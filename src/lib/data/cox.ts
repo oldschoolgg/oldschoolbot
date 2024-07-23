@@ -8,7 +8,7 @@ import {
 	reduceNumByPercent,
 	shuffleArr
 } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
@@ -189,14 +189,14 @@ export const COXMaxRangeGear = constructGearSetup({
 const maxRange = new Gear(COXMaxRangeGear);
 
 export const COXMaxMeleeGear = constructGearSetup({
-	head: "Torva full helm",
+	head: 'Torva full helm',
 	neck: 'Amulet of torture',
-	body: "Torva platebody",
+	body: 'Torva platebody',
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
-	legs: "Torva platelegs",
+	legs: 'Torva platelegs',
 	feet: 'Primordial boots',
-	'2h': "Scythe of vitur",
+	'2h': 'Scythe of vitur',
 	ring: 'Ultor ring'
 });
 const maxMelee = new Gear(COXMaxMeleeGear);
@@ -325,9 +325,8 @@ function kcEffectiveness(challengeMode: boolean, isSolo: boolean, normalKC: numb
 		cap = isSolo ? 75 : 100;
 	}
 	const kcEffectiveness = Math.min(100, calcWhatPercent(kc, cap));
-	console.log(`kcEffectiveness: ${kcEffectiveness}`)
+	console.log(`kcEffectiveness: ${kcEffectiveness}`);
 	return kcEffectiveness;
-	
 }
 
 const { ceil } = Math;
@@ -338,7 +337,7 @@ function calcPerc(perc: number, num: number) {
 function teamSizeBoostPercent(size: number) {
 	switch (size) {
 		case 1:
-			return -10;
+			return 5;
 		case 2:
 			return 12;
 		case 3:
@@ -368,7 +367,8 @@ interface ItemBoost {
 }
 
 const itemBoosts: ItemBoost[][] = [
-	[ // melee weapon boost
+	[
+		// melee weapon boost
 		{
 			item: getOSItem('Scythe of vitur'),
 			boost: 10,
@@ -404,7 +404,8 @@ const itemBoosts: ItemBoost[][] = [
 			requiredCharges: TENTACLE_CHARGES_PER_COX
 		}
 	],
-	[ // Range weapon boost
+	[
+		// Range weapon boost
 		{
 			item: getOSItem('Twisted bow'),
 			boost: 10,
@@ -424,7 +425,8 @@ const itemBoosts: ItemBoost[][] = [
 			setup: 'range'
 		}
 	],
-	[ // mage weapon boost
+	[
+		// mage weapon boost
 		{
 			item: getOSItem("Tumeken's shadow"),
 			boost: 10,
@@ -442,15 +444,16 @@ const itemBoosts: ItemBoost[][] = [
 			requiredCharges: SANGUINESTI_CHARGES_PER_COX
 		}
 	],
-	[ // defense reduction weapon boost
+	[
+		// defense reduction weapon boost
 		{
 			item: getOSItem('Elder maul'),
-			boost: 4,
+			boost: 5,
 			mustBeEquipped: false
 		},
 		{
 			item: getOSItem('Dragon warhammer'),
-			boost: 3,
+			boost: 4,
 			mustBeEquipped: false
 		},
 		{
@@ -459,7 +462,8 @@ const itemBoosts: ItemBoost[][] = [
 			mustBeEquipped: false
 		}
 	],
-	[ // Zaryte crossbow spec boost
+	[
+		// Zaryte crossbow spec boost
 		{
 			item: getOSItem('Zaryte crossbow') && getOSItem('Lightbearer'),
 			boost: 5,
@@ -494,13 +498,13 @@ export async function calcCoxDuration(
 	const size = team.length;
 
 	let totalReduction = 0;
-	console.log(`Team is: ${team}`)
-	console.log(`Team size is : ${size}`)
-	console.log(`maxSpeedReductionFromItems: ${maxSpeedReductionFromItems}`)
-	console.log(`maxSpeedReductionUser: ${maxSpeedReductionUser}`)
+	// console.log(`Team is: ${team}`);
+	// console.log(`Team size is : ${size}`);
+	console.log(`maxSpeedReductionFromItems: ${maxSpeedReductionFromItems}`);
+	console.log(`maxSpeedReductionUser: ${maxSpeedReductionUser}`);
 	const reductions: Record<string, number> = {};
 
-	// Track degradeable items:
+	// Track degradeable items (fakemass works properly with this code, it wont remove 5x charges):
 	const degradeableItems: { item: Item; user: MUser; chargesToDegrade: number }[] = [];
 
 	for (const u of team) {
@@ -509,63 +513,58 @@ export async function calcCoxDuration(
 		// Reduce time for gear
 		const { total } = calculateUserGearPercents(u);
 		userPercentChange += calcPerc(total, speedReductionForGear);
+		console.log(`userPercentChange: ${userPercentChange}`)
 
 		// Reduce time for KC
 		const stats = await u.fetchMinigames();
 		const kcPercent = kcEffectiveness(challengeMode, team.length === 1, stats.raids, stats.raids_challenge_mode);
-		console.log(`kcPercent: ${kcPercent}`)
-		console.log(`speedReductionForKC: ${speedReductionForKC}`)
-		console.log(`userPercentChange before: ${userPercentChange}`)
+		// console.log(`kcPercent: ${kcPercent}`);
+		// console.log(`speedReductionForKC: ${speedReductionForKC}`);
+		// console.log(`userPercentChange before: ${userPercentChange}`);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
-		console.log(`userPercentChange after: ${userPercentChange}`)
+		// console.log(`userPercentChange: ${userPercentChange}`)
+		// console.log(`userPercentChange after: ${userPercentChange}`);
 
-		// Reduce time for item boosts
+        // Reduce time for item boosts
 		for (const set of itemBoosts) {
+			let maxBoost = 0;
 			for (const item of set) {
-				if (item.mustBeCharged && item.requiredCharges) {
-					const itemsToCheck = Array.isArray(item.item) ? item.item : [item.item];
-					for (const singleItem of itemsToCheck) {
-						if (u.hasEquippedOrInBank(singleItem.id)) {
+				const items = Array.isArray(item.item) ? item.item : [item.item];
+				
+				for (const i of items) {
+					if (item.mustBeCharged && item.requiredCharges) {
+						if (u.hasEquippedOrInBank(i.id)) {
 							const testItem = {
-								item: singleItem,
+								item: i,
 								user: u,
 								chargesToDegrade: item.requiredCharges
 							};
 							const canDegrade = checkUserCanUseDegradeableItem(testItem);
 							if (canDegrade.hasEnough) {
-								userPercentChange += item.boost;
+								maxBoost = Math.max(maxBoost, item.boost);
 								degradeableItems.push(testItem);
-								break;
 							}
 						}
-					}
-				} else if (item.mustBeEquipped) {
-					const itemsToCheck = Array.isArray(item.item) ? item.item : [item.item];
-					for (const singleItem of itemsToCheck) {
-						if (item.setup && u.gear[item.setup].hasEquipped(singleItem.id)) {
-							userPercentChange += item.boost;
-							break;
-						} else if (!item.setup && u.hasEquipped(singleItem.id)) {
-							userPercentChange += item.boost;
-							break;
+					} else if (item.mustBeEquipped) {
+						if (item.setup && u.gear[item.setup].hasEquipped(i.id)) {
+							maxBoost = Math.max(maxBoost, item.boost);
+						} else if (!item.setup && u.hasEquipped(i.id)) {
+							maxBoost = Math.max(maxBoost, item.boost);
 						}
-					}
-				} else {
-					const itemsToCheck = Array.isArray(item.item) ? item.item : [item.item];
-					for (const singleItem of itemsToCheck) {
-						if (u.hasEquippedOrInBank(singleItem.id)) {
-							userPercentChange += item.boost;
-							break;
-						}
+					} else if (u.hasEquippedOrInBank(i.id)) {
+						maxBoost = Math.max(maxBoost, item.boost);
 					}
 				}
 			}
+			userPercentChange += maxBoost;
 		}
-
-		totalReduction += userPercentChange / size;
-		reductions[u.id] = userPercentChange / size;
-		}
-		let duration = baseDuration;
+		
+		const perc = Math.min(100, userPercentChange / size);
+		
+		totalReduction += perc;
+		reductions[u.id] = perc;
+    }
+    let duration = baseDuration;
 
 	if (challengeMode) {
 		duration = baseCmDuration;
@@ -575,6 +574,7 @@ export async function calcCoxDuration(
 	}
 
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
+	
 
 	return { duration, reductions, maxUserReduction: maxSpeedReductionUser / size, degradeables: degradeableItems };
 }

@@ -81,7 +81,9 @@ export const raidsTask: MinionTask = {
 	async run(data: RaidsOptions) {
 		const { channelID, users, challengeMode, duration, leader, quantity: _quantity } = data;
 		const quantity = _quantity ?? 1;
-		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
+		const isFakeMass = users.length > 1 && new Set(users).size === 1;
+		const usersToCheck = isFakeMass ? [users[0]] : users;
+		const allUsers = await Promise.all(usersToCheck.map(async u => mUserFetch(u)));
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
 		let totalPoints = 0;

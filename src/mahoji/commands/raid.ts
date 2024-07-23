@@ -30,7 +30,7 @@ export const raidCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'type',
 							description: 'Choose whether you want to solo, mass, or fake mass.',
-							choices: ['solo', 'mass', 'mass (4 bot teammates)'].map(i => ({ name: i, value: i })),
+							choices: ['solo', 'mass', 'fakemass'].map(i => ({ name: i, value: i })),
 							required: true
 						},
 						{
@@ -179,7 +179,12 @@ export const raidCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{
 		cox?: {
-			start?: { type: 'solo' | 'mass' | 'mass (4 bot teammates)'; challenge_mode?: boolean; max_team_size?: number; quantity?: number };
+			start?: {
+				type: 'solo' | 'mass' | 'fakemass';
+				challenge_mode?: boolean;
+				max_team_size?: number;
+				quantity?: number;
+			};
 			stats?: {};
 		};
 		tob?: {

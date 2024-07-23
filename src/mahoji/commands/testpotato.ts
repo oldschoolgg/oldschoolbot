@@ -23,6 +23,7 @@ import { MAX_QP } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -38,14 +39,13 @@ import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { userEventToStr } from '../../lib/util/userEvents';
+import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
-import { COXMaxMeleeGear, COXMaxMageGear, COXMaxRangeGear } from '../../lib/data/cox';
-import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 
 export async function giveMaxStats(user: MUser) {
 	const updates: Prisma.UserUpdateArgs['data'] = {};
@@ -832,7 +832,7 @@ ${droprates.join('\n')}`),
 				}
 				if (options.gear) {
 					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
-				
+
 					for (const type of ['melee', 'range', 'mage'] as const) {
 						const currentGear = gear[type];
 						if (currentGear.ammo && getItem(currentGear.ammo.item)?.stackable) {
@@ -845,7 +845,7 @@ ${droprates.join('\n')}`),
 						gear_range: gear.range.raw() as any,
 						gear_mage: gear.mage.raw() as any
 					});
-				
+
 					return gearViewCommand(user, 'all', false);
 				}
 				if (options.reset) {

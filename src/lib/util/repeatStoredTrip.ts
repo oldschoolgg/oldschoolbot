@@ -480,15 +480,19 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Raids]: {
 		commandName: 'raid',
-		args: (data: RaidsOptions) => ({
-			cox: {
-				start: {
-					challenge_mode: data.challengeMode,
-					type: data.users.length === 1 ? 'solo' : 'mass',
-					quantity: data.quantity
+		args: (data: RaidsOptions) => {
+			const isFakeMass = data.users.length > 1 && new Set(data.users).size === 1;
+
+			return {
+				cox: {
+					start: {
+						challenge_mode: data.challengeMode,
+						type: isFakeMass ? 'fakemass' : data.users.length === 1 ? 'solo' : 'mass',
+						quantity: data.quantity
+					}
 				}
-			}
-		})
+			};
+		}
 	},
 	[activity_type_enum.RoguesDenMaze]: {
 		commandName: 'minigames',

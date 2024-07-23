@@ -81,12 +81,12 @@ export async function coxStatsCommand(user: MUser) {
 export async function coxCommand(
 	channelID: string,
 	user: MUser,
-	type: 'solo' | 'mass' | 'mass (4 bot teammates)',
+	type: 'solo' | 'mass' | 'fakemass',
 	maxSizeInput: number | undefined,
 	isChallengeMode: boolean,
 	_quantity?: number
 ) {
-	if (type !== 'mass' && type !== 'solo' && type !== 'mass (4 bot teammates)') {
+	if (type !== 'mass' && type !== 'solo' && type !== 'fakemass') {
 		return 'Specify your team setup for Chambers of Xeric, either solo, mass, or mass (4 bots teammates).';
 	}
 
@@ -154,16 +154,13 @@ export async function coxCommand(
 	if (!channelIsSendable(channel)) return 'No channel found.';
 
 	let users: MUser[] = [];
-	if (type === 'mass (4 bot teammates)'){
+	if (type === 'fakemass') {
 		users = [user, user, user, user, user];
-		console.log(`users length: ${users.length}`);
 	} else if (type === 'mass') {
 		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
 	}
-
-	console.log(`users length: ${users.length}`);
 
 	const {
 		duration: raidDuration,
@@ -188,9 +185,8 @@ export async function coxCommand(
 	);
 	let debugStr = '';
 	const isSolo = users.length === 1;
-	console.log(`isSolo = ${isSolo}`);
-
-	const totalCost = new Bank();
+	const isFakeMass = users.length > 1 && new Set(users).size === 1;
+	console.log(`isSolo: ${isSolo} | isFakeMass: ${isFakeMass}`);
 
 	await Promise.all(
 		degradeables.map(async d => {
@@ -198,15 +194,18 @@ export async function coxCommand(
 		})
 	);
 
+	const totalCost = new Bank();
+	const usersToCheck = isFakeMass ? [users[0]] : users;
+
 	const costResult = await Promise.all([
-		...users.map(async u => {
+		...usersToCheck.map(async u => {
 			const supplies = await calcCoxInput(u, isSolo);
 			await u.removeItemsFromBank(supplies);
 			totalCost.add(supplies);
 			const { total } = calculateUserGearPercents(u);
 			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n`;
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n **DEBUG:** reductions: ${reductions[u.id]} maxUserReuctions: ${maxUserReduction}` ;
 			return {
 				userID: u.id,
 				itemsRemoved: supplies
@@ -242,7 +241,9 @@ export async function coxCommand(
 		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
 				quantity > 1 ? 's' : ''
 			}. The total trip will take ${formatDuration(duration)}.`
-		: `${partyOptions.leader.usernameOrMention}'s party (${users
+		: isFakeMass ? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+				quantity > 1 ? 's' : ''
+			} - the total trip will take ${formatDuration(duration)}.` :`${partyOptions.leader.usernameOrMention}'s party (${users
 				.map(u => u.usernameOrMention)
 				.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
 				quantity > 1 ? 's' : ''
