@@ -358,7 +358,7 @@ function teamSizeBoostPercent(size: number) {
 }
 
 interface ItemBoost {
-	item: Item | Item[];
+	item: Item;
 	boost: number;
 	mustBeEquipped: boolean;
 	setup?: 'melee' | 'mage' | 'range';
@@ -423,8 +423,7 @@ const itemBoosts: ItemBoost[][] = [
 			boost: 4,
 			mustBeEquipped: true,
 			setup: 'range'
-		},
-
+		}
 	],
 	[
 		// mage weapon boost
@@ -516,58 +515,51 @@ export async function calcCoxDuration(
 		// Reduce time for gear
 		const { total } = calculateUserGearPercents(u);
 		userPercentChange += calcPerc(total, speedReductionForGear);
-		console.log(`userPercentChange: ${userPercentChange}`)
+		console.log(`userPercentChange: ${userPercentChange}`);
 
 		// Reduce time for KC
 		const stats = await u.fetchMinigames();
 		const kcPercent = kcEffectiveness(challengeMode, team.length === 1, stats.raids, stats.raids_challenge_mode);
-		// console.log(`kcPercent: ${kcPercent}`);
-		// console.log(`speedReductionForKC: ${speedReductionForKC}`);
-		// console.log(`userPercentChange before: ${userPercentChange}`);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
-		// console.log(`userPercentChange: ${userPercentChange}`)
-		// console.log(`userPercentChange after: ${userPercentChange}`);
 
-        // Reduce time for item boosts
+		// Reduce time for item boosts
 		for (const set of itemBoosts) {
-			let maxBoost = 0;
 			for (const item of set) {
-				const items = Array.isArray(item.item) ? item.item : [item.item];
-				
-				for (const i of items) {
-					if (item.mustBeCharged && item.requiredCharges) {
-						if (u.hasEquippedOrInBank(i.id)) {
-							const testItem = {
-								item: i,
-								user: u,
-								chargesToDegrade: item.requiredCharges
-							};
-							const canDegrade = checkUserCanUseDegradeableItem(testItem);
-							if (canDegrade.hasEnough) {
-								maxBoost = Math.max(maxBoost, item.boost);
-								degradeableItems.push(testItem);
-							}
+				if (item.mustBeCharged && item.requiredCharges) {
+					if (u.hasEquippedOrInBank(item.item.id)) {
+						const testItem = {
+							item: item.item,
+							user: u,
+							chargesToDegrade: item.requiredCharges
+						};
+						const canDegrade = checkUserCanUseDegradeableItem(testItem);
+						if (canDegrade.hasEnough) {
+							userPercentChange += item.boost;
+							degradeableItems.push(testItem);
+							break;
 						}
-					} else if (item.mustBeEquipped) {
-						if (item.setup && u.gear[item.setup].hasEquipped(i.id)) {
-							maxBoost = Math.max(maxBoost, item.boost);
-						} else if (!item.setup && u.hasEquipped(i.id)) {
-							maxBoost = Math.max(maxBoost, item.boost);
-						}
-					} else if (u.hasEquippedOrInBank(i.id)) {
-						maxBoost = Math.max(maxBoost, item.boost);
 					}
+				} else if (item.mustBeEquipped) {
+					if (item.setup && u.gear[item.setup].hasEquipped(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					} else if (!item.setup && u.hasEquipped(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					}
+				} else if (u.hasEquippedOrInBank(item.item.id)) {
+					userPercentChange += item.boost;
+					break;
 				}
 			}
-			userPercentChange += maxBoost;
 		}
-		
+
 		const perc = Math.min(100, userPercentChange / size);
-		
+
 		totalReduction += perc;
 		reductions[u.id] = perc;
-    }
-    let duration = baseDuration;
+	}
+	let duration = baseDuration;
 
 	if (challengeMode) {
 		duration = baseCmDuration;
@@ -577,22 +569,22 @@ export async function calcCoxDuration(
 	}
 
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
-	
 
 	return { duration, reductions, maxUserReduction: maxSpeedReductionUser / size, degradeables: degradeableItems };
 }
 
-export async function calcCoxInput(u: MUser, solo: boolean) {
+export async function calcCoxInput(u: MUser, quantity: number, solo: boolean) {
 	const items = new Bank();
-	const kc = await getMinigameScore(u.id, 'raids');
-	items.add('Stamina potion(4)', solo ? 2 : 1);
+	for (let i = 0; i < quantity; i++) {
+		const kc = await getMinigameScore(u.id, 'raids');
+		items.add('Stamina potion(4)', solo ? 2 : 1);
 
-	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
-	if (solo) brewsNeeded++;
-	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
+		let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
+		if (solo) brewsNeeded++;
+		const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 
-	items.add('Saradomin brew(4)', brewsNeeded);
-	items.add('Super restore(4)', restoresNeeded);
-
+		items.add('Saradomin brew(4)', brewsNeeded);
+		items.add('Super restore(4)', restoresNeeded);
+	}
 	return items;
 }

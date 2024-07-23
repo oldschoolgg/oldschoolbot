@@ -188,6 +188,10 @@ export async function coxCommand(
 	const isFakeMass = users.length > 1 && new Set(users).size === 1;
 	console.log(`isSolo: ${isSolo} | isFakeMass: ${isFakeMass}`);
 
+	for (const d of degradeables) {
+		d.chargesToDegrade *= quantity;
+	}
+
 	await Promise.all(
 		degradeables.map(async d => {
 			await degradeItem(d);
@@ -199,13 +203,13 @@ export async function coxCommand(
 
 	const costResult = await Promise.all([
 		...usersToCheck.map(async u => {
-			const supplies = await calcCoxInput(u, isSolo);
+			const supplies = await calcCoxInput(u, quantity, isSolo);
 			await u.removeItemsFromBank(supplies);
 			totalCost.add(supplies);
 			const { total } = calculateUserGearPercents(u);
 			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n **DEBUG:** reductions: ${reductions[u.id]} maxUserReuctions: ${maxUserReduction}` ;
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n **DEBUG:** reductions: ${reductions[u.id]} maxUserReuctions: ${maxUserReduction}`;
 			return {
 				userID: u.id,
 				itemsRemoved: supplies
@@ -241,13 +245,15 @@ export async function coxCommand(
 		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
 				quantity > 1 ? 's' : ''
 			}. The total trip will take ${formatDuration(duration)}.`
-		: isFakeMass ? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
-				quantity > 1 ? 's' : ''
-			} - the total trip will take ${formatDuration(duration)}.` :`${partyOptions.leader.usernameOrMention}'s party (${users
-				.map(u => u.usernameOrMention)
-				.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
-				quantity > 1 ? 's' : ''
-			} - the total trip will take ${formatDuration(duration)}.`;
+		: isFakeMass
+			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+					quantity > 1 ? 's' : ''
+				} - the total trip will take ${formatDuration(duration)}.`
+			: `${partyOptions.leader.usernameOrMention}'s party (${users
+					.map(u => u.usernameOrMention)
+					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+					quantity > 1 ? 's' : ''
+				} - the total trip will take ${formatDuration(duration)}.`;
 
 	str += ` \n\n${debugStr}`;
 
