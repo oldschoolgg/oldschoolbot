@@ -337,9 +337,9 @@ function calcPerc(perc: number, num: number) {
 function teamSizeBoostPercent(size: number) {
 	switch (size) {
 		case 1:
-			return 5;
+			return -2;
 		case 2:
-			return 12;
+			return 7;
 		case 3:
 			return 13;
 		case 4:
@@ -371,7 +371,7 @@ const itemBoosts: ItemBoost[][] = [
 		// melee weapon boost
 		{
 			item: getOSItem('Scythe of vitur'),
-			boost: 10,
+			boost: 8,
 			mustBeEquipped: true,
 			setup: 'melee',
 			mustBeCharged: true,
@@ -379,7 +379,7 @@ const itemBoosts: ItemBoost[][] = [
 		},
 		{
 			item: getOSItem('Dragon hunter lance'),
-			boost: 6,
+			boost: 5,
 			mustBeEquipped: true,
 			setup: 'melee'
 		},
@@ -408,28 +408,29 @@ const itemBoosts: ItemBoost[][] = [
 		// Range weapon boost
 		{
 			item: getOSItem('Twisted bow'),
-			boost: 10,
+			boost: 8,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
 			item: getOSItem('Bow of faerdhinen (c)'),
-			boost: 6,
+			boost: 5,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
 			item: getOSItem('Dragon hunter crossbow'),
-			boost: 5,
+			boost: 4,
 			mustBeEquipped: true,
 			setup: 'range'
-		}
+		},
+
 	],
 	[
 		// mage weapon boost
 		{
 			item: getOSItem("Tumeken's shadow"),
-			boost: 10,
+			boost: 8,
 			mustBeEquipped: true,
 			setup: 'mage',
 			mustBeCharged: true,
@@ -453,7 +454,7 @@ const itemBoosts: ItemBoost[][] = [
 		},
 		{
 			item: getOSItem('Dragon warhammer'),
-			boost: 4,
+			boost: 3,
 			mustBeEquipped: false
 		},
 		{
@@ -472,14 +473,16 @@ const itemBoosts: ItemBoost[][] = [
 	]
 ];
 
-const speedReductionForGear = 20;
+const speedReductionForGear = 16;
 const speedReductionForKC = 30;
 
+// comes to 34
 const maxSpeedReductionFromItems = itemBoosts.reduce(
 	(sum, items) => sum + Math.max(...items.map(item => item.boost)),
 	0
 );
 
+// try to keep this number as close to 80 as possible
 const maxSpeedReductionUser = speedReductionForGear + speedReductionForKC + maxSpeedReductionFromItems;
 
 const baseDuration = Time.Minute * 83;
@@ -568,7 +571,7 @@ export async function calcCoxDuration(
 
 	if (challengeMode) {
 		duration = baseCmDuration;
-		duration = reduceNumByPercent(duration, totalReduction / 1.3);
+		duration = reduceNumByPercent(duration, totalReduction / 1.1);
 	} else {
 		duration = reduceNumByPercent(duration, totalReduction);
 	}
