@@ -81,12 +81,12 @@ export async function coxStatsCommand(user: MUser) {
 export async function coxCommand(
 	channelID: string,
 	user: MUser,
-	type: 'solo' | 'mass' | 'mass (4 bots teammates)',
+	type: 'solo' | 'mass' | 'mass (4 bot teammates)',
 	maxSizeInput: number | undefined,
 	isChallengeMode: boolean,
 	_quantity?: number
 ) {
-	if (type !== 'mass' && type !== 'solo' && type !== 'mass (4 bots teammates)') {
+	if (type !== 'mass' && type !== 'solo' && type !== 'mass (4 bot teammates)') {
 		return 'Specify your team setup for Chambers of Xeric, either solo, mass, or mass (4 bots teammates).';
 	}
 
@@ -154,15 +154,16 @@ export async function coxCommand(
 	if (!channelIsSendable(channel)) return 'No channel found.';
 
 	let users: MUser[] = [];
-	if (type === 'mass (4 bots teammates)'){
-		users = Array(5).fill(user);
-		console.log(users);
-	}
-	if (type === 'mass') {
+	if (type === 'mass (4 bot teammates)'){
+		users = [user, user, user, user, user];
+		console.log(`users length: ${users.length}`);
+	} else if (type === 'mass') {
 		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
 	}
+
+	console.log(`users length: ${users.length}`);
 
 	const {
 		duration: raidDuration,
@@ -187,6 +188,7 @@ export async function coxCommand(
 	);
 	let debugStr = '';
 	const isSolo = users.length === 1;
+	console.log(`isSolo = ${isSolo}`);
 
 	const totalCost = new Bank();
 

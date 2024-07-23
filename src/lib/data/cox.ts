@@ -325,7 +325,9 @@ function kcEffectiveness(challengeMode: boolean, isSolo: boolean, normalKC: numb
 		cap = isSolo ? 75 : 100;
 	}
 	const kcEffectiveness = Math.min(100, calcWhatPercent(kc, cap));
+	console.log(`kcEffectiveness: ${kcEffectiveness}`)
 	return kcEffectiveness;
+	
 }
 
 const { ceil } = Math;
@@ -402,20 +404,6 @@ const itemBoosts: ItemBoost[][] = [
 			requiredCharges: TENTACLE_CHARGES_PER_COX
 		}
 	],
-	[ // melee cape boost
-		{
-			item: getOSItem('Infernal cape'),
-			boost: 5,
-			mustBeEquipped: true,
-			setup: 'melee'
-		},
-		{
-			item: getOSItem('Fire cape'),
-			boost: 2,
-			mustBeEquipped: true,
-			setup: 'melee'
-		},
-	],
 	[ // Range weapon boost
 		{
 			item: getOSItem('Twisted bow'),
@@ -436,20 +424,6 @@ const itemBoosts: ItemBoost[][] = [
 			setup: 'range'
 		}
 	],
-	[ // range cape boost
-		{
-			item: getOSItem("Blessed dizana's quiver"),
-			boost: 5,
-			mustBeEquipped: true,
-			setup: 'range'
-		},
-		{
-			item: getOSItem("Ava's assembler"),
-			boost: 2,
-			mustBeEquipped: true,
-			setup: 'range'
-		},
-	],
 	[ // mage weapon boost
 		{
 			item: getOSItem("Tumeken's shadow"),
@@ -467,20 +441,6 @@ const itemBoosts: ItemBoost[][] = [
 			mustBeCharged: true,
 			requiredCharges: SANGUINESTI_CHARGES_PER_COX
 		}
-	],
-	[ // mage cape boost
-		{
-			item: getOSItem("Imbued saradomin cape"),
-			boost: 5,
-			mustBeEquipped: true,
-			setup: 'mage'
-		},
-		{
-			item: getOSItem("Saradomin cape"),
-			boost: 2,
-			mustBeEquipped: true,
-			setup: 'mage'
-		},
 	],
 	[ // defense reduction weapon boost
 		{
@@ -508,13 +468,14 @@ const itemBoosts: ItemBoost[][] = [
 	]
 ];
 
-const speedReductionForGear = 16;
-const speedReductionForKC = 40;
+const speedReductionForGear = 20;
+const speedReductionForKC = 30;
 
 const maxSpeedReductionFromItems = itemBoosts.reduce(
 	(sum, items) => sum + Math.max(...items.map(item => item.boost)),
 	0
 );
+
 const maxSpeedReductionUser = speedReductionForGear + speedReductionForKC + maxSpeedReductionFromItems;
 
 const baseDuration = Time.Minute * 83;
@@ -533,7 +494,10 @@ export async function calcCoxDuration(
 	const size = team.length;
 
 	let totalReduction = 0;
-
+	console.log(`Team is: ${team}`)
+	console.log(`Team size is : ${size}`)
+	console.log(`maxSpeedReductionFromItems: ${maxSpeedReductionFromItems}`)
+	console.log(`maxSpeedReductionUser: ${maxSpeedReductionUser}`)
 	const reductions: Record<string, number> = {};
 
 	// Track degradeable items:
@@ -549,45 +513,59 @@ export async function calcCoxDuration(
 		// Reduce time for KC
 		const stats = await u.fetchMinigames();
 		const kcPercent = kcEffectiveness(challengeMode, team.length === 1, stats.raids, stats.raids_challenge_mode);
+		console.log(`kcPercent: ${kcPercent}`)
+		console.log(`speedReductionForKC: ${speedReductionForKC}`)
+		console.log(`userPercentChange before: ${userPercentChange}`)
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
+		console.log(`userPercentChange after: ${userPercentChange}`)
 
 		// Reduce time for item boosts
 		for (const set of itemBoosts) {
 			for (const item of set) {
 				if (item.mustBeCharged && item.requiredCharges) {
-					if (u.hasEquippedOrInBank(item.item.id)) {
-						const testItem = {
-							item: item.item,
-							user: u,
-							chargesToDegrade: item.requiredCharges
-						};
-						const canDegrade = checkUserCanUseDegradeableItem(testItem);
-						if (canDegrade.hasEnough) {
-							userPercentChange += item.boost;
-							degradeableItems.push(testItem);
-							break;
+					const itemsToCheck = Array.isArray(item.item) ? item.item : [item.item];
+					for (const singleItem of itemsToCheck) {
+						if (u.hasEquippedOrInBank(singleItem.id)) {
+							const testItem = {
+								item: singleItem,
+								user: u,
+								chargesToDegrade: item.requiredCharges
+							};
+							const canDegrade = checkUserCanUseDegradeableItem(testItem);
+							if (canDegrade.hasEnough) {
+								userPercentChange += item.boost;
+								degradeableItems.push(testItem);
+								break;
+							}
 						}
 					}
 				} else if (item.mustBeEquipped) {
-					if (item.setup && u.gear[item.setup].hasEquipped(item.item.id)) {
-						userPercentChange += item.boost;
-						break;
-					} else if (!item.setup && u.hasEquipped(item.item.id)) {
-						userPercentChange += item.boost;
-						break;
+					const itemsToCheck = Array.isArray(item.item) ? item.item : [item.item];
+					for (const singleItem of itemsToCheck) {
+						if (item.setup && u.gear[item.setup].hasEquipped(singleItem.id)) {
+							userPercentChange += item.boost;
+							break;
+						} else if (!item.setup && u.hasEquipped(singleItem.id)) {
+							userPercentChange += item.boost;
+							break;
+						}
 					}
-				} else if (u.hasEquippedOrInBank(item.item.id)) {
-					userPercentChange += item.boost;
-					break;
+				} else {
+					const itemsToCheck = Array.isArray(item.item) ? item.item : [item.item];
+					for (const singleItem of itemsToCheck) {
+						if (u.hasEquippedOrInBank(singleItem.id)) {
+							userPercentChange += item.boost;
+							break;
+						}
+					}
 				}
 			}
 		}
 
-
 		totalReduction += userPercentChange / size;
 		reductions[u.id] = userPercentChange / size;
-	}
-	let duration = baseDuration;
+		}
+		let duration = baseDuration;
 
 	if (challengeMode) {
 		duration = baseCmDuration;
