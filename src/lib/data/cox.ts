@@ -189,15 +189,14 @@ export const COXMaxRangeGear = constructGearSetup({
 const maxRange = new Gear(COXMaxRangeGear);
 
 export const COXMaxMeleeGear = constructGearSetup({
-	head: "Inquisitor's great helm",
+	head: "Torva full helm",
 	neck: 'Amulet of torture',
-	body: "Inquisitor's hauberk",
+	body: "Torva platebody",
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
-	legs: "Inquisitor's plateskirt",
+	legs: "Torva platelegs",
 	feet: 'Primordial boots',
-	weapon: "Inquisitor's mace",
-	shield: 'Avernic defender',
+	'2h': "Scythe of vitur",
 	ring: 'Ultor ring'
 });
 const maxMelee = new Gear(COXMaxMeleeGear);
