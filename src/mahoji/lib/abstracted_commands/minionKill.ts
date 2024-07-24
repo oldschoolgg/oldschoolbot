@@ -16,6 +16,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { colosseumCommand } from '../../../lib/colosseum';
 import { BitField, PeakTier, type PvMMethod, YETI_ID } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
@@ -180,6 +181,7 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID);
 	if (user.usingPet('Ishi')) {
 		sendToChannelID(channelID.toString(), {
 			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`
