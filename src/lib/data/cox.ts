@@ -367,8 +367,7 @@ interface ItemBoost {
 }
 
 const itemBoosts: ItemBoost[][] = [
-	[
-		// melee weapon boost
+	[ // melee weapon boost
 		{
 			item: getOSItem('Scythe of vitur'),
 			boost: 8,
@@ -404,8 +403,7 @@ const itemBoosts: ItemBoost[][] = [
 			requiredCharges: TENTACLE_CHARGES_PER_COX
 		}
 	],
-	[
-		// Range weapon boost
+	[ // Range weapon boost
 		{
 			item: getOSItem('Twisted bow'),
 			boost: 8,
@@ -425,8 +423,7 @@ const itemBoosts: ItemBoost[][] = [
 			setup: 'range'
 		}
 	],
-	[
-		// mage weapon boost
+	[ // mage weapon boost
 		{
 			item: getOSItem("Tumeken's shadow"),
 			boost: 8,
@@ -444,8 +441,7 @@ const itemBoosts: ItemBoost[][] = [
 			requiredCharges: SANGUINESTI_CHARGES_PER_COX
 		}
 	],
-	[
-		// defense reduction weapon boost
+	[ // defense reduction weapon boost
 		{
 			item: getOSItem('Elder maul'),
 			boost: 5,
@@ -462,11 +458,17 @@ const itemBoosts: ItemBoost[][] = [
 			mustBeEquipped: false
 		}
 	],
-	[
-		// Zaryte crossbow spec boost
+	[ // Zaryte crossbow
 		{
-			item: getOSItem('Zaryte crossbow') && getOSItem('Lightbearer'),
-			boost: 5,
+			item: getOSItem('Zaryte crossbow'),
+			boost: 3,
+			mustBeEquipped: false
+		}
+	],
+	[ // Lightbearer
+		{
+			item: getOSItem('Lightbearer'),
+			boost: 2,
 			mustBeEquipped: false
 		}
 	]
@@ -476,7 +478,7 @@ const speedReductionForGear = 16;
 const speedReductionForKC = 30;
 
 // comes to 34
-const maxSpeedReductionFromItems = itemBoosts.reduce(
+export const maxSpeedReductionFromItems = itemBoosts.reduce(
 	(sum, items) => sum + Math.max(...items.map(item => item.boost)),
 	0
 );
