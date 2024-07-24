@@ -13,6 +13,7 @@ import {
 	maxSpeedReductionFromItems,
 	minimumCoxSuppliesNeeded
 } from '../../../lib/data/cox';
+import { getSimilarItems } from '../../../lib/data/similarItems';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { trackLoot } from '../../../lib/lootTrack';
 import { setupParty } from '../../../lib/party';
@@ -46,7 +47,7 @@ export async function coxBoostsCommand(user: MUser) {
 	let boostPercent = 0;
 	boostStr.push('<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>\n');
 	boostStr.push(
-		'*Item boosts help reduce the time required to complete Chambers. Only one boost from each section can be applied. The further left the higher the boost.*\n\n'
+		'*Item boosts help reduce the time required to complete Chambers. Only one boost from each bullet point can be applied. The further left the higher the boost.*\n\n'
 	);
 	boostStr.push('**Equipped boost Items:**\n');
 	for (const set of itemBoosts) {
@@ -57,9 +58,11 @@ export async function coxBoostsCommand(user: MUser) {
 		boostStr.push('- ');
 		const ownedItems = set.filter(item => {
 			if (item.mustBeEquipped) {
-				return user.hasEquipped(item.item.id);
+				if (item.setup && user.gear[item.setup].hasEquipped(item.item.id, false, true)) {
+					return true;
+				}
 			} else {
-				return user.owns(item.item.id);
+				return user.hasEquippedOrInBank(getSimilarItems(item.item.id));
 			}
 		});
 		if (ownedItems.length > 0) {
@@ -67,9 +70,17 @@ export async function coxBoostsCommand(user: MUser) {
 			const setItems = set.map(item => {
 				if (item.boost === maxBoost && ownedItems.some(ownedItem => ownedItem.item.id === item.item.id)) {
 					boostPercent += item.boost;
-					return `${Emoji.Tick}${item.item.name}`;
+					if (item.item.name === 'Dragon pickaxe') {
+						return `${Emoji.Tick}Pickaxe Boost (Dragon, Crystal, 3a)`;
+					} else {
+						return `${Emoji.Tick}${item.item.name}`;
+					}
 				} else {
-					return `${Emoji.RedX}${item.item.name}`;
+					if (item.item.name === 'Dragon pickaxe') {
+						return `${Emoji.RedX}Pickaxe Boost (3a, Crystal, Dragon)`;
+					} else {
+						return `${Emoji.RedX}${item.item.name}`;
+					}
 				}
 			});
 			boostStr.push(setItems.join(', '));
@@ -258,7 +269,7 @@ export async function coxCommand(
 			totalCost.add(supplies);
 			const realAmmoCost = await u.specialRemoveItems(ammo);
 			totalCost.add(realAmmoCost.realCost);
-			supplies.add(realAmmoCost.realCost)
+			supplies.add(realAmmoCost.realCost);
 			const { total } = calculateUserGearPercents(u);
 			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword

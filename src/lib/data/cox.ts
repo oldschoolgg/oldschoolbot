@@ -21,6 +21,7 @@ import type { Skills } from '../types';
 import { itemID, itemNameFromID, randomVariation, resolveItems } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
+import { getSimilarItems } from './similarItems';
 
 const bareMinStats: Skills = {
 	attack: 80,
@@ -374,7 +375,7 @@ function kcEffectiveness(challengeMode: boolean, isSolo: boolean, normalKC: numb
 		cap = isSolo ? 75 : 100;
 	}
 	const kcEffectiveness = Math.min(100, calcWhatPercent(kc, cap));
-	console.log(`kcEffectiveness: ${kcEffectiveness}`);
+	// console.log(`kcEffectiveness: ${kcEffectiveness}`);
 	return kcEffectiveness;
 }
 
@@ -476,7 +477,8 @@ export const itemBoosts: ItemBoost[][] = [
 		{
 			item: getOSItem('Zaryte crossbow'),
 			boost: 3,
-			mustBeEquipped: true
+			mustBeEquipped: true,
+			setup: 'range'
 		}
 	],
 	[
@@ -484,27 +486,32 @@ export const itemBoosts: ItemBoost[][] = [
 		{
 			item: getOSItem('Dragon arrow'),
 			boost: 3,
-			mustBeEquipped: true
+			mustBeEquipped: true,
+			setup: 'range'
 		},
 		{
 			item: getOSItem('Ruby dragon bolts (e)'),
 			boost: 2,
-			mustBeEquipped: true
+			mustBeEquipped: true,
+			setup: 'range'
 		},
 		{
 			item: getOSItem('Ruby dragon bolts (e)'),
 			boost: 2,
-			mustBeEquipped: true
+			mustBeEquipped: true,
+			setup: 'range'
 		},
 		{
 			item: getOSItem('Amethyst arrow'),
 			boost: 1,
-			mustBeEquipped: true
+			mustBeEquipped: true,
+			setup: 'range'
 		},
 		{
 			item: getOSItem('Dragon bolts'),
 			boost: 1,
-			mustBeEquipped: true
+			mustBeEquipped: true,
+			setup: 'range'
 		}
 	],
 	[
@@ -596,8 +603,8 @@ export async function calcCoxDuration(
 	const size = team.length;
 
 	let totalReduction = 0;
-	console.log(`maxSpeedReductionFromItems: ${maxSpeedReductionFromItems}`);
-	console.log(`maxSpeedReductionUser: ${maxSpeedReductionUser}`);
+	// console.log(`maxSpeedReductionFromItems: ${maxSpeedReductionFromItems}`);
+	// console.log(`maxSpeedReductionUser: ${maxSpeedReductionUser}`);
 	const reductions: Record<string, number> = {};
 
 	// Track degradeable items (fakemass works properly with this code, it wont remove 5x charges):
@@ -609,7 +616,7 @@ export async function calcCoxDuration(
 		// Reduce time for gear
 		const { total } = calculateUserGearPercents(u);
 		userPercentChange += calcPerc(total, speedReductionForGear);
-		console.log(`userPercentChange: ${userPercentChange}`);
+		// console.log(`userPercentChange: ${userPercentChange}`);
 
 		// Reduce time for KC
 		const stats = await u.fetchMinigames();
@@ -619,8 +626,9 @@ export async function calcCoxDuration(
 		// Reduce time for item boosts
 		for (const set of itemBoosts) {
 			for (const item of set) {
+				const simItems = getSimilarItems(item.item.id);
 				if (item.mustBeEquipped && item.mustBeCharged && item.requiredCharges) {
-					if (u.hasEquipped(item.item.id)) {
+					if (u.hasEquipped(simItems)) {
 						const testItem = {
 							item: item.item,
 							user: u,
@@ -634,7 +642,7 @@ export async function calcCoxDuration(
 						}
 					}
 				} else if (item.mustBeCharged && item.requiredCharges) {
-					if (u.hasEquippedOrInBank(item.item.id)) {
+					if (u.hasEquippedOrInBank(simItems)) {
 						const testItem = {
 							item: item.item,
 							user: u,
@@ -648,14 +656,14 @@ export async function calcCoxDuration(
 						}
 					}
 				} else if (item.mustBeEquipped) {
-					if (item.setup && u.gear[item.setup].hasEquipped(item.item.id)) {
+					if (item.setup && u.gear[item.setup].hasEquipped(simItems)) {
 						userPercentChange += item.boost;
 						break;
-					} else if (!item.setup && u.hasEquipped(item.item.id)) {
+					} else if (!item.setup && u.hasEquipped(simItems)) {
 						userPercentChange += item.boost;
 						break;
 					}
-				} else if (u.hasEquippedOrInBank(item.item.id)) {
+				} else if (u.hasEquippedOrInBank(simItems)) {
 					userPercentChange += item.boost;
 					break;
 				}

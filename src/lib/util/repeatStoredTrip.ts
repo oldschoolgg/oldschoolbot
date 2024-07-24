@@ -481,7 +481,7 @@ const tripHandlers = {
 	[activity_type_enum.Raids]: {
 		commandName: 'raid',
 		args: (data: RaidsOptions) => {
-		return {
+			return {
 				cox: {
 					start: {
 						challenge_mode: data.challengeMode,
