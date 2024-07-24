@@ -3,6 +3,7 @@ import type { CommandOptions } from '@oldschoolgg/toolkit';
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';
 
+import { TimerManager } from '@sapphire/timer-manager';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
 import { logError } from '../../lib/util/logError';
 import type { AbstractCommand } from './inhibitors';
@@ -28,7 +29,7 @@ export async function postCommand({
 	continueDeltaMillis: number | null;
 }): Promise<string | undefined> {
 	if (!busyImmuneCommands.includes(abstractCommand.name)) {
-		setTimeout(() => modifyBusyCounter(userID, -1), 1000);
+		TimerManager.setTimeout(() => modifyBusyCounter(userID, -1), 1000);
 	}
 	if (shouldTrackCommand(abstractCommand, args)) {
 		const commandUsage = makeCommandUsage({

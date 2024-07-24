@@ -1,38 +1,7 @@
 import { Items } from 'oldschooljs';
+import { globalConfig } from './constants';
 
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
-
-const arrayColumns = [
-	['guilds', 'disabledCommands'],
-	['guilds', 'staffOnlyChannels'],
-	['users', 'badges'],
-	['users', 'bitfield'],
-	['users', 'favoriteItems'],
-	['users', 'favorite_alchables'],
-	['users', 'favorite_food'],
-	['users', 'favorite_bh_seeds'],
-	['users', 'attack_style'],
-	['users', 'combat_options'],
-	['users', 'slayer.unlocks'],
-	['users', 'slayer.blocked_ids'],
-	['users', 'slayer.autoslay_options'],
-	['users', 'monkeys_fought'],
-	['users', 'unlocked_blueprints'],
-	['users', 'disabled_inventions'],
-	['users', 'unlocked_gear_templates']
-];
-
-for (const [table, column] of arrayColumns) {
-	startupScripts.push({
-		sql: `UPDATE "${table}" SET "${column}" = '{}' WHERE "${column}" IS NULL;`
-	});
-	startupScripts.push({
-		sql: `
-ALTER TABLE "${table}"
-	ALTER COLUMN "${column}" SET DEFAULT '{}',
-	ALTER COLUMN "${column}" SET NOT NULL;`
-	});
-}
 
 interface CheckConstraint {
 	table: string;
@@ -43,21 +12,9 @@ interface CheckConstraint {
 const checkConstraints: CheckConstraint[] = [
 	{
 		table: 'users',
-		column: 'lms_points',
-		name: 'users_lms_points_min',
-		body: 'lms_points >= 0'
-	},
-	{
-		table: 'users',
 		column: '"GP"',
 		name: 'users_gp',
 		body: '"GP" >= 0'
-	},
-	{
-		table: 'users',
-		column: '"QP"',
-		name: 'users_qp',
-		body: '"QP" >= 0'
 	},
 	{
 		table: 'ge_listing',
@@ -159,8 +116,9 @@ DO
   UPDATE SET name = EXCLUDED.name
 WHERE item_metadata.name IS DISTINCT FROM EXCLUDED.name;
 `;
-
-startupScripts.push({ sql: itemMetaDataQuery });
+if (globalConfig.isProduction) {
+	startupScripts.push({ sql: itemMetaDataQuery });
+}
 
 export async function runStartupScripts() {
 	await prisma.$transaction(startupScripts.map(query => prisma.$queryRawUnsafe(query.sql)));

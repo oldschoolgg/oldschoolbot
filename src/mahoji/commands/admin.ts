@@ -966,7 +966,7 @@ export const adminCommand: OSBMahojiCommand = {
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			process.exit();
+			import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
 		}
 		if (options.shut_down) {
 			debugLog('SHUTTING DOWN');
@@ -982,7 +982,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			process.exit(0);
+			import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
 		}
 
 		if (options.sync_blacklist) {

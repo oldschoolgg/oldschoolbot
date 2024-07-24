@@ -7,7 +7,7 @@ import { Emoji, Events } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import type { ItemBank } from '../../lib/types';
-import { roll, toKMB } from '../../lib/util';
+import { roll, toKMB, truncateString } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -161,7 +161,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		await handleMahojiConfirmation(
 			interaction,
-			`${user}, are you sure you want to sacrifice ${bankToSac}? This will add ${totalPrice.toLocaleString()} (${toKMB(
+			`${user}, are you sure you want to sacrifice ${truncateString(bankToSac.toString(), 15000)}? This will add ${totalPrice.toLocaleString()} (${toKMB(
 				totalPrice
 			)}) to your sacrificed amount.`
 		);

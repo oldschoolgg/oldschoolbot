@@ -437,7 +437,8 @@ export const allCollectionLogs: ICollection = {
 					'Sunfire fanatic helm',
 					'Echo crystal',
 					'Tonalztics of ralos (uncharged)',
-					'Sunfire splinters'
+					'Sunfire splinters',
+					'Uncut onyx'
 				]),
 				fmtProg: ({ minigames }) => `${minigames.colosseum} KC`
 			},

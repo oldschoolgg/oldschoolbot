@@ -345,9 +345,9 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientMethod: 'cannon'
 	},
 	{
-		monsterID: Monsters.Nechryael.id,
-		efficientName: Monsters.Nechryael.name,
-		efficientMonster: Monsters.Nechryael.id,
+		monsterID: Monsters.GreaterNechryael.id,
+		efficientName: Monsters.GreaterNechryael.name,
+		efficientMonster: Monsters.GreaterNechryael.id,
 		efficientMethod: 'barrage'
 	},
 	{

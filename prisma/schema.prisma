@@ -461,7 +461,7 @@ model User {
   // BSO
   nursery                  Json?    @db.Json
   selected_tame            Int?
-  monkeys_fought           String[]
+  monkeys_fought           String[] @default([])
   emerged_inferno_attempts Int      @default(0)
   skills_dungeoneering     BigInt   @default(0) @map("skills.dungeoneering")
   ourania_tokens           Int      @default(0)

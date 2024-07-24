@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"watch": "nodemon -e ts -w src --exec 'yarn buildandrun'",
+		"watch": "nodemon --delay 1ms -e ts -w src --exec 'yarn buildandrun'",
 		"build": "tsx ./src/scripts/build.ts",
 		"fix": "tsx ./src/scripts/troubleshooter.ts",
 		"start": "yarn build && node --enable-source-maps dist/",
@@ -25,17 +25,19 @@
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
-		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#3550582efbdf04929f0a2c5114ed069a61551807",
+		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#2813f25327093fcf2cb12bee7d4c85ce629069a0",
 		"@prisma/client": "^5.17.0",
 		"@sapphire/ratelimits": "^2.4.9",
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/time-utilities": "^1.6.0",
+		"@sapphire/timer-manager": "^1.0.2",
 		"@sentry/node": "^8.15.0",
 		"ascii-table3": "^0.9.0",
 		"bufferutil": "^4.0.8",
 		"discord.js": "^14.15.3",
 		"dotenv": "^16.4.5",
 		"e": "0.2.33",
+		"exit-hook": "^4.0.0",
 		"fast-deep-equal": "^3.1.3",
 		"lodash": "^4.17.21",
 		"lru-cache": "^10.3.0",

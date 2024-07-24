@@ -34,7 +34,7 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Callisto,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Callisto.id],
+		monsters: [Monsters.Callisto.id, Monsters.Artio.id],
 		isBoss: true,
 		wilderness: true
 	},
@@ -91,27 +91,7 @@ export const bossTasks: AssignableSlayerTask[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		monsters: [Monsters.DagannothPrime.id],
-		isBoss: true
-	},
-	{
-		monster: Monsters.DagannothSupreme,
-		amount: [3, 35],
-		weight: 1,
-		levelRequirements: {
-			prayer: 43
-		},
-		monsters: [Monsters.DagannothSupreme.id],
-		isBoss: true
-	},
-	{
-		monster: Monsters.DagannothRex,
-		amount: [3, 35],
-		weight: 1,
-		levelRequirements: {
-			prayer: 43
-		},
-		monsters: [Monsters.DagannothRex.id],
+		monsters: [Monsters.DagannothPrime.id, Monsters.DagannothSupreme.id, Monsters.DagannothRex.id],
 		isBoss: true
 	},
 	{
@@ -220,7 +200,7 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Venenatis,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Venenatis.id],
+		monsters: [Monsters.Venenatis.id, Monsters.Spindel.id],
 		isBoss: true,
 		wilderness: true
 	},
@@ -228,7 +208,7 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Vetion,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Vetion.id],
+		monsters: [Monsters.Vetion.id, Monsters.Calvarion.id],
 		isBoss: true,
 		wilderness: true
 	},
@@ -274,7 +254,7 @@ export const wildernessBossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Callisto,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Callisto.id],
+		monsters: [Monsters.Callisto.id, Monsters.Artio.id],
 		isBoss: true,
 		wilderness: true
 	},
@@ -314,7 +294,7 @@ export const wildernessBossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Venenatis,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Venenatis.id],
+		monsters: [Monsters.Venenatis.id, Monsters.Spindel.id],
 		isBoss: true,
 		wilderness: true
 	},
@@ -322,7 +302,7 @@ export const wildernessBossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Vetion,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Vetion.id],
+		monsters: [Monsters.Vetion.id, Monsters.Calvarion.id],
 		isBoss: true,
 		wilderness: true
 	}
