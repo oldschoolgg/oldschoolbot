@@ -454,6 +454,9 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	diedAt?: number;
 	loot?: ItemBank;
 	maxGlory: number;
+	scytheCharges: number;
+	venatorBowCharges: number;
+	bloodFuryCharges: number;
 }
 
 type UserID = string;
