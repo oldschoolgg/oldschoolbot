@@ -11,7 +11,7 @@ function makeSender() {
 	return new TSRedis({ mocked: !globalConfig.redisPort, port: globalConfig.redisPort });
 }
 
-test.concurrent('Should add patron badge', async () => {
+test('Should add patron badge', async () => {
 	const user = await createTestUser();
 	expect(user.user.badges).not.includes(BadgesEnum.Patron);
 	const _redis = makeSender();
@@ -27,7 +27,7 @@ test.concurrent('Should add patron badge', async () => {
 	expect(user.user.badges).includes(BadgesEnum.Patron);
 });
 
-test.concurrent('Should remove patron badge', async () => {
+test('Should remove patron badge', async () => {
 	const user = await createTestUser(undefined, { badges: [BadgesEnum.Patron] });
 	expect(user.user.badges).includes(BadgesEnum.Patron);
 	const _redis = makeSender();
@@ -43,7 +43,7 @@ test.concurrent('Should remove patron badge', async () => {
 	expect(user.user.badges).not.includes(BadgesEnum.Patron);
 });
 
-test.concurrent('Should add to cache', async () => {
+test('Should add to cache', async () => {
 	const users = [await createTestUser(), await createTestUser(), await createTestUser()];
 	await roboChimpClient.user.createMany({
 		data: users.map(u => ({
@@ -67,7 +67,7 @@ test.concurrent('Should add to cache', async () => {
 	}
 });
 
-test.concurrent('Should remove from cache', async () => {
+test('Should remove from cache', async () => {
 	const users = [await createTestUser(), await createTestUser(), await createTestUser()];
 	await roboChimpClient.user.createMany({
 		data: users.map(u => ({
@@ -91,14 +91,14 @@ test.concurrent('Should remove from cache', async () => {
 	}
 });
 
-test.concurrent('Should recognize special bitfields', async () => {
+test('Should recognize special bitfields', async () => {
 	expect(getUsersPerkTier(await createTestUser(undefined, { bitfield: [BitField.HasPermanentTierOne] }))).toEqual(3);
 	expect(
 		getUsersPerkTier(await createTestUser(undefined, { bitfield: [BitField.BothBotsMaxedFreeTierOnePerks] }))
 	).toEqual(2);
 });
 
-test.concurrent('Should sdffsddfss', async () => {
+test('Should sdffsddfss', async () => {
 	const user = await createTestUser();
 	roboChimpCache.set(user.id, { perk_tier: 5 } as any);
 	expect(getUsersPerkTier(user)).toEqual(5);
