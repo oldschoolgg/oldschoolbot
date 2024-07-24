@@ -433,6 +433,7 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	isFakeMass: boolean;
 	quantity?: number;
 }
 

@@ -236,7 +236,7 @@ export async function coxCommand(
 	let debugStr = '';
 	const isSolo = users.length === 1;
 	const isFakeMass = users.length > 1 && new Set(users).size === 1;
-	console.log(`isSolo: ${isSolo} | isFakeMass: ${isFakeMass}`);
+	// console.log(`isSolo: ${isSolo} | isFakeMass: ${isFakeMass}`);
 
 	for (const d of degradeables) {
 		d.chargesToDegrade *= quantity;
@@ -289,8 +289,9 @@ export async function coxCommand(
 		duration,
 		type: 'Raids',
 		leader: user.id,
-		users: users.map(u => u.id),
+		users: usersToCheck.map(u => u.id),
 		challengeMode: isChallengeMode,
+		isFakeMass,
 		quantity
 	});
 
