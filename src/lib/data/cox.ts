@@ -464,7 +464,7 @@ export const itemBoosts: ItemBoost[][] = [
 		{
 			item: getOSItem('Zaryte crossbow'),
 			boost: 3,
-			mustBeEquipped: false
+			mustBeEquipped: true
 		}
 	],
 	[ // range ammo boost
