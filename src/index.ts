@@ -198,7 +198,7 @@ async function main() {
 		prisma.$connect().then(noOp),
 		import('exit-hook').then(({ asyncExitHook }) =>
 			asyncExitHook(exitCleanup, {
-				wait: 1000
+				wait: 2000
 			})
 		)
 	]);
