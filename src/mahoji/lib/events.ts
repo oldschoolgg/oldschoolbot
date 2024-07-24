@@ -14,7 +14,11 @@ export async function updateTestBotStatus(online = true) {
 	try {
 		if (globalConfig.isProduction) return;
 		const idMap: Record<string, string> = {
-			'829398443821891634': '1265571664142270464'
+			'829398443821891634': '1265571664142270464',
+			'577488230539067403': '1265582554644217977',
+			'353484579840983042': '1265582554644217977',
+			'897549995446779964': '1265582743970910259',
+			'1158785741028081696': '1265583194108067925'
 		};
 		const catChannelID = idMap[globalConfig.clientID];
 		if (!catChannelID) return;
