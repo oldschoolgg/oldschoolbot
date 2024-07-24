@@ -43,6 +43,8 @@ const rareRolesSrc: [string, number, string][] = [
 
 const userCache = new LRUCache<string, number>({ max: 1000 });
 function rareRoles(msg: Message) {
+	if (!globalConfig.isProduction) return;
+
 	if (!msg.guild || msg.guild.id !== SupportServer) {
 		return;
 	}

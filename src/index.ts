@@ -25,6 +25,7 @@ import { handleInteractionError, interactionReply } from './lib/util/interaction
 import { logError } from './lib/util/logError';
 import { allCommands } from './mahoji/commands/allCommands';
 import { onStartup } from './mahoji/lib/events';
+import { exitCleanup } from './mahoji/lib/exitHandler';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
@@ -194,6 +195,13 @@ client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => onStartup());
 
 async function main() {
+	await import('exit-hook')
+		.then(({ asyncExitHook }) =>
+			asyncExitHook(exitCleanup, {
+				wait: 5000
+			})
+		)
+		.catch(console.error);
 	if (process.env.TEST) return;
 	await preStartup();
 	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
