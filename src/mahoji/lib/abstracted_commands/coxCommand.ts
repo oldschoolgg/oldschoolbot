@@ -68,16 +68,17 @@ export async function coxBoostsCommand(user: MUser) {
 		if (ownedItems.length > 0) {
 			const maxBoost = Math.max(...ownedItems.map(item => item.boost));
 			const setItems = set.map(item => {
-				if (item.boost === maxBoost && ownedItems.some(ownedItem => ownedItem.item.id === item.item.id)) {
-					boostPercent += item.boost;
-					if (item.item.name === 'Dragon pickaxe') {
-						return `${Emoji.Tick}Pickaxe Boost (Dragon, Crystal, 3a)`;
+				if (item.item.name === 'Dragon pickaxe') {
+					if (item.boost === maxBoost && ownedItems.some(ownedItem => ownedItem.item.id === item.item.id)) {
+						boostPercent += item.boost;
+						return `${Emoji.Tick}Pickaxe Boost (3a, Crystal, Dragon)`;
 					} else {
-						return `${Emoji.Tick}${item.item.name}`;
+						return `${Emoji.RedX}Pickaxe Boost (3a, Crystal, Dragon)`;
 					}
 				} else {
-					if (item.item.name === 'Dragon pickaxe') {
-						return `${Emoji.RedX}Pickaxe Boost (3a, Crystal, Dragon)`;
+					if (item.boost === maxBoost && ownedItems.some(ownedItem => ownedItem.item.id === item.item.id)) {
+						boostPercent += item.boost;
+						return `${Emoji.Tick}${item.item.name}`;
 					} else {
 						return `${Emoji.RedX}${item.item.name}`;
 					}
@@ -85,13 +86,17 @@ export async function coxBoostsCommand(user: MUser) {
 			});
 			boostStr.push(setItems.join(', '));
 		} else {
-			const setItems = set.map(item => `${Emoji.RedX}${item.item.name}`);
+			const setItems = set.map(item => {
+				if (item.item.name === 'Dragon pickaxe') {
+					return `${Emoji.RedX}Pickaxe Boost (3a, Crystal, Dragon)`;
+				} else {
+					return `${Emoji.RedX}${item.item.name}`;
+				}
+			});
 			boostStr.push(setItems.join(', '));
 		}
-
 		boostStr.push('\n');
 	}
-
 	boostStr.push(
 		`\nYou're using ${((boostPercent / maxSpeedReductionFromItems) * 100).toFixed(1)}% of the total item boosts in Chambers.`
 	);

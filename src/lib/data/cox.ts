@@ -496,7 +496,7 @@ export const itemBoosts: ItemBoost[][] = [
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Ruby dragon bolts (e)'),
+			item: getOSItem('Diamond dragon bolts (e)'),
 			boost: 2,
 			mustBeEquipped: true,
 			setup: 'range'
