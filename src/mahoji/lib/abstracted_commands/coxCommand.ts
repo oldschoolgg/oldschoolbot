@@ -9,6 +9,7 @@ import {
 	checkCoxTeam,
 	createTeam,
 	hasMinRaidsRequirements,
+	itemBoosts,
 	minimumCoxSuppliesNeeded
 } from '../../../lib/data/cox';
 import { degradeItem } from '../../../lib/degradeableItems';
@@ -38,6 +39,36 @@ const uniques = [
 	'Twisted bow'
 ];
 
+async function coxBoostItemsStr(user: MUser) {
+	const boostStr = [];
+	for (const set of itemBoosts) {
+		boostStr.push('- ');
+		const ownedItems = set.filter(item => {
+			if (item.mustBeEquipped) {
+				return user.hasEquipped(item.item.id);
+			} else {
+				return user.owns(item.item.id);
+			}
+		});	
+		if (ownedItems.length > 0) {
+			const maxBoost = Math.max(...ownedItems.map(item => item.boost));	
+			const setItems = set.map(item => {
+				if (item.boost === maxBoost && ownedItems.some(ownedItem => ownedItem.item.id === item.item.id)) {
+					return `${Emoji.Tick}${item.item.name}`;
+				} else {
+					return `${Emoji.RedX}${item.item.name}`;
+				}
+			});
+			boostStr.push(setItems.join(', '));
+		} else {
+			const setItems = set.map(item => `${Emoji.RedX}${item.item.name}`);
+			boostStr.push(setItems.join(', '));
+		}
+		boostStr.push('\n');
+	}
+	return boostStr.join('');
+}
+
 export async function coxStatsCommand(user: MUser) {
 	const [minigameScores, stats] = await Promise.all([
 		user.fetchMinigames(),
@@ -54,6 +85,7 @@ export async function coxStatsCommand(user: MUser) {
 	const normalTeam = await calcCoxDuration(Array(2).fill(user), false);
 	const cmSolo = await calcCoxDuration([user], true);
 	const cmTeam = await calcCoxDuration(Array(2).fill(user), true);
+	const boostItems = await coxBoostItemsStr(user);
 	return `<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>
 **Normal:** ${minigameScores.raids} KC (Solo: ${Emoji.Skull} ${(await createTeam([user], false))[0].deathChance.toFixed(
 		1
@@ -72,6 +104,8 @@ export async function coxStatsCommand(user: MUser) {
 **Total Uniques:** ${totalUniques} ${
 		totalUniques > 0 ? `(1 unique per ${Math.floor(totalPoints / totalUniques).toLocaleString()} pts)` : ''
 	}\n
+**Boost Items:**
+${boostItems}
 **Melee:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
 **Range:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
 **Mage:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%

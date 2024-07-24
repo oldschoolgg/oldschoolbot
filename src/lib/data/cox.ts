@@ -366,7 +366,7 @@ interface ItemBoost {
 	requiredCharges?: number;
 }
 
-const itemBoosts: ItemBoost[][] = [
+export const itemBoosts: ItemBoost[][] = [
 	[ // melee weapon boost
 		{
 			item: getOSItem('Scythe of vitur'),
