@@ -42,11 +42,13 @@ const uniques = [
 
 export async function coxBoostsCommand(user: MUser) {
 	const boostStr = [];
-	let workFromBank = false
+	let workFromBank = false;
 	let boostPercent = 0;
-	boostStr.push('<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>\n')
-	boostStr.push('*Item boosts help reduce the time required to complete Chambers. Only one boost from each section can be applied. The further left the higher the boost.*\n\n')
-	boostStr.push('**Equipped boost Items:**\n')
+	boostStr.push('<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>\n');
+	boostStr.push(
+		'*Item boosts help reduce the time required to complete Chambers. Only one boost from each section can be applied. The further left the higher the boost.*\n\n'
+	);
+	boostStr.push('**Equipped boost Items:**\n');
 	for (const set of itemBoosts) {
 		if (set.some(item => !item.mustBeEquipped) && workFromBank === false) {
 			boostStr.push('**Bank boost Items:**\n');
@@ -78,8 +80,10 @@ export async function coxBoostsCommand(user: MUser) {
 
 		boostStr.push('\n');
 	}
-	
-	boostStr.push(`\nYou're using ${((boostPercent / maxSpeedReductionFromItems) * 100).toFixed(1)}% of the total item boosts in Chambers.`)
+
+	boostStr.push(
+		`\nYou're using ${((boostPercent / maxSpeedReductionFromItems) * 100).toFixed(1)}% of the total item boosts in Chambers.`
+	);
 	return boostStr.join('');
 }
 
@@ -121,7 +125,7 @@ export async function coxStatsCommand(user: MUser) {
 **Range:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
 **Mage:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
 **Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%\n
-Check \`/raid cox boosts\` for more information on Item boosts.`
+Check \`/raid cox boosts\` for more information on Item boosts.`;
 }
 
 export async function coxCommand(
@@ -249,13 +253,16 @@ export async function coxCommand(
 
 	const costResult = await Promise.all([
 		...usersToCheck.map(async u => {
-			const supplies = await calcCoxInput(u, quantity, isSolo);
+			const { supplies, ammo } = await calcCoxInput(u, quantity, isSolo);
 			await u.removeItemsFromBank(supplies);
 			totalCost.add(supplies);
+			const realAmmoCost = await u.specialRemoveItems(ammo);
+			totalCost.add(realAmmoCost.realCost);
+			supplies.add(realAmmoCost.realCost)
 			const { total } = calculateUserGearPercents(u);
 			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n **DEBUG:** reductions: ${reductions[u.id]} maxUserReuctions: ${maxUserReduction}`;
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n`;
 			return {
 				userID: u.id,
 				itemsRemoved: supplies

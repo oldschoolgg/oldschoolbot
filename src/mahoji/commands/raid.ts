@@ -64,7 +64,7 @@ export const raidCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'itemboosts',
 					description: 'Check your CoX item boosts.'
-				},
+				}
 			]
 		},
 		{

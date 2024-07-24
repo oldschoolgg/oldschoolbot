@@ -36,11 +36,21 @@ const SHADOW_CHARGES_PER_COX = 120;
 const SANGUINESTI_CHARGES_PER_COX = 160;
 const TENTACLE_CHARGES_PER_COX = 200;
 
-const REQUIRED_BOW = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)', 'Magic shortbow'])
+const REQUIRED_BOW = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)', 'Magic shortbow']);
 const REQUIRED_ARROWS = resolveItems(['Dragon arrow', 'Amethyst arrow', 'Rune arrow', 'Adamant arrow']);
 const BOW_ARROWS_NEEDED = 150;
-const REQUIRED_CROSSBOW = resolveItems(['Zaryte crossbow', 'Dragon hunter crossbow', 'Armadyl crossbow', 'rune crossbow'])
-const REQUIRED_BOLTS = resolveItems([ 'Ruby dragon bolts (e)','Diamond dragon bolts (e)', 'Dragon bolts', 'Runite bolts'])
+const REQUIRED_CROSSBOW = resolveItems([
+	'Zaryte crossbow',
+	'Dragon hunter crossbow',
+	'Armadyl crossbow',
+	'rune crossbow'
+]);
+const REQUIRED_BOLTS = resolveItems([
+	'Ruby dragon bolts (e)',
+	'Diamond dragon bolts (e)',
+	'Dragon bolts',
+	'Runite bolts'
+]);
 const CROSSBOW_BOLTS_NEEDED = 150;
 
 export function hasMinRaidsRequirements(user: MUser) {
@@ -289,20 +299,20 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		if (user.minionIsBusy) {
 			return `${user.usernameOrMention}'s minion is already doing an activity and cannot join.`;
 		}
-		
+
 		// Range weapon/ammo check
 		const rangeAmmo = user.gear.range.ammo;
 		const rangeWeapon = user.gear.range.equippedWeapon();
 		const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
 		const boltsNeeded = CROSSBOW_BOLTS_NEEDED * quantity;
-		if (!rangeWeapon) return `<@${user.id}> Where is your range weapon?`
-		if (rangeWeapon?.id){
+		if (!rangeWeapon) return `<@${user.id}> Where is your range weapon?`;
+		if (rangeWeapon?.id) {
 			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
-				if (REQUIRED_BOW.includes(rangeWeapon.id)){
+				if (REQUIRED_BOW.includes(rangeWeapon.id)) {
 					if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded || !REQUIRED_ARROWS.includes(rangeAmmo.item)) {
 						return `<@${user.id}> needs ${arrowsNeeded} of one of these arrows equipped: ${REQUIRED_ARROWS.map(itemNameFromID).join(', ')}.`;
-					}		
-				} else if (REQUIRED_CROSSBOW.includes(rangeWeapon.id)){
+					}
+				} else if (REQUIRED_CROSSBOW.includes(rangeWeapon.id)) {
 					if (!rangeAmmo || rangeAmmo.quantity < boltsNeeded || !REQUIRED_BOLTS.includes(rangeAmmo.item)) {
 						return `<@${user.id}> needs ${boltsNeeded} of ones of these bolts equipped: ${REQUIRED_BOLTS.map(itemNameFromID).join(', ')}.`;
 					}
@@ -406,7 +416,8 @@ interface ItemBoost {
 }
 
 export const itemBoosts: ItemBoost[][] = [
-	[ // melee weapon boost
+	[
+		// melee weapon boost
 		{
 			item: getOSItem('Scythe of vitur'),
 			boost: 8,
@@ -442,7 +453,8 @@ export const itemBoosts: ItemBoost[][] = [
 			requiredCharges: TENTACLE_CHARGES_PER_COX
 		}
 	],
-	[ // Range weapon boost
+	[
+		// Range weapon boost
 		{
 			item: getOSItem('Twisted bow'),
 			boost: 8,
@@ -467,11 +479,12 @@ export const itemBoosts: ItemBoost[][] = [
 			mustBeEquipped: true
 		}
 	],
-	[ // range ammo boost
+	[
+		// range ammo boost
 		{
 			item: getOSItem('Dragon arrow'),
 			boost: 3,
-			mustBeEquipped: true,
+			mustBeEquipped: true
 		},
 		{
 			item: getOSItem('Ruby dragon bolts (e)'),
@@ -492,10 +505,10 @@ export const itemBoosts: ItemBoost[][] = [
 			item: getOSItem('Dragon bolts'),
 			boost: 1,
 			mustBeEquipped: true
-		},
-
+		}
 	],
-	[ // mage weapon boost
+	[
+		// mage weapon boost
 		{
 			item: getOSItem("Tumeken's shadow"),
 			boost: 8,
@@ -513,7 +526,8 @@ export const itemBoosts: ItemBoost[][] = [
 			requiredCharges: SANGUINESTI_CHARGES_PER_COX
 		}
 	],
-	[ // defense reduction weapon boost
+	[
+		// defense reduction weapon boost
 		{
 			item: getOSItem('Elder maul'),
 			boost: 5,
@@ -530,21 +544,24 @@ export const itemBoosts: ItemBoost[][] = [
 			mustBeEquipped: false
 		}
 	],
-	[ // zaryte crossbow spec weapon
+	[
+		// zaryte crossbow spec weapon
 		{
 			item: getOSItem('Zaryte crossbow'),
 			boost: 3,
 			mustBeEquipped: false
 		}
 	],
-	[ // lightbearer increases spec
+	[
+		// lightbearer increases spec
 		{
 			item: getOSItem('Lightbearer'),
 			boost: 2,
 			mustBeEquipped: false
 		}
 	],
-	[ // pickaxe boost
+	[
+		// pickaxe boost
 		{
 			item: getOSItem('Dragon pickaxe'),
 			boost: 1,
@@ -665,17 +682,29 @@ export async function calcCoxDuration(
 }
 
 export async function calcCoxInput(u: MUser, quantity: number, solo: boolean) {
-	const items = new Bank();
+	const supplies = new Bank();
+	const ammo = new Bank();
 	for (let i = 0; i < quantity; i++) {
 		const kc = await getMinigameScore(u.id, 'raids');
-		items.add('Stamina potion(4)', solo ? 2 : 1);
+		supplies.add('Stamina potion(4)', solo ? 2 : 1);
 
 		let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
 		if (solo) brewsNeeded++;
 		const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 
-		items.add('Saradomin brew(4)', brewsNeeded);
-		items.add('Super restore(4)', restoresNeeded);
+		supplies.add('Saradomin brew(4)', brewsNeeded);
+		supplies.add('Super restore(4)', restoresNeeded);
+
+		// get ammo usage (checkCoxTeam() handles checking the proper amount and correct ammo type)
+		const rangeAmmo = u.gear.range.ammo;
+		const rangeWeapon = u.gear.range.equippedWeapon();
+		if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)') && rangeWeapon && rangeAmmo) {
+			if (REQUIRED_BOW.includes(rangeWeapon.id)) {
+				ammo.add(rangeAmmo.item, BOW_ARROWS_NEEDED);
+			} else if (REQUIRED_CROSSBOW.includes(rangeWeapon.id)) {
+				ammo.add(rangeAmmo.item, CROSSBOW_BOLTS_NEEDED);
+			}
+		}
 	}
-	return items;
+	return { supplies, ammo };
 }
