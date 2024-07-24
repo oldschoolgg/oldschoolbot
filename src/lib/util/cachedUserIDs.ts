@@ -4,13 +4,13 @@ import { objectEntries } from 'e';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { globalConfig } from '../constants';
-import { logWrapFn, runTimedLoggedFn } from '../util';
+import { runTimedLoggedFn } from '../util';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();
 CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
 for (const id of OWNER_IDS) CACHED_ACTIVE_USER_IDS.add(id);
 
-export const syncActiveUserIDs = logWrapFn('Sync Active User IDs', async () => {
+export const syncActiveUserIDs = async () => {
 	const users = await prisma.$queryRawUnsafe<
 		{ user_id: string }[]
 	>(`SELECT DISTINCT(${Prisma.ActivityScalarFieldEnum.user_id}::text)
@@ -25,7 +25,7 @@ WHERE perk_tier > 0;`);
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
 	debugLog(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
-});
+};
 
 export function memoryAnalysis() {
 	const guilds = globalClient.guilds.cache.size;

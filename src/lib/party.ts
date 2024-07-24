@@ -1,10 +1,10 @@
 import { makeComponents } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit';
+import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
 import { Time, debounce, noOp } from 'e';
 
-import { production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { SILENT_ERROR } from './constants';
 import type { MakePartyOptions } from './types';
@@ -12,11 +12,9 @@ import { getUsername } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
-if (production) {
-	setInterval(() => {
-		partyLockCache.clear();
-	}, Time.Minute * 20);
-}
+TimerManager.setInterval(() => {
+	partyLockCache.clear();
+}, Time.Minute * 20);
 
 const buttons = [
 	{
@@ -226,7 +224,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 				for (const user of usersWhoConfirmed) {
 					partyLockCache.delete(user);
 				}
-				setTimeout(() => startTrip(), 250);
+				TimerManager.setTimeout(() => startTrip(), 250);
 			});
 		});
 

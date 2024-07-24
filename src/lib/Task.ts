@@ -96,7 +96,6 @@ import { modifyBusyCounter } from './busyCounterCache';
 import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
-import { logWrapFn } from './util';
 import { logError } from './util/logError';
 
 const tasks: MinionTask[] = [
@@ -219,13 +218,13 @@ export async function processPendingActivities() {
 	}
 }
 
-export const syncActivityCache = logWrapFn('syncActivityCache', async () => {
+export const syncActivityCache = async () => {
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
 	minionActivityCache.clear();
 	for (const task of tasks) {
 		activitySync(task);
 	}
-});
+};
 
 const ActivityTaskOptionsSchema = z.object({
 	userID: z.string(),
