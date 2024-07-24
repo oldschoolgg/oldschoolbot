@@ -18,7 +18,7 @@ import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { Skills } from '../types';
-import { randomVariation } from '../util';
+import { itemID, itemNameFromID, randomVariation, resolveItems } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 
@@ -35,6 +35,13 @@ const SCYTHE_CHARGERS_PER_COX = 100;
 const SHADOW_CHARGES_PER_COX = 120;
 const SANGUINESTI_CHARGES_PER_COX = 160;
 const TENTACLE_CHARGES_PER_COX = 200;
+
+const REQUIRED_BOW = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)', 'Magic shortbow'])
+const REQUIRED_ARROWS = resolveItems(['Dragon arrow', 'Amethyst arrow', 'Rune arrow', 'Adamant arrow']);
+const BOW_ARROWS_NEEDED = 150;
+const REQUIRED_CROSSBOW = resolveItems(['Zaryte crossbow', 'Dragon hunter crossbow', 'Armadyl crossbow', 'rune crossbow'])
+const REQUIRED_BOLTS = resolveItems([ 'Ruby dragon bolts (e)','Diamond dragon bolts (e)', 'Dragon bolts', 'Runite bolts'])
+const CROSSBOW_BOLTS_NEEDED = 150;
 
 export function hasMinRaidsRequirements(user: MUser) {
 	return user.hasSkillReqs(bareMinStats);
@@ -180,7 +187,7 @@ export const COXMaxRangeGear = constructGearSetup({
 	body: 'Masori Body (f)',
 	cape: "Blessed dizana's quiver",
 	hands: 'Zaryte vambraces',
-	legs: 'Masori body(f)',
+	legs: 'Masori chaps (f)',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
 	ring: 'Venator ring',
@@ -282,10 +289,42 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		if (user.minionIsBusy) {
 			return `${user.usernameOrMention}'s minion is already doing an activity and cannot join.`;
 		}
+		
+		// Range weapon/ammo check
+		const rangeAmmo = user.gear.range.ammo;
+		const rangeWeapon = user.gear.range.equippedWeapon();
+		const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
+		const boltsNeeded = CROSSBOW_BOLTS_NEEDED * quantity;
+		if (!rangeWeapon) return `<@${user.id}> Where is your range weapon?`
+		if (rangeWeapon?.id){
+			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
+				if (REQUIRED_BOW.includes(rangeWeapon.id)){
+					if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded || !REQUIRED_ARROWS.includes(rangeAmmo.item)) {
+						return `<@${user.id}> needs ${arrowsNeeded} of one of these arrows equipped: ${REQUIRED_ARROWS.map(itemNameFromID).join(', ')}.`;
+					}		
+				} else if (REQUIRED_CROSSBOW.includes(rangeWeapon.id)){
+					if (!rangeAmmo || rangeAmmo.quantity < boltsNeeded || !REQUIRED_BOLTS.includes(rangeAmmo.item)) {
+						return `<@${user.id}> needs ${boltsNeeded} of ones of these bolts equipped: ${REQUIRED_BOLTS.map(itemNameFromID).join(', ')}.`;
+					}
+				}
+			}
+		}
+
+		// Charge weapons check
+		if (user.gear.melee.hasEquipped('Scythe of vitur')) {
+			const scytheResult = checkUserCanUseDegradeableItem({
+				item: getOSItem('Scythe of vitur'),
+				chargesToDegrade: SCYTHE_CHARGERS_PER_COX * quantity,
+				user
+			});
+			if (!scytheResult.hasEnough) {
+				return scytheResult.userMessage;
+			}
+		}
 		if (user.gear.melee.hasEquipped('Abyssal tentacle')) {
 			const tentacleResult = checkUserCanUseDegradeableItem({
 				item: getOSItem('Abyssal tentacle'),
-				chargesToDegrade: TENTACLE_CHARGES_PER_COX,
+				chargesToDegrade: TENTACLE_CHARGES_PER_COX * quantity,
 				user
 			});
 			if (!tentacleResult.hasEnough) {
@@ -295,7 +334,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
 			const sangResult = checkUserCanUseDegradeableItem({
 				item: getOSItem('Sanguinesti staff'),
-				chargesToDegrade: SANGUINESTI_CHARGES_PER_COX,
+				chargesToDegrade: SANGUINESTI_CHARGES_PER_COX * quantity,
 				user
 			});
 			if (!sangResult.hasEnough) {
@@ -305,7 +344,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
 			const shadowResult = checkUserCanUseDegradeableItem({
 				item: getOSItem("Tumeken's shadow"),
-				chargesToDegrade: SHADOW_CHARGES_PER_COX,
+				chargesToDegrade: SHADOW_CHARGES_PER_COX * quantity,
 				user
 			});
 			if (!shadowResult.hasEnough) {
@@ -421,7 +460,40 @@ export const itemBoosts: ItemBoost[][] = [
 			boost: 4,
 			mustBeEquipped: true,
 			setup: 'range'
+		},
+		{
+			item: getOSItem('Zaryte crossbow'),
+			boost: 3,
+			mustBeEquipped: false
 		}
+	],
+	[ // range ammo boost
+		{
+			item: getOSItem('Dragon arrow'),
+			boost: 3,
+			mustBeEquipped: true,
+		},
+		{
+			item: getOSItem('Ruby dragon bolts (e)'),
+			boost: 2,
+			mustBeEquipped: true
+		},
+		{
+			item: getOSItem('Ruby dragon bolts (e)'),
+			boost: 2,
+			mustBeEquipped: true
+		},
+		{
+			item: getOSItem('Amethyst arrow'),
+			boost: 1,
+			mustBeEquipped: true
+		},
+		{
+			item: getOSItem('Dragon bolts'),
+			boost: 1,
+			mustBeEquipped: true
+		},
+
 	],
 	[ // mage weapon boost
 		{
@@ -458,32 +530,37 @@ export const itemBoosts: ItemBoost[][] = [
 			mustBeEquipped: false
 		}
 	],
-	[ // Zaryte crossbow
+	[ // zaryte crossbow spec weapon
 		{
 			item: getOSItem('Zaryte crossbow'),
 			boost: 3,
 			mustBeEquipped: false
 		}
 	],
-	[ // Lightbearer
+	[ // lightbearer increases spec
 		{
 			item: getOSItem('Lightbearer'),
 			boost: 2,
 			mustBeEquipped: false
 		}
+	],
+	[ // pickaxe boost
+		{
+			item: getOSItem('Dragon pickaxe'),
+			boost: 1,
+			mustBeEquipped: false
+		}
 	]
 ];
 
-const speedReductionForGear = 16;
-const speedReductionForKC = 30;
+const speedReductionForGear = 14;
+const speedReductionForKC = 28;
 
-// comes to 34
 export const maxSpeedReductionFromItems = itemBoosts.reduce(
 	(sum, items) => sum + Math.max(...items.map(item => item.boost)),
 	0
 );
 
-// try to keep this number as close to 80 as possible
 const maxSpeedReductionUser = speedReductionForGear + speedReductionForKC + maxSpeedReductionFromItems;
 
 const baseDuration = Time.Minute * 83;
@@ -502,8 +579,6 @@ export async function calcCoxDuration(
 	const size = team.length;
 
 	let totalReduction = 0;
-	// console.log(`Team is: ${team}`);
-	// console.log(`Team size is : ${size}`);
 	console.log(`maxSpeedReductionFromItems: ${maxSpeedReductionFromItems}`);
 	console.log(`maxSpeedReductionUser: ${maxSpeedReductionUser}`);
 	const reductions: Record<string, number> = {};
@@ -527,7 +602,21 @@ export async function calcCoxDuration(
 		// Reduce time for item boosts
 		for (const set of itemBoosts) {
 			for (const item of set) {
-				if (item.mustBeCharged && item.requiredCharges) {
+				if (item.mustBeEquipped && item.mustBeCharged && item.requiredCharges) {
+					if (u.hasEquipped(item.item.id)) {
+						const testItem = {
+							item: item.item,
+							user: u,
+							chargesToDegrade: item.requiredCharges
+						};
+						const canDegrade = checkUserCanUseDegradeableItem(testItem);
+						if (canDegrade.hasEnough) {
+							userPercentChange += item.boost;
+							degradeableItems.push(testItem);
+							break;
+						}
+					}
+				} else if (item.mustBeCharged && item.requiredCharges) {
 					if (u.hasEquippedOrInBank(item.item.id)) {
 						const testItem = {
 							item: item.item,

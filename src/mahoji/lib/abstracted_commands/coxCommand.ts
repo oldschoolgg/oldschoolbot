@@ -49,9 +49,9 @@ async function coxBoostItemsStr(user: MUser) {
 			} else {
 				return user.owns(item.item.id);
 			}
-		});	
+		});
 		if (ownedItems.length > 0) {
-			const maxBoost = Math.max(...ownedItems.map(item => item.boost));	
+			const maxBoost = Math.max(...ownedItems.map(item => item.boost));
 			const setItems = set.map(item => {
 				if (item.boost === maxBoost && ownedItems.some(ownedItem => ownedItem.item.id === item.item.id)) {
 					return `${Emoji.Tick}${item.item.name}`;
