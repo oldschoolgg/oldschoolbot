@@ -72,28 +72,29 @@ export async function syncCustomPrices() {
 }
 
 export const onStartup = logWrapFn('onStartup', async () => {
-	globalClient.application.commands.fetch({
-		guildId: globalConfig.isProduction ? undefined : globalConfig.testingServerID
-	});
-	if (!globalConfig.isProduction) {
-		console.log('Syncing commands locally...');
-		await bulkUpdateCommands({
-			client: globalClient.mahojiClient,
-			commands: Array.from(globalClient.mahojiClient.commands.values()),
-			guildID: globalConfig.testingServerID
-		});
-	}
+	const syncTestBotCommands = globalConfig.isProduction
+		? null
+		: bulkUpdateCommands({
+				client: globalClient.mahojiClient,
+				commands: Array.from(globalClient.mahojiClient.commands.values()),
+				guildID: globalConfig.testingServerID
+			});
 
 	initCrons();
 	initTickers();
 
-	if (globalConfig.isProduction) {
-		sendToChannelID(Channel.GeneralChannel, {
-			content: `I have just turned on!
+	const sendStartupMessage = globalConfig.isProduction
+		? sendToChannelID(Channel.GeneralChannel, {
+				content: `I have just turned on!\n\n${META_CONSTANTS.RENDERED_STR}`
+			}).catch(console.error)
+		: null;
 
-${META_CONSTANTS.RENDERED_STR}`
-		}).catch(console.error);
-	} else {
-		updateTestBotStatus();
-	}
+	await Promise.all([
+		globalClient.application.commands.fetch({
+			guildId: globalConfig.isProduction ? undefined : globalConfig.testingServerID
+		}),
+		updateTestBotStatus(),
+		sendStartupMessage,
+		syncTestBotCommands
+	]);
 });

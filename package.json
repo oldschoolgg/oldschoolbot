@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"watch": "nodemon -e ts -w src --exec 'yarn buildandrun'",
+		"watch": "nodemon --delay 1ms -e ts -w src --exec 'yarn buildandrun'",
 		"build": "tsx ./src/scripts/build.ts",
 		"fix": "tsx ./src/scripts/troubleshooter.ts",
 		"start": "yarn build && node --enable-source-maps dist/",
