@@ -195,6 +195,7 @@ client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => onStartup());
 
 async function main() {
+	await prisma.$connect();
 	await import('exit-hook')
 		.then(({ asyncExitHook }) =>
 			asyncExitHook(exitCleanup, {
