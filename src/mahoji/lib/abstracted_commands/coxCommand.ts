@@ -10,6 +10,7 @@ import {
 	createTeam,
 	hasMinRaidsRequirements,
 	itemBoosts,
+	maxSpeedReductionFromItems,
 	minimumCoxSuppliesNeeded
 } from '../../../lib/data/cox';
 import { degradeItem } from '../../../lib/degradeableItems';
@@ -39,9 +40,12 @@ const uniques = [
 	'Twisted bow'
 ];
 
-async function coxBoostItemsStr(user: MUser) {
+export async function coxBoostsCommand(user: MUser) {
 	const boostStr = [];
 	let workFromBank = false
+	let boostPercent = 0;
+	boostStr.push('<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>\n')
+	boostStr.push('*Item boosts help reduce the time required to complete Chambers. Only one boost from each section can be applied. The further left the higher the boost.*\n\n')
 	boostStr.push('**Equipped boost Items:**\n')
 	for (const set of itemBoosts) {
 		if (set.some(item => !item.mustBeEquipped) && workFromBank === false) {
@@ -60,6 +64,7 @@ async function coxBoostItemsStr(user: MUser) {
 			const maxBoost = Math.max(...ownedItems.map(item => item.boost));
 			const setItems = set.map(item => {
 				if (item.boost === maxBoost && ownedItems.some(ownedItem => ownedItem.item.id === item.item.id)) {
+					boostPercent += item.boost;
 					return `${Emoji.Tick}${item.item.name}`;
 				} else {
 					return `${Emoji.RedX}${item.item.name}`;
@@ -73,6 +78,8 @@ async function coxBoostItemsStr(user: MUser) {
 
 		boostStr.push('\n');
 	}
+	
+	boostStr.push(`\nYou're using ${((boostPercent / maxSpeedReductionFromItems) * 100).toFixed(1)}% of the total item boosts in Chambers.`)
 	return boostStr.join('');
 }
 
@@ -92,7 +99,6 @@ export async function coxStatsCommand(user: MUser) {
 	const normalTeam = await calcCoxDuration(Array(2).fill(user), false);
 	const cmSolo = await calcCoxDuration([user], true);
 	const cmTeam = await calcCoxDuration(Array(2).fill(user), true);
-	const boostItems = await coxBoostItemsStr(user);
 	return `<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>
 **Normal:** ${minigameScores.raids} KC (Solo: ${Emoji.Skull} ${(await createTeam([user], false))[0].deathChance.toFixed(
 		1
@@ -115,7 +121,7 @@ export async function coxStatsCommand(user: MUser) {
 **Range:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
 **Mage:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
 **Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%\n
-${boostItems}`;
+Check \`/raid cox boosts\` for more information on Item boosts.`
 }
 
 export async function coxCommand(
