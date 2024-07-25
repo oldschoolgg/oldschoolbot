@@ -308,7 +308,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		const boltsNeeded = CROSSBOW_BOLTS_NEEDED * quantity;
 		if (!rangeWeapon) return `<@${user.id}> Where is your range weapon?`;
 		if (rangeWeapon?.id) {
-			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
+			if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
 				if (REQUIRED_BOW.includes(rangeWeapon.id)) {
 					if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded || !REQUIRED_ARROWS.includes(rangeAmmo.item)) {
 						return `<@${user.id}> needs ${arrowsNeeded} of one of these arrows equipped: ${REQUIRED_ARROWS.map(itemNameFromID).join(', ')}.`;

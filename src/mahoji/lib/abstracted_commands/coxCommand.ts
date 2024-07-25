@@ -97,8 +97,9 @@ export async function coxBoostsCommand(user: MUser) {
 		}
 		boostStr.push('\n');
 	}
+	const finalPercentage = ((boostPercent / maxSpeedReductionFromItems) * 100).toFixed(1);
 	boostStr.push(
-		`\nYou're using ${((boostPercent / maxSpeedReductionFromItems) * 100).toFixed(1)}% of the total item boosts in Chambers.`
+		`\nYour CoX Item Boost is: **${finalPercentage === '100.0' ? '100' : finalPercentage}/100%**\nEffectively lowering your raid time by: **${boostPercent} minutes**`
 	);
 	return boostStr.join('');
 }
