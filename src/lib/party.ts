@@ -48,7 +48,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 				await Promise.all(usersWhoConfirmed.map(u => getUsername(u)))
 			).join(
 				', '
-			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`,
+			)}\n\nThis party will automatically depart in 5 minutes, or if the leader clicks the start (start early) or stop button.`,
 			components: makeComponents(buttons.map(i => i.button)),
 			allowedMentions: {
 				users: []

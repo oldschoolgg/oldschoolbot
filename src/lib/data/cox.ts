@@ -32,6 +32,23 @@ const bareMinStats: Skills = {
 	prayer: 70
 };
 
+export const coxUniques = [
+	'Dexterous prayer scroll',
+	'Arcane prayer scroll',
+	'Twisted buckler',
+	'Dragon hunter crossbow',
+	"Dinh's bulwark",
+	'Ancestral hat',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Dragon claws',
+	'Elder maul',
+	'Kodai insignia',
+	'Twisted bow'
+];
+
+export const coxCMUniques = ['Metamorphic dust', 'Twisted ancestral colour kit'];
+
 const SCYTHE_CHARGERS_PER_COX = 100;
 const SHADOW_CHARGES_PER_COX = 120;
 const SANGUINESTI_CHARGES_PER_COX = 160;

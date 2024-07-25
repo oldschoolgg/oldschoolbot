@@ -7,6 +7,7 @@ import {
 	calcCoxInput,
 	calculateUserGearPercents,
 	checkCoxTeam,
+	coxUniques,
 	createTeam,
 	hasMinRaidsRequirements,
 	itemBoosts,
@@ -26,21 +27,6 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
-const uniques = [
-	'Dexterous prayer scroll',
-	'Arcane prayer scroll',
-	'Twisted buckler',
-	'Dragon hunter crossbow',
-	"Dinh's bulwark",
-	'Ancestral hat',
-	'Ancestral robe top',
-	'Ancestral robe bottom',
-	'Dragon claws',
-	'Elder maul',
-	'Kodai insignia',
-	'Twisted bow'
-];
-
 export async function coxBoostsCommand(user: MUser) {
 	const boostStr = [];
 	let workFromBank = false;
@@ -52,7 +38,7 @@ export async function coxBoostsCommand(user: MUser) {
 	boostStr.push('**Equipped boost Items:**\n');
 	for (const set of itemBoosts) {
 		if (set.some(item => !item.mustBeEquipped) && workFromBank === false) {
-			boostStr.push('**Bank boost Items:**\n');
+			boostStr.push('**Works from bank:**\n');
 			workFromBank = true;
 		}
 		boostStr.push('- ');
@@ -111,7 +97,7 @@ export async function coxStatsCommand(user: MUser) {
 	]);
 	let totalUniques = 0;
 	const { cl } = user;
-	for (const item of uniques) {
+	for (const item of coxUniques) {
 		totalUniques += cl.amount(item);
 	}
 	const totalPoints = stats.total_cox_points;
@@ -142,7 +128,7 @@ export async function coxStatsCommand(user: MUser) {
 **Range:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
 **Mage:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
 **Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%\n
-Check \`/raid cox boosts\` for more information on Item boosts.`;
+Check \`/raid cox itemboosts\` for more information on Item boosts.`;
 }
 
 export async function coxCommand(
@@ -253,6 +239,8 @@ export async function coxCommand(
 	let debugStr = '';
 	const isSolo = users.length === 1;
 	const isFakeMass = users.length > 1 && new Set(users).size === 1;
+	const fakeUsers = isFakeMass ? 5 : 0;
+
 	// console.log(`isSolo: ${isSolo} | isFakeMass: ${isFakeMass}`);
 
 	for (const d of degradeables) {
@@ -309,6 +297,7 @@ export async function coxCommand(
 		users: usersToCheck.map(u => u.id),
 		challengeMode: isChallengeMode,
 		isFakeMass,
+		fakeUsers,
 		quantity
 	});
 
