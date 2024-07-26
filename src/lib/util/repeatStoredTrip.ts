@@ -486,7 +486,8 @@ const tripHandlers = {
 					start: {
 						challenge_mode: data.challengeMode,
 						type: data.isFakeMass ? 'fakemass' : data.users.length === 1 ? 'solo' : 'mass',
-						quantity: data.quantity
+						max_team_size: data.maxSizeInput,
+						quantity: data.quantity,
 					}
 				}
 			};

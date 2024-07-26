@@ -79,10 +79,19 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 export const raidsTask: MinionTask = {
 	type: 'Raids',
 	async run(data: RaidsOptions) {
-		const { channelID, users, challengeMode, isFakeMass, fakeUsers, duration, leader, quantity: _quantity } = data;
+		const {
+			channelID,
+			users,
+			challengeMode,
+			isFakeMass,
+			maxSizeInput,
+			duration,
+			leader,
+			quantity: _quantity
+		} = data;
 		const quantity = _quantity ?? 1;
 		const fetchedUsers = await Promise.all(users.map(async u => mUserFetch(u)));
-		let allUsers = isFakeMass ? Array(fakeUsers).fill(fetchedUsers[0]) : fetchedUsers;
+		let allUsers = isFakeMass ? Array(maxSizeInput).fill(fetchedUsers[0]) : fetchedUsers;
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
 		let totalPoints = 0;
@@ -115,7 +124,7 @@ export const raidsTask: MinionTask = {
 			for (const [userID, userLoot] of Object.entries(raidLoot)) {
 				//track the simulated users loot to show the user on trip return
 				if (isFakeMass) {
-					if (userID !== leader){
+					if (userID !== leader) {
 						const existingLoot = fakeUserResults.get(userID) || new Bank();
 						existingLoot.add(userLoot);
 						fakeUserResults.set(userID, existingLoot);

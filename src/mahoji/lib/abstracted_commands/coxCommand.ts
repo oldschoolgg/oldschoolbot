@@ -207,8 +207,9 @@ export async function coxCommand(
 	if (!channelIsSendable(channel)) return 'No channel found.';
 
 	let users: MUser[] = [];
+	const fakeUsers = Math.min(maxSizeInput ?? 5, maxSize);
 	if (type === 'fakemass') {
-		users = [user, user, user, user, user];
+		users = new Array(fakeUsers).fill(user);
 	} else if (type === 'mass') {
 		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
 	} else {
@@ -239,7 +240,6 @@ export async function coxCommand(
 	let debugStr = '';
 	const isSolo = users.length === 1;
 	const isFakeMass = users.length > 1 && new Set(users).size === 1;
-	const fakeUsers = isFakeMass ? 5 : 0;
 
 	// console.log(`isSolo: ${isSolo} | isFakeMass: ${isFakeMass}`);
 
@@ -296,8 +296,8 @@ export async function coxCommand(
 		leader: user.id,
 		users: usersToCheck.map(u => u.id),
 		challengeMode: isChallengeMode,
+		maxSizeInput: isFakeMass ? fakeUsers : maxSize,
 		isFakeMass,
-		fakeUsers,
 		quantity
 	});
 
