@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { writeFileSync } from 'node:fs';
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Events } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
@@ -21,6 +22,12 @@ import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
+
+let str = '';
+for (const a of Buyables) {
+	str += `${a.name}\n`;
+}
+writeFileSync('buyables.txt', str);
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',

@@ -3,6 +3,7 @@ import { activity_type_enum } from '@prisma/client';
 import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
+import { writeFileSync } from 'node:fs';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
@@ -342,3 +343,10 @@ for (const a of Object.values(activity_type_enum)) {
 		console.log(`Missing ${a} task`);
 	}
 }
+
+let str2 = '';
+for (const a of tasks) {
+	if (ignored.includes(a.type)) continue;
+	str2 += `${a.type}\n`;
+}
+writeFileSync('activities.txt', str2);

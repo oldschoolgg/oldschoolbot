@@ -4,6 +4,7 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
+import { writeFileSync } from 'node:fs';
 import { divinationEnergies, portents } from '../bso/divination';
 import { type ClueTier, ClueTiers } from '../clues/clueTiers';
 import type { CollectionLogType } from '../collectionLogTask';
@@ -50,7 +51,7 @@ import type { ItemBank } from '../types';
 import { stringMatches } from '../util';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
-import { shuffleRandom } from '../util/smallUtils';
+import { itemNameFromID, shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {
 	abyssalDragonCL,
@@ -1884,6 +1885,11 @@ export const allCLItemsFiltered = [
 			.flat(100)
 	)
 ];
+let str = '';
+for (const a of allCLItemsFiltered) {
+	str += `${itemNameFromID(a)}\n`;
+}
+writeFileSync('all_collection_log_items.txt', str);
 
 export const overallPlusItems = [
 	...new Set(
@@ -1893,6 +1899,11 @@ export const overallPlusItems = [
 			.flat(100)
 	)
 ];
+let str2 = '';
+for (const a of allCLItems) {
+	str2 += `${itemNameFromID(a)}\n`;
+}
+writeFileSync('allllllll_collection_log_items.txt', str2);
 
 export function calcCLDetails(user: MUser | Bank) {
 	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));

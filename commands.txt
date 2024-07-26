@@ -1,0 +1,511 @@
+------ bs------
+bs search
+bs format
+
+
+------ build------
+build name
+build quantity
+
+
+------ buy------
+buy name
+buy quantity
+
+
+------ ca------
+ca view
+ca claim
+
+
+------ chop------
+chop name
+chop quantity
+chop powerchop
+chop forestry_events
+chop twitchers_gloves
+
+
+------ cook------
+cook name
+cook quantity
+
+
+------ clue------
+clue tier
+clue quantity
+
+
+------ config------
+config server
+config server channel
+config server pet_messages
+config server command
+config user
+config user toggle
+config user combat_options
+config user bank_sort
+config user favorite_alchs
+config user favorite_bh_seeds
+config user favorite_food
+config user favorite_items
+config user slayer
+config user toggle_invention
+
+
+------ m------
+
+
+------ gp------
+
+
+------ craft------
+craft name
+craft quantity
+
+
+------ fish------
+fish name
+fish quantity
+
+
+------ farming------
+farming check_patches
+farming plant
+farming auto_farm
+farming auto_farm_filter
+farming default_compost
+farming always_pay
+farming harvest
+farming tithe_farm
+farming compost_bin
+farming contract
+
+
+------ drop------
+drop items
+drop filter
+drop search
+
+
+------ create------
+create item
+create quantity
+create showall
+
+
+------ activities------
+activities plank_make
+activities chompy_hunt
+activities champions_challenge
+activities warriors_guild
+activities camdozaal
+activities collect
+activities quest
+activities decant
+activities charge
+activities fight_caves
+activities inferno
+activities birdhouses
+activities aerial_fishing
+activities enchant
+activities bury
+activities scatter
+activities puro_puro
+activities alch
+activities cast
+activities underwater
+activities underwater agility_thieving
+activities underwater drift_net_fishing
+activities other
+
+
+------ data------
+data name
+
+
+------ fletch------
+fletch name
+fletch quantity
+
+
+------ gear------
+gear equip
+gear unequip
+gear stats
+gear pet
+gear view
+gear swap
+gear best_in_slot
+
+
+------ hunt------
+hunt name
+hunt quantity
+hunt hunter_potion
+hunt stamina_potions
+
+
+------ k------
+k name
+k quantity
+k method
+k wilderness
+
+
+------ laps------
+laps name
+laps quantity
+laps alch
+
+
+------ light------
+light name
+light quantity
+
+
+------ mine------
+mine name
+mine quantity
+mine powermine
+
+
+------ minigames------
+minigames barb_assault
+minigames barb_assault start
+minigames barb_assault buy
+minigames barb_assault level
+minigames barb_assault gamble
+minigames barb_assault stats
+minigames castle_wars
+minigames castle_wars stats
+minigames castle_wars start
+minigames lms
+minigames lms stats
+minigames lms start
+minigames lms buy
+minigames lms simulate
+minigames pest_control
+minigames pest_control stats
+minigames pest_control start
+minigames pest_control xp
+minigames pest_control buy
+minigames fishing_trawler
+minigames fishing_trawler start
+minigames mage_arena
+minigames mage_arena start
+minigames mage_arena_2
+minigames mage_arena_2 start
+minigames gnome_restaurant
+minigames gnome_restaurant start
+minigames temple_trek
+minigames temple_trek start
+minigames temple_trek buy
+minigames sepulchre
+minigames sepulchre start
+minigames gauntlet
+minigames gauntlet start
+minigames mage_training_arena
+minigames mage_training_arena start
+minigames mage_training_arena points
+minigames mage_training_arena buy
+minigames mahogany_homes
+minigames mahogany_homes start
+minigames mahogany_homes buy
+minigames tears_of_guthix
+minigames tears_of_guthix start
+minigames pyramid_plunder
+minigames pyramid_plunder start
+minigames rogues_den
+minigames rogues_den start
+minigames soul_wars
+minigames soul_wars start
+minigames soul_wars tokens
+minigames soul_wars buy
+minigames soul_wars imbue
+minigames volcanic_mine
+minigames volcanic_mine start
+minigames volcanic_mine buy
+minigames volcanic_mine stats
+minigames agility_arena
+minigames agility_arena start
+minigames agility_arena buy
+minigames agility_arena recolor
+minigames agility_arena xp
+minigames trouble_brewing
+minigames trouble_brewing start
+minigames giants_foundry
+minigames giants_foundry start
+minigames giants_foundry buy
+minigames giants_foundry stats
+minigames gotr
+minigames gotr start
+minigames nmz
+minigames nmz start
+minigames nmz buy
+minigames nmz stats
+minigames nmz imbue
+minigames shades_of_morton
+minigames shades_of_morton start
+
+
+------ minion------
+minion buy
+minion status
+minion stats
+minion achievementdiary
+minion cancel
+minion set_icon
+minion set_name
+minion level
+minion kc
+minion charge
+minion daily
+minion train
+minion pat
+minion blowpipe
+minion info
+minion peak
+minion feed_hammy
+minion mastery
+
+
+------ sell------
+sell items
+sell filter
+sell search
+
+
+------ sacrifice------
+sacrifice items
+sacrifice filter
+sacrifice search
+
+
+------ runecraft------
+runecraft rune
+runecraft quantity
+runecraft usestams
+runecraft daeyalt_essence
+
+
+------ raid------
+raid cox
+raid cox start
+raid cox stats
+raid tob
+raid tob start
+raid tob stats
+raid tob check
+raid toa
+raid toa start
+raid toa help
+raid doa
+raid doa start
+raid doa help
+
+
+------ poh------
+poh view
+poh wallkit
+poh build
+poh destroy
+poh mount_item
+poh items
+
+
+------ open------
+open name
+open quantity
+open open_until
+
+
+------ offer------
+offer name
+offer quantity
+
+
+------ mix------
+mix name
+mix quantity
+mix wesley
+mix zahur
+
+
+------ smelt------
+smelt name
+smelt quantity
+smelt blast_furnace
+
+
+------ slayer------
+slayer autoslay
+slayer new_task
+slayer manage
+slayer rewards
+slayer rewards unlock
+slayer rewards unblock
+slayer rewards buy
+slayer rewards my_unlocks
+slayer rewards show_all_rewards
+slayer rewards disable
+slayer status
+
+
+------ smith------
+smith name
+smith quantity
+
+
+------ steal------
+steal name
+steal quantity
+
+
+------ tools------
+tools patron
+tools patron sacrificed_bank
+tools patron cl_bank
+tools patron minion_stats
+tools patron stats
+tools user
+tools user checkmasses
+tools user fixbank
+tools stash_units
+tools stash_units view
+tools stash_units build_all
+tools stash_units fill_all
+tools stash_units unfill
+
+
+------ tokkulshop------
+tokkulshop buy
+tokkulshop sell
+
+
+------ use------
+use item
+use secondary_item
+
+
+------ bank------
+bank page
+bank item
+bank items
+bank format
+bank search
+bank filter
+bank sort
+bank flag
+bank flag_extra
+
+
+------ bsominigames------
+bsominigames baxtorian_bathhouses
+bsominigames baxtorian_bathhouses help
+bsominigames baxtorian_bathhouses start
+bsominigames monkey_rumble
+bsominigames monkey_rumble start
+bsominigames monkey_rumble stats
+bsominigames ourania_delivery_service
+bsominigames ourania_delivery_service start
+bsominigames ourania_delivery_service stats
+bsominigames ourania_delivery_service buy
+bsominigames fishing_contest
+bsominigames fishing_contest fish
+bsominigames fishing_contest stats_info
+bsominigames fist_of_guthix
+bsominigames fist_of_guthix start
+bsominigames stealing_creation
+bsominigames stealing_creation start
+bsominigames tinkering_workshop
+bsominigames tinkering_workshop start
+bsominigames balthazars_big_bonanza
+bsominigames balthazars_big_bonanza start
+bsominigames divine_dominion
+bsominigames divine_dominion check
+bsominigames divine_dominion sacrifice_god_item
+bsominigames guthixian_cache
+bsominigames guthixian_cache join
+bsominigames guthixian_cache stats
+bsominigames turaels_trials
+bsominigames turaels_trials start
+
+
+------ completion------
+completion view_all_tasks
+completion check
+
+
+------ dg------
+dg start
+dg stats
+dg buy
+
+
+------ divination------
+divination harvest_memories
+divination portent
+divination charge_portent
+divination toggle_portent
+
+
+------ invention------
+invention disassemble
+invention research
+invention invent
+invention tools
+invention details
+invention materials
+invention group
+
+
+------ kibble------
+kibble kibble
+kibble quantity
+
+
+------ nursery------
+nursery build
+nursery fuel
+nursery add_egg
+nursery check
+
+
+------ paint------
+paint paint
+paint item
+
+
+------ tames------
+tames status
+tames list
+tames set_name
+tames cancel
+tames merge
+tames feed
+tames kill
+tames collect
+tames select
+tames view
+tames equip
+tames unequip
+tames cast
+tames activity
+tames clue
+tames set_custom_image
+
+
+------ leagues------
+leagues check
+leagues view_task
+leagues claim
+leagues view_all_tasks
+
+
+------ randomizer------
+randomizer info
+randomizer unlock_item_mapping
+randomizer reset
+
+

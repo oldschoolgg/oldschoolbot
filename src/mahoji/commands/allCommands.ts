@@ -1,3 +1,4 @@
+import { writeFileSync } from 'node:fs';
 import { globalConfig } from '../../lib/constants';
 import type { OSBMahojiCommand } from '../lib/util';
 import { activitiesCommand } from './activities';
@@ -46,6 +47,7 @@ import { pohCommand } from './poh';
 import { raidCommand } from './raid';
 import { randomizerCommand } from './randomizer';
 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { rpCommand } from './rp';
 import { runecraftCommand } from './runecraft';
 import { sacrificeCommand } from './sacrifice';
@@ -131,3 +133,23 @@ for (const cmd of allCommands) {
 	}
 	names.add(cmd.name);
 }
+
+let str2 = '';
+for (const cmd of allCommands) {
+	if (['testpotato', 'admin', 'rp', 'lb', 'cl'].includes(cmd.name)) continue;
+	str2 += `------ ${cmd.name}------\n`;
+	for (const a of cmd.options) {
+		if (a.type === ApplicationCommandOptionType.SubcommandGroup) {
+			str2 += `${cmd.name} ${a.name}\n`;
+			for (const b of a.options!) {
+				str2 += `${cmd.name} ${a.name} ${b.name}\n`;
+			}
+		} else if (a.type === ApplicationCommandOptionType.Subcommand) {
+			str2 += `${cmd.name} ${a.name}\n`;
+		} else {
+			str2 += `${cmd.name} ${a.name}\n`;
+		}
+	}
+	str2 += '\n\n';
+}
+writeFileSync('commands.txt', str2);

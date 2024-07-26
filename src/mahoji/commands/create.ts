@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { isFunction, reduceNumByPercent } from 'e';
@@ -22,6 +22,12 @@ const allCreatablesTable = {
 	content,
 	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
 };
+
+let str = '';
+for (const a of Createables) {
+	str += `${a.name}\n`;
+}
+writeFileSync('creatables.txt', str);
 
 export const createCommand: OSBMahojiCommand = {
 	name: 'create',
