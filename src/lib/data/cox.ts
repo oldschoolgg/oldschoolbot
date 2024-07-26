@@ -525,6 +525,18 @@ export const itemBoosts: ItemBoost[][] = [
 			setup: 'range'
 		},
 		{
+			item: getOSItem('Ruby dragon bolts'),
+			boost: 1,
+			mustBeEquipped: true,
+			setup: 'range'
+		},
+		{
+			item: getOSItem('Diamond dragon bolts'),
+			boost: 1,
+			mustBeEquipped: true,
+			setup: 'range'
+		},
+		{
 			item: getOSItem('Dragon bolts'),
 			boost: 1,
 			mustBeEquipped: true,
