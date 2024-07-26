@@ -55,13 +55,6 @@ const TrekShopItems: TrekShopItem[] = [
 		medRange: [30, 65],
 		hardRange: [60, 80],
 		aliases: ['lobster', 'raw lobsters']
-	},
-	{
-		name: 'Experience',
-		easyRange: [1100, 1650],
-		medRange: [2035, 3025],
-		hardRange: [4015, 5005],
-		aliases: ['xp']
 	}
 ];
 

@@ -11,7 +11,6 @@ import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 
 import { SkillsEnum } from '../../lib/skilling/types';
-import { globalPresets } from '../../lib/structures/Gear';
 import getOSItem from '../../lib/util/getOSItem';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -31,8 +30,6 @@ export const filterOption: CommandOption = {
 };
 
 export const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
-
-export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
 
 export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
 
@@ -119,27 +116,6 @@ export const ownedItemOption = (filter?: (item: Item) => boolean): CommandOption
 		return res.map(i => ({ name: `${i[0].name}`, value: i[0].name.toString() }));
 	}
 });
-
-export const gearPresetOption: CommandOption = {
-	type: ApplicationCommandOptionType.String,
-	name: 'gear_preset',
-	description: 'The gear preset you want to select.',
-	required: false,
-	autocomplete: async (value, user) => {
-		const presets = await prisma.gearPreset.findMany({
-			where: {
-				user_id: user.id
-			},
-			select: {
-				name: true
-			}
-		});
-		return presets
-			.map(i => ({ name: i.name, value: i.name }))
-			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })))
-			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
-	}
-};
 
 export const ownedMaterialOption = {
 	name: 'material',

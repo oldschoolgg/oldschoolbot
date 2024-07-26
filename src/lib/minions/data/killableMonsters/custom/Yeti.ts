@@ -5,7 +5,7 @@ import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import UncommonSeedDropTable from 'oldschooljs/dist/simulation/subtables/UncommonSeedDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { BitField, YETI_ID } from '../../../../constants';
+import { YETI_ID } from '../../../../constants';
 import { GearStat } from '../../../../gear';
 import type { CustomMonster } from './customMonsters';
 
@@ -70,6 +70,5 @@ export const Yeti: CustomMonster = {
 		highestDeathChance: 30,
 		steepness: 0.99,
 		hardness: 0.4
-	},
-	requiredBitfield: BitField.HasUnlockedYeti
+	}
 };

@@ -6,7 +6,6 @@ import {
 	type CacheType,
 	type Collection,
 	type CollectorFilter,
-	type Guild,
 	type InteractionReplyOptions,
 	type Message,
 	type MessageEditOptions,
@@ -20,16 +19,15 @@ import { Time, calcWhatPercent, notEmpty, objectEntries, randArrItem, randInt, s
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
-import type { Prisma, PrismaClient } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
-import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { ClueTiers } from './clues/clueTiers';
-import { BitField, ONE_TRILLION, type ProjectileType, globalConfig, projectiles } from './constants';
+import { BitField, ONE_TRILLION, type ProjectileType, projectiles } from './constants';
 import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
@@ -50,7 +48,6 @@ import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import resolveItems from './util/resolveItems';
-import { itemNameFromID } from './util/smallUtils';
 
 export * from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
@@ -62,11 +59,6 @@ BigInt.prototype.toJSON = function () {
 
 export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
-}
-
-export function britishTime() {
-	const currentDate = new Date(Date.now() - Time.Hour * 10);
-	return currentDate;
 }
 
 export function isWeekend() {
@@ -131,13 +123,6 @@ export function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions
 
 export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
-}
-
-export function getSupportGuild(): Guild | null {
-	if (!globalClient || Object.keys(globalClient).length === 0) return null;
-	const guild = globalClient.guilds.cache.get(SupportServer);
-	if (!guild) return null;
-	return guild;
 }
 
 export function calcCombatLevel(skills: Skills) {
@@ -403,23 +388,6 @@ export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
 
-export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
-	const marketPrices = (await prisma.clientStorage.findFirst({
-		where: { id: globalConfig.clientID },
-		select: {
-			market_prices: true
-		}
-	}))!.market_prices as ItemBank;
-	let price = 0;
-	for (const [item, qty] of bank.items()) {
-		if (!item) {
-			continue;
-		}
-		price += (marketPrices[item.id] ?? item.price * 0.8) * qty;
-	}
-	return price;
-}
-
 export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
@@ -504,12 +472,11 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 		},
 		select: {
 			username: true,
-			badges: true,
-			minion_ironman: true
+			badges: true
 		}
 	});
 	if (!user?.username) return 'Unknown';
-	const badges = makeBadgeString(user.badges, user.minion_ironman);
+	const badges = makeBadgeString(user.badges, true);
 	const newValue = `${badges ? `${badges} ` : ''}${user.username}`;
 	usernameWithBadgesCache.set(id, newValue);
 	return newValue;
@@ -559,15 +526,11 @@ export function awaitMessageComponentInteraction({
 	});
 }
 
-export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
-	const logger = globalConfig.isProduction ? debugLog : console.log;
+export async function runTimedLoggedFn<T>(_name: string, fn: () => Promise<T>, _threshholdToLog = 100): Promise<T> {
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	const result = await fn();
 	stopwatch.stop();
-	if (!globalConfig.isProduction || stopwatch.duration > threshholdToLog) {
-		logger(`Took ${stopwatch} to do ${name}`);
-	}
 	return result;
 }
 
@@ -576,10 +539,6 @@ export function logWrapFn<T extends (...args: any[]) => Promise<unknown>>(
 	fn: T
 ): (...args: Parameters<T>) => ReturnType<T> {
 	return (...args: Parameters<T>): ReturnType<T> => runTimedLoggedFn(name, () => fn(...args)) as ReturnType<T>;
-}
-
-export function isModOrAdmin(user: MUser) {
-	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
 export async function calcClueScores(user: MUser) {
@@ -617,9 +576,8 @@ export function checkRangeGearWeapon(gear: Gear) {
 	);
 	if (!projectileCategory) return 'You have an invalid range weapon.';
 	if (!projectileCategory[1].items.includes(ammo.item)) {
-		return `You have invalid ammo for your equipped weapon. For ${
-			projectileCategory[0]
-		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
+		return `You have invalid ammo for your equipped weapon. For $
+			projectileCategory[0]-based weapons, you can use: $projectileCategory[1].items.map(itemNameFromID).join(', ').`;
 	}
 
 	return {

@@ -3,7 +3,7 @@ import { activity_type_enum } from '@prisma/client';
 import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
-import { production } from '../config';
+import { writeFileSync } from 'node:fs';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
@@ -13,7 +13,6 @@ import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
 import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
-import { bossEventTask } from '../tasks/minions/bossEventActivity';
 import { bathhouseTask } from '../tasks/minions/bso/bathhousesActivity';
 import { bonanzaTask } from '../tasks/minions/bso/bonanzaActivity';
 import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
@@ -116,7 +115,7 @@ import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOf
 import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
-import { minionActivityCache } from './constants';
+import { globalConfig, minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logWrapFn } from './util';
@@ -218,7 +217,6 @@ const tasks: MinionTask[] = [
 	dungeoneeringTask,
 	fogTask,
 	scTask,
-	bossEventTask,
 	twTask,
 	cutLeapingFishTask,
 	toaTask,
@@ -241,7 +239,7 @@ export async function processPendingActivities() {
 	const activities: Activity[] = await prisma.activity.findMany({
 		where: {
 			completed: false,
-			finish_date: production
+			finish_date: globalConfig.isProduction
 				? {
 						lt: new Date()
 					}
@@ -345,3 +343,10 @@ for (const a of Object.values(activity_type_enum)) {
 		console.log(`Missing ${a} task`);
 	}
 }
+
+let str2 = '';
+for (const a of tasks) {
+	if (ignored.includes(a.type)) continue;
+	str2 += `${a.type}\n`;
+}
+writeFileSync('activities.txt', str2);

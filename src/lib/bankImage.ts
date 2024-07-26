@@ -3,14 +3,14 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import type { SKRSContext2D } from '@napi-rs/canvas';
 import { Canvas, GlobalFonts, Image, loadImage } from '@napi-rs/canvas';
-import { PerkTier, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
-import { chunk, randInt, sumArr } from 'e';
+import { chunk, randInt } from 'e';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
-import { resolveItems, toKMB } from 'oldschooljs/dist/util/util';
+import { getItemOrThrow, resolveItems, toKMB } from 'oldschooljs/dist/util/util';
 
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
@@ -23,11 +23,9 @@ import type { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
-import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { divinationEnergies } from './bso/divination';
-import { BOT_TYPE, BitField, ItemIconPacks, doaPurples, toaPurpleItems } from './constants';
+import { doaPurples, toaPurpleItems } from './constants';
 import { TOBUniques } from './data/tob';
-import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
 import { SkillsEnum } from './skilling/types';
 import { applyCustomItemEffects } from './util/customItemEffects';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
@@ -227,7 +225,6 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
 	[i('Redwood logs'), 'Redwood'],
-	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
 
 	// Uncharged
 	[i('Holy sanguinesti staff (uncharged)'), 'Unch.'],
@@ -408,32 +405,9 @@ export class BankImageTask {
 		for (const fileName of filesInDir) {
 			this.itemIconsList.add(Number.parseInt(path.parse(fileName).name));
 		}
-
-		for (const pack of ItemIconPacks) {
-			const directories = BOT_TYPE === 'OSB' ? ['osb'] : ['osb', 'bso'];
-
-			for (const dir of directories) {
-				const filesInThisDir = await fs.readdir(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}`);
-				for (const fileName of filesInThisDir) {
-					const themedItemID = Number.parseInt(path.parse(fileName).name);
-					const image = await loadImage(
-						`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`
-					);
-					pack.icons.set(themedItemID, image);
-				}
-			}
-		}
 	}
 
 	async getItemImage(itemID: number, user?: MUser): Promise<Image> {
-		if (user && user.user.icon_pack_id !== null) {
-			for (const pack of ItemIconPacks) {
-				if (pack.id === user.user.icon_pack_id) {
-					return pack.icons.get(itemID) ?? this.getItemImage(itemID, undefined);
-				}
-			}
-		}
-
 		const cachedImage = this.itemIconImagesCache.get(itemID);
 		if (cachedImage) return cachedImage;
 
@@ -454,17 +428,23 @@ export class BankImageTask {
 		}
 	}
 
-	async fetchAndCacheImage(itemID: number) {
+	async fetchAndCacheImage(itemID: number): Promise<Image> {
 		const imageBuffer = await fetch(`https://static.runelite.net/cache/item/icon/${itemID}.png`).then(result =>
 			result.buffer()
 		);
 
 		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
 
-		const image = await loadImage(imageBuffer);
+		try {
+			const image = await loadImage(imageBuffer);
 
-		this.itemIconsList.add(itemID);
-		this.itemIconImagesCache.set(itemID, image);
+			this.itemIconsList.add(itemID);
+			this.itemIconImagesCache.set(itemID, image);
+			return image;
+		} catch (err) {
+			console.error(`${itemID} image failed to load`);
+			return this.fetchAndCacheImage(getItemOrThrow('Bones').id);
+		}
 	}
 
 	drawBorder(ctx: SKRSContext2D, sprite: IBgSprite, titleLine = true) {
@@ -655,10 +635,7 @@ export class BankImageTask {
 				}
 			} else if (mahojiFlags?.includes('show_weights') && weightings && weightings[item.id]) {
 				bottomItemText = weightings[item.id];
-			} else if (mahojiFlags?.includes('show_market_price')) {
-				bottomItemText = marketPriceOrBotPrice(item.id) * quantity;
 			}
-
 			const forcedShortName = forcedShortNameMap.get(item.id);
 			if (forcedShortName && !bottomItemText) {
 				ctx.font = '10px Smallest Pixel-7';
@@ -686,7 +663,7 @@ export class BankImageTask {
 		collectionLog?: Bank;
 		mahojiFlags?: BankFlag[];
 	}): Promise<BankImageResult> {
-		let { user, collectionLog, title = '', showValue = true } = opts;
+		let { user, collectionLog, title = '' } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));
 		let compact = flags.has('compact');
@@ -720,8 +697,7 @@ export class BankImageTask {
 		// Sorting
 		const favorites = user?.user.favoriteItems;
 		const weightings = user?.user.bank_sort_weightings as ItemBank;
-		const perkTier = user ? user.perkTier() : 0;
-		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : user?.bankSortMethod ?? 'value';
+		const defaultSort: BankSortMethod = user?.bankSortMethod ?? 'value';
 		const sortInput = flags.get('sort');
 		const sort = sortInput ? BankSortMethods.find(s => s === sortInput) ?? defaultSort : defaultSort;
 
@@ -738,7 +714,7 @@ export class BankImageTask {
 			});
 		}
 
-		if (perkTier >= PerkTier.Two && weightings && Object.keys(weightings).length > 0) {
+		if (user && user.perkTier() >= 2 && weightings && Object.keys(weightings).length > 0) {
 			items.sort((a, b) => {
 				const aWeight = weightings[a[0].id];
 				const bWeight = weightings[b[0].id];
@@ -749,8 +725,6 @@ export class BankImageTask {
 				return 0;
 			});
 		}
-
-		const totalValue = sumArr(items.map(([i, q]) => i.price * q));
 
 		const chunkSize = compact ? 140 : 56;
 		const chunked = chunk(items, chunkSize);
@@ -803,14 +777,10 @@ export class BankImageTask {
 
 		const hexColor = user?.user.bank_bg_hex;
 
-		const useSmallBank =
-			bgImage.id !== 100 &&
-			(user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true);
-
-		const canvas = new Canvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
+		const canvas = new Canvas(width, Math.max(331, canvasHeight));
 
 		let resizeBg = -1;
-		if (!wide && !useSmallBank && !isTransparent && actualBackground && canvasHeight > 331) {
+		if (!wide && !isTransparent && actualBackground && canvasHeight > 331) {
 			resizeBg = Math.min(1440, canvasHeight) / actualBackground.height;
 		}
 
@@ -838,10 +808,6 @@ export class BankImageTask {
 				wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? 1 : resizeBg),
 				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
 			);
-		}
-
-		if (showValue) {
-			title += ` (V: ${toKMB(totalValue)} / MV: ${toKMB(marketPriceOfBank(bank))}) `;
 		}
 
 		drawTitle(ctx, title, canvas);

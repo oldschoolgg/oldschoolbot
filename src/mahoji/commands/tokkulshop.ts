@@ -11,7 +11,6 @@ import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const { TzTokJad } = Monsters;
@@ -102,7 +101,7 @@ export const tksCommand: OSBMahojiCommand = {
 		const [hasKaramjaDiary] = await userhasDiaryTier(user, KaramjaDiary.easy);
 		const item = TokkulShopItems.find(i => stringMatches(i.name, options.buy?.name ?? options.sell?.name ?? ''));
 		const hasKilledJad: boolean = (await user.getKC(TzTokJad.id)) >= 1;
-		const isIronman = !!user.user.minion_ironman;
+		const isIronman = true;
 
 		// If the user is buying an invalid item
 		if (!item) return "That's not a valid item.";
@@ -185,7 +184,6 @@ export const tksCommand: OSBMahojiCommand = {
 
 		// Remove the cost, and update bank settings
 		await transactItems({ userID: user.id, itemsToRemove: cost });
-		await updateBankSetting('tks_cost', cost);
 
 		// Tokkul shop activity
 		await addSubTaskToActivityTask<TokkulShopOptions>({

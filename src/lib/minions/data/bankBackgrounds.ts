@@ -1,7 +1,7 @@
 import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BitField, PerkTier } from '../../constants';
+import { PerkTier } from '../../constants';
 import type { BankBackground } from '../types';
 
 const backgroundImages: BankBackground[] = [
@@ -192,24 +192,6 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 10_000_000,
 		storeBitField: StoreBitfield.HasSetOneNaturePermanentBankBackgrounds
-	},
-	{
-		id: 14,
-		name: 'CoX',
-		image: null,
-		available: true,
-		bitfield: BitField.HasPermanentEventBackgrounds,
-		hasPurple: true,
-		purpleImage: null,
-		storeBitField: StoreBitfield.HasDynamicCoXBackgroundPermanentBankBackgrounds
-	},
-	{
-		id: 15,
-		name: 'OSB',
-		image: null,
-		available: true,
-		bitfield: BitField.HasPermanentEventBackgrounds,
-		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 16,

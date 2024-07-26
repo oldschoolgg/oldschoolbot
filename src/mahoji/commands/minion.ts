@@ -1,17 +1,17 @@
-import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import {
-	BitField,
+	type BitField,
 	BitFieldData,
 	FormattedCustomEmoji,
 	MAX_LEVEL,
 	PerkTier,
+	badges,
 	minionActivityCache
 } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
@@ -22,16 +22,13 @@ import type { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
-import { roboChimpCache } from '../../lib/perkTier';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { convertLVLtoXP, isValidNickname } from '../../lib/util';
-import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
 import { getKCByName } from '../../lib/util/getKCByName';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import { checkPeakTimes } from '../../lib/util/minionUtils';
@@ -39,13 +36,9 @@ import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
 } from '../lib/abstracted_commands/achievementDiaryCommand';
-import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand';
-import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
 import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
 import { feedHammyCommand } from '../lib/abstracted_commands/hammyCommand';
-import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
-import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
@@ -64,16 +57,20 @@ const patMessages = [
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
-	const roboChimpUser = await roboChimpUserFetch(user.id);
-	const leaguesRanking = await roboChimpClient.user.count({
+	const leaguesRanking = await prisma.user.count({
 		where: {
-			leagues_points_total: {
-				gte: roboChimpUser.leagues_points_total
+			leagues_completed_tasks_count: {
+				gte: user.user.leagues_completed_tasks_count
 			}
 		}
 	});
-	const clRankRaw = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
-	const clRank = clRankRaw[0].count;
+	const clRank = await prisma.user.count({
+		where: {
+			cl_percent: {
+				gte: user.user.cl_percent ?? 0
+			}
+		}
+	});
 
 	const bitfields = `${(user.bitfield as BitField[])
 		.map(i => BitFieldData[i])
@@ -84,37 +81,25 @@ export async function getUserInfo(user: MUser) {
 	const task = minionActivityCache.get(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
+	const userBadges = user.user.badges.map(i => badges[i]);
+
 	const result = {
 		perkTier: user.perkTier(),
 		isBlacklisted: BLACKLISTED_USERS.has(user.id),
-		badges: user.badgesString,
-		isIronman: user.isIronman,
+		badges: userBadges,
 		bitfields,
-		currentTask: taskText,
-		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
-		github: roboChimpUser.github_id ? 'Yes' : 'None'
+		currentTask: taskText
 	};
 
-	const globalCLPercent = (((roboChimpUser.bso_cl_percent ?? 0) + (roboChimpUser.osb_cl_percent ?? 0)) / 2).toFixed(
-		2
-	);
-
-	const roboCache = roboChimpCache.get(user.id);
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Current Trip:** ${taskText}
-**Perk Tier:** ${roboCache?.perk_tier ?? 'None'}
 **Blacklisted:** ${result.isBlacklisted}
-**Badges:** ${result.badges}
-**Ironman:** ${result.isIronman}
+**Badges:** ${result.badges.join(' ')}
 **Bitfields:** ${result.bitfields}
-**Patreon Connected:** ${result.patreon}
-**Github Connected:** ${result.github}
-**Leagues:** ${roboChimpUser.leagues_completed_tasks_ids.length} tasks, ${
-			roboChimpUser.leagues_points_total
-		} points (Rank ${leaguesRanking > 500 ? 'Unranked! Get more points!' : formatOrdinal(leaguesRanking)})
-**Global CL:** ${globalCLPercent}% (${clRank > 500 ? 'Unranked! Get more CL slots completed!' : formatOrdinal(clRank)})
+**Leagues:** ${user.user.leagues_completed_tasks_ids.length} tasks, (Rank ${leaguesRanking > 500 ? 'Unranked! Finish more tasks!' : formatOrdinal(leaguesRanking)})
+**CL:** ${user.user.cl_percent}% (${clRank > 500 ? 'Unranked! Get more CL slots completed!' : formatOrdinal(clRank)})
 `
 	};
 }
@@ -126,33 +111,12 @@ export const minionCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'buy',
-			description: 'Buy a minion so you can start playing the bot!',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'ironman',
-					description: 'Do you want to be an ironman?',
-					required: false
-				}
-			]
+			description: 'Buy a minion so you can start playing the bot!'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'status',
 			description: 'View the status of your minion.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'cracker',
-			description: 'Use a Christmas Cracker on someone.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'user',
-					description: 'The user you want to use the cracker on.',
-					required: true
-				}
-			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -176,85 +140,6 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'claim',
 					description: 'Claim your rewards?',
 					required: false
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'bankbg',
-			description: 'Change your bank background.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'name',
-					description: 'The name of the bank background you want.',
-					autocomplete: async (value, user) => {
-						const mUser = await mUserFetch(user.id);
-						const isMod = mUser.bitfield.includes(BitField.isModerator);
-						const bankImages = bankImageGenerator.backgroundImages;
-						const allAccounts = await findGroupOfUser(mUser.id);
-						const owned = bankImages
-							.filter(
-								bg =>
-									(bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField)) ||
-									bg.owners?.some(i => allAccounts.includes(i))
-							)
-							.map(bg => bg.id);
-						return bankImages
-							.filter(bg => isMod || bg.available || owned.includes(bg.id))
-							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => {
-								const name = i.perkTierNeeded
-									? `${i.name} (Tier ${i.perkTierNeeded - 1} patrons)`
-									: i.name;
-								return { name, value: i.name };
-							});
-					}
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'lamp',
-			description: 'Use lamps to claim XP.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'item',
-					description: 'The item you want to use.',
-					autocomplete: async (value, user) => {
-						const mappedLampables = Lampables.map(i => i.items)
-							.flat(2)
-							.map(getItem)
-							.filter(notEmpty)
-							.map(i => ({ id: i.id, name: i.name }));
-
-						const botUser = await mUserFetch(user.id);
-
-						return botUser.bank
-							.items()
-							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
-							.filter(i => {
-								if (!value) return true;
-								return i[0].name.toLowerCase().includes(value.toLowerCase());
-							})
-							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
-					},
-					required: true
-				},
-				{
-					...skillOption,
-					required: true,
-					name: 'skill',
-					description: 'The skill you want to use the item on.'
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'quantity',
-					description: 'You quantity you want to use.',
-					required: false,
-					min_value: 1,
-					max_value: 100_000
 				}
 			]
 		},
@@ -315,19 +200,6 @@ export const minionCommand: OSBMahojiCommand = {
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'ironman',
-			description: 'Become an ironman, or de-iron.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'permanent',
-					description: 'Do you want to become a permanent ironman?',
-					required: false
 				}
 			]
 		},
@@ -439,7 +311,6 @@ export const minionCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		userID,
-		user: apiUser,
 		options,
 		interaction,
 		channelID
@@ -447,15 +318,12 @@ export const minionCommand: OSBMahojiCommand = {
 		stats?: { stat?: string };
 		achievementdiary?: { diary?: string; claim?: boolean };
 		bankbg?: { name?: string };
-		cracker?: { user: MahojiUserOption };
-		lamp?: { item: string; quantity?: number; skill: string };
 		cancel?: {};
 		set_icon?: { icon: string };
 		set_name?: { name: string };
 		level?: { skill: string };
 		kc?: { name: string };
-		buy?: { ironman?: boolean };
-		ironman?: { permanent?: boolean };
+		buy?: {};
 		charge?: { item?: string; amount?: number };
 		daily?: {};
 		train?: { style: AttackStyles };
@@ -473,7 +341,7 @@ export const minionCommand: OSBMahojiCommand = {
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
-		if (options.status) return minionStatusCommand(user, channelID.toString());
+		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
 			return { embeds: [await minionStatsEmbed(user)] };
@@ -484,22 +352,6 @@ export const minionCommand: OSBMahojiCommand = {
 				return claimAchievementDiaryCommand(user, options.achievementdiary.diary ?? '');
 			}
 			return achievementDiaryCommand(user, options.achievementdiary.diary ?? '');
-		}
-
-		if (options.bankbg) {
-			return bankBgCommand(interaction, user, options.bankbg.name ?? '');
-		}
-		if (options.cracker) {
-			return crackerCommand({
-				ownerID: userID.toString(),
-				otherPersonID: options.cracker.user.user.id,
-				interaction,
-				otherPersonAPIUser: options.cracker.user.user
-			});
-		}
-
-		if (options.lamp) {
-			return lampCommand(user, options.lamp.item, options.lamp.skill, options.lamp.quantity);
 		}
 
 		if (options.cancel) return cancelTaskCommand(user, interaction);
@@ -547,8 +399,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
 
-		if (options.buy) return minionBuyCommand(apiUser, user, Boolean(options.buy.ironman));
-		if (options.ironman) return ironmanCommand(user, interaction);
+		if (options.buy) return minionBuyCommand(user);
 
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);

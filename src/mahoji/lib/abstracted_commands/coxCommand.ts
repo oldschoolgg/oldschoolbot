@@ -18,7 +18,7 @@ import {
 	inventionBoosts,
 	inventionItemBoost
 } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MakePartyOptions } from '../../../lib/types';
@@ -26,7 +26,6 @@ import type { RaidsOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
 const uniques = [
@@ -95,8 +94,6 @@ export async function coxCommand(
 	if (type !== 'mass' && type !== 'solo') {
 		return 'Specify your team setup for Chambers of Xeric, either solo or mass.';
 	}
-
-	const minigameID = isChallengeMode ? 'raids_challenge_mode' : 'raids';
 
 	if (isChallengeMode) {
 		const normalKC = await getMinigameScore(user.id, 'raids');
@@ -206,7 +203,7 @@ export async function coxCommand(
 		})
 	);
 
-	const costResult = await Promise.all([
+	await Promise.all([
 		...users.map(async u => {
 			const supplies = (await calcCoxInput(u, isSolo)).multiply(quantity);
 			await u.removeItemsFromBank(supplies);
@@ -236,19 +233,6 @@ export async function coxCommand(
 			};
 		})
 	]);
-
-	updateBankSetting('cox_cost', totalCost);
-
-	await trackLoot({
-		id: minigameID,
-		totalCost,
-		type: 'Minigame',
-		changeType: 'cost',
-		users: costResult.map(i => ({
-			id: i.userID,
-			cost: i.itemsRemoved
-		}))
-	});
 
 	await addSubTaskToActivityTask<RaidsOptions>({
 		userID: user.id,

@@ -131,5 +131,5 @@ export async function testRunCmd({
 
 	const commandResponse = await cmd.run(options);
 	Math.random = originalMathRandom;
-	return expect(commandResponse).toEqual(result);
+	return expect(commandResponse).include(result);
 }

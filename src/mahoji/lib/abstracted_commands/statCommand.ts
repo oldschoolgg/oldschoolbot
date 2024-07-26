@@ -4,7 +4,7 @@ import type { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { type CommandResponse, PerkTier, toTitleCase } from '@oldschoolgg/toolkit';
+import { type CommandResponse, PerkTier } from '@oldschoolgg/toolkit';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, sumArr } from 'e';
@@ -18,10 +18,8 @@ import {
 	calculateAllFletchedItems,
 	calculateChargedItems,
 	calculateDartsFletchedFromScratch,
-	calculateTiarasMade,
-	calculateXPSources
+	calculateTiarasMade
 } from '../../../lib/leagues/stats';
-import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
@@ -387,16 +385,6 @@ ${actualClues.actualCluesBank
 			return `You have received ${Number(
 				stats.silverhawk_boots_passive_xp
 			).toLocaleString()} XP from your Silverhawk boots passive.`;
-		}
-	},
-	{
-		name: 'XP from Lamps',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			const entries = Object.entries(stats.lamped_xp as ItemBank);
-			if (entries.length === 0) return 'No recorded lamp usages.';
-			return `**XP From Lamps**
-${entries.map(i => `**${toTitleCase(i[0])}**: ${toKMB(i[1])}`).join('\n')}`;
 		}
 	},
 	{
@@ -787,35 +775,6 @@ GROUP BY data->>'plantsName'`;
 		}
 	},
 	{
-		name: 'Personal TOB Cost',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.tob_cost as ItemBank), 'Your TOB Cost');
-		}
-	},
-	{
-		name: 'Personal TOB Loot',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.tob_loot as ItemBank), 'Your TOB Loot');
-		}
-	},
-	{
-		name: 'Gambling PNL',
-		run: async (_, stats) => {
-			const gpDice = toKMB(Number(stats.gp_dice));
-			const gpLuckyPick = toKMB(Number(stats.gp_luckypick));
-			const gpSlots = toKMB(Number(stats.gp_slots));
-
-			return {
-				content: `**Dicing:** ${gpDice}
-**Lucky Pick:** ${gpLuckyPick}
-**Slots:** ${gpSlots}`
-			};
-		},
-		perkTierNeeded: PerkTier.Four
-	},
-	{
 		name: 'Personal Slayer Tasks',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
@@ -978,62 +937,6 @@ ${result
 		}
 	},
 	{
-		name: 'Global Servers',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			return `Old School Bot is in ${globalClient.guilds.cache.size} servers.`;
-		}
-	},
-	{
-		name: 'Global Minions',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result = await prisma.$queryRawUnsafe<any>(
-				'SELECT COUNT(*)::int FROM users WHERE "minion.hasBought" = true;'
-			);
-			return `There are ${result[0].count.toLocaleString()} minions!`;
-		}
-	},
-	{
-		name: 'Global Ironmen',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result = await prisma.$queryRawUnsafe<any>(
-				'SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true;'
-			);
-			return `There are ${Number.parseInt(result[0].count).toLocaleString()} ironman minions!`;
-		}
-	},
-	{
-		name: 'Global Icons',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result: { icon: string | null; qty: number }[] = await prisma.$queryRawUnsafe(
-				'SELECT "minion.icon" as icon, COUNT(*)::int as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;'
-			);
-			return `**Current minion tiers and their number of users:**\n${Object.values(result)
-				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
-				.join('\n')}`;
-		}
-	},
-	{
-		name: 'Global Bank Backgrounds',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result = await prisma.$queryRawUnsafe<any>(`SELECT "bankBackground", COUNT(*)::int
-FROM users
-WHERE "bankBackground" <> 1
-GROUP BY "bankBackground";`);
-
-			return result
-				.map(
-					(res: any) =>
-						`**${getBankBgById(res.bankBackground).name}:** ${Number.parseInt(res.count).toLocaleString()}`
-				)
-				.join('\n');
-		}
-	},
-	{
 		name: 'Global Sacrificed',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
@@ -1151,20 +1054,6 @@ GROUP BY "bankBackground";`);
 		}
 	},
 	{
-		name: 'Total Items Given For Item Contracts',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.ic_cost_bank as ItemBank), 'Item Contract Items Paid');
-		}
-	},
-	{
-		name: 'Total Loot From Item Contracts',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.ic_loot_bank as ItemBank), 'Item Contract Loot');
-		}
-	},
-	{
 		name: 'Personal XP gained from Tears of Guthix',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
@@ -1250,68 +1139,6 @@ GROUP BY "bankBackground";`);
 		}
 	},
 	{
-		name: 'Total Giveaway Cost',
-		perkTierNeeded: PerkTier.Four,
-		run: async u => {
-			const giveaways = await prisma.economyTransaction.findMany({
-				where: {
-					sender: BigInt(u.id),
-					type: 'giveaway'
-				},
-				select: {
-					items_sent: true
-				}
-			});
-			const items = new Bank();
-			for (const g of giveaways) {
-				items.add(g.items_sent as ItemBank);
-			}
-			sanitizeBank(items);
-			return makeResponseForBank(items, "You've given away...");
-		}
-	},
-	{
-		name: 'Total Giveaway Winnings/Loot',
-		perkTierNeeded: PerkTier.Four,
-		run: async u => {
-			const giveaways = await prisma.economyTransaction.findMany({
-				where: {
-					recipient: BigInt(u.id),
-					type: 'giveaway'
-				},
-				select: {
-					items_sent: true
-				}
-			});
-			const items = new Bank();
-			for (const g of giveaways) {
-				items.add(g.items_sent as ItemBank);
-			}
-			sanitizeBank(items);
-			return makeResponseForBank(items, "You've received from giveaways...");
-		}
-	},
-	{
-		name: 'Item Contract Donations Given',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(
-				new Bank(stats.ic_donations_given_bank as ItemBank),
-				'Item Contract Donations Given'
-			);
-		}
-	},
-	{
-		name: 'Item Contract Donations Received',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(
-				new Bank(stats.ic_donations_received_bank as ItemBank),
-				'Item Contract Donations Received'
-			);
-		}
-	},
-	{
 		name: 'Rarest CL Items',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
@@ -1346,7 +1173,6 @@ FROM   (
                              SUM(FLOOR(value::numeric)::bigint) AS itemqty
                   FROM       users
                   CROSS JOIN jsonb_each_text("collectionLogBank")
-				  WHERE "users"."minion.ironman" = true
                   GROUP BY   KEY ) s;`;
 			const bank = new Bank(res[0].banks);
 			return {
@@ -1527,34 +1353,6 @@ ${(
 		perkTierNeeded: null,
 		run: async user => {
 			return makeResponseForBank((await calculateChargedItems(user)).bankOfChargedItems, 'Charged Items');
-		}
-	},
-	{
-		name: 'XP Gain Sources',
-		perkTierNeeded: null,
-		run: async user => {
-			const result = await calculateXPSources(user);
-			return {
-				content: `You have gained....
-
-${Object.entries(result)
-	.map(i => `${i[0]}: ${i[1].toLocaleString()} XP`)
-	.join('\n')}`
-			};
-		}
-	},
-	{
-		name: 'Stealing/Thieving Cost',
-		perkTierNeeded: null,
-		run: async (_, userStats) => {
-			return makeResponseForBank(new Bank(userStats.steal_cost_bank as ItemBank), 'Your Stealing/Thieving Cost');
-		}
-	},
-	{
-		name: 'Stealing/Thieving Loot',
-		perkTierNeeded: null,
-		run: async (_, userStats) => {
-			return makeResponseForBank(new Bank(userStats.steal_loot_bank as ItemBank), 'Your Stealing/Thieving Loot');
 		}
 	},
 	{

@@ -67,7 +67,6 @@ export interface OpenArgs {
 	quantity: number;
 	user: MUser;
 	self: UnifiedOpenable;
-	totalLeaguesPoints: number;
 }
 
 export interface UnifiedOpenable {
@@ -562,15 +561,13 @@ export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
 export function getOpenableLoot({
 	openable,
 	quantity,
-	user,
-	totalLeaguesPoints
+	user
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
-	totalLeaguesPoints: number;
 }) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity, totalLeaguesPoints });
+		: openable.output({ user, self: openable, quantity });
 }

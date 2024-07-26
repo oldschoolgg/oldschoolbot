@@ -11,7 +11,6 @@ import {
 	pohDestroyCommand,
 	pohListItemsCommand,
 	pohMountItemCommand,
-	pohWallkitCommand,
 	pohWallkits
 } from '../lib/abstracted_commands/pohCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
@@ -117,7 +116,6 @@ export const pohCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{
 		view?: { build_mode?: boolean };
-		wallkit?: { name: string };
 		build?: { name: string };
 		destroy?: { name: string };
 		mount_item?: { name: string };
@@ -128,9 +126,7 @@ export const pohCommand: OSBMahojiCommand = {
 		if (options.view) {
 			return makePOHImage(user, options.view.build_mode);
 		}
-		if (options.wallkit) {
-			return pohWallkitCommand(user, options.wallkit.name);
-		}
+
 		if (minionIsBusy(user.id)) return 'You cannot interact with your PoH, because your minion is busy.';
 		if (options.build) {
 			return pohBuildCommand(interaction, user, options.build.name);

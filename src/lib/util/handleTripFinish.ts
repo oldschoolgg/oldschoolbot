@@ -1,30 +1,23 @@
-import { Stopwatch, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
+import { channelIsSendable } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import {
-	type AttachmentBuilder,
-	type ButtonBuilder,
-	type MessageCollector,
-	type MessageCreateOptions,
-	bold
-} from 'discord.js';
-import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
+import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
+import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { PortentID, chargePortentIfHasCharges, getAllPortentCharges } from '../bso/divination';
 import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { BitField, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../invention/inventions';
-import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
@@ -32,8 +25,7 @@ import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { makeComponents, toKMB } from '../util';
-import { mahojiChatHead } from './chatHeadImage';
+import { makeComponents } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -45,19 +37,10 @@ import {
 } from './globalInteractions';
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
-import { logError } from './logError';
 import { perHourChance } from './smallUtils';
-import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
 const collectors = new Map<string, MessageCollector>();
-
-const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
-	'GroupMonsterKilling',
-	'MonsterKilling',
-	'Raids',
-	'ClueCompletion'
-];
 
 interface TripFinishEffectOptions {
 	data: ActivityTaskData;
@@ -67,43 +50,22 @@ interface TripFinishEffectOptions {
 	portents?: Awaited<ReturnType<typeof getAllPortentCharges>>;
 }
 
-type TripEffectReturn = {
-	itemsToAddWithCL?: Bank;
-	itemsToRemove?: Bank;
-};
-
 export interface TripFinishEffect {
 	name: string;
 	// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
-	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined | void>;
+	fn: (options: TripFinishEffectOptions) => Promise<undefined | void>;
 }
 
 const tripFinishEffects: TripFinishEffect[] = [
-	{
-		name: 'Track GP Analytics',
-		fn: async ({ data, loot }) => {
-			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-				const GP = loot.amount(COINS_ID);
-				if (typeof GP === 'number') {
-					await updateClientGPTrackSetting('gp_pvm', GP);
-				}
-			}
-			return {};
-		}
-	},
 	{
 		name: 'Implings',
 		fn: async ({ data, messages, user }) => {
 			const imp = await handlePassiveImplings(user, data, messages);
 			if (imp && imp.bank.length > 0) {
-				const many = imp.bank.length > 1;
-				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
 				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
-				return {
-					itemsToAddWithCL: imp.bank
-				};
+				const res = await user.addItemsToBank({ items: imp.bank, collectionLog: true });
+				messages.push(`You received these items from implings spawns: ${res.itemsAdded}`);
 			}
-			return {};
 		}
 	},
 	{
@@ -115,32 +77,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Random Events',
 		fn: async ({ data, messages, user }) => {
-			return triggerRandomEvent(user, data.type, data.duration, messages);
-		}
-	},
-	{
-		name: 'Loot Doubling',
-		fn: async ({ data, messages, user, loot }) => {
-			const cantBeDoubled = ['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'];
-			if (
-				loot &&
-				!data.cantBeDoubled &&
-				!cantBeDoubled.includes(data.type) &&
-				data.duration > Time.Minute * 20 &&
-				roll(user.usingPet('Mr. E') ? 12 : 15)
-			) {
-				const otherLoot = new Bank().add(MysteryBoxes.roll());
-				const bonusLoot = new Bank().add(loot).add(otherLoot);
-				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
-
-				await Promise.all([
-					userStatsBankUpdate(user.id, 'doubled_loot_bank', bonusLoot),
-					updateBankSetting('trip_doubling_loot', bonusLoot)
-				]);
-				return {
-					itemsToAddWithCL: bonusLoot
-				};
-			}
+			await triggerRandomEvent(user, data.type, data.duration, messages);
 		}
 	},
 	{
@@ -149,6 +86,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const pet = user.user.minion_equippedPet;
 			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
+			let prefix = '';
 			const bonusLoot = new Bank();
 			switch (pet) {
 				case itemID('Peky'): {
@@ -158,9 +96,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						}
 					}
 					userStatsBankUpdate(user.id, 'peky_loot_bank', bonusLoot);
-					messages.push(
-						`<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`
-					);
+					prefix = '<:peky:787028037031559168> Peky flew off and got you some seeds during this trip:';
 					break;
 				}
 				case itemID('Obis'): {
@@ -169,9 +105,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						bonusLoot.add(RuneTable.roll());
 					}
 					userStatsBankUpdate(user.id, 'obis_loot_bank', bonusLoot);
-					messages.push(
-						`<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`
-					);
+					prefix = '<:obis:787028036792614974> Obis did some runecrafting during this trip and got you:';
 					break;
 				}
 				case itemID('Brock'): {
@@ -180,9 +114,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						bonusLoot.add(WoodTable.roll());
 					}
 					userStatsBankUpdate(user.id, 'brock_loot_bank', bonusLoot);
-					messages.push(
-						`<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${bonusLoot}.`
-					);
+					prefix = '<:brock:787310793183854594> Brock did some woodcutting during this trip and got you:';
 					break;
 				}
 				case itemID('Wilvus'): {
@@ -191,9 +123,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						bonusLoot.add(WilvusTable.roll());
 					}
 					userStatsBankUpdate(user.id, 'wilvus_loot_bank', bonusLoot);
-					messages.push(
-						`<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${bonusLoot}.`
-					);
+					prefix = '<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you:';
 					break;
 				}
 				case itemID('Smokey'): {
@@ -204,9 +134,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 					}
 					userStatsBankUpdate(user.id, 'smokey_loot_bank', bonusLoot);
 					if (bonusLoot.length > 0) {
-						messages.push(
-							`<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`
-						);
+						prefix =
+							'<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you:';
 					}
 					break;
 				}
@@ -215,7 +144,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						bonusLoot.add(DougTable.roll());
 					}
 					userStatsBankUpdate(user.id, 'doug_loot_bank', bonusLoot);
-					messages.push(`Doug did some mining while you were on your trip and got you: ${bonusLoot}.`);
+					prefix = 'Doug did some mining while you were on your trip and got you:';
 					break;
 				}
 				case itemID('Harry'): {
@@ -223,16 +152,16 @@ const tripFinishEffects: TripFinishEffect[] = [
 						bonusLoot.add('Banana', randInt(1, 3));
 					}
 					userStatsBankUpdate(user.id, 'harry_loot_bank', bonusLoot);
-					messages.push(`<:harry:749945071104819292>: ${bonusLoot}.`);
+					prefix = '<:harry:749945071104819292> Harry got you:';
 					break;
 				}
 				default: {
 				}
 			}
-
-			return {
-				itemsToAddWithCL: bonusLoot
-			};
+			if (bonusLoot.length > 0) {
+				const res = await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
+				messages.push(`${prefix} ${res.itemsAdded}`);
+			}
 		}
 	},
 	{
@@ -254,23 +183,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 					);
 				}
 
-				await Promise.all([
-					updateBankSetting('magic_cost_bank', alchResult.bankToRemove),
-					updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'))
-				]);
-				messages.push(
-					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${
-						alchResult.itemToAlch.name
-					} <:alch:739456571347566623> ${toKMB(alchResult.bankToAdd.amount('Coins'))} GP ${
-						!voidlingEquipped && !user.hasEquipped('Magic master cape')
-							? '<:bank:739459924693614653>⏬'
-							: ''
-					}${user.hasEquipped('Magic master cape') ? '<:Magicmastercape:1115026341314703492>⏫' : ''}`
-				);
-				return {
-					itemsToAddWithCL: alchResult.bankToAdd,
-					itemsToRemove: alchResult.bankToRemove
-				};
+				const res = await user.transactItems({
+					itemsToAdd: alchResult.bankToAdd,
+					itemsToRemove: alchResult.bankToRemove,
+					collectionLog: true
+				});
+				messages.push(`Voilding alched ${alchResult.bankToRemove} into ${res.itemsAdded}`);
 			} else if (user.favAlchs(Time.Minute * 30).length !== 0) {
 				messages.push(
 					"Your Voidling didn't alch anything because you either don't have any nature runes or fire runes."
@@ -297,20 +215,20 @@ const tripFinishEffects: TripFinishEffect[] = [
 							increment: xpToReceive
 						}
 					});
-					await user.addXP({
+					const res = await user.addXP({
 						skillName: SkillsEnum.Agility,
 						amount: xpToReceive,
 						multiplier: false,
 						duration: data.duration
 					});
-					messages.push(`+${toKMB(xpToReceive)} Agility XP from Silverhawk boots (${costRes.messages})`);
+					messages.push(`+${res} from Silverhawk boots (${costRes.messages})`);
 				}
 			}
 		}
 	},
 	{
 		name: 'Message in a Bottle',
-		fn: async ({ data, messages }) => {
+		fn: async ({ data, messages, user }) => {
 			const underwaterTrips: activity_type_enum[] = [
 				activity_type_enum.UnderwaterAgilityThieving,
 				activity_type_enum.DepthsOfAtlantis
@@ -319,21 +237,16 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (!roll(500)) return;
 			messages.push('You found a message in a bottle!');
 			const bottleLoot = new Bank().add('Message in a bottle');
-			return {
-				itemsToAddWithCL: bottleLoot
-			};
+			const res = await user.addItemsToBank({ items: bottleLoot });
+			messages.push(`You received these items from a message in a bottle spawn: ${res.itemsAdded}`);
 		}
 	},
 	{
 		name: 'Crate Spawns',
-		fn: async ({ data, messages, user }) => {
-			const crateRes = handleCrateSpawns(user, data.duration);
-			if (crateRes && crateRes.length > 0) {
-				messages.push(bold(`You found ${crateRes}!`));
-				return {
-					itemsToAddWithCL: crateRes
-				};
-			}
+		fn: async ({ data, user, messages }) => {
+			const crateRes = handleCrateSpawns(data.duration);
+			const res = await user.addItemsToBank({ items: crateRes });
+			messages.push(`You received these items from crate spawns: ${res.itemsAdded}`);
 		}
 	},
 	{
@@ -353,56 +266,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Combat Achievements',
 		fn: combatAchievementTripEffect
-	},
-	{
-		name: 'Mysterious trail',
-		fn: async ({ data, user, messages }) => {
-			if (user.skillsAsLevels.hunter < 100) return;
-			if (!user.owns('Mysterious clue (1)')) return;
-			if (user.user.bso_mystery_trail_current_step_id === null) return;
-			const { step, stepData, previousStepData, nextStep } = user.getMysteriousTrailData();
-			if (!step || !(await step.didPass(data))) {
-				return;
-			}
-			if (stepData.loot) {
-				if (user.cl.has(stepData.loot)) return;
-				await user.addItemsToBank({ items: stepData.loot, collectionLog: true });
-			}
-			if (previousStepData?.clueItem && user.owns(previousStepData.clueItem.id)) {
-				await user.removeItemsFromBank(new Bank().add(previousStepData.clueItem.id));
-			}
-			if (nextStep) {
-				await user.update({
-					bso_mystery_trail_current_step_id: user.user.bso_mystery_trail_current_step_id + 1
-				});
-				messages.push(`❔You found ${stepData.loot}.`);
-			} else {
-				if (user.bitfield.includes(BitField.HasUnlockedYeti)) return;
-				await user.update({
-					bitfield: {
-						push: BitField.HasUnlockedYeti
-					}
-				});
-				for (const item of [
-					...Object.values(mysteriousStepData).map(i => i.clueItem?.id),
-					itemID('Mysterious clue (1)')
-				].filter(notEmpty)) {
-					if (user.owns(item)) {
-						try {
-							await user.removeItemsFromBank(new Bank().add(item));
-						} catch (err) {
-							logError(err);
-						}
-					}
-				}
-				const message = `${
-					user.minionName
-				} arrives at the snowy area north of rellekka, finding a giant, monstrous Yeti. At his feet, lay a slain animal. The Yeti looks at ${
-					user.minionName
-				}, and prepares to attack. Use ${mentionCommand(globalClient, 'k')} to fight the yeti!.`;
-				messages.push(bold(message));
-			}
-		}
 	},
 	{
 		name: 'Divine eggs',
@@ -436,12 +299,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 				charges: eggsReceived
 			});
 			if (chargeResult.didCharge) {
+				const res = await user.addItemsToBank({ items: loot, collectionLog: true });
 				messages.push(
-					`You received ${loot}, your Rebirth portent has ${chargeResult.portent.charges_remaining}x charges remaining.`
+					`You received ${res}, your Rebirth portent has ${chargeResult.portent.charges_remaining}x charges remaining.`
 				);
-				return {
-					itemsToAddWithCL: loot
-				};
 			}
 		}
 	},
@@ -461,16 +322,17 @@ const tripFinishEffects: TripFinishEffect[] = [
 					return;
 				}
 
+				const x = await user.transactItems({
+					itemsToAdd: loot,
+					itemsToRemove: cost,
+					collectionLog: true
+				});
+
 				if (cost.length > 0 && loot.length === 0) {
 					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}, but all died`);
 				} else if (loot.length > 0) {
-					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}; ${loot} survived`);
+					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}; ${x.itemsAdded} survived`);
 				}
-
-				return {
-					itemsToAddWithCL: loot,
-					itemsToRemove: cost
-				};
 			}
 		}
 	}
@@ -500,20 +362,8 @@ export async function handleTripFinish(
 	const messages: string[] = [];
 
 	const portents = await getAllPortentCharges(user);
-	const itemsToAddWithCL = new Bank();
-	const itemsToRemove = new Bank();
 	for (const effect of tripFinishEffects) {
-		const stopwatch = new Stopwatch().start();
-		const res = await effect.fn({ data, user, loot, messages, portents });
-		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
-		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
-		stopwatch.stop();
-		if (stopwatch.duration > 500) {
-			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
-		}
-	}
-	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
-		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
+		await effect.fn({ data, user, loot, messages, portents });
 	}
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
@@ -571,29 +421,6 @@ export async function handleTripFinish(
 
 	if (components.length > 0) {
 		message.components = makeComponents(components);
-	}
-
-	if (!user.owns('Mysterious clue (1)') && roll(10) && !user.bitfield.includes(BitField.HasUnlockedYeti)) {
-		const img = await mahojiChatHead({
-			content: randArrItem([
-				'Traveller, I need your help... Use this clue to guide you.',
-				'I have a task for you.... Use this clue to guide you.',
-				'I have a quest for you... Use this clue to guide you.',
-				'Duty calls. Use this clue to guide you.'
-			]),
-			head: 'mysteriousFigure'
-		});
-		message.files = img.files;
-		const loot = new Bank().add('Mysterious clue (1)');
-		await user.addItemsToBank({ items: loot, collectionLog: true });
-		if (user.user.bso_mystery_trail_current_step_id === null) {
-			await user.update({
-				bso_mystery_trail_current_step_id: 1
-			});
-		}
-		if (message.content) {
-			message.content += `\nYou received ${loot}.`;
-		}
 	}
 
 	handleTriggerShootingStar(user, data, components);

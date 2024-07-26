@@ -2,7 +2,6 @@ import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
@@ -12,7 +11,6 @@ import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/s
 import type { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
@@ -170,13 +168,6 @@ export const infernoTask: MinionTask = {
 
 		if (unusedItems.length > 0) {
 			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
-
-			const currentData = await mahojiClientSettingsFetch({ inferno_cost: true });
-			const current = new Bank(currentData.inferno_cost as ItemBank);
-			const newBank = current.remove(unusedItems);
-			await mahojiClientSettingsUpdate({
-				inferno_cost: newBank.bank
-			});
 		}
 
 		if (diedPreZuk) {
@@ -227,7 +218,7 @@ export const infernoTask: MinionTask = {
 			const { cl } = user;
 
 			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
-				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
+				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'));
 				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.badgedUsername}** just received their first Infernal cape on their ${formatOrdinal(

@@ -4,15 +4,14 @@ import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
 import { Time, debounce, noOp } from 'e';
 
-import { production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
-import { SILENT_ERROR } from './constants';
+import { SILENT_ERROR, globalConfig } from './constants';
 import type { MakePartyOptions } from './types';
 import { getUsername } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
-if (production) {
+if (globalConfig.isProduction) {
 	setInterval(() => {
 		partyLockCache.clear();
 	}, Time.Minute * 20);
@@ -78,7 +77,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			let partyCancelled = false;
 			const collector = new InteractionCollector(globalClient, {
 				time: Time.Minute * 5,
-				maxUsers: options.usersAllowed?.length ?? options.maxSize,
+				maxUsers: 1,
 				dispose: true,
 				channel,
 				componentType: ComponentType.Button,
@@ -87,7 +86,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					CACHED_ACTIVE_USER_IDS.add(interaction.user.id);
 					const user = await mUserFetch(interaction.user.id);
 					if (
-						(!options.ironmanAllowed && user.user.minion_ironman) ||
+						!options.ironmanAllowed ||
 						interaction.user.bot ||
 						user.minionIsBusy ||
 						!user.user.minion_hasBought
@@ -169,7 +168,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 						reply('You joined this mass.');
 
-						if (usersWhoConfirmed.length >= options.maxSize) {
+						if (usersWhoConfirmed.length === 1) {
 							collector.stop('everyoneJoin');
 							break;
 						}

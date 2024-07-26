@@ -1,7 +1,6 @@
 import type { TextChannel } from 'discord.js';
-import { Time } from 'e';
 
-import { Channel } from './constants';
+import { globalConfig } from './constants';
 import { formatDuration } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 
@@ -12,9 +11,7 @@ export function isDoubleLootActive(duration = 0) {
 }
 
 export async function addToDoubleLootTimer(amount: number, reason: string) {
-	const clientSettings = await mahojiClientSettingsFetch({
-		double_loot_finish_time: true
-	});
+	const clientSettings = await mahojiClientSettingsFetch();
 	let current = Number(clientSettings.double_loot_finish_time);
 	if (current < Date.now()) {
 		current = Date.now();
@@ -24,7 +21,7 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 		double_loot_finish_time: newDoubleLootTimer
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = newDoubleLootTimer;
-	(globalClient.channels.cache.get(Channel.BSOGeneral)! as TextChannel).send({
+	(globalClient.channels.cache.get(globalConfig.generalChannelID)! as TextChannel).send({
 		content: `<@&923768318442229792> 🎉 ${formatDuration(
 			amount
 		)} added to the Double Loot timer because: ${reason}. 🎉`,
@@ -34,25 +31,8 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 	syncPrescence();
 }
 
-export async function addPatronLootTime(_tier: number, user: MUser | null) {
-	const map: Record<number, number> = {
-		1: 3,
-		2: 6,
-		3: 15,
-		4: 25,
-		5: 60
-	};
-	const tier = _tier - 1;
-	if (!map[tier]) return;
-	const minutes = map[tier];
-	const timeAdded = Math.floor(Time.Minute * minutes);
-	addToDoubleLootTimer(timeAdded, `${user ?? 'Someone'} became a Tier ${tier} sponsor`);
-}
-
 export async function syncDoubleLoot() {
-	const clientSettings = await mahojiClientSettingsFetch({
-		double_loot_finish_time: true
-	});
+	const clientSettings = await mahojiClientSettingsFetch();
 	DOUBLE_LOOT_FINISH_TIME_CACHE = Number(clientSettings.double_loot_finish_time);
 }
 

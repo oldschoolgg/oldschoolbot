@@ -6,7 +6,6 @@ import { gauntlet } from '../../../lib/simulation/gauntlet';
 import type { GauntletOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',
@@ -41,8 +40,7 @@ export const gauntletTask: MinionTask = {
 
 		await incrementMinigameScore(userID, key, quantity - deaths);
 
-		const { previousCL } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -56,10 +54,8 @@ export const gauntletTask: MinionTask = {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 		}
 
-		updateBankSetting('gauntlet_loot', loot);
-
 		const image = await makeBankImage({
-			bank: loot,
+			bank: itemsAdded,
 			title: `Loot From ${quantity - deaths}x ${name}`,
 			user,
 			previousCL

@@ -3,7 +3,6 @@ import { Time, noOp, shuffleArr } from 'e';
 import murmurhash from 'murmurhash';
 
 import { channelIsSendable } from '../../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export async function buttonUserPicker({
 	channelID,
@@ -45,9 +44,8 @@ export async function buttonUserPicker({
 
 		collector.on('collect', async i => {
 			const { id } = i.user;
-			const mUser = await mahojiUsersSettingsFetch(id, { minion_ironman: true });
 			const isCreator = id === creator;
-			const notAllowed = !ironmenAllowed && mUser.minion_ironman;
+			const notAllowed = !ironmenAllowed;
 			if (notAllowed && !isCreator) {
 				i.reply({ ephemeral: true, content: "You aren't allowed to participate.." });
 				return;

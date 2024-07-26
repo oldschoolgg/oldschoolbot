@@ -1,10 +1,10 @@
 import { deepEqual, deepObjectDiff } from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { deepClone, notEmpty, uniqueArr } from 'e';
 import { Items } from 'oldschooljs';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { type GearSetup, GearSetupTypes } from '../gear';
+import { type GearSetup, type GearSetupType, GearSetupTypes } from '../gear';
 
 import type { ItemBank } from '../types';
 import { moidLink } from '../util';
@@ -13,7 +13,6 @@ type GearX = Required<Record<`gear_${GearSetupType}`, GearSetup | null>>;
 type Changes = {
 	bank: ItemBank;
 	collectionLogBank: ItemBank;
-	temp_cl: ItemBank;
 	sacrificedBank: ItemBank;
 	favoriteItems: number[];
 	tames: { id: number; max_total_loot: ItemBank; fed_items: ItemBank }[];
@@ -31,7 +30,6 @@ export async function repairBrokenItemsFromUser(mUser: MUser) {
 	const __currentValues: Changes = {
 		bank: user.bank as ItemBank,
 		collectionLogBank: user.collectionLogBank as ItemBank,
-		temp_cl: user.temp_cl as ItemBank,
 		sacrificedBank: (await mUser.fetchStats({ sacrificed_bank: true })).sacrificed_bank as ItemBank,
 		favoriteItems: user.favoriteItems,
 		tames: userTames.map(t => ({
@@ -74,7 +72,6 @@ export async function repairBrokenItemsFromUser(mUser: MUser) {
 	const allItemsToCheck = uniqueArr([
 		...Object.keys(currentValues.bank),
 		...Object.keys(currentValues.collectionLogBank),
-		...Object.keys(currentValues.temp_cl),
 		...Object.keys(currentValues.sacrificedBank),
 		...currentValues.favoriteItems,
 		...allGearItemIDs
@@ -91,7 +88,6 @@ export async function repairBrokenItemsFromUser(mUser: MUser) {
 	for (const id of brokenBank) {
 		delete newValues.bank[id];
 		delete newValues.collectionLogBank[id];
-		delete newValues.temp_cl[id];
 		delete newValues.sacrificedBank[id];
 		for (const tame of newValues.tames) {
 			delete tame.fed_items[id];
@@ -121,9 +117,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser) {
 		if (!deepEqual(currentValues.collectionLogBank, newValues.collectionLogBank)) {
 			changes.collectionLogBank = newValues.collectionLogBank;
 		}
-		if (!deepEqual(currentValues.temp_cl, newValues.temp_cl)) {
-			changes.temp_cl = newValues.temp_cl;
-		}
+
 		if (!deepEqual(currentValues.favoriteItems, newValues.favoriteItems)) {
 			changes.favoriteItems = newValues.favoriteItems;
 		}

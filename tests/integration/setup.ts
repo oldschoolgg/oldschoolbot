@@ -10,10 +10,6 @@ import { PrismaClient } from '@prisma/client';
 import { noOp } from 'e';
 import { BankImageTask, bankImageTask } from '../../src/lib/bankImage';
 
-if (!roboChimpClient) {
-	throw new Error('Robochimp client not found.');
-}
-
 export function randomMock(random = 0.1) {
 	Math.random = () => random;
 }

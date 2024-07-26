@@ -1,13 +1,12 @@
 import type { Image } from '@napi-rs/canvas';
 import type { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
-import type { GearSetupType, XpGainSource } from '@prisma/client';
 import type { Bank, MonsterKillOptions } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import type { ClueTier } from '../clues/clueTiers';
 import type { BitField } from '../constants';
-import type { GearStat, OffenceGearStat } from '../gear';
+import type { GearSetupType, GearStat, OffenceGearStat } from '../gear';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
 import type { LevelRequirements, SkillsEnum } from '../skilling/types';
@@ -171,7 +170,7 @@ export interface AddXpParams {
 	minimal?: boolean;
 	artificial?: boolean;
 	masterCapeBoost?: boolean;
-	source?: XpGainSource;
+	source?: any;
 }
 
 export interface AddMonsterXpParams {
@@ -198,21 +197,6 @@ export interface BlowpipeData {
 	dartID: number | null;
 }
 
-export interface MegaDuckLocation {
-	x: number;
-	y: number;
-	placesVisited: string[];
-	usersParticipated: Record<string, number>;
-	steps: [number, number][];
-}
-
-export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
-	x: 1356,
-	y: 209,
-	usersParticipated: {},
-	placesVisited: [],
-	steps: []
-};
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;

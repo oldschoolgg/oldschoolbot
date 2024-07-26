@@ -1,0 +1,1438 @@
+Godsword blade
+Armadyl godsword
+Bandos godsword
+Saradomin godsword
+Zamorak godsword
+Ancient godsword
+Infernal pickaxe
+Malediction ward
+Odium ward
+Crystal key
+Master clue
+Infernal axe
+Infernal harpoon
+Hell cat ears
+Small pouch
+Medium pouch
+Large pouch
+Giant pouch
+Colossal pouch
+Blessed spirit shield
+Spectral spirit shield
+Arcane spirit shield
+Elysian spirit shield
+Holy book
+Book of balance
+Unholy book
+Book of law
+Book of war
+Book of darkness
+Ava's accumulator
+Ava's assembler
+Dragon sq shield
+Dragon kiteshield
+Dragon platebody
+Coconut milk
+Zamorakian hasta
+Ultracompost
+Tomatoes(5)
+Tomato
+Apples(5)
+Cooking apple
+Bananas(5)
+Banana
+Strawberries(5)
+Strawberry
+Oranges(5)
+Orange
+Potatoes(10)
+Potato
+Onions(10)
+Onion
+Cabbages(10)
+Cabbage
+Bucket of sand (1kg)
+Bucket of sand (2kg)
+Bucket of sand (5kg)
+Bucket of sand (10kg)
+Eldritch nightmare staff
+Harmonised nightmare staff
+Volatile nightmare staff
+Zamorak's grapes
+Toad's legs
+Pegasian boots
+Primordial boots
+Eternal boots
+Partyhat & specs
+Ivandis Flail
+Blisterwood Flail
+Spirit angler headband
+Spirit angler top
+Spirit angler waders
+Spirit angler boots
+Bottled dragonbreath
+Ring of endurance
+Fish sack barrel
+Kodai wand
+Salve amulet (e)
+Salve amulet(ei)
+Ring of wealth (i)
+Strange hallowed tome
+Frozen key
+Ecumenical key
+Daeyalt essence
+Celestial signet
+Eternal teleport crystal
+Saturated heart
+Trident of the swamp
+Golden cape
+Voidwaker
+Accursed sceptre (u)
+Ursine chainmace (u)
+Webweaver bow (u)
+Bone mace
+Bone shortbow
+Bone staff
+Venator bow (uncharged)
+Blessed dizana's quiver
+Dizana's max cape
+Revert tanzanite fang
+Revert toxic blowpipe (empty)
+Revert magic fang
+Revert serpentine visage
+Revert serpentine helm (uncharged)
+Revert ancient icon
+Revert venator shard
+Revert volatile nightmare staff
+Revert harmonised nightmare staff
+Revert eldritch nightmare staff
+Revert red decorative full helm
+Revert red decorative helm
+Revert red decorative body
+Revert red decorative legs
+Revert red decorative skirt
+Revert red decorative boots
+Revert red decorative shield
+Revert red decorative sword
+Revert white decorative full helm
+Revert white decorative helm
+Revert white decorative body
+Revert white decorative legs
+Revert white decorative skirt
+Revert white decorative boots
+Revert white decorative shield
+Revert white decorative sword
+Revert gold decorative full helm
+Revert gold decorative helm
+Revert gold decorative body
+Revert gold decorative legs
+Revert gold decorative skirt
+Revert gold decorative boots
+Revert gold decorative shield
+Revert gold decorative sword
+Revert zamorak castlewars hood
+Revert zamorak castlewars cloak
+Revert saradomin castlewars hood
+Revert saradomin castlewars cloak
+Revert saradomin banner
+Revert zamorak banner
+Revert decorative magic hat
+Revert decorative magic top
+Revert decorative magic robe
+Revert decorative ranged top
+Revert decorative ranged legs
+Revert decorative quiver
+Revert saradomin halo
+Revert zamorak halo
+Revert guthix halo
+Revert partyhat & specs
+Revert zamorakian hasta
+Revert armadyl godsword
+Revert bandos godsword
+Revert saradomin godsword
+Revert zamorak godsword
+Revert Fish sack barrel
+Revert midnight
+Revert baby mole-rat
+Revert tzrek-zuk
+Revert little parasite
+Revert ziggy
+Revert red
+Revert great blue heron
+Revert greatish guardian
+Revert xeric's talisman (inert)
+Revert Dizana's quiver (uncharged)
+Crystal pickaxe
+Crystal harpoon
+Crystal axe
+Enhanced crystal key
+Blade of saeldor (c)
+Revert blade of saeldor (c)
+Bow of faerdhinen (c)
+Revert bow of faerdhinen (c)
+Blade of saeldor (inactive)
+Revert blade of saeldor (inactive)
+Bow of faerdhinen (inactive)
+Revert bow of faerdhinen (inactive)
+Crystal halberd
+Crystal bow
+Crystal helm
+Crystal legs
+Crystal body
+Dragon defender (t)
+Revert dragon defender (t)
+Rune defender (t)
+Revert rune defender (t)
+Dragon pickaxe (or)
+Revert dragon pickaxe (or)
+Dragon sq shield (g)
+Revert dragon sq shield (g)
+Dragon full helm (g)
+Revert dragon full helm (g)
+Dragon platebody (g)
+Revert dragon platebody (g)
+Dragon kiteshield (g)
+Revert dragon kiteshield (g)
+Dragon boots (g)
+Revert dragon boots (g)
+Dragon scimitar (or)
+Revert dragon scimitar (or)
+Dragon platelegs (g)
+Revert dragon platelegs (g)
+Dragon plateskirt (g)
+Revert dragon plateskirt (g)
+Dragon chainbody (g)
+Revert dragon chainbody (g)
+Amulet of fury (or)
+Revert amulet of fury (or)
+Zamorak godsword (or)
+Revert zamorak godsword (or)
+Bandos godsword (or)
+Revert bandos godsword (or)
+Saradomin godsword (or)
+Revert saradomin godsword (or)
+Armadyl godsword (or)
+Revert armadyl godsword (or)
+Amulet of torture (or)
+Revert amulet of torture (or)
+Necklace of anguish (or)
+Revert necklace of anguish (or)
+Tormented bracelet (or)
+Revert tormented bracelet (or)
+Occult necklace (or)
+Revert occult necklace (or)
+Rune scimitar (guthix)
+Revert rune scimitar (guthix)
+Rune scimitar (saradomin)
+Revert rune scimitar (saradomin)
+Rune scimitar (zamorak)
+Revert rune scimitar (zamorak)
+Tzhaar-ket-om (t)
+Revert tzhaar-ket-om (t)
+Berserker necklace (or)
+Revert berserker necklace (or)
+Dark infinity hat
+Revert dark infinity hat
+Dark infinity top
+Revert dark infinity top
+Dark infinity bottoms
+Revert dark infinity bottoms
+Light infinity hat
+Revert light infinity hat
+Light infinity top
+Revert light infinity top
+Light infinity bottoms
+Revert light infinity bottoms
+Polar camouflage gear
+Woodland camouflage gear
+Jungle camouflage gear
+Desert camouflage gear
+Larupia hunter gear
+Graahk hunter gear
+Kyatt hunter gear
+Spotted cape
+Spottier cape
+Gloves of silence
+Twisted ancestral hat
+Twisted ancestral robe top
+Twisted ancestral robe bottom
+Revert twisted ancestral robe bottom
+Revert twisted ancestral robe top
+Revert twisted ancestral hat
+Puppadile
+Tektiny
+Vanguard
+Vasa minirio
+Vespina
+Lil' maiden
+Lil' bloat
+Lil' nylo
+Lil' sot
+Lil' xarp
+Midnight
+Baby mole-rat
+Tzrek-zuk
+Little parasite
+Ziggy
+Red
+Great blue heron
+Greatish guardian
+Dark totem
+Dragon hunter lance
+Ferocious gloves
+Revert ferocious gloves
+Uncut zenyte
+Neitiznot faceguard
+Revert neitiznot faceguard
+Arclight
+Boots of brimstone
+Devout boots
+Uncharged toxic trident
+Bryophyta's staff
+Toxic staff (uncharged)
+Abyssal tentacle
+Brimstone ring
+Guardian boots
+Abyssal bludgeon
+Uncharged black mask
+Slayer ring (8)
+Slayer ring (eternal)
+Slayer helmet
+Slayer helmet (i)
+Revert slayer helmet
+Revert slayer helmet (i)
+Black slayer helmet
+Black slayer helmet (i)
+Revert black slayer helmet
+Revert black slayer helmet (i)
+Green slayer helmet
+Green slayer helmet (i)
+Revert green slayer helmet
+Revert green slayer helmet (i)
+Red slayer helmet
+Red slayer helmet (i)
+Revert red slayer helmet
+Revert red slayer helmet (i)
+Purple slayer helmet
+Purple slayer helmet (i)
+Revert purple slayer helmet
+Revert purple slayer helmet (i)
+Turquoise slayer helmet
+Turquoise slayer helmet (i)
+Revert turquoise slayer helmet
+Revert turquoise slayer helmet (i)
+Hydra slayer helmet
+Hydra slayer helmet (i)
+Revert hydra slayer helmet
+Revert hydra slayer helmet (i)
+Twisted slayer helmet
+Twisted slayer helmet (i)
+Revert twisted slayer helmet
+Revert twisted slayer helmet (i)
+Ardougne max cape
+Infernal max cape
+Assembler max cape
+Imbued guthix max cape
+Imbued saradomin max cape
+Imbued zamorak max cape
+Mythical max cape
+Fire max cape
+Masori assembler max cape
+Uncharged dragonfire shield
+Uncharged dragonfire ward
+Uncharged ancient wyvern shield
+Dragonfire shield
+Dragonfire ward
+Ancient wyvern shield
+Bracelet of ethereum
+Revenant ether
+Viggora's chainmace
+Revert viggora's chainmace
+Ursine chainmace
+Revert ursine chainmace
+Revert viggora's chainmace (u)
+Craw's bow
+Revert craw's bow
+Webweaver bow
+Revert webweaver bow
+Revert craw's bow (u)
+Thammaron's sceptre
+Revert thammaron's sceptre
+Accursed sceptre
+Revert accursed sceptre
+Revert thammaron's sceptre (u)
+Unpack bronze set (lg)
+Bronze set (lg)
+Unpack bronze set (sk)
+Bronze set (sk)
+Unpack bronze trimmed set (lg)
+Bronze trimmed set (lg)
+Unpack bronze trimmed set (sk)
+Bronze trimmed set (sk)
+Unpack bronze gold-trimmed set (lg)
+Bronze gold-trimmed set (lg)
+Unpack bronze gold-trimmed set (sk)
+Bronze gold-trimmed set (sk)
+Unpack iron set (lg)
+Iron set (lg)
+Unpack iron set (sk)
+Iron set (sk)
+Unpack iron trimmed set (lg)
+Iron trimmed set (lg)
+Unpack iron trimmed set (sk)
+Iron trimmed set (sk)
+Unpack iron gold-trimmed set (lg)
+Iron gold-trimmed set (lg)
+Unpack iron gold-trimmed set (sk)
+Iron gold-trimmed set (sk)
+Unpack steel set (lg)
+Steel set (lg)
+Unpack steel set (sk)
+Steel set (sk)
+Unpack steel trimmed set (lg)
+Steel trimmed set (lg)
+Unpack steel trimmed set (sk)
+Steel trimmed set (sk)
+Unpack steel gold-trimmed set (lg)
+Steel gold-trimmed set (lg)
+Unpack steel gold-trimmed set (sk)
+Steel gold-trimmed set (sk)
+Unpack black set (lg)
+Black set (lg)
+Unpack black set (sk)
+Black set (sk)
+Unpack black trimmed set (lg)
+Black trimmed set (lg)
+Unpack black trimmed set (sk)
+Black trimmed set (sk)
+Unpack black gold-trimmed set (lg)
+Black gold-trimmed set (lg)
+Unpack black gold-trimmed set (sk)
+Black gold-trimmed set (sk)
+Unpack mithril set (lg)
+Mithril set (lg)
+Unpack mithril set (sk)
+Mithril set (sk)
+Unpack mithril trimmed set (lg)
+Mithril trimmed set (lg)
+Unpack mithril trimmed set (sk)
+Mithril trimmed set (sk)
+Unpack mithril gold-trimmed set (lg)
+Mithril gold-trimmed set (lg)
+Unpack mithril gold-trimmed set (sk)
+Mithril gold-trimmed set (sk)
+Unpack adamant set (lg)
+Adamant set (lg)
+Unpack adamant set (sk)
+Adamant set (sk)
+Unpack adamant trimmed set (lg)
+Adamant trimmed set (lg)
+Unpack adamant trimmed set (sk)
+Adamant trimmed set (sk)
+Unpack adamant gold-trimmed set (lg)
+Adamant gold-trimmed set (lg)
+Unpack adamant gold-trimmed set (sk)
+Adamant gold-trimmed set (sk)
+Unpack rune armour set (lg)
+Rune armour set (lg)
+Unpack rune armour set (sk)
+Rune armour set (sk)
+Unpack rune trimmed set (lg)
+Rune trimmed set (lg)
+Unpack rune trimmed set (sk)
+Rune trimmed set (sk)
+Unpack rune gold-trimmed set (lg)
+Rune gold-trimmed set (lg)
+Unpack rune gold-trimmed set (sk)
+Rune gold-trimmed set (sk)
+Unpack gilded armour set (lg)
+Gilded armour set (lg)
+Unpack gilded armour set (sk)
+Gilded armour set (sk)
+Unpack guthix armour set (lg)
+Guthix armour set (lg)
+Unpack guthix armour set (sk)
+Guthix armour set (sk)
+Unpack saradomin armour set (lg)
+Saradomin armour set (lg)
+Unpack saradomin armour set (sk)
+Saradomin armour set (sk)
+Unpack zamorak armour set (lg)
+Zamorak armour set (lg)
+Unpack zamorak armour set (sk)
+Zamorak armour set (sk)
+Unpack ancient rune armour set (lg)
+Ancient rune armour set (lg)
+Unpack ancient rune armour set (sk)
+Ancient rune armour set (sk)
+Unpack armadyl rune armour set (lg)
+Armadyl rune armour set (lg)
+Unpack armadyl rune armour set (sk)
+Armadyl rune armour set (sk)
+Unpack bandos rune armour set (lg)
+Bandos rune armour set (lg)
+Unpack bandos rune armour set (sk)
+Bandos rune armour set (sk)
+Unpack dragon armour set (lg)
+Dragon armour set (lg)
+Unpack dragon armour set (sk)
+Dragon armour set (sk)
+Unpack verac's armour set
+Verac's armour set
+Unpack dharok's armour set
+Dharok's armour set
+Unpack guthan's armour set
+Guthan's armour set
+Unpack ahrim's armour set
+Ahrim's armour set
+Unpack torag's armour set
+Torag's armour set
+Unpack karil's armour set
+Karil's armour set
+Unpack inquisitor's armour set
+Inquisitor's armour set
+Unpack justiciar armour set
+Justiciar armour set
+Unpack obsidian armour set
+Obsidian armour set
+Unpack dragonstone armour set
+Dragonstone armour set
+Unpack initiate harness m
+Initiate harness m
+Unpack proselyte harness m
+Proselyte harness m
+Unpack proselyte harness f
+Proselyte harness f
+Unpack green dragonhide set
+Green dragonhide set
+Unpack blue dragonhide set
+Blue dragonhide set
+Unpack red dragonhide set
+Red dragonhide set
+Unpack black dragonhide set
+Black dragonhide set
+Unpack gilded dragonhide set
+Gilded dragonhide set
+Unpack guthix dragonhide set
+Guthix dragonhide set
+Unpack saradomin dragonhide set
+Saradomin dragonhide set
+Unpack zamorak dragonhide set
+Zamorak dragonhide set
+Unpack ancient dragonhide set
+Ancient dragonhide set
+Unpack armadyl dragonhide set
+Armadyl dragonhide set
+Unpack bandos dragonhide set
+Bandos dragonhide set
+Unpack mystic set (blue)
+Mystic set (blue)
+Unpack mystic set (dark)
+Mystic set (dark)
+Unpack mystic set (light)
+Mystic set (light)
+Unpack mystic set (dusk)
+Mystic set (dusk)
+Unpack ancestral robes set
+Ancestral robes set
+Unpack book of balance page set
+Book of balance page set
+Unpack holy book page set
+Holy book page set
+Unpack unholy book page set
+Unholy book page set
+Unpack book of darkness page set
+Book of darkness page set
+Unpack book of law page set
+Book of law page set
+Unpack book of war page set
+Book of war page set
+Unpack partyhat set
+Partyhat set
+Unpack halloween mask set
+Halloween mask set
+Unpack combat potion set
+Combat potion set
+Unpack super potion set
+Super potion set
+Unpack dwarf cannon set
+Dwarf cannon set
+Dagon'hai robes set
+Unpack Dagon'hai robes set
+Masori armour set (f)
+Unpack Masori armour set (f)
+Clown set
+Unpack Clown set
+Acrobat set
+Unpack Acrobat set
+Ringmaster set
+Unpack Ringmaster set
+Acrylic set
+Unpack Acrylic set
+Warpriest of Zamorak set
+Unpack Warpriest of Zamorak set
+Warpriest of Saradomin set
+Unpack Warpriest of Saradomin set
+Warpriest of Armadyl set
+Unpack Warpriest of Armadyl set
+Warpriest of Bandos set
+Unpack Warpriest of Bandos set
+Dwarven armour set
+Unpack Dwarven armour set
+Drygore longsword set
+Unpack Drygore longsword set
+Drygore rapier set
+Unpack Drygore rapier set
+Drygore mace set
+Unpack Drygore mace set
+Torva armour set
+Unpack Torva armour set
+Pernix armour set
+Unpack Pernix armour set
+Virtus armour set
+Unpack Virtus armour set
+Divine spirit shield
+Heart crystal
+Vasa cloak
+Bryophyta's staff(i)
+Ignis ring(i)
+Abyssal pouch
+Elder pouch
+Bucket of sand
+Breadcrumbs
+Infernal bulwark
+TzKal cape
+Infernal slayer helmet
+Infernal slayer helmet(i)
+Royal crossbow
+Polypore staff
+Golden partyhat
+Crystal fishing rod
+Void staff (u)
+Void staff
+Revert void staff
+Abyssal tome
+Spellbound ring(i)
+Black swan
+Nexterminator
+Seamonkey staff (t1)
+Seamonkey staff (t2)
+Seamonkey staff (t3)
+Arcane blast necklace
+Farsight snapshot necklace
+Brawler's hook necklace
+Gorajan bonecrusher
+Revert gorajan bonecrusher
+Fix fire cape
+Fix fire max cape
+Fix infernal cape
+Fix infernal max cape
+Fix assembler max cape
+Fix imbued saradomin cape
+Fix imbued saradomin max cape
+Fix imbued guthix cape
+Fix imbued guthix max cape
+Fix imbued zamorak cape
+Fix imbued zamorak max cape
+Fix dragon defender
+Fix avernic defender
+Fix void knight top
+Fix void knight robe
+Fix elite void top
+Fix elite void robe
+Fix void knight gloves
+Fix void mage helm
+Fix void ranger helm
+Fix void melee helm
+Fix hellfire bow
+Fix hellfire bownana
+Unlock dragon defender
+Unpack twisted relichunter (t1) armour set
+Twisted relichunter (t1) armour set
+Unpack twisted relichunter (t2) armour set
+Twisted relichunter (t2) armour set
+Unpack twisted relichunter (t3) armour set
+Twisted relichunter (t3) armour set
+Unpack trailblazer relichunter (t1) armour set
+Trailblazer relichunter (t1) armour set
+Unpack trailblazer relichunter (t2) armour set
+Trailblazer relichunter (t2) armour set
+Unpack trailblazer relichunter (t3) armour set
+Trailblazer relichunter (t3) armour set
+Unpack dagon'hai robes set
+Dagon'hai robes set
+Drygore rapier (blood)
+Drygore rapier (ice)
+Drygore rapier (shadow)
+Drygore rapier (3a)
+Drygore rapier (xmas)
+Offhand drygore rapier (blood)
+Offhand drygore rapier (ice)
+Offhand drygore rapier (shadow)
+Offhand drygore rapier (3a)
+Offhand drygore rapier (xmas)
+Drygore mace (blood)
+Drygore mace (ice)
+Drygore mace (shadow)
+Drygore mace (3a)
+Drygore mace (xmas)
+Offhand drygore mace (blood)
+Offhand drygore mace (ice)
+Offhand drygore mace (shadow)
+Offhand drygore mace (3a)
+Offhand drygore mace (xmas)
+Drygore longsword (blood)
+Drygore longsword (ice)
+Drygore longsword (shadow)
+Drygore longsword (3a)
+Drygore longsword (xmas)
+Offhand drygore longsword (blood)
+Offhand drygore longsword (ice)
+Offhand drygore longsword (shadow)
+Offhand drygore longsword (3a)
+Offhand drygore longsword (xmas)
+Dwarven warhammer (blood)
+Dwarven warhammer (ice)
+Dwarven warhammer (shadow)
+Dwarven warhammer (3a)
+Dwarven warnana
+Dwarven warhammer (volcanic)
+Ho-ho hammer
+Dwarven pumpkinsmasher
+Twisted bow (ice)
+Twisted bow (shadow)
+Twisted bow (blood)
+Twisted bow (3a)
+Twisted bownana
+Zaryte bow (ice)
+Zaryte bow (shadow)
+Zaryte bow (blood)
+Zaryte bow (3a)
+Zaryte bownana
+Hellfire bownana
+Mistleboe
+Hellfire bow (ice)
+Hellfire bow (Oceanic)
+Demonic piercer
+Zaryte crossbow (xmas)
+Vasa cloak (xmas)
+Vasa cloak (zamorak)
+Vasa cloak (saradomin)
+Santa claws
+TzKal cape (Oceanic)
+TzKal cape (Volcanic)
+TzKal cape (spooky)
+Gorajan warrior helmet (Primal)
+Gorajan warrior helmet (Oceanic)
+Gorajan warrior top (Primal)
+Gorajan warrior top (Oceanic)
+Gorajan warrior legs (Primal)
+Gorajan warrior legs (Oceanic)
+Gorajan warrior gloves (Primal)
+Gorajan warrior gloves (Oceanic)
+Gorajan warrior boots (Primal)
+Gorajan warrior boots (Oceanic)
+Gorajan occult helmet (Celestial)
+Gorajan occult helmet (Oceanic)
+Gorajan occult top (Celestial)
+Gorajan occult top (Oceanic)
+Gorajan occult legs (Celestial)
+Gorajan occult legs (Oceanic)
+Gorajan occult gloves (Celestial)
+Gorajan occult gloves (Oceanic)
+Gorajan occult boots (Celestial)
+Gorajan occult boots (Oceanic)
+Gorajan archer helmet (Sagittarian)
+Gorajan archer helmet (Oceanic)
+Gorajan archer top (Sagittarian)
+Gorajan archer top (Oceanic)
+Gorajan archer legs (Sagittarian)
+Gorajan archer legs (Oceanic)
+Gorajan archer gloves (Sagittarian)
+Gorajan archer gloves (Oceanic)
+Gorajan archer boots (Sagittarian)
+Gorajan archer boots (Oceanic)
+Dwarven full helm (Volcanic)
+Dwarven platebody (Volcanic)
+Dwarven platelegs (Volcanic)
+Dwarven gloves (Volcanic)
+Dwarven boots (Volcanic)
+Dwarven pickaxe (xmas)
+Infernal slayer helmet(i) (ice)
+Infernal slayer helmet(i) (xmas)
+The Grim Reaper
+Deathly collector
+Ganodermic visor
+Ganodermic poncho
+Ganodermic leggings
+Grifolic visor
+Grifolic poncho
+Grifolic leggings
+Dragonbone boots
+Dragonbone full helm
+Dragonbone platebody
+Dragonbone platelegs
+Dragonbone gloves
+Dragonbone mage boots
+Dragonbone mage gloves
+Dragonbone mage bottoms
+Dragonbone mage hat
+Dragonbone mage top
+Royal dragon platebody
+Frosty
+Virtus wand
+Virtus book
+Pernix cowl
+Pernix body
+Pernix chaps
+Pernix boots
+Pernix gloves
+Torva full helm
+Torva platebody
+Torva platelegs
+Torva boots
+Torva gloves
+Virtus mask
+Virtus robe top
+Virtus robe legs
+Virtus boots
+Virtus gloves
+Revert Pernix cowl (broken)
+Revert Pernix body (broken)
+Revert Pernix chaps (broken)
+Revert Pernix boots (broken)
+Revert Pernix gloves (broken)
+Revert Torva full helm (broken)
+Revert Torva platebody (broken)
+Revert Torva platelegs (broken)
+Revert Torva boots (broken)
+Revert Torva gloves (broken)
+Revert Virtus mask (broken)
+Revert Virtus robe top (broken)
+Revert Virtus robe legs (broken)
+Revert Virtus boots (broken)
+Revert Virtus gloves (broken)
+Revert bandos chestplate
+Revert bandos tassets
+Revert armadyl helmet (components)
+Revert armadyl chestplate (components)
+Revert armadyl chainskirt (components)
+Revert ancestral hat
+Revert ancestral robe top
+Revert ancestral robe bottom
+Revert masori mask
+Revert masori body
+Revert masori chaps
+Divine water
+Divine water (Bones)
+Divine water (Big bones)
+Divine water (Jogre bones)
+Divine water (Babydragon bones)
+Divine water (Dragon bones)
+Divine water (Wyrm bones)
+Divine water (Wyvern bones)
+Divine water (Drake bones)
+Divine water (Lava dragon bones)
+Divine water (Hydra bones)
+Divine water (Dagannoth bones)
+Divine water (Superior dragon bones)
+Divine water (Abyssal dragon bones)
+Divine water (Frost dragon bones)
+Divine water (Royal dragon bones)
+Crystal dust
+Dagannoth slayer helm
+Jelly slayer helm
+Abyssal slayer helm
+Black demonical slayer helm
+Troll slayer helm
+Ganodermic slayer helm
+Gargoyle slayer helm
+Dark beast slayer helm
+Dust devil slayer helm
+Crawling hand slayer helm
+Basilisk slayer helm
+Bloodveld slayer helm
+Banshee slayer helm
+Cockatrice slayer helm
+Aberrant slayer helm
+Kurask slayer helm
+Titan ballista
+Piercing trident
+Atlantean trident
+Shark tooth necklace
+Ring of piercing
+Ring of piercing (i)
+Tidal collector
+Revert completionist cape
+Revert completionist cape (t)
+Ghostly zombie gloves
+Revert Ghostly zombie gloves
+Ghostly zombie trousers
+Revert Ghostly zombie trousers
+Ghostly zombie shirt
+Revert Ghostly zombie shirt
+Ghostly zombie boots
+Revert Ghostly zombie boots
+Ghostly zombie mask
+Revert Ghostly zombie mask
+Ghostly lederhosen hat
+Revert Ghostly lederhosen hat
+Ghostly lederhosen shorts
+Revert Ghostly lederhosen shorts
+Ghostly lederhosen gloves
+Revert Ghostly lederhosen gloves
+Ghostly lederhosen top
+Revert Ghostly lederhosen top
+Ghostly lederhosen boots
+Revert Ghostly lederhosen boots
+Ghostly jester hat
+Revert Ghostly jester hat
+Ghostly jester gloves
+Revert Ghostly jester gloves
+Ghostly jester boots
+Revert Ghostly jester boots
+Ghostly jester top
+Revert Ghostly jester top
+Ghostly jester tights
+Revert Ghostly jester tights
+Ghostly ringmaster hat
+Revert Ghostly ringmaster hat
+Ghostly ringmaster pants
+Revert Ghostly ringmaster pants
+Ghostly ringmaster boots
+Revert Ghostly ringmaster boots
+Ghostly ringmaster shirt
+Revert Ghostly ringmaster shirt
+Ghostly ringmaster gloves
+Revert Ghostly ringmaster gloves
+Ghostly chicken feet
+Revert Ghostly chicken feet
+Ghostly chicken wings
+Revert Ghostly chicken wings
+Ghostly chicken gloves
+Revert Ghostly chicken gloves
+Ghostly chicken legs
+Revert Ghostly chicken legs
+Ghostly chicken head
+Revert Ghostly chicken head
+Revert Pale energy
+Revert Flickering energy
+Boon of flickering energy
+Revert Bright energy
+Boon of bright energy
+Revert Glowing energy
+Boon of glowing energy
+Revert Sparkling energy
+Boon of sparkling energy
+Revert Gleaming energy
+Boon of gleaming energy
+Revert Vibrant energy
+Boon of vibrant energy
+Revert Lustrous energy
+Boon of lustrous energy
+Revert Elder energy
+Boon of elder energy
+Revert Brilliant energy
+Boon of brilliant energy
+Revert Radiant energy
+Boon of radiant energy
+Revert Luminous energy
+Boon of luminous energy
+Revert Incandescent energy
+Boon of incandescent energy
+Revert Ancient energy
+Boon of ancient energy
+Cache portent
+Graceful portent
+Rogues portent
+Dungeon portent
+Lucky portent
+Rebirth portent
+Spiritual mining portent
+Pacifist hunting portent
+Sundial scimitar
+Offhand spidergore rapier
+Lumina (Materials)
+Clue scroll (elder)
+Lumina (Elder logs)
+Lumina (Redwood logs)
+Lumina (Magic logs)
+Lumina (Yew logs)
+Revert Support cape
+Revert Gatherer's cape
+Revert Combatant's cape
+Revert Artisan's cape
+Graceful
+Graceful hood
+Graceful top
+Graceful legs
+Graceful gloves
+Graceful boots
+Graceful cape
+Revert graceful
+Revert graceful hood
+Revert graceful top
+Revert graceful legs
+Revert graceful gloves
+Revert graceful boots
+Revert graceful cape
+Dark Graceful
+Dark Graceful hood
+Dark graceful top
+Dark graceful legs
+Dark graceful gloves
+Dark graceful boots
+Dark graceful cape
+Arceuus graceful
+Arceuus graceful hood
+Arceuus graceful top
+Arceuus graceful legs
+Arceuus graceful gloves
+Arceuus graceful boots
+Arceuus graceful cape
+Revert arceuus graceful
+Revert arceuus graceful hood
+Revert arceuus graceful top
+Revert arceuus graceful legs
+Revert arceuus graceful gloves
+Revert arceuus graceful boots
+Revert arceuus graceful cape
+Piscarilius graceful
+Piscarilius graceful hood
+Piscarilius graceful top
+Piscarilius graceful legs
+Piscarilius graceful gloves
+Piscarilius graceful boots
+Piscarilius graceful cape
+Revert Piscarilius graceful
+Revert Piscarilius graceful hood
+Revert Piscarilius graceful top
+Revert Piscarilius graceful legs
+Revert Piscarilius graceful gloves
+Revert Piscarilius graceful boots
+Revert Piscarilius graceful cape
+Lovakengj graceful
+Lovakengj graceful hood
+Lovakengj graceful top
+Lovakengj graceful legs
+Lovakengj graceful gloves
+Lovakengj graceful boots
+Lovakengj graceful cape
+Revert Lovakengj graceful
+Revert Lovakengj graceful hood
+Revert Lovakengj graceful top
+Revert Lovakengj graceful legs
+Revert Lovakengj graceful gloves
+Revert Lovakengj graceful boots
+Revert Lovakengj graceful cape
+Shayzien graceful
+Shayzien graceful hood
+Shayzien graceful top
+Shayzien graceful legs
+Shayzien graceful gloves
+Shayzien graceful boots
+Shayzien graceful cape
+Revert Shayzien graceful
+Revert Shayzien graceful hood
+Revert Shayzien graceful top
+Revert Shayzien graceful legs
+Revert Shayzien graceful gloves
+Revert Shayzien graceful boots
+Revert Shayzien graceful cape
+Hosidius graceful
+Hosidius graceful hood
+Hosidius graceful top
+Hosidius graceful legs
+Hosidius graceful gloves
+Hosidius graceful boots
+Hosidius graceful cape
+Revert Hosidius graceful
+Revert Hosidius graceful hood
+Revert Hosidius graceful top
+Revert Hosidius graceful legs
+Revert Hosidius graceful gloves
+Revert Hosidius graceful boots
+Revert Hosidius graceful cape
+Kourend graceful
+Kourend graceful hood
+Kourend graceful top
+Kourend graceful legs
+Kourend graceful gloves
+Kourend graceful boots
+Kourend graceful cape
+Revert Kourend graceful
+Revert Kourend graceful hood
+Revert Kourend graceful top
+Revert Kourend graceful legs
+Revert Kourend graceful gloves
+Revert Kourend graceful boots
+Revert Kourend graceful cape
+Scythe of vitur
+Sanguinesti staff
+Holy sanguinesti staff
+Revert sanguinesti staff
+Revert holy sanguinesti staff
+Revert scythe of vitur
+Holy scythe of vitur
+Revert holy scythe of vitur
+Revert holy scythe of vitur (uncharged)
+Sanguine scythe of vitur
+Revert sanguine scythe of vitur
+Sanguine scythe of vitur (uncharged)
+Revert sanguine scythe of vitur (uncharged)
+Holy scythe of vitur (uncharged)
+Holy sanguinesti staff (uncharged)
+Revert holy sanguinesti staff (uncharged)
+Avernic defender
+Revert avernic defender
+Holy ghrazi rapier
+Revert holy ghrazi rapier
+Granite maul (or)
+Granite maul (ornate handle)
+Granite maul (or) (ornate handle)
+Mystic steam staff (or) (lms)
+Revert mystic steam staff (or)
+Steam battlestaff (or)
+Revert steam battlestaff (or)
+Mystic lava staff (or) (lms)
+Revert mystic lava staff (or)
+Lava battlestaff (or)
+Revert lava battlestaff (or)
+Dragon pickaxe (upgraded)
+Revert dragon pickaxe (upgraded)
+Malediction ward (or)
+Revert malediction ward (or)
+Odium ward (or)
+Revert odium ward (or)
+Dark bow (green)
+Revert dark bow (green)
+Dark bow (blue)
+Revert dark bow (blue)
+Dark bow (yellow)
+Revert dark bow (yellow)
+Dark bow (white)
+Revert dark bow (white)
+Volcanic abyssal whip
+Revert volcanic abyssal whip
+Frozen abyssal whip
+Revert frozen abyssal whip
+Staff of balance
+Saradomin's blessed sword
+Magic shortbow (i)
+Looting bag
+Rune pouch
+Mystic air staff
+Mystic water staff
+Mystic earth staff
+Mystic fire staff
+Mystic dust staff
+Mystic lava staff
+Mystic lava staff (or)
+Mystic mist staff
+Mystic mud staff
+Mystic smoke staff
+Mystic steam staff
+Mystic steam staff (or)
+Ancient godsword
+Zaryte crossbow
+Revert crystal weapon seed
+Revert crystal tool seed
+Revert enhanced crystal teleport seed
+Revert crystal armour seed
+Revert enhanced crystal weapon seed
+Golden prospector boots
+Golden prospector helmet
+Golden prospector jacket
+Golden prospector legs
+Dragon axe (or)
+Revert Dragon axe (or)
+Dragon harpoon (or)
+Revert Dragon harpoon (or)
+Infernal axe (or)
+Revert Infernal axe (or)
+Infernal harpoon (or)
+Revert Infernal harpoon (or)
+Infernal pickaxe (or)
+Revert Infernal pickaxe (or)
+Dragon pickaxe (or) (Trailblazer)
+Revert Dragon pickaxe (or) (Trailblazer)
+Abyssal tentacle (or)
+Revert Abyssal tentacle (or)
+Abyssal whip (or)
+Revert Abyssal whip (or)
+Book of balance (or)
+Revert Book of balance (or)
+Book of darkness (or)
+Revert Book of darkness (or)
+Book of law (or)
+Revert Book of law (or)
+Book of war (or)
+Revert Book of war (or)
+Holy book (or)
+Revert Holy book (or)
+Unholy book (or)
+Revert Unholy book (or)
+Rune crossbow (or)
+Revert Rune crossbow (or)
+Elite void robe (or)
+Revert Elite void robe (or)
+Elite void top (or)
+Revert Elite void top (or))
+Void knight gloves (or)
+Revert Void knight gloves (or)
+Void knight top (or)
+Revert Void knight top (or)
+Void knight robe (or)
+Revert Void knight robe (or)
+Void mage helm (or)
+Revert Void mage helm (or)
+Void melee helm (or)
+Revert Void melee helm (or)
+Void ranger helm (or)
+Revert Void ranger helm (or)
+Cannon barrels (or)
+Revert Cannon barrels (or)
+Cannon base (or)
+Revert Cannon base (or)
+Cannon furnace (or)
+Revert Cannon furnace (or)
+Cannon stand (or)
+Revert Cannon stand (or)
+Mystic boots (or)
+Revert Mystic boots (or)
+Mystic gloves (or)
+Revert Mystic gloves (or)
+Mystic hat (or)
+Revert Mystic hat (or)
+Mystic robe bottom (or)
+Revert Mystic robe bottom (or)
+Mystic robe top (or)
+Revert Mystic robe top (or)
+Unpack Twisted relic hunter (t1) armour set
+Unpack Twisted relic hunter (t2) armour set
+Unpack Twisted relic hunter (t3) armour set
+Unpack Trailblazer relic hunter (t1) armour set
+Unpack Trailblazer relic hunter (t2) armour set
+Unpack Trailblazer relic hunter (t3) armour set
+Unpack Shattered relic hunter (t1) armour set
+Unpack Shattered relic hunter (t2) armour set
+Unpack Shattered relic hunter (t3) armour set
+Trailblazer graceful hood
+Revert Trailblazer graceful hood
+Trailblazer graceful cape
+Revert Trailblazer graceful cape
+Trailblazer graceful top
+Revert Trailblazer graceful top
+Trailblazer graceful legs
+Revert Trailblazer graceful legs
+Trailblazer graceful gloves
+Revert Trailblazer graceful gloves
+Trailblazer graceful boots
+Revert Trailblazer graceful boots
+Hat of the eye (red)
+Revert Hat of the eye (red)
+Robe top of the eye (red)
+Revert Robe top of the eye (red)
+Robe bottoms of the eye (red)
+Revert Robe bottoms of the eye (red)
+Hat of the eye (green)
+Revert Hat of the eye (green)
+Robe top of the eye (green)
+Revert Robe top of the eye (green)
+Robe bottoms of the eye (green)
+Revert Robe bottoms of the eye (green)
+Hat of the eye (blue)
+Revert Hat of the eye (blue)
+Robe top of the eye (blue)
+Revert Robe top of the eye (blue)
+Robe bottoms of the eye (blue)
+Revert Robe bottoms of the eye (blue)
+Abyssal green dye (using Abyssal blue dye)
+Abyssal green dye (using Abyssal red dye)
+Abyssal blue dye (using Abyssal green dye)
+Abyssal blue dye (using Abyssal red dye)
+Abyssal red dye (using Abyssal green dye)
+Abyssal red dye (using Abyssal blue dye)
+Runite igne claws
+Dragon igne claws
+Barrows igne claws
+Volcanic igne claws
+Drygore igne claws
+Dwarven igne claws
+Gorajan igne claws
+Dragon igne armor
+Barrows igne armor
+Volcanic igne armor
+Justiciar igne armor
+Drygore igne armor
+Dwarven igne armor
+Gorajan igne armor
+Demonic jibwings
+Abyssal jibwings
+3rd age jibwings
+3rd age jibwings (e)
+Demonic jibwings (e)
+Abyssal jibwings (e)
+Divine ring
+Impling locator
+Revert Runite igne claws
+Revert Dragon igne claws
+Revert Barrows igne claws
+Revert Volcanic igne claws
+Revert Drygore igne claws
+Revert Dwarven igne claws
+Revert Gorajan igne claws
+Revert Dragon igne armor
+Revert Barrows igne armor
+Revert Volcanic igne armor
+Revert Justiciar igne armor
+Revert Drygore igne armor
+Revert Dwarven igne armor
+Revert Gorajan igne armor
+Volcanic pickaxe
+Offhand volcanic pickaxe
+Moktang totem
+Dragonstone full helm(u)
+Dragonstone platebody(u)
+Dragonstone platelegs(u)
+Dragonstone boots(u)
+Dragonstone gauntlets(u)
+Bronze coffin
+Steel coffin
+Black coffin
+Silver coffin
+Gold coffin
+Necromancer outfit
+Necromancer's air staff
+Revert Necromancer's air staff
+Necromancer's earth staff
+Revert Necromancer's earth staff
+Necromancer's fire staff
+Revert Necromancer's fire staff
+Necromancer's lava staff
+Revert Necromancer's lava staff
+Necromancer's mud staff
+Revert Necromancer's mud staff
+Necromancer's steam staff
+Revert Necromancer's steam staff
+Necromancer's water staff
+Revert Necromancer's water staff
+Skeletal battlestaff of air
+Revert Skeletal battlestaff of air
+Skeletal battlestaff of earth
+Revert Skeletal battlestaff of earth
+Skeletal battlestaff of fire
+Revert Skeletal battlestaff of fire
+Skeletal battlestaff of water
+Revert Skeletal battlestaff of water
+Skeletal lava battlestaff
+Revert Skeletal lava battlestaff
+Skeletal mud battlestaff
+Revert Skeletal mud battlestaff
+Skeletal steam battlestaff
+Revert Skeletal steam battlestaff
+Masori assembler
+Osmumten's fang (or)
+Elidinis' ward (f)
+Revert Elidinis' ward (f)
+Elidinis' ward (or)
+Revert Elidinis' ward (or)
+Divine rune pouch
+Masori mask (f)
+Masori body (f)
+Masori chaps (f)
+Revert Armadyl helmet (to plates)
+Revert Armadyl chestplate (to plates)
+Revert Armadyl chainskirt (to plates)
+Keris partisan of breaching
+Keris partisan of corruption
+Keris partisan of the sun
+Revert Masori assembler
+Akkhito
+Revert Akkhito
+Babi
+Revert Babi
+Kephriti
+Revert Kephriti
+Tumeken's damaged guardian
+Revert Tumeken's damaged guardian
+Elidinis' damaged guardian
+Revert Elidinis' damaged guardian
+Zebo
+Revert Zebo
+Revert Arcane spirit shield
+Bloodbark helm
+Bloodbark body
+Bloodbark legs
+Bloodbark boots
+Bloodbark gauntlets
+Swampbark helm
+Swampbark body
+Swampbark legs
+Swampbark boots
+Swampbark gauntlets
+Warrior icon
+Bellator icon
+Bellator ring
+Berserker icon
+Ultor icon
+Ultor ring
+Seers icon
+Magus icon
+Magus ring
+Sanguine torva full helm
+Sanguine torva platebody
+Sanguine torva platelegs
+Archer icon
+Venator icon
+Venator ring
+Soulreaper axe
+Tztok slayer helmet
+Revert Tztok slayer helmet
+Tztok slayer helmet (i)
+Revert Tztok slayer helmet (i)
+Dragon hunter crossbow (t)
+Revert Dragon hunter crossbow (t)
+Dragon hunter crossbow (b)
+Revert Dragon hunter crossbow (b)
+Tzkal slayer helmet
+Revert Tzkal slayer helmet
+Tzkal slayer helmet (i)
+Revert Tzkal slayer helmet (i)
+Vampyric slayer helmet
+Revert Vampyric slayer helmet
+Vampyric slayer helmet (i)
+Revert Vampyric slayer helmet (i)
+Ghommal's avernic defender 5
+Revert Ghommal's avernic defender 5
+Ghommal's avernic defender 6
+Revert Ghommal's avernic defender 6
+Secateurs attachment
+Nature offerings
+Sturdy harness
+Forestry basket
+Clothes pouch
+Pheasant hat
+Pheasant legs
+Pheasant boots
+Pheasant cape
+Bronze felling axe
+Iron felling axe
+Steel felling axe
+Black felling axe
+Mithril felling axe
+Adamant felling axe
+Rune felling axe
+Dragon felling axe
+Crystal felling axe
+3rd age felling axe
+Pheasant
+Revert Pheasant
+Fox
+Revert Fox
+Barronite mace
+Imcando hammer
+Axe handle base
+Axe handle
+Axe of the high sungod (u)
+Axe of the high sungod

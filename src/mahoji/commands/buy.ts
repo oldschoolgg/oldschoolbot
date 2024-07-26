@@ -4,25 +4,30 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { writeFileSync } from 'node:fs';
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Events } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
+import { remapBank } from '../../lib/randomizer';
 import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
-import { isElligibleForPresent } from '../../lib/settings/settings';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemID, itemNameFromID, stringMatches } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
 import type { OSBMahojiCommand } from '../lib/util';
-import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
+import { mahojiParseNumber } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
+
+let str = '';
+for (const a of Buyables) {
+	str += `${a.name}\n`;
+}
+writeFileSync('buyables.txt', str);
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -118,20 +123,7 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
-		let gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
-
-		if (buyable.name === getOSItem('Festive present').name) {
-			if (!(await isElligibleForPresent(user))) {
-				return "Santa doesn't want to sell you a Festive present!";
-			}
-			quantity = 1;
-			const previouslyBought = user.cl.amount('Festive present');
-			if (user.isIronman) {
-				gpCost = Math.floor(10_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 6));
-			} else {
-				gpCost = Math.floor(100_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 3));
-			}
-		}
+		const gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		if (buyable.name === 'Golden cape shard') {
 			quantity = 1;
@@ -157,7 +149,7 @@ export const buyCommand: OSBMahojiCommand = {
 
 		await handleMahojiConfirmation(
 			interaction,
-			`${user}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`
+			`${user}, please confirm that you want to buy **${remapBank(user, outItems)}** for: ${totalCost}.`
 		);
 
 		if (
@@ -166,8 +158,8 @@ export const buyCommand: OSBMahojiCommand = {
 			!user.cl.has(buyable.name)
 		) {
 			const [count, ironCount] = await Promise.all([
-				countUsersWithItemInCl(itemID(buyable.name), false),
-				countUsersWithItemInCl(itemID(buyable.name), true)
+				countUsersWithItemInCl(itemID(buyable.name)),
+				countUsersWithItemInCl(itemID(buyable.name))
 			]);
 
 			let announcement = `**${user.badgedUsername}'s** minion, ${user.minionName}, just purchased their first ${
@@ -192,24 +184,6 @@ export const buyCommand: OSBMahojiCommand = {
 			.clone()
 			.remove('Coins', totalCost.amount('Coins')).bank;
 		if (Object.keys(costBankExcludingGP).length === 0) costBankExcludingGP = undefined;
-
-		const currentStats = await user.fetchStats({ buy_cost_bank: true, buy_loot_bank: true });
-		await Promise.all([
-			updateBankSetting('buy_cost_bank', totalCost),
-			updateBankSetting('buy_loot_bank', outItems),
-			userStatsUpdate(user.id, {
-				buy_cost_bank: totalCost.clone().add(currentStats.buy_cost_bank as ItemBank).bank,
-				buy_loot_bank: outItems.clone().add(currentStats.buy_loot_bank as ItemBank).bank
-			}),
-			prisma.buyCommandTransaction.create({
-				data: {
-					user_id: BigInt(user.id),
-					cost_gp: totalCost.amount('Coins'),
-					cost_bank_excluding_gp: costBankExcludingGP,
-					loot_bank: outItems.bank
-				}
-			})
-		]);
 
 		return `You purchased ${outItems}.`;
 	}

@@ -1,37 +1,16 @@
-import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit';
-import { captureException } from '@sentry/node';
+import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
 import type { Interaction } from 'discord.js';
 
 import { isObject } from 'e';
-import { production } from '../../config';
-import { globalConfig } from '../constants';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
-		if (production) {
-			logError(new Error(desc ?? 'Failed assertion'), context);
-		} else {
-			throw new Error(desc ?? 'Failed assertion');
-		}
+		logError(new Error(desc ?? 'Failed assertion'), context);
 	}
 }
 
 export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
-	const metaInfo = deepMerge(context ?? {}, extra ?? {});
-	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, {
-		type: 'ERROR',
-		raw: JSON.stringify(err),
-		metaInfo: JSON.stringify(metaInfo)
-	});
-	if (globalConfig.isProduction) {
-		captureException(err, {
-			tags: context,
-			extra: metaInfo
-		});
-	} else {
-		console.error(err);
-		console.log(metaInfo);
-	}
+	console.error(err, context, extra);
 }
 
 export function logErrorForInteraction(

@@ -3,6 +3,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
+import { Bank } from 'oldschooljs';
 import { setupParty } from '../../lib/party';
 import {
 	determineDgLevelForFloor,
@@ -78,7 +79,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 				];
 			}
 
-			if (!hasRequiredLevels(user, floorToDo)) {
+			if (!hasRequiredLevels(user, floorToDo) && floorToDo > 1) {
 				return [
 					true,
 					`you don't have the required stats for this floor, you need: ${formatSkillRequirements(
@@ -197,15 +198,16 @@ async function buyCommand(user: MUser, name?: string, quantity?: number) {
 			item.name
 		}. You need ${overallCost}, but you have only ${balance.toLocaleString()}.`;
 	}
+	const loot = new Bank().add(item.id, quantity);
 
-	await user.addItemsToBank({ items: { [item.id]: quantity }, collectionLog: true });
+	await user.addItemsToBank({ items: loot, collectionLog: true });
 	await user.update({
 		dungeoneering_tokens: {
 			decrement: overallCost
 		}
 	});
 
-	return `Successfully purchased ${quantity}x ${item.name} for ${overallCost} Dungeoneering tokens.`;
+	return `Successfully purchased ${loot} for ${overallCost} Dungeoneering tokens.`;
 }
 
 export const dgCommand: OSBMahojiCommand = {

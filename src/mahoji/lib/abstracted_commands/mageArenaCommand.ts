@@ -6,7 +6,6 @@ import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUse
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function mageArenaCommand(user: MUser, channelID: string) {
 	if (user.skillLevel(SkillsEnum.Magic) < 60) {
@@ -36,8 +35,6 @@ export async function mageArenaCommand(user: MUser, channelID: string) {
 	const totalCost = itemsNeeded.clone().add(foodRemoved);
 
 	await user.removeItemsFromBank(itemsNeeded);
-
-	updateBankSetting('mage_arena_cost', totalCost);
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,

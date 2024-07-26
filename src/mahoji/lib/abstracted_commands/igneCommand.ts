@@ -74,7 +74,6 @@ export async function igneCommand(
 		mostImportantStat: 'attack_crush',
 		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
-		settingsKeys: ['ignecarus_cost', 'ignecarus_loot'],
 		channel,
 		activity: 'Ignecarus',
 		massText: `${user.usernameOrMention} is assembling a team to fight Ignecarus! Use the buttons below to join/leave.`,

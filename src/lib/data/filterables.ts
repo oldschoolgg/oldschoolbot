@@ -5,7 +5,6 @@ import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
-import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
 import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
 import { DisassemblySourceGroups } from '../invention/groups';
@@ -21,7 +20,6 @@ import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { XPLamps } from '../xpLamps';
 import { allCollectionLogs } from './Collections';
 import {
 	allClueItems,
@@ -950,16 +948,6 @@ export const baseFilters: Filterable[] = [
 		items: () => [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
 	},
 	{
-		name: 'umb',
-		aliases: ['umb'],
-		items: () => umbTable
-	},
-	{
-		name: 'tmb',
-		aliases: ['tmb'],
-		items: () => tmbTable
-	},
-	{
 		name: 'Pets',
 		aliases: ['pets', 'pmb'],
 		items: () => allPetIDs.flat(Number.POSITIVE_INFINITY) as number[]
@@ -1013,11 +1001,6 @@ export const baseFilters: Filterable[] = [
 		name: 'Fruit',
 		aliases: ['fruit'],
 		items: () => monkeyEatables.map(i => i.item.id)
-	},
-	{
-		name: 'Lamps',
-		aliases: ['lamps'],
-		items: () => XPLamps.map(i => i.itemID)
 	},
 	{
 		name: 'Favourite Alchs',

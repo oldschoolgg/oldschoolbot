@@ -9,7 +9,6 @@ import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/mini
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 import { getPOH } from './pohCommand';
 
@@ -103,7 +102,6 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 
 	await user.removeItemsFromBank(itemsToRemove);
 
-	await updateBankSetting('gnome_res_cost', itemsToRemove);
 	await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),

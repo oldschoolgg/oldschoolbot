@@ -10,7 +10,6 @@ import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const ds2Requirements: Skills = {
@@ -161,8 +160,6 @@ export const buildCommand: OSBMahojiCommand = {
 		if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
-
-		updateBankSetting('construction_cost_bank', cost);
 
 		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>({
 			objectID: object.id,

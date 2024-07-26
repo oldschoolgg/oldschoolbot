@@ -8,7 +8,6 @@ import type { ButlerActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const unlimitedEarthRuneProviders = resolveItems([
 	'Staff of earth',
@@ -132,8 +131,6 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 
 	const costBank = new Bank(consumedItems).add('Coins', cost).add(plank?.inputItem, quantity);
 	await user.removeItemsFromBank(costBank);
-
-	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', cost));
 
 	await addSubTaskToActivityTask<ButlerActivityTaskOptions>({
 		type: 'Butler',

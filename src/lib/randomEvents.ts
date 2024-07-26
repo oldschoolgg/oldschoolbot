@@ -187,19 +187,19 @@ const cache = new LRUCache<string, number>({ max: 500 });
 const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut];
 
 export async function triggerRandomEvent(user: MUser, type: activity_type_enum, duration: number, messages: string[]) {
-	if (doesntGetRandomEvent.includes(type)) return {};
+	if (doesntGetRandomEvent.includes(type)) return null;
 	const minutes = Math.min(30, duration / Time.Minute);
 	const randomEventChance = 60 - minutes;
-	if (!roll(randomEventChance)) return {};
+	if (!roll(randomEventChance)) return null;
 	if (user.bitfield.includes(BitField.DisabledRandomEvents)) {
-		return {};
+		return null;
 	}
 
 	const prev = cache.get(user.id);
 
 	// Max 1 event per 3h mins per user
 	if (prev && Date.now() - prev < Time.Hour * 3) {
-		return {};
+		return null;
 	}
 	cache.set(user.id, Date.now());
 
@@ -219,8 +219,6 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 		messages.push('Found a cute Balloon cat!');
 	}
 	await userStatsBankUpdate(user, 'random_event_completions_bank', new Bank().add(event.id));
-	messages.push(`Did ${event.name} random event and got ${loot}`);
-	return {
-		itemsToAddWithCL: loot
-	};
+	const res = await user.addItemsToBank({ items: loot, collectionLog: true });
+	messages.push(`Did ${event.name} random event and got ${res.itemsAdded}`);
 }

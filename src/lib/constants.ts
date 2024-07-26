@@ -1,19 +1,17 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 
-import type { Image } from '@napi-rs/canvas';
-import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
+import { PerkTier, SimpleTable, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import type { APIButtonComponent, APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import type { APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
 import { convertLVLtoXP, getItemOrThrow } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
-import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { customItems } from './customItems/util';
 import { SkillsEnum } from './skilling/types';
@@ -24,68 +22,8 @@ import '../lib/data/itemAliases';
 
 export { PerkTier };
 
-const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '944924763405574174';
-
 export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO' as 'BSO' | 'OSB';
 export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
-
-export const Channel = {
-	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: production ? '811589869314899980' : '1042760447830536212',
-	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
-	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '738780181946171493',
-	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
-	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
-	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
-	PatronLogs: '806744016309714966',
-	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
-	HelpAndSupport: '970752140324790384',
-	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
-	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '991383631337635971',
-	BotLogs: production ? '1051725977320964197' : TestingMainChannelID,
-	GeneralChannel:
-		BOT_TYPE === 'OSB'
-			? production
-				? '346304390858145792'
-				: '1154056119019393035'
-			: production
-				? '792691343284764693'
-				: '1154056119019393035',
-	// BSO Channels
-	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
-	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
-	BSOGambling: DISCORD_SETTINGS.Channels?.BSOChannel ?? '792692390778896424',
-	BSOGrandExchange: DISCORD_SETTINGS.Channels?.BSOChannel ?? '738780181946171493'
-};
-
-export const Roles = {
-	Booster: DISCORD_SETTINGS.Roles?.Booster ?? '665908237152813057',
-	Contributor: DISCORD_SETTINGS.Roles?.Contributor ?? '456181501437018112',
-	Moderator: DISCORD_SETTINGS.Roles?.Moderator ?? '622806157563527178',
-	PatronTier1: DISCORD_SETTINGS.Roles?.PatronTier1 ?? '678970545789730826',
-	PatronTier2: DISCORD_SETTINGS.Roles?.PatronTier2 ?? '678967943979204608',
-	PatronTier3: DISCORD_SETTINGS.Roles?.PatronTier3 ?? '687408140832342043',
-	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424',
-	MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? '734055552933429280',
-	BSOMassHoster: DISCORD_SETTINGS.Roles?.BSOMassHoster ?? '759572886364225558',
-	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '848966830617788427',
-	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '848966773885763586',
-	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '848966732265160775',
-	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '867967884515770419',
-	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
-	TopInventor: '992799099801833582',
-	TopLeagues: '1005417171112972349',
-	EventOrganizer: '1149907536749801542'
-};
-
-export enum DefaultPingableRoles {
-	// Tester roles:
-	Tester = '682052620809928718',
-	BSOTester = '829368646182371419',
-	// Mass roles:
-	BSOMass = '759573020464906242'
-}
 
 export enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
@@ -163,7 +101,6 @@ export enum Emoji {
 	CombatAchievements = '<:combatAchievements:1145015804040065184>',
 	Stopwatch = '⏱️',
 	Smokey = '<:Smokey:886284971914969149>',
-	ItemContract = '<:Item_contract:988422348434718812>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -221,32 +158,16 @@ export enum Events {
 export const COINS_ID = 995;
 
 export enum BitField {
-	IsPatronTier1 = 2,
-	IsPatronTier2 = 3,
-	IsPatronTier3 = 4,
-	IsPatronTier4 = 5,
-	IsPatronTier5 = 6,
-	isModerator = 7,
-	isContributor = 8,
-	BypassAgeRestriction = 9,
-	HasHosidiusWallkit = 10,
-	HasPermanentEventBackgrounds = 11,
-	HasPermanentTierOne = 12,
+	isModerator = 1,
 	DisabledRandomEvents = 13,
-	PermanentIronman = 14,
-	AlwaysSmallBank = 15,
 	HasDexScroll = 16,
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
-	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
-	IsPatronTier6 = 21,
 	DisableBirdhouseRunButton = 22,
 	DisableAshSanctifier = 23,
-	BothBotsMaxedFreeTierOnePerks = 24,
 	HasBloodbarkScroll = 25,
 	DisableAutoFarmContractButton = 26,
-	DisableGrandExchangeDMs = 27,
 	HadAllSlayerUnlocks = 28,
 	HasSwampbarkScroll = 29,
 	HasSaradominsLight = 30,
@@ -256,25 +177,20 @@ export enum BitField {
 	UsedFrozenTablet = 34,
 	CleanHerbsFarming = 35,
 	SelfGamblingLocked = 36,
-	DisabledFarmingReminders = 37,
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
 	DisableOpenableNames = 41,
 
-	HasGivenBirthdayPack = 200,
-	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
 	HasScrollOfLongevity = 203,
 	HasScrollOfTheHunt = 204,
 	HasBananaEnchantmentScroll = 205,
 	HasDaemonheimAgilityPass = 206,
 	DisabledGorajanBoneCrusher = 207,
-	HasLeaguesOneMinuteLengthBoost = 208,
 	HasPlantedIvy = 209,
 	HasGuthixEngram = 210,
 	ScrollOfLongevityDisabled = 211,
-	HasUnlockedYeti = 212,
 	NoItemContractDonations = 213,
 
 	HasFlickeringBoon = 214,
@@ -308,20 +224,8 @@ interface BitFieldData {
 }
 
 export const BitFieldData: Record<BitField, BitFieldData> = {
-	[BitField.IsWikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
 	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
-	[BitField.isContributor]: { name: 'Contributor', protected: true, userConfigurable: false },
 
-	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
-	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier6]: { name: 'Tier 6 Patron', protected: false, userConfigurable: false },
-
-	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasArcaneScroll]: { name: 'Arcane Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
@@ -331,7 +235,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasScrollOfTheHunt]: { name: 'Scroll of the Hunt Used', protected: false, userConfigurable: false },
 	[BitField.HasPlantedIvy]: { name: 'Has Planted Ivy Seed', protected: false, userConfigurable: false },
 	[BitField.HasGuthixEngram]: { name: 'Has Guthix Engram', protected: false, userConfigurable: false },
-	[BitField.HasUnlockedYeti]: { name: 'Yeti Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasBananaEnchantmentScroll]: {
 		name: 'Banana Enchantment Scroll Used',
 		protected: false,
@@ -352,24 +255,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: false },
 
-	[BitField.HasGivenBirthdayPack]: { name: 'Has Given Birthday Pack', protected: false, userConfigurable: false },
-	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
-	[BitField.HasPermanentEventBackgrounds]: {
-		name: 'Permanent Event Backgrounds',
-		protected: false,
-		userConfigurable: false
-	},
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
-	[BitField.HasLeaguesOneMinuteLengthBoost]: {
-		name: 'Leagues One Minute Trip Length Boost',
-		protected: false,
-		userConfigurable: false
-	},
-	[BitField.BothBotsMaxedFreeTierOnePerks]: {
-		name: 'Free T1 Perks for Maxed in OSB/BSO',
-		protected: false,
-		userConfigurable: false
-	},
 	[BitField.HasFlickeringBoon]: {
 		name: 'Has Flickering Boon',
 		protected: false,
@@ -436,7 +321,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		userConfigurable: false
 	},
 
-	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
 	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
 	[BitField.DisabledGorajanBoneCrusher]: {
 		name: 'Disabled Gorajan Bonecrusher',
@@ -454,11 +338,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-	[BitField.DisableGrandExchangeDMs]: {
-		name: 'Disable Grand Exchange DMs',
-		protected: false,
-		userConfigurable: true
-	},
 	[BitField.ScrollOfLongevityDisabled]: {
 		name: 'Disable Scroll of Longevity',
 		protected: false,
@@ -466,11 +345,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.CleanHerbsFarming]: {
 		name: 'Clean herbs during farm runs',
-		protected: false,
-		userConfigurable: true
-	},
-	[BitField.DisabledFarmingReminders]: {
-		name: 'Disable Farming Reminders',
 		protected: false,
 		userConfigurable: true
 	},
@@ -584,43 +458,6 @@ export const LEVEL_120_XP = convertLVLtoXP(120);
 export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
-
-const buttonSource = [
-	{
-		label: 'Wiki',
-		emoji: '802136964027121684',
-		url: 'https://bso-wiki.oldschool.gg/'
-	},
-	{
-		label: 'Patreon',
-		emoji: '679334888792391703',
-		url: 'https://www.patreon.com/oldschoolbot'
-	},
-	{
-		label: 'Support Server',
-		emoji: '778418736180494347',
-		url: 'https://www.discord.gg/ob'
-	},
-	{
-		label: 'Bot Invite',
-		emoji: '778418736180494347',
-		url: 'http://www.oldschool.gg/invite/bso'
-	}
-];
-
-export const informationalButtons = buttonSource.map(i =>
-	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
-);
-export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
-	type: ComponentType.Button,
-	label: i.label,
-	emoji: { id: i.emoji },
-	style: ButtonStyle.Link,
-	url: i.url
-}));
-
-export const PATRON_ONLY_GEAR_SETUP =
-	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
 export const projectiles = {
 	arrow: {
@@ -789,8 +626,10 @@ const globalConfigSchema = z.object({
 	redisPort: z.coerce.number().int().optional(),
 	botToken: z.string().min(1),
 	isCI: z.coerce.boolean().default(false),
-	isProduction: z.coerce.boolean().default(production),
-	testingServerID: z.string(),
+	isProduction: z.coerce.boolean(),
+	mainServerID: z.string(),
+	generalChannelID: z.string(),
+	announcementsChannelID: z.string(),
 	timeZone: z.literal('UTC')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
@@ -801,7 +640,6 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
-const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const isProduction = process.env.NODE_ENV === 'production';
 
 export const globalConfig = globalConfigSchema.parse({
@@ -810,14 +648,12 @@ export const globalConfig = globalConfigSchema.parse({
 	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
-	isProduction,
-	testingServerID: process.env.TESTING_SERVER_ID ?? OLDSCHOOLGG_TESTING_SERVER_ID,
+	isProduction: process.env.NODE_ENV === 'production',
+	mainServerID: process.env.MAIN_SERVER,
+	generalChannelID: process.env.GENERAL_CHANNEL,
+	announcementsChannelID: process.env.ANNOUNCEMENTS_CHANNEL,
 	timeZone: process.env.TZ
 });
-
-if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
-	throw new Error('The NODE_ENV and isProduction variables must match');
-}
 
 export const ONE_TRILLION = 1_000_000_000_000;
 export const gloriesInventorySize = 26;
@@ -847,9 +683,8 @@ export const YETI_ID = 129_521;
 export const KING_GOLDEMAR_GUARD_ID = 30_913;
 
 export const gitHash = execSync('git rev-parse HEAD').toString().trim();
-const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
-
-const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
+const gitRemote = 'oldschoolgg/oldschoolbot';
+const GIT_BRANCH = 'randomizer2';
 
 export const META_CONSTANTS = {
 	GIT_HASH: gitHash,
@@ -870,33 +705,6 @@ export const CHINCANNON_MESSAGES = [
 	'Your Chincannon turned the loot into dust.'
 ];
 
-export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
-
-export const ItemIconPacks = [
-	{
-		name: 'Halloween',
-		storeBitfield: StoreBitfield.HalloweenItemIconPack,
-		id: 'halloween',
-		icons: new Map<number, Image>()
-	}
-];
-
-export const patronFeatures = {
-	ShowEnteredInGiveawayList: {
-		tier: PerkTier.Four
-	}
-};
-
-export const christmasCakeIngredients = resolveItems([
-	'Gingerbread',
-	'Grimy salt',
-	'Snail oil',
-	'Ashy flour',
-	'Banana-butter',
-	'Fresh rat milk',
-	'Pristine chocolate bar',
-	'Smokey egg'
-]);
 export const gearValidationChecks = new Set();
 
 export const BSO_MAX_TOTAL_LEVEL = 3120;
@@ -929,3 +737,57 @@ if (!process.env.TEST) {
 		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
 	);
 }
+
+export const perkTierUnlocks = [
+	{
+		tier: 5,
+		clPercent: 90,
+		perk: PerkTier.Six
+	},
+	{
+		tier: 4,
+		clPercent: 80,
+		perk: PerkTier.Five
+	},
+	{
+		tier: 3,
+		clPercent: 60,
+		perk: PerkTier.Four
+	},
+	{
+		tier: 2,
+		clPercent: 40,
+		perk: PerkTier.Three
+	},
+	{
+		tier: 1,
+		clPercent: 20,
+		perk: PerkTier.Two
+	},
+	{
+		tier: 0,
+		clPercent: 0,
+		perk: PerkTier.One
+	}
+];
+export const RANDOMIZER_HELP = `**Randomizer 2.0**
+
+- When you buy a minion/start, you get a "seed" which randomizes your "item mappings", deciding what each of your items are randomized to. Everybody has different randomizations.
+- Your XP gets randomized (e.g. cooking xp can become slayer xp, etc. So if you want to train slayer, you'd have to do cooking.)
+- You can reset your **entire** account ONCE, using /randomizer reset. You will start totally fresh, but this can only happen once and cannot be undone, so think carefully.
+- For every 50 CL slots you complete, you can view the mapping of a certain item. For example, if you want a Twisted bow but not sure what item it randomizes from, you can do /randomizer unlock_item_mapping item:Twisted bow and it will show a message like this: "Rune kiteshield -> Twisted bow -> Iron arrow(p++)". This means, if you smith a rune kiteshield, you'll get a twisted bow. If you get a twisted bow from COX, you'll actually get a iron arrow(p++).
+- You will need to unlock another 50 CL slots if you want to view another mapping.
+- Dungeoneering floor 1 has no skill requirements.
+- The ONLY mystery box is UMBs, the other mystery boxes cannot be opened or used - they drop randomly from doing any trips.
+- Some items never get randomized, which means you get them like normal. Coins, UMBs, and keycrate crates. You can get any/all keycrates from any trips. 
+- Questing is hugely buffed.
+- All normal rules still apply (no alting/botting/etc). If you break a rule in randomizer, your OSB/BSO accounts will be punished too.
+
+**Tips:**
+- Do every possible activity/skill you can do. Minigames, thieving, farming, clue scrolls, etc, everything.
+- Buy lots of items from all the shops to see what you can get.
+- Save your "view mapping" unlocks for items you really need/want.
+- Train skills and figure out which skills are randomized to what.
+
+Based on your progress, you can earn a Trophy in OSB/BSO.
+`;

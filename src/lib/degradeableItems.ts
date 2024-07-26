@@ -9,7 +9,6 @@ import type { ChargeBank } from './structures/Banks';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
-import { updateBankSetting } from './util/updateBankSetting';
 
 export interface DegradeableItem {
 	item: Item;
@@ -375,9 +374,6 @@ export async function degradeItem({
 		await user.update({
 			[degItem.settingsKey]: 0
 		});
-		const itemsDeleted = new Bank().add(item.id);
-
-		updateBankSetting('degraded_items_cost', itemsDeleted);
 
 		if (hasEquipped) {
 			// Get the users equipped item.

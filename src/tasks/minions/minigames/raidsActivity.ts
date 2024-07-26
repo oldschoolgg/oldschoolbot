@@ -9,7 +9,7 @@ import { CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import type { RaidsOptions } from '../../../lib/types/minions';
@@ -17,7 +17,6 @@ import { randomVariation, roll } from '../../../lib/util';
 import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 interface RaidResultUser {
@@ -221,22 +220,6 @@ export const raidsTask: MinionTask = {
 			const msg = randArrItem(CHINCANNON_MESSAGES);
 			resultMessage += `\n\n**${msg}**`;
 		}
-
-		const effectiveTotalLoot = cc ? new Bank() : totalLoot;
-		updateBankSetting('cox_loot', effectiveTotalLoot);
-		await trackLoot({
-			totalLoot: effectiveTotalLoot,
-			id: minigameID,
-			type: 'Minigame',
-			changeType: 'loot',
-			duration,
-			kc: quantity,
-			users: allUsers.map(i => ({
-				id: i.id,
-				duration,
-				loot: raidResults.get(i.id)?.loot ?? new Bank()
-			}))
-		});
 
 		const shouldShowImage = allUsers.length <= 3 && Array.from(raidResults.values()).every(i => i.loot.length <= 6);
 

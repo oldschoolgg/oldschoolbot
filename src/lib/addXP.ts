@@ -4,8 +4,7 @@ import { bold } from 'discord.js';
 import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { MAXING_MESSAGE } from '../config';
-import { Channel, Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
+import { Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
 import {
 	divinersOutfit,
 	gorajanArcherOutfit,
@@ -19,7 +18,7 @@ import type { AddXpParams } from './minions/types';
 
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
-import { SkillsEnum } from './skilling/types';
+import { SkillsArray, SkillsEnum } from './skilling/types';
 import { convertLVLtoXP, convertXPtoLVL, itemNameFromID, toKMB } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -28,37 +27,25 @@ import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_120_XP}`).join(' AND ');
-const makeQuery = (ironman: boolean) => `SELECT count(id)::int
+const makeQuery = () => `SELECT count(id)::int
 FROM users
-WHERE ${maxFilter}
-${ironman ? 'AND "minion.ironman" = true' : ''};`;
+WHERE ${maxFilter};`;
 
 async function howManyMaxed() {
-	const [normies, irons] = (
-		(await Promise.all([prisma.$queryRawUnsafe(makeQuery(false)), prisma.$queryRawUnsafe(makeQuery(true))])) as any
-	)
-		.map((i: any) => i[0].count)
-		.map((i: any) => Number.parseInt(i));
-
 	return {
-		normies,
-		irons
+		irons: Number.parseInt((await prisma.$queryRawUnsafe<any>(makeQuery()))[0].count)
 	};
 }
 
 async function onMax(user: MUser) {
-	const { normies, irons } = await howManyMaxed();
+	const { irons } = await howManyMaxed();
 
 	const str = `🎉 ${
 		user.usernameOrMention
-	}'s minion just achieved level 120 in every skill, they are the **${formatOrdinal(normies)}** minion to be maxed${
-		user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
-	} 🎉`;
+	}'s minion just achieved level 120 in every skill, they are the **${formatOrdinal(irons)}** minion to be maxed 🎉`;
 
 	globalClient.emit(Events.ServerNotification, str);
-	sendToChannelID(Channel.BSOGeneral, { content: str }).catch(noOp);
-	const djsUser = await globalClient.users.fetch(user.id);
-	djsUser.send(MAXING_MESSAGE).catch(noOp);
+	sendToChannelID(globalConfig.generalChannelID, { content: str }).catch(noOp);
 }
 
 interface StaticXPBoost {
@@ -119,6 +106,10 @@ function getEquippedCapes(user: MUser) {
 }
 
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
+	params.skillName = (user.user.skill_map as any)[params.skillName as any] as SkillsEnum;
+	if (!params.skillName || !SkillsArray.includes(params.skillName)) {
+		throw new Error(`${user.id} has skill mapping: ${params.skillName}`);
+	}
 	const currentXP = Number(user.user[`skills_${params.skillName}`]);
 	const currentLevel = user.skillLevel(params.skillName);
 	const currentTotalLevel = user.totalLevel;
@@ -231,29 +222,6 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	let preMax = -1;
 	if (totalXPAdded > 0) {
 		preMax = totalXPAdded;
-		await prisma.xPGain.create({
-			data: {
-				user_id: BigInt(user.id),
-				skill: params.skillName,
-				xp: Math.floor(totalXPAdded),
-				artificial: params.artificial ? true : null,
-				source: params.source
-			}
-		});
-	}
-
-	// Post-MAX_XP
-	if (params.amount - totalXPAdded > 0) {
-		await prisma.xPGain.create({
-			data: {
-				user_id: BigInt(user.id),
-				skill: params.skillName,
-				xp: Math.floor(params.amount - totalXPAdded),
-				artificial: params.artificial ? true : null,
-				post_max: true,
-				source: params.source
-			}
-		});
 	}
 
 	// If they reached a XP milestone, send a server notification.
@@ -324,18 +292,14 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			queryValue = convertLVLtoXP(value);
 			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
 				user.minionName
-			}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get level ${value} in ${skillNameCased}`
-			}`;
+			}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.`;
 		} else {
 			queryValue = value;
 			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
 				user.minionName
 			}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
 				value
-			)} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get ${toKMB(value)} XP in ${skillNameCased}`
-			}`;
+			)} in ${skillNameCased}.`;
 		}
 		// Query nthUser and nthIronman
 		const [nthUser] = await prisma.$queryRawUnsafe<
@@ -344,16 +308,6 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			}[]
 		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
 		resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count) + 1));
-		if (user.isIronman) {
-			const [nthIron] = await prisma.$queryRawUnsafe<
-				{
-					count: string;
-				}[]
-			>(
-				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
-			);
-			resultStr = resultStr.replace('{nthIron}', formatOrdinal(Number(nthIron.count) + 1));
-		}
 		globalClient.emit(Events.ServerNotification, resultStr);
 	}
 

@@ -3,7 +3,7 @@ import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
 import { divinationEnergies } from './bso/divination';
-import { Emoji, OSB_VIRTUS_IDS } from './constants';
+import { OSB_VIRTUS_IDS } from './constants';
 import {
 	allPetIDs,
 	chambersOfXericCL,
@@ -20,17 +20,16 @@ import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import type { UnifiedOpenable } from './openables';
 import { PaintBoxTable } from './paintColors';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
+import { LampTable } from './simulation/grandmasterClue';
 import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
 import { clAdjustedDroprate } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
-import { LampTable } from './xpLamps';
 
 const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;
 const MR_E_DROPRATE_FROM_PMB = 200;
-const MR_E_DROPRATE_FROM_EMB = 500;
 
 export const MysteryBoxes = new LootTable()
 	.oneIn(55, 'Pet Mystery Box')
@@ -722,14 +721,6 @@ export const itemSearchMbTable = [
 	])
 ];
 
-function makeOutputFromArrayOfItemIDs(fn: () => number, quantity: number) {
-	const loot = new Bank();
-	for (let i = 0; i < quantity; i++) {
-		loot.add(fn());
-	}
-	return { bank: loot };
-}
-
 const christmasPetFoodTable = new LootTable()
 	.add('Pumpkinhead praline')
 	.add('Takon truffle')
@@ -787,37 +778,13 @@ const VenatrixEggTable = new LootTable().tertiary(1000, 'Baby venatrix');
 
 export const bsoOpenables: UnifiedOpenable[] = [
 	{
-		name: 'Tradeables Mystery box',
-		id: 6199,
-		openedItem: getOSItem(6199),
-		aliases: ['mystery', 'mystery box', 'tradeables mystery box', 'tmb'],
-
-		output: async ({ user, quantity, totalLeaguesPoints }) => ({
-			bank: getMysteryBoxItem(user, totalLeaguesPoints, true, quantity)
-		}),
-		emoji: Emoji.MysteryBox,
-		allItems: [],
-		isMysteryBox: true,
-		smokeyApplies: true
-	},
-	{
 		name: 'Untradeables Mystery box',
 		id: 19_939,
 		openedItem: getOSItem(19_939),
 		aliases: ['untradeables mystery box', 'umb'],
-		output: async ({ user, quantity, totalLeaguesPoints }) => ({
-			bank: getMysteryBoxItem(user, totalLeaguesPoints, false, quantity)
+		output: async ({ user, quantity }) => ({
+			bank: getMysteryBoxItem(user, false, quantity)
 		}),
-		allItems: [],
-		isMysteryBox: true,
-		smokeyApplies: true
-	},
-	{
-		name: 'Equippable mystery box',
-		id: itemID('Equippable mystery box'),
-		openedItem: getOSItem('Equippable mystery box'),
-		aliases: ['equippable mystery box', 'emb'],
-		output: async ({ quantity }) => makeOutputFromArrayOfItemIDs(randomEquippable, quantity),
 		allItems: [],
 		isMysteryBox: true,
 		smokeyApplies: true
@@ -1054,16 +1021,6 @@ for (const crate of keyCrates) {
 	});
 }
 
-function randomEquippable(): number {
-	const res = randArrItem(embTable);
-	if (cantBeDropped.includes(res)) return randomEquippable();
-	if (res >= 40_000 && res <= 50_000) return randomEquippable();
-	if (roll(MR_E_DROPRATE_FROM_EMB)) {
-		return itemID('Mr. E');
-	}
-	return res;
-}
-
 function findMysteryBoxItem(table: number[]): number {
 	const result = randArrItem(table);
 	if (cantBeDropped.includes(result)) return findMysteryBoxItem(table);
@@ -1071,41 +1028,15 @@ function findMysteryBoxItem(table: number[]): number {
 	return result;
 }
 
-const leaguesUnlockedMysteryBoxItems = [
-	{
-		item: getOSItem('Fuzzy dice'),
-		unlockedAt: 5000
-	},
-	{
-		item: getOSItem('Karambinana'),
-		unlockedAt: 10_000
-	}
-];
-
-export function getMysteryBoxItem(
-	user: MUser,
-	totalLeaguesPoints: number,
-	tradeables: boolean,
-	quantity: number
-): Bank {
+export function getMysteryBoxItem(user: MUser, tradeables: boolean, quantity: number): Bank {
 	const mrEDroprate = clAdjustedDroprate(user, 'Mr. E', MR_E_DROPRATE_FROM_UMB_AND_TMB, 1.2);
 	const table = tradeables ? tmbTable : umbTable;
 	const loot = new Bank();
 
-	const elligibleLeaguesRewards = leaguesUnlockedMysteryBoxItems
-		.filter(i => totalLeaguesPoints >= i.unlockedAt)
-		.map(i => ({ ...i, dropRate: clAdjustedDroprate(user, i.item.id, 500, 1.5) }));
-
-	outer: for (let i = 0; i < quantity; i++) {
+	for (let i = 0; i < quantity; i++) {
 		if (roll(mrEDroprate)) {
 			loot.add('Mr. E');
 			continue;
-		}
-		for (const leagueReward of elligibleLeaguesRewards) {
-			if (roll(leagueReward.dropRate)) {
-				loot.add(leagueReward.item.id);
-				continue outer;
-			}
 		}
 		loot.add(findMysteryBoxItem(table));
 	}

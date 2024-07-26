@@ -62,7 +62,6 @@ export async function kgCommand(
 		mostImportantStat: 'attack_slash',
 		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
-		settingsKeys: ['kg_cost', 'kg_loot'],
 		channel,
 		activity: 'KingGoldemar',
 		massText: `${user.usernameOrMention} is assembling a team to fight King Goldemar! Use the buttons below to join/leave.`,

@@ -1,22 +1,13 @@
-import { PerkTier } from '@oldschoolgg/toolkit';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
-import { ComponentType, PermissionsBitField } from 'discord.js';
 
-import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import {
-	BadgesEnum,
-	BitField,
-	Channel,
-	DISABLED_COMMANDS,
-	gearValidationChecks,
-	minionBuyButton
-} from '../../lib/constants';
+import { BitField, DISABLED_COMMANDS } from '../../lib/constants';
 import type { CategoryFlag } from '../../lib/types';
-import { formatDuration, roll } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
+import { minionBuyCommand } from './abstracted_commands/minionBuyCommand';
 
 export interface AbstractCommandAttributes {
 	examples?: string[];
@@ -61,20 +52,10 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'hasMinion',
-		run: async ({ user, command }) => {
-			if (!command.attributes?.requiresMinion) return false;
-
+		run: async ({ user }) => {
 			if (!user.user.minion_hasBought) {
-				return {
-					content: 'You need a minion to use this command.',
-					components: [
-						{
-							components: [minionBuyButton],
-							type: ComponentType.ActionRow
-						}
-					],
-					flags: undefined
-				};
+				const res = await minionBuyCommand(user);
+				return { content: res };
 			}
 
 			return false;
@@ -110,11 +91,8 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: async ({ command, guild, user }) => {
-			if (
-				!OWNER_IDS.includes(user.id) &&
-				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
-			) {
+		run: async ({ command, guild }) => {
+			if (command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name)) {
 				return { content: 'This command is globally disabled.' };
 			}
 			if (!guild) return false;
@@ -127,56 +105,10 @@ const inhibitors: Inhibitor[] = [
 		canBeDisabled: false
 	},
 	{
-		name: 'commandRoleLimit',
-		run: async ({ member, guild, channel, user }) => {
-			if (!guild || guild.id !== SupportServer) return false;
-			if (channel.id !== Channel.General) return false;
-			const perkTier = user.perkTier();
-			if (member && perkTier >= PerkTier.Two) {
-				return false;
-			}
-
-			return { content: "You cannot use commands in the general channel unless you're a patron" };
-		},
-		canBeDisabled: false,
-		silent: true
-	},
-	{
-		name: 'onlyStaffCanUseCommands',
-		run: async ({ channel, guild, user, member }) => {
-			if (!guild || !member) return false;
-			// Allow green gem badge holders to run commands in support channel:
-			if (channel.id === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
-				return false;
-			}
-
-			// Allow contributors + moderators to use disabled channels in SupportServer
-			const userBitfield = user.bitfield;
-			const isStaff =
-				userBitfield.includes(BitField.isModerator) || userBitfield.includes(BitField.isContributor);
-			if (guild.id === SupportServer && isStaff) {
-				return false;
-			}
-
-			// Allow guild-moderators to use commands in disabled channels
-			const settings = untrustedGuildSettingsCache.get(guild.id);
-			if (settings?.staffOnlyChannels.includes(channel.id)) {
-				const hasPerm = member.permissions.has(PermissionsBitField.Flags.BanMembers);
-				if (!hasPerm) {
-					return { content: "You need the 'Ban Members' permission to use commands in disabled channels." };
-				}
-			}
-
-			return false;
-		},
-		canBeDisabled: false,
-		silent: true
-	},
-	{
 		name: 'cooldown',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.cooldown) return false;
-			if (OWNER_IDS.includes(user.id) || user.bitfield.includes(BitField.isModerator)) return false;
+			if (user.bitfield.includes(BitField.isModerator)) return false;
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return {
@@ -200,26 +132,6 @@ const inhibitors: Inhibitor[] = [
 		},
 		canBeDisabled: false,
 		silent: true
-	},
-	{
-		name: 'toa_commands_channel',
-		run: async ({ user, guild, channel, command }) => {
-			if (!guild || guild.id !== SupportServer) return false;
-			if (channel.id !== '1069176960523190292') return false;
-
-			if (user.bitfield.includes(BitField.isModerator)) {
-				return false;
-			}
-
-			if (command.name === 'raid') return false;
-
-			return {
-				content: 'You can only send TOA commands in this channel! Please use <#346304390858145792> instead.',
-				ephemeral: true
-			};
-		},
-		canBeDisabled: false,
-		silent: true
 	}
 ];
 
@@ -238,18 +150,6 @@ export async function runInhibitors({
 	guild: Guild | null;
 	bypassInhibitors: boolean;
 }): Promise<undefined | { reason: InteractionReplyOptions; silent: boolean }> {
-	if (!gearValidationChecks.has(user.id) && roll(3)) {
-		const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
-		if (itemsUnequippedAndRefunded.length > 0) {
-			return {
-				reason: {
-					content: `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`
-				},
-				silent: false
-			};
-		}
-	}
-
 	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
 		const result = await run({ user, channel, member, command, guild });

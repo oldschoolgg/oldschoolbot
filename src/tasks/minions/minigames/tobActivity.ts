@@ -6,7 +6,7 @@ import { drawChestLootImage } from '../../../lib/bankImage';
 import { BOT_TYPE, CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques } from '../../../lib/data/tob';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
@@ -15,7 +15,6 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 async function handleTobXP(user: MUser, isHm: boolean) {
@@ -70,7 +69,6 @@ export const tobTask: MinionTask = {
 			hardMode,
 			leader,
 			wipedRooms,
-			duration,
 			deaths: allDeaths,
 			quantity,
 			cc: chincannonUser
@@ -122,15 +120,6 @@ export const tobTask: MinionTask = {
 			resultMessage += `\n Unique chance: ${result.percentChanceOfUnique.toFixed(
 				2
 			)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})`;
-
-			// Track loot for T3+ patrons
-			if (!chincannonUser) {
-				await Promise.all(
-					allUsers.map(user => {
-						return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
-					})
-				);
-			}
 
 			for (const [userID, _userLoot] of Object.entries(result.loot)) {
 				if (data.solo && userID !== leader) continue;
@@ -218,26 +207,6 @@ export const tobTask: MinionTask = {
 		if (successfulRaidCount > 0) {
 			await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, successfulRaidCount)));
 		}
-		if (wipeCount > 0) {
-			// Update economy stats:
-			await updateBankSetting('tob_cost', globalTobCost);
-		}
-
-		const effectiveTotalLoot = chincannonUser ? new Bank() : totalLoot;
-		await updateBankSetting('tob_loot', effectiveTotalLoot);
-		await trackLoot({
-			totalLoot: effectiveTotalLoot,
-			id: minigameID,
-			type: 'Minigame',
-			changeType: 'loot',
-			duration,
-			kc: successfulRaidCount,
-			users: allUsers.map(i => ({
-				id: i.id,
-				loot: teamsLoot.get(i.id),
-				duration
-			}))
-		});
 
 		if (chincannonUser) {
 			const msg = randArrItem(CHINCANNON_MESSAGES);

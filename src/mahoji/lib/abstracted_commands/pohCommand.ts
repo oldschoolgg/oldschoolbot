@@ -2,7 +2,6 @@ import { stringMatches } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
 import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh';
 import { pohImageGenerator } from '../../../lib/pohImage';
 
@@ -10,18 +9,12 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { formatSkillRequirements, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const pohWallkits = [
 	{
 		bitfield: null,
 		name: 'Default',
 		imageID: 1
-	},
-	{
-		bitfield: BitField.HasHosidiusWallkit,
-		name: 'Hosidius',
-		imageID: 2
 	}
 ];
 
@@ -34,46 +27,6 @@ export async function makePOHImage(user: MUser, showSpaces = false) {
 	const poh = await getPOH(user.id);
 	const buffer = await pohImageGenerator.run(poh, showSpaces);
 	return { files: [{ attachment: buffer, name: 'image.jpg' }] };
-}
-
-export async function pohWallkitCommand(user: MUser, input: string) {
-	const poh = await getPOH(user.id);
-	const currentWallkit = pohWallkits.find(i => i.imageID === poh.background_id)!;
-	const selectedKit = pohWallkits.find(i => stringMatches(i.name, input));
-
-	if (!input || !selectedKit) {
-		return `Your current wallkit is the '${currentWallkit.name}' wallkit. The available wallkits are: ${pohWallkits
-			.map(i => i.name)
-			.join(', ')}.`;
-	}
-
-	if (currentWallkit.imageID === selectedKit.imageID) {
-		return 'This is already your wallkit.';
-	}
-
-	const { bitfield } = user;
-	const userBank = user.bank;
-	if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
-		if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
-			await user.removeItemsFromBank(new Bank().add('Hosidius blueprints'));
-			await user.update({
-				bitfield: {
-					push: selectedKit.bitfield
-				}
-			});
-		} else {
-			return `You haven't unlocked the ${selectedKit.name} wallkit!`;
-		}
-	}
-	await prisma.playerOwnedHouse.update({
-		where: {
-			user_id: user.id
-		},
-		data: {
-			background_id: selectedKit.imageID
-		}
-	});
-	return makePOHImage(user);
 }
 
 export async function pohBuildCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
@@ -118,7 +71,6 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		}
 		await handleMahojiConfirmation(interaction, str);
 		await user.removeItemsFromBank(obj.itemCost);
-		updateBankSetting('construction_cost_bank', obj.itemCost);
 	}
 
 	let refunded: Bank | null = null;
@@ -216,10 +168,11 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 				[obj.slot]: null
 			}
 		});
-		await user.addItemsToBank({ items: { [inPlace!]: 1 }, collectionLog: false });
+		const loot = new Bank().add(inPlace!);
+		await user.addItemsToBank({ items: loot, collectionLog: false });
 		return {
 			...(await makePOHImage(user)),
-			content: `You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(inPlace!)}.`
+			content: `You removed a ${obj.name} from your house, and were refunded ${loot}.`
 		};
 	}
 	if (inPlace !== obj.id) {

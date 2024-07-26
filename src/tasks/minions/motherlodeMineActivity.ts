@@ -134,6 +134,12 @@ export const motherlodeMiningTask: MinionTask = {
 			}
 		}
 
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
@@ -142,12 +148,6 @@ export const motherlodeMiningTask: MinionTask = {
 		if (user.hasEquippedOrInBank('Mining master cape')) {
 			str += '\n2x nuggets for Mining master cape.';
 		}
-
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

@@ -7,7 +7,6 @@ import type { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export const alchingTask: MinionTask = {
 	type: 'Alching',
@@ -42,7 +41,6 @@ export const alchingTask: MinionTask = {
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		updateClientGPTrackSetting('gp_alch', alchValue);
 
 		const xpReceived = quantity * 65;
 		const xpRes = await user.addXP({

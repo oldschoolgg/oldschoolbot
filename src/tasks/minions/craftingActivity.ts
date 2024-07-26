@@ -50,17 +50,16 @@ export const craftingTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
-
-		if (hasScroll) {
-			str += '\n\nYour Scroll of dexterity allows you to receive 15% extra items.';
-		}
-
-		await transactItems({
+		const res = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
+		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${res.itemsAdded}. ${xpRes}`;
+
+		if (hasScroll) {
+			str += '\n\nYour Scroll of dexterity allows you to receive 15% extra items.';
+		}
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

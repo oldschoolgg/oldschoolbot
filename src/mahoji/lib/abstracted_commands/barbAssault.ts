@@ -139,12 +139,13 @@ export async function barbAssaultBuyCommand(
 	const { item, cost } = buyable;
 	const stats = await user.fetchStats({ honour_points: true });
 	const balance = stats.honour_points;
+	const loot = new Bank().add(item.id, quantity);
 	if (balance < cost * quantity) {
-		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
+		return `You don't have enough Honour Points to buy ${loot}. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to buy ${quantity.toLocaleString()}x ${item.name}, for ${(cost * quantity).toLocaleString()} honour points?`
+		`Are you sure you want to buy ${loot}, for ${(cost * quantity).toLocaleString()} honour points?`
 	);
 	await userStatsUpdate(
 		user.id,
@@ -156,9 +157,9 @@ export async function barbAssaultBuyCommand(
 		{}
 	);
 
-	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
+	const res = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${(cost * quantity).toLocaleString()} Honour Points.`;
+	return `Successfully purchased ${res.itemsAdded} for ${(cost * quantity).toLocaleString()} Honour Points.`;
 }
 
 export async function barbAssaultGambleCommand(

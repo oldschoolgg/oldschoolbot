@@ -10,7 +10,6 @@ import { itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
@@ -63,8 +62,6 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 		}, you're missing **${cost.clone().remove(userBank)}**.`;
 	}
 	await transactItems({ userID: user.id, itemsToRemove: cost });
-
-	updateBankSetting('magic_cost_bank', cost);
 
 	await addSubTaskToActivityTask<EnchantingActivityTaskOptions>({
 		itemID: enchantable.id,

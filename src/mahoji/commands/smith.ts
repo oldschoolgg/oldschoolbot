@@ -14,7 +14,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
 import { pluraliseItemName } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const smithCommand: OSBMahojiCommand = {
@@ -172,7 +171,6 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
-		updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,

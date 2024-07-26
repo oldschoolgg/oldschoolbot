@@ -1,4 +1,4 @@
-import { deepMerge, md5sum, miniID, toTitleCase } from '@oldschoolgg/toolkit';
+import { deepMerge, md5sum, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
@@ -121,8 +121,6 @@ export function makeAutoFarmButton() {
 
 export const SQL_sumOfAllCLItems = (clItems: number[]) =>
 	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;
-
-export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
 export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
 	let entryKC = 0;

@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import type { CollectingOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { collectables } from '../../mahoji/lib/collectables';
 
 export const collectingTask: MinionTask = {
@@ -29,14 +28,10 @@ export const collectingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		let str = `${user}, ${user.minionName} finished collecting ${totalQuantity}x ${
-			collectable.item.name
-		}. (${Math.round((totalQuantity / (duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
+		let str = `${user}, ${user.minionName} finished collecting ${loot}. (${Math.round((totalQuantity / (duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 		if (moryHardBoost) {
 			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}
-
-		updateBankSetting('collecting_loot', loot);
 
 		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
 	}

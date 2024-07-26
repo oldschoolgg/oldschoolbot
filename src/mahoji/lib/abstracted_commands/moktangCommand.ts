@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import type { MoktangTaskOptions } from '../../../lib/types/minions';
@@ -11,7 +11,6 @@ import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 
@@ -56,19 +55,6 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 	}
 
 	await user.removeItemsFromBank(cost);
-	await updateBankSetting('moktang_cost', cost);
-	await trackLoot({
-		changeType: 'cost',
-		totalCost: cost,
-		id: 'moktang',
-		type: 'Monster',
-		users: [
-			{
-				id: user.id,
-				cost
-			}
-		]
-	});
 
 	await addSubTaskToActivityTask<MoktangTaskOptions>({
 		userID: user.id,

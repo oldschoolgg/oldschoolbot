@@ -22,7 +22,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -688,7 +687,6 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 		diedEmergedZuk
 	});
 
-	updateBankSetting('inferno_cost', realCost);
 	const emergedZukDeathMsg = emerged
 		? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
 				1

@@ -4,7 +4,7 @@ import Clue from 'oldschooljs/dist/structures/Clue';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import resolveItems from '../util/resolveItems';
-import { LampTable } from '../xpLamps';
+import { LampTable } from './grandmasterClue';
 
 const boxTable = new LootTable()
 	.add('Pet mystery box')

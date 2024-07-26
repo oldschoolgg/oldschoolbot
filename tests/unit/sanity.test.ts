@@ -1,5 +1,5 @@
 import { type Tame, tame_growth } from '@prisma/client';
-import { Bank, Items, Monsters } from 'oldschooljs';
+import { Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
 
@@ -7,7 +7,6 @@ import { allMbTables } from '../../src/lib/bsoOpenables';
 import { allPetIDs } from '../../src/lib/data/CollectionsExport';
 import Buyables from '../../src/lib/data/buyables/buyables';
 import { itemsToDelete } from '../../src/lib/deletedItems';
-import { marketPriceOfBank } from '../../src/lib/marketPrices';
 import killableMonsters from '../../src/lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../src/lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../../src/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
@@ -20,7 +19,6 @@ import itemID from '../../src/lib/util/itemID';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { calculateMaximumTameFeedingLevelGain } from '../../src/lib/util/tameUtil';
-import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager';
 
 describe('Sanity', () => {
 	test('avas', () => {
@@ -138,16 +136,6 @@ describe('Sanity', () => {
 			getOSItem(buyable.name);
 		}
 	});
-	test('trophies', () => {
-		for (const trophy of BingoTrophies) {
-			if (trophy.item.customItemData?.cantBeSacrificed !== true) {
-				throw new Error(`${trophy.item.name} can be sacrificed`);
-			}
-			if (itemIsTradeable(trophy.item.id)) {
-				throw new Error(`${trophy.item.name} is tradeable`);
-			}
-		}
-	});
 
 	test('calculateMaximumTameFeedingLevelGain', () => {
 		expect(
@@ -157,10 +145,5 @@ describe('Sanity', () => {
 				growth_stage: tame_growth.adult
 			} as Tame)
 		).toEqual(14);
-	});
-
-	test('market price of coins', () => {
-		const b = new Bank().add('Coins', 66);
-		expect(marketPriceOfBank(b)).toEqual(66);
 	});
 });

@@ -9,7 +9,6 @@ import type { MinigameScore } from '../settings/minigames';
 import type { MUserStats } from '../structures/MUserStats';
 import getOSItem from '../util/getOSItem';
 import { assert } from '../util/logError';
-import { LampTable } from '../xpLamps';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -1094,7 +1093,6 @@ export const cluesGrandmasterCL = resolveItems([
 	'Ignecarus mask',
 	'Malygos mask',
 	'Blabberbeak',
-	...LampTable.allItems,
 	'Helm of raedwald',
 	'Clue hunter garb',
 	'Clue hunter gloves',

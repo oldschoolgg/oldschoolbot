@@ -3,10 +3,8 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { GearSetupType } from '@prisma/client';
-import { gearValidationChecks } from '../../lib/constants';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
-import { GearSetupTypes, GearStat } from '../../lib/gear';
+import { type GearSetupType, GearSetupTypes, GearStat } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
@@ -19,7 +17,7 @@ import {
 	gearUnequipCommand,
 	gearViewCommand
 } from '../lib/abstracted_commands/gearCommands';
-import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
+import { equippedItemOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -45,11 +43,6 @@ export const gearCommand: OSBMahojiCommand = {
 					...ownedItemOption(item => Boolean(item.equipable_by_player) && Boolean(item.equipment)),
 					name: 'item',
 					description: 'The item you want to equip.'
-				},
-				{
-					...gearPresetOption,
-					required: false,
-					name: 'preset'
 				},
 				{
 					type: ApplicationCommandOptionType.Integer,
@@ -198,7 +191,6 @@ export const gearCommand: OSBMahojiCommand = {
 			gear_setup: GearSetupType;
 			item?: string;
 			items?: string;
-			preset?: string;
 			quantity?: number;
 			auto?: string;
 		};
@@ -234,12 +226,7 @@ ${res
 				files: [await totalCanvas.encode('png')]
 			};
 		}
-		if ((options.equip || options.unequip) && !gearValidationChecks.has(userID)) {
-			const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
-			if (itemsUnequippedAndRefunded.length > 0) {
-				return `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`;
-			}
-		}
+
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
@@ -247,7 +234,6 @@ ${res
 				setup: options.equip.gear_setup,
 				item: options.equip.item,
 				items: options.equip.items,
-				preset: options.equip.preset,
 				quantity: options.equip.quantity,
 				unEquippedItem: undefined,
 				auto: options.equip.auto

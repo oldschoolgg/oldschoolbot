@@ -17,10 +17,8 @@ import {
 import { Bank, LootTable } from 'oldschooljs';
 import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { degradeChargeBank } from './degradeableItems';
 import type { GearSetupType } from './gear/types';
-import { trackLoot } from './lootTrack';
 import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
 import type { ItemBank, Skills } from './types';
@@ -28,7 +26,6 @@ import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import resolveItems from './util/resolveItems';
 import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
-import { updateBankSetting } from './util/updateBankSetting';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);
@@ -618,21 +615,6 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		throw err;
 	}
 	messages.push(`Removed ${realCost}`);
-
-	await updateBankSetting('colo_cost', realCost);
-	await userStatsBankUpdate(user, 'colo_cost', realCost);
-	await trackLoot({
-		totalCost: realCost,
-		id: 'colo',
-		type: 'Minigame',
-		changeType: 'cost',
-		users: [
-			{
-				id: user.id,
-				cost: realCost
-			}
-		]
-	});
 
 	if (chargeBank.length() > 0) {
 		const hasChargesResult = user.hasCharges(chargeBank);

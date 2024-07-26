@@ -10,7 +10,6 @@ import { processPendingActivities } from '../../src/lib/Task';
 import { globalConfig } from '../../src/lib/constants';
 import type { ItemBank } from '../../src/lib/types';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
-import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import type { ClientStorage, User, UserStats } from '.prisma/client';
 

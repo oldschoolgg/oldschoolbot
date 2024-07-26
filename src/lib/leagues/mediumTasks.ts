@@ -32,13 +32,13 @@ import { implings } from '../implings';
 import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
 import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
 
+import { LampTable } from '../simulation/grandmasterClue';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
 import type { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { LampTable } from '../xpLamps';
 import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
 import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
 
@@ -397,20 +397,6 @@ export const mediumTasks: Task[] = [
 		name: 'Do a birdhouse trip',
 		has: async ({ activityCounts }) => {
 			return (activityCounts.Birdhouse ?? 0) >= 1;
-		}
-	},
-	{
-		id: 1056,
-		name: 'Complete 10 Item Contracts',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.total_item_contracts >= 10;
-		}
-	},
-	{
-		id: 1057,
-		name: 'Achieve an Item Contract streak of 5',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.item_contract_streak >= 5;
 		}
 	},
 	{

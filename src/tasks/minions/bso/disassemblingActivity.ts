@@ -1,14 +1,12 @@
 import { userMention } from 'discord.js';
 import { Time, roll } from 'e';
 import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji } from '../../../lib/constants';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
 import { inventionBoosts, transactMaterialsFromUser } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { DisassembleTaskOptions } from '../../../lib/types/minions';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -29,13 +27,6 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 		user,
 		add: materialLoot,
 		addToDisassembledItemsBank: cost
-	});
-
-	const { items_disassembled_cost } = await mahojiClientSettingsFetch({
-		items_disassembled_cost: true
-	});
-	await mahojiClientSettingsUpdate({
-		items_disassembled_cost: new Bank(items_disassembled_cost as ItemBank).add(cost).bank
 	});
 
 	const xpStr = await user.addXP({

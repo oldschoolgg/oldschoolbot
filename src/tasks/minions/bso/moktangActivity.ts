@@ -6,7 +6,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
 import {
 	FletchingTipsTable,
@@ -21,7 +21,6 @@ import { itemNameFromID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const moktangTask: MinionTask = {
 	type: 'Moktang',
@@ -54,22 +53,6 @@ export const moktangTask: MinionTask = {
 		}
 
 		const res = await user.addItemsToBank({ items: loot, collectionLog: true });
-		await updateBankSetting('moktang_loot', loot);
-		await trackLoot({
-			duration: data.duration,
-			totalLoot: loot,
-			type: 'Monster',
-			changeType: 'loot',
-			id: 'moktang',
-			kc: qty,
-			users: [
-				{
-					id: user.id,
-					loot,
-					duration: data.duration
-				}
-			]
-		});
 
 		const xpStr = await user.addXP({
 			skillName: SkillsEnum.Mining,

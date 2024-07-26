@@ -72,13 +72,12 @@ export const cookingTask: MinionTask = {
 			}
 		}
 
-		str += `\nYou received: ${loot}.`;
-
-		await transactItems({
+		const res = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
+		str += `\nYou received: ${res.itemsAdded}.`;
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

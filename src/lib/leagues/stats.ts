@@ -1,36 +1,9 @@
-import type { UserStats, XpGainSource } from '@prisma/client';
-import type { User as RoboChimpUser } from '@prisma/robochimp';
-import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { gloriesInventorySize, wealthInventorySize } from '../constants';
 
 import Darts from '../skilling/skills/fletching/fletchables/darts';
-import type { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';
-
-export function totalLampedXP(userStats: UserStats) {
-	return sumArr(Object.values(userStats.lamped_xp as ItemBank));
-}
-
-export async function calcLeaguesRanking(user: RoboChimpUser) {
-	const [pointsRanking, tasksRanking] = await Promise.all([
-		roboChimpClient.user.count({
-			where: {
-				leagues_points_total: {
-					gt: user.leagues_points_total
-				}
-			}
-		}),
-		roboChimpClient.$queryRaw<any>`SELECT COUNT(*)::int AS count
-FROM public.user
-WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > ${user.leagues_completed_tasks_ids.length};`
-	]);
-	return {
-		pointsRanking: pointsRanking + 1,
-		tasksRanking: (tasksRanking[0].count as number) + 1
-	};
-}
 
 export async function calculateAllFletchedItems(user: MUser) {
 	const result = await prisma.$queryRawUnsafe<{ name: string; total: number }[]>(`SELECT data->>'fletchableName' AS name, SUM((data->>'quantity')::int) AS total
@@ -111,17 +84,4 @@ WHERE type = 'MahoganyHomes'
 AND user_id = '${user.id}'::bigint
 AND data->>'points' IS NOT NULL;`);
 	return Number(result[0].total);
-}
-
-export async function calculateXPSources(user: MUser) {
-	const result = await prisma.$queryRawUnsafe<{ source: XpGainSource; total: bigint }[]>(`SELECT "xp_gains"."source" AS source, SUM(xp) AS total
-FROM xp_gains
-WHERE "xp_gains"."source" IS NOT NULL
-AND user_id = '${user.id}'::bigint
-GROUP BY "xp_gains"."source";`);
-	const obj: Partial<Record<XpGainSource, number>> = {};
-	for (const res of result) {
-		obj[res.source] = Number(res.total);
-	}
-	return obj;
 }

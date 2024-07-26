@@ -254,7 +254,7 @@ export async function generateGearImage(
 	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await loadImage(user.gearTemplate.template);
+	const gearTemplateImage = await loadImage(gearImages[0].template);
 	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
@@ -368,7 +368,7 @@ export async function generateAllGearImage(user: MUser) {
 	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
-	const gearTemplateImage = await loadImage(user.gearTemplate.templateCompact);
+	const gearTemplateImage = await loadImage(gearImages[0].templateCompact);
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;

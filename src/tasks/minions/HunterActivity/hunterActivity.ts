@@ -10,7 +10,7 @@ import { globalDroprates } from '../../../lib/data/globalDroprates';
 import type { UserFullGearSetup } from '../../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { type Creature, SkillsEnum } from '../../../lib/skilling/types';
@@ -20,7 +20,6 @@ import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { clAdjustedDroprate, roll, skillingPetDropRate, stringMatches, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 
@@ -342,23 +341,6 @@ export const hunterTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove: totalCost
-		});
-
-		await updateBankSetting('hunter_loot', loot);
-		await trackLoot({
-			id: creature.name,
-			changeType: 'loot',
-			duration,
-			kc: quantity,
-			totalLoot: loot,
-			type: 'Skilling',
-			users: [
-				{
-					id: user.id,
-					duration,
-					loot
-				}
-			]
 		});
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));

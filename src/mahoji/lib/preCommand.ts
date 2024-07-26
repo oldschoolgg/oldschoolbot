@@ -46,7 +46,6 @@ async function rawPreCommand({
 		username
 	});
 
-	// TODO: user.checkBankBackground();
 	if (userIsBusy(userID) && !bypassInhibitors && !busyImmuneCommands.includes(abstractCommand.name)) {
 		return { reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}

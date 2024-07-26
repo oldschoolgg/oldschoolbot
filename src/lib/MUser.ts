@@ -1,11 +1,10 @@
-import { PerkTier, cleanUsername, mentionCommand, seedShuffle } from '@oldschoolgg/toolkit';
+import { type PerkTier, cleanUsername, mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import type { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
-import { Time, calcWhatPercent, objectEntries, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
+import { Time, calcWhatPercent, objectEntries, percentChance, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
@@ -16,27 +15,21 @@ import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
-import { BitField, projectiles } from './constants';
-import { bossCLItems } from './data/Collections';
+import { type BitField, perkTierUnlocks, projectiles } from './constants';
+import { allCLItemsFiltered, bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { degradeableItems } from './degradeableItems';
 import { type GearSetup, type UserFullGearSetup, defaultGear } from './gear';
-import { gearImages } from './gear/functions/generateGearImage';
 import { handleNewCLItems } from './handleNewCLItems';
 import type { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
-import { marketPriceOfBank } from './marketPrices';
-import backgroundImages from './minions/data/bankBackgrounds';
 import type { CombatOptionsEnum } from './minions/data/combatConstants';
 import { defaultFarmingContract } from './minions/farming';
 import type { FarmingContract } from './minions/farming/types';
 import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
-import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
-import { getUsersPerkTier } from './perkTiers';
-import { roboChimpUserFetch } from './roboChimp';
 import type { MinigameScore } from './settings/minigames';
 import { Minigames, getMinigameEntity } from './settings/minigames';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
@@ -49,7 +42,6 @@ import { MTame } from './structures/MTame';
 import type { Skills } from './types';
 import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
-import { findGroupOfUser } from './util/findGroupOfUser';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
@@ -107,6 +99,7 @@ export class MUserClass {
 	paintedItems!: Map<number, number>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
+	cachedPerkTier!: PerkTier;
 
 	constructor(user: User) {
 		this.user = user;
@@ -146,10 +139,15 @@ export class MUserClass {
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
-	}
 
-	get gearTemplate() {
-		return gearImages.find(i => i.id === this.user.gear_template)!;
+		const clSlots = allCLItemsFiltered.filter(i => this.cl.has(i)).length;
+		const clPercentage = calcWhatPercent(clSlots, allCLItemsFiltered.length);
+		for (const a of perkTierUnlocks) {
+			if (clPercentage >= a.clPercent) {
+				this.cachedPerkTier = a.perk;
+				break;
+			}
+		}
 	}
 
 	countSkillsAtleast99() {
@@ -205,15 +203,15 @@ export class MUserClass {
 	}
 
 	get isIronman() {
-		return this.user.minion_ironman;
+		return true;
 	}
 
 	get GP() {
 		return Number(this.user.GP);
 	}
 
-	perkTier() {
-		return getUsersPerkTier(this);
+	perkTier(): 1 | 2 | 3 | 4 | 5 {
+		return 1;
 	}
 
 	skillLevel(skill: xp_gains_skill_enum) {
@@ -355,7 +353,7 @@ GROUP BY data->>'ci';`);
 		dontAddToTempCL = false,
 		neverUpdateHistory = false
 	}: {
-		items: ItemBank | Bank;
+		items: Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
@@ -363,7 +361,7 @@ GROUP BY data->>'ci';`);
 	}) {
 		const res = await transactItems({
 			collectionLog,
-			itemsToAdd: new Bank(items),
+			itemsToAdd: items,
 			filterLoot,
 			dontAddToTempCL,
 			userID: this.id,
@@ -683,8 +681,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	calculateAddItemsToCLUpdates({
-		items,
-		dontAddToTempCL = false
+		items
 	}: {
 		items: Bank;
 		dontAddToTempCL?: boolean;
@@ -692,10 +689,6 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		const updates: Prisma.UserUpdateArgs['data'] = {
 			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).bank
 		};
-
-		if (!dontAddToTempCL) {
-			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).bank;
-		}
 		return updates;
 	}
 
@@ -837,31 +830,6 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		await this.sync();
 	}
 
-	getMysteriousTrailData() {
-		const currentStepID = this.user.bso_mystery_trail_current_step_id as 1 | 2 | 3 | 4 | 5 | 6 | 7 | null;
-		if (currentStepID === null) {
-			return { step: null, track: null };
-		}
-		const [trackID] = seedShuffle(
-			mysteriousTrailTracks.map(i => i.id),
-			this.id
-		);
-		const track = mysteriousTrailTracks.find(i => i.id === trackID)!;
-		const step = track.steps[currentStepID - 1];
-		if (!step) {
-			throw new Error(`No step for ${currentStepID} ${this.id}`);
-		}
-		return {
-			step,
-			nextStep: track.steps[currentStepID as any] ?? null,
-			track,
-			stepData: mysteriousStepData[currentStepID],
-			nextStepData: mysteriousStepData[(currentStepID + 1) as keyof typeof mysteriousStepData],
-			previousStepData: mysteriousStepData[(currentStepID - 1) as keyof typeof mysteriousStepData],
-			minionMessage: randArrItem(mysteriousStepData[currentStepID].messages).replace('{minion}', this.minionName)
-		};
-	}
-
 	caPoints(): number {
 		const keys = Object.keys(CombatAchievements) as CATier[];
 		return keys
@@ -877,147 +845,9 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
-	buildTertiaryItemChanges(hasRingOfWealthI = false, inWildy = false, onTask = false) {
-		const changes = new Map();
-
-		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
-		for (const tier of tiers) {
-			let change = hasRingOfWealthI ? 50 : 0;
-			if (this.hasCompletedCATier(tier)) {
-				change += 5;
-			}
-			changes.set(`Clue scroll (${tier})`, change);
-		}
-
-		if (inWildy) changes.set('Giant key', 50);
-
-		if (inWildy && !onTask) {
-			changes.set('Mossy key', 60);
-		} else if (!inWildy && onTask) {
-			changes.set('Mossy key', 66.67);
-		} else if (inWildy && onTask) {
-			changes.set('Mossy key', 77.6);
-		}
-
-		return changes;
-	}
-
-	async checkBankBackground() {
-		if (this.bitfield.includes(BitField.isModerator)) {
-			return;
-		}
-		const resetBackground = async () => {
-			await this.update({ bankBackground: 1 });
-		};
-		const background = backgroundImages.find(i => i.id === this.user.bankBackground);
-		if (!background) {
-			return resetBackground();
-		}
-		if (background.id === 1) return;
-		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
-			return;
-		}
-		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
-			return;
-		}
-		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
-			return;
-		}
-		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield && !background.owners) {
-			return;
-		}
-		if (background.owners) {
-			const userIDs = await findGroupOfUser(this.id);
-			if (background.owners.some(owner => userIDs.includes(owner))) {
-				return;
-			}
-		}
-		return resetBackground();
-	}
-
-	async fetchRobochimpUser() {
-		return roboChimpUserFetch(this.id);
-	}
-
-	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
-		const gear = this.gear[setup].raw();
-		const equippedInSlot = gear[slot];
-		if (!equippedInSlot) {
-			return { refundBank: new Bank() };
-		}
-		gear[slot] = null;
-
-		const actualItem = getItem(equippedInSlot.item);
-		const refundBank = new Bank();
-		if (actualItem) {
-			refundBank.add(actualItem.id, equippedInSlot.quantity);
-		}
-
-		await this.update({
-			[`gear_${setup}`]: gear as any as Prisma.InputJsonObject
-		});
-		if (refundBank.length > 0) {
-			await this.addItemsToBank({
-				items: refundBank,
-				collectionLog: false
-			});
-		}
-
-		debugLog(
-			`ForceUnequip User[${this.id}] in ${setup} slot[${slot}] ${JSON.stringify(equippedInSlot)}: ${reason}`
-		);
-
-		return { refundBank };
-	}
-
 	async fetchStashUnits() {
 		const units = await getParsedStashUnits(this.id);
 		return units;
-	}
-
-	async validateEquippedGear() {
-		const itemsUnequippedAndRefunded = new Bank();
-		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, GearSetup][]) {
-			if (gearSetup['2h'] !== null) {
-				if (gearSetup.weapon?.item) {
-					const { refundBank } = await this.forceUnequip(
-						gearSetupName,
-						EquipmentSlot.Weapon,
-						'2h Already equipped'
-					);
-					itemsUnequippedAndRefunded.add(refundBank);
-				}
-				if (gearSetup.shield?.item) {
-					const { refundBank } = await this.forceUnequip(
-						gearSetupName,
-						EquipmentSlot.Shield,
-						'2h Already equipped'
-					);
-					itemsUnequippedAndRefunded.add(refundBank);
-				}
-			}
-			for (const slot of Object.values(EquipmentSlot)) {
-				const item = gearSetup[slot];
-				if (!item) continue;
-				const osItem = getItem(item.item);
-				if (!osItem) {
-					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Invalid item');
-					itemsUnequippedAndRefunded.add(refundBank);
-					continue;
-				}
-				if (osItem.equipment?.slot !== slot) {
-					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Wrong slot');
-					itemsUnequippedAndRefunded.add(refundBank);
-				}
-				if (osItem.equipment?.requirements && !this.hasSkillReqs(osItem.equipment.requirements)) {
-					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Doesnt meet requirements');
-					itemsUnequippedAndRefunded.add(refundBank);
-				}
-			}
-		}
-		return {
-			itemsUnequippedAndRefunded
-		};
 	}
 
 	async fetchTames() {
@@ -1065,52 +895,6 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		});
 		return { activity, tame: new MTame(tame) };
 	}
-
-	async calculateNetWorth() {
-		const bank = this.allItemsOwned.clone();
-		const activeListings = await prisma.gEListing.findMany({
-			where: {
-				user_id: this.id,
-				quantity_remaining: {
-					gt: 0
-				},
-				fulfilled_at: null,
-				cancelled_at: null
-			},
-			include: {
-				buyTransactions: true,
-				sellTransactions: true
-			}
-		});
-		for (const listing of activeListings) {
-			if (listing.type === 'Sell') {
-				bank.add(listing.item_id, listing.quantity_remaining);
-			} else {
-				bank.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
-			}
-		}
-		const activeGiveaways = await prisma.giveaway.findMany({
-			where: {
-				completed: false,
-				user_id: this.id
-			}
-		});
-		for (const giveaway of activeGiveaways) {
-			bank.add(giveaway.loot as ItemBank);
-		}
-		const gifts = await prisma.giftBox.findMany({
-			where: {
-				owner_id: this.id
-			}
-		});
-		for (const gift of gifts) {
-			bank.add(gift.items as ItemBank);
-		}
-		return {
-			bank,
-			value: marketPriceOfBank(bank)
-		};
-	}
 }
 declare global {
 	export type MUser = MUserClass;
@@ -1134,22 +918,6 @@ async function srcMUserFetch(userID: string, updates: Prisma.UserUpdateInput = {
 global.mUserFetch = srcMUserFetch;
 
 export const dailyResetTime = Time.Hour * 4;
-export const spawnLampResetTime = (user: MUser) => {
-	const bf = user.bitfield;
-	const perkTier = user.perkTier();
-
-	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
-	const hasTier5 = perkTier >= PerkTier.Five;
-	const hasTier4 = !hasTier5 && perkTier === PerkTier.Four;
-
-	let cooldown = ([PerkTier.Six, PerkTier.Five] as number[]).includes(perkTier) ? Time.Hour * 12 : Time.Hour * 24;
-
-	if (!hasTier5 && !hasTier4 && hasPerm) {
-		cooldown = Time.Hour * 48;
-	}
-
-	return cooldown - Time.Minute * 15;
-};
 export const itemContractResetTime = Time.Hour * 7.8;
 export const giveBoxResetTime = Time.Hour * 23.5;
 global.GlobalMUserClass = MUserClass;

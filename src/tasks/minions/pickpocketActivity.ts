@@ -13,8 +13,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { clueUpgraderEffect } from './monsterActivity';
+import { rogueOutfitPercentBonus, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 const notMultiplied = resolveItems([
 	'Blood shard',
@@ -76,9 +75,7 @@ export const pickpocketTask: MinionTask = {
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
-				const lootItems = obj.table.roll(1, {
-					tertiaryItemPercentageChanges: user.buildTertiaryItemChanges()
-				});
+				const lootItems = obj.table.roll();
 				// TODO: Remove Rocky from loot tables in oldschoolJS
 				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
@@ -104,7 +101,6 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		const boosts: string[] = [];
-		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
 		if (user.hasEquipped("Thieves' armband")) {
 			boosts.push('3x loot for Thieves armband');
 			loot.multiply(3, notMultiplied);
@@ -135,12 +131,6 @@ export const pickpocketTask: MinionTask = {
 				gotWil = true;
 			}
 		}
-
-		if (loot.has('Coins')) {
-			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
-		}
-
-		await userStatsBankUpdate(user, 'steal_loot_bank', loot);
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

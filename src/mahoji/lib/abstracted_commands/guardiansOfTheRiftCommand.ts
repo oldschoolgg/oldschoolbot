@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
 import { pickaxes, varrockArmours } from '../../../lib/skilling/functions/miningBoosts';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -10,7 +9,6 @@ import { formatDuration, itemID, itemNameFromID, randomVariation } from '../../.
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function guardiansOfTheRiftStartCommand(
@@ -157,19 +155,6 @@ export async function guardiansOfTheRiftStartCommand(
 		rolls += 2;
 		boosts.push('Extra 2 rolls for Combination runecrafting');
 		await user.removeItemsFromBank(removeRunesAndNecks);
-		updateBankSetting('gotr_cost', removeRunesAndNecks);
-		await trackLoot({
-			id: 'guardians_of_the_rift',
-			type: 'Minigame',
-			totalCost: removeRunesAndNecks,
-			changeType: 'cost',
-			users: [
-				{
-					id: user.id,
-					cost: removeRunesAndNecks
-				}
-			]
-		});
 	}
 
 	// 5.5 rolls, 120 is average mined essences, 14 is averge created guardians/barriers per game at max efficiency

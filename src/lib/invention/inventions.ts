@@ -9,7 +9,6 @@ import type { IMaterialBank, MaterialType } from '.';
 import { type ClueTier, ClueTiers } from '../clues/clueTiers';
 import type { ItemBank } from '../types';
 import { formatDuration, stringMatches, toKMB } from '../util';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { minionIsBusy } from '../util/minionIsBusy';
@@ -539,8 +538,7 @@ export async function transactMaterialsFromUser({
 	add,
 	remove,
 	addToDisassembledItemsBank,
-	addToResearchedMaterialsBank,
-	addToGlobalInventionCostBank
+	addToResearchedMaterialsBank
 }: {
 	user: MUser;
 	add?: MaterialBank;
@@ -565,14 +563,6 @@ export async function transactMaterialsFromUser({
 		updateObject.researched_materials_bank = remove
 			.clone()
 			.add(user.user.researched_materials_bank as IMaterialBank).bank;
-	}
-
-	if (addToGlobalInventionCostBank && remove) {
-		const current = await mahojiClientSettingsFetch({ invention_materials_cost: true });
-		await mahojiClientSettingsUpdate({
-			invention_materials_cost: new MaterialBank(current.invention_materials_cost as IMaterialBank).add(remove)
-				.bank
-		});
 	}
 
 	await user.update(updateObject);

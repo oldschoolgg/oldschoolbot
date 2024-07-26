@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { catchFishAtLocation, fishingLocations } from '../../../lib/fishingContest';
-import { trackLoot } from '../../../lib/lootTrack';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
@@ -11,7 +10,6 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import type { FishingContestOptions } from '../../../lib/types/minions';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSizeCM: number; fishingLevel: number }) {
 	let fishingXP = (fishSizeCM + 100) * (170 + Math.min(100, fishingLevel) / 5);
@@ -95,24 +93,6 @@ export const fishingContestTask: MinionTask = {
 			skillName: SkillsEnum.Fishing,
 			amount: fishingXP,
 			duration
-		});
-
-		await updateBankSetting('fc_loot', loot);
-
-		await trackLoot({
-			totalLoot: loot,
-			id: 'fishing_contest',
-			type: 'Minigame',
-			changeType: 'loot',
-			duration,
-			kc: 1,
-			users: [
-				{
-					id: user.id,
-					loot,
-					duration
-				}
-			]
 		});
 
 		handleTripFinish(

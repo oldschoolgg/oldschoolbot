@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { isFunction, reduceNumByPercent } from 'e';
@@ -12,9 +12,8 @@ import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
 
@@ -23,6 +22,12 @@ const allCreatablesTable = {
 	content,
 	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
 };
+
+let str = '';
+for (const a of Createables) {
+	str += `${a.name}\n`;
+}
+writeFileSync('creatables.txt', str);
 
 export const createCommand: OSBMahojiCommand = {
 	name: 'create',
@@ -241,11 +246,6 @@ export const createCommand: OSBMahojiCommand = {
 			itemsToAdd: outItems,
 			itemsToRemove: inItems
 		});
-
-		await updateBankSetting('create_cost', inItems);
-		await updateBankSetting('create_loot', outItems);
-		await userStatsBankUpdate(user, 'create_cost_bank', inItems);
-		await userStatsBankUpdate(user, 'create_loot_bank', outItems);
 
 		if (action === 'revert') {
 			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;

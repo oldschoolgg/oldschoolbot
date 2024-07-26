@@ -29,8 +29,8 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	const difference = currentDate - lastPlayedDate;
 
 	// If they have already claimed a ToG in the past 7days
-	if (difference < Time.Day * 7) {
-		const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Day * 7));
+	if (difference < Time.Hour * 8) {
+		const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Hour * 8));
 		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${duration}.`;
 	}
 
@@ -43,14 +43,12 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	const skills = user.skillsAsLevels;
 	let missingIronmanSkills = false;
 	// Extra requirements if Ironman
-	if (user.user.minion_ironman) {
-		let skillsMatch = 0;
-		Object.entries(ironmanExtraReqs).forEach(([skill, level]) => {
-			if (skills[skill as SkillsEnum] >= level) skillsMatch += 1;
-		});
-		if (skillsMatch === 0) {
-			missingIronmanSkills = true;
-		}
+	let skillsMatch = 0;
+	Object.entries(ironmanExtraReqs).forEach(([skill, level]) => {
+		if (skills[skill as SkillsEnum] >= level) skillsMatch += 1;
+	});
+	if (skillsMatch === 0) {
+		missingIronmanSkills = true;
 	}
 
 	const missingIronmanSkillMessage = `As an Ironman, you also need one of the following requirements:${formatSkillRequirements(

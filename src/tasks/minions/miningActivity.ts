@@ -198,7 +198,6 @@ export function calculateMiningResult({
 			const spiritBank = new Bank().add(ore.id, amountOfSpiritsToUse);
 			loot.add(spiritBank);
 			oresFromSpiritsBank.add(ore.id, amountOfSpiritsToUse);
-			messages.push(`You received ${spiritBank} from your ${spiritCost}.`);
 		}
 	}
 
@@ -295,7 +294,7 @@ export const miningTask: MinionTask = {
 			miningXP: user.skillsAsXP.mining
 		});
 
-		await transactItems({
+		const res = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot,
@@ -316,7 +315,7 @@ export const miningTask: MinionTask = {
 			})}`;
 		}
 
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished mining and received ${res.itemsAdded}. ${xpRes}`;
 
 		if (barsFromKlikBank.length > 0) {
 			await userStatsBankUpdate(user.id, 'bars_from_klik_bank', barsFromKlikBank);
@@ -334,8 +333,6 @@ export const miningTask: MinionTask = {
 				}
 			});
 		}
-
-		str += `\nYou received: ${loot}.`;
 
 		if (messages.length > 0) {
 			str += `\n\n${messages.join('\n')}`;

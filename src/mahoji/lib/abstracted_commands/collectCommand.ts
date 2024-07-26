@@ -7,7 +7,6 @@ import type { CollectingOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { collectables } from '../collectables';
 import { getPOH } from './pohCommand';
 
@@ -83,8 +82,6 @@ export async function collectCommand(
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
 		await transactItems({ userID: user.id, itemsToRemove: cost });
-
-		await updateBankSetting('collecting_cost', cost);
 	}
 
 	await addSubTaskToActivityTask<CollectingOptions>({

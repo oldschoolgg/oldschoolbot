@@ -7,7 +7,6 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')
@@ -97,8 +96,6 @@ export const gnomeResTask: MinionTask = {
 		});
 
 		const str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${flappyRes.userMsg}`;
-
-		updateBankSetting('gnome_res_loot', loot);
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

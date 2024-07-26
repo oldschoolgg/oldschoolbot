@@ -5,9 +5,14 @@ import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import Clue from 'oldschooljs/dist/structures/Clue';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-
-import { LampTable } from '../xpLamps';
 import { AllBarrows, BattlestaffTable, CosmeticsTable, StaffOrbTable, runeAlchablesTable } from './sharedTables';
+
+export const LampTable = new LootTable()
+	.add(6796, 1, 40)
+	.add(21_642, 1, 30)
+	.add(23_516, 1, 20)
+	.add(22_320, 1, 5)
+	.add(11_157, 1, 1);
 
 const ClueHunterTable = new LootTable()
 	.add('Helm of raedwald')

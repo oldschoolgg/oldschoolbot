@@ -10,7 +10,6 @@ import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const mixCommand: OSBMahojiCommand = {
@@ -151,8 +150,6 @@ export const mixCommand: OSBMahojiCommand = {
 				.remove(userBank)}**.`;
 
 		await user.removeItemsFromBank(finalCost);
-
-		updateBankSetting('herblore_cost_bank', finalCost);
 
 		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.item.id,

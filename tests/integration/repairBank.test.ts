@@ -16,12 +16,10 @@ test('Repair Bank', async () => {
 	const gear = TOBMaxMeleeGear.clone().raw();
 	gear[EquipmentSlot.Body] = null;
 	const cl = bank.clone();
-	const temp_cl = bank.clone();
 	const favoriteItems = resolveItems(['Coins', 'Coal', 'Egg', 'Trout']);
 	const expectedData: Parameters<(typeof user)['update']>['0'] = {
 		bank: bank.bank,
 		collectionLogBank: cl.bank,
-		temp_cl: temp_cl.bank,
 		favoriteItems: favoriteItems,
 		gear_fashion: gear as any as Prisma.InputJsonValue,
 		gear_melee: gear as any as Prisma.InputJsonValue,

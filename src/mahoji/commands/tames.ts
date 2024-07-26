@@ -2,10 +2,9 @@ import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
 import { Canvas, type Image, type SKRSContext2D, loadImage } from '@napi-rs/canvas';
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { mentionCommand, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
-import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
 import {
 	Time,
@@ -24,10 +23,9 @@ import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier, badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { trackLoot } from '../../lib/lootTrack';
+
 import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
-import { getUsersPerkTier } from '../../lib/perkTiers';
 
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -72,7 +70,6 @@ import {
 	tameHasBeenFed,
 	tameName
 } from '../../lib/util/tameUtil';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
 import { collectables } from '../lib/collectables';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -636,8 +633,6 @@ export async function removeRawFood({
 		}
 	});
 
-	updateBankSetting('economyStats_PVMCost', itemCost);
-
 	return {
 		success: true,
 		str: `${itemCost} from ${user.rawUsername}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
@@ -747,7 +742,6 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 	);
 
 	await user.removeItemsFromBank(mergingCost);
-	updateBankSetting('tame_merging_cost', mergingCost);
 
 	// Set the merged tame activities to the tame that is consuming it
 	await prisma.tameActivity.updateMany({
@@ -980,7 +974,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	const patronBoost = patronMaxTripBonus(user) * 2;
 	if (patronBoost > 0) {
 		maxTripLength += patronBoost;
-		boosts.push(`+${formatDuration(patronBoost, true)} trip length for T${getUsersPerkTier(user) - 1} patron`);
+		boosts.push(`+${formatDuration(patronBoost, true)} trip length for T${user.perkTier()} patron`);
 	}
 
 	if (isWeekend()) {
@@ -1029,21 +1023,6 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	}
 
 	const fakeDuration = Math.floor(quantity * speed);
-
-	await trackLoot({
-		id: monster.name,
-		changeType: 'cost',
-		type: 'Monster',
-		totalCost: foodRes.removed,
-		suffix: 'tame',
-		users: [
-			{
-				id: user.id,
-				cost: foodRes.removed
-			}
-		]
-	});
-
 	const kcs = await getIgneTameKC(tame);
 	const deathChance = monster.deathChance ? monster.deathChance({ tame, kc: kcs.idBank[monster.id] ?? 0 }) : 0;
 	let realDuration: number = fakeDuration;
@@ -1266,19 +1245,7 @@ async function monkeyMagicHandler(
 	}
 
 	await user.removeItemsFromBank(finalCost);
-	await trackLoot({
-		id: `${spellOptions.spell.name}`,
-		changeType: 'cost',
-		type: 'Skilling',
-		totalCost: finalCost,
-		suffix: 'tame',
-		users: [
-			{
-				id: user.id,
-				cost: finalCost
-			}
-		]
-	});
+
 	await prisma.tame.update({
 		where: {
 			id: tame.id
@@ -1287,7 +1254,6 @@ async function monkeyMagicHandler(
 			total_cost: new Bank(tame.total_cost as ItemBank).add(finalCost).bank
 		}
 	});
-	await updateBankSetting('economyStats_PVMCost', finalCost);
 
 	const duration = Math.floor(quantity * speed);
 
@@ -1547,7 +1513,7 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 	}
 
 	const loot = new Bank().add(equippable.item.id);
-	await user.addItemsToBank({ items: loot, collectionLog: false, dontAddToTempCL: true });
+	await user.transactItems({ itemsToAdd: loot, collectionLog: false, dontAddToTempCL: true, shouldRemap: false });
 
 	await prisma.tame.update({
 		where: {
@@ -1681,7 +1647,6 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 
 	await user.removeItemsFromBank(cost);
 	await tame.addToStatsBank('total_cost', cost);
-	await updateBankSetting('economyStats_PVMCost', cost);
 	if (costSavedByDemonicJibwings) {
 		await tame.addToStatsBank('demonic_jibwings_saved_cost', costSavedByDemonicJibwings);
 	}

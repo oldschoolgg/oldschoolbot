@@ -362,24 +362,16 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
-		// Loot received, items used, and logs/loot rolls lost message
-		str += `\nYou received ${loot}. `;
-		str += `${itemsToRemove.length > 0 ? `You used ${itemsToRemove}. ` : ''}`;
-		str += `${
-			lostLogs > 0 && !powerchopping
-				? `You lost ${
-						log.lootTable ? `${lostLogs}x ${log.name} loot rolls` : `${lostLogs}x ${log.name}`
-					} due to using a felling axe.`
-				: ''
-		}`;
-
 		// Update cl, give loot, and remove items used
-		await transactItems({
+		const res = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove
 		});
+		// Loot received, items used, and logs/loot rolls lost message
+		str += `\nYou received ${res.itemsAdded}. `;
+		str += `${itemsToRemove.length > 0 ? `You used ${itemsToRemove}. ` : ''}`;
 
 		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

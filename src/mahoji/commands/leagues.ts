@@ -1,8 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcWhatPercent } from 'e';
 
-import { production } from '../../config';
-import { PerkTier } from '../../lib/constants';
 import {
 	allLeagueTasks,
 	generateLeaguesTasksTextFile,
@@ -10,7 +8,6 @@ import {
 	leaguesCheckUser,
 	leaguesClaimCommand
 } from '../../lib/leagues/leagues';
-import { getUsersPerkTier } from '../../lib/perkTiers';
 import { type CommandRunOptions, formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { Cooldowns } from '../lib/Cooldowns';
@@ -72,13 +69,8 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 		view_all_tasks?: { exclude_finished?: boolean };
 	}>) => {
 		await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
-		const cooldown = Cooldowns.get(
-			userID.toString(),
-			'leagues',
-			getUsersPerkTier(user) >= PerkTier.Two ? Time.Second * 5 : Time.Second * 30
-		);
-		if (cooldown && production) {
+		const cooldown = Cooldowns.get(userID.toString(), 'leagues', Time.Second * 30);
+		if (cooldown) {
 			return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}.`;
 		}
 		const { content, finished } = await leaguesCheckUser(userID.toString());
@@ -90,14 +82,14 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 			if (!group) return 'Invalid task.';
 			const task = group.tasks.find(t => t.id.toString() === options.view_task?.task);
 			if (!task) return 'Invalid task.';
-			const count = await roboChimpClient.user.count({
+			const count = await prisma.user.count({
 				where: {
 					leagues_completed_tasks_ids: {
 						has: task.id
 					}
 				}
 			});
-			const totalUsers = await roboChimpClient.user.count({ where: { leagues_points_total: { gt: 0 } } });
+			const totalUsers = await prisma.user.count({ where: { leagues_completed_tasks_count: { gt: 0 } } });
 			const percentCompleted = calcWhatPercent(count, totalUsers);
 			return `**Description:** ${task.name}
 **Tier:** ${group.name}
@@ -106,7 +98,7 @@ ${percentCompleted.toFixed(2)}% of users have finished this task, ${
 			}`;
 		}
 		if (options.claim) {
-			return leaguesClaimCommand(userID, finished);
+			return leaguesClaimCommand(await mUserFetch(userID), finished);
 		}
 		if (options.view_all_tasks) {
 			return generateLeaguesTasksTextFile(finished, options.view_all_tasks.exclude_finished);

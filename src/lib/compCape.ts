@@ -517,9 +517,9 @@ miscRequirements
 	})
 	.add({
 		name: 'Unlock all Slayer unlocks',
-		has: ({ user, roboChimpUser }) => {
+		has: ({ user }) => {
 			const hasAll =
-				roboChimpUser.leagues_completed_tasks_ids.includes(4103) ||
+				user.user.leagues_completed_tasks_ids.includes(4103) ||
 				user.user.slayer_unlocks.length >= slayerUnlockableRewards.length ||
 				user.bitfield.includes(BitField.HadAllSlayerUnlocks);
 			if (!hasAll) {
@@ -601,10 +601,6 @@ const unlockablesRequirements = new Requirements()
 		bitfieldRequirement: BitField.HasGuthixEngram
 	})
 	.add({
-		name: 'Unlock the Hosidius wallkit',
-		bitfieldRequirement: BitField.HasHosidiusWallkit
-	})
-	.add({
 		name: 'Use a Dexterous Prayer Scroll',
 		bitfieldRequirement: BitField.HasDexScroll
 	})
@@ -639,10 +635,6 @@ const unlockablesRequirements = new Requirements()
 	.add({
 		name: "Use a Saradomin's light",
 		bitfieldRequirement: BitField.HasSaradominsLight
-	})
-	.add({
-		name: 'Unlock the Leagues max trip length boost',
-		bitfieldRequirement: BitField.HasLeaguesOneMinuteLengthBoost
 	})
 	.add({
 		name: 'Unlock the sacrifice max trip length boost',
@@ -770,10 +762,10 @@ export const compCapeTrimmedRequirements = new Requirements()
 	})
 	.add({
 		name: 'Complete all Leagues tasks',
-		has: ({ roboChimpUser }) => {
+		has: ({ user }) => {
 			const hasAll =
-				roboChimpUser.leagues_completed_tasks_ids.length === allLeagueTasks.length &&
-				allLeagueTasks.every(t => roboChimpUser.leagues_completed_tasks_ids.includes(t.id));
+				user.user.leagues_completed_tasks_ids.length === allLeagueTasks.length &&
+				allLeagueTasks.every(t => user.user.leagues_completed_tasks_ids.includes(t.id));
 			if (!hasAll) {
 				return 'You need to complete all Leagues tasks.';
 			}
@@ -792,8 +784,8 @@ export const compCapeTrimmedRequirements = new Requirements()
 for (const group of leagueTasks) {
 	compCapeTrimmedRequirements.add({
 		name: `Complete all ${group.name} Leagues tasks`,
-		has: ({ roboChimpUser }) => {
-			return group.tasks.every(t => roboChimpUser.leagues_completed_tasks_ids.includes(t.id));
+		has: ({ user }) => {
+			return group.tasks.every(t => user.user.leagues_completed_tasks_ids.includes(t.id));
 		}
 	});
 }

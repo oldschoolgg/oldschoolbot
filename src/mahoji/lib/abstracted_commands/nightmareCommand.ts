@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { BitField, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../../lib/constants';
 import { degradeItem } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
@@ -17,7 +17,6 @@ import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import getOSItem from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../mahojiSettings';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
@@ -286,20 +285,6 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 			});
 		}
 	}
-
-	await updateBankSetting('nightmare_cost', totalCost);
-	await trackLoot({
-		id: 'nightmare',
-		totalCost,
-		type: 'Monster',
-		changeType: 'cost',
-		users: [
-			{
-				id: user.id,
-				cost: totalCost
-			}
-		]
-	});
 
 	await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
 		userID: user.id,

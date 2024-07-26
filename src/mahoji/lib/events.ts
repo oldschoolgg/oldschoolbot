@@ -1,48 +1,53 @@
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import { Channel, META_CONSTANTS, globalConfig } from '../../lib/constants';
-import { initCrons } from '../../lib/crons';
+import { DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 
 import { initTickers } from '../../lib/tickers';
-import { logWrapFn } from '../../lib/util';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncSlayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
-import { sendToChannelID } from '../../lib/util/webhook';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 
 export async function syncCustomPrices() {
-	const clientData = await mahojiClientSettingsFetch({ custom_prices: true });
+	const clientData = await mahojiClientSettingsFetch();
 	for (const [key, value] of Object.entries(clientData.custom_prices as ItemBank)) {
 		CUSTOM_PRICE_CACHE.set(Number(key), Number(value));
 	}
 }
 
-export const onStartup = logWrapFn('onStartup', async () => {
+export async function onStartup() {
 	globalClient.application.commands.fetch({
-		guildId: globalConfig.isProduction ? undefined : globalConfig.testingServerID
+		guildId: globalConfig.isProduction ? undefined : globalConfig.mainServerID
 	});
+
+	// Sync disabled commands
+	const disabledCommands = await prisma.clientStorage.upsert({
+		where: {
+			id: globalConfig.clientID
+		},
+		select: { disabled_commands: true },
+		create: {
+			id: globalConfig.clientID
+		},
+		update: {}
+	});
+
+	if (disabledCommands.disabled_commands) {
+		for (const command of disabledCommands.disabled_commands) {
+			DISABLED_COMMANDS.add(command);
+		}
+	}
 	if (!globalConfig.isProduction) {
 		console.log('Syncing commands locally...');
 		await bulkUpdateCommands({
 			client: globalClient.mahojiClient,
 			commands: Array.from(globalClient.mahojiClient.commands.values()),
-			guildID: globalConfig.testingServerID
+			guildID: globalConfig.mainServerID
 		});
 	}
 
 	await syncDoubleLoot();
-
-	initCrons();
 	initTickers();
 	syncSlayerMaskLeaderboardCache();
-
-	if (globalConfig.isProduction) {
-		sendToChannelID(Channel.GeneralChannel, {
-			content: `I have just turned on!
-
-${META_CONSTANTS.RENDERED_STR}`
-		}).catch(console.error);
-	}
-});
+}

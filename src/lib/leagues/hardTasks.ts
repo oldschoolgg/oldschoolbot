@@ -513,20 +513,6 @@ export const hardTasks: Task[] = [
 		}
 	},
 	{
-		id: 2060,
-		name: 'Complete 30 Item Contracts',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.total_item_contracts >= 30;
-		}
-	},
-	{
-		id: 2061,
-		name: 'Achieve an Item Contract streak of 15',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.item_contract_streak >= 15;
-		}
-	},
-	{
 		id: 2062,
 		name: 'Kill 75 unique monsters',
 		has: async ({ userStats }) => {

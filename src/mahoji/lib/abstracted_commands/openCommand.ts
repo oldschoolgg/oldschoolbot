@@ -1,21 +1,20 @@
 import { type CommandResponse, PerkTier, stringMatches } from '@oldschoolgg/toolkit';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
+import { notEmpty, percentChance, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { BitField, Emoji } from '../../../lib/constants';
 import { type UnifiedOpenable, allOpenables, getOpenableLoot } from '../../../lib/openables';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { assert, itemNameFromID, makeComponents } from '../../../lib/util';
+import { assert, makeComponents } from '../../../lib/util';
 import { checkElderClueRequirements } from '../../../lib/util/elderClueRequirements';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import itemID from '../../../lib/util/itemID';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
+import { addToOpenablesScores, patronMsg, userStatsBankUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -58,14 +57,12 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 	const loot = new Bank();
 	let amountOpened = 0;
 	const max = Math.min(100, amountOfThisOpenableOwned);
-	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({
 			openable,
 			quantity: 1,
-			user,
-			totalLeaguesPoints
+			user
 		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
@@ -131,7 +128,6 @@ async function finalizeOpening({
 
 	if (hasSmokey || hasOcto) {
 		const bonuses = [];
-		const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 		for (const openable of openables) {
 			if (!openable.smokeyApplies) continue;
 			const bonusChancePercent = hasSmokey ? 10 : 8;
@@ -152,8 +148,7 @@ async function finalizeOpening({
 					await getOpenableLoot({
 						user,
 						openable,
-						quantity: smokeyBonus,
-						totalLeaguesPoints
+						quantity: smokeyBonus
 					})
 				).bank
 			);
@@ -170,50 +165,15 @@ async function finalizeOpening({
 		return `You don't own: ${cost}.`;
 	}
 	await transactItems({ userID: user.id, itemsToRemove: cost });
-	const { previousCL } = await user.addItemsToBank({
+	const { previousCL, itemsAdded } = await user.addItemsToBank({
 		items: loot,
 		collectionLog: true,
 		filterLoot: false,
 		dontAddToTempCL: openables.some(i => itemsThatDontAddToTempCL.includes(i.id))
 	});
 
-	const fakeTrickedLoot = loot.clone();
-
-	const openableWithTricking = openables.find(i => 'trickableItems' in i);
-	if (
-		openableWithTricking &&
-		'trickableItems' in openableWithTricking &&
-		openableWithTricking.trickableItems !== undefined
-	) {
-		const activeTrick = await prisma.mortimerTricks.findFirst({
-			where: {
-				target_id: user.id,
-				completed: false
-			}
-		});
-		if (activeTrick) {
-			// Pick a random item not in CL, or just a random one if all are in CL
-			const trickedItem =
-				shuffleArr(openableWithTricking.trickableItems).find(i => !user.cl.has(i)) ??
-				randArrItem(openableWithTricking.trickableItems);
-			fakeTrickedLoot.add(trickedItem);
-			const trickster = await globalClient.users.fetch(activeTrick.trickster_id).catch(noOp);
-			trickster
-				?.send(`You just tricked ${user.rawUsername} into thinking they got a ${itemNameFromID(trickedItem)}!`)
-				.catch(noOp);
-			await prisma.mortimerTricks.update({
-				where: {
-					id: activeTrick.id
-				},
-				data: {
-					completed: true
-				}
-			});
-		}
-	}
-
 	const image = await makeBankImage({
-		bank: fakeTrickedLoot,
+		bank: itemsAdded,
 		title:
 			openables.length === 1
 				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
@@ -222,10 +182,6 @@ async function finalizeOpening({
 		previousCL,
 		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
 	});
-
-	if (loot.has('Coins')) {
-		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
-	}
 
 	const openedStr = openables
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
@@ -295,8 +251,6 @@ export async function abstractedOpenCommand(
 	const loot = new Bank();
 	const messages: string[] = [];
 
-	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
-
 	for (const openable of openables) {
 		const { openedItem } = openable;
 		const quantity = typeof _quantity === 'string' ? user.bank.amount(openedItem.id) : _quantity;
@@ -310,8 +264,7 @@ export async function abstractedOpenCommand(
 		const thisLoot = await getOpenableLoot({
 			openable,
 			quantity,
-			user,
-			totalLeaguesPoints
+			user
 		});
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);

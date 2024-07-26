@@ -7,8 +7,7 @@ import {
 	percentChance,
 	randArrItem,
 	reduceNumByPercent,
-	roll,
-	sumArr
+	roll
 } from 'e';
 import type { MonsterKillOptions } from 'oldschooljs';
 import { Bank, Monsters } from 'oldschooljs';
@@ -16,85 +15,27 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { BitField, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import { trackLoot } from '../../lib/lootTrack';
+import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
-import announceLoot from '../../lib/minions/functions/announceLoot';
 import type { KillableMonster } from '../../lib/minions/types';
 
-import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, calculateSimpleMonsterDeathChance, clAdjustedDroprate, hasSkillReqs } from '../../lib/util';
+import { calculateSimpleMonsterDeathChance, clAdjustedDroprate, hasSkillReqs } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { trackClientBankStats, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
-
-async function bonecrusherEffect(user: MUser, loot: Bank, duration: number, messages: string[]) {
-	if (!user.hasEquippedOrInBank(['Gorajan bonecrusher', 'Superior bonecrusher'], 'one')) return;
-	if (user.bitfield.includes(BitField.DisabledGorajanBoneCrusher)) return;
-	let hasSuperior = user.owns('Superior bonecrusher');
-
-	let totalXP = 0;
-	for (const bone of bones) {
-		const amount = loot.amount(bone.inputId);
-		if (amount > 0) {
-			totalXP += bone.xp * amount * 4;
-			loot.remove(bone.inputId, amount);
-		}
-	}
-
-	const durationForCost = totalXP * 16.8;
-	let boostMsg: string | null = null;
-	if (hasSuperior && durationForCost > Time.Minute) {
-		const t = await inventionItemBoost({
-			user,
-			inventionID: InventionID.SuperiorBonecrusher,
-			duration: durationForCost
-		});
-		if (!t.success) {
-			hasSuperior = false;
-		} else {
-			totalXP = increaseNumByPercent(totalXP, inventionBoosts.superiorBonecrusher.xpBoostPercent);
-			boostMsg = t.messages;
-		}
-	}
-
-	totalXP *= 5;
-	userStatsUpdate(user.id, {
-		bonecrusher_prayer_xp: {
-			increment: Math.floor(totalXP)
-		}
-	});
-	const xpStr = await user.addXP({
-		skillName: SkillsEnum.Prayer,
-		amount: totalXP,
-		duration,
-		minimal: true,
-		multiplier: false
-	});
-	messages.push(
-		`${xpStr} Prayer XP ${
-			hasSuperior
-				? `+${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher${
-						boostMsg ? ` (${boostMsg})` : ''
-					}`
-				: ' from Gorajan bonecrusher'
-		}`
-	);
-}
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 const hideLeatherMap = [
 	[getOSItem('Green dragonhide'), getOSItem('Green dragon leather')],
@@ -123,44 +64,8 @@ async function portableTannerEffect(user: MUser, loot: Bank, duration: number, m
 		}
 	}
 	loot.add(toAdd);
-	trackClientBankStats('portable_tanner_loot', toAdd);
-	userStatsBankUpdate(user.id, 'portable_tanner_bank', toAdd);
 	if (!triggered) return;
 	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
-}
-
-export async function clueUpgraderEffect(user: MUser, loot: Bank, messages: string[], type: 'pvm' | 'pickpocketing') {
-	if (!user.owns('Clue upgrader')) return false;
-	const upgradedClues = new Bank();
-	const removeBank = new Bank();
-	let durationForCost = 0;
-
-	const fn = type === 'pvm' ? inventionBoosts.clueUpgrader.chance : inventionBoosts.clueUpgrader.pickPocketChance;
-	for (let i = 0; i < 5; i++) {
-		const clueTier = ClueTiers[i];
-		if (!loot.has(clueTier.scrollID)) continue;
-		for (let t = 0; t < loot.amount(clueTier.scrollID); t++) {
-			if (percentChance(fn(clueTier))) {
-				removeBank.add(clueTier.scrollID);
-				upgradedClues.add(ClueTiers[i + 1].scrollID);
-				durationForCost += inventionBoosts.clueUpgrader.durationCalc(clueTier);
-			}
-		}
-	}
-	if (upgradedClues.length === 0) return false;
-	const boostRes = await inventionItemBoost({
-		user,
-		inventionID: InventionID.ClueUpgrader,
-		duration: durationForCost
-	});
-	if (!boostRes.success) return false;
-	trackClientBankStats('clue_upgrader_loot', upgradedClues);
-	userStatsBankUpdate(user.id, 'clue_upgrader_bank', upgradedClues);
-	loot.add(upgradedClues);
-	assert(loot.has(removeBank));
-	loot.remove(removeBank);
-	const totalCluesUpgraded = sumArr(upgradedClues.items().map(i => i[1]));
-	messages.push(`<:Clue_upgrader:986830303001722880> Upgraded ${totalCluesUpgraded} clues (${boostRes.messages})`);
 }
 
 export const monsterTask: MinionTask = {
@@ -276,36 +181,7 @@ export const monsterTask: MinionTask = {
 					messages.push(`Your ${calc.gearThatBroke} broke, turning into ${calc.gearToRefund} in your bank.`);
 				}
 
-				// Track items lost
-				await trackLoot({
-					totalCost: calc.lostItems,
-					id: monster.name,
-					type: 'Monster',
-					changeType: 'cost',
-					users: [
-						{
-							id: user.id,
-							cost: calc.lostItems
-						}
-					]
-				});
 				// Track loot (For duration)
-				await trackLoot({
-					totalLoot: new Bank(),
-					id: monster.name,
-					type: 'Monster',
-					changeType: 'loot',
-					duration,
-					kc: quantity,
-					users: [
-						{
-							id: user.id,
-							loot: new Bank(),
-							duration
-						}
-					]
-				});
-
 				messages.push(
 					`${
 						hasPrayerLevel && !protectItem
@@ -383,14 +259,7 @@ export const monsterTask: MinionTask = {
 			onSlayerTask: isOnTaskResult.isOnTask,
 			slayerMaster: isOnTaskResult.isOnTask ? isOnTaskResult.slayerMaster.osjsEnum : undefined,
 			hasSuperiors: superiorTable,
-			inCatacombs: isInCatacombs,
-			lootTableOptions: {
-				tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
-					hasRingOfWealthI,
-					isInWilderness,
-					isOnTaskResult.isOnTask
-				)
-			}
+			inCatacombs: isInCatacombs
 		};
 
 		const loot = (monster as KillableMonster).table.kill(boostedQuantity, killOptions);
@@ -539,8 +408,6 @@ export const monsterTask: MinionTask = {
 			messages.push('**Double Loot!**');
 		}
 
-		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
-
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			await userStatsUpdate(
 				user.id,
@@ -562,9 +429,7 @@ export const monsterTask: MinionTask = {
 			loot.add('Clue hunter boots');
 		}
 
-		await bonecrusherEffect(user, loot, duration, messages);
 		await portableTannerEffect(user, loot, duration, messages);
-		await clueUpgraderEffect(user, loot, messages, 'pvm');
 
 		let thisTripFinishesTask = false;
 
@@ -714,22 +579,6 @@ export const monsterTask: MinionTask = {
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
-		});
-
-		await trackLoot({
-			totalLoot: itemsAdded,
-			id: monster.name.toString(),
-			type: 'Monster',
-			changeType: 'loot',
-			kc: quantity,
-			duration,
-			users: [
-				{
-					id: user.id,
-					loot: itemsAdded,
-					duration
-				}
-			]
 		});
 
 		const image =

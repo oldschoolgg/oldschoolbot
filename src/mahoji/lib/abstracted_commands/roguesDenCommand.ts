@@ -6,7 +6,6 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function roguesDenCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
@@ -47,7 +46,6 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 
 	if (staminasToRemove.length > 0) {
 		await user.removeItemsFromBank(staminasToRemove);
-		await updateBankSetting('rogues_den_cost', staminasToRemove);
 	}
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({

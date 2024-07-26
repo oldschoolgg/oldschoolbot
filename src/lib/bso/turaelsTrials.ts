@@ -2,7 +2,6 @@ import { Time, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit';
-import { trackClientBankStats, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { degradeChargeBank } from '../degradeableItems';
 import { ChargeBank } from '../structures/Banks';
 import type { TuraelsTrialsOptions } from '../types/minions';
@@ -108,8 +107,6 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 
 	const degradeResults = await degradeChargeBank(user, chargeBank);
 	await user.removeItemsFromBank(cost);
-	await trackClientBankStats('turaels_trials_cost_bank', cost);
-	await userStatsBankUpdate(user.id, 'turaels_trials_cost_bank', cost);
 	messages.push(degradeResults.map(i => i.userMessage).join(', '));
 	messages.push(`Removed ${cost}`);
 

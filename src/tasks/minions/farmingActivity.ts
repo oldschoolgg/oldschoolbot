@@ -19,7 +19,6 @@ import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
@@ -109,7 +108,6 @@ export const farmingTask: MinionTask = {
 			channelID,
 			planting,
 			currentDate,
-			pid,
 			duration
 		} = data;
 		const user = await mUserFetch(userID);
@@ -219,16 +217,15 @@ export const farmingTask: MinionTask = {
 				loot.bank[itemID('Plopper')] = 1;
 			}
 
-			if (loot.length > 0) {
-				str += `\n\nYou received: ${loot}.`;
-			}
-
-			updateBankSetting('farming_loot_bank', loot);
-			await transactItems({
+			const { itemsAdded } = await transactItems({
 				userID: user.id,
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+
+			if (loot.length > 0) {
+				str += `\n\nYou received: ${itemsAdded}.`;
+			}
 
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
@@ -236,8 +233,7 @@ export const farmingTask: MinionTask = {
 				plantTime: currentDate,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
-				lastPayment: payment ?? false,
-				pid
+				lastPayment: payment ?? false
 			};
 
 			await user.update({
@@ -522,8 +518,7 @@ export const farmingTask: MinionTask = {
 					plantTime: currentDate,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
-					lastPayment: payment ? payment : false,
-					pid
+					lastPayment: payment ? payment : false
 				};
 			}
 
@@ -612,26 +607,14 @@ export const farmingTask: MinionTask = {
 				}
 			}
 
-			if (Object.keys(loot).length > 0) {
-				infoStr.push(`\nYou received: ${loot}.`);
-			}
-
-			updateBankSetting('farming_loot_bank', loot);
-			await transactItems({
+			const { itemsAdded } = await transactItems({
 				userID: user.id,
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-			await userStatsBankUpdate(user, 'farming_harvest_loot_bank', loot);
-			if (pid) {
-				await prisma.farmedCrop.update({
-					where: {
-						id: pid
-					},
-					data: {
-						date_harvested: new Date()
-					}
-				});
+
+			if (itemsAdded.length > 0) {
+				infoStr.push(`\n\nYou received: ${itemsAdded}.`);
 			}
 
 			const seedPackCount = loot.amount('Seed pack');
