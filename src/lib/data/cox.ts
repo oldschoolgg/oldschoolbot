@@ -392,7 +392,6 @@ function kcEffectiveness(challengeMode: boolean, isSolo: boolean, normalKC: numb
 		cap = isSolo ? 75 : 100;
 	}
 	const kcEffectiveness = Math.min(100, calcWhatPercent(kc, cap));
-	// console.log(`kcEffectiveness: ${kcEffectiveness}`);
 	return kcEffectiveness;
 }
 
@@ -404,7 +403,7 @@ function calcPerc(perc: number, num: number) {
 function teamSizeBoostPercent(size: number) {
 	switch (size) {
 		case 1:
-			return -2;
+			return -6;
 		case 2:
 			return 7;
 		case 3:
@@ -413,14 +412,8 @@ function teamSizeBoostPercent(size: number) {
 			return 18;
 		case 5:
 			return 23;
-		case 6:
-			return 26;
-		case 7:
-			return 29;
-		case 8:
-			return 33;
 		default:
-			return 35;
+			return 23;
 	}
 }
 
@@ -708,7 +701,7 @@ export async function calcCoxDuration(
 
 	if (challengeMode) {
 		duration = baseCmDuration;
-		duration = reduceNumByPercent(duration, totalReduction / 1.1);
+		duration = reduceNumByPercent(duration, totalReduction / 1.05);
 	} else {
 		duration = reduceNumByPercent(duration, totalReduction);
 	}

@@ -231,17 +231,16 @@ export async function coxCommand(
 		return `Your mass failed to start because of this reason: ${teamCheckFailure}`;
 	}
 
-	// This gives a normal duration distribution. Better than (raidDuration * quantity) +/- 5%
+	// add variance to cox raid time
 	const duration = sumArr(
 		Array(quantity)
 			.fill(raidDuration)
 			.map(d => randomVariation(d, 5))
 	);
+
 	let debugStr = '';
 	const isSolo = users.length === 1;
 	const isFakeMass = users.length > 1 && new Set(users).size === 1;
-
-	// console.log(`isSolo: ${isSolo} | isFakeMass: ${isFakeMass}`);
 
 	for (const d of degradeables) {
 		d.chargesToDegrade *= quantity;

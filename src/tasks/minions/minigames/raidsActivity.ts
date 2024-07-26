@@ -113,8 +113,8 @@ export const raidsTask: MinionTask = {
 				}
 			}
 
-			// Vary completion times for CM time limits
-			const timeToComplete = quantity === 1 ? duration : randomVariation(duration / quantity, 5);
+			// Vary completion times for multiple raids in 1 trip
+			const timeToComplete = quantity === 1 ? duration : randomVariation(duration / quantity, 2);
 			const raidLoot = ChambersOfXeric.complete({
 				challengeMode,
 				timeToComplete,
