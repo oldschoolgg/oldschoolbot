@@ -683,9 +683,8 @@ export const YETI_ID = 129_521;
 export const KING_GOLDEMAR_GUARD_ID = 30_913;
 
 export const gitHash = execSync('git rev-parse HEAD').toString().trim();
-const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
-
-const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
+const gitRemote = 'oldschoolgg/oldschoolbot';
+const GIT_BRANCH = 'randomizer2';
 
 export const META_CONSTANTS = {
 	GIT_HASH: gitHash,
@@ -705,8 +704,6 @@ export const CHINCANNON_MESSAGES = [
 	'Your Chincannon blew up all the loot!',
 	'Your Chincannon turned the loot into dust.'
 ];
-
-export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
 export const gearValidationChecks = new Set();
 
@@ -740,3 +737,18 @@ if (!process.env.TEST) {
 		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
 	);
 }
+
+export const RANDOMIZER_HELP = `**Randomizer 2.0**
+
+- When you buy a minion/start, you get a "seed" which randomizes your "item mappings", deciding what each of your items are randomized to. Everybody has different randomizations.
+- You can reset your entire account (and your seed/mappings), ONCE, using /randomizer reset. You will start totally fresh, but this can only happen once and cannot be undone, so think carefully.
+- For every 50 CL slots you complete, you can view the mapping of a certain item. For example, if you want a Twisted bow but not sure what item it randomizes from, you can do /randomizer unlock_item_mapping item:Twisted bow and it will show a message like this: "Rune kiteshield -> Twisted bow -> Iron arrow(p++)". This means, if you smith a rune kiteshield, you'll get a twisted bow. If you get a twisted bow from COX, you'll actually get a iron arrow(p++).
+- You will need to unlock another 50 CL slots if you want to view another mapping.
+- Your XP gets randomized (e.g. cooking xp can become slayer xp, etc. So if you want to train slayer, you'd have to do cooking.)
+- Dungeoneering floor 1 has no skill requirements.
+- The ONLY mystery box is UMBs, the other mystery boxes cannot be opened or used - they drop randomly from doing any trips.
+- Some items never get randomized, which means you get them like normal. Coins, UMBs, and keycrate crates. You can get any/all keycrates from any trips. 
+- All normal rules still apply (no alting/botting/etc).
+
+Based on your progress, you can earn a Trophy in OSB/BSO.
+`;

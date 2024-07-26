@@ -29,8 +29,8 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	const difference = currentDate - lastPlayedDate;
 
 	// If they have already claimed a ToG in the past 7days
-	if (difference < Time.Day * 7) {
-		const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Day * 7));
+	if (difference < Time.Hour * 8) {
+		const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Hour * 8));
 		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${duration}.`;
 	}
 

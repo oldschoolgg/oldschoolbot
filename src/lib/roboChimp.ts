@@ -1,12 +1,9 @@
-import type { User } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { getTotalCl } from './data/Collections';
 import { calculateMastery } from './mastery';
 import { MUserStats } from './structures/MUserStats';
-
-export type RobochimpUser = User;
 
 export async function roboChimpSyncData(user: MUser) {
 	const stats = await MUserStats.fromID(user.id);

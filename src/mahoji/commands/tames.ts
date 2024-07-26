@@ -1513,7 +1513,7 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 	}
 
 	const loot = new Bank().add(equippable.item.id);
-	await user.addItemsToBank({ items: loot, collectionLog: false, dontAddToTempCL: true });
+	await user.transactItems({ itemsToAdd: loot, collectionLog: false, dontAddToTempCL: true, shouldRemap: false });
 
 	await prisma.tame.update({
 		where: {

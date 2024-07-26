@@ -75,13 +75,12 @@ export const cutLeapingFishTask: MinionTask = {
 			duration
 		});
 
-		const str = `${user}, ${user.minionName} finished cutting ${quantity}x ${barbarianFish.item.name}. ${xpRes}\n\n You received: ${loot}.`;
-
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
+		const str = `${user}, ${user.minionName} finished cutting ${quantity}x ${barbarianFish.item.name}. ${xpRes}\n\n You received: ${loot}.`;
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

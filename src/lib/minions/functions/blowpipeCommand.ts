@@ -129,7 +129,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	if (!userBank.has(itemsToRemove.bank)) {
 		return `You don't own ${itemsToRemove}.`;
 	}
-	await user.removeItemsFromBank(itemsToRemove);
+	await user.transactItems({ itemsToRemove: itemsToRemove, shouldRemap: false });
 	await user.update({
 		blowpipe: currentData as any as Prisma.InputJsonObject
 	});

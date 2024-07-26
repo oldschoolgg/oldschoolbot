@@ -142,7 +142,6 @@ async function kcLb(
 		 FROM user_stats
 		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
 		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
-		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
 		 ORDER BY score DESC
 		 LIMIT 2000;`
 	);
@@ -157,17 +156,11 @@ async function kcLb(
 	});
 }
 
-async function farmingContractLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	ironmanOnly: boolean
-) {
+async function farmingContractLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
 	const list = await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
 		`SELECT id, CAST("minion.farmingContract"->>'contractsCompleted' AS INTEGER) as count
 		 FROM users
 		 WHERE "minion.farmingContract" is not null and CAST ("minion.farmingContract"->>'contractsCompleted' AS INTEGER) >= 1
-		 ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
 		 ORDER BY count DESC
 		 LIMIT 2000;`
 	);
@@ -238,8 +231,7 @@ async function sacrificeLb(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	channelID: string,
-	type: 'value' | 'unique',
-	ironmanOnly: boolean
+	type: 'value' | 'unique'
 ) {
 	if (type === 'value') {
 		const list = (
@@ -247,7 +239,6 @@ async function sacrificeLb(
 				`SELECT "id", "sacrificedValue"
 					   FROM users
 					   WHERE "sacrificedValue" > 0
-					   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 					   ORDER BY "sacrificedValue"
 					   DESC LIMIT 2000;`
 			)
@@ -275,7 +266,6 @@ async function sacrificeLb(
 		`SELECT u.user_id::text AS id, u.sacbanklength
 				FROM (
   					SELECT (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) sacbanklength, user_id FROM user_stats
-  						${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id WHERE "minion.ironman" = true' : ''}
 				) u
 				ORDER BY u.sacbanklength DESC LIMIT 10;
 `
@@ -494,7 +484,6 @@ async function openLb(
 		`SELECT user_id::text AS id, ("${key}"->>'${entityID}')::int as qty FROM user_stats
 			${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id' : ''}
 			WHERE ("${key}"->>'${entityID}')::int > 3
-			${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
 			ORDER BY qty DESC LIMIT 30;`
 	);
 
@@ -514,7 +503,6 @@ async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, chann
 			`SELECT "id", "GP"
 					   FROM users
 					   WHERE "GP" > 1000000
-					   ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
 					   ORDER BY "GP" DESC
 					   LIMIT 100;`
 		)
@@ -536,14 +524,12 @@ async function skillsLb(
 	user: MUser,
 	channelID: string,
 	inputSkill: string,
-	type: 'xp' | 'level',
-	ironmanOnly: boolean
+	type: 'xp' | 'level'
 ) {
 	let res = [];
 	let overallUsers: {
 		id: string;
 		totalLevel: number;
-		ironman: boolean;
 		totalXP: number;
 	}[] = [];
 
@@ -565,11 +551,9 @@ async function skillsLb(
 		const query = `SELECT
 								u.id,
 								${skillsVals.map(s => `"skills.${s.id}"`)},
-								${skillsVals.map(s => `"skills.${s.id}"::int8`).join(' + ')} as totalxp,
-								u."minion.ironman"
+								${skillsVals.map(s => `"skills.${s.id}"::int8`).join(' + ')} as totalxp
 							FROM
 								users u
-							${ironmanOnly ? ' WHERE "minion.ironman" = true ' : ''}
 							ORDER BY totalxp DESC
 							LIMIT 2000;`;
 		res = await prisma.$queryRawUnsafe<Record<string, any>[]>(query);
@@ -581,7 +565,6 @@ async function skillsLb(
 			return {
 				id: user.id,
 				totalLevel,
-				ironman: user['minion.ironman'],
 				totalXP: Number(user.totalxp!)
 			};
 		});
@@ -614,10 +597,8 @@ async function skillsLb(
 		if (!skill) return "That's not a valid skill.";
 
 		const query = `SELECT
-								u."skills.${skill.id}", u.id, u."minion.ironman"
 							FROM
 								users u
-							${ironmanOnly ? ' WHERE "minion.ironman" = true ' : ''}
 							ORDER BY
 								1 DESC
 							LIMIT 2000;`;
@@ -712,7 +693,6 @@ async function cluesLb(
 FROM users
 WHERE "collectionLogBank"->>'${id}' IS NOT NULL
 AND ("collectionLogBank"->>'${id}')::int > 25
-${ironmanOnly ? 'AND "minion.ironman" = true ' : ''}
 ORDER BY ("collectionLogBank"->>'${id}')::int DESC
 LIMIT 50;`
 		)
@@ -785,7 +765,6 @@ async function compLeaderboard(
 		 FROM user_stats
 		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
 		 WHERE ${key} IS NOT NULL
-		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
 		 ORDER BY ${key} DESC
 		 LIMIT 100;`
 	);
@@ -1180,17 +1159,17 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		} = options;
 		if (kc) return kcLb(interaction, user, channelID, kc.monster, true);
 		if (farming_contracts) {
-			return farmingContractLb(interaction, user, channelID, true);
+			return farmingContractLb(interaction, user, channelID);
 		}
 		if (inferno) return infernoLb();
 		if (challenges) return bsoChallenge(interaction, user, channelID);
-		if (sacrifice) return sacrificeLb(interaction, user, channelID, sacrifice.type, true);
+		if (sacrifice) return sacrificeLb(interaction, user, channelID, sacrifice.type);
 		if (minigames) return minigamesLb(interaction, user, channelID, minigames.minigame);
 		if (hunter_catches) return creaturesLb(interaction, user, channelID, hunter_catches.creature);
 		if (agility_laps) return lapsLb(interaction, user, channelID, agility_laps.course);
 		if (gp) return gpLb(interaction, user, channelID, Boolean(gp.ironmen_only));
 		if (skills) {
-			return skillsLb(interaction, user, channelID, skills.skill, skills.xp ? 'xp' : 'level', true);
+			return skillsLb(interaction, user, channelID, skills.skill, skills.xp ? 'xp' : 'level');
 		}
 		if (opens) return openLb(interaction, user, channelID, opens.openable, true);
 		if (cl) return clLb(interaction, user, channelID, cl.cl, true, Boolean(cl.tames));

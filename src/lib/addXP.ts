@@ -292,18 +292,14 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			queryValue = convertLVLtoXP(value);
 			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
 				user.minionName
-			}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get level ${value} in ${skillNameCased}`
-			}`;
+			}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.`;
 		} else {
 			queryValue = value;
 			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
 				user.minionName
 			}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
 				value
-			)} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get ${toKMB(value)} XP in ${skillNameCased}`
-			}`;
+			)} in ${skillNameCased}.`;
 		}
 		// Query nthUser and nthIronman
 		const [nthUser] = await prisma.$queryRawUnsafe<
@@ -312,16 +308,6 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			}[]
 		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
 		resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count) + 1));
-		if (user.isIronman) {
-			const [nthIron] = await prisma.$queryRawUnsafe<
-				{
-					count: string;
-				}[]
-			>(
-				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
-			);
-			resultStr = resultStr.replace('{nthIron}', formatOrdinal(Number(nthIron.count) + 1));
-		}
 		globalClient.emit(Events.ServerNotification, resultStr);
 	}
 

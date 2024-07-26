@@ -29,18 +29,15 @@ export const smithingTask: MinionTask = {
 		const loot = new Bank({
 			[smithedItem.id]: quantity * smithedItem.outputMultiple
 		});
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		let str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 		if (hasBS) {
 			str += '\n**10%** Bonus XP For Blacksmith Outfit';
 		}
-
-		const collectionLog = true;
-
-		await transactItems({
-			userID: user.id,
-			collectionLog,
-			itemsToAdd: loot
-		});
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

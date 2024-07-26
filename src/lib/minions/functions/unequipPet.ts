@@ -12,7 +12,7 @@ export async function unequipPet(user: MUser) {
 	const loot = new Bank().add(equippedPet);
 
 	try {
-		await user.addItemsToBank({ items: loot, collectionLog: false });
+		await user.transactItems({ itemsToAdd: loot, collectionLog: false, shouldRemap: false });
 	} catch (e) {
 		logError(new Error('Failed to add pet to bank'), {
 			user_id: user.id,

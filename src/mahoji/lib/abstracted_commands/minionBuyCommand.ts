@@ -1,3 +1,4 @@
+import { RANDOMIZER_HELP } from '../../../lib/constants';
 import { updateUsersRandomizerMap } from '../../../lib/randomizer';
 
 export async function minionBuyCommand(user: MUser): Promise<string> {
@@ -10,7 +11,5 @@ export async function minionBuyCommand(user: MUser): Promise<string> {
 
 	await updateUsersRandomizerMap(user);
 
-	return `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
-
-TODO fill this out later with info`;
+	return RANDOMIZER_HELP;
 }

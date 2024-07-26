@@ -1173,7 +1173,6 @@ FROM   (
                              SUM(FLOOR(value::numeric)::bigint) AS itemqty
                   FROM       users
                   CROSS JOIN jsonb_each_text("collectionLogBank")
-				  WHERE "users"."minion.ironman" = true
                   GROUP BY   KEY ) s;`;
 			const bank = new Bank(res[0].banks);
 			return {

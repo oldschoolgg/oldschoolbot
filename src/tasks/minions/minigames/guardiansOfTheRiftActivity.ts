@@ -145,14 +145,14 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		runesLoot.add('Blood rune', bonusBloods);
 		totalLoot.add(runesLoot);
 
-		const { previousCL } = await transactItems({
+		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: totalLoot
 		});
 
 		const image = await makeBankImage({
-			bank: rewardsGuardianLoot,
+			bank: itemsAdded,
 			title: `Loot From ${rewardsQty}x Rewards Guardian rolls`,
 			user,
 			previousCL
@@ -160,7 +160,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 
 		let str = `<@${userID}>, ${
 			user.minionName
-		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also received: ${runesLoot}${
+		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also received: ${itemsAdded}${
 			setBonus - 1 > 0
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''

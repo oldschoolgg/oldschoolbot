@@ -247,11 +247,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_roles',
-			description: 'Sync roles'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'badges',
 			description: 'Manage badges of a user',
 			options: [
@@ -571,7 +566,7 @@ export const adminCommand: OSBMahojiCommand = {
 					item.wiki_url
 				}) to \`${price.toLocaleString()}\`?`
 			);
-			const settings = await mahojiClientSettingsFetch({ custom_prices: true });
+			const settings = await mahojiClientSettingsFetch();
 			const current = settings.custom_prices as ItemBank;
 			const newPrices = { ...current, [item.id]: price };
 			await mahojiClientSettingsUpdate({

@@ -27,7 +27,7 @@ import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { ClueTiers } from './clues/clueTiers';
-import { BitField, ONE_TRILLION, type ProjectileType, globalConfig, projectiles } from './constants';
+import { BitField, ONE_TRILLION, type ProjectileType, projectiles } from './constants';
 import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
@@ -526,15 +526,11 @@ export function awaitMessageComponentInteraction({
 	});
 }
 
-export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
-	const logger = globalConfig.isProduction ? debugLog : console.log;
+export async function runTimedLoggedFn<T>(_name: string, fn: () => Promise<T>, _threshholdToLog = 100): Promise<T> {
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	const result = await fn();
 	stopwatch.stop();
-	if (!globalConfig.isProduction || stopwatch.duration > threshholdToLog) {
-		logger(`Took ${stopwatch} to do ${name}`);
-	}
 	return result;
 }
 

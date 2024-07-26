@@ -1,10 +1,8 @@
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { MAX_QP } from '../../lib/minions/data/quests';
-import { SkillsEnum } from '../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -42,28 +40,11 @@ export const questingTask: MinionTask = {
 				increment: qpReceived
 			}
 		});
-		const herbLevel = user.skillLevel(SkillsEnum.Herblore);
-		if (herbLevel === 1 && newQP > 5 && roll(2)) {
-			await user.addXP({ skillName: SkillsEnum.Herblore, amount: 250 });
-			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
-		}
 
 		if (roll(globalDroprates.zippyQuesting.baseRate)) {
 			str +=
 				'\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!';
 			await user.addItemsToBank({ items: new Bank().add('Zippy'), collectionLog: true });
-		}
-
-		const magicXP = Number(user.user.skills_magic);
-		if (magicXP === 0 && roll(2)) {
-			await user.addXP({ skillName: SkillsEnum.Magic, amount: 325 });
-			str += `${Emoji.Magic} You received 325 Magic XP for completing Witch's Potion.`;
-		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
-			await user.addXP({ skillName: SkillsEnum.Magic, amount: 1000 });
-			str += `${Emoji.Magic} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
-		} else if (user.skillLevel(SkillsEnum.Cooking) >= 40 && newQP > 50 && magicXP < 2500 && roll(2)) {
-			await user.addXP({ skillName: SkillsEnum.Magic, amount: 2500 });
-			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
 
 		handleTripFinish(user, channelID, str, undefined, data, null);

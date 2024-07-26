@@ -18,6 +18,7 @@ export interface TransactItemsArgs {
 	dontAddToTempCL?: boolean;
 	neverUpdateHistory?: boolean;
 	otherUpdates?: Prisma.UserUpdateArgs['data'];
+	shouldRemap?: boolean;
 }
 
 declare global {
@@ -30,6 +31,7 @@ async function transactItemsFromBank({
 	collectionLog = false,
 	filterLoot = true,
 	dontAddToTempCL = false,
+	shouldRemap = true,
 	...options
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
@@ -38,7 +40,7 @@ async function transactItemsFromBank({
 
 	return userQueueFn(userID, async function transactItemsInner() {
 		const settings = await mUserFetch(userID);
-		if (itemsToAdd) {
+		if (itemsToAdd && shouldRemap) {
 			itemsToAdd.bank = remapBank(settings, itemsToAdd).bank;
 		}
 

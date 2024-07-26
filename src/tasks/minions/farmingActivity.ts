@@ -217,15 +217,15 @@ export const farmingTask: MinionTask = {
 				loot.bank[itemID('Plopper')] = 1;
 			}
 
-			if (loot.length > 0) {
-				str += `\n\nYou received: ${loot}.`;
-			}
-
-			await transactItems({
+			const { itemsAdded } = await transactItems({
 				userID: user.id,
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+
+			if (loot.length > 0) {
+				str += `\n\nYou received: ${itemsAdded}.`;
+			}
 
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
@@ -607,15 +607,15 @@ export const farmingTask: MinionTask = {
 				}
 			}
 
-			if (Object.keys(loot).length > 0) {
-				infoStr.push(`\nYou received: ${loot}.`);
-			}
-
-			await transactItems({
+			const { itemsAdded } = await transactItems({
 				userID: user.id,
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+
+			if (itemsAdded.length > 0) {
+				infoStr.push(`\n\nYou received: ${itemsAdded}.`);
+			}
 
 			const seedPackCount = loot.amount('Seed pack');
 

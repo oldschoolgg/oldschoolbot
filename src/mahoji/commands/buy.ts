@@ -8,6 +8,7 @@ import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Events } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
+import { remapBank } from '../../lib/randomizer';
 import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { MUserStats } from '../../lib/structures/MUserStats';
@@ -141,7 +142,7 @@ export const buyCommand: OSBMahojiCommand = {
 
 		await handleMahojiConfirmation(
 			interaction,
-			`${user}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`
+			`${user}, please confirm that you want to buy **${remapBank(user, outItems)}** for: ${totalCost}.`
 		);
 
 		if (

@@ -40,7 +40,7 @@ export const gauntletTask: MinionTask = {
 
 		await incrementMinigameScore(userID, key, quantity - deaths);
 
-		const { previousCL } = await user.transactItems({
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -55,7 +55,7 @@ export const gauntletTask: MinionTask = {
 		}
 
 		const image = await makeBankImage({
-			bank: loot,
+			bank: itemsAdded,
 			title: `Loot From ${quantity - deaths}x ${name}`,
 			user,
 			previousCL

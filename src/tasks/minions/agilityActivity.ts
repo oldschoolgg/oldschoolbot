@@ -213,7 +213,7 @@ export const agilityTask: MinionTask = {
 			})}`;
 		}
 
-		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\n${xpRes}`;
 
 		// Roll for monkey backpacks
 		if (course.id === 6) {
@@ -283,7 +283,7 @@ export const agilityTask: MinionTask = {
 						shardQty *= 2;
 					}
 					loot.add(item.id, shardQty);
-					messages.push(`You received **${shardQty}x ${item.name}**`);
+					messages.push(`Found (was gorajan shards): **${shardQty}x ${item.name}**`);
 				}
 			}
 		}
@@ -294,7 +294,7 @@ export const agilityTask: MinionTask = {
 			petMessages.push("You have a funny feeling you're being followed...");
 		}
 
-		await transactItems({
+		const res = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
@@ -303,6 +303,8 @@ export const agilityTask: MinionTask = {
 		for (const msgs of [boosts, messages, petMessages]) {
 			if (msgs.length > 0) str += `\n\n${msgs.join('\n')}`;
 		}
+
+		str += `\n\n**You received: ${res.itemsAdded}.**`;
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

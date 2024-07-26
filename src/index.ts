@@ -115,6 +115,16 @@ client.on('interactionCreate', async interaction => {
 		return;
 	}
 
+	if (interaction.inGuild() && interaction.guildId !== '342983479501389826') {
+		if (interaction.isRepliable()) {
+			await interactionReply(interaction, {
+				content: 'You can only use this bot in the main server.',
+				ephemeral: true
+			});
+		}
+		return;
+	}
+
 	if (
 		BLACKLISTED_USERS.has(interaction.user.id) ||
 		(interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId))

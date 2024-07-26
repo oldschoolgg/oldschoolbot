@@ -14,7 +14,6 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { rogueOutfitPercentBonus, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { clueUpgraderEffect } from './monsterActivity';
 
 const notMultiplied = resolveItems([
 	'Blood shard',
@@ -102,7 +101,6 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		const boosts: string[] = [];
-		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
 		if (user.hasEquipped("Thieves' armband")) {
 			boosts.push('3x loot for Thieves armband');
 			loot.multiply(3, notMultiplied);

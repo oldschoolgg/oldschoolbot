@@ -10,7 +10,7 @@ import { syncSlayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderb
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 
 export async function syncCustomPrices() {
-	const clientData = await mahojiClientSettingsFetch({ custom_prices: true });
+	const clientData = await mahojiClientSettingsFetch();
 	for (const [key, value] of Object.entries(clientData.custom_prices as ItemBank)) {
 		CUSTOM_PRICE_CACHE.set(Number(key), Number(value));
 	}
