@@ -97,6 +97,13 @@ declare global {
 	var globalClient: OldSchoolBotClient;
 }
 
+const WHITELISTED_SERVERS = [
+	'342983479501389826',
+	'1025677640360804413',
+	'736774315223154779',
+	'1022634851486150707',
+	'961265329768656926'
+];
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', msg => {
@@ -108,23 +115,14 @@ client.on('interactionCreate', async interaction => {
 		if (interaction.isRepliable()) {
 			await interactionReply(interaction, {
 				content:
-					'BSO is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'Randomizer is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}
 		return;
 	}
 
-	if (
-		interaction.inGuild() &&
-		![
-			'342983479501389826',
-			'1025677640360804413',
-			'736774315223154779',
-			'1022634851486150707',
-			'961265329768656926'
-		].includes(interaction.guildId)
-	) {
+	if (interaction.inGuild() && !WHITELISTED_SERVERS.includes(interaction.guildId)) {
 		if (interaction.isRepliable()) {
 			await interactionReply(interaction, {
 				content:
@@ -172,6 +170,9 @@ client.on(Events.ServerNotification, (message: string) => {
 
 client.on('guildCreate', guild => {
 	if (!guild.available) return;
+	if (!WHITELISTED_SERVERS.includes(guild.id)) {
+		guild.leave();
+	}
 	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.ownerId)) {
 		guild.leave();
 	}
