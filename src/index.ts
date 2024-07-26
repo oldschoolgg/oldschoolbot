@@ -3,7 +3,7 @@ import './lib/globals';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 
-import { MahojiClient } from '@oldschoolgg/toolkit';
+import { MahojiClient, bulkUpdateCommands } from '@oldschoolgg/toolkit';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
@@ -165,6 +165,19 @@ async function main() {
 	await preStartup();
 	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
 	console.log(`Logged in as ${globalClient.user.username}`);
+	const totalCommands = Array.from(globalClient.mahojiClient.commands.values());
+	const globalCommands = totalCommands.filter(i => !i.guildID);
+	const guildCommands = totalCommands.filter(i => Boolean(i.guildID) && !['testpotato'].includes(i.name));
+	await bulkUpdateCommands({
+		client: globalClient.mahojiClient,
+		commands: globalCommands,
+		guildID: null
+	});
+	await bulkUpdateCommands({
+		client: globalClient.mahojiClient,
+		commands: guildCommands,
+		guildID: '342983479501389826'
+	});
 }
 
 process.on('uncaughtException', err => {
