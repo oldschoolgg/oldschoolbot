@@ -72,7 +72,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 55,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -97,7 +97,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
