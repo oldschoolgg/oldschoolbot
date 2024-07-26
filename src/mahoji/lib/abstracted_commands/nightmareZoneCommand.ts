@@ -438,7 +438,7 @@ export async function nightmareZoneShopCommand(
 		}
 	});
 
-	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(costPerItem * quantity).toLocaleString()} Nightmare Zone points.\nYou now have ${currentUserPoints - cost} Nightmare Zone points left.`;
+	return `You successfully bought **${loot}** for ${(costPerItem * quantity).toLocaleString()} Nightmare Zone points.\nYou now have ${currentUserPoints - cost} Nightmare Zone points left.`;
 }
 
 export async function nightmareZoneImbueCommand(user: MUser, input = '') {

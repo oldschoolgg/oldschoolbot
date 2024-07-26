@@ -15,7 +15,7 @@ export const questingTask: MinionTask = {
 		const currentQP = user.QP;
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
-		let qpReceived = randInt(1, 30);
+		let qpReceived = randInt(100, 300);
 
 		const newQP = currentQP + qpReceived;
 
