@@ -86,7 +86,7 @@ export const raidsTask: MinionTask = {
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
 		let totalPoints = 0;
-		const fakeUsersStr: string[] = [];
+		const fakeUserResults = new Map<string, Bank>();
 		const raidResults = new Map<string, RaidResultUser>();
 		for (let x = 0; x < quantity; x++) {
 			const team = await createTeam(allUsers, challengeMode);
@@ -115,13 +115,10 @@ export const raidsTask: MinionTask = {
 			for (const [userID, userLoot] of Object.entries(raidLoot)) {
 				//track the simulated users loot to show the user on trip return
 				if (isFakeMass) {
-					const greenUnique = coxCMUniques.find(u => userLoot.has(u));
-					const purpleUnique = coxUniques.find(u => userLoot.has(u));
-					const fakeUserOlmlet = userLoot.has('Olmlet');
-					if (userID !== leader) {
-						fakeUsersStr.push(
-							`${fakeUserOlmlet ? '<:Olmlet:324127376873357316>' : ''}${greenUnique ? `${Emoji.Green}` : ''}${purpleUnique ? `${Emoji.Purple}` : ''}User #${userID}: ${userLoot}\n`
-						);
+					if (userID !== leader){
+						const existingLoot = fakeUserResults.get(userID) || new Bank();
+						existingLoot.add(userLoot);
+						fakeUserResults.set(userID, existingLoot);
 					}
 				}
 				let userData = raidResults.get(userID);
@@ -179,8 +176,17 @@ export const raidsTask: MinionTask = {
 			quantity > 1 ? 's have' : ' has'
 		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.`;
 
-		// create the simulated users loot str
+		// create the simulated users loot message
 		if (isFakeMass) {
+			const fakeUsersStr: string[] = [];
+			for (const [fakeID, fakeLoot] of fakeUserResults) {
+				const greenUnique = coxCMUniques.find(u => fakeLoot.has(u));
+				const purpleUnique = coxUniques.find(u => fakeLoot.has(u));
+				const fakeUserOlmlet = fakeLoot.has('Olmlet');
+				fakeUsersStr.push(
+					`${fakeUserOlmlet ? '<:Olmlet:324127376873357316>' : ''}${greenUnique ? `${Emoji.Green}` : ''}${purpleUnique ? `${Emoji.Purple}` : ''}User #${fakeID}: ${fakeLoot}\n`
+				);
+			}
 			const fakeUsersString = fakeUsersStr.join(' ');
 			const greenUnique = coxCMUniques.find(u => fakeUsersString.includes(u));
 			const purpleUnique = coxUniques.find(u => fakeUsersString.includes(u));
