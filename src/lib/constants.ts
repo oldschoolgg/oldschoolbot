@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
+import { isMainThread } from 'node:worker_threads';
 import type { Image } from '@napi-rs/canvas';
 import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
@@ -627,7 +628,7 @@ export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(780)
 	.add(850);
 
-if (!process.env.TEST) {
+if (!process.env.TEST && isMainThread) {
 	console.log(
 		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
 	);
