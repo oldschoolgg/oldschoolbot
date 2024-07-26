@@ -115,10 +115,20 @@ client.on('interactionCreate', async interaction => {
 		return;
 	}
 
-	if (interaction.inGuild() && interaction.guildId !== '342983479501389826') {
+	if (
+		interaction.inGuild() &&
+		![
+			'342983479501389826',
+			'1025677640360804413',
+			'736774315223154779',
+			'1022634851486150707',
+			'961265329768656926'
+		].includes(interaction.guildId)
+	) {
 		if (interaction.isRepliable()) {
 			await interactionReply(interaction, {
-				content: 'You can only use this bot in the main server.',
+				content:
+					'You can only use this bot in these servers: https://discord.gg/RTeFJ9EvH8 https://discord.gg/BZsEXGQvF8 https://discord.com/invite/GXkVqtHC6m https://discord.gg/ycPCtfkgMh',
 				ephemeral: true
 			});
 		}
