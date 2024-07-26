@@ -200,7 +200,7 @@ export const raidsTask: MinionTask = {
 			const greenUnique = coxCMUniques.find(u => fakeUsersString.includes(u));
 			const purpleUnique = coxUniques.find(u => fakeUsersString.includes(u));
 			const fakeUserOlmlet = fakeUsersString.includes('Olmlet');
-			resultMessage += `\n${isFakeMass ? `\n${fakeUserOlmlet ? '<:Olmlet:324127376873357316>' : ''}${greenUnique ? `${Emoji.Green}` : ''}${purpleUnique ? `${Emoji.Purple}` : ''}Simulated users loot:\n||${fakeUsersStr.join('')}||` : ''}`;
+			resultMessage += `\n${`\n${fakeUserOlmlet ? '<:Olmlet:324127376873357316>' : ''}${greenUnique ? `${Emoji.Green}` : ''}${purpleUnique ? `${Emoji.Purple}` : ''}Simulated users loot:\n||${fakeUsersStr.join('')}||`}`;
 		}
 
 		// Filter out fake users and only retain the leader's results
