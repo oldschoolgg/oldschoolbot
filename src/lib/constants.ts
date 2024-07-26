@@ -738,6 +738,38 @@ if (!process.env.TEST) {
 	);
 }
 
+export const perkTierUnlocks = [
+	{
+		tier: 5,
+		clPercent: 90,
+		perk: PerkTier.Six
+	},
+	{
+		tier: 4,
+		clPercent: 80,
+		perk: PerkTier.Five
+	},
+	{
+		tier: 3,
+		clPercent: 60,
+		perk: PerkTier.Four
+	},
+	{
+		tier: 2,
+		clPercent: 40,
+		perk: PerkTier.Three
+	},
+	{
+		tier: 1,
+		clPercent: 20,
+		perk: PerkTier.Two
+	},
+	{
+		tier: 0,
+		clPercent: 0,
+		perk: PerkTier.One
+	}
+];
 export const RANDOMIZER_HELP = `**Randomizer 2.0**
 
 - When you buy a minion/start, you get a "seed" which randomizes your "item mappings", deciding what each of your items are randomized to. Everybody has different randomizations.

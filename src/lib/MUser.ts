@@ -1,4 +1,4 @@
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit';
+import { type PerkTier, cleanUsername, mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit';
 import type { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
@@ -15,8 +15,8 @@ import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
-import { type BitField, projectiles } from './constants';
-import { bossCLItems } from './data/Collections';
+import { type BitField, perkTierUnlocks, projectiles } from './constants';
+import { allCLItemsFiltered, bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { degradeableItems } from './degradeableItems';
@@ -99,6 +99,7 @@ export class MUserClass {
 	paintedItems!: Map<number, number>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
+	cachedPerkTier!: PerkTier;
 
 	constructor(user: User) {
 		this.user = user;
@@ -138,6 +139,15 @@ export class MUserClass {
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
+
+		const clSlots = allCLItemsFiltered.filter(i => this.cl.has(i)).length;
+		const clPercentage = calcWhatPercent(clSlots, allCLItemsFiltered.length);
+		for (const a of perkTierUnlocks) {
+			if (clPercentage >= a.clPercent) {
+				this.cachedPerkTier = a.perk;
+				break;
+			}
+		}
 	}
 
 	countSkillsAtleast99() {

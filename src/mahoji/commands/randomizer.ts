@@ -67,8 +67,10 @@ export const randomizerCommand: OSBMahojiCommand = {
 		const reverseMap = user.user.reverse_item_map as ItemBank;
 
 		if (options.info) {
+			let str = RANDOMIZER_HELP;
+			str += `You have tier ${user.perkTier() - 1} perks, unlock higher tiers by filling out more collection log slots.`;
 			return {
-				content: RANDOMIZER_HELP
+				content: str
 			};
 		}
 
