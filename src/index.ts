@@ -164,7 +164,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.on(Events.ServerNotification, (message: string) => {
-	const channel = globalClient.channels.cache.get(globalConfig.generalChannelID);
+	const channel = globalClient.channels.cache.get(globalConfig.announcementsChannelID);
 	if (channel) (channel as TextChannel).send(message);
 });
 
