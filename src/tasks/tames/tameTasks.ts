@@ -142,12 +142,11 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 
 	async function handleFinish(res: { loot: Bank | null; message: string; user: MUser }) {
 		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
-
-		const loot = res.loot?.clone() ?? new Bank();
-		const crateRes = handleCrateSpawns(user, activity.duration);
-		if (crateRes !== null) loot.add(crateRes);
+		const { loot } = res;
 
 		if (loot) {
+			const crateRes = handleCrateSpawns(user, activity.duration);
+			if (crateRes !== null) loot.add(crateRes);
 			await prisma.tame.update({
 				where: {
 					id: tame.id
