@@ -1,5 +1,5 @@
 import { type Tame, tame_growth } from '@prisma/client';
-import { round } from 'e';
+import { Time, roll, round } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
@@ -14,7 +14,7 @@ export class MTame {
 	id: number;
 	userID: string;
 	species: Species;
-	growthStage: string;
+	growthStage: tame_growth;
 	fedItems: Bank;
 	equippedArmor: Item | null;
 	equippedPrimary: Item | null;
@@ -28,6 +28,7 @@ export class MTame {
 	maxCombatLevel: number;
 	maxGathererLevel: number;
 	maxArtisanLevel: number;
+	growthPercentage: number;
 
 	private currentLevel(maxLevel: number) {
 		return round(maxLevel / this.growthLevel, 2);
@@ -46,6 +47,7 @@ export class MTame {
 		this.growthLevel = 3 - [tame_growth.baby, tame_growth.juvenile, tame_growth.adult].indexOf(tame.growth_stage);
 		this.totalLoot = new Bank(this.tame.max_total_loot as ItemBank);
 		this.speciesVariant = tame.species_variant;
+		this.growthPercentage = tame.growth_percent;
 
 		this.maxSupportLevel = tame.max_support_level;
 		this.maxCombatLevel = tame.max_combat_level;
@@ -57,6 +59,47 @@ export class MTame {
 
 	toString() {
 		return `${this.nickname ?? this.species.name}`;
+	}
+
+	async addDuration(durationMilliseconds: number): Promise<string | null> {
+		if (this.growthStage === tame_growth.adult) return null;
+		const percentToAdd = durationMilliseconds / Time.Minute / 20;
+		const newPercent = Math.max(1, Math.min(100, this.growthPercentage + percentToAdd));
+
+		if (newPercent >= 100) {
+			const newTame = await prisma.tame.update({
+				where: {
+					id: this.id
+				},
+				data: {
+					growth_stage: this.growthStage === tame_growth.baby ? tame_growth.juvenile : tame_growth.adult,
+					growth_percent: 0
+				}
+			});
+			return `Your tame has grown into a ${newTame.growth_stage}!`;
+		}
+
+		await prisma.tame.update({
+			where: {
+				id: this.id
+			},
+			data: {
+				growth_percent: newPercent
+			}
+		});
+
+		return `Your tame has grown ${percentToAdd.toFixed(2)}%!`;
+	}
+
+	doubleLootCheck(loot: Bank) {
+		const hasMrE = this.fedItems.has('Mr. E');
+		let doubleLootMsg = '';
+		if (hasMrE && roll(12)) {
+			loot.multiply(2);
+			doubleLootMsg = '\n**2x Loot from Mr. E**';
+		}
+
+		return { loot, doubleLootMsg };
 	}
 
 	hasBeenFed(itemID: number | string) {

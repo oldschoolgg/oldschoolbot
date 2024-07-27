@@ -1,4 +1,4 @@
-import { type Tame, tame_growth } from '@prisma/client';
+import type { Tame, TameActivity } from '@prisma/client';
 import { Time, objectEntries } from 'e';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -9,7 +9,9 @@ import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBos
 import { Planks } from './minions/data/planks';
 import type { KillableMonster } from './minions/types';
 
+import type { handleFinish } from '../tasks/tames/tameTasks';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
+import type { MTame } from './structures/MTame';
 import { assert, calculateSimpleMonsterDeathChance } from './util';
 import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
@@ -203,15 +205,15 @@ export const igneArmors = [
 ].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_armor' as const }));
 
 export type TameKillableMonster = {
-	loot: (opts: { quantity: number; tame: Tame }) => Bank;
+	loot: (opts: { quantity: number; tame: MTame }) => Bank;
 	deathChance?: (opts: { tame: Tame; kc: number }) => number;
 	oriWorks?: boolean;
 	mustBeAdult?: boolean;
 	minArmorTier?: Item;
 } & Omit<KillableMonster, 'table'>;
 
-function calcPointsForTame(tame: Tame) {
-	const lvl = tame.max_combat_level;
+function calcPointsForTame(tame: MTame) {
+	const lvl = tame.maxCombatLevel;
 	if (lvl < 75) return 25_000;
 	if (lvl < 80) return 26_500;
 	if (lvl < 85) return 28_000;
@@ -443,10 +445,11 @@ export interface ArbitraryTameActivity {
 	id: 'Tempoross' | 'Wintertodt';
 	run: (opts: {
 		previousTameCL: Bank;
-		handleFinish(res: { loot: Bank | null; message: string; user: MUser }): Promise<void>;
+		handleFinish: typeof handleFinish;
 		user: MUser;
-		tame: Tame;
+		tame: MTame;
 		duration: number;
+		activity: TameActivity;
 	}) => Promise<void>;
 	allowedTames: TameSpeciesID[];
 }
@@ -538,36 +541,6 @@ export const tameSpecies: Species[] = [
 			.add('Coins', 10_000_000)
 	}
 ];
-
-export async function addDurationToTame(tame: Tame, duration: number) {
-	if (tame.growth_stage === tame_growth.adult) return null;
-	const percentToAdd = duration / Time.Minute / 20;
-	const newPercent = Math.max(1, Math.min(100, tame.growth_percent + percentToAdd));
-
-	if (newPercent >= 100) {
-		const newTame = await prisma.tame.update({
-			where: {
-				id: tame.id
-			},
-			data: {
-				growth_stage: tame.growth_stage === tame_growth.baby ? tame_growth.juvenile : tame_growth.adult,
-				growth_percent: 0
-			}
-		});
-		return `Your tame has grown into a ${newTame.growth_stage}!`;
-	}
-
-	await prisma.tame.update({
-		where: {
-			id: tame.id
-		},
-		data: {
-			growth_percent: newPercent
-		}
-	});
-
-	return `Your tame has grown ${percentToAdd.toFixed(2)}%!`;
-}
 
 export interface Species {
 	id: TameSpeciesID;

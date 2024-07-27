@@ -16,6 +16,7 @@ import { queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
+import { MTame } from './structures/MTame';
 import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
@@ -364,7 +365,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 			});
 
 			for (const task of tameTasks) {
-				await runTameTask(task, task.tame);
+				await runTameTask(task, new MTame(task.tame));
 			}
 		}
 	},

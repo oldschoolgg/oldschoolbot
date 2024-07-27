@@ -1,4 +1,4 @@
-import type { Tame, TameActivity } from '@prisma/client';
+import type { TameActivity } from '@prisma/client';
 import {
 	type APIInteractionGuildMember,
 	ActionRowBuilder,
@@ -24,13 +24,12 @@ import { allOpenables } from '../../lib/openables';
 import { runCommand } from '../../lib/settings/settings';
 import { getTemporossLoot } from '../../lib/simulation/tempoross';
 import { WintertodtCrate } from '../../lib/simulation/wintertodt';
-import { MTame } from '../../lib/structures/MTame';
+import type { MTame } from '../../lib/structures/MTame';
 import {
 	type ArbitraryTameActivity,
 	TameSpeciesID,
 	type TameTaskOptions,
 	TameType,
-	addDurationToTame,
 	seaMonkeySpells,
 	tameKillableMonsters
 } from '../../lib/tames';
@@ -39,25 +38,79 @@ import { assert, calcPerHour, formatDuration, itemNameFromID } from '../../lib/u
 import getOSItem from '../../lib/util/getOSItem';
 import { handleCrateSpawns } from '../../lib/util/handleCrateSpawns';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { tameHasBeenFed, tameLastFinishedActivity, tameName } from '../../lib/util/tameUtil';
+import { tameLastFinishedActivity } from '../../lib/util/tameUtil';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { collectables } from '../../mahoji/lib/collectables';
+
+export async function handleFinish({
+	lootToAdd,
+	user,
+	activity,
+	tame,
+	message
+}: { lootToAdd: Bank; message: string; user: MUser; tame: MTame; activity: TameActivity }) {
+	const results: string[] = [message];
+	const previousTameCl = tame.totalLoot.clone();
+	const crateRes = handleCrateSpawns(user, activity.duration);
+	if (crateRes !== null) lootToAdd.add(crateRes);
+
+	await prisma.tame.update({
+		where: {
+			id: tame.id
+		},
+		data: {
+			max_total_loot: previousTameCl.clone().add(lootToAdd).bank,
+			last_activity_date: new Date()
+		}
+	});
+	const { itemsAdded } = await user.addItemsToBank({ items: lootToAdd, collectionLog: false });
+	results.push(`Received ${itemsAdded}`);
+
+	const addRes = await tame.addDuration(activity.duration);
+	if (addRes) results.push(addRes);
+
+	return sendToChannelID(activity.channel_id, {
+		content: results.join(', '),
+		components: [
+			new ActionRowBuilder<ButtonBuilder>().addComponents(
+				new ButtonBuilder()
+					.setCustomId('REPEAT_TAME_TRIP')
+					.setLabel('Repeat Trip')
+					.setStyle(ButtonStyle.Secondary)
+			)
+		],
+		files:
+			itemsAdded.length > 0
+				? [
+						new AttachmentBuilder(
+							(
+								await makeBankImage({
+									bank: lootToAdd,
+									title: `${tame}'s Loot`,
+									user: user,
+									previousCL: previousTameCl
+								})
+							).file.attachment
+						)
+					]
+				: undefined
+	});
+}
 
 export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 	{
 		name: 'Tempoross',
 		id: 'Tempoross',
 		allowedTames: [TameSpeciesID.Monkey],
-		run: async ({ handleFinish, user, duration, tame, previousTameCL }) => {
+		run: async ({ handleFinish, user, duration, tame, previousTameCL, activity }) => {
 			const quantity = Math.ceil(duration / (Time.Minute * 5));
-			const loot = getTemporossLoot(quantity, tame.max_gatherer_level + 15, previousTameCL);
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
+			const loot = getTemporossLoot(quantity, tame.maxGathererLevel + 15, previousTameCL);
 			handleFinish({
-				loot: itemsAdded,
-				message: `${user}, ${tameName(
-					tame
-				)} finished defeating Tempoross ${quantity}x times, and received ${loot}.`,
-				user
+				lootToAdd: loot,
+				message: `${user}, ${tame} finished defeating Tempoross ${quantity}x times.`,
+				user,
+				tame,
+				activity
 			});
 		}
 	},
@@ -65,7 +118,7 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 		name: 'Wintertodt',
 		id: 'Wintertodt',
 		allowedTames: [TameSpeciesID.Igne],
-		run: async ({ handleFinish, user, duration, tame }) => {
+		run: async ({ handleFinish, user, duration, tame, activity }) => {
 			const quantity = Math.ceil(duration / (Time.Minute * 5));
 			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
@@ -78,28 +131,16 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 					})
 				);
 			}
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
-				loot: itemsAdded,
-				message: `${user}, ${tameName(
-					tame
-				)} finished defeating Wintertodt ${quantity}x times, and received ${loot}.`,
-				user
+				lootToAdd: loot,
+				message: `${user}, ${tame} finished defeating Wintertodt ${quantity}x times.`,
+				user,
+				activity,
+				tame
 			});
 		}
 	}
 ];
-
-function doubleLootCheck(tame: Tame, loot: Bank) {
-	const hasMrE = tameHasBeenFed(tame, 'Mr. E');
-	let doubleLootMsg = '';
-	if (hasMrE && roll(12)) {
-		loot.multiply(2);
-		doubleLootMsg = '\n**2x Loot from Mr. E**';
-	}
-
-	return { loot, doubleLootMsg };
-}
 
 async function handleImplingLocator(user: MUser, tame: MTame, duration: number, loot: Bank, messages: string[]) {
 	if (tame.hasBeenFed('Impling locator')) {
@@ -137,56 +178,8 @@ async function handleImplingLocator(user: MUser, tame: MTame, duration: number, 
 	}
 }
 
-export async function runTameTask(activity: TameActivity, tame: Tame) {
+export async function runTameTask(activity: TameActivity, tame: MTame) {
 	const user = await mUserFetch(activity.user_id);
-
-	async function handleFinish(res: { loot: Bank | null; message: string; user: MUser }) {
-		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
-
-		const loot = res.loot?.clone() ?? new Bank();
-		const crateRes = handleCrateSpawns(user, activity.duration);
-		if (crateRes !== null) loot.add(crateRes);
-
-		if (loot) {
-			await prisma.tame.update({
-				where: {
-					id: tame.id
-				},
-				data: {
-					max_total_loot: previousTameCl.clone().add(loot.bank).bank,
-					last_activity_date: new Date()
-				}
-			});
-		}
-		const addRes = await addDurationToTame(tame, activity.duration);
-		if (addRes) res.message += `\n${addRes}`;
-
-		sendToChannelID(activity.channel_id, {
-			content: res.message,
-			components: [
-				new ActionRowBuilder<ButtonBuilder>().addComponents(
-					new ButtonBuilder()
-						.setCustomId('REPEAT_TAME_TRIP')
-						.setLabel('Repeat Trip')
-						.setStyle(ButtonStyle.Secondary)
-				)
-			],
-			files: loot
-				? [
-						new AttachmentBuilder(
-							(
-								await makeBankImage({
-									bank: loot,
-									title: `${tameName(tame)}'s Loot`,
-									user: res.user,
-									previousCL: previousTameCl
-								})
-							).file.attachment
-						)
-					]
-				: undefined
-		});
-	}
 
 	const activityData = activity.data as any as TameTaskOptions;
 	switch (activityData.type) {
@@ -197,15 +190,17 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			let killQty = quantity - activity.deaths;
 			if (killQty < 1) {
 				handleFinish({
-					loot: null,
+					lootToAdd: new Bank(),
 					message: `${userMention(user.id)}, Your tame died in all their attempts to kill ${
 						mon.name
 					}. Get them some better armor!`,
-					user
+					user,
+					activity,
+					tame
 				});
 				return;
 			}
-			const hasOri = tameHasBeenFed(tame, 'Ori');
+			const hasOri = tame.hasBeenFed('Ori');
 
 			const oriIsApplying = hasOri && mon.oriWorks !== false;
 			// If less than 8 kills, roll 25% chance per kill
@@ -221,24 +216,21 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const loot = mon.loot({ quantity: killQty, tame });
 			const messages: string[] = [];
 
-			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${mon.name}.${
-				activity.deaths > 0 ? ` ${tameName(tame)} died ${activity.deaths}x times.` : ''
+			let str = `${user}, ${tame} finished killing ${quantity}x ${mon.name}.${
+				activity.deaths > 0 ? ` ${tame} died ${activity.deaths}x times.` : ''
 			}`;
 			if (oriIsApplying) {
 				messages.push('25% extra loot (ate an Ori)');
 			}
 
-			const { doubleLootMsg } = doubleLootCheck(tame, loot);
+			const { doubleLootMsg } = tame.doubleLootCheck(loot);
 			str += doubleLootMsg;
-
-			const mTame = new MTame(tame);
-			await handleImplingLocator(user, mTame, activity.duration, loot, messages);
+			await handleImplingLocator(user, tame, activity.duration, loot, messages);
 
 			if (messages.length > 0) {
 				str += `\n\n**Messages:** ${messages.join(', ')}.`;
 			}
 
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			await trackLoot({
 				duration: activity.duration,
 				kc: activityData.quantity,
@@ -250,15 +242,17 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				users: [
 					{
 						id: user.id,
-						loot: itemsAdded,
+						loot,
 						duration: activity.duration
 					}
 				]
 			});
 			handleFinish({
-				loot: itemsAdded,
+				lootToAdd: loot,
 				message: str,
-				user
+				user,
+				activity,
+				tame
 			});
 			break;
 		}
@@ -267,45 +261,46 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const collectable = collectables.find(c => c.item.id === itemID)!;
 			const totalQuantity = quantity * collectable.quantity;
 			const loot = new Bank().add(collectable.item.id, totalQuantity);
-			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
+			let str = `${user}, ${tame} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
-			const { doubleLootMsg } = doubleLootCheck(tame, loot);
+			const { doubleLootMsg } = tame.doubleLootCheck(loot);
 			str += doubleLootMsg;
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
-				loot: itemsAdded,
+				lootToAdd: loot,
 				message: str,
-				user
+				user,
+				tame,
+				activity
 			});
 			break;
 		}
 		case 'SpellCasting': {
 			const spell = seaMonkeySpells.find(s => s.id === activityData.spellID)!;
 			const loot = new Bank(activityData.loot);
-			let str = `${user}, ${tameName(tame)} finished casting the ${spell.name} spell for ${formatDuration(
+			let str = `${user}, ${tame} finished casting the ${spell.name} spell for ${formatDuration(
 				activity.duration
 			)}. ${loot
 				.items()
 				.map(([item, qty]) => `${Math.floor(calcPerHour(qty, activity.duration)).toFixed(1)}/hr ${item.name}`)
 				.join(', ')}`;
-			const { doubleLootMsg } = doubleLootCheck(tame, loot);
+			const { doubleLootMsg } = tame.doubleLootCheck(loot);
 			str += doubleLootMsg;
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
-				loot: itemsAdded,
+				lootToAdd: loot,
 				message: str,
-				user
+				user,
+				activity,
+				tame
 			});
 			break;
 		}
 		case 'Clues': {
-			const mTame = new MTame(tame);
 			const clueTier = ClueTiers.find(c => c.scrollID === activityData.clueID)!;
 			const messages: string[] = [];
 			const loot = new Bank();
 
-			await handleImplingLocator(user, mTame, activity.duration, loot, messages);
+			await handleImplingLocator(user, tame, activity.duration, loot, messages);
 
 			let actualOpenQuantityWithBonus = 0;
 			for (let i = 0; i < activityData.quantity; i++) {
@@ -313,7 +308,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			}
 
 			if (clueTier.name === 'Master' && !user.bitfield.includes(BitField.DisabledTameClueOpening)) {
-				const hasDivineRing = mTame.hasEquipped('Divine ring');
+				const hasDivineRing = tame.hasEquipped('Divine ring');
 				const percentChanceOfGMC = hasDivineRing ? 3.5 : 1.5;
 				for (let i = 0; i < activityData.quantity; i++) {
 					if (percentChance(percentChanceOfGMC)) {
@@ -328,7 +323,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			} else {
 				const openingLoot = clueTier.table.open(actualOpenQuantityWithBonus, user);
 
-				if (mTame.hasEquipped('Abyssal jibwings') && clueTier !== ClueTiers[0]) {
+				if (tame.hasEquipped('Abyssal jibwings') && clueTier !== ClueTiers[0]) {
 					const lowerTier = ClueTiers[ClueTiers.indexOf(clueTier) - 1];
 					const abysJwLoot = new Bank();
 					let bonusClues = 0;
@@ -340,28 +335,28 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 					}
 					if (abysJwLoot.length > 0) {
 						loot.add(abysJwLoot);
-						await mTame.addToStatsBank('abyssal_jibwings_loot', abysJwLoot);
+						await tame.addToStatsBank('abyssal_jibwings_loot', abysJwLoot);
 						messages.push(
 							`You received the loot from ${bonusClues}x ${lowerTier.name} caskets from your Abyssal jibwings.`
 						);
 					}
-				} else if (mTame.hasEquipped('3rd age jibwings') && openingLoot.has('Coins')) {
+				} else if (tame.hasEquipped('3rd age jibwings') && openingLoot.has('Coins')) {
 					const thirdAgeJwLoot = new Bank().add('Coins', openingLoot.amount('Coins'));
 					loot.add(thirdAgeJwLoot);
 					messages.push(`You received ${thirdAgeJwLoot} from your 3rd age jibwings.`);
-					await mTame.addToStatsBank('third_age_jibwings_loot', thirdAgeJwLoot);
+					await tame.addToStatsBank('third_age_jibwings_loot', thirdAgeJwLoot);
 				}
 
 				loot.add(openingLoot);
 			}
 
-			if (mTame.hasBeenFed('Elder knowledge') && roll(15)) {
-				await mTame.addToStatsBank('elder_knowledge_loot_bank', loot);
+			if (tame.hasBeenFed('Elder knowledge') && roll(15)) {
+				await tame.addToStatsBank('elder_knowledge_loot_bank', loot);
 				loot.multiply(2);
 				messages.push('2x loot from Elder knowledge (1/15 chance)');
 			}
 
-			let str = `${user}, ${mTame} finished completing ${activityData.quantity}x ${itemNameFromID(
+			let str = `${user}, ${tame} finished completing ${activityData.quantity}x ${itemNameFromID(
 				clueTier.scrollID
 			)}. (${Math.floor(calcPerHour(activityData.quantity, activity.duration)).toFixed(1)} clues/hr)`;
 
@@ -369,11 +364,12 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				str += `\n\n${messages.join('\n')}`;
 			}
 
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
-				loot: itemsAdded,
+				lootToAdd: loot,
 				message: str,
-				user
+				user,
+				activity,
+				tame
 			});
 			break;
 		}
@@ -393,7 +389,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				user,
 				tame,
 				duration: activity.duration,
-				previousTameCL: new Bank(previousTameCL?.tame_cl_bank as ItemBank)
+				previousTameCL: new Bank(previousTameCL?.tame_cl_bank as ItemBank),
+				activity
 			});
 			break;
 		}
