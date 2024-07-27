@@ -5,9 +5,36 @@ import type { Bank } from 'oldschooljs';
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
 import { roboChimpSyncData } from './roboChimp';
-import { MUserStats } from './structures/MUserStats';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { insertUserEvent } from './util/userEvents';
+
+async function fetchCurrentMastery(user: MUser) {
+	const [masteryRank, mastery, clPercentRank] = await prisma.$transaction([
+		prisma.user.count({
+			where: {
+				mastery: {
+					gt: user.user.mastery
+				}
+			}
+		}),
+		prisma.user.findFirst({
+			where: {
+				id: user.id
+			},
+			select: {
+				mastery: true
+			}
+		}),
+		prisma.user.count({
+			where: {
+				cl_percent: {
+					gt: user.user.cl_percent
+				}
+			}
+		})
+	]);
+	return { masteryRank, mastery, clPercentRank };
+}
 
 export async function handleNewCLItems({
 	itemsAdded,
@@ -29,7 +56,27 @@ export async function handleNewCLItems({
 
 	const previousCLDetails = calcCLDetails(previousCL);
 
+	const { mastery: previousMastery } = await fetchCurrentMastery(user);
+
 	await roboChimpSyncData(user);
+
+	const {
+		mastery: newMastery,
+		masteryRank: newMasteryRank,
+		clPercentRank: newCLPercentRank
+	} = await fetchCurrentMastery(user);
+
+	// Mastery tier message
+	if (newMastery && previousMastery) {
+		for (const percentage of [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 99]) {
+			if (previousMastery.mastery < percentage && newMastery.mastery >= percentage) {
+				globalClient.emit(
+					Events.ServerNotification,
+					`${user.badgedUsername} just reached ${percentage}% Mastery! They are now rank ${newMasteryRank} in mastery.`
+				);
+			}
+		}
+	}
 
 	const newCLDetails = calcCLDetails(newCL);
 
@@ -38,9 +85,7 @@ export async function handleNewCLItems({
 	const milestonePercentages = [25, 50, 70, 80, 90, 95, 100];
 	for (const milestone of milestonePercentages) {
 		if (previousCLDetails.percent < milestone && newCLDetails.percent >= milestone) {
-			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems
-				.toString()
-				.slice(0, 500)}!`;
+			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion!`;
 		}
 		break;
 	}
@@ -64,14 +109,6 @@ export async function handleNewCLItems({
 			type: UserEventType.CLCompletion,
 			collectionLogName: finishedCL.name
 		});
-		const kcString = finishedCL.fmtProg
-			? `They finished after... ${await finishedCL.fmtProg({
-					getKC: (id: number) => user.getKC(id),
-					user,
-					minigames: await user.fetchMinigames(),
-					stats: await MUserStats.fromID(user.id)
-				})}!`
-			: '';
 
 		const nthUser = (
 			await fetchCLLeaderboard({
@@ -82,11 +119,9 @@ export async function handleNewCLItems({
 			})
 		).filter(u => u.qty === finishedCL.items.length).length;
 
-		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
-
 		globalClient.emit(
 			Events.ServerNotification,
-			`${user.badgedUsername} just finished the ${finishedCL.name} collection log!${placeStr} ${kcString}`
+			`${user.badgedUsername} just finished the ${finishedCL.name} collection log! They are the ${formatOrdinal(nthUser)} user to finish this CL, and they are now rank ${newCLPercentRank} in overall CL completion.`
 		);
 	}
 }

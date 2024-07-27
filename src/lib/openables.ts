@@ -138,7 +138,6 @@ for (const clueTier of ClueTiers) {
 			const stats = await user.fetchStats({ openable_scores: true });
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
-			let gotMilestoneReward = false;
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
 			if (
@@ -150,7 +149,6 @@ for (const clueTier of ClueTiers) {
 					items: new Bank().add(clueTier.milestoneReward.itemReward),
 					collectionLog: true
 				});
-				gotMilestoneReward = true;
 			}
 
 			if (loot.length === 0) {
