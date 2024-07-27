@@ -4,11 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { clamp } from 'e';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import {
-	OpenUntilItems,
-	abstractedOpenCommand,
-	abstractedOpenUntilCommand
-} from '../lib/abstracted_commands/openCommand';
+import { abstractedOpenCommand } from '../lib/abstracted_commands/openCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const openCommand: OSBMahojiCommand = {
@@ -33,8 +29,7 @@ export const openCommand: OSBMahojiCommand = {
 							val.toLowerCase().includes(value.toLowerCase())
 						);
 					})
-					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }))
-					.concat([{ name: 'All (Open Everything)', value: 'all' }]);
+					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
 			}
 		},
 		{
@@ -43,20 +38,7 @@ export const openCommand: OSBMahojiCommand = {
 			description: 'The quantity you want to open (defaults to one).',
 			required: false,
 			min_value: 1,
-			max_value: 100_000
-		},
-		{
-			type: ApplicationCommandOptionType.String,
-			name: 'open_until',
-			description: 'Keep opening items until you get this item.',
-			required: false,
-			autocomplete: async (value: string) => {
-				if (!value) return OpenUntilItems.map(i => ({ name: i.name, value: i.name }));
-				return OpenUntilItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase())).map(i => ({
-					name: i.name,
-					value: i.name
-				}));
-			}
+			max_value: 200
 		}
 	],
 	run: async ({
@@ -72,13 +54,7 @@ export const openCommand: OSBMahojiCommand = {
 				1950
 			)}.`;
 		}
-		options.quantity = clamp(options.quantity ?? 1, 1, 100_000_000);
-		if (options.open_until) {
-			return abstractedOpenUntilCommand(user.id, options.name, options.open_until);
-		}
-		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');
-		}
+		options.quantity = clamp(options.quantity ?? 1, 1, 200);
 		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
 	}
 };
