@@ -1,4 +1,3 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { percentChance, randInt, roll } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -11,7 +10,7 @@ import LarransChest, { LarransChestOpenable } from 'oldschooljs/dist/simulation/
 
 import { bsoOpenables } from './bsoOpenables';
 import { ClueTiers } from './clues/clueTiers';
-import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
+import { Emoji, MIMIC_MONSTER_ID } from './constants';
 import { clueHunterOutfit } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import type { FarmingContract } from './minions/farming/types';
@@ -90,45 +89,6 @@ export interface UnifiedOpenable {
 	trickableItems?: number[];
 }
 
-const clueItemsToNotifyOf = resolveItems([
-	'3rd age range coif',
-	'3rd age range top',
-	'3rd age range legs',
-	'3rd age vambraces',
-	'3rd age robe top',
-	'3rd age robe',
-	'3rd age mage hat',
-	'3rd age amulet',
-	'3rd age plateskirt',
-	'3rd age platelegs',
-	'3rd age platebody',
-	'3rd age full helmet',
-	'3rd age kiteshield',
-	'3rd age longsword',
-	'3rd age wand',
-	'3rd age cloak',
-	'3rd age bow',
-	'3rd age pickaxe',
-	'3rd age axe',
-	'3rd age druidic robe bottoms',
-	'3rd age druidic robe top',
-	'3rd age druidic staff',
-	'3rd age druidic cloak'
-])
-	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
-	.concat(
-		resolveItems([
-			'Dwarven blessing',
-			'First age tiara',
-			'First age amulet',
-			'First age cape',
-			'First age bracelet',
-			'First age ring',
-			'First age robe bottom',
-			'First age robe top'
-		])
-	);
-
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
 	const casketItem = getOSItem(clueTier.id);
@@ -191,21 +151,6 @@ for (const clueTier of ClueTiers) {
 					collectionLog: true
 				});
 				gotMilestoneReward = true;
-			}
-
-			// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
-			// and send a notification if they got one.
-			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id), false);
-			if (gotMilestoneReward) {
-				announcedLoot.add(clueTier.milestoneReward?.itemReward);
-			}
-			if (announcedLoot.length > 0) {
-				globalClient.emit(
-					Events.ServerNotification,
-					`**${user.badgedUsername}'s** minion, ${user.minionName}, just opened their ${formatOrdinal(
-						nthCasket
-					)} ${clueTier.name} casket and received **${announcedLoot}**!`
-				);
 			}
 
 			if (loot.length === 0) {
