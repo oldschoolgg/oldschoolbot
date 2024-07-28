@@ -38,7 +38,7 @@ export const openCommand: OSBMahojiCommand = {
 			description: 'The quantity you want to open (defaults to one).',
 			required: false,
 			min_value: 1,
-			max_value: 200
+			max_value: 1000
 		}
 	],
 	run: async ({
@@ -54,7 +54,7 @@ export const openCommand: OSBMahojiCommand = {
 				1950
 			)}.`;
 		}
-		options.quantity = clamp(options.quantity ?? 1, 1, 200);
+		options.quantity = clamp(options.quantity ?? 1, 1, 1000);
 		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
 	}
 };
