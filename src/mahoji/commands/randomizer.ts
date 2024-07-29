@@ -83,11 +83,11 @@ export const randomizerCommand: OSBMahojiCommand = {
 			let str = RANDOMIZER_HELP(user);
 			str += `\n\nYou have tier ${user.perkTier() - 1} perks, unlock higher tiers by filling out more collection log slots.`;
 
-			let mapStr = 'FROM -> TO\n\n';
-			for (const [key, val] of Object.entries(map)) {
-				mapStr += `${itemNameFromID(Number(key))} (${key}) -> ${itemNameFromID(Number(val))} (${val}) \n`;
-			}
-			const attachment = Buffer.from(mapStr);
+			// let mapStr = 'FROM -> TO\n\n';
+			// for (const [key, val] of Object.entries(map)) {
+			// 	mapStr += `${itemNameFromID(Number(key))} (${key}) -> ${itemNameFromID(Number(val))} (${val}) \n`;
+			// }
+			// const attachment = Buffer.from(mapStr);
 
 			let buyableStr = '[Buy This] -> [Get This]\n';
 			for (const b of Buyables) {
@@ -101,7 +101,7 @@ export const randomizerCommand: OSBMahojiCommand = {
 			}
 			const attachment2 = Buffer.from(buyableStr);
 
-			let creatablesStr = '[Buy This] -> [Get This]\n';
+			let creatablesStr = '[Create This] -> [Get This]\n';
 			for (const c of Createables) {
 				const outItems = new Bank(isFunction(c.outputItems) ? c.outputItems(user) : c.outputItems);
 				const inItems = isFunction(c.inputItems) ? c.inputItems(user) : new Bank(c.inputItems);
@@ -113,7 +113,6 @@ export const randomizerCommand: OSBMahojiCommand = {
 			return {
 				content: str,
 				files: [
-					{ attachment, name: 'testingmap.txt' },
 					{ attachment: attachment2, name: 'buyables.txt' },
 					{ attachment: attachment3, name: 'creatables.txt' }
 				]
