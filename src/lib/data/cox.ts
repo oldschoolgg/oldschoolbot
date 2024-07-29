@@ -195,7 +195,7 @@ function calcSetupPercent(
 	return totalPercent;
 }
 
-//TODO: https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Strategies#Melee
+// BIS CoX gear: https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Strategies#Melee
 export const COXMaxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
 	neck: 'Occult necklace',
