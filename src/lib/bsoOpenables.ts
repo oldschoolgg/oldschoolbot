@@ -35,7 +35,6 @@ export const MysteryBoxes = new LootTable()
 	.oneIn(35, 'Equippable mystery box')
 	.oneIn(35, 'Clothing Mystery Box')
 	.add('Tradeable Mystery Box')
-	.add('Untradeable Mystery Box');
 
 export const magicCreateCrate = new LootTable()
 	.add('Pure essence', [500, 1000], 4)
