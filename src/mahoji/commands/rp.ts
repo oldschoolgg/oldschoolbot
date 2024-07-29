@@ -138,7 +138,7 @@ async function usernameSync() {
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
 	if ([...ADMIN_IDS, ...OWNER_IDS, ...botAccounts].includes(user.id)) return true;
-	if ([BitField.isModerator, BitField.isContributor].some(bf => user.bitfield.includes(bf))) return true;
+	if ([BitField.isModerator].some(bf => user.bitfield.includes(bf))) return true;
 	return false;
 }
 
@@ -564,11 +564,8 @@ export const rpCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isAdmin = ADMIN_IDS.includes(userID);
 		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		const isTrusted = [BitField.IsWikiContributor, BitField.isContributor].some(bit =>
-			adminUser.bitfield.includes(bit)
-		);
 		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-		if (!isAdmin && !isMod && !isTrusted) return randArrItem(gifs);
+		if (!isAdmin && !isMod) return randArrItem(gifs);
 
 		if (options.user_event) {
 			const messageId =
