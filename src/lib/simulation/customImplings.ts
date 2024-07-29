@@ -61,7 +61,6 @@ export const MysteryImpling = new SimpleOpenable({
 	name: 'Mystery impling jar',
 	aliases: ['mystery impling', 'mystery imp'],
 	table: new LootTable()
-		.add('Untradeable Mystery Box')
 		.add('Tradeable Mystery Box')
 		.add('Pet Mystery Box')
 		.add('Equippable mystery box')

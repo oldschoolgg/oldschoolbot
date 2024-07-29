@@ -2,6 +2,7 @@ import type { activity_type_enum } from '@prisma/client';
 import { Time, calcPercentOfNum, calcWhatPercent } from 'e';
 
 import { PerkTier } from '../constants';
+import { RelicID } from '../relics';
 import { SkillsEnum } from '../skilling/types';
 import { skillLevel } from './minionUtils';
 
@@ -100,5 +101,8 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	const perkTier = user.perkTier();
 	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
 
+	if (user.hasRelic(RelicID.Repetition)) {
+		max *= 1.3;
+	}
 	return max;
 }

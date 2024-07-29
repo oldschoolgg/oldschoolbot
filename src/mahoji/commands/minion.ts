@@ -22,6 +22,7 @@ import type { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
+import { randomizationMethods } from '../../lib/randomizer';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -111,7 +112,16 @@ export const minionCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'buy',
-			description: 'Buy a minion so you can start playing the bot!'
+			description: 'Buy a minion so you can start playing the bot!',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'randomization_method',
+					description: 'The randomization method you want to use.',
+					required: true,
+					choices: randomizationMethods.map(i => ({ name: i.name, value: i.name }))
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -323,7 +333,7 @@ export const minionCommand: OSBMahojiCommand = {
 		set_name?: { name: string };
 		level?: { skill: string };
 		kc?: { name: string };
-		buy?: {};
+		buy?: { randomization_method: string };
 		charge?: { item?: string; amount?: number };
 		daily?: {};
 		train?: { style: AttackStyles };
@@ -339,6 +349,20 @@ export const minionCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await mUserFetch(userID);
 		const perkTier = user.perkTier();
+
+		if (options.buy || !user.hasMinion) {
+			const randMethod = randomizationMethods.find(i => i.name === options.buy?.randomization_method);
+			if (!randMethod) {
+				return 'Invalid method.';
+			}
+
+			await handleMahojiConfirmation(
+				interaction,
+				`You chose **${randMethod.name} (${randMethod.desc})**, are you sure? Changing this later requires you to reset.`
+			);
+
+			return minionBuyCommand(user, randMethod);
+		}
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
 		if (options.status) return minionStatusCommand(user);
@@ -398,8 +422,6 @@ export const minionCommand: OSBMahojiCommand = {
 			}
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
-
-		if (options.buy) return minionBuyCommand(user);
 
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);

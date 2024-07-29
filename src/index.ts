@@ -158,7 +158,6 @@ client.on('guildCreate', guild => {
 });
 
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
-client.once('ready', () => onStartup());
 
 async function main() {
 	if (process.env.TEST) return;
@@ -168,16 +167,19 @@ async function main() {
 	const totalCommands = Array.from(globalClient.mahojiClient.commands.values());
 	const globalCommands = totalCommands.filter(i => !i.guildID);
 	const guildCommands = totalCommands.filter(i => Boolean(i.guildID) && !['testpotato'].includes(i.name));
-	await bulkUpdateCommands({
-		client: globalClient.mahojiClient,
-		commands: globalCommands,
-		guildID: null
-	});
+	if (globalConfig.isProduction) {
+		await bulkUpdateCommands({
+			client: globalClient.mahojiClient,
+			commands: globalCommands,
+			guildID: null
+		});
+	}
 	await bulkUpdateCommands({
 		client: globalClient.mahojiClient,
 		commands: guildCommands,
-		guildID: '342983479501389826'
+		guildID: globalConfig.isProduction ? '342983479501389826' : '940758552425955348'
 	});
+	await onStartup();
 }
 
 process.on('uncaughtException', err => {

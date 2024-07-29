@@ -54,7 +54,7 @@ export const buyCommand: OSBMahojiCommand = {
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity?: string }>) => {
 		const user = await mUserFetch(userID.toString());
 		const { name } = options;
-		let quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
+		let quantity = mahojiParseNumber({ input: options.quantity, min: 1, max: 10_000_000 }) ?? 1;
 		if (stringMatches(name, 'kitten')) {
 			return buyKitten(user);
 		}
@@ -171,6 +171,10 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 
 			globalClient.emit(Events.ServerNotification, announcement);
+		}
+
+		if (gpCost && user.GP < gpCost) {
+			return `You don't have enough GP to buy this item. You need ${gpCost.toLocaleString()} GP.`;
 		}
 
 		await transactItems({

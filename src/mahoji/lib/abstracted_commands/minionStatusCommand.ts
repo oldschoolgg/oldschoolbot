@@ -1,8 +1,8 @@
 import type { BaseMessageOptions } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField, Emoji, PerkTier, minionBuyButton } from '../../../lib/constants';
+import { BitField, Emoji, PerkTier } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { roboChimpSyncData } from '../../../lib/roboChimp';
 
@@ -31,14 +31,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	if (!user.user.minion_hasBought) {
 		return {
-			content:
-				"You haven't bought a minion yet! Click the button below to buy a minion and start playing the bot.",
-			components: [
-				{
-					components: [minionBuyButton],
-					type: ComponentType.ActionRow
-				}
-			]
+			content: `You haven't bought a minion yet! Use /minion buy.`
 		};
 	}
 

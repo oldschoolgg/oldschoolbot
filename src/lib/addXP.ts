@@ -1,7 +1,7 @@
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
+import { Time, increaseNumByPercent, noOp, notEmpty, objectEntries, objectValues } from 'e';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
@@ -16,9 +16,10 @@ import { skillEmoji } from './data/emojis';
 import { getSimilarItems } from './data/similarItems';
 import type { AddXpParams } from './minions/types';
 
+import { RelicID } from './relics';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
-import { SkillsArray, SkillsEnum } from './skilling/types';
+import { type SkillNameType, SkillsArray, SkillsEnum } from './skilling/types';
 import { convertLVLtoXP, convertXPtoLVL, itemNameFromID, toKMB } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -367,5 +368,30 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 				: `\n**Congratulations! Your ${name} level is now ${newLevel}** 🎉`;
 		}
 	}
+
+	if (user.hasRelic(RelicID.XP)) {
+		let lowestSkill: SkillNameType = 'attack';
+		let lowestSkillXP = 100000000;
+		for (const [skill, xp] of objectEntries(user.skillsAsXP)) {
+			if (xp < lowestSkillXP) {
+				lowestSkill = skill;
+				lowestSkillXP = xp;
+			}
+		}
+
+		const bonusXPForThisSkill = Math.ceil(params.amount * 0.1);
+		const xpForLowestSkill = Math.ceil(params.amount * 0.01);
+		await user.update({
+			[`skills_${lowestSkill}`]: {
+				increment: xpForLowestSkill
+			},
+			[`skills_${params.skillName}`]: {
+				increment: bonusXPForThisSkill
+			}
+		});
+
+		str += ` **Relic of XP granted you:** ${toKMB(bonusXPForThisSkill)} ${params.skillName} XP, ${toKMB(xpForLowestSkill)} ${lowestSkill} XP.`;
+	}
+
 	return str;
 }

@@ -7,8 +7,7 @@ import {
 	agilityArenaBuyCommand,
 	agilityArenaBuyables,
 	agilityArenaCommand,
-	agilityArenaRecolorCommand,
-	agilityArenaXPCommand
+	agilityArenaRecolorCommand
 } from '../lib/abstracted_commands/agilityArenaCommand';
 import {
 	BarbBuyables,
@@ -1362,10 +1361,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.agility_arena?.recolor) {
 			return agilityArenaRecolorCommand(user);
 		}
-		if (options.agility_arena?.xp) {
-			return agilityArenaXPCommand(user, options.agility_arena.xp.quantity);
-		}
-
 		/**
 		 *
 		 * Trouble Brewing

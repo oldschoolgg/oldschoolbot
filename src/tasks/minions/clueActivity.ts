@@ -19,8 +19,7 @@ const possibleFound = new LootTable()
 	.add('Reward casket (elite)')
 	.add('Reward casket (master)')
 	.add('Tradeable Mystery Box')
-	.add('Tradeable Mystery Box')
-	.add('Untradeable Mystery Box');
+	.add('Tradeable Mystery Box');
 
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',

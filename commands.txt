@@ -317,7 +317,6 @@ poh items
 ------ open------
 open name
 open quantity
-open open_until
 
 
 ------ offer------
@@ -507,5 +506,13 @@ leagues view_all_tasks
 randomizer info
 randomizer unlock_item_mapping
 randomizer reset
+
+
+------ gamble------
+
+
+------ relic------
+relic pick
+relic view
 
 

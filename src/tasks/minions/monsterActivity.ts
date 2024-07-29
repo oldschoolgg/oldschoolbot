@@ -24,6 +24,7 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import type { KillableMonster } from '../../lib/minions/types';
 
+import { RelicID } from '../../lib/relics';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
@@ -494,7 +495,13 @@ export const monsterTask: MinionTask = {
 					{ slayer_wildy_task_streak: true }
 				);
 				const currentStreak = newStats.slayer_wildy_task_streak;
-				const points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
+				let points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
+
+				if (user.hasRelic(RelicID.Slay)) {
+					points *= 2;
+					str += '(2x points)';
+				}
+
 				const secondNewUser = await user.update({
 					slayer_points: {
 						increment: points
@@ -516,7 +523,11 @@ export const monsterTask: MinionTask = {
 					{ slayer_task_streak: true }
 				);
 				const currentStreak = newStats.slayer_task_streak;
-				const points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
+				let points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
+				if (user.hasRelic(RelicID.Slay)) {
+					points *= 2;
+					str += '(2x points)';
+				}
 				const secondNewUser = await user.update({
 					slayer_points: {
 						increment: points

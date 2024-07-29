@@ -49,7 +49,7 @@ export async function cancelTask(userID: string) {
 	minionActivityCache.delete(userID);
 }
 
-async function runMahojiCommand({
+export async function runMahojiCommand({
 	channelID,
 	userID,
 	guildID,

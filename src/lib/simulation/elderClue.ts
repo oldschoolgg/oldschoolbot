@@ -11,8 +11,7 @@ const boxTable = new LootTable()
 	.add('Holiday mystery box')
 	.add('Equippable mystery box')
 	.add('Clothing mystery box')
-	.add('Tradeable mystery box', 2)
-	.add('Untradeable mystery box', 2);
+	.add('Tradeable mystery box', 2);
 
 const table = new LootTable()
 	.tertiary(

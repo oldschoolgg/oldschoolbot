@@ -300,6 +300,11 @@ export async function slayerNewTaskCommand({
 		await userStatsUpdate(user.id, { [taskStreakKey]: 0 }, {});
 
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
+		if (typeof newSlayerTask === 'string') {
+			interactionReply(interaction, newSlayerTask);
+			return;
+		}
+
 		const commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 		const returnMessage =
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
@@ -350,6 +355,10 @@ export async function slayerNewTaskCommand({
 	}
 
 	const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
+	if (typeof newSlayerTask === 'string') {
+		interactionReply(interaction, newSlayerTask);
+		return;
+	}
 
 	let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 	if (commonName === 'TzHaar') {

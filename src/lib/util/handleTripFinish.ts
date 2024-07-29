@@ -19,6 +19,9 @@ import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../invention/inventions';
 import { triggerRandomEvent } from '../randomEvents';
+import { relics } from '../randomizer';
+import { RelicID } from '../relics';
+import { runMahojiCommand } from '../settings/settings';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
@@ -37,6 +40,7 @@ import {
 } from './globalInteractions';
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
+import { fetchRepeatTrips, tripHandlers } from './repeatStoredTrip';
 import { perHourChance } from './smallUtils';
 import { sendToChannelID } from './webhook';
 
@@ -78,6 +82,16 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Random Events',
 		fn: async ({ data, messages, user }) => {
 			await triggerRandomEvent(user, data.type, data.duration, messages);
+		}
+	},
+	{
+		name: 'Loot Doubling',
+		fn: async ({ data, messages, user, loot }) => {
+			if (loot && !data.cantBeDoubled && roll(user.usingPet('Mr. E') ? 12 : 15) && user.hasRelic(RelicID.Loot)) {
+				const bonusLoot = new Bank().add(loot);
+				const res = await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
+				messages.push(`Your Relic of Loot granted you double loot: ${res.itemsAdded}`);
+			}
 		}
 	},
 	{
@@ -244,7 +258,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Crate Spawns',
 		fn: async ({ data, user, messages }) => {
-			const crateRes = handleCrateSpawns(data.duration);
+			const crateRes = handleCrateSpawns(user, data.duration);
 			const res = await user.addItemsToBank({ items: crateRes });
 			messages.push(`You received these items from crate spawns: ${res.itemsAdded}`);
 		}
@@ -366,6 +380,19 @@ export async function handleTripFinish(
 		await effect.fn({ data, user, loot, messages, portents });
 	}
 
+	const minutes = Math.floor(data.duration / Time.Minute);
+	if (minutes > 1) {
+		for (let i = 0; i < minutes; i++) {
+			if (roll(4800)) {
+				const randomRelic = relics.find(r => !user.hasRelic(r.id));
+				if (randomRelic) {
+					await user.update({ relics: { push: randomRelic.id } });
+					messages.push(`**You found a new relic:** ${randomRelic.name} (${randomRelic.desc}!`);
+				}
+			}
+		}
+	}
+
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 
 	if (_messages) messages.push(..._messages);
@@ -426,4 +453,30 @@ export async function handleTripFinish(
 	handleTriggerShootingStar(user, data, components);
 
 	sendToChannelID(channelID, message);
+
+	if (user.hasRelic(RelicID.Repetition) && roll(3)) {
+		setTimeout(async () => {
+			try {
+				const trips = await fetchRepeatTrips(user.id);
+				if (trips.length === 0) {
+					return;
+				}
+				const handler = tripHandlers[data.type];
+				const result = await runMahojiCommand({
+					options: handler.args(trips[0].data as any),
+					commandName: handler.commandName,
+					guildID: null,
+					channelID,
+					userID: user.id,
+					member: null,
+					user,
+					interaction: null as any
+				});
+
+				if (result) {
+					sendToChannelID(channelID, result as any);
+				}
+			} catch (_) {}
+		});
+	}
 }

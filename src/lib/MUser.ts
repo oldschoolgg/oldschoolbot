@@ -30,6 +30,8 @@ import type { FarmingContract } from './minions/farming/types';
 import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
+import { randomizationMethods } from './randomizer';
+import type { RelicID } from './relics';
 import type { MinigameScore } from './settings/minigames';
 import { Minigames, getMinigameEntity } from './settings/minigames';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
@@ -546,6 +548,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return percentBossCLFinished;
 	}
 
+	hasRelic(id: RelicID) {
+		return this.user.relics.includes(id);
+	}
+
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
 		const previousCL = new Bank(this.cl.bank);
 		const updates = this.calculateAddItemsToCLUpdates({
@@ -678,6 +684,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	async getCreatureScore(creatureID: number) {
 		const stats = await this.fetchStats({ creature_scores: true });
 		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
+	}
+
+	getRandomizeMethod() {
+		return randomizationMethods.find(i => i.id === this.user.randomize_method);
 	}
 
 	calculateAddItemsToCLUpdates({

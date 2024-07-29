@@ -1,17 +1,7 @@
 import { reduceNumByPercent } from 'e';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../data/CollectionsExport';
-import { skillsMeetRequirements } from '../../../util';
 import { SkillsEnum } from '../../types';
-import { requiredSkills } from './dungData';
-
-export function hasRequiredLevels(user: MUser, floor: number) {
-	return skillsMeetRequirements(user.skillsAsXP, requiredSkills(floor));
-}
-
-export function calcMaxFloorUserCanDo(user: MUser) {
-	return [7, 6, 5, 4, 3, 2, 1].find(floor => hasRequiredLevels(user, floor)) || 1;
-}
 
 export function calcUserGorajanShardChance(user: MUser) {
 	return calcGorajanShardChance({

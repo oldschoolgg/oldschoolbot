@@ -70,7 +70,9 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 			if (Eatables.indexOf(food) === Eatables.length - 1) {
 				return `You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
 					i => i.name
-				).join(', ')}.`;
+				)
+					.slice(0, 20)
+					.join(', ')}.`;
 			}
 			continue;
 		}

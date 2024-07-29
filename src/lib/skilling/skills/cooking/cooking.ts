@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { removeDiscontinuedItems } from '../../../bso/bsoUtil';
 import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
 import type { Cookable } from '../../types';
@@ -326,7 +325,7 @@ export const Cookables: Cookable[] = [
 	}
 ];
 
-export const cookingCL = removeDiscontinuedItems(Cookables.map(i => i.id));
+export const cookingCL = Cookables.map(i => i.id);
 
 const Cooking = {
 	aliases: ['cooking', 'cook'],

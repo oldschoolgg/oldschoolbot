@@ -17,7 +17,6 @@ const customBSOCreatures: Creature[] = [
 					.oneIn(90, 'Pet Mystery Box')
 					.oneIn(30, 'Equippable mystery box')
 					.add('Tradeable Mystery Box')
-					.add('Untradeable Mystery Box')
 			)
 			.tertiary(500, 'Clue scroll (hard)')
 			.tertiary(5, 'Sand')

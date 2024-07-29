@@ -166,29 +166,3 @@ export async function agilityArenaRecolorCommand(user: MUser) {
 		head: 'izzy'
 	});
 }
-
-export async function agilityArenaXPCommand(user: MUser, qty: number): CommandResponse {
-	const amountTicketsHas = user.bank.amount('Agility arena ticket');
-
-	if (!(qty in ticketQuantities)) {
-		return `You can only redeem tickets for XP at the following quantities: ${Object.keys(ticketQuantities).join(
-			', '
-		)}.`;
-	}
-	if (amountTicketsHas < qty) {
-		return "You don't have enough Agility arena tickets.";
-	}
-	const [hasKaramjaMed] = await userhasDiaryTier(user, KaramjaDiary.medium);
-	const xpToGive = determineXPFromTickets(qty, user, hasKaramjaMed);
-	let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(xpToGive / qty).toFixed(2)} ea)`;
-	await transactItems({ userID: user.id, itemsToRemove: new Bank().add('Agility arena ticket', qty) });
-	await user.addXP({
-		skillName: SkillsEnum.Agility,
-		amount: xpToGive,
-		artificial: true
-	});
-	if (hasKaramjaMed) {
-		str += '\n\nYou received 10% extra XP for the Karamja Medium Diary.';
-	}
-	return str;
-}

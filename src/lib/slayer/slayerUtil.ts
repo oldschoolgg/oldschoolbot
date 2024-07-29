@@ -9,6 +9,7 @@ import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import type { KillableMonster } from '../minions/types';
 
+import { RelicID } from '../relics';
 import { SkillsEnum } from '../skilling/types';
 import { roll, stringMatches } from '../util';
 import { logError } from '../util/logError';
@@ -98,6 +99,7 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 			return basePoints * multiplier[i];
 		}
 	}
+
 	return basePoints;
 }
 
@@ -249,6 +251,9 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		}
 	}
 
+	if (!assignedTask) {
+		return 'Failed to assign you a task.';
+	}
 	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
 
 	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(assignedTask!.monster.id));
@@ -305,6 +310,10 @@ export async function calcMaxBlockedTasks(user: MUser) {
 
 	if (hasBlockAndRoll) {
 		blocks += 3;
+	}
+
+	if (user.hasRelic(RelicID.Slay)) {
+		blocks += 500;
 	}
 	return blocks;
 }

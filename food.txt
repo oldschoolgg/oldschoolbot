@@ -1,0 +1,241 @@
+Anchovies heals 1
+Shrimps heals 3
+Cooked chicken heals 3
+Cooked meat heals 3
+Sardine heals 4
+Bread heals 5
+Herring heals 5
+Mackerel heals 6
+Trout heals 7
+Cod heals 7
+Pike heals 8
+Salmon heals 9
+Tuna heals 10
+Jug of wine heals 11
+Stew heals 11
+Cake heals 12
+Lobster heals 12
+Bass heals 13
+Plain pizza heals 14
+Swordfish heals 14
+Potato with butter heals 14
+Chilli potato heals 14
+Chocolate cake heals 15
+Egg potato heals 16
+Potato with cheese heals 16
+Meat pizza heals 16
+Monkfish heals 16
+Anchovy pizza heals 18
+Cooked karambwan heals 18
+Blighted karambwan heals 18
+Curry heals 19
+Ugthanki kebab heals 19
+Mushroom potato heals 20
+Shark heals 20
+Sea turtle heals 21
+Pineapple pizza heals 22
+Summer pie heals 22
+Manta ray heals 22
+Blighted manta ray heals 22
+Tuna potato heals 22
+Dark crab heals 22
+Anglerfish heals e=>{let t=e.skillLevel("hitpoints"),a=2;return t>10&&(a=2),t>25&&(a=4),t>50&&(a=6),t>75&&(a=8),t>93&&(a=13),t*(1/10)+a}
+Blighted anglerfish heals e=>{let t=e.skillLevel("hitpoints"),a=2;return t>10&&(a=2),t>25&&(a=4),t>50&&(a=6),t>75&&(a=8),t>93&&(a=13),t*(1/10)+a}
+Rocktail heals 26
+Raw yeti meat heals 26
+Cup of tea heals 3
+Bruised banana heals 0
+Jangerberries heals 2
+Giant carp heals 6
+Edible seaweed heals 4
+Karamjan rum heals 5
+Ugthanki meat heals 3
+Chopped tomato heals 2
+Chopped onion heals 1
+Onion & tomato heals 3
+Asgarnian ale heals 1
+Wizard's mind bomb heals 1
+Greenman's ale heals 1
+Dragon bitter heals 1
+Dwarven stout heals 1
+Grog heals 3
+Beer heals 1
+Potato heals 1
+Onion heals 1
+Pumpkin heals 14
+Easter egg heals 14
+Banana heals 2
+Cabbage heals 1
+Spinach roll heals 2
+Chocolate bar heals 3
+Chocolatey milk heals 4
+Tomato heals 2
+Cheese heals 2
+Half full wine jug heals 7
+Vodka heals 5
+Whisky heals 5
+Gin heals 5
+Brandy heals 5
+Premade blurb' sp. heals 7
+Premade choc s'dy heals 5
+Premade dr' dragon heals 5
+Premade fr' blast heals 9
+Premade p' punch heals 9
+Premade sgg heals 5
+Premade wiz blz'd heals 5
+Pineapple punch heals 9
+Wizard blizzard heals 5
+Blurberry special heals 7
+Choc saturday heals 5
+Short green guy heals 5
+Fruit blast heals 9
+Drunk dragon heals 5
+Lemon heals 2
+Lemon chunks heals 2
+Lemon slices heals 2
+Orange heals 2
+Orange chunks heals 2
+Orange slices heals 2
+Pineapple chunks heals 2
+Pineapple ring heals 2
+Lime heals 2
+Lime chunks heals 2
+Lime slices heals 2
+Dwellberries heals 2
+Equa leaves heals 1
+Pot of cream heals 1
+Lava eel heals 11
+Toad's legs heals 3
+King worm heals 2
+Chocolate bomb heals 15
+Tangled toad's legs heals 15
+Worm hole heals 12
+Veg ball heals 12
+Worm crunchies heals 8
+Chocchip crunchies heals 7
+Spicy crunchies heals 7
+Toad crunchies heals 8
+Premade w'm batta heals 11
+Premade t'd batta heals 11
+Premade c+t batta heals 11
+Premade fr't batta heals 11
+Premade veg batta heals 11
+Premade choc bomb heals 15
+Premade ttl heals 15
+Premade worm hole heals 12
+Premade veg ball heals 12
+Premade w'm crun' heals 8
+Premade ch' crunch heals 8
+Premade s'y crunch heals 7
+Premade t'd crunch heals 8
+Worm batta heals 11
+Toad batta heals 11
+Cheese+tom batta heals 11
+Fruit batta heals 11
+Vegetable batta heals 11
+Cooked oomlie wrap heals 14
+Cooked chompy heals 11
+Moonlight mead heals 4
+Sliced banana heals 2
+Cooked rabbit heals 5
+Keg of beer heals 15
+Beer tankard heals 4
+Monkey nuts heals 4
+Monkey bar heals 5
+Banana stew heals 11
+Nettle-water heals 1
+Nettle tea heals 3
+White pearl heals 2
+Giant frog legs heals 6
+Bandit's brew heals 1
+Asgarnian ale(m) heals 2
+Mature wmb heals 2
+Greenman's ale(m) heals 2
+Dragon bitter(m) heals 2
+Dwarven stout(m) heals 2
+Moonlight mead(m) heals 6
+Axeman's folly heals 1
+Axeman's folly(m) heals 2
+Chef's delight heals 1
+Chef's delight(m) heals 2
+Slayer's respite heals 1
+Slayer's respite(m) heals 2
+Cider heals 1
+Mature cider heals 2
+Papaya fruit heals 8
+Gout tuber heals 12
+White tree fruit heals 3
+Baked potato heals 4
+Choc-ice heals 7
+Peach heals 8
+Baguette heals 6
+Triangle sandwich heals 6
+Roll heals 6
+Square sandwich heals 6
+Chilli con carne heals 5
+Egg and tomato heals 8
+Mushroom & onion heals 11
+Tuna and corn heals 13
+Minced meat heals 13
+Spicy sauce heals 2
+Scrambled egg heals 2
+Fried mushrooms heals 5
+Fried onions heals 5
+Chopped tuna heals 10
+Braindeath 'rum' heals 14
+Roast rabbit heals 7
+Spicy stew heals 0
+Cooked fishcake heals 11
+Cooked jubbly heals 15
+Red banana heals 5
+Tchiki monkey nuts heals 5
+Sliced red banana heals 5
+Stuffed snake heals 20
+Bottle of wine heals 14
+Field ration heals 10
+Fresh monkfish heals 1
+Locust meat heals 3
+Roast bird meat heals 6
+Roast beast meat heals 8
+Spicy tomato heals 2
+Spicy minced meat heals 3
+Rainbow fish heals 11
+Green gloop soup heals 2
+Frogspawn gumbo heals 2
+Frogburger heals 2
+Coated frogs' legs heals 2
+Bat shish heals 2
+Fingers heals 2
+Grubs à la mode heals 2
+Roast frog heals 2
+Mushrooms heals 2
+Fillets heals 2
+Loach heals 3
+Eel sushi heals 10
+Roe heals 3
+Caviar heals 5
+Pysk fish (0) heals 5
+Suphi fish (1) heals 8
+Leckish fish (2) heals 11
+Brawk fish (3) heals 14
+Mycil fish (4) heals 17
+Roqed fish (5) heals 20
+Kyren fish (6) heals 23
+Guanic bat (0) heals 5
+Prael bat (1) heals 8
+Giral bat (2) heals 11
+Phluxia bat (3) heals 14
+Kryket bat (4) heals 17
+Murng bat (5) heals 20
+Psykk bat (6) heals 23
+Honey locust heals 20
+Silk dressing (2) heals 100
+Bloody bracer heals 2
+Dragonfruit heals 10
+Paddlefish heals 20
+Elven dawn heals 1
+Cooked mystery meat heals 5
+Steak sandwich heals 6
+Corrupted paddlefish heals 16
+Crystal paddlefish heals 16
+Kovac's grog heals 1

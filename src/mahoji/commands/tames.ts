@@ -27,6 +27,7 @@ import { getSimilarItems } from '../../lib/data/similarItems';
 import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 
+import { RelicID } from '../../lib/relics';
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
@@ -954,6 +955,11 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	let speed = monster.timeToFinish * tameGrowthLevel(tame);
 
 	const boosts = [];
+
+	if (user.hasRelic(RelicID.Speed)) {
+		speed = reduceNumByPercent(speed, 10);
+		boosts.push('Your relic of speed granted you a 30% speed boost');
+	}
 
 	// Apply calculated boost:
 	const combatLevelChange = reduceNumByPercent(speed, combatLevelBoost);

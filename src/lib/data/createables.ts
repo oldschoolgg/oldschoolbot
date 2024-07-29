@@ -7,10 +7,10 @@ import type { MaterialBank } from '../invention/MaterialBank';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank, Skills } from '../types';
+import { resolveItems } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { itemNameFromID } from '../util/smallUtils';
-import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport';
 import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { BsoCreateables } from './creatables/bsoItems';
@@ -34,6 +34,8 @@ import { toaCreatables } from './creatables/toa';
 import { tobCreatables } from './creatables/tob';
 import { tameCreatables } from './tameCreatables';
 
+const chambersOfXericMetamorphPets = resolveItems(['Puppadile', 'Tektiny', 'Vanguard', 'Vasa minirio', 'Vespina']);
+const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
 export interface Createable {
 	name: string;
 	outputItems: ItemBank | Bank | ((user: MUser) => Bank);

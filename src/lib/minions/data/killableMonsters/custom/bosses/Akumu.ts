@@ -2,13 +2,18 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { MysteryBoxes } from '../../../../../bsoOpenables';
 import { GearStat } from '../../../../../gear';
 import { UncutGemTable } from '../../../../../simulation/sharedTables';
 import itemID from '../../../../../util/itemID';
 import resolveItems from '../../../../../util/resolveItems';
 import type { CustomMonster } from '../customMonsters';
 
+const MysteryBoxes = new LootTable()
+	.oneIn(55, 'Pet Mystery Box')
+	.oneIn(165, 'Holiday Mystery Box')
+	.oneIn(35, 'Equippable mystery box')
+	.oneIn(35, 'Clothing Mystery Box')
+	.add('Tradeable Mystery Box');
 export const AkumuLootTable = new LootTable()
 	.tertiary(1000, 'Mini akumu')
 	.every('Nightmarish ashes', [5, 10])

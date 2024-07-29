@@ -1,8 +1,12 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { RANDOMIZER_HELP } from '../../lib/constants';
+import { isFunction } from 'e';
+import { Bank } from 'oldschooljs';
 import { getTotalCl } from '../../lib/data/Collections';
+import Buyables from '../../lib/data/buyables/buyables';
+import Createables from '../../lib/data/createables';
+import { RANDOMIZER_HELP, randomizationMethods, remapBank } from '../../lib/randomizer';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import type { ItemBank } from '../../lib/types';
 import { getItem, itemNameFromID } from '../../lib/util';
@@ -18,7 +22,7 @@ export const randomizerCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'info',
-			description: 'View randomizer information.'
+			description: 'View your randomizer information.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -49,7 +53,16 @@ export const randomizerCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'reset',
-			description: 'Entirely reset your account/seed.'
+			description: 'Entirely reset your account/seed.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'randomization_method',
+					description: 'The randomization method you want to use.',
+					required: true,
+					choices: randomizationMethods.map(i => ({ name: i.name, value: i.name }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -60,17 +73,50 @@ export const randomizerCommand: OSBMahojiCommand = {
 		info?: {};
 		unlock_item_mapping?: { item: string };
 		// test_mapping?: { items: string };
-		reset?: {};
+		reset?: { randomization_method: string };
 	}>) => {
 		const user = await mUserFetch(userID);
 		const map = user.user.item_map as ItemBank;
 		const reverseMap = user.user.reverse_item_map as ItemBank;
 
 		if (options.info) {
-			let str = RANDOMIZER_HELP;
-			str += `You have tier ${user.perkTier() - 1} perks, unlock higher tiers by filling out more collection log slots.`;
+			let str = RANDOMIZER_HELP(user);
+			str += `\n\nYou have tier ${user.perkTier() - 1} perks, unlock higher tiers by filling out more collection log slots.`;
+
+			let mapStr = 'FROM -> TO\n\n';
+			for (const [key, val] of Object.entries(map)) {
+				mapStr += `${itemNameFromID(Number(key))} (${key}) -> ${itemNameFromID(Number(val))} (${val}) \n`;
+			}
+			const attachment = Buffer.from(mapStr);
+
+			let buyableStr = '[Buy This] -> [Get This]\n';
+			for (const b of Buyables) {
+				const singleOutput: Bank =
+					b.outputItems === undefined
+						? new Bank().add(b.name)
+						: b.outputItems instanceof Bank
+							? b.outputItems
+							: b.outputItems(user);
+				buyableStr += `${b.name} -> ${remapBank(user, singleOutput)}\n`;
+			}
+			const attachment2 = Buffer.from(buyableStr);
+
+			let creatablesStr = '[Buy This] -> [Get This]\n';
+			for (const c of Createables) {
+				const outItems = new Bank(isFunction(c.outputItems) ? c.outputItems(user) : c.outputItems);
+				const inItems = isFunction(c.inputItems) ? c.inputItems(user) : new Bank(c.inputItems);
+
+				creatablesStr += `${inItems} -> ${remapBank(user, outItems)}\n`;
+			}
+			const attachment3 = Buffer.from(creatablesStr);
+
 			return {
-				content: str
+				content: str,
+				files: [
+					{ attachment, name: 'testingmap.txt' },
+					{ attachment: attachment2, name: 'buyables.txt' },
+					{ attachment: attachment3, name: 'creatables.txt' }
+				]
 			};
 		}
 
@@ -92,7 +138,7 @@ export const randomizerCommand: OSBMahojiCommand = {
 				return `You can only map ${amountTheyCanMap} items, you have already mapped ${Object.keys(user.user.unlocked_item_map as ItemBank).length}. You unlock a new mapping every ${SLOTS_PER_MAPPING} collection log slots you fill out.`;
 			}
 
-			const mapStr = `${itemNameFromID(reverseMap[item.id])} -> ${itemNameFromID(item.id)} -> ${itemNameFromID(map[item.id])}`;
+			const mapStr = `${itemNameFromID(reverseMap[item.id])} [${reverseMap[item.id]}] -> ${itemNameFromID(item.id)} [${item.id}] -> ${itemNameFromID(map[item.id])} (${map[item.id]})`;
 			if ((user.user.unlocked_item_map as ItemBank)[item.id]) {
 				return `This item is already unlocked: ${mapStr}`;
 			}
@@ -123,18 +169,26 @@ export const randomizerCommand: OSBMahojiCommand = {
 		// }
 
 		if (options.reset) {
+			const maxResets = 5;
 			const previousResets = await prisma.fullReset.findMany({
 				where: {
 					discord_id: user.id
 				}
 			});
-			if (previousResets.length > 0) {
-				return 'You have already reset your account.';
+			if (previousResets.length > maxResets) {
+				return `You have already reset your account ${previousResets.length}x times.`;
+			}
+
+			const randMethod = randomizationMethods.find(i => i.name === options.reset?.randomization_method);
+			if (!randMethod) {
+				return 'Invalid method.';
 			}
 
 			await handleMahojiConfirmation(
 				interaction,
-				'Are you sure you want to reset your account? This will reset your entire account and seed. **You can only do this ONCE!**'
+				`Are you sure you want to reset your account? This will reset your entire account and seed. **You can only do this ${maxResets - previousResets.length}x times**!
+
+You chose: **${randMethod.name} (${randMethod.desc})**`
 			);
 
 			const transactions = [];
@@ -162,7 +216,7 @@ export const randomizerCommand: OSBMahojiCommand = {
 			);
 
 			await prisma.$transaction(transactions);
-			return `Your account/seed has been reset.\n${await minionBuyCommand(await mUserFetch(userID))}`;
+			return `Your account/seed has been reset.\n${await minionBuyCommand(await mUserFetch(userID), randMethod)}`;
 		}
 
 		return 'Invalid command.';

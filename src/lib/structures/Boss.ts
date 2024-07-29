@@ -6,6 +6,7 @@ import type { GearSetupType, GearStats } from '../gear';
 
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { setupParty } from '../party';
+import { RelicID } from '../relics';
 import type { Skills } from '../types';
 import type { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend, makeTable } from '../util';
@@ -423,6 +424,11 @@ export class BossInstance {
 		if (isWeekend()) {
 			this.boosts.push('5% Weekend boost');
 			duration = reduceNumByPercent(duration, 5);
+		}
+
+		if (this.users?.some(u => u.hasRelic(RelicID.Speed))) {
+			this.boosts.push('Your Relic of Speed grants you a 30% speed boost.');
+			duration = reduceNumByPercent(duration, 30);
 		}
 
 		return {

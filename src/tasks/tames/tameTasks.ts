@@ -20,6 +20,7 @@ import { BitField } from '../../lib/constants';
 import { handlePassiveImplings } from '../../lib/implings';
 import { allOpenables } from '../../lib/openables';
 
+import { RelicID } from '../../lib/relics';
 import { runCommand } from '../../lib/settings/settings';
 import { getTemporossLoot } from '../../lib/simulation/tempoross';
 import { WintertodtCrate } from '../../lib/simulation/wintertodt';
@@ -142,7 +143,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
 
 		const loot = res.loot?.clone() ?? new Bank();
-		const crateRes = handleCrateSpawns(activity.duration);
+		const crateRes = handleCrateSpawns(user, activity.duration);
 		if (crateRes !== null) loot.add(crateRes);
 
 		if (loot) {
@@ -158,6 +159,10 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		}
 		const addRes = await addDurationToTame(tame, activity.duration);
 		if (addRes) res.message += `\n${addRes}`;
+		if (user.hasRelic(RelicID.Loot)) {
+			await user.addItemsToBank({ items: loot, collectionLog: false });
+			res.message += ` Your Relic of Loot granted you: ${loot}`;
+		}
 
 		sendToChannelID(activity.channel_id, {
 			content: res.message,

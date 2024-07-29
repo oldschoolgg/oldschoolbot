@@ -1,6 +1,5 @@
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
 import { DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 
@@ -18,7 +17,7 @@ export async function syncCustomPrices() {
 
 export async function onStartup() {
 	globalClient.application.commands.fetch({
-		guildId: globalConfig.isProduction ? undefined : globalConfig.mainServerID
+		guildId: globalConfig.mainServerID
 	});
 
 	// Sync disabled commands
@@ -37,14 +36,6 @@ export async function onStartup() {
 		for (const command of disabledCommands.disabled_commands) {
 			DISABLED_COMMANDS.add(command);
 		}
-	}
-	if (!globalConfig.isProduction) {
-		console.log('Syncing commands locally...');
-		await bulkUpdateCommands({
-			client: globalClient.mahojiClient,
-			commands: Array.from(globalClient.mahojiClient.commands.values()),
-			guildID: globalConfig.mainServerID
-		});
 	}
 
 	await syncDoubleLoot();

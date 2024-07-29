@@ -36,6 +36,7 @@ import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { relics } from '../../lib/randomizer';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -323,6 +324,20 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 			name: 'testpotato',
 			description: 'Commands for making testing easier and faster.',
 			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'spawnrelic',
+					description: 'spawn relic.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'relic',
+							description: 'relic.',
+							required: true,
+							choices: relics.map(i => ({ name: i.name, value: i.name }))
+						}
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'wipe',
@@ -724,6 +739,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				bingo_tools?: { start_bingo: string };
 				setslayertask?: { master: string; monster: string; quantity: number };
 				events?: {};
+				spawnrelic?: { relic: string };
 			}>) => {
 				await deferInteraction(interaction);
 				if (globalConfig.isProduction) {
@@ -732,6 +748,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				}
 				const user = await mUserFetch(userID.toString());
 
+				if (options.spawnrelic) {
+					const relic = relics.find(r => r.name === options.spawnrelic?.relic);
+					if (!relic) return 'Invalid relic';
+					await user.update({
+						relics: {
+							push: relic.id
+						}
+					});
+					return `Spawned relic: ${relic.name}`;
+				}
 				if (options.settamelvl) {
 					const tame = await getUsersTame(user);
 					if (!tame.tame) return 'no tame selected';

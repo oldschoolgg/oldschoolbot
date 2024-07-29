@@ -48,6 +48,8 @@ import { raidCommand } from './raid';
 import { randomizerCommand } from './randomizer';
 
 import { ApplicationCommandOptionType } from 'discord.js';
+import { gambleCommand } from './gamble';
+import { relicCommand } from './relic';
 import { rpCommand } from './rp';
 import { runecraftCommand } from './runecraft';
 import { sacrificeCommand } from './sacrifice';
@@ -119,7 +121,9 @@ export const allCommands: OSBMahojiCommand[] = [
 	paintCommand,
 	tamesCommand,
 	bsoLeaguesCommand,
-	randomizerCommand
+	randomizerCommand,
+	gambleCommand,
+	relicCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {

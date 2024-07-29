@@ -108,6 +108,8 @@ enum bank_sort_method_enum {
 }
 
 model User {
+  randomize_method              Int     @default(-1)
+  relics                        Int[]
   skill_map                     Json?   @db.JsonB
   item_map_key                  String?
   item_map                      Json?   @db.Json

@@ -1,4 +1,3 @@
-import type { Prisma } from '@prisma/client';
 import { type ChatInputCommandInteraction, type InteractionReplyOptions, bold } from 'discord.js';
 import {
 	Time,
@@ -50,6 +49,7 @@ import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC'
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import type { Consumable } from '../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../lib/poh';
+import { RelicID } from '../../../lib/relics';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -78,7 +78,7 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { hasMonsterRequirements, resolveAvailableItemBoosts, userStatsUpdate } from '../../mahojiSettings';
+import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
 import { igneCommand } from './igneCommand';
 import { kgCommand } from './kgCommand';
 import { kkCommand } from './kkCommand';
@@ -973,47 +973,17 @@ export async function minionKillCommand(
 		duration *= 0.9;
 	}
 
+	if (user.hasRelic(RelicID.Speed)) {
+		boosts.push('Your Relic of Speed granted you a 30% speed boost.');
+		duration *= 0.7;
+	}
+
 	if (hasBlessing && dwarvenBlessingPotsNeeded) {
 		const prayerPotsBank = new Bank().add(dwarvenBlessingItem, dwarvenBlessingPotsNeeded);
 		lootToRemove.add(prayerPotsBank);
 	}
-	const rangeSetup = { ...user.gear.range.raw() };
-	let usedDart = false;
-	if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
-		duration = 1;
-		if (rangeSetup.weapon.quantity > 1) {
-			rangeSetup.weapon.quantity--;
-		} else {
-			rangeSetup.weapon = null;
-		}
-		await user.update({
-			gear_range: rangeSetup as Prisma.InputJsonObject
-		});
-		if (monster.name === 'Koschei the deathless') {
-			return (
-				'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks' +
-				' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
-			);
-		}
-		if (monster.name === 'Solis') {
-			return 'The dart melts into a crisp dust before coming into contact with Solis.';
-		}
-		if (monster.name === 'Celestara') {
-			return 'Your minion threw the dart at the moon, it did not reach.';
-		}
-		if (monster.name === 'Yeti') {
-			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
-		}
-		if ([BSOMonsters.Akumu.id, BSOMonsters.Venatrix.id].includes(monster.id)) {
-			return 'This monster is temporarily unable to be killed with a Deathtouched dart.';
-		}
-		usedDart = true;
-		await userStatsUpdate(user.id, {
-			death_touched_darts_used: {
-				increment: 1
-			}
-		});
-	}
+	const usedDart = false;
+
 	if (monster.name === 'Koschei the deathless') {
 		return 'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.';
 	}

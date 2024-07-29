@@ -32,6 +32,6 @@ export async function unEquipAllCommand(
 		[`gear_${gearType}`]: defaultGear
 	});
 
-	await user.addItemsToBank({ items: refund, collectionLog: false });
+	await user.transactItems({ itemsToAdd: refund, collectionLog: false, shouldRemap: false });
 	return `You unequipped all items (${refund}) from your ${toTitleCase(gearType)} setup.`;
 }

@@ -5,22 +5,15 @@ import { Time, reduceNumByPercent } from 'e';
 
 import { Bank } from 'oldschooljs';
 import { setupParty } from '../../lib/party';
+import { determineDgLevelForFloor, dungBuyables, isValidFloor } from '../../lib/skilling/skills/dung/dungData';
 import {
-	determineDgLevelForFloor,
-	dungBuyables,
-	isValidFloor,
-	requiredSkills
-} from '../../lib/skilling/skills/dung/dungData';
-import {
-	calcMaxFloorUserCanDo,
 	calcUserGorajanShardChance,
-	hasRequiredLevels,
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { MakePartyOptions } from '../../lib/types';
 import type { DungeoneeringOptions } from '../../lib/types/minions';
-import { channelIsSendable, formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
+import { channelIsSendable, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -35,7 +28,13 @@ const boostPerPlayer = 5;
 async function startCommand(channelID: string, user: MUser, floor: string | undefined, solo: boolean | undefined) {
 	const isSolo = Boolean(solo);
 
-	const floorToDo = floor ? Number(floor) : calcMaxFloorUserCanDo(user);
+	let floorToDo = floor ? Number(floor) : 1;
+	for (const lvl of [7, 6, 5, 4, 3, 2, 1]) {
+		if (determineDgLevelForFloor(lvl) <= user.skillLevel(SkillsEnum.Dungeoneering)) {
+			floorToDo = lvl;
+			break;
+		}
+	}
 
 	if (!isValidFloor(floorToDo)) {
 		return "That's an invalid floor.";
@@ -52,8 +51,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 	const message = `${user.usernameOrMention} has created a Dungeoneering party! Use the buttons below to join/leave.
 **Floor:** ${floorToDo}
 **Duration:** ${formatDuration(duration)}
-**Min. Quantity:** ${quantity}
-**Required Stats:** ${formatSkillRequirements(requiredSkills(floorToDo))}`;
+**Min. Quantity:** ${quantity}`;
 
 	const partyOptions: MakePartyOptions = {
 		leader: user,
@@ -67,25 +65,6 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 			}
 			if (user.minionIsBusy) {
 				return [true, 'your minion is busy.'];
-			}
-
-			const max = calcMaxFloorUserCanDo(user);
-			if (max < floorToDo) {
-				return [
-					true,
-					`this party is doing Floor ${floorToDo}, you can't do this floor because you need level ${determineDgLevelForFloor(
-						floorToDo
-					)} Dungeoneering.`
-				];
-			}
-
-			if (!hasRequiredLevels(user, floorToDo) && floorToDo > 1) {
-				return [
-					true,
-					`you don't have the required stats for this floor, you need: ${formatSkillRequirements(
-						requiredSkills(floorToDo)
-					)}.`
-				];
 			}
 
 			return [false];
@@ -226,11 +205,8 @@ export const dgCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'floor',
 					description: 'The floor you want to do. (Optional, defaults to max)',
-					autocomplete: async (_, user) => {
-						const kUser = await mUserFetch(user.id);
-						return [7, 6, 5, 4, 3, 2, 1]
-							.filter(floor => hasRequiredLevels(kUser, floor))
-							.map(i => ({ name: `Floor ${i}`, value: i.toString() }));
+					autocomplete: async () => {
+						return [7, 6, 5, 4, 3, 2, 1].map(i => ({ name: `Floor ${i}`, value: i.toString() }));
 					},
 					required: false
 				},
@@ -287,8 +263,7 @@ export const dgCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		if (options.start) return startCommand(channelID, user, options.start.floor, options.start.solo);
 		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);
-		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.user.dungeoneering_tokens.toLocaleString()}
-**Max floor:** ${calcMaxFloorUserCanDo(user)}`;
+		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.user.dungeoneering_tokens.toLocaleString()}`;
 		const { boosts } = calcUserGorajanShardChance(user);
 		if (boosts.length > 0) {
 			str += `\n**Gorajan shard boosts:** ${boosts.join(', ')}`;

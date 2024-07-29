@@ -1,9 +1,7 @@
 import { randArrItem, roll } from 'e';
 import { Bank, Items, LootTable } from 'oldschooljs';
-import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
 import { divinationEnergies } from './bso/divination';
-import { OSB_VIRTUS_IDS } from './constants';
 import {
 	allPetIDs,
 	chambersOfXericCL,
@@ -16,9 +14,9 @@ import {
 import { PartyhatTable, baseHolidayItems } from './data/holidayItems';
 import { allTrophyItems } from './data/itemAliases';
 import { keyCrates } from './keyCrates';
-import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import type { UnifiedOpenable } from './openables';
 import { PaintBoxTable } from './paintColors';
+import { RelicID } from './relics';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { LampTable } from './simulation/grandmasterClue';
 import { RuneTable } from './simulation/seedTable';
@@ -175,45 +173,6 @@ export const NestBoxes = new LootTable()
 	.add('Nest box (seeds)', 1, 12)
 	.add('Nest box (ring)', 1, 5)
 	.add('Nest box (empty)', 1, 3);
-
-const baseTGBTable = new LootTable()
-	.add('Tradeable mystery box', [1, 3])
-	.add('Reward casket (master)', [3, 6])
-	.add('Reward casket (beginner)', [3, 9])
-	.add('Reward casket (hard)', [3, 7])
-	.add('Dwarven crate', 2)
-	.add(NestBoxes, 100)
-	.add('Holiday Mystery box')
-	.add('Pet Mystery box')
-	.add('Untradeable Mystery box')
-	.add('Abyssal dragon bones', [100, 500], 2)
-	.add('Coins', [20_000_000, 100_000_000], 2)
-	.add(LampTable, [1, 3])
-	.add('Clue scroll (beginner)', [5, 10], 2)
-	.add('Clue scroll (easy)', [4, 9], 2)
-	.add('Clue scroll (medium)', [4, 9], 2)
-	.add('Clue scroll (hard)', [3, 6], 2)
-	.add('Clue scroll (elite)', [4, 9], 2)
-	.add('Clue scroll (master)', [2, 5], 2)
-	.add('Manta ray', [100, 600], 2)
-	.add(FishTable, [1, 15])
-	.add(TreeHerbSeedTable, [1, 15])
-	.add('Prayer potion(4)', [5, 40])
-	.add('Saradomin brew(4)', [5, 40])
-	.add('Super restore(4)', [5, 20])
-	.add('Monkey nuts', 2)
-	.add('Shark', [100, 200], 2)
-	.add('Beer', [500, 5000])
-	.add('Tchiki monkey nuts')
-	.add('Magic seed', [20, 50]);
-
-const testerGiftTable = new LootTable()
-	.every(baseTGBTable, [3, 7])
-	.every('Clue scroll (grandmaster)', [1, 3])
-	.every(LampTable, [1, 2])
-	.add('Rocktail', [30, 60])
-	.add('Tradeable mystery box', [1, 3])
-	.add(baseTGBTable);
 
 export const IronmanPMBTable = new LootTable()
 	.add(PMBTable, 1, PMBTable.length)
@@ -672,7 +631,6 @@ const cantBeDropped = resolveItems([
 	27_785,
 	27_788,
 	27_790,
-	...OSB_VIRTUS_IDS,
 	'Scurry',
 	'Trailblazer reloaded dragon trophy',
 	'Trailblazer reloaded rune trophy',
@@ -783,49 +741,11 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem(19_939),
 		aliases: ['untradeables mystery box', 'umb'],
 		output: async ({ user, quantity }) => ({
-			bank: getMysteryBoxItem(user, false, quantity)
+			...getMysteryBoxItem(user, false, quantity)
 		}),
 		allItems: [],
 		isMysteryBox: true,
 		smokeyApplies: true
-	},
-	{
-		name: 'Clothing Mystery Box',
-		id: 50_421,
-		openedItem: getOSItem(50_421),
-		aliases: ['cmb', 'clothing mystery box'],
-		output: ClothingMysteryBoxTable,
-		allItems: ClothingMysteryBoxTable.allItems,
-		smokeyApplies: true
-	},
-	{
-		name: 'Holiday Mystery box',
-		id: 3713,
-		openedItem: getOSItem(3713),
-		aliases: ['holiday mystery box', 'hmb', 'holiday', 'holiday item mystery box', 'himb'],
-		output: baseHolidayItems,
-		allItems: baseHolidayItems.allItems,
-		smokeyApplies: true
-	},
-	{
-		name: 'Pet Mystery box',
-		id: 3062,
-		openedItem: getOSItem(3062),
-		aliases: ['pet mystery box', 'pmb'],
-		output: async ({ user, quantity }) => ({
-			bank: user.isIronman ? IronmanPMBTable.roll(quantity) : PMBTable.roll(quantity)
-		}),
-		allItems: PMBTable.allItems,
-		smokeyApplies: true
-	},
-	{
-		name: 'Tester Gift box',
-		id: itemID('Tester gift box'),
-		openedItem: getOSItem('Tester Gift box'),
-		aliases: ['tester gift box', 'tgb'],
-		output: testerGiftTable,
-		allItems: testerGiftTable.allItems,
-		excludeFromOpenAll: true
 	},
 	{
 		name: 'Dwarven crate',
@@ -1028,18 +948,23 @@ function findMysteryBoxItem(table: number[]): number {
 	return result;
 }
 
-export function getMysteryBoxItem(user: MUser, tradeables: boolean, quantity: number): Bank {
+export function getMysteryBoxItem(user: MUser, tradeables: boolean, quantity: number) {
 	const mrEDroprate = clAdjustedDroprate(user, 'Mr. E', MR_E_DROPRATE_FROM_UMB_AND_TMB, 1.2);
 	const table = tradeables ? tmbTable : umbTable;
 	const loot = new Bank();
-
+	let message = '';
 	for (let i = 0; i < quantity; i++) {
 		if (roll(mrEDroprate)) {
 			loot.add('Mr. E');
 			continue;
 		}
-		loot.add(findMysteryBoxItem(table));
+		let item = findMysteryBoxItem(table);
+		if (user.hasRelic(RelicID.Randomness) && user.cl.has(item)) {
+			item = findMysteryBoxItem(table);
+			message = 'Your Relic of Randomness rerolled a duplicate item.';
+		}
+		loot.add(item);
 	}
 
-	return loot;
+	return { bank: loot, message };
 }

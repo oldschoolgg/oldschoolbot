@@ -2,12 +2,12 @@ import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChanne
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BitField, DISABLED_COMMANDS } from '../../lib/constants';
+import { randomizationMethods } from '../../lib/randomizer';
 import type { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
-import { minionBuyCommand } from './abstracted_commands/minionBuyCommand';
 
 export interface AbstractCommandAttributes {
 	examples?: string[];
@@ -52,10 +52,13 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'hasMinion',
-		run: async ({ user }) => {
-			if (!user.user.minion_hasBought) {
-				const res = await minionBuyCommand(user);
-				return { content: res };
+		run: async ({ user, command }) => {
+			if (!user.user.minion_hasBought && command.name !== 'minion') {
+				return {
+					ephemeral: true,
+					content: `Use /minion buy to buy a minion first, you can choose between 2 randomizer methods:
+${randomizationMethods.map(m => `${m.name}: ${m.desc}`).join('\n')}`
+				};
 			}
 
 			return false;

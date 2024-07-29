@@ -116,25 +116,3 @@ export function determineDgLevelForFloor(floor: number) {
 export function requiredLevel(floor: number) {
 	return floor * 14;
 }
-
-export function requiredSkills(floor: number) {
-	const lvl = requiredLevel(floor);
-	const nonCmbLvl = Math.floor(lvl / 1.5);
-	return {
-		attack: lvl,
-		strength: lvl,
-		defence: lvl,
-		hitpoints: lvl,
-		magic: lvl,
-		ranged: lvl,
-		herblore: nonCmbLvl,
-		runecraft: nonCmbLvl,
-		prayer: nonCmbLvl,
-		fletching: nonCmbLvl,
-		fishing: nonCmbLvl,
-		cooking: nonCmbLvl,
-		construction: nonCmbLvl,
-		crafting: nonCmbLvl,
-		dungeoneering: determineDgLevelForFloor(floor)
-	};
-}

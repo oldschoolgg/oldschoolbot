@@ -68,6 +68,7 @@ export default async function removeFoodFromUser({
 				if (!minimumHealAmount) return true;
 				return getRealHealAmount(user, food.healAmount) >= minimumHealAmount;
 			})
+				.slice(0, 20)
 				.map(i => i.name)
 				.join(', ')}.`
 		);

@@ -43,7 +43,6 @@ const globalInteractionActions = [
 	'AUTO_FARMING_CONTRACT',
 	'FARMING_CONTRACT_EASIER',
 	'OPEN_SEED_PACK',
-	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
 	'SPAWN_LAMP',
@@ -268,15 +267,6 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (id === 'REPEAT_TAME_TRIP') {
 		return repeatTameTrip({ ...options });
-	}
-
-	if (id === 'BUY_MINION') {
-		return runCommand({
-			commandName: 'minion',
-			args: { buy: {} },
-			bypassInhibitors: true,
-			...options
-		});
 	}
 
 	if (id === 'DO_FISHING_CONTEST') {

@@ -1,9 +1,13 @@
 import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { MysteryBoxes } from '../../../../../bsoOpenables';
 import setCustomMonster from '../../../../../util/setCustomMonster';
-
+const MysteryBoxes = new LootTable()
+	.oneIn(55, 'Pet Mystery Box')
+	.oneIn(165, 'Holiday Mystery Box')
+	.oneIn(35, 'Equippable mystery box')
+	.oneIn(35, 'Clothing Mystery Box')
+	.add('Tradeable Mystery Box');
 const dwarvenArmorTable = new LootTable()
 	.add('Dwarven full helm')
 	.add('Dwarven platebody')

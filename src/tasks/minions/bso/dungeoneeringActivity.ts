@@ -5,7 +5,6 @@ import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divinatio
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import {
-	calcMaxFloorUserCanDo,
 	calcUserGorajanShardChance,
 	numberOfGorajanOutfitsEquipped
 } from '../../../lib/skilling/skills/dung/dungDbFunctions';
@@ -112,7 +111,7 @@ export const dungeoneeringTask: MinionTask = {
 				hasScrollOfMystery: u.bank.has('Scroll of mystery'),
 				gorajanShardChance: calcUserGorajanShardChance(u).chance,
 				duration,
-				maxFloorUserCanDo: calcMaxFloorUserCanDo(u),
+				maxFloorUserCanDo: 7,
 				hasDungeonPortent: portentResult.didCharge
 			});
 

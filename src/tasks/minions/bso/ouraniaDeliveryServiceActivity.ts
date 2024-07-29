@@ -12,7 +12,6 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const boxTable = new LootTable()
 	.add('Tradeable mystery box', [1, 2], 100)
-	.add('Untradeable mystery box', 1, 40)
 	.add('Equippable mystery box', 1, 5)
 	.add('Pet mystery box');
 const BaseTable = new LootTable()

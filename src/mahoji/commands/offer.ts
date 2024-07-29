@@ -177,11 +177,6 @@ export const offerCommand: OSBMahojiCommand = {
 				}
 			}
 
-			const xpStr = await user.addXP({
-				skillName: SkillsEnum.Prayer,
-				amount: quantity * 100
-			});
-
 			const { previousCL, itemsAdded } = await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot,
@@ -200,7 +195,7 @@ export const offerCommand: OSBMahojiCommand = {
 			});
 
 			return {
-				content: `You offered ${quantity}x ${egg.name} to the Shrine and received the attached loot and ${xpStr}.`,
+				content: `You offered ${quantity}x ${egg.name} to the Shrine and received the attached loot.`,
 				files: [file]
 			};
 		}
@@ -218,17 +213,10 @@ export const offerCommand: OSBMahojiCommand = {
 			if (amountHas < quantity) {
 				return `You don't have ${quantity}x ${specialBone.item.name}, you have ${amountHas}.`;
 			}
-			const xp = quantity * specialBone.xp;
-			await Promise.all([
-				user.addXP({
-					skillName: SkillsEnum.Construction,
-					amount: xp
-				}),
-				user.removeItemsFromBank(new Bank().add(specialBone.item.id, quantity))
-			]);
+			await Promise.all([user.removeItemsFromBank(new Bank().add(specialBone.item.id, quantity))]);
 			return `You handed over ${quantity} ${specialBone.item.name}${
 				quantity > 1 ? "'s" : ''
-			} to Barlak and received ${xp} Construction XP.`;
+			} to Barlak and received no XP, weird.`;
 		}
 
 		const speedMod = 1.5;
