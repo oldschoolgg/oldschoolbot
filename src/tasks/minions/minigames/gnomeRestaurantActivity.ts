@@ -8,7 +8,7 @@ import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-const tipTable = new LootTable()
+export const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')
 	.oneIn(210, 'Gnome goggles')
 	.oneIn(50, 'Mint cake')
