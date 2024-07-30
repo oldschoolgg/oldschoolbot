@@ -638,6 +638,7 @@ export async function pinTripCommand(
 ) {
 	if (!tripId) return 'Invalid trip.';
 	const id = Number(tripId);
+	if (!id || Number.isNaN(id)) return 'Invalid trip.';
 	const trip = await prisma.activity.findFirst({ where: { id, user_id: BigInt(user.id) } });
 	if (!trip) return 'Invalid trip.';
 
