@@ -152,8 +152,7 @@ const inhibitors: Inhibitor[] = [
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
 			const userBitfield = user.bitfield;
-			const isStaff =
-				userBitfield.includes(BitField.isModerator) || userBitfield.includes(BitField.isContributor);
+			const isStaff = userBitfield.includes(BitField.isModerator);
 			if (guild.id === SupportServer && isStaff) {
 				return false;
 			}

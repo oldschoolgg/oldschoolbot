@@ -97,13 +97,11 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		BitField.IsPatronTier4,
 		BitField.IsPatronTier5,
 		BitField.isModerator,
-		BitField.isContributor,
 		BitField.BypassAgeRestriction,
 		BitField.HasPermanentEventBackgrounds,
 		BitField.HasPermanentTierOne,
 		BitField.DisabledRandomEvents,
 		BitField.AlwaysSmallBank,
-		BitField.IsWikiContributor,
 		BitField.IsPatronTier6
 	];
 

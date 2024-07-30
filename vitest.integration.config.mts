@@ -7,8 +7,7 @@ export default defineConfig({
 		setupFiles: 'tests/integration/setup.ts',
 		coverage: {
 			provider: 'v8',
-			reporter: 'text',
-			include: ['src/lib/MUser.ts']
+			reporter: 'text'
 		},
 		testTimeout: 30_000,
 		bail: 1,
