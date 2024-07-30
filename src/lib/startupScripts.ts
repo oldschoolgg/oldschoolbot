@@ -27,9 +27,11 @@ BEGIN
         END
     );
 END;
-$$;
+$$;`
+});
 
-CREATE OR REPLACE FUNCTION remove_item_from_bank(
+startupScripts.push({
+	sql: `CREATE OR REPLACE FUNCTION remove_item_from_bank(
     bank JSONB,
     key TEXT,
     quantity INT
