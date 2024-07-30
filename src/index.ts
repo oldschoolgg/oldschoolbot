@@ -8,7 +8,7 @@ import { MahojiClient } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
-import { isObject, noOp } from 'e';
+import { isObject } from 'e';
 
 import { SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
@@ -16,6 +16,7 @@ import { Channel, Events, gitHash, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';
+import { preStartup } from './lib/preStartup';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { CACHED_ACTIVE_USER_IDS } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
@@ -194,8 +195,7 @@ client.once('ready', () => onStartup());
 
 async function main() {
 	await Promise.all([
-		roboChimpClient.$connect().then(noOp),
-		prisma.$connect().then(noOp),
+		preStartup(),
 		import('exit-hook').then(({ asyncExitHook }) =>
 			asyncExitHook(exitCleanup, {
 				wait: 2000
