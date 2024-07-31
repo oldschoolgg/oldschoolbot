@@ -303,6 +303,7 @@ model User {
   QP                     Int       @default(0)
   bank                   Json      @default("{}") @db.Json
   collectionLogBank      Json      @default("{}") @db.JsonB
+  cl_array               Int[]     @default([])
   blowpipe               Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
   slayer_unlocks         Int[]     @default([]) @map("slayer.unlocks")
   slayer_blocked_ids     Int[]     @default([]) @map("slayer.blocked_ids")
