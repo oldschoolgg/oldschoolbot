@@ -22,7 +22,7 @@ export async function fetchCLLeaderboard({
 		const specificUsers =
 			userIds.length > 0
 				? await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
-    SELECT user_id::text AS id, CARDINALITY(cl_array) - CARDINALITY(cl_array - array[${items
+    SELECT user_id::text AS id, CARDINALITY(s.cl_array) - CARDINALITY(s.cl_array - array[${items
 		.map(i => `${i}`)
 		.join(', ')}]) AS qty
     FROM user_stats s INNER JOIN users u ON s.user_id::text = u.id
@@ -30,12 +30,12 @@ export async function fetchCLLeaderboard({
 `)
 				: [];
 		const generalUsers = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
-    SELECT user_id::text AS id, CARDINALITY(cl_array) - CARDINALITY(cl_array - array[${items
+    SELECT user_id::text AS id, CARDINALITY(user_stats.cl_array) - CARDINALITY(user_stats.cl_array - array[${items
 		.map(i => `${i}`)
 		.join(', ')}]) AS qty
     FROM user_stats
     ${ironmenOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
-    WHERE (cl_array && array[${items.map(i => `${i}`).join(', ')}]
+    WHERE (user_stats.cl_array && array[${items.map(i => `${i}`).join(', ')}]
     ${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''})
     ${userIds.length > 0 ? `AND user_id::text NOT IN (${userIdsList})` : ''}
     ORDER BY qty DESC
