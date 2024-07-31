@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import {
@@ -10,6 +11,13 @@ import {
 import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { alching } from '../../mahoji/commands/laps';
+=======
+import { Stopwatch, channelIsSendable, makeComponents } from '@oldschoolgg/toolkit';
+import type { activity_type_enum } from '@prisma/client';
+import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
+import { Bank } from 'oldschooljs';
+
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
@@ -66,21 +74,29 @@ interface TripFinishEffectOptions {
 	messages: string[];
 	portents?: Awaited<ReturnType<typeof getAllPortentCharges>>;
 }
+
+type TripEffectReturn = {
+	itemsToAddWithCL?: Bank;
+	itemsToRemove?: Bank;
+};
+
 export interface TripFinishEffect {
 	name: string;
-	fn: (options: TripFinishEffectOptions) => unknown;
+	// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined | void>;
 }
 
 const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Track GP Analytics',
-		fn: ({ data, loot }) => {
+		fn: async ({ data, loot }) => {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateClientGPTrackSetting('gp_pvm', GP);
+					await updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
+			return {};
 		}
 	},
 	{
@@ -90,9 +106,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
-				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
-				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
+				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
+				return {
+					itemsToAddWithCL: imp.bank
+				};
 			}
+			return {};
 		}
 	},
 	{
@@ -104,7 +123,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Random Events',
 		fn: async ({ data, messages, user }) => {
-			await triggerRandomEvent(user, data.type, data.duration, messages);
+			return triggerRandomEvent(user, data.type, data.duration, messages);
 		}
 	},
 	{
@@ -330,6 +349,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Combat Achievements',
+<<<<<<< HEAD
 		fn: combatAchievementTripEffect
 	},
 	{
@@ -448,6 +468,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}; ${loot} survived`);
 				}
 			}
+=======
+		fn: async options => {
+			return combatAchievementTripEffect(options);
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 		}
 	}
 ];
@@ -475,9 +499,27 @@ export async function handleTripFinish(
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
 
+<<<<<<< HEAD
 	// TODO: This is called for *every* trip, even though it's used only for users with the rebirth portent.
 	const portents = await getAllPortentCharges(user);
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages, portents });
+=======
+	const itemsToAddWithCL = new Bank();
+	const itemsToRemove = new Bank();
+	for (const effect of tripFinishEffects) {
+		const stopwatch = new Stopwatch().start();
+		const res = await effect.fn({ data, user, loot, messages });
+		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
+		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
+		stopwatch.stop();
+		if (stopwatch.duration > 500) {
+			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
+		}
+	}
+	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
+		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
+	}
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 

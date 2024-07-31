@@ -235,9 +235,14 @@ async function favItemConfig(
 	const currentFavorites = user.user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
+<<<<<<< HEAD
 	if (!item || secretItems.includes(item.id)) return currentItems;
+=======
+
+	if (!item) return currentItems;
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 	if (itemToAdd) {
 		const limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {

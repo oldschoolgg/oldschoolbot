@@ -1267,6 +1267,7 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
+<<<<<<< HEAD
 
 			const isChincannonUser = u.id === chinCannonUser?.id;
 			if (isChincannonUser) {
@@ -1282,6 +1283,9 @@ export async function toaStartCommand(
 				debugStr += ` ${inventionBoosts.chincannon.toaPercentReduction}% speed increase from the Chincannon (${res.messages})`;
 			}
 			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
+=======
+			await userStatsBankUpdate(u, 'toa_cost', realCost);
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 

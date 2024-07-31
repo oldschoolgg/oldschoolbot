@@ -131,7 +131,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 	for (const [event, count] of objectEntries(eventCounts)) {
 		if (event && count && count > 0) {
 			totalEvents += count;
-			await userStatsBankUpdate(user.id, 'forestry_event_completions_bank', new Bank().add(Number(event), count));
+			await userStatsBankUpdate(user, 'forestry_event_completions_bank', new Bank().add(Number(event), count));
 		}
 	}
 

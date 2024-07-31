@@ -1,7 +1,9 @@
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
+import { TimerManager } from '@sapphire/timer-manager';
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { runTameTask } from '../tasks/tames/tameTasks';
@@ -10,7 +12,6 @@ import { processPendingActivities } from './Task';
 import { bossEvents, startBossEvent } from './bossEvents';
 import { BitField, Channel, PeakTier, informationalButtons } from './constants';
 import { GrandExchange } from './grandExchange';
-import { cacheGEPrices } from './marketPrices';
 import { collectMetrics } from './metrics';
 import { queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
@@ -51,9 +52,16 @@ export interface Peak {
 /**
  * Tickers should idempotent, and be able to run at any time.
  */
-export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => Promise<unknown> }[] = [
+export const tickers: {
+	name: string;
+	startupWait?: number;
+	interval: number;
+	timer: NodeJS.Timeout | null;
+	cb: () => Promise<unknown>;
+}[] = [
 	{
 		name: 'giveaways',
+		startupWait: Time.Second * 30,
 		interval: Time.Second * 10,
 		timer: null,
 		cb: async () => {
@@ -91,6 +99,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	},
 	{
 		name: 'minion_activities',
+		startupWait: Time.Second * 10,
 		timer: null,
 		interval: production ? Time.Second * 5 : 500,
 		cb: async () => {
@@ -100,6 +109,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	{
 		name: 'daily_reminders',
 		interval: Time.Minute * 3,
+		startupWait: Time.Minute,
 		timer: null,
 		cb: async () => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; last_daily_timestamp: bigint }[]>(
@@ -179,6 +189,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 	},
 	{
 		name: 'farming_reminder_ticker',
+		startupWait: Time.Minute,
 		interval: Time.Minute * 3.5,
 		timer: null,
 		cb: async () => {
@@ -299,6 +310,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 	{
 		name: 'support_channel_messages',
 		timer: null,
+		startupWait: Time.Second * 22,
 		interval: Time.Minute * 20,
 		cb: async () => {
 			if (!production) return;
@@ -321,7 +333,12 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		}
 	},
 	{
+<<<<<<< HEAD
 		name: 'tame_activities',
+=======
+		name: 'ge_channel_messages',
+		startupWait: Time.Second * 19,
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 		timer: null,
 		interval: Time.Second * 5,
 		cb: async () => {
@@ -385,18 +402,11 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 	},
 	{
 		name: 'ge_ticker',
+		startupWait: Time.Second * 30,
 		timer: null,
-		interval: Time.Second * 3,
+		interval: Time.Second * 10,
 		cb: async () => {
 			await GrandExchange.tick();
-		}
-	},
-	{
-		name: 'Cache g.e prices and validate',
-		timer: null,
-		interval: Time.Hour * 4,
-		cb: async () => {
-			await cacheGEPrices();
 		}
 	}
 ];
@@ -407,14 +417,22 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				const stopwatch = new Stopwatch().start();
 				await ticker.cb();
+				stopwatch.stop();
+				if (stopwatch.duration > 100) {
+					debugLog(`Ticker ${ticker.name} took ${stopwatch}`);
+				}
 			} catch (err) {
 				logError(err);
 				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
 			} finally {
-				ticker.timer = setTimeout(fn, ticker.interval);
+				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
+				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);
 			}
 		};
-		fn();
+		ticker.timer = TimerManager.setTimeout(() => {
+			fn();
+		}, ticker.startupWait ?? 1);
 	}
 }

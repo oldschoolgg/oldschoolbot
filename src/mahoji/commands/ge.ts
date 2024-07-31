@@ -9,6 +9,7 @@ import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 
+<<<<<<< HEAD
 import {
 	formatDuration,
 	isGEUntradeable,
@@ -17,6 +18,11 @@ import {
 	returnStringOrFile,
 	toKMB
 } from '../../lib/util';
+=======
+import { Bank } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 import { createChart } from '../../lib/util/chart';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -25,6 +31,7 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemArr, itemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -141,8 +148,15 @@ export const geCommand: OSBMahojiCommand = {
 					description: 'The item you want to sell.',
 					required: true,
 					autocomplete: async (value, { id }) => {
+<<<<<<< HEAD
 						const user = await mUserFetch(id);
 						return user.bank
+=======
+						const raw = await mahojiUsersSettingsFetch(id, { bank: true });
+						const bank = new Bank(raw.bank as ItemBank);
+
+						return bank
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 							.items()
 							.filter(i => !isGEUntradeable(i[0].id))
 							.filter(i => (!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())))

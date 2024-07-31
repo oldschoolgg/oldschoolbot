@@ -171,14 +171,21 @@ export const agilityTask: MinionTask = {
 			hasAgilityPortent: portentResult.didCharge
 		});
 
+		const stats = await user.fetchStats({ laps_scores: true });
 		const { laps_scores: newLapScores } = await userStatsUpdate(
 			user.id,
+<<<<<<< HEAD
 			({ laps_scores }) => ({
 				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, successfulLaps),
 				xp_from_graceful_portent: {
 					increment: portentXP
 				}
 			}),
+=======
+			{
+				laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, quantity - lapsFailed)
+			},
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 			{ laps_scores: true }
 		);
 

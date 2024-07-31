@@ -366,6 +366,9 @@ interface ColosseumResult {
 	realDuration: number;
 	totalDeathChance: number;
 	deathChances: number[];
+	scytheCharges: number;
+	venatorBowCharges: number;
+	bloodFuryCharges: number;
 }
 
 export const startColosseumRun = (options: {
@@ -377,6 +380,9 @@ export const startColosseumRun = (options: {
 	hasClaws: boolean;
 	hasSGS: boolean;
 	hasTorture: boolean;
+	scytheCharges: number;
+	venatorBowCharges: number;
+	bloodFuryCharges: number;
 }): ColosseumResult => {
 	const waveTwelveKC = options.kcBank.amount(12);
 
@@ -406,6 +412,10 @@ export const startColosseumRun = (options: {
 	let realDuration = 0;
 	let maxGlory = 0;
 
+	// Calculate charges used
+	const scytheCharges = 300;
+	const calculateVenCharges = () => 50;
+
 	for (const wave of colosseumWaves) {
 		realDuration += waveDuration;
 		const kcForThisWave = options.kcBank.amount(wave.waveNumber);
@@ -422,7 +432,10 @@ export const startColosseumRun = (options: {
 				fakeDuration,
 				realDuration,
 				totalDeathChance: combinedChance(deathChances),
-				deathChances
+				deathChances,
+				scytheCharges: options.hasScythe ? scytheCharges : 0,
+				venatorBowCharges: options.hasVenBow ? calculateVenCharges() : 0,
+				bloodFuryCharges: options.hasBF ? scytheCharges * 3 : 0
 			};
 		}
 		addedWaveKCBank.add(wave.waveNumber);
@@ -436,7 +449,11 @@ export const startColosseumRun = (options: {
 				fakeDuration,
 				realDuration,
 				totalDeathChance: combinedChance(deathChances),
-				deathChances
+				deathChances,
+
+				scytheCharges: options.hasScythe ? scytheCharges : 0,
+				venatorBowCharges: options.hasVenBow ? calculateVenCharges() : 0,
+				bloodFuryCharges: options.hasBF ? scytheCharges * 3 : 0
 			};
 		}
 	}
@@ -532,6 +549,9 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	const hasClaws = user.hasEquippedOrInBank('Dragon claws');
 	const hasSGS = user.hasEquippedOrInBank('Saradomin godsword');
 	const hasTorture = !hasBF && user.gear.melee.hasEquipped('Amulet of torture');
+	const scytheCharges = 300;
+	const bloodFuryCharges = scytheCharges * 3;
+	const venatorBowCharges = calculateVenCharges();
 
 	const res = startColosseumRun({
 		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
@@ -541,7 +561,10 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		hasBF,
 		hasClaws,
 		hasSGS,
-		hasTorture
+		hasTorture,
+		scytheCharges,
+		venatorBowCharges,
+		bloodFuryCharges
 	});
 	const minutes = res.realDuration / Time.Minute;
 
@@ -556,7 +579,6 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		return 'You need to have a Ranging potion(4) or Bastion potion(4) in your bank.';
 	}
 
-	const scytheCharges = 300;
 	if (hasScythe) {
 		messages.push('10% boost for Scythe');
 		chargeBank.add('scythe_of_vitur_charges', scytheCharges);
@@ -595,7 +617,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	}
 
 	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {
-		chargeBank.add('blood_fury_charges', scytheCharges * 3);
+		chargeBank.add('blood_fury_charges', bloodFuryCharges);
 		messages.push('-5% death chance for blood fury');
 	} else {
 		messages.push('Missed -5% death chance for blood fury. If you have one, add charges and equip it to melee.');
@@ -620,7 +642,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	messages.push(`Removed ${realCost}`);
 
 	await updateBankSetting('colo_cost', realCost);
-	await userStatsBankUpdate(user.id, 'colo_cost', realCost);
+	await userStatsBankUpdate(user, 'colo_cost', realCost);
 	await trackLoot({
 		totalCost: realCost,
 		id: 'colo',
@@ -652,7 +674,10 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		fakeDuration: res.fakeDuration,
 		maxGlory: res.maxGlory,
 		diedAt: res.diedAt ?? undefined,
-		loot: res.loot?.bank
+		loot: res.loot?.bank,
+		scytheCharges: res.scytheCharges,
+		venatorBowCharges: res.venatorBowCharges,
+		bloodFuryCharges: res.bloodFuryCharges
 	});
 
 	return `${user.minionName} is now attempting the Colosseum. They will finish in around ${formatDuration(

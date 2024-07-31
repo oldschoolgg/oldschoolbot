@@ -11,7 +11,6 @@ import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { analyticsTick } from '../../lib/analytics';
 import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
 import { BitField, Channel } from '../../lib/constants';
@@ -39,7 +38,6 @@ import { sendToChannelID } from '../../lib/util/webhook';
 import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { gifs } from './admin';
 import { getUserInfo } from './minion';
 import { sellPriceOfItem } from './sell';
@@ -348,25 +346,6 @@ export const rpCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'add_ironman_alt',
-					description: 'Add an ironman alt account for a user',
-					options: [
-						{
-							type: ApplicationCommandOptionType.User,
-							name: 'main',
-							description: 'The main',
-							required: true
-						},
-						{
-							type: ApplicationCommandOptionType.User,
-							name: 'ironman_alt',
-							description: 'The ironman alt',
-							required: true
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'view_user',
 					description: 'View a users info',
 					options: [
@@ -591,7 +570,6 @@ export const rpCommand: OSBMahojiCommand = {
 				user: MahojiUserOption;
 				message_id: string;
 			};
-			add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
 			view_user?: { user: MahojiUserOption };
 			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
 			list_trades?: {
@@ -878,6 +856,7 @@ ORDER BY item_id ASC;`);
 			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
 			return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
 		}
+<<<<<<< HEAD
 		if (options.player?.add_ironman_alt) {
 			const mainAccount = await mahojiUsersSettingsFetch(options.player.add_ironman_alt.main.user.id, {
 				minion_ironman: true,
@@ -931,6 +910,8 @@ ORDER BY item_id ASC;`);
 			});
 			return `You set \`${altUser.usernameOrMention}\` as the alt account of \`${mainUser.usernameOrMention}\`.`;
 		}
+=======
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 
 		if (options.player?.view_user) {
 			const userToView = await mUserFetch(options.player.view_user.user.user.id);

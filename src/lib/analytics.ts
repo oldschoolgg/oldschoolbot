@@ -59,7 +59,7 @@ export async function analyticsTick() {
 	).map((v: { val: bigint }[]) => BigInt(v[0].val));
 
 	const taskCounts = await calculateMinionTaskCounts();
-	const currentClientSettings = await prisma.clientStorage.findFirst({
+	const currentClientSettings = await prisma.clientStorage.upsert({
 		where: {
 			id: globalConfig.clientID
 		},
@@ -77,11 +77,13 @@ export async function analyticsTick() {
 			gp_sell: true,
 			gp_slots: true,
 			gp_tax_balance: true,
-			economyStats_dailiesAmount: true,
-			gp_ic: true
-		}
+			economyStats_dailiesAmount: true
+		},
+		create: {
+			id: globalConfig.clientID
+		},
+		update: {}
 	});
-	if (!currentClientSettings) throw new Error('No client settings found');
 	await prisma.analytic.create({
 		data: {
 			guildsCount: globalClient.guilds.cache.size,

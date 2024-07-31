@@ -1,6 +1,6 @@
 import { Time } from 'e';
 
-import { production } from '../config';
+import { TimerManager } from '@sapphire/timer-manager';
 
 export const BLACKLISTED_USERS = new Set<string>();
 export const BLACKLISTED_GUILDS = new Set<string>();
@@ -15,6 +15,4 @@ export async function syncBlacklists() {
 	}
 }
 
-if (production) {
-	setInterval(syncBlacklists, Time.Minute * 10);
-}
+TimerManager.setInterval(syncBlacklists, Time.Minute * 10);

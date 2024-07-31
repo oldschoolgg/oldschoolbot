@@ -1,7 +1,9 @@
 import { Items } from 'oldschooljs';
+import { globalConfig } from './constants';
 
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
+<<<<<<< HEAD
 const arrayColumns = [
 	['clientStorage', 'userBlacklist'],
 	['clientStorage', 'guildBlacklist'],
@@ -37,6 +39,8 @@ ALTER TABLE "${table}"
 	});
 }
 
+=======
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 interface CheckConstraint {
 	table: string;
 	column: string;
@@ -46,21 +50,9 @@ interface CheckConstraint {
 const checkConstraints: CheckConstraint[] = [
 	{
 		table: 'users',
-		column: 'lms_points',
-		name: 'users_lms_points_min',
-		body: 'lms_points >= 0'
-	},
-	{
-		table: 'users',
 		column: '"GP"',
 		name: 'users_gp',
 		body: '"GP" >= 0'
-	},
-	{
-		table: 'users',
-		column: '"QP"',
-		name: 'users_qp',
-		body: '"QP" >= 0'
 	},
 	{
 		table: 'ge_listing',
@@ -140,6 +132,19 @@ startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS tame_only_one_task ON tame_activity (user_id, completed) WHERE NOT completed;'
 });
 
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_buy_filter_sort 
+ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item DESC, created_at ASC);`
+});
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_sell_filter_sort 
+ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item ASC, created_at ASC);`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS ge_transaction_sell_listing_id_created_at_idx 
+ON ge_transaction (sell_listing_id, created_at DESC);`
+});
 const itemMetaDataNames = Items.map(item => `(${item.id}, '${item.name.replace(/'/g, "''")}')`).join(', ');
 const itemMetaDataQuery = `
 INSERT INTO item_metadata (id, name)
@@ -149,8 +154,9 @@ DO
   UPDATE SET name = EXCLUDED.name
 WHERE item_metadata.name IS DISTINCT FROM EXCLUDED.name;
 `;
-
-startupScripts.push({ sql: itemMetaDataQuery });
+if (globalConfig.isProduction) {
+	startupScripts.push({ sql: itemMetaDataQuery });
+}
 
 export async function runStartupScripts() {
 	await prisma.$transaction(startupScripts.map(query => prisma.$queryRawUnsafe(query.sql)));

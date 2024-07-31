@@ -468,6 +468,7 @@ export async function tobStartCommand(
 			const supplies = await calcTOBInput(u);
 			const { total } = calculateTOBUserGearPercents(u);
 			const blowpipeData = u.blowpipe;
+<<<<<<< HEAD
 			const preChincannonCost = supplies
 				.clone()
 				.add('Coins', 100_000)
@@ -480,6 +481,17 @@ export async function tobStartCommand(
 			}
 			const { realCost } = await u.specialRemoveItems(preChincannonCost.multiply(qty));
 			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
+=======
+			const { realCost } = await u.specialRemoveItems(
+				supplies
+					.clone()
+					.add('Coins', 100_000)
+					.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
+					.add(u.gear.range.ammo?.item, 100)
+					.multiply(qty)
+			);
+			await userStatsBankUpdate(u, 'tob_cost', realCost);
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
 			if (isChincannonUser) {

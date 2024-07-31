@@ -24,7 +24,7 @@ export const scatteringTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished scattering ${quantity}x ${ash.name}. ${xpRes}`;
 
-		await userStatsBankUpdate(user.id, 'scattered_ashes_bank', new Bank().add(ash.inputId, quantity));
+		await userStatsBankUpdate(user, 'scattered_ashes_bank', new Bank().add(ash.inputId, quantity));
 
 		handleTripFinish(user, channelID, str, undefined, data, null);
 	}

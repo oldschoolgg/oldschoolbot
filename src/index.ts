@@ -8,33 +8,25 @@ import { MahojiClient } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
-import { isObject } from 'e';
+import { isObject, noOp } from 'e';
 
 import { SENTRY_DSN, SupportServer } from './config';
-import { syncActivityCache } from './lib/Task';
-import { cacheBadges } from './lib/badges';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from './lib/blacklists';
-import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/constants';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
+import { Channel, Events, gitHash, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
-import { GrandExchange } from './lib/grandExchange';
 import { modalInteractionHook } from './lib/modals';
-import { populateRoboChimpCache } from './lib/perkTier';
-import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
-import { assert, runTimedLoggedFn } from './lib/util';
-import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
+import { CACHED_ACTIVE_USER_IDS } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
-import { handleInteractionError } from './lib/util/interactionReply';
+import { handleInteractionError, interactionReply } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
-import { syncDisabledCommands } from './lib/util/syncDisabledCommands';
 import { allCommands } from './mahoji/commands/allCommands';
-import { onStartup, syncCustomPrices } from './mahoji/lib/events';
+import { onStartup } from './mahoji/lib/events';
+import { exitCleanup } from './mahoji/lib/exitHandler';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
-
-debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
 
 if (SENTRY_DSN) {
 	init({
@@ -45,8 +37,6 @@ if (SENTRY_DSN) {
 		release: gitHash
 	});
 }
-
-assert(process.env.TZ === 'UTC');
 
 const client = new OldSchoolBotClient({
 	shards: 'auto',
@@ -139,19 +129,29 @@ global.globalClient = client;
 client.on('messageCreate', msg => {
 	onMessage(msg);
 });
+client.on('error', console.error);
 client.on('interactionCreate', async interaction => {
-	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
-	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
-
-	if (!client.isReady()) {
+	if (globalClient.isShuttingDown) {
 		if (interaction.isRepliable()) {
-			await interaction.reply({
+			await interactionReply(interaction, {
 				content:
-					'BSO is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}
+		return;
+	}
 
+	if (
+		BLACKLISTED_USERS.has(interaction.user.id) ||
+		(interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId))
+	) {
+		if (interaction.isRepliable()) {
+			await interactionReply(interaction, {
+				content: 'You are blacklisted.',
+				ephemeral: true
+			});
+		}
 		return;
 	}
 
@@ -190,22 +190,20 @@ client.on('guildCreate', guild => {
 });
 
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
-client.once('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
+client.once('ready', () => onStartup());
 
 async function main() {
-	if (process.env.TEST) return;
 	await Promise.all([
-		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
-		runTimedLoggedFn('Sync Activity Cache', syncActivityCache),
-		runTimedLoggedFn('Startup Scripts', runStartupScripts),
-		runTimedLoggedFn('Sync Disabled Commands', syncDisabledCommands),
-		runTimedLoggedFn('Sync Blacklist', syncBlacklists),
-		runTimedLoggedFn('Syncing prices', syncCustomPrices),
-		runTimedLoggedFn('Caching badges', cacheBadges),
-		runTimedLoggedFn('Init Grand Exchange', () => GrandExchange.init()),
-		runTimedLoggedFn('populateRoboChimpCache', populateRoboChimpCache)
+		roboChimpClient.$connect().then(noOp),
+		prisma.$connect().then(noOp),
+		import('exit-hook').then(({ asyncExitHook }) =>
+			asyncExitHook(exitCleanup, {
+				wait: 2000
+			})
+		)
 	]);
-	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
+	if (process.env.TEST) return;
+	await client.login(globalConfig.botToken);
 	console.log(`Logged in as ${globalClient.user.username}`);
 }
 

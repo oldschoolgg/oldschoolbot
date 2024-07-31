@@ -124,6 +124,7 @@ export const tobTask: MinionTask = {
 			)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})`;
 
 			// Track loot for T3+ patrons
+<<<<<<< HEAD
 			if (!chincannonUser) {
 				await Promise.all(
 					allUsers.map(user => {
@@ -131,6 +132,13 @@ export const tobTask: MinionTask = {
 					})
 				);
 			}
+=======
+			await Promise.all(
+				allUsers.map(user => {
+					return userStatsBankUpdate(user, 'tob_loot', new Bank(result.loot[user.id]));
+				})
+			);
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 
 			for (const [userID, _userLoot] of Object.entries(result.loot)) {
 				if (data.solo && userID !== leader) continue;

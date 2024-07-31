@@ -245,7 +245,8 @@ export async function processPendingActivities() {
 						lt: new Date()
 					}
 				: undefined
-		}
+		},
+		take: 5
 	});
 
 	if (activities.length > 0) {
@@ -259,19 +260,21 @@ export async function processPendingActivities() {
 				completed: true
 			}
 		});
+		await Promise.all(activities.map(completeActivity));
 	}
-
-	await Promise.all(activities.map(completeActivity));
-	return activities;
 }
 
+<<<<<<< HEAD
 export async function syncActivityCache() {
+=======
+export const syncActivityCache = async () => {
+>>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
 	minionActivityCache.clear();
 	for (const task of tasks) {
 		activitySync(task);
 	}
-}
+};
 
 const ActivityTaskOptionsSchema = z.object({
 	userID: z.string(),
