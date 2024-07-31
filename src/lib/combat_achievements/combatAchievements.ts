@@ -188,7 +188,6 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 	);
 
 	for (const user of users) {
-		console.log('1');
 		const completedTasks = [];
 		let qty = quantity;
 		for (const task of indexesWithRng) {
