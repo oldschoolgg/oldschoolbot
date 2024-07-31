@@ -32,7 +32,7 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 				? getOSItem(randArrItem(fossilIslandNotesCL))
 				: getOSItem(randArrItem(filteredPages));
 		tempClWithNewUniques.add(outPage);
-		loot.add(outPage);
+		loot.add(outPage);win
 	}
 
 	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
