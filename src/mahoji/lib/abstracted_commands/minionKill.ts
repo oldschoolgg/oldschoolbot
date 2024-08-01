@@ -49,7 +49,7 @@ import type { AttackStyles } from '../../../lib/minions/functions';
 import { calculateMonsterFood, convertAttackStylesToSetup, resolveAttackStyles } from '../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import type { Consumable } from '../../../lib/minions/types';
+import type { Consumable, KillableMonster } from '../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../lib/poh';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
@@ -157,6 +157,28 @@ function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]):
 	return [newDuration, str];
 }
 
+export function gorajanGearBoost(user: MUser, monster: KillableMonster | string) {
+	let attackStyle = null;
+	let goraBoost = false;
+
+	if (typeof monster !== 'string' && monster.attackStyleToUse) {
+		attackStyle = gearstatToSetup.get(monster.attackStyleToUse);
+	} else if (monster === 'Colosseum') {
+		attackStyle = 'melee';
+	} else {
+		return goraBoost;
+	}
+
+	const allGorajan = gorajanBoosts.every(e => user.gear[e[1]].hasEquipped(e[0], true));
+	for (const [outfit, setup] of gorajanBoosts) {
+		if (allGorajan || (attackStyle === setup && user.gear[setup].hasEquipped(outfit, true))) {
+			goraBoost = true;
+			break;
+		}
+	}
+	return goraBoost;
+}
+
 export async function minionKillCommand(
 	user: MUser,
 	interaction: ChatInputCommandInteraction,
@@ -181,7 +203,7 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
-	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID);
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID, quantity);
 	if (user.usingPet('Ishi')) {
 		sendToChannelID(channelID.toString(), {
 			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`
@@ -678,16 +700,11 @@ export async function minionKillCommand(
 		timeToFinish *= 0.95;
 		boosts.push('5% for Amulet of zealots');
 	}
-	const allGorajan = gorajanBoosts.every(e => user.gear[e[1]].hasEquipped(e[0], true));
-	for (const [outfit, setup] of gorajanBoosts) {
-		if (
-			allGorajan ||
-			(gearstatToSetup.get(monster.attackStyleToUse) === setup && user.gear[setup].hasEquipped(outfit, true))
-		) {
-			boosts.push('10% for Gorajan');
-			timeToFinish *= 0.9;
-			break;
-		}
+
+	// calculate boost from gorajan gear
+	if (gorajanGearBoost(user, monster)) {
+		boosts.push('10% for Gorajan');
+		timeToFinish *= 0.9;
 	}
 
 	if (attackStyles.includes(SkillsEnum.Ranged) && user.hasEquipped('Ranged master cape')) {
