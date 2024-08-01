@@ -291,7 +291,7 @@ export const colosseumWaves: Wave[] = [
 	}
 ];
 
-function calculateDeathChance(waveKC: number, hasBF: boolean, hasSGS: boolean): number {
+function calculateDeathChance(waveKC: number, hasBF: boolean, hasSGS: boolean, hasBulwark: boolean): number {
 	const cappedKc = Math.min(Math.max(waveKC, 0), 150);
 	const baseChance = 80;
 	const kcReduction = 80 * (1 - Math.exp(-1.5 * cappedKc));
@@ -303,6 +303,9 @@ function calculateDeathChance(waveKC: number, hasBF: boolean, hasSGS: boolean): 
 	}
 	if (hasBF) {
 		newChance = reduceNumByPercent(newChance, 5);
+	}
+	if (hasBulwark) {
+		newChance = reduceNumByPercent(newChance, 20);
 	}
 
 	return clamp(newChance, 1, 80);
@@ -379,9 +382,7 @@ export const colosseumWaveTime = (options: {
 	hasScythe: boolean;
 	hasTBow: boolean;
 	hasVenBow: boolean;
-	hasBF: boolean;
 	hasClaws: boolean;
-	hasSGS: boolean;
 	hasTorture: boolean;
 	hasHFB: boolean;
 	hasSungodAxe: boolean;
@@ -434,6 +435,7 @@ export const startColosseumRun = (options: {
 	hasSungodAxe: boolean;
 	hasGora: boolean;
 	hasBHook: boolean;
+	hasBulwark: boolean;
 }): ColosseumResult => {
 	const bank = new Bank();
 	const addedWaveKCBank = new ColosseumWaveBank();
@@ -443,9 +445,7 @@ export const startColosseumRun = (options: {
 		hasScythe: options.hasScythe,
 		hasTBow: options.hasTBow,
 		hasVenBow: options.hasVenBow,
-		hasBF: options.hasBF,
 		hasClaws: options.hasClaws,
-		hasSGS: options.hasSGS,
 		hasTorture: options.hasTorture,
 		hasHFB: options.hasHFB,
 		hasSungodAxe: options.hasSungodAxe,
@@ -466,7 +466,7 @@ export const startColosseumRun = (options: {
 		realDuration += waveDuration;
 		const kcForThisWave = options.kcBank.amount(wave.waveNumber);
 		maxGlory = Math.max(calculateGlory(options.kcBank, wave), maxGlory);
-		const deathChance = calculateDeathChance(kcForThisWave, options.hasBF, options.hasSGS);
+		const deathChance = calculateDeathChance(kcForThisWave, options.hasBF, options.hasSGS, options.hasBulwark);
 		deathChances.push(deathChance);
 
 		if (percentChance(deathChance)) {
@@ -542,7 +542,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 			legs: resolveItems(['Torva platelegs', 'Bandos tassets']),
 			feet: resolveItems(['Torva boots', 'Primordial boots']),
 			hands: resolveItems(['Torva gloves', 'Ferocious gloves', 'Barrows gloves']),
-			ring: resolveItems(['Ignis ring', 'Ultor ring', 'Berserker ring (i)'])
+			ring: resolveItems(['Ignis ring', 'Ultor ring', 'Berserker ring'])
 		},
 		range: {
 			cape: resolveItems(["Ava's assembler"]),
@@ -552,7 +552,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 			legs: resolveItems(['Pernix chaps', 'Masori chaps', 'Armadyl chainskirt']),
 			feet: resolveItems(['Pernix boots', 'Pegasian boots']),
 			hands: resolveItems(['Pernix gloves', 'Zaryte vambraces', 'Barrows gloves']),
-			ring: resolveItems(['Ring of piercing', 'Venator ring', 'Archers ring (i)'])
+			ring: resolveItems(['Ring of piercing', 'Venator ring', 'Archers ring'])
 		}
 	};
 
@@ -595,16 +595,10 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 			.join(', ')}.`;
 	}
 
-	const costStr: string[] = [];
-	const boosts: string[] = [];
-	const missedBoosts: string[] = [];
-	const deathBoosts: string[] = [];
-	const missedDeathBoosts: string[] = [];
-
 	//OSB boost items:
 	const hasBF = user.gear.melee.hasEquipped('Amulet of blood fury', true, false);
 	const hasScythe = user.gear.melee.hasEquipped('Scythe of vitur', true, true);
-	const hasTBow = user.gear.range.hasEquipped('Twisted bow', true, true);
+	const hasTBow = user.gear.range.hasEquipped('Twisted bow', true, false);
 	function calculateVenCharges() {
 		return 50;
 	}
@@ -621,17 +615,16 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	const hasSungodAxe = user.gear.melee.hasEquipped('Axe of the high sungod', true, true);
 	const hasGora = gorajanGearBoost(user, 'Colosseum');
 	const hasBHook = !hasBF && user.gear.melee.hasEquipped("Brawler's hook necklace");
+	const hasBulwark = user.owns('Infernal bulwark');
 
+	// Get trip time and calculate max attempts the user can do per trip
 	const kcBank: ColosseumWaveBank = new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank);
-
 	const waveDuration = colosseumWaveTime({
 		kcBank,
 		hasScythe,
 		hasTBow,
 		hasVenBow,
-		hasBF,
 		hasClaws,
-		hasSGS,
 		hasTorture,
 		hasHFB,
 		hasSungodAxe,
@@ -640,16 +633,15 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	});
 	const oneColoTripTime = waveDuration * 12;
 	const maxUserTripTime = calcMaxTripLength(user, 'MonsterKilling');
-	const maxColoQty = Math.floor(maxUserTripTime/oneColoTripTime);
-
+	const maxColoQty = Math.max(1, Math.floor(maxUserTripTime / oneColoTripTime));
 	if (!quantity || quantity > maxColoQty) {
 		quantity = maxColoQty;
 	}
 
+	// get all the results and cost from each attempt
 	const chargeBank = new ChargeBank();
 	const cost = new Bank()
 	const results: ColosseumResult[] = [];
-
 	for (let i = 0; i < quantity; i++) {
 		const res = startColosseumRun({
 			kcBank,
@@ -666,10 +658,10 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 			hasHFB,
 			hasSungodAxe,
 			hasGora,
-			hasBHook
+			hasBHook,
+			hasBulwark
 		});
 		results.push(res);
-
 		const minutes = res.realDuration / Time.Minute;
 
 		// Calculate resources needed for 1 attempt
@@ -691,7 +683,13 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		}
 	}
 
-	// create item and death reduction boost messages
+	// Generate various messages
+	const costStr: string[] = [];
+	const boosts: string[] = [];
+	const missedBoosts: string[] = [];
+	const deathBoosts: string[] = [];
+	const missedDeathBoosts: string[] = [];
+
 	if (hasSungodAxe) {
 		boosts.push('+40% for Axe of the high sungod');
 	} else if (hasScythe) {
@@ -748,6 +746,13 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		missedDeathBoosts.push('-5% for Saradomin godsword');
 	}
 
+	if (hasBulwark) {
+		deathBoosts.push('-20% for Infernal bulwark');
+	} else {
+		missedDeathBoosts.push('-20% for Infernal bulwark');
+	}
+
+	// attempt to remove resources and charges from the user
 	const realCost = new Bank();
 	try {
 		const result = await user.specialRemoveItems(cost);
@@ -758,7 +763,6 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		}
 		throw err;
 	}
-
 	costStr.push(`**Removed:** ${realCost}`);
 
 	if (chargeBank.length() > 0) {
@@ -771,6 +775,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		costStr.push(degradeResults.map(i => i.userMessage).join(', '));
 	}
 
+	// update user stats
 	await updateBankSetting('colo_cost', realCost);
 	await userStatsBankUpdate(user, 'colo_cost', realCost);
 	await trackLoot({
@@ -795,6 +800,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	let totalVenatorBowCharges = 0;
 	let totalBloodFuryCharges = 0;
 	
+	// go through the results and combine them 
 	for (const result of results) {
 		totalDuration += result.realDuration;
 		totalFakeDuration += result.fakeDuration;

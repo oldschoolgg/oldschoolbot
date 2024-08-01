@@ -32,27 +32,32 @@ export const colosseumTask: MinionTask = {
 			bloodFuryCharges
 		} = data;
 		const user = await mUserFetch(userID);
-		const stats = await user.fetchStats({ colo_kc_bank: true, colo_max_glory: true });
-		const newKCs = new ColosseumWaveBank();
+
 		const deathCount = diedAt?.filter(value => value !== null).length || 0;
 		const successfulKills = quantity - deathCount;
 
 		// Increment wave KCs
 		for (let i = 0; i < quantity; i++) {
-			const waves = diedAt?.[i] ?? 12;	
+			const newKCs = new ColosseumWaveBank();
+			const waves = diedAt?.[i] ? diedAt?.[i]! - 1 : 12;
 			for (let j = 0; j < waves; j++) {
 				newKCs.add(j + 1);
 			}
-			for (const [key, value] of Object.entries(stats.colo_kc_bank as ItemBank))
+			const kcBank = await user.fetchStats({ colo_kc_bank: true });
+			for (const [key, value] of Object.entries(kcBank.colo_kc_bank as ItemBank))
 				newKCs.add(Number.parseInt(key), value);
 			await userStatsUpdate(user.id, { colo_kc_bank: newKCs._bank });
 		}
-		const newKCsStr = `${newKCs
-			.entries()
-			.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
-			.join(', ')}`;
-		const newWaveKcStr = `**Colosseum Wave KCs:** ${newKCsStr}.`;
 
+		const stats = await user.fetchStats({ colo_kc_bank: true, colo_max_glory: true });
+		const coloWaveKCs = stats.colo_kc_bank;
+		const newKCsStr = coloWaveKCs 
+			? Object.entries(coloWaveKCs)
+				.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
+				.join(', ')
+			: 'No KCs recorded';
+		const newWaveKcStr = `**Colosseum Wave KCs:** ${newKCsStr}`;
+		
 		// Generate death message & calculate refund
 		const finalDeathStr: string[] = [];
 		const deathStr: string[] = [];
@@ -100,7 +105,7 @@ export const colosseumTask: MinionTask = {
 			}
 		}
 
-		await incrementMinigameScore(user.id, 'colosseum'); //TODO: i think the cl kc issue is here its not counting properly
+		await incrementMinigameScore(user.id, 'colosseum', successfulKills);
 
 		const loot = new Bank().add(possibleLoot);
 
