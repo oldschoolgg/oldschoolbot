@@ -1506,7 +1506,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData, _user: MUserClass, index?: number) =>
+			hasChance: (data: ActivityTaskData, _user: MUserClass, index: number) =>
 				data.type === 'Colosseum' &&
 				(!data.diedAt || (Array.isArray(data.diedAt) && index !== undefined && data.diedAt[index]! > 7))
 		}
@@ -1519,7 +1519,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData, _user: MUserClass, index?: number) =>
+			hasChance: (data: ActivityTaskData, _user: MUserClass, index: number) =>
 				data.type === 'Colosseum' &&
 				(!data.diedAt || (Array.isArray(data.diedAt) && index !== undefined && data.diedAt[index]! > 4))
 		}

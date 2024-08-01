@@ -47,7 +47,7 @@ export type CombatAchievement = {
 	| {
 			rng: {
 				chancePerKill: number;
-				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser, index?: number) => boolean);
+				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser, index: number) => boolean);
 			};
 	  }
 	| {

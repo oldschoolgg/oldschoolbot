@@ -1473,7 +1473,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData, _user: MUserClass, index?: number) =>
+			hasChance: (data: ActivityTaskData, _user: MUserClass, index: number) =>
 				data.type === 'Colosseum' &&
 				(!data.diedAt || (Array.isArray(data.diedAt) && index !== undefined && data.diedAt[index]! > 11))
 		}
