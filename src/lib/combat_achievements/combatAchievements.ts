@@ -47,7 +47,7 @@ export type CombatAchievement = {
 	| {
 			rng: {
 				chancePerKill: number;
-				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser) => boolean);
+				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser, index?: number) => boolean);
 			};
 	  }
 	| {
@@ -164,9 +164,6 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
 		(dataCopy as any).quantity = 1;
 	}
-	if (dataCopy.type === 'Colosseum') {
-		(dataCopy as any).quantity = 1;
-	}
 	if (!('quantity' in dataCopy)) return;
 	let quantity = Number(dataCopy.quantity);
 	if (Number.isNaN(quantity)) return;
@@ -194,12 +191,12 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 			if (qty === 0) break;
 			if (user.user.completed_ca_task_ids.includes(task.id)) continue;
 			if (!('rng' in task)) continue;
+			for (let i = 0; i < qty; i++) {
 			const hasChance =
 				typeof task.rng.hasChance === 'string'
 					? dataCopy.type === task.rng.hasChance
-					: task.rng.hasChance(dataCopy, user);
-			if (!hasChance) continue;
-			for (let i = 0; i < qty; i++) {
+					: task.rng.hasChance(dataCopy, user, i);
+				if (!hasChance) continue;
 				if (roll(task.rng.chancePerKill)) {
 					completedTasks.push(task);
 					qty--;

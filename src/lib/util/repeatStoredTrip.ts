@@ -835,7 +835,7 @@ export const tripHandlers = {
 		commandName: 'k',
 		args: (data: ColoTaskOptions) => ({
 			name: 'colosseum',
-			quantity: data.quantity,
+			quantity: data.quantity
 		})
 	}
 } as const;

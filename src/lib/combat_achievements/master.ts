@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import type { MUserClass } from '../MUser';
 import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
 import { NexMonster } from '../nex';
 import { Requirements } from '../structures/Requirements';
@@ -1472,8 +1473,9 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 11))
+			hasChance: (data: ActivityTaskData, _user: MUserClass, index?: number) =>
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && index !== undefined && data.diedAt[index]! > 11))
 		}
 	},
 	{

@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
+import { Emoji } from '../../lib/constants';
 import { refundChargeBank } from '../../lib/degradeableItems';
 import { trackLoot } from '../../lib/lootTrack';
 import { incrementMinigameScore } from '../../lib/settings/minigames';
@@ -13,7 +14,6 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { Emoji } from '../../lib/constants';
 
 const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuirass', 'Sunfire fanatic chausses']);
 
@@ -51,32 +51,36 @@ export const colosseumTask: MinionTask = {
 
 		const stats = await user.fetchStats({ colo_kc_bank: true, colo_max_glory: true });
 		const coloWaveKCs = stats.colo_kc_bank;
-		const newKCsStr = coloWaveKCs 
+		const newKCsStr = coloWaveKCs
 			? Object.entries(coloWaveKCs)
-				.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
-				.join(', ')
+					.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
+					.join(', ')
 			: 'No KCs recorded';
 		const newWaveKcStr = `**Colosseum Wave KCs:** ${newKCsStr}`;
-		
+
 		// Generate death message & calculate refund
 		const finalDeathStr: string[] = [];
 		const deathStr: string[] = [];
-		finalDeathStr.push(`${Emoji.Skull.repeat(deathCount)}**Deaths: **\n`)
+		finalDeathStr.push(`${Emoji.Skull.repeat(deathCount)}**Deaths: **\n`);
 		for (let i = 0; i < quantity; i++) {
 			if (diedAt?.[i] !== null) {
-				const waveNumber = diedAt?.[i]
+				const waveNumber = diedAt?.[i];
 				const wave = colosseumWaves.find(i => i.waveNumber === waveNumber)!;
 				if (quantity > 1) {
-				deathStr.push(`attempt #${i + 1} wave #${diedAt?.[i]} to ${randArrItem([
-				...(wave?.reinforcements ?? []),
-				...wave.enemies
-			])}. `);
-		} else {
-			deathStr.push(`You died on wave ${waveNumber} to ${randArrItem([
-				...(wave?.reinforcements ?? []),
-				...wave.enemies
-			])}. `);
-		}
+					deathStr.push(
+						`attempt #${i + 1} wave #${diedAt?.[i]} to ${randArrItem([
+							...(wave?.reinforcements ?? []),
+							...wave.enemies
+						])}. `
+					);
+				} else {
+					deathStr.push(
+						`You died on wave ${waveNumber} to ${randArrItem([
+							...(wave?.reinforcements ?? []),
+							...wave.enemies
+						])}. `
+					);
+				}
 
 				let scytheRefund = 0;
 				let venatorBowRefund = 0;
@@ -96,10 +100,10 @@ export const colosseumTask: MinionTask = {
 				if (chargeBank.length() > 0) {
 					const refundResults = await refundChargeBank(user, chargeBank);
 
-				const refundMessages = refundResults
+					const refundMessages = refundResults
 						.map(result => `${result.userMessage} Total charges: ${result.totalCharges}.`)
 						.join('');
-						deathStr.push(`${refundMessages}`);
+					deathStr.push(`${refundMessages}`);
 				}
 				deathStr.push('\n');
 			}
@@ -145,14 +149,15 @@ export const colosseumTask: MinionTask = {
 			await userStatsUpdate(user.id, { colo_max_glory: maxGlory });
 			gloryStr = `**Your new max glory is:** ${maxGlory}!`;
 		}
-		
-		finalDeathStr.push(deathStr.join(''))
-		const str = `${user} your minion has returned from the Colosseum! ` +
-		`${user.minionName} killed Sol Heredit ${successfulKills} ${successfulKills === 1 ? 'time' : 'times'}. ` +
-		`${gloryStr !== null ? gloryStr : ''}` +
-		`${deathCount > 0 ? `\n${finalDeathStr.join('')}` : ''}` +
-		`\n${newWaveKcStr}`;
-	
+
+		finalDeathStr.push(deathStr.join(''));
+		const str =
+			`${user} your minion has returned from the Colosseum! ` +
+			`${user.minionName} killed Sol Heredit ${successfulKills} ${successfulKills === 1 ? 'time' : 'times'}. ` +
+			`${gloryStr !== null ? gloryStr : ''}` +
+			`${deathCount > 0 ? `\n${finalDeathStr.join('')}` : ''}` +
+			`\n${newWaveKcStr}`;
+
 		const image = await makeBankImage({ bank: loot, title: 'Colosseum Loot', user, previousCL });
 
 		return handleTripFinish(user, channelID, str, image.file.attachment, data, loot);

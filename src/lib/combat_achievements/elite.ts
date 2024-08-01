@@ -8,6 +8,7 @@ import type { ActivityTaskData, GauntletOptions, NightmareActivityTaskOptions, T
 import { anyoneDiedInTOARaid } from '../util';
 import { isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
+import type { MUserClass } from '../MUser';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -1505,8 +1506,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 7))
+			hasChance: (data: ActivityTaskData, _user: MUserClass, index?: number) =>
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && index !== undefined && data.diedAt[index]! > 7))
 		}
 	},
 	{
@@ -1517,8 +1519,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 4))
+			hasChance: (data: ActivityTaskData, _user: MUserClass, index?: number) =>
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && index !== undefined && data.diedAt[index]! > 4))
 		}
 	}
 ];

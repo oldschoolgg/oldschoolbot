@@ -618,7 +618,9 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	const hasBulwark = user.owns('Infernal bulwark');
 
 	// Get trip time and calculate max attempts the user can do per trip
-	const kcBank: ColosseumWaveBank = new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank);
+	const kcBank: ColosseumWaveBank = new ColosseumWaveBank(
+		(await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank
+	);
 	const waveDuration = colosseumWaveTime({
 		kcBank,
 		hasScythe,
@@ -640,7 +642,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 
 	// get all the results and cost from each attempt
 	const chargeBank = new ChargeBank();
-	const cost = new Bank()
+	const cost = new Bank();
 	const results: ColosseumResult[] = [];
 	for (let i = 0; i < quantity; i++) {
 		const res = startColosseumRun({
@@ -677,7 +679,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		if (hasTBow) cost.add('Dragon arrow', Math.ceil(minutes * 3));
 		if (hasScythe) chargeBank.add('scythe_of_vitur_charges', scytheCharges);
 		if (hasBF) chargeBank.add('blood_fury_charges', bloodFuryCharges);
-		if (hasVenBow){
+		if (hasVenBow) {
 			chargeBank.add('venator_bow_charges', calculateVenCharges());
 			cost.add(hasHFB ? 'Hellfire arrow' : 'Dragon arrow', hasHFB ? 40 : 50);
 		}
@@ -700,7 +702,6 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 
 	if (hasHFB) {
 		boosts.push('+20% for Hellfire bow');
-		
 	} else if (hasTBow) {
 		boosts.push('+10% for TBow');
 	} else {
@@ -715,7 +716,6 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 
 	if (hasVenBow) {
 		boosts.push('+7% boost for Venator bow');
-
 	} else {
 		missedBoosts.push(
 			`+7% for Venator bow (You also need atleast ${hasHFB ? '40' : '50'} ${hasHFB ? 'Hellfire arrow' : 'Dragon arrow'} equipped)`
@@ -799,8 +799,8 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	let totalScytheCharges = 0;
 	let totalVenatorBowCharges = 0;
 	let totalBloodFuryCharges = 0;
-	
-	// go through the results and combine them 
+
+	// go through the results and combine them
 	for (const result of results) {
 		totalDuration += result.realDuration;
 		totalFakeDuration += result.fakeDuration;
@@ -811,7 +811,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		totalVenatorBowCharges += result.venatorBowCharges;
 		totalBloodFuryCharges += result.bloodFuryCharges;
 	}
-	
+
 	await addSubTaskToActivityTask<ColoTaskOptions>({
 		userID: user.id,
 		channelID,
@@ -828,7 +828,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	});
 
 	return (
-		`${user.minionName} is now ${quantity > 1? `doing ${quantity} attempts at` : 'attempting'} the Colosseum. They will finish in around ${formatDuration(totalFakeDuration)}, unless they die early.\n\n` +
+		`${user.minionName} is now ${quantity > 1 ? `doing ${quantity} attempts at` : 'attempting'} the Colosseum. They will finish in around ${formatDuration(totalFakeDuration)}, unless they die early.\n\n` +
 		`**Boosts:** ${boosts.join(', ')}.\n` +
 		`**Missed Boosts:** ${missedBoosts.join(', ')}.\n` +
 		`**Death Reduction:** ${deathBoosts.join(', ')}.\n` +

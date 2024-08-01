@@ -51,8 +51,6 @@ function simulateColosseumRuns(samples = 100) {
 			attempts++;
 			const result = startColosseumRun({
 				kcBank,
-				user,
-				quantity: 1,
 				hasScythe: false,
 				hasTBow: false,
 				hasVenBow: true,
@@ -66,7 +64,8 @@ function simulateColosseumRuns(samples = 100) {
 				hasHFB: true,
 				hasSungodAxe: true,
 				hasGora: true,
-				hasBHook: true
+				hasBHook: true,
+				hasBulwark: true
 			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);
