@@ -324,20 +324,10 @@ async function clLb(
 ) {
 	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
 	if (!items || items.length === 0) {
-		return "That's not a valid collection log category. Check +cl for all possible logs.";
+		return "That's not a valid collection log category. Check /cl for all possible logs.";
 	}
 
-	const userEventOrders = await prisma.userEvent.findMany({
-		where: {
-			type: 'CLCompletion',
-			collection_log_name: resolvedCl.toLowerCase()
-		},
-		orderBy: {
-			date: 'asc'
-		}
-	});
-
-	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, userEvents: userEventOrders });
+	const { users } = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, clName: resolvedCl });
 	inputType = toTitleCase(inputType.toLowerCase());
 
 	return doMenuWrapper({
