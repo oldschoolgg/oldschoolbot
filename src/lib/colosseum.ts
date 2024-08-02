@@ -827,6 +827,9 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		bloodFuryCharges: totalBloodFuryCharges
 	});
 
+	if (missedBoosts.length === 0) missedBoosts.push('None');
+	if (missedDeathBoosts.length === 0) missedDeathBoosts.push('None');
+
 	return (
 		`${user.minionName} is now ${quantity > 1 ? `doing ${quantity} attempts at` : 'attempting'} the Colosseum. They will finish in around ${formatDuration(totalFakeDuration)}, unless they die early.\n\n` +
 		`**Boosts:** ${boosts.join(', ')}.\n` +

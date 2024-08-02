@@ -61,14 +61,14 @@ export const colosseumTask: MinionTask = {
 		// Generate death message & calculate refund
 		const finalDeathStr: string[] = [];
 		const deathStr: string[] = [];
-		finalDeathStr.push(`${Emoji.Skull.repeat(deathCount)}**Deaths: **\n`);
+		finalDeathStr.push(`**Deaths: **${Emoji.Skull.repeat(deathCount)}\n`);
 		for (let i = 0; i < quantity; i++) {
 			if (diedAt?.[i] !== null) {
 				const waveNumber = diedAt?.[i];
 				const wave = colosseumWaves.find(i => i.waveNumber === waveNumber)!;
 				if (quantity > 1) {
 					deathStr.push(
-						`attempt #${i + 1} wave #${diedAt?.[i]} to ${randArrItem([
+						`- Attempt #${i + 1} Wave #${diedAt?.[i]} to ${randArrItem([
 							...(wave?.reinforcements ?? []),
 							...wave.enemies
 						])}. `
@@ -163,7 +163,7 @@ export const colosseumTask: MinionTask = {
 		const str =
 			`${user} your minion has returned from the Colosseum! ` +
 			`${user.minionName} killed Sol Heredit ${successfulKills} ${successfulKills === 1 ? 'time' : 'times'}. ` +
-			`${gloryStr !== null ? gloryStr : ''}` +
+			`${gloryStr !== null ? gloryStr : ''}\n` +
 			`${deathCount > 0 ? `\n${finalDeathStr.join('')}` : ''}` +
 			`\n${newWaveKcStr}`;
 
