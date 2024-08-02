@@ -6,8 +6,9 @@ import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 
 import { Prisma } from '@prisma/client';
+import PQueue from 'p-queue';
 import Skills from '../lib/skilling/skills';
-import { Stopwatch, convertXPtoLVL, getUsernameSync } from '../lib/util';
+import { Stopwatch, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
 import { ClueTiers } from './clues/clueTiers';
 import { TeamLoot } from './simulation/TeamLoot';
 import type { ItemBank } from './types';
@@ -344,6 +345,8 @@ async function globalCL() {
 export async function runRolesTask(dryRun: boolean) {
 	const results: RoleResult[] = [];
 
+	const promiseQueue = new PQueue({ concurrency: 2 });
+
 	const tup = [
 		['Top Slayer', fetchSlayerResults],
 		['Top Clue Hunters', topClueHunters],
@@ -356,14 +359,14 @@ export async function runRolesTask(dryRun: boolean) {
 		['Global CL', globalCL]
 	] as const;
 
-	await Promise.all([
-		...tup.map(async ([name, fn]) => {
+	for (const [name, fn] of tup) {
+		promiseQueue.add(async () => {
 			const stopwatch = new Stopwatch();
 			const res = await fn();
-			console.log(`Ran ${name} in ${stopwatch.stop()}`);
+			console.log(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
 			results.push(...res);
-		})
-	]);
+		});
+	}
 
 	const allBadgeIDs = uniqueArr(results.map(i => i.badge));
 	const allRoleIDs = uniqueArr(results.map(i => i.roleID));
@@ -411,7 +414,10 @@ WHERE badges && ${badgeIDs}
 				}
 			}
 		}
-		return `**Roles**\n${results.map(r => `${getUsernameSync(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`).join('\n')}`;
+
+		return returnStringOrFile(
+			`**Roles**\n${results.map(r => `${getUsernameSync(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`).join('\n')}`
+		);
 	}
 
 	return 'Dry run';
