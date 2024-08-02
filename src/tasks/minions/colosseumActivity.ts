@@ -88,9 +88,18 @@ export const colosseumTask: MinionTask = {
 
 				// Calculate refund for unused charges
 				const completionPercentage = (diedAt?.[i]! - 1) / 12;
-				if (scytheCharges > 0) scytheRefund = Math.ceil(scytheCharges * (1 - completionPercentage));
-				if (venatorBowCharges > 0) venatorBowRefund = Math.ceil(venatorBowCharges * (1 - completionPercentage));
-				if (bloodFuryCharges > 0) bloodFuryRefund = Math.ceil(bloodFuryCharges * (1 - completionPercentage));
+				if (scytheCharges > 0) {
+					scytheRefund = Math.floor((scytheCharges / quantity) * (1 - completionPercentage));
+					scytheRefund = Math.min(scytheRefund, scytheCharges / quantity);
+				}
+				if (venatorBowCharges > 0) {
+					venatorBowRefund = Math.floor((venatorBowCharges / quantity) * (1 - completionPercentage));
+					venatorBowRefund = Math.min(venatorBowRefund, venatorBowCharges / quantity);
+				}
+				if (bloodFuryCharges > 0) {
+					bloodFuryRefund = Math.floor((bloodFuryCharges / quantity) * (1 - completionPercentage));
+					bloodFuryRefund = Math.min(bloodFuryRefund, bloodFuryCharges / quantity);
+				}
 
 				const chargeBank = new ChargeBank();
 				if (scytheRefund > 0) chargeBank.add('scythe_of_vitur_charges', scytheRefund);

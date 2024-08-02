@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import type { MUserClass } from '../MUser';
 import { MIMIC_MONSTER_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID, demonBaneWeapons } from '../constants';
 import { NexMonster } from '../nex';
 import { SkillsEnum } from '../skilling/types';
@@ -8,7 +9,6 @@ import type { ActivityTaskData, GauntletOptions, NightmareActivityTaskOptions, T
 import { anyoneDiedInTOARaid } from '../util';
 import { isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
-import type { MUserClass } from '../MUser';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -1507,8 +1507,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 12,
 			hasChance: (data: ActivityTaskData, _user: MUserClass, index: number) =>
-				data.type === 'Colosseum' &&
-				(!data.diedAt || (Array.isArray(data.diedAt) && index !== undefined && data.diedAt[index]! > 7))
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 7))
 		}
 	},
 	{
@@ -1520,8 +1519,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 12,
 			hasChance: (data: ActivityTaskData, _user: MUserClass, index: number) =>
-				data.type === 'Colosseum' &&
-				(!data.diedAt || (Array.isArray(data.diedAt) && index !== undefined && data.diedAt[index]! > 4))
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 4))
 		}
 	}
 ];

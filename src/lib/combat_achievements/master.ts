@@ -1474,8 +1474,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 15,
 			hasChance: (data: ActivityTaskData, _user: MUserClass, index: number) =>
-				data.type === 'Colosseum' &&
-				(!data.diedAt || (Array.isArray(data.diedAt) && index !== undefined && data.diedAt[index]! > 11))
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 11))
 		}
 	},
 	{

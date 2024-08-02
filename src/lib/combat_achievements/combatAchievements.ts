@@ -192,10 +192,10 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 			if (user.user.completed_ca_task_ids.includes(task.id)) continue;
 			if (!('rng' in task)) continue;
 			for (let i = 0; i < qty; i++) {
-			const hasChance =
-				typeof task.rng.hasChance === 'string'
-					? dataCopy.type === task.rng.hasChance
-					: task.rng.hasChance(dataCopy, user, i);
+				const hasChance =
+					typeof task.rng.hasChance === 'string'
+						? dataCopy.type === task.rng.hasChance
+						: task.rng.hasChance(dataCopy, user, i);
 				if (!hasChance) continue;
 				if (roll(task.rng.chancePerKill)) {
 					completedTasks.push(task);
