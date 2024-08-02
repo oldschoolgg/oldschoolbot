@@ -19,7 +19,6 @@ import { itemID } from 'oldschooljs/dist/util';
 import { gorajanGearBoost } from '../../../lib/bso/gorajanGearBoost';
 import { colosseumCommand } from '../../../lib/colosseum';
 import { BitField, PeakTier, type PvMMethod, YETI_ID } from '../../../lib/constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
@@ -124,19 +123,6 @@ function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 }
 
 const { floor } = Math;
-
-export const gorajanBoosts = [
-	[gorajanArcherOutfit, 'range'],
-	[gorajanWarriorOutfit, 'melee'],
-	[gorajanOccultOutfit, 'mage']
-] as const;
-
-export const gearstatToSetup = new Map()
-	.set('attack_stab', 'melee')
-	.set('attack_slash', 'melee')
-	.set('attack_crush', 'melee')
-	.set('attack_magic', 'mage')
-	.set('attack_ranged', 'range');
 
 function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = sumArr(styles.map(s => user.skillLevel(s)));
