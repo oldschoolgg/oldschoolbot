@@ -368,6 +368,10 @@ export async function runRolesTask(dryRun: boolean) {
 		});
 	}
 
+	await promiseQueue.onIdle();
+
+	debugLog(`Finished role functions, ${results.length} results`);
+
 	const allBadgeIDs = uniqueArr(results.map(i => i.badge));
 	const allRoleIDs = uniqueArr(results.map(i => i.roleID));
 
@@ -377,6 +381,8 @@ export async function runRolesTask(dryRun: boolean) {
 		if (!supportServerGuild) throw new Error('No support guild');
 
 		// Remove all top badges from all users (and add back later)
+
+		debugLog('Removing badges...');
 		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
 		await prisma.$queryRawUnsafe(`
 UPDATE users
@@ -385,22 +391,31 @@ WHERE badges && ${badgeIDs}
 `);
 
 		// Remove roles from ineligible users
+		debugLog('Remove roles from ineligible users...');
 		for (const member of supportServerGuild.members.cache.values()) {
 			const rolesToRemove = member.roles.cache.filter(r => allRoleIDs.includes(r.id));
 			if (rolesToRemove.size > 0) {
-				await member.roles.remove(rolesToRemove.map(r => r.id)).catch(noOp);
+				await member.roles.remove(rolesToRemove.map(r => r.id)).catch(console.error);
 			}
 		}
 
 		// Add roles to users
+		debugLog('Add roles to users...');
 		for (const { userID, roleID, badge } of results) {
-			const role = await supportServerGuild.roles.fetch(roleID).catch(noOp);
+			const role = await supportServerGuild.roles.fetch(roleID).catch(console.error);
 			const member = await supportServerGuild.members.fetch(userID).catch(noOp);
-			if (!member || !role) continue;
+			if (!member) {
+				debugLog(`Failed to find member ${userID}`);
+				continue;
+			}
+			if (!role) {
+				debugLog(`Failed to find role ${roleID}`);
+				continue;
+			}
 			roleNames.set(roleID, role.name);
 
 			if (!member.roles.cache.has(roleID)) {
-				await member.roles.add(roleID).catch(noOp);
+				await member.roles.add(roleID).catch(console.error);
 			}
 
 			if (badge) {
