@@ -8,7 +8,7 @@ import { Minigames } from '../lib/settings/minigames';
 import { Prisma } from '@prisma/client';
 import PQueue from 'p-queue';
 import Skills from '../lib/skilling/skills';
-import { Stopwatch, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
+import { type CommandResponse, Stopwatch, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
 import { ClueTiers } from './clues/clueTiers';
 import { TeamLoot } from './simulation/TeamLoot';
 import type { ItemBank } from './types';
@@ -342,7 +342,7 @@ async function globalCL() {
 	return results;
 }
 
-export async function runRolesTask(dryRun: boolean) {
+export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 	const results: RoleResult[] = [];
 
 	const promiseQueue = new PQueue({ concurrency: 2 });
