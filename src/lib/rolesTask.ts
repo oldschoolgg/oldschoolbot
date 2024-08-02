@@ -7,19 +7,22 @@ import { Minigames } from '../lib/settings/minigames';
 
 import { Prisma } from '@prisma/client';
 import PQueue from 'p-queue';
-import Skills from '../lib/skilling/skills';
+import { partition } from 'remeda';
+import z from 'zod';
 import { type CommandResponse, Stopwatch, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
 import { ClueTiers } from './clues/clueTiers';
 import { TeamLoot } from './simulation/TeamLoot';
+import { SkillsArray } from './skilling/types';
 import type { ItemBank } from './types';
 import { fetchMultipleCLLeaderboards } from './util/clLeaderboard';
 
-interface RoleResult {
-	roleID: string;
-	userID: string;
-	reason: string;
-	badge?: (typeof BadgesEnum)[keyof typeof BadgesEnum];
-}
+const RoleResultSchema = z.object({
+	roleID: z.string().min(17).max(19),
+	userID: z.string().min(17).max(19),
+	reason: z.string(),
+	badge: z.number().int().optional()
+});
+type RoleResult = z.infer<typeof RoleResultSchema>;
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
@@ -45,24 +48,24 @@ for (const cl of CLS_THAT_GET_ROLE) {
 
 async function topSkillers() {
 	const results: RoleResult[] = [];
-	const skillVals = Object.values(Skills);
 
 	const [top200TotalXPUsers, ...top200ms] = await prisma.$transaction([
 		prisma.$queryRawUnsafe<any>(
-			`SELECT id, ${skillVals.map(s => `"skills.${s.id}"`)}, ${skillVals
-				.map(s => `"skills.${s.id}"::bigint`)
-				.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 200;`
+			`SELECT id, ${SkillsArray.map(s => `"skills.${s}"`)}, ${SkillsArray.map(s => `"skills.${s}"::bigint`).join(
+				' + '
+			)} as totalxp FROM users ORDER BY totalxp DESC LIMIT 200;`
 		),
-		...skillVals.map(s =>
-			prisma.$queryRawUnsafe<{
+		...SkillsArray.map(s => {
+			const query = `SELECT id, "skills.${s}" AS xp, '${s}' AS skill FROM users ORDER BY xp DESC LIMIT 1;`;
+			return prisma.$queryRawUnsafe<{
 				id: string;
 				xp: string;
 				skill: string;
-			}>(`SELECT id, "skills.${s.id}" AS xp, '${s.id}' AS skill FROM users ORDER BY xp DESC LIMIT 1;`)
-		)
+			}>(query);
+		})
 	]);
 
-	for (const { id, skill } of top200ms) {
+	for (const { id, skill } of top200ms.flat()) {
 		results.push({
 			userID: id,
 			roleID: Roles.TopSkiller,
@@ -74,8 +77,8 @@ async function topSkillers() {
 	const rankOneTotal = top200TotalXPUsers
 		.map((u: any) => {
 			let totalLevel = 0;
-			for (const skill of skillVals) {
-				totalLevel += convertXPtoLVL(Number(u[`skills.${skill.id}` as keyof any]) as any);
+			for (const skill of SkillsArray) {
+				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}` as keyof any]) as any);
 			}
 			return {
 				id: u.id,
@@ -196,7 +199,7 @@ LIMIT 1;`
 		)
 	);
 
-	for (const res of topClueHunters) {
+	for (const res of topClueHunters.flat()) {
 		results.push({
 			userID: res.user_id,
 			roleID: Roles.TopClueHunter,
@@ -364,7 +367,11 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 			const stopwatch = new Stopwatch();
 			const res = await fn();
 			console.log(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
-			results.push(...res);
+			const [validResults, invalidResults] = partition(res, i => RoleResultSchema.safeParse(i).success);
+			results.push(...validResults);
+			if (invalidResults.length > 0) {
+				console.error(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
+			}
 		});
 	}
 
@@ -381,7 +388,6 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 		if (!supportServerGuild) throw new Error('No support guild');
 
 		// Remove all top badges from all users (and add back later)
-
 		debugLog('Removing badges...');
 		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
 		await prisma.$queryRawUnsafe(`
