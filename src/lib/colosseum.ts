@@ -673,7 +673,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		} else if (user.bank.has('Bastion potion(4)')) {
 			cost.add('Bastion potion(4)');
 		} else {
-			return 'You need to have a Ranging potion(4) or Bastion potion(4) in your bank.'; //TODO: add quantity check
+			return 'You need to have a Ranging potion(4) or Bastion potion(4) in your bank.';
 		}
 		if (hasHFB) cost.add('Hellfire arrow', Math.ceil(minutes * 3.5));
 		if (hasTBow) cost.add('Dragon arrow', Math.ceil(minutes * 3));

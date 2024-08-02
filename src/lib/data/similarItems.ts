@@ -196,6 +196,8 @@ const source: [string, (string | number)[]][] = [
 	[
 		"Ava's assembler",
 		[
+			"Combatant's cape",
+			'Ranged master cape',
 			'Assembler max cape',
 			'Assembler max cape (l)',
 			'Masori assembler',
