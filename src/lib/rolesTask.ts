@@ -402,6 +402,7 @@ WHERE badges && ${badgeIDs}
 		// Add roles to users
 		debugLog('Add roles to users...');
 		for (const { userID, roleID, badge } of results) {
+			if (!userID) continue;
 			const role = await supportServerGuild.roles.fetch(roleID).catch(console.error);
 			const member = await supportServerGuild.members.fetch(userID).catch(noOp);
 			if (!member) {

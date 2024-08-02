@@ -864,6 +864,7 @@ export const adminCommand: OSBMahojiCommand = {
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
 			import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
+			return;
 		}
 		if (options.shut_down) {
 			debugLog('SHUTTING DOWN');
@@ -873,13 +874,14 @@ ${META_CONSTANTS.RENDERED_STR}`
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await economyLog('Flushing economy log due to shutdown', true);
-			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			await Promise.all([sleep(timer), GrandExchange.queue.onIdle()]);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
 			import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
+			return;
 		}
 
 		if (options.sync_blacklist) {
