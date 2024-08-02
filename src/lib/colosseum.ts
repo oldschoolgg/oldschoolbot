@@ -17,8 +17,8 @@ import {
 import { Bank, LootTable } from 'oldschooljs';
 import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { gorajanGearBoost } from '../mahoji/lib/abstracted_commands/minionKill';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
+import { gorajanGearBoost } from './bso/gorajanGearBoost';
 import { getSimilarItems } from './data/similarItems';
 import { degradeChargeBank } from './degradeableItems';
 import type { GearSetupType } from './gear/types';
