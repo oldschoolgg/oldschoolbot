@@ -33,17 +33,18 @@ export async function fetchMultipleCLLeaderboards(
 			const userIds = Array.from(userEventMap.keys());
 			const userIdsList = userIds.length > 0 ? userIds.map(i => `'${i}'`).join(', ') : 'NULL';
 
-			return prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
+			const query = `
 SELECT id, qty
 FROM (
     	SELECT id, CARDINALITY(cl_array & ${SQL_ITEMS}) AS qty
     	FROM users
     	WHERE (cl_array && ${SQL_ITEMS}
-		${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''}) ${userIdsList.length > 0 ? `OR id IN (${userIdsList})` : ''}
-		LIMIT ${resultLimit}
+		${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''}) ${userIds.length > 0 ? `OR id IN (${userIdsList})` : ''}
 	) AS subquery
-ORDER BY qty DESC;
-`);
+ORDER BY qty DESC
+LIMIT ${resultLimit};
+`;
+			return prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(query);
 		})
 	]);
 
