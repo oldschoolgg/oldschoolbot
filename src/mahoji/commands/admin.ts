@@ -484,11 +484,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_roles',
-			description: 'Sync roles'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'badges',
 			description: 'Manage badges of a user',
 			options: [
@@ -665,7 +660,6 @@ export const adminCommand: OSBMahojiCommand = {
 		sync_blacklist?: {};
 		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
-		sync_roles?: {};
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
@@ -696,20 +690,6 @@ export const adminCommand: OSBMahojiCommand = {
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
-		}
-		if (options.sync_roles) {
-			// try {
-			// 	const result = await runRolesTask();
-			// 	if (result.length < 2000) return result;
-			// 	return {
-			// 		content: 'The result was too big! Check the file.',
-			// 		files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
-			// 	};
-			// } catch (err: any) {
-			// 	logError(err);
-			// 	return `Failed to run roles task. ${err.message}`;
-			// }
-			return 'The roles task is disabled for now.';
 		}
 
 		if (options.badges) {
