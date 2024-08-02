@@ -1,6 +1,6 @@
 import { deepMerge, modifyItem } from '@oldschoolgg/toolkit';
 import { omit } from 'lodash';
-import { EItem, Items } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
@@ -152,6 +152,13 @@ setItemAlias(2528, 'Genie lamp');
 // Ore Sack
 setItemAlias(27_019, "Ore pack (Giant's Foundry)");
 setItemAlias(27_693, 'Ore pack (Volcanic Mine)');
+
+// DT2 items
+setItemAlias(28316, 'Bellator ring');
+setItemAlias(28307, 'Ultor ring');
+setItemAlias(28313, 'Magus ring');
+setItemAlias(28310, 'Venator ring');
+// setItemAlias(28338, 'Soulreaper axe'); TODO: id 28338 is missing from OSJS in item_data.json
 
 // Birds eggs
 setItemAlias(5076, 'Red bird egg');
@@ -392,21 +399,9 @@ for (const item of allTeamCapes) {
 
 export const itemDataSwitches = [
 	{
-		from: 25488,
-		to: EItem.BELLATOR_RING
-	},
-	{
-		from: 25486,
-		to: EItem.MAGUS_RING
-	},
-	{
-		from: 25487,
-		to: EItem.VENATOR_RING
-	},
-	{
-		from: 25485,
-		to: EItem.ULTOR_RING
-	}
+		from: 1,
+		to: 1
+	} //placeholder for future use if needed
 ];
 
 for (const items of itemDataSwitches) {
