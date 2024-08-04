@@ -42,6 +42,7 @@
 		"lodash": "^4.17.21",
 		"lru-cache": "^10.3.0",
 		"murmurhash": "^2.0.1",
+		"node": "^20.16.0",
 		"node-cron": "^3.0.3",
 		"node-fetch": "^2.6.7",
 		"oldschooljs": "^2.5.10",
