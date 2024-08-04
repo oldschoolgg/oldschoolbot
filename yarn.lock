@@ -3221,6 +3221,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nodejs@npm:^0.0.0":
+  version: 0.0.0
+  resolution: "nodejs@npm:0.0.0"
+  checksum: 10c0/e857dc610eedcdca12974fb64be356a535360f3f4c27a1135625800d64ef7f1f250ca2b25281584f479ef56bd64dc7dc68237a62508d19a8bfc61789ed7d1b51
+  languageName: node
+  linkType: hard
+
 "nodemon@npm:^3.1.4":
   version: 3.1.4
   resolution: "nodemon@npm:3.1.4"
@@ -3875,6 +3882,7 @@ __metadata:
     node: "npm:^20.16.0"
     node-cron: "npm:^3.0.3"
     node-fetch: "npm:^2.6.7"
+    nodejs: "npm:^0.0.0"
     nodemon: "npm:^3.1.4"
     oldschooljs: "npm:^2.5.10"
     p-queue: "npm:^6.6.2"
