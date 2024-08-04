@@ -4,7 +4,6 @@ import { Monsters } from 'oldschooljs';
 import { PHOSANI_NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
 import type {
-	ActivityTaskData,
 	GauntletOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
@@ -1037,8 +1036,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 24
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				Array.isArray(data.diedAt) &&
+				!data.diedAt[index] &&
+				data.duration < Time.Minute * 24 * data.quantity
 		}
 	},
 	{
@@ -1049,7 +1051,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{
@@ -1060,7 +1063,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 30,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{
@@ -1071,7 +1075,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 20,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{

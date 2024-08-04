@@ -1,10 +1,17 @@
 import { Monsters } from 'oldschooljs';
 
-import { MIMIC_MONSTER_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID, demonBaneWeapons } from '../constants';
+import {
+	MIMIC_MONSTER_ID,
+	NIGHTMARE_ID,
+	PHOSANI_NIGHTMARE_ID,
+	ZALCANO_ID,
+	clawWeapon,
+	demonBaneWeapons
+} from '../constants';
 import { NexMonster } from '../nex';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
-import type { ActivityTaskData, GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
+import type { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
 import { anyoneDiedInTOARaid } from '../util';
 import { isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
@@ -1494,7 +1501,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 5,
-			hasChance: 'Colosseum'
+			hasChance: (data, user, index) =>
+				user.hasEquippedOrInBank(clawWeapon, 'one') &&
+				data.type === 'Colosseum' &&
+				Array.isArray(data.diedAt) &&
+				data.diedAt[index]! > 1
 		}
 	},
 	{
@@ -1505,8 +1516,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 7))
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 7))
 		}
 	},
 	{
@@ -1517,8 +1528,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 4))
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 4))
 		}
 	}
 ];

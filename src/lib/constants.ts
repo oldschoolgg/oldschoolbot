@@ -650,6 +650,9 @@ export const projectiles = {
 } as const;
 export type ProjectileType = keyof typeof projectiles;
 
+export const spearWeapon = resolveItems(['Crystal halberd', 'Zamorakian hasta', 'Zamorakian spear']);
+export const clawWeapon = resolveItems(['Dragon claws']); // TODO: Add Burning claws once OSJS updated
+
 export const PHOSANI_NIGHTMARE_ID = 9416;
 const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {

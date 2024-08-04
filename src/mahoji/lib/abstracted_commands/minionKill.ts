@@ -16,9 +16,9 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { gorajanGearBoost } from '../../../lib/bso/gorajanGearBoost';
 import { colosseumCommand } from '../../../lib/colosseum';
 import { BitField, PeakTier, type PvMMethod, YETI_ID } from '../../../lib/constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
@@ -124,19 +124,6 @@ function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 
 const { floor } = Math;
 
-export const gorajanBoosts = [
-	[gorajanArcherOutfit, 'range'],
-	[gorajanWarriorOutfit, 'melee'],
-	[gorajanOccultOutfit, 'mage']
-] as const;
-
-export const gearstatToSetup = new Map()
-	.set('attack_stab', 'melee')
-	.set('attack_slash', 'melee')
-	.set('attack_crush', 'melee')
-	.set('attack_magic', 'mage')
-	.set('attack_ranged', 'range');
-
 function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = sumArr(styles.map(s => user.skillLevel(s)));
 
@@ -181,7 +168,7 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
-	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID);
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID, quantity);
 	if (user.usingPet('Ishi')) {
 		sendToChannelID(channelID.toString(), {
 			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`
@@ -678,16 +665,11 @@ export async function minionKillCommand(
 		timeToFinish *= 0.95;
 		boosts.push('5% for Amulet of zealots');
 	}
-	const allGorajan = gorajanBoosts.every(e => user.gear[e[1]].hasEquipped(e[0], true));
-	for (const [outfit, setup] of gorajanBoosts) {
-		if (
-			allGorajan ||
-			(gearstatToSetup.get(monster.attackStyleToUse) === setup && user.gear[setup].hasEquipped(outfit, true))
-		) {
-			boosts.push('10% for Gorajan');
-			timeToFinish *= 0.9;
-			break;
-		}
+
+	// calculate boost from gorajan gear
+	if (gorajanGearBoost(user, monster)) {
+		boosts.push('10% for Gorajan');
+		timeToFinish *= 0.9;
 	}
 
 	if (attackStyles.includes(SkillsEnum.Ranged) && user.hasEquipped('Ranged master cape')) {

@@ -196,12 +196,15 @@ const source: [string, (string | number)[]][] = [
 	[
 		"Ava's assembler",
 		[
+			"Combatant's cape",
+			'Ranged master cape',
 			'Assembler max cape',
 			'Assembler max cape (l)',
 			'Masori assembler',
 			'Masori assembler max cape',
 			"Blessed dizana's quiver",
-			"Dizana's max cape"
+			"Dizana's max cape",
+			'Tidal collector'
 		]
 	],
 	['Mythical cape', ['Mythical max cape']],
@@ -316,18 +319,6 @@ const source: [string, (string | number)[]][] = [
 	['Prayer master cape', ["Combatant's cape"]],
 	['Ranged master cape', ["Combatant's cape"]],
 	['Strength master cape', ["Combatant's cape"]],
-	[
-		"Ava's assembler",
-		[
-			"Combatant's cape",
-			'Assembler max cape',
-			'Ranged master cape',
-			'Assembler max cape (l)',
-			'Masori assembler',
-			'Masori assembler max cape',
-			'Tidal collector'
-		]
-	],
 	['Crafting master cape', ["Artisan's cape"]],
 	['Construction master cape', ["Artisan's cape"]],
 	['Cooking master cape', ["Artisan's cape"]],
@@ -442,8 +433,11 @@ const source: [string, (string | number)[]][] = [
 	['Rune pouch', ['Divine rune pouch']],
 	['Ghrazi rapier', ['Holy ghrazi rapier']],
 	["Inventors' backpack", ['Invention master cape']],
+	['Berserker ring', ['Berserker ring (i)']],
+	['Archers ring', ['Archers ring (i)']],
 	['Ignis ring', ['Ignis ring (i)']],
 	['Ring of piercing', ['Ring of piercing (i)']],
+
 	// Inventions
 	['Inferno adze', ['Superior inferno adze']],
 	['Gorajan bonecrusher', ['Superior bonecrusher']],
