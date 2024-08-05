@@ -106,7 +106,9 @@ export const cookCommand: OSBMahojiCommand = {
 				cookingBoost += 1;
 			}
 			timeToCookSingleCookable /= cookingBoost;
+			if (cookingBoost !== 1) {
 			boosts.push(`+${(cookingBoost - 1) * 100}% for ${cookingBoostItems.join(', ')}.`);
+			}
 		}
 
 		const userBank = user.bank;
