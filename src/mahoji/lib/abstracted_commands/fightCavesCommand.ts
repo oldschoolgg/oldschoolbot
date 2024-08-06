@@ -86,7 +86,7 @@ function checkGear(user: MUser): string | undefined {
 	}
 
 	if (!user.owns(fightCavesCost)) {
-		return `JalYt, you need supplies to have a chance in the caves... come back with ${fightCavesCost}.`;
+		return `JalYt, you need supplies to have a chance in the caves... Come back with ${fightCavesCost}.`;
 	}
 
 	if (user.skillLevel('prayer') < 43) {
