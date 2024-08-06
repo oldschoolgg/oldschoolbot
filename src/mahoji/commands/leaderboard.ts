@@ -289,7 +289,7 @@ async function minigamesLb(
 		   FROM user_stats
 		   WHERE "tithe_farms_completed" > 10
 		   ORDER BY "tithe_farms_completed" DESC
-		   LIMIT 10;`
+		   LIMIT 100;`
 		);
 
 		doMenu(
@@ -330,7 +330,7 @@ async function minigamesLb(
 	// General Minigame handling with raw SQL
 	const minValue = column === 'champions_challenge' ? 1 : 10;
 
-	try {
+
 		const minigameResults = await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
 			`SELECT user_id::text as id, ${column} AS score
 			   FROM minigames
@@ -349,10 +349,7 @@ async function minigamesLb(
 			title: `${minigame.name} Leaderboard`,
 			ironmanOnly
 		});
-	} catch (error) {
-		console.error('Error fetching minigame leaderboard:', error);
-		return 'An error occurred while fetching the leaderboard. Please try again later.';
-	}
+	
 }
 
 async function clLb(
