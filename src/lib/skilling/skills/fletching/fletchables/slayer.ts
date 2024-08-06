@@ -1,5 +1,4 @@
 import { Bank } from 'oldschooljs';
-
 import { SlayerTaskUnlocksEnum } from '../../../../slayer/slayerUnlocks';
 import itemID from '../../../../util/itemID';
 import type { Fletchable } from '../../../types';
@@ -82,4 +81,34 @@ const Slayer: Fletchable[] = [
 	}
 ];
 
-export default Slayer;
+const BroadArrows: Fletchable = {
+	name: 'Broad arrows',
+	id: itemID('Broad arrows'),
+	level: 52,
+	xp: 10,
+	inputItems: new Bank({ 'Broad arrowheads': 1, 'Headless arrow': 1 }),
+	tickRate: 0.13,
+	requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
+};
+
+const BroadBolts: Fletchable = {
+	name: 'Broad bolts',
+	id: itemID('Broad bolts'),
+	level: 55,
+	xp: 3,
+	inputItems: new Bank({ 'Unfinished broad bolts': 1, Feather: 1 }),
+	tickRate: 0.08,
+	requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
+};
+
+const AmethystBroadBolts: Fletchable = {
+	name: 'Amethyst broad bolts',
+	id: itemID('Amethyst broad bolts'),
+	level: 76,
+	xp: 10.6,
+	inputItems: new Bank({ 'Broad bolts': 1, 'Amethyst bolt tips': 1 }),
+	tickRate: 0.13,
+	requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
+};
+
+export { Slayer, BroadArrows, BroadBolts, AmethystBroadBolts };

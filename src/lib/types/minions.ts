@@ -5,6 +5,7 @@ import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkil
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
+import type { Fletchable } from '../skilling/types';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
@@ -380,6 +381,10 @@ export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOption
 export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
 	type: 'Sepulchre';
 	floors: number[];
+	fletch?: {
+		fletchable: Fletchable;
+		fletchingQuantity: number;
+	};
 }
 
 export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions {
