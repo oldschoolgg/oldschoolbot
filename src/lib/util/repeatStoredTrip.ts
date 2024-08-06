@@ -306,7 +306,12 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
-		args: (data: FishingActivityTaskOptions) => ({ name: data.fishID, quantity: data.iQty })
+		args: (data: FishingActivityTaskOptions) => ({ 
+			name: data.fishID, 
+			minutes: data.minutes ?? 0,
+			powerfish: data.powerfish ?? false,
+			spirit_flakes: data.spirit_flakes ?? false })
+
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
@@ -709,3 +714,4 @@ export async function repeatTrip(
 		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
 }
+

@@ -150,7 +150,7 @@ export function minionStatus(user: MUser) {
 
 			const fish = Fishing.Fishes.find(fish => fish.id === data.fishID);
 
-			return `${name} is currently fishing ${data.quantity}x ${fish?.name}. ${formattedDuration} Your ${
+			return `${name} is currently fishing ${fish?.name}. ${formattedDuration} Your ${
 				Emoji.Fishing
 			} Fishing level is ${user.skillLevel(SkillsEnum.Fishing)}`;
 		}

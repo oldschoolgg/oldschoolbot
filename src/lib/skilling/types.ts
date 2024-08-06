@@ -115,14 +115,21 @@ export interface Fish {
 	xp: number;
 	id: number;
 	name: string;
+	//spot?: string;
 	petChance?: number;
-	timePerFish: number;
 	bait?: number;
+	timePerFish?: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
 	alias?: string[];
+
+	chance1?: number;
+	chance99?: number;
+	lostTicks?: number;
+	bankingTime?: number;
+	ticksPerRoll?: number;
 }
 
 export interface Course {

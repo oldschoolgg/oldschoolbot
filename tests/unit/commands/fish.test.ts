@@ -44,7 +44,7 @@ describe('Fish Command', () => {
 		testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'shrimps' },
-			result: "<:minion:778418736180494347> Your minion is now fishing 251x Shrimps, it'll take around 29 minutes, 58 seconds to finish."
+			result: "<:minion:778418736180494347> Your minion is now fishing Shrimps, it'll take around 30 minutes to finish."
 		});
 	});
 
@@ -70,12 +70,9 @@ describe('Fish Command', () => {
 				skills_fishing: 999_999,
 				skills_agility: 999_999,
 				skills_strength: 999_999,
-				meleeGear: new Gear({ weapon: 'Pearl barbarian rod' }),
 				bank: new Bank().add('Feather', 100)
 			},
-			result: `<:minion:778418736180494347> Your minion is now fishing 100x Barbarian fishing, it'll take around 6 minutes, 1 second to finish.
-
-**Boosts:** 5% for Pearl barbarian rod.`
+			result: `<:minion:778418736180494347> Your minion is now fishing Barbarian fishing, it'll take around 30 minutes to finish.`
 		});
 	});
 
@@ -87,9 +84,9 @@ describe('Fish Command', () => {
 				skills_fishing: 999_999,
 				meleeGear: new Gear({ cape: 'Fish sack barrel' })
 			},
-			result: `<:minion:778418736180494347> Your minion is now fishing 511x Shrimps, it'll take around 38 minutes, 56 seconds to finish.
+			result: `<:minion:778418736180494347> Your minion is now fishing Shrimps, it'll take around 39 minutes to finish.
 
-**Boosts:** +9 trip minutes for having a Fish sack barrel.`
+  **Boosts:** +9 trip minutes for having a Fish sack barrel.`
 		});
 	});
 });
