@@ -132,7 +132,7 @@ export class MUserClass {
 		this.skillsAsLevels = this.getSkills(true);
 	}
 
-	countSkillsAtleast99() {
+	countSkillsAtLeast99() {
 		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 

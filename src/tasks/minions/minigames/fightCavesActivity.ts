@@ -35,7 +35,7 @@ export const fightCavesTask: MinionTask = {
 			{ fight_caves_attempts: true }
 		);
 
-		const attemptsStr = `You have tried Fight caves ${newFightCavesAttempts}x times.`;
+		const attemptsStr = `You have tried Fight caves ${newFightCavesAttempts}x times`;
 
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -81,7 +81,7 @@ export const fightCavesTask: MinionTask = {
 					preJadDeathTime
 				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
 				await chatHeadImage({
-					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
+					content: `You die before you even reach TzTok-Jad... At least you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
 				}),
 				data,
@@ -117,7 +117,7 @@ export const fightCavesTask: MinionTask = {
 				channelID,
 				`${user} ${msg}`,
 				await chatHeadImage({
-					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
+					content: `TzTok-Jad stomp you to death... Nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
 				}),
 				data,

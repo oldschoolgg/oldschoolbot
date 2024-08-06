@@ -108,7 +108,7 @@ export const musicCapeRequirements = new Requirements()
 		}
 	})
 	.add({
-		name: 'Runecraft all runes atleast once',
+		name: 'Runecraft all runes at least once',
 		has: async ({ user }) => {
 			const counts = await prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
 FROM activity

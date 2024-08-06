@@ -86,11 +86,11 @@ function checkGear(user: MUser): string | undefined {
 	}
 
 	if (!user.owns(fightCavesCost)) {
-		return `JalYt, you need supplies to have a chance in the caves...come back with ${fightCavesCost}.`;
+		return `JalYt, you need supplies to have a chance in the caves... come back with ${fightCavesCost}.`;
 	}
 
 	if (user.skillLevel('prayer') < 43) {
-		return 'JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.';
+		return 'JalYt, come back when you have at least 43 Prayer, TzTok-Jad annihilate you without protection from gods.';
 	}
 }
 
