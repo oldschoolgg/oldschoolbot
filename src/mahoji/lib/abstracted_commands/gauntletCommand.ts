@@ -44,7 +44,7 @@ const corruptedRequirements = {
 export async function gauntletCommand(user: MUser, channelID: string, type: 'corrupted' | 'normal' = 'normal') {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.QP < 200) {
-		return 'You need atleast 200 QP to do the Gauntlet.';
+		return 'You need at least 200 QP to do the Gauntlet.';
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;

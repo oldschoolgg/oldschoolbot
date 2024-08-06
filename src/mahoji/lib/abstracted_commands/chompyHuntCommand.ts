@@ -40,7 +40,7 @@ export async function chompyHuntClaimCommand(user: MUser) {
 
 export async function chompyHuntCommand(user: MUser, channelID: string) {
 	if (user.QP < 10) {
-		return 'You need atleast 10 QP to hunt Chompy birds.';
+		return 'You need at least 10 QP to hunt Chompy birds.';
 	}
 
 	const rangeGear = user.gear.range;

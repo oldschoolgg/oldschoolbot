@@ -14,11 +14,11 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 	const thievingLevel = skills.thieving;
 	const minLevel = sepulchreFloors[0].agilityLevel;
 	if (agilityLevel < minLevel) {
-		return `You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`;
+		return `You need at least level ${minLevel} Agility to do the Hallowed Sepulchre.`;
 	}
 
 	if (thievingLevel < 66) {
-		return 'You need atleast level 66 Thieving to do the Hallowed Sepulchre.';
+		return 'You need at least level 66 Thieving to do the Hallowed Sepulchre.';
 	}
 
 	if (!userHasGracefulEquipped(user)) {

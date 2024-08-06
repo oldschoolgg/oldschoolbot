@@ -137,7 +137,7 @@ export class MUserClass {
 		this.bitfield = this.user.bitfield as readonly BitField[];
 	}
 
-	countSkillsAtleast99() {
+	countSkillsAtLeast99() {
 		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 

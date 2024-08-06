@@ -180,11 +180,11 @@ async function checkTOBUser(
 	}
 	const dartsNeeded = 150 * quantity;
 	if (blowpipeData.dartQuantity < dartsNeeded) {
-		return [true, `${user.usernameOrMention}, you need atleast ${dartsNeeded} darts in your blowpipe.`];
+		return [true, `${user.usernameOrMention}, you need at least ${dartsNeeded} darts in your blowpipe.`];
 	}
 	const scalesNeeded = 1000 * quantity;
 	if (blowpipeData.scales < scalesNeeded) {
-		return [true, `${user.usernameOrMention}, you need atleast ${scalesNeeded} scales in your blowpipe.`];
+		return [true, `${user.usernameOrMention}, you need at least ${scalesNeeded} scales in your blowpipe.`];
 	}
 	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
 	if (dartIndex < 5) {
@@ -209,7 +209,7 @@ async function checkTOBUser(
 	if (rangeGear.ammo!.quantity < arrowsRequired) {
 		return [
 			true,
-			`${user.usernameOrMention}, you need atleast ${arrowsRequired} arrows equipped in your range setup.`
+			`${user.usernameOrMention}, you need at least ${arrowsRequired} arrows equipped in your range setup.`
 		];
 	}
 
@@ -217,7 +217,7 @@ async function checkTOBUser(
 		const kc = await getMinigameScore(user.id, 'tob');
 
 		if (kc < 250) {
-			return [true, `${user.usernameOrMention} needs atleast 250 Theatre of Blood KC before doing Hard mode.`];
+			return [true, `${user.usernameOrMention} needs at least 250 Theatre of Blood KC before doing Hard mode.`];
 		}
 		if (!meleeGear.hasEquipped('Infernal cape')) {
 			return [true, `${user.usernameOrMention} needs an Infernal cape to do Hard mode.`];
@@ -227,7 +227,7 @@ async function checkTOBUser(
 	if (teamSize === 2) {
 		const kc = await getMinigameScore(user.id, isHardMode ? 'tob_hard' : 'tob');
 		if (kc < 150) {
-			return [true, `${user.usernameOrMention} needs atleast 150 KC before doing duo's.`];
+			return [true, `${user.usernameOrMention} needs at least 150 KC before doing duo's.`];
 		}
 	}
 
@@ -306,7 +306,7 @@ export async function tobStartCommand(
 	if (isHardMode) {
 		const normalKC = await getMinigameScore(user.id, 'tob');
 		if (normalKC < 250) {
-			return 'You need atleast 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
+			return 'You need at least 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
 		}
 	}
 	if (user.minionIsBusy) {

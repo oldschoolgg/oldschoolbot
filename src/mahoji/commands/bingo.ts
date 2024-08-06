@@ -675,7 +675,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			const fee = BOT_TYPE === 'OSB' ? 20_000_000 : 50_000_000;
 			const creationCost = new Bank().add('Coins', fee);
 			if (user.GP < creationCost.amount('Coins')) {
-				return `You need atleast ${creationCost} to create a bingo.`;
+				return `You need at least ${creationCost} to create a bingo.`;
 			}
 
 			const channel = globalClient.channels.cache.get(options.create_bingo.notifications_channel_id);
@@ -713,9 +713,9 @@ export const bingoCommand: OSBMahojiCommand = {
 				return 'Team size must be between 1 and 5.';
 			}
 
-			// Start date must be atleast 3 hours into the future
+			// Start date must be at least 3 hours into the future
 			if (createOptions.start_date.getTime() < Date.now() + Time.Minute * 3) {
-				return 'Start date must be atleast 3 minutes into the future.';
+				return 'Start date must be at least 3 minutes into the future.';
 			}
 
 			// Start date cannot be more than 31 days into the future
@@ -914,7 +914,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 
 				const cost = new Bank().add('Coins', amount);
 				if (user.GP < cost.amount('Coins')) {
-					return `You need atleast ${cost} to add that much GP to the prize pool.`;
+					return `You need at least ${cost} to add that much GP to the prize pool.`;
 				}
 
 				await handleMahojiConfirmation(

@@ -125,7 +125,7 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 
 		if (filtered.size < 4) {
 			return channel.send(
-				'Please specify atleast 4 players for Last Man Standing, like so: `+lms Alex, Kyra, Magna, Rick`, or type `+lms auto` to automatically pick people from the chat.'
+				'Please specify at least 4 players for Last Man Standing, like so: `+lms Alex, Kyra, Magna, Rick`, or type `+lms auto` to automatically pick people from the chat.'
 			);
 		}
 

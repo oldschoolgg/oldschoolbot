@@ -68,7 +68,7 @@ export async function puroPuroStartCommand(
 	}
 	if (!impToHunt) return 'Error selecting impling, please try again.';
 	if (hunterLevel < impToHunt.hunterLevel)
-		return `${user.minionName} needs atleast level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
+		return `${user.minionName} needs at least level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
 	if (!darkLure || (darkLure && !impToHunt.spell)) darkLure = false;
 	if (darkLure) {
 		if (user.QP < 9) return 'To use Dark Lure, you need 9 QP.';

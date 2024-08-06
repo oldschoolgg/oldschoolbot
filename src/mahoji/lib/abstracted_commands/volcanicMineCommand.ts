@@ -234,6 +234,6 @@ export async function volcanicMineStatsCommand(user: MUser) {
 	const currentUserPoints = user.user.volcanic_mine_points;
 	const kc = await getMinigameScore(user.id, 'volcanic_mine');
 
-	return `You have ${currentUserPoints.toLocaleString()} Volanic Mine points points.
+	return `You have ${currentUserPoints.toLocaleString()} Volcanic Mine points.
 You have completed ${kc} games of Volcanic Mine.`;
 }

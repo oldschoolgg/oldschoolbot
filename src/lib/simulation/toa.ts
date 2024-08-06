@@ -247,7 +247,7 @@ const toaRequirements: {
 			return true;
 		},
 		desc: () =>
-			`atleast ${BP_DARTS_NEEDED}x darts per raid, and using one of: ${ALLOWED_DARTS.map(i => i.name).join(
+			`at least ${BP_DARTS_NEEDED}x darts per raid, and using one of: ${ALLOWED_DARTS.map(i => i.name).join(
 				', '
 			)}, loaded in Blowpipe`
 	},
@@ -278,7 +278,7 @@ const toaRequirements: {
 			return true;
 		},
 		desc: () =>
-			`decent range gear (BiS is ${maxRangeGear.toString()}), atleast ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${REQUIRED_RANGE_WEAPONS.map(
+			`decent range gear (BiS is ${maxRangeGear.toString()}), at least ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${REQUIRED_RANGE_WEAPONS.map(
 				itemNameFromID
 			).join(', ')}`
 	},
@@ -335,11 +335,11 @@ const toaRequirements: {
 				minimumSuppliesNeeded = minSuppliesWithAtkStr;
 			}
 			if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
-				return `You need atleast this much supplies: ${minimumSuppliesNeeded}.`;
+				return `You need at least this much supplies: ${minimumSuppliesNeeded}.`;
 			}
 			const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
 			if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
-				return `You need atleast ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+				return `You need at least ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
 					globalClient,
 					'minion',
 					'charge'
@@ -348,7 +348,7 @@ const toaRequirements: {
 
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
-				return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+				return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
 					globalClient,
 					'minion',
 					'charge'
@@ -357,7 +357,7 @@ const toaRequirements: {
 
 			return true;
 		},
-		desc: () => `Need atleast ${minimumSuppliesNeeded}`
+		desc: () => `Need at least ${minimumSuppliesNeeded}`
 	},
 	{
 		name: 'Rune Pouch',
@@ -368,7 +368,7 @@ const toaRequirements: {
 			}
 			return true;
 		},
-		desc: () => `Need atleast ${minimumSuppliesNeeded}`
+		desc: () => `Need at least ${minimumSuppliesNeeded}`
 	},
 	{
 		name: 'Poison Protection',
@@ -1044,7 +1044,7 @@ async function checkTOAUser(
 			true,
 			`${
 				user.usernameOrMention
-			} doesn't have enough Serpentine helm charges. You need atleast ${serpHelmCharges} charges to do a ${formatDuration(
+			} doesn't have enough Serpentine helm charges. You need at least ${serpHelmCharges} charges to do a ${formatDuration(
 				duration
 			)} TOA raid.`
 		];
@@ -1057,7 +1057,7 @@ async function checkTOAUser(
 		if (kc < dividedRaidLevel) {
 			return [
 				true,
-				`${user.usernameOrMention}, you need atleast ${dividedRaidLevel} TOA KC to ${
+				`${user.usernameOrMention}, you need at least ${dividedRaidLevel} TOA KC to ${
 					teamSize === 2 ? 'duo' : 'solo'
 				} a level ${raidLevel} TOA raid.`
 			];

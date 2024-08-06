@@ -600,7 +600,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		cost.add('Dragon arrow', 50);
 	} else {
 		messages.push(
-			'Missed 7% Venator bow boost. If you have one, charge it and keep it in your bank. You also need atleast 50 dragon arrows equipped.'
+			'Missed 7% Venator bow boost. If you have one, charge it and keep it in your bank. You also need at least 50 dragon arrows equipped.'
 		);
 	}
 

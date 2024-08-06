@@ -72,7 +72,7 @@ export const mixCommand: OSBMahojiCommand = {
 		}
 
 		if (mixableItem.qpRequired && user.QP < mixableItem.qpRequired) {
-			return `You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.item.name}.`;
+			return `You need at least **${mixableItem.qpRequired}** QP to make ${mixableItem.item.name}.`;
 		}
 
 		const requiredItems = new Bank(mixableItem.inputItems);

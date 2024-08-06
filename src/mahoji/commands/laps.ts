@@ -127,7 +127,7 @@ export const lapsCommand: OSBMahojiCommand = {
 		}
 
 		if (course.qpRequired && user.QP < course.qpRequired) {
-			return `You need atleast ${course.qpRequired} Quest Points to do this course.`;
+			return `You need at least ${course.qpRequired} Quest Points to do this course.`;
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Agility');

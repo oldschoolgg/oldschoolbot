@@ -51,33 +51,43 @@ export const infernoTask: MinionTask = {
 		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
+		const xpBonuses = [];
 
-		let xpStr = await user.addXP({
-			skillName: SkillsEnum.Ranged,
-			amount: calcPercentOfNum(percentMadeItThrough, 80_000),
-			duration,
-			minimal: true
-		});
-		xpStr += await user.addXP({
-			skillName: SkillsEnum.Hitpoints,
-			amount: calcPercentOfNum(percentMadeItThrough, 35_000),
-			duration,
-			minimal: true
-		});
-		xpStr += await user.addXP({
-			skillName: SkillsEnum.Magic,
-			amount: calcPercentOfNum(percentMadeItThrough, 25_000),
-			duration,
-			minimal: true
-		});
+		xpBonuses.push(
+			await user.addXP({
+				skillName: SkillsEnum.Ranged,
+				amount: calcPercentOfNum(percentMadeItThrough, 80_000),
+				duration,
+				minimal: true
+			})
+		);
+		xpBonuses.push(
+			await user.addXP({
+				skillName: SkillsEnum.Hitpoints,
+				amount: calcPercentOfNum(percentMadeItThrough, 35_000),
+				duration,
+				minimal: true
+			})
+		);
+		xpBonuses.push(
+			await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: calcPercentOfNum(percentMadeItThrough, 25_000),
+				duration,
+				minimal: true
+			})
+		);
 		if (isOnTask) {
-			xpStr += await user.addXP({
-				skillName: SkillsEnum.Slayer,
-				amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
-				duration
-			});
+			xpBonuses.push(
+				await user.addXP({
+					skillName: SkillsEnum.Slayer,
+					amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
+					duration
+				})
+			);
 		}
 
+		const xpStr = xpBonuses.join(', ');
 		if (!deathTime) {
 			await incrementMinigameScore(userID, 'inferno', 1);
 		}
@@ -156,7 +166,7 @@ export const infernoTask: MinionTask = {
 
 		if (diedPreZuk) {
 			text += `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
-			chatText = `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
+			chatText = `You die before you even reach TzKal-Zuk... At least you tried, I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;
 		} else if (diedZuk) {

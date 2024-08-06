@@ -249,7 +249,7 @@ async function infernoRun({
 	const dartIndex = blowpipeDarts.indexOf(dartItem);
 	const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
 	if (dartIndex < 5) {
-		return 'Your darts are simply too weak, to work in the Inferno!';
+		return 'Your darts are simply too weak to work in the Inferno!';
 	}
 	duration.add(true, -percent, `${dartItem.name} in blowpipe`);
 
@@ -516,7 +516,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 			{
 				name: 'image.jpg',
 				attachment: await newChatHeadImage({
-					content: "You're on your own now JalYt, you face certain death... prepare to fight for your life.",
+					content: "You're on your own now JalYt, you face certain death... Prepare to fight for your life.",
 					head: 'ketKeh'
 				})
 			}

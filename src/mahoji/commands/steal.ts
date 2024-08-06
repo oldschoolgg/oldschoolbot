@@ -70,7 +70,7 @@ export const stealCommand: OSBMahojiCommand = {
 		}
 
 		if (stealable.qpRequired && user.QP < stealable.qpRequired) {
-			return `You need atleast **${stealable.qpRequired}** QP to ${
+			return `You need at least **${stealable.qpRequired}** QP to ${
 				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 			} a ${stealable.name}.`;
 		}
