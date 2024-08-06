@@ -484,11 +484,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_roles',
-			description: 'Sync roles'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'badges',
 			description: 'Manage badges of a user',
 			options: [
@@ -665,7 +660,6 @@ export const adminCommand: OSBMahojiCommand = {
 		sync_blacklist?: {};
 		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
-		sync_roles?: {};
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
@@ -696,20 +690,6 @@ export const adminCommand: OSBMahojiCommand = {
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
-		}
-		if (options.sync_roles) {
-			// try {
-			// 	const result = await runRolesTask();
-			// 	if (result.length < 2000) return result;
-			// 	return {
-			// 		content: 'The result was too big! Check the file.',
-			// 		files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
-			// 	};
-			// } catch (err: any) {
-			// 	logError(err);
-			// 	return `Failed to run roles task. ${err.message}`;
-			// }
-			return 'The roles task is disabled for now.';
 		}
 
 		if (options.badges) {
@@ -884,6 +864,7 @@ export const adminCommand: OSBMahojiCommand = {
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
 			import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
+			return 'Turning off...';
 		}
 		if (options.shut_down) {
 			debugLog('SHUTTING DOWN');
@@ -893,13 +874,14 @@ ${META_CONSTANTS.RENDERED_STR}`
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await economyLog('Flushing economy log due to shutdown', true);
-			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			await Promise.all([sleep(timer), GrandExchange.queue.onIdle()]);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
 			import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
+			return 'Turning off...';
 		}
 
 		if (options.sync_blacklist) {
