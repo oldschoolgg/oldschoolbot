@@ -41,6 +41,7 @@ export const fishingTask: MinionTask = {
 	}),
 	async run(data: FishingActivityTaskOptions) {
 		const { fishID, quantity, userID, channelID, duration } = data;
+		let { flakesQuantity } = data;
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const { blessingEquipped, blessingChance } = radasBlessing(user);
@@ -159,6 +160,11 @@ export const fishingTask: MinionTask = {
 						: randInt(baseMinnow[0], baseMinnow[1]);
 			} else {
 				lootQuantity += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
+			}
+
+			if (flakesQuantity && flakesQuantity > 0) {
+				lootQuantity += percentChance(50) ? 1 : 0;
+				flakesQuantity--;
 			}
 		}
 
