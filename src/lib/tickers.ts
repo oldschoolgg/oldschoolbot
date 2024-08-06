@@ -3,6 +3,7 @@ import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
+import { TimerManager } from '@sapphire/timer-manager';
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from './MUser';
@@ -221,7 +222,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 							BitField.IsPatronTier4,
 							BitField.IsPatronTier5,
 							BitField.IsPatronTier6,
-							BitField.isContributor,
 							BitField.isModerator
 						]
 					}
@@ -398,10 +398,11 @@ export function initTickers() {
 				logError(err);
 				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
 			} finally {
-				ticker.timer = setTimeout(fn, ticker.interval);
+				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
+				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);
 			}
 		};
-		setTimeout(() => {
+		ticker.timer = TimerManager.setTimeout(() => {
 			fn();
 		}, ticker.startupWait ?? 1);
 	}

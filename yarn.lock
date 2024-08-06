@@ -646,9 +646,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#3550582efbdf04929f0a2c5114ed069a61551807":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#cd7c6865229ca7dc4a66b3816586f2d3f4a4fbed":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=3550582efbdf04929f0a2c5114ed069a61551807"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=cd7c6865229ca7dc4a66b3816586f2d3f4a4fbed"
   dependencies:
     decimal.js: "npm:^10.4.3"
     deep-object-diff: "npm:^1.1.9"
@@ -664,7 +664,7 @@ __metadata:
   peerDependencies:
     discord.js: ^14.15.3
     oldschooljs: ^2.5.9
-  checksum: 10c0/8a968e143bc34c38d15ab29f1ecde613340e58c93341d51368651c6af52228652449be13a5a1c299bc836e0ff9a5a9c7c6a104198096d73345dd3601e06655ae
+  checksum: 10c0/42eaec1c99c671adab7b56ca7e11d37bf5a0e07d0f0da0a892cdf477a78c061ea131a43b1c578d09f1c6b02e05d1ce47db9586ad9a8de62679cc492c847c3fca
   languageName: node
   linkType: hard
 
@@ -1214,6 +1214,13 @@ __metadata:
   dependencies:
     "@sapphire/utilities": "npm:^3.3.0"
   checksum: 10c0/d325a2c57da389908493b997b689f5e707f89c420890cfd2293182b6d5b59722df955464cffafedc7909e58585bfff98a41961b1327feb7525cec2cdde3e1dab
+  languageName: node
+  linkType: hard
+
+"@sapphire/timer-manager@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@sapphire/timer-manager@npm:1.0.2"
+  checksum: 10c0/0c9fee9a94b5927020aa98dac0fbe7ab903fc8b028383ae28c625f262eec4b65973b5ba5a17d329f72e1abf2092e7655647517d8818378781d5b790cb8b2e62a
   languageName: node
   linkType: hard
 
@@ -2557,6 +2564,13 @@ __metadata:
     signal-exit: "npm:^4.1.0"
     strip-final-newline: "npm:^3.0.0"
   checksum: 10c0/2c52d8775f5bf103ce8eec9c7ab3059909ba350a5164744e9947ed14a53f51687c040a250bda833f906d1283aa8803975b84e6c8f7a7c42f99dc8ef80250d1af
+  languageName: node
+  linkType: hard
+
+"exit-hook@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "exit-hook@npm:4.0.0"
+  checksum: 10c0/7fb33eaeb9050aee9479da9c93d42b796fb409c40e1d2b6ea2f40786ae7d7db6dc6a0f6ecc7bc24e479f957b7844bcb880044ded73320334743c64e3ecef48d7
   languageName: node
   linkType: hard
 
@@ -4536,6 +4550,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"remeda@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "remeda@npm:2.7.0"
+  dependencies:
+    type-fest: "npm:^4.21.0"
+  checksum: 10c0/4e7d0dc616f00961653244ea9df3f297720fc9346ac8ec7502abf4c434741af4a4750d5bd83ea9938ee406089b37e3a2270b8f022d48b345ba83218e47dd8918
+  languageName: node
+  linkType: hard
+
 "replace-ext@npm:0.0.1":
   version: 0.0.1
   resolution: "replace-ext@npm:0.0.1"
@@ -4712,11 +4735,12 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
     "@napi-rs/canvas": "npm:^0.1.53"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#3550582efbdf04929f0a2c5114ed069a61551807"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#cd7c6865229ca7dc4a66b3816586f2d3f4a4fbed"
     "@prisma/client": "npm:^5.17.0"
     "@sapphire/ratelimits": "npm:^2.4.9"
     "@sapphire/snowflake": "npm:^3.5.3"
     "@sapphire/time-utilities": "npm:^1.6.0"
+    "@sapphire/timer-manager": "npm:^1.0.2"
     "@sentry/node": "npm:^8.15.0"
     "@types/lodash": "npm:^4.14.195"
     "@types/node": "npm:^20.14.9"
@@ -4731,6 +4755,7 @@ __metadata:
     dpdm: "npm:^3.14.0"
     e: "npm:0.2.33"
     esbuild: "npm:0.21.5"
+    exit-hook: "npm:^4.0.0"
     fast-deep-equal: "npm:^3.1.3"
     fast-glob: "npm:^3.3.2"
     lodash: "npm:^4.17.21"
@@ -4745,6 +4770,7 @@ __metadata:
     prettier: "npm:^3.3.2"
     prisma: "npm:^5.17.0"
     random-js: "npm:^2.1.0"
+    remeda: "npm:^2.7.0"
     simple-statistics: "npm:^7.8.3"
     sonic-boom: "npm:^4.0.1"
     spritesmith: "npm:^3.4.1"
@@ -5351,6 +5377,13 @@ __metadata:
   version: 0.14.5
   resolution: "tweetnacl@npm:0.14.5"
   checksum: 10c0/4612772653512c7bc19e61923fbf42903f5e0389ec76a4a1f17195859d114671ea4aa3b734c2029ce7e1fa7e5cc8b80580f67b071ecf0b46b5636d030a0102a2
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^4.21.0":
+  version: 4.23.0
+  resolution: "type-fest@npm:4.23.0"
+  checksum: 10c0/c42bb14e99329ab37983d1f188e307bf0cc705a23807d9b2268d8fb2ae781d610ac6e2058dde8f9ea2b1b8ddc77ceb578d157fa81f69f8f70aef1d42fb002996
   languageName: node
   linkType: hard
 

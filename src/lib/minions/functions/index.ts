@@ -50,7 +50,7 @@ export function resolveAttackStyles(
 	// Automatically use magic if barrage/burst is chosen
 	if (
 		params.boostMethod &&
-		(params.boostMethod === 'barrage' || params.boostMethod === 'burst') &&
+		(params.boostMethod.includes('barrage') || params.boostMethod.includes('burst')) &&
 		!attackStyles.includes(SkillsEnum.Magic)
 	) {
 		if (attackStyles.includes(SkillsEnum.Defence)) {
@@ -63,7 +63,7 @@ export function resolveAttackStyles(
 }
 
 export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
-	const boostMethod = params.burstOrBarrage ? 'barrage' : 'none';
+	const boostMethod = params.burstOrBarrage ? ['barrage'] : ['none'];
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
 		monsterID: params.monsterID,

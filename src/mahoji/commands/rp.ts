@@ -11,8 +11,7 @@ import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
-import { analyticsTick } from '../../lib/analytics';
-import { BitField, Channel } from '../../lib/constants';
+import { BitField, Channel, globalConfig } from '../../lib/constants';
 import { allCollectionLogsFlat } from '../../lib/data/Collections';
 import type { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
@@ -21,10 +20,11 @@ import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
+import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ItemBank } from '../../lib/types';
-import { dateFm, isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
+import { dateFm, isValidDiscordSnowflake } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -44,7 +44,14 @@ import { sellPriceOfItem } from './sell';
 const itemFilters = [
 	{
 		name: 'Tradeable',
-		filter: (item: Item) => itemIsTradeable(item.id, true)
+		filter: (item: Item) => itemIsTradeable(item.id, true),
+		run: async () => {
+			const isValid = await GrandExchange.extensiveVerification();
+			if (isValid) {
+				return 'No issues found.';
+			}
+			return 'Something was invalid. Check logs!';
+		}
 	}
 ];
 
@@ -138,9 +145,38 @@ async function usernameSync() {
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
 	if ([...ADMIN_IDS, ...OWNER_IDS, ...botAccounts].includes(user.id)) return true;
-	if ([BitField.isModerator, BitField.isContributor].some(bf => user.bitfield.includes(bf))) return true;
+	if ([BitField.isModerator].some(bf => user.bitfield.includes(bf))) return true;
 	return false;
 }
+
+const actions = [
+	{
+		name: 'validate_ge',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			const isValid = await GrandExchange.extensiveVerification();
+			if (isValid) {
+				return 'No issues found.';
+			}
+			return 'Something was invalid. Check logs!';
+		}
+	},
+	{
+		name: 'sync_roles',
+		allowed: (user: MUser) =>
+			ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id) || user.bitfield.includes(BitField.isModerator),
+		run: async () => {
+			return runRolesTask(!globalConfig.isProduction);
+		}
+	},
+	{
+		name: 'sync_usernames',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			return usernameSync();
+		}
+	}
+];
 
 export const rpCommand: OSBMahojiCommand = {
 	name: 'rp',
@@ -150,45 +186,13 @@ export const rpCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'action',
-			description: 'Action tools',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'validate_ge',
-					description: 'Validate the g.e.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'patreon_reset',
-					description: 'Reset all patreon data.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'view_all_items',
-					description: 'View all item IDs present in banks/cls.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'analytics_tick',
-					description: 'analyticsTick.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'networth_sync',
-					description: 'networth_sync.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'redis_sync',
-					description: 'redis sync.',
-					options: []
-				}
-			]
+			description: 'Actions',
+			options: actions.map(a => ({
+				type: ApplicationCommandOptionType.Subcommand,
+				name: a.name,
+				description: a.name,
+				options: []
+			}))
 		},
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
@@ -520,14 +524,7 @@ export const rpCommand: OSBMahojiCommand = {
 			max_total?: { user: MahojiUserOption; type: UserEventType; message_id: string };
 			max?: { user: MahojiUserOption; type: UserEventType; skill: xp_gains_skill_enum; message_id: string };
 		};
-		action?: {
-			validate_ge?: {};
-			patreon_reset?: {};
-			view_all_items?: {};
-			analytics_tick?: {};
-			networth_sync?: {};
-			redis_sync?: {};
-		};
+		action?: any;
 		player?: {
 			viewbank?: { user: MahojiUserOption; json?: boolean };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
@@ -564,11 +561,8 @@ export const rpCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isAdmin = ADMIN_IDS.includes(userID);
 		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		const isTrusted = [BitField.IsWikiContributor, BitField.isContributor].some(bit =>
-			adminUser.bitfield.includes(bit)
-		);
 		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-		if (!isAdmin && !isMod && !isTrusted) return randArrItem(gifs);
+		if (!isAdmin && !isMod) return randArrItem(gifs);
 
 		if (options.user_event) {
 			const messageId =
@@ -623,52 +617,13 @@ Date: ${dateFm(date)}`;
 
 		if (!isMod) return randArrItem(gifs);
 
-		if (options.action?.validate_ge) {
-			const isValid = await GrandExchange.extensiveVerification();
-			if (isValid) {
-				return 'No issues found.';
-			}
-			return 'Something was invalid. Check logs!';
-		}
-		if (options.action?.analytics_tick) {
-			await analyticsTick();
-			return 'Finished.';
-		}
-		if (options.action?.redis_sync) {
-			const result = await usernameSync();
-			return result;
-		}
-		if (options.action?.networth_sync) {
-			const users = await prisma.user.findMany({
-				where: {
-					GP: {
-						gt: 10_000_000_000
-					}
-				},
-				take: 20,
-				orderBy: {
-					GP: 'desc'
-				},
-				select: {
-					id: true
+		if (options.action) {
+			for (const action of actions) {
+				if (options.action[action.name]) {
+					if (!action.allowed(adminUser)) return randArrItem(gifs);
+					return action.run();
 				}
-			});
-			for (const { id } of users) {
-				const user = await mUserFetch(id);
-				await user.update({
-					cached_networth_value: (await user.calculateNetWorth()).value
-				});
 			}
-			return 'Done.';
-		}
-		if (options.action?.view_all_items) {
-			const result = await prisma.$queryRawUnsafe<{ item_id: number }[]>(`SELECT DISTINCT json_object_keys(bank)::int AS item_id
-FROM users
-UNION
-SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
-FROM users
-ORDER BY item_id ASC;`);
-			return returnStringOrFile(`[${result.map(i => i.item_id).join(',')}]`);
 		}
 
 		if (options.player?.set_buy_date) {

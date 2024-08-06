@@ -37,7 +37,6 @@ GROUP BY item_id;`);
 	 * Delete all voice channels
 	 */
 	schedule('0 0 */1 * *', async () => {
-		debugLog('Cache cleanup cronjob starting');
 		cacheCleanup();
 	});
 
