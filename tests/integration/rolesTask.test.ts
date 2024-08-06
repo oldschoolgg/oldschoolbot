@@ -43,7 +43,7 @@ describe.skip('Roles Task', async () => {
 				duration: 10_000
 			}
 		});
-		const result = await runRolesTask();
+		const result = await runRolesTask(true);
 		expect(result).toBeTruthy();
 		expect(result).includes('Roles');
 	});
