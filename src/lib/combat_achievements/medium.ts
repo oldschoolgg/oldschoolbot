@@ -431,7 +431,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		monster: 'Skotizo',
 		desc: 'Kill Skotizo with no altars active.',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 5,
 			hasChance: isCertainMonsterTrip(Monsters.Skotizo.id)
 		}
 	},
