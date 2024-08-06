@@ -468,10 +468,7 @@ export const FaladorDiary: Diary = {
 			woodcutting: 71
 		},
 		qp: 32,
-		collectionLogReqs: resolveItems([
-			'Mind rune',
-			'Prospector helmet'
-		]),
+		collectionLogReqs: resolveItems(['Mind rune', 'Prospector helmet']),
 		monsterScores: {
 			'Skeletal Wyvern': 1,
 			'Blue Dragon': 1
