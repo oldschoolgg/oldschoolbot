@@ -2491,7 +2491,7 @@ for (const set of armorSetsSrc) {
 		name: `Unpack ${set.packed.name}`,
 		inputItems: new Bank().add(set.packed.id, 1),
 		outputItems: set.unpacked,
-		noCl: true,
-		type: 'unpack'
+		type: 'unpack',
+		noCl: true
 	});
 }
