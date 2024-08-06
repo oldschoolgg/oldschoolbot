@@ -169,13 +169,17 @@ ${leaguesTrophiesBuyables
 				interaction,
 				user,
 				channelID,
-				chunk(result, 10).map(subList =>
-					subList
-						.map(
-							({ id, leagues_points_total }) =>
-								`**${getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-						)
-						.join('\n')
+				await Promise.all(
+					chunk(result, 10).map(async subList =>
+						(
+							await Promise.all(
+								subList.map(
+									async ({ id, leagues_points_total }) =>
+										`**${await getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
+								)
+							)
+						).join('\n')
+					)
 				),
 				'Leagues Points Leaderboard'
 			);

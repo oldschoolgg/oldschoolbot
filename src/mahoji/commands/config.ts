@@ -1,4 +1,4 @@
-import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
+import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
@@ -14,6 +14,7 @@ import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 
+import { DynamicButtons } from '../../lib/DynamicButtons';
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
@@ -21,7 +22,7 @@ import { BankSortMethods } from '../../lib/sorts';
 import { formatDuration, isValidNickname, itemNameFromID, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
-import { interactionReplyGetDuration } from '../../lib/util/interactionHelpers';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
@@ -88,32 +89,39 @@ const toggles: UserConfigToggle[] = [
 				return { result: true, message: 'Your Gambling lockout time has expired.' };
 			} else if (interaction) {
 				const durations = [
-					{ display: '24 hours', duration: Time.Day },
+					{ display: '1 day', duration: Time.Day },
 					{ display: '7 days', duration: Time.Day * 7 },
-					{ display: '2 weeks', duration: Time.Day * 14 },
 					{ display: '1 month', duration: Time.Month },
-					{ display: '3 months', duration: Time.Month * 3 },
 					{ display: '6 months', duration: Time.Month * 6 },
-					{ display: '1 year', duration: Time.Year },
-					{ display: '3 years', duration: Time.Year * 3 },
-					{ display: '5 years', duration: Time.Year * 5 }
+					{ display: '1 year', duration: Time.Year }
 				];
-				if (!production) {
-					durations.push({ display: '30 seconds', duration: Time.Second * 30 });
-					durations.push({ display: '1 minute', duration: Time.Minute });
-					durations.push({ display: '5 minutes', duration: Time.Minute * 5 });
+				const channel = globalClient.channels.cache.get(interaction.channelId);
+				if (!channelIsSendable(channel)) return { result: false, message: 'Could not find channel.' };
+				await deferInteraction(interaction);
+				const buttons = new DynamicButtons({
+					channel: channel,
+					usersWhoCanInteract: [user.id],
+					deleteAfterConfirm: true
+				});
+				for (const dur of durations) {
+					buttons.add({
+						name: dur.display
+					});
 				}
-				const lockoutDuration = await interactionReplyGetDuration(
-					interaction,
-					`${user}, This will lockout your ability to gamble for the specified time. Choose carefully!`,
-					...durations
-				);
+				const pickedButton = await buttons.render({
+					messageOptions: {
+						content: `${user}, This will lockout your ability to gamble for the specified time. Choose carefully!`
+					},
+					isBusy: false
+				});
 
-				if (lockoutDuration !== false) {
-					await user.update({ gambling_lockout_expiry: new Date(Date.now() + lockoutDuration.duration) });
+				const pickedDuration = durations.find(d => stringMatches(d.display, pickedButton?.name ?? ''));
+
+				if (pickedDuration) {
+					await user.update({ gambling_lockout_expiry: new Date(Date.now() + pickedDuration.duration) });
 					return {
 						result: true,
-						message: `Locking out gambling for ${formatDuration(lockoutDuration.duration)}`
+						message: `Locking out gambling for ${formatDuration(pickedDuration.duration)}`
 					};
 				}
 				return { result: false, message: 'Cancelled.' };
@@ -204,8 +212,9 @@ async function favItemConfig(
 	const currentFavorites = user.user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
+
 	if (!item) return currentItems;
 	if (itemToAdd) {
 		const limit = (user.perkTier() + 1) * 100;
@@ -629,6 +638,7 @@ export async function pinTripCommand(
 ) {
 	if (!tripId) return 'Invalid trip.';
 	const id = Number(tripId);
+	if (!id || Number.isNaN(id)) return 'Invalid trip.';
 	const trip = await prisma.activity.findFirst({ where: { id, user_id: BigInt(user.id) } });
 	if (!trip) return 'Invalid trip.';
 
@@ -1063,7 +1073,7 @@ export const configCommand: OSBMahojiCommand = {
 								>(`
 SELECT DISTINCT ON (activity.type) activity.type, activity.data, activity.id, activity.finish_date
 FROM activity
-WHERE finish_date::date > now() - INTERVAL '31 days'
+WHERE finish_date > now() - INTERVAL '14 days'
 AND user_id = '${user.id}'::bigint
 ORDER BY activity.type, finish_date DESC
 LIMIT 20;

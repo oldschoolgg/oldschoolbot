@@ -1,4 +1,4 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 
 import { cancelUsersListings } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 

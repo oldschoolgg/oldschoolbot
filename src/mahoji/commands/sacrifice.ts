@@ -8,7 +8,7 @@ import { Emoji, Events } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import type { ItemBank } from '../../lib/types';
-import { toKMB } from '../../lib/util';
+import { toKMB, truncateString } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -21,7 +21,7 @@ import { sellPriceOfItem } from './sell';
 async function trackSacBank(user: MUser, bank: Bank) {
 	await Promise.all([
 		updateBankSetting('economyStats_sacrificedBank', bank),
-		userStatsBankUpdate(user.id, 'sacrificed_bank', bank)
+		userStatsBankUpdate(user, 'sacrificed_bank', bank)
 	]);
 	const stats = await user.fetchStats({ sacrificed_bank: true });
 	return new Bank(stats.sacrificed_bank as ItemBank);
@@ -99,7 +99,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			);
 		}
 
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 
 		const bankToSac = parseBank({
 			inputStr: options.items,
@@ -156,7 +156,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		await handleMahojiConfirmation(
 			interaction,
-			`${user}, are you sure you want to sacrifice ${bankToSac}? This will add ${totalPrice.toLocaleString()} (${toKMB(
+			`${user}, are you sure you want to sacrifice ${truncateString(bankToSac.toString(), 15000)}? This will add ${totalPrice.toLocaleString()} (${toKMB(
 				totalPrice
 			)}) to your sacrificed amount.`
 		);

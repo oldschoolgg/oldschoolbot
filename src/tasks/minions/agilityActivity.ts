@@ -70,11 +70,12 @@ export const agilityTask: MinionTask = {
 		const xpReceived =
 			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
 
+		const stats = await user.fetchStats({ laps_scores: true });
 		const { laps_scores: newLapScores } = await userStatsUpdate(
 			user.id,
-			({ laps_scores }) => ({
-				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, quantity - lapsFailed)
-			}),
+			{
+				laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, quantity - lapsFailed)
+			},
 			{ laps_scores: true }
 		);
 

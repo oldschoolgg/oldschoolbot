@@ -69,7 +69,6 @@ export async function collectMetrics() {
 		prisma_query_active_transactions: transformed.query_active_transactions as number
 	};
 	h.reset();
-	debugLog('Collected metrics', { ...metrics, type: 'COLLECT_METRICS' });
 
 	return metrics;
 }

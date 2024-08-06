@@ -4,7 +4,7 @@ import * as path from 'node:path';
 import type { SKRSContext2D } from '@napi-rs/canvas';
 import { Canvas, GlobalFonts, Image, loadImage } from '@napi-rs/canvas';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
@@ -641,8 +641,6 @@ export class BankImageTask {
 		}
 
 		let items = bank.items();
-
-		debugLog(`Generating a bank image with ${items.length} items`, { title, userID: user?.id });
 
 		// Sorting
 		const favorites = user?.user.favoriteItems;

@@ -1,8 +1,10 @@
-import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
+import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
+import { isObject } from 'e';
 import { production } from '../../config';
+import { globalConfig } from '../constants';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
@@ -15,26 +17,39 @@ export function assert(condition: boolean, desc?: string, context?: Record<strin
 }
 
 export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
-	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, { type: 'ERROR', raw: JSON.stringify(err) });
-	if (production) {
+	const metaInfo = deepMerge(context ?? {}, extra ?? {});
+	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, {
+		type: 'ERROR',
+		raw: JSON.stringify(err),
+		metaInfo: JSON.stringify(metaInfo)
+	});
+	if (globalConfig.isProduction) {
 		captureException(err, {
 			tags: context,
-			extra
+			extra: metaInfo
 		});
 	} else {
 		console.error(err);
-		console.log(context);
-		console.log(extra);
+		console.log(metaInfo);
 	}
 }
 
-export function logErrorForInteraction(err: Error | unknown, interaction: Interaction) {
+export function logErrorForInteraction(
+	err: Error | unknown,
+	interaction: Interaction,
+	extraContext?: Record<string, string>
+) {
 	const context: Record<string, any> = {
 		user_id: interaction.user.id,
 		channel_id: interaction.channelId,
 		guild_id: interaction.guildId,
 		interaction_id: interaction.id,
-		interaction_type: interaction.type
+		interaction_type: interaction.type,
+		...extraContext,
+		interaction_created_at: interaction.createdTimestamp,
+		current_timestamp: Date.now(),
+		difference_ms: Date.now() - interaction.createdTimestamp,
+		was_deferred: interaction.isRepliable() ? interaction.deferred : 'N/A'
 	};
 	if (interaction.isChatInputCommand()) {
 		context.options = JSON.stringify(
@@ -43,6 +58,13 @@ export function logErrorForInteraction(err: Error | unknown, interaction: Intera
 		context.command_name = interaction.commandName;
 	} else if (interaction.isButton()) {
 		context.button_id = interaction.customId;
+	}
+
+	if ('rawError' in interaction) {
+		const _err = err as any;
+		if ('requestBody' in _err && isObject(_err.requestBody)) {
+			context.request_body = JSON.stringify(_err.requestBody);
+		}
 	}
 
 	logError(err, context);
