@@ -2485,7 +2485,7 @@ for (const set of armorSetsSrc) {
 		name: set.packed.name,
 		inputItems: set.unpacked,
 		outputItems: new Bank().add(set.packed.id, 1),
-		type: 'pack',
+		type: 'pack'
 	});
 	armorAndItemPacks.push({
 		name: `Unpack ${set.packed.name}`,
