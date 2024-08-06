@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { describe, expect, test } from 'vitest';
 
-import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
 
 import PQueue from 'p-queue';
@@ -172,9 +171,6 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 
 		const wes = await createTestUser();
 		const magnaboy = await createTestUser();
-
-		usernameCache.set(wes.id, 'Wes');
-		usernameCache.set(magnaboy.id, 'Magnaboy');
 
 		await magnaboy.addItemsToBank({ items: sampleBank });
 		await wes.addItemsToBank({ items: sampleBank });

@@ -1,4 +1,4 @@
-import { Stopwatch } from '@oldschoolgg/toolkit';
+import { Prisma } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 
@@ -10,23 +10,22 @@ export const CACHED_ACTIVE_USER_IDS = new Set();
 CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
 for (const id of OWNER_IDS) CACHED_ACTIVE_USER_IDS.add(id);
 
-export async function syncActiveUserIDs() {
-	const [users, otherUsers] = await Promise.all([
-		prisma.$queryRaw<{ user_id: string }[]>`SELECT DISTINCT(user_id::text)
-FROM command_usage
-WHERE date > now() - INTERVAL '72 hours';`,
-		prisma.$queryRaw<{ id: string }[]>`SELECT id
-FROM users
-WHERE main_account IS NOT NULL
-      OR CARDINALITY(ironman_alts) > 0
-	  OR bitfield && ARRAY[2,3,4,5,6,7,8,12,11,21,19];`
-	]);
+export const syncActiveUserIDs = async () => {
+	const users = await prisma.$queryRawUnsafe<
+		{ user_id: string }[]
+	>(`SELECT DISTINCT(${Prisma.ActivityScalarFieldEnum.user_id}::text)
+FROM activity
+WHERE finish_date > now() - INTERVAL '48 hours'`);
 
-	for (const id of [...users.map(i => i.user_id), ...otherUsers.map(i => i.id)]) {
+	const perkTierUsers = await roboChimpClient.$queryRawUnsafe<{ id: string }[]>(`SELECT id::text
+FROM "user"
+WHERE perk_tier > 0;`);
+
+	for (const id of [...users.map(i => i.user_id), ...perkTierUsers.map(i => i.id)]) {
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
 	debugLog(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
-}
+};
 
 export function memoryAnalysis() {
 	const guilds = globalClient.guilds.cache.size;
@@ -97,11 +96,6 @@ export const emojiServers = new Set([
 
 export function cacheCleanup() {
 	if (!globalClient.isReady()) return;
-	const stopwatch = new Stopwatch();
-	stopwatch.start();
-	debugLog('Cache Cleanup Start', {
-		type: 'CACHE_CLEANUP'
-	});
 	return runTimedLoggedFn('Cache Cleanup', async () => {
 		await runTimedLoggedFn('Clear Channels', async () => {
 			for (const channel of globalClient.channels.cache.values()) {
@@ -167,11 +161,6 @@ export function cacheCleanup() {
 					role.hoist = undefined;
 				}
 			}
-		});
-
-		stopwatch.stop();
-		debugLog(`Cache Cleanup Finish After ${stopwatch.toString()}`, {
-			type: 'CACHE_CLEANUP'
 		});
 	});
 }

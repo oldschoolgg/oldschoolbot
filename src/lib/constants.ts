@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
+import { isMainThread } from 'node:worker_threads';
 import type { Image } from '@napi-rs/canvas';
 import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
@@ -19,6 +20,7 @@ export { PerkTier };
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB' as 'BSO' | 'OSB';
+export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
@@ -196,7 +198,6 @@ export enum BitField {
 	IsPatronTier4 = 5,
 	IsPatronTier5 = 6,
 	isModerator = 7,
-	isContributor = 8,
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
@@ -207,7 +208,6 @@ export enum BitField {
 	HasDexScroll = 16,
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
-	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
 	IsPatronTier6 = 21,
 	DisableBirdhouseRunButton = 22,
@@ -243,9 +243,7 @@ interface BitFieldData {
 }
 
 export const BitFieldData: Record<BitField, BitFieldData> = {
-	[BitField.IsWikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
 	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
-	[BitField.isContributor]: { name: 'Contributor', protected: true, userConfigurable: false },
 
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
@@ -346,7 +344,9 @@ export const BadgesEnum = {
 	TopSkiller: 9,
 	TopCollector: 10,
 	TopMinigame: 11,
-	SotWTrophy: 12
+	SotWTrophy: 12,
+	Slayer: 13,
+	TopGiveawayer: 14
 } as const;
 
 export const badges: { [key: number]: string } = {
@@ -362,7 +362,9 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.TopSkiller]: Emoji.Skiller,
 	[BadgesEnum.TopCollector]: Emoji.CollectionLog,
 	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
-	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
+	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy,
+	[BadgesEnum.Slayer]: Emoji.Slayer,
+	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat
 };
 
 export const MAX_XP = 200_000_000;
@@ -478,8 +480,6 @@ export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
 export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
 
 export const busyImmuneCommands = ['admin', 'rp'];
-export const usernameCache = new Map<string, string>();
-export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
 	.setCustomId('BUY_MINION')
 	.setLabel('Buy Minion')
@@ -533,7 +533,10 @@ const globalConfigSchema = z.object({
 	geAdminChannelID: z.string().default(''),
 	redisPort: z.coerce.number().int().optional(),
 	botToken: z.string().min(1),
-	isCI: z.coerce.boolean().default(false)
+	isCI: z.coerce.boolean().default(false),
+	isProduction: z.coerce.boolean().default(production),
+	testingServerID: z.string(),
+	timeZone: z.literal('UTC')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
@@ -543,13 +546,23 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
+const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
-	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID,
+	geAdminChannelID: isProduction ? '830145040495411210' : '1042760447830536212',
 	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
-	isCI: process.env.CI
+	isCI: process.env.CI,
+	isProduction,
+	testingServerID: process.env.TESTING_SERVER_ID ?? OLDSCHOOLGG_TESTING_SERVER_ID,
+	timeZone: process.env.TZ
 });
+
+if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
+	throw new Error('The NODE_ENV and isProduction variables must match');
+}
 
 export const ONE_TRILLION = 1_000_000_000_000;
 export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
@@ -614,3 +627,9 @@ export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(750)
 	.add(780)
 	.add(850);
+
+if (!process.env.TEST && isMainThread) {
+	console.log(
+		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
+	);
+}

@@ -1,25 +1,26 @@
-import type {
-	Activity,
-	Bingo,
-	BingoParticipant,
-	BuyCommandTransaction,
-	CommandUsage,
-	EconomyTransaction,
-	FarmedCrop,
-	GearPreset,
-	Giveaway,
-	HistoricalData,
-	LastManStandingGame,
-	LootTrack,
-	Minigame,
-	PinnedTrip,
-	PlayerOwnedHouse,
-	Prisma,
-	ReclaimableItem,
-	SlayerTask,
-	UserStats,
-	XPGain,
-	activity_type_enum
+import {
+	type Activity,
+	type Bingo,
+	type BingoParticipant,
+	type BuyCommandTransaction,
+	type CommandUsage,
+	type EconomyTransaction,
+	type FarmedCrop,
+	type GearPreset,
+	type Giveaway,
+	type HistoricalData,
+	type LastManStandingGame,
+	type LootTrack,
+	type Minigame,
+	type PinnedTrip,
+	type PlayerOwnedHouse,
+	type Prisma,
+	type ReclaimableItem,
+	type SlayerTask,
+	type UserStats,
+	type XPGain,
+	type activity_type_enum,
+	command_name_enum
 } from '@prisma/client';
 import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -52,7 +53,6 @@ import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
@@ -690,13 +690,6 @@ const allTableCommands: TestCommand[] = [
 		}
 	},
 	{
-		name: 'Create new_users entry',
-		cmd: async user => {
-			await syncNewUserUsername(user, `testUser${randInt(1000, 9999).toString()}`);
-		},
-		priority: true
-	},
-	{
 		name: 'Buy command transaction',
 		cmd: async user => {
 			const randomBuyItems: string[] = [
@@ -943,17 +936,18 @@ const allTableCommands: TestCommand[] = [
 				user_id: user.id
 			});
 
+			const stats = await user.fetchStats({ items_sold_bank: true });
 			await Promise.all([
 				updateClientGPTrackSetting('gp_sell', totalPrice),
 				updateBankSetting('sold_items_bank', bankToSell),
 				userStatsUpdate(
 					user.id,
-					userStats => ({
-						items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+					{
+						items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).bank,
 						sell_gp: {
 							increment: totalPrice
 						}
-					}),
+					},
 					{}
 				),
 				global.prisma!.botItemSell.createMany({ data: botItemSellData })
@@ -1057,12 +1051,17 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Command usage',
 		cmd: async user => {
-			const randCommands = ['minion', 'runecraft', 'chop', 'mine', 'buy'];
+			const randCommands = [
+				command_name_enum.minion,
+				command_name_enum.runecraft,
+				command_name_enum.chop,
+				command_name_enum.mine,
+				command_name_enum.buy
+			];
 			await global.prisma!.commandUsage.create({
 				data: {
 					user_id: BigInt(user.id),
 					channel_id: 1_111_111_111n,
-					status: 'Unknown',
 					args: {},
 					command_name: randArrItem(randCommands),
 					guild_id: null,

@@ -1,11 +1,10 @@
-import { modifyItem } from '@oldschoolgg/toolkit';
-import { Items } from 'oldschooljs';
+import { deepMerge, modifyItem } from '@oldschoolgg/toolkit';
+import { omit } from 'lodash';
+import { EItem, Items } from 'oldschooljs';
 import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
-import { resolveItems } from 'oldschooljs/dist/util/util';
-
-import { getOSItem } from '../util/getOSItem';
+import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
@@ -179,11 +178,14 @@ setItemAlias(2993, 'Chompy bird hat (dragon archer)');
 setItemAlias(2994, 'Chompy bird hat (expert ogre dragon archer)');
 setItemAlias(2995, 'Chompy bird hat (expert dragon archer)');
 
-// Item aliases
+// Achievement diary lamps
 setItemAlias(11_137, 'Antique lamp 1');
 setItemAlias(11_139, 'Antique lamp 2');
 setItemAlias(11_141, 'Antique lamp 3');
 setItemAlias(11_185, 'Antique lamp 4');
+
+// Defender of varrock quest lamp
+setItemAlias(28_820, 'Antique lamp (defender of varrock)');
 
 // Dragonfire shields
 setItemAlias(11_284, 'Uncharged dragonfire shield');
@@ -386,7 +388,32 @@ for (const item of allTeamCapes) {
 	modifyItem(item.id, {
 		price: 100
 	});
-	if (getOSItem(item.id).price !== 100) {
+	if (getItemOrThrow(item.id).price !== 100) {
 		throw new Error(`Failed to modify price of item ${item.id}`);
 	}
+}
+
+export const itemDataSwitches = [
+	{
+		from: 25488,
+		to: EItem.BELLATOR_RING
+	},
+	{
+		from: 25486,
+		to: EItem.MAGUS_RING
+	},
+	{
+		from: 25487,
+		to: EItem.VENATOR_RING
+	},
+	{
+		from: 25485,
+		to: EItem.ULTOR_RING
+	}
+];
+
+for (const items of itemDataSwitches) {
+	const from = getItemOrThrow(items.from);
+	const to = getItemOrThrow(items.to);
+	modifyItem(to.id, deepMerge(omit(to, 'id'), omit(from, 'id')));
 }

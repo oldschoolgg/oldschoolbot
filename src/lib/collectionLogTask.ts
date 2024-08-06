@@ -6,12 +6,12 @@ import { calcWhatPercent, objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 import { Util } from 'oldschooljs';
 
-import type { UserStatsDataNeededForCL } from '../lib/data/Collections';
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import type { IToReturnCollection } from '../lib/data/CollectionsExport';
 import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
 import type { IBgSprite } from './bankImage';
+import type { MUserStats } from './structures/MUserStats';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
@@ -100,7 +100,7 @@ class CollectionLogTask {
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number | undefined };
-		stats: UserStatsDataNeededForCL | null;
+		stats: MUserStats | null;
 		collectionLog?: IToReturnCollection;
 	}): Promise<CommandResponse> {
 		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
@@ -193,8 +193,6 @@ class CollectionLogTask {
 				121 + (itemSize + itemSpacer) * Math.ceil(collectionLog.collectionTotal / maxPerLine)
 			)
 		);
-
-		debugLog('Generating a CL image', { collection, ...flags, type, user_id: user.id });
 
 		// Create base canvas
 		const canvas = new Canvas(canvasWidth, canvasHeight);

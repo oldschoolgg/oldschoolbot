@@ -1,8 +1,11 @@
 import '../globalSetup';
 
+import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
 import { vi } from 'vitest';
 
 import { mockMUser, mockUserMap } from './utils';
+
+global.redis = new TSRedis({ mocked: true });
 
 vi.mock('../../src/lib/settings/prisma.ts', () => ({
 	__esModule: true,

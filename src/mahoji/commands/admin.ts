@@ -1,14 +1,9 @@
-import { execSync } from 'node:child_process';
-import { inspect } from 'node:util';
-
-import { type CommandRunOptions, Stopwatch, bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
 import { economy_transaction_type } from '@prisma/client';
-import { isThenable } from '@sentry/utils';
 import type { InteractionReplyOptions } from 'discord.js';
-import { AttachmentBuilder, codeBlock, escapeCodeBlock } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -18,7 +13,6 @@ import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import {
-	BOT_TYPE,
 	BadgesEnum,
 	BitField,
 	BitFieldData,
@@ -29,13 +23,11 @@ import {
 	globalConfig
 } from '../../lib/constants';
 import { economyLog } from '../../lib/economyLogs';
-import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import type { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
-import { Gear } from '../../lib/structures/Gear';
 import {
 	calcPerHour,
 	cleanString,
@@ -51,7 +43,6 @@ import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
-import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -68,61 +59,6 @@ export const gifs = [
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
 
-async function unsafeEval({ userID, code }: { userID: string; code: string }) {
-	if (!OWNER_IDS.includes(userID)) return { content: 'Unauthorized' };
-	code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
-	const stopwatch = new Stopwatch();
-	let syncTime = '?';
-	let asyncTime = '?';
-	let result = null;
-	let thenable = false;
-	try {
-		// biome-ignore lint/security/noGlobalEval: <explanation>
-		result = eval(code);
-		syncTime = stopwatch.toString();
-		if (isThenable(result)) {
-			thenable = true;
-			stopwatch.restart();
-			result = await result;
-			asyncTime = stopwatch.toString();
-		}
-	} catch (error: any) {
-		if (!syncTime) syncTime = stopwatch.toString();
-		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
-		if (error?.stack) logError(error);
-		result = error;
-	}
-
-	stopwatch.stop();
-	if (result instanceof Bank) {
-		return { files: [(await makeBankImage({ bank: result })).file] };
-	}
-	if (result instanceof Gear) {
-		const image = await generateGearImage(await mUserFetch(userID), result, null, null);
-		return { files: [image] };
-	}
-
-	if (Buffer.isBuffer(result)) {
-		return {
-			content: 'The result was a buffer.',
-			files: [result]
-		};
-	}
-
-	if (typeof result !== 'string') {
-		result = inspect(result, {
-			depth: 1,
-			showHidden: false
-		});
-	}
-
-	return {
-		content: `${codeBlock(escapeCodeBlock(result))}
-**Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
-`
-	};
-}
-
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<{ pet: number; qty: number }[]>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet")::int AS qty
 FROM users
@@ -134,25 +70,6 @@ ORDER BY qty DESC;`);
 		bank.add(pet, qty);
 	}
 	return bank;
-}
-
-async function evalCommand(userID: string, code: string): CommandResponse {
-	try {
-		if (!OWNER_IDS.includes(userID)) {
-			return "You don't have permission to use this command.";
-		}
-		const res = await unsafeEval({ code, userID });
-
-		if (res.content && res.content.length > 2000) {
-			return {
-				files: [{ attachment: Buffer.from(res.content), name: 'output.txt' }]
-			};
-		}
-
-		return res;
-	} catch (err: any) {
-		return err.message ?? err;
-	}
 }
 
 async function getAllTradedItems(giveUniques = false) {
@@ -504,24 +421,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'debug_patreon',
-			description: 'Debug patreon.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'eval',
-			description: 'Eval.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'code',
-					description: 'Code',
-					required: true
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_commands',
 			description: 'Sync commands',
 			options: []
@@ -582,16 +481,6 @@ export const adminCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_roles',
-			description: 'Sync roles'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_patreon',
-			description: 'Sync patreon'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -733,11 +622,6 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		// {
-		// 	type: ApplicationCommandOptionType.Subcommand,
-		// 	name: 'wipe_bingo_temp_cls',
-		// 	description: 'Wipe all temp cls of bingo users'
-		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
@@ -771,15 +655,11 @@ export const adminCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		reboot?: {};
 		shut_down?: {};
-		debug_patreon?: {};
-		eval?: { code: string };
 		sync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
 		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
-		sync_roles?: {};
-		sync_patreon?: {};
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
@@ -787,7 +667,6 @@ export const adminCommand: OSBMahojiCommand = {
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: { item?: string };
 		view?: { thing: string };
-		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
 	}>) => {
 		await deferInteraction(interaction);
@@ -811,20 +690,6 @@ export const adminCommand: OSBMahojiCommand = {
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
-		}
-		if (options.sync_roles) {
-			// try {
-			// 	const result = await runRolesTask();
-			// 	if (result.length < 2000) return result;
-			// 	return {
-			// 		content: 'The result was too big! Check the file.',
-			// 		files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
-			// 	};
-			// } catch (err: any) {
-			// 	logError(err);
-			// 	return `Failed to run roles task. ${err.message}`;
-			// }
-			return 'The roles task is disabled for now.';
 		}
 
 		if (options.badges) {
@@ -998,22 +863,25 @@ export const adminCommand: OSBMahojiCommand = {
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			process.exit();
+			import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
+			return 'Turning off...';
 		}
 		if (options.shut_down) {
+			debugLog('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
 			const timer = production ? Time.Second * 30 : Time.Second * 5;
 			await interactionReply(interaction, {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await economyLog('Flushing economy log due to shutdown', true);
-			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			await Promise.all([sleep(timer), GrandExchange.queue.onIdle()]);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
+			import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
+			return 'Turning off...';
 		}
 
 		if (options.sync_blacklist) {
@@ -1110,9 +978,6 @@ ${guildCommands.length} Guild commands`;
 			return randArrItem(gifs);
 		}
 
-		if (options.eval) {
-			return evalCommand(userID.toString(), options.eval.code);
-		}
 		if (options.item_stats) {
 			const item = getItem(options.item_stats.item);
 			if (!item) return 'Invalid item.';

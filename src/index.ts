@@ -1,6 +1,5 @@
 import './lib/safeglobals';
 import './lib/globals';
-import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/geImage';
@@ -11,27 +10,24 @@ import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
 
-import { DEV_SERVER_ID, SENTRY_DSN, SupportServer } from './config';
-import { syncActivityCache } from './lib/Task';
+import { SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/constants';
+import { Channel, Events, gitHash, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';
-import { runStartupScripts } from './lib/startupScripts';
+import { preStartup } from './lib/preStartup';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
-import { assert, runTimedLoggedFn } from './lib/util';
-import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
+import { CACHED_ACTIVE_USER_IDS } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
-import { handleInteractionError } from './lib/util/interactionReply';
+import { handleInteractionError, interactionReply } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
 import { allCommands } from './mahoji/commands/allCommands';
 import { onStartup } from './mahoji/lib/events';
+import { exitCleanup } from './mahoji/lib/exitHandler';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
-
-debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
 
 if (SENTRY_DSN) {
 	init({
@@ -42,8 +38,6 @@ if (SENTRY_DSN) {
 		release: gitHash
 	});
 }
-
-assert(process.env.TZ === 'UTC');
 
 const client = new OldSchoolBotClient({
 	shards: 'auto',
@@ -71,7 +65,10 @@ const client = new OldSchoolBotClient({
 			maxSize: 200,
 			keepOverLimit: member => CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
-		GuildEmojiManager: { maxSize: 1, keepOverLimit: i => [DEV_SERVER_ID, SupportServer].includes(i.guild.id) },
+		GuildEmojiManager: {
+			maxSize: 1,
+			keepOverLimit: i => [globalConfig.testingServerID, SupportServer].includes(i.guild.id)
+		},
 		GuildStickerManager: { maxSize: 0 },
 		PresenceManager: { maxSize: 0 },
 		VoiceStateManager: { maxSize: 0 },
@@ -92,7 +89,7 @@ const client = new OldSchoolBotClient({
 });
 
 export const mahojiClient = new MahojiClient({
-	developmentServerID: DEV_SERVER_ID,
+	developmentServerID: globalConfig.testingServerID,
 	applicationID: globalConfig.clientID,
 	commands: allCommands,
 	handlers: {
@@ -133,15 +130,26 @@ global.globalClient = client;
 client.on('messageCreate', msg => {
 	onMessage(msg);
 });
+client.on('error', console.error);
 client.on('interactionCreate', async interaction => {
-	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
-	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
-
-	if (!client.isReady()) {
-		if (interaction.isChatInputCommand()) {
-			await interaction.reply({
+	if (globalClient.isShuttingDown) {
+		if (interaction.isRepliable()) {
+			await interactionReply(interaction, {
 				content:
-					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+				ephemeral: true
+			});
+		}
+		return;
+	}
+
+	if (
+		BLACKLISTED_USERS.has(interaction.user.id) ||
+		(interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId))
+	) {
+		if (interaction.isRepliable()) {
+			await interactionReply(interaction, {
+				content: 'You are blacklisted.',
 				ephemeral: true
 			});
 		}
@@ -167,7 +175,9 @@ client.on('interactionCreate', async interaction => {
 
 client.on(Events.ServerNotification, (message: string) => {
 	const channel = globalClient.channels.cache.get(Channel.Notifications);
-	if (channel) (channel as TextChannel).send(message);
+	if (channel) {
+		(channel as TextChannel).send({ content: message, allowedMentions: { parse: [], users: [], roles: [] } });
+	}
 });
 
 client.on(Events.EconomyLog, async (message: string) => {
@@ -180,19 +190,21 @@ client.on('guildCreate', guild => {
 	}
 });
 
-client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
-client.once('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
+client.once('ready', () => onStartup());
 
 async function main() {
-	if (process.env.TEST) return;
 	await Promise.all([
-		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
-		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
+		preStartup(),
+		import('exit-hook').then(({ asyncExitHook }) =>
+			asyncExitHook(exitCleanup, {
+				wait: 2000
+			})
+		)
 	]);
-	await runTimedLoggedFn('Startup Scripts', runStartupScripts);
-
-	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
+	if (process.env.TEST) return;
+	await client.login(globalConfig.botToken);
+	console.log(`Logged in as ${globalClient.user.username}`);
 }
 
 process.on('uncaughtException', err => {

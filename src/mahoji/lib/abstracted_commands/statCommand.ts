@@ -30,7 +30,7 @@ import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { Cooldowns } from '../Cooldowns';
-import { collectables } from './collectCommand';
+import { collectables } from '../collectables';
 
 interface DataPiece {
 	name: string;
@@ -288,6 +288,9 @@ GROUP BY data->>'collectableID';`);
 
 async function makeResponseForBank(bank: Bank, title: string, content?: string) {
 	sanitizeBank(bank);
+	if (bank.length === 0) {
+		return { content: 'No results.' };
+	}
 	const image = await makeBankImage({
 		title,
 		bank
@@ -359,14 +362,14 @@ GROUP BY type;`);
 		name: 'Personal Monster KC',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { id: number; kc: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int)::int AS kc
+			const result: { id: number; kc: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'mi')::int as id, SUM((data->>'q')::int)::int AS kc
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 AND type = 'MonsterKilling'
 AND data IS NOT NULL
 AND data::text != '{}'
-GROUP BY data->>'monsterID';`);
+GROUP BY data->>'mi';`);
 			const dataPoints: [string, number][] = result
 				.sort((a, b) => b.kc - a.kc)
 				.slice(0, 30)
@@ -1213,20 +1216,24 @@ LIMIT 5;`
 			}[][];
 
 			const response = `**Luckiest CoX Raiders**
-${luckiest
-	.map(
-		i =>
-			`${getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+${(
+	await Promise.all(
+		luckiest.map(
+			async i =>
+				`${await getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+		)
 	)
-	.join('\n')}
+).join('\n')}
 
 **Unluckiest CoX Raiders**
-${unluckiest
-	.map(
-		i =>
-			`${getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+${(
+	await Promise.all(
+		unluckiest.map(
+			async i =>
+				`${await getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+		)
 	)
-	.join('\n')}`;
+).join('\n')}`;
 			return {
 				content: response
 			};

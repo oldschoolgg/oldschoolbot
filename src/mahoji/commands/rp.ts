@@ -1,36 +1,34 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
-import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
+import { type Prisma, UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { SnowflakeUtil, codeBlock } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, randArrItem, sumArr } from 'e';
+import { Time, objectValues, randArrItem, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { analyticsTick } from '../../lib/analytics';
-import { BitField, Channel } from '../../lib/constants';
+import { BitField, Channel, globalConfig } from '../../lib/constants';
 import { allCollectionLogsFlat } from '../../lib/data/Collections';
 import type { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { allPerkBitfields } from '../../lib/perkTiers';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
+import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
+import { SkillsEnum } from '../../lib/skilling/types';
 import type { ItemBank } from '../../lib/types';
-import { dateFm, isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
+import { dateFm, isValidDiscordSnowflake } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -39,7 +37,6 @@ import { sendToChannelID } from '../../lib/util/webhook';
 import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { gifs } from './admin';
 import { getUserInfo } from './minion';
 import { sellPriceOfItem } from './sell';
@@ -47,16 +44,139 @@ import { sellPriceOfItem } from './sell';
 const itemFilters = [
 	{
 		name: 'Tradeable',
-		filter: (item: Item) => itemIsTradeable(item.id, true)
+		filter: (item: Item) => itemIsTradeable(item.id, true),
+		run: async () => {
+			const isValid = await GrandExchange.extensiveVerification();
+			if (isValid) {
+				return 'No issues found.';
+			}
+			return 'Something was invalid. Check logs!';
+		}
 	}
 ];
+
+async function usernameSync() {
+	const roboChimpUsersToCache = (
+		await roboChimpClient.user.findMany({
+			where: {
+				OR: [
+					{
+						osb_cl_percent: {
+							gte: 80
+						}
+					},
+					{
+						bso_total_level: {
+							gte: 80
+						}
+					},
+					{
+						osb_total_level: {
+							gte: 1500
+						}
+					},
+					{
+						bso_total_level: {
+							gte: 1500
+						}
+					},
+					{
+						leagues_points_total: {
+							gte: 20_000
+						}
+					}
+				]
+			},
+			select: {
+				id: true
+			}
+		})
+	).map(i => i.id.toString());
+
+	const orConditions: Prisma.UserWhereInput[] = [];
+	for (const skill of objectValues(SkillsEnum)) {
+		orConditions.push({
+			[`skills_${skill}`]: {
+				gte: 15_000_000
+			}
+		});
+	}
+	const usersToCache = (
+		await prisma.user.findMany({
+			where: {
+				OR: [
+					...orConditions,
+					{
+						last_command_date: {
+							gt: new Date(Date.now() - Number(Time.Month))
+						}
+					}
+				],
+				id: {
+					notIn: roboChimpUsersToCache
+				}
+			},
+			select: {
+				id: true
+			}
+		})
+	).map(i => i.id);
+
+	const response: string[] = [];
+	const allNewUsers = await prisma.newUser.findMany({
+		where: {
+			username: {
+				not: null
+			},
+			id: {
+				in: [...usersToCache, ...roboChimpUsersToCache]
+			}
+		},
+		select: {
+			id: true,
+			username: true
+		}
+	});
+
+	response.push(`Cached ${allNewUsers.length} usernames.`);
+	return response.join(', ');
+}
 
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
 	if ([...ADMIN_IDS, ...OWNER_IDS, ...botAccounts].includes(user.id)) return true;
-	if ([BitField.isModerator, BitField.isContributor].some(bf => user.bitfield.includes(bf))) return true;
+	if ([BitField.isModerator].some(bf => user.bitfield.includes(bf))) return true;
 	return false;
 }
+
+const actions = [
+	{
+		name: 'validate_ge',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			const isValid = await GrandExchange.extensiveVerification();
+			if (isValid) {
+				return 'No issues found.';
+			}
+			return 'Something was invalid. Check logs!';
+		}
+	},
+	{
+		name: 'sync_roles',
+		allowed: (user: MUser) =>
+			ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id) || user.bitfield.includes(BitField.isModerator),
+		run: async () => {
+			return runRolesTask(!globalConfig.isProduction);
+		}
+	},
+	{
+		name: 'sync_usernames',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			return usernameSync();
+		}
+	}
+];
 
 export const rpCommand: OSBMahojiCommand = {
 	name: 'rp',
@@ -66,39 +186,13 @@ export const rpCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'action',
-			description: 'Action tools',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'validate_ge',
-					description: 'Validate the g.e.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'patreon_reset',
-					description: 'Reset all patreon data.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'view_all_items',
-					description: 'View all item IDs present in banks/cls.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'analytics_tick',
-					description: 'analyticsTick.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'networth_sync',
-					description: 'networth_sync.',
-					options: []
-				}
-			]
+			description: 'Actions',
+			options: actions.map(a => ({
+				type: ApplicationCommandOptionType.Subcommand,
+				name: a.name,
+				description: a.name,
+				options: []
+			}))
 		},
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
@@ -231,25 +325,6 @@ export const rpCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'delete',
 							description: 'To delete the items instead'
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'add_ironman_alt',
-					description: 'Add an ironman alt account for a user',
-					options: [
-						{
-							type: ApplicationCommandOptionType.User,
-							name: 'main',
-							description: 'The main',
-							required: true
-						},
-						{
-							type: ApplicationCommandOptionType.User,
-							name: 'ironman_alt',
-							description: 'The ironman alt',
-							required: true
 						}
 					]
 				},
@@ -449,13 +524,7 @@ export const rpCommand: OSBMahojiCommand = {
 			max_total?: { user: MahojiUserOption; type: UserEventType; message_id: string };
 			max?: { user: MahojiUserOption; type: UserEventType; skill: xp_gains_skill_enum; message_id: string };
 		};
-		action?: {
-			validate_ge?: {};
-			patreon_reset?: {};
-			view_all_items?: {};
-			analytics_tick?: {};
-			networth_sync?: {};
-		};
+		action?: any;
 		player?: {
 			viewbank?: { user: MahojiUserOption; json?: boolean };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
@@ -476,7 +545,6 @@ export const rpCommand: OSBMahojiCommand = {
 				user: MahojiUserOption;
 				message_id: string;
 			};
-			add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
 			view_user?: { user: MahojiUserOption };
 			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
 			list_trades?: {
@@ -493,11 +561,8 @@ export const rpCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isAdmin = ADMIN_IDS.includes(userID);
 		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		const isTrusted = [BitField.IsWikiContributor, BitField.isContributor].some(bit =>
-			adminUser.bitfield.includes(bit)
-		);
 		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-		if (!isAdmin && !isMod && !isTrusted) return randArrItem(gifs);
+		if (!isAdmin && !isMod) return randArrItem(gifs);
 
 		if (options.user_event) {
 			const messageId =
@@ -552,62 +617,13 @@ Date: ${dateFm(date)}`;
 
 		if (!isMod) return randArrItem(gifs);
 
-		if (options.action?.validate_ge) {
-			const isValid = await GrandExchange.extensiveVerification();
-			if (isValid) {
-				return 'No issues found.';
-			}
-			return 'Something was invalid. Check logs!';
-		}
-		if (options.action?.analytics_tick) {
-			await analyticsTick();
-			return 'Finished.';
-		}
-		if (options.action?.networth_sync) {
-			const users = await prisma.user.findMany({
-				where: {
-					GP: {
-						gt: 10_000_000_000
-					}
-				},
-				take: 20,
-				orderBy: {
-					GP: 'desc'
-				},
-				select: {
-					id: true
+		if (options.action) {
+			for (const action of actions) {
+				if (options.action[action.name]) {
+					if (!action.allowed(adminUser)) return randArrItem(gifs);
+					return action.run();
 				}
-			});
-			for (const { id } of users) {
-				const user = await mUserFetch(id);
-				await user.update({
-					cached_networth_value: (await user.calculateNetWorth()).value
-				});
 			}
-			return 'Done.';
-		}
-		if (options.action?.view_all_items) {
-			const result = await prisma.$queryRawUnsafe<{ item_id: number }[]>(`SELECT DISTINCT json_object_keys(bank)::int AS item_id
-FROM users
-UNION
-SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
-FROM users
-ORDER BY item_id ASC;`);
-			return returnStringOrFile(`[${result.map(i => i.item_id).join(',')}]`);
-		}
-
-		if (options.action?.patreon_reset) {
-			const bitfieldsToRemove = [
-				BitField.IsPatronTier1,
-				BitField.IsPatronTier2,
-				BitField.IsPatronTier3,
-				BitField.IsPatronTier4,
-				BitField.IsPatronTier5,
-				BitField.IsPatronTier6
-			];
-			await prisma.$queryRaw`UPDATE users SET bitfield = bitfield - '{${bitfieldsToRemove.join(',')}'::int[];`;
-			await syncLinkedAccounts();
-			return 'Finished.';
 		}
 
 		if (options.player?.set_buy_date) {
@@ -741,62 +757,6 @@ ORDER BY item_id ASC;`);
 			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
 			return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
 		}
-		if (options.player?.add_ironman_alt) {
-			const mainAccount = await mahojiUsersSettingsFetch(options.player.add_ironman_alt.main.user.id, {
-				minion_ironman: true,
-				id: true,
-				ironman_alts: true,
-				main_account: true
-			});
-			const altAccount = await mahojiUsersSettingsFetch(options.player.add_ironman_alt.ironman_alt.user.id, {
-				minion_ironman: true,
-				bitfield: true,
-				id: true,
-				ironman_alts: true,
-				main_account: true
-			});
-			const mainUser = await mUserFetch(mainAccount.id);
-			const altUser = await mUserFetch(altAccount.id);
-			if (mainAccount === altAccount) return "They're they same account.";
-			if (mainAccount.minion_ironman) return `${mainUser.usernameOrMention} is an ironman.`;
-			if (!altAccount.minion_ironman) return `${altUser.usernameOrMention} is not an ironman.`;
-			if (!altAccount.bitfield.includes(BitField.PermanentIronman)) {
-				return `${altUser.usernameOrMention} is not a *permanent* ironman.`;
-			}
-
-			const peopleWithThisAltAlready = (
-				await prisma.$queryRawUnsafe<unknown[]>(
-					`SELECT id FROM users WHERE '${altAccount.id}' = ANY(ironman_alts);`
-				)
-			).length;
-			if (peopleWithThisAltAlready > 0) {
-				return `Someone already has ${altUser.usernameOrMention} as an ironman alt.`;
-			}
-			if (mainAccount.main_account) {
-				return `${mainUser.usernameOrMention} has a main account connected already.`;
-			}
-			if (altAccount.main_account) {
-				return `${altUser.usernameOrMention} has a main account connected already.`;
-			}
-			const mainAccountsAlts = mainAccount.ironman_alts;
-			if (mainAccountsAlts.includes(altAccount.id)) {
-				return `${mainUser.usernameOrMention} already has ${altUser.usernameOrMention} as an alt.`;
-			}
-
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure that \`${altUser.usernameOrMention}\` is the alt account of \`${mainUser.usernameOrMention}\`?`
-			);
-			await mahojiUserSettingsUpdate(mainAccount.id, {
-				ironman_alts: {
-					push: altAccount.id
-				}
-			});
-			await mahojiUserSettingsUpdate(altAccount.id, {
-				main_account: mainAccount.id
-			});
-			return `You set \`${altUser.usernameOrMention}\` as the alt account of \`${mainUser.usernameOrMention}\`.`;
-		}
 
 		if (options.player?.view_user) {
 			const userToView = await mUserFetch(options.player.view_user.user.user.id);
@@ -817,12 +777,6 @@ ORDER BY item_id ASC;`);
 			const destUser = await mUserFetch(dest.user.id);
 
 			if (isProtectedAccount(destUser)) return 'You cannot clobber that account.';
-			if (allPerkBitfields.some(pt => destUser.bitfield.includes(pt))) {
-				await handleMahojiConfirmation(
-					interaction,
-					`The target user, ${destUser.logName}, has a Patreon Tier; are you really sure you want to DELETE all data from that account?`
-				);
-			}
 			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
 			const destXp = sumArr(Object.values(destUser.skillsAsXP));
 			if (destXp > sourceXp) {

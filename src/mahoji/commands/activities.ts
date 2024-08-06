@@ -22,7 +22,7 @@ import { championsChallengeCommand } from '../lib/abstracted_commands/championsC
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
 import { chargeWealthCommand } from '../lib/abstracted_commands/chargeWealthCommand';
 import { chompyHuntClaimCommand, chompyHuntCommand } from '../lib/abstracted_commands/chompyHuntCommand';
-import { collectCommand, collectables } from '../lib/abstracted_commands/collectCommand';
+import { collectCommand } from '../lib/abstracted_commands/collectCommand';
 import { decantCommand } from '../lib/abstracted_commands/decantCommand';
 import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
 import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
@@ -35,6 +35,7 @@ import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
 import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/underwaterCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
+import { collectables } from '../lib/collectables';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -545,7 +546,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
 		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand(user);
-		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user.user);
+		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
 
 		// Minion must be free
 		const isBusy = user.minionIsBusy;

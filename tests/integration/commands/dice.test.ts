@@ -27,7 +27,7 @@ describe('Dice Command', async () => {
 		await user.gpMatch(100_000_000);
 		const unmock = mockMathRandom(0.1);
 		const result = await user.runCommand(gambleCommand, { dice: { amount: '100m' } });
-		expect(result).toMatchObject(` <@${user.id}> rolled **11** on the percentile dice, and you lost -100m GP.`);
+		expect(result).toMatchObject('Unknown rolled **11** on the percentile dice, and you lost -100m GP.');
 		await user.gpMatch(0);
 		await user.statsMatch('dice_losses', 1);
 		await user.statsMatch('gp_dice', BigInt(-100_000_000));
@@ -39,7 +39,7 @@ describe('Dice Command', async () => {
 		const unmock = mockMathRandom(0.9);
 		await user.gpMatch(100_000_000);
 		const result = await user.runCommand(gambleCommand, { dice: { amount: '100m' } });
-		expect(result).toMatchObject(` <@${user.id}> rolled **91** on the percentile dice, and you won 100m GP.`);
+		expect(result).toMatchObject('Unknown rolled **91** on the percentile dice, and you won 100m GP.');
 		await user.gpMatch(200_000_000);
 		await user.statsMatch('dice_wins', 1);
 		await user.statsMatch('gp_dice', BigInt(100_000_000));
