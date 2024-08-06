@@ -677,6 +677,9 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'ManagingMiscellania': {
+			return `${name} is currently collecting from their Miscellania Kingdom. This trip should take ${formatDuration(durationRemaining)}.`;
+		}
 		case 'SpecificQuest': {
 			const data = currentTask as SpecificQuestOptions;
 			return `${name} is currently doing the ${

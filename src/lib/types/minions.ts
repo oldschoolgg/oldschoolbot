@@ -546,6 +546,12 @@ export interface SpecificQuestOptions extends ActivityTaskOptions {
 	type: 'SpecificQuest';
 	questID: number;
 }
+export interface ManagingMiscellaniaActivityTaskOptions extends ActivityTaskOptions {
+	type: 'ManagingMiscellania';
+	main_collect: string;
+	secondary_collect: string;
+	cofferCost: number;
+}
 
 export type ActivityTaskData =
 	| MonsterActivityTaskOptions
@@ -611,4 +617,5 @@ export type ActivityTaskData =
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| ManagingMiscellaniaActivityTaskOptions;
