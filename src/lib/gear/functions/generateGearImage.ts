@@ -79,7 +79,6 @@ export async function generateGearImage(
 	gearType: GearSetupType | null,
 	petID: number | null
 ) {
-	debugLog('Generating gear image', { user_id: user.id });
 	const bankBg = user.user.bankBackground ?? 1;
 
 	const { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
@@ -246,7 +245,6 @@ export async function generateAllGearImage(user: MUser) {
 	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
-	debugLog('Generating all-gear image', { user_id: user.id });
 	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template_compact.png');
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');

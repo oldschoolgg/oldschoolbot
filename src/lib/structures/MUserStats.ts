@@ -9,10 +9,22 @@ import { getToaKCs } from '../util/smallUtils';
 export class MUserStats {
 	userStats: UserStats;
 	sacrificedBank: Bank;
+	titheFarmsCompleted: number;
+	lapsScores: ItemBank;
+	openableScores: Bank;
+	kcBank: ItemBank;
+	highGambles: number;
+	gotrRiftSearches: number;
 
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
 		this.sacrificedBank = new Bank().add(this.userStats.sacrificed_bank as ItemBank);
+		this.titheFarmsCompleted = this.userStats.tithe_farms_completed;
+		this.lapsScores = userStats.laps_scores as ItemBank;
+		this.openableScores = new Bank().add(userStats.openable_scores as ItemBank);
+		this.kcBank = userStats.monster_scores as ItemBank;
+		this.highGambles = userStats.high_gambles;
+		this.gotrRiftSearches = userStats.gotr_rift_searches;
 	}
 
 	static async fromID(id: string) {
@@ -26,10 +38,6 @@ export class MUserStats {
 			update: {}
 		});
 		return new MUserStats(userStats);
-	}
-
-	get lapsScores() {
-		return this.userStats.laps_scores as ItemBank;
 	}
 
 	getToaKCs() {

@@ -1,4 +1,4 @@
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/dist/lib/GeneralBank';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
 
 import type { DegradeableItem } from '../degradeableItems';
 import { degradeableItems } from '../degradeableItems';

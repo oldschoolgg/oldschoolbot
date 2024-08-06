@@ -1,14 +1,13 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction, MessageEditOptions } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, calcWhatPercent, chunk, objectValues } from 'e';
+import { calcWhatPercent, chunk, isFunction } from 'e';
 
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { Emoji, badges, badgesCache, masteryKey, usernameCache } from '../../lib/constants';
+import { masteryKey } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -23,9 +22,9 @@ import {
 	convertXPtoLVL,
 	formatDuration,
 	getUsername,
+	getUsernameSync,
 	makePaginatedMessage,
-	stringMatches,
-	stripEmojis
+	stringMatches
 } from '../../lib/util';
 import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -48,11 +47,12 @@ export function getPos(page: number, record: number) {
 	return `${page * LB_PAGE_SIZE + 1 + record}. `;
 }
 
+export type AsyncPageString = () => Promise<string>;
 export async function doMenu(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	channelID: string,
-	pages: string[],
+	pages: string[] | AsyncPageString[],
 	title: string
 ) {
 	if (pages.length === 0) {
@@ -63,9 +63,66 @@ export async function doMenu(
 
 	makePaginatedMessage(
 		channel,
-		pages.map(p => ({ embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] })),
+		pages.map(p => {
+			if (isFunction(p)) {
+				return async () => ({ embeds: [new EmbedBuilder().setTitle(title).setDescription(await p())] });
+			}
+
+			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
+		}),
 		user.id
 	);
+}
+
+function doMenuWrapper({
+	user,
+	channelID,
+	users,
+	title,
+	ironmanOnly,
+	formatter
+}: {
+	ironmanOnly: boolean;
+	users: { id: string; score: number }[];
+	title: string;
+	interaction: ChatInputCommandInteraction;
+	user: MUser;
+	channelID: string;
+	formatter?: (val: number) => string;
+}) {
+	const chunked = chunk(users, LB_PAGE_SIZE);
+	const pages: (() => Promise<MessageEditOptions>)[] = [];
+	for (let c = 0; c < chunked.length; c++) {
+		const makePage = async () => {
+			const chnk = chunked[c];
+			const unwaited = chnk.map(
+				async (user, i) =>
+					`${getPos(c, i)}**${await getUsername(user.id)}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`
+			);
+			const pageText = (await Promise.all(unwaited)).join('\n');
+			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(pageText)] };
+		};
+		pages.push(makePage);
+	}
+	if (pages.length === 0) {
+		return 'There are no users on this leaderboard.';
+	}
+	const channel = globalClient.channels.cache.get(channelID);
+	if (!channelIsSendable(channel)) return 'Invalid channel.';
+
+	makePaginatedMessage(
+		channel,
+		pages.map(p => {
+			if (isFunction(p)) {
+				return p;
+			}
+
+			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
+		}),
+		user.id
+	);
+
+	return lbMsg(title, ironmanOnly);
 }
 
 async function kcLb(
@@ -77,29 +134,24 @@ async function kcLb(
 ) {
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
-	const list = await prisma.$queryRawUnsafe<{ id: string; kc: number }[]>(
-		`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as kc
+	const list = await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
+		`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as score
 		 FROM user_stats
 		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
 		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
 		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
-		 ORDER BY kc DESC
+		 ORDER BY score DESC
 		 LIMIT 2000;`
 	);
 
-	doMenu(
-		interaction,
+	return doMenuWrapper({
+		ironmanOnly,
 		user,
+		interaction,
 		channelID,
-		chunk(list, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map((user, j) => `${getPos(i, j)}**${getUsername(user.id)}:** ${user.kc.toLocaleString()}`)
-				.join('\n')
-		),
-		`KC Leaderboard for ${monster.name}`
-	);
-
-	return lbMsg(`${monster.name} KC `, ironmanOnly);
+		users: list,
+		title: `KC Leaderboard for ${monster.name}`
+	});
 }
 
 async function farmingContractLb(
@@ -124,7 +176,7 @@ async function farmingContractLb(
 		chunk(list, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(({ id, count }, j) => {
-					return `${getPos(i, j)}**${getUsername(id)}:** ${count.toLocaleString()}`;
+					return `${getPos(i, j)}**${getUsernameSync(id)}:** ${count.toLocaleString()}`;
 				})
 				.join('\n')
 		),
@@ -147,7 +199,7 @@ LIMIT 10;`);
 	}
 
 	return `**Inferno Records**\n\n${res
-		.map((e, i) => `${i + 1}. **${getUsername(e.user_id)}:** ${formatDuration(e.duration)}`)
+		.map((e, i) => `${i + 1}. **${getUsernameSync(e.user_id)}:** ${formatDuration(e.duration)}`)
 		.join('\n')}`;
 }
 
@@ -176,7 +228,10 @@ async function sacrificeLb(
 			channelID,
 			chunk(list, LB_PAGE_SIZE).map((subList, i) =>
 				subList
-					.map(({ id, amount }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${amount.toLocaleString()} GP `)
+					.map(
+						({ id, amount }, j) =>
+							`${getPos(i, j)}**${getUsernameSync(id)}:** ${amount.toLocaleString()} GP `
+					)
 					.join('\n')
 			),
 			'Sacrifice Leaderboard'
@@ -202,7 +257,7 @@ async function sacrificeLb(
 			subList
 				.map(
 					({ id, sacbanklength }, j) =>
-						`${getPos(i, j)}**${getUsername(id)}:** ${sacbanklength.toLocaleString()} Unique Sac's`
+						`${getPos(i, j)}**${getUsernameSync(id)}:** ${sacbanklength.toLocaleString()} Unique Sac's`
 				)
 				.join('\n')
 		),
@@ -231,7 +286,7 @@ async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser
 			channelID,
 			chunk(titheCompletions, LB_PAGE_SIZE).map((subList, i) =>
 				subList
-					.map(({ id, amount }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${amount.toLocaleString()}`)
+					.map(({ id, amount }, j) => `${getPos(i, j)}**${getUsernameSync(id)}:** ${amount.toLocaleString()}`)
 					.join('\n')
 			),
 			'Tithe farm Leaderboard'
@@ -250,18 +305,14 @@ async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser
 		take: 10
 	});
 
-	doMenu(
-		interaction,
+	return doMenuWrapper({
+		ironmanOnly: false,
 		user,
+		interaction,
 		channelID,
-		chunk(res, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map((u, j) => `${getPos(i, j)}**${getUsername(u.user_id)}:** ${u[minigame.column].toLocaleString()}`)
-				.join('\n')
-		),
-		`${minigame.name} Leaderboard`
-	);
-	return lbMsg(`${minigame.name} Leaderboard`);
+		users: res.map(u => ({ id: u.user_id, score: u[minigame.column] })),
+		title: `${minigame.name} Leaderboard`
+	});
 }
 
 async function clLb(
@@ -273,39 +324,21 @@ async function clLb(
 ) {
 	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
 	if (!items || items.length === 0) {
-		return "That's not a valid collection log category. Check +cl for all possible logs.";
+		return "That's not a valid collection log category. Check /cl for all possible logs.";
 	}
 
-	const userEventOrders = await prisma.userEvent.findMany({
-		where: {
-			type: 'CLCompletion',
-			collection_log_name: resolvedCl.toLowerCase()
-		},
-		orderBy: {
-			date: 'asc'
-		}
-	});
-
-	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, userEvents: userEventOrders });
+	const { users } = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, clName: resolvedCl });
 	inputType = toTitleCase(inputType.toLowerCase());
-	doMenu(
-		interaction,
+
+	return doMenuWrapper({
+		ironmanOnly: ironmenOnly,
 		user,
+		interaction,
 		channelID,
-		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map(
-					({ id, qty }, j) =>
-						`${getPos(i, j)}**${getUsername(id)}:** ${qty.toLocaleString()} (${calcWhatPercent(
-							qty,
-							items.length
-						).toFixed(1)}%)`
-				)
-				.join('\n')
-		),
-		`${inputType} Collection Log Leaderboard (${items.length} slots)`
-	);
-	return lbMsg(`${inputType} Collection Log Leaderboard`, ironmenOnly);
+		users: users.map(u => ({ id: u.id, score: u.qty })),
+		title: `${inputType} Collection Log Leaderboard`,
+		formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.length).toFixed(1)}%)`
+	});
 }
 
 async function creaturesLb(
@@ -332,7 +365,7 @@ async function creaturesLb(
 		channelID,
 		chunk(data, LB_PAGE_SIZE).map((subList, i) =>
 			subList
-				.map(({ id, count }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${count.toLocaleString()}`)
+				.map(({ id, count }, j) => `${getPos(i, j)}**${getUsernameSync(id)}:** ${count.toLocaleString()}`)
 				.join('\n')
 		),
 		`Catch Leaderboard for ${creature.name}`
@@ -357,7 +390,7 @@ async function lapsLb(interaction: ChatInputCommandInteraction, user: MUser, cha
 		channelID,
 		chunk(data, LB_PAGE_SIZE).map((subList, i) =>
 			subList
-				.map(({ id, count }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${count.toLocaleString()}`)
+				.map(({ id, count }, j) => `${getPos(i, j)}**${getUsernameSync(id)}:** ${count.toLocaleString()}`)
 				.join('\n')
 		),
 		`${course.name} Laps Leaderboard`
@@ -403,18 +436,14 @@ async function openLb(
 			ORDER BY qty DESC LIMIT 30;`
 	);
 
-	doMenu(
-		interaction,
+	return doMenuWrapper({
+		ironmanOnly,
 		user,
+		interaction,
 		channelID,
-		chunk(list, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map((user, j) => `${getPos(i, j)}**${getUsername(user.id)}:** ${user.qty.toLocaleString()}`)
-				.join('\n')
-		),
-		`Open Leaderboard for ${openableName}`
-	);
-	return lbMsg(`${openableName} Opening`);
+		users: list.map(u => ({ id: u.id, score: u.qty })),
+		title: `${openableName} Opening Leaderboard`
+	});
 }
 
 async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, ironmanOnly: boolean) {
@@ -425,22 +454,19 @@ async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, chann
 					   WHERE "GP" > 1000000
 					   ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
 					   ORDER BY "GP" DESC
-					   LIMIT 500;`
+					   LIMIT 100;`
 		)
-	).map(res => ({ ...res, GP: Number(res.GP) }));
+	).map(res => ({ ...res, score: Number(res.GP) }));
 
-	doMenu(
-		interaction,
+	return doMenuWrapper({
+		ironmanOnly,
 		user,
+		interaction,
 		channelID,
-		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map(({ id, GP }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${GP.toLocaleString()} GP`)
-				.join('\n')
-		),
-		'GP Leaderboard'
-	);
-	return lbMsg('GP Leaderboard', ironmanOnly);
+		users,
+		title: 'GP Leaderboard',
+		formatter: val => `${val.toLocaleString()} GP`
+	});
 }
 
 async function skillsLb(
@@ -575,7 +601,7 @@ async function skillsLb(
 			chunk(overallUsers, LB_PAGE_SIZE).map((subList, i) =>
 				subList
 					.map((obj, j) => {
-						return `${getPos(i, j)}**${getUsername(
+						return `${getPos(i, j)}**${getUsernameSync(
 							obj.id
 						)}:** ${obj.totalLevel.toLocaleString()} (${obj.totalXP.toLocaleString()} XP)`;
 					})
@@ -596,7 +622,7 @@ async function skillsLb(
 					const objKey = `skills.${skill?.id}`;
 					const skillXP = Number(obj[objKey] ?? 0);
 
-					return `${getPos(i, j)}**${getUsername(obj.id)}:** ${skillXP.toLocaleString()} XP (${convertXPtoLVL(
+					return `${getPos(i, j)}**${getUsernameSync(obj.id)}:** ${skillXP.toLocaleString()} XP (${convertXPtoLVL(
 						skillXP
 					)})`;
 				})
@@ -635,111 +661,15 @@ LIMIT 50;`
 		channelID,
 		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
 			subList
-				.map(({ id, score }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${score.toLocaleString()} Completed`)
+				.map(
+					({ id, score }, j) =>
+						`${getPos(i, j)}**${getUsernameSync(id)}:** ${score.toLocaleString()} Completed`
+				)
 				.join('\n')
 		),
 		`${clueTier.name} Clue Leaderboard`
 	);
 	return lbMsg('Clue Leaderboard', ironmanOnly);
-}
-
-export async function cacheUsernames() {
-	const roboChimpUseresToCache = await roboChimpClient.user.findMany({
-		where: {
-			OR: [
-				{
-					osb_cl_percent: {
-						gte: 80
-					}
-				},
-				{
-					bso_total_level: {
-						gte: 80
-					}
-				},
-				{
-					osb_total_level: {
-						gte: 1500
-					}
-				},
-				{
-					bso_total_level: {
-						gte: 1500
-					}
-				},
-				{
-					leagues_points_total: {
-						gte: 20_000
-					}
-				}
-			]
-		},
-		select: {
-			id: true
-		}
-	});
-
-	const orConditions: Prisma.UserWhereInput[] = [];
-	for (const skill of objectValues(SkillsEnum)) {
-		orConditions.push({
-			[`skills_${skill}`]: {
-				gte: 15_000_000
-			}
-		});
-	}
-	const usersToCache = await prisma.user.findMany({
-		where: {
-			OR: [
-				...orConditions,
-				{
-					last_command_date: {
-						gt: new Date(Date.now() - Number(Time.Month))
-					}
-				}
-			],
-			id: {
-				notIn: roboChimpUseresToCache.map(i => i.id.toString())
-			}
-		},
-		select: {
-			id: true
-		}
-	});
-
-	const userIDsToCache = [...usersToCache, ...roboChimpUseresToCache].map(i => i.id.toString());
-	debugLog(`Caching usernames of ${userIDsToCache.length} users`);
-
-	const allNewUsers = await prisma.newUser.findMany({
-		where: {
-			username: {
-				not: null
-			},
-			id: {
-				in: userIDsToCache
-			}
-		},
-		select: {
-			id: true,
-			username: true
-		}
-	});
-
-	const arrayOfIronmenAndBadges: { badges: number[]; id: string; ironman: boolean }[] = await prisma.$queryRawUnsafe(
-		'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;'
-	);
-
-	for (const user of allNewUsers) {
-		const badgeUser = arrayOfIronmenAndBadges.find(i => i.id === user.id);
-		const name = stripEmojis(user.username!);
-		usernameCache.set(user.id, name);
-		if (badgeUser) {
-			const rawBadges = badgeUser.badges.map(num => badges[num]);
-			if (badgeUser.ironman) {
-				rawBadges.push(Emoji.Ironman);
-			}
-			badgesCache.set(user.id, rawBadges.join(' '));
-		}
-	}
 }
 
 const globalLbTypes = ['xp', 'cl', 'mastery'] as const;
@@ -772,7 +702,7 @@ LIMIT 10;
 				subList
 					.map(
 						({ id, osb_xp_percent, bso_xp_percent }, j) =>
-							`${getPos(i, j)}**${getUsername(id)}:** ${osb_xp_percent.toFixed(
+							`${getPos(i, j)}**${getUsernameSync(id)}:** ${osb_xp_percent.toFixed(
 								2
 							)}% OSB, ${bso_xp_percent.toFixed(2)}% BSO`
 					)
@@ -800,7 +730,9 @@ LIMIT 10;
 			user,
 			channelID,
 			chunk(result, LB_PAGE_SIZE).map((subList, i) =>
-				subList.map(({ id, avg }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${avg.toFixed(2)}%`).join('\n')
+				subList
+					.map(({ id, avg }, j) => `${getPos(i, j)}**${getUsernameSync(id)}:** ${avg.toFixed(2)}%`)
+					.join('\n')
 			),
 			'Global (OSB+BSO) Mastery Leaderboard'
 		);
@@ -821,7 +753,7 @@ LIMIT 20;`;
 			subList
 				.map(
 					({ id, total_cl_percent }, j) =>
-						`${getPos(i, j)}**${getUsername(id)}:** ${total_cl_percent.toLocaleString()}%`
+						`${getPos(i, j)}**${getUsernameSync(id)}:** ${total_cl_percent.toLocaleString()}%`
 				)
 				.join('\n')
 		),
@@ -901,7 +833,7 @@ LIMIT 10;
 			subList
 				.map(
 					({ user_id, cl_completion_count, cl_global_rank, count_increase, rank_difference }, j) =>
-						`${getPos(i, j)}**${getUsername(
+						`${getPos(i, j)}**${getUsernameSync(
 							user_id
 						)}:** Gained ${count_increase} CL slots, from ${cl_completion_count} to ${
 							cl_completion_count + count_increase
@@ -932,7 +864,8 @@ LIMIT 50;`
 		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(
-					({ id, qty }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${qty.toLocaleString()} Tasks Completed`
+					({ id, qty }, j) =>
+						`${getPos(i, j)}**${getUsernameSync(id)}:** ${qty.toLocaleString()} Tasks Completed`
 				)
 				.join('\n')
 		),
@@ -942,36 +875,32 @@ LIMIT 50;`
 }
 
 async function masteryLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
-	const users = await roboChimpClient.user.findMany({
-		where: {
-			[masteryKey]: { not: null }
-		},
-		orderBy: {
-			[masteryKey]: 'desc'
-		},
-		take: 50,
-		select: {
-			id: true,
-			osb_mastery: true,
-			bso_mastery: true
-		}
-	});
+	const users = (
+		await roboChimpClient.user.findMany({
+			where: {
+				[masteryKey]: { not: null }
+			},
+			orderBy: {
+				[masteryKey]: 'desc'
+			},
+			take: 50,
+			select: {
+				id: true,
+				osb_mastery: true,
+				bso_mastery: true
+			}
+		})
+	).map(u => ({ id: u.id.toString(), score: u[masteryKey] ?? 0 }));
 
-	doMenu(
+	return doMenuWrapper({
 		interaction,
-		user,
+		title: 'Mastery Leaderboard',
 		channelID,
-		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map(
-					(lUser, j) =>
-						`${getPos(i, j)}**${getUsername(lUser.id)}:** ${lUser[masteryKey]?.toFixed(3)}% mastery`
-				)
-				.join('\n')
-		),
-		'Mastery Leaderboard'
-	);
-	return lbMsg('Mastery Leaderboard');
+		ironmanOnly: false,
+		user,
+		users,
+		formatter: val => `${val.toFixed(3)}% mastery`
+	});
 }
 
 const ironmanOnlyOption = {

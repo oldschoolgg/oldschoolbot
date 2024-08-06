@@ -71,7 +71,7 @@ export const massCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ interaction, options, userID, channelID }: CommandRunOptions<{ monster: string }>) => {
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
 		const channel = globalClient.channels.cache.get(channelID.toString());
@@ -156,10 +156,10 @@ export const massCommand: OSBMahojiCommand = {
 		}
 
 		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
-			monsterID: monster.id,
+			mi: monster.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			quantity,
+			q: quantity,
 			duration,
 			type: 'GroupMonsterKilling',
 			leader: user.id,

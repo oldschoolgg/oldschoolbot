@@ -12,7 +12,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export const groupoMonsterTask: MinionTask = {
 	type: 'GroupMonsterKilling',
 	async run(data: GroupMonsterActivityTaskOptions) {
-		const { monsterID, channelID, quantity, users, leader, duration } = data;
+		const { mi: monsterID, channelID, q: quantity, users, leader, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: Bank } = {};

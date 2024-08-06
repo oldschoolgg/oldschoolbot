@@ -1,11 +1,12 @@
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import type { BaseMessageOptions, Message, TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold } from 'discord.js';
 import { Time, isFunction, roll } from 'e';
 import { LRUCache } from 'lru-cache';
 import { Items } from 'oldschooljs';
 
+import { command_name_enum } from '@prisma/client';
 import { SupportServer, production } from '../config';
 import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
@@ -42,6 +43,8 @@ const rareRolesSrc: [string, number, string][] = [
 
 const userCache = new LRUCache<string, number>({ max: 1000 });
 function rareRoles(msg: Message) {
+	if (!globalConfig.isProduction) return;
+
 	if (!msg.guild || msg.guild.id !== SupportServer) {
 		return;
 	}
@@ -140,7 +143,7 @@ interface MentionCommandOptions {
 	content: string;
 }
 interface MentionCommand {
-	name: string;
+	name: command_name_enum;
 	aliases: string[];
 	description: string;
 	run: (options: MentionCommandOptions) => Promise<unknown>;
@@ -148,7 +151,7 @@ interface MentionCommand {
 
 const mentionCommands: MentionCommand[] = [
 	{
-		name: 'bs',
+		name: command_name_enum.bs,
 		aliases: ['bs'],
 		description: 'Searches your bank.',
 		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
@@ -167,7 +170,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'bal',
+		name: command_name_enum.bal,
 		aliases: ['bal', 'gp'],
 		description: 'Shows how much GP you have.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -178,7 +181,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'is',
+		name: command_name_enum.is,
 		aliases: ['is'],
 		description: 'Searches for items.',
 		run: async ({ msg, components, user, content }: MentionCommandOptions) => {
@@ -220,7 +223,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'bank',
+		name: command_name_enum.bank,
 		aliases: ['b', 'bank'],
 		description: 'Shows your bank.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -242,7 +245,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'cd',
+		name: command_name_enum.cd,
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -272,7 +275,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'sendtoabutton',
+		name: command_name_enum.sendtoabutton,
 		aliases: ['sendtoabutton'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user }: MentionCommandOptions) => {
@@ -297,7 +300,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 's',
+		name: command_name_enum.stats,
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -331,7 +334,6 @@ export async function onMessage(msg: Message) {
 				guild_id: msg.guildId ? BigInt(msg.guildId) : undefined,
 				command_name: command.name,
 				args: msgContentWithoutCommand,
-				flags: undefined,
 				inhibited: false,
 				is_mention_command: true
 			}

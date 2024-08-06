@@ -16,7 +16,7 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
 import type { OSBMahojiCommand } from '../lib/util';
-import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
+import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
 
@@ -151,12 +151,13 @@ export const buyCommand: OSBMahojiCommand = {
 			.remove('Coins', totalCost.amount('Coins')).bank;
 		if (Object.keys(costBankExcludingGP).length === 0) costBankExcludingGP = undefined;
 
+		const currentStats = await user.fetchStats({ buy_cost_bank: true, buy_loot_bank: true });
 		await Promise.all([
 			updateBankSetting('buy_cost_bank', totalCost),
 			updateBankSetting('buy_loot_bank', outItems),
-			multipleUserStatsBankUpdate(user.id, {
-				buy_cost_bank: totalCost,
-				buy_loot_bank: outItems
+			userStatsUpdate(user.id, {
+				buy_cost_bank: totalCost.clone().add(currentStats.buy_cost_bank as ItemBank).bank,
+				buy_loot_bank: outItems.clone().add(currentStats.buy_loot_bank as ItemBank).bank
 			}),
 			prisma.buyCommandTransaction.create({
 				data: {

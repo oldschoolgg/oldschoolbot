@@ -147,7 +147,9 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		button: ButtonInstance;
 	}) => {
 		const amountReceived = Math.floor(button.mod(amount));
-		await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
+		if (amountReceived > 0) {
+			await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
+		}
 		await updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
 		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, user);
 		await sentMessage.edit({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);

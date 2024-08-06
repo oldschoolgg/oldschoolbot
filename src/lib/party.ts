@@ -1,22 +1,20 @@
 import { makeComponents } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
+import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, userMention } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
 import { Time, debounce, noOp } from 'e';
 
-import { production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
-import { SILENT_ERROR, usernameCache } from './constants';
+import { SILENT_ERROR } from './constants';
 import type { MakePartyOptions } from './types';
+import { getUsername } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
-if (production) {
-	setInterval(() => {
-		debugLog('Clearing partylockcache');
-		partyLockCache.clear();
-	}, Time.Minute * 20);
-}
+TimerManager.setInterval(() => {
+	partyLockCache.clear();
+}, Time.Minute * 20);
 
 const buttons = [
 	{
@@ -42,13 +40,13 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 	let deleted = false;
 	let massStarted = false;
 
-	function getMessageContent() {
+	async function getMessageContent() {
 		return {
-			content: `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
-				.map(u => usernameCache.get(u) ?? userMention(u))
-				.join(
-					', '
-				)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`,
+			content: `${options.message}\n\n**Users Joined:** ${(
+				await Promise.all(usersWhoConfirmed.map(u => getUsername(u)))
+			).join(
+				', '
+			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`,
 			components: makeComponents(buttons.map(i => i.button)),
 			allowedMentions: {
 				users: []
@@ -56,12 +54,12 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 		};
 	}
 
-	const confirmMessage = await channel.send(getMessageContent());
+	const confirmMessage = await channel.send(await getMessageContent());
 
 	// Debounce message edits to prevent spam.
-	const updateUsersIn = debounce(() => {
+	const updateUsersIn = debounce(async () => {
 		if (deleted) return;
-		confirmMessage.edit(getMessageContent());
+		confirmMessage.edit(await getMessageContent());
 	}, 500);
 
 	const removeUser = (userID: string) => {
@@ -77,7 +75,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 		new Promise<MUser[]>(async (resolve, reject) => {
 			let partyCancelled = false;
 			const collector = new InteractionCollector(globalClient, {
-				time: Time.Minute * 2,
+				time: Time.Minute * 5,
 				maxUsers: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
 				channel,
@@ -138,7 +136,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					return;
 				}
 
-				resolve(await Promise.all(usersWhoConfirmed.map(mUserFetch)));
+				resolve(await Promise.all(usersWhoConfirmed.map(id => mUserFetch(id))));
 			}
 
 			collector.on('collect', async interaction => {
@@ -226,7 +224,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 				for (const user of usersWhoConfirmed) {
 					partyLockCache.delete(user);
 				}
-				setTimeout(() => startTrip(), 250);
+				TimerManager.setTimeout(() => startTrip(), 250);
 			});
 		});
 

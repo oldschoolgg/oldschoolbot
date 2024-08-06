@@ -427,7 +427,7 @@ export async function tobStartCommand(
 					.add(u.gear.range.ammo?.item, 100)
 					.multiply(qty)
 			);
-			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
+			await userStatsBankUpdate(u, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
 			if (u.gear.melee.hasEquipped('Abyssal tentacle')) {

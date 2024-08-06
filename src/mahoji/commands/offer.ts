@@ -187,7 +187,7 @@ export const offerCommand: OSBMahojiCommand = {
 				itemsToAdd: loot,
 				itemsToRemove: cost
 			});
-			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
+			await userStatsBankUpdate(user, 'bird_eggs_offered_bank', cost);
 
 			notifyUniques(user, egg.name, evilChickenOutfit, loot, quantity);
 
