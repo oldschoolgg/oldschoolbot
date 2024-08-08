@@ -114,7 +114,7 @@ const source: [string, (string | number)[]][] = [
 	['Occult necklace', ['Occult necklace (or)']],
 	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
 	['Armadyl crossbow', ['Zaryte crossbow']],
-	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
+	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, 'Crystal pickaxe', '3rd age pickaxe', 'Infernal pickaxe']],
 	['Steam battlestaff', [12_795]],
 	['Lava battlestaff', [21_198]],
 	['Odium ward', [12_807]],

@@ -5,7 +5,7 @@ import type { RaidLevel } from '../../lib/simulation/toa';
 import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
-import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
+import { coxBoostsCommand, coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -29,8 +29,8 @@ export const raidCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'type',
-							description: 'Choose whether you want to solo or mass.',
-							choices: ['solo', 'mass'].map(i => ({ name: i, value: i })),
+							description: 'Choose whether you want to solo, mass, or fake mass.',
+							choices: ['solo', 'mass', 'fakemass'].map(i => ({ name: i, value: i })),
 							required: true
 						},
 						{
@@ -59,6 +59,11 @@ export const raidCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'stats',
 					description: 'Check your CoX stats.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'itemboosts',
+					description: 'Check your CoX item boosts.'
 				}
 			]
 		},
@@ -179,8 +184,14 @@ export const raidCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{
 		cox?: {
-			start?: { type: 'solo' | 'mass'; challenge_mode?: boolean; max_team_size?: number; quantity?: number };
+			start?: {
+				type: 'solo' | 'mass' | 'fakemass';
+				challenge_mode?: boolean;
+				max_team_size?: number;
+				quantity?: number;
+			};
 			stats?: {};
+			itemboosts?: {};
 		};
 		tob?: {
 			start?: { solo?: boolean; hard_mode?: boolean; max_team_size?: number; quantity?: number };
@@ -196,6 +207,7 @@ export const raidCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
+		if (cox?.itemboosts) return coxBoostsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
 		if (options.toa?.help) return toaHelpCommand(user, channelID);
