@@ -222,7 +222,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 							BitField.IsPatronTier4,
 							BitField.IsPatronTier5,
 							BitField.IsPatronTier6,
-							BitField.isContributor,
 							BitField.isModerator
 						]
 					}
