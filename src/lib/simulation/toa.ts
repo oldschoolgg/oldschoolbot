@@ -1,4 +1,5 @@
-import { SimpleTable, mentionCommand } from '@oldschoolgg/toolkit';
+import { SimpleTable, exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
 import { XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
@@ -19,9 +20,9 @@ import {
 	sumArr,
 	uniqueArr
 } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';
@@ -46,8 +47,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
-import { bankToStrShortNames, exponentialPercentScale, getToaKCs } from '../util/smallUtils';
+import { bankToStrShortNames, getToaKCs } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -113,7 +113,7 @@ function estimatePoints(raidLevel: number, teamSize: number) {
 	return totalPoints;
 }
 
-export const maxMageGear = constructGearSetup({
+const maxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
 	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
@@ -126,7 +126,7 @@ export const maxMageGear = constructGearSetup({
 });
 const maxMage = new Gear(maxMageGear);
 
-export const maxRangeGear = constructGearSetup({
+const maxRangeGear = constructGearSetup({
 	head: 'Masori mask (f)',
 	neck: 'Necklace of anguish',
 	body: 'Masori body (f)',
@@ -142,7 +142,7 @@ export const maxRangeGear = constructGearSetup({
 const maxRange = new Gear(maxRangeGear);
 maxRange.ammo!.quantity = 100_000;
 
-export const maxMeleeLessThan300Gear = constructGearSetup({
+const maxMeleeLessThan300Gear = constructGearSetup({
 	head: 'Torva full helm',
 	neck: 'Amulet of torture',
 	body: 'Torva platebody',
@@ -154,7 +154,7 @@ export const maxMeleeLessThan300Gear = constructGearSetup({
 	shield: 'Avernic defender',
 	ring: 'Lightbearer'
 });
-export const maxMeleeOver300Gear = constructGearSetup({
+const maxMeleeOver300Gear = constructGearSetup({
 	head: 'Torva full helm',
 	neck: 'Amulet of torture',
 	body: 'Torva platebody',
@@ -616,7 +616,6 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 	// The number of raid levels from 400 to 550
 	const y = Math.min(150, raidLevel - 400);
 
-	// prettier-ignore
 	const pointsForOnePercentUniqueChance = 10_500 - 20 * (x + y / 3);
 	const chanceOfUnique = Math.min(totalTeamPoints / pointsForOnePercentUniqueChance, 55);
 	const didGetUnique = percentChance(chanceOfUnique);
@@ -913,7 +912,7 @@ interface GearSetupPercents {
 	mage: number;
 	total: number;
 }
-export function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): GearSetupPercents {
+function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): GearSetupPercents {
 	const maxMelee = raidLevel < 300 ? maxMeleeLessThan300Gear : maxMeleeOver300Gear;
 	const melee = calcSetupPercent(
 		maxMelee.stats,
@@ -1010,7 +1009,7 @@ async function calcTOAInput({
 	};
 }
 
-export async function checkTOAUser(
+async function checkTOAUser(
 	user: MUser,
 	kc: number,
 	raidLevel: number,
@@ -1068,7 +1067,7 @@ export async function checkTOAUser(
 	return [false];
 }
 
-export async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number): Promise<string | null> {
+async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
@@ -1231,7 +1230,7 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
-			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
+			await userStatsBankUpdate(u, 'toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 
@@ -1337,7 +1336,7 @@ interface ParsedTeamMember {
 	attempts: number;
 }
 
-export function createTOATeam({
+function createTOATeam({
 	team,
 	disableVariation,
 	raidLevel,
@@ -1536,7 +1535,7 @@ export function createTOATeam({
 	return results;
 }
 
-export async function toaCheckCommand(user: MUser) {
+async function toaCheckCommand(user: MUser) {
 	const result = await checkTOAUser(user, await getMinigameScore(user.id, 'tombs_of_amascut'), 200, 5, Time.Hour, 1);
 	if (result[0]) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
@@ -1637,22 +1636,4 @@ ${calculateBoostString(user)}
 `;
 
 	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
-}
-
-export function normalizeTOAUsers(data: TOAOptions) {
-	const _detailedUsers = data.detailedUsers;
-	const detailedUsers = (
-		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
-	).map(userArr =>
-		userArr.map(user => ({
-			id: user[0],
-			points: user[1],
-			deaths: user[2]
-		}))
-	);
-	return detailedUsers;
-}
-
-export function anyoneDiedInTOARaid(data: TOAOptions) {
-	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }

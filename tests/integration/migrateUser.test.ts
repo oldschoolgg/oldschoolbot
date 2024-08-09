@@ -1,30 +1,31 @@
-import type {
-	Activity,
-	Bingo,
-	BingoParticipant,
-	BuyCommandTransaction,
-	CommandUsage,
-	EconomyTransaction,
-	FarmedCrop,
-	GearPreset,
-	Giveaway,
-	HistoricalData,
-	LastManStandingGame,
-	LootTrack,
-	Minigame,
-	PinnedTrip,
-	PlayerOwnedHouse,
-	Prisma,
-	ReclaimableItem,
-	SlayerTask,
-	UserStats,
-	XPGain,
-	activity_type_enum
+import {
+	type Activity,
+	type Bingo,
+	type BingoParticipant,
+	type BuyCommandTransaction,
+	type CommandUsage,
+	type EconomyTransaction,
+	type FarmedCrop,
+	type GearPreset,
+	type Giveaway,
+	type HistoricalData,
+	type LastManStandingGame,
+	type LootTrack,
+	type Minigame,
+	type PinnedTrip,
+	type PlayerOwnedHouse,
+	type Prisma,
+	type ReclaimableItem,
+	type SlayerTask,
+	type UserStats,
+	type XPGain,
+	type activity_type_enum,
+	command_name_enum
 } from '@prisma/client';
 import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { expect, test, vi } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vitest';
 
 import { processPendingActivities } from '../../src/lib/Task';
 import { BitField } from '../../src/lib/constants';
@@ -36,12 +37,11 @@ import type { SkillsEnum } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
 import type { Skills } from '../../src/lib/types';
-import { isGroupActivity } from '../../src/lib/util';
+import { isGroupActivity, resolveItems } from '../../src/lib/util';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
 import { findPlant } from '../../src/lib/util/farmingHelpers';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { migrateUser } from '../../src/lib/util/migrateUser';
-import resolveItems from '../../src/lib/util/resolveItems';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
 import { updateBankSetting } from '../../src/lib/util/updateBankSetting';
 import { pinTripCommand } from '../../src/mahoji/commands/config';
@@ -53,7 +53,6 @@ import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
@@ -63,7 +62,7 @@ import type { BotItemSell, GEListing, StashUnit } from '.prisma/client';
 
 interface TestCommand {
 	name: string;
-	cmd: [OSBMahojiCommand, Object] | ((user: TestUser) => Promise<any>);
+	cmd: [OSBMahojiCommand, object] | ((user: TestUser) => Promise<any>);
 	activity?: boolean;
 	priority?: boolean;
 }
@@ -691,13 +690,6 @@ const allTableCommands: TestCommand[] = [
 		}
 	},
 	{
-		name: 'Create new_users entry',
-		cmd: async user => {
-			await syncNewUserUsername(user, `testUser${randInt(1000, 9999).toString()}`);
-		},
-		priority: true
-	},
-	{
 		name: 'Buy command transaction',
 		cmd: async user => {
 			const randomBuyItems: string[] = [
@@ -745,7 +737,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
 		}
 	},
 	{
@@ -755,8 +747,8 @@ const allTableCommands: TestCommand[] = [
 			const items = 'Bandos chestplate, Bandos tassets, Berserker ring, Ghrazi rapier';
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
-
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			if (!equippedGear) throw new Error('Equipped gear is undefined');
+			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
 		}
 	},
 	{
@@ -944,17 +936,18 @@ const allTableCommands: TestCommand[] = [
 				user_id: user.id
 			});
 
+			const stats = await user.fetchStats({ items_sold_bank: true });
 			await Promise.all([
 				updateClientGPTrackSetting('gp_sell', totalPrice),
 				updateBankSetting('sold_items_bank', bankToSell),
 				userStatsUpdate(
 					user.id,
-					userStats => ({
-						items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+					{
+						items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).bank,
 						sell_gp: {
 							increment: totalPrice
 						}
-					}),
+					},
 					{}
 				),
 				global.prisma!.botItemSell.createMany({ data: botItemSellData })
@@ -1058,12 +1051,17 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Command usage',
 		cmd: async user => {
-			const randCommands = ['minion', 'runecraft', 'chop', 'mine', 'buy'];
+			const randCommands = [
+				command_name_enum.minion,
+				command_name_enum.runecraft,
+				command_name_enum.chop,
+				command_name_enum.mine,
+				command_name_enum.buy
+			];
 			await global.prisma!.commandUsage.create({
 				data: {
 					user_id: BigInt(user.id),
 					channel_id: 1_111_111_111n,
-					status: 'Unknown',
 					args: {},
 					command_name: randArrItem(randCommands),
 					guild_id: null,
@@ -1190,7 +1188,7 @@ async function buildBaseUser(userId: string) {
 	const user = await createTestUser(startBank, userData);
 	return user;
 }
-await mockClient();
+
 vi.doMock('../../src/lib/util', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util');
 	return {
@@ -1268,6 +1266,11 @@ test.concurrent('test preventing a double (clobber) robochimp migration (two bot
 	// Verify migrated id is correct
 	expect(newDestData.migratedUserId).toEqual(BigInt(sourceData.id));
 });
+
+beforeAll(async () => {
+	await mockClient();
+});
+
 test.concurrent('test migrating existing user to target with no records', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	await runAllTestCommandsOnUser(sourceUser);

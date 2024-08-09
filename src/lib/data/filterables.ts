@@ -1,3 +1,4 @@
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import Potions from '../minions/data/potions';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
@@ -5,7 +6,6 @@ import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import Grimy from '../skilling/skills/herblore/mixables/grimy';
 import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import resolveItems from '../util/resolveItems';
 import { allCollectionLogs } from './Collections';
 import {
 	allClueItems,

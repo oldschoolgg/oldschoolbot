@@ -1,5 +1,5 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { calcWhatPercent, objectEntries, percentChance, sumArr, uniqueArr } from 'e';
@@ -7,14 +7,15 @@ import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { userStatsUpdate } from '../mahoji/mahojiSettings';
+import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
 import type { CATier } from './combat_achievements/combatAchievements';
 import { CombatAchievements } from './combat_achievements/combatAchievements';
-import { BitField, Emoji, badges, projectiles, usernameCache } from './constants';
+import { BitField, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -29,11 +30,10 @@ import type { FarmingContract } from './minions/farming/types';
 import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
-import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
+import { getUsersPerkTier } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
 import type { MinigameScore } from './settings/minigames';
 import { Minigames, getMinigameEntity } from './settings/minigames';
-import { prisma } from './settings/prisma';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
@@ -46,14 +46,14 @@ import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
+import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
-import resolveItems from './util/resolveItems';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
-		const newUser = await prisma.user.update({
+		const newUser = await global.prisma.user.update({
 			data,
 			where: {
 				id: user.toString()
@@ -95,13 +95,13 @@ export class MUserClass {
 	gear!: UserFullGearSetup;
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
+	badgesString!: string;
+	bitfield!: readonly BitField[];
 
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
 		this.updateProperties();
-
-		syncPerkTierOfUser(this);
 	}
 
 	private updateProperties() {
@@ -131,6 +131,10 @@ export class MUserClass {
 
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
+
+		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
+
+		this.bitfield = this.user.bitfield as readonly BitField[];
 	}
 
 	countSkillsAtleast99() {
@@ -193,12 +197,8 @@ export class MUserClass {
 		return Number(this.user.GP);
 	}
 
-	get bitfield() {
-		return this.user.bitfield as readonly BitField[];
-	}
-
-	perkTier(noCheckOtherAccounts?: boolean | undefined) {
-		return getUsersPerkTier(this, noCheckOtherAccounts);
+	perkTier() {
+		return getUsersPerkTier(this);
 	}
 
 	skillLevel(skill: xp_gains_skill_enum) {
@@ -214,23 +214,15 @@ export class MUserClass {
 	}
 
 	get rawUsername() {
-		return globalClient.users.cache.get(this.id)?.username ?? usernameCache.get(this.id) ?? 'Unknown';
+		return cleanUsername(this.user.username ?? globalClient.users.cache.get(this.id)?.username ?? 'Unknown');
 	}
 
 	get usernameOrMention() {
-		return usernameCache.get(this.id) ?? this.mention;
-	}
-
-	get badgeString() {
-		const rawBadges = this.user.badges.map(num => badges[num]);
-		if (this.isIronman) {
-			rawBadges.push(Emoji.Ironman);
-		}
-		return rawBadges.join(' ');
+		return this.rawUsername;
 	}
 
 	get badgedUsername() {
-		return `${this.badgeString} ${this.usernameOrMention}`;
+		return `${this.badgesString} ${this.usernameOrMention}`.trim();
 	}
 
 	toString() {
@@ -275,13 +267,13 @@ export class MUserClass {
 	}
 
 	async calcActualClues() {
-		const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+		const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'ci')::int AS id, SUM((data->>'q')::int)::int AS qty
 FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${this.id}'::bigint
-AND data->>'clueID' IS NOT NULL
+AND data->>'ci' IS NOT NULL
 AND completed = true
-GROUP BY data->>'clueID';`);
+GROUP BY data->>'ci';`);
 		const casketsCompleted = new Bank();
 		for (const res of result) {
 			const item = getItem(res.id);
@@ -712,19 +704,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
-		const result = await prisma.userStats.upsert({
-			where: {
-				user_id: BigInt(this.id)
-			},
-			create: {
-				user_id: BigInt(this.id)
-			},
-			update: {},
-			select: keysToSelect
-		});
-
-		return result as unknown as SelectedUserStats<T>;
+		return fetchUserStats(this.id, selectKeys);
 	}
 
 	get logName() {
@@ -951,12 +931,12 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-export async function srcMUserFetch(userID: string) {
+async function srcMUserFetch(userID: string, updates: Prisma.UserUpdateInput = {}) {
 	const user = await prisma.user.upsert({
 		create: {
 			id: userID
 		},
-		update: {},
+		update: updates,
 		where: {
 			id: userID
 		}

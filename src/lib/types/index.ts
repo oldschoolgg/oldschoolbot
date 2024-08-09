@@ -4,21 +4,6 @@ export interface ItemBank {
 	[key: string]: number;
 }
 
-export interface Patron {
-	patreonID: string;
-	discordID?: string;
-	entitledTiers: string[];
-	lastChargeDate: string;
-	lastChargeStatus: string;
-	lifeTimeSupportCents: number;
-	patronStatus: string;
-	pledgeRelationshipStart: string;
-}
-
-type ResolvableItem = number | string;
-export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
-export type ArrayItemsResolved = (number | number[])[];
-
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
@@ -49,5 +34,4 @@ export interface IDiscordSettings {
 	Channels: Record<string, string>;
 	Emojis: Record<string, string>;
 	SupportServer: string;
-	BotID: string;
 }

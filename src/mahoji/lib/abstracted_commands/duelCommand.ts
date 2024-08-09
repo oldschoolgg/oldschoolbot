@@ -1,13 +1,11 @@
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, noOp, sleep } from 'e';
-import type { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank, Util } from 'oldschooljs';
 
-import { MUserClass } from '../../../lib/MUser';
 import { BLACKLISTED_USERS } from '../../../lib/blacklists';
 import { Emoji, Events } from '../../../lib/constants';
-import { prisma } from '../../../lib/settings/prisma';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
@@ -39,7 +37,6 @@ export async function duelCommand(
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
-	if (!(duelTargetUser instanceof MUserClass)) return "You didn't mention a user to duel.";
 	if (BLACKLISTED_USERS.has(duelTargetUser.id)) return 'Target user is blacklisted.';
 	if (targetAPIUser.user.bot) return 'You cant duel a bot.';
 

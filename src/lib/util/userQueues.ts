@@ -1,7 +1,7 @@
 import PromiseQueue from 'p-queue';
 
-export const userQueues: Map<string, PromiseQueue> = new Map();
-export function getUserUpdateQueue(userID: string) {
+const userQueues: Map<string, PromiseQueue> = new Map();
+function getUserUpdateQueue(userID: string) {
 	const currentQueue = userQueues.get(userID);
 	if (!currentQueue) {
 		const queue = new PromiseQueue({ concurrency: 1 });
@@ -11,16 +11,16 @@ export function getUserUpdateQueue(userID: string) {
 	return currentQueue;
 }
 
-export async function userQueueFn<T>(userID: string, fn: () => Promise<T>) {
+export async function userQueueFn<T>(userID: string, fn: () => Promise<T>): Promise<T> {
 	const queue = getUserUpdateQueue(userID);
-	return queue.add(async () => {
-		const error = new Error();
-		try {
-			return await fn();
-		} catch (e) {
-			console.error(e);
-			error.message = (e as Error).message;
-			throw error;
-		}
+	return new Promise<T>((resolve, reject) => {
+		queue.add(() => {
+			return fn()
+				.then(resolve)
+				.catch(e => {
+					console.error(e);
+					reject(e);
+				});
+		});
 	});
 }

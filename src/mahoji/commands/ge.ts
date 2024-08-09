@@ -1,17 +1,19 @@
-import { getItem } from '@oldschoolgg/toolkit';
-import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandOption } from '@oldschoolgg/toolkit';
+import { evalMathExpression } from '@oldschoolgg/toolkit';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import type { CommandOption } from 'mahoji/dist/lib/types';
+import { getItem } from 'oldschooljs/dist/util/util';
 
 import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
-import { prisma } from '../../lib/settings/prisma';
+
+import { Bank } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
-import { lineChart } from '../../lib/util/chart';
+import { createChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -19,6 +21,7 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -135,9 +138,10 @@ export const geCommand: OSBMahojiCommand = {
 					description: 'The item you want to sell.',
 					required: true,
 					autocomplete: async (value, { id }) => {
-						const user = await mUserFetch(id);
+						const raw = await mahojiUsersSettingsFetch(id, { bank: true });
+						const bank = new Bank(raw.bank as ItemBank);
 
-						return user.bank
+						return bank
 							.items()
 							.filter(i => i[0].tradeable_on_ge)
 							.filter(i => (!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())))
@@ -432,13 +436,13 @@ ORDER BY
 				if (result[0].average_price_per_item_before_tax <= 1_000_000) {
 					result = result.filter(i => i.total_quantity_bought > 1);
 				}
-				const buffer = await lineChart(
-					`Price History for ${item.name}`,
-					result.map(i => [new Date(i.week).toDateString(), i.average_price_per_item_before_tax]),
-					val => val.toString(),
-					val => val,
-					false
-				);
+				const buffer = await createChart({
+					title: `Price History for ${item.name}`,
+					format: 'kmb',
+					values: result.map(i => [new Date(i.week).toDateString(), i.average_price_per_item_before_tax]),
+					type: 'line'
+				});
+
 				return {
 					content: baseMessage,
 					files: [buffer]

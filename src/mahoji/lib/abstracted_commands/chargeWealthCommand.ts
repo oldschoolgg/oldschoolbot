@@ -1,14 +1,14 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export const wealthInventorySize = 26;
-export const wealthInventoryTime = Time.Minute * 2.2;
+const wealthInventoryTime = Time.Minute * 2.2;
 
 export async function chargeWealthCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const userBank = user.bank;

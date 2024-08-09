@@ -1,7 +1,7 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { TextChannel } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, objectKeys } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -71,7 +71,7 @@ export const massCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ interaction, options, userID, channelID }: CommandRunOptions<{ monster: string }>) => {
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
 		const channel = globalClient.channels.cache.get(channelID.toString());
@@ -156,10 +156,10 @@ export const massCommand: OSBMahojiCommand = {
 		}
 
 		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
-			monsterID: monster.id,
+			mi: monster.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			quantity,
+			q: quantity,
 			duration,
 			type: 'GroupMonsterKilling',
 			leader: user.id,

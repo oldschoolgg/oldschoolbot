@@ -2,8 +2,6 @@ import type { Guild, Prisma } from '@prisma/client';
 import type { Guild as DJSGuild } from 'discord.js';
 import { LRUCache } from 'lru-cache';
 
-import { prisma } from '../lib/settings/prisma';
-
 type CachedGuild = Pick<Guild, 'disabledCommands' | 'id' | 'petchannel' | 'staffOnlyChannels'>;
 export const untrustedGuildSettingsCache = new LRUCache<string, CachedGuild>({ max: 1000 });
 

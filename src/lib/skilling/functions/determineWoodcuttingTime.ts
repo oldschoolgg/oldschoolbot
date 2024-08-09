@@ -1,7 +1,7 @@
 import { Time, percentChance } from 'e';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import resolveItems from '../../util/resolveItems';
 import type { MUserClass } from './../../MUser';
 import type { Log } from './../types';
 

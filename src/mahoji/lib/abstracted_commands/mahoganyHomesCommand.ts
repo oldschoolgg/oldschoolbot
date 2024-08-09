@@ -1,5 +1,5 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { Time, calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { getMinigameScore } from '../../../lib/settings/minigames';

@@ -1,19 +1,20 @@
 import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import type { Minigame } from '@prisma/client';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { MAX_QP } from './minions/data/quests';
 import type { DiaryTier, DiaryTierName } from './minions/types';
 import { DiaryID } from './minions/types';
-import type { MinigameScore } from './settings/minigames';
+import { Minigames } from './settings/minigames';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
 import { MUserStats } from './structures/MUserStats';
 import type { Skills } from './types';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
 import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
 
-export interface Diary {
+interface Diary {
 	name: string;
 	id: DiaryID;
 	alias?: string[];
@@ -25,9 +26,10 @@ export interface Diary {
 
 export function userhasDiaryTierSync(
 	user: MUser,
-	tier: DiaryTier,
-	data: { stats: MUserStats; minigameScores: MinigameScore[] }
-): [true] | [false, string] {
+	_tier: DiaryTier | [DiaryID, DiaryTierName],
+	data: { stats: MUserStats; minigameScores: Minigame }
+): { hasDiary: boolean; reasons: string; diaryGroup: Diary; tier: DiaryTier } {
+	const tier = Array.isArray(_tier) ? diaries.find(d => d.id === _tier[0])![_tier[1]] : _tier;
 	const [hasReqs] = hasSkillReqs(user, tier.skillReqs);
 	const skills = user.skillsAsLevels;
 	let canDo = true;
@@ -69,13 +71,13 @@ export function userhasDiaryTierSync(
 	}
 
 	if (tier.minigameReqs) {
-		const entries = Object.entries(tier.minigameReqs);
+		const entries = objectEntries(tier.minigameReqs);
 		for (const [key, neededScore] of entries) {
-			const thisScore = data.minigameScores.find(m => m.minigame.column === key)!;
-			if (thisScore.score < neededScore!) {
+			const thisScore = data.minigameScores[key]!;
+			if (thisScore < neededScore!) {
 				canDo = false;
 				reasons.push(
-					`You don't have **${neededScore}** KC in **${thisScore.minigame.name}**, you have **${thisScore.score}**`
+					`You don't have **${neededScore}** KC in **${Minigames.find(m => m.column === key)!.name}**, you have **${thisScore}**`
 				);
 			}
 		}
@@ -114,15 +116,23 @@ export function userhasDiaryTierSync(
 		}
 	}
 
-	if (canDo) return [true];
-	return [canDo, reasons.join('\n- ')];
+	return {
+		hasDiary: canDo,
+		reasons: reasons.join('\n- '),
+		tier,
+		diaryGroup: diaries.find(d => [d.easy, d.medium, d.hard, d.elite].includes(tier))!
+	};
 }
 
-export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[true] | [false, string]> {
-	return userhasDiaryTierSync(user, tier, {
+export async function userhasDiaryTier(
+	user: MUser,
+	tier: [DiaryID, DiaryTierName] | DiaryTier
+): Promise<[boolean, string, Diary]> {
+	const result = userhasDiaryTierSync(user, tier, {
 		stats: await MUserStats.fromID(user.id),
-		minigameScores: await user.fetchMinigameScores()
+		minigameScores: await user.fetchMinigames()
 	});
+	return [result.hasDiary, result.reasons, result.diaryGroup];
 }
 
 export const WesternProv: Diary = {
@@ -316,7 +326,7 @@ export const ArdougneDiary: Diary = {
 	}
 };
 
-export const DesertDiary: Diary = {
+const DesertDiary: Diary = {
 	name: 'Desert',
 	id: DiaryID.Desert,
 	easy: {
@@ -458,13 +468,7 @@ export const FaladorDiary: Diary = {
 			woodcutting: 71
 		},
 		qp: 32,
-		collectionLogReqs: resolveItems([
-			'Mind rune',
-			'Prospector jacket',
-			'Prospector helmet',
-			'Prospector legs',
-			'Prospector boots'
-		]),
+		collectionLogReqs: resolveItems(['Mind rune', 'Prospector helmet']),
 		monsterScores: {
 			'Skeletal Wyvern': 1,
 			'Blue Dragon': 1
@@ -501,7 +505,7 @@ export const FaladorDiary: Diary = {
 	}
 };
 
-export const FremennikDiary: Diary = {
+const FremennikDiary: Diary = {
 	name: 'Fremennik',
 	id: DiaryID.Fremennik,
 	alias: ['fremmy', 'fremenik', 'fremmenik', 'frem'],
@@ -964,7 +968,7 @@ export const MorytaniaDiary: Diary = {
 	}
 };
 
-export const VarrockDiary: Diary = {
+const VarrockDiary: Diary = {
 	name: 'Varrock',
 	id: DiaryID.Varrock,
 	alias: ['var'],
@@ -1130,16 +1134,9 @@ export const diariesObject = {
 } as const;
 export const diaries = Object.values(diariesObject);
 
-export async function userhasDiaryIDTier(user: MUser, type: DiaryID, tier: DiaryTierName) {
-	const diaryGroup = diaries.find(d => d.id === type)!;
-	const diaryTier = diaryGroup[tier]!;
-	const [hasDiary] = userhasDiaryTierSync(user, diaryTier, {
+export async function userhasDiaryIDTier(user: MUser, diaryID: DiaryID, tier: DiaryTierName) {
+	return userhasDiaryTierSync(user, [diaryID, tier], {
 		stats: await MUserStats.fromID(user.id),
-		minigameScores: await user.fetchMinigameScores()
+		minigameScores: await user.fetchMinigames()
 	});
-	return {
-		hasDiary,
-		diaryGroup,
-		diaryTier
-	};
 }

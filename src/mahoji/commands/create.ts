@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import Createables from '../../lib/data/createables';
@@ -203,8 +203,8 @@ export const createCommand: OSBMahojiCommand = {
 
 		await updateBankSetting('create_cost', inItems);
 		await updateBankSetting('create_loot', outItems);
-		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
-		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
+		await userStatsBankUpdate(user, 'create_cost_bank', inItems);
+		await userStatsBankUpdate(user, 'create_loot_bank', outItems);
 
 		if (action === 'revert') {
 			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;

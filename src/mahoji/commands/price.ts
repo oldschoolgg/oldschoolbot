@@ -1,5 +1,5 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from 'discord.js';
-import type { CommandRunOptions } from 'mahoji';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { getItem } from '../../lib/util/getOSItem';

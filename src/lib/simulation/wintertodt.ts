@@ -1,16 +1,15 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable, normal } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { MAX_XP } from '../constants';
 import type { LevelRequirements } from '../skilling/types';
 import { SkillsEnum } from '../skilling/types';
 import type { ItemBank } from '../types';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
-import { normal } from '../util/smallUtils';
 
 interface WintertodtCrateOptions {
 	points: number;
@@ -138,7 +137,7 @@ const pyroPieces = resolveItems([
 	'Pyromancer boots'
 ]) as number[];
 
-export class WintertodtCrateClass {
+class WintertodtCrateClass {
 	public pickWeightedLootItem<T>(lvl: number, array: T[]): T {
 		const maxIndex = Math.max(Math.floor(calcPercentOfNum(Math.min(lvl + 15, 99), array.length)), 1);
 		const minIndex = Math.floor(calcPercentOfNum(Math.max(lvl - 70, 1), array.length));

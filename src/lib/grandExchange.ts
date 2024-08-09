@@ -1,18 +1,19 @@
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
-import { Time, calcPercentOfNum, clamp, noOp, sumArr } from 'e';
+import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';
+import { LRUCache } from 'lru-cache';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
-import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, ONE_TRILLION, PerkTier, globalConfig } from './constants';
 import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
-import { prisma } from './settings/prisma';
+
+import { BLACKLISTED_USERS } from './blacklists';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
 import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
@@ -109,6 +110,13 @@ class GrandExchangeSingleton {
 	public locked = false;
 	public isTicking = false;
 	public ready = false;
+	public loggingEnabled = false;
+
+	log(message: string, context?: any) {
+		if (this.loggingEnabled) {
+			debugLog(message, context);
+		}
+	}
 
 	public config = {
 		maxPricePerItem: ONE_TRILLION,
@@ -163,7 +171,6 @@ class GrandExchangeSingleton {
 		try {
 			await this.fetchOwnedBank();
 			await this.extensiveVerification();
-			await this.checkGECanFullFilAllListings();
 		} catch (err: any) {
 			await this.lockGE(err.message);
 		} finally {
@@ -171,7 +178,15 @@ class GrandExchangeSingleton {
 		}
 	}
 
-	async calculateSlotsOfUser(user: MUser) {
+	private slotsCache = new LRUCache<string, Awaited<ReturnType<typeof this.calculateSlotsOfUser>>>({
+		ttl: Time.Hour,
+		max: 100
+	});
+	async calculateSlotsOfUser(
+		user: MUser
+	): Promise<{ slots: number; doesntHaveNames: string[]; possibleExtra: number; maxPossible: number }> {
+		const cached = this.slotsCache.get(user.id);
+		if (cached) return cached;
 		const robochimpUser = await roboChimpUserFetch(user.id);
 		let slots = 0;
 		const doesntHaveNames = [];
@@ -186,7 +201,9 @@ class GrandExchangeSingleton {
 				possibleExtra += boost.amount;
 			}
 		}
-		return { slots, doesntHaveNames, possibleExtra, maxPossible };
+		const result = { slots, doesntHaveNames, possibleExtra, maxPossible };
+		this.slotsCache.set(user.id, result);
+		return result;
 	}
 
 	getInterval() {
@@ -249,8 +266,6 @@ class GrandExchangeSingleton {
 				}
 			}
 		});
-
-		for (const tx of allActiveListingsInTimePeriod) sanityCheckTransaction(tx);
 
 		const item = getOSItem(geListing.item_id);
 		const buyLimit = this.getItemBuyLimit(item);
@@ -404,7 +419,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
 			]);
 
-			debugLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
+			sanityCheckListing(listing);
+			this.log(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
 			return {
 				createdListing: listing,
@@ -514,7 +530,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerLoot.add('Coins', buyerRefund);
 			bankToRemoveFromGeBank.add('Coins', buyerRefund);
 
-			debugLog(
+			this.log(
 				`Buyer got refunded ${buyerRefund} GP due to price difference. Buyer was asking ${buyerListing.asking_price_per_item}GP for each of the ${quantityToBuy}x items, seller was asking ${sellerListing.asking_price_per_item}GP, and the post-tax price per item was ${pricePerItemAfterTax}`,
 				logContext
 			);
@@ -527,9 +543,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerListing.asking_price_per_item
 		}] SellerPrice[${
 			sellerListing.asking_price_per_item
-		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${bankToRemoveFromGeBank}] ExpectedAfterBank[${geBank
-			.clone()
-			.remove(bankToRemoveFromGeBank)}]`;
+		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.bank)}] ExpectedAfterBank[${
+			geBank.clone().remove(bankToRemoveFromGeBank).bank
+		}]`;
 
 		assert(
 			bankToRemoveFromGeBank.amount('Coins') === Number(buyerListing.asking_price_per_item) * quantityToBuy,
@@ -542,22 +558,22 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			const missingItems = bankGEShouldHave.clone().remove(geBank);
 			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankGEShouldHave} missing: ${missingItems}. ${debug}`;
 			logError(str, logContext);
-			debugLog(str, logContext);
+			this.log(str, logContext);
 			throw new Error(str);
 		}
 
-		debugLog(
-			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}. ${debug}`,
+		this.log(
+			`Completing a transaction, removing ${JSON.stringify(bankToRemoveFromGeBank.bank)} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${JSON.stringify(geBank.bank)}. ${debug}`,
 			{
 				totalPriceAfterTax,
 				totalTaxPaid,
 				totalPriceBeforeTax,
 				bankToRemoveFromGeBank: bankToRemoveFromGeBank.toString(),
-				currentGEBank: geBank.toString()
+				currentGEBank: JSON.stringify(geBank.bank)
 			}
 		);
 
-		await prisma.$transaction([
+		const [newTx] = await prisma.$transaction([
 			prisma.gETransaction.create({
 				data: {
 					buy_listing_id: buyerListing.id,
@@ -607,7 +623,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			...makeTransactFromTableBankQueries({ bankToRemove: bankToRemoveFromGeBank })
 		]);
 
-		debugLog(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
+		sanityCheckTransaction(newTx);
+
+		this.log(`Transaction completed, the new G.E bank is ${JSON.stringify((await this.fetchOwnedBank()).bank)}.`);
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
@@ -695,29 +713,36 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async fetchActiveListings() {
-		const [buyListings, sellListings, clientStorage, currentBankRaw] = await prisma.$transaction([
-			prisma.gEListing.findMany({
-				where: {
-					type: GEListingType.Buy,
-					fulfilled_at: null,
-					cancelled_at: null,
-					user_id: { not: null }
+		const buyListings = await prisma.gEListing.findMany({
+			where: {
+				type: GEListingType.Buy,
+				fulfilled_at: null,
+				cancelled_at: null,
+				user_id: {
+					not: null
+				}
+			},
+			orderBy: [
+				{
+					asking_price_per_item: 'desc'
 				},
-				orderBy: [
-					{
-						asking_price_per_item: 'desc'
-					},
-					{
-						created_at: 'asc'
-					}
-				]
-			}),
+				{
+					created_at: 'asc'
+				}
+			]
+		});
+		const [sellListings, clientStorage, currentBankRaw] = await prisma.$transaction([
 			prisma.gEListing.findMany({
 				where: {
 					type: GEListingType.Sell,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: { not: null }
+					user_id: {
+						not: null
+					},
+					item_id: {
+						in: uniqueArr(buyListings.map(i => i.item_id))
+					}
 				},
 				orderBy: [
 					{
@@ -757,23 +782,63 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async extensiveVerification() {
-		const allListings = await prisma.gEListing.findMany();
-		for (const listing of allListings) sanityCheckListing(listing);
-
-		const allTransactions = await prisma.gETransaction.findMany();
-		for (const transaction of allTransactions) sanityCheckTransaction(transaction);
-
 		await this.checkGECanFullFilAllListings();
-
-		debugLog('Validated GE and found no issues.');
-
 		return true;
 	}
 
 	async checkGECanFullFilAllListings() {
 		const shouldHave = new Bank();
-		const { buyListings, sellListings, currentBank } = await this.fetchActiveListings();
-
+		const [buyListings, sellListings, currentBankRaw] = await prisma.$transaction([
+			prisma.gEListing.findMany({
+				where: {
+					type: GEListingType.Buy,
+					fulfilled_at: null,
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
+				},
+				orderBy: [
+					{
+						asking_price_per_item: 'desc'
+					},
+					{
+						created_at: 'asc'
+					}
+				]
+			}),
+			prisma.gEListing.findMany({
+				where: {
+					type: GEListingType.Sell,
+					fulfilled_at: null,
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
+				},
+				orderBy: [
+					{
+						asking_price_per_item: 'asc'
+					},
+					{
+						created_at: 'asc'
+					}
+				],
+				// Take the last purchase transaction for each sell listing
+				include: {
+					sellTransactions: {
+						orderBy: {
+							created_at: 'desc'
+						},
+						take: 1
+					}
+				}
+			}),
+			prisma.$queryRawUnsafe<{ bank: ItemBank }[]>(
+				'SELECT json_object_agg(item_id, quantity) as bank FROM ge_bank WHERE quantity != 0;'
+			)
+		]);
+		const currentBank = new Bank(currentBankRaw[0].bank);
 		// How much GP the g.e still has from this listing
 		for (const listing of buyListings) {
 			shouldHave.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
@@ -783,7 +848,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			shouldHave.add(listing.item_id, listing.quantity_remaining);
 		}
 
-		debugLog(`Expected G.E Bank: ${shouldHave}`);
+		this.log(`Expected G.E Bank: ${JSON.stringify(shouldHave.bank)}`);
 		if (!currentBank.equals(shouldHave)) {
 			if (!currentBank.has(shouldHave)) {
 				throw new Error(
@@ -798,27 +863,26 @@ G.E Bank Has: ${currentBank}
 G.E Bank Should Have: ${shouldHave}
 Difference: ${shouldHave.difference(currentBank)}`);
 		} else {
-			debugLog(
-				`GE has ${currentBank}, which is enough to cover the ${
-					[...buyListings, ...sellListings].length
-				}x active listings! Difference: ${shouldHave.difference(currentBank)}`
-			);
+			this.log('GE has enough to cover the listings.');
 			return true;
 		}
 	}
 
 	async tick() {
-		await this.queue.add(async () => {
-			if (this.isTicking) throw new Error('Already ticking.');
-			try {
-				await this._tick();
-			} catch (err: any) {
-				logError(err.message);
-				debugLog(err.message);
-				throw err;
-			} finally {
-				this.isTicking = false;
-			}
+		return new Promise<void>(async (resolve, reject) => {
+			await this.queue.add(async () => {
+				if (this.isTicking) return reject('Already ticking.');
+				try {
+					await this._tick();
+				} catch (err: any) {
+					logError(err.message);
+					debugLog(err.message);
+					reject(err);
+				} finally {
+					this.isTicking = false;
+					resolve();
+				}
+			});
 		});
 	}
 
@@ -845,20 +909,35 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
-		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
+		const { buyListings, sellListings } = await this.fetchActiveListings();
 
-		// Filter out listings from Blacklisted users:
-		const buyListings = _buyListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
-		const sellListings = _sellListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
+		const minimumSellPricePerItem = new Map<number, number>();
+		for (const sellListing of sellListings) {
+			const currentPrice = minimumSellPricePerItem.get(sellListing.item_id);
+			if (currentPrice === undefined || sellListing.asking_price_per_item < currentPrice) {
+				minimumSellPricePerItem.set(sellListing.item_id, Number(sellListing.asking_price_per_item));
+			}
+		}
 
 		for (const buyListing of buyListings) {
+			const minPrice = minimumSellPricePerItem.get(buyListing.item_id);
+			if (!buyListing.user_id || minPrice === undefined || buyListing.asking_price_per_item < minPrice) {
+				continue;
+			}
+
+			if (BLACKLISTED_USERS.has(buyListing.user_id)) {
+				continue;
+			}
+
 			// These are all valid, matching sell listings we can match with this buy listing.
 			const matchingSellListings = sellListings.filter(
 				sellListing =>
 					sellListing.item_id === buyListing.item_id &&
 					// "Trades succeed when one player's buy offer is greater than or equal to another player's sell offer."
 					buyListing.asking_price_per_item >= sellListing.asking_price_per_item &&
-					buyListing.user_id !== sellListing.user_id
+					buyListing.user_id !== sellListing.user_id &&
+					sellListing.user_id !== null &&
+					!BLACKLISTED_USERS.has(sellListing.user_id)
 			);
 
 			/**

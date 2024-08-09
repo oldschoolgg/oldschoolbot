@@ -1,4 +1,4 @@
-import resolveItems from '../../util/resolveItems';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
 const Potions = [
 	{

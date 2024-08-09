@@ -1,3 +1,4 @@
+import { perTimeUnitChance } from '@oldschoolgg/toolkit';
 import { Time, objectEntries, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -11,9 +12,8 @@ import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
+import { resolveItems, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import resolveItems from '../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
@@ -127,7 +127,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 	for (const [event, count] of objectEntries(eventCounts)) {
 		if (event && count && count > 0) {
 			totalEvents += count;
-			await userStatsBankUpdate(user.id, 'forestry_event_completions_bank', new Bank().add(Number(event), count));
+			await userStatsBankUpdate(user, 'forestry_event_completions_bank', new Bank().add(Number(event), count));
 		}
 	}
 

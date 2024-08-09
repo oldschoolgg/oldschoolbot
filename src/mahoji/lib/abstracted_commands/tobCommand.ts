@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { randomVariation } from 'oldschooljs/dist/util';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { Emoji } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
@@ -22,7 +23,7 @@ import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MakePartyOptions } from '../../../lib/types';
 import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
+import { channelIsSendable, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -42,7 +43,7 @@ const minStats = {
 
 const SCYTHE_CHARGES_PER_RAID = 200;
 
-export async function calcTOBInput(u: MUser) {
+async function calcTOBInput(u: MUser) {
 	const items = new Bank();
 	const kc = await getMinigameScore(u.id, 'tob');
 	items.add('Super combat potion(4)', 1);
@@ -75,7 +76,7 @@ export async function calcTOBInput(u: MUser) {
 	return items;
 }
 
-export async function checkTOBUser(
+async function checkTOBUser(
 	user: MUser,
 	isHardMode: boolean,
 	teamSize?: number,
@@ -233,12 +234,7 @@ export async function checkTOBUser(
 	return [false];
 }
 
-export async function checkTOBTeam(
-	users: MUser[],
-	isHardMode: boolean,
-	solo: boolean,
-	quantity = 1
-): Promise<string | null> {
+async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, quantity = 1): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
@@ -431,7 +427,7 @@ export async function tobStartCommand(
 					.add(u.gear.range.ammo?.item, 100)
 					.multiply(qty)
 			);
-			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
+			await userStatsBankUpdate(u, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
 			if (u.gear.melee.hasEquipped('Abyssal tentacle')) {

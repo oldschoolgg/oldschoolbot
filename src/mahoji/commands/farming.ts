@@ -1,15 +1,15 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
 import { AutoFarmFilterEnum } from '@prisma/client';
 import type { User } from 'discord.js';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';
 import type { ContractOption } from '../../lib/minions/farming/types';
 import { ContractOptions } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
-import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
+import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostTiers } from '../../lib/skilling/skills/farming';
 import { stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
@@ -204,7 +204,7 @@ export const farmingCommand: OSBMahojiCommand = {
 	}>) => {
 		await deferInteraction(interaction);
 		const klasaUser = await mUserFetch(userID);
-		const { patchesDetailed } = await getFarmingInfo(userID);
+		const { patchesDetailed } = getFarmingInfoFromUser(klasaUser.user);
 
 		if (options.auto_farm) {
 			return autoFarm(klasaUser, patchesDetailed, channelID);

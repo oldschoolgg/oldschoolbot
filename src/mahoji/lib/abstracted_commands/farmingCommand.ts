@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import Farming from '../../../lib/skilling/skills/farming';
@@ -299,7 +299,7 @@ export async function farmingPlantCommand({
 		}
 	});
 
-	await userStatsBankUpdate(user.id, 'farming_plant_cost_bank', cost);
+	await userStatsBankUpdate(user, 'farming_plant_cost_bank', cost);
 
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 		plantsName: plant.name,

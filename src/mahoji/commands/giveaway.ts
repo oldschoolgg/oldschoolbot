@@ -1,3 +1,4 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import type { BaseMessageOptions } from 'discord.js';
@@ -11,15 +12,14 @@ import {
 	messageLink,
 	time
 } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randInt } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji, patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
-import { prisma } from '../../lib/settings/prisma';
+
 import { channelIsSendable, isModOrAdmin, makeComponents, toKMB } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';

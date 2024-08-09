@@ -2,12 +2,12 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import resolveItems from '../../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahojiSettings';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
@@ -298,7 +298,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
 	await user.removeItemsFromBank(cost);
-	await userStatsBankUpdate(user.id, 'shades_of_morton_cost_bank', cost);
+	await userStatsBankUpdate(user, 'shades_of_morton_cost_bank', cost);
 
 	await addSubTaskToActivityTask<ShadesOfMortonOptions>({
 		userID: user.id,

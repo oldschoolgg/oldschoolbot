@@ -1,10 +1,10 @@
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import type { PvMMethod } from '../../lib/constants';
 import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { prisma } from '../../lib/settings/prisma';
+
 import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -47,7 +47,7 @@ export const autocompleteMonsters = [
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
 	const res = await prisma.$queryRawUnsafe<{ mon_id: string; last_killed: Date }[]>(
-		`SELECT DISTINCT((data->>'monsterID')) AS mon_id, MAX(start_date) as last_killed
+		`SELECT DISTINCT((data->>'mi')) AS mon_id, MAX(start_date) as last_killed
 FROM activity
 WHERE user_id = $1
 AND type = 'MonsterKilling'

@@ -1,17 +1,16 @@
 import '../data/itemAliases';
 
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { calcDropRatesFromBank, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 import killableMonsters from '../minions/data/killableMonsters';
 import { handleNexKills } from '../simulation/nex';
 import { simulatedKillables } from '../simulation/simulatedKillables';
-import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
-import resolveItems from '../util/resolveItems';
 
-if (global.prisma) {
-	throw new Error('Prisma is loaded in the kill worker!');
+if (global.prisma || global.redis) {
+	throw new Error('Prisma/Redis is loaded in the kill worker!');
 }
 
 export default async ({

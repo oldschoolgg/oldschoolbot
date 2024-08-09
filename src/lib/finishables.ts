@@ -10,6 +10,7 @@ import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
 import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
 	NexCL,
@@ -39,17 +40,16 @@ import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { calculateTripConsumableCost } from './util';
+import { calculateTripConsumableCost } from './util/calculateTripConsumableCost';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
-import resolveItems from './util/resolveItems';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
 	totalRuns: number;
 }
 
-export interface Finishable {
+interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];

@@ -25,13 +25,13 @@ const peakFactor = [
 ];
 
 // Returns a value 0 - 100 representing the % of 10 hours spent in pk-able wilderness.
-export async function getPkEvasionExp(user: MUser) {
+async function getPkEvasionExp(user: MUser) {
 	const maxBoostDuration = Time.Hour * 10;
 	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
 	return Math.min(100, (stats.pk_evasion_exp / maxBoostDuration) * 100);
 }
 
-export async function getWildEvasionPercent(user: MUser) {
+async function getWildEvasionPercent(user: MUser) {
 	const maxReductionPercent = 75;
 	return randomVariation(calcPercentOfNum(await getPkEvasionExp(user), maxReductionPercent), 10);
 }
@@ -46,7 +46,8 @@ export async function calcWildyPKChance(
 	peak: Peak,
 	monster: KillableMonster,
 	duration: number,
-	supplies: boolean
+	supplies: boolean,
+	cannonMulti: boolean
 ): Promise<[number, boolean, string]> {
 	// Chance per minute, Difficulty from 1 to 10, and factor a million difference, High peak 5x as likley encounter, Medium peak 1x, Low peak 5x as unlikley
 	const peakInfluence = peakFactor.find(_peaktier => _peaktier.peakTier === peak?.peakTier)?.factor ?? 1;
@@ -72,7 +73,7 @@ export async function calcWildyPKChance(
 	deathChance += deathChanceFromLevels;
 
 	// Multi does make it riskier, but only if there's actually a team on you
-	const wildyMultiMultiplier = monster.wildyMulti === true ? 2 : 1;
+	const wildyMultiMultiplier = monster.wildyMulti || cannonMulti ? 2 : 1;
 	const hasSupplies = supplies ? 0.5 : 1;
 	const hasOverheads = user.skillLevel(SkillsEnum.Prayer) >= 43 ? 0.25 : 1;
 

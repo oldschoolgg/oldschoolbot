@@ -1,7 +1,7 @@
 import type { Bank } from 'oldschooljs';
 
+import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
 import { Events } from '../../constants';
-import type { ArrayItemsResolved } from '../../types';
 import { minionName } from '../../util/minionUtils';
 import { effectiveMonsters } from '../data/killableMonsters';
 
@@ -20,7 +20,6 @@ export default async function announceLoot({
 }) {
 	if (!_notifyDrops) return;
 	const notifyDrops = _notifyDrops.flat(Number.POSITIVE_INFINITY);
-	const kc = await user.getKC(monsterID);
 	const itemsToAnnounce = loot.clone().filter(i => notifyDrops.includes(i.id));
 	if (itemsToAnnounce.length > 0) {
 		let notif = '';
@@ -30,6 +29,7 @@ export default async function announceLoot({
 				effectiveMonsters.find(m => m.id === monsterID)?.name
 			}, **${team.lootRecipient.badgedUsername}** just received **${itemsToAnnounce}**!`;
 		} else {
+			const kc = await user.getKC(monsterID);
 			notif = `**${user.badgedUsername}'s** minion, ${minionName(
 				user
 			)}, just received **${itemsToAnnounce}**, their ${

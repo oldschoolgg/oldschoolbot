@@ -4,23 +4,18 @@ import { Time, isObject, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events, toaPurpleItems } from '../../../lib/constants';
 import { toaCL } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import {
-	calcTOALoot,
-	calculateXPFromRaid,
-	normalizeTOAUsers,
-	toaOrnamentKits,
-	toaPetTransmogItems
-} from '../../../lib/simulation/toa';
+import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '../../../lib/simulation/toa';
 import type { TOAOptions } from '../../../lib/types/minions';
+import { normalizeTOAUsers } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -164,21 +159,16 @@ export const toaTask: MinionTask = {
 
 			itemsAddedTeamLoot.add(userID, itemsAdded);
 
-			userStatsUpdate(
-				user.id,
-				u => {
-					return {
-						toa_raid_levels_bank: new Bank()
-							.add(u.toa_raid_levels_bank as ItemBank)
-							.add(raidLevel, quantity).bank,
-						total_toa_duration_minutes: {
-							increment: Math.floor(duration / Time.Minute)
-						},
-						toa_loot: new Bank(u.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
-					};
+			const currentStats = await user.fetchStats({ toa_raid_levels_bank: true, toa_loot: true });
+			await userStatsUpdate(user.id, {
+				toa_raid_levels_bank: new Bank()
+					.add(currentStats.toa_raid_levels_bank as ItemBank)
+					.add(raidLevel, quantity).bank,
+				total_toa_duration_minutes: {
+					increment: Math.floor(duration / Time.Minute)
 				},
-				{}
-			);
+				toa_loot: new Bank(currentStats.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
+			});
 
 			const items = itemsAdded.items();
 

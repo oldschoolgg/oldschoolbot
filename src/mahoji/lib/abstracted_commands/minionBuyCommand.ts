@@ -1,8 +1,7 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { ComponentType } from 'discord.js';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
-import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
 	if (user.user.minion_hasBought) return 'You already have a minion!';
@@ -14,7 +13,15 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 	});
 
 	// Ensure user has a userStats row
-	await clArrayUpdate(user, user.cl);
+	await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(user.id)
+		},
+		create: {
+			user_id: BigInt(user.id)
+		},
+		update: {}
+	});
 
 	return {
 		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.

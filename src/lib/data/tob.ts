@@ -3,14 +3,14 @@ import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import { randomVariation } from 'oldschooljs/dist/util';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { GearStats } from '../gear/types';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
-import resolveItems from '../util/resolveItems';
 
-export interface TOBRoom {
+interface TOBRoom {
 	name: string;
 	difficultyRating: number;
 	timeWeighting: number;

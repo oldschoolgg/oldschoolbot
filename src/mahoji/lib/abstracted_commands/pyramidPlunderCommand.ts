@@ -1,9 +1,9 @@
 import { Time, reduceNumByPercent } from 'e';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { PlunderActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';

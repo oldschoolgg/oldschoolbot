@@ -12,9 +12,8 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import type { RaidsOptions } from '../../../lib/types/minions';
-import { randomVariation, roll } from '../../../lib/util';
+import { randomVariation, resolveItems, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -32,7 +31,7 @@ const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
-export const coxPurpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
+const coxPurpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
 async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	let hitpointsXP = 12_000 * qty;

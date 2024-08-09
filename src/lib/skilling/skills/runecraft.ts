@@ -18,7 +18,7 @@ export interface Rune {
 	ardyDiaryChance?: number;
 }
 
-export interface Tiara {
+interface Tiara {
 	xp: number;
 	id: number;
 	name: string;

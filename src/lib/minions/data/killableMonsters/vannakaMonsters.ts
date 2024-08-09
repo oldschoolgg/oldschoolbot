@@ -2,8 +2,8 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import type { KillableMonster } from '../../types';
 
 export const vannakaMonsters: KillableMonster[] = [
@@ -243,7 +243,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
-		canCannon: true,
 		pkActivityRating: 4,
 		pkBaseDeathChance: 6,
 		revsWeaponBoost: true
@@ -677,7 +676,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		revsWeaponBoost: true,
-		wildySlayerCave: true
+		wildySlayerCave: true,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 4
 	},
 	{
 		id: Monsters.HarpieBugSwarm.id,

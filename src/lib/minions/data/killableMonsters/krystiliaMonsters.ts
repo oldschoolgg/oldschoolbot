@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import type { KillableMonster } from '../../types';
 
 export const krystiliaMonsters: KillableMonster[] = [
@@ -15,9 +15,11 @@ export const krystiliaMonsters: KillableMonster[] = [
 
 		difficultyRating: 5,
 		qpRequired: 0,
+		canCannon: true,
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.ChaosDruid.id,
@@ -31,7 +33,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		canCannon: true,
-		cannonMulti: true,
+		cannonMulti: false,
 		canBarrage: false,
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
@@ -53,7 +55,8 @@ export const krystiliaMonsters: KillableMonster[] = [
 		canBarrage: false,
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.DeadlyRedSpider.id,
@@ -87,7 +90,8 @@ export const krystiliaMonsters: KillableMonster[] = [
 		canBarrage: false,
 		pkActivityRating: 2,
 		pkBaseDeathChance: 7,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.Ent.id,
@@ -125,7 +129,8 @@ export const krystiliaMonsters: KillableMonster[] = [
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
 		revsWeaponBoost: true,
-		canBePked: true
+		canBePked: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.LavaDragon.id,
@@ -143,7 +148,8 @@ export const krystiliaMonsters: KillableMonster[] = [
 		pkActivityRating: 3,
 		pkBaseDeathChance: 4,
 		revsWeaponBoost: true,
-		canBePked: true
+		canBePked: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.MagicAxe.id,
@@ -162,7 +168,8 @@ export const krystiliaMonsters: KillableMonster[] = [
 		},
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		canCannon: true
 	},
 	{
 		id: Monsters.Mammoth.id,
@@ -181,7 +188,8 @@ export const krystiliaMonsters: KillableMonster[] = [
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
 		revsWeaponBoost: true,
-		canBePked: true
+		canBePked: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.Pirate.id,

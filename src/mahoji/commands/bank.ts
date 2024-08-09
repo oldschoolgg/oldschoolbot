@@ -1,7 +1,7 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, codeBlock } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import type { Bank } from 'oldschooljs';
 
 import { PaginatedMessage } from '../../lib/PaginatedMessage';

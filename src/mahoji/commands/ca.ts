@@ -1,7 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, objectEntries } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { buildCombatAchievementsResult } from '../../lib/combat_achievements/caUtils';
@@ -13,6 +13,7 @@ import {
 	caToPlayerString,
 	nextCATier
 } from '../../lib/combat_achievements/combatAchievements';
+import { Requirements } from '../../lib/structures/Requirements';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -94,9 +95,10 @@ export const caCommand: OSBMahojiCommand = {
 				.filter(i => !('rng' in i));
 
 			const completedTasks: CombatAchievement[] = [];
+			const reqData = await Requirements.fetchRequiredData(user);
 			for (const task of tasksToCheck) {
 				if ('requirements' in task) {
-					const { hasAll } = await task.requirements.check(user);
+					const { hasAll } = task.requirements.check(reqData);
 					if (hasAll) {
 						completedTasks.push(task);
 					}

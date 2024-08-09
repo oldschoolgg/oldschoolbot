@@ -1,7 +1,7 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 
 import { cancelUsersListings } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { prisma } from '../settings/prisma';
+
 import { logError } from './logError';
 
 export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {

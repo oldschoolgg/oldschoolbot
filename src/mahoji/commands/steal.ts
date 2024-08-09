@@ -1,16 +1,16 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
 import { stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { logError } from '../../lib/util/logError';

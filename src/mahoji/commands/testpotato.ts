@@ -1,18 +1,18 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { calcDropRatesFromBankWithoutUniques, mentionCommand } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { xp_gains_skill_enum } from '@prisma/client';
 import type { User } from 'discord.js';
-import { Time, noOp, uniqueArr } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, noOp } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import type { BitField } from '../../lib/constants';
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
@@ -21,9 +21,8 @@ import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/kill
 import potions from '../../lib/minions/data/potions';
 import { MAX_QP } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
-import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
-import { prisma } from '../../lib/settings/prisma';
+
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -33,13 +32,11 @@ import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
-import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
-import resolveItems from '../../lib/util/resolveItems';
 import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
@@ -63,22 +60,6 @@ export async function giveMaxStats(user: MUser) {
 		lms_points: 500_000,
 		...updates
 	});
-}
-
-async function givePatronLevel(user: MUser, tier: number) {
-	const tierToGive = tiers[tier];
-	const currentBitfield = user.bitfield;
-	if (!tier || !tierToGive) {
-		await user.update({
-			bitfield: currentBitfield.filter(i => !tiers.map(t => t[1]).includes(i))
-		});
-		return 'Removed patron perks.';
-	}
-	const newBitField: BitField[] = [...currentBitfield, tierToGive[1]];
-	await user.update({
-		bitfield: uniqueArr(newBitField)
-	});
-	return `Gave you tier ${tierToGive[1] - 1} patron.`;
 }
 
 const coloMelee = new Gear();
@@ -841,9 +822,6 @@ ${droprates.join('\n')}`),
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
 				}
-				if (options.patron) {
-					return givePatronLevel(user, Number(options.patron.tier));
-				}
 				if (options.gear) {
 					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
 					await user.update({
@@ -901,14 +879,15 @@ ${droprates.join('\n')}`),
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
+					const stats = await user.fetchStats({ monster_scores: true });
 					await userStatsUpdate(
 						user.id,
-						({ monster_scores }) => ({
+						{
 							monster_scores: {
-								...(monster_scores as Record<string, unknown>),
+								...(stats.monster_scores as Record<string, unknown>),
 								[monster.id]: options.setmonsterkc?.kc ?? 1
 							}
-						}),
+						},
 						{}
 					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;

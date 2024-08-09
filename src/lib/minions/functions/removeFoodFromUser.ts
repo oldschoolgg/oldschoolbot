@@ -1,4 +1,4 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import { objectEntries, reduceNumByPercent } from 'e';
 import type { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
@@ -67,8 +67,7 @@ export default async function removeFoodFromUser({
 		);
 	} else {
 		await transactItems({ userID: user.id, itemsToRemove: foodToRemove });
-
-		updateBankSetting('economyStats_PVMCost', foodToRemove);
+		await updateBankSetting('economyStats_PVMCost', foodToRemove);
 
 		return {
 			foodRemoved: foodToRemove,

@@ -1,15 +1,17 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
 import { ChannelType, EmbedBuilder } from 'discord.js';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
+import { PerkTier, asyncGzip } from '@oldschoolgg/toolkit';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField, PerkTier } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
 import {
 	anglerOutfit,
@@ -23,10 +25,9 @@ import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import type { MinigameName } from '../../lib/settings/minigames';
 import { Minigames } from '../../lib/settings/minigames';
-import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
+import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
-	asyncGzip,
 	formatDuration,
 	getUsername,
 	isGroupActivity,
@@ -40,7 +41,6 @@ import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import resolveItems from '../../lib/util/resolveItems';
 import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
@@ -147,13 +147,13 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
 		if (!clueTier) return 'Invalid clue scroll tier.';
 		const tierId = clueTier.id;
-		tierFilter = `AND (a."data"->>'clueID')::int = ${tierId}`;
+		tierFilter = `AND (a."data"->>'ci')::int = ${tierId}`;
 		title = `Highest ${clueTier.name} clue scroll completions in the past ${interval}`;
 	} else {
 		title = `Highest All clue scroll completions in the past ${interval}`;
 	}
 
-	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate 
 	  FROM activity a
 	  JOIN users u ON a.user_id::text = u.id
 	  WHERE a.type = 'ClueCompletion'
@@ -174,9 +174,14 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 	const embed = new EmbedBuilder()
 		.setTitle(title)
 		.setDescription(
-			res
-				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
-				.join('\n')
+			(
+				await Promise.all(
+					res.map(
+						async (i: any) =>
+							`${++place}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
+					)
+				)
+			).join('\n')
 		);
 
 	return { embeds: [embed] };
@@ -249,12 +254,14 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 		.setDescription(
-			xpRecords
-				.map(
-					record =>
-						`${++place}. **${getUsername(record.user)}**: ${Number(record.total_xp).toLocaleString()} XP`
+			(
+				await Promise.all(
+					xpRecords.map(
+						async record =>
+							`${++place}. **${await getUsername(record.user)}**: ${Number(record.total_xp).toLocaleString()} XP`
+					)
 				)
-				.join('\n')
+			).join('\n')
 		);
 
 	return { embeds: [embed] };
@@ -285,10 +292,10 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 	}
 
 	const query = `
-    SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+    SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate 
     FROM activity a
     JOIN users u ON a.user_id::text = u.id
-    WHERE a.type = 'MonsterKilling' AND (a."data"->>'monsterID')::int = ${monster.id}
+    WHERE a.type = 'MonsterKilling' AND (a."data"->>'mi')::int = ${monster.id}
     AND a.finish_date >= now() - interval '1 ${intervalValue}'  -- Corrected interval usage
     AND a.completed = true
     ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
@@ -305,9 +312,14 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
-			res
-				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
-				.join('\n')
+			(
+				await Promise.all(
+					res.map(
+						async (i: any) =>
+							`${++place}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
+					)
+				)
+			).join('\n')
 		);
 
 	return { embeds: [embed] };
@@ -601,9 +613,11 @@ async function dryStreakCommand(monsterName: string, itemName: string, ironmanOn
 		if (result.length === 0) return 'No results found.';
 		if (typeof result === 'string') return result;
 
-		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${result
-			.map(({ id, val }) => `${getUsername(id)}: ${entity.format(val || -1)}`)
-			.join('\n')}`;
+		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${(
+			await Promise.all(
+				result.map(async ({ id, val }) => `${await getUsername(id)}: ${entity.format(val || -1)}`)
+			)
+		).join('\n')}`;
 	}
 
 	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monsterName)));
@@ -633,9 +647,13 @@ async function dryStreakCommand(monsterName: string, itemName: string, ironmanOn
 
 	if (result.length === 0) return 'No results found.';
 
-	return `**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
-		.map(({ id, KC }) => `${getUsername(id) as string}: ${Number.parseInt(KC).toLocaleString()}`)
-		.join('\n')}`;
+	return `**Dry Streaks for ${item.name} from ${mon.name}:**\n${(
+		await Promise.all(
+			result.map(
+				async ({ id, KC }) => `${(await getUsername(id)) as string}: ${Number.parseInt(KC).toLocaleString()}`
+			)
+		)
+	).join('\n')}`;
 }
 
 async function mostDrops(user: MUser, itemName: string, filter: string) {
@@ -663,12 +681,14 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 
 	if (result.length === 0) return 'No results found.';
 
-	return `**Most '${item.name}' received:**\n${result
-		.map(
-			({ id, qty }) =>
-				`${result.length < 10 ? '(Anonymous)' : getUsername(id)}: ${Number.parseInt(qty).toLocaleString()}`
+	return `**Most '${item.name}' received:**\n${(
+		await Promise.all(
+			result.map(
+				async ({ id, qty }) =>
+					`${result.length < 10 ? '(Anonymous)' : await getUsername(id)}: ${Number.parseInt(qty).toLocaleString()}`
+			)
 		)
-		.join('\n')}`;
+	).join('\n')}`;
 }
 
 async function checkMassesCommand(guildID: string | undefined) {

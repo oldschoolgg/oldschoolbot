@@ -1,6 +1,6 @@
 import itemID from '../util/itemID';
 
-export interface Eatable {
+interface Eatable {
 	name: string;
 	id: number;
 	healAmount: ((user: MUser) => number) | number;

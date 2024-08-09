@@ -1,7 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { leagueBuyables } from '../../lib/data/leaguesBuyables';
@@ -169,13 +169,17 @@ ${leaguesTrophiesBuyables
 				interaction,
 				user,
 				channelID,
-				chunk(result, 10).map(subList =>
-					subList
-						.map(
-							({ id, leagues_points_total }) =>
-								`**${getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-						)
-						.join('\n')
+				await Promise.all(
+					chunk(result, 10).map(async subList =>
+						(
+							await Promise.all(
+								subList.map(
+									async ({ id, leagues_points_total }) =>
+										`**${await getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
+								)
+							)
+						).join('\n')
+					)
 				),
 				'Leagues Points Leaderboard'
 			);

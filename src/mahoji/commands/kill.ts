@@ -1,6 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
@@ -10,7 +10,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import type { OSBMahojiCommand } from '../lib/util';
 
-export function determineKillLimit(user: MUser) {
+function determineKillLimit(user: MUser) {
 	const perkTier = user.perkTier();
 
 	if (perkTier >= PerkTier.Six) {

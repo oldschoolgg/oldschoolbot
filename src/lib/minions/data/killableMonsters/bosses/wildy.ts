@@ -1,10 +1,10 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import type { KillableMonster } from '../../../types';
 import { DiaryID } from '../../../types';
 

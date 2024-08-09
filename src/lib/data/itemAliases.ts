@@ -1,6 +1,10 @@
-import { Items } from 'oldschooljs';
+import { deepMerge, modifyItem } from '@oldschoolgg/toolkit';
+import { omit } from 'lodash';
+import { EItem, Items } from 'oldschooljs';
+import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
+import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
@@ -174,11 +178,14 @@ setItemAlias(2993, 'Chompy bird hat (dragon archer)');
 setItemAlias(2994, 'Chompy bird hat (expert ogre dragon archer)');
 setItemAlias(2995, 'Chompy bird hat (expert dragon archer)');
 
-// Item aliases
+// Achievement diary lamps
 setItemAlias(11_137, 'Antique lamp 1');
 setItemAlias(11_139, 'Antique lamp 2');
 setItemAlias(11_141, 'Antique lamp 3');
 setItemAlias(11_185, 'Antique lamp 4');
+
+// Defender of varrock quest lamp
+setItemAlias(28_820, 'Antique lamp (defender of varrock)');
 
 // Dragonfire shields
 setItemAlias(11_284, 'Uncharged dragonfire shield');
@@ -298,3 +305,115 @@ setItemAlias(25_922, 'Antique lamp (hard ca)');
 setItemAlias(25_923, 'Antique lamp (elite ca)');
 setItemAlias(25_924, 'Antique lamp (master ca)');
 setItemAlias(25_925, 'Antique lamp (grandmaster ca)');
+
+/**
+ * Trophies
+ */
+
+// BSO (Twisted) trophies
+setItemAlias(24_372, 'BSO dragon trophy');
+setItemAlias(24_374, 'BSO rune trophy');
+setItemAlias(24_376, 'BSO adamant trophy');
+setItemAlias(24_378, 'BSO mithril trophy');
+setItemAlias(24_380, 'BSO steel trophy');
+setItemAlias(24_382, 'BSO iron trophy');
+setItemAlias(24_384, 'BSO bronze trophy');
+
+// Comp. trophies
+setItemAlias(25_042, 'Comp. dragon trophy');
+setItemAlias(25_044, 'Comp. rune trophy');
+setItemAlias(25_046, 'Comp. adamant trophy');
+setItemAlias(25_048, 'Comp. mithril trophy');
+setItemAlias(25_050, 'Comp. steel trophy');
+setItemAlias(25_052, 'Comp. iron trophy');
+setItemAlias(25_054, 'Comp. bronze trophy');
+
+// Placeholder trophies
+setItemAlias(26_515, 'Placeholder dragon trophy');
+setItemAlias(26_513, 'Placeholder rune trophy');
+setItemAlias(26_511, 'Placeholder adamant trophy');
+setItemAlias(26_509, 'Placeholder mithril trophy');
+setItemAlias(26_507, 'Placeholder steel trophy');
+setItemAlias(26_505, 'Placeholder iron trophy');
+setItemAlias(26_503, 'Placeholder bronze trophy');
+
+export const allTrophyItems = resolveItems([
+	'BSO dragon trophy',
+	'BSO rune trophy',
+	'BSO adamant trophy',
+	'BSO mithril trophy',
+	'BSO steel trophy',
+	'BSO iron trophy',
+	'BSO bronze trophy',
+	'Comp. dragon trophy',
+	'Comp. rune trophy',
+	'Comp. adamant trophy',
+	'Comp. mithril trophy',
+	'Comp. steel trophy',
+	'Comp. iron trophy',
+	'Comp. bronze trophy',
+	'Placeholder dragon trophy',
+	'Placeholder rune trophy',
+	'Placeholder adamant trophy',
+	'Placeholder mithril trophy',
+	'Placeholder steel trophy',
+	'Placeholder iron trophy',
+	'Placeholder bronze trophy'
+]);
+
+for (const item of allTrophyItems) {
+	modifyItem(item, {
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantBeSacrificed: true
+		}
+	});
+}
+
+/**
+ * Item modifications
+ */
+
+export interface CustomItemData {
+	cantBeSacrificed?: true;
+}
+declare module 'oldschooljs/dist/meta/types' {
+	interface Item {
+		customItemData?: CustomItemData;
+	}
+}
+
+for (const item of allTeamCapes) {
+	modifyItem(item.id, {
+		price: 100
+	});
+	if (getItemOrThrow(item.id).price !== 100) {
+		throw new Error(`Failed to modify price of item ${item.id}`);
+	}
+}
+
+export const itemDataSwitches = [
+	{
+		from: 25488,
+		to: EItem.BELLATOR_RING
+	},
+	{
+		from: 25486,
+		to: EItem.MAGUS_RING
+	},
+	{
+		from: 25487,
+		to: EItem.VENATOR_RING
+	},
+	{
+		from: 25485,
+		to: EItem.ULTOR_RING
+	}
+];
+
+for (const items of itemDataSwitches) {
+	const from = getItemOrThrow(items.from);
+	const to = getItemOrThrow(items.to);
+	modifyItem(to.id, deepMerge(omit(to, 'id'), omit(from, 'id')));
+}

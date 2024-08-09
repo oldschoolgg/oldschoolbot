@@ -1,9 +1,9 @@
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { PerkTier } from '../../lib/constants';
 import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '../../lib/lootTrack';
-import { prisma } from '../../lib/settings/prisma';
+
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import type { OSBMahojiCommand } from '../lib/util';
 

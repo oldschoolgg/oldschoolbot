@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import type {
 	DefenceGearStat,
@@ -19,7 +20,6 @@ import type { GearRequirement } from '../minions/types';
 import { assert } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
 
 export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;
@@ -71,14 +71,7 @@ export const defaultGear: GearSetup = {
 	[EquipmentSlot.Weapon]: null
 };
 Object.freeze(defaultGear);
-export function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
-	const filteredGear = !gear
-		? undefined
-		: typeof gear.ammo === 'undefined' || typeof gear.ammo === 'string'
-			? constructGearSetup(gear as PartialGearSetup)
-			: (gear as GearSetup);
-	return filteredGear;
-}
+
 export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 	{
 		name: 'graceful',

@@ -74,7 +74,7 @@ export interface ShootingStarsOptions extends ActivityTaskOptions {
 	totalXp: number;
 	lootItems: ItemBank;
 }
-export interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
+interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
 	users: string[];
 }
 
@@ -131,13 +131,13 @@ export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
 
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'MonsterKilling';
-	monsterID: number;
-	quantity: number;
+	mi: number;
+	q: number;
 	iQty?: number;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
-	burstOrBarrage?: number;
+	bob?: number;
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
@@ -146,9 +146,8 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	type: 'ClueCompletion';
-
-	clueID: number;
-	quantity: number;
+	ci: number;
+	q: number;
 	implingID?: number;
 	implingClues?: number;
 }
@@ -462,13 +461,16 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	diedAt?: number;
 	loot?: ItemBank;
 	maxGlory: number;
+	scytheCharges: number;
+	venatorBowCharges: number;
+	bloodFuryCharges: number;
 }
 
 type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
 
-export type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
+type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
 export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TombsOfAmascut';
 	leader: string;

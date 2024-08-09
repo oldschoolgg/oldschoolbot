@@ -7,17 +7,16 @@ export default defineConfig({
 		setupFiles: 'tests/integration/setup.ts',
 		coverage: {
 			provider: 'v8',
-			reporter: 'text',
-			include: ['src/lib/MUser.ts']
+			reporter: 'text'
 		},
 		testTimeout: 30_000,
 		bail: 1,
-		pool: 'threads',
-		maxConcurrency: 30,
+		pool: 'forks',
+		maxConcurrency: 5,
 		poolOptions: {
-			threads: {
-				maxThreads: 30,
-				minThreads: 10
+			forks: {
+				maxForks: 10,
+				minForks: 10
 			}
 		}
 	}

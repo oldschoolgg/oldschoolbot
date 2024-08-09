@@ -1,20 +1,20 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt, roll } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { PerkTier, averageBank } from '@oldschoolgg/toolkit';
 import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
-import { PerkTier } from '../../lib/constants';
 import pets from '../../lib/data/pets';
-import { assert, averageBank, formatDuration } from '../../lib/util';
+import { assert, formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import type { OSBMahojiCommand } from '../lib/util';
 
-export function determineCoxLimit(user: MUser) {
+function determineCoxLimit(user: MUser) {
 	const perkTier = user.perkTier();
 
 	if (perkTier >= PerkTier.Three) {
@@ -57,7 +57,10 @@ function simulateColosseumRuns(samples = 100) {
 				hasBF: false,
 				hasClaws: true,
 				hasSGS: true,
-				hasTorture: true
+				hasTorture: true,
+				scytheCharges: 300,
+				venatorBowCharges: 50,
+				bloodFuryCharges: 0
 			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);

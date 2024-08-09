@@ -2,11 +2,11 @@ import { clamp, objectValues } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { Skills } from '../../../lib/types';
 import { assert, isValidSkill, itemID } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
-import resolveItems from '../../../lib/util/resolveItems';
 
 interface IXPLamp {
 	itemID: number;
@@ -84,13 +84,12 @@ export const XPLamps: IXPLamp[] = [
 		minimumLevel: 1,
 		allowedSkills: [SkillsEnum.Magic]
 	},
-	/*	Needs OSJS Update
 	{
 		itemID: 28_820,
 		amount: 5000,
 		name: 'Antique lamp (defender of varrock)',
 		minimumLevel: 1
-	},*/
+	},
 	{
 		itemID: itemID('Antique lamp (easy ca)'),
 		amount: 5000,
@@ -149,6 +148,13 @@ export const Lampables: IXPObject[] = [
 				skills[skill] =
 					data.user.skillLevel(skill) *
 					([
+						SkillsEnum.Attack,
+						SkillsEnum.Strength,
+						SkillsEnum.Defence,
+						SkillsEnum.Magic,
+						SkillsEnum.Ranged,
+						SkillsEnum.Hitpoints,
+						SkillsEnum.Prayer,
 						SkillsEnum.Mining,
 						SkillsEnum.Woodcutting,
 						SkillsEnum.Herblore,

@@ -1,6 +1,6 @@
 import { resolveAvailableItemBoosts } from '../../../mahoji/mahojiSettings';
 import { calcPOHBoosts } from '../../poh';
-import { prisma } from '../../settings/prisma';
+
 import type { KillableMonster } from '../types';
 import reducedTimeFromKC from './reducedTimeFromKC';
 

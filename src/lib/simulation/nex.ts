@@ -14,13 +14,14 @@ import {
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util/util';
 
+import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
-import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
+import { formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { TeamLoot } from './TeamLoot';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
 
@@ -30,7 +31,7 @@ const minStats: Skills = {
 	prayer: 74
 };
 
-export function nexGearStats(user: MUser) {
+function nexGearStats(user: MUser) {
 	const { gear } = user;
 	const offence = calcWhatPercent(gear.range.stats.attack_ranged, 252);
 	const defence = calcWhatPercent(gear.range.stats.defence_magic, 150);
@@ -128,7 +129,7 @@ export interface NexContext {
 	team: { id: string; contribution: number; deaths: number[]; ghost?: true }[];
 }
 
-export const purpleNexItems = resolveItems([
+const purpleNexItems = resolveItems([
 	'Nexling',
 	'Ancient hilt',
 	'Nihil horn',

@@ -1,7 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from 'discord.js';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores } from 'oldschooljs';
 
 import type { OSBMahojiCommand } from '../lib/util';
