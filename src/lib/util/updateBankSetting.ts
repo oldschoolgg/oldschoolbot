@@ -60,6 +60,7 @@ type ClientBankKey =
 	| 'nmz_cost'
 	| 'toa_cost'
 	| 'toa_loot'
+	| 'ourania_loot'
 	| 'colo_cost'
 	| 'colo_loot';
 
