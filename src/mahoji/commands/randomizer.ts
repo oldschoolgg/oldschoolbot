@@ -192,6 +192,8 @@ You chose: **${randMethod.name} (${randMethod.desc})**`
 
 			const transactions = [];
 			transactions.push(prisma.$executeRaw`SET CONSTRAINTS ALL DEFERRED`);
+			transactions.push(prisma.portent.deleteMany({ where: { user_id: user.id } }));
+			transactions.push(prisma.slayerTask.deleteMany({ where: { user_id: user.id } }));
 			transactions.push(prisma.slayerTask.deleteMany({ where: { user_id: user.id } }));
 			transactions.push(prisma.newUser.deleteMany({ where: { id: user.id } }));
 			transactions.push(prisma.minigame.deleteMany({ where: { user_id: user.id } }));
@@ -204,7 +206,6 @@ You chose: **${randMethod.name} (${randMethod.desc})**`
 			transactions.push(prisma.tame.deleteMany({ where: { user_id: user.id } }));
 			transactions.push(prisma.user.deleteMany({ where: { id: user.id } }));
 			transactions.push(prisma.userEvent.deleteMany({ where: { user_id: user.id } }));
-			transactions.push(prisma.portent.deleteMany({ where: { user_id: user.id } }));
 			transactions.push(prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } }));
 			transactions.push(
 				prisma.fullReset.create({
