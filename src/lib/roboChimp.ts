@@ -20,6 +20,20 @@ export async function roboChimpSyncData(user: MUser) {
 		mastery: totalMastery
 	});
 
+	const newCLArray = Object.keys(user.cl.bank).map(str => Number(str));
+	await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(user.id)
+		},
+		update: {
+			cl_array: newCLArray
+		},
+		create: {
+			user_id: BigInt(user.id),
+			cl_array: newCLArray
+		}
+	});
+
 	return newUser;
 }
 

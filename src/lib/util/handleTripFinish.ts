@@ -454,7 +454,7 @@ export async function handleTripFinish(
 
 	sendToChannelID(channelID, message);
 
-	if (user.hasRelic(RelicID.Repetition) && roll(3)) {
+	if (user.hasRelic(RelicID.Repetition) && !user.bitfield.includes(BitField.DisableRelicOfRepitition) && roll(3)) {
 		setTimeout(async () => {
 			try {
 				const trips = await fetchRepeatTrips(user.id);

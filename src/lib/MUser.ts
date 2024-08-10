@@ -138,7 +138,7 @@ export class MUserClass {
 		this.skillsAsLevels = this.getSkills(true);
 
 		this.paintedItems = this.buildPaintedItems();
-		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
+		this.badgesString = makeBadgeString(this, this.user.badges);
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
 

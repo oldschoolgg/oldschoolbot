@@ -1,9 +1,8 @@
-import { Emoji, badges } from '../constants';
+import { badges } from '../constants';
 
-export function makeBadgeString(badgeIDs: number[] | null | undefined, isIronman: boolean) {
+export function makeBadgeString(user: MUser, badgeIDs: number[] | null | undefined) {
+	const method = user.getRandomizeMethod();
 	const rawBadges: string[] = (badgeIDs ?? []).map(num => badges[num]);
-	if (isIronman) {
-		rawBadges.push(Emoji.Ironman);
-	}
+	rawBadges.push(method!.emoji);
 	return rawBadges.join(' ').trim();
 }

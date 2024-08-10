@@ -83,12 +83,14 @@ export const randomizationMethods = [
 	{
 		id: 1,
 		name: 'True Random',
-		desc: 'Every item is randomly mapped to another item, with no restrictions.'
+		desc: 'Every item is randomly mapped to another item, with no restrictions.',
+		emoji: '<:TrueRandom:1271796744837009550>'
 	},
 	{
 		id: 2,
 		name: 'CL to CL',
-		desc: 'CL items are only mapped to other CL items, and non-CL items are only mapped to other non-CL items.'
+		desc: 'CL items are only mapped to other CL items, and non-CL items are only mapped to other non-CL items.',
+		emoji: '<:Collectionlog:1271797160752713782>'
 	}
 ] as const;
 

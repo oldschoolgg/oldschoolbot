@@ -210,7 +210,9 @@ export enum BitField {
 	HasUnlockedVenatrix = 229,
 	GrewFiveSpiritTrees = 230,
 	UseSuperRestoresForDwarvenBlessing = 231,
-	DisableSizeMatters = 232
+	DisableSizeMatters = 232,
+
+	DisableRelicOfRepitition = 800
 }
 
 interface BitFieldData {
@@ -399,6 +401,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableSizeMatters]: {
 		name: 'Disable Size Matters unlock',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableRelicOfRepitition]: {
+		name: 'Disable Relic of repitition',
 		protected: false,
 		userConfigurable: true
 	}

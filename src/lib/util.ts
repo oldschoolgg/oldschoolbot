@@ -466,18 +466,10 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 	const id = _id.toString();
 	const cached = usernameWithBadgesCache.get(id);
 	if (cached) return cached;
-	const user = await prisma.user.findFirst({
-		where: {
-			id
-		},
-		select: {
-			username: true,
-			badges: true
-		}
-	});
-	if (!user?.username) return 'Unknown';
-	const badges = makeBadgeString(user.badges, true);
-	const newValue = `${badges ? `${badges} ` : ''}${user.username}`;
+	const user = await mUserFetch(id);
+	if (!user?.user.username) return 'Unknown';
+	const badges = makeBadgeString(user, user.user.badges);
+	const newValue = `${badges ? `${badges} ` : ''}${user.user.username}`;
 	usernameWithBadgesCache.set(id, newValue);
 	return newValue;
 }

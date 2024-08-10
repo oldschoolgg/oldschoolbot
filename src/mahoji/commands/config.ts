@@ -90,6 +90,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Use super restores for Dwarven blessing',
 		bit: BitField.UseSuperRestoresForDwarvenBlessing
+	},
+	{
+		name: 'Disable Relic of repitition',
+		bit: BitField.DisableRelicOfRepitition
 	}
 ];
 
