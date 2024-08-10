@@ -15,7 +15,7 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 	const thievingLevel = skills.thieving;
 	const minLevel = plunderRooms[0].thievingLevel;
 	if (thievingLevel < minLevel) {
-		return `You need atleast level ${minLevel} Thieving to do the Pyramid Plunder.`;
+		return `You need at least level ${minLevel} Thieving to do the Pyramid Plunder.`;
 	}
 
 	const completableRooms = plunderRooms.filter(room => thievingLevel >= room.thievingLevel);
