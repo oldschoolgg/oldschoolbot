@@ -146,7 +146,6 @@ export const fishCommand: OSBMahojiCommand = {
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / scaledTimePerFish);
 		}
-		let shouldRemoveFromBank = false;
 		let flakesQuantity: number | undefined;
 		const cost = new Bank();
 
@@ -157,7 +156,6 @@ export const fishCommand: OSBMahojiCommand = {
 
 			flakesQuantity = Math.min(user.bank.amount('Spirit flakes'), quantity);
 			boosts.push(`More fish from using ${pluraliseItemNameWithQuantity('spirit flake', flakesQuantity)}`);
-			shouldRemoveFromBank = true;
 			cost.add('Spirit flakes', flakesQuantity);
 		}
 
@@ -172,11 +170,10 @@ export const fishCommand: OSBMahojiCommand = {
 				quantity = maxCanDo;
 			}
 
-			shouldRemoveFromBank = true;
 			cost.add(fish.bait, quantity);
 		}
 
-		if (shouldRemoveFromBank) {
+		if (cost.length > 0) {
 			// Remove the bait and/or spirit flakes from their bank.
 			await user.removeItemsFromBank(cost);
 		}
