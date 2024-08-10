@@ -257,7 +257,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 						false,
 						`You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
 							unmetKey!
-						)} stat in your ${setup} setup is ${has}, but you need atleast ${
+						)} stat in your ${setup} setup is ${has}, but you need at least ${
 							monster.minimumGearRequirements[setup]?.[unmetKey!]
 						}.`
 					];

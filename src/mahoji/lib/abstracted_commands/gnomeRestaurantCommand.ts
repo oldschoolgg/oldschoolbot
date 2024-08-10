@@ -18,7 +18,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	const itemsToRemove = new Bank();
 	const gp = user.GP;
 	if (gp < 5000) {
-		return 'You need atleast 5k GP to work at the Gnome Restaurant.';
+		return 'You need at least 5k GP to work at the Gnome Restaurant.';
 	}
 	itemsToRemove.add('Coins', 5000);
 
