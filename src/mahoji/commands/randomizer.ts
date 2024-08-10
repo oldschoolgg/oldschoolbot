@@ -215,7 +215,12 @@ You chose: **${randMethod.name} (${randMethod.desc})**`
 				})
 			);
 
-			await prisma.$transaction(transactions);
+			try {
+				await prisma.$transaction(transactions);
+			} catch (err) {
+				console.error(`Failed to reset ${user.id}`, err);
+				return 'Failed to reset your account, please try again later.';
+			}
 			return `Your account/seed has been reset.\n${await minionBuyCommand(await mUserFetch(userID), randMethod)}`;
 		}
 
