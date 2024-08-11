@@ -103,7 +103,7 @@ export const musicCapeRequirements = new Requirements()
 		}
 	})
 	.add({
-		name: 'Runecraft all runes atleast once',
+		name: 'Runecraft all runes at least once',
 		has: ({ uniqueRunesCrafted }) => {
 			const runesToCheck = resolveItems([
 				'Mind rune',

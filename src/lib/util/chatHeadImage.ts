@@ -46,7 +46,7 @@ const names: Record<keyof typeof chatHeads, string> = {
 	alry: 'Alry the Angler',
 	wurMuTheMonkey: 'Wur Mu the Monkey',
 	marimbo: 'Marimbo',
-	ketKeh: 'Tzhaar-Ket-Keh',
+	ketKeh: 'TzHaar-Ket-Keh',
 	gertrude: 'Gertrude',
 	antiSanta: 'Anti-Santa',
 	bunny: 'Easter Bunny',

@@ -9,6 +9,7 @@ import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collect
 import { calculateMastery } from './mastery';
 import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
 
+import { RawSQL } from './rawSql';
 import { MUserStats } from './structures/MUserStats';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { insertUserEvent } from './util/userEvents';
@@ -49,6 +50,10 @@ export async function handleNewCLItems({
 	const didGetNewCLItem = newCLItems && newCLItems.length > 0;
 	if (didGetNewCLItem || roll(30)) {
 		await prisma.historicalData.create({ data: await createHistoricalData(user) });
+	}
+
+	if (didGetNewCLItem) {
+		await prisma.$queryRawUnsafe(RawSQL.updateCLArray(user.id));
 	}
 
 	if (!didGetNewCLItem) return;
@@ -105,15 +110,14 @@ export async function handleNewCLItems({
 				})}!`
 			: '';
 
-		const nthUser = (
-			await fetchCLLeaderboard({
-				ironmenOnly: false,
-				items: finishedCL.items,
-				resultLimit: 100_000,
-				method: 'raw_cl',
-				userEvents: null
-			})
-		).filter(u => u.qty === finishedCL.items.length).length;
+		const leaderboardUsers = await fetchCLLeaderboard({
+			ironmenOnly: false,
+			items: finishedCL.items,
+			resultLimit: 100_000,
+			clName: finishedCL.name
+		});
+
+		const nthUser = leaderboardUsers.users.filter(u => u.qty === finishedCL.items.length).length;
 
 		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
 

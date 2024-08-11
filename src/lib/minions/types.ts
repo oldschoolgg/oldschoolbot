@@ -189,7 +189,7 @@ export interface AddMonsterXpParams {
 
 export interface ResolveAttackStylesParams {
 	monsterID: number | undefined;
-	boostMethod?: string;
+	boostMethod?: string[];
 }
 
 export interface BlowpipeData {

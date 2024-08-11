@@ -1,6 +1,7 @@
 import { randInt } from 'e';
 import { userHasMasterFarmerOutfit } from '../../../mahoji/mahojiSettings';
 import { BitField } from '../../constants';
+import { QuestID } from '../../minions/data/quests';
 import { hasUnlockedAtlantis } from '../../util';
 import type { FarmingPatchName } from '../../util/farmingHelpers';
 import { type Plant, SkillsEnum } from '../types';
@@ -43,6 +44,18 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 		const extraAtlantisPatches = atlantisPatches[plant.seedType];
 		if (extraAtlantisPatches) {
 			numOfPatches += extraAtlantisPatches;
+		}
+	}
+
+	if (user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+		switch (plant.seedType) {
+			case 'allotment':
+				numOfPatches += 2;
+				break;
+			case 'herb':
+			case 'flower':
+				numOfPatches += 1;
+				break;
 		}
 	}
 
