@@ -17,6 +17,7 @@ import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { mahojiParseNumber } from '../../mahojiSettings';
+import { remapBank } from '../../../lib/randomizer';
 
 async function gearEquipMultiCommand(
 	user: MUser,
@@ -97,7 +98,7 @@ export async function gearEquipCommand(args: {
 
 	const bank = new Bank(user.bank);
 	const cost = new Bank().add(itemToEquip.id, quantity);
-	if (!bank.has(cost)) return `You don't own ${cost}.`;
+	if (!bank.has(cost)) return `You don't own ${remapBank(user, cost)}.`;
 
 	const dbKey = `gear_${setup}` as const;
 	const allGear = user.gear;
