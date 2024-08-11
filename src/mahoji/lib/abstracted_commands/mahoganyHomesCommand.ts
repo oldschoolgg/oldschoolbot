@@ -141,7 +141,7 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 
 export async function mahoganyHomesPointsCommand(user: MUser) {
 	const balance = user.user.carpenter_points;
-	return `You have **${balance.toLocaleString()}** Mahogany Homes points.`
+	return `You have **${balance.toLocaleString()}** Mahogany Homes points.`;
 }
 
 export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {
