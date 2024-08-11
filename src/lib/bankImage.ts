@@ -3,7 +3,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import type { SKRSContext2D } from '@napi-rs/canvas';
 import { Canvas, GlobalFonts, Image, loadImage } from '@napi-rs/canvas';
-import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import { cleanString, formatItemStackQuantity, generateHexColorForCashStack, Stopwatch } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
@@ -21,7 +21,7 @@ import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import type { BankSortMethod } from '../lib/sorts';
 import { BankSortMethods, sorts } from '../lib/sorts';
 import type { ItemBank } from '../lib/types';
-import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
+import { fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
@@ -277,7 +277,7 @@ export class BankImageTask {
 	public treeImage!: Image;
 	public ready!: Promise<void>;
 	public spriteSheetImage!: Image;
-	public spriteSheetData!: Record<string, [number,number,number,number]>;
+	public spriteSheetData!: Record<string, [number, number, number, number]>;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -314,8 +314,11 @@ export class BankImageTask {
 			};
 		}
 
-		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.png'));
-		this.spriteSheetData = JSON.parse(await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' }));
+		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.webp'));
+		this.spriteSheetData = JSON.parse(
+			await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' })
+		);
+		console.log(this.spriteSheetData[23768]);
 		await this.run();
 	}
 
@@ -415,32 +418,87 @@ export class BankImageTask {
 		}
 	}
 
-	drawItemIDSprite(itemID: number, ctx: SKRSContext2D, x: number, y: number, user?: MUser) {
+	async drawItemIDSprite({
+		itemID,
+		ctx,
+		x,
+		y,
+		outline
+	}: {
+		itemID: number;
+		ctx: SKRSContext2D;
+		x: number;
+		y: number;
+		outline?: { outlineColor: string; outlineWidth: number; alpha: number };
+	}) {
+		const t = new Stopwatch();
 		const data = this.spriteSheetData[itemID];
+		const drawOptions = {
+			image: this.spriteSheetImage,
+			sourceX: -1,
+			sourceY: -1,
+			sourceWidth: -1,
+			sourceHeight: -1,
+			destX: -1,
+			destY: -1
+		};
 
-		if (!data){
-			const image = this.getItemImage(itemID);
-			if (image) {
-				ctx.drawImage(image, x, y);
-			}
-			return;
+		if (!data) {
+			console.log(`Item ${itemID} has no sprite data.`);
+			const image = await this.getItemImage(itemID);
+			drawOptions.sourceWidth = image.width;
+			drawOptions.sourceHeight = image.height;
+			drawOptions.sourceX = 0;
+			drawOptions.sourceY = 0;
+			drawOptions.image = image;
+		} else {
+			const [sX, sY, width, height] = data;
+			drawOptions.sourceX = sX;
+			drawOptions.sourceY = sY;
+			drawOptions.sourceWidth = width;
+			drawOptions.sourceHeight = height;
 		}
-		const [sX, sY, sW, sH] = data;
+
+		drawOptions.destX = floor(x + (itemSize - drawOptions.sourceWidth) / 2) + 2;
+		drawOptions.destY = floor(y + (itemSize - drawOptions.sourceHeight) / 2);
+
+		if (outline) {
+			const { outlineColor, outlineWidth, alpha } = outline;
+			const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1];
+			const temporaryCanvas = new Canvas(
+				drawOptions.sourceWidth + (outlineWidth + 2),
+				drawOptions.sourceHeight + (outlineWidth + 2)
+			);
+			const temporaryCtx = temporaryCanvas.getContext('2d');
+			for (let i = 0; i < dArr.length; i += 2) {
+				temporaryCtx.drawImage(drawOptions.image, dArr[i] * outlineWidth, dArr[i + 1] * outlineWidth);
+			}
+			temporaryCtx.globalAlpha = alpha;
+			temporaryCtx.globalCompositeOperation = 'source-in';
+			temporaryCtx.fillStyle = outlineColor;
+			temporaryCtx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+			temporaryCtx.globalCompositeOperation = 'source-over';
+			ctx.drawImage(
+				temporaryCtx.canvas,
+				drawOptions.destX,
+				drawOptions.destY,
+				drawOptions.sourceWidth + (outlineWidth + 2),
+				drawOptions.sourceHeight + (outlineWidth + 2)
+			);
+		}
+
 		ctx.drawImage(
-				this.spriteSheetImage,
-
-				sX,
-				sY,
-
-				sW,
-				sH,
-
-				x,
-				y,
-
-				sW,
-				sH
+			drawOptions.image,
+			drawOptions.sourceX,
+			drawOptions.sourceY,
+			drawOptions.sourceWidth,
+			drawOptions.sourceHeight,
+			drawOptions.destX,
+			drawOptions.destY,
+			drawOptions.sourceWidth,
+			drawOptions.sourceHeight
 		);
+		console.log(`Finished drawing item in ${t.stop()}`);
 	}
 
 	async fetchAndCacheImage(itemID: number) {
@@ -560,7 +618,7 @@ export class BankImageTask {
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
 		verticalSpacer = 0,
-		user?: MUser
+		_user?: MUser
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -577,20 +635,17 @@ export class BankImageTask {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			const [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id, user);
-			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
-			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
+			
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 
-			const x = floor(xLoc + (itemSize - itemWidth) / 2) + 2;
-			const y = floor(yLoc + (itemSize - itemHeight) / 2);
-
-			if (isNewCLItem) {
-				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
-			} else {
-				this.drawItemIDSprite(item.id, ctx, x, y);
-			}
+			await this.drawItemIDSprite({
+				itemID: item.id,
+				ctx,
+				x: xLoc,
+				y: yLoc,
+				outline: isNewCLItem ? { outlineColor: '#ac7fff', outlineWidth: 1, alpha: 1 } : undefined
+			});
 
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
@@ -649,6 +704,7 @@ export class BankImageTask {
 		collectionLog?: Bank;
 		mahojiFlags?: BankFlag[];
 	}): Promise<BankImageResult> {
+		const a = new Stopwatch();
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));
@@ -806,6 +862,7 @@ export class BankImageTask {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
 
+		a.check("Preparation");
 		await this.drawItems(
 			ctx,
 			compact,
@@ -821,7 +878,9 @@ export class BankImageTask {
 			user
 		);
 
+		a.check("Drawing items");
 		const image = await canvas.encode('png');
+		a.check("encode");
 
 		return {
 			image,

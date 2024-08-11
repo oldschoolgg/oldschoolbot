@@ -15,7 +15,6 @@ import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllComm
 import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
-import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -109,75 +108,23 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	};
 }
 
-async function gearEquipMultiCommand(
-	user: MUser,
-	interaction: ChatInputCommandInteraction,
-	setup: string,
-	items: string
-) {
-	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
-	if (setup === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
-			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
-		);
-	}
-
-	// We must update the user after any confirmation because the bank/gear could change from something else.
-	await user.sync();
-	const {
-		success: resultSuccess,
-		failMsg,
-		skillFailBank,
-		equippedGear,
-		equipBank,
-		unequipBank
-	} = gearEquipMultiImpl(user, setup, items);
-	if (!resultSuccess) return failMsg!;
-
-	const dbKey = `gear_${setup}` as const;
-	const { newUser } = await user.update({
-		[dbKey]: equippedGear
-	});
-	await transactItems({
-		userID: user.id,
-		filterLoot: false,
-		itemsToRemove: equipBank,
-		itemsToAdd: unequipBank
-	});
-
-	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
-	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
-	if (skillFailBank!.length > 0) {
-		content += `\nThese items failed to be equipped as you don't have the requirements: ${skillFailBank}.`;
-	}
-	return {
-		content,
-		files: [{ name: 'gear.jpg', attachment: image }]
-	};
-}
-
 export async function gearEquipCommand(args: {
 	interaction: ChatInputCommandInteraction;
 	userID: string;
 	setup: string;
 	item: string | undefined;
-	items: string | undefined;
 	preset: string | undefined;
 	quantity: number | undefined;
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { interaction, userID, setup, item, items, preset, quantity: _quantity, auto } = args;
+	const { interaction, userID, setup, item, preset, quantity: _quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	const user = await mUserFetch(userID);
 	if (minionIsBusy(user.id)) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
-	if (items) {
-		return gearEquipMultiCommand(user, interaction, setup, items);
-	}
 	if (setup === 'other' && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}

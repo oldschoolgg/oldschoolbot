@@ -11,8 +11,8 @@ import Buyables from '../src/lib/data/buyables/buyables';
 import Createables from '../src/lib/data/createables';
 
 const iconsDir = './item/icon';
-const outputImageFilePath = './spritesheet.png';
-const outputJsonFilePath = './spritesheet.json';
+const outputImageFilePath = './src/lib/resources/images/spritesheet.png';
+const outputJsonFilePath = './src/lib/resources/images/spritesheet.json';
 
 const manualIDs = [
 	11139, 25500, 21724, 26280, 24301, 19687, 22695, 24327, 3469, 13283, 12895, 21845, 22715, 21842, 7775, 25920, 26310,
@@ -75,7 +75,7 @@ const generateJsonData = (result: Spritesmith.Result): Record<string, any> => {
 	const jsonData: Record<string, any> = {};
 	for (const [filePath, data] of Object.entries(result.coordinates)) {
 		const fileName = path.basename(filePath, '.png');
-		jsonData[fileName] = [data.x,data.y,data.width,data.height];
+		jsonData[fileName] = [data.x, data.y, data.width, data.height];
 	}
 	return jsonData;
 };
@@ -86,7 +86,6 @@ const main = async () => {
 		if (pngFiles.length === 0) {
 			throw new Error('No PNG files found in the directory');
 		}
-      console.log(pngFiles);
 
 		const filesToDo = [];
 		for (const id of itemsMustBeInSpritesheet) {
@@ -94,14 +93,17 @@ const main = async () => {
 			if (!item) {
 				throw new Error(`Item with ID ${id} not found`);
 			}
-			if (!pngFiles.some(file => file.endsWith( `${item.id}.png`))) {
+			if (!pngFiles.some(file => file.endsWith(`${item.id}.png`))) {
 				console.log(`Item ${item.name} (${item.id}) not found in spritesheet, adding...`);
 			} else {
 				filesToDo.push(`${item.id}.png`);
 			}
 		}
 
-		const result = await createSpriteSheet(filesToDo.map(p => path.join("item", "icon", p)), outputImageFilePath);
+		const result = await createSpriteSheet(
+			filesToDo.map(p => path.join('item', 'icon', p)),
+			outputImageFilePath
+		);
 		const jsonData = generateJsonData(result);
 		await fs.writeFile(outputJsonFilePath, JSON.stringify(jsonData, null, 2));
 		console.log('Spritesheet and JSON created successfully!');

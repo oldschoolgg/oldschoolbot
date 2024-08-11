@@ -2,6 +2,7 @@ import type { Bank } from 'oldschooljs';
 
 import type { BankFlag } from '../bankImage';
 import type { Flags } from '../minions/types';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 
 interface MakeBankImageOptions {
 	bank: Bank;
@@ -27,6 +28,8 @@ export async function makeBankImage({
 }: MakeBankImageOptions) {
 	const realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
+
+	const stopwatch = new Stopwatch();
 	const { image, isTransparent } = await bankImageGenerator.generateBankImage({
 		bank,
 		title,
@@ -36,6 +39,7 @@ export async function makeBankImage({
 		collectionLog: previousCL,
 		mahojiFlags
 	});
+	console.log(`Generated bank image in ${stopwatch.stop()}`);
 
 	return {
 		file: {

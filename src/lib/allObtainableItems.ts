@@ -123,7 +123,7 @@ for (const item of [
 	Mining.Ores.map(i => i.id),
 	RandomEvents.map(i => i.loot.allItems),
 	RandomEvents.map(i => i.outfit),
-	allOpenables.map(i => i.allItems),
+	allOpenables.map(i => [i.allItems, i.id, i.openedItem.id]),
 	RawJunkTable.allItems,
 	trawlerFish.map(i => i.id),
 	rewardsGuardianTable.allItems,
@@ -144,7 +144,7 @@ for (const item of [
 	HardEncounterLoot.allItems,
 	Woodcutting.Logs.filter(i => i.lootTable).map(i => i.lootTable?.allItems)
 ]
-	.flat(2)
+	.flat(100)
 	.filter(notEmpty)) {
 	ALL_OBTAINABLE_ITEMS.add(item);
 }
