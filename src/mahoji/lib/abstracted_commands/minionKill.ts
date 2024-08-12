@@ -477,7 +477,7 @@ export async function minionKillCommand(
 					: '';
 	}
 
-	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
+	if (isDragon && monster.name.toLowerCase() !== 'vorkath' && monster.name.toLowerCase() !== 'queen black dragon') {
 		applyDragonBoost();
 	}
 
@@ -1275,20 +1275,24 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	}
 
 	let isDragon = false;
-	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
+	if (
+		monster.name.toLowerCase() !== 'vorkath' &&
+		monster.name.toLowerCase() !== 'queen black dragon' &&
+		osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
+	) {
 		isDragon = true;
 		if (
 			user.hasEquippedOrInBank('Dragon hunter lance') &&
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 20);
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			ownedBoostItems.push('Dragon hunter lance');
-			totalItemBoost += 20;
+			totalItemBoost += 15;
 		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 20);
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			ownedBoostItems.push('Dragon hunter crossbow');
-			totalItemBoost += 20;
+			totalItemBoost += 15;
 		}
 	}
 	// poh boosts
