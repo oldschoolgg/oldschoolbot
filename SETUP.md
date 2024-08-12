@@ -15,7 +15,7 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 2. Install [Postgres 16](https://www.postgresql.org/download/) and PGAdmin4 for interacting with postgres (optional, but helpful)
 3. Install Yarn using: `npm i -g yarn`
 4. Clone the repo: `git clone https://github.com/oldschoolgg/oldschoolbot.git`
-5. Run `corepack enable` and `yarn` in the root of the repo.
+5. Run the following commands in the root of the repo: `corepack enable`, `yarn`, `npx prisma db push` and `npx prisma db push --schema ./prisma/robochimp.prisma`
 
 ### Configuration
 

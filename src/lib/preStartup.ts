@@ -1,3 +1,4 @@
+import { noOp } from 'e';
 import { syncCustomPrices } from '../mahoji/lib/events';
 import { syncActivityCache } from './Task';
 import { cacheBadges } from './badges';
@@ -5,6 +6,7 @@ import { syncBlacklists } from './blacklists';
 import { GrandExchange } from './grandExchange';
 import { cacheGEPrices } from './marketPrices';
 import { populateRoboChimpCache } from './perkTier';
+import { RawSQL } from './rawSql';
 import { runStartupScripts } from './startupScripts';
 import { logWrapFn } from './util';
 import { syncActiveUserIDs } from './util/cachedUserIDs';
@@ -21,6 +23,7 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 		cacheBadges(),
 		GrandExchange.init(),
 		populateRoboChimpCache(),
-		cacheGEPrices()
+		cacheGEPrices(),
+		prisma.$queryRawUnsafe(RawSQL.updateAllUsersCLArrays()).then(noOp)
 	]);
 });

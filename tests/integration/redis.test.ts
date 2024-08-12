@@ -15,7 +15,7 @@ test('Should add patron badge', async () => {
 	const user = await createTestUser();
 	expect(user.user.badges).not.includes(BadgesEnum.Patron);
 	const _redis = makeSender();
-	_redis.publish({
+	await _redis.publish({
 		type: 'patron_tier_change',
 		discord_ids: [user.id],
 		new_tier: 1,
@@ -31,7 +31,7 @@ test('Should remove patron badge', async () => {
 	const user = await createTestUser(undefined, { badges: [BadgesEnum.Patron] });
 	expect(user.user.badges).includes(BadgesEnum.Patron);
 	const _redis = makeSender();
-	_redis.publish({
+	await _redis.publish({
 		type: 'patron_tier_change',
 		discord_ids: [user.id],
 		new_tier: 0,
@@ -52,7 +52,7 @@ test('Should add to cache', async () => {
 		}))
 	});
 	const _redis = makeSender();
-	_redis.publish({
+	await _redis.publish({
 		type: 'patron_tier_change',
 		discord_ids: users.map(u => u.id),
 		new_tier: 5,
@@ -76,7 +76,7 @@ test('Should remove from cache', async () => {
 		}))
 	});
 	const _redis = makeSender();
-	_redis.publish({
+	await _redis.publish({
 		type: 'patron_tier_change',
 		discord_ids: users.map(u => u.id),
 		new_tier: 0,

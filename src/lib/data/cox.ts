@@ -241,11 +241,11 @@ export const minimumCoxSuppliesNeeded = new Bank({
 export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): Promise<string | null> {
 	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
 	if (!hasHerbalist) {
-		return 'nobody with atleast level 78 Herblore';
+		return 'nobody with at least level 78 Herblore';
 	}
 	const hasFarmer = users.some(u => u.skillLevel(SkillsEnum.Farming) >= 55);
 	if (!hasFarmer) {
-		return 'nobody with atleast level 55 Farming';
+		return 'nobody with at least level 55 Farming';
 	}
 	const suppliesNeeded = minimumCoxSuppliesNeeded.clone().multiply(quantity);
 	const userWithoutSupplies = users.find(u => !u.bank.has(suppliesNeeded));

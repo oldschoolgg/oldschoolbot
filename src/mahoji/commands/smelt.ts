@@ -164,7 +164,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
 			const gp = user.GP;
 			if (gp < coinsToRemove) {
-				return `You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`;
+				return `You need at least ${coinsToRemove} GP to work at the Blast Furnace.`;
 			}
 
 			cost.add('Coins', coinsToRemove);
