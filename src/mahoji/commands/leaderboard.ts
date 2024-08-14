@@ -883,7 +883,7 @@ async function leaguesPointsLeaderboard(interaction: ChatInputCommandInteraction
 }
 
 async function leastCompletedLeagueTasksLb() {
-	const taskCounts = await roboChimpClient.$queryRaw<{ task_id: number; qty: number }[]>`SELECT task_id, count(*) AS qty
+	const taskCounts = await roboChimpClient.$queryRaw<{ task_id: number; qty: number }[]>`SELECT task_id, count(*)::int AS qty
 FROM (
    SELECT unnest(leagues_completed_tasks_ids) AS task_id
    FROM public.user
