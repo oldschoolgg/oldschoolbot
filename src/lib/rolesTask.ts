@@ -15,6 +15,7 @@ import { TeamLoot } from './simulation/TeamLoot';
 import { SkillsArray } from './skilling/types';
 import type { ItemBank } from './types';
 import { fetchMultipleCLLeaderboards } from './util/clLeaderboard';
+import { logError } from './util/logError';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),
@@ -365,12 +366,17 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 	for (const [name, fn] of tup) {
 		promiseQueue.add(async () => {
 			const stopwatch = new Stopwatch();
-			const res = await fn();
-			console.log(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
-			const [validResults, invalidResults] = partition(res, i => RoleResultSchema.safeParse(i).success);
-			results.push(...validResults);
-			if (invalidResults.length > 0) {
-				console.error(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
+			try {
+				const res = await fn();
+				const [validResults, invalidResults] = partition(res, i => RoleResultSchema.safeParse(i).success);
+				results.push(...validResults);
+				if (invalidResults.length > 0) {
+					logError(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
+				}
+			} catch (err) {
+				logError(`[RolesTask] Error in ${name}: ${err}`);
+			} finally {
+				debugLog(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
 			}
 		});
 	}
