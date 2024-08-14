@@ -29,6 +29,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -621,7 +622,13 @@ Date: ${dateFm(date)}`;
 			for (const action of actions) {
 				if (options.action[action.name]) {
 					if (!action.allowed(adminUser)) return randArrItem(gifs);
-					return action.run();
+					try {
+						const result = await action.run();
+						return result;
+					} catch (err) {
+						logError(err);
+						return 'An error occurred.';
+					}
 				}
 			}
 		}
