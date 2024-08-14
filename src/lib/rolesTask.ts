@@ -1,4 +1,4 @@
-import { noOp, uniqueArr } from 'e';
+import { noOp, notEmpty, uniqueArr } from 'e';
 
 import { SupportServer } from '../config';
 import { BadgesEnum, Roles } from '../lib/constants';
@@ -19,7 +19,7 @@ import {
 	returnStringOrFile
 } from '../lib/util';
 import { ClueTiers } from './clues/clueTiers';
-import { RawSQL } from './rawSql';
+import { RawSQL, loggedRawPrismaQuery } from './rawSql';
 import { TeamLoot } from './simulation/TeamLoot';
 import { SkillsArray } from './skilling/types';
 import type { ItemBank } from './types';
@@ -478,8 +478,8 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 
 	debugLog(`Finished role functions, ${results.length} results`);
 
-	const allBadgeIDs = uniqueArr(results.map(i => i.badge));
-	const allRoleIDs = uniqueArr(results.map(i => i.roleID));
+	const allBadgeIDs = uniqueArr(results.map(i => i.badge)).filter(notEmpty);
+	const allRoleIDs = uniqueArr(results.map(i => i.roleID)).filter(notEmpty);
 
 	if (!dryRun) {
 		const roleNames = new Map<string, string>();
@@ -489,7 +489,7 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 		// Remove all top badges from all users (and add back later)
 		debugLog('Removing badges...');
 		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
-		await prisma.$queryRawUnsafe(`
+		await loggedRawPrismaQuery(`
 UPDATE users
 SET badges = badges - ${badgeIDs}
 WHERE badges && ${badgeIDs}
