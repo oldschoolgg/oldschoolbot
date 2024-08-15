@@ -164,10 +164,11 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 
 	let quantity = 1;
 	if ('q' in dataCopy) {
-		quantity = (dataCopy as any).q;
+		quantity = (dataCopy as any).q; 
 	} else if ('quantity' in dataCopy) {
 		quantity = (dataCopy as any).quantity;
 	}
+	if (Number.isNaN(quantity)) return;
 
 	if (data.type === 'TombsOfAmascut') {
 		const wipedRoom = (data as TOAOptions).wipedRoom ?? 0;
