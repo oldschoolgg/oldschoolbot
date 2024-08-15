@@ -164,7 +164,7 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 
 	let quantity = 1;
 	if ('q' in dataCopy) {
-		quantity = (dataCopy as any).q; 
+		quantity = (dataCopy as any).q;
 	} else if ('quantity' in dataCopy) {
 		quantity = (dataCopy as any).quantity;
 	}
