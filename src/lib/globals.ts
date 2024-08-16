@@ -1,10 +1,11 @@
 import { isMainThread } from 'node:worker_threads';
-import { TSRedis } from '@oldschoolgg/toolkit/dist/lib/TSRedis';
+import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
 import { PrismaClient } from '@prisma/client';
 import { PrismaClient as RobochimpPrismaClient } from '@prisma/robochimp';
 
 import { production } from '../config';
 import { globalConfig } from './constants';
+import { handleDeletedPatron, handleEditPatron } from './patreonUtils';
 
 declare global {
 	var prisma: PrismaClient;
@@ -19,12 +20,7 @@ function makePrismaClient(): PrismaClient {
 	}
 
 	return new PrismaClient({
-		log: [
-			{
-				emit: 'event',
-				level: 'query'
-			}
-		]
+		log: ['info', 'warn', 'error']
 	});
 }
 global.prisma = global.prisma || makePrismaClient();
@@ -35,7 +31,9 @@ function makeRobochimpPrismaClient(): RobochimpPrismaClient {
 		throw new Error('Robochimp client should only be created on the main thread.');
 	}
 
-	return new RobochimpPrismaClient();
+	return new RobochimpPrismaClient({
+		log: ['info', 'warn', 'error']
+	});
 }
 global.roboChimpClient = global.roboChimpClient || makeRobochimpPrismaClient();
 
@@ -47,3 +45,14 @@ function makeRedisClient(): TSRedis {
 	return new TSRedis({ mocked: !globalConfig.redisPort, port: globalConfig.redisPort });
 }
 global.redis = global.redis || makeRedisClient();
+
+global.redis.subscribe(message => {
+	debugLog(`Received message from Redis: ${JSON.stringify(message)}`);
+	if (message.type === 'patron_tier_change') {
+		if (message.new_tier === 0) {
+			return handleDeletedPatron(message.discord_ids);
+		} else {
+			return handleEditPatron(message.discord_ids);
+		}
+	}
+});

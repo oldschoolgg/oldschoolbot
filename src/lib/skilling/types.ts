@@ -331,7 +331,7 @@ export enum HunterTechniqueEnum {
 	BoxTrapping = 'box trapping',
 	ButterflyNetting = 'butterfly netting',
 	DeadfallTrapping = 'deadfall trapping',
-	Falconry = 'falconry',
+	Falconry = 'hawking',
 	MagicBoxTrapping = 'magic box trapping',
 	NetTrapping = 'net trapping',
 	PitfallTrapping = 'pitfall trapping',

@@ -9,9 +9,7 @@ async function getPostgresVersion() {
 		const version = result[0].version.split(',')[0];
 		return version;
 	} catch (err) {
-		await client.$disconnect();
-		console.log('Failed to execute postgres query. Is postgres running?');
-		process.exit(1);
+		return 'UNKNOWN';
 	} finally {
 		await client.$disconnect();
 	}

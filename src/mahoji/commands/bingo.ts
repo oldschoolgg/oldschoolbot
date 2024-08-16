@@ -13,9 +13,18 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { clImageGenerator } from '../../lib/collectionLogTask';
-import { BOT_TYPE, Emoji, usernameCache } from '../../lib/constants';
+import { BOT_TYPE, Emoji } from '../../lib/constants';
 
-import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
+import {
+	channelIsSendable,
+	dateFm,
+	getUsername,
+	getUsernameSync,
+	isValidDiscordSnowflake,
+	isValidNickname,
+	md5sum,
+	toKMB
+} from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -86,7 +95,7 @@ async function bingoTeamLeaderboard(
 				.map(
 					(team, j) =>
 						`${getPos(i, j)}** ${`${team.trophy?.emoji} ` ?? ''}${team.participants
-							.map(pt => usernameCache.get(pt.user_id) ?? '?')
+							.map(pt => getUsernameSync(pt.user_id))
 							.join(', ')}:** ${team.tilesCompletedCount.toLocaleString()}`
 				)
 				.join('\n')
@@ -666,7 +675,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			const fee = BOT_TYPE === 'OSB' ? 20_000_000 : 50_000_000;
 			const creationCost = new Bank().add('Coins', fee);
 			if (user.GP < creationCost.amount('Coins')) {
-				return `You need atleast ${creationCost} to create a bingo.`;
+				return `You need at least ${creationCost} to create a bingo.`;
 			}
 
 			const channel = globalClient.channels.cache.get(options.create_bingo.notifications_channel_id);
@@ -704,9 +713,9 @@ export const bingoCommand: OSBMahojiCommand = {
 				return 'Team size must be between 1 and 5.';
 			}
 
-			// Start date must be atleast 3 hours into the future
+			// Start date must be at least 3 hours into the future
 			if (createOptions.start_date.getTime() < Date.now() + Time.Minute * 3) {
-				return 'Start date must be atleast 3 minutes into the future.';
+				return 'Start date must be at least 3 minutes into the future.';
 			}
 
 			// Start date cannot be more than 31 days into the future
@@ -804,9 +813,7 @@ The creator of the bingo (${userMention(
 								teams
 									.map(team =>
 										[
-											team.participants
-												.map(u => usernameCache.get(u.user_id) ?? u.user_id)
-												.join(','),
+											team.participants.map(u => getUsernameSync(u.user_id)).join(','),
 											team.tilesCompletedCount,
 											team.trophy?.item.name ?? 'No Trophy'
 										].join('\t')
@@ -907,7 +914,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 
 				const cost = new Bank().add('Coins', amount);
 				if (user.GP < cost.amount('Coins')) {
-					return `You need atleast ${cost} to add that much GP to the prize pool.`;
+					return `You need at least ${cost} to add that much GP to the prize pool.`;
 				}
 
 				await handleMahojiConfirmation(
@@ -946,22 +953,20 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					);
 
 					for (const userID of team.participants.map(t => t.user_id)) {
-						const reclaimableItems: Prisma.ReclaimableItemCreateManyInput[] = trophiesToReceive.map(
-							trophy => ({
+						const reclaimableItems: Prisma.ReclaimableItemCreateManyInput[] = await Promise.all(
+							trophiesToReceive.map(async trophy => ({
 								name: `Bingo Trophy (${trophy.item.name})`,
 								quantity: 1,
 								key: `bso-bingo-2-${trophy.item.id}`,
 								item_id: trophy.item.id,
 								description: `Awarded for placing in the top ${trophy.percentile}% of ${
 									bingo.title
-								}. Your team (${team.participants
-									.map(t => usernameCache.get(t.user_id) ?? t.user_id)
-									.join(', ')}) placed ${formatOrdinal(team.rank)} with ${
+								}. Your team (${(await Promise.all(team.participants.map(async t => await getUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${
 									team.tilesCompletedCount
 								} tiles completed.`,
 								date: bingo.endDate.toISOString(),
 								user_id: userID
-							})
+							}))
 						);
 						toInsert.push(...reclaimableItems);
 					}

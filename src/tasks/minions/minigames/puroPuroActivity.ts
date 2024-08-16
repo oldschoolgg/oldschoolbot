@@ -164,7 +164,7 @@ export const puroPuroTask: MinionTask = {
 			itemsToRemove: itemCost
 		});
 
-		userStatsBankUpdate(user.id, 'puropuro_implings_bank', bank);
+		userStatsBankUpdate(user, 'puropuro_implings_bank', bank);
 
 		handleTripFinish(user, channelID, str, undefined, data, bank);
 	}

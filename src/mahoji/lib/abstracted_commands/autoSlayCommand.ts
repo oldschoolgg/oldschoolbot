@@ -17,7 +17,7 @@ interface AutoslayLink {
 	// Name and Monster must be specified if either is.
 	efficientName?: string;
 	efficientMonster?: number;
-	efficientMethod?: PvMMethod;
+	efficientMethod?: PvMMethod | PvMMethod[];
 	slayerMasters?: SlayerMasterEnum[];
 }
 
@@ -147,7 +147,7 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.SmokeDevil.id,
 		efficientName: Monsters.SmokeDevil.name,
 		efficientMonster: Monsters.SmokeDevil.id,
-		efficientMethod: 'barrage'
+		efficientMethod: ['barrage', 'cannon']
 	},
 	{
 		monsterID: Monsters.DarkBeast.id,
@@ -216,13 +216,13 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.AbyssalDemon.id,
 		efficientName: Monsters.AbyssalDemon.name,
 		efficientMonster: Monsters.AbyssalDemon.id,
-		efficientMethod: 'barrage'
+		efficientMethod: ['barrage', 'cannon']
 	},
 	{
 		monsterID: Monsters.Ankou.id,
 		efficientName: Monsters.Ankou.name,
 		efficientMonster: Monsters.Ankou.id,
-		efficientMethod: 'barrage'
+		efficientMethod: ['barrage', 'cannon']
 	},
 	{
 		monsterID: Monsters.BlackDemon.id,
@@ -240,7 +240,7 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.Bloodveld.id,
 		efficientName: Monsters.Bloodveld.name,
 		efficientMonster: Monsters.Bloodveld.id,
-		efficientMethod: 'barrage'
+		efficientMethod: 'none'
 	},
 	{
 		monsterID: Monsters.ChaosDruid.id,
@@ -264,7 +264,7 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.DustDevil.id,
 		efficientName: Monsters.DustDevil.name,
 		efficientMonster: Monsters.DustDevil.id,
-		efficientMethod: 'barrage'
+		efficientMethod: ['barrage', 'cannon']
 	},
 	{
 		monsterID: Monsters.ElderChaosDruid.id,
@@ -318,7 +318,7 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.Jelly.id,
 		efficientName: Monsters.Jelly.name,
 		efficientMonster: Monsters.Jelly.id,
-		efficientMethod: 'barrage'
+		efficientMethod: ['barrage', 'cannon']
 	},
 	{
 		monsterID: Monsters.LesserDemon.id,
@@ -345,10 +345,10 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientMethod: 'cannon'
 	},
 	{
-		monsterID: Monsters.Nechryael.id,
-		efficientName: Monsters.Nechryael.name,
-		efficientMonster: Monsters.Nechryael.id,
-		efficientMethod: 'barrage'
+		monsterID: Monsters.GreaterNechryael.id,
+		efficientName: Monsters.GreaterNechryael.name,
+		efficientMonster: Monsters.GreaterNechryael.id,
+		efficientMethod: ['barrage', 'cannon']
 	},
 	{
 		monsterID: Monsters.RevenantImp.id,
@@ -485,7 +485,7 @@ export async function autoSlayCommand({
 				name: ehpMonster.efficientName
 			};
 			if (ehpMonster.efficientMethod) {
-				args.method = ehpMonster.efficientMethod;
+				args.method = ehpMonster.efficientMethod as unknown as CommandOptions;
 			}
 			runCommand({
 				commandName: 'k',

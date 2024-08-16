@@ -63,7 +63,7 @@ import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 import getOSItem from './getOSItem';
-import { deferInteraction } from './interactionReply';
+import { interactionReply } from './interactionReply';
 
 const taskCanBeRepeated = (activity: Activity) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
@@ -88,7 +88,7 @@ const taskCanBeRepeated = (activity: Activity) => {
 const tripHandlers = {
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'clue',
-		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID, implings: getOSItem(data.implingID!).name })
+		args: (data: ClueActivityTaskOptions) => ({ tier: data.ci, implings: getOSItem(data.implingID!).name })
 	},
 	[activity_type_enum.SpecificQuest]: {
 		commandName: 'm',
@@ -337,7 +337,7 @@ const tripHandlers = {
 	[activity_type_enum.GroupMonsterKilling]: {
 		commandName: 'mass',
 		args: (data: GroupMonsterActivityTaskOptions) => ({
-			monster: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString()
+			monster: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString()
 		})
 	},
 	[activity_type_enum.Herblore]: {
@@ -409,10 +409,10 @@ const tripHandlers = {
 			let method: PvMMethod = 'none';
 			if (data.usingCannon) method = 'cannon';
 			if (data.chinning) method = 'chinning';
-			else if (data.burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
-			else if (data.burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
+			else if (data.bob === SlayerActivityConstants.IceBarrage) method = 'barrage';
+			else if (data.bob === SlayerActivityConstants.IceBurst) method = 'burst';
 			return {
-				name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString(),
+				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString(),
 				quantity: data.iQty,
 				method,
 				wilderness: data.isInWilderness
@@ -699,7 +699,9 @@ export async function repeatTrip(
 	interaction: ButtonInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
 ) {
-	await deferInteraction(interaction);
+	if (!data || !data.data || !data.type) {
+		return interactionReply(interaction, { content: "Couldn't find any trip to repeat.", ephemeral: true });
+	}
 	const handler = tripHandlers[data.type];
 	return runCommand({
 		commandName: handler.commandName,
