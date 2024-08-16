@@ -111,18 +111,36 @@ export interface Burnable {
 }
 
 export interface Fish {
+	name: string;
+	alias?: string[];
 	level: number;
 	xp: number;
 	id: number;
-	name: string;
+	chance1Lvl1?: number;
+	chance1Lvl99?: number;
+	level2?: number;
+	xp2?: number;
+	id2?: number;
+	chance2Lvl1?: number;
+	chance2Lvl99?: number;
+	level3?: number;
+	xp3?: number;
+	id3?: number;
+	chance3Lvl1?: number;
+	chance3Lvl99?: number;
+
 	petChance?: number;
-	timePerFish: number;
+	clueScrollChance?: number;
+	lostTicks?: number;
+	bankingTime?: number;
+	ticksPerRoll?: number;
+
 	bait?: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
-	clueScrollChance?: number;
-	alias?: string[];
+
+	timePerFish?: number;
 }
 
 export interface Course {

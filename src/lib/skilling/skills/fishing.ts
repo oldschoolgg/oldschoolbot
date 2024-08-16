@@ -5,235 +5,306 @@ import { SkillsEnum } from '../types';
 
 const fishes: Fish[] = [
 	{
+		name: 'Shrimps/Anchovies',
 		level: 1,
 		xp: 10,
 		id: itemID('Raw shrimps'),
-		name: 'Shrimps',
+		chance1Lvl1: 0.1373, // catch chance for fish 1 at lvl 1
+		chance1Lvl99: 1.0000,
+
+		level2: 15,
+		xp2: 40,
+		id2: itemID('Raw anchovies'),
+		chance2Lvl1: 0.0937,
+		chance2Lvl99: 0.5039,
+
 		petChance: 435_165,
-		timePerFish: 3.6,
-		clueScrollChance: 870_330
+		clueScrollChance: 870_330,
+		lostTicks: 0.05, // percentage of ticks spent moving/dropping,
+		bankingTime: 30,
+		ticksPerRoll: 6
 	},
 	{
+		name: 'Sardine/Herring',
 		level: 5,
 		xp: 20,
 		id: itemID('Raw sardine'),
-		name: 'Sardine',
-		petChance: 528_000,
+		chance1Lvl1: 0.1267,
+		chance1Lvl99: 0.7539,
+
+		level2: 10,
+		xp2: 30,
+		id2: itemID('Raw herring'),
+		chance2Lvl1: 0.1273,
+		chance2Lvl99: 0.5039,
+
 		bait: itemID('Fishing bait'),
-		timePerFish: 3.6,
-		clueScrollChance: 1_056_000
+		petChance: 528_000,
+		clueScrollChance: 1_056_000,
+		lostTicks: 0.05,
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
+		name: 'Karambwanji',
 		level: 5,
 		xp: 20,
 		id: itemID('Raw karambwanji'),
-		name: 'Karambwanji',
+		chance1Lvl1: 0.3945,
+		chance1Lvl99: 0.9805,
+
 		petChance: 443_697,
 		qpRequired: 15,
-		timePerFish: 3.6,
-		clueScrollChance: 443_697
+		clueScrollChance: 443_697,
+		lostTicks: 0.01,
+		bankingTime: 0,
+		ticksPerRoll: 6
 	},
 	{
-		level: 10,
-		xp: 30,
-		id: itemID('Raw herring'),
-		name: 'Herring',
-		petChance: 528_000,
-		bait: itemID('Fishing bait'),
-		timePerFish: 3.6,
-		clueScrollChance: 1_056_000
-	},
-	{
-		level: 15,
-		xp: 40,
-		id: itemID('Raw anchovies'),
-		name: 'Anchovies',
-		petChance: 435_165,
-		timePerFish: 7,
-		clueScrollChance: 870_330
-	},
-	{
+		name: 'Mackerel/Cod/Bass',
 		level: 16,
 		xp: 20,
 		id: itemID('Raw mackerel'),
-		name: 'Mackerel',
+		chance1Lvl1: 0.0645,
+		chance1Lvl99: 0.2897,
+
+		level2: 23,
+		xp2: 45,
+		id2: itemID('Raw cod'),
+		chance2Lvl1: 0.0173,
+		chance2Lvl99: 0.2188,
+
+		level3: 46,
+		xp3: 100,
+		id3: itemID('Raw bass'),
+		bigFish: itemID('Big bass'),
+		bigFishRate: 1000,
+		chance3Lvl1: 0.0156,
+		chance3Lvl99: 0.1602,
+
 		petChance: 382_609,
-		timePerFish: 3.6,
-		clueScrollChance: 1_147_827
+		clueScrollChance: 1_147_827,
+		lostTicks: 0.05,
+		bankingTime: 25,
+		ticksPerRoll: 6
 	},
 	{
+		name: 'Trout/Salmon',
 		level: 20,
 		xp: 50,
 		id: itemID('Raw trout'),
-		name: 'Trout',
+		chance1Lvl1: 0.0174,
+		chance1Lvl99: 0.7538,
+
+		level2: 30,
+		xp2: 70,
+		id2: itemID('Raw salmon'),
+		chance2Lvl1: 0.0683,
+		chance2Lvl99: 0.3789,
+
 		petChance: 461_808,
 		bait: itemID('Feather'),
-		timePerFish: 4.5,
-		clueScrollChance: 923_616
+		clueScrollChance: 923_616,
+		lostTicks: 0.05,
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
-		level: 23,
-		xp: 45,
-		id: itemID('Raw cod'),
-		name: 'Cod',
-		petChance: 382_609,
-		timePerFish: 5,
-		clueScrollChance: 1_147_827
-	},
-	{
+		name: 'Pike',
 		level: 25,
 		xp: 60,
 		id: itemID('Raw pike'),
-		name: 'Pike',
+		chance1Lvl1: 0.0685,
+		chance1Lvl99: 0.3789,
+
 		petChance: 305_792,
 		bait: itemID('Fishing bait'),
-		timePerFish: 6,
-		clueScrollChance: 305_792
+		clueScrollChance: 305_792,
+		lostTicks: 0.05,
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
-		level: 30,
-		xp: 70,
-		id: itemID('Raw salmon'),
-		name: 'Salmon',
-		petChance: 461_808,
-		bait: itemID('Feather'),
-		timePerFish: 5.04,
-		clueScrollChance: 923_616
-	},
-	{
+		name: 'Tuna/Swordfish',
+		alias: ['sword, sf'],
 		level: 35,
 		xp: 80,
 		id: itemID('Raw tuna'),
-		name: 'Tuna',
+		chance1Lvl1: 0.0326,
+		chance1Lvl99: 0.2539,
+
+		level2: 50,
+		xp2: 100,
+		id2: itemID('Raw swordfish'),
+		bigFish: itemID('Big swordfish'),
+		bigFishRate: 2500,
+		chance2Lvl1: 0.0196,
+		chance2Lvl99: 0.1914,
+
 		petChance: 128_885,
-		timePerFish: 9.6,
-		clueScrollChance: 257_770
+		clueScrollChance: 257_770,
+		lostTicks: 0.05,
+		bankingTime: 25,
+		ticksPerRoll: 6
 	},
 	{
+		name: 'Cave eel',
 		level: 38,
 		xp: 80,
 		id: itemID('Raw cave eel'),
-		name: 'Cave eel',
-		timePerFish: 12.6
+		chance1Lvl1: 0.1900,
+		chance1Lvl99: 0.3164,
+		lostTicks: 0.05,
+		bankingTime: 40,
+		ticksPerRoll: 5
 	},
 	{
+		name: 'Lobster',
+		alias: ['lobs'],
 		level: 40,
 		xp: 90,
 		id: itemID('Raw lobster'),
-		name: 'Lobster',
+		chance1Lvl1: 0.0247,
+		chance1Lvl99: 0.3750,
 		petChance: 116_129,
-		timePerFish: 11,
-		clueScrollChance: 116_129
+		clueScrollChance: 116_129,
+		lostTicks: 0.05,
+		bankingTime: 25,
+		ticksPerRoll: 6
 	},
 	{
-		level: 46,
-		xp: 100,
-		id: itemID('Raw bass'),
-		name: 'Bass',
-		petChance: 382_609,
-		timePerFish: 10.3,
-		bigFish: itemID('Big bass'),
-		bigFishRate: 1000,
-		clueScrollChance: 1_147_827
-	},
-	{
-		level: 50,
-		xp: 100,
-		id: itemID('Raw swordfish'),
-		name: 'Swordfish',
-		alias: ['sword'],
-		petChance: 128_885,
-		timePerFish: 11,
-		bigFish: itemID('Big swordfish'),
-		bigFishRate: 2500,
-		clueScrollChance: 257_770
-	},
-	{
+		name: 'Monkfish',
+		alias: ['monk'],
 		level: 62,
 		xp: 120,
 		id: itemID('Raw monkfish'),
-		name: 'Monkfish',
-		alias: ['monk'],
+		chance1Lvl1: 0.1900,
+		chance1Lvl99: 0.3555,
 		petChance: 138_583,
 		qpRequired: 100,
-		timePerFish: 13.5,
-		clueScrollChance: 138_583
+		clueScrollChance: 138_583,
+		lostTicks: 0.10,
+		bankingTime: 20,
+		ticksPerRoll: 6
 	},
 	{
+		name: 'Karambwan',
+		alias: ['karam'],
 		level: 65,
 		xp: 50,
 		id: itemID('Raw karambwan'),
-		name: 'Karambwan',
+		chance1Lvl1: 0.0210,
+		chance1Lvl99: 0.6289,
 		petChance: 170_874,
 		bait: itemID('Raw karambwanji'),
-		timePerFish: 4.5,
-		clueScrollChance: 170_874
+		clueScrollChance: 170_874,
+		lostTicks: 0.00, // fishing spots never moves
+		bankingTime: 25,
+		ticksPerRoll: 4
 	},
 	{
+		name: 'Shark',
+		alias: ['shark'],
 		level: 76,
 		xp: 110,
 		id: itemID('Raw shark'),
-		name: 'Shark',
+		chance1Lvl1: 0.0102,
+		chance1Lvl99: 0.1602,
 		petChance: 82_243,
-		timePerFish: 30,
 		bigFish: itemID('Big shark'),
 		bigFishRate: 5000,
-		clueScrollChance: 82_243
+		clueScrollChance: 82_243,
+		lostTicks: 0.05,
+		bankingTime: 25,
+		ticksPerRoll: 6
 	},
 	{
+		name: 'Anglerfish',
+		alias: ['angler'],
 		level: 82,
 		xp: 120,
 		id: itemID('Raw anglerfish'),
-		name: 'Anglerfish',
-		alias: ['angler'],
+		chance1Lvl1: 0.0096,
+		chance1Lvl99: 0.1445,
 		petChance: 78_649,
 		bait: itemID('Sandworms'),
 		qpRequired: 40,
-		timePerFish: 18.75,
-		clueScrollChance: 78_649
+		clueScrollChance: 78_649,
+		lostTicks: 0.05,
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
+		name: 'Minnow',
+		alias: ['minnows'],
 		level: 82,
 		xp: 26.1,
 		id: itemID('Minnow'),
-		name: 'Minnow',
-		alias: ['minnows'],
+		chance1Lvl1: 0.6666, // no info on catch chance
+		chance1Lvl99: 0.9259, // handpicked to match wiki rates
 		petChance: 977_778,
 		qpRequired: 1,
-		timePerFish: 2.14,
-		clueScrollChance: 977_778
+		clueScrollChance: 977_778,
+		lostTicks: 0.25,
+		bankingTime: 0, // stackable
+		ticksPerRoll: 2
 	},
 	{
+		name: 'Dark crab',
+		alias: ['crab', 'dark'],
 		level: 85,
 		xp: 130,
 		id: itemID('Raw dark crab'),
-		name: 'Dark crab',
-		alias: ['crab', 'dark'],
+		chance1Lvl1: 0.0230,
+		chance1Lvl99: 0.1602,
 		petChance: 149_434,
 		bait: itemID('Dark fishing bait'),
-		timePerFish: 11.7,
-		clueScrollChance: 149_434
+		clueScrollChance: 149_434,
+		lostTicks: 0.05,
+		bankingTime: 0,
+		ticksPerRoll: 6
 	},
 	{
-		level: 48,
-		xp: 130,
-		id: itemID('Leaping trout'),
 		name: 'Barbarian fishing',
 		alias: ['barb', 'barbarian'],
+		level: 48,
+		xp: 50,
+		id: itemID('Leaping trout'),
+		chance1Lvl1: 32 / 255,
+		chance1Lvl99: 192 / 255,
+
+		level2: 58,
+		xp2: 70,
+		id2: itemID('Leaping salmon'),
+		chance2Lvl1: 16 / 255,
+		chance2Lvl99: 96 / 255,
+
+		level3: 70,
+		xp3: 80,
+		id3: itemID('Leaping sturgeon'),
+		chance3Lvl1: 8 / 255,
+		chance3Lvl99: 64 / 255,
+
 		petChance: 426_954,
 		bait: itemID('Feather'),
-		timePerFish: 3,
-		clueScrollChance: 1_280_862
+		clueScrollChance: 1_280_862,
+		lostTicks: 0.05,
+		bankingTime: 40,
+		ticksPerRoll: 5
 	},
 	{
+		name: 'Infernal eel',
 		level: 80,
 		xp: 95,
 		id: itemID('Infernal eel'),
-		name: 'Infernal eel',
 		petChance: 160_000,
 		bait: itemID('Fishing bait'),
-		timePerFish: 12.4,
-		clueScrollChance: 165_000
+		clueScrollChance: 165_000,
+		chance1Lvl1: 0.1253,
+		chance1Lvl99: 0.3672,
+		lostTicks: 0.10,
+		bankingTime: 0,
+		ticksPerRoll: 5
 	}
 ];
 

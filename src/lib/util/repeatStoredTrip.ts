@@ -289,8 +289,8 @@ const tripHandlers = {
 		args: (data: FarmingActivityTaskOptions) =>
 			data.autoFarmed
 				? {
-						auto_farm: {}
-					}
+					auto_farm: {}
+				}
 				: {}
 	},
 	[activity_type_enum.FightCaves]: {
@@ -306,7 +306,13 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
-		args: (data: FishingActivityTaskOptions) => ({ name: data.fishID, quantity: data.iQty })
+		args: (data: FishingActivityTaskOptions) => ({
+			name: data.fishID,
+			quantity: data.quantity,
+			powerfish: data.powerfish ?? false,
+			spirit_flakes: data.spirit_flakes ?? false
+		})
+
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
@@ -707,3 +713,4 @@ export async function repeatTrip(
 		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
 }
+
