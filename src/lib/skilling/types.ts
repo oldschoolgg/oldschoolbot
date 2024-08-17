@@ -116,18 +116,18 @@ export interface Fish {
 	level: number;
 	xp: number;
 	id: number;
-	chance1Lvl1?: number;
-	chance1Lvl99?: number;
+	intercept1?: number;
+	slope1?: number;
 	level2?: number;
 	xp2?: number;
 	id2?: number;
-	chance2Lvl1?: number;
-	chance2Lvl99?: number;
+	intercept2?: number;
+	slope2?: number;
 	level3?: number;
 	xp3?: number;
 	id3?: number;
-	chance3Lvl1?: number;
-	chance3Lvl99?: number;
+	intercept3?: number;
+	slope3?: number;
 
 	petChance?: number;
 	clueScrollChance?: number;

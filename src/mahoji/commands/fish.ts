@@ -88,9 +88,9 @@ function determineFishingTime(
 	}
 
 	// probabilities of catching a fish at the user's fishing lvl
-	let p1 = harpoonBoost * (fish.chance1Lvl99! - (99 - effFishLvl) * (fish.chance1Lvl99! - fish.chance1Lvl1!) / (99 - 1));
-	let p2 = fish.id2 === undefined ? 0 : harpoonBoost * (fish.chance2Lvl99! - (99 - effFishLvl) * (fish.chance2Lvl99! - fish.chance2Lvl1!) / (99 - 1));
-	let p3 = fish.id3 === undefined ? 0 : harpoonBoost * (fish.chance3Lvl99! - (99 - effFishLvl) * (fish.chance3Lvl99! - fish.chance2Lvl1!) / (99 - 1));
+	let p1 = harpoonBoost * (fish.intercept1! + (effFishLvl - 1) * fish.slope1!);
+	let p2 = fish.id2 === undefined ? 0 : harpoonBoost * (fish.intercept2! + (effFishLvl - 1) * fish.slope2!);
+	let p3 = fish.id3 === undefined ? 0 : harpoonBoost * (fish.intercept3! + (effFishLvl - 1) * fish.slope3!);
 
 	let ticksPerRoll = fish.ticksPerRoll!;
 	let lostTicks = fish.lostTicks!;
@@ -297,8 +297,8 @@ export const fishCommand: OSBMahojiCommand = {
 		if (fish.name === 'Dark crab') {
 			const [hasWildyElite] = await userhasDiaryTier(user, WildernessDiary.elite);
 			if (hasWildyElite) {
-				fish.chance1Lvl1 = 0.0961;
-				fish.chance1Lvl99 = 0.3439;
+				fish.intercept1 = 0.0961;
+				fish.slope1 = 0.3439;
 				boosts.push('Increased dark crab catch rate from having the Elite Wilderness Diary');
 			}
 		}
