@@ -14,17 +14,17 @@ import { updateBankSetting } from './util/updateBankSetting';
 export interface DegradeableItem {
 	item: Item;
 	settingsKey:
-		| 'tentacle_charges'
-		| 'sang_charges'
-		| 'celestial_ring_charges'
-		| 'ash_sanctifier_charges'
-		| 'serp_helm_charges'
-		| 'blood_fury_charges'
-		| 'tum_shadow_charges'
-		| 'blood_essence_charges'
-		| 'trident_charges'
-		| 'scythe_of_vitur_charges'
-		| 'venator_bow_charges';
+	| 'tentacle_charges'
+	| 'sang_charges'
+	| 'celestial_ring_charges'
+	| 'ash_sanctifier_charges'
+	| 'serp_helm_charges'
+	| 'blood_fury_charges'
+	| 'tum_shadow_charges'
+	| 'blood_essence_charges'
+	| 'trident_charges'
+	| 'scythe_of_vitur_charges'
+	| 'venator_bow_charges';
 	itemsToRefundOnBreak: Bank;
 	refundVariants: {
 		variant: Item;
@@ -59,13 +59,6 @@ interface DegradeableItemPVMBoost {
 		user: MUser;
 	}) => number;
 	boost: number;
-}
-
-interface RefundResult {
-	item: Item;
-	refundedCharges: number;
-	totalCharges: number;
-	userMessage: string;
 }
 
 export const degradeableItems: DegradeableItem[] = [
@@ -287,7 +280,14 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		attackStyle: 'range',
 		charges: ({ totalHP }) => totalHP / 25,
 		boost: 3
-	}
+	},
+	{
+		item: getOSItem('Amulet of blood fury'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Amulet of blood fury'))!,
+		attackStyle: 'melee',
+		charges: ({ totalHP }) => totalHP / 25,
+		boost: 0
+	},
 ];
 
 export function checkUserCanUseDegradeableItem({
@@ -396,9 +396,9 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining${
-			pennyReduction > 0 ? `. Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
-		}`
+		userMessage: `Your ${item.name
+			} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.${pennyReduction > 0 ? ` Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
+			}`
 	};
 }
 
@@ -415,8 +415,7 @@ export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
 	const hasChargesResult = user.hasCharges(chargeBank);
 	if (!hasChargesResult.hasCharges) {
 		throw new Error(
-			`Tried to degrade a charge bank (${chargeBank}) for ${
-				user.logName
+			`Tried to degrade a charge bank (${chargeBank}) for ${user.logName
 			}, but they don't have the required charges: ${JSON.stringify(hasChargesResult)}`
 		);
 	}
@@ -427,41 +426,6 @@ export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
 		const { item } = degradeableItems.find(i => i.settingsKey === key)!;
 		const result = await degradeItem({ item, chargesToDegrade, user });
 		results.push(result);
-	}
-
-	return results;
-}
-
-export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Promise<RefundResult[]> {
-	const results: RefundResult[] = [];
-
-	for (const [key, chargesToRefund] of chargeBank.entries()) {
-		const degItem = degradeableItems.find(i => i.settingsKey === key);
-		if (!degItem) {
-			throw new Error(`Invalid degradeable item settings key: ${key}`);
-		}
-
-		const currentCharges = user.user[degItem.settingsKey];
-		const newCharges = currentCharges + chargesToRefund;
-
-		// Prepare result message
-		const userMessage = `Refunded ${chargesToRefund} charges for ${degItem.item.name}.`;
-
-		// Create result object
-		const result: RefundResult = {
-			item: degItem.item,
-			refundedCharges: chargesToRefund,
-			totalCharges: newCharges,
-			userMessage
-		};
-
-		// Push result to results array
-		results.push(result);
-
-		// Update user
-		await user.update({
-			[degItem.settingsKey]: newCharges
-		});
 	}
 
 	return results;

@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
 
+
 const killableBosses: KillableMonster[] = [
 	{
 		id: Monsters.GiantMole.id,
@@ -161,10 +162,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon warhammer')]: 10
-			},
-			{
-				[itemID('Elder maul')]: 5
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Elder maul')]: 12
 			},
 			{
 				[itemID('Keris partisan of breaching')]: 5
@@ -201,9 +200,11 @@ const killableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 30,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,
-
 		difficultyRating: 6,
-		itemsRequired: resolveItems(['Zamorakian spear']),
+
+		itemsRequired: deepResolveItems([
+			['Zamorakian spear', "Osmumten's fang"]
+		]),
 		notifyDrops: resolveItems([
 			'Spectral sigil',
 			'Arcane sigil',
@@ -212,7 +213,85 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 10 }, { [itemID('Bandos godsword')]: 5 }],
+
+		itemInBankBoosts: [
+			{
+				[itemID("Dragon warhammer")]: 10,
+				[itemID("Elder maul")]: 12
+			},
+			{
+				[itemID('Bandos godsword')]: 5,
+				[itemID("Voidwaker")]: 6
+			}
+		],
+		equippedItemBoosts: [
+			{
+				items: [
+					{ boostPercent: 10, itemID: itemID("Osmumten's fang") }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 8, itemID: itemID("Elysian spirit shield") },
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 2, itemID: itemID("Torva full helm") },
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID("Masori body (f)") },
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID("Masori chaps (f)") },
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 2, itemID: itemID("Infernal cape") },
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 1, itemID: itemID("Ring of suffering (i)") }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 1, itemID: itemID("Barrows gloves") }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 1, itemID: itemID("Primordial boots") }
+				],
+				gearSetup: 'melee'
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID("Amulet of blood fury"),
+						boostPercent: 8
+					}
+				]
+			}
+		],
 		groupKillable: true,
 		respawnTime: 20_000,
 		levelRequirements: {
