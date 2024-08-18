@@ -66,6 +66,7 @@ export const Roles = {
 	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324',
+	TopFarmer: DISCORD_SETTINGS.Roles?.TopFarmer ?? '894194027363205150',
 	TopGlobalCL: '1072426869028294747'
 };
 
