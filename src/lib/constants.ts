@@ -346,7 +346,8 @@ export const BadgesEnum = {
 	TopMinigame: 11,
 	SotWTrophy: 12,
 	Slayer: 13,
-	TopGiveawayer: 14
+	TopGiveawayer: 14,
+	Farmer: 15
 } as const;
 
 export const badges: { [key: number]: string } = {
@@ -364,7 +365,8 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy,
 	[BadgesEnum.Slayer]: Emoji.Slayer,
-	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat
+	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat,
+	[BadgesEnum.Farmer]: Emoji.Farming
 };
 
 export const MAX_XP = 200_000_000;

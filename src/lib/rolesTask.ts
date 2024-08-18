@@ -243,7 +243,7 @@ LIMIT 2;`
 			userID: id,
 			roleID: '894194027363205150',
 			reason: desc,
-			badge: BadgesEnum.Slayer
+			badge: BadgesEnum.Farmer
 		});
 	}
 	return results;
