@@ -99,7 +99,7 @@ function determineFishingTime(
 	if (fish.name === 'Barbarian fishing') {
 		if (powerfish) {
 			ticksPerRoll = 3;
-			lostTicks = 0.02; // more focused
+			lostTicks = 0.06; // more focused
 		}
 		if (user.allItemsOwned.has('Fishing cape') || user.allItemsOwned.has('Fishing cape (t)') || user.allItemsOwned.has('Max cape')) {
 			bankingTime = 20;
@@ -107,12 +107,12 @@ function determineFishingTime(
 	} else if (fish.name === 'Trout/Salmon') {
 		if (powerfish) {
 			ticksPerRoll = 3;
-			lostTicks = 0.03;
+			lostTicks = 0.06;
 		}
 	} else if (fish.name === 'Tuna/Swordfish') {
 		if (powerfish) {
 			ticksPerRoll = 2;
-			lostTicks = 0.01;
+			lostTicks = 0.03;
 		}
 	}
 
