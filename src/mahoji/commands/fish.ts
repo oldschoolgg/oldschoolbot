@@ -112,7 +112,7 @@ function determineFishingTime(
 	} else if (fish.name === 'Tuna/Swordfish') {
 		if (powerfish) {
 			ticksPerRoll = 2;
-			lostTicks = 0.03;
+			lostTicks = 0.06;
 		}
 	}
 
@@ -386,7 +386,7 @@ export const fishCommand: OSBMahojiCommand = {
 			type: 'Fishing'
 		});
 
-		let response = `${user.minionName} is now fishing ${fish.name}, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now fishing ${fish.name}, it'll take ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
