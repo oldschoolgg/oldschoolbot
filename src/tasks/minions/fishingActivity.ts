@@ -129,7 +129,7 @@ export const fishingTask: MinionTask = {
 		} else if (fish.name === 'Karambwanji') {
 			loot1 *= baseKarambwanji;
 		}
-		loot.add(fish!.id, loot1);
+		loot.add(fish.id, loot1);
 
 		let str = ''
 

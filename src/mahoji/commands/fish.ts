@@ -118,9 +118,9 @@ function determineFishingTime(
 
 	if (powerfish) {
 		while (ticksElapsed < tripTicks) {
-			if (p3 != 0 && Math.random() < p3) {
+			if (p3 != 0 && fishLvl >= fish.level3! && Math.random() < p3) {
 				catches3++; // roll for the highest lvl fish first
-			} else if (p2 != 0 && Math.random() < p2) {
+			} else if (p2 != 0 && fishLvl >= fish.level2! && Math.random() < p2) {
 				catches2++; // then the second only if first one wasn't caught
 			} else if (Math.random() < p1) {
 				catches1++;
@@ -133,11 +133,11 @@ function determineFishingTime(
 		}
 	} else {
 		while (ticksElapsed < tripTicks) {
-			if (p3 != 0 && Math.random() < p3) {
+			if (p3 != 0 && fishLvl >= fish.level3! && Math.random() < p3) {
 				catches3++;
 				lootAmount3++;
 				[lootAmount3, flakesUsed, currentInv] = rollExtraLoot(lootAmount3, flakesUsed, currentInv, blessingChance, spirit_flakes, flakesQuantity);
-			} else if (p2 != 0 && Math.random() < p2) {
+			} else if (p2 != 0 && fishLvl >= fish.level2! && Math.random() < p2) {
 				catches2++;
 				lootAmount2++;
 				[lootAmount2, flakesUsed, currentInv] = rollExtraLoot(lootAmount2, flakesUsed, currentInv, blessingChance, spirit_flakes, flakesQuantity);
@@ -298,7 +298,7 @@ export const fishCommand: OSBMahojiCommand = {
 			const [hasWildyElite] = await userhasDiaryTier(user, WildernessDiary.elite);
 			if (hasWildyElite) {
 				fish.intercept1 = 0.0961;
-				fish.slope1 = 0.3439;
+				fish.slope1 = 0.0025;
 				boosts.push('Increased dark crab catch rate from having the Elite Wilderness Diary');
 			}
 		}
