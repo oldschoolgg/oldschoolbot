@@ -140,7 +140,7 @@ export interface Fish {
 	bigFish?: number;
 	bigFishRate?: number;
 
-	timePerFish?: number;
+	timePerFish?: number; // still needed for camdozaal
 }
 
 export interface Course {

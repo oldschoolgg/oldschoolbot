@@ -70,13 +70,11 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		type: 'CamdozaalMining'
 	});
 
-	let response = `${minionName(user)} is now mining inside the Ruins of Camdozaal until your minion ${
-		quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
-	}, it'll take ${
-		quantity
+	let response = `${minionName(user)} is now mining inside the Ruins of Camdozaal until your minion ${quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
+		}, it'll take ${quantity
 			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
 			: formatDuration(duration)
-	} to finish.`;
+		} to finish.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -137,7 +135,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
 	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
-	const timePerFish = camdozaalfish.timePerFish * Time.Second;
+	const timePerFish = camdozaalfish.timePerFish! * Time.Second;
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerFish);
@@ -148,7 +146,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
 		)}, try a lower quantity. The highest amount of Camdozaal fish you can catch is ${Math.floor(
-			maxTripLength / timePerFish
+			maxTripLength / timePerFish!
 		)}.`;
 	}
 
