@@ -293,7 +293,7 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Amulet of blood fury'))!,
 		attackStyle: 'melee',
 		charges: ({ totalHP }) => totalHP / 25,
-		boost: 0
+		boost: 2
 	},
 ];
 

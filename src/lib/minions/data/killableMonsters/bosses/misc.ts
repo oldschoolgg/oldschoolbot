@@ -531,14 +531,38 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Scurrius.id,
 		name: Monsters.Scurrius.name,
 		aliases: Monsters.Scurrius.aliases,
-		timeToFinish: Time.Minute * 2,
+		timeToFinish: Time.Minute * 1.5,
+		respawnTime: Time.Minute / 3,
 		table: Monsters.Scurrius,
 		notifyDrops: resolveItems(['Scurry']),
 		qpRequired: 0,
+
+		itemInBankBoosts: [
+			{
+				[itemID('Abyssal whip')]: 5,
+				[itemID('Bone mace')]: 8,
+				[itemID("Soulreaper axe")]: 10
+			},
+			{
+				[itemID('Amulet of fury')]: 2,
+				[itemID('Amulet of torture')]: 4
+			},
+			{
+				[itemID('Fire cape')]: 2,
+				[itemID('Infernal cape')]: 4
+			},
+			{
+				[itemID('Barrows gloves')]: 2,
+				[itemID('Ferocious gloves')]: 4
+			}
+		],
+
 		levelRequirements: {
 			prayer: 43
 		},
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		combatXpMultiplier: 1.20,
+		healAmountNeeded: 20
 	}
 ];
 
