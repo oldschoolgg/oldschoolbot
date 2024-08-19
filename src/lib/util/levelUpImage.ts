@@ -3,7 +3,7 @@ import { AttachmentBuilder } from 'discord.js';
 import * as fs from 'fs';
 
 import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
-import { toTitleCase } from './toTitleCase';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 
 export const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const fishingLevelUpImage = fs.readFileSync('./src/lib/resources/images/skillLevelUpImages/fishing.png');
@@ -122,6 +122,6 @@ export default async function levelUpImage({ lvl, skill }: { lvl: number; skill:
 export async function mahojiLevelUp({ lvl, skill }: { lvl: number; skill: keyof typeof skillLevelUpImages }) {
 	const image = await newLevelUpImage({ lvl, skill });
 	return {
-		files: [{ attachment: image, name: 'image.jpg' }]
+		file: { attachment: image, name: 'image.jpg' }
 	};
 }

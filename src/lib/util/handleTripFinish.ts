@@ -25,6 +25,7 @@ import {
 	makeRepeatTripButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
+import { mahojiLevelUp } from './levelUpImage';
 
 export const collectors = new Map<string, MessageCollector>();
 
@@ -101,6 +102,16 @@ export async function handleTripFinish(
 	const message = typeof _message === 'string' ? { content: _message } : _message;
 	if (attachment) {
 		!message.files ? (message.files = [attachment]) : message.files.push(attachment);
+	}
+
+	//Handle and catch level ups
+	if (message.content.includes(`Congratulations! Your`) && message.content.includes(`level is now`)) {
+		//const skillIndex = message.content.indexOf(`Congratulations! Your`)
+		//const skill = message.content.substring(skillIndex + 2)
+		const lvlIndex = message.content.indexOf(`level is now`)
+		const lvl = message.content.substring(lvlIndex + 2)
+		const lvlImage = await mahojiLevelUp({lvl:+lvl, skill:"fishing"})
+		!message.files ? (message.files = [lvlImage.file.attachment]) : message.files.push(lvlImage.file.attachment);
 	}
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
