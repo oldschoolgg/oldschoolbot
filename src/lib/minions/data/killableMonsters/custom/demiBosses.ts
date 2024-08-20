@@ -208,10 +208,15 @@ export const QueenBlackDragon: CustomMonster = {
 		}
 	},
 	notifyDrops: resolveItems(['Queen black dragonling']),
-	baseMonster: Monsters.Vorkath,
+	baseMonster: Monsters.KingBlackDragon,
+	hp: 750,
 	itemInBankBoosts: [
 		{
 			[itemID('Royal crossbow')]: 8
+		},
+		{
+			[itemID('Dragon hunter lance')]: 15,
+			[itemID('Dragon hunter crossbow')]: 15
 		}
 	]
 };
