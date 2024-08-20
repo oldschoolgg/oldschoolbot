@@ -8,7 +8,6 @@ import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
 
-
 const killableBosses: KillableMonster[] = [
 	{
 		id: Monsters.GiantMole.id,
@@ -200,11 +199,9 @@ const killableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 30,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,
-		difficultyRating: 6,
 
-		itemsRequired: deepResolveItems([
-			['Zamorakian spear', "Osmumten's fang"]
-		]),
+		difficultyRating: 6,
+		itemsRequired: deepResolveItems([['Zamorakian spear', "Osmumten's fang"]]),
 		notifyDrops: resolveItems([
 			'Spectral sigil',
 			'Arcane sigil',
@@ -213,70 +210,51 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-
 		itemInBankBoosts: [
 			{
-				[itemID("Dragon warhammer")]: 10,
-				[itemID("Elder maul")]: 12
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Elder maul')]: 12
 			},
 			{
 				[itemID('Bandos godsword')]: 5,
-				[itemID("Voidwaker")]: 6
+				[itemID('Voidwaker')]: 6
 			}
 		],
 		equippedItemBoosts: [
 			{
-				items: [
-					{ boostPercent: 10, itemID: itemID("Osmumten's fang") }
-				],
+				items: [{ boostPercent: 10, itemID: itemID("Osmumten's fang") }],
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 8, itemID: itemID("Elysian spirit shield") },
-				],
+				items: [{ boostPercent: 8, itemID: itemID('Elysian spirit shield') }],
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 2, itemID: itemID("Torva full helm") },
-				],
+				items: [{ boostPercent: 2, itemID: itemID('Torva full helm') }],
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 3, itemID: itemID("Masori body (f)") },
-				],
+				items: [{ boostPercent: 3, itemID: itemID('Masori body (f)') }],
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 3, itemID: itemID("Masori chaps (f)") },
-				],
+				items: [{ boostPercent: 3, itemID: itemID('Masori chaps (f)') }],
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 2, itemID: itemID("Infernal cape") },
-				],
+				items: [{ boostPercent: 2, itemID: itemID('Infernal cape') }],
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 1, itemID: itemID("Ring of suffering (i)") }
-				],
+				items: [{ boostPercent: 1, itemID: itemID('Ring of suffering (i)') }],
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 1, itemID: itemID("Barrows gloves") }
-				],
+				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 1, itemID: itemID("Primordial boots") }
-				],
+				items: [{ boostPercent: 1, itemID: itemID('Primordial boots') }],
 				gearSetup: 'melee'
 			}
 		],
@@ -286,7 +264,7 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'melee',
 				items: [
 					{
-						itemID: itemID("Amulet of blood fury"),
+						itemID: itemID('Amulet of blood fury'),
 						boostPercent: 8
 					}
 				]
@@ -536,13 +514,12 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Scurrius,
 		notifyDrops: resolveItems(['Scurry']),
 		qpRequired: 0,
-
 		equippedItemBoosts: [
 			{
 				items: [
 					{ boostPercent: 15, itemID: itemID('Scythe of vitur') },
 					{ boostPercent: 12, itemID: itemID('Soulreaper axe') },
-					{ boostPercent: 5, itemID: itemID('Bone mace') },
+					{ boostPercent: 5, itemID: itemID('Bone mace') }
 				],
 				gearSetup: 'melee'
 			},
@@ -573,23 +550,14 @@ const killableBosses: KillableMonster[] = [
 					{ boostPercent: 2, itemID: itemID('Fire cape') }
 				],
 				gearSetup: 'melee'
-			},
-			{
-				items: [
-					{ boostPercent: 4, itemID: itemID('Infernal cape') },
-					{ boostPercent: 2, itemID: itemID('Fire cape') }
-				],
-				gearSetup: 'melee'
-			},
-
+			}
 		],
-
 		levelRequirements: {
 			prayer: 43
 		},
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 575,
-		combatXpMultiplier: 1.20,
+		combatXpMultiplier: 1.2,
 		healAmountNeeded: 20
 	}
 ];

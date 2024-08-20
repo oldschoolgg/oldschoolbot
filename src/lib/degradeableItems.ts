@@ -294,7 +294,7 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		attackStyle: 'melee',
 		charges: ({ totalHP }) => totalHP / 25,
 		boost: 2
-	},
+	}
 ];
 
 export function checkUserCanUseDegradeableItem({

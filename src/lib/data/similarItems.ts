@@ -382,8 +382,7 @@ const source: [string, (string | number)[]][] = [
 	['Forestry kit', ['Forestry basket']],
 	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']],
 
-	['Ring of suffering (i)', ['Ring of suffering (ri)']],
-
+	['Ring of suffering (i)', ['Ring of suffering (ri)']]
 ];
 
 const similarItems: Map<number, number[]> = new Map(source.map(entry => [itemID(entry[0]), resolveItems(entry[1])]));

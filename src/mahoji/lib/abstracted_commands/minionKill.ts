@@ -349,8 +349,9 @@ export async function minionKillCommand(
 				: user.hasEquippedOrInBank('Salve amulet (ei)');
 			if (salveBoost) {
 				salveAmuletBoost = salveEnhanced ? 20 : oneSixthBoost;
-				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${salveEnhanced ? '(ei)' : '(i)'
-					} on non-melee task`;
+				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
+					salveEnhanced ? '(ei)' : '(i)'
+				} on non-melee task`;
 			}
 		} else {
 			salveBoost = isInWilderness
@@ -361,8 +362,9 @@ export async function minionKillCommand(
 				: user.hasEquippedOrInBank('Salve amulet (e)');
 			if (salveBoost) {
 				salveAmuletBoost = salveEnhanced ? 20 : oneSixthBoost;
-				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${salveEnhanced ? ' (e)' : ''
-					} on melee task`;
+				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
+					salveEnhanced ? ' (e)' : ''
+				} on melee task`;
 			}
 		}
 	}
@@ -569,11 +571,12 @@ export async function minionKillCommand(
 		for (const set of monster.degradeableItemUsage) {
 			const equippedInThisSet = set.items.find(item => user.gear[set.gearSetup].hasEquipped(item.itemID));
 			if (set.required && !equippedInThisSet) {
-				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${monster.name
-					}: ${set.items
-						.map(i => i.itemID)
-						.map(itemNameFromID)
-						.join(', ')}.`;
+				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+					monster.name
+				}: ${set.items
+					.map(i => i.itemID)
+					.map(itemNameFromID)
+					.join(', ')}.`;
 			}
 			if (equippedInThisSet) {
 				const degItem = degradeablePvmBoostItems.find(i => i.item.id === equippedInThisSet.itemID)!;
@@ -620,9 +623,6 @@ export async function minionKillCommand(
 			quantity = floor(maxTripLength / timeToFinish);
 		}
 	}
-
-
-
 
 	if (isOnTask) {
 		let effectiveQtyRemaining = usersTask.currentTask?.quantity_remaining;
@@ -725,8 +725,9 @@ export async function minionKillCommand(
 	}
 	if (pvmCost) {
 		if (quantity === 0 || !user.owns(lootToRemove)) {
-			return `You don't have the items needed to kill any amount of ${monster.name
-				}, you need: ${formatMissingItems(consumableCosts, timeToFinish)} per kill.`;
+			return `You don't have the items needed to kill any amount of ${
+				monster.name
+			}, you need: ${formatMissingItems(consumableCosts, timeToFinish)} per kill.`;
 		}
 	}
 
@@ -743,8 +744,9 @@ export async function minionKillCommand(
 		if (projectilesNeeded > rangeCheck.ammo.quantity) {
 			return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
 				rangeCheck.ammo.item
-			)} to kill ${quantity}x ${monster.name
-				}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
+			)} to kill ${quantity}x ${
+				monster.name
+			}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
 		}
 	}
 
@@ -1110,7 +1112,8 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 		const gearReductions = gearStats.replace(/: Reduced from (?:[0-9]+?), /, '\n').replace('), ', ')\n');
 		if (hpNeededPerKill > 0) {
 			itemRequirements.push(
-				`**Healing Required:** ${gearReductions}\nYou require ${hpNeededPerKill * maxCanKill
+				`**Healing Required:** ${gearReductions}\nYou require ${
+					hpNeededPerKill * maxCanKill
 				} hp for a full trip\n`
 			);
 		} else {
@@ -1145,7 +1148,8 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	}
 	if (totalBoost.length > 0) {
 		str.push(
-			`**Boosts**\nAvailable Boosts: ${totalBoost.join(', ')}\n${ownedBoostItems.length > 0 ? `Your boosts: ${ownedBoostItems.join(', ')} for ${totalItemBoost}%` : ''
+			`**Boosts**\nAvailable Boosts: ${totalBoost.join(', ')}\n${
+				ownedBoostItems.length > 0 ? `Your boosts: ${ownedBoostItems.join(', ')} for ${totalItemBoost}%` : ''
 			}\n${skillString}`
 		);
 	} else {
@@ -1184,7 +1188,8 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	if (monster.degradeableItemUsage) {
 		for (const item of monster.degradeableItemUsage) {
 			str.push(
-				`${item.items.map(i => `${itemNameFromID(i.itemID)} (${i.boostPercent}% boost)`).join(' OR ')} ${item.required ? 'must' : 'can'
+				`${item.items.map(i => `${itemNameFromID(i.itemID)} (${i.boostPercent}% boost)`).join(' OR ')} ${
+					item.required ? 'must' : 'can'
 				} be equipped in your ${item.gearSetup} setup, needs to be charged using /minion charge.`
 			);
 		}
