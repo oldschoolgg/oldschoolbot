@@ -597,7 +597,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		monster: 'Tempoross',
 		desc: 'Subdue Tempoross, getting rewarded with 10 reward permits from a single Tempoross fight.',
 		rng: {
-			chancePerKill: 30,
+			chancePerKill: 5,
 			hasChance: data => data.type === 'Tempoross'
 		}
 	},

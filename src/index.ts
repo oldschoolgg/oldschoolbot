@@ -18,13 +18,13 @@ import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';
 import { preStartup } from './lib/preStartup';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
-import { runTimedLoggedFn } from './lib/util';
 import { CACHED_ACTIVE_USER_IDS } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError, interactionReply } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
 import { allCommands } from './mahoji/commands/allCommands';
 import { onStartup } from './mahoji/lib/events';
+import { exitCleanup } from './mahoji/lib/exitHandler';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
@@ -194,9 +194,16 @@ client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => onStartup());
 
 async function main() {
+	await Promise.all([
+		preStartup(),
+		import('exit-hook').then(({ asyncExitHook }) =>
+			asyncExitHook(exitCleanup, {
+				wait: 2000
+			})
+		)
+	]);
 	if (process.env.TEST) return;
-	await preStartup();
-	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
+	await client.login(globalConfig.botToken);
 	console.log(`Logged in as ${globalClient.user.username}`);
 }
 

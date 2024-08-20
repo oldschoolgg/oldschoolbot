@@ -638,6 +638,7 @@ export async function pinTripCommand(
 ) {
 	if (!tripId) return 'Invalid trip.';
 	const id = Number(tripId);
+	if (!id || Number.isNaN(id)) return 'Invalid trip.';
 	const trip = await prisma.activity.findFirst({ where: { id, user_id: BigInt(user.id) } });
 	if (!trip) return 'Invalid trip.';
 
@@ -1072,7 +1073,7 @@ export const configCommand: OSBMahojiCommand = {
 								>(`
 SELECT DISTINCT ON (activity.type) activity.type, activity.data, activity.id, activity.finish_date
 FROM activity
-WHERE finish_date::date > now() - INTERVAL '31 days'
+WHERE finish_date > now() - INTERVAL '14 days'
 AND user_id = '${user.id}'::bigint
 ORDER BY activity.type, finish_date DESC
 LIMIT 20;
