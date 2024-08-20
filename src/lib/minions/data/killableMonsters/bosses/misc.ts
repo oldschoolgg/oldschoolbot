@@ -531,36 +531,64 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Scurrius.id,
 		name: Monsters.Scurrius.name,
 		aliases: Monsters.Scurrius.aliases,
-		timeToFinish: Time.Minute * 1.5,
-		respawnTime: Time.Minute / 3,
+		timeToFinish: Time.Minute * 2,
+		respawnTime: 20_000,
 		table: Monsters.Scurrius,
 		notifyDrops: resolveItems(['Scurry']),
 		qpRequired: 0,
 
-		itemInBankBoosts: [
+		equippedItemBoosts: [
 			{
-				[itemID('Abyssal whip')]: 5,
-				[itemID('Bone mace')]: 8,
-				[itemID("Soulreaper axe")]: 10
+				items: [
+					{ boostPercent: 15, itemID: itemID('Scythe of vitur') },
+					{ boostPercent: 12, itemID: itemID('Soulreaper axe') },
+					{ boostPercent: 5, itemID: itemID('Bone mace') },
+				],
+				gearSetup: 'melee'
 			},
 			{
-				[itemID('Amulet of fury')]: 2,
-				[itemID('Amulet of torture')]: 4
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'melee'
 			},
 			{
-				[itemID('Fire cape')]: 2,
-				[itemID('Infernal cape')]: 4
+				items: [
+					{ boostPercent: 4, itemID: itemID('Amulet of torture') },
+					{ boostPercent: 2, itemID: itemID('Amulet of fury') }
+				],
+				gearSetup: 'melee'
 			},
 			{
-				[itemID('Barrows gloves')]: 2,
-				[itemID('Ferocious gloves')]: 4
-			}
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee'
+			},
+
 		],
 
 		levelRequirements: {
 			prayer: 43
 		},
 		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 575,
 		combatXpMultiplier: 1.20,
 		healAmountNeeded: 20
 	}
