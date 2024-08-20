@@ -351,9 +351,9 @@ export const portents: SourcePortent[] = [
 		description: 'Consumes stone spirits to grant extra mining XP, instead of extra ore.',
 		divinationLevelToCreate: 90,
 		cost: new Bank().add('Incandescent energy', 1200),
-		chargesPerPortent: 1000,
+		chargesPerPortent: 60 * 10,
 		addChargeMessage: portent =>
-			`You used a Spiritual mining portent, your next ${portent.charges_remaining}x stone spirits will grant XP instead of ore.`
+			`You used a Spiritual mining portent, it will turn stone spirits into extra mining XP, instead of ore, in your next ${portent.charges_remaining} minutes of mining.`
 	},
 	{
 		id: PortentID.PacifistPortent,

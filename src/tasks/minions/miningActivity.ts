@@ -251,6 +251,7 @@ export const miningTask: MinionTask = {
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, userID, channelID, duration, powermine } = data;
 		const { quantity } = data;
+		const minutes = Math.round(duration / Time.Minute);
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
@@ -264,7 +265,7 @@ export const miningTask: MinionTask = {
 				? await chargePortentIfHasCharges({
 						user,
 						portentID: PortentID.MiningPortent,
-						charges: amountOfSpiritsToUse
+						charges: minutes
 					})
 				: null;
 		const {
