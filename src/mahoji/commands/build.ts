@@ -52,7 +52,8 @@ export const buildCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (value: string, user: User) => {
 				const mUser = await mUserFetch(user.id);
-				const conLevel = mUser.skillLevel('construction');
+				const hasCrystalSaw = mUser.owns('Crystal saw');
+				const conLevel = mUser.skillLevel('construction') + (hasCrystalSaw ? 3 : 0);
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.filter(c => c.level <= conLevel)
 					.map(i => ({
@@ -80,8 +81,10 @@ export const buildCommand: OSBMahojiCommand = {
 		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
 
 		if (!object) return 'Thats not a valid object to build.';
+		const hasCrystalSaw = user.owns('Crystal saw');
 
-		if (user.skillLevel('construction') < object.level) {
+		const conLevel = user.skillLevel('construction') + (hasCrystalSaw ? 3 : 0);
+		if (conLevel < object.level) {
 			return `${user.minionName} needs ${object.level} Construction to create a ${object.name}.`;
 		}
 
@@ -147,11 +150,17 @@ export const buildCommand: OSBMahojiCommand = {
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish. Removed ${cost} from your bank. **${xpHr}**
+		let str = `${user.minionName} is now constructing ${quantity}x ${
+			object.name
+		}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost} from your bank. **${xpHr}**
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
 `;
+
+		if (hasCrystalSaw) {
+			str += '\nYour crystal saw is boosting your construction level by 3.';
+		}
+
+		return str;
 	}
 };
