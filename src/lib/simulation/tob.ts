@@ -109,7 +109,7 @@ class TheatreOfBloodClass {
 
 			clueRate = 3.5 / 25;
 		}
-		console.log(clueRate)
+
 		if (Math.random() < clueRate) {
 			loot.add('Clue scroll (elite)');
 		}
