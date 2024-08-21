@@ -98,6 +98,7 @@ class TheatreOfBloodClass {
 			loot.add(NonUniqueTable.roll());
 		}
 
+		let clueRate = 3 / 25;
 		if (isHardMode) {
 			// Add 15% extra regular loot for hard mode:
 			for (const [itemID] of Object.entries(loot.bank)) {
@@ -105,9 +106,11 @@ class TheatreOfBloodClass {
 			}
 			// Add HM Tertiary drops: dust / kits
 			loot.add(HardModeExtraTable.roll());
+
+			clueRate = 3.5 / 25;
 		}
 
-		if (roll(25)) {
+		if (Math.random() < clueRate) {
 			loot.add('Clue scroll (elite)');
 		}
 
