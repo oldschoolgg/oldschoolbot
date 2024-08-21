@@ -14,17 +14,17 @@ import { updateBankSetting } from './util/updateBankSetting';
 export interface DegradeableItem {
 	item: Item;
 	settingsKey:
-	| 'tentacle_charges'
-	| 'sang_charges'
-	| 'celestial_ring_charges'
-	| 'ash_sanctifier_charges'
-	| 'serp_helm_charges'
-	| 'blood_fury_charges'
-	| 'tum_shadow_charges'
-	| 'blood_essence_charges'
-	| 'trident_charges'
-	| 'scythe_of_vitur_charges'
-	| 'venator_bow_charges';
+		| 'tentacle_charges'
+		| 'sang_charges'
+		| 'celestial_ring_charges'
+		| 'ash_sanctifier_charges'
+		| 'serp_helm_charges'
+		| 'blood_fury_charges'
+		| 'tum_shadow_charges'
+		| 'blood_essence_charges'
+		| 'trident_charges'
+		| 'scythe_of_vitur_charges'
+		| 'venator_bow_charges';
 	itemsToRefundOnBreak: Bank;
 	refundVariants: {
 		variant: Item;
@@ -403,8 +403,9 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining${pennyReduction > 0 ? `. Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
-			}`
+		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining${
+			pennyReduction > 0 ? `. Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
+		}`
 	};
 }
 
@@ -421,7 +422,8 @@ export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
 	const hasChargesResult = user.hasCharges(chargeBank);
 	if (!hasChargesResult.hasCharges) {
 		throw new Error(
-			`Tried to degrade a charge bank (${chargeBank}) for ${user.logName
+			`Tried to degrade a charge bank (${chargeBank}) for ${
+				user.logName
 			}, but they don't have the required charges: ${JSON.stringify(hasChargesResult)}`
 		);
 	}
