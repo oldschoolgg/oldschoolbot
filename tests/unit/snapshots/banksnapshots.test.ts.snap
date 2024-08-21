@@ -22917,7 +22917,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25445": 1,
-        "25459": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -22934,7 +22934,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25448": 1,
-        "25461": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -22951,7 +22951,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25451": 1,
-        "25463": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -22968,7 +22968,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25454": 1,
-        "25465": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
