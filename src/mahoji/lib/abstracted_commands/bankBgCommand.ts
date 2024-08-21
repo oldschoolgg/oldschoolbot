@@ -39,7 +39,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	if (selectedImage.sacValueRequired) {
 		const sac = Number(user.user.sacrificedValue);
 		if (sac < selectedImage.sacValueRequired) {
-			return `You have to have sacrificed atleast ${toKMB(
+			return `You have to have sacrificed at least ${toKMB(
 				selectedImage.sacValueRequired
 			)} GP worth of items to use this background.`;
 		}

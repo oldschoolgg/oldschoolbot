@@ -195,11 +195,14 @@ setItemAlias(2993, 'Chompy bird hat (dragon archer)');
 setItemAlias(2994, 'Chompy bird hat (expert ogre dragon archer)');
 setItemAlias(2995, 'Chompy bird hat (expert dragon archer)');
 
-// Item aliases
+// Achievement diary lamps
 setItemAlias(11_137, 'Antique lamp 1');
 setItemAlias(11_139, 'Antique lamp 2');
 setItemAlias(11_141, 'Antique lamp 3');
 setItemAlias(11_185, 'Antique lamp 4');
+
+// Defender of varrock quest lamp
+setItemAlias(28_820, 'Antique lamp (defender of varrock)');
 
 // Dragonfire shields
 setItemAlias(11_284, 'Uncharged dragonfire shield');

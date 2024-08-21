@@ -152,7 +152,7 @@ export class MUserClass {
 		return gearImages.find(i => i.id === this.user.gear_template)!;
 	}
 
-	countSkillsAtleast99() {
+	countSkillsAtLeast99() {
 		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 

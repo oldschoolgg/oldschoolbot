@@ -101,7 +101,7 @@ export async function coxCommand(
 	if (isChallengeMode) {
 		const normalKC = await getMinigameScore(user.id, 'raids');
 		if (normalKC < 200) {
-			return 'You need atleast 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.';
+			return 'You need at least 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.';
 		}
 	}
 	if (user.minionIsBusy) {

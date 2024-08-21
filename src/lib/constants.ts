@@ -76,7 +76,10 @@ export const Roles = {
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
 	TopInventor: '992799099801833582',
 	TopLeagues: '1005417171112972349',
-	EventOrganizer: '1149907536749801542'
+	EventOrganizer: '1149907536749801542',
+	TopTamer: '1054356709222666240',
+	TopMysterious: '1074592096968785960',
+	TopGlobalCL: '848966773885763586'
 };
 
 export enum DefaultPingableRoles {
@@ -540,7 +543,9 @@ export const BadgesEnum = {
 	TopSkiller: 9,
 	TopCollector: 10,
 	TopMinigame: 11,
-	SotWTrophy: 12
+	SotWTrophy: 12,
+	Slayer: 13,
+	TopGiveawayer: 14
 } as const;
 
 export const badges: { [key: number]: string } = {
@@ -556,7 +561,9 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.TopSkiller]: Emoji.Skiller,
 	[BadgesEnum.TopCollector]: Emoji.CollectionLog,
 	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
-	[BadgesEnum.SotWTrophy]: Emoji.SOTW
+	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy,
+	[BadgesEnum.Slayer]: Emoji.Slayer,
+	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat
 };
 
 export const MAX_XP = 5_000_000_000;

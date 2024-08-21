@@ -208,10 +208,10 @@ export const offerCommand: OSBMahojiCommand = {
 		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, options.name));
 		if (specialBone) {
 			if (user.QP < 8) {
-				return 'You need atleast 8 QP to offer long/curved bones for XP.';
+				return 'You need at least 8 QP to offer long/curved bones for XP.';
 			}
 			if (user.skillLevel(SkillsEnum.Construction) < 30) {
-				return 'You need atleast level 30 Construction to offer long/curved bones for XP.';
+				return 'You need at least level 30 Construction to offer long/curved bones for XP.';
 			}
 			const amountHas = userBank.amount(specialBone.item.id);
 			if (!quantity) quantity = Math.max(amountHas, 1);
