@@ -29,7 +29,7 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 	}
 
 	if (amount < 1_000_000) {
-		return 'You have to dice atleast 1,000,000.';
+		return 'You have to dice at least 1,000,000.';
 	}
 
 	const gp = user.GP;

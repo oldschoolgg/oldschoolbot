@@ -494,7 +494,6 @@ model User {
 
   store_bitfield Int[]
 
-  // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
   farmingPatches_tree       Json? @map("farmingPatches.tree") @db.Json
@@ -534,6 +533,8 @@ model User {
   smokey_lottery_tickets          Json?     @db.Json
   grinchions_caught               Int       @default(0)
   last_giveaway_ticket_given_date DateTime? @db.Timestamp(6)
+
+  cl_array Int[] @default([])
 
   @@index([id, last_command_date])
   @@map("users")
@@ -993,7 +994,7 @@ model UserStats {
   creature_scores Json @default("{}")
   monster_scores  Json @default("{}")
   laps_scores     Json @default("{}")
-  sacrificed_bank Json @default("{}")
+  sacrificed_bank Json @default("{}") @db.JsonB
   openable_scores Json @default("{}")
 
   gp_luckypick BigInt @default(0)

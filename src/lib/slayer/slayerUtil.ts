@@ -35,45 +35,55 @@ interface DetermineBoostParams {
 	cbOpts: CombatOptionsEnum[];
 	user: MUser;
 	monster: KillableMonster;
-	method?: PvMMethod | null;
+	methods?: PvMMethod[] | null;
 	isOnTask?: boolean;
 	wildyBurst?: boolean;
 }
-export function determineBoostChoice(params: DetermineBoostParams) {
-	let boostChoice = 'none';
+export function determineCombatBoosts(params: DetermineBoostParams) {
+	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
+	const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
 
-	// BSO Only:
-	if (!params.isOnTask) return boostChoice;
+	if (!params.isOnTask) return [];
 
-	if (params.method && params.method === 'none') {
-		return boostChoice;
-	}
-	if (params.method && (params.method as string) === 'chinning') {
-		boostChoice = 'chinning';
-	} else if (params.method && params.method === 'barrage') {
-		boostChoice = 'barrage';
-	} else if (params.method && params.method === 'burst') {
-		boostChoice = 'burst';
-	} else if (params.method && params.method === 'cannon') {
-		boostChoice = 'cannon';
-	} else if (
-		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
-		(params.monster!.canBarrage || params.wildyBurst)
-	) {
-		boostChoice = 'barrage';
-	} else if (
-		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
-		(params.monster!.canBarrage || params.wildyBurst)
-	) {
-		boostChoice = 'burst';
-	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
-		boostChoice = 'cannon';
+	// check if user has cannon combat option turned on
+	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
+		boostMethods.includes('cannon') ? null : boostMethods.push('cannon');
 	}
 
-	if (boostChoice === 'barrage' && params.user.skillLevel(SkillsEnum.Magic) < 94) {
-		boostChoice = 'burst';
+	// check for special burst case under wildyBurst variable
+	if (params.wildyBurst) {
+		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+			boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
+		}
+		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+			boostMethods.includes('burst') ? null : boostMethods.push('burst');
+		}
 	}
-	return boostChoice;
+
+	// check if the monster can be barraged
+	if (params.monster.canBarrage) {
+		// check if the monster exists in catacombs
+		if (params.monster.existsInCatacombs) {
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+				boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
+			}
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+				boostMethods.includes('burst') ? null : boostMethods.push('burst');
+			}
+		} else if (!params.monster.cannonMulti) {
+			// prevents cases such as: cannoning in singles but receiving multi combat bursting boost
+			return boostMethods;
+		} else {
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+				boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
+			}
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+				boostMethods.includes('burst') ? null : boostMethods.push('burst');
+			}
+		}
+	}
+
+	return boostMethods;
 }
 
 export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: MUser) {

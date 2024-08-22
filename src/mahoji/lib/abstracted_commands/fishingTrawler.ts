@@ -8,7 +8,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 	if (user.skillLevel('fishing') < 15) {
-		return 'You need atleast level 15 Fishing to do the Fishing Trawler.';
+		return 'You need at least level 15 Fishing to do the Fishing Trawler.';
 	}
 
 	const tripsDone = await getMinigameScore(user.id, 'fishing_trawler');

@@ -646,9 +646,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#2813f25327093fcf2cb12bee7d4c85ce629069a0":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#cd7c6865229ca7dc4a66b3816586f2d3f4a4fbed":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=2813f25327093fcf2cb12bee7d4c85ce629069a0"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=cd7c6865229ca7dc4a66b3816586f2d3f4a4fbed"
   dependencies:
     decimal.js: "npm:^10.4.3"
     deep-object-diff: "npm:^1.1.9"
@@ -664,7 +664,7 @@ __metadata:
   peerDependencies:
     discord.js: ^14.15.3
     oldschooljs: ^2.5.9
-  checksum: 10c0/c83f2188e18ac1e7d79edd9ab06b7ab0f96f8774a404a26fd766d22606bd65a8def0c0a74d0f681c5bde0d7b5b5bbb16f829e751b4e75f6821a1baf5c62b2580
+  checksum: 10c0/42eaec1c99c671adab7b56ca7e11d37bf5a0e07d0f0da0a892cdf477a78c061ea131a43b1c578d09f1c6b02e05d1ce47db9586ad9a8de62679cc492c847c3fca
   languageName: node
   linkType: hard
 
@@ -3972,6 +3972,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"remeda@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "remeda@npm:2.7.0"
+  dependencies:
+    type-fest: "npm:^4.21.0"
+  checksum: 10c0/4e7d0dc616f00961653244ea9df3f297720fc9346ac8ec7502abf4c434741af4a4750d5bd83ea9938ee406089b37e3a2270b8f022d48b345ba83218e47dd8918
+  languageName: node
+  linkType: hard
+
 "require-directory@npm:^2.1.1":
   version: 2.1.1
   resolution: "require-directory@npm:2.1.1"
@@ -4113,7 +4122,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
     "@napi-rs/canvas": "npm:^0.1.53"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#2813f25327093fcf2cb12bee7d4c85ce629069a0"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#cd7c6865229ca7dc4a66b3816586f2d3f4a4fbed"
     "@prisma/client": "npm:^5.17.0"
     "@sapphire/ratelimits": "npm:^2.4.9"
     "@sapphire/snowflake": "npm:^3.5.3"
@@ -4148,6 +4157,7 @@ __metadata:
     prettier: "npm:^3.3.2"
     prisma: "npm:^5.17.0"
     random-js: "npm:^2.1.0"
+    remeda: "npm:^2.7.0"
     simple-statistics: "npm:^7.8.3"
     sonic-boom: "npm:^4.0.1"
     tsx: "npm:^4.16.2"
@@ -4610,6 +4620,13 @@ __metadata:
   bin:
     tsx: dist/cli.mjs
   checksum: 10c0/9df52264f88be00ca473e7d7eda43bb038cc09028514996b864db78645e9cd297c71485f0fdd4985464d6dc46424f8bef9f8c4bd56692c4fcf4d71621ae21763
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^4.21.0":
+  version: 4.23.0
+  resolution: "type-fest@npm:4.23.0"
+  checksum: 10c0/c42bb14e99329ab37983d1f188e307bf0cc705a23807d9b2268d8fb2ae781d610ac6e2058dde8f9ea2b1b8ddc77ceb578d157fa81f69f8f70aef1d42fb002996
   languageName: node
   linkType: hard
 

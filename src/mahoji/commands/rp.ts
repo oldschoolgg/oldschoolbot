@@ -11,9 +11,7 @@ import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
-import { analyticsTick } from '../../lib/analytics';
-import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
-import { BitField, Channel } from '../../lib/constants';
+import { BitField, Channel, globalConfig } from '../../lib/constants';
 import { allCollectionLogsFlat } from '../../lib/data/Collections';
 import type { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
@@ -22,14 +20,16 @@ import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
+import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ItemBank } from '../../lib/types';
-import { isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
+import { isValidDiscordSnowflake } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -45,7 +45,14 @@ import { sellPriceOfItem } from './sell';
 const itemFilters = [
 	{
 		name: 'Tradeable',
-		filter: (item: Item) => itemIsTradeable(item.id, true)
+		filter: (item: Item) => itemIsTradeable(item.id, true),
+		run: async () => {
+			const isValid = await GrandExchange.extensiveVerification();
+			if (isValid) {
+				return 'No issues found.';
+			}
+			return 'Something was invalid. Check logs!';
+		}
 	}
 ];
 
@@ -143,6 +150,35 @@ function isProtectedAccount(user: MUser) {
 	return false;
 }
 
+const actions = [
+	{
+		name: 'validate_ge',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			const isValid = await GrandExchange.extensiveVerification();
+			if (isValid) {
+				return 'No issues found.';
+			}
+			return 'Something was invalid. Check logs!';
+		}
+	},
+	{
+		name: 'sync_roles',
+		allowed: (user: MUser) =>
+			ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id) || user.bitfield.includes(BitField.isModerator),
+		run: async () => {
+			return runRolesTask(!globalConfig.isProduction);
+		}
+	},
+	{
+		name: 'sync_usernames',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			return usernameSync();
+		}
+	}
+];
+
 export const rpCommand: OSBMahojiCommand = {
 	name: 'rp',
 	description: 'Admin tools second set',
@@ -151,51 +187,13 @@ export const rpCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'action',
-			description: 'Action tools',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'validate_ge',
-					description: 'Validate the g.e.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'patreon_reset',
-					description: 'Reset all patreon data.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'force_comp_update',
-					description: 'Force the top 100 completionist users to update their completion percentage.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'view_all_items',
-					description: 'View all item IDs present in banks/cls.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'analytics_tick',
-					description: 'analyticsTick.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'networth_sync',
-					description: 'networth_sync.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'redis_sync',
-					description: 'redis sync.',
-					options: []
-				}
-			]
+			description: 'Actions',
+			options: actions.map(a => ({
+				type: ApplicationCommandOptionType.Subcommand,
+				name: a.name,
+				description: a.name,
+				options: []
+			}))
 		},
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
@@ -540,15 +538,7 @@ export const rpCommand: OSBMahojiCommand = {
 			max_total?: { user: MahojiUserOption; type: UserEventType; message_id: string };
 			max?: { user: MahojiUserOption; type: UserEventType; skill: xp_gains_skill_enum; message_id: string };
 		};
-		action?: {
-			validate_ge?: {};
-			patreon_reset?: {};
-			force_comp_update?: {};
-			view_all_items?: {};
-			analytics_tick?: {};
-			networth_sync?: {};
-			redis_sync?: {};
-		};
+		action?: any;
 		player?: {
 			givetgb?: { user: MahojiUserOption };
 			viewbank?: { user: MahojiUserOption; json?: boolean };
@@ -642,74 +632,19 @@ Date: ${dateFm(date)}`;
 
 		if (!isMod) return randArrItem(gifs);
 
-		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-
-		if (!isMod) return randArrItem(gifs);
-		// Mod+ only commands:
-		if (options.action?.validate_ge) {
-			const isValid = await GrandExchange.extensiveVerification();
-			if (isValid) {
-				return 'No issues found.';
-			}
-			return 'Something was invalid. Check logs!';
-		}
-		if (options.action?.force_comp_update) {
-			const usersToUpdate = await prisma.userStats.findMany({
-				where: {
-					untrimmed_comp_cape_percent: {
-						not: null
+		if (options.action) {
+			for (const action of actions) {
+				if (options.action[action.name]) {
+					if (!action.allowed(adminUser)) return randArrItem(gifs);
+					try {
+						const result = await action.run();
+						return result;
+					} catch (err) {
+						logError(err);
+						return 'An error occurred.';
 					}
-				},
-				orderBy: {
-					untrimmed_comp_cape_percent: 'desc'
-				},
-				take: 100
-			});
-			for (const user of usersToUpdate) {
-				await calculateCompCapeProgress(await mUserFetch(user.user_id.toString()));
-			}
-			return 'Done.';
-		}
-
-		if (options.action?.analytics_tick) {
-			await analyticsTick();
-			return 'Finished.';
-		}
-		if (options.action?.redis_sync) {
-			const result = await usernameSync();
-			return result;
-		}
-		if (options.action?.networth_sync) {
-			const users = await prisma.user.findMany({
-				where: {
-					GP: {
-						gt: 10_000_000_000
-					}
-				},
-				take: 20,
-				orderBy: {
-					GP: 'desc'
-				},
-				select: {
-					id: true
 				}
-			});
-			for (const { id } of users) {
-				const user = await mUserFetch(id);
-				await user.update({
-					cached_networth_value: (await user.calculateNetWorth()).value
-				});
 			}
-			return 'Done.';
-		}
-		if (options.action?.view_all_items) {
-			const result = await prisma.$queryRawUnsafe<{ item_id: number }[]>(`SELECT DISTINCT json_object_keys(bank)::int AS item_id
-FROM users
-UNION
-SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
-FROM users
-ORDER BY item_id ASC;`);
-			return returnStringOrFile(`[${result.map(i => i.item_id).join(',')}]`);
 		}
 
 		if (options.player?.set_buy_date) {
