@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { calculateCompCapeProgress } from '../../bso/calculateCompCapeProgress';
 import { compCapeCreatableBank } from '../../skilling/skillcapes';
-import { isAtleastThisOld } from '../../util';
 import type { Buyable } from './buyables';
 import { circusBuyables } from './circusBuyables';
 import { fistOfGuthixBuyables } from './fistOfGuthixBuyables';
