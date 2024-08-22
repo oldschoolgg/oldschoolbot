@@ -8,7 +8,7 @@ import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, pluraliseItemNameWithQuantity } from '../../lib/util';
+import { formatDuration, itemID, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -155,7 +155,7 @@ export const fishCommand: OSBMahojiCommand = {
 			}
 
 			flakesQuantity = Math.min(user.bank.amount('Spirit flakes'), quantity);
-			boosts.push(`More fish from using ${pluraliseItemNameWithQuantity('spirit flake', flakesQuantity)}`);
+			boosts.push(`More fish from using ${flakesQuantity}x Spirit flakes`);
 			cost.add('Spirit flakes', flakesQuantity);
 		}
 

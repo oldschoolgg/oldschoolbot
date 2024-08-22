@@ -8,13 +8,7 @@ import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { deduplicateClueScrolls } from '../../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import {
-	pluraliseItemName,
-	pluraliseItemNameWithQuantity,
-	sanitizeBank,
-	skillingPetDropRate,
-	stripEmojis
-} from '../../src/lib/util';
+import { pluraliseItemName, sanitizeBank, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './utils';
@@ -147,13 +141,5 @@ describe('util', () => {
 		expect(pluraliseItemName('Steel Axe')).toEqual('Steel Axes');
 		expect(pluraliseItemName('Steel Arrowtips')).toEqual('Steel Arrowtips');
 		expect(pluraliseItemName('Adamantite nails')).toEqual('Adamantite nails');
-	});
-
-	test('pluraliseItemWithQuantity correctly pluralises items', async () => {
-		expect(pluraliseItemNameWithQuantity('Shrimp', 0)).toEqual('0 Shrimps');
-		expect(pluraliseItemNameWithQuantity('Twisted bow', 999)).toEqual('999 Twisted bows');
-		expect(pluraliseItemNameWithQuantity('Bronze Arrowtips', 0)).toEqual('0 Bronze Arrowtips');
-		expect(pluraliseItemNameWithQuantity('Spirit flakes', 10)).toEqual('10 Spirit flakes');
-		expect(pluraliseItemNameWithQuantity('Yellow square', 1)).toEqual('1 Yellow square');
 	});
 });

@@ -70,12 +70,6 @@ export function pluraliseItemName(name: string): string {
 	return name + (name.endsWith('s') ? '' : 's');
 }
 
-export function pluraliseItemNameWithQuantity(name: string, quantity: number): string {
-	const result = `${quantity} ${name}`;
-	if (quantity === 1) return result;
-	return pluraliseItemName(result);
-}
-
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);

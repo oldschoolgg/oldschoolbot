@@ -113,7 +113,7 @@ describe('Fish Command', () => {
 			},
 			result: `<:minion:778418736180494347> Your minion is now fishing 251x Shrimps, it'll take around 29 minutes, 58 seconds to finish.
 
-**Boosts:** More fish from using 251 spirit flakes.`
+**Boosts:** More fish from using 251x Spirit flakes.`
 		});
 	});
 
@@ -126,7 +126,7 @@ describe('Fish Command', () => {
 			},
 			result: `<:minion:778418736180494347> Your minion is now fishing 251x Shrimps, it'll take around 29 minutes, 58 seconds to finish.
 
-**Boosts:** More fish from using 100 spirit flakes.`
+**Boosts:** More fish from using 100x Spirit flakes.`
 		});
 	});
 });
