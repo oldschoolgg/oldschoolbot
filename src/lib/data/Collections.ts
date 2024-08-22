@@ -283,7 +283,7 @@ export const allCollectionLogs: ICollection = {
 				]
 			},
 			Vardorvis: {
-				alias: ['vardorvis'],
+				alias: ['vard', 'vardorvis'],
 				kcActivity: {
 					Default: [Monsters.Vardorvis.name, Monsters.AwakenedVardorvis.name],
 					Awakened: Monsters.AwakenedVardorvis.name

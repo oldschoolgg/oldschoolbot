@@ -6,7 +6,7 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { ONE_TRILLION } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { cleanString, stringMatches } from '../util';
+import { cleanString, getItem, stringMatches } from '../util';
 import itemIsTradeable from './itemIsTradeable';
 
 const { floor, max, min } = Math;
@@ -56,7 +56,12 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	return [osItems, quantity];
 }
 
-export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: true): [Item, number | undefined][] {
+export function parseStringBank(
+	str = '',
+	inputBank?: Bank,
+	noDuplicateItems?: true,
+	itemAliases?: true
+): [Item, number | undefined][] {
 	const split = str
 		.trim()
 		.replace(/\s\s+/g, ' ')
@@ -70,11 +75,18 @@ export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: t
 		if (resItems !== undefined) {
 			for (const item of noDuplicateItems ? resItems.slice(0, 1) : resItems) {
 				if (currentIDs.has(item.id)) continue;
-				currentIDs.add(item.id);
-				items.push([item, quantity]);
+				let resolvedItem: Item | null = item;
+				if (itemAliases) {
+					resolvedItem = getItem(item.name);
+				}
+				if (resolvedItem) {
+					items.push([resolvedItem, quantity]);
+					currentIDs.add(resolvedItem.id);
+				}
 			}
 		}
 	}
+
 	return items;
 }
 
@@ -134,6 +146,7 @@ interface ParseBankOptions {
 	maxSize?: number;
 	user?: MUser;
 	noDuplicateItems?: true;
+	itemAliases?: true;
 }
 
 export function parseBank({
@@ -145,11 +158,12 @@ export function parseBank({
 	search,
 	maxSize,
 	user,
-	noDuplicateItems = undefined
+	noDuplicateItems = undefined,
+	itemAliases = undefined
 }: ParseBankOptions): Bank {
 	if (inputStr) {
 		const _bank = new Bank();
-		const strItems = parseStringBank(inputStr, inputBank, noDuplicateItems);
+		const strItems = parseStringBank(inputStr, inputBank, noDuplicateItems, itemAliases);
 		for (const [item, quantity] of strItems) {
 			if (maxSize && _bank.length >= maxSize) break;
 			_bank.add(
