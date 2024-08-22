@@ -135,6 +135,7 @@ MUserStats.fromID = async (id: string) => {
 		total_gp_traded: 69n,
 		last_daily_timestamp: 1720196666639n,
 		last_tears_of_guthix_timestamp: 0n,
+		last_managing_miscellania_timestamp: 0n,
 		herbs_cleaned_while_farming_bank: {},
 		forestry_event_completions_bank: {},
 		colo_cost: {},

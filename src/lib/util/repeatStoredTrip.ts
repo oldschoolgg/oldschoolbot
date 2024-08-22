@@ -80,7 +80,8 @@ const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.TokkulShop,
 			activity_type_enum.Birdhouse,
 			activity_type_enum.StrongholdOfSecurity,
-			activity_type_enum.CombatRing
+			activity_type_enum.CombatRing,
+			activity_type_enum.ManagingMiscellania
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -139,6 +140,10 @@ const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.KourendFavour]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.ManagingMiscellania]: {
 		commandName: 'm',
 		args: () => ({})
 	},

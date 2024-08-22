@@ -118,7 +118,14 @@ const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientI
 
 const cooldownTimers: {
 	name: string;
-	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
+	timeStamp: (
+		user: MUser,
+		stats: {
+			last_daily_timestamp: bigint;
+			last_tears_of_guthix_timestamp: bigint;
+			last_managing_miscellania_timestamp: bigint;
+		}
+	) => number;
 	cd: number | ((user: MUser) => number);
 	command: [string] | [string, string] | [string, string, string];
 }[] = [
@@ -133,6 +140,12 @@ const cooldownTimers: {
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
 		cd: Time.Hour * 12,
 		command: ['minion', 'daily']
+	},
+	{
+		name: 'Managing Miscellania',
+		timeStamp: (_, stats) => Number(stats.last_managing_miscellania_timestamp),
+		cd: Time.Day,
+		command: ['activities', 'managing_miscellania', 'start']
 	}
 ];
 
@@ -249,7 +262,11 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
+			const stats = await user.fetchStats({
+				last_daily_timestamp: true,
+				last_tears_of_guthix_timestamp: true,
+				last_managing_miscellania_timestamp: true
+			});
 			return msg.reply({
 				content: cooldownTimers
 					.map(cd => {

@@ -4,6 +4,7 @@ import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
 import { production } from '../config';
+import { managingMiscellaniaTask } from '../tasks/managingMiscellaniaActivity';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
@@ -187,7 +188,8 @@ const tasks: MinionTask[] = [
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
-	colosseumTask
+	colosseumTask,
+	managingMiscellaniaTask
 ];
 
 export async function processPendingActivities() {
