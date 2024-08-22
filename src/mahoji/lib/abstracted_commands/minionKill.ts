@@ -762,8 +762,8 @@ export async function minionKillCommand(
 	duration = randomVariation(duration, 3);
 
 	if (isWeekend()) {
-		//boosts.push('10% for Weekend');
-		//duration *= 0.9;
+		boosts.push('10% for Weekend');
+		duration *= 0.9;
 	}
 
 	const degradeablesWithEnoughCharges = [];
