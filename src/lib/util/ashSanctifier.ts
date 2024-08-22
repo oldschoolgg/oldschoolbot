@@ -1,4 +1,4 @@
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
@@ -15,7 +15,7 @@ export async function ashSanctifierEffect(user: MUser, loot: Bank, duration: num
 	const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
 	const ashXpModifider = hasEliteDiary ? 1 : 0.5;
 
-	let startingAshSanctifierCharges = await checkDegradeableItemCharges({
+	const startingAshSanctifierCharges = await checkDegradeableItemCharges({
 		item: getOSItem('Ash sanctifier'),
 		user
 	});

@@ -1,9 +1,9 @@
 import { calcWhatPercent, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { getMinigameScore, incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
+import { type MinigameName, getMinigameScore, incrementMinigameScore } from '../../../lib/settings/minigames';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
-import { GauntletOptions } from '../../../lib/types/minions';
+import type { GauntletOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

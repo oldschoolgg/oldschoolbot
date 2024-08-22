@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 

@@ -1,5 +1,5 @@
 import killableMonsters from '../minions/data/killableMonsters';
-import { KillableMonster } from '../minions/types';
+import type { KillableMonster } from '../minions/types';
 import { stringMatches } from '../util';
 
 export default function findMonster(str = ''): KillableMonster | undefined {

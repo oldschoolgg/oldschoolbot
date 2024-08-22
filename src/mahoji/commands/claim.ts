@@ -1,14 +1,14 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BitField, BSO_MAX_TOTAL_LEVEL, Channel } from '../../lib/constants';
+import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
 import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { prisma } from '../../lib/settings/prisma';
-import { dateFm, stringMatches } from '../../lib/util';
+
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const claimables = [
 	{

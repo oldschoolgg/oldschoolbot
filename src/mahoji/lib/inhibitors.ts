@@ -1,14 +1,6 @@
-import {
-	ComponentType,
-	DMChannel,
-	Guild,
-	GuildMember,
-	InteractionReplyOptions,
-	PermissionsBitField,
-	TextChannel,
-	User
-} from 'discord.js';
-import { roll } from 'e';
+import { PerkTier } from '@oldschoolgg/toolkit';
+import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
+import { ComponentType, PermissionsBitField } from 'discord.js';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
@@ -18,12 +10,10 @@ import {
 	Channel,
 	DISABLED_COMMANDS,
 	gearValidationChecks,
-	minionBuyButton,
-	PerkTier
+	minionBuyButton
 } from '../../lib/constants';
-import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
-import { CategoryFlag } from '../../lib/types';
-import { formatDuration } from '../../lib/util';
+import type { CategoryFlag } from '../../lib/types';
+import { formatDuration, roll } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
@@ -47,7 +37,6 @@ export interface AbstractCommand {
 interface Inhibitor {
 	name: string;
 	run: (options: {
-		APIUser: User;
 		user: MUser;
 		command: AbstractCommand;
 		guild: Guild | null;
@@ -69,23 +58,6 @@ const inhibitors: Inhibitor[] = [
 			return false;
 		},
 		canBeDisabled: false
-	},
-	{
-		name: 'bots',
-		run: async ({ APIUser, user }) => {
-			if (!APIUser.bot) return false;
-			if (
-				![
-					'798308589373489172', // BIRDIE#1963
-					'902745429685469264' // Randy#0008
-				].includes(user.id)
-			) {
-				return { content: 'Bots cannot use commands.' };
-			}
-			return false;
-		},
-		canBeDisabled: false,
-		silent: true
 	},
 	{
 		name: 'hasMinion',
@@ -138,9 +110,9 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: async ({ command, guild, APIUser }) => {
+		run: async ({ command, guild, user }) => {
 			if (
-				!OWNER_IDS.includes(APIUser.id) &&
+				!OWNER_IDS.includes(user.id) &&
 				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
 			) {
 				return { content: 'This command is globally disabled.' };
@@ -159,11 +131,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ member, guild, channel, user }) => {
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
-
-			let perkTier = perkTierCache.get(user.id);
-			if (!perkTier) {
-				perkTier = syncPerkTierOfUser(user);
-			}
+			const perkTier = user.perkTier();
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
 			}
@@ -184,8 +152,7 @@ const inhibitors: Inhibitor[] = [
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
 			const userBitfield = user.bitfield;
-			const isStaff =
-				userBitfield.includes(BitField.isModerator) || userBitfield.includes(BitField.isContributor);
+			const isStaff = userBitfield.includes(BitField.isModerator);
 			if (guild.id === SupportServer && isStaff) {
 				return false;
 			}
@@ -261,11 +228,9 @@ export async function runInhibitors({
 	member,
 	command,
 	guild,
-	bypassInhibitors,
-	APIUser
+	bypassInhibitors
 }: {
 	user: MUser;
-	APIUser: User;
 	channel: TextChannel | DMChannel;
 	member: GuildMember | null;
 	command: AbstractCommand;
@@ -286,7 +251,7 @@ export async function runInhibitors({
 
 	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
-		const result = await run({ user, channel, member, command, guild, APIUser });
+		const result = await run({ user, channel, member, command, guild });
 		if (result !== false) {
 			return { reason: result, silent: Boolean(silent) };
 		}

@@ -1,7 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { prisma } from './settings/prisma';
-
 export async function getReclaimableItemsOfUser(user: MUser) {
 	const totalElligible = new Bank();
 

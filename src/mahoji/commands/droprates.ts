@@ -1,8 +1,9 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { herbertDroprate, MAX_XP, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MAX_XP, MIN_LENGTH_FOR_PET, herbertDroprate } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
@@ -14,7 +15,7 @@ import {
 	makeTable,
 	stringMatches
 } from '../../lib/util';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 interface GlobalDroprate {
 	name: string;
@@ -56,8 +57,8 @@ const droprates: GlobalDroprate[] = [
 			const rows = [];
 
 			for (const pot of Potions) {
-				let dropratePerMinute = herbertDroprate(1, pot.level);
-				let dropratePerMinuteAtMax = herbertDroprate(MAX_XP, pot.level);
+				const dropratePerMinute = herbertDroprate(1, pot.level);
+				const dropratePerMinuteAtMax = herbertDroprate(MAX_XP, pot.level);
 				rows.push([pot.item.name, 1 / (60 / dropratePerMinute), 1 / (60 / dropratePerMinuteAtMax)]);
 			}
 

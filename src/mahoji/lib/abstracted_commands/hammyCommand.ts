@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -62,7 +62,7 @@ export async function feedHammyCommand(interaction: ChatInputCommandInteraction,
 	}
 
 	if (roll(chanceToDouble)) {
-		let loot = new Bank();
+		const loot = new Bank();
 		loot.add(firstItem.id);
 		await user.addItemsToBank({ items: loot, collectionLog: false });
 		return randArrItem(hammyDoubleMessages).replace(/\{item\}/g, firstItem.name);

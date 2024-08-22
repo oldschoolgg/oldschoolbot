@@ -3,7 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const mediumCombatAchievements: CombatAchievement[] = [
 	{
@@ -431,7 +431,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		monster: 'Skotizo',
 		desc: 'Kill Skotizo with no altars active.',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 5,
 			hasChance: isCertainMonsterTrip(Monsters.Skotizo.id)
 		}
 	},

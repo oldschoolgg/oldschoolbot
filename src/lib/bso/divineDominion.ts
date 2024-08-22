@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { Time, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -277,4 +277,4 @@ ${await divineDominionCheck(user)}`;
 	return response;
 }
 
-export const allGodlyItems = gods.map(g => g.godItems).flat();
+export const allGodlyItems = gods.flatMap(g => g.godItems);

@@ -5,7 +5,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { pickaxes, varrockArmours } from '../../../lib/skilling/functions/miningBoosts';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { GuardiansOfTheRiftActivityTaskOptions } from '../../../lib/types/minions';
+import type { GuardiansOfTheRiftActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemID, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -23,8 +23,8 @@ export async function guardiansOfTheRiftStartCommand(
 		return 'You need 27 Runecraft to access the Temple of the Eye.';
 	}
 
-	let timePerGame = Time.Minute * 10;
-	let maxTripLength = calcMaxTripLength(user, 'GuardiansOfTheRift');
+	const timePerGame = Time.Minute * 10;
+	const maxTripLength = calcMaxTripLength(user, 'GuardiansOfTheRift');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	// Being reduced with ticks
@@ -133,7 +133,7 @@ export async function guardiansOfTheRiftStartCommand(
 		rolls += 1;
 	}
 
-	let removeRunesAndNecks = new Bank();
+	const removeRunesAndNecks = new Bank();
 	if (combinationRunes) {
 		const tomeOfFire = user.hasEquipped(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
 		const tomeOfWater = user.hasEquipped(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;

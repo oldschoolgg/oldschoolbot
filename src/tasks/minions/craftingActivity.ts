@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CraftingActivityTaskOptions } from '../../lib/types/minions';
+import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -20,7 +20,7 @@ export const craftingTask: MinionTask = {
 		if (item.outputMultiple) {
 			sets = ' sets of';
 		}
-		let quantityToGive = item.outputMultiple ? quantity * item.outputMultiple : quantity;
+		const quantityToGive = item.outputMultiple ? quantity * item.outputMultiple : quantity;
 		const loot = new Bank();
 
 		let crushed = 0;

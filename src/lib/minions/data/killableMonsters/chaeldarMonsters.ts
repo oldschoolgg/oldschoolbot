@@ -2,10 +2,10 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{
@@ -32,12 +32,15 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 60,
 		table: Monsters.Aviansie,
 
-		wildy: false,
+		wildy: true,
 		difficultyRating: 4,
 		qpRequired: 0,
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
-		healAmountNeeded: 24
+		healAmountNeeded: 24,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 10,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.BlackDemon.id,
@@ -45,7 +48,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.BlackDemon.aliases,
 		timeToFinish: Time.Second * 36,
 		table: Monsters.BlackDemon,
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 3,
 		existsInCatacombs: true,
@@ -64,7 +67,11 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canCannon: true,
 		// Even if no multi, can safespot for same effect
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 9,
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -209,7 +216,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.GreaterDemon,
 
-		wildy: false,
+		wildy: true,
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
@@ -227,7 +234,11 @@ export const chaeldarMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 9,
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.IronDragon.id,

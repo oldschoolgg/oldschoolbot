@@ -1,10 +1,11 @@
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const shop = [
 	{

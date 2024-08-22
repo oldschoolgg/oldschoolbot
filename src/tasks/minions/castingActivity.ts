@@ -1,12 +1,12 @@
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CastingActivityTaskOptions } from '../../lib/types/minions';
+import type { CastingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const castingTask: MinionTask = {
 	type: 'Casting',
 	async run(data: CastingActivityTaskOptions) {
-		let { spellID, quantity, userID, channelID, duration } = data;
+		const { spellID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 
 		const spell = Castables.find(i => i.id === spellID)!;
@@ -51,7 +51,7 @@ export const castingTask: MinionTask = {
 			});
 		}
 
-		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
+		const str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
 			loot ?? 'no items'
 		}. ${xpRes} ${craftXpRes}${prayerXpRes}`;
 

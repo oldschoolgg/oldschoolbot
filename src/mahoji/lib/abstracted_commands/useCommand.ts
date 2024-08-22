@@ -1,8 +1,8 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
-import { notEmpty, objectEntries, randArrItem, randInt, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Time, notEmpty, objectEntries, randArrItem, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
@@ -39,7 +39,7 @@ interface Usable {
 	items: Item[];
 	run: (user: MUser) => CommandResponse | Awaited<CommandResponse>;
 }
-export const usables: Usable[] = [];
+const usables: Usable[] = [];
 
 interface UsableUnlock {
 	item: Item;

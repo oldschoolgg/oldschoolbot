@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -24,7 +24,7 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 	);
 
 	const tempClWithNewUniques = user.cl ? user.cl.clone() : new Bank();
-	let loot = new Bank();
+	const loot = new Bank();
 	for (let i = 0; i < quantity; i++) {
 		const filteredPages = fossilIslandNotesCL.filter(page => !tempClWithNewUniques.has(page));
 		const outPage =

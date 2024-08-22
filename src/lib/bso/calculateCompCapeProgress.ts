@@ -2,6 +2,7 @@ import { calcWhatPercent } from 'e';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { compCapeCategories, compCapeTrimmedRequirements } from '../compCape';
+import { Requirements } from '../structures/Requirements';
 
 export async function calculateCompCapeProgress(user: MUser) {
 	let finalStr = '';
@@ -10,8 +11,9 @@ export async function calculateCompCapeProgress(user: MUser) {
 	let totalCompletedTrimmed = 0;
 	let totalCompletedUntrimmed = 0;
 
+	const data = await Requirements.fetchRequiredData(user);
 	for (const cat of compCapeCategories) {
-		const progress = await cat.requirements.check(user);
+		const progress = cat.requirements.check(data);
 
 		let subStr = `${cat.name} (Finished ${progress.metRequirements}/${
 			progress.totalRequirements

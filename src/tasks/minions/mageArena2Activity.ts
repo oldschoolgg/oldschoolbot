@@ -1,25 +1,25 @@
 import { percentChance, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
+import type { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const mageArenaTwoTask: MinionTask = {
 	type: 'MageArena2',
 	async run(data: ActivityTaskOptionsWithNoChanges) {
-		let { userID, channelID } = data;
+		const { userID, channelID } = data;
 		const user = await mUserFetch(userID);
 
 		let str = '';
 		let loot: Bank | undefined = undefined;
 		if (percentChance(70)) {
 			const deathReason = randArrItem([
-				'Died to Porazdir.',
-				'Killed by Derwen.',
-				'Killed by Justiciar Zachariah.',
-				"PK'd by a clan.",
-				'Killed by Chaos Elemental.',
-				'Killed by a PKer.'
+				'Died to Porazdir',
+				'Killed by Derwen',
+				'Killed by Justiciar Zachariah',
+				"PK'd by a clan",
+				'Killed by Chaos Elemental',
+				'Killed by a PKer'
 			]);
 			str = `${user}, ${user.minionName} failed to complete the Mage Arena II: ${deathReason}. Try again.`;
 		} else {

@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
 import { wealthInventorySize, wealthInventoryTime } from '../../../lib/constants';
-import { userhasDiaryTier, WildernessDiary } from '../../../lib/diaries';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

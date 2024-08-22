@@ -14,19 +14,19 @@ import {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
-	userhasDiaryTier,
 	VarrockDiary,
 	WesternProv,
-	WildernessDiary
+	WildernessDiary,
+	userhasDiaryTier
 } from '../diaries';
 import { Cookables } from '../skilling/skills/cooking/cooking';
 import Fishing from '../skilling/skills/fishing';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import Runecraft from '../skilling/skills/runecraft';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leaguesUtils';
+import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
 import { calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
 
 export const easyTasks: Task[] = [

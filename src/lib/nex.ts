@@ -12,7 +12,7 @@ import {
 	virtusOutfit
 } from './data/CollectionsExport';
 import { GearStat } from './gear';
-import { KillableMonster } from './minions/types';
+import type { KillableMonster } from './minions/types';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeKillTable } from './util/setCustomMonster';

@@ -1,13 +1,14 @@
 import { userMention } from '@discordjs/builders';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, sumArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { ores, secondaries, seedsFilter } from '../../lib/data/filterables';
 import { Herb } from '../../lib/invention/groups/Herb';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { prisma } from '../../lib/settings/prisma';
+
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { assert, isSuperUntradeable } from '../../lib/util';
@@ -17,7 +18,7 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 async function addToLotteryBank(userID: string, bankToAdd: Bank) {
@@ -152,7 +153,7 @@ const specialPricesBeforeMultiplying = new Bank()
 	.add('Hellfire arrow', 30_000)
 	.add('Mysterious seed', 5_000_000);
 
-for (const herb of Herb.items.map(i => i.item).flat()) {
+for (const herb of Herb.items.flatMap(i => i.item)) {
 	if (!specialPricesBeforeMultiplying.has(herb.id)) {
 		specialPricesBeforeMultiplying.add(herb.id, 10_000);
 	}
@@ -310,7 +311,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 		buy_tickets?: { quantity: number };
 		deposit_items?: { items?: string; filter?: string; search?: string };
 	}>) => {
-		let infoStr = `
+		const infoStr = `
 1. This is a regular Lottery (no special event or DC items)
 2. There'll be 4 spins, each winner winning 1/4th of the loot.
 3. You can win more than once.
@@ -385,7 +386,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 				return "Those items aren't worth enough, your deposit needs to be enough to get you atleast 1 ticket.";
 			}
 
-			let perItemTickets = [];
+			const perItemTickets = [];
 			for (const [item, quantity] of bankToSell
 				.items()
 				.sort((a, b) => getPriceOfItem(b[0]) * b[1] - getPriceOfItem(a[0]) * a[1])

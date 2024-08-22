@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { GearSetup } from '../gear/types';
+import type { GearSetup } from '../gear/types';
 import { isValidGearSetup, skillsMeetRequirements } from '../util';
 import { parseStringBank } from './parseStringBank';
 
@@ -56,22 +56,22 @@ export function gearEquipMultiImpl(
 	for (const [item, qty] of equipBank.items()) {
 		const { slot } = item.equipment!;
 		if (slot === EquipmentSlot.TwoHanded && equippedGear[EquipmentSlot.Shield]) {
-			unequipBank.add(equippedGear[EquipmentSlot.Shield]!.item, equippedGear[EquipmentSlot.Shield]!.quantity);
+			unequipBank.add(equippedGear[EquipmentSlot.Shield]?.item, equippedGear[EquipmentSlot.Shield]?.quantity);
 			equippedGear[EquipmentSlot.Shield] = null;
 		}
 		if (slot === EquipmentSlot.TwoHanded && equippedGear[EquipmentSlot.Weapon]) {
-			unequipBank.add(equippedGear[EquipmentSlot.Weapon]!.item, equippedGear[EquipmentSlot.Weapon]!.quantity);
+			unequipBank.add(equippedGear[EquipmentSlot.Weapon]?.item, equippedGear[EquipmentSlot.Weapon]?.quantity);
 			equippedGear[EquipmentSlot.Weapon] = null;
 		}
 		if (equippedGear[EquipmentSlot.TwoHanded] && (slot === EquipmentSlot.Shield || slot === EquipmentSlot.Weapon)) {
 			unequipBank.add(
-				equippedGear[EquipmentSlot.TwoHanded]!.item,
-				equippedGear[EquipmentSlot.TwoHanded]!.quantity
+				equippedGear[EquipmentSlot.TwoHanded]?.item,
+				equippedGear[EquipmentSlot.TwoHanded]?.quantity
 			);
 			equippedGear[EquipmentSlot.TwoHanded] = null;
 		}
 		if (equippedGear[slot]) {
-			unequipBank.add(equippedGear[slot]!.item, equippedGear[slot]!.quantity);
+			unequipBank.add(equippedGear[slot]?.item, equippedGear[slot]?.quantity);
 		}
 		equippedGear[slot] = { item: item.id, quantity: qty };
 	}

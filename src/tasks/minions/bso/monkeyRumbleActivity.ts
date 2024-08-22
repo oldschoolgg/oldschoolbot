@@ -1,10 +1,10 @@
-import { randArrItem, roll, Time, uniqueArr } from 'e';
+import { Time, randArrItem, roll, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { monkeyHeadImage, monkeyTierOfUser } from '../../../lib/monkeyRumble';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MonkeyRumbleOptions } from '../../../lib/types/minions';
+import type { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -31,8 +31,8 @@ export const mrTask: MinionTask = {
 		});
 
 		const monkeyTier = monkeyTierOfUser(user);
-		let tierBonusXP = quantity * monkeyTier * 1233;
-		let strengthBonusXP = quantity * user.skillLevel(SkillsEnum.Strength) * 1000;
+		const tierBonusXP = quantity * monkeyTier * 1233;
+		const strengthBonusXP = quantity * user.skillLevel(SkillsEnum.Strength) * 1000;
 		const strXP = Math.floor(tierBonusXP + strengthBonusXP) / 5;
 
 		let xpStr = await user.addXP({
@@ -57,7 +57,7 @@ export const mrTask: MinionTask = {
 		const tokens = Math.ceil(quantity * (monkeyTier / 1.2));
 		const loot = new Bank().add('Rumble token', tokens);
 
-		let files = [];
+		const files = [];
 		const specialMonkeys = monkeys.filter(m => m.special);
 		for (const monkey of specialMonkeys) {
 			const unique = rewardTable.roll();

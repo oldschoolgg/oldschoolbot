@@ -1,5 +1,5 @@
 import getOSItem from '../../../util/getOSItem';
-import { CutLeapingFish } from '../../types';
+import type { CutLeapingFish } from '../../types';
 
 const LeapingFish: CutLeapingFish[] = [
 	{

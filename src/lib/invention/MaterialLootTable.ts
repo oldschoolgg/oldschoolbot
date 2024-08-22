@@ -1,6 +1,6 @@
 import { randInt } from 'e';
 
-import { IMaterialBank, MaterialType } from '.';
+import type { IMaterialBank, MaterialType } from '.';
 
 interface MaterialTableItem {
 	material: MaterialType;

@@ -1,10 +1,10 @@
 import { Time } from 'e';
 
-import { MaterialType, materialTypes } from '../../../lib/invention';
-import { transactMaterialsFromUser } from '../../../lib/invention/inventions';
+import { type MaterialType, materialTypes } from '../../../lib/invention';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
-import { ItemBank } from '../../../lib/types';
-import { TinkeringWorkshopOptions } from '../../../lib/types/minions';
+import { transactMaterialsFromUser } from '../../../lib/invention/inventions';
+import type { ItemBank } from '../../../lib/types';
+import type { TinkeringWorkshopOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -28,15 +28,13 @@ export async function tinkeringWorkshopCommand(user: MUser, material: MaterialTy
 		return `You don't have enough materials to workshop with this material, you need: ${materialCost}.`;
 	}
 	await transactMaterialsFromUser({ user, remove: materialCost });
-	await userStatsUpdate(user.id, oldStats => {
-		return {
-			tworkshop_material_cost_bank: new MaterialBank(oldStats.tworkshop_material_cost_bank as ItemBank).add(
-				materialCost
-			).bank
-		};
+	const stats = await user.fetchStats({ tworkshop_material_cost_bank: true });
+	await userStatsUpdate(user.id, {
+		tworkshop_material_cost_bank: new MaterialBank(stats.tworkshop_material_cost_bank as ItemBank).add(materialCost)
+			.bank
 	});
 
-	let str = `${
+	const str = `${
 		user.minionName
 	} is now off to do ${quantity}x Tinkering Workshop projects! The total trip will take ${formatDuration(
 		duration

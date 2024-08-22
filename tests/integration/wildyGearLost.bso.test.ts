@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { Gear } from '../../src/lib/structures/Gear';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { monsterTask } from '../../src/tasks/minions/monsterActivity';
 import { createTestUser, mockClient } from './util';
 
@@ -27,8 +28,8 @@ test('calculateGearLostOnDeathWilderness', async () => {
 
 	await monsterTask.run({
 		type: 'MonsterKilling',
-		monsterID: Monsters.Venenatis.id,
-		quantity: 10,
+		mi: Monsters.Venenatis.id,
+		q: 10,
 		died: true,
 		pkEncounters: 3,
 		hasWildySupplies: true,
@@ -37,7 +38,7 @@ test('calculateGearLostOnDeathWilderness', async () => {
 		id: 123,
 		finishDate: new Date().getTime(),
 		channelID: ''
-	});
+	} as MonsterActivityTaskOptions);
 
 	await user.sync();
 	expect(user.gear.wildy.toString()).toEqual("Abyssal cape, Inquisitor's plateskirt, Ignis ring");

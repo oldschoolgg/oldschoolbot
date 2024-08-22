@@ -1,6 +1,5 @@
 import { Time } from 'e';
 
-import { prisma } from '../../../lib/settings/prisma';
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

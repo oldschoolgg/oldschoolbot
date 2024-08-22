@@ -1,4 +1,4 @@
-import { Plankable } from '../../skilling/types';
+import type { Plankable } from '../../skilling/types';
 import itemID from '../../util/itemID';
 
 export const Planks: Plankable[] = [

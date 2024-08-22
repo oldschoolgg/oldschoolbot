@@ -1,9 +1,11 @@
-import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
+import type { SKRSContext2D } from '@napi-rs/canvas';
+import { Canvas } from '@napi-rs/canvas';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { loadAndCacheLocalImage, measureTextWidth } from '../../lib/util/canvasUtil';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
 

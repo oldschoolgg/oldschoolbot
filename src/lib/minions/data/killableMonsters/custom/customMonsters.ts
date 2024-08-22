@@ -1,13 +1,13 @@
-import { LootTable } from 'oldschooljs';
-import { MonsterData } from 'oldschooljs/dist/meta/monsterData';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type { LootTable } from 'oldschooljs';
+import type { MonsterData } from 'oldschooljs/dist/meta/monsterData';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import setCustomMonster, { makeKillTable } from '../../../../util/setCustomMonster';
-import { KillableMonster } from '../../../types';
+import type { KillableMonster } from '../../../types';
+import { SunMoonMonsters } from './SunMoon';
 import { customDemiBosses } from './demiBosses';
 import { MiscCustomMonsters } from './misc';
 import { resourceDungeonMonsters } from './resourceDungeons';
-import { SunMoonMonsters } from './SunMoon';
 
 declare module 'oldschooljs/dist/structures/Monster' {
 	export default interface Monster {

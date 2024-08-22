@@ -1,10 +1,9 @@
+import { writeFileSync } from 'node:fs';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { tame_growth, UserStats } from '@prisma/client';
+import { type UserStats, tame_growth } from '@prisma/client';
 import { calcWhatPercent, objectEntries, sumArr } from 'e';
-import { writeFileSync } from 'fs';
 import { Bank, Items } from 'oldschooljs';
 
-import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
 import { divinationEnergies } from './bso/divination';
 import { ClueTiers } from './clues/clueTiers';
 import { BitField } from './constants';
@@ -120,10 +119,10 @@ import {
 	stealingCreationCL,
 	templeTrekkingCL,
 	temporossCL,
-	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theNightmareCL,
+	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
 	tinkeringWorshopCL,
 	titheFarmCL,
@@ -146,14 +145,15 @@ import { creatablesCL } from './data/createables';
 import { kibbleCL } from './data/kibble';
 import { getSimilarItems } from './data/similarItems';
 import { slayerMasksHelmsCL } from './data/slayerMaskHelms';
-import { diariesObject, diaryTiers } from './diaries';
+import { diaries, diariesObject } from './diaries';
 import { growablePetsCL } from './growablePets';
 import { implingsCL } from './implings';
 import { inventionCL } from './invention/inventions';
 import { allLeagueTasks, leagueTasks } from './leagues/leagues';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
-import { getPOHObject, PoHObjects } from './poh';
-import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
+import { type DiaryID, type DiaryTierName, diaryTiers } from './minions/types';
+import { PoHObjects, getPOHObject } from './poh';
+import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Skillcapes from './skilling/skillcapes';
 import Agility from './skilling/skills/agility';
 import { cookingCL } from './skilling/skills/cooking/cooking';
@@ -164,9 +164,9 @@ import { fletchingCL } from './skilling/skills/fletching/fletchables';
 import { herbloreCL } from './skilling/skills/herblore/mixables';
 import { smithingCL } from './skilling/skills/smithing/smithables';
 import { slayerUnlockableRewards } from './slayer/slayerUnlocks';
-import { RequirementFailure, Requirements } from './structures/Requirements';
-import { tameFeedableItems, TameSpeciesID } from './tames';
-import { ItemBank } from './types';
+import { type RequirementFailure, Requirements } from './structures/Requirements';
+import { TameSpeciesID, tameFeedableItems } from './tames';
+import type { ItemBank } from './types';
 import { itemID, itemNameFromID } from './util';
 import resolveItems from './util/resolveItems';
 
@@ -338,21 +338,10 @@ const skillingRequirements = new Requirements()
 	.add({ name: 'Complete Implings CL', clRequirement: implingsCL })
 	.add({
 		name: 'Grow 5 Spirit trees',
-		has: async ({ user }) => {
-			if (user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
-				return true;
-			}
-			const info = await getFarmingInfo(user.id);
+		has: ({ user }) => {
+			const info = getFarmingInfoFromUser(user.user);
 			const hasFive = info.patches.spirit.lastQuantity >= 5;
-			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
-				await user.update({
-					bitfield: {
-						push: BitField.GrewFiveSpiritTrees
-					}
-				});
-			}
-
-			return hasFive;
+			return hasFive || user.bitfield.includes(BitField.GrewFiveSpiritTrees);
 		}
 	});
 
@@ -407,8 +396,7 @@ const cluesRequirements = new Requirements()
 	})
 	.add({
 		name: 'Collect/Complete/Open a Grandmaster clue',
-		has: async ({ user }) => {
-			const { clueCounts } = await user.calcActualClues();
+		has: ({ clueCounts }) => {
 			if (clueCounts.Grandmaster === 0) {
 				return 'You need to Collect/Complete/Open a Grandmaster clue';
 			}
@@ -416,8 +404,7 @@ const cluesRequirements = new Requirements()
 	})
 	.add({
 		name: 'Collect/Complete/Open a Elder clue',
-		has: async ({ user }) => {
-			const { clueCounts } = await user.calcActualClues();
+		has: ({ clueCounts }) => {
 			if (clueCounts.Elder === 0) {
 				return 'You need to Collect/Complete/Open a Elder clue';
 			}
@@ -530,7 +517,7 @@ miscRequirements
 	})
 	.add({
 		name: 'Unlock all Slayer unlocks',
-		has: async ({ user, roboChimpUser }) => {
+		has: ({ user, roboChimpUser }) => {
 			const hasAll =
 				roboChimpUser.leagues_completed_tasks_ids.includes(4103) ||
 				user.user.slayer_unlocks.length >= slayerUnlockableRewards.length ||
@@ -567,8 +554,7 @@ miscRequirements
 	})
 	.add({
 		name: 'Build the highest tier (level requirement) item in every POH Slot',
-		has: async ({ user }) => {
-			const poh = await getPOH(user.id);
+		has: ({ poh }) => {
 			const failures: RequirementFailure[] = [];
 			for (const [key, val] of objectEntries(poh)) {
 				if (key === 'user_id' || key === 'background_id' || key === 'altar') continue;
@@ -689,8 +675,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Obtain, hatch, and fully grow a Monkey Tame',
-		has: async ({ user }) => {
-			const tames = await user.getTames();
+		has: ({ tames }) => {
 			if (!tames.some(t => t.species.id === TameSpeciesID.Monkey && t.growthStage === tame_growth.adult)) {
 				return 'You need to obtain, hatch, and grow to adult a Monkey Tame.';
 			}
@@ -699,8 +684,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Obtain, hatch, and fully grow a Igne Tame',
-		has: async ({ user }) => {
-			const tames = await user.getTames();
+		has: ({ tames }) => {
 			if (!tames.some(t => t.species.id === TameSpeciesID.Igne && t.growthStage === tame_growth.adult)) {
 				return 'You need to obtain, hatch, and grow to adult a Igne Tame.';
 			}
@@ -709,8 +693,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Feed a Monkey tame all items that provide a boost',
-		has: async ({ user }) => {
-			const tames = await user.getTames();
+		has: ({ tames }) => {
 			const itemsToBeFed = tameFeedableItems.filter(i =>
 				i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Monkey)
 			);
@@ -731,8 +714,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Feed a Igne tame all items that provide a boost',
-		has: async ({ user }) => {
-			const tames = await user.getTames();
+		has: ({ tames }) => {
 			const itemsToBeFed = tameFeedableItems.filter(i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Igne));
 
 			const oneTameHasAll = tames
@@ -751,9 +733,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Equip a Igne tame with the BiS items',
-		has: async ({ user }) => {
-			const tames = await user.getTames();
-
+		has: ({ tames }) => {
 			const oneTameHasAll = tames
 				.filter(t => t.species.id === TameSpeciesID.Igne)
 				.some(tame => {
@@ -769,10 +749,16 @@ const tameRequirements = new Requirements()
 	});
 
 const diaryRequirements = new Requirements();
-for (const [key, b] of objectEntries(diariesObject)) {
+for (const [, b] of objectEntries(diariesObject)) {
 	diaryRequirements.add({
 		name: `Complete the ${b.name} achievement diary`,
-		diaryRequirement: diaryTiers.map(i => [key, i])
+		diaryRequirement: diaries.flatMap(i => {
+			const res: [DiaryID, DiaryTierName][] = [];
+			for (const a of diaryTiers) {
+				res.push([i.id, a]);
+			}
+			return res;
+		})
 	});
 }
 diaryRequirements.add({ name: 'Complete Achievement Diary CL', clRequirement: diariesCL });
@@ -784,7 +770,7 @@ export const compCapeTrimmedRequirements = new Requirements()
 	})
 	.add({
 		name: 'Complete all Leagues tasks',
-		has: async ({ roboChimpUser }) => {
+		has: ({ roboChimpUser }) => {
 			const hasAll =
 				roboChimpUser.leagues_completed_tasks_ids.length === allLeagueTasks.length &&
 				allLeagueTasks.every(t => roboChimpUser.leagues_completed_tasks_ids.includes(t.id));
@@ -854,13 +840,12 @@ export const compCapeCategories = [
 const allCLItemsCheckedFor = compCapeCategories
 	.map(i => i.requirements.requirements)
 	.flat(2)
-	.map(req => {
+	.flatMap(req => {
 		if ('clRequirement' in req) {
 			return Array.isArray(req.clRequirement) ? req.clRequirement : req.clRequirement.items().map(i => i[0].id);
 		}
 		return [];
-	})
-	.flat();
+	});
 
 const overallItemsNotCheckedFor = Items.array()
 	.map(i => i.id)

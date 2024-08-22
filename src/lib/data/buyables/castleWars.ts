@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Buyable } from './buyables';
+import type { Buyable } from './buyables';
 
 const items = [
 	['Red decorative full helm', 5],

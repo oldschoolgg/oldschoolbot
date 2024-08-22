@@ -1,0 +1,66 @@
+{
+	"encoded": "{\"chart\":{\"type\":\"bar\"},\"title\":{\"text\":\"bar kmb title\"},\"series\":[{\"name\":\"bar kmb title\",\"data\":[{\"x\":\"Twisted bow\",\"y\":5000000000,\"fillColor\":\"#ffee65\"},{\"x\":\"Egg\",\"y\":1500000000,\"fillColor\":\"#87bc45\"},{\"x\":\"Cat\",\"y\":500000000,\"fillColor\":\"#bdcf32\"},{\"x\":\"Dog\",\"y\":2500000000,\"fillColor\":\"#27aeef\"},{\"x\":\"Trout\",\"y\":4500000000,\"fillColor\":\"#e60049\"}]}],\"xaxis\":{\"categories\":[\"Twisted bow\",\"Egg\",\"Cat\",\"Dog\",\"Trout\"]},\"dataLabels\":{\"enabled\":true,\"style\":{\"colors\":[\"#000\"]},\"formatter\":(v) => {\n      if (v > 999999999 || v < -999999999) {\n        return `${Math.round(v / 1e9)}b`;\n      } else if (v > 999999 || v < -999999) {\n        return `${Math.round(v / 1e6)}m`;\n      } else if (v > 999 || v < -999) {\n        return `${Math.round(v / 1e3)}k`;\n      }\n      return Math.round(v);\n    }},\"yaxis\":{\"labels\":{\"formatter\":(v) => {\n      if (v > 999999999 || v < -999999999) {\n        return `${Math.round(v / 1e9)}b`;\n      } else if (v > 999999 || v < -999999) {\n        return `${Math.round(v / 1e6)}m`;\n      } else if (v > 999 || v < -999) {\n        return `${Math.round(v / 1e3)}k`;\n      }\n      return Math.round(v);\n    }}},\"plotOptions\":{\"bar\":{\"dataLabels\":{\"position\":\"top\"}}}}",
+	"config": {
+		"chart": {
+			"type": "bar"
+		},
+		"title": {
+			"text": "bar kmb title"
+		},
+		"series": [
+			{
+				"name": "bar kmb title",
+				"data": [
+					{
+						"x": "Twisted bow",
+						"y": 5000000000,
+						"fillColor": "#ffee65"
+					},
+					{
+						"x": "Egg",
+						"y": 1500000000,
+						"fillColor": "#87bc45"
+					},
+					{
+						"x": "Cat",
+						"y": 500000000,
+						"fillColor": "#bdcf32"
+					},
+					{
+						"x": "Dog",
+						"y": 2500000000,
+						"fillColor": "#27aeef"
+					},
+					{
+						"x": "Trout",
+						"y": 4500000000,
+						"fillColor": "#e60049"
+					}
+				]
+			}
+		],
+		"xaxis": {
+			"categories": ["Twisted bow", "Egg", "Cat", "Dog", "Trout"]
+		},
+		"dataLabels": {
+			"enabled": true,
+			"style": {
+				"colors": ["#000"]
+			},
+			"formatter": "FORMATTER"
+		},
+		"yaxis": {
+			"labels": {
+				"formatter": "FORMATTER"
+			}
+		},
+		"plotOptions": {
+			"bar": {
+				"dataLabels": {
+					"position": "top"
+				}
+			}
+		}
+	},
+	"url": "https://quickchart.io/apex-charts/render?config=%7B%22chart%22%3A%7B%22type%22%3A%22bar%22%7D%2C%22title%22%3A%7B%22text%22%3A%22bar%20kmb%20title%22%7D%2C%22series%22%3A%5B%7B%22name%22%3A%22bar%20kmb%20title%22%2C%22data%22%3A%5B%7B%22x%22%3A%22Twisted%20bow%22%2C%22y%22%3A5000000000%2C%22fillColor%22%3A%22%23ffee65%22%7D%2C%7B%22x%22%3A%22Egg%22%2C%22y%22%3A1500000000%2C%22fillColor%22%3A%22%2387bc45%22%7D%2C%7B%22x%22%3A%22Cat%22%2C%22y%22%3A500000000%2C%22fillColor%22%3A%22%23bdcf32%22%7D%2C%7B%22x%22%3A%22Dog%22%2C%22y%22%3A2500000000%2C%22fillColor%22%3A%22%2327aeef%22%7D%2C%7B%22x%22%3A%22Trout%22%2C%22y%22%3A4500000000%2C%22fillColor%22%3A%22%23e60049%22%7D%5D%7D%5D%2C%22xaxis%22%3A%7B%22categories%22%3A%5B%22Twisted%20bow%22%2C%22Egg%22%2C%22Cat%22%2C%22Dog%22%2C%22Trout%22%5D%7D%2C%22dataLabels%22%3A%7B%22enabled%22%3Atrue%2C%22style%22%3A%7B%22colors%22%3A%5B%22%23000%22%5D%7D%2C%22formatter%22%3A(v)%20%3D%3E%20%7B%0A%20%20%20%20%20%20if%20(v%20%3E%20999999999%20%7C%7C%20v%20%3C%20-999999999)%20%7B%0A%20%20%20%20%20%20%20%20return%20%60%24%7BMath.round(v%20%2F%201e9)%7Db%60%3B%0A%20%20%20%20%20%20%7D%20else%20if%20(v%20%3E%20999999%20%7C%7C%20v%20%3C%20-999999)%20%7B%0A%20%20%20%20%20%20%20%20return%20%60%24%7BMath.round(v%20%2F%201e6)%7Dm%60%3B%0A%20%20%20%20%20%20%7D%20else%20if%20(v%20%3E%20999%20%7C%7C%20v%20%3C%20-999)%20%7B%0A%20%20%20%20%20%20%20%20return%20%60%24%7BMath.round(v%20%2F%201e3)%7Dk%60%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20return%20Math.round(v)%3B%0A%20%20%20%20%7D%7D%2C%22yaxis%22%3A%7B%22labels%22%3A%7B%22formatter%22%3A(v)%20%3D%3E%20%7B%0A%20%20%20%20%20%20if%20(v%20%3E%20999999999%20%7C%7C%20v%20%3C%20-999999999)%20%7B%0A%20%20%20%20%20%20%20%20return%20%60%24%7BMath.round(v%20%2F%201e9)%7Db%60%3B%0A%20%20%20%20%20%20%7D%20else%20if%20(v%20%3E%20999999%20%7C%7C%20v%20%3C%20-999999)%20%7B%0A%20%20%20%20%20%20%20%20return%20%60%24%7BMath.round(v%20%2F%201e6)%7Dm%60%3B%0A%20%20%20%20%20%20%7D%20else%20if%20(v%20%3E%20999%20%7C%7C%20v%20%3C%20-999)%20%7B%0A%20%20%20%20%20%20%20%20return%20%60%24%7BMath.round(v%20%2F%201e3)%7Dk%60%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20return%20Math.round(v)%3B%0A%20%20%20%20%7D%7D%7D%2C%22plotOptions%22%3A%7B%22bar%22%3A%7B%22dataLabels%22%3A%7B%22position%22%3A%22top%22%7D%7D%7D%7D"
+}

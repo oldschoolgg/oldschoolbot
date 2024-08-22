@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import itemID from '../../../util/itemID';
-import { BlastableBar } from '../../types';
+import type { BlastableBar } from '../../types';
 
 const BlastableBars: BlastableBar[] = [
 	{

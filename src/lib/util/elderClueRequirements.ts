@@ -50,7 +50,7 @@ export const elderSherlockItems = deepResolveItems([
 ]);
 
 export async function checkElderClueRequirements(user: MUser) {
-	let unmetRequirements: string[] = [];
+	const unmetRequirements: string[] = [];
 
 	// 120 all
 	const skillsNot120 = Object.entries(user.skillsAsLevels)

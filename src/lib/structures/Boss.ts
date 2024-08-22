@@ -1,18 +1,18 @@
-import { AttachmentBuilder, BaseMessageOptions, TextChannel } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
+import { AttachmentBuilder, type BaseMessageOptions, type TextChannel } from 'discord.js';
+import { Time, calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { GearSetupType, GearStats } from '../gear';
+import type { GearSetupType, GearStats } from '../gear';
 import { trackLoot } from '../lootTrack';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { setupParty } from '../party';
-import { Skills } from '../types';
-import { NewBossOptions } from '../types/minions';
+import type { Skills } from '../types';
+import type { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend, makeTable } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { ClientBankKey, updateBankSetting } from '../util/updateBankSetting';
-import { Gear } from './Gear';
+import { type ClientBankKey, updateBankSetting } from '../util/updateBankSetting';
+import type { Gear } from './Gear';
 
 export const gpCostPerKill = (user: MUser) =>
 	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
@@ -22,7 +22,7 @@ export const calcDwwhChance = (users: MUser[]) => {
 	const baseRate = 850;
 	const modDenominator = 15;
 
-	let dropRate = (baseRate / 2) * (1 + size / modDenominator);
+	const dropRate = (baseRate / 2) * (1 + size / modDenominator);
 	let groupRate = Math.ceil(dropRate / size);
 	groupRate = Math.ceil(groupRate);
 
@@ -96,7 +96,7 @@ function calcSetupPercent(
 		totalPercent = Math.floor(Math.max(0, totalPercent / 2));
 	}
 
-	if (isNaN(totalPercent) || totalPercent < 0 || totalPercent > 100) {
+	if (Number.isNaN(totalPercent) || totalPercent < 0 || totalPercent > 100) {
 		throw new Error(`Invalid total gear percent: ${totalPercent}`);
 	}
 
@@ -167,12 +167,12 @@ export class BossInstance {
 	ignoreStats: (keyof GearStats)[] = [];
 	food: Bank | ((user: MUser) => Bank);
 	bossUsers: BossUser[] = [];
-	duration: number = -1;
+	duration = -1;
 	quantity: number | null = null;
 	tempQty: number | null = null;
-	allowMoreThan1Solo: boolean = false;
-	allowMoreThan1Group: boolean = false;
-	totalPercent: number = -1;
+	allowMoreThan1Solo = false;
+	allowMoreThan1Group = false;
+	totalPercent = -1;
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channel: TextChannel;
 	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent';
@@ -188,9 +188,9 @@ export class BossInstance {
 	automaticStartTime: number;
 	maxSize: number;
 	boostMax: number | null = null;
-	speedMaxReduction: number = 40;
-	speedGearWeight: number = 25;
-	speedKcWeight: number = 35;
+	speedMaxReduction = 40;
+	speedGearWeight = 25;
+	speedKcWeight = 35;
 	skipInvalidUsers?: boolean = false;
 	allowedMentions?: BaseMessageOptions['allowedMentions'];
 
@@ -223,7 +223,7 @@ export class BossInstance {
 		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
 		this.quantity = options.quantity ?? null;
 		this.maxSize = options.maxSize ?? 10;
-		let massText = [options.massText, '\n'];
+		const massText = [options.massText, '\n'];
 		if (Object.keys(this.skillRequirements).length > 0) {
 			massText.push(`**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`);
 		}
@@ -253,7 +253,7 @@ export class BossInstance {
 	}
 
 	calculateQty(duration: number) {
-		let baseQty = this.tempQty;
+		const baseQty = this.tempQty;
 		// Calculate max kill qty
 		let tempQty = 1;
 		const maxTripLength = this.leader ? calcMaxTripLength(this.leader, this.activity) : Time.Hour;
@@ -285,7 +285,7 @@ export class BossInstance {
 						message: this.massText,
 						massTimeout: this.automaticStartTime,
 						allowedMentions: this.allowedMentions
-				  });
+					});
 
 		this.tempQty = this.quantity;
 		// Force qty to 1 for init calculations
@@ -340,7 +340,7 @@ export class BossInstance {
 
 	async calcFoodForUser(user: MUser, solo = false) {
 		const kc = await user.getKC(this.id);
-		let itemsToRemove = calcFood(solo, kc);
+		const itemsToRemove = calcFood(solo, kc);
 		if (this.itemCost) {
 			return this.itemCost({ user, kills: this.quantity ?? 0, baseFood: itemsToRemove, solo });
 		}
@@ -365,7 +365,7 @@ export class BossInstance {
 		// Track user len outside the loop because the loop corrupts it. (calcFoodForUser())
 		for (const user of this.users!) {
 			const gear = user.gear[this.gearSetup];
-			let debugStr = [];
+			const debugStr = [];
 			let userPercentChange = 0;
 
 			// Gear
@@ -499,7 +499,7 @@ export class BossInstance {
 
 	async simulate() {
 		const arr = Array(30).fill(this.leader);
-		let results: any[] = [];
+		const results: any[] = [];
 		for (const num of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
 			this.users = arr.slice(0, num);
 			const { bossUsers, duration } = await this.calculateBossUsers();

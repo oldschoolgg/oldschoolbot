@@ -3,7 +3,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { allEquippableItems } from '../../mahoji/lib/mahojiCommandOptions';
 import { getSimilarItems } from '../data/similarItems';
 import { allDyedItems } from '../dyedItems';
-import { GearStat } from '../gear/types';
+import type { GearStat } from '../gear/types';
 import { Gear } from '../structures/Gear';
 import { itemNameFromID } from './smallUtils';
 

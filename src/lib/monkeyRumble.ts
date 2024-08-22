@@ -1,10 +1,10 @@
-import { Canvas, Image } from '@napi-rs/canvas';
+import fs from 'node:fs/promises';
+import { Canvas, type Image, loadImage } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt, roll } from 'e';
-import fs from 'fs/promises';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { canvasImageFromBuffer, printWrappedText } from './util/canvasUtil';
+import { printWrappedText } from './util/canvasUtil';
 import { textBoxFile } from './util/chatHeadImage';
 import getOSItem from './util/getOSItem';
 
@@ -22,7 +22,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		id: 1,
 		name: 'Beginner',
 		greegrees: [getOSItem('Beginner rumble greegree')],
-		image: fs.readFile('./src/lib/resources/images/mmmr/beginnermonkey.png').then(canvasImageFromBuffer),
+		image: loadImage('./src/lib/resources/images/mmmr/beginnermonkey.png'),
 		strengthLevelReq: 80,
 		gamesReq: 0
 	},
@@ -30,7 +30,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		id: 2,
 		name: 'Intermediate',
 		greegrees: [getOSItem('Intermediate rumble greegree')],
-		image: fs.readFile('./src/lib/resources/images/mmmr/intermediatemonkey.png').then(canvasImageFromBuffer),
+		image: loadImage('./src/lib/resources/images/mmmr/intermediatemonkey.png'),
 		strengthLevelReq: 90,
 		gamesReq: 50
 	},
@@ -38,7 +38,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		id: 3,
 		name: 'Ninja',
 		greegrees: [getOSItem('Ninja rumble greegree')],
-		image: fs.readFile('./src/lib/resources/images/mmmr/ninjamonkey.png').then(canvasImageFromBuffer),
+		image: loadImage('./src/lib/resources/images/mmmr/ninjamonkey.png'),
 		strengthLevelReq: 100,
 		gamesReq: 100
 	},
@@ -46,7 +46,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		id: 4,
 		name: 'Expert Ninja',
 		greegrees: [getOSItem('Expert ninja rumble greegree')],
-		image: fs.readFile('./src/lib/resources/images/mmmr/expertninjamonkey.png').then(canvasImageFromBuffer),
+		image: loadImage('./src/lib/resources/images/mmmr/expertninjamonkey.png'),
 		strengthLevelReq: 110,
 		gamesReq: 200
 	},
@@ -54,7 +54,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		id: 5,
 		name: 'Elder',
 		greegrees: [getOSItem('Elder rumble greegree'), getOSItem('Gorilla rumble greegree')],
-		image: fs.readFile('./src/lib/resources/images/mmmr/eldermonkey.png').then(canvasImageFromBuffer),
+		image: loadImage('./src/lib/resources/images/mmmr/eldermonkey.png'),
 		strengthLevelReq: 120,
 		gamesReq: 500
 	}
@@ -165,7 +165,7 @@ export const fightingMessages = [
 
 export const monkeyPhrases = ['Ah Ah!', 'Ah Uh Ah!', 'Ah!', 'Ook Ah Ook!', 'Ook Ah Uh!', 'Ook Ook!', 'Ook!', 'Ook.'];
 export const getMonkeyPhrase = () => {
-	let arr = [];
+	const arr = [];
 	for (let i = 0; i < randInt(5, 10); i++) {
 		arr.push(randArrItem(monkeyPhrases));
 	}
@@ -185,9 +185,7 @@ export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; con
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	const bg = await textBoxFile;
-	const headImage = await canvasImageFromBuffer(
-		await [...normalHeads, ...specialHeads].find(h => h[1] === monkey.head)![0]
-	);
+	const headImage = await loadImage(await [...normalHeads, ...specialHeads].find(h => h[1] === monkey.head)![0]);
 	ctx.font = '16px RuneScape Quill 8';
 	ctx.drawImage(bg, 0, 0);
 	ctx.drawImage(headImage, 28, bg.height / 2 - headImage.height / 2);

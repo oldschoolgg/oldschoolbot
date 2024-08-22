@@ -2,7 +2,7 @@ import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
+import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
 
 export const nightmareZoneTask: MinionTask = {
 	type: 'NightmareZone',
@@ -18,7 +18,7 @@ export const nightmareZoneTask: MinionTask = {
 		const pointsReceived = Math.floor((strategy === 'points' ? 4 : 0.8) * monsterPoints * quantity);
 		const xpPerSkill = totalXP / attackStyles.length;
 
-		let res: string[] = [];
+		const res: string[] = [];
 
 		for (const style of attackStyles) {
 			res.push(
@@ -48,7 +48,7 @@ export const nightmareZoneTask: MinionTask = {
 
 		const score = await incrementMinigameScore(userID, 'nmz', quantity);
 
-		let str = `${user}, ${
+		const str = `${user}, ${
 			user.minionName
 		} finished killing ${quantity}x Nightmare Zone monsters. Your Nightmare Zone KC is now ${score.newScore}.
  \n**XP Gains:** ${res.join(' ')}\nYou gained **${pointsReceived.toLocaleString()}** Nightmare Zone points.`;

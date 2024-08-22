@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Creature, HunterTechniqueEnum } from '../../../types';
+import { type Creature, HunterTechniqueEnum } from '../../../types';
 
 const customBSOCreatures: Creature[] = [
 	{
@@ -28,7 +28,7 @@ const customBSOCreatures: Creature[] = [
 		slope: 0,
 		intercept: 99,
 		bait: qty => {
-			let req = new Bank();
+			const req = new Bank();
 			const kibbleRequired = Math.ceil(qty / 8);
 			req.add('Simple kibble', kibbleRequired);
 			return req;
@@ -47,7 +47,7 @@ const customBSOCreatures: Creature[] = [
 		slope: 0,
 		intercept: 99,
 		bait: qty => {
-			let req = new Bank();
+			const req = new Bank();
 			const kibbleRequired = Math.ceil(qty / 2);
 			req.add('Delicious kibble', kibbleRequired);
 			return req;

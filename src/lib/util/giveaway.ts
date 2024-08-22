@@ -1,11 +1,11 @@
-import { Giveaway } from '@prisma/client';
-import { MessageEditOptions, time, userMention } from 'discord.js';
-import { debounce, noOp, randArrItem, Time } from 'e';
+import type { Giveaway } from '@prisma/client';
+import { type MessageEditOptions, time, userMention } from 'discord.js';
+import { Time, debounce, noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../constants';
-import { prisma } from '../settings/prisma';
+
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
 import { sendToChannelID } from './webhook';

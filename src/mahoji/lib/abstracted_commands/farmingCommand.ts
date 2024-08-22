@@ -1,19 +1,20 @@
-import { CropUpgradeType } from '@prisma/client';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { percentChance, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
+import type { CropUpgradeType } from '@prisma/client';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, reduceNumByPercent } from 'e';
 import { BitField } from '../../../lib/constants';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import Farming from '../../../lib/skilling/skills/farming';
-import { Plant, SkillsEnum } from '../../../lib/skilling/types';
-import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import type { Plant } from '../../../lib/skilling/types';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import type { FarmingActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
@@ -165,7 +166,7 @@ export async function farmingPlantCommand({
 		)}. *Make sure you are not attempting to farm 0 crops.*`;
 	}
 
-	let wantsToPay = (pay || alwaysPay) && plant.canPayFarmer;
+	const wantsToPay = (pay || alwaysPay) && plant.canPayFarmer;
 
 	if (user.skillLevel(SkillsEnum.Farming) < plant.level) {
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
@@ -205,7 +206,7 @@ export async function farmingPlantCommand({
 		return `There are not enough ${plant.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
 	}
 
-	let duration: number = 0;
+	let duration = 0;
 	if (patchType.patchPlanted) {
 		duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
 		if (quantity > patchType.lastQuantity) {
@@ -326,7 +327,7 @@ export async function farmingPlantCommand({
 		}
 	});
 
-	await userStatsBankUpdate(user.id, 'farming_plant_cost_bank', cost);
+	await userStatsBankUpdate(user, 'farming_plant_cost_bank', cost);
 
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 		plantsName: plant.name,

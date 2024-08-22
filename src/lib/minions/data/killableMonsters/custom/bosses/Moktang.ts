@@ -5,9 +5,9 @@ import {
 	ClueTable,
 	FletchingTipsTable,
 	HighTierStoneSpiritTable,
+	StoneSpiritTable,
 	lowRuneHighAdamantTable,
-	runeWeaponTable,
-	StoneSpiritTable
+	runeWeaponTable
 } from '../../../../../simulation/sharedTables';
 
 export const MOKTANG_ID = 391_241;

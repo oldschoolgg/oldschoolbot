@@ -2,7 +2,7 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 import { uniqueArr } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { AttackStyles } from '.';
+import type { AttackStyles } from '.';
 
 const validStyles: AttackStyles[] = [
 	SkillsEnum.Attack,
@@ -29,7 +29,7 @@ export const allPossibleStyles: string[] = uniqueArr([
 	...validStyles,
 	...validStyles
 		.map(i => {
-			let styles = [];
+			const styles = [];
 			for (const style of validStyles) {
 				if (style === i) continue;
 				if (invalidCombinations.some(t => t.includes(i) && t.includes(style))) continue;
@@ -61,8 +61,8 @@ export async function trainCommand(user: MUser, _styles: string | undefined) {
 		_styles === 'shared'
 			? [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]
 			: isValidAttackStyle(_styles)
-			? [_styles]
-			: parsed.filter(isValidAttackStyle);
+				? [_styles]
+				: parsed.filter(isValidAttackStyle);
 
 	for (const comb of invalidCombinations) {
 		if (comb.every(i => styles.includes(i))) {

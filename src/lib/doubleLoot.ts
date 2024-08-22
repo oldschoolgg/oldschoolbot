@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js';
+import type { TextChannel } from 'discord.js';
 import { Time } from 'e';
 
 import { Channel } from './constants';
@@ -7,7 +7,7 @@ import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/cl
 
 export let DOUBLE_LOOT_FINISH_TIME_CACHE = 0;
 
-export function isDoubleLootActive(duration: number = 0) {
+export function isDoubleLootActive(duration = 0) {
 	return Date.now() - duration < DOUBLE_LOOT_FINISH_TIME_CACHE;
 }
 
@@ -35,7 +35,7 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 }
 
 export async function addPatronLootTime(_tier: number, user: MUser | null) {
-	let map: Record<number, number> = {
+	const map: Record<number, number> = {
 		1: 3,
 		2: 6,
 		3: 15,
@@ -44,8 +44,8 @@ export async function addPatronLootTime(_tier: number, user: MUser | null) {
 	};
 	const tier = _tier - 1;
 	if (!map[tier]) return;
-	let minutes = map[tier];
-	let timeAdded = Math.floor(Time.Minute * minutes);
+	const minutes = map[tier];
+	const timeAdded = Math.floor(Time.Minute * minutes);
 	addToDoubleLootTimer(timeAdded, `${user ?? 'Someone'} became a Tier ${tier} sponsor`);
 }
 
@@ -59,7 +59,7 @@ export async function syncDoubleLoot() {
 export async function syncPrescence() {
 	await syncDoubleLoot();
 
-	let str = isDoubleLootActive()
+	const str = isDoubleLootActive()
 		? `${formatDuration(DOUBLE_LOOT_FINISH_TIME_CACHE - Date.now(), true)} Double Loot!`
 		: '/help';
 	if (globalClient.user!.presence.activities[0]?.name !== str) {

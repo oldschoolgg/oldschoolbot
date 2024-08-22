@@ -1,9 +1,8 @@
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
-import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
-import { Item } from 'oldschooljs/dist/meta/types';
-import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
+import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAXING_MESSAGE } from '../config';
 import { Channel, Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
@@ -16,12 +15,12 @@ import {
 } from './data/CollectionsExport';
 import { skillEmoji } from './data/emojis';
 import { getSimilarItems } from './data/similarItems';
-import { AddXpParams } from './minions/types';
-import { prisma } from './settings/prisma';
+import type { AddXpParams } from './minions/types';
+
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
-import { itemNameFromID } from './util';
+import { convertLVLtoXP, convertXPtoLVL, itemNameFromID, toKMB } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 import { insertUserEvent } from './util/userEvents';
@@ -39,7 +38,7 @@ async function howManyMaxed() {
 		(await Promise.all([prisma.$queryRawUnsafe(makeQuery(false)), prisma.$queryRawUnsafe(makeQuery(true))])) as any
 	)
 		.map((i: any) => i[0].count)
-		.map((i: any) => parseInt(i));
+		.map((i: any) => Number.parseInt(i));
 
 	return {
 		normies,
@@ -110,7 +109,7 @@ const skillingOutfitBoosts = [
 // Build list of all Master capes including combined capes.
 const allMasterCapes = Skillcapes.map(i => i.masterCape)
 	.map(msc => getSimilarItems(msc.id))
-	.flat(Infinity) as number[];
+	.flat(Number.POSITIVE_INFINITY) as number[];
 
 function getEquippedCapes(user: MUser) {
 	return objectValues(user.gear)
@@ -361,26 +360,24 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (currentXP >= MAX_XP) {
 		let xpStr = '';
 		if (params.duration && !params.minimal) {
-			xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name} XP already.`;
-			xpStr += ` Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+			xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name}XP already`;
+			xpStr += ` Tracked ${params.amount.toLocaleString()}${skill.emoji}XP.`;
 			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			xpStr += ` (${toKMB(rawXPHr)}/Hr)`;
 		} else {
-			xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+			xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()}${skill.emoji}XP.`;
 		}
 		return xpStr;
 	}
 
-	await user.update({
-		[`skills_${params.skillName}`]: Math.floor(newXP)
-	});
+	await user.update({ [`skills_${params.skillName}`]: Math.floor(newXP) });
 
 	if (currentXP < MAX_XP && newXP === MAX_XP && Object.values(user.skillsAsXP).every(xp => xp === MAX_XP)) {
 		globalClient.emit(
 			Events.ServerNotification,
 			bold(
-				`🎉 ${skill.emoji} **${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
+				`🎉 ${skill.emoji}**${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
 			)
 		);
 		await insertUserEvent({ userID: user.id, type: UserEventType.MaxTotalXP });

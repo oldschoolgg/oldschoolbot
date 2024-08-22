@@ -1,5 +1,5 @@
+import type { DisassemblySourceGroup } from '..';
 import getOSItem from '../../util/getOSItem';
-import { DisassemblySourceGroup } from '..';
 
 const i = getOSItem;
 

@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const championsChallengeTask: MinionTask = {

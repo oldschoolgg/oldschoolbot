@@ -1,16 +1,16 @@
-import { roll, Time } from 'e';
+import { Time, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { VirtusTable } from 'oldschooljs/dist/simulation/subtables/VirtusTable';
 
-import { QuestID } from '../../../../../mahoji/lib/abstracted_commands/questCommand';
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { OSB_VIRTUS_IDS } from '../../../../constants';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
-import { removeItemsFromLootTable } from '../../../../util';
 import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import { KillableMonster } from '../../../types';
+import { removeItemsFromLootTable } from '../../../../util/smallUtils';
+import type { KillableMonster } from '../../../types';
+import { QuestID } from '../../quests';
 
 const awakenedDeathProps = {
 	hardness: 0.9,

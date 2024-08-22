@@ -1,5 +1,5 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import { ClueTiers } from './clueTiers';

@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { PoHObject } from '..';
+import type { PoHObject } from '..';
 
 export const Amulets: PoHObject[] = [
 	{

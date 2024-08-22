@@ -1,31 +1,24 @@
-import {
-	ActionRowBuilder,
-	BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	ChatInputCommandInteraction,
-	MessageComponentInteraction
-} from 'discord.js';
-import { chunk, noOp, roll, shuffleArr, Time } from 'e';
+import type { BaseMessageOptions, ButtonInteraction, CacheType, ChatInputCommandInteraction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, chunk, noOp, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { SILENT_ERROR } from '../../../lib/constants';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { handleMahojiConfirmation, silentButtonAck } from '../../../lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
 import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
 
-export async function luckyPickCommand(
-	user: MUser,
-	luckypickamount: string,
-	interaction: ChatInputCommandInteraction
-): Promise<string> {
+export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: ChatInputCommandInteraction) {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
 
 	if (!amount) {
 		return 'amount must be between 1000000 and 3000000000 exclusively.';
 	}
+
+	await deferInteraction(interaction);
 
 	interface Button {
 		name: string;
@@ -61,23 +54,38 @@ export async function luckyPickCommand(
 	];
 
 	function getButtons(): ButtonInstance[] {
-		// prettier-ignore
-		let buttonsToShow = ['0', '0', '0',
-		'2x', '1.5x', '0', '1.5x', '0',
-		'1.5x', '1.5x', '2x', '0', '3x',
-		'2x', '0', '0', '2x', '0'];
+		const buttonsToShow = [
+			'0',
+			'0',
+			'0',
+			'2x',
+			'1.5x',
+			'0',
+			'1.5x',
+			'0',
+			'1.5x',
+			'1.5x',
+			'2x',
+			'0',
+			'3x',
+			'2x',
+			'0',
+			'0',
+			'2x',
+			'0'
+		];
 
 		buttonsToShow.push(roll(10) ? '10x' : '0');
 		buttonsToShow.push(roll(10) ? '5x' : '0');
 		return shuffleArr(buttonsToShow.map(n => buttons.find(i => i.name === n)!)).map((item, index) => ({
 			...item,
 			picked: false,
-			id: index
+			id: `LP_${index}`
 		}));
 	}
 
 	interface ButtonInstance extends Button {
-		id: number;
+		id: string;
 		picked: boolean;
 	}
 	if (user.isIronman) {
@@ -96,11 +104,11 @@ export async function luckyPickCommand(
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
 	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): BaseMessageOptions['components'] {
-		let chunkedButtons = chunk(buttonsToShow, 5);
+		const chunkedButtons = chunk(buttonsToShow, 5);
 		return chunkedButtons.map(c =>
 			new ActionRowBuilder<ButtonBuilder>().addComponents(
 				c.map(b => {
-					let button = new ButtonBuilder()
+					const button = new ButtonBuilder()
 
 						.setCustomId(b.id.toString())
 						.setStyle(
@@ -129,26 +137,25 @@ export async function luckyPickCommand(
 	const channel = globalClient.channels.cache.get(interaction.channelId);
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const sentMessage = await channel.send({
-		content: 'Pick *one* button!',
+		content: `${user}, Pick *one* button!`,
 		components: getCurrentButtons({ showTrueNames: false })
 	});
 
 	const finalize = async ({
-		button,
-		interaction
+		button
 	}: {
 		button: ButtonInstance;
-		interaction: MessageComponentInteraction;
 	}) => {
-		let amountReceived = Math.floor(button.mod(amount));
-		await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
+		const amountReceived = Math.floor(button.mod(amount));
+		if (amountReceived > 0) {
+			await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
+		}
 		await updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
 		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, user);
-
-		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
+		await sentMessage.edit({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
 		return amountReceived === 0
-			? 'Unlucky, you picked the wrong button and lost your bet!'
-			: `You won ${toKMB(amountReceived)}!`;
+			? `${user} picked the wrong button and lost ${toKMB(amount)}!`
+			: `${user} won ${toKMB(amountReceived)}!`;
 	};
 
 	const cancel = async () => {
@@ -172,13 +179,19 @@ export async function luckyPickCommand(
 			},
 			time: Time.Second * 10
 		});
+		sentMessage.delete().catch(noOp);
 
-		const pickedButton = buttonsToShow.find(b => b.id.toString() === selection.customId)!;
-		buttonsToShow[pickedButton.id].picked = true;
+		const pickedButton = buttonsToShow.find(b => b.id === selection.customId)!;
+		const index = Number.parseInt(pickedButton.id.split('_')[1]);
+		buttonsToShow[index].picked = true;
 
 		try {
-			const result = await finalize({ button: pickedButton, interaction: selection });
-			return result;
+			await silentButtonAck(selection as ButtonInteraction<CacheType>);
+			const result = await finalize({ button: pickedButton });
+			return {
+				content: result,
+				components: getCurrentButtons({ showTrueNames: true })
+			};
 		} catch (err) {
 			logError(err);
 			return 'Error.';

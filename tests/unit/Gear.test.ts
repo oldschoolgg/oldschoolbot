@@ -1,10 +1,10 @@
-import { GearPreset } from '@prisma/client';
+import type { GearPreset } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 import { describe, expect, it, test } from 'vitest';
 
 import { GearStat } from '../../src/lib/gear/types';
-import { constructGearSetup, Gear } from '../../src/lib/structures/Gear';
+import { Gear, constructGearSetup } from '../../src/lib/structures/Gear';
 import { itemNameFromID } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 

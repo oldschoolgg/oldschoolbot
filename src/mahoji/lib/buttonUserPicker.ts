@@ -1,5 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { noOp, shuffleArr, Time } from 'e';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ComponentType } from 'discord.js';
+import { Time, noOp, shuffleArr } from 'e';
 import murmurhash from 'murmurhash';
 
 import { channelIsSendable } from '../../lib/util';
@@ -47,7 +47,7 @@ export async function buttonUserPicker({
 			const { id } = i.user;
 			const mUser = await mahojiUsersSettingsFetch(id, { minion_ironman: true });
 			const isCreator = id === creator;
-			let notAllowed = !ironmenAllowed && mUser.minion_ironman;
+			const notAllowed = !ironmenAllowed && mUser.minion_ironman;
 			if (notAllowed && !isCreator) {
 				i.reply({ ephemeral: true, content: "You aren't allowed to participate.." });
 				return;

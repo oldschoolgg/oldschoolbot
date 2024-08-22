@@ -7,7 +7,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ExoticSeedsTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -44,7 +44,7 @@ export const odsTask: MinionTask = {
 			}
 		});
 
-		let totalXP = level * (quantity * randFloat(39, 41));
+		const totalXP = level * (quantity * randFloat(39, 41));
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Runecraft,
 			amount: totalXP,
@@ -53,7 +53,7 @@ export const odsTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Ourania deliveries, you received ${tokens} tokens. ${xpRes}`;
 
-		let loot = new Bank();
+		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add(OuraniaTipTable.roll());
 		}

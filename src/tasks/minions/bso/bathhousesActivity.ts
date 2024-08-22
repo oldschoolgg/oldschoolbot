@@ -1,5 +1,5 @@
 import { baxtorianBathhousesActivity } from '../../../lib/baxtorianBathhouses';
-import { BathhouseTaskOptions } from '../../../lib/types/minions';
+import type { BathhouseTaskOptions } from '../../../lib/types/minions';
 
 export const bathhouseTask: MinionTask = {
 	type: 'BaxtorianBathhouses',

@@ -1,11 +1,11 @@
-import { randFloat, reduceNumByPercent, Time } from 'e';
+import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
+import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
+import type { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
 
 export async function underwaterAgilityThievingCommand(
 	channelID: string,
@@ -25,9 +25,10 @@ export async function underwaterAgilityThievingCommand(
 		return 'You need Graceful top, legs and gloves to do Underwater Agility and Thieving.';
 	}
 
-	if (minutes < 1 || !Number.isInteger(minutes) || isNaN(minutes)) return 'Please specify a valid number of minutes.';
+	if (minutes < 1 || !Number.isInteger(minutes) || Number.isNaN(minutes))
+		return 'Please specify a valid number of minutes.';
 
-	let tripLength = Time.Minute * minutes;
+	const tripLength = Time.Minute * minutes;
 
 	if (tripLength > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(

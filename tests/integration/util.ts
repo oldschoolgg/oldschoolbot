@@ -1,32 +1,33 @@
-import { Prisma } from '@prisma/client';
-import { randInt, shuffleArr, Time, uniqueArr } from 'e';
-import { CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import { Time, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
+import { integer, nodeCrypto } from 'random-js';
+import { vi } from 'vitest';
 
-import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
-import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
 import { processPendingActivities } from '../../src/lib/Task';
-import { ItemBank } from '../../src/lib/types';
-import { ActivityTaskOptions } from '../../src/lib/types/minions';
-import { cryptoRand } from '../../src/lib/util';
+import { globalConfig } from '../../src/lib/constants';
+import type { ItemBank } from '../../src/lib/types';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
-import { ClientStorage, User, UserStats } from '.prisma/client';
+import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+import type { ClientStorage, User, UserStats } from '.prisma/client';
 
-export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
+const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
 	userID,
 	guildID: '342983479501389826',
 	member: {} as any,
 	user: { id: userID, createdAt: new Date().getTime() - Time.Year } as any,
 	channelID: '111111111',
 	interaction: {
+		channelId: '1',
 		deferReply: () => Promise.resolve(),
 		editReply: () => Promise.resolve(),
 		followUp: () => Promise.resolve()
 	} as any,
-	client: {} as any
+	client: {} as any,
+	djsClient: {} as any
 });
 
 export class TestUser extends MUserClass {
@@ -68,7 +69,6 @@ export class TestUser extends MUserClass {
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}) {
 		const result = await command.run({ ...commandRunOptions(this.id), options });
-		await this.sync();
 		return result;
 	}
 
@@ -103,18 +103,6 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
-	async runActivity<T extends ActivityTaskOptions>(): Promise<T> {
-		const [finishedActivity] = await processPendingActivities();
-		if (!finishedActivity) {
-			throw new Error('runActivity: No activity was ran');
-		}
-		if (finishedActivity.user_id.toString() !== this.id) {
-			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
-		}
-		const data = convertStoredActivityToFlatActivity(finishedActivity);
-		return data as any;
-	}
-
 	randomBankSubset() {
 		const bank = new Bank();
 		const items = shuffleArr(this.bankWithGP.items()).slice(0, randInt(0, this.bankWithGP.length));
@@ -127,25 +115,43 @@ export class TestUser extends MUserClass {
 
 const idsUsed = new Set<string>();
 
-export function mockedId() {
-	return cryptoRand(1_000_000_000, 5_000_000_000_000).toString();
+export function unMockedCyptoRand(min: number, max: number) {
+	return integer(min, max)(nodeCrypto);
 }
 
-export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
+export function mockedId() {
+	return unMockedCyptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
+}
+
+export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
 	if (idsUsed.has(id)) {
 		throw new Error(`ID ${id} has already been used`);
 	}
 	idsUsed.add(id);
+
+	const bank = _bank ? _bank.clone() : null;
+	let GP = userData.GP ? Number(userData.GP) : undefined;
+	if (bank) {
+		if (GP) {
+			GP += bank.amount('Coins');
+		} else {
+			GP = bank.amount('Coins');
+		}
+		bank.remove('Coins', GP);
+	}
+
 	const user = await global.prisma!.user.upsert({
 		create: {
 			id,
 			...userData,
-			bank: bank?.bank
+			bank: bank?.bank,
+			GP: GP ?? undefined
 		},
 		update: {
 			...userData,
-			bank: bank?.bank
+			bank: bank?.bank,
+			GP
 		},
 		where: {
 			id
@@ -187,6 +193,10 @@ class TestClient {
 			throw new Error(`Expected ${key} to be ${value} but got ${this.data[key]}`);
 		}
 	}
+
+	async processActivities() {
+		await processPendingActivities();
+	}
 }
 
 export async function mockClient() {
@@ -203,4 +213,10 @@ export async function mockClient() {
 
 if (uniqueArr([mockedId(), mockedId(), mockedId()]).length !== 3) {
 	throw new Error('mockedId is broken');
+}
+
+const originalMathRandom = Math.random;
+export function mockMathRandom(value: number) {
+	vi.spyOn(Math, 'random').mockImplementation(() => value);
+	return () => (Math.random = originalMathRandom);
 }

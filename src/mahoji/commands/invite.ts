@@ -1,4 +1,4 @@
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const inviteCommand: OSBMahojiCommand = {
 	name: 'invite',

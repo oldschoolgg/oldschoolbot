@@ -1,8 +1,8 @@
-import deepEqual from 'deep-equal';
+import deepEqual from 'fast-deep-equal';
 import { Bank } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import { defaultGear, Gear } from '../../src/lib/structures/Gear';
+import { Gear, defaultGear } from '../../src/lib/structures/Gear';
 import { assert } from '../../src/lib/util';
 import itemID from '../../src/lib/util/itemID';
 import { createTestUser, mockClient } from './util';

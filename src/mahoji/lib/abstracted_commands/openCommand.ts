@@ -1,15 +1,13 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { type CommandResponse, PerkTier, stringMatches } from '@oldschoolgg/toolkit';
+import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField, Emoji, PerkTier } from '../../../lib/constants';
-import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
+import { BitField, Emoji } from '../../../lib/constants';
+import { type UnifiedOpenable, allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { prisma } from '../../../lib/settings/prisma';
 import { assert, itemNameFromID, makeComponents } from '../../../lib/util';
 import { checkElderClueRequirements } from '../../../lib/util/elderClueRequirements';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -59,7 +57,7 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	let max = Math.min(100, amountOfThisOpenableOwned);
+	const max = Math.min(100, amountOfThisOpenableOwned);
 	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
@@ -106,7 +104,7 @@ const itemsThatDontAddToTempCL = resolveItems([
 	'Monkey crate',
 	'Magic crate',
 	'Chimpling jar',
-	...ClueTiers.map(t => [t.id, t.scrollID]).flat()
+	...ClueTiers.flatMap(t => [t.id, t.scrollID])
 ]);
 
 async function finalizeOpening({
@@ -132,7 +130,7 @@ async function finalizeOpening({
 	let smokeyMsg: string | null = null;
 
 	if (hasSmokey || hasOcto) {
-		let bonuses = [];
+		const bonuses = [];
 		const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 		for (const openable of openables) {
 			if (!openable.smokeyApplies) continue;
@@ -236,14 +234,15 @@ async function finalizeOpening({
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	let response: Awaited<CommandResponse> = {
+	const response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`,
 		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
-		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
+		response.files = [{ name: 'response.txt', attachment: Buffer.from(response.content!) }];
+
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
@@ -264,7 +263,7 @@ export async function abstractedOpenCommand(
 		? allOpenables.filter(
 				({ openedItem, excludeFromOpenAll }) =>
 					user.bank.has(openedItem.id) && !favorites.includes(openedItem.id) && excludeFromOpenAll !== true
-		  )
+			)
 		: names
 				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
 				.filter(notEmpty);

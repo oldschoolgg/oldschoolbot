@@ -1,8 +1,8 @@
-import { clamp, Time } from 'e';
+import { Time, clamp } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Planks } from '../../../lib/minions/data/planks';
-import { SawmillActivityTaskOptions } from '../../../lib/types/minions';
+import type { SawmillActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -86,10 +86,10 @@ export async function sawmillCommand(
 	await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
 		type: 'Sawmill',
 		duration,
-		plankID: plank!.outputItem,
+		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
-		channelID: channelID.toString()
+		channelID
 	});
 
 	let response = `${user.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${

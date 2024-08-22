@@ -1,5 +1,5 @@
 import { researchTask } from '../../../lib/invention/research';
-import { ResearchTaskOptions } from '../../../lib/types/minions';
+import type { ResearchTaskOptions } from '../../../lib/types/minions';
 
 export const researchActivityTask: MinionTask = {
 	type: 'Research',

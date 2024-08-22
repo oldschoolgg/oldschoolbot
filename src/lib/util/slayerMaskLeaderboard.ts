@@ -1,16 +1,14 @@
 import { Bank } from 'oldschooljs';
 
 import { slayerMaskHelms } from '../data/slayerMaskHelms';
-import { prisma } from '../settings/prisma';
-import { ItemBank } from '../types';
+
+import type { ItemBank } from '../types';
 
 export const slayerMaskLeaderboardCache = new Map<number, string>();
 export const allSlayerMaskHelmsAndMasks = new Set(slayerMaskHelms.flatMap(i => [i.mask.id, i.helm.id]));
 
 export async function syncSlayerMaskLeaderboardCache() {
-	const result = await prisma.$queryRawUnsafe<
-		{ user_id: string; on_task_with_mask_monster_scores: ItemBank }[]
-	>(`SELECT user_id::text, on_task_with_mask_monster_scores
+	const result = await prisma.$queryRawUnsafe<{ user_id: string; on_task_with_mask_monster_scores: ItemBank }[]>(`SELECT user_id::text, on_task_with_mask_monster_scores
 FROM user_stats
 WHERE on_task_with_mask_monster_scores IS NOT NULL AND on_task_with_mask_monster_scores::text != '{}';`);
 
@@ -18,7 +16,7 @@ WHERE on_task_with_mask_monster_scores IS NOT NULL AND on_task_with_mask_monster
 	for (const user of result) {
 		const kcBank = new Bank(user.on_task_with_mask_monster_scores);
 		const maskKCBank = new Bank();
-		let parsedUser = { userID: user.user_id, maskKCBank };
+		const parsedUser = { userID: user.user_id, maskKCBank };
 		for (const { mask, monsters } of slayerMaskHelms) {
 			for (const mon of monsters) {
 				maskKCBank.add(mask.id, kcBank.amount(mon));

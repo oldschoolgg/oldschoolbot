@@ -1,7 +1,7 @@
 import { Time } from 'e';
 
 import itemID from '../../../../util/itemID';
-import { SmithedItem } from '../../../types';
+import type { SmithedItem } from '../../../types';
 
 const items = [
 	['Gorajan warrior helmet', 'Torva full helm'],

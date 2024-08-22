@@ -1,29 +1,24 @@
-import { randInt, Time } from 'e';
+import { Time, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { increaseBankQuantitesByPercent } from '@oldschoolgg/toolkit';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { BitField } from '../../lib/constants';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { PatchTypes } from '../../lib/minions/farming';
-import { FarmingContract } from '../../lib/minions/farming/types';
-import { prisma } from '../../lib/settings/prisma';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
+import type { PatchTypes } from '../../lib/minions/farming';
+import type { FarmingContract } from '../../lib/minions/farming/types';
+
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
+import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
-import { Plant, SkillsEnum } from '../../lib/skilling/types';
-import { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import {
-	assert,
-	clAdjustedDroprate,
-	increaseBankQuantitesByPercent,
-	itemID,
-	itemNameFromID,
-	roll,
-	skillingPetDropRate
-} from '../../lib/util';
+import { type Plant, SkillsEnum } from '../../lib/skilling/types';
+import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { assert, clAdjustedDroprate, itemNameFromID, roll, skillingPetDropRate } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -334,7 +329,7 @@ export const farmingTask: MinionTask = {
 					const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
 					await user.addItemsToCollectionLog(uncleanedHerbLoot);
 					const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
-					await userStatsBankUpdate(user.id, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
+					await userStatsBankUpdate(user, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
@@ -459,8 +454,8 @@ export const farmingTask: MinionTask = {
 					farmingLevel: currentFarmingLevel
 				});
 				const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
-					monsterID: Monsters.Hespori.id,
-					quantity: patchType.lastQuantity,
+					mi: Monsters.Hespori.id,
+					q: patchType.lastQuantity,
 					type: 'MonsterKilling',
 					userID: user.id,
 					duration: data.duration,
@@ -594,7 +589,7 @@ export const farmingTask: MinionTask = {
 			// Give boxes for planting when harvesting
 			if (planting && plant.name === 'Mysterious tree') {
 				for (let j = 0; j < quantity; j++) {
-					let upper = randInt(1, 2);
+					const upper = randInt(1, 2);
 					for (let i = 0; i < upper; i++) {
 						loot.add(MysteryBoxes.roll());
 					}
@@ -603,7 +598,7 @@ export const farmingTask: MinionTask = {
 			// Give the boxes for harvesting during a harvest
 			if (alivePlants && plantToHarvest.name === 'Mysterious tree') {
 				for (let j = 0; j < alivePlants; j++) {
-					let upper = randInt(1, 3);
+					const upper = randInt(1, 3);
 					for (let i = 0; i < upper; i++) {
 						loot.add(MysteryBoxes.roll());
 					}
@@ -627,7 +622,7 @@ export const farmingTask: MinionTask = {
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-			await userStatsBankUpdate(user.id, 'farming_harvest_loot_bank', loot);
+			await userStatsBankUpdate(user, 'farming_harvest_loot_bank', loot);
 			if (pid) {
 				await prisma.farmedCrop.update({
 					where: {
@@ -640,6 +635,15 @@ export const farmingTask: MinionTask = {
 			}
 
 			const seedPackCount = loot.amount('Seed pack');
+
+			const hasFive = getFarmingInfoFromUser(user.user).patches.spirit.lastQuantity >= 5;
+			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
+				await user.update({
+					bitfield: {
+						push: BitField.GrewFiveSpiritTrees
+					}
+				});
+			}
 
 			return handleTripFinish(
 				user,
@@ -655,7 +659,7 @@ export const farmingTask: MinionTask = {
 								contractsCompleted + 1
 							} farming contracts.`,
 							head: 'jane'
-					  })
+						})
 					: undefined,
 				data,
 				loot

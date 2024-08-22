@@ -1,9 +1,8 @@
-import { Portent } from '@prisma/client';
+import type { Portent } from '@prisma/client';
 import { Bank, LootTable } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../constants';
-import { prisma } from '../settings/prisma';
 import { hasUnlockedAtlantis } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
@@ -253,9 +252,9 @@ for (const energy of divinationEnergies) {
 
 export const allDivinationEnergyTypes = divinationEnergies.map(e => e.type);
 export enum MemoryHarvestType {
-	ConvertToXP,
-	ConvertToEnergy,
-	ConvertWithEnergyToXP
+	ConvertToXP = 0,
+	ConvertToEnergy = 1,
+	ConvertWithEnergyToXP = 2
 }
 export const memoryHarvestTypes = [
 	{ id: MemoryHarvestType.ConvertToXP, name: 'Convert to XP (Default)' },
@@ -352,9 +351,9 @@ export const portents: SourcePortent[] = [
 		description: 'Consumes stone spirits to grant extra mining XP, instead of extra ore.',
 		divinationLevelToCreate: 90,
 		cost: new Bank().add('Incandescent energy', 1200),
-		chargesPerPortent: 1000,
+		chargesPerPortent: 60 * 10,
 		addChargeMessage: portent =>
-			`You used a Spiritual mining portent, your next ${portent.charges_remaining}x stone spirits will grant XP instead of ore.`
+			`You used a Spiritual mining portent, it will turn stone spirits into extra mining XP, instead of ore, in your next ${portent.charges_remaining} minutes of mining.`
 	},
 	{
 		id: PortentID.PacifistPortent,
@@ -374,7 +373,7 @@ export async function getAllPortentCharges(user: MUser) {
 			user_id: user.id
 		}
 	});
-	let result: Record<PortentID, number> = {};
+	const result: Record<PortentID, number> = {};
 	for (const portent of portents) {
 		result[portent.id] = 0;
 	}

@@ -2,10 +2,10 @@ import { Time } from 'e';
 import { Bank, LootTable, Monsters } from 'oldschooljs';
 
 import { GearStat } from '../../../../gear';
-import { addStatsOfItemsTogether, Gear } from '../../../../structures/Gear';
+import { Gear, addStatsOfItemsTogether } from '../../../../structures/Gear';
 import itemID from '../../../../util/itemID';
 import resolveItems from '../../../../util/resolveItems';
-import { CustomMonster } from './customMonsters';
+import type { CustomMonster } from './customMonsters';
 
 const solisMinGear = new Gear();
 solisMinGear.equip('Gorajan warrior helmet');

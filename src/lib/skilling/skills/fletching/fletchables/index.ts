@@ -1,4 +1,4 @@
-import { Fletchable } from '../../../types';
+import type { Fletchable } from '../../../types';
 import Arrows from './arrows';
 import Bolts from './bolts';
 import Bows from './bows';

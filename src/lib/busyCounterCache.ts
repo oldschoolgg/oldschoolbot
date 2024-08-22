@@ -16,7 +16,7 @@ export function baseModifyBusyCounter(map: Map<string, number>, userID: string, 
 	return newCounter;
 }
 
-export function getBusyCounter(userID: string) {
+function getBusyCounter(userID: string) {
 	return globalClient.busyCounterCache.get(userID) ?? 0;
 }
 export function modifyBusyCounter(userID: string, amount: -1 | 1) {

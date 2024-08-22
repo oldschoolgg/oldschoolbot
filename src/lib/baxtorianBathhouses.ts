@@ -1,23 +1,24 @@
 import { userMention } from '@discordjs/builders';
-import { User } from '@prisma/client';
-import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
+import type { User } from '@prisma/client';
+import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
 import { incrementMinigameScore } from './settings/minigames';
 import Grimy from './skilling/skills/herblore/mixables/grimy';
 import { SkillsEnum } from './skilling/types';
-import { getAllUserTames, TameSpeciesID } from './tames';
-import { Skills } from './types';
-import { BathhouseTaskOptions } from './types/minions';
+import { TameSpeciesID, getAllUserTames } from './tames';
+import type { Skills } from './types';
+import type { BathhouseTaskOptions } from './types/minions';
 import { formatDuration, formatSkillRequirements, makeTable, skillsMeetRequirements, stringMatches } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
 import { handleTripFinish } from './util/handleTripFinish';
-import resolveItems, { resolveOSItems } from './util/resolveItems';
+import { makeBankImage } from './util/makeBankImage';
+import resolveItems from './util/resolveItems';
 import { updateBankSetting } from './util/updateBankSetting';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
@@ -123,13 +124,13 @@ export const bathHouseTiers: BathhouseTier[] = [
 ];
 
 export const BathwaterMixtures = [
-	{ items: resolveOSItems(['Guam leaf', 'Avantoe']), name: 'Vitalizing' },
-	{ items: resolveOSItems(['Marrentill', 'Kwuarm']), name: 'Soothing' },
-	{ items: resolveOSItems(['Tarromin', 'Snapdragon']), name: 'Caustic' },
-	{ items: resolveOSItems(['Harralander', 'Cadantine']), name: 'Magical' },
-	{ items: resolveOSItems(['Ranarr weed', 'Lantadyme']), name: 'Unholy' },
-	{ items: resolveOSItems(['Toadflax', 'Dwarf weed']), name: 'Invigorating' },
-	{ items: resolveOSItems(['Irit leaf', 'Torstol']), name: 'Healing' }
+	{ items: resolveItems(['Guam leaf', 'Avantoe']), name: 'Vitalizing' },
+	{ items: resolveItems(['Marrentill', 'Kwuarm']), name: 'Soothing' },
+	{ items: resolveItems(['Tarromin', 'Snapdragon']), name: 'Caustic' },
+	{ items: resolveItems(['Harralander', 'Cadantine']), name: 'Magical' },
+	{ items: resolveItems(['Ranarr weed', 'Lantadyme']), name: 'Unholy' },
+	{ items: resolveItems(['Toadflax', 'Dwarf weed']), name: 'Invigorating' },
+	{ items: resolveItems(['Irit leaf', 'Torstol']), name: 'Healing' }
 ] as const;
 type BathwaterMixtureName = (typeof BathwaterMixtures)[number]['name'];
 
@@ -306,7 +307,7 @@ export async function baxtorianBathhousesStartCommand({
 		mixtureToUse =
 			BathwaterMixtures.find(o => {
 				const checkBank = new Bank();
-				for (const h of o.items) checkBank.add(h.id, herbsNeeded);
+				for (const id of o.items) checkBank.add(id, herbsNeeded);
 				return userBank.has(checkBank);
 			}) ?? BathwaterMixtures[0];
 	}
@@ -351,14 +352,14 @@ export async function baxtorianBathhousesStartCommand({
 		.add(oreToUse.logs.id, logsNeeded);
 
 	const herbCost = new Bank();
-	for (const h of mixtureToUse.items) herbCost.add(h.id, herbsNeeded);
+	for (const id of mixtureToUse.items) herbCost.add(id, herbsNeeded);
 
 	const cost = new Bank().add(heatingCost).add(herbCost);
 
 	if (!user.owns(cost)) {
 		return `You don't have enough supplies to do a trip, for ${quantity}x ${bathHouseTier.name} baths, you need: ${cost}.`;
 	}
-	updateBankSetting('bb_cost', cost);
+	await updateBankSetting('bb_cost', cost);
 	await user.removeItemsFromBank(cost);
 
 	await addSubTaskToActivityTask<BathhouseTaskOptions>({
@@ -384,7 +385,7 @@ export function calculateBathouseResult(data: BathhouseTaskOptions) {
 	const ore = BathhouseOres.find(i => i.item.id === data.ore)!;
 	const tier = bathHouseTiers.find(t => t.name === data.tier)!;
 	const mixture = BathwaterMixtures.find(i => i.name === data.mixture)!;
-	const [firstHerb, secondHerb] = mixture.items.map(herb => Grimy.find(i => i.item.id === herb.id)!);
+	const [firstHerb, secondHerb] = mixture.items.map(herbID => Grimy.find(i => i.item.id === herbID)!);
 	const speciesCanServe = species.filter(i => i.tier === tier.name);
 
 	const herbXP = quantity * (firstHerb.xp + secondHerb.xp) * 220 * tier.xpMultiplier;
@@ -419,7 +420,7 @@ export function calculateBathouseResult(data: BathhouseTaskOptions) {
 }
 
 export function baxBathSim() {
-	let results = [];
+	const results = [];
 	for (const tier of bathHouseTiers) {
 		for (const ore of BathhouseOres) {
 			for (const mixture of BathwaterMixtures) {
@@ -440,7 +441,7 @@ export function baxBathSim() {
 	}
 
 	results.sort((a, b) => b.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER - a.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER);
-	let tableArr = [];
+	const tableArr = [];
 	for (const { tier, ore, mixture, firemakingXP, herbXP } of results) {
 		tableArr.push([
 			`${tier.name} ${ore.item.name} ${mixture.name}`,
@@ -473,7 +474,12 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 		}
 	}
 
-	await user.addItemsToBank({ items: loot, collectionLog: true });
+	const { previousCL, itemsAdded } = await transactItems({
+		userID: user.id,
+		collectionLog: true,
+		itemsToAdd: loot
+	});
+
 	let xpStr = await user.addXP({ skillName: SkillsEnum.Herblore, amount: herbXP, duration });
 	xpStr += '\n';
 	xpStr += await user.addXP({
@@ -482,16 +488,17 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 		duration
 	});
 
-	let uniqSpecies = uniqueArr(speciesServed);
-	updateBankSetting('bb_loot', loot);
+	const uniqSpecies = uniqueArr(speciesServed);
+	await updateBankSetting('bb_loot', loot);
 
-	const bankImage = await bankImageGenerator.generateBankImage({
-		bank: loot,
+	const bankImage = await makeBankImage({
+		bank: itemsAdded,
+		title: 'Baxtorian Bathhouses Loot',
 		user,
-		title: 'Baxtorian Bathhouses Loot'
+		previousCL
 	});
 
-	handleTripFinish(
+	return handleTripFinish(
 		user,
 		channelID,
 		`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${
@@ -502,7 +509,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 				: ''
 		}
 ${xpStr}`,
-		bankImage.image,
+		bankImage.file.attachment,
 		data,
 		loot
 	);

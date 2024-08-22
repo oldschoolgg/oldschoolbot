@@ -8,8 +8,8 @@ import { GearStat } from '../../../../gear';
 import { lowRuneHighAdamantTable, runeWeaponTable } from '../../../../simulation/sharedTables';
 import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems from '../../../../util/resolveItems';
-import { CustomMonster } from './customMonsters';
 import { GrimyHerbTable } from './Treebeard';
+import type { CustomMonster } from './customMonsters';
 
 function neemCost(extraCost?: Bank) {
 	const cost = new Bank().add('Neem oil', 1);

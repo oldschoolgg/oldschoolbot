@@ -1,10 +1,11 @@
-import { FarmedCrop, User } from '@prisma/client';
-import { BaseMessageOptions, ButtonBuilder } from 'discord.js';
+import type { User } from '@prisma/client';
+import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
+import { dateFm } from '@oldschoolgg/toolkit';
 import { Emoji } from '../constants';
-import { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
+import type { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
 import Farming from '../skilling/skills/farming';
-import { dateFm, makeAutoFarmButton, makeComponents, stringMatches } from '../util';
+import { makeAutoFarmButton, makeComponents, stringMatches } from '../util';
 
 export const farmingPatchNames = [
 	'herb',
@@ -70,19 +71,5 @@ export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): B
 	return {
 		content: str,
 		components: makeComponents(buttons)
-	};
-}
-
-export function parseFarmedCrop(crop: FarmedCrop) {
-	return {
-		id: crop.id,
-		userID: crop.user_id,
-		datePlanted: crop.date_planted,
-		dateHarvested: crop.date_harvested,
-		itemID: crop.item_id,
-		plant: Farming.Plants.find(i => i.id === crop.item_id)!,
-		quantityPlanted: crop.quantity_planted,
-		upgradeType: crop.upgrade_type,
-		paid: crop.paid_for_protection
 	};
 }

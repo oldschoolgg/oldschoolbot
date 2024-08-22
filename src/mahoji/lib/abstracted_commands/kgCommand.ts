@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
@@ -91,7 +91,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 
 		return {
 			embeds: [embed.data],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
+			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
 		};
 	} catch (err: any) {
 		return `The mass failed to start for this reason: ${err}.`;

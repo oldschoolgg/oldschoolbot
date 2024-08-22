@@ -1,20 +1,8 @@
-import { BaseMessageOptions } from 'discord.js';
-
-import { SkillsEnum } from '../skilling/types';
+import type { BaseMessageOptions } from 'discord.js';
+import type { SkillsEnum } from '../skilling/types';
 
 export interface ItemBank {
 	[key: string]: number;
-}
-
-export interface Patron {
-	patreonID: string;
-	discordID?: string;
-	entitledTiers: string[];
-	lastChargeDate: string;
-	lastChargeStatus: string;
-	lifeTimeSupportCents: number;
-	patronStatus: string;
-	pledgeRelationshipStart: string;
 }
 
 type ResolvableItem = number | string;

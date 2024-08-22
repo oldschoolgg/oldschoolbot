@@ -3,9 +3,9 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { SkillsEnum } from '../../skilling/types';
-import { ItemBank } from '../../types';
+import type { ItemBank } from '../../types';
 import { roll, skillingPetDropRate } from '../../util';
-import { MUserClass } from './../../MUser';
+import type { MUserClass } from './../../MUser';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 

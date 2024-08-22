@@ -2,10 +2,10 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { deepResolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
-import { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const turaelMonsters: KillableMonster[] = [
 	{
@@ -455,7 +455,9 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1
 	},
 	{
 		id: Monsters.Goblin.id,
@@ -483,7 +485,10 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 8,
+		pkBaseDeathChance: 4,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.GrizzlyBearCub.id,
@@ -840,7 +845,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Scorpion,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 1,
 		qpRequired: 0,
@@ -849,7 +854,10 @@ export const turaelMonsters: KillableMonster[] = [
 		canBarrage: false,
 		healAmountNeeded: 8,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		pkActivityRating: 3,
+		pkBaseDeathChance: 2,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.Seagull.id,
@@ -890,7 +898,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Skeleton,
 
-		wildy: false,
+		wildy: true,
 
 		existsInCatacombs: true,
 		difficultyRating: 1,
@@ -900,7 +908,10 @@ export const turaelMonsters: KillableMonster[] = [
 		canBarrage: false,
 		healAmountNeeded: 11,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.SkeletonFremennik.id,
@@ -971,13 +982,16 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 5,
 		table: Monsters.Spider,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.SulphurLizard.id,
@@ -1200,7 +1214,7 @@ export const turaelMonsters: KillableMonster[] = [
 		aliases: Monsters.Zombie.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Zombie,
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 1,
 		qpRequired: 0,
@@ -1209,7 +1223,10 @@ export const turaelMonsters: KillableMonster[] = [
 		canBarrage: false,
 		healAmountNeeded: 9,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		pkActivityRating: 6,
+		pkBaseDeathChance: 4,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.ZombieRat.id,

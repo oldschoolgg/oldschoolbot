@@ -1,7 +1,6 @@
-import {
+import type {
 	BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
+	ButtonInteraction,
 	DMChannel,
 	Message,
 	MessageComponentInteraction,
@@ -9,11 +8,13 @@ import {
 	TextChannel,
 	ThreadChannel
 } from 'discord.js';
-import { noOp, Time } from 'e';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, isFunction, noOp } from 'e';
 import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists';
 import { awaitMessageComponentInteraction, makeComponents } from './util';
+import { silentButtonAck } from './util/handleMahojiConfirmation';
 import { minionIsBusy } from './util/minionIsBusy';
 
 type DynamicButtonFn = (opts: { message: Message; interaction: MessageComponentInteraction }) => unknown;
@@ -22,7 +23,7 @@ export class DynamicButtons {
 	buttons: {
 		name: string;
 		id: string;
-		fn: DynamicButtonFn;
+		fn?: DynamicButtonFn;
 		emoji: string | undefined;
 		cantBeBusy: boolean;
 		style?: ButtonStyle;
@@ -84,9 +85,11 @@ export class DynamicButtons {
 			...messageOptions,
 			components: makeComponents(buttons)
 		});
-		const collectedInteraction = await awaitMessageComponentInteraction({
+		const collectedInteraction: ButtonInteraction = (await awaitMessageComponentInteraction({
 			message: this.message,
-			filter: i => {
+			filter: async i => {
+				if (!i.isButton()) return false;
+				await silentButtonAck(i);
 				if (BLACKLISTED_USERS.has(i.user.id)) return false;
 				if (this.usersWhoCanInteract.includes(i.user.id)) {
 					return true;
@@ -95,7 +98,7 @@ export class DynamicButtons {
 				return false;
 			},
 			time: this.timer ?? Time.Second * 20
-		}).catch(noOp);
+		}).catch(noOp)) as ButtonInteraction;
 		if (this.deleteAfterConfirm === true) {
 			await this.message.delete().catch(noOp);
 		} else {
@@ -105,20 +108,22 @@ export class DynamicButtons {
 		if (collectedInteraction) {
 			for (const button of this.buttons) {
 				if (collectedInteraction.customId === button.id) {
-					collectedInteraction.deferUpdate();
 					if (minionIsBusy(collectedInteraction.user.id) && button.cantBeBusy) {
-						return collectedInteraction.reply({
+						await collectedInteraction.reply({
 							content: "Your action couldn't be performed, because your minion is busy.",
 							ephemeral: true
 						});
+						return null;
 					}
-					await button.fn({ message: this.message!, interaction: collectedInteraction });
-					return collectedInteraction;
+					if ('fn' in button && isFunction(button.fn)) {
+						await button.fn({ message: this.message!, interaction: collectedInteraction });
+					}
+					return button;
 				}
 			}
 		}
 
-		return collectedInteraction;
+		return null;
 	}
 
 	add({
@@ -129,7 +134,7 @@ export class DynamicButtons {
 		style
 	}: {
 		name: string;
-		fn: DynamicButtonFn;
+		fn?: DynamicButtonFn;
 		emoji?: string;
 		cantBeBusy?: boolean;
 		style?: ButtonStyle;
@@ -137,7 +142,7 @@ export class DynamicButtons {
 		const id = murmurhash(name).toString();
 		this.buttons.push({
 			name,
-			id,
+			id: `DYN_${id}`,
 			fn,
 			emoji,
 			cantBeBusy: cantBeBusy ?? false,

@@ -1,4 +1,4 @@
-import { percentChance, Time } from 'e';
+import { Time, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
@@ -24,7 +24,7 @@ export const smeltingTask: MinionTask = {
 		const hasBS = user.hasEquippedOrInBank(BlacksmithOutfit, 'every');
 		const oldQuantity = quantity;
 		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
-			let chance = masterCapeInEffect ? bar.chanceOfFail / 2 : bar.chanceOfFail;
+			const chance = masterCapeInEffect ? bar.chanceOfFail / 2 : bar.chanceOfFail;
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (!percentChance(chance)) {

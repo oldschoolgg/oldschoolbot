@@ -1,6 +1,6 @@
 import { Bank, Monsters } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type LootTable from 'oldschooljs/dist/structures/LootTable';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
 export function makeKillTable(table: LootTable) {
 	return {

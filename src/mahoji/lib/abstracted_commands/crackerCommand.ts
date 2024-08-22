@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, User } from 'discord.js';
+import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { shuffleArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 

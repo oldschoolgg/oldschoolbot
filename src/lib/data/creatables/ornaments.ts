@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const ornamentKits: Createable[] = [
 	{
@@ -329,13 +329,13 @@ export const ornamentKits: Createable[] = [
 			'Rune scimitar ornament kit (guthix)': 1
 		}),
 		outputItems: new Bank({
-			23_330: 1
+			23330: 1
 		})
 	},
 	{
 		name: 'Revert rune scimitar (guthix)',
 		inputItems: new Bank({
-			23_330: 1
+			23330: 1
 		}),
 		outputItems: new Bank({
 			'Rune scimitar': 1,
@@ -350,13 +350,13 @@ export const ornamentKits: Createable[] = [
 			'Rune scimitar ornament kit (saradomin)': 1
 		}),
 		outputItems: new Bank({
-			23_332: 1
+			23332: 1
 		})
 	},
 	{
 		name: 'Revert rune scimitar (saradomin)',
 		inputItems: new Bank({
-			23_332: 1
+			23332: 1
 		}),
 		outputItems: new Bank({
 			'Rune scimitar': 1,
@@ -371,13 +371,13 @@ export const ornamentKits: Createable[] = [
 			'Rune scimitar ornament kit (zamorak)': 1
 		}),
 		outputItems: new Bank({
-			23_334: 1
+			23334: 1
 		})
 	},
 	{
 		name: 'Revert rune scimitar (zamorak)',
 		inputItems: new Bank({
-			23_334: 1
+			23334: 1
 		}),
 		outputItems: new Bank({
 			'Rune scimitar': 1,

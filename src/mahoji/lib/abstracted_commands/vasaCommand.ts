@@ -1,6 +1,5 @@
-import { EmbedBuilder, TextChannel } from 'discord.js';
-import { randInt, sumArr, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { EmbedBuilder, type TextChannel } from 'discord.js';
+import { Time, randInt, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { VasaMagus } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
@@ -8,7 +7,7 @@ import { BossInstance } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
 import { formatDuration } from '../../../lib/util';
 
-export async function vasaCommand(user: MUser, channelID: string, quantity?: number): CommandResponse {
+export async function vasaCommand(user: MUser, channelID: string, quantity?: number) {
 	const instance = new BossInstance({
 		leader: user,
 		id: VasaMagus.id,
@@ -78,7 +77,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 
 		return {
 			embeds: [embed.data],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
+			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
 		};
 	} catch (err: any) {
 		return `The mass failed to start for this reason: ${err}.`;

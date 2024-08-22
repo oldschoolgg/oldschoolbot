@@ -1,7 +1,7 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
+import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { Emoji } from '../../../lib/constants';
 import { divinersOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
@@ -13,10 +13,10 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export const guthixianCacheTask: MinionTask = {
 	type: 'GuthixianCache',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		let { userID, channelID, duration } = data;
+		const { userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 
-		let xp = user.skillLevel('divination') * user.skillLevel('divination') * 2.5;
+		const xp = user.skillLevel('divination') * user.skillLevel('divination') * 2.5;
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Divination,
 			amount: xp,

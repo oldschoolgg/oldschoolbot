@@ -1,9 +1,9 @@
-import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
+import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 
 import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';
-import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
+import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -21,7 +21,7 @@ function calcPerformance(kcLearned: number, skillPercentage: number) {
 	return Math.min(100, basePerformance);
 }
 
-export async function zalcanoCommand(user: MUser, channelID: string) {
+export async function zalcanoCommand(user: MUser, channelID: string, quantity?: number) {
 	const [hasReqs, reason] = hasSkillReqs(user, soteSkillRequirements);
 	if (!hasReqs) {
 		return `To fight Zalcano, you need: ${reason}.`;
@@ -59,8 +59,18 @@ export async function zalcanoCommand(user: MUser, channelID: string) {
 	else if (kc > 50) healAmountNeeded = 3 * 12;
 	else if (kc > 20) healAmountNeeded = 5 * 12;
 
-	const quantity = Math.floor(calcMaxTripLength(user, 'Zalcano') / baseTime);
+	const maxTripLength = calcMaxTripLength(user, 'Zalcano');
+	if (!quantity) quantity = Math.floor(maxTripLength / baseTime);
+	quantity = Math.max(1, quantity);
 	const duration = quantity * baseTime;
+
+	if (quantity > 1 && duration > maxTripLength) {
+		return `${user.minionName} can't go on PvM trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount you can do for Zalcano is ${Math.floor(
+			maxTripLength / baseTime
+		)}.`;
+	}
 
 	const { foodRemoved } = await removeFoodFromUser({
 		user,

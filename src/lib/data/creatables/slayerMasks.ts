@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
-import { ItemBank } from '../../types';
-import { Createable } from '../createables';
+import type { ItemBank } from '../../types';
+import type { Createable } from '../createables';
 import { slayerMaskHelms } from '../slayerMaskHelms';
 
 export const slayerMaskCreatables: Createable[] = [];

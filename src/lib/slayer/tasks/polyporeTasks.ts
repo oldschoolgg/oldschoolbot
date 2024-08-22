@@ -1,6 +1,6 @@
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { getMonster } from '../../util';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 
 export const polyporeTasks: AssignableSlayerTask[] = [
 	{

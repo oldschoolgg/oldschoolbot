@@ -1,11 +1,12 @@
-import { randInt, roll, Time } from 'e';
+import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { herbertDroprate } from '../../lib/constants';
-import { userhasDiaryTier, WildernessDiary } from '../../lib/diaries';
+import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import { Mixable, SkillsEnum } from '../../lib/skilling/types';
-import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
+import type { Mixable } from '../../lib/skilling/types';
+import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { percentChance } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -59,11 +60,11 @@ export const herbloreTask: MinionTask = {
 			const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
 			let scales = 0;
 			// Having 99 herblore gives a 98% chance to recieve the max amount of shards
-			let maxShardChance = currentHerbLevel >= 99 ? 98 : 0;
+			const maxShardChance = currentHerbLevel >= 99 ? 98 : 0;
 			// Completion of hard wilderness diary gives 50% more lava scale shards per lava scale, rounded down
-			let diaryMultiplier = hasWildyDiary ? 1.5 : 1;
+			const diaryMultiplier = hasWildyDiary ? 1.5 : 1;
 
-			if (Boolean(wesley)) {
+			if (wesley) {
 				// Wesley always turns Lava scales into 3 lava scale shards
 				scales = quantity * 3;
 			} else {

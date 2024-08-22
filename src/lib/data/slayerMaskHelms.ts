@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { slayerMasters } from '../slayer/slayerMasters';
@@ -165,4 +165,4 @@ for (const a of slayerMaskHelms) {
 	}
 }
 
-export const slayerMasksHelmsCL = slayerMaskHelms.map(i => [i.helm.id, i.mask.id]).flat();
+export const slayerMasksHelmsCL = slayerMaskHelms.flatMap(i => [i.helm.id, i.mask.id]);

@@ -1,5 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
@@ -8,9 +9,9 @@ import { stringMatches } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
-export function determineKillLimit(user: MUser) {
+function determineKillLimit(user: MUser) {
 	const perkTier = user.perkTier();
 
 	if (perkTier >= PerkTier.Six) {
@@ -73,7 +74,7 @@ export const killCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
 		const user = await mUserFetch(userID);
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, options.name)));
 		const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, options.name));
 
@@ -98,7 +99,7 @@ export const killCommand: OSBMahojiCommand = {
 			limit,
 			catacombs: false,
 			onTask: false,
-			lootTableTertiaryChanges: Array.from(user.buildCATertiaryItemChanges().entries())
+			lootTableTertiaryChanges: Array.from(user.buildTertiaryItemChanges().entries())
 		});
 
 		if (result.error) {

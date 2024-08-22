@@ -1,4 +1,4 @@
-import { Message, TextChannel } from 'discord.js';
+import { type Message, TextChannel } from 'discord.js';
 import { noOp } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
@@ -12,7 +12,7 @@ export async function boxFrenzy(channelID: string, content: string, quantity: nu
 		throw new Error(`Tried to start box frenzy in invalid channel ${channelID}`);
 	}
 
-	let bank = new Bank();
+	const bank = new Bank();
 	for (let i = 0; i < quantity; i++) {
 		bank.add(Items.random().id, 1);
 	}

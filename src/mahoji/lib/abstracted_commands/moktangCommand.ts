@@ -6,7 +6,7 @@ import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
-import { MoktangTaskOptions } from '../../../lib/types/minions';
+import type { MoktangTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

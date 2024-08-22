@@ -1,11 +1,13 @@
 import { Canvas, loadImage } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
+import type { GearSetupType } from '@prisma/client';
 import { gearValidationChecks } from '../../lib/constants';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
+import { GearSetupTypes, GearStat } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { GearSetupType, GearSetupTypes, GearStat } from '../../lib/gear/types';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { itemNameFromID } from '../../lib/util';
@@ -18,7 +20,7 @@ import {
 	gearViewCommand
 } from '../lib/abstracted_commands/gearCommands';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gearCommand: OSBMahojiCommand = {

@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import itemID from '../../../../util/itemID';
-import { Craftable } from '../../../types';
+import type { Craftable } from '../../../types';
 
 const Leather: Craftable[] = [
 	{

@@ -2,7 +2,7 @@ import { percentChance } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { SkillsEnum } from '../../lib/skilling/types';
-import { UnderwaterAgilityThievingTaskOptions } from '../../lib/types/minions';
+import type { UnderwaterAgilityThievingTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 // Bonus loot from clams and chests, TODO: check wiki in future for more accurate rates
@@ -16,14 +16,14 @@ const clamChestTable = new LootTable()
 export const underwaterAgilityThievingTask: MinionTask = {
 	type: 'UnderwaterAgilityThieving',
 	async run(data: UnderwaterAgilityThievingTaskOptions) {
-		let { quantity, userID, channelID, duration, trainingSkill } = data;
+		const { quantity, userID, channelID, duration, trainingSkill } = data;
 		const user = await mUserFetch(userID);
 		const currentThievingLevel = user.skillLevel(SkillsEnum.Thieving);
 		const currentAgilityLevel = user.skillLevel(SkillsEnum.Agility);
 
 		let successful = 0;
 		// Search clam/chest until it becomes inactive chance
-		let chanceOfSuccess = 0.043_88 * currentThievingLevel + 11.68;
+		const chanceOfSuccess = 0.043_88 * currentThievingLevel + 11.68;
 
 		for (let i = 0; i < quantity; i++) {
 			while (percentChance(chanceOfSuccess)) {

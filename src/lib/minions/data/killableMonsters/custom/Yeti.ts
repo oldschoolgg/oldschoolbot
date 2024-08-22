@@ -7,7 +7,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { BitField, YETI_ID } from '../../../../constants';
 import { GearStat } from '../../../../gear';
-import { CustomMonster } from './customMonsters';
+import type { CustomMonster } from './customMonsters';
 
 const DeadTable = new LootTable().add('Iron med helm').add('Bones').add('Skull').add('Bronze sword');
 

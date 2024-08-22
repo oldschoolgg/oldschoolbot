@@ -1,16 +1,18 @@
-import { calcPercentOfNum, randInt, reduceNumByPercent, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, calcPercentOfNum, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
+import { itemID } from 'oldschooljs/dist/util';
 
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, stringMatches } from '../../lib/util';
+import type { FishingActivityTaskOptions } from '../../lib/types/minions';
+import { itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',
@@ -76,7 +78,7 @@ export const fishCommand: OSBMahojiCommand = {
 				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 			}
 		}
-		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(parseInt(i)));
+		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(Number.parseInt(i)));
 		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasEquippedOrInBank(test!))) {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
@@ -155,7 +157,7 @@ export const fishCommand: OSBMahojiCommand = {
 		];
 		for (let i = 0; i < tackleBoxes.length; i++) {
 			if (user.hasEquippedOrInBank([tackleBoxes[i]])) {
-				let num = Time.Minute * (tackleBoxes.length - i);
+				const num = Time.Minute * (tackleBoxes.length - i);
 				maxTripLength += num;
 				boosts.push(`${formatDuration(num)} for ${tackleBoxes[i]}`);
 				break;

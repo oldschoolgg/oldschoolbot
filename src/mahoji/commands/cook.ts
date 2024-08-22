@@ -1,16 +1,17 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
-import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import type { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const cookCommand: OSBMahojiCommand = {
 	name: 'cook',
@@ -91,7 +92,7 @@ export const cookCommand: OSBMahojiCommand = {
 			if (hasRemy) timeToCookSingleCookable /= 1.5;
 		} else {
 			let cookingBoost = 1;
-			let cookingBoostItems: string[] = [];
+			const cookingBoostItems: string[] = [];
 			if (user.hasEquippedOrInBank('Cooking master cape')) {
 				cookingBoostItems.push('Cooking master cape');
 				cookingBoost += 2.5;

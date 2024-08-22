@@ -1,109 +1,64 @@
-import { gzip } from 'node:zlib';
-
-import { stripEmojis } from '@oldschoolgg/toolkit';
-import { PrismaClient } from '@prisma/client';
-import { Stopwatch } from '@sapphire/stopwatch';
+import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import {
-	BaseMessageOptions,
+	type BaseMessageOptions,
+	type ButtonInteraction,
+	type CacheType,
+	type Collection,
+	type CollectorFilter,
+	type Guild,
+	type InteractionReplyOptions,
+	type Message,
+	type MessageEditOptions,
+	type SelectMenuInteraction,
+	type TextChannel,
 	bold,
-	ButtonBuilder,
-	ButtonInteraction,
-	CacheType,
-	Collection,
-	CollectorFilter,
-	ComponentType,
-	escapeMarkdown,
-	Guild,
-	InteractionReplyOptions,
-	InteractionType,
-	Message,
-	MessageEditOptions,
-	SelectMenuInteraction,
-	TextChannel
+	escapeMarkdown
 } from 'discord.js';
-import {
-	calcWhatPercent,
-	chunk,
-	increaseNumByPercent,
-	notEmpty,
-	objectEntries,
-	randArrItem,
-	randInt,
-	shuffleArr,
-	sumArr,
-	Time
-} from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import murmurHash from 'murmurhash';
+import type { ComponentType } from 'discord.js';
+import { Time, calcWhatPercent, notEmpty, objectEntries, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank, Items, Monsters } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
-import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
-import { bool, integer, nodeCrypto, real } from 'random-js';
+import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
-import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../config';
+import type { Prisma, PrismaClient } from '@prisma/client';
+import { LRUCache } from 'lru-cache';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type Monster from 'oldschooljs/dist/structures/Monster';
+import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
+import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
+import type { MUserClass } from './MUser';
+import { PaginatedMessage } from './PaginatedMessage';
 import { ClueTiers } from './clues/clueTiers';
-import {
-	badgesCache,
-	BitField,
-	globalConfig,
-	ONE_TRILLION,
-	projectiles,
-	ProjectileType,
-	usernameCache
-} from './constants';
-import { UserStatsDataNeededForCL } from './data/Collections';
+import { BitField, ONE_TRILLION, type ProjectileType, globalConfig, projectiles } from './constants';
 import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
-import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
+import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
+import { GearSetupTypes, GearStat } from './gear/types';
 import type { Consumable } from './minions/types';
-import { MUserClass } from './MUser';
-import { PaginatedMessage } from './PaginatedMessage';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
-import { Gear } from './structures/Gear';
-import { MUserStats } from './structures/MUserStats';
-import type { Skills } from './types';
+import type { Gear } from './structures/Gear';
+import type { ItemBank, Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
 	RaidsOptions,
+	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
 import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
+import { makeBadgeString } from './util/makeBadgeString';
 import resolveItems from './util/resolveItems';
 import { itemNameFromID } from './util/smallUtils';
 
-export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
+export * from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
 
-const zeroWidthSpace = '\u200b';
 // @ts-ignore ignore
-// eslint-disable-next-line no-extend-native, func-names
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
-export function cleanMentions(guild: Guild | null, input: string, showAt = true) {
-	const at = showAt ? '@' : '';
-	return input
-		.replace(/@(here|everyone)/g, `@${zeroWidthSpace}$1`)
-		.replace(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
-			switch (type) {
-				case '@':
-				case '@!': {
-					const tag = guild?.client.users.cache.get(id);
-					return tag ? `${at}${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
-				}
-				case '@&': {
-					const role = guild?.roles.cache.get(id);
-					return role ? `${at}${role.name}` : match;
-				}
-				default:
-					return `<${type}${zeroWidthSpace}${id}>`;
-			}
-		});
-}
 
 export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
@@ -112,14 +67,6 @@ export function inlineCodeblock(input: string) {
 export function britishTime() {
 	const currentDate = new Date(Date.now() - Time.Hour * 10);
 	return currentDate;
-}
-
-export function isNightTime() {
-	const time = britishTime();
-	let hours = time.getHours();
-
-	if (!production) hours = 20;
-	return hours > 16 || hours < 5;
 }
 
 export function isWeekend() {
@@ -141,16 +88,18 @@ export function convertXPtoLVL(xp: number, cap = 120) {
 	return cap;
 }
 
+const randEngine = process.env.TEST ? nativeMath : nodeCrypto;
+
 export function cryptoRand(min: number, max: number) {
-	return integer(min, max)(nodeCrypto);
+	return integer(min, max)(randEngine);
 }
 
 export function randFloat(min: number, max: number) {
-	return real(min, max)(nodeCrypto);
+	return real(min, max)(randEngine);
 }
 
 export function percentChance(percent: number) {
-	return bool(percent / 100)(nodeCrypto);
+	return bool(percent / 100)(randEngine);
 }
 
 export function roll(max: number) {
@@ -264,19 +213,6 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	return str.join('');
 }
 
-export const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
-	const consumableCost = c.itemCost.clone();
-	if (c.qtyPerKill) {
-		consumableCost.multiply(quantity);
-	} else if (c.qtyPerMinute) {
-		consumableCost.multiply(duration / Time.Minute);
-	}
-	for (const [item, qty] of Object.entries(consumableCost.bank)) {
-		consumableCost.bank[item] = Math.ceil(qty);
-	}
-	return consumableCost;
-};
-
 export function formatPohBoosts(boosts: POHBoosts) {
 	const bonusStr = [];
 	const slotStr = [];
@@ -293,16 +229,6 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-function gaussianRand(rolls: number = 3) {
-	let rand = 0;
-	for (let i = 0; i < rolls; i += 1) {
-		rand += Math.random();
-	}
-	return rand / rolls;
-}
-export function gaussianRandom(min: number, max: number, rolls?: number) {
-	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
-}
 export function isValidNickname(str?: string) {
 	return Boolean(
 		str &&
@@ -314,7 +240,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export type PaginatedMessagePage = MessageEditOptions;
+export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
 
 export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
@@ -371,7 +297,7 @@ export function getMonster(str: string): Monster {
 }
 
 export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
-	let result = [];
+	const result = [];
 	let uniquesReceived = 0;
 	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
 		if (uniques.includes(item.id)) {
@@ -396,17 +322,6 @@ export function convertPercentChance(percent: number) {
 	return (1 / (percent / 100)).toFixed(1);
 }
 
-export function murMurHashChance(input: string, percent: number) {
-	const hash = murmurHash.v3(input) % 1e4;
-	return hash < percent * 100;
-}
-
-const getMurKey = (input: string | number, sortHash: string) => `${input.toString()}-${sortHash}`;
-
-export function murMurSort<T extends string | number>(arr: T[], sortHash: string) {
-	return [...arr].sort((a, b) => murmurHash.v3(getMurKey(b, sortHash)) - murmurHash.v3(getMurKey(a, sortHash)));
-}
-
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
 	let setup: GearSetupType = 'melee';
 
@@ -426,20 +341,8 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	return setup;
 }
 
-export function formatTimestamp(date: Date, relative = false) {
-	const unixTime = date.getTime() / 1000;
-	if (relative) {
-		return `<t:${unixTime}:R>`;
-	}
-	return `<t:${unixTime}>`;
-}
-
 export function ISODateString(date?: Date) {
 	return (date ?? new Date()).toISOString().slice(0, 10);
-}
-
-export function averageArr(arr: number[]) {
-	return sumArr(arr) / arr.length;
 }
 
 export function convertPvmStylesToGearSetup(attackStyles: SkillsEnum[]) {
@@ -492,19 +395,6 @@ export function validateBankAndThrow(bank: Bank) {
 	}
 }
 
-export function convertBankToPerHourStats(bank: Bank, time: number) {
-	let result = [];
-	for (const [item, qty] of bank.items()) {
-		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
-	}
-	return result;
-}
-
-export function isAtleastThisOld(date: Date | number, age: number) {
-	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
-	return difference >= age;
-}
-
 export function removeMarkdownEmojis(str: string) {
 	return escapeMarkdown(stripEmojis(str));
 }
@@ -512,6 +402,7 @@ export function removeMarkdownEmojis(str: string) {
 export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
+
 export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
 	const marketPrices = (await prisma.clientStorage.findFirst({
 		where: { id: globalConfig.clientID },
@@ -549,46 +440,30 @@ export function roughMergeMahojiResponse(
 ): InteractionReplyOptions {
 	const first = normalizeMahojiResponse(one);
 	const second = normalizeMahojiResponse(two);
+	const newContent: string[] = [];
+
 	const newResponse: InteractionReplyOptions = { content: '', files: [], components: [] };
 	for (const res of [first, second]) {
-		if (res.content) newResponse.content += `${res.content} `;
+		if (res.content) newContent.push(res.content);
 		if (res.files) newResponse.files = [...newResponse.files!, ...res.files];
 		if (res.components) newResponse.components = res.components;
 	}
+	newResponse.content = newContent.join('\n\n');
 	return newResponse;
-}
-
-export async function asyncGzip(buffer: Buffer) {
-	return new Promise<Buffer>((resolve, reject) => {
-		gzip(buffer, {}, (error, gzipped) => {
-			if (error) {
-				reject(error);
-			}
-			resolve(gzipped);
-		});
-	});
-}
-
-export function increaseBankQuantitesByPercent(bank: Bank, percent: number, whitelist: number[] | null = null) {
-	for (const [key, value] of Object.entries(bank.bank)) {
-		if (whitelist !== null && !whitelist.includes(parseInt(key))) continue;
-		const increased = Math.floor(increaseNumByPercent(value, percent));
-		bank.bank[key] = increased;
-	}
 }
 
 export function generateXPLevelQuestion() {
 	const level = randInt(1, 120);
 	const xp = randInt(convertLVLtoXP(level), convertLVLtoXP(level + 1) - 1);
 
-	let chanceOfSwitching = randInt(1, 4);
+	const chanceOfSwitching = randInt(1, 4);
 
-	let answers: string[] = [level.toString()];
-	let arr = shuffleArr(['plus', 'minus'] as const);
+	const answers: string[] = [level.toString()];
+	const arr = shuffleArr(['plus', 'minus'] as const);
 
 	while (answers.length < 4) {
-		let modifier = randArrItem([1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10]);
-		let action = roll(chanceOfSwitching) ? arr[0] : arr[1];
+		const modifier = randArrItem([1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10]);
+		const action = roll(chanceOfSwitching) ? arr[0] : arr[1];
 		let potentialAnswer = action === 'plus' ? level + modifier : level - modifier;
 		if (potentialAnswer < 1) potentialAnswer = level + modifier;
 		else if (potentialAnswer > 120) potentialAnswer = level - modifier;
@@ -617,17 +492,31 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-export function getBadges(user: MUser | string | bigint) {
-	if (typeof user === 'string' || typeof user === 'bigint') {
-		return badgesCache.get(user.toString()) ?? '';
-	}
-	return user.badgeString;
+const usernameWithBadgesCache = new LRUCache<string, string>({ max: 2000 });
+
+export async function getUsername(_id: string | bigint): Promise<string> {
+	const id = _id.toString();
+	const cached = usernameWithBadgesCache.get(id);
+	if (cached) return cached;
+	const user = await prisma.user.findFirst({
+		where: {
+			id
+		},
+		select: {
+			username: true,
+			badges: true,
+			minion_ironman: true
+		}
+	});
+	if (!user?.username) return 'Unknown';
+	const badges = makeBadgeString(user.badges, user.minion_ironman);
+	const newValue = `${badges ? `${badges} ` : ''}${user.username}`;
+	usernameWithBadgesCache.set(id, newValue);
+	return newValue;
 }
 
-export function getUsername(id: string | bigint, withBadges: boolean = true) {
-	let username = usernameCache.get(id.toString()) ?? 'Unknown';
-	if (withBadges) username = `${getBadges(id)} ${username}`;
-	return username;
+export function getUsernameSync(_id: string | bigint) {
+	return usernameWithBadgesCache.get(_id.toString()) ?? 'Unknown';
 }
 
 export function clAdjustedDroprate(
@@ -646,16 +535,6 @@ export function clAdjustedDroprate(
 	return Math.floor(newRate);
 }
 
-export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
-	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
-}
-
-type test = CollectorFilter<
-	[
-		ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
-		Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
-	]
->;
 export function awaitMessageComponentInteraction({
 	message,
 	filter,
@@ -663,7 +542,12 @@ export function awaitMessageComponentInteraction({
 }: {
 	time: number;
 	message: Message;
-	filter: test;
+	filter: CollectorFilter<
+		[
+			ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
+			Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
+		]
+	>;
 }): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
 	return new Promise((resolve, reject) => {
 		const collector = message.createMessageComponentCollector<ComponentType.Button>({ max: 1, filter, time });
@@ -675,32 +559,23 @@ export function awaitMessageComponentInteraction({
 	});
 }
 
-export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
-	debugLog(`Starting ${name}...`);
+export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
+	const logger = globalConfig.isProduction ? debugLog : console.log;
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
-	await fn();
+	const result = await fn();
 	stopwatch.stop();
-	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
-}
-
-export function getAllIDsOfUser(user: MUser) {
-	let main = user.user.main_account;
-	const allAccounts: string[] = [...user.user.ironman_alts, user.id];
-	if (main) {
-		allAccounts.push(main);
+	if (!globalConfig.isProduction || stopwatch.duration > threshholdToLog) {
+		logger(`Took ${stopwatch} to do ${name}`);
 	}
-	return allAccounts;
+	return result;
 }
 
-export function getInteractionTypeName(type: InteractionType) {
-	return {
-		[InteractionType.Ping]: 'Ping',
-		[InteractionType.ApplicationCommand]: 'ApplicationCommand',
-		[InteractionType.MessageComponent]: 'MessageComponent',
-		[InteractionType.ApplicationCommandAutocomplete]: 'ApplicationCommandAutocomplete',
-		[InteractionType.ModalSubmit]: 'ModalSubmit'
-	}[type];
+export function logWrapFn<T extends (...args: any[]) => Promise<unknown>>(
+	name: string,
+	fn: T
+): (...args: Parameters<T>) => ReturnType<T> {
+	return (...args: Parameters<T>): ReturnType<T> => runTimedLoggedFn(name, () => fn(...args)) as ReturnType<T>;
 }
 
 export function isModOrAdmin(user: MUser) {
@@ -727,21 +602,6 @@ export async function calcClueScores(user: MUser) {
 		.filter(notEmpty);
 }
 
-export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
-	const stats = await MUserStats.fromID(user.id);
-	const { userStats } = stats;
-	return {
-		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
-		titheFarmsCompleted: userStats.tithe_farms_completed,
-		lapsScores: userStats.laps_scores as ItemBank,
-		openableScores: new Bank(userStats.openable_scores as ItemBank),
-		kcBank: userStats.monster_scores as ItemBank,
-		highGambles: userStats.high_gambles,
-		gotrRiftSearches: userStats.gotr_rift_searches,
-		stats
-	};
-}
-
 export { assert } from './util/logError';
 export * from './util/smallUtils';
 export { channelIsSendable } from '@oldschoolgg/toolkit';
@@ -753,10 +613,7 @@ export function checkRangeGearWeapon(gear: Gear) {
 	if (!ammo) return 'You have no ammo equipped.';
 
 	const projectileCategory = objectEntries(projectiles).find(i =>
-		i[1].weapons
-			.map(w => getSimilarItems(w))
-			.flat()
-			.includes(weapon.id)
+		i[1].weapons.flatMap(w => getSimilarItems(w)).includes(weapon.id)
 	);
 	if (!projectileCategory) return 'You have an invalid range weapon.';
 	if (!projectileCategory[1].items.includes(ammo.item)) {
@@ -774,3 +631,25 @@ export function checkRangeGearWeapon(gear: Gear) {
 export function hasUnlockedAtlantis(user: MUser) {
 	return doaCL.some(itemID => user.cl.has(itemID));
 }
+
+export function normalizeTOAUsers(data: TOAOptions) {
+	const _detailedUsers = data.detailedUsers;
+	const detailedUsers = (
+		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
+	).map(userArr =>
+		userArr.map(user => ({
+			id: user[0],
+			points: user[1],
+			deaths: user[2]
+		}))
+	);
+	return detailedUsers;
+}
+
+export function anyoneDiedInTOARaid(data: TOAOptions) {
+	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
+}
+
+export type JsonKeys<T> = {
+	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
+}[keyof T];

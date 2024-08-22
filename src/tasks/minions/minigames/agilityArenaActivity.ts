@@ -1,11 +1,11 @@
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
@@ -18,7 +18,7 @@ export const agilityArenaTask: MinionTask = {
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		// You get 1 ticket per minute at best without diary
-		let timePerTicket = Time.Minute;
+		const timePerTicket = Time.Minute;
 		let ticketsReceived = Math.floor(duration / timePerTicket);
 
 		// Approximately 25k xp/hr (416xp per min) from the obstacles
@@ -66,7 +66,7 @@ export const agilityArenaTask: MinionTask = {
 			str += `\nYou received ${bonusTickets} bonus tickets for the Karamja Elite Diary.`;
 		}
 
-		let xpFromTickets = determineXPFromTickets(ticketsReceived, user, hasKaramjaElite);
+		const xpFromTickets = determineXPFromTickets(ticketsReceived, user, hasKaramjaElite);
 		const xpFromTrip = xpFromTickets + agilityXP;
 		str += `\n${(
 			(xpFromTrip / (duration / Time.Minute)) *

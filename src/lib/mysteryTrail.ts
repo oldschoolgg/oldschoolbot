@@ -1,8 +1,8 @@
 import { Bank, Monsters } from 'oldschooljs';
 
-import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
+import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { getUsersCurrentSlayerInfo } from './slayer/slayerUtil';
-import { ActivityTaskData } from './types/minions';
+import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -28,8 +28,7 @@ const firstStep = {
 	hint: `In Lumbridge's dawn, where bovine graze,
 Lay one to rest in the morning haze,
 In its yield, your path will blaze.`,
-	didPass: (data: ActivityTaskData) =>
-		data.type === 'MonsterKilling' && data.monsterID === Monsters.Cow.id && data.quantity === 1
+	didPass: (data: ActivityTaskData) => data.type === 'MonsterKilling' && data.mi === Monsters.Cow.id && data.q === 1
 };
 
 const finalStep = {
@@ -134,7 +133,7 @@ export const mysteriousTrailTracks: Track[] = [
 				didPass: (data: ActivityTaskData) => {
 					if (
 						data.type === 'MonsterKilling' &&
-						[Monsters.MaleHamMember.id, Monsters.FemaleHamMember.id].includes(data.monsterID)
+						[Monsters.MaleHamMember.id, Monsters.FemaleHamMember.id].includes(data.mi)
 					) {
 						return true;
 					}
@@ -239,7 +238,7 @@ export const mysteriousTrailTracks: Track[] = [
 					if (
 						task.slayerMaster?.name === 'Turael' &&
 						data.type === 'MonsterKilling' &&
-						task.assignedTask?.monsters.includes(data.monsterID)
+						task.assignedTask?.monsters.includes(data.mi)
 					) {
 						return true;
 					}
@@ -252,7 +251,7 @@ export const mysteriousTrailTracks: Track[] = [
 				didPass: (data: ActivityTaskData) => {
 					if (
 						data.type === 'MonsterKilling' &&
-						[Monsters.TrollGeneral.id, Monsters.MountainTroll.id].includes(data.monsterID)
+						[Monsters.TrollGeneral.id, Monsters.MountainTroll.id].includes(data.mi)
 					) {
 						return true;
 					}
@@ -292,7 +291,7 @@ export const mysteriousTrailTracks: Track[] = [
 			{
 				hint: 'Hear the echo of a crowned roar, in a place too dangerous to explore.',
 				didPass: (data: ActivityTaskData) =>
-					data.type === 'MonsterKilling' && data.monsterID === Monsters.KingBlackDragon.id
+					data.type === 'MonsterKilling' && data.mi === Monsters.KingBlackDragon.id
 			},
 			finalStep
 		]
@@ -338,7 +337,7 @@ export const mysteriousTrailTracks: Track[] = [
 				didPass: (data: ActivityTaskData) => {
 					if (
 						data.type === 'MonsterKilling' &&
-						[Monsters.TrollGeneral.id, Monsters.MountainTroll.id].includes(data.monsterID)
+						[Monsters.TrollGeneral.id, Monsters.MountainTroll.id].includes(data.mi)
 					) {
 						return true;
 					}

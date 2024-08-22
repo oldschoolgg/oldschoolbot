@@ -1,8 +1,8 @@
-import { reduceNumByPercent, sumArr, Time } from 'e';
+import { Time, reduceNumByPercent, sumArr } from 'e';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
+import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -14,11 +14,11 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 	const thievingLevel = skills.thieving;
 	const minLevel = sepulchreFloors[0].agilityLevel;
 	if (agilityLevel < minLevel) {
-		return `You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`;
+		return `You need at least level ${minLevel} Agility to do the Hallowed Sepulchre.`;
 	}
 
 	if (thievingLevel < 66) {
-		return 'You need atleast level 66 Thieving to do the Hallowed Sepulchre.';
+		return 'You need at least level 66 Thieving to do the Hallowed Sepulchre.';
 	}
 
 	if (!userHasGracefulEquipped(user)) {

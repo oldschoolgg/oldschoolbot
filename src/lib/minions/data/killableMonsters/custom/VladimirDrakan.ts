@@ -1,4 +1,4 @@
-import { roll, shuffleArr, Time, uniqueArr } from 'e';
+import { Time, roll, shuffleArr, uniqueArr } from 'e';
 import { Bank, LootTable, Monsters } from 'oldschooljs';
 
 import { vladDrakanCL } from '../../../../data/CollectionsExport';
@@ -7,7 +7,7 @@ import { GearStat } from '../../../../gear';
 import { runeWeaponTable } from '../../../../simulation/sharedTables';
 import { clAdjustedDroprate, randomVariation, resolveNameBank } from '../../../../util';
 import resolveItems from '../../../../util/resolveItems';
-import { CustomMonster } from './customMonsters';
+import type { CustomMonster } from './customMonsters';
 
 const JewelleryTable = new LootTable()
 	.add(new LootTable().add('Onyx ring').add('Onyx necklace').add('Onyx bracelet').add('Onyx amulet'))

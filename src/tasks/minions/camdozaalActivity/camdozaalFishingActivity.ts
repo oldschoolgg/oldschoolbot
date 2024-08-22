@@ -3,7 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -11,7 +11,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 export const camdozaalFishingTask: MinionTask = {
 	type: 'CamdozaalFishing',
 	async run(data: ActivityTaskOptionsWithQuantity) {
-		let { userID, channelID, quantity, duration } = data;
+		const { userID, channelID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
@@ -74,7 +74,7 @@ export const camdozaalFishingTask: MinionTask = {
 		// If user has the entire angler outfit, give an extra 2.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
-				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
+				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
 				true
 			)
 		) {
@@ -84,7 +84,7 @@ export const camdozaalFishingTask: MinionTask = {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquipped(Number.parseInt(itemID))) {
 					const amountToAdd = Math.floor(fishingXpReceived * (bonus / 100));
 					fishingXpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -107,7 +107,7 @@ export const camdozaalFishingTask: MinionTask = {
 		}
 
 		// Add clue scrolls
-		let clueScrollChance = guppy.clueScrollChance!;
+		const clueScrollChance = guppy.clueScrollChance!;
 		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
 
 		// Heron Pet roll

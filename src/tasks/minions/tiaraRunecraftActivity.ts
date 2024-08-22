@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { TiaraRunecraftActivityTaskOptions } from '../../lib/types/minions';
+import type { TiaraRunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const tiaraRunecraftTask: MinionTask = {
@@ -14,7 +14,7 @@ export const tiaraRunecraftTask: MinionTask = {
 		const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === tiaraID)!;
 
 		const xpReceived = tiaraQuantity * tiara.xp;
-		let xpRes = `\n${await user.addXP({
+		const xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Runecraft,
 			amount: xpReceived,
 			duration

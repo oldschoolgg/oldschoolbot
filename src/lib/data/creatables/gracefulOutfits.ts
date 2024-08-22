@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import itemID from '../../util/itemID';
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const gracefulOutfitCreatables: Createable[] = [
 	// Normal

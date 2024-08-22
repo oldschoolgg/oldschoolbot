@@ -7,7 +7,7 @@ import Clue from 'oldschooljs/dist/structures/Clue';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { LampTable } from '../xpLamps';
-import { AllBarrows, BattlestaffTable, CosmeticsTable, runeAlchablesTable, StaffOrbTable } from './sharedTables';
+import { AllBarrows, BattlestaffTable, CosmeticsTable, StaffOrbTable, runeAlchablesTable } from './sharedTables';
 
 const ClueHunterTable = new LootTable()
 	.add('Helm of raedwald')

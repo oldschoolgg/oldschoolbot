@@ -1,10 +1,9 @@
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank, Skills } from '../types';
-import { FarmingPatchName } from '../util/farmingHelpers';
+import type { Bank } from 'oldschooljs';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type LootTable from 'oldschooljs/dist/structures/LootTable';
+import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import type { Skills } from '../types';
+import type { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
 	Agility = 'agility',
@@ -328,7 +327,7 @@ export enum HunterTechniqueEnum {
 	BoxTrapping = 'box trapping',
 	ButterflyNetting = 'butterfly netting',
 	DeadfallTrapping = 'deadfall trapping',
-	Falconry = 'falconry',
+	Falconry = 'hawking',
 	MagicBoxTrapping = 'magic box trapping',
 	NetTrapping = 'net trapping',
 	PitfallTrapping = 'pitfall trapping',

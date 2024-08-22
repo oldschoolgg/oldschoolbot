@@ -3,12 +3,13 @@ import { bold } from 'discord.js';
 import { increaseNumByPercent, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
+import assert from 'node:assert';
 import { Events } from '../../../lib/constants';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ShadesOfMortonOptions } from '../../../lib/types/minions';
-import { assert, clAdjustedDroprate } from '../../../lib/util';
+import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
+import { clAdjustedDroprate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 
@@ -23,29 +24,29 @@ export const shadesOfMortonTask: MinionTask = {
 		const log = shadesLogs.find(i => i.normalLog.id === logID)!;
 		const shade = shades.find(i => i.shadeName === shadeID)!;
 
-		let loot = new Bank();
+		const loot = new Bank();
 
 		const multiplier = 100;
-		let table = new LootTable().add('Coins', 0.21 * multiplier);
+		const table = new LootTable().add('Coins', 0.21 * multiplier);
 		if (shade.lowMetalKeys) {
-			let subTable = new LootTable();
+			const subTable = new LootTable();
 			for (const key of shade.lowMetalKeys.items) subTable.add(key);
 			table.add(subTable, 1, shade.lowMetalKeys.fraction * multiplier);
 		}
 		if (shade.highMetalKeys) {
-			let subTable = new LootTable();
+			const subTable = new LootTable();
 			for (const key of shade.highMetalKeys.items) subTable.add(key);
 			table.add(subTable, 1, shade.highMetalKeys.fraction * multiplier);
 		}
 
-		let messages: string[] = [];
+		const messages: string[] = [];
 
 		// Pet droprate gets rarer if using lower tier shades
 		let gotPet = false;
-		let remains = ['Urium', 'Fiyr', 'Asyn', 'Riyl', 'Phrin', 'Loar'];
+		const remains = ['Urium', 'Fiyr', 'Asyn', 'Riyl', 'Phrin', 'Loar'];
 		assert(remains.includes(shadeID), `Invalid shadeID: ${shadeID}`);
-		let baseGaryRate = (remains.indexOf(shadeID) + 1) * 1200;
-		let garyDroprate = clAdjustedDroprate(user, 'Gary', baseGaryRate, 1.4);
+		const baseGaryRate = (remains.indexOf(shadeID) + 1) * 1200;
+		const garyDroprate = clAdjustedDroprate(user, 'Gary', baseGaryRate, 1.4);
 
 		for (let i = 0; i < quantity; i++) {
 			loot.add(table.roll());
@@ -65,7 +66,7 @@ export const shadesOfMortonTask: MinionTask = {
 
 		if (loot.has('Gary')) {
 			await user.sync();
-			let kcGot = randInt(scoreUpdate.newScore - quantity + 1, scoreUpdate.newScore);
+			const kcGot = randInt(scoreUpdate.newScore - quantity + 1, scoreUpdate.newScore);
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${user.minionName}, just received their ${formatOrdinal(
@@ -102,7 +103,7 @@ export const shadesOfMortonTask: MinionTask = {
 			source: 'ShadesOfMorton'
 		});
 
-		let str = `${user}, You received ${loot}. ${xpStr}.`;
+		const str = `${user}, You received ${loot}. ${xpStr}.`;
 
 		handleTripFinish(user, channelID, str, undefined, data, itemsAdded, messages);
 	}

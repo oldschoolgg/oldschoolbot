@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const amrodCreatables: Createable[] = [
 	{

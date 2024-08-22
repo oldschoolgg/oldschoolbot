@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { itemNameFromID } from '../../util';
 import resolveItems from '../../util/resolveItems';
 import { diariesCL } from '../CollectionsExport';
-import { Buyable } from './buyables';
+import type { Buyable } from './buyables';
 
 export const perduBuyables: Buyable[] = diariesCL.map(itemName => ({
 	name: itemNameFromID(itemName)!,

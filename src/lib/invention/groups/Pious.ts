@@ -1,5 +1,5 @@
+import type { DisassemblySourceGroup } from '..';
 import getOSItem from '../../util/getOSItem';
-import { DisassemblySourceGroup } from '..';
 
 export const Pious: DisassemblySourceGroup = {
 	name: 'Pious',

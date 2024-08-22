@@ -1,4 +1,5 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { getPaintedItemImage, paintColors } from '../../lib/paintColors';
@@ -6,7 +7,7 @@ import { itemEffectImageCache } from '../../lib/util/customItemEffects';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const paintCommand: OSBMahojiCommand = {
 	name: 'paint',

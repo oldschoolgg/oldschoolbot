@@ -1,4 +1,5 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -9,7 +10,7 @@ import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRate
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 function determineLimit(user: MUser) {
 	const perkTier = user.perkTier();
@@ -73,9 +74,7 @@ export const casketCommand: OSBMahojiCommand = {
 		return {
 			content: `You opened ${options.quantity} ${clueTier.name} caskets.
 **Bot Value:** ${toKMB(loot.value())} (Average of ${toKMB(loot.value() / options.quantity)} per casket)
-**Market Value:** ${toKMB(marketPriceOfBank(loot))} (Average of ${toKMB(
-				marketPriceOfBank(loot) / options.quantity
-			)} per casket)
+**Market Value:** ${toKMB(marketPriceOfBank(loot))} (Average of ${toKMB(marketPriceOfBank(loot) / options.quantity)} per casket)
 **Droprates:** ${calcDropRatesFromBankWithoutUniques(loot, options.quantity).slice(0, 20).join(', ')}`,
 
 			files: [image.file]

@@ -1,5 +1,6 @@
 import { Emoji } from '../../constants';
-import { Course, SkillsEnum } from '../types';
+import type { Course } from '../types';
+import { SkillsEnum } from '../types';
 
 export const courses: Course[] = [
 	{
@@ -195,7 +196,7 @@ export const gracefulItems = [
 	'Agility cape(t)'
 ];
 
-export const MonkeyBackpacks = [
+const MonkeyBackpacks = [
 	{
 		id: 24_862,
 		name: 'Karamjan monkey',

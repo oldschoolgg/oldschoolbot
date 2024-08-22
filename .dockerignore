@@ -1,0 +1,8 @@
+.env
+icon_cache
+logs
+dist
+node_modules
+coverage
+.yarn
+.tests

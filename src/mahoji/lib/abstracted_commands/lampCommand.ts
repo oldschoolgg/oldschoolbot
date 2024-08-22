@@ -1,9 +1,9 @@
 import { clamp, objectValues } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { Skills } from '../../../lib/types';
+import type { ItemBank, Skills } from '../../../lib/types';
 import { assert, isValidSkill, itemID } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -180,6 +180,13 @@ export const Lampables: IXPObject[] = [
 				skills[skill] =
 					data.user.skillLevel(skill) *
 					([
+						SkillsEnum.Attack,
+						SkillsEnum.Strength,
+						SkillsEnum.Defence,
+						SkillsEnum.Magic,
+						SkillsEnum.Ranged,
+						SkillsEnum.Hitpoints,
+						SkillsEnum.Prayer,
 						SkillsEnum.Mining,
 						SkillsEnum.Woodcutting,
 						SkillsEnum.Herblore,
@@ -303,18 +310,16 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 		]!}** in ${skill} to receive it.`;
 	}
 
-	let amount = skillsToReceive[skill]!;
+	const amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
-	userStatsUpdate(user.id, u => {
-		let newLampedXp = {
-			...(u.lamped_xp as ItemBank)
-		};
-		if (!newLampedXp[skill]) newLampedXp[skill] = amount;
-		else newLampedXp[skill] += amount;
-
-		return {
-			lamped_xp: newLampedXp
-		};
+	const stats = await user.fetchStats({ lamped_xp: true });
+	const newLampedXp = {
+		...(stats.lamped_xp as ItemBank)
+	};
+	if (!newLampedXp[skill]) newLampedXp[skill] = amount;
+	else newLampedXp[skill] += amount;
+	userStatsUpdate(user.id, {
+		lamped_xp: newLampedXp
 	});
 
 	await user.removeItemsFromBank(toRemoveFromBank);

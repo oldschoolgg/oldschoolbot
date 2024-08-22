@@ -1,8 +1,7 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { isObject } from 'e';
-import { ICommand, MahojiClient } from 'mahoji';
-import { CommandOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
+import type { CommandOptions, ICommand, MahojiClient, MahojiUserOption } from '@oldschoolgg/toolkit';
 import { Cooldowns } from './Cooldowns';
 import type { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
 
@@ -10,7 +9,7 @@ export interface OSBMahojiCommand extends ICommand {
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 }
 
-export function isMahojiUserOption(data: any): data is MahojiUserOption {
+function isMahojiUserOption(data: any): data is MahojiUserOption {
 	return 'user' in data && 'id' in data.user;
 }
 
@@ -25,7 +24,7 @@ interface CompressedArg {
 	[key: string]: string | number | boolean | null | undefined | CompressedArg;
 }
 function compressMahojiArgs(options: CommandOptions) {
-	let newOptions: CompressedArg = {};
+	const newOptions: CompressedArg = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
 		CommandOptions[keyof CommandOptions]
@@ -71,7 +70,7 @@ export function getCommandArgs(
 }
 
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
-	return mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand);
+	return Array.from(mahojiClient.commands.values()).map(convertMahojiCommandToAbstractCommand);
 }
 
 export function resetCooldown(user: MUser, key?: string) {

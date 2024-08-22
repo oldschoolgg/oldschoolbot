@@ -10,7 +10,7 @@ import {
 } from '../../../lib/fishingContest';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { FishingContestOptions } from '../../../lib/types/minions';
+import type { FishingContestOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -19,13 +19,13 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 	const currentFishType = getCurrentFishType();
 	const validLocs = getValidLocationsForFishType(currentFishType);
 	let quantity = 1;
-	let duration = Math.floor(quantity * Time.Minute * 1.69);
-	let quantityBoosts = [];
+	const duration = Math.floor(quantity * Time.Minute * 1.69);
+	const quantityBoosts = [];
 
 	const tackleBoxes = ["Champion's tackle box", 'Professional tackle box', 'Standard tackle box', 'Basic tackle box'];
 	for (let i = 0; i < tackleBoxes.length; i++) {
 		if (user.hasEquippedOrInBank(tackleBoxes[i])) {
-			let num = tackleBoxes.length - i;
+			const num = tackleBoxes.length - i;
 			quantityBoosts.push(`${num} for ${tackleBoxes[i]}`);
 			quantity += num;
 			break;

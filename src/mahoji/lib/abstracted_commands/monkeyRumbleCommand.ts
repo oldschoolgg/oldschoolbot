@@ -1,21 +1,21 @@
-import { randArrItem, reduceNumByPercent, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { Time, randArrItem, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import {
+	type Monkey,
+	TOTAL_MONKEYS,
 	fightingMessages,
 	getMonkeyPhrase,
 	getRandomMonkey,
-	Monkey,
 	monkeyEatables,
 	monkeyHeadImage,
 	monkeyTierOfUser,
-	monkeyTiers,
-	TOTAL_MONKEYS
+	monkeyTiers
 } from '../../../lib/monkeyRumble';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
-import { MonkeyRumbleOptions } from '../../../lib/types/minions';
+import type { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -128,9 +128,7 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 		.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)
 		.join(', ')}). The trip will take ${formatDuration(
 		duration
-	)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${(
-		chanceOfSpecial / quantity
-	).toFixed(2)} chance that one of them would be special.**`;
+	)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${(chanceOfSpecial / quantity).toFixed(2)} chance that one of them would be special.**`;
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}

@@ -1,10 +1,10 @@
 import { roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { UnifiedOpenable } from './openables';
+import { resolveItems } from 'oldschooljs/dist/util/util';
+import type { UnifiedOpenable } from './openables';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
 
 const BronzeChest = new LootTable({ limit: 99 })
 	.every('Swamp paste', [10, 20])

@@ -9,7 +9,7 @@ export const LeafTable = new LootTable()
 	.add('Yew leaves', 20)
 	.add('Magic leaves', 20);
 
-export interface ForestryEvent {
+interface ForestryEvent {
 	id: number;
 	name: string;
 	uniqueXP: SkillsEnum;

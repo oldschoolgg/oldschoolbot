@@ -1,13 +1,12 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { GrandExchange } from '../../../lib/grandExchange';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { makeTransactFromTableBankQueries } from '../../../lib/tableBank';
 import { logError } from '../../../lib/util/logError';
 
 export async function cancelUsersListings(user: MUser) {
-	await user.sync();
 	const activeListings = await prisma.gEListing.findMany({
 		where: {
 			user_id: user.id,
@@ -49,7 +48,12 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 		const listing = await prisma.gEListing.findFirst({
 			where: {
 				user_id: user.id,
-				userfacing_id: idToCancel
+				userfacing_id: idToCancel,
+				cancelled_at: null,
+				fulfilled_at: null,
+				quantity_remaining: {
+					gt: 0
+				}
 			}
 		});
 		if (!listing) {
@@ -77,24 +81,25 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 			return 'Something went wrong, please try again later.';
 		}
 
-		await prisma.$transaction([
-			prisma.gEListing.update({
-				where: {
-					id: listing.id
-				},
-				data: {
-					cancelled_at: new Date()
-				}
-			}),
-			...makeTransactFromTableBankQueries({ bankToRemove: refundBank })
+		await Promise.all([
+			prisma.$transaction([
+				prisma.gEListing.update({
+					where: {
+						id: listing.id
+					},
+					data: {
+						cancelled_at: new Date()
+					}
+				}),
+				...makeTransactFromTableBankQueries({ bankToRemove: refundBank })
+			]),
+			user.addItemsToBank({
+				items: refundBank,
+				collectionLog: false,
+				dontAddToTempCL: true,
+				neverUpdateHistory: true
+			})
 		]);
-
-		await user.addItemsToBank({
-			items: refundBank,
-			collectionLog: false,
-			dontAddToTempCL: true,
-			neverUpdateHistory: true
-		});
 
 		return `Successfully cancelled your listing, you have been refunded ${refundBank}.`;
 	});

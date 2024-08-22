@@ -3,7 +3,8 @@ import { Bank } from 'oldschooljs';
 import { removeDiscontinuedItems } from '../../../bso/bsoUtil';
 import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
-import { Cookable, SkillsEnum } from '../../types';
+import type { Cookable } from '../../types';
+import { SkillsEnum } from '../../types';
 
 export const Cookables: Cookable[] = [
 	{

@@ -2,9 +2,9 @@ import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '../../../lib/constants';
-import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
+import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const chompHuntTask: MinionTask = {

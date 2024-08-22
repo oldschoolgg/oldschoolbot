@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const revenantMonsters: KillableMonster[] = [
 	{
@@ -74,7 +74,7 @@ export const revenantMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 147,
 		table: Monsters.RevenantDragon,
 		wildy: true,
-		difficultyRating: 9,
+		difficultyRating: 10,
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,

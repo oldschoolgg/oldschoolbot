@@ -17,7 +17,7 @@ export interface Rune {
 	stams?: boolean;
 }
 
-export interface Tiara {
+interface Tiara {
 	xp: number;
 	id: number;
 	name: string;

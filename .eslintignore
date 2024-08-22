@@ -1,7 +1,0 @@
-node_modules/
-dist/
-*.js
-icon_cache/
-licenses/
-coverage/
-.github/

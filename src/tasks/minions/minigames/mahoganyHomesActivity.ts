@@ -3,7 +3,7 @@ import { calcPercentOfNum } from 'e';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
+import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
 import { calcConBonusXP } from '../../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 

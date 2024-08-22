@@ -1,7 +1,7 @@
 import { Time } from 'e';
 
 import itemID from '../../../../util/itemID';
-import { SmithedItem } from '../../../types';
+import type { SmithedItem } from '../../../types';
 
 const Mithril: SmithedItem[] = [
 	{

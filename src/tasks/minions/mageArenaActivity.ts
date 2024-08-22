@@ -1,12 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
+import type { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const mageArenaTask: MinionTask = {
 	type: 'MageArena',
 	async run(data: ActivityTaskOptionsWithNoChanges) {
-		let { userID, channelID } = data;
+		const { userID, channelID } = data;
 		const user = await mUserFetch(userID);
 		const loot = new Bank().add('Saradomin cape').add('Zamorak cape').add('Guthix cape');
 		await transactItems({
