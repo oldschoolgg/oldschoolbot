@@ -66,6 +66,7 @@ export const Roles = {
 	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324',
+	TopFarmer: DISCORD_SETTINGS.Roles?.TopFarmer ?? '894194027363205150',
 	TopGlobalCL: '1072426869028294747'
 };
 
@@ -346,7 +347,8 @@ export const BadgesEnum = {
 	TopMinigame: 11,
 	SotWTrophy: 12,
 	Slayer: 13,
-	TopGiveawayer: 14
+	TopGiveawayer: 14,
+	Farmer: 15
 } as const;
 
 export const badges: { [key: number]: string } = {
@@ -364,7 +366,8 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy,
 	[BadgesEnum.Slayer]: Emoji.Slayer,
-	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat
+	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat,
+	[BadgesEnum.Farmer]: Emoji.Farming
 };
 
 export const MAX_XP = 200_000_000;

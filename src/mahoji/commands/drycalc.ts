@@ -39,7 +39,7 @@ export const dryCalcCommand: OSBMahojiCommand = {
 		)}%** chance of not receiving any drop, and a **${round(
 			dropChance,
 			2
-		)}%** chance of receiving atleast one drop.`;
+		)}%** chance of receiving at least one drop.`;
 
 		return output;
 	}
