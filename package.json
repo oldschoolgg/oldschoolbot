@@ -25,7 +25,7 @@
 		"spritesheet": "tsx ./scripts/spritesheet.ts"
 	},
 	"dependencies": {
-		"@napi-rs/canvas": "^0.1.53",
+		"@napi-rs/canvas": "^0.1.54",
 		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#cd7c6865229ca7dc4a66b3816586f2d3f4a4fbed",
 		"@prisma/client": "^5.17.0",
 		"@sapphire/ratelimits": "^2.4.9",

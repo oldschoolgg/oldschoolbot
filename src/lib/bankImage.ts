@@ -3,7 +3,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import type { SKRSContext2D } from '@napi-rs/canvas';
 import { Canvas, GlobalFonts, Image, loadImage } from '@napi-rs/canvas';
-import { cleanString, formatItemStackQuantity, generateHexColorForCashStack, Stopwatch } from '@oldschoolgg/toolkit';
+import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
@@ -318,7 +318,6 @@ export class BankImageTask {
 		this.spriteSheetData = JSON.parse(
 			await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' })
 		);
-		console.log(this.spriteSheetData[23768]);
 		await this.run();
 	}
 
@@ -431,7 +430,6 @@ export class BankImageTask {
 		y: number;
 		outline?: { outlineColor: string; outlineWidth: number; alpha: number };
 	}) {
-		const t = new Stopwatch();
 		const data = this.spriteSheetData[itemID];
 		const drawOptions = {
 			image: this.spriteSheetImage,
@@ -444,7 +442,6 @@ export class BankImageTask {
 		};
 
 		if (!data) {
-			console.log(`Item ${itemID} has no sprite data.`);
 			const image = await this.getItemImage(itemID);
 			drawOptions.sourceWidth = image.width;
 			drawOptions.sourceHeight = image.height;
@@ -498,7 +495,6 @@ export class BankImageTask {
 			drawOptions.sourceWidth,
 			drawOptions.sourceHeight
 		);
-		console.log(`Finished drawing item in ${t.stop()}`);
 	}
 
 	async fetchAndCacheImage(itemID: number) {
@@ -635,7 +631,7 @@ export class BankImageTask {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			const [item, quantity] = items[i];
-			
+
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 
@@ -704,7 +700,6 @@ export class BankImageTask {
 		collectionLog?: Bank;
 		mahojiFlags?: BankFlag[];
 	}): Promise<BankImageResult> {
-		const a = new Stopwatch();
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));
@@ -862,7 +857,6 @@ export class BankImageTask {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
 
-		a.check("Preparation");
 		await this.drawItems(
 			ctx,
 			compact,
@@ -878,9 +872,7 @@ export class BankImageTask {
 			user
 		);
 
-		a.check("Drawing items");
 		const image = await canvas.encode('png');
-		a.check("encode");
 
 		return {
 			image,
