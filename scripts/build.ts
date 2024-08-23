@@ -1,13 +1,13 @@
-import '../lib/safeglobals';
+import '../src/lib/safeglobals';
 
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import fg from 'fast-glob';
 
-import { production } from '../config.js';
-import { BOT_TYPE } from '../lib/constants';
-import { getSystemInfo } from '../lib/systemInfo.js';
+import { production } from '../src/config';
+import { BOT_TYPE } from '../src/lib/constants';
+import { getSystemInfo } from '../src/lib/systemInfo';
 import { execAsync, runTimedLoggedFn } from './scriptUtil.js';
 
 const args = process.argv.slice(2);

@@ -1,8 +1,8 @@
 {
 	"scripts": {
 		"watch": "nodemon --delay 1ms -e ts -w src --exec 'yarn buildandrun'",
-		"build": "tsx ./src/scripts/build.ts",
-		"fix": "tsx ./src/scripts/troubleshooter.ts",
+		"build": "tsx ./scripts/build.ts",
+		"fix": "tsx ./scripts/troubleshooter.ts",
 		"start": "yarn build && node --enable-source-maps dist/",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"prisma generate --no-hints --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
 		"prettify": "prettier --use-tabs \"./**/*.{md,yml}\" --write",
