@@ -44,7 +44,7 @@ describe('Fish Command', () => {
 		testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'Shrimps/Anchovies' },
-			result: "<:minion:778418736180494347>  Your minion is now fishing Shrimps/Anchovies, it'll take around 30 minutes to finish"
+			result: "<:minion:778418736180494347> Your minion is now fishing Shrimps/Anchovies, it'll take 30 minutes, 1 second to finish."
 		});
 	});
 
@@ -72,7 +72,7 @@ describe('Fish Command', () => {
 				skills_strength: 999_999,
 				bank: new Bank().add('Feather', 1000)
 			},
-			result: `<:minion:778418736180494347> Your minion is now fishing Barbarian fishing, it'll take around 30 minutes to finish.`
+			result: `<:minion:778418736180494347> Your minion is now fishing Barbarian fishing, it'll take 30 minutes, 3 seconds to finish.`
 		});
 	});
 
