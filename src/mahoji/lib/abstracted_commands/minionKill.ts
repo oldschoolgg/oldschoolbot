@@ -281,7 +281,6 @@ export async function minionKillCommand(
 	const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
 
 	function applyRevWeaponBoost() {
-		const style = convertAttackStylesToSetup(user.user.attack_style);
 		const specialWeapon = revSpecialWeapons[style];
 		const upgradedWeapon = revUpgradedWeapons[style];
 
@@ -370,10 +369,6 @@ export async function minionKillCommand(
 		}
 	}
 
-	if (isInWilderness && monster.revsWeaponBoost) {
-		applyRevWeaponBoost();
-	}
-
 	function calculateVirtusBoost() {
 		let virtusPiecesEquipped = 0;
 
@@ -396,6 +391,12 @@ export async function minionKillCommand(
 					: '';
 	}
 
+	if (isInWilderness && monster.revsWeaponBoost) {
+		if (!combatMethods.includes('barrage') || !combatMethods.includes('burst')) {
+			applyRevWeaponBoost();
+		}
+	}
+
 	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
 		applyDragonBoost();
 	}
@@ -407,6 +408,17 @@ export async function minionKillCommand(
 	if (isUndead) {
 		calculateSalveAmuletBoost();
 	}
+
+	// Kodai boost
+	if (style === 'mage' && (combatMethods.includes('barrage') || combatMethods.includes('burst'))) {
+		const kodaiEquipped = isInWilderness ? wildyGear.hasEquipped('Kodai wand') : user.gear.mage.hasEquipped('Kodai wand');
+		
+		if (kodaiEquipped) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push('15% boost for Kodai wand');
+		}
+	}
+
 
 	// Only choose greater boost:
 	if (salveAmuletBoost || blackMaskBoost) {
