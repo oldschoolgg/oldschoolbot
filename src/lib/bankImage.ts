@@ -428,7 +428,7 @@ export class BankImageTask {
 		ctx: SKRSContext2D;
 		x: number;
 		y: number;
-		outline?: { outlineColor: string; outlineWidth: number; alpha: number };
+		outline?: { outlineColor: string; alpha: number };
 	}) {
 		const data = this.spriteSheetData[itemID];
 		const drawOptions = {
@@ -456,8 +456,8 @@ export class BankImageTask {
 			drawOptions.sourceHeight = height;
 		}
 
-		drawOptions.destX = floor(x + (itemSize - drawOptions.sourceWidth) / 2) + 2;
-		drawOptions.destY = floor(y + (itemSize - drawOptions.sourceHeight) / 2);
+		drawOptions.destX = Math.floor(x + (itemSize - drawOptions.sourceWidth) / 2) + 2;
+		drawOptions.destY = Math.floor(y + (itemSize - drawOptions.sourceHeight) / 2);
 
 		if (outline) {
 			ctx.filter = `drop-shadow(0px 0px 2px ${outline.outlineColor})`;
@@ -621,7 +621,7 @@ export class BankImageTask {
 				ctx,
 				x: xLoc,
 				y: yLoc,
-				outline: isNewCLItem ? { outlineColor: '#ac7fff', outlineWidth: 1, alpha: 1 } : undefined
+				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined
 			});
 
 			// Do not draw the item qty if there is 0 of that item in the bank
