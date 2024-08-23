@@ -493,6 +493,15 @@ export async function minionKillCommand(
 				break;
 			}
 		}
+
+		// revenants
+		for (const revenant of revenantMonsters) {
+			if (monster.id === revenant.id) {
+				usingCannon = false;
+				cannonMulti = false;
+				break;
+			}
+		}
 	}
 
 	// Burst/barrage check with wilderness conditions
