@@ -84,9 +84,9 @@ describe('Fish Command', () => {
 				skills_fishing: 999_999,
 				meleeGear: new Gear({ cape: 'Fish sack barrel' })
 			},
-			result: `<:minion:778418736180494347> Your minion is now fishing Shrimps/Anchovies, it'll take around 39 minutes, 1 second to finish.
+			result: `<:minion:778418736180494347> Your minion is now fishing Shrimps/Anchovies, it'll take 48 minutes, 1 second to finish.
 
-  **Boosts:** +9 trip minutes and +28 inventory slots for having a Fish sack barrel.`
+**Boosts:** +9 trip minutes and +28 inventory slots for having a Fish sack barrel.`
 		});
 	});
 });
