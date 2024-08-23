@@ -23900,6 +23900,39 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": "function",
+    "name": "Divine water (Wolf bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Monkey bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Bat bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
     "name": "Divine water (Big bones)",
     "outputItems": Bank {
       "bank": {
@@ -23922,6 +23955,28 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": "function",
+    "name": "Divine water (Zogre bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Shaikahan bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
     "name": "Divine water (Babydragon bones)",
     "outputItems": Bank {
       "bank": {
@@ -23933,7 +23988,7 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": "function",
-    "name": "Divine water (Dragon bones)",
+    "name": "Divine water (Wyrm bones)",
     "outputItems": Bank {
       "bank": {
         "50599": 1,
@@ -23944,7 +23999,7 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": "function",
-    "name": "Divine water (Wyrm bones)",
+    "name": "Divine water (Dragon bones)",
     "outputItems": Bank {
       "bank": {
         "50599": 1,
@@ -23977,7 +24032,29 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": "function",
+    "name": "Divine water (Fayrg bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
     "name": "Divine water (Lava dragon bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Raurg bones)",
     "outputItems": Bank {
       "bank": {
         "50599": 1,
@@ -24000,6 +24077,17 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": "function",
     "name": "Divine water (Dagannoth bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Ourg bones)",
     "outputItems": Bank {
       "bank": {
         "50599": 1,
