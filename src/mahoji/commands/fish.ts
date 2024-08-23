@@ -374,6 +374,7 @@ export const fishCommand: OSBMahojiCommand = {
 			}
 		}
 
+
 		// determining fish time and quantities
 		const {
 			catches1: Qty1,
@@ -416,6 +417,7 @@ export const fishCommand: OSBMahojiCommand = {
 			spirit_flakes: spirit_flakes,
 			type: 'Fishing'
 		});
+
 
 		let response = `${user.minionName} is now fishing ${fish.name}, it'll take ${formatDuration(duration)} to finish.`;
 

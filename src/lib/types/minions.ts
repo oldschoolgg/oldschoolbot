@@ -148,6 +148,7 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
+
 	quantity?: number;
 	Qty1: number;
 	Qty2?: number;

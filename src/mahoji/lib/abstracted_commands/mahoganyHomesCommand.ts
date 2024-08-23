@@ -139,6 +139,11 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
 
+export async function mahoganyHomesPointsCommand(user: MUser) {
+	const balance = user.user.carpenter_points;
+	return `You have **${balance.toLocaleString()}** Mahogany Homes points.`;
+}
+
 export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
