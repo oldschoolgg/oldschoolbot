@@ -70,11 +70,13 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		type: 'CamdozaalMining'
 	});
 
-	let response = `${minionName(user)} is now mining inside the Ruins of Camdozaal until your minion ${quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
-		}, it'll take ${quantity
+	let response = `${minionName(user)} is now mining inside the Ruins of Camdozaal until your minion ${
+		quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
+	}, it'll take ${
+		quantity
 			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
 			: formatDuration(duration)
-		} to finish.`;
+	} to finish.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
