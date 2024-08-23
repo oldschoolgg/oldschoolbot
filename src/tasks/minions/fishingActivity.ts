@@ -25,8 +25,20 @@ export const fishingTask: MinionTask = {
 		quantity: z.number().min(1)
 	}),
 	async run(data: FishingActivityTaskOptions) {
-		let { fishID, userID, channelID, duration, spirit_flakes,
-			Qty1, Qty2 = 0, Qty3 = 0, loot1 = 0, loot2 = 0, loot3 = 0, flakesToRemove } = data;
+		let {
+			fishID,
+			userID,
+			channelID,
+			duration,
+			spirit_flakes,
+			Qty1,
+			Qty2 = 0,
+			Qty3 = 0,
+			loot1 = 0,
+			loot2 = 0,
+			loot3 = 0,
+			flakesToRemove
+		} = data;
 
 		spirit_flakes = spirit_flakes ?? false;
 
@@ -60,14 +72,13 @@ export const fishingTask: MinionTask = {
 		// adding xp and loot
 
 		xpReceived += fish.xp * Qty1;
-		if (Qty2 != 0) xpReceived += fish.xp2! * Qty2;
-		if (Qty3 != 0) xpReceived += fish.xp3! * Qty3;
+		if (Qty2 !== 0) xpReceived += fish.xp2! * Qty2;
+		if (Qty3 !== 0) xpReceived += fish.xp3! * Qty3;
 
 		if (fish.name === 'Barbarian fishing') {
 			agilityXpReceived += 7 * Qty3 + 6 * Qty2 + 5 * Qty1;
 			strengthXpReceived += 7 * Qty3 + 6 * Qty2 + 5 * Qty1;
 		}
-
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		let bonusXP = 0;
@@ -91,7 +102,6 @@ export const fishingTask: MinionTask = {
 			}
 		}
 
-
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Fishing,
 			amount: xpReceived,
@@ -100,20 +110,19 @@ export const fishingTask: MinionTask = {
 		xpRes +=
 			agilityXpReceived > 0
 				? await user.addXP({
-					skillName: SkillsEnum.Agility,
-					amount: agilityXpReceived,
-					duration
-				})
+						skillName: SkillsEnum.Agility,
+						amount: agilityXpReceived,
+						duration
+					})
 				: '';
 		xpRes +=
 			strengthXpReceived > 0
 				? await user.addXP({
-					skillName: SkillsEnum.Strength,
-					amount: strengthXpReceived,
-					duration
-				})
+						skillName: SkillsEnum.Strength,
+						amount: strengthXpReceived,
+						duration
+					})
 				: '';
-
 
 		const loot = new Bank();
 		loot.add(fish.id3!, loot3);
@@ -131,11 +140,10 @@ export const fishingTask: MinionTask = {
 		}
 		loot.add(fish.id, loot1);
 
-		let str = ''
+		let str = '';
 
 		const totalCatches = Qty1 + Qty2 + Qty3;
 		str = `${user}, ${user.minionName} finished fishing ${totalCatches} ${fish.name}. ${xpRes}`;
-
 
 		const cost = new Bank();
 		if (spirit_flakes) {
@@ -177,7 +185,7 @@ export const fishingTask: MinionTask = {
 			}
 		}
 
-		// bigFishQuantity add this 
+		// bigFishQuantity add this
 		if (fish.bigFishRate && fish.bigFish) {
 			let bigFishQuantity = 0;
 			if (fish.name === 'Shark') {
@@ -196,7 +204,6 @@ export const fishingTask: MinionTask = {
 			}
 		}
 
-
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
@@ -207,5 +214,4 @@ export const fishingTask: MinionTask = {
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
-}
-
+};

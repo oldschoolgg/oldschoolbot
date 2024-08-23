@@ -312,7 +312,6 @@ const tripHandlers = {
 			powerfish: data.powerfish ?? false,
 			spirit_flakes: data.spirit_flakes ?? false
 		})
-
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
@@ -715,4 +714,3 @@ export async function repeatTrip(
 		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
 }
-

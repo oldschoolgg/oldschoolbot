@@ -20,7 +20,7 @@ const fishes: Fish[] = [
 
 		petChance: 435_165,
 		clueScrollChance: 870_330,
-		lostTicks: 0.10, // percentage of ticks spent moving/dropping,
+		lostTicks: 0.1, // percentage of ticks spent moving/dropping,
 		bankingTime: 30,
 		ticksPerRoll: 6
 	},
@@ -41,7 +41,7 @@ const fishes: Fish[] = [
 		bait: itemID('Fishing bait'),
 		petChance: 528_000,
 		clueScrollChance: 1_056_000,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -51,7 +51,7 @@ const fishes: Fish[] = [
 		xp: 20,
 		id: itemID('Raw karambwanji'),
 		intercept1: 0.3945,
-		slope1: 0.0060,
+		slope1: 0.006,
 
 		petChance: 443_697,
 		qpRequired: 15,
@@ -84,7 +84,7 @@ const fishes: Fish[] = [
 
 		petChance: 382_609,
 		clueScrollChance: 1_147_827,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 25,
 		ticksPerRoll: 6
 	},
@@ -105,7 +105,7 @@ const fishes: Fish[] = [
 		petChance: 461_808,
 		bait: itemID('Feather'),
 		clueScrollChance: 923_616,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -120,7 +120,7 @@ const fishes: Fish[] = [
 		petChance: 305_792,
 		bait: itemID('Fishing bait'),
 		clueScrollChance: 305_792,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -143,7 +143,7 @@ const fishes: Fish[] = [
 
 		petChance: 128_885,
 		clueScrollChance: 257_770,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 25,
 		ticksPerRoll: 6
 	},
@@ -152,9 +152,9 @@ const fishes: Fish[] = [
 		level: 38,
 		xp: 80,
 		id: itemID('Raw cave eel'),
-		intercept1: 0.1900,
+		intercept1: 0.19,
 		slope1: 0.0013,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 40,
 		ticksPerRoll: 5
 	},
@@ -168,7 +168,7 @@ const fishes: Fish[] = [
 		slope1: 0.0036,
 		petChance: 116_129,
 		clueScrollChance: 116_129,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 25,
 		ticksPerRoll: 6
 	},
@@ -178,7 +178,7 @@ const fishes: Fish[] = [
 		level: 62,
 		xp: 120,
 		id: itemID('Raw monkfish'),
-		intercept1: 0.1900,
+		intercept1: 0.19,
 		slope1: 0.0017,
 		petChance: 138_583,
 		qpRequired: 100,
@@ -193,7 +193,7 @@ const fishes: Fish[] = [
 		level: 65,
 		xp: 50,
 		id: itemID('Raw karambwan'),
-		intercept1: 0.0210,
+		intercept1: 0.021,
 		slope1: 0.0062,
 		petChance: 170_874,
 		bait: itemID('Raw karambwanji'),
@@ -214,7 +214,7 @@ const fishes: Fish[] = [
 		bigFish: itemID('Big shark'),
 		bigFishRate: 5000,
 		clueScrollChance: 82_243,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 25,
 		ticksPerRoll: 6
 	},
@@ -230,7 +230,7 @@ const fishes: Fish[] = [
 		bait: itemID('Sandworms'),
 		qpRequired: 40,
 		clueScrollChance: 78_649,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -240,7 +240,7 @@ const fishes: Fish[] = [
 		level: 82,
 		xp: 26.1,
 		id: itemID('Minnow'),
-		intercept1: -0.5690, // no info on catch chance
+		intercept1: -0.569, // no info on catch chance
 		slope1: 0.0153, // handpicked to match wiki rates
 		petChance: 977_778,
 		qpRequired: 1,
@@ -255,12 +255,12 @@ const fishes: Fish[] = [
 		level: 85,
 		xp: 130,
 		id: itemID('Raw dark crab'),
-		intercept1: 0.0230,
+		intercept1: 0.023,
 		slope1: 0.0014,
 		petChance: 149_434,
 		bait: itemID('Dark fishing bait'),
 		clueScrollChance: 149_434,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 0,
 		ticksPerRoll: 6
 	},
@@ -288,7 +288,7 @@ const fishes: Fish[] = [
 		petChance: 426_954,
 		bait: itemID('Feather'),
 		clueScrollChance: 1_280_862,
-		lostTicks: 0.10,
+		lostTicks: 0.1,
 		bankingTime: 40,
 		ticksPerRoll: 5
 	},
