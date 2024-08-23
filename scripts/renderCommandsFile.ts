@@ -2,11 +2,10 @@ import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-
-import { BOT_TYPE } from '../lib/constants';
-import { allCommands } from '../mahoji/commands/allCommands';
-import type { AbstractCommand } from '../mahoji/lib/inhibitors';
-import { convertMahojiCommandToAbstractCommand } from '../mahoji/lib/util';
+import { BOT_TYPE } from '../src/lib/constants';
+import { allCommands } from '../src/mahoji/commands/allCommands';
+import type { AbstractCommand } from '../src/mahoji/lib/inhibitors';
+import { convertMahojiCommandToAbstractCommand } from '../src/mahoji/lib/util';
 
 async function renderCommands() {
 	return allCommands

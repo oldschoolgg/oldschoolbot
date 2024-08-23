@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { Bank } from 'oldschooljs';
-import Createables from '../lib/data/createables';
-import { makeTable } from '../lib/util/smallUtils';
+import Createables from '../src/lib/data/createables';
+import { makeTable } from '../src/lib/util';
 
 export function renderCreatablesFile() {
 	const headers = ['Item name', 'Input Items', 'Output Items', 'GP Cost'];
