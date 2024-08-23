@@ -289,8 +289,8 @@ const tripHandlers = {
 		args: (data: FarmingActivityTaskOptions) =>
 			data.autoFarmed
 				? {
-						auto_farm: {}
-					}
+					auto_farm: {}
+				}
 				: {}
 	},
 	[activity_type_enum.FightCaves]: {
