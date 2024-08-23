@@ -42,7 +42,7 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		if (!b.outputItems) return [];
 		if (isFunction(b.outputItems)) {
 			return b
-				.outputItems({ countSkillsAtleast99: () => 100 } as any)
+				.outputItems({ countSkillsAtLeast99: () => 100 } as any)
 				.items()
 				.flatMap(i => i[0].id);
 		}

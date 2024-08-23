@@ -314,7 +314,7 @@ export class BankImageTask {
 			};
 		}
 
-		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.webp'));
+		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.png'));
 		this.spriteSheetData = JSON.parse(
 			await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' })
 		);
