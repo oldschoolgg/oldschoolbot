@@ -287,6 +287,13 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		attackStyle: 'range',
 		charges: ({ totalHP }) => totalHP / 25,
 		boost: 3
+	},
+	{
+		item: getOSItem('Amulet of blood fury'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Amulet of blood fury'))!,
+		attackStyle: 'melee',
+		charges: ({ totalHP }) => totalHP / 25,
+		boost: 2
 	}
 ];
 
@@ -396,10 +403,8 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		userMessage: `Your ${
-			item.name
-		} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.${
-			pennyReduction > 0 ? ` Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
+		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining${
+			pennyReduction > 0 ? `. Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
 		}`
 	};
 }
