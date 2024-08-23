@@ -1,8 +1,7 @@
 {
 	"scripts": {
 		"watch": "nodemon --delay 1ms -e ts -w src --exec 'yarn buildandrun'",
-		"build": "tsx ./src/scripts/build.ts",
-		"fix": "tsx ./src/scripts/troubleshooter.ts",
+		"build": "tsx ./scripts/build.ts",
 		"start": "yarn build && node --enable-source-maps dist/",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"prisma generate --no-hints --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
 		"prettify": "prettier --use-tabs \"./**/*.{md,yml}\" --write",
@@ -21,10 +20,11 @@
 		"build:main": "esbuild src/index.ts src/lib/workers/index.ts --sourcemap=inline --minify --legal-comments=none --outdir=./dist --log-level=error --bundle --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
 		"build:workers": "esbuild src/lib/workers/kill.worker.ts src/lib/workers/finish.worker.ts src/lib/workers/casket.worker.ts --sourcemap=inline --log-level=error --bundle --minify --legal-comments=none --outdir=./dist/lib/workers --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
 		"test:circular": "dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js",
-		"test:ci:unit": "concurrently --raw --kill-others-on-fail \"yarn test:unit\" \"yarn test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\" \"yarn test:circular\""
+		"test:ci:unit": "concurrently --raw --kill-others-on-fail \"yarn test:unit\" \"yarn test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\" \"yarn test:circular\"",
+		"spritesheet": "tsx ./scripts/spritesheet.ts"
 	},
 	"dependencies": {
-		"@napi-rs/canvas": "^0.1.53",
+		"@napi-rs/canvas": "^0.1.54",
 		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#cd7c6865229ca7dc4a66b3816586f2d3f4a4fbed",
 		"@prisma/client": "^5.17.0",
 		"@sapphire/ratelimits": "^2.4.9",
@@ -68,6 +68,7 @@
 		"nodemon": "^3.1.4",
 		"prettier": "^3.3.2",
 		"prisma": "^5.17.0",
+		"spritesmith": "^3.4.1",
 		"tsx": "^4.16.2",
 		"typescript": "^5.5.3",
 		"vitest": "^2.0.3"
