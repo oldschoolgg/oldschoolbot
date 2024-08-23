@@ -411,14 +411,15 @@ export async function minionKillCommand(
 
 	// Kodai boost
 	if (style === 'mage' && (combatMethods.includes('barrage') || combatMethods.includes('burst'))) {
-		const kodaiEquipped = isInWilderness ? wildyGear.hasEquipped('Kodai wand') : user.gear.mage.hasEquipped('Kodai wand');
-		
+		const kodaiEquipped = isInWilderness
+			? wildyGear.hasEquipped('Kodai wand')
+			: user.gear.mage.hasEquipped('Kodai wand');
+
 		if (kodaiEquipped) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			boosts.push('15% boost for Kodai wand');
 		}
 	}
-
 
 	// Only choose greater boost:
 	if (salveAmuletBoost || blackMaskBoost) {
