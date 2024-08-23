@@ -460,28 +460,7 @@ export class BankImageTask {
 		drawOptions.destY = floor(y + (itemSize - drawOptions.sourceHeight) / 2);
 
 		if (outline) {
-			const { outlineColor, outlineWidth, alpha } = outline;
-			const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1];
-			const temporaryCanvas = new Canvas(
-				drawOptions.sourceWidth + (outlineWidth + 2),
-				drawOptions.sourceHeight + (outlineWidth + 2)
-			);
-			const temporaryCtx = temporaryCanvas.getContext('2d');
-			for (let i = 0; i < dArr.length; i += 2) {
-				temporaryCtx.drawImage(drawOptions.image, dArr[i] * outlineWidth, dArr[i + 1] * outlineWidth);
-			}
-			temporaryCtx.globalAlpha = alpha;
-			temporaryCtx.globalCompositeOperation = 'source-in';
-			temporaryCtx.fillStyle = outlineColor;
-			temporaryCtx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-			temporaryCtx.globalCompositeOperation = 'source-over';
-			ctx.drawImage(
-				temporaryCtx.canvas,
-				drawOptions.destX,
-				drawOptions.destY,
-				drawOptions.sourceWidth + (outlineWidth + 2),
-				drawOptions.sourceHeight + (outlineWidth + 2)
-			);
+			ctx.filter = `drop-shadow(0px 0px 2px ${outline.outlineColor})`;
 		}
 
 		ctx.drawImage(
@@ -495,6 +474,8 @@ export class BankImageTask {
 			drawOptions.sourceWidth,
 			drawOptions.sourceHeight
 		);
+
+		ctx.filter = 'none';
 	}
 
 	async fetchAndCacheImage(itemID: number) {
