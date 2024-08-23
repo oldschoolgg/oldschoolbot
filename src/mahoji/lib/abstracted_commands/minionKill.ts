@@ -38,6 +38,7 @@ import {
 	iceBarrageConsumables,
 	iceBurstConsumables
 } from '../../../lib/minions/data/combatConstants';
+import { wildyKillableMonsters } from '../../../lib/minions/data/killableMonsters/bosses/wildy';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { quests } from '../../../lib/minions/data/quests';
 import type { AttackStyles } from '../../../lib/minions/functions';
@@ -451,7 +452,7 @@ export async function minionKillCommand(
 	const hasCannon = cannonBanks.some(i => user.owns(i));
 
 	// Check for cannon
-	if (method === 'cannon' && !hasCannon) {
+	if (combatMethods.includes('cannon') && !hasCannon) {
 		return "You don't own a Dwarf multicannon, so how could you use one?";
 	}
 
@@ -483,10 +484,24 @@ export async function minionKillCommand(
 				cannonMulti = false;
 			}
 		}
+
+		// wildy bosses
+		for (const wildyMonster of wildyKillableMonsters) {
+			if (monster.id === wildyMonster.id && wildyMonster.canCannon) {
+				usingCannon = isInWilderness;
+				cannonMulti = false;
+				break;
+			}
+			if (monster.id === wildyMonster.id) {
+				usingCannon = false;
+				cannonMulti = false;
+				break;
+			}
+		}
 	}
 
 	// Burst/barrage check with wilderness conditions
-	if ((method === 'burst' || method === 'barrage') && !monster?.canBarrage) {
+	if ((combatMethods.includes('burst') || combatMethods.includes('barrage')) && !monster?.canBarrage) {
 		if (jelly) {
 			if (!isInWilderness) {
 				return `${monster.name} can only be barraged or burst in the wilderness.`;
@@ -495,8 +510,8 @@ export async function minionKillCommand(
 	}
 
 	if (!usingCannon) {
-		if (method === 'cannon' && !monster?.canCannon) {
-			return `${monster?.name} cannot be killed with a cannon.`;
+		if (combatMethods.includes('cannon') && !monster?.canCannon) {
+			return `${monster?.name} cannot be killed with a cannon.\n\n- Try removing: \`method:cannon\` from \`/k\` \n- Try: \`/config user combat_options action:Remove input:Always Cannon\``;
 		}
 	}
 
@@ -532,7 +547,7 @@ export async function minionKillCommand(
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
-	} else if (method === 'chinning' && attackStyles.includes(SkillsEnum.Ranged) && monster?.canChinning) {
+	} else if (combatMethods.includes('chinning') && attackStyles.includes(SkillsEnum.Ranged) && monster?.canChinning) {
 		chinning = true;
 		// Check what Chinchompa to use
 		const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
