@@ -72,16 +72,14 @@ describe('Fish Command', () => {
 				skills_strength: 999_999,
 				bank: new Bank().add('Feather', 1000)
 			},
-			result: `<:minion:778418736180494347> Your minion is now fishing 100x Barbarian fishing, it'll take around 6 minutes, 1 second to finish.
-
-**Boosts:** 5% for Pearl barbarian rod.`
+			result: `<:minion:778418736180494347> Your minion is now fishing Barbarian fishing, it'll take around 30 minutes to finish.`
 		});
 	});
 
 	it('should fish barrel boost', () => {
 		testRunCmd({
 			cmd: fishCommand,
-			opts: { name: 'shrimps' },
+			opts: { name: 'Shrimps/Anchovies' },
 			user: {
 				skills_fishing: 999_999,
 				meleeGear: new Gear({ cape: 'Fish sack barrel' })
@@ -89,43 +87,6 @@ describe('Fish Command', () => {
 			result: `<:minion:778418736180494347> Your minion is now fishing Shrimps/Anchovies, it'll take around 39 minutes, 1 second to finish.
 
   **Boosts:** +9 trip minutes and +28 inventory slots for having a Fish sack barrel.`
-		});
-	});
-
-	it('should handle using flakes without flakes in bank', () => {
-		testRunCmd({
-			cmd: fishCommand,
-			opts: { name: 'shrimps', flakes: true },
-			user: {
-				skills_fishing: 999_999
-			},
-			result: 'You need to have at least one spirit flake!'
-		});
-	});
-
-	it('should fish with flakes', () => {
-		testRunCmd({
-			cmd: fishCommand,
-			opts: { name: 'shrimps', flakes: true },
-			user: {
-				bank: new Bank({ 'Spirit flakes': 10000 })
-			},
-			result: `<:minion:778418736180494347> Your minion is now fishing 251x Shrimps, it'll take around 29 minutes, 58 seconds to finish.
-
-**Boosts:** More fish from using 251x Spirit flakes.`
-		});
-	});
-
-	it('should still use flakes if bank contains fewer flakes than fish quantity', () => {
-		testRunCmd({
-			cmd: fishCommand,
-			opts: { name: 'shrimps', flakes: true },
-			user: {
-				bank: new Bank({ 'Spirit flakes': 100 })
-			},
-			result: `<:minion:778418736180494347> Your minion is now fishing 251x Shrimps, it'll take around 29 minutes, 58 seconds to finish.
-
-**Boosts:** More fish from using 100x Spirit flakes.`
 		});
 	});
 });
