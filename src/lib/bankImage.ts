@@ -21,7 +21,7 @@ import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import type { BankSortMethod } from '../lib/sorts';
 import { BankSortMethods, sorts } from '../lib/sorts';
 import type { ItemBank } from '../lib/types';
-import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
+import { fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
@@ -276,6 +276,8 @@ export class BankImageTask {
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: Image;
 	public ready!: Promise<void>;
+	public spriteSheetImage!: Image;
+	public spriteSheetData!: Record<string, [number, number, number, number]>;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -312,6 +314,10 @@ export class BankImageTask {
 			};
 		}
 
+		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.png'));
+		this.spriteSheetData = JSON.parse(
+			await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' })
+		);
 		await this.run();
 	}
 
@@ -409,6 +415,67 @@ export class BankImageTask {
 			logError(`Failed to load item icon with id: ${itemID}`);
 			return this.getItemImage(1);
 		}
+	}
+
+	async drawItemIDSprite({
+		itemID,
+		ctx,
+		x,
+		y,
+		outline
+	}: {
+		itemID: number;
+		ctx: SKRSContext2D;
+		x: number;
+		y: number;
+		outline?: { outlineColor: string; outlineWidth: number; alpha: number };
+	}) {
+		const data = this.spriteSheetData[itemID];
+		const drawOptions = {
+			image: this.spriteSheetImage,
+			sourceX: -1,
+			sourceY: -1,
+			sourceWidth: -1,
+			sourceHeight: -1,
+			destX: -1,
+			destY: -1
+		};
+
+		if (!data) {
+			const image = await this.getItemImage(itemID);
+			drawOptions.sourceWidth = image.width;
+			drawOptions.sourceHeight = image.height;
+			drawOptions.sourceX = 0;
+			drawOptions.sourceY = 0;
+			drawOptions.image = image;
+		} else {
+			const [sX, sY, width, height] = data;
+			drawOptions.sourceX = sX;
+			drawOptions.sourceY = sY;
+			drawOptions.sourceWidth = width;
+			drawOptions.sourceHeight = height;
+		}
+
+		drawOptions.destX = floor(x + (itemSize - drawOptions.sourceWidth) / 2) + 2;
+		drawOptions.destY = floor(y + (itemSize - drawOptions.sourceHeight) / 2);
+
+		if (outline) {
+			ctx.filter = `drop-shadow(0px 0px 2px ${outline.outlineColor})`;
+		}
+
+		ctx.drawImage(
+			drawOptions.image,
+			drawOptions.sourceX,
+			drawOptions.sourceY,
+			drawOptions.sourceWidth,
+			drawOptions.sourceHeight,
+			drawOptions.destX,
+			drawOptions.destY,
+			drawOptions.sourceWidth,
+			drawOptions.sourceHeight
+		);
+
+		ctx.filter = 'none';
 	}
 
 	async fetchAndCacheImage(itemID: number) {
@@ -528,7 +595,7 @@ export class BankImageTask {
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
 		verticalSpacer = 0,
-		user?: MUser
+		_user?: MUser
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -545,20 +612,17 @@ export class BankImageTask {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			const [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id, user);
-			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
-			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
+
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 
-			const x = floor(xLoc + (itemSize - itemWidth) / 2) + 2;
-			const y = floor(yLoc + (itemSize - itemHeight) / 2);
-
-			if (isNewCLItem) {
-				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
-			} else {
-				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
-			}
+			await this.drawItemIDSprite({
+				itemID: item.id,
+				ctx,
+				x: xLoc,
+				y: yLoc,
+				outline: isNewCLItem ? { outlineColor: '#ac7fff', outlineWidth: 1, alpha: 1 } : undefined
+			});
 
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
