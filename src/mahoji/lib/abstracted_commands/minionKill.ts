@@ -487,13 +487,8 @@ export async function minionKillCommand(
 
 		// wildy bosses
 		for (const wildyMonster of wildyKillableMonsters) {
-			if (monster.id === wildyMonster.id && wildyMonster.canCannon) {
-				usingCannon = isInWilderness;
-				cannonMulti = false;
-				break;
-			}
 			if (monster.id === wildyMonster.id) {
-				usingCannon = false;
+				usingCannon = wildyMonster.canCannon ? isInWilderness : false;
 				cannonMulti = false;
 				break;
 			}
