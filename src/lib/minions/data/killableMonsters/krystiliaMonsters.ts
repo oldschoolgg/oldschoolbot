@@ -1,8 +1,8 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import resolveItems from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
+import type { KillableMonster } from '../../types';
 
 export const krystiliaMonsters: KillableMonster[] = [
 	{
@@ -14,7 +14,12 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 5,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.ChaosDruid.id,
@@ -28,8 +33,11 @@ export const krystiliaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		canCannon: true,
-		cannonMulti: true,
-		canBarrage: false
+		cannonMulti: false,
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.DarkWarrior.id,
@@ -44,7 +52,11 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.DeadlyRedSpider.id,
@@ -59,7 +71,8 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.ElderChaosDruid.id,
@@ -74,7 +87,11 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 7,
+		revsWeaponBoost: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.Ent.id,
@@ -86,11 +103,14 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		itemsRequired: resolveItems(['Dragon axe', 'Rune axe']),
+		itemsRequired: deepResolveItems([['Dragon axe', 'Rune axe']]),
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 4,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.GuardBandit.id,
@@ -105,7 +125,12 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true,
+		canBePked: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.LavaDragon.id,
@@ -119,7 +144,12 @@ export const krystiliaMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 3,
+		pkBaseDeathChance: 4,
+		revsWeaponBoost: true,
+		canBePked: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.MagicAxe.id,
@@ -131,11 +161,15 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		// itemsRequired: resolveItems(['Lockpick']),
+		itemsRequired: resolveItems(['Lockpick']),
 		qpRequired: 0,
 		levelRequirements: {
-			// theiving: 23
-		}
+			thieving: 23
+		},
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true,
+		canCannon: true
 	},
 	{
 		id: Monsters.Mammoth.id,
@@ -150,7 +184,12 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true,
+		canBePked: true,
+		wildyMulti: true
 	},
 	{
 		id: Monsters.Pirate.id,
@@ -162,10 +201,13 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		// itemsRequired: resolveItems(['Lockpick']),
+		itemsRequired: resolveItems(['Lockpick']),
 		levelRequirements: {
-			// thieving: 39
+			thieving: 39
 		},
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true
 	}
 ];

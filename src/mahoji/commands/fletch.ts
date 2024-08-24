@@ -1,16 +1,17 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
-import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import type { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const fletchCommand: OSBMahojiCommand = {
 	name: 'fletch',
@@ -58,7 +59,7 @@ export const fletchCommand: OSBMahojiCommand = {
 		}
 
 		if (fletchable.requiredSlayerUnlocks) {
-			let mySlayerUnlocks = user.user.slayer_unlocks;
+			const mySlayerUnlocks = user.user.slayer_unlocks;
 
 			const { success, errors } = hasSlayerUnlock(
 				mySlayerUnlocks as SlayerTaskUnlocksEnum[],

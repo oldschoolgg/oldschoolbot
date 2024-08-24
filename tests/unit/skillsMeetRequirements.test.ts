@@ -1,11 +1,11 @@
 import { objectEntries } from 'e';
 import { describe, expect, test } from 'vitest';
 
-import { Skills } from '../../src/lib/skilling/skills';
+import type { Skills } from '../../src/lib/skilling/skills';
 import { convertLVLtoXP, skillsMeetRequirements } from '../../src/lib/util';
 
 function convert(bank: Record<keyof typeof Skills, number>) {
-	let newObj: Record<keyof typeof Skills, number> = {};
+	const newObj: Record<keyof typeof Skills, number> = {};
 	for (const [key, val] of objectEntries(bank)) {
 		newObj[key] = convertLVLtoXP(val);
 	}

@@ -1,17 +1,19 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',
@@ -54,19 +56,21 @@ export const smithCommand: OSBMahojiCommand = {
 		if (!smithedItem) return 'That is not a valid item to smith.';
 
 		if (user.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
-			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`;
+			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${pluraliseItemName(
+				smithedItem.name
+			)}.`;
 		}
 
 		const userQP = user.QP;
 
 		if (smithedItem.qpRequired && userQP < smithedItem.qpRequired) {
-			return `${user.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}`;
+			return `${user.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}.`;
 		}
 		// If they have the entire Smiths' Uniform, give 100% chance save 1 tick each item
 		let setBonus = 0;
 		if (
 			user.gear.skilling.hasEquipped(
-				Object.keys(Smithing.smithsUniformItems).map(i => parseInt(i)),
+				Object.keys(Smithing.smithsUniformItems).map(i => Number.parseInt(i)),
 				true
 			)
 		) {
@@ -74,7 +78,7 @@ export const smithCommand: OSBMahojiCommand = {
 		} else {
 			// For each Smiths' Uniform item, check if they have it, give % chance to save 1 tick each item
 			for (const [itemID, bonus] of Object.entries(Smithing.smithsUniformItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+				if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
 					setBonus += bonus;
 				}
 			}
@@ -96,7 +100,7 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
-		let timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
+		const timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 
 		let maxTripLength = calcMaxTripLength(user, 'Smithing');
 

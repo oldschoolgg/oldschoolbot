@@ -2,7 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../minions/data/killableMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 
 export const nieveTasks: AssignableSlayerTask[] = [
@@ -355,21 +355,6 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualMage,
-		amount: [110, 170],
-
-		weight: 12,
-		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
-		levelRequirements: {
-			slayer: 60
-		},
-		combatLevel: 60,
-		slayerLevel: 63,
-		questPoints: 3,
-		unlocked: true,
-		dontAssign: true
-	},
-	{
 		monster: Monsters.SpiritualRanger,
 		amount: [120, 185],
 		weight: 6,
@@ -387,7 +372,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [30, 60],
 		weight: 5,
 		monsters: [Monsters.SteelDragon.id],
-		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
 		combatLevel: 85,
 		questPoints: 34,
 		unlocked: true

@@ -1,18 +1,18 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { PerkTier, stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { PerkTier } from '../../../lib/constants';
-import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
-import { ItemBank } from '../../../lib/types';
+import { BitField } from '../../../lib/constants';
+import type { UnifiedOpenable } from '../../../lib/openables';
+import { allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { patronMsg, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -23,17 +23,6 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 		if (a.name.includes('Clue')) return -1;
 		return 0;
 	});
-
-async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
-	const { openable_scores: newOpenableScores } = await userStatsUpdate(
-		mahojiUser.id,
-		({ openable_scores }) => ({
-			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
-		}),
-		{ openable_scores: true }
-	);
-	return new Bank(newOpenableScores as ItemBank);
-}
 
 export async function abstractedOpenUntilCommand(
 	interaction: ChatInputCommandInteraction,
@@ -69,7 +58,7 @@ export async function abstractedOpenUntilCommand(
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	let max = Math.min(100, amountOfThisOpenableOwned);
+	const max = Math.min(100, amountOfThisOpenableOwned);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
@@ -120,6 +109,7 @@ async function finalizeOpening({
 		collectionLog: true,
 		filterLoot: false
 	});
+
 	const image = await makeBankImage({
 		bank: loot,
 		title:
@@ -127,7 +117,8 @@ async function finalizeOpening({
 				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
 				: 'Loot From Opening',
 		user,
-		previousCL
+		previousCL,
+		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
 	});
 
 	if (loot.has('Coins')) {
@@ -139,16 +130,17 @@ async function finalizeOpening({
 		.join(', ');
 
 	const perkTier = user.perkTier();
-	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	let response: Awaited<CommandResponse> = {
+	const response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`,
 		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
-		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
+		response.files = [{ name: 'response.txt', attachment: Buffer.from(response.content!) }];
+
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}

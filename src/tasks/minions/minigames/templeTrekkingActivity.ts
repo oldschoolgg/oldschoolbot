@@ -9,7 +9,7 @@ import {
 	rewardTokens
 } from '../../../lib/minions/data/templeTrekking';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
+import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { percentChance, stringMatches } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -44,21 +44,21 @@ export const templeTrekkingTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(user.id, 'temple_trekking', quantity);
 		const userBank = user.bank.clone();
-		let loot = new Bank();
+		const loot = new Bank();
 
 		const rewardToken = stringMatches(difficulty, 'hard')
 			? getOSItem(rewardTokens.hard)
 			: stringMatches(difficulty, 'medium')
-			? getOSItem(rewardTokens.medium)
-			: getOSItem(rewardTokens.easy);
+				? getOSItem(rewardTokens.medium)
+				: getOSItem(rewardTokens.easy);
 
 		let totalEncounters = 0;
 		for (let trip = 0; trip < quantity; trip++) {
 			const encounters = stringMatches(difficulty, 'hard')
 				? randInt(0, 7)
 				: stringMatches(difficulty, 'medium')
-				? randInt(0, 4)
-				: randInt(0, 5);
+					? randInt(0, 4)
+					: randInt(0, 5);
 
 			for (let i = 0; i < encounters; i++) {
 				// 2 out of 12 encounters drop loot, 16%
@@ -89,7 +89,7 @@ export const templeTrekkingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		let str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated.`;
+		const str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated.`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

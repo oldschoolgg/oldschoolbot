@@ -1,10 +1,9 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID, resolveItems } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
 import { getSimilarItems } from '../../src/lib/data/similarItems';
 import { Gear } from '../../src/lib/structures/Gear';
 import { itemNameFromID } from '../../src/lib/util';
-import resolveItems from '../../src/lib/util/resolveItems';
 
 describe('Gear', () => {
 	const testGear = new Gear({
@@ -153,13 +152,13 @@ describe('Gear', () => {
 	expect(getSimilarItems(itemID('Infernal max cape'))).toEqual([itemID('Infernal max cape')]);
 
 	test('toa', () => {
-		let testGear = new Gear({ cape: 'Masori assembler max cape' });
+		const testGear = new Gear({ cape: 'Masori assembler max cape' });
 		expect(testGear.hasEquipped("Ava's assembler")).toEqual(true);
-		let testGear2 = new Gear({ weapon: "Osmumten's fang (or)" });
+		const testGear2 = new Gear({ weapon: "Osmumten's fang (or)" });
 		expect(testGear2.hasEquipped("Osmumten's fang")).toEqual(true);
-		let testGear3 = new Gear({ cape: 'Masori assembler' });
+		const testGear3 = new Gear({ cape: 'Masori assembler' });
 		expect(testGear3.hasEquipped("Ava's assembler")).toEqual(true);
-		let testGear4 = new Gear({ cape: "Elidinis' ward (or)" });
+		const testGear4 = new Gear({ cape: "Elidinis' ward (or)" });
 		expect(testGear4.hasEquipped("Elidinis' ward (f)")).toEqual(true);
 	});
 

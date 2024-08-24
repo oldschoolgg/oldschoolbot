@@ -1,18 +1,19 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Mining from '../../lib/skilling/skills/mining';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
+import type { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const mineCommand: OSBMahojiCommand = {
 	name: 'mine',
@@ -59,7 +60,9 @@ export const mineCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		let { quantity, powermine } = options;
 
-		const motherlodeMine = Mining.MotherlodeMine.name === options.name;
+		const motherlodeMine =
+			stringMatches(Mining.MotherlodeMine.name, options.name) ||
+			Mining.MotherlodeMine.aliases?.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, quantity });
@@ -69,7 +72,7 @@ export const mineCommand: OSBMahojiCommand = {
 			ore =>
 				stringMatches(ore.id, options.name) ||
 				stringMatches(ore.name, options.name) ||
-				stringMatches(ore.name.split(' ')[0], options.name)
+				ore.aliases?.some(a => stringMatches(a, options.name))
 		);
 		if (!ore) {
 			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
@@ -88,7 +91,7 @@ export const mineCommand: OSBMahojiCommand = {
 				return `To mine ${ore.name}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 			}
 			if (user.QP < 125) {
-				return `To mine ${ore.name}, you need atleast 125 Quest Points.`;
+				return `To mine ${ore.name}, you need at least 125 Quest Points.`;
 			}
 		}
 
@@ -122,9 +125,9 @@ export const mineCommand: OSBMahojiCommand = {
 		let glovesRate = 0;
 		if (user.skillsAsLevels.mining >= 60) {
 			for (const glove of miningGloves) {
-				if (!user.hasEquipped(glove.id) || !glove.Percentages.has(ore.id)) continue;
-				glovesRate = glove.Percentages.amount(ore.id);
-				if (glovesRate !== 0) {
+				if (!user.hasEquipped(glove.id) || !glove.Percentages[ore.name]) continue;
+				glovesRate = glove.Percentages[ore.name];
+				if (glovesRate) {
 					boosts.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
 					break;
 				}
@@ -133,9 +136,9 @@ export const mineCommand: OSBMahojiCommand = {
 
 		let armourEffect = 0;
 		for (const armour of varrockArmours) {
-			if (!user.hasEquippedOrInBank(armour.id) || !armour.Percentages.has(ore.id)) continue;
-			armourEffect = armour.Percentages.amount(ore.id);
-			if (armourEffect !== 0) {
+			if (!user.hasEquippedOrInBank(armour.id) || !armour.Percentages[ore.name]) continue;
+			armourEffect = armour.Percentages[ore.name];
+			if (armourEffect) {
 				boosts.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
 				break;
 			}
@@ -148,9 +151,9 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let miningCapeEffect = 0;
-		if (user.hasEquippedOrInBank([itemID('Mining cape')]) && miningCapeOreEffect.has(ore.id)) {
-			miningCapeEffect = miningCapeOreEffect.amount(ore.id);
-			if (miningCapeEffect !== 0) {
+		if (user.hasEquippedOrInBank([itemID('Mining cape')]) && miningCapeOreEffect[ore.name]) {
+			miningCapeEffect = miningCapeOreEffect[ore.name];
+			if (miningCapeEffect) {
 				boosts.push(`**${miningCapeEffect}%** chance to mine an extra ore using Mining cape`);
 			}
 		}
@@ -161,7 +164,7 @@ export const mineCommand: OSBMahojiCommand = {
 			boosts.push('**Powermining**');
 		}
 		// Calculate the time it takes to mine specific quantity or as many as possible
-		let [timeToMine, newQuantity] = determineMiningTime({
+		const [timeToMine, newQuantity] = determineMiningTime({
 			quantity,
 			user,
 			ore,
@@ -188,6 +191,7 @@ export const mineCommand: OSBMahojiCommand = {
 			userID: userID.toString(),
 			channelID: channelID.toString(),
 			quantity: newQuantity,
+			iQty: options.quantity ? options.quantity : undefined,
 			powermine,
 			duration,
 			fakeDurationMax,

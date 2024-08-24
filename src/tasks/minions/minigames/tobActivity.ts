@@ -1,9 +1,9 @@
-import { formatOrdinal, miniID } from '@oldschoolgg/toolkit';
+import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit';
 import { roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
-import { Emoji, Events } from '../../../lib/constants';
+import { BOT_TYPE, Emoji, Events } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -12,8 +12,7 @@ import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance } from '../../../lib/util';
+import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
@@ -92,7 +91,7 @@ export const tobTask: MinionTask = {
 				team: tobUsers
 			});
 
-			resultMessage += `\n **Raid ${raidId} results: **`;
+			resultMessage += `\n **Raid${quantity < 2 ? '' : ` ${raidId}`} results:**`;
 
 			// Give them all +1 attempts
 			const diedToMaiden = wipedRoom !== null && wipedRoom === 0;
@@ -116,11 +115,11 @@ export const tobTask: MinionTask = {
 			// Track loot for T3+ patrons
 			await Promise.all(
 				allUsers.map(user => {
-					return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+					return userStatsBankUpdate(user, 'tob_loot', new Bank(result.loot[user.id]));
 				})
 			);
 
-			for (let [userID, _userLoot] of Object.entries(result.loot)) {
+			for (const [userID, _userLoot] of Object.entries(result.loot)) {
 				if (data.solo && userID !== leader) continue;
 				const user = allUsers.find(i => i.id === userID);
 				if (!user) continue;
@@ -140,6 +139,13 @@ export const tobTask: MinionTask = {
 				}
 				// Refund initial 100k entry cost
 				userLoot.add('Coins', 100_000);
+
+				// Remove elite clue scroll if OSB & user has one in bank
+				if (BOT_TYPE === 'OSB') {
+					if (user.owns('Clue scroll (elite)')) {
+						userLoot.remove('Clue scroll (elite)', 1);
+					}
+				}
 
 				// Add this raids loot to the raid's total loot:
 				totalLoot.add(userLoot);
@@ -221,7 +227,8 @@ export const tobTask: MinionTask = {
 				duration
 			}))
 		});
-		const shouldShowImage = allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6);
+		const shouldShowImage =
+			allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6 && i[1].length > 0);
 
 		if (users.length === 1) {
 			return handleTripFinish(
@@ -239,7 +246,7 @@ export const tobTask: MinionTask = {
 								}
 							],
 							type: 'Theatre of Blood'
-					  })
+						})
 					: undefined,
 				data,
 				totalLoot
@@ -259,7 +266,7 @@ export const tobTask: MinionTask = {
 							customTexts: []
 						})),
 						type: 'Theatre of Blood'
-				  })
+					})
 				: undefined,
 			data,
 			null

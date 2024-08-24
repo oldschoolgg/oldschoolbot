@@ -1,12 +1,12 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { Emoji } from '../../../lib/constants';
 import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
+import { stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -45,10 +45,6 @@ export async function titheFarmCommand(user: MUser, channelID: string) {
 	if (skills.farming < 34) {
 		return `${user} needs 34 Farming to use the Tithe Farm!`;
 	}
-	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 100);
-	if (!hasFavour) {
-		return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use the Tithe Farm!`;
-	}
 
 	const [duration, boostStr] = await determineDuration(user);
 
@@ -73,9 +69,7 @@ export async function titheFarmShopCommand(
 	_quantity?: number
 ) {
 	const buyable = TitheFarmBuyables.find(
-		item =>
-			stringMatches(buyableName, item.name) ||
-			(item.aliases && item.aliases.some(alias => stringMatches(alias, buyableName)))
+		item => stringMatches(buyableName, item.name) || item.aliases?.some(alias => stringMatches(alias, buyableName))
 	);
 
 	if (!buyable) {
@@ -95,7 +89,7 @@ export async function titheFarmShopCommand(
 		return `You need ${cost} Tithe Farm points to make this purchase.`;
 	}
 
-	let purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
+	const purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
 	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
 	await userStatsUpdate(

@@ -1,14 +1,16 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
+import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
-export function determineKillLimit(user: MUser) {
+function determineKillLimit(user: MUser) {
 	const perkTier = user.perkTier();
 
 	if (perkTier >= PerkTier.Six) {
@@ -50,10 +52,13 @@ export const killCommand: OSBMahojiCommand = {
 			autocomplete: async (value: string) => {
 				return [
 					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
+					...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] })),
 					{ name: 'nex', aliases: ['nex'] },
 					{ name: 'nightmare', aliases: ['nightmare'] }
 				]
-					.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
+					.filter(i =>
+						!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
+					)
 					.map(i => ({
 						name: i.name,
 						value: i.name
@@ -78,7 +83,7 @@ export const killCommand: OSBMahojiCommand = {
 			limit: determineKillLimit(user),
 			catacombs: false,
 			onTask: false,
-			lootTableTertiaryChanges: Array.from(user.buildCATertiaryItemChanges().entries())
+			lootTableTertiaryChanges: Array.from(user.buildTertiaryItemChanges().entries())
 		});
 
 		if (result.error) {

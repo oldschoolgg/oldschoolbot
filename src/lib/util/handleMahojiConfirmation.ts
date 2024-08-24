@@ -1,20 +1,12 @@
 import { channelIsSendable } from '@oldschoolgg/toolkit';
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonInteraction,
-	ButtonStyle,
-	ChatInputCommandInteraction,
-	ComponentType,
-	InteractionResponseType,
-	Routes
-} from 'discord.js';
-import { noOp, Time } from 'e';
+import type { ButtonInteraction, ChatInputCommandInteraction, ComponentType } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionResponseType, Routes } from 'discord.js';
+import { Time, noOp } from 'e';
 
 import { SILENT_ERROR } from '../constants';
 import { deferInteraction, interactionReply } from './interactionReply';
 
-async function silentButtonAck(interaction: ButtonInteraction) {
+export async function silentButtonAck(interaction: ButtonInteraction) {
 	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 		body: {
 			type: InteractionResponseType.DeferredMessageUpdate
@@ -32,7 +24,7 @@ export async function handleMahojiConfirmation(
 	await deferInteraction(interaction);
 
 	const users = _users ?? [interaction.user.id];
-	let confirmed: string[] = [];
+	const confirmed: string[] = [];
 	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
 		content: str,

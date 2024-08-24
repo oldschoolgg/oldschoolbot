@@ -2,7 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../minions/data/killableMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 
 export const duradelTasks: AssignableSlayerTask[] = [
@@ -376,25 +376,9 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualMage,
+		monster: Monsters.SpiritualRanger,
 		amount: [110, 170],
 
-		weight: 12,
-		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
-		extendedAmount: [180, 250],
-		extendedUnlockId: SlayerTaskUnlocksEnum.SpiritualFervour,
-		levelRequirements: {
-			slayer: 60
-		},
-		combatLevel: 60,
-		slayerLevel: 63,
-		questPoints: 3,
-		unlocked: true,
-		dontAssign: true
-	},
-	{
-		monster: Monsters.SpiritualRanger,
-		amount: [130, 200],
 		weight: 7,
 		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
 		extendedAmount: [180, 250],
@@ -412,7 +396,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [10, 20],
 		weight: 7,
 		monsters: [Monsters.SteelDragon.id],
-		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
 		combatLevel: 85,

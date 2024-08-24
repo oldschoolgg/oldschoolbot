@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Buyable } from './buyables';
+import type { Buyable } from './buyables';
 
 export const forestryBuyables: Buyable[] = [
 	{
@@ -22,14 +22,6 @@ export const forestryBuyables: Buyable[] = [
 		itemCost: new Bank().add('Anima-infused bark', 150).add('Maple logs', 10)
 	},
 	{
-		name: 'Clover insignia',
-		itemCost: new Bank().add('Anima-infused bark', 200).add('Oak logs', 15)
-	},
-	{
-		name: 'Powdered pollen',
-		itemCost: new Bank().add('Anima-infused bark', 300).add('Willow logs', 15)
-	},
-	{
 		name: 'Log brace',
 		itemCost: new Bank().add('Anima-infused bark', 3000).add('Maple logs', 300).add('Yew logs', 300)
 	},
@@ -38,8 +30,20 @@ export const forestryBuyables: Buyable[] = [
 		itemCost: new Bank().add('Anima-infused bark', 10_000).add('Willow logs', 300).add('Maple logs', 300)
 	},
 	{
+		name: 'Cape pouch',
+		itemCost: new Bank().add('Anima-infused bark', 2500)
+	},
+	{
 		name: 'Log basket',
 		itemCost: new Bank().add('Anima-infused bark', 5000).add('Oak logs', 300).add('Willow logs', 300)
+	},
+	{
+		name: 'Felling axe handle',
+		itemCost: new Bank().add('Anima-infused bark', 10_000).add('Oak logs', 500)
+	},
+	{
+		name: "Twitcher's gloves",
+		itemCost: new Bank().add('Anima-infused bark', 5000).add('Willow logs', 500)
 	},
 	{
 		name: 'Funky shaped log',
@@ -54,6 +58,11 @@ export const forestryBuyables: Buyable[] = [
 			.add('Yew logs', 500)
 			.add('Magic logs', 500)
 			.add('Redwood logs', 500)
+	},
+	{
+		name: 'Sawmill voucher',
+		itemCost: new Bank().add('Anima-infused bark', 150),
+		outputItems: new Bank({ 'Sawmill voucher': 10 })
 	},
 	{
 		name: 'Lumberjack boots',

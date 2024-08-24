@@ -2,7 +2,7 @@ import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
-import { ActivityTaskData } from './types/minions';
+import type { ActivityTaskData } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 
 const {
@@ -84,7 +84,7 @@ export const puroImpHighTierTable = new LootTable()
 	.add('Dragon impling jar', 1, 9)
 	.add('Lucky impling jar', 1, 1);
 
-export const defaultImpTable = new LootTable()
+const defaultImpTable = new LootTable()
 	.add('Baby impling jar', 1, 28_280)
 	.add('Young impling jar', 1, 28_280)
 	.add('Gourmet impling jar', 1, 35_350)
@@ -117,7 +117,8 @@ export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 			activity_type_enum.Construction,
 			activity_type_enum.TombsOfAmascut,
 			activity_type_enum.DriftNet,
-			activity_type_enum.UnderwaterAgilityThieving
+			activity_type_enum.UnderwaterAgilityThieving,
+			activity_type_enum.Colosseum
 		].includes(data.type)
 	)
 		return null;
@@ -127,10 +128,10 @@ export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 	const skills = user.skillsAsLevels;
 	const level = skills.hunter;
 
-	let bank = new Bank();
+	const bank = new Bank();
 	const missed = new Bank();
 
-	const impTable = implingTableByWorldLocation[activityInArea(data)];
+	const impTable = implingTableByWorldLocation[activityInArea(user, data)];
 
 	for (let i = 0; i < minutes; i++) {
 		const loot = impTable.roll();

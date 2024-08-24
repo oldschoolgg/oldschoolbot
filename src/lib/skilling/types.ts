@@ -1,11 +1,11 @@
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import type { Bank } from 'oldschooljs';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Emoji } from '../constants';
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank } from '../types';
-import { FarmingPatchName } from '../util/farmingHelpers';
+import type { Emoji } from '../constants';
+import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import type { ItemBank } from '../types';
+import type { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
 	Agility = 'agility',
@@ -33,6 +33,41 @@ export enum SkillsEnum {
 	Slayer = 'slayer'
 }
 
+export const SkillsArray = [
+	'agility',
+	'cooking',
+	'fishing',
+	'mining',
+	'smithing',
+	'woodcutting',
+	'firemaking',
+	'runecraft',
+	'crafting',
+	'prayer',
+	'fletching',
+	'farming',
+	'herblore',
+	'thieving',
+	'hunter',
+	'construction',
+	'magic',
+	'attack',
+	'strength',
+	'defence',
+	'ranged',
+	'hitpoints',
+	'slayer'
+] as const;
+
+export type SkillNameType = (typeof SkillsArray)[number];
+for (const skill of SkillsArray) {
+	const matching = Object.keys(SkillsEnum).find(key => key.toLowerCase() === skill);
+	if (!matching) throw new Error(`Missing skill enum for ${skill}`);
+}
+if (SkillsArray.length !== Object.keys(SkillsEnum).length) {
+	throw new Error('Not all skills have been added to the SkillsArray.');
+}
+
 export interface Ore {
 	level: number;
 	xp: number;
@@ -45,6 +80,7 @@ export interface Ore {
 	petChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
+	aliases?: string[];
 }
 
 export interface Log {
@@ -53,6 +89,7 @@ export interface Log {
 	id: number;
 	lootTable?: LootTable;
 	name: string;
+	leaf?: number;
 	aliases?: string[];
 	findNewTreeTime: number;
 	bankingTime: number;
@@ -276,7 +313,7 @@ export enum HunterTechniqueEnum {
 	BoxTrapping = 'box trapping',
 	ButterflyNetting = 'butterfly netting',
 	DeadfallTrapping = 'deadfall trapping',
-	Falconry = 'falconry',
+	Falconry = 'hawking',
 	MagicBoxTrapping = 'magic box trapping',
 	NetTrapping = 'net trapping',
 	PitfallTrapping = 'pitfall trapping',

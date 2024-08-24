@@ -1,14 +1,16 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
 export const payCommand: OSBMahojiCommand = {
@@ -44,6 +46,8 @@ export const payCommand: OSBMahojiCommand = {
 		// Ensure the recipient's users row exists:
 		if (!amount) return "That's not a valid amount.";
 		const { GP } = user;
+		const isBlacklisted = BLACKLISTED_USERS.has(recipient.id);
+		if (isBlacklisted) return "Blacklisted players can't receive money.";
 		if (recipient.id === user.id) return "You can't send money to yourself.";
 		if (user.isIronman) return "Iron players can't send money.";
 		if (recipient.isIronman) return "Iron players can't receive money.";

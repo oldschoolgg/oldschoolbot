@@ -4,7 +4,7 @@ import { randomVariation } from 'oldschooljs/dist/util';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import Mining from '../../../lib/skilling/skills/mining';
-import { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
+import type { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionName } from '../../../lib/util/minionUtils';
@@ -61,7 +61,7 @@ export async function motherlodeMineCommand({
 	const powermine = false;
 
 	// Calculate the time it takes to mine specific quantity or as many as possible
-	let [duration, newQuantity] = determineMiningTime({
+	const [duration, newQuantity] = determineMiningTime({
 		quantity,
 		user,
 		ore: motherlode,
@@ -81,6 +81,7 @@ export async function motherlodeMineCommand({
 		userID: user.id,
 		channelID,
 		quantity: newQuantity,
+		iQty: quantity ? quantity : undefined,
 		duration,
 		fakeDurationMax,
 		fakeDurationMin,

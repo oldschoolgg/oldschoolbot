@@ -1,31 +1,32 @@
-import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { existsSync } from 'node:fs';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import type { SKRSContext2D } from '@napi-rs/canvas';
+import { Canvas, GlobalFonts, Image, loadImage } from '@napi-rs/canvas';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
-import { existsSync } from 'fs';
-import * as fs from 'fs/promises';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
-import * as path from 'path';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
-import { BitField, BOT_TYPE, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
+import { BOT_TYPE, BitField, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
-import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
-import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
-import { ItemBank } from '../lib/types';
-import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
+import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
+import type { BankSortMethod } from '../lib/sorts';
+import { BankSortMethods, sorts } from '../lib/sorts';
+import type { ItemBank } from '../lib/types';
+import { fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
-import { giftCountCache } from '../mahoji/commands/gift';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { TOBUniques } from './data/tob';
-import { murMurSort } from './util';
-import resolveItems from './util/resolveItems';
+import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
 
 const fonts = {
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
@@ -232,14 +233,19 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
 	[i('Scythe of vitur (uncharged)'), 'Unch.'],
 	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
-	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Venator bow (uncharged)'), 'Unch.'],
+
+	// Ore Packs
+	[27_019, 'GF Pack'],
+	[27_693, 'VM Pack']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 	// Draw Bank Title
 	ctx.font = '16px RuneScape Bold 12';
 	const titleWidthPx = ctx.measureText(title);
-	let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
+	const titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
 
 	ctx.fillStyle = '#000000';
 	fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
@@ -250,6 +256,7 @@ function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 
 export const bankFlags = [
 	'show_price',
+	'show_market_price',
 	'show_alch',
 	'show_id',
 	'show_names',
@@ -259,7 +266,7 @@ export const bankFlags = [
 ] as const;
 export type BankFlag = (typeof bankFlags)[number];
 
-class BankImageTask {
+export class BankImageTask {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
@@ -268,6 +275,9 @@ class BankImageTask {
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: Image;
+	public ready!: Promise<void>;
+	public spriteSheetImage!: Image;
+	public spriteSheetData!: Record<string, [number, number, number, number]>;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -275,10 +285,11 @@ class BankImageTask {
 
 		// If this file does exist, it might be cached in this, or need to be read from fs.
 		this.itemIconImagesCache = new Map();
+
+		this.ready = this.init();
 	}
 
 	async init() {
-		this.treeImage = await loadImage('./src/lib/resources/images/xmastree.png');
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
@@ -288,8 +299,8 @@ class BankImageTask {
 		const basePath = './src/lib/resources/images/bank_backgrounds/spritesheet/';
 		const files = await fs.readdir(basePath);
 		for (const file of files) {
-			const bgName: BGSpriteName = file.split('\\').pop()!.split('/').pop()!.split('.').shift()! as BGSpriteName;
-			let d = await loadImage(await fs.readFile(basePath + file));
+			const bgName: BGSpriteName = file.split('\\').pop()?.split('/').pop()?.split('.').shift()! as BGSpriteName;
+			const d = await loadImage(await fs.readFile(basePath + file));
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {
 				name: bgName,
@@ -303,6 +314,10 @@ class BankImageTask {
 			};
 		}
 
+		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.png'));
+		this.spriteSheetData = JSON.parse(
+			await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' })
+		);
 		await this.run();
 	}
 
@@ -354,7 +369,7 @@ class BankImageTask {
 
 		// For each one, set a cache value that it exists.
 		for (const fileName of filesInDir) {
-			this.itemIconsList.add(parseInt(path.parse(fileName).name));
+			this.itemIconsList.add(Number.parseInt(path.parse(fileName).name));
 		}
 
 		for (const pack of ItemIconPacks) {
@@ -363,7 +378,7 @@ class BankImageTask {
 			for (const dir of directories) {
 				const filesInThisDir = await fs.readdir(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}`);
 				for (const fileName of filesInThisDir) {
-					const themedItemID = parseInt(path.parse(fileName).name);
+					const themedItemID = Number.parseInt(path.parse(fileName).name);
 					const image = await loadImage(
 						`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`
 					);
@@ -400,6 +415,67 @@ class BankImageTask {
 			logError(`Failed to load item icon with id: ${itemID}`);
 			return this.getItemImage(1);
 		}
+	}
+
+	async drawItemIDSprite({
+		itemID,
+		ctx,
+		x,
+		y,
+		outline
+	}: {
+		itemID: number;
+		ctx: SKRSContext2D;
+		x: number;
+		y: number;
+		outline?: { outlineColor: string; alpha: number };
+	}) {
+		const data = this.spriteSheetData[itemID];
+		const drawOptions = {
+			image: this.spriteSheetImage,
+			sourceX: -1,
+			sourceY: -1,
+			sourceWidth: -1,
+			sourceHeight: -1,
+			destX: -1,
+			destY: -1
+		};
+
+		if (!data) {
+			const image = await this.getItemImage(itemID);
+			drawOptions.sourceWidth = image.width;
+			drawOptions.sourceHeight = image.height;
+			drawOptions.sourceX = 0;
+			drawOptions.sourceY = 0;
+			drawOptions.image = image;
+		} else {
+			const [sX, sY, width, height] = data;
+			drawOptions.sourceX = sX;
+			drawOptions.sourceY = sY;
+			drawOptions.sourceWidth = width;
+			drawOptions.sourceHeight = height;
+		}
+
+		drawOptions.destX = Math.floor(x + (itemSize - drawOptions.sourceWidth) / 2) + 2;
+		drawOptions.destY = Math.floor(y + (itemSize - drawOptions.sourceHeight) / 2);
+
+		if (outline) {
+			ctx.filter = `drop-shadow(0px 0px 2px ${outline.outlineColor})`;
+		}
+
+		ctx.drawImage(
+			drawOptions.image,
+			drawOptions.sourceX,
+			drawOptions.sourceY,
+			drawOptions.sourceWidth,
+			drawOptions.sourceHeight,
+			drawOptions.destX,
+			drawOptions.destY,
+			drawOptions.sourceWidth,
+			drawOptions.sourceHeight
+		);
+
+		ctx.filter = 'none';
 	}
 
 	async fetchAndCacheImage(itemID: number) {
@@ -478,13 +554,12 @@ class BankImageTask {
 		}
 	}
 
-	getBgAndSprite(bankBgId: number = 1, user?: MUser) {
-		let background = this.backgroundImages.find(i => i.id === bankBgId)!;
+	getBgAndSprite(bankBgId = 1, user?: MUser) {
+		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
 
 		const currentContract = user?.farmingContract();
 		const isFarmingContractReadyToHarvest = Boolean(
-			currentContract &&
-				currentContract.contract.hasContract &&
+			currentContract?.contract.hasContract &&
 				currentContract.matchingPlantedCrop &&
 				currentContract.matchingPlantedCrop.ready
 		);
@@ -520,7 +595,7 @@ class BankImageTask {
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
 		verticalSpacer = 0,
-		user?: MUser
+		_user?: MUser
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -536,21 +611,18 @@ class BankImageTask {
 			// Adds distance from side
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
-			let [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id, user);
-			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
-			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
+			const [item, quantity] = items[i];
+
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 
-			const x = floor(xLoc + (itemSize - itemWidth) / 2) + 2;
-			const y = floor(yLoc + (itemSize - itemHeight) / 2);
-
-			if (isNewCLItem) {
-				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
-			} else {
-				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
-			}
+			await this.drawItemIDSprite({
+				itemID: item.id,
+				ctx,
+				x: xLoc,
+				y: yLoc,
+				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined
+			});
 
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
@@ -578,6 +650,8 @@ class BankImageTask {
 				bottomItemText = item.name;
 			} else if (mahojiFlags?.includes('show_weights') && weightings && weightings[item.id]) {
 				bottomItemText = weightings[item.id];
+			} else if (mahojiFlags?.includes('show_market_price')) {
+				bottomItemText = marketPriceOrBotPrice(item.id) * quantity;
 			}
 
 			const forcedShortName = forcedShortNameMap.get(item.id);
@@ -587,7 +661,7 @@ class BankImageTask {
 			}
 
 			if (bottomItemText) {
-				let text =
+				const text =
 					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
 				ctx.fillStyle = 'black';
 				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
@@ -631,8 +705,6 @@ class BankImageTask {
 		}
 
 		let items = bank.items();
-
-		debugLog(`Generating a bank image with ${items.length} items`, { title, userID: user?.id });
 
 		// Sorting
 		const favorites = user?.user.favoriteItems;
@@ -684,7 +756,7 @@ class BankImageTask {
 
 		// Paging
 		if (typeof page === 'number' && !isShowingFullBankImage) {
-			let pageLoot = chunked[page];
+			const pageLoot = chunked[page];
 			if (!pageLoot) throw new UserError('You have no items on this page.');
 			items = pageLoot;
 		}
@@ -702,7 +774,7 @@ class BankImageTask {
 					itemSize * 1.5
 			) - 2;
 
-		let {
+		const {
 			sprite: bgSprite,
 			uniqueSprite: hasBgSprite,
 			background: bgImage,
@@ -716,7 +788,7 @@ class BankImageTask {
 			currentCL !== undefined &&
 			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
-		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
+		const actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
 
 		const hexColor = user?.user.bank_bg_hex;
 
@@ -755,30 +827,8 @@ class BankImageTask {
 			);
 		}
 
-		ctx.drawImage(this.treeImage, 370, 170);
-		if (user) {
-			const giftsOwned = giftCountCache.get(user.id);
-
-			const boundingBoxX = 326;
-			const boundingBoxY = 295;
-			const boundingBoxWidth = 150;
-			const boundingBoxHeight = 25;
-
-			if (giftsOwned) {
-				const sorted = murMurSort(giftItemIDList, user.id);
-				for (let i = 0; i < giftsOwned; i++) {
-					const image = await this.getItemImage(sorted[i], user);
-
-					const x = boundingBoxX + (randInt(0, boundingBoxWidth) - image.width / 2);
-					const y = boundingBoxY + (randInt(0, boundingBoxHeight) - image.height / 2);
-
-					ctx.drawImage(image, x, y);
-				}
-			}
-		}
-
 		if (showValue) {
-			title += ` (Value: ${toKMB(totalValue)})`;
+			title += ` (V: ${toKMB(totalValue)} / MV: ${toKMB(marketPriceOfBank(bank))}) `;
 		}
 
 		drawTitle(ctx, title, canvas);
@@ -787,6 +837,7 @@ class BankImageTask {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
+
 		await this.drawItems(
 			ctx,
 			compact,
@@ -942,7 +993,7 @@ export async function drawChestLootImage(options: {
 			name: fileName
 		});
 	}
-	let spaceBetweenImages = 15;
+	const spaceBetweenImages = 15;
 	const combinedCanvas = new Canvas(
 		canvases[0].width * canvases.length + spaceBetweenImages * canvases.length,
 		canvases[0].height
@@ -958,14 +1009,8 @@ export async function drawChestLootImage(options: {
 }
 
 declare global {
-	const bankImageGenerator: BankImageTask;
+	var bankImageGenerator: BankImageTask;
 }
-declare global {
-	namespace NodeJS {
-		interface Global {
-			bankImageGenerator: BankImageTask;
-		}
-	}
-}
-global.bankImageGenerator = new BankImageTask();
-bankImageGenerator.init();
+
+export const bankImageTask = new BankImageTask();
+global.bankImageGenerator = bankImageTask;

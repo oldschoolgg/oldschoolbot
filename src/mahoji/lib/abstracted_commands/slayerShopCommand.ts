@@ -1,11 +1,10 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { table } from 'table';
 
 import { BitField } from '../../../lib/constants';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
-import { stringMatches } from '../../../lib/util';
+import { makeTable, stringMatches } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
 
@@ -110,11 +109,7 @@ export function slayerShopListMyUnlocks(mahojiUser: MUser) {
 	const myUnlocks = SlayerRewardsShop.filter(srs => mahojiUser.user.slayer_unlocks.includes(srs.id));
 	const unlocksStr = myUnlocks.map(unlock => unlock.name).join('\n');
 
-	const content =
-		`Current points: ${mahojiUser.user.slayer_points}\n**You currently have the following ` +
-		`rewards unlocked:**\n${unlocksStr}\n\n` +
-		'Usage:\n`/slayer rewards [unlock|buy|disable] Reward`\nExample:' +
-		'\n`/slayer rewards unlock unlockable:Malevolent Masquerade`';
+	const content = `Current points: ${mahojiUser.user.slayer_points}\n**You currently have the following rewards unlocked:**\n${unlocksStr}\n\nUsage:\n\`/slayer rewards [unlock|buy|disable] Reward\`\nExample:\n\`/slayer rewards unlock unlockable:Malevolent Masquerade\``;
 	if (content.length > 2000) {
 		return {
 			content: 'Your currently unlocked Slayer rewards',
@@ -129,15 +124,10 @@ export function slayerShopListRewards(type: 'all' | 'unlocks' | 'buyables') {
 		type === 'all' ? true : type === 'unlocks' ? !srs.item : Boolean(srs.item)
 	);
 
-	const unlockTable = table([
+	const unlockTable = makeTable(
 		['Slayer Points', 'name: ', 'Description', 'Type'],
-		...availableUnlocks.map(i => [
-			i.slayerPointCost,
-			i.name,
-			i.desc,
-			i.extendMult === undefined ? 'unlock' : 'extend'
-		])
-	]);
+		availableUnlocks.map(i => [i.slayerPointCost, i.name, i.desc, i.extendMult === undefined ? 'unlock' : 'extend'])
+	);
 
 	const content = type === 'all' ? 'List of all slayer rewards' : `List sof slayer ${type}`;
 	return {

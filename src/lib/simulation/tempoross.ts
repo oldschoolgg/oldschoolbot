@@ -129,7 +129,7 @@ const fishTables = [
 
 export function getTemporossLoot(quantity: number, fishingLevel: number, userBank: Bank) {
 	const loot = new Bank();
-	let lootTable = new LootTable()
+	const lootTable = new LootTable()
 		.add('Spirit flakes', [32, 64], 2000)
 		.add(PoolCasketTable, 1, 400)
 		.add('Plank', [20, 30], 350)

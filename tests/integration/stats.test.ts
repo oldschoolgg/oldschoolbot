@@ -1,6 +1,5 @@
 import { describe, test } from 'vitest';
 
-import { prisma } from '../../src/lib/settings/prisma';
 import { dataPoints } from '../../src/mahoji/lib/abstracted_commands/statCommand';
 import { createTestUser, mockClient } from './util';
 
@@ -9,7 +8,7 @@ describe('Datapoints', async () => {
 
 	test('Data points', async () => {
 		const user = await createTestUser();
-		const stats = await prisma.userStats.upsert({
+		const stats = await global.prisma!.userStats.upsert({
 			where: { user_id: BigInt(user.id) },
 			create: { user_id: BigInt(user.id) },
 			update: {}

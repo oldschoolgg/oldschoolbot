@@ -1,12 +1,12 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { WildernessDiary } from '../../../../diaries';
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import { KillableMonster } from '../../../types';
+import type { KillableMonster } from '../../../types';
+import { DiaryID } from '../../../types';
 
 export const wildyKillableMonsters: KillableMonster[] = [
 	{
@@ -253,7 +253,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			ranged: 65,
 			magic: 70
 		},
-		diaryRequirement: [WildernessDiary, WildernessDiary.medium],
+		diaryRequirement: [DiaryID.Wilderness, 'medium'],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -484,7 +484,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			defence: 70,
 			magic: 70
 		},
-		diaryRequirement: [WildernessDiary, WildernessDiary.medium],
+		diaryRequirement: [DiaryID.Wilderness, 'medium'],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 420,
 		healAmountNeeded: 8 * 20,
@@ -501,6 +501,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		wildy: true,
 		wildyMulti: true,
 		canBePked: true,
+		canCannon: true,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 9,
 
@@ -766,7 +767,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			defence: 70,
 			magic: 70
 		},
-		diaryRequirement: [WildernessDiary, WildernessDiary.medium],
+		diaryRequirement: [DiaryID.Wilderness, 'medium'],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackCrush,
@@ -780,7 +781,9 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Minute * 4.3,
 		emoji: '<:Pet_chaos_elemental:324127377070227456>',
 		wildy: true,
-
+		canBePked: true,
+		pkActivityRating: 4,
+		pkBaseDeathChance: 5,
 		difficultyRating: 8,
 		itemsRequired: deepResolveItems([
 			["Black d'hide body", "Karil's leathertop"],
@@ -788,17 +791,24 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
-		itemInBankBoosts: [
+		equippedItemBoosts: [
 			{
-				[itemID("Craw's bow")]: 20,
-				[itemID('Webweaver bow')]: 25
+				items: [
+					{ boostPercent: 25, itemID: itemID('Webweaver bow') },
+					{ boostPercent: 20, itemID: itemID("Craw's bow") }
+				],
+				gearSetup: 'wildy'
 			},
 			{
-				[itemID('Archers ring')]: 3,
-				[itemID('Archers ring (i)')]: 5
+				items: [
+					{ boostPercent: 5, itemID: itemID('Archers ring (i)') },
+					{ boostPercent: 3, itemID: itemID('Archers ring') }
+				],
+				gearSetup: 'wildy'
 			},
 			{
-				[itemID('Barrows gloves')]: 3
+				items: [{ boostPercent: 3, itemID: itemID('Barrows gloves') }],
+				gearSetup: 'wildy'
 			}
 		],
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -815,16 +825,28 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Minute * 3.3,
 		emoji: '<:Ancient_staff:412845709453426689>',
 		wildy: true,
+		canBePked: true,
+		pkActivityRating: 4,
+		pkBaseDeathChance: 2,
 		difficultyRating: 6,
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
-		itemInBankBoosts: [
+		equippedItemBoosts: [
 			{
-				[itemID("Craw's bow")]: 20,
-				[itemID('Webweaver bow')]: 25
+				items: [
+					{ boostPercent: 25, itemID: itemID('Webweaver bow') },
+					{ boostPercent: 20, itemID: itemID("Craw's bow") }
+				],
+				gearSetup: 'wildy'
 			},
-			{ [itemID("Karil's leathertop")]: 3 },
-			{ [itemID("Karil's leatherskirt")]: 3 }
+			{
+				items: [{ boostPercent: 3, itemID: itemID("Karil's leathertop") }],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID("Karil's leatherskirt") }],
+				gearSetup: 'wildy'
+			}
 		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.125,
@@ -840,10 +862,17 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Minute * 2.9,
 		emoji: '<:Fedora:456179157303427092>',
 		wildy: true,
-
+		canBePked: true,
+		pkActivityRating: 6,
+		pkBaseDeathChance: 7,
 		difficultyRating: 6,
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
+		equippedItemBoosts: [
+			{
+				items: [{ boostPercent: 10, itemID: itemID('Occult necklace') }],
+				gearSetup: 'wildy'
+			}
+		],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.25,
 		healAmountNeeded: 4 * 20,
@@ -858,10 +887,22 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Minute * 3.0,
 		emoji: '<:Scorpias_offspring:324127378773377024>',
 		wildy: true,
+		canBePked: true,
+		pkActivityRating: 6,
+		pkBaseDeathChance: 7,
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }, { [itemID('Harmonised nightmare staff')]: 10 }],
+		equippedItemBoosts: [
+			{
+				items: [{ boostPercent: 10, itemID: itemID('Occult necklace') }],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 10, itemID: itemID('Harmonised nightmare staff') }],
+				gearSetup: 'wildy'
+			}
+		],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 4 * 20,

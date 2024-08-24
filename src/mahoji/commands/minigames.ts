@@ -1,22 +1,23 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
-import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
+import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import {
-	agilityArenaBuyables,
 	agilityArenaBuyCommand,
+	agilityArenaBuyables,
 	agilityArenaCommand,
 	agilityArenaRecolorCommand,
 	agilityArenaXPCommand
 } from '../lib/abstracted_commands/agilityArenaCommand';
 import {
+	BarbBuyables,
+	GambleTiers,
 	barbAssaultBuyCommand,
 	barbAssaultGambleCommand,
 	barbAssaultLevelCommand,
 	barbAssaultStartCommand,
-	barbAssaultStatsCommand,
-	BarbBuyables,
-	GambleTiers
+	barbAssaultStatsCommand
 } from '../lib/abstracted_commands/barbAssault';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
@@ -32,16 +33,17 @@ import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
 import {
-	mageTrainingArenaBuyables,
 	mageTrainingArenaBuyCommand,
+	mageTrainingArenaBuyables,
 	mageTrainingArenaPointsCommand,
 	mageTrainingArenaStartCommand
 } from '../lib/abstracted_commands/mageTrainingArenaCommand';
 import {
 	contractTiers,
 	mahoganyHomesBuildCommand,
+	mahoganyHomesBuyCommand,
 	mahoganyHomesBuyables,
-	mahoganyHomesBuyCommand
+	mahoganyHomesPointsCommand
 } from '../lib/abstracted_commands/mahoganyHomesCommand';
 import {
 	nightmareZoneShopCommand,
@@ -49,8 +51,8 @@ import {
 	nightmareZoneStatsCommand
 } from '../lib/abstracted_commands/nightmareZoneCommand';
 import {
-	pestControlBuyables,
 	pestControlBuyCommand,
+	pestControlBuyables,
 	pestControlStartCommand,
 	pestControlStatsCommand,
 	pestControlXPCommand
@@ -60,10 +62,10 @@ import { roguesDenCommand } from '../lib/abstracted_commands/roguesDenCommand';
 import { sepulchreCommand } from '../lib/abstracted_commands/sepulchreCommand';
 import { shades, shadesLogs, shadesOfMortonStartCommand } from '../lib/abstracted_commands/shadesOfMortonCommand';
 import {
-	soulWarsBuyables,
 	soulWarsBuyCommand,
-	soulWarsImbueables,
+	soulWarsBuyables,
 	soulWarsImbueCommand,
+	soulWarsImbueables,
 	soulWarsStartCommand,
 	soulWarsTokensCommand
 } from '../lib/abstracted_commands/soulWarsCommand';
@@ -71,18 +73,19 @@ import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCo
 import { trekCommand, trekShop } from '../lib/abstracted_commands/trekCommand';
 import { troubleBrewingStartCommand } from '../lib/abstracted_commands/troubleBrewingCommand';
 import {
-	volcanicMineCommand,
 	VolcanicMineShop,
+	volcanicMineCommand,
 	volcanicMineShopCommand,
 	volcanicMineStatsCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
-import { OSBMahojiCommand } from '../lib/util';
-import { NMZ_STRATEGY, NMZStrategy } from './../../lib/constants';
+import type { OSBMahojiCommand } from '../lib/util';
+import type { NMZStrategy } from './../../lib/constants';
+import { NMZ_STRATEGY } from './../../lib/constants';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
 import {
 	nightmareZoneBuyables,
-	nightmareZoneImbueables,
-	nightmareZoneImbueCommand
+	nightmareZoneImbueCommand,
+	nightmareZoneImbueables
 } from './../lib/abstracted_commands/nightmareZoneCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
@@ -610,6 +613,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 							max_value: 1000
 						}
 					]
+				},
+				{
+					name: 'points',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Mahogany Homes point balance.'
 				}
 			]
 		},
@@ -1071,7 +1079,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { name: string };
 			points?: {};
 		};
-		mahogany_homes?: { start?: { tier?: number }; buy?: { name: string; quantity?: number } };
+		mahogany_homes?: {
+			start?: { tier?: number };
+			buy?: { name: string; quantity?: number };
+			points?: {};
+		};
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
@@ -1219,11 +1231,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.temple_trek) {
 			if (options.temple_trek.buy) {
-				let { reward, difficulty, quantity } = options.temple_trek.buy!;
+				const { reward, difficulty, quantity } = options.temple_trek.buy!;
 				return trekShop(user, reward, difficulty, quantity, interaction);
 			}
 			if (options.temple_trek.start) {
-				let { difficulty, quantity } = options.temple_trek.start!;
+				const { difficulty, quantity } = options.temple_trek.start!;
 				return trekCommand(user, channelID, difficulty, quantity);
 			}
 		}
@@ -1276,6 +1288,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 			}
 			if (options.mahogany_homes.start) {
 				return mahoganyHomesBuildCommand(user, channelID, options.mahogany_homes.start.tier);
+			}
+			if (options.mahogany_homes.points) {
+				return mahoganyHomesPointsCommand(user);
 			}
 		}
 

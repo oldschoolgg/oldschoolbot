@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { TokkulShopOptions } from '../../lib/types/minions';
+import type { TokkulShopOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 

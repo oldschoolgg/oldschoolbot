@@ -2,7 +2,7 @@ import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -28,7 +28,7 @@ export const barbAssaultTask: MinionTask = {
 			pts *= 1.1;
 			resultStr += `${user.usernameOrMention} received 10% extra pts for Kandarin Hard diary. `;
 		}
-		let totalPoints = Math.floor(pts * quantity);
+		const totalPoints = Math.floor(pts * quantity);
 
 		await incrementMinigameScore(user.id, 'barb_assault', quantity);
 		await userStatsUpdate(
