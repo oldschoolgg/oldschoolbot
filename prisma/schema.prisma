@@ -942,6 +942,7 @@ enum activity_type_enum {
   CamdozaalFishing
   CamdozaalMining
   CamdozaalSmithing
+  MyNotes
   Colosseum
 }
 
