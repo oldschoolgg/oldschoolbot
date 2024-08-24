@@ -2,7 +2,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { ActivityTaskOptionsWithQuantity } from './../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from './../../lib/types/minions';
 
 const ancientPageTable = new LootTable()
 	.add(11_341, 1, 1)
@@ -59,7 +59,7 @@ export const myNotesTask: MinionTask = {
 						title: `Loot From Rummaging ${quantity}x Skeletons:`,
 						user,
 						previousCL
-				  });
+					});
 
 		handleTripFinish(
 			user,
