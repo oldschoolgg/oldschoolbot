@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../minions/data/killableMonsters';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 
 export const mazchnaTasks: AssignableSlayerTask[] = [
 	{
@@ -89,14 +89,6 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.Lizard,
-		amount: [40, 70],
-		weight: 8,
-		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
-		slayerLevel: 22,
-		unlocked: true
-	},
-	{
 		monster: Monsters.GuardDog,
 		amount: [40, 70],
 		weight: 7,
@@ -109,7 +101,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		amount: [40, 70],
 		weight: 6,
 		monsters: [Monsters.EarthWarrior.id],
-		levelRequirements: killableMonsters.find(k => k.id === Monsters.EarthWarrior.id)!.levelRequirements,
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.EarthWarrior.id)?.levelRequirements,
 		combatLevel: 35,
 		unlocked: true
 	},
@@ -183,6 +175,14 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		combatLevel: 50,
 		slayerLevel: 37,
 		questPoints: 4,
+		unlocked: true
+	},
+	{
+		monster: Monsters.Lizard,
+		amount: [40, 70],
+		weight: 8,
+		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
+		slayerLevel: 22,
 		unlocked: true
 	},
 	{

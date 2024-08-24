@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const guardiansOfTheRiftCreatables: Createable[] = [
 	// Red Recolours
@@ -103,6 +103,43 @@ export const guardiansOfTheRiftCreatables: Createable[] = [
 		name: 'Revert Robe bottoms of the eye (blue)',
 		inputItems: new Bank({ 'Robe bottoms of the eye (blue)': 1 }),
 		outputItems: new Bank({ 'Robe bottoms of the eye': 1 }),
+		noCl: true
+	},
+	// Dye swaps
+	{
+		name: 'Abyssal green dye (using Abyssal blue dye)',
+		inputItems: new Bank({ 'Abyssal blue dye': 1 }),
+		outputItems: new Bank({ 'Abyssal green dye': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Abyssal green dye (using Abyssal red dye)',
+		inputItems: new Bank({ 'Abyssal red dye': 1 }),
+		outputItems: new Bank({ 'Abyssal green dye': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Abyssal blue dye (using Abyssal green dye)',
+		inputItems: new Bank({ 'Abyssal green dye': 1 }),
+		outputItems: new Bank({ 'Abyssal blue dye': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Abyssal blue dye (using Abyssal red dye)',
+		inputItems: new Bank({ 'Abyssal red dye': 1 }),
+		outputItems: new Bank({ 'Abyssal blue dye': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Abyssal red dye (using Abyssal green dye)',
+		inputItems: new Bank({ 'Abyssal green dye': 1 }),
+		outputItems: new Bank({ 'Abyssal red dye': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Abyssal red dye (using Abyssal blue dye)',
+		inputItems: new Bank({ 'Abyssal blue dye': 1 }),
+		outputItems: new Bank({ 'Abyssal red dye': 1 }),
 		noCl: true
 	}
 ];

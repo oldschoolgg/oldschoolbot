@@ -3,19 +3,19 @@ import { itemID } from 'oldschooljs/dist/util';
 interface Constructable {
 	id: number;
 	name: string;
-	input: [Plank, number];
+	input: [number, number];
 	xp: number;
 	level: number;
 	nails?: number;
 	ticks: number;
 }
 
-export enum Plank {
-	Plank = itemID('Plank'),
-	OakPlank = itemID('Oak plank'),
-	TeakPlank = itemID('Teak plank'),
-	MahoganyPlank = itemID('Mahogany plank')
-}
+export const Plank = {
+	Plank: itemID('Plank'),
+	OakPlank: itemID('Oak plank'),
+	TeakPlank: itemID('Teak plank'),
+	MahoganyPlank: itemID('Mahogany plank')
+} as const;
 
 const Constructables: Constructable[] = [
 	{

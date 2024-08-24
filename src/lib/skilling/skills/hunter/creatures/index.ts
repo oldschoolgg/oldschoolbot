@@ -1,4 +1,4 @@
-import { Creature } from '../../../types';
+import type { Creature } from '../../../types';
 import birdSnaringCreatures from './birdSnaring';
 import boxTrappingCreatures from './boxTrapping';
 import butterflyNettingCreatures from './butterflyNetting';

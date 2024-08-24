@@ -1,9 +1,10 @@
 import { randInt } from 'e';
 
-import { Favours, gotFavour } from '../../minions/data/kourendFavour';
-import { Plant, SkillsEnum } from '../types';
+import { QuestID } from '../../minions/data/quests';
+import type { Plant } from '../types';
+import { SkillsEnum } from '../types';
 
-export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number, string | undefined] {
+export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
 	let numOfPatches = plant.defaultNumOfPatches;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const questPoints = qp;
@@ -14,13 +15,7 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 			break;
 		}
 	}
-	let errorMessage: string | undefined = undefined;
 	for (let i = plant.additionalPatchesByFarmGuildAndLvl.length; i > 0; i--) {
-		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 60);
-		if (!hasFavour) {
-			errorMessage = `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use Farming guild patches.`;
-			break;
-		}
 		const [farmingLevelReq, additionalPatches] = plant.additionalPatchesByFarmGuildAndLvl[i - 1];
 		if (farmingLevel >= farmingLevelReq) {
 			numOfPatches += additionalPatches;
@@ -34,7 +29,20 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 			break;
 		}
 	}
-	return [numOfPatches, errorMessage];
+
+	if (user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+		switch (plant.seedType) {
+			case 'allotment':
+				numOfPatches += 2;
+				break;
+			case 'herb':
+			case 'flower':
+				numOfPatches += 1;
+				break;
+		}
+	}
+
+	return [numOfPatches];
 }
 
 export function calcVariableYield(

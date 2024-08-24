@@ -1,13 +1,13 @@
-import { clamp, Time } from 'e';
+import { Time, clamp } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { Planks } from '../../../lib/minions/data/planks';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ButlerActivityTaskOptions } from '../../../lib/types/minions';
+import type { ButlerActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const unlimitedEarthRuneProviders = resolveItems([
@@ -48,7 +48,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		return 'You need level 50 Construction to use the demon butler.';
 	}
 
-	let timePerPlank = (Time.Second * 15) / 26;
+	const timePerPlank = (Time.Second * 15) / 26;
 
 	const maxTripLength = calcMaxTripLength(user, 'Butler');
 
@@ -67,9 +67,9 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 	}
 
 	const { GP } = user;
-	let cost = plank!.gpCost * quantity;
+	let cost = plank?.gpCost * quantity;
 
-	let inventories = Math.ceil(quantity / 26);
+	const inventories = Math.ceil(quantity / 26);
 
 	cost += 1250 * inventories;
 
@@ -130,7 +130,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		)}.`;
 	}
 
-	const costBank = new Bank(consumedItems).add('Coins', cost).add(plank!.inputItem, quantity);
+	const costBank = new Bank(consumedItems).add('Coins', cost).add(plank?.inputItem, quantity);
 	await user.removeItemsFromBank(costBank);
 
 	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', cost));
@@ -138,7 +138,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 	await addSubTaskToActivityTask<ButlerActivityTaskOptions>({
 		type: 'Butler',
 		duration,
-		plankID: plank!.outputItem,
+		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
 		channelID: channelID.toString()

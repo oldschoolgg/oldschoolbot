@@ -1,7 +1,8 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { round } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const dryCalcCommand: OSBMahojiCommand = {
 	name: 'drycalc',
@@ -38,7 +39,7 @@ export const dryCalcCommand: OSBMahojiCommand = {
 		)}%** chance of not receiving any drop, and a **${round(
 			dropChance,
 			2
-		)}%** chance of receiving atleast one drop.`;
+		)}%** chance of receiving at least one drop.`;
 
 		return output;
 	}

@@ -1,0 +1,23 @@
+name: Integration Tests
+
+on:
+  push:
+    branches:
+      - master
+      - bso
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run Integration Tests
+        run: docker compose up --build --abort-on-container-exit --remove-orphans && docker compose down --volumes --remove-orphans

@@ -1,0 +1,46 @@
+name: Unit Tests
+
+on:
+  push:
+    branches:
+      - master
+      - bso
+  pull_request:
+
+jobs:
+  test:
+    name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        node_version: [20.15.0]
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v4
+      - run: corepack enable &&  corepack install
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: yarn
+      - name: Restore CI Cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/yarn.lock') }}
+      - name: Install Dependencies
+        run: yarn --immutable
+      - name: Copy Configuration
+        run: |
+          pushd src &&
+          cp config.example.ts config.ts &&
+          popd && cp .env.test .env
+      - name: Generate Prisma Clients
+        run: yarn gen
+      - name: Build
+        run: yarn build:tsc
+      - name: Test
+        run: yarn test:ci:unit

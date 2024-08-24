@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 
 export const bossTasks: AssignableSlayerTask[] = [
 	{
@@ -33,8 +33,9 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Callisto,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Callisto.id],
-		isBoss: true
+		monsters: [Monsters.Callisto.id, Monsters.Artio.id],
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.Cerberus,
@@ -52,14 +53,16 @@ export const bossTasks: AssignableSlayerTask[] = [
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.ChaosElemental.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.ChaosFanatic,
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.ChaosFanatic.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.CommanderZilyana,
@@ -77,7 +80,8 @@ export const bossTasks: AssignableSlayerTask[] = [
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.CrazyArchaeologist.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.DagannothPrime,
@@ -86,27 +90,7 @@ export const bossTasks: AssignableSlayerTask[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		monsters: [Monsters.DagannothPrime.id],
-		isBoss: true
-	},
-	{
-		monster: Monsters.DagannothSupreme,
-		amount: [3, 35],
-		weight: 1,
-		levelRequirements: {
-			prayer: 43
-		},
-		monsters: [Monsters.DagannothSupreme.id],
-		isBoss: true
-	},
-	{
-		monster: Monsters.DagannothRex,
-		amount: [3, 35],
-		weight: 1,
-		levelRequirements: {
-			prayer: 43
-		},
-		monsters: [Monsters.DagannothRex.id],
+		monsters: [Monsters.DagannothPrime.id, Monsters.DagannothSupreme.id, Monsters.DagannothRex.id],
 		isBoss: true
 	},
 	{
@@ -200,7 +184,8 @@ export const bossTasks: AssignableSlayerTask[] = [
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.Scorpia.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.ThermonuclearSmokeDevil,
@@ -214,15 +199,17 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Venenatis,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Venenatis.id],
-		isBoss: true
+		monsters: [Monsters.Venenatis.id, Monsters.Spindel.id],
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.Vetion,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Vetion.id],
-		isBoss: true
+		monsters: [Monsters.Vetion.id, Monsters.Calvarion.id],
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.Vorkath,
@@ -245,5 +232,64 @@ export const bossTasks: AssignableSlayerTask[] = [
 		questPoints: 75,
 		monsters: [Monsters.Zulrah.id],
 		isBoss: true
+	}
+];
+
+export const wildernessBossTasks: AssignableSlayerTask[] = [
+	{
+		monster: Monsters.Callisto,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Callisto.id, Monsters.Artio.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.ChaosElemental,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.ChaosElemental.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.ChaosFanatic,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.ChaosFanatic.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.CrazyArchaeologist,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.CrazyArchaeologist.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.Scorpia,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Scorpia.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.Venenatis,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Venenatis.id, Monsters.Spindel.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.Vetion,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Vetion.id, Monsters.Calvarion.id],
+		isBoss: true,
+		wilderness: true
 	}
 ];

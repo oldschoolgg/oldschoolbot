@@ -1,16 +1,16 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
-import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
+import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
+import type { InfernoOptions } from '../../../lib/types/minions';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -28,9 +28,9 @@ export const infernoTask: MinionTask = {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
 			score > 0 &&
-			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 		const unusedItems = new Bank();
 		const cost = new Bank(data.cost);
@@ -51,33 +51,43 @@ export const infernoTask: MinionTask = {
 		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
+		const xpBonuses = [];
 
-		let xpStr = await user.addXP({
-			skillName: SkillsEnum.Ranged,
-			amount: calcPercentOfNum(percentMadeItThrough, 80_000),
-			duration,
-			minimal: true
-		});
-		xpStr += await user.addXP({
-			skillName: SkillsEnum.Hitpoints,
-			amount: calcPercentOfNum(percentMadeItThrough, 35_000),
-			duration,
-			minimal: true
-		});
-		xpStr += await user.addXP({
-			skillName: SkillsEnum.Magic,
-			amount: calcPercentOfNum(percentMadeItThrough, 25_000),
-			duration,
-			minimal: true
-		});
+		xpBonuses.push(
+			await user.addXP({
+				skillName: SkillsEnum.Ranged,
+				amount: calcPercentOfNum(percentMadeItThrough, 80_000),
+				duration,
+				minimal: true
+			})
+		);
+		xpBonuses.push(
+			await user.addXP({
+				skillName: SkillsEnum.Hitpoints,
+				amount: calcPercentOfNum(percentMadeItThrough, 35_000),
+				duration,
+				minimal: true
+			})
+		);
+		xpBonuses.push(
+			await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: calcPercentOfNum(percentMadeItThrough, 25_000),
+				duration,
+				minimal: true
+			})
+		);
 		if (isOnTask) {
-			xpStr += await user.addXP({
-				skillName: SkillsEnum.Slayer,
-				amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
-				duration
-			});
+			xpBonuses.push(
+				await user.addXP({
+					skillName: SkillsEnum.Slayer,
+					amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
+					duration
+				})
+			);
 		}
 
+		const xpStr = xpBonuses.join(', ');
 		if (!deathTime) {
 			await incrementMinigameScore(userID, 'inferno', 1);
 		}
@@ -101,7 +111,7 @@ export const infernoTask: MinionTask = {
 
 				await prisma.slayerTask.update({
 					where: {
-						id: usersTask.currentTask!.id
+						id: usersTask.currentTask?.id
 					},
 					data: {
 						quantity_remaining: 0,
@@ -132,7 +142,7 @@ export const infernoTask: MinionTask = {
 
 			await prisma.slayerTask.update({
 				where: {
-					id: usersTask.currentTask!.id
+					id: usersTask.currentTask?.id
 				},
 				data: {
 					quantity_remaining: 0,
@@ -156,7 +166,7 @@ export const infernoTask: MinionTask = {
 
 		if (diedPreZuk) {
 			text += `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
-			chatText = `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
+			chatText = `You die before you even reach TzKal-Zuk... At least you tried, I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;
 		} else if (diedZuk) {
@@ -206,7 +216,7 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 				unusedItems.length
 					? `, you didn't use ${percSuppliesRefunded.toFixed(
 							2
-					  )}% of your supplies, ${unusedItems} was returned to your bank`
+						)}% of your supplies, ${unusedItems} was returned to your bank`
 					: '.'
 			}
 `,

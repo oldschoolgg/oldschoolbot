@@ -1,12 +1,12 @@
 import { clamp, objectValues } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { Skills } from '../../../lib/types';
+import type { Skills } from '../../../lib/types';
 import { assert, isValidSkill, itemID } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
-import resolveItems from '../../../lib/util/resolveItems';
 
 interface IXPLamp {
 	itemID: number;
@@ -55,6 +55,40 @@ export const XPLamps: IXPLamp[] = [
 			SkillsEnum.Magic,
 			SkillsEnum.Prayer
 		]
+	},
+	{
+		itemID: 28_587,
+		amount: 30_000,
+		name: 'Magic lamp (strength)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Strength]
+	},
+	{
+		itemID: 28_588,
+		amount: 20_000,
+		name: 'Magic lamp (slayer)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Slayer]
+	},
+	{
+		itemID: 28_589,
+		amount: 5000,
+		name: 'Magic lamp (thieving)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Thieving]
+	},
+	{
+		itemID: 28_590,
+		amount: 500,
+		name: 'Magic lamp (magic)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Magic]
+	},
+	{
+		itemID: 28_820,
+		amount: 5000,
+		name: 'Antique lamp (defender of varrock)',
+		minimumLevel: 1
 	},
 	{
 		itemID: itemID('Antique lamp (easy ca)'),
@@ -114,6 +148,13 @@ export const Lampables: IXPObject[] = [
 				skills[skill] =
 					data.user.skillLevel(skill) *
 					([
+						SkillsEnum.Attack,
+						SkillsEnum.Strength,
+						SkillsEnum.Defence,
+						SkillsEnum.Magic,
+						SkillsEnum.Ranged,
+						SkillsEnum.Hitpoints,
+						SkillsEnum.Prayer,
 						SkillsEnum.Mining,
 						SkillsEnum.Woodcutting,
 						SkillsEnum.Herblore,
@@ -233,7 +274,7 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 		]!}** in ${skill} to receive it.`;
 	}
 
-	let amount = skillsToReceive[skill]!;
+	const amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
 
 	await user.removeItemsFromBank(toRemoveFromBank);

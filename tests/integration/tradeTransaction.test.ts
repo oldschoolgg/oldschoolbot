@@ -1,20 +1,18 @@
-import 'source-map-support/register';
-
-import { randomSnowflake } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { prisma } from '../../src/lib/settings/prisma';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
+import { mockedId } from './util';
 
 describe('Transactionalized Trade Test', async () => {
-	async function createUserWithBank(bank: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
-		const userId = randomSnowflake();
+	async function createUserWithBank(_bank: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
+		const userId = mockedId();
+		const bank = _bank.clone();
 		const GP = bank.amount('Coins');
-		delete bank.bank[995];
+		bank.remove('Coins', GP);
 
-		await prisma.user.create({
+		await global.prisma!.user.create({
 			data: { id: userId, GP, bank: bank.bank, ...userData }
 		});
 
@@ -108,46 +106,66 @@ describe('Transactionalized Trade Test', async () => {
 	});
 
 	test('Test not enough GP trade...', async () => {
-		const cyrStartingBank = new Bank().add('Coins', 1_000_000).add('Twisted bow', 2).add('Dragon arrow', 1000);
+		const cyrStartingBank = new Bank()
+			.add('Coins', 1_000_000)
+			.add('Twisted bow', 2)
+			.add('Dragon arrow', 1000)
+			.freeze();
 		const cyr = await createUserWithBank(cyrStartingBank);
 
-		const magnaStartingBank = new Bank().add('Coins', 20_000_000).add('Cannonball', 10_000).add('Feather', 500);
+		const magnaStartingBank = new Bank()
+			.add('Coins', 20_000_000)
+			.add('Cannonball', 10_000)
+			.add('Feather', 500)
+			.freeze();
 		const magna = await createUserWithBank(magnaStartingBank);
 
-		const uCyr = await mUserFetch(cyr);
+		const uCyr = await mUserFetch(cyr, { username: 'Cyr' });
 		const uMagna = await mUserFetch(magna);
 
-		const tradeFromCyr = new Bank().add('Coins', 2_000_000).add('Twisted bow', 1);
-		const tradeFromMagna = new Bank().add('Coins', 2_000_000).add('Feather', 500).add('Cannonball', 2000);
+		expect(uCyr.GP).toBe(1_000_000);
+		expect(uMagna.GP).toBe(20_000_000);
+
+		const tradeFromCyr = new Bank().add('Coins', 2_000_000).add('Twisted bow', 1).freeze();
+		const tradeFromMagna = new Bank().add('Coins', 2_000_000).add('Feather', 500).add('Cannonball', 2000).freeze();
 
 		const result = await tradePlayerItems(uCyr, uMagna, tradeFromCyr, tradeFromMagna);
 
-		const expectedResult = { success: false, message: `<@${cyr}> doesn't own all items.` };
+		const expectedResult = { success: false, message: `Cyr doesn't own all items.` };
 
 		expect(result).toMatchObject(expectedResult);
-		expect(uCyr.bank.equals(cyrStartingBank)).toBe(true);
-		expect(uMagna.bank.equals(magnaStartingBank)).toBe(true);
+		expect(uCyr.bankWithGP.toString()).toEqual(cyrStartingBank.toString());
+		expect(uCyr.bankWithGP.equals(cyrStartingBank)).toBe(true);
+		expect(uMagna.bankWithGP.equals(magnaStartingBank)).toBe(true);
 	});
 
 	test('Test not enough items trade...', async () => {
-		const cyrStartingBank = new Bank().add('Coins', 1_000_000).add('Twisted bow', 2).add('Dragon arrow', 1000);
+		const cyrStartingBank = new Bank()
+			.add('Coins', 1_000_000)
+			.add('Twisted bow', 2)
+			.add('Dragon arrow', 1000)
+			.freeze();
 		const cyr = await createUserWithBank(cyrStartingBank);
 
-		const magnaStartingBank = new Bank().add('Coins', 20_000_000).add('Cannonball', 10_000).add('Feather', 500);
+		const magnaStartingBank = new Bank()
+			.add('Coins', 20_000_000)
+			.add('Cannonball', 10_000)
+			.add('Feather', 500)
+			.freeze();
 		const magna = await createUserWithBank(magnaStartingBank);
 
 		const uCyr = await mUserFetch(cyr);
-		const uMagna = await mUserFetch(magna);
+		const uMagna = await mUserFetch(magna, { username: 'magna' });
 
-		const tradeFromCyr = new Bank().add('Coins', 1_000_000).add('Twisted bow', 1);
-		const tradeFromMagna = new Bank().add('Coins', 2_000_000).add('Feather', 5000).add('Cannonball', 2000);
+		const tradeFromCyr = new Bank().add('Coins', 1_000_000).add('Twisted bow', 1).freeze();
+		const tradeFromMagna = new Bank().add('Coins', 2_000_000).add('Feather', 5000).add('Cannonball', 2000).freeze();
 
 		const result = await tradePlayerItems(uCyr, uMagna, tradeFromCyr, tradeFromMagna);
 
-		const expectedResult = { success: false, message: `<@${magna}> doesn't own all items.` };
+		const expectedResult = { success: false, message: `magna doesn't own all items.` };
 
 		expect(result).toMatchObject(expectedResult);
-		expect(uCyr.bank.equals(cyrStartingBank)).toBe(true);
-		expect(uMagna.bank.equals(magnaStartingBank)).toBe(true);
+		expect(uCyr.bankWithGP.equals(cyrStartingBank)).toBe(true);
+		expect(uMagna.bankWithGP.equals(magnaStartingBank)).toBe(true);
 	});
 });

@@ -160,7 +160,7 @@ export const NestBoxesTable = new LootTable()
 	.add('Nest box (ring)', 1, 5)
 	.add('Nest box (empty)', 1, 3);
 
-export const BaseGemBagTable = new LootTable()
+const BaseGemBagTable = new LootTable()
 	.add('Uncut sapphire', 1, 4993)
 	.add('Uncut emerald', 1, 3468)
 	.add('Uncut ruby', 1, 1180)

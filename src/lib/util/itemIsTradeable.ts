@@ -1,25 +1,24 @@
 import { Bank } from 'oldschooljs';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
 import { COINS_ID } from '../constants';
 import { leaguesCreatables } from '../data/creatables/leagueCreatables';
 import { leagueBuyables } from '../data/leaguesBuyables';
 import getOSItem from './getOSItem';
-import resolveItems from './resolveItems';
 
 const specialUntradeables = resolveItems([
 	'Coins',
 	...leaguesCreatables
 		.filter(i => !i.noCl)
 		.map(i => new Bank(i.outputItems))
-		.map(i => i.items().map(i => i[0].id))
-		.flat(),
+		.flatMap(i => i.items().map(i => i[0].id)),
 	...leagueBuyables.map(i => i.item.id)
 ]);
 
 /**
  * These items aren't tradeable ingame, but we want to specially let them be traded.
  */
-export const specialTradeables = resolveItems([
+const specialTradeables = resolveItems([
 	'Slice of birthday cake',
 	'War ship',
 	'Birthday present',

@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import itemID from '../../../util/itemID';
-import { Plant } from '../../types';
+import type { Plant } from '../../types';
 
 const herbPlants: Plant[] = [
 	{

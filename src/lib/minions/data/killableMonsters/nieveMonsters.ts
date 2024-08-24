@@ -1,9 +1,10 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
+import { itemID } from 'oldschooljs/dist/util';
 
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const nieveMonsters: KillableMonster[] = [
 	{
@@ -31,7 +32,7 @@ export const nieveMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 76,
 		table: Monsters.BlackDragon,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
@@ -41,7 +42,11 @@ export const nieveMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 7,
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.BrutalBlackDragon.id,
@@ -139,6 +144,18 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 10
+					}
+				]
+			}
+		],
 		qpRequired: 0,
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,

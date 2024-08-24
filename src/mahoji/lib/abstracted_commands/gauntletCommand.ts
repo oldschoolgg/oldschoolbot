@@ -1,10 +1,11 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { GauntletOptions } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements } from '../../../lib/util';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import type { GauntletOptions } from '../../../lib/types/minions';
+import { formatDuration, formatSkillRequirements, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -18,7 +19,8 @@ const baseRequirements = {
 	smithing: 70,
 	herblore: 70,
 	construction: 70,
-	hunter: 70
+	hunter: 70,
+	prayer: 77
 };
 
 const standardRequirements = {
@@ -27,8 +29,7 @@ const standardRequirements = {
 	strength: 80,
 	defence: 80,
 	magic: 80,
-	ranged: 80,
-	prayer: 77
+	ranged: 80
 };
 
 const corruptedRequirements = {
@@ -37,23 +38,17 @@ const corruptedRequirements = {
 	strength: 90,
 	defence: 90,
 	magic: 90,
-	ranged: 90,
-	prayer: 77,
-	// Skilling
-	cooking: 70,
-	farming: 70,
-	fishing: 70,
-	mining: 70,
-	woodcutting: 70
+	ranged: 90
 };
 
 export async function gauntletCommand(user: MUser, channelID: string, type: 'corrupted' | 'normal' = 'normal') {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.QP < 200) {
-		return 'You need atleast 200 QP to do the Gauntlet.';
+		return 'You need at least 200 QP to do the Gauntlet.';
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
+	const prayLevel = user.skillLevel(SkillsEnum.Prayer);
 
 	if (!user.hasSkillReqs(requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
@@ -70,28 +65,57 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		return "You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!";
 	}
 
-	let baseLength = type === 'corrupted' ? Time.Minute * 10 : Time.Minute * 14;
+	// Base times for gauntlet prep.
+	const normPrep = Time.Minute * 8;
+	const corrPrep = Time.Minute * 7.5;
+
+	// Base times for Hunllef fight.
+	const normHunllef = Time.Minute * 3.5;
+	const corrHunllef = Time.Minute * 5.5;
+
+	let baseLength = type === 'corrupted' ? corrPrep + corrHunllef : normPrep + normHunllef;
 
 	const boosts = [];
 
-	const scoreBoost = Math.min(100, calcWhatPercent(type === 'corrupted' ? corruptedKC : normalKC, 100)) / 5;
+	// Gauntlet prep boost
+	let prepBoost = Math.min(100, calcWhatPercent(corruptedKC + normalKC, 100)) / 5;
+	if (prepBoost > 1) {
+		if (type === 'corrupted') {
+			baseLength = reduceNumByPercent(baseLength, prepBoost);
+			boosts.push(`${prepBoost}% boost for experience with preparation`);
+		} else {
+			prepBoost *= 2;
+			baseLength = reduceNumByPercent(baseLength, prepBoost);
+			boosts.push(`${prepBoost}% boost for experience with preparation (2x for normal prep)`);
+		}
+	}
+
+	// Hunllef boss fight boost
+	const scoreBoost =
+		Math.min(100, calcWhatPercent(type === 'corrupted' ? corruptedKC : normalKC + corruptedKC, 100)) / 5;
 	if (scoreBoost > 1) {
 		baseLength = reduceNumByPercent(baseLength, scoreBoost);
-		boosts.push(`${scoreBoost}% boost for experience in the minigame`);
+		boosts.push(`${scoreBoost}% boost for ${type === 'corrupted' ? 'Corrupted ' : ''}Hunllef KC`);
 	}
 
 	if (user.bitfield.includes(BitField.HasArcaneScroll)) {
-		boosts.push('3% for Augury');
-		baseLength = reduceNumByPercent(baseLength, 3);
+		boosts.push('5% for Augury');
+		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (prayLevel >= 45) {
+		boosts.push('2% for Mystic Might');
+		baseLength = reduceNumByPercent(baseLength, 2);
 	}
 
 	if (user.bitfield.includes(BitField.HasDexScroll)) {
-		boosts.push('3% for Rigour');
-		baseLength = reduceNumByPercent(baseLength, 3);
+		boosts.push('5% for Rigour');
+		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (prayLevel >= 44) {
+		boosts.push('2% for Eagle Eye');
+		baseLength = reduceNumByPercent(baseLength, 2);
 	}
 
-	let gauntletLength = baseLength;
-	if (type === 'corrupted') gauntletLength *= 1.3;
+	// Add a 5% variance to account for randomness of gauntlet
+	const gauntletLength = randomVariation(baseLength, 5);
 
 	const maxTripLength = calcMaxTripLength(user, 'Gauntlet');
 
@@ -117,9 +141,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 
 	const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : '';
 
-	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatDuration(
-		duration
-	)}.
+	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatDuration(duration)}.
 ${boostsStr}
 `;
 }

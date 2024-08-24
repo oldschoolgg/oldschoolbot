@@ -1,14 +1,13 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
+import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import { DarkAltarOptions } from '../../types/minions';
+import type { DarkAltarOptions } from '../../types/minions';
 import { formatDuration, hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
-import { Favours, gotFavour } from '../data/kourendFavour';
 
 export const darkAltarRunes = {
 	soul: {
@@ -41,10 +40,7 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 	if (!hasReqs) {
 		return `You can't craft Blood runes at the Dark Altar, because you don't have these required stats: ${neededReqs}.`;
 	}
-	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Arceuus, 100);
-	if (!hasFavour) {
-		return `Crafting Blood/Soul runes at the Dark Altar requires ${requiredPoints}% Arceuus Favour.`;
-	}
+
 	const rune = name.toLowerCase().includes('soul') ? 'soul' : 'blood';
 	const runeData = darkAltarRunes[rune];
 

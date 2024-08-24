@@ -1,8 +1,10 @@
-import { Channel, Message, TextChannel } from 'discord.js';
+import type { Channel, Message } from 'discord.js';
+import { TextChannel } from 'discord.js';
 import { chunk, sleep } from 'e';
 
-import LastManStandingUsage, { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../structures/LastManStandingUsage';
-import { channelIsSendable, cleanMentions } from '../../util';
+import type LastManStandingUsage from '../../structures/LastManStandingUsage';
+import { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../structures/LastManStandingUsage';
+import { channelIsSendable } from '../../util';
 
 const playing = new Set<string>();
 
@@ -10,15 +12,15 @@ function calculateMaxDeaths(game: LastManStandingGame) {
 	return game.prep // have 0 deaths during the preparation phase
 		? 0
 		: // For 16 people, 5 die, 36 -> 7, and so on keeps the game interesting.
-		game.contestants.size >= 16
-		? Math.ceil(Math.sqrt(game.contestants.size) + 1)
-		: // If there are more than 7 contestants, proceed to kill them in 4s.
-		game.contestants.size > 7
-		? 4
-		: // If there are more than 3 contestants, eliminate 2, else 1 (3 -> 2, 2 -> 1)
-		game.contestants.size > 3
-		? 2
-		: 1;
+			game.contestants.size >= 16
+			? Math.ceil(Math.sqrt(game.contestants.size) + 1)
+			: // If there are more than 7 contestants, proceed to kill them in 4s.
+				game.contestants.size > 7
+				? 4
+				: // If there are more than 3 contestants, eliminate 2, else 1 (3 -> 2, 2 -> 1)
+					game.contestants.size > 3
+					? 2
+					: 1;
 }
 
 function shuffle(contestants: string[]) {
@@ -71,7 +73,7 @@ function buildTexts(game: LastManStandingGame, results: string[], deaths: string
 		deaths.length > 0
 			? `${`**${deaths.length} new gravestone${
 					deaths.length === 1 ? ' litters' : 's litter'
-			  } the battlefield.**`}\n\n${deaths.map(d => `- ${d}`).join('\n')}`
+				} the battlefield.**`}\n\n${deaths.map(d => `- ${d}`).join('\n')}`
 			: '';
 	const panels = chunk(results, 5);
 
@@ -106,34 +108,34 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 	if (!channel) return;
 	if (!(channel instanceof TextChannel)) return;
 	let filtered = new Set<string>();
-	const splitContestants = names ? cleanMentions(channel.guild!, names).split(',') : [];
+	const splitContestants = names ? names.split(',') : [];
 	// Autofill using authors from the last 100 messages, if none are given to the command
 	if (names === 'auto' || !names || splitContestants.length === 0) {
 		const messages = await channel.messages.fetch({ limit: 100 });
 
 		for (const { author } of messages.values()) {
-			const name = cleanMentions(channel.guild, author.username);
+			const name = author.username;
 			if (!filtered.has(name)) filtered.add(name);
 		}
 	} else {
 		filtered = new Set(splitContestants);
 		if (filtered.size !== splitContestants.length) {
-			channel.send('I am sorry, but a user cannot play twice.');
+			return channel.send('I am sorry, but a user cannot play twice.');
 		}
 
 		if (filtered.size < 4) {
-			channel.send(
-				'Please specify atleast 4 players for Last Man Standing, like so: `+lms Alex, Kyra, Magna, Rick`, or type `+lms auto` to automatically pick people from the chat.'
+			return channel.send(
+				'Please specify at least 4 players for Last Man Standing, like so: `+lms Alex, Kyra, Magna, Rick`, or type `+lms auto` to automatically pick people from the chat.'
 			);
 		}
 
 		if (filtered.size > 48) {
-			channel.send('I am sorry but the amount of players can be no greater than 48.');
+			return channel.send('I am sorry but the amount of players can be no greater than 48.');
 		}
 	}
 
 	if (playing.has(channel.guildId)) {
-		channel.send('There is a game in progress in this server already, try again when it finishes.');
+		return channel.send('There is a game in progress in this server already, try again when it finishes.');
 	}
 
 	playing.add(channel.guildId);
@@ -160,8 +162,8 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 			// If the channel is not postable, break:
 			if (!channelIsSendable(channel)) return;
 
-			gameMessage = await channel.send(text);
-			await sleep(Math.max(gameMessage!.content.length / 20, 7) * 700);
+			gameMessage = await channel.send({ content: text });
+			await sleep(Math.max(gameMessage?.content.length / 20, 7) * 700);
 
 			// Delete the previous message, and if stopped, send stop.
 			gameMessage?.delete();
@@ -174,10 +176,13 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 	// The match finished with one remaining player
 	const winner = game.contestants.values().next().value;
 	playing.delete(channel.guildId);
-	return channel.send(`And the Last Man Standing is... **${winner}**!`);
+	return channel.send({
+		content: `And the Last Man Standing is... **${winner}**!`,
+		allowedMentions: { parse: [], users: [] }
+	});
 }
 
-export interface LastManStandingGame {
+interface LastManStandingGame {
 	prep: boolean;
 	final: boolean;
 	contestants: Set<string>;

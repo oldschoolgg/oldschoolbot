@@ -1,11 +1,10 @@
 import { Bank } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import type { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const cookingTask: MinionTask = {
@@ -19,11 +18,11 @@ export const cookingTask: MinionTask = {
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;
 
+		const [hasEasyDiary] = await userhasDiaryTier(user, KourendKebosDiary.easy);
 		const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
-		const [hasFavour] = gotFavour(user, Favours.Hosidius, 100);
 		const hasGaunts = user.hasEquipped('Cooking gauntlets');
 
-		if (hasFavour && cookable.burnKourendBonus) {
+		if (hasEasyDiary && cookable.burnKourendBonus) {
 			stopBurningLvl = cookable.burnKourendBonus[(hasEliteDiary ? 1 : 0) * 2 + (hasGaunts ? 1 : 0)];
 		} else if (cookable.stopBurnAtCG && hasGaunts) {
 			stopBurningLvl = cookable.stopBurnAtCG;

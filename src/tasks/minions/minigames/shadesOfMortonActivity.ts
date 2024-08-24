@@ -4,7 +4,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ShadesOfMortonOptions } from '../../../lib/types/minions';
+import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 
@@ -19,17 +19,17 @@ export const shadesOfMortonTask: MinionTask = {
 		const log = shadesLogs.find(i => i.normalLog.id === logID)!;
 		const shade = shades.find(i => i.shadeName === shadeID)!;
 
-		let loot = new Bank();
+		const loot = new Bank();
 
 		const multiplier = 100;
-		let table = new LootTable().add('Coins', 0.21 * multiplier);
+		const table = new LootTable().add('Coins', 0.21 * multiplier);
 		if (shade.lowMetalKeys) {
-			let subTable = new LootTable();
+			const subTable = new LootTable();
 			for (const key of shade.lowMetalKeys.items) subTable.add(key);
 			table.add(subTable, 1, shade.lowMetalKeys.fraction * multiplier);
 		}
 		if (shade.highMetalKeys) {
-			let subTable = new LootTable();
+			const subTable = new LootTable();
 			for (const key of shade.highMetalKeys.items) subTable.add(key);
 			table.add(subTable, 1, shade.highMetalKeys.fraction * multiplier);
 		}
@@ -38,7 +38,7 @@ export const shadesOfMortonTask: MinionTask = {
 			loot.add(table.roll());
 		}
 
-		let messages: string[] = [];
+		const messages: string[] = [];
 
 		const { itemsAdded } = await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
 

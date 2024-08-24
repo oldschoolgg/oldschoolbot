@@ -1,38 +1,20 @@
 import { mentionCommand, miniID, truncateString } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { GiftBoxStatus } from '@prisma/client';
-import { debounce, Time } from 'e';
-import { groupBy } from 'lodash';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BOT_TYPE } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
-import { ItemBank } from '../../lib/types';
+
+import type { ItemBank } from '../../lib/types';
 import { containsBlacklistedWord, isValidNickname } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
-import { OSBMahojiCommand } from '../lib/util';
-
-export const giftCountCache = new Map<string, number>();
-export const regenerateGiftCountCache = debounce(async () => {
-	const allGifts = await prisma.giftBox.findMany({
-		where: {
-			status: GiftBoxStatus.Sent,
-			owner_id: {
-				not: null
-			}
-		}
-	});
-	giftCountCache.clear();
-	const grouped = groupBy(allGifts, g => g.owner_id);
-	for (const [key, value] of Object.entries(grouped)) {
-		giftCountCache.set(key, value.length);
-	}
-}, Time.Second * 2);
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const giftCommand: OSBMahojiCommand = {
 	name: 'gift',
@@ -300,7 +282,6 @@ ${items}`
 					type: 'gift'
 				}
 			});
-			regenerateGiftCountCache();
 			return `You sent the gift box to ${recipient.badgedUsername}!`;
 		}
 

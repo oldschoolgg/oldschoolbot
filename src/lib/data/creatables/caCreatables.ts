@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const caCreatables: Createable[] = [
 	{
@@ -15,6 +15,12 @@ export const caCreatables: Createable[] = [
 		}
 	},
 	{
+		name: 'Revert Tztok slayer helmet',
+		outputItems: new Bank().add('Slayer helmet'),
+		inputItems: new Bank().add('Tztok slayer helmet'),
+		noCl: true
+	},
+	{
 		name: 'Tztok slayer helmet (i)',
 		inputItems: new Bank().add('Slayer helmet (i)'),
 		outputItems: new Bank().add('Tztok slayer helmet (i)'),
@@ -24,6 +30,12 @@ export const caCreatables: Createable[] = [
 			}
 			return null;
 		}
+	},
+	{
+		name: 'Revert Tztok slayer helmet (i)',
+		outputItems: new Bank().add('Slayer helmet (i)'),
+		inputItems: new Bank().add('Tztok slayer helmet (i)'),
+		noCl: true
 	},
 	//
 	{
@@ -74,6 +86,12 @@ export const caCreatables: Createable[] = [
 		}
 	},
 	{
+		name: 'Revert Tzkal slayer helmet',
+		outputItems: new Bank().add('Slayer helmet'),
+		inputItems: new Bank().add('Tzkal slayer helmet'),
+		noCl: true
+	},
+	{
 		name: 'Tzkal slayer helmet (i)',
 		inputItems: new Bank().add('Slayer helmet (i)'),
 		outputItems: new Bank().add('Tzkal slayer helmet (i)'),
@@ -83,6 +101,12 @@ export const caCreatables: Createable[] = [
 			}
 			return null;
 		}
+	},
+	{
+		name: 'Revert Tzkal slayer helmet (i)',
+		outputItems: new Bank().add('Slayer helmet (i)'),
+		inputItems: new Bank().add('Tzkal slayer helmet (i)'),
+		noCl: true
 	},
 	//
 	{
@@ -97,6 +121,12 @@ export const caCreatables: Createable[] = [
 		}
 	},
 	{
+		name: 'Revert Vampyric slayer helmet',
+		outputItems: new Bank().add('Slayer helmet'),
+		inputItems: new Bank().add('Vampyric slayer helmet'),
+		noCl: true
+	},
+	{
 		name: 'Vampyric slayer helmet (i)',
 		inputItems: new Bank().add('Slayer helmet (i)'),
 		outputItems: new Bank().add('Vampyric slayer helmet (i)'),
@@ -106,6 +136,12 @@ export const caCreatables: Createable[] = [
 			}
 			return null;
 		}
+	},
+	{
+		name: 'Revert Vampyric slayer helmet (i)',
+		outputItems: new Bank().add('Slayer helmet (i)'),
+		inputItems: new Bank().add('Vampyric slayer helmet (i)'),
+		noCl: true
 	},
 	//
 	{

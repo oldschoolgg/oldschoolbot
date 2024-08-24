@@ -1,12 +1,13 @@
-import { calcWhatPercent, percentChance, randInt, reduceNumByPercent, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { Time, calcWhatPercent, percentChance, randInt, reduceNumByPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
+import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -24,7 +25,9 @@ async function determineDuration(user: MUser): Promise<[number, string]> {
 
 	// Reduce time based on KC
 	const jadKC = await user.getKC(TzTokJad.id);
-	const percentIncreaseFromKC = Math.min(50, jadKC);
+	const zukKC = await getMinigameScore(user.id, 'inferno');
+	const experienceKC = jadKC + zukKC * 3;
+	const percentIncreaseFromKC = Math.min(50, experienceKC);
 	baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
 	debugStr += `${percentIncreaseFromKC}% from KC`;
 
@@ -43,8 +46,11 @@ async function determineDuration(user: MUser): Promise<[number, string]> {
 	return [baseTime, debugStr];
 }
 
-function determineChanceOfDeathPreJad(user: MUser, attempts: number) {
+function determineChanceOfDeathPreJad(user: MUser, attempts: number, hasInfernoKC: boolean) {
 	let deathChance = Math.max(14 - attempts * 2, 5);
+
+	// If user has killed inferno, give them the lowest chance of death pre Jad.
+	if (hasInfernoKC) deathChance = 5;
 
 	// -4% Chance of dying before Jad if you have SGS.
 	if (user.hasEquipped(itemID('Saradomin godsword'))) {
@@ -54,8 +60,12 @@ function determineChanceOfDeathPreJad(user: MUser, attempts: number) {
 	return deathChance;
 }
 
-function determineChanceOfDeathInJad(attempts: number) {
-	const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
+function determineChanceOfDeathInJad(attempts: number, hasInfernoKC: boolean) {
+	let chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
+
+	if (hasInfernoKC) {
+		chance /= 1.5;
+	}
 
 	// Chance of death cannot be 100% or <5%.
 	return Math.max(Math.min(chance, 99), 5);
@@ -76,11 +86,11 @@ function checkGear(user: MUser): string | undefined {
 	}
 
 	if (!user.owns(fightCavesCost)) {
-		return `JalYt, you need supplies to have a chance in the caves...come back with ${fightCavesCost}.`;
+		return `JalYt, you need supplies to have a chance in the caves... Come back with ${fightCavesCost}.`;
 	}
 
 	if (user.skillLevel('prayer') < 43) {
-		return 'JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.';
+		return 'JalYt, come back when you have at least 43 Prayer, TzTok-Jad annihilate you without protection from gods.';
 	}
 }
 
@@ -89,7 +99,10 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 	if (gearFailure) {
 		return {
 			files: [
-				{ attachment: await newChatHeadImage({ content: gearFailure, head: 'mejJal' }), name: 'fightcaves.jpg' }
+				{
+					attachment: await newChatHeadImage({ content: gearFailure, head: 'mejJal' }),
+					name: 'fightcaves.jpg'
+				}
 			]
 		};
 	}
@@ -98,11 +111,14 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 
 	const { fight_caves_attempts: attempts } = await user.fetchStats({ fight_caves_attempts: true });
 
-	const jadDeathChance = determineChanceOfDeathInJad(attempts);
-	const preJadDeathChance = determineChanceOfDeathPreJad(user, attempts);
+	const jadKC = await user.getKC(TzTokJad.id);
+	const zukKC = await getMinigameScore(user.id, 'inferno');
+	const hasInfernoKC = zukKC > 0;
+
+	const jadDeathChance = determineChanceOfDeathInJad(attempts, hasInfernoKC);
+	const preJadDeathChance = determineChanceOfDeathPreJad(user, attempts, hasInfernoKC);
 
 	const usersRangeStats = user.gear.range.stats;
-	const jadKC = await user.getKC(TzTokJad.id);
 
 	duration += (randInt(1, 5) * duration) / 100;
 
@@ -113,8 +129,8 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
-		usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
-		usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
+		usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+		usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 	// 15% boost for on task
 	if (isOnTask && user.hasEquippedOrInBank('Black mask (i)')) {
@@ -148,6 +164,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}
+**Zuk KC:** ${zukKC}
 **Attempts:** ${attempts}
 
 **Removed from your bank:** ${fightCavesCost}`,
