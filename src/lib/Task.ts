@@ -188,7 +188,7 @@ const tasks: MinionTask[] = [
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
-	myNotesTask
+	myNotesTask,
 	colosseumTask
 ];
 
