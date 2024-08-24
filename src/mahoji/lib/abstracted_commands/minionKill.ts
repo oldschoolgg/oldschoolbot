@@ -214,7 +214,7 @@ export async function minionKillCommand(
 	// determines what pvm methods the user can use
 	const myCBOpts = user.combatOptions;
 	const methods = [method] as PvMMethod[];
-	const combatMethods = determineCombatBoosts({
+	let combatMethods = determineCombatBoosts({
 		cbOpts: myCBOpts as CombatOptionsEnum[],
 		user,
 		monster,
@@ -528,7 +528,7 @@ export async function minionKillCommand(
 
 	if (!usingCannon) {
 		if (combatMethods.includes('cannon') && !monster?.canCannon) {
-			return `${monster?.name} cannot be killed with a cannon.\n\n- Try removing: \`method:cannon\` from \`/k\` \n- Try: \`/config user combat_options action:Remove input:Always Cannon\``;
+			combatMethods = combatMethods.filter(method => method !== 'cannon');
 		}
 	}
 
