@@ -1,9 +1,9 @@
+import * as fs from 'node:fs';
 import { Canvas } from '@napi-rs/canvas';
 import { AttachmentBuilder } from 'discord.js';
-import * as fs from 'fs';
 
-import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
 
 export const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const fishingLevelUpImage = fs.readFileSync('./src/lib/resources/images/skillLevelUpImages/fishing.png');
