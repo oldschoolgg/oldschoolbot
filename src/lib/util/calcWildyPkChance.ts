@@ -12,7 +12,7 @@ import { percentChance } from '../util';
 const peakFactor = [
 	{
 		peakTier: PeakTier.High,
-		factor: 2.5
+		factor: 5
 	},
 	{
 		peakTier: PeakTier.Medium,
@@ -31,8 +31,9 @@ async function getPkEvasionExp(user: MUser) {
 	return Math.min(100, (stats.pk_evasion_exp / maxBoostDuration) * 100);
 }
 
-async function getWildEvasionPercent(user: MUser) {
-	const maxReductionPercent = 75;
+export async function getWildEvasionPercent(user: MUser) {
+	// Caps out to 10% as before
+	const maxReductionPercent = 10;
 	return randomVariation(calcPercentOfNum(await getPkEvasionExp(user), maxReductionPercent), 10);
 }
 
