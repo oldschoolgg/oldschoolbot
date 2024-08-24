@@ -1,8 +1,8 @@
 import { Time } from 'e';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { Skills } from '../../../lib/types';
-import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
+import type { Skills } from '../../../lib/types';
+import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -30,7 +30,7 @@ const darkLureSkillRequirements: Skills = {
 	strength: 16
 };
 
-export const puroOptions: PuroImpling[] = [
+const puroOptions: PuroImpling[] = [
 	{ name: 'All Implings', hunterLevel: 17, spell: true, item: null, tier: 1 },
 	{ name: 'High-tier Implings', hunterLevel: 58, spell: true, item: null, tier: 2 },
 	{ name: 'Eclectic Implings', hunterLevel: 50, spell: false, item: getOSItem('Eclectic impling jar'), tier: 3 },
@@ -68,16 +68,11 @@ export async function puroPuroStartCommand(
 	}
 	if (!impToHunt) return 'Error selecting impling, please try again.';
 	if (hunterLevel < impToHunt.hunterLevel)
-		return `${user.minionName} needs atleast level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
+		return `${user.minionName} needs at least level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
 	if (!darkLure || (darkLure && !impToHunt.spell)) darkLure = false;
 	if (darkLure) {
 		if (user.QP < 9) return 'To use Dark Lure, you need 9 QP.';
 		if (!hasDarkLureSkillReqs) return `To use Dark Lure, you need: ${lureReason}.`;
-		const currentUserFavour = user.kourendFavour;
-		for (const [key, value] of Object.entries(currentUserFavour)) {
-			if (value < 100)
-				return `You don't have the required amount of Favour to cast Dark Lure.\n\nRequired: 100% ${key} Favour.`;
-		}
 		const { bank } = user;
 		const natureRuneID = itemID('Nature rune');
 		const deathRuneID = itemID('Death rune');

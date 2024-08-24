@@ -1,4 +1,5 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -6,7 +7,7 @@ import { PerkTier } from '../../lib/constants';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 function determineLimit(user: MUser) {
 	const perkTier = user.perkTier();

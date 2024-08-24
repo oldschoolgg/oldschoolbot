@@ -1,21 +1,21 @@
-import { readFileSync } from 'fs';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { readFileSync } from 'node:fs';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import Createables from '../../lib/data/createables';
-import { gotFavour } from '../../lib/minions/data/kourendFavour';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import type { SkillsEnum } from '../../lib/skilling/types';
+import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 
 const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
 
-let content = 'Theses are the items that you can create:';
+const content = 'Theses are the items that you can create:';
 const allCreatablesTable = {
 	content,
 	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
@@ -61,7 +61,7 @@ export const createCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
 		const user = await mUserFetch(userID.toString());
 
-		const itemName = options.item.toLowerCase();
+		const itemName = options.item?.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
 			return allCreatablesTable;
@@ -93,7 +93,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			let mySlayerUnlocks = user.user.slayer_unlocks;
+			const mySlayerUnlocks = user.user.slayer_unlocks;
 
 			const { success, errors } = hasSlayerUnlock(
 				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
@@ -101,21 +101,6 @@ export const createCommand: OSBMahojiCommand = {
 			);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to ${action} this item.\n\nRequired: ${errors}`;
-			}
-		}
-		if (createableItem.requiredFavour) {
-			const [success, points] = gotFavour(user, createableItem.requiredFavour, 100);
-			if (!success) {
-				return `You don't have the required amount of Favour to ${action} this item.\n\nRequired: ${points}% ${createableItem.requiredFavour.toString()} Favour.`;
-			}
-		}
-
-		if (createableItem.name.toLowerCase().includes('kourend')) {
-			const currentUserFavour = user.kourendFavour;
-			for (const [key, value] of Object.entries(currentUserFavour)) {
-				if (value < 100) {
-					return `You don't have the required amount of Favour to ${action} this item.\n\nRequired: 100% ${key} Favour.`;
-				}
 			}
 		}
 
@@ -218,8 +203,8 @@ export const createCommand: OSBMahojiCommand = {
 
 		await updateBankSetting('create_cost', inItems);
 		await updateBankSetting('create_loot', outItems);
-		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
-		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
+		await userStatsBankUpdate(user, 'create_cost_bank', inItems);
+		await userStatsBankUpdate(user, 'create_loot_bank', outItems);
 
 		if (action === 'revert') {
 			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;

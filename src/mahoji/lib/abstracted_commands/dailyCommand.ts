@@ -1,13 +1,13 @@
-import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { roll, shuffleArr, Time, uniqueArr } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import { Time, roll, shuffleArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { SupportServer } from '../../../config';
+import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { COINS_ID, Emoji } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
-import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
@@ -155,7 +155,7 @@ export async function dailyCommand(
 		buttons.add({
 			name: answer,
 			fn: ({ interaction }) => {
-				if (question.answers.includes(answer) ? true : false) {
+				if (question.answers.includes(answer)) {
 					correctUser = interaction.user.id;
 				}
 			},

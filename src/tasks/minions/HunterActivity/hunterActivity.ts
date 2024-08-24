@@ -1,5 +1,5 @@
-import { Prisma } from '@prisma/client';
-import { randInt, Time } from 'e';
+import type { Prisma } from '@prisma/client';
+import { Time, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -9,11 +9,12 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { HunterActivityTaskOptions } from '../../../lib/types/minions';
+import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 
 const riskDeathNumbers = [
@@ -34,7 +35,8 @@ const riskDeathNumbers = [
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration } = data;
+		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
+			data;
 		const user = await mUserFetch(userID);
 		const userBank = user.bank;
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
@@ -53,11 +55,28 @@ export const hunterTask: MinionTask = {
 
 		if (!creature) return;
 
+		const crystalImpling = creature.name === 'Crystal impling';
+
+		let graceful = false;
+		if (userHasGracefulEquipped(user)) {
+			graceful = true;
+		}
+
+		const experienceScore = await user.getCreatureScore(creature.id);
+
 		let [successfulQuantity, xpReceived] = calcLootXPHunting(
 			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 			creature,
-			quantity
+			quantity,
+			usingStaminaPotion,
+			graceful,
+			experienceScore
 		);
+
+		if (crystalImpling) {
+			// Limit it to a max of 22 crystal implings per hour
+			successfulQuantity = Math.min(successfulQuantity, Math.round((21 / 60) * duration) + 1);
+		}
 
 		if (creature.wildy) {
 			let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;
@@ -95,8 +114,8 @@ export const hunterTask: MinionTask = {
 			}
 			if (gotPked && !died) {
 				if (userBank.amount('Saradomin brew(4)') >= 10 && userBank.amount('Super restore(4)') >= 5) {
-					let lostBrew = randInt(1, 10);
-					let lostRestore = randInt(1, 5);
+					const lostBrew = randInt(1, 10);
+					const lostRestore = randInt(1, 5);
 					const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
 					await transactItems({ userID: user.id, itemsToRemove: cost });
 
@@ -136,6 +155,7 @@ export const hunterTask: MinionTask = {
 				});
 			}
 		}
+
 		const loot = new Bank();
 		for (let i = 0; i < successfulQuantity - pkedQuantity; i++) {
 			loot.add(creatureTable.roll());
@@ -156,13 +176,13 @@ export const hunterTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished hunting ${
-			creature.name
-		} ${quantity}x times, due to clever creatures you missed out on ${
-			quantity - successfulQuantity
-		}x catches. ${xpStr}`;
-
-		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
+		let str = `${user}, ${user.minionName} finished hunting ${creature.name}${
+			crystalImpling
+				? '. '
+				: ` ${quantity}x times, due to clever creatures you missed out on ${
+						quantity - successfulQuantity
+					}x catches. `
+		}${xpStr}\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
 		if (gotPked && !died) {
 			str += `\n${pkStr}`;

@@ -1,5 +1,6 @@
-import { userMention } from '@discordjs/builders';
+import { userMention } from 'discord.js';
 import {
+	Time,
 	calcWhatPercent,
 	clamp,
 	increaseNumByPercent,
@@ -8,21 +9,21 @@ import {
 	randInt,
 	reduceNumByPercent,
 	roll,
-	sumArr,
-	Time
+	sumArr
 } from 'e';
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util/util';
 
+import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
-import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
-import { NexNonUniqueTable, NexUniqueTable } from './misc';
+import { formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { TeamLoot } from './TeamLoot';
+import { NexNonUniqueTable, NexUniqueTable } from './misc';
 
 const minStats: Skills = {
 	defence: 90,
@@ -30,8 +31,8 @@ const minStats: Skills = {
 	prayer: 74
 };
 
-export function nexGearStats(user: MUser) {
-	let { gear } = user;
+function nexGearStats(user: MUser) {
+	const { gear } = user;
 	const offence = calcWhatPercent(gear.range.stats.attack_ranged, 252);
 	const defence = calcWhatPercent(gear.range.stats.defence_magic, 150);
 	return {
@@ -58,7 +59,7 @@ export function checkNexUser(user: MUser): [false] | [true, string] {
 	if (!user.hasSkillReqs(minStats)) {
 		return [true, `${tag} doesn't have the skill requirements: ${formatSkillRequirements(minStats)}.`];
 	}
-	if (user.GP < 1_000_000) return [true, `${tag} needs atleast 1m GP to cover potential deaths.`];
+	if (user.GP < 1_000_000) return [true, `${tag} needs at least 1m GP to cover potential deaths.`];
 	const { offence, defence, rangeGear } = nexGearStats(user);
 	if (offence < 50) {
 		return [
@@ -123,12 +124,12 @@ interface TeamMember {
 	totalDefensivePercent: number;
 }
 
-interface NexContext {
+export interface NexContext {
 	quantity: number;
-	team: { id: string; contribution: number; deaths: number[] }[];
+	team: { id: string; contribution: number; deaths: number[]; ghost?: true }[];
 }
 
-export const purpleNexItems = resolveItems([
+const purpleNexItems = resolveItems([
 	'Nexling',
 	'Ancient hilt',
 	'Nihil horn',
@@ -143,6 +144,9 @@ export function handleNexKills({ quantity, team }: NexContext) {
 
 	for (let i = 0; i < quantity; i++) {
 		const survivors = team.filter(usr => !usr.deaths.includes(i));
+		if (survivors.length === 0) {
+			continue;
+		}
 
 		const uniqueRecipient = roll(43) ? randArrItem(survivors).id : null;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
@@ -163,18 +167,23 @@ export function handleNexKills({ quantity, team }: NexContext) {
 		}
 	}
 
+	for (const member of team) {
+		if (member.ghost) {
+			teamLoot.map.delete(member.id);
+		}
+	}
 	return teamLoot;
 }
 
 export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
-	let resultTeam: TeamMember[] = [];
+	const resultTeam: TeamMember[] = [];
 
 	for (const member of team) {
 		let { offence, defence, rangeGear } = nexGearStats(member);
 		let deathChance = 100;
-		let nexKC = await member.getKC(NEX_ID);
+		const nexKC = await member.getKC(NEX_ID);
 		const kcLearningCap = 500;
 		const kcPercent = clamp(calcWhatPercent(nexKC, kcLearningCap), 0, 100);
 		const messages: string[] = [];
@@ -194,7 +203,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		const hasRigour = member.bitfield.includes(BitField.HasDexScroll);
 		if (hasRigour) offence += 5;
 
-		let offensivePercents = [offence, clamp(calcWhatPercent(nexKC, 100), 0, 100)];
+		const offensivePercents = [offence, clamp(calcWhatPercent(nexKC, 100), 0, 100)];
 		const totalOffensivePecent = sumArr(offensivePercents) / offensivePercents.length;
 		const contribution = totalOffensivePecent;
 
@@ -247,7 +256,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 
 	lengthPerKill = clamp(lengthPerKill, Time.Minute * 6, Time.Hour);
 
-	let quantity = Math.floor(maxTripLength / lengthPerKill);
+	const quantity = Math.floor(maxTripLength / lengthPerKill);
 
 	let wipedKill: number | null = null;
 

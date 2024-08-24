@@ -1,89 +1,109 @@
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["fullTextSearch"]
-    output          = "../node_modules/@prisma/robochimp"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+  output          = "../node_modules/@prisma/robochimp"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("ROBOCHIMP_DATABASE_URL")
+  provider = "postgresql"
+  url      = env("ROBOCHIMP_DATABASE_URL")
 }
 
 model TriviaQuestion {
-    id       Int      @id @unique @default(autoincrement())
-    question String   @db.VarChar()
-    answers  String[] @db.VarChar()
+  id       Int      @id @unique @default(autoincrement())
+  question String   @db.VarChar()
+  answers  String[] @db.VarChar()
 
-    @@map("trivia_question")
+  @@map("trivia_question")
 }
 
 enum BlacklistedEntityType {
-    guild
-    user
+  guild
+  user
 }
 
 model BlacklistedEntity {
-    id     BigInt                @id @unique
-    type   BlacklistedEntityType
-    reason String?
-    date   DateTime              @default(now()) @db.Timestamp(6)
+  id     BigInt                @id @unique
+  type   BlacklistedEntityType
+  reason String?
+  date   DateTime              @default(now()) @db.Timestamp(6)
 
-    @@map("blacklisted_entity")
+  @@map("blacklisted_entity")
 }
 
 model User {
-    id         BigInt  @id @unique
-    bits       Int[]
-    github_id  Int?
-    patreon_id String?
+  id         BigInt  @id @unique
+  bits       Int[]
+  github_id  Int?
+  patreon_id String?
 
-    leagues_completed_tasks_ids Int[]
-    leagues_points_balance_osb  Int   @default(0)
-    leagues_points_balance_bso  Int   @default(0)
-    leagues_points_total        Int   @default(0)
+  migrated_user_id BigInt?
 
-    react_emoji_id String?
+  leagues_completed_tasks_ids Int[]
+  leagues_points_balance_osb  Int   @default(0)
+  leagues_points_balance_bso  Int   @default(0)
+  leagues_points_total        Int   @default(0)
 
-    osb_total_level Int?
-    bso_total_level Int?
-    osb_total_xp    BigInt?
-    bso_total_xp    BigInt?
-    osb_cl_percent  Float?
-    bso_cl_percent  Float?
-    osb_mastery     Float?
-    bso_mastery     Float?
+  react_emoji_id String?
 
-    tag Tag[]
+  osb_total_level Int?
+  bso_total_level Int?
+  osb_total_xp    BigInt?
+  bso_total_xp    BigInt?
+  osb_cl_percent  Float?
+  bso_cl_percent  Float?
+  osb_mastery     Float?
+  bso_mastery     Float?
 
-    store_bitfield Int[]
+  store_bitfield Int[]
 
-    @@map("user")
+  testing_points         Float @default(0)
+  testing_points_balance Float @default(0)
+
+  perk_tier                   Int     @default(0)
+  premium_balance_tier        Int?
+  premium_balance_expiry_date BigInt?
+
+  user_group_id String?    @db.Uuid
+  userGroup     UserGroup? @relation(fields: [user_group_id], references: [id])
+
+  tag Tag[]
+
+  @@map("user")
 }
 
 model PingableRole {
-    role_id String @id
-    name    String @unique @db.VarChar(32)
+  role_id String @id
+  name    String @unique @db.VarChar(32)
 
-    @@map("pingable_role")
+  @@map("pingable_role")
 }
 
 model Tag {
-    id      Int    @id @unique @default(autoincrement())
-    name    String @unique @db.VarChar(32)
-    content String @db.VarChar(2000)
+  id      Int    @id @unique @default(autoincrement())
+  name    String @unique @db.VarChar(32)
+  content String @db.VarChar(2000)
 
-    user_id BigInt
-    creator User   @relation(fields: [user_id], references: [id])
+  user_id BigInt
+  creator User   @relation(fields: [user_id], references: [id])
 
-    @@map("tag")
+  @@map("tag")
 }
 
 model StoreCode {
-    product_id Int
-    code       String @id @unique
+  product_id Int
+  code       String @id @unique
 
-    redeemed_at         DateTime?
-    redeemed_by_user_id String?   @db.VarChar(19)
+  redeemed_at         DateTime?
+  redeemed_by_user_id String?   @db.VarChar(19)
 
-    @@map("store_code")
+  @@map("store_code")
+}
+
+model UserGroup {
+  id String @id @default(uuid()) @db.Uuid
+
+  users User[]
+
+  @@map("user_group")
 }

@@ -1,11 +1,12 @@
 import { Monsters } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { warmGear } from '../data/filterables';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import getOSItem from '../util/getOSItem';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{
@@ -411,6 +412,31 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Wyrm.id]: 1
+			}
+		})
+	},
+	{
+		id: 34,
+		name: 'Sit Rat',
+		type: 'restriction',
+		monster: 'Scurrius',
+		desc: 'Finish off Scurrius with a ratbane weapon.',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.Scurrius.id)(data) &&
+				[resolveItems(['Bone mace', 'Bone staff', 'Bone shortbow'])].some(i => user.hasEquipped(i))
+		}
+	},
+	{
+		id: 35,
+		name: 'Scurrius Novice',
+		type: 'kill_count',
+		monster: 'Scurrius',
+		desc: 'Kill Scurrius once.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Scurrius.id]: 1
 			}
 		})
 	}

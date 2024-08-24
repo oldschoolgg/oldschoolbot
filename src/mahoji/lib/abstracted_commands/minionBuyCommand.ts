@@ -1,8 +1,7 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { ComponentType } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
-import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
 	if (user.user.minion_hasBought) return 'You already have a minion!';
@@ -14,7 +13,15 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 	});
 
 	// Ensure user has a userStats row
-	await clArrayUpdate(user, user.cl);
+	await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(user.id)
+		},
+		create: {
+			user_id: BigInt(user.id)
+		},
+		update: {}
+	});
 
 	return {
 		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
@@ -25,7 +32,7 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 
 <:patreonLogo:679334888792391703> **Patreon:** If you're able too, please consider supporting my work on Patreon, it's highly appreciated and helps me hugely <https://www.patreon.com/oldschoolbot> ❤️
 
-<:BSO:863823820435619890> **BSO:** I run a 2nd bot called BSO (Bot School Old), which you can also play, it has lots of fun and unique changes, like 5x XP and infinitely stacking clues. Type \`+bso\` for more information.
+<:BSO:863823820435619890> **BSO:** I run a 2nd bot called BSO (Bot School Old), which you can also play, it has lots of fun and unique changes, like 5x XP and infinitely stacking clues. Type \`/help\` for more information.
 
 Please click the buttons below for important links.`,
 		components: [

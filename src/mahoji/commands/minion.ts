@@ -1,35 +1,36 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import {
-	badges,
 	BitField,
 	BitFieldData,
 	FormattedCustomEmoji,
 	MAX_LEVEL,
-	minionActivityCache,
-	PerkTier
+	PerkTier,
+	minionActivityCache
 } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { calculateMastery } from '../../lib/mastery';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { AttackStyles } from '../../lib/minions/functions';
+import type { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
+import { roboChimpCache } from '../../lib/perkTier';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { MUserStats } from '../../lib/structures/MUserStats';
-import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
-import getOSItem from '../../lib/util/getOSItem';
+import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import { checkPeakTimes } from '../../lib/util/minionUtils';
@@ -46,7 +47,7 @@ import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { skillOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
 const patMessages = [
@@ -81,23 +82,10 @@ export async function getUserInfo(user: MUser) {
 	const task = minionActivityCache.get(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
-	const userBadges = user.user.badges.map(i => badges[i]);
-
-	const premiumDate = Number(user.user.premium_balance_expiry_date);
-	const premiumTier = user.user.premium_balance_tier;
-
 	const result = {
 		perkTier: user.perkTier(),
 		isBlacklisted: BLACKLISTED_USERS.has(user.id),
-		badges: userBadges,
-		mainAccount:
-			user.user.main_account !== null
-				? `${getUsername(user.user.main_account)}[${user.user.main_account}]`
-				: 'None',
-		ironmanAlts: user.user.ironman_alts.map(id => `${getUsername(id)}[${id}]`),
-		premiumBalance: `${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
-			premiumTier ? `Tier ${premiumTier}` : ''
-		}`,
+		badges: user.badgesString,
 		isIronman: user.isIronman,
 		bitfields,
 		currentTask: taskText,
@@ -109,16 +97,14 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
+	const roboCache = roboChimpCache.get(user.id);
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Current Trip:** ${taskText}
-**Perk Tier:** ${result.perkTier}
+**Perk Tier:** ${roboCache?.perk_tier ?? 'None'}
 **Blacklisted:** ${result.isBlacklisted}
-**Badges:** ${result.badges.join(' ')}
-**Main Account:** ${result.mainAccount}
-**Ironman Alts:** ${result.ironmanAlts}
-**Patron Balance:** ${result.premiumBalance}
+**Badges:** ${result.badges}
 **Ironman:** ${result.isIronman}
 **Bitfields:** ${result.bitfields}
 **Patreon Connected:** ${result.patreon}
@@ -232,7 +218,8 @@ export const minionCommand: OSBMahojiCommand = {
 					autocomplete: async (value, user) => {
 						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
-							.map(getOSItem)
+							.map(getItem)
+							.filter(notEmpty)
 							.map(i => ({ id: i.id, name: i.name }));
 
 						const botUser = await mUserFetch(user.id);

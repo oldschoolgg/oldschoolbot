@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Util } from 'oldschooljs';
 
 import { cryptoRand } from '../../../lib/util';
@@ -29,13 +29,13 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 	}
 
 	if (amount < 1_000_000) {
-		return 'You have to dice atleast 1,000,000.';
+		return 'You have to dice at least 1,000,000.';
 	}
 
 	const gp = user.GP;
 	if (amount > gp) return "You don't have enough GP.";
 	const won = roll >= 55;
-	let amountToAdd = won ? amount : -amount;
+	const amountToAdd = won ? amount : -amount;
 
 	await updateClientGPTrackSetting('gp_dice', amountToAdd);
 	await updateGPTrackSetting('gp_dice', amountToAdd, user);

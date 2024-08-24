@@ -1,11 +1,10 @@
-import { formatOrdinal, SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable, calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit';
 import { clamp, percentChance, sumArr } from 'e';
 
 import { Emoji } from '../../../lib/constants';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { calcPerHour, gaussianRandom } from '../../../lib/util';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 interface LMSGameSimulated {
@@ -76,9 +75,9 @@ export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnT
 			if (wonFight) kills++;
 			else died = true;
 		}
-		let diedPosition = gaussianRandom(2, 24 - Math.ceil(12 * experienceFactor), 5);
+		const diedPosition = gaussianRandom(2, 24 - Math.ceil(12 * experienceFactor), 5);
 
-		let position = died ? diedPosition : 1;
+		const position = died ? diedPosition : 1;
 		let points = 0;
 		if (position === 1) points += 5;
 		else if (position === 2) points += 4;

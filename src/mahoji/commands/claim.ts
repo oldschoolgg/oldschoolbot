@@ -1,21 +1,22 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BitField, Channel } from '../../lib/constants';
+import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
 import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { prisma } from '../../lib/settings/prisma';
+
 import { dateFm, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const claimables = [
 	{
 		name: 'Free T1 Perks',
 		hasRequirement: async (user: MUser): Promise<true | string> => {
 			const roboChimpUser = await roboChimpUserFetch(user.id);
-			if (roboChimpUser.osb_total_level === 2277 && roboChimpUser.bso_total_level === 3000) {
+			if (roboChimpUser.osb_total_level === 2277 && roboChimpUser.bso_total_level === BSO_MAX_TOTAL_LEVEL) {
 				return true;
 			}
 			return 'You need to be maxed in both bots (OSB and BSO) to claim this.';

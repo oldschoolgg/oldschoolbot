@@ -1,12 +1,12 @@
-import { increaseNumByPercent, randInt, roll, Time } from 'e';
+import { Time, increaseNumByPercent, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { AgilityActivityTaskOptions } from '../../lib/types/minions';
+import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -24,7 +24,7 @@ function chanceOfFailingAgilityPyramid(user: MUser) {
 export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
-		let { courseID, quantity, userID, channelID, duration, alch } = data;
+		const { courseID, quantity, userID, channelID, duration, alch } = data;
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
@@ -70,11 +70,12 @@ export const agilityTask: MinionTask = {
 		const xpReceived =
 			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
 
+		const stats = await user.fetchStats({ laps_scores: true });
 		const { laps_scores: newLapScores } = await userStatsUpdate(
 			user.id,
-			({ laps_scores }) => ({
-				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, quantity - lapsFailed)
-			}),
+			{
+				laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, quantity - lapsFailed)
+			},
 			{ laps_scores: true }
 		);
 

@@ -10,8 +10,10 @@ import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
 import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
+	NexCL,
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
 	cluesBeginnerCL,
@@ -21,13 +23,12 @@ import {
 	cluesMasterCL,
 	cluesMediumCL,
 	evilChickenOutfit,
-	NexCL,
 	temporossCL,
-	theatreOfBLoodCL,
-	theatreOfBLoodNormalCL,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
+	theatreOfBLoodCL,
+	theatreOfBLoodNormalCL,
 	wintertodtCL
 } from './data/CollectionsExport';
 import pets from './data/pets';
@@ -39,17 +40,16 @@ import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { calculateTripConsumableCost } from './util';
+import { calculateTripConsumableCost } from './util/calculateTripConsumableCost';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
-import resolveItems from './util/resolveItems';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
 	totalRuns: number;
 }
 
-export interface Finishable {
+interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];
@@ -287,14 +287,14 @@ for (const mon of monsterPairedCLs) {
 		cl: mon.cl,
 		kill: ({ accumulatedLoot }) => {
 			const cost = new Bank();
-			if (killableMonster && killableMonster.healAmountNeeded) {
+			if (killableMonster?.healAmountNeeded) {
 				cost.add('Swordfish', Math.ceil(killableMonster.healAmountNeeded / 14));
 			}
 			if (killableMonster?.itemCost) {
 				cost.add(calculateTripConsumableCost(killableMonster.itemCost, 1, killableMonster.timeToFinish));
 			}
-			let loot = mon.mon.kill(1, {});
-			if (killableMonster && killableMonster.specialLoot) {
+			const loot = mon.mon.kill(1, {});
+			if (killableMonster?.specialLoot) {
 				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1 });
 			}
 			return { loot, cost };

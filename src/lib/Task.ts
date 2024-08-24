@@ -1,7 +1,16 @@
-import { Activity, activity_type_enum } from '@prisma/client';
-import { z, ZodSchema } from 'zod';
+import type { Activity } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
+import type { ZodSchema } from 'zod';
+import { z } from 'zod';
 
 import { production } from '../config';
+import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
+import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
+import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
+import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
+import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
+import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
+import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
@@ -11,6 +20,8 @@ import { camdozaalSmithingTask } from '../tasks/minions/camdozaalActivity/camdoz
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
+import { colosseumTask } from '../tasks/minions/colosseumActivity';
+import { combatRingTask } from '../tasks/minions/combatRingActivity';
 import { constructionTask } from '../tasks/minions/constructionActivity';
 import { cookingTask } from '../tasks/minions/cookingActivity';
 import { craftingTask } from '../tasks/minions/craftingActivity';
@@ -24,11 +35,6 @@ import { fletchingTask } from '../tasks/minions/fletchingActivity';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
-import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
-import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
-import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
-import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
-import { kourendTask } from '../tasks/minions/kourendFavourActivity';
 import { mageArenaTwoTask } from '../tasks/minions/mageArena2Activity';
 import { mageArenaTask } from '../tasks/minions/mageArenaActivity';
 import { agilityArenaTask } from '../tasks/minions/minigames/agilityArenaActivity';
@@ -67,11 +73,9 @@ import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
 import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
+import { myNotesTask } from '../tasks/minions/myNotesActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
-import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
-import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
-import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
@@ -91,11 +95,11 @@ import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneAct
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
 import { minionActivityCache } from './constants';
-import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
+import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
 
-export const tasks: MinionTask[] = [
+const tasks: MinionTask[] = [
 	aerialFishingTask,
 	birdHouseTask,
 	driftNetTask,
@@ -161,7 +165,6 @@ export const tasks: MinionTask[] = [
 	pickpocketTask,
 	questingTask,
 	monsterTask,
-	kourendTask,
 	vmTask,
 	templeTrekkingTask,
 	mageTrainingTask,
@@ -180,10 +183,13 @@ export const tasks: MinionTask[] = [
 	toaTask,
 	underwaterAgilityThievingTask,
 	strongholdTask,
+	combatRingTask,
 	specificQuestTask,
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
-	camdozaalFishingTask
+	camdozaalFishingTask,
+	myNotesTask,
+	colosseumTask
 ];
 
 export async function processPendingActivities() {
@@ -193,33 +199,34 @@ export async function processPendingActivities() {
 			finish_date: production
 				? {
 						lt: new Date()
-				  }
+					}
 				: undefined
-		}
-	});
-
-	await prisma.activity.updateMany({
-		where: {
-			id: {
-				in: activities.map(i => i.id)
-			}
 		},
-		data: {
-			completed: true
-		}
+		take: 5
 	});
 
-	await Promise.all(activities.map(completeActivity));
-	return activities;
+	if (activities.length > 0) {
+		await prisma.activity.updateMany({
+			where: {
+				id: {
+					in: activities.map(i => i.id)
+				}
+			},
+			data: {
+				completed: true
+			}
+		});
+		await Promise.all(activities.map(completeActivity));
+	}
 }
-export async function syncActivityCache() {
-	const tasks = await prisma.activity.findMany({ where: { completed: false } });
 
+export const syncActivityCache = async () => {
+	const tasks = await prisma.activity.findMany({ where: { completed: false } });
 	minionActivityCache.clear();
 	for (const task of tasks) {
 		activitySync(task);
 	}
-}
+};
 
 const ActivityTaskOptionsSchema = z.object({
 	userID: z.string(),
@@ -229,17 +236,18 @@ const ActivityTaskOptionsSchema = z.object({
 	channelID: z.string()
 });
 
-export async function completeActivity(_activity: Activity) {
+async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
-	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 
 	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
+		logError(new Error('Tried to complete an already completed task.'));
+		return;
 	}
 
 	const task = tasks.find(i => i.type === activity.type)!;
 	if (!task) {
-		throw new Error('Missing task');
+		logError(new Error('Missing task'));
+		return;
 	}
 
 	modifyBusyCounter(activity.userID, 1);
@@ -248,7 +256,7 @@ export async function completeActivity(_activity: Activity) {
 			const schema = ActivityTaskOptionsSchema.and(task.dataSchema);
 			const { success } = schema.safeParse(activity);
 			if (!success) {
-				console.error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`);
+				logError(new Error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`));
 			}
 		}
 		await task.run(activity);
@@ -257,7 +265,6 @@ export async function completeActivity(_activity: Activity) {
 	} finally {
 		modifyBusyCounter(activity.userID, -1);
 		minionActivityCacheDelete(activity.userID);
-		debugLog(`Finished completing activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 	}
 }
 
@@ -275,7 +282,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.BlastFurnace,
 	activity_type_enum.Easter,
 	activity_type_enum.HalloweenEvent,
-	activity_type_enum.Revenants
+	activity_type_enum.Revenants,
+	activity_type_enum.KourendFavour
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

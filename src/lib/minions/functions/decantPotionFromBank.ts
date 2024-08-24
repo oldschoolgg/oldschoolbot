@@ -31,7 +31,7 @@ export default function decantPotionFromBank(
 
 	for (let i = 0; i < potionToDecant.items.length; i++) {
 		if (i === dose - 1) continue;
-		let qty = userBank.amount(potionToDecant.items[i]);
+		const qty = userBank.amount(potionToDecant.items[i]);
 		if (qty > 0) {
 			potionsToRemove.add(potionToDecant.items[i], qty);
 			sumOfPots += qty;

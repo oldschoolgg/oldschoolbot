@@ -1,40 +1,16 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji, Events, winterTodtPointsTable } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-
-const PointsTable = new SimpleTable<number>()
-	.add(420)
-	.add(470)
-	.add(500)
-	.add(505)
-	.add(510)
-	.add(520)
-	.add(550)
-	.add(560)
-	.add(590)
-	.add(600)
-	.add(620)
-	.add(650)
-	.add(660)
-	.add(670)
-	.add(680)
-	.add(700)
-	.add(720)
-	.add(740)
-	.add(750)
-	.add(780)
-	.add(850);
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
@@ -42,12 +18,12 @@ export const wintertodtTask: MinionTask = {
 		const { userID, channelID, quantity } = data;
 		const user = await mUserFetch(userID);
 
-		let loot = new Bank();
+		const loot = new Bank();
 
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = PointsTable.rollOrThrow();
+			const points = winterTodtPointsTable.rollOrThrow();
 			totalPoints += points;
 
 			loot.add(
@@ -98,7 +74,7 @@ export const wintertodtTask: MinionTask = {
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
-				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
+				Object.keys(Firemaking.pyromancerItems).map(i => Number.parseInt(i)),
 				true
 			)
 		) {
@@ -108,7 +84,7 @@ export const wintertodtTask: MinionTask = {
 		} else {
 			// For each pyromancer item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquipped(Number.parseInt(itemID))) {
 					const amountToAdd = Math.floor(fmXpToGive * (bonus / 100));
 					fmXpToGive += amountToAdd;
 					fmBonusXP += amountToAdd;
@@ -137,6 +113,7 @@ export const wintertodtTask: MinionTask = {
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({
+			title: `Loot From ${quantity}x Wintertodt`,
 			bank: itemsAdded,
 			user,
 			previousCL

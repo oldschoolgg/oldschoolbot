@@ -1,6 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { leagueBuyables } from '../../lib/data/leaguesBuyables';
@@ -8,7 +9,7 @@ import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { getUsername } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { doMenu } from './leaderboard';
 
 const leaguesTrophiesBuyables = [
@@ -118,14 +119,14 @@ ${leaguesTrophiesBuyables
 		}
 
 		if (options.buy_reward) {
-			let quantity = 1;
+			const quantity = 1;
 			const pointsCostMultiplier = 150;
 
 			const item = leagueBuyables.find(i => stringMatches(i.item.name, options.buy_reward?.item));
 
 			if (!item) return "That's not a valid item.";
 
-			let baseCost = item.price * pointsCostMultiplier;
+			const baseCost = item.price * pointsCostMultiplier;
 			const cost = quantity * baseCost;
 			if (roboChimpUser.leagues_points_balance_osb < cost) {
 				return `You don't have enough League Points to purchase this. You need ${cost}, but you have ${roboChimpUser.leagues_points_balance_osb}.`;
@@ -168,13 +169,17 @@ ${leaguesTrophiesBuyables
 				interaction,
 				user,
 				channelID,
-				chunk(result, 10).map(subList =>
-					subList
-						.map(
-							({ id, leagues_points_total }) =>
-								`**${getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-						)
-						.join('\n')
+				await Promise.all(
+					chunk(result, 10).map(async subList =>
+						(
+							await Promise.all(
+								subList.map(
+									async ({ id, leagues_points_total }) =>
+										`**${await getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
+								)
+							)
+						).join('\n')
+					)
 				),
 				'Leagues Points Leaderboard'
 			);

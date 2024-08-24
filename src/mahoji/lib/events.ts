@@ -1,23 +1,69 @@
-import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { DEV_SERVER_ID, production } from '../../config';
-import { cacheBadges } from '../../lib/badges';
-import { syncBlacklists } from '../../lib/blacklists';
-import { Channel, DISABLED_COMMANDS, globalConfig, META_CONSTANTS } from '../../lib/constants';
+import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
+import { ActivityType, bold, time } from 'discord.js';
+import { Channel, META_CONSTANTS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
-import { GrandExchange } from '../../lib/grandExchange';
-import { prisma } from '../../lib/settings/prisma';
 import { initTickers } from '../../lib/tickers';
-import { runTimedLoggedFn } from '../../lib/util';
-import { cacheCleanup } from '../../lib/util/cachedUserIDs';
+import { logWrapFn } from '../../lib/util';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
-import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { regenerateGiftCountCache } from '../commands/gift';
-import { cacheUsernames } from '../commands/leaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 
+export async function updateTestBotStatus(online = true) {
+	try {
+		if (globalConfig.isProduction) return;
+		const idMap: Record<string, string> = {
+			'829398443821891634': '1265571664142270464',
+			'577488230539067403': '1265582554644217977',
+			'353484579840983042': '1265582554644217977',
+			'897549995446779964': '1265582743970910259',
+			'1158785741028081696': '1265583194108067925'
+		};
+		const catChannelID = idMap[globalConfig.clientID];
+		if (!catChannelID) return;
+		const cat = await globalClient.channels.fetch(catChannelID);
+		if (!cat || !cat.isTextBased() || cat.isDMBased()) {
+			console.log('Could not find status channel');
+			return;
+		}
+
+		const emoji = online ? '🟢' : '🔴';
+		let text = '';
+		if (online) {
+			text = `${emoji} ${globalClient.user.username} is ONLINE ${emoji}
+
+Turned on ${time(new Date(), 'R')}`;
+			text = bold(text);
+		} else {
+			text = `${emoji} ${globalClient.user.username} is offline ${emoji}
+
+Turned off ${time(new Date(), 'R')}`;
+		}
+		const message = await cat.messages
+			.fetch({ limit: 5 })
+			.then(messages => messages.filter(m => m.author.id === globalClient.user!.id))
+			.then(msg => msg.first());
+		if (!message) {
+			await cat.send(text);
+		} else {
+			await message.edit(text);
+		}
+		if (online) {
+			await globalClient.user.setPresence({
+				status: 'online',
+				activities: [
+					{
+						name: `${emoji} ONLINE`,
+						type: ActivityType.Custom
+					}
+				]
+			});
+		}
+	} catch (err) {
+		console.error(err);
+	}
+}
 export async function syncCustomPrices() {
 	const clientData = await mahojiClientSettingsFetch({ custom_prices: true });
 	for (const [key, value] of Object.entries(clientData.custom_prices as ItemBank)) {
@@ -25,54 +71,30 @@ export async function syncCustomPrices() {
 	}
 }
 
-export async function onStartup() {
-	globalClient.application.commands.fetch({ guildId: production ? undefined : DEV_SERVER_ID });
-
-	// Sync disabled commands
-	const disabledCommands = await prisma.clientStorage.upsert({
-		where: {
-			id: globalConfig.clientID
-		},
-		select: { disabled_commands: true },
-		create: {
-			id: globalConfig.clientID
-		},
-		update: {}
-	});
-
-	for (const command of disabledCommands!.disabled_commands) {
-		DISABLED_COMMANDS.add(command);
-	}
-
-	// Sync blacklists
-	await syncBlacklists();
-
-	if (!production) {
-		console.log('Syncing commands locally...');
-		await bulkUpdateCommands({
-			client: globalClient.mahojiClient,
-			commands: globalClient.mahojiClient.commands.values,
-			guildID: DEV_SERVER_ID
-		});
-	}
-
-	runTimedLoggedFn('Syncing prices', syncCustomPrices);
-
-	runTimedLoggedFn('Caching badges', cacheBadges);
-	runTimedLoggedFn('Cache Usernames', cacheUsernames);
-	cacheCleanup();
-
-	runTimedLoggedFn('Sync Linked Accounts', syncLinkedAccounts);
-	runTimedLoggedFn('Init Grand Exchange', GrandExchange.init.bind(GrandExchange));
+export const onStartup = logWrapFn('onStartup', async () => {
+	const syncTestBotCommands = globalConfig.isProduction
+		? null
+		: bulkUpdateCommands({
+				client: globalClient.mahojiClient,
+				commands: Array.from(globalClient.mahojiClient.commands.values()),
+				guildID: globalConfig.testingServerID
+			});
 
 	initCrons();
 	initTickers();
 
-	await regenerateGiftCountCache();
+	const sendStartupMessage = globalConfig.isProduction
+		? sendToChannelID(Channel.GeneralChannel, {
+				content: `I have just turned on!\n\n${META_CONSTANTS.RENDERED_STR}`
+			}).catch(console.error)
+		: null;
 
-	sendToChannelID(Channel.GeneralChannel, {
-		content: `I have just turned on!
-
-${META_CONSTANTS.RENDERED_STR}`
-	}).catch(console.error);
-}
+	await Promise.all([
+		globalClient.application.commands.fetch({
+			guildId: globalConfig.isProduction ? undefined : globalConfig.testingServerID
+		}),
+		updateTestBotStatus(),
+		sendStartupMessage,
+		syncTestBotCommands
+	]);
+});

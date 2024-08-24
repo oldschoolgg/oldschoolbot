@@ -6,7 +6,7 @@ import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
+import type { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -40,7 +40,8 @@ export const fishingTask: MinionTask = {
 		quantity: z.number().min(1)
 	}),
 	async run(data: FishingActivityTaskOptions) {
-		let { fishID, quantity, userID, channelID, duration } = data;
+		const { fishID, quantity, userID, channelID, duration } = data;
+		let { flakesQuantity } = data;
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const { blessingEquipped, blessingChance } = radasBlessing(user);
@@ -96,7 +97,7 @@ export const fishingTask: MinionTask = {
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
-				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
+				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
 				true
 			)
 		) {
@@ -106,7 +107,7 @@ export const fishingTask: MinionTask = {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquipped(Number.parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -125,7 +126,7 @@ export const fishingTask: MinionTask = {
 						skillName: SkillsEnum.Agility,
 						amount: agilityXpReceived,
 						duration
-				  })
+					})
 				: '';
 		xpRes +=
 			strengthXpReceived > 0
@@ -133,7 +134,7 @@ export const fishingTask: MinionTask = {
 						skillName: SkillsEnum.Strength,
 						amount: strengthXpReceived,
 						duration
-				  })
+					})
 				: '';
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
@@ -142,7 +143,7 @@ export const fishingTask: MinionTask = {
 		const baseKarambwanji = 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		let baseMinnow = [10, 10];
 		for (const [level, quantities] of Object.entries(minnowQuantity).reverse()) {
-			if (user.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
+			if (user.skillLevel(SkillsEnum.Fishing) >= Number.parseInt(level)) {
 				baseMinnow = quantities;
 				break;
 			}
@@ -160,9 +161,14 @@ export const fishingTask: MinionTask = {
 			} else {
 				lootQuantity += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 			}
+
+			if (flakesQuantity && flakesQuantity > 0) {
+				lootQuantity += percentChance(50) ? 1 : 0;
+				flakesQuantity--;
+			}
 		}
 
-		let loot = new Bank({
+		const loot = new Bank({
 			[fish.id]: lootQuantity
 		});
 

@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const armorAndItemPacks: Createable[] = [
 	// Melee armour sets
@@ -2164,29 +2164,6 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Mystic set (dusk)')]: 1
 		}
 	},
-	// {
-	// 	name: "Unpack dagon'hai robes set",
-	// 	inputItems: {
-	// 		[itemID("Dagon'hai robes set")]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID("Dagon'hai hat")]: 1,
-	// 		[itemID("Dagon'hai robe top")]: 1,
-	// 		[itemID("Dagon'hai robe bottom")]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: "Dagon'hai robes set",
-	// 	inputItems: {
-	// 		[itemID("Dagon'hai hat")]: 1,
-	// 		[itemID("Dagon'hai robe top")]: 1,
-	// 		[itemID("Dagon'hai robe bottom")]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID("Dagon'hai robes set")]: 1
-	// 	}
-	// },
 	{
 		name: 'Unpack ancestral robes set',
 		inputItems: {
@@ -2361,82 +2338,6 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Book of war page set')]: 1
 		}
 	},
-	// twisted relichunter
-	// {
-	// 	name: 'Unpack twisted relichunter (t1) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted relichunter (t1) armour set')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted hat (t1)')]: 1,
-	// 		[itemID('Twisted coat (t1)')]: 1,
-	// 		[itemID('Twisted trousers (t1)')]: 1,
-	// 		[itemID('Twisted boots (t1)')]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: 'Twisted relichunter (t1) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted hat (t1)')]: 1,
-	// 		[itemID('Twisted coat (t1)')]: 1,
-	// 		[itemID('Twisted trousers (t1)')]: 1,
-	// 		[itemID('Twisted boots (t1)')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted relichunter (t1) armour set')]: 1
-	// 	}
-	// },
-	// {
-	// 	name: 'Unpack twisted relichunter (t2) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted relichunter (t2) armour set')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted hat (t2)')]: 1,
-	// 		[itemID('Twisted coat (t2)')]: 1,
-	// 		[itemID('Twisted trousers (t2)')]: 1,
-	// 		[itemID('Twisted boots (t2)')]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: 'Twisted relichunter (t2) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted hat (t2)')]: 1,
-	// 		[itemID('Twisted coat (t2)')]: 1,
-	// 		[itemID('Twisted trousers (t2)')]: 1,
-	// 		[itemID('Twisted boots (t2)')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted relichunter (t2) armour set')]: 1
-	// 	}
-	// },
-	// {
-	// 	name: 'Unpack twisted relichunter (t3) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted relichunter (t3) armour set')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted hat (t3)')]: 1,
-	// 		[itemID('Twisted coat (t3)')]: 1,
-	// 		[itemID('Twisted trousers (t3)')]: 1,
-	// 		[itemID('Twisted boots (t3)')]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: 'Twisted relichunter (t3) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted hat (t3)')]: 1,
-	// 		[itemID('Twisted coat (t3)')]: 1,
-	// 		[itemID('Twisted trousers (t3)')]: 1,
-	// 		[itemID('Twisted boots (t3)')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted relichunter (t3) armour set')]: 1
-	// 	}
-	// },
 	// holiday
 	{
 		name: 'Unpack partyhat set',
@@ -2572,6 +2473,10 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 	{
 		unpacked: new Bank().add('Masori mask (f)').add('Masori body (f)').add('Masori chaps (f)'),
 		packed: getOSItem('Masori armour set (f)')
+	},
+	{
+		unpacked: new Bank().add('Sunfire fanatic helm').add('Sunfire fanatic cuirass').add('Sunfire fanatic chausses'),
+		packed: getOSItem('Sunfire fanatic armour set')
 	}
 ];
 
@@ -2580,14 +2485,13 @@ for (const set of armorSetsSrc) {
 		name: set.packed.name,
 		inputItems: set.unpacked,
 		outputItems: new Bank().add(set.packed.id, 1),
-		type: 'pack',
-		noCl: true
+		type: 'pack'
 	});
 	armorAndItemPacks.push({
 		name: `Unpack ${set.packed.name}`,
 		inputItems: new Bank().add(set.packed.id, 1),
 		outputItems: set.unpacked,
-		noCl: true,
-		type: 'unpack'
+		type: 'unpack',
+		noCl: true
 	});
 }

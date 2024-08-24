@@ -1,10 +1,11 @@
 import '../globalSetup';
 
+import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
 import { vi } from 'vitest';
 
-import { globalConfig } from '../../src/lib/constants';
-import { MUserStats } from '../../src/lib/structures/MUserStats';
 import { mockMUser, mockUserMap } from './utils';
+
+global.redis = new TSRedis({ mocked: true });
 
 vi.mock('../../src/lib/settings/prisma.ts', () => ({
 	__esModule: true,
@@ -47,9 +48,6 @@ vi.mock('../../src/lib/patreon', async () => {
 	};
 });
 
-export const mockPatreonWebhookSecret = 'test';
-globalConfig.patreonWebhookSecret = mockPatreonWebhookSecret;
-
 vi.mock('../../src/lib/settings/minigames.ts', async () => {
 	const actual: any = await vi.importActual('../../src/lib/settings/minigames.ts');
 	return {
@@ -57,10 +55,3 @@ vi.mock('../../src/lib/settings/minigames.ts', async () => {
 		getMinigameEntity: async () => ({})
 	};
 });
-
-// @ts-ignore mock
-MUserStats.fromID = async () => {
-	return new MUserStats({
-		user_id: ''
-	} as any);
-};

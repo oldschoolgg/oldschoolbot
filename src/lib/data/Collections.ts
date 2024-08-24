@@ -1,14 +1,15 @@
-import { AttachmentBuilder } from 'discord.js';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import { Bank, Clues, Monsters } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
-import Monster from 'oldschooljs/dist/structures/Monster';
-import { table } from 'table';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
-import { ClueTier, ClueTiers } from '../clues/clueTiers';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { resolveItems } from 'oldschooljs/dist/util/util';
+import type { ClueTier } from '../clues/clueTiers';
+import { ClueTiers } from '../clues/clueTiers';
 import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
-import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
+import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
 import { sepulchreFloors } from '../minions/data/sepulchre';
 import {
 	EasyEncounterLoot,
@@ -22,10 +23,10 @@ import { allFarmingItems } from '../skilling/skills/farming';
 import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
-import { fetchStatsForCL, stringMatches } from '../util';
-import resolveItems from '../util/resolveItems';
 import { shuffleRandom } from '../util/smallUtils';
+import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {
+	NexCL,
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
@@ -68,7 +69,6 @@ import {
 	fightCavesCL,
 	fishingTrawlerCL,
 	forestryCL,
-	FormatProgressFunction,
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
@@ -80,10 +80,7 @@ import {
 	guardiansOfTheRiftCL,
 	hallowedSepulchreCL,
 	hesporiCL,
-	ICollection,
-	ILeftListStatus,
 	implingsCL,
-	IToReturnCollection,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
 	krakenCL,
@@ -96,7 +93,7 @@ import {
 	monkeyBackpacksCL,
 	motherlodeMineCL,
 	muspahCL,
-	NexCL,
+	myNotesCL,
 	oborCL,
 	pestControlCL,
 	questCL,
@@ -115,13 +112,13 @@ import {
 	spiritAnglerOutfit,
 	templeTrekkingCL,
 	temporossCL,
-	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theLeviathanCL,
 	theNightmareCL,
-	thermonuclearSmokeDevilCL,
 	theWhispererCL,
+	theatreOfBLoodCL,
+	thermonuclearSmokeDevilCL,
 	titheFarmCL,
 	toaCL,
 	troubleBrewingCL,
@@ -143,7 +140,7 @@ function kcProg(mon: Monster): FormatProgressFunction {
 }
 
 function mgProg(minigameName: MinigameName): FormatProgressFunction {
-	return ({ minigames }) => `${minigames[minigameName]} KC`;
+	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
 function skillProg(skillName: SkillsEnum): FormatProgressFunction {
@@ -157,7 +154,8 @@ function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
 				const tier = ClueTiers.find(_tier => _tier.name === i)!;
 				return `${stats.openableScores.amount(tier.id)} ${tier.name} Opens`;
 			})
-			.filter(notEmpty);
+			.filter(notEmpty)
+			.join(', ');
 	};
 }
 
@@ -317,6 +315,25 @@ export const allCollectionLogs: ICollection = {
 				items: fightCavesCL,
 				fmtProg: kcProg(Monsters.TzTokJad)
 			},
+			'Fortis Colosseum': {
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'colosseum')!.score
+				},
+				alias: ['colosseum'],
+				items: resolveItems([
+					'Smol heredit',
+					"Dizana's quiver (uncharged)",
+					'Sunfire fanatic cuirass',
+					'Sunfire fanatic chausses',
+					'Sunfire fanatic helm',
+					'Echo crystal',
+					'Tonalztics of ralos (uncharged)',
+					'Sunfire splinters',
+					'Uncut onyx'
+				]),
+				fmtProg: ({ minigames }) => `${minigames.colosseum} KC`
+			},
 			'The Gauntlet': {
 				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
 				kcActivity: {
@@ -353,6 +370,10 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: kcProg(Monsters.Hespori)
 			},
 			'The Inferno': {
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'inferno')!.score
+				},
 				alias: ['zuk', 'inferno'],
 				items: theInfernoCL,
 				fmtProg: ({ minigames }) => `${minigames.inferno} KC`
@@ -433,6 +454,12 @@ export const allCollectionLogs: ICollection = {
 				items: scorpiaCL,
 				fmtProg: kcProg(Monsters.Scorpia)
 			},
+			Scurrius: {
+				alias: Monsters.Scurrius.aliases,
+				allItems: Monsters.Scurrius.allItems,
+				items: resolveItems(['Scurry', "Scurrius' spine"]),
+				fmtProg: kcProg(Monsters.Scurrius)
+			},
 			Skotizo: {
 				alias: Monsters.Skotizo.aliases,
 				allItems: Monsters.Skotizo.allItems,
@@ -501,7 +528,7 @@ export const allCollectionLogs: ICollection = {
 	},
 	Raids: {
 		activities: {
-			"Chamber's of Xeric": {
+			'Chambers of Xeric': {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
 					Default: async (_, minigameScores) =>
@@ -532,9 +559,9 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: {
 					Default: async (_, minigameScores) =>
 						minigameScores.find(i => i.minigame.column === 'tombs_of_amascut')!.score,
-					Entry: async (_, __, { stats }) => stats.getToaKCs().entryKC,
-					Normal: async (_, __, { stats }) => stats.getToaKCs().normalKC,
-					Expert: async (_, __, { stats }) => stats.getToaKCs().expertKC
+					Entry: async (_, __, stats) => stats.getToaKCs().entryKC,
+					Normal: async (_, __, stats) => stats.getToaKCs().normalKC,
+					Expert: async (_, __, stats) => stats.getToaKCs().expertKC
 				},
 				items: toaCL,
 				isActivity: true,
@@ -806,7 +833,7 @@ export const allCollectionLogs: ICollection = {
 			"Shades of Mort'ton": {
 				items: shadesOfMorttonCL,
 				isActivity: true,
-				fmtProg: () => '0 KC'
+				fmtProg: mgProg('shades_of_morton')
 			},
 			'Soul Wars': {
 				alias: ['soul wars', 'sw'],
@@ -888,7 +915,7 @@ export const allCollectionLogs: ICollection = {
 				items: cyclopsCL
 			},
 			Forestry: {
-				alias: ['forestry'],
+				alias: ['forestry', 'forest', 'for'],
 				fmtProg: skillProg(SkillsEnum.Woodcutting),
 				allItems: forestryCL,
 				items: forestryCL
@@ -915,6 +942,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['mlm'],
 				items: motherlodeMineCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
+			},
+			'My Notes': {
+				alias: ['my notes'],
+				items: myNotesCL
 			},
 			'Random Events': {
 				alias: ['random'],
@@ -1078,9 +1109,9 @@ export const allCollectionLogs: ICollection = {
 			},
 			Creatables: {
 				counts: false,
-				items: Createables.filter(i => i.noCl !== true)
-					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
-					.flat()
+				items: Createables.filter(i => i.noCl !== true).flatMap(i =>
+					new Bank(i.outputItems).items().map(i => i[0].id)
+				)
 			},
 			Leagues: {
 				counts: false,
@@ -1145,7 +1176,7 @@ export const allDroppedItems = uniqueArr([
 		)
 		.flat(100),
 	...Object.values(Monsters)
-		.map(m => (m && m.allItems ? m.allItems : []))
+		.map(m => (m?.allItems ? m.allItems : []))
 		.flat(100)
 ]);
 
@@ -1167,7 +1198,7 @@ export const allCLItemsFiltered = [
 	)
 ];
 
-export const overallPlusItems = [
+const overallPlusItems = [
 	...new Set(
 		Object.entries(allCollectionLogs)
 			.filter(i => i[0] !== 'Discontinued')
@@ -1193,13 +1224,8 @@ export function calcCLDetails(user: MUser | Bank) {
 }
 
 // Get the left list to be added to the cls
-function getLeftList(
-	userBank: Bank,
-	checkCategory: string,
-	allItems: boolean = false,
-	removeCoins = false
-): ILeftListStatus {
-	let leftList: ILeftListStatus = {};
+function getLeftList(userBank: Bank, checkCategory: string, allItems = false, removeCoins = false): ILeftListStatus {
+	const leftList: ILeftListStatus = {};
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (category === checkCategory) {
 			// Sort list by alphabetical order
@@ -1221,22 +1247,7 @@ function getLeftList(
 	return leftList;
 }
 
-export interface UserStatsDataNeededForCL {
-	sacrificedBank: Bank;
-	titheFarmsCompleted: number;
-	lapsScores: ItemBank;
-	openableScores: Bank;
-	kcBank: ItemBank;
-	highGambles: number;
-	gotrRiftSearches: number;
-	stats: MUserStats;
-}
-
-export function getBank(
-	user: MUser,
-	type: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | MUserStats | null
-) {
+function getBank(user: MUser, type: 'sacrifice' | 'bank' | 'collection' | 'temp', userStats: MUserStats | null) {
 	switch (type) {
 		case 'collection':
 			return new Bank(user.cl);
@@ -1254,46 +1265,39 @@ export function getBank(
 export function getTotalCl(
 	user: MUser,
 	logType: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | MUserStats | null
+	userStats: MUserStats | null
 ) {
 	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
 }
 
-export function getPossibleOptions() {
-	const roles: [string, string, string][] = [];
-	const categories: [string, string, string][] = [];
-	const activities: [string, string, string][] = [];
-
-	// Get categories and enabled activities
-	for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		categories.push(['General', category, entries.alias ? entries.alias.join(', ') : '']);
-		for (const [activityName, attributes] of Object.entries(entries.activities)) {
-			categories.push(['Activity', activityName, attributes.alias ? attributes.alias.join(', ') : '']);
-		}
-	}
-
-	// get monsters
-	for (const monster of effectiveMonsters) {
-		categories.push(['Monsters', monster.name, monster.aliases ? monster.aliases.join(', ') : '']);
-	}
-	const normalTable = table([['Type', 'name: ', 'Alias'], ...[...categories, ...activities, ...roles]]);
-	return new AttachmentBuilder(Buffer.from(normalTable), { name: 'possible_logs.txt' });
-}
-
-export function getCollectionItems(collection: string, allItems = false, removeCoins = false): number[] {
+export function getCollectionItems(
+	collection: string,
+	allItems: boolean,
+	removeCoins: boolean,
+	returnResolvedCl: boolean
+): { resolvedCl: string; items: number[] };
+export function getCollectionItems(collection: string, allItems?: boolean, removeCoins?: boolean): number[];
+export function getCollectionItems(
+	collection: string,
+	allItems = false,
+	removeCoins = false,
+	returnResolvedCl?: boolean
+): { resolvedCl: string; items: number[] } | number[] {
+	const returnValue = (clName: string, items: number[]) => {
+		return returnResolvedCl !== undefined ? { resolvedCl: clName.toLowerCase(), items } : items;
+	};
 	if (collection === 'overall+') {
-		return overallPlusItems;
+		return returnValue(collection, overallPlusItems);
 	}
 	if (['overall', 'all'].some(s => stringMatches(collection, s))) {
-		return allCLItemsFiltered;
+		return returnValue('overall', allCLItemsFiltered);
 	}
 
 	let _items: number[] = [];
+	let _clName = '';
 	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		if (
-			stringMatches(category, collection) ||
-			(entries.alias && entries.alias.some(a => stringMatches(a, collection)))
-		) {
+		if (stringMatches(category, collection) || entries.alias?.some(a => stringMatches(a, collection))) {
+			_clName = category;
 			_items = uniqueArr(
 				Object.values(entries.activities)
 					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
@@ -1303,10 +1307,8 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 			break;
 		}
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
-			if (
-				stringMatches(activityName, collection) ||
-				(attributes.alias && attributes.alias.find(a => stringMatches(a, collection)))
-			) {
+			if (stringMatches(activityName, collection) || attributes.alias?.find(a => stringMatches(a, collection))) {
+				_clName = activityName;
 				_items = [
 					...new Set([...attributes.items, ...(allItems && attributes.allItems ? attributes.allItems : [])])
 				];
@@ -1320,11 +1322,12 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 			[m.name, ...m.aliases].some(name => stringMatches(name, collection))
 		);
 		if (_monster) {
-			_items = uniqueArr(Monsters.get(_monster!.id)!.allItems);
+			_clName = _monster.name;
+			_items = uniqueArr(Monsters.get(_monster?.id)!.allItems);
 		}
 	}
 	if (removeCoins && _items.includes(995)) _items = removeFromArr(_items, 995);
-	return _items;
+	return returnValue(_clName, _items);
 }
 
 function getUserClData(usarBank: ItemBank, clItems: number[]): [number, number] {
@@ -1343,7 +1346,7 @@ for (const mon of killableMonsters) allClNames.push(mon.name);
 export async function getCollection(options: {
 	user: MUser;
 	search: string;
-	flags: { [key: string]: string | number };
+	flags: { [key: string]: string | number | undefined };
 	logType?: 'collection' | 'sacrifice' | 'bank' | 'temp';
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
@@ -1352,7 +1355,7 @@ export async function getCollection(options: {
 	if (logType === undefined) logType = 'collection';
 
 	const minigameScores = await user.fetchMinigameScores();
-	const userStats = await fetchStatsForCL(user);
+	const userStats = await MUserStats.fromID(user.id);
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
@@ -1360,7 +1363,7 @@ export async function getCollection(options: {
 		flags.missing = 'missing';
 	}
 
-	if (Boolean(flags.missing)) {
+	if (flags.missing) {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
 	}
 
@@ -1390,7 +1393,7 @@ export async function getCollection(options: {
 	}
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		if (stringMatches(category, search) || (entries.alias && entries.alias.some(a => stringMatches(a, search)))) {
+		if (stringMatches(category, search) || entries.alias?.some(a => stringMatches(a, search))) {
 			return {
 				category,
 				name: category,
@@ -1403,10 +1406,7 @@ export async function getCollection(options: {
 			};
 		}
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
-			if (
-				stringMatches(activityName, search) ||
-				(attributes.alias && attributes.alias.find(a => stringMatches(a, search)))
-			) {
+			if (stringMatches(activityName, search) || attributes.alias?.find(a => stringMatches(a, search))) {
 				let userKC: Record<string, number> | undefined = { Default: 0 };
 
 				// Defaults to the activity name
@@ -1472,9 +1472,9 @@ export async function getCollection(options: {
 	return false;
 }
 
-export const allCollectionLogsFlat = Object.values(allCollectionLogs)
-	.map(i => Object.entries(i.activities).map(entry => ({ ...entry[1], name: entry[0] })))
-	.flat();
+export const allCollectionLogsFlat = Object.values(allCollectionLogs).flatMap(i =>
+	Object.entries(i.activities).map(entry => ({ ...entry[1], name: entry[0] }))
+);
 
 export function isCLItem(item: Item | number | [Item, number]): boolean {
 	if (Array.isArray(item)) return isCLItem(item[0]);
@@ -1482,8 +1482,6 @@ export function isCLItem(item: Item | number | [Item, number]): boolean {
 }
 
 export const bossCLItems = Object.values({
-	...allCollectionLogs['Bosses'].activities,
-	...allCollectionLogs['Raids'].activities
-})
-	.map(i => i.items)
-	.flat();
+	...allCollectionLogs.Bosses.activities,
+	...allCollectionLogs.Raids.activities
+}).flatMap(i => i.items);
