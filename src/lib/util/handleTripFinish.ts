@@ -25,7 +25,7 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
-import { mahojiLevelUp, skillLevelUpImages } from './levelUpImage';
+import { mahojiLevelUp, type skillLevelUpImages } from './levelUpImage';
 import { sendToChannelID } from './webhook';
 
 const collectors = new Map<string, MessageCollector>();
@@ -129,12 +129,15 @@ export async function handleTripFinish(
 		// Find the skill name
 		const skillStartIndex = message.content.indexOf('Congratulations! Your') + 'Congratulations! Your '.length;
 		const skillEndIndex = message.content.indexOf(' level is now');
-		const skillString = message.content.substring(skillStartIndex, skillEndIndex).trim().toLowerCase() as keyof typeof skillLevelUpImages;
+		const skillString = message.content
+			.substring(skillStartIndex, skillEndIndex)
+			.trim()
+			.toLowerCase() as keyof typeof skillLevelUpImages;
 
 		// Find the level
 		const lvlIndex = message.content.indexOf('level is now') + 'level is now'.length + 1;
 		const lvlString = message.content.substring(lvlIndex).trim();
-		const lvl = parseInt(lvlString); // Extract only the number part
+		const lvl = Number.parseInt(lvlString); // Extract only the number part
 
 		const lvlImage = await mahojiLevelUp({ lvl, skill: skillString });
 		!message.files ? (message.files = [lvlImage.file.attachment]) : message.files.push(lvlImage.file.attachment);
