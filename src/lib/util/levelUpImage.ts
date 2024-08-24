@@ -1,9 +1,9 @@
 import * as fs from 'node:fs';
-import { Canvas } from '@napi-rs/canvas';
+import { Canvas, loadImage } from '@napi-rs/canvas';
 import { AttachmentBuilder } from 'discord.js';
 
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
+import { printWrappedText } from './canvasUtil';
 
 export const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const fishingLevelUpImage = fs.readFileSync('./src/lib/resources/images/skillLevelUpImages/fishing.png');
@@ -60,8 +60,8 @@ export async function newLevelUpImage({ lvl, skill }: { lvl: number; skill: keyo
 	const canvas = new Canvas(518, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-	const levelUpImage = await canvasImageFromBuffer(skillLevelUpImages[skill]);
-	const bg = await canvasImageFromBuffer(textBoxFile);
+	const levelUpImage = await loadImage(skillLevelUpImages[skill]);
+	const bg = await loadImage(textBoxFile);
 	const skillName = toTitleCase(skill);
 	ctx.drawImage(bg, 0, 0);
 	ctx.drawImage(
