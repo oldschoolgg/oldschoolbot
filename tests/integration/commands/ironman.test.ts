@@ -1,19 +1,19 @@
-import { miniID, randomSnowflake } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
+import { miniID } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { prisma } from '../../../src/lib/settings/prisma';
 import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand';
+import { mockedId } from '../util';
 
 describe('Ironman Command', () => {
 	async function createUserWithEverything(userId: string, userData: Partial<Prisma.UserCreateInput> = {}) {
-		await prisma.user.create({
+		await global.prisma!.user.create({
 			data: { id: userId, skills_agility: 100_000_000, skills_attack: 100_000_000, ...userData }
 		});
-		await prisma.newUser.create({ data: { id: userId } });
-		const activity = await prisma.activity.create({
+		await global.prisma!.newUser.create({ data: { id: userId } });
+		const activity = await global.prisma!.activity.create({
 			data: {
 				user_id: BigInt(userId),
 				start_date: new Date(),
@@ -27,11 +27,11 @@ describe('Ironman Command', () => {
 			}
 		});
 		await Promise.all([
-			prisma.botItemSell.create({ data: { user_id: userId, item_id: 1, quantity: 1, gp_received: 1 } }),
-			prisma.pinnedTrip.create({
+			global.prisma!.botItemSell.create({ data: { user_id: userId, item_id: 1, quantity: 1, gp_received: 1 } }),
+			global.prisma!.pinnedTrip.create({
 				data: { user_id: userId, id: miniID(10), activity_id: activity.id, activity_type: 'Mining' }
 			}),
-			prisma.farmedCrop.create({
+			global.prisma!.farmedCrop.create({
 				data: {
 					user_id: userId,
 					date_planted: new Date(),
@@ -41,7 +41,7 @@ describe('Ironman Command', () => {
 					paid_for_protection: false
 				}
 			}),
-			prisma.slayerTask.create({
+			global.prisma!.slayerTask.create({
 				data: {
 					user_id: userId,
 					monster_id: 1,
@@ -51,12 +51,12 @@ describe('Ironman Command', () => {
 					skipped: false
 				}
 			}),
-			prisma.playerOwnedHouse.create({ data: { user_id: userId } }),
-			prisma.minigame.create({ data: { user_id: userId } }),
-			prisma.xPGain.create({ data: { user_id: BigInt(userId), skill: 'agility', xp: 1 } }),
-			prisma.stashUnit.create({ data: { user_id: BigInt(userId), stash_id: 1, has_built: false } }),
-			prisma.userStats.create({ data: { user_id: BigInt(userId) } }),
-			prisma.historicalData.create({
+			global.prisma!.playerOwnedHouse.create({ data: { user_id: userId } }),
+			global.prisma!.minigame.create({ data: { user_id: userId } }),
+			global.prisma!.xPGain.create({ data: { user_id: BigInt(userId), skill: 'agility', xp: 1 } }),
+			global.prisma!.stashUnit.create({ data: { user_id: BigInt(userId), stash_id: 1, has_built: false } }),
+			global.prisma!.userStats.create({ data: { user_id: BigInt(userId) } }),
+			global.prisma!.historicalData.create({
 				data: {
 					user_id: userId,
 					GP: 100_000,
@@ -70,7 +70,7 @@ describe('Ironman Command', () => {
 	}
 
 	test('Should reset everything', async () => {
-		const userId = randomSnowflake();
+		const userId = mockedId();
 		await createUserWithEverything(userId);
 
 		const result = await ironmanCommand(await mUserFetch(userId), null, false);
@@ -83,23 +83,23 @@ describe('Ironman Command', () => {
 		expect(user.bank.equals(new Bank())).toEqual(true);
 		expect(user.cl.equals(new Bank())).toEqual(true);
 
-		expect(await prisma.activity.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
-		expect(await prisma.botItemSell.count({ where: { user_id: userId } })).toEqual(0);
-		expect(await prisma.pinnedTrip.count({ where: { user_id: userId } })).toEqual(0);
-		expect(await prisma.farmedCrop.count({ where: { user_id: userId } })).toEqual(0);
-		expect(await prisma.slayerTask.count({ where: { user_id: userId } })).toEqual(0);
-		expect(await prisma.playerOwnedHouse.count({ where: { user_id: userId } })).toEqual(0);
-		expect(await prisma.minigame.count({ where: { user_id: userId } })).toEqual(0);
-		expect(await prisma.xPGain.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
-		expect(await prisma.stashUnit.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
-		expect(await prisma.historicalData.count({ where: { user_id: userId } })).toEqual(0);
-		const userStats = await prisma.userStats.findFirst({ where: { user_id: BigInt(userId) } });
+		expect(await global.prisma!.activity.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
+		expect(await global.prisma!.botItemSell.count({ where: { user_id: userId } })).toEqual(0);
+		expect(await global.prisma!.pinnedTrip.count({ where: { user_id: userId } })).toEqual(0);
+		expect(await global.prisma!.farmedCrop.count({ where: { user_id: userId } })).toEqual(0);
+		expect(await global.prisma!.slayerTask.count({ where: { user_id: userId } })).toEqual(0);
+		expect(await global.prisma!.playerOwnedHouse.count({ where: { user_id: userId } })).toEqual(0);
+		expect(await global.prisma!.minigame.count({ where: { user_id: userId } })).toEqual(0);
+		expect(await global.prisma!.xPGain.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
+		expect(await global.prisma!.stashUnit.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
+		expect(await global.prisma!.historicalData.count({ where: { user_id: userId } })).toEqual(0);
+		const userStats = await global.prisma!.userStats.findFirst({ where: { user_id: BigInt(userId) } });
 		expect(userStats?.cl_array).toEqual(undefined);
 		expect(userStats?.cl_array_length).toEqual(undefined);
 	});
 
 	test('Should de-iron', async () => {
-		const userId = randomSnowflake();
+		const userId = mockedId();
 		await createUserWithEverything(userId, { minion_ironman: true });
 		const initialUser = await mUserFetch(userId);
 		expect(initialUser.isIronman).toEqual(true);

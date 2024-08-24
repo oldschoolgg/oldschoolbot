@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -63,6 +63,21 @@ export const soulWarsImbueables = [
 	{
 		input: getOSItem('Hydra slayer helmet'),
 		output: getOSItem('Hydra slayer helmet (i)'),
+		tokens: 500
+	},
+	{
+		input: getOSItem('Tztok slayer helmet'),
+		output: getOSItem('Tztok slayer helmet (i)'),
+		tokens: 500
+	},
+	{
+		input: getOSItem('Vampyric slayer helmet'),
+		output: getOSItem('Vampyric slayer helmet (i)'),
+		tokens: 500
+	},
+	{
+		input: getOSItem('Tzkal slayer helmet'),
+		output: getOSItem('Tzkal slayer helmet (i)'),
 		tokens: 500
 	},
 	{ input: getOSItem('Salve amulet'), output: getOSItem('Salve amulet(i)'), tokens: 320 },
@@ -149,7 +164,7 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 	if (!quantity) {
 		quantity = 1;
 	}
-	if (!Number.isNaN(parseInt(possibleItemName[0]))) {
+	if (!Number.isNaN(Number.parseInt(possibleItemName[0]))) {
 		quantity = Number(possibleItemName.shift());
 	}
 

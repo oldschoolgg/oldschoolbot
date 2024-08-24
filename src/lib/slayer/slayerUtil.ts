@@ -1,69 +1,86 @@
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
-import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import { Bank, Monsters } from 'oldschooljs';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
-import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
+import { resolveItems } from 'oldschooljs/dist/util/util';
+import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import { PvMMethod } from '../constants';
+import type { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
-import { KillableMonster } from '../minions/types';
-import { prisma } from '../settings/prisma';
+import type { KillableMonster } from '../minions/types';
+
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
-import { bankHasItem, roll, stringMatches } from '../util';
-import itemID from '../util/itemID';
+import { roll, stringMatches } from '../util';
 import { logError } from '../util/logError';
-import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
-import { bossTasks } from './tasks/bossTasks';
-import { AssignableSlayerTask, SlayerMaster } from './types';
+import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
+import type { AssignableSlayerTask, SlayerMaster } from './types';
 
 export enum SlayerMasterEnum {
-	Reserved,
-	Turael,
-	Mazchna,
-	Vannaka,
-	Chaeldar,
-	Konar,
-	Nieve,
-	Duradel
+	Reserved = 0,
+	Turael = 1,
+	Mazchna = 2,
+	Vannaka = 3,
+	Chaeldar = 4,
+	Konar = 5,
+	Nieve = 6,
+	Duradel = 7
 }
 
-export interface DetermineBoostParams {
+interface DetermineBoostParams {
 	cbOpts: CombatOptionsEnum[];
 	user: MUser;
 	monster: KillableMonster;
-	method?: PvMMethod | null;
+	methods?: PvMMethod[] | null;
 	isOnTask?: boolean;
+	wildyBurst?: boolean;
 }
-export function determineBoostChoice(params: DetermineBoostParams) {
-	let boostChoice = 'none';
+export function determineCombatBoosts(params: DetermineBoostParams) {
+	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
+	const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
 
-	if (params.method && params.method === 'none') {
-		return boostChoice;
-	}
-	if (params.method && params.method === 'chinning') {
-		boostChoice = 'chinning';
-	} else if (params.method && params.method === 'barrage') {
-		boostChoice = 'barrage';
-	} else if (params.method && params.method === 'burst') {
-		boostChoice = 'burst';
-	} else if (params.method && params.method === 'cannon') {
-		boostChoice = 'cannon';
-	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) && params.monster!.canBarrage) {
-		boostChoice = 'barrage';
-	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) && params.monster!.canBarrage) {
-		boostChoice = 'burst';
-	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
-		boostChoice = 'cannon';
+	// check if user has cannon combat option turned on
+	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
+		boostMethods.includes('cannon') ? null : boostMethods.push('cannon');
 	}
 
-	if (boostChoice === 'barrage' && params.user.skillLevel(SkillsEnum.Magic) < 94) {
-		boostChoice = 'burst';
+	// check for special burst case under wildyBurst variable
+	if (params.wildyBurst) {
+		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+			boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
+		}
+		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+			boostMethods.includes('burst') ? null : boostMethods.push('burst');
+		}
 	}
-	return boostChoice;
+
+	// check if the monster can be barraged
+	if (params.monster.canBarrage) {
+		// check if the monster exists in catacombs
+		if (params.monster.existsInCatacombs) {
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+				boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
+			}
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+				boostMethods.includes('burst') ? null : boostMethods.push('burst');
+			}
+		} else if (!params.monster.cannonMulti) {
+			// prevents cases such as: cannoning in singles but receiving multi combat bursting boost
+			return boostMethods;
+		} else {
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+				boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
+			}
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+				boostMethods.includes('burst') ? null : boostMethods.push('burst');
+			}
+		}
+	}
+
+	return boostMethods;
 }
 
 export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: MUser) {
@@ -91,7 +108,7 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 	return basePoints;
 }
 
-export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
+function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 	let totalweight = 0;
 	for (let i = 0; i < filteredTasks.length; i++) {
 		totalweight += filteredTasks[i].weight;
@@ -109,7 +126,7 @@ export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 		}
 	}
 
-	let task = filteredTasks[result];
+	const task = filteredTasks[result];
 
 	return task;
 }
@@ -122,12 +139,7 @@ export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	);
 }
 
-export function userCanUseTask(
-	user: MUser,
-	task: AssignableSlayerTask,
-	master: SlayerMaster,
-	allowBossTasks: boolean = false
-) {
+function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerMaster, allowBossTasks = false) {
 	if (task.isBoss && !allowBossTasks) return false;
 	if (task.dontAssign) return false;
 	const myLastTask = user.user.slayer_last_task;
@@ -142,7 +154,7 @@ export function userCanUseTask(
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
-	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank.bank, itemID('Brittle key'))) return false;
+	if (lmon === 'grotesque guardians' && !user.bank.has('Brittle key')) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
 	if (lmon === 'mithril dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe)) return false;
@@ -161,6 +173,12 @@ export function userCanUseTask(
 		!myUnlocks.includes(SlayerTaskUnlocksEnum.Basilocked)
 	)
 		return false;
+	if (
+		(lmon === 'dust devil' || lmon === 'greater nechryael' || lmon === 'abyssal demon' || lmon === 'jelly') &&
+		lmast === 'krystilia' &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.IWildyMoreSlayer)
+	)
+		return false;
 	return true;
 }
 
@@ -168,6 +186,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
 	let bossTask = false;
+	let wildyBossTask = false;
 	if (
 		_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
 		(master.name.toLowerCase() === 'konar quo maten' ||
@@ -179,21 +198,33 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		bossTask = true;
 	}
 
+	if (_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8 && roll(25)) {
+		wildyBossTask = true;
+	}
+
 	let assignedTask: AssignableSlayerTask | null = null;
+
 	if (bossTask) {
 		const baseBossTasks = bossTasks.filter(t => userCanUseTask(_user, t, master, true));
 		if (baseBossTasks.length > 0) {
 			assignedTask = weightedPick(baseBossTasks);
-		} else {
-			assignedTask = weightedPick(baseTasks);
 		}
-	} else {
+	}
+
+	if (wildyBossTask) {
+		const baseWildyBossTasks = wildernessBossTasks.filter(t => userCanUseTask(_user, t, master, true));
+		if (baseWildyBossTasks.length > 0) {
+			assignedTask = weightedPick(baseWildyBossTasks);
+		}
+	}
+
+	if (assignedTask === null) {
 		assignedTask = weightedPick(baseTasks);
 	}
 
 	const newUser = await getNewUser(_user.id);
 
-	let maxQuantity = assignedTask!.amount[1];
+	let maxQuantity = assignedTask?.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
 		for (const tier of objectKeys(CombatAchievements)) {
 			if (_user.hasCompletedCATier(tier)) {
@@ -202,30 +233,39 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		}
 	}
 
-	const quantity = randInt(assignedTask!.amount[0], maxQuantity);
+	const quantity = randInt(assignedTask?.amount[0], maxQuantity);
 	const currentTask = await prisma.slayerTask.create({
 		data: {
 			user_id: newUser.id,
 			quantity,
 			quantity_remaining: quantity,
 			slayer_master_id: master.id,
-			monster_id: assignedTask!.monster.id,
+			monster_id: assignedTask?.monster.id,
 			skipped: false
 		}
 	});
 	await _user.update({
-		slayer_last_task: assignedTask!.monster.id
+		slayer_last_task: assignedTask?.monster.id
 	});
 
 	return { currentTask, assignedTask };
 }
 
-export function calcMaxBlockedTasks(user: MUser) {
+export async function calcMaxBlockedTasks(user: MUser) {
 	const qps = user.QP;
-	// 6 Blocks total 5 for 250 qps, + 1 for lumby.
-	// For now we're do 1 free + 1 for every 50 qps.
-	return Math.min(1 + Math.floor(qps / 50), 6);
+	let blocks = 0;
+	const [hasLumbyDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.elite);
+	if (hasLumbyDiary) {
+		blocks += 1;
+	}
+	blocks += Math.floor(qps / 50);
+
+	// Limit blocks to 7 due to BSO quest points
+	blocks = Math.min(blocks, 7);
+
+	return blocks;
 }
+
 export function getCommonTaskName(task: Monster) {
 	let commonName = task.name;
 	switch (task.id) {
@@ -257,6 +297,12 @@ export function getCommonTaskName(task: Monster) {
 		case Monsters.TzHaarKet.id:
 			commonName = 'TzHaar';
 			break;
+		case Monsters.RevenantImp.id:
+			commonName = 'Revenant';
+			break;
+		case Monsters.DagannothPrime.id:
+			commonName = 'Dagannoth Kings';
+			break;
 		default:
 	}
 	if (commonName !== 'TzHaar' && !commonName.endsWith('s')) commonName += 's';
@@ -283,13 +329,18 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	}
 
 	const slayerMaster = slayerMasters.find(master => master.id === currentTask.slayer_master_id);
-	const assignedTask = slayerMaster!.tasks.find(m => m.monster.id === currentTask.monster_id)!;
+	const assignedTask = slayerMaster?.tasks.find(m => m.monster.id === currentTask.monster_id);
 
 	if (!assignedTask || !slayerMaster) {
 		logError(
 			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}`,
 			{ userID: id }
 		);
+		// 'Skip' broken task:
+		await prisma.slayerTask.update({
+			data: { skipped: true, quantity_remaining: 0 },
+			where: { id: currentTask.id }
+		});
 		return {
 			currentTask: null,
 			assignedTask: null,
@@ -304,43 +355,9 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	};
 }
 
-export const allSlayerHelmets = [
-	'Slayer helmet',
-	'Slayer helmet (i)',
-	'Black slayer helmet',
-	'Black slayer helmet (i)',
-	'Green slayer helmet',
-	'Green slayer helmet (i)',
-	'Red slayer helmet',
-	'Red slayer helmet (i)',
-	'Purple slayer helmet',
-	'Purple slayer helmet (i)',
-	'Turquoise slayer helmet',
-	'Turquoise slayer helmet (i)',
-	'Hydra slayer helmet',
-	'Hydra slayer helmet (i)',
-	'Twisted slayer helmet',
-	'Twisted slayer helmet (i)'
-];
-
-export function getSlayerMasterOSJSbyID(slayerMasterID: number) {
-	const osjsSlayerMaster = [
-		MonsterSlayerMaster.Turael,
-		MonsterSlayerMaster.Turael,
-		MonsterSlayerMaster.Mazchna,
-		MonsterSlayerMaster.Vannaka,
-		MonsterSlayerMaster.Chaeldar,
-		MonsterSlayerMaster.Konar,
-		MonsterSlayerMaster.Nieve,
-		MonsterSlayerMaster.Duradel,
-		MonsterSlayerMaster.Krystilia
-	];
-	return osjsSlayerMaster[slayerMasterID];
-}
-
-export function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
+function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
 	const { name } = SlayerRewardsShop.find(srs => {
-		return srs!.id === id;
+		return srs?.id === id;
 	})!;
 	return name;
 }
@@ -364,7 +381,6 @@ export function hasSlayerUnlock(
 }
 
 const filterLootItems = resolveItems([
-	'Black mask (10)',
 	"Hydra's eye",
 	"Hydra's fang",
 	"Hydra's heart",
@@ -379,26 +395,18 @@ const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeo
 
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	// Order: Fang, eye, heart.
-	const numBlackMask = myLoot.amount('Black mask (10)');
 	let numHydraEyes = myLoot.amount("Hydra's eye");
 	numHydraEyes += myLoot.amount("Hydra's fang");
 	numHydraEyes += myLoot.amount("Hydra's heart");
 	const numDarkTotemBases = myLoot.amount('Dark totem base');
 	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
-	if (!numBludgeonPieces && !numDarkTotemBases && !numHydraEyes && !numBlackMask) {
+	if (!numBludgeonPieces && !numDarkTotemBases && !numHydraEyes) {
 		return { bankLoot: myLoot, clLoot: myLoot };
 	}
 
 	myLoot.filter(i => !filterLootItems.includes(i.id), true);
 
 	const myClLoot = new Bank(myLoot.bank);
-
-	if (numBlackMask) {
-		for (let x = 0; x < numBlackMask; x++) {
-			myLoot.add('Black mask');
-			myClLoot.add('Black mask (10)');
-		}
-	}
 
 	const combinedBank = new Bank(myBank).add(myLoot);
 	if (numBludgeonPieces) {
@@ -461,8 +469,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 }
 
 export async function getSlayerTaskStats(userID: string) {
-	const result: { monster_id: number; total_quantity: number; qty: number }[] =
-		await prisma.$queryRaw`SELECT monster_id, SUM(quantity) AS total_quantity, COUNT(monster_id) AS qty
+	const result: { monster_id: number; total_quantity: number; qty: number }[] = await prisma.$queryRaw`SELECT monster_id, SUM(quantity)::int AS total_quantity, COUNT(monster_id)::int AS qty
 FROM slayer_tasks
 WHERE user_id = ${userID}
 AND quantity_remaining = 0

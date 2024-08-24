@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -53,7 +53,7 @@ export async function lmsCommand(
 			return `You don't have enough points. ${quantity}x ${itemToBuy.item.name} costs ${cost}, but you have ${stats.points}.`;
 		}
 		if (itemToBuy.wins && stats.gamesWon < itemToBuy.wins) {
-			return `You are not worthy! You need to have won atleast ${itemToBuy.wins} games to buy the ${itemToBuy.item.name}.`;
+			return `You are not worthy! You need to have won at least ${itemToBuy.wins} games to buy the ${itemToBuy.item.name}.`;
 		}
 		const loot = new Bank().add(itemToBuy.item.id, quantity * (itemToBuy.quantity ?? 1));
 		await handleMahojiConfirmation(interaction, `Are you sure you want to spend ${cost} points on buying ${loot}?`);

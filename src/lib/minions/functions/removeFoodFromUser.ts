@@ -1,11 +1,11 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import { objectEntries, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
-import { GearSetupType } from '../../gear/types';
+import type { GearSetupType } from '../../gear/types';
 import { updateBankSetting } from '../../util/updateBankSetting';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
@@ -67,8 +67,7 @@ export default async function removeFoodFromUser({
 		);
 	} else {
 		await transactItems({ userID: user.id, itemsToRemove: foodToRemove });
-
-		updateBankSetting('economyStats_PVMCost', foodToRemove);
+		await updateBankSetting('economyStats_PVMCost', foodToRemove);
 
 		return {
 			foodRemoved: foodToRemove,

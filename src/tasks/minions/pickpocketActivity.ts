@@ -2,9 +2,10 @@ import { percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
-import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
+import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
+import { stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
+import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -27,7 +28,7 @@ export function calcLootXPPickpocketing(
 	const diary = hasDiary && npc.customTickRate === undefined ? 1.1 : 1;
 	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
-	let chanceOfSuccess = (npc.slope! * currentLevel + npc.intercept!) * diary * thievCape;
+	const chanceOfSuccess = (npc.slope! * currentLevel + npc.intercept!) * diary * thievCape;
 
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {
@@ -60,7 +61,7 @@ export const pickpocketTask: MinionTask = {
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
 				const lootItems = obj.table.roll(1, {
-					tertiaryItemPercentageChanges: user.buildCATertiaryItemChanges()
+					tertiaryItemPercentageChanges: user.buildTertiaryItemChanges()
 				});
 				// TODO: Remove Rocky from loot tables in oldschoolJS
 				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
@@ -113,7 +114,7 @@ export const pickpocketTask: MinionTask = {
 				? ''
 				: `${
 						100 - obj.lootPercent!
-				  }% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
+					}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
 		}`;
 
 		if (rogueOutfitBoostActivated) {
@@ -140,7 +141,7 @@ export const pickpocketTask: MinionTask = {
 						title: `Loot From ${successfulQuantity} ${obj.name}:`,
 						user,
 						previousCL
-				  });
+					});
 
 		handleTripFinish(user, channelID, str, image?.file.attachment, data, loot);
 	}

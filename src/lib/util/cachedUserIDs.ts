@@ -1,43 +1,41 @@
-import { Stopwatch } from '@sapphire/stopwatch';
+import { Prisma } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { globalConfig } from '../constants';
-import { prisma } from '../settings/prisma';
 import { runTimedLoggedFn } from '../util';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();
 CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
 for (const id of OWNER_IDS) CACHED_ACTIVE_USER_IDS.add(id);
 
-export async function syncActiveUserIDs() {
-	const [users, otherUsers] = await Promise.all([
-		prisma.$queryRaw<{ user_id: string }[]>`SELECT DISTINCT(user_id::text)
-FROM command_usage
-WHERE date > now() - INTERVAL '72 hours';`,
-		prisma.$queryRaw<{ id: string }[]>`SELECT id
-FROM users
-WHERE main_account IS NOT NULL
-      OR CARDINALITY(ironman_alts) > 0
-	  OR bitfield && ARRAY[2,3,4,5,6,7,8,12,11,21,19];`
-	]);
+export const syncActiveUserIDs = async () => {
+	const users = await prisma.$queryRawUnsafe<
+		{ user_id: string }[]
+	>(`SELECT DISTINCT(${Prisma.ActivityScalarFieldEnum.user_id}::text)
+FROM activity
+WHERE finish_date > now() - INTERVAL '48 hours'`);
 
-	for (const id of [...users.map(i => i.user_id), ...otherUsers.map(i => i.id)]) {
+	const perkTierUsers = await roboChimpClient.$queryRawUnsafe<{ id: string }[]>(`SELECT id::text
+FROM "user"
+WHERE perk_tier > 0;`);
+
+	for (const id of [...users.map(i => i.user_id), ...perkTierUsers.map(i => i.id)]) {
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
 	debugLog(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
-}
+};
 
 export function memoryAnalysis() {
-	let guilds = globalClient.guilds.cache.size;
+	const guilds = globalClient.guilds.cache.size;
 	let emojis = 0;
-	let channels = globalClient.channels.cache.size;
-	let voiceChannels = 0;
-	let guildTextChannels = 0;
+	const channels = globalClient.channels.cache.size;
+	const voiceChannels = 0;
+	const guildTextChannels = 0;
 	let roles = 0;
 	let members = 0;
-	let channelCounter: Record<string | number, number> = {} as any;
+	const channelCounter: Record<string | number, number> = {} as any;
 	let messages = 0;
 	let voiceStates = 0;
 	let commands = 0;
@@ -98,11 +96,6 @@ export const emojiServers = new Set([
 
 export function cacheCleanup() {
 	if (!globalClient.isReady()) return;
-	let stopwatch = new Stopwatch();
-	stopwatch.start();
-	debugLog('Cache Cleanup Start', {
-		type: 'CACHE_CLEANUP'
-	});
 	return runTimedLoggedFn('Cache Cleanup', async () => {
 		await runTimedLoggedFn('Clear Channels', async () => {
 			for (const channel of globalClient.channels.cache.values()) {
@@ -110,15 +103,15 @@ export function cacheCleanup() {
 					globalClient.channels.cache.delete(channel.id);
 				}
 				// @ts-ignore ignore
-				delete channel.topic;
+				channel.topic = undefined;
 				// @ts-ignore ignore
-				delete channel.rateLimitPerUser;
+				channel.rateLimitPerUser = undefined;
 				// @ts-ignore ignore
-				delete channel.nsfw;
+				channel.nsfw = undefined;
 				// @ts-ignore ignore
-				delete channel.parentId;
+				channel.parentId = undefined;
 				// @ts-ignore ignore
-				delete channel.name;
+				channel.name = undefined;
 				// @ts-ignore ignore
 				channel.lastMessageId = null;
 				// @ts-ignore ignore
@@ -145,34 +138,29 @@ export function cacheCleanup() {
 				guild.emojis?.cache.clear();
 
 				for (const channel of guild.channels.cache.values()) {
-					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildNewsThread) {
+					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.AnnouncementThread) {
 						guild.channels.cache.delete(channel.id);
 					}
 				}
 				for (const role of guild.roles.cache.values()) {
 					// @ts-ignore ignore
-					delete role.managed;
+					role.managed = undefined;
 					// @ts-ignore ignore
-					delete role.name;
+					role.name = undefined;
 					// @ts-ignore ignore
-					delete role.tags;
+					role.tags = undefined;
 					// @ts-ignore ignore
-					delete role.icon;
+					role.icon = undefined;
 					// @ts-ignore ignore
-					delete role.unicodeEmoji;
+					role.unicodeEmoji = undefined;
 					// @ts-ignore ignore
-					delete role.rawPosition;
+					role.rawPosition = undefined;
 					// @ts-ignore ignore
-					delete role.color;
+					role.color = undefined;
 					// @ts-ignore ignore
-					delete role.hoist;
+					role.hoist = undefined;
 				}
 			}
-		});
-
-		stopwatch.stop();
-		debugLog(`Cache Cleanup Finish After ${stopwatch.toString()}`, {
-			type: 'CACHE_CLEANUP'
 		});
 	});
 }

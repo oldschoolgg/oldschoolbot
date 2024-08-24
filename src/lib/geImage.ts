@@ -1,24 +1,19 @@
-import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import * as fs from 'node:fs/promises';
+import type { Image, SKRSContext2D } from '@napi-rs/canvas';
+import { Canvas, loadImage } from '@napi-rs/canvas';
 import { formatItemStackQuantity, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit';
-import { GEListing, GETransaction } from '@prisma/client';
-import * as fs from 'fs/promises';
-import { floor } from 'lodash';
-import fetch from 'node-fetch';
-import * as path from 'path';
+import type { GEListing, GETransaction } from '@prisma/client';
 
-import { GEListingWithTransactions } from './../mahoji/commands/ge';
+import type { GEListingWithTransactions } from './../mahoji/commands/ge';
 import { GrandExchange } from './grandExchange';
 import { fillTextXTimesInCtx } from './util/canvasUtil';
 import getOSItem from './util/getOSItem';
-import { logError } from './util/logError';
-
-const CACHE_DIR = './icon_cache';
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 	// Draw Page Title
 	ctx.font = '16px RuneScape Bold 12';
 	const titleWidthPx = ctx.measureText(title);
-	let titleX = Math.floor(floor(canvas.width) * 0.95 - titleWidthPx.width);
+	const titleX = Math.floor(Math.floor(canvas.width) * 0.95 - titleWidthPx.width);
 	ctx.fillStyle = '#000000';
 	fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
 
@@ -34,20 +29,9 @@ class GeImageTask {
 	public geProgressShadow: Image | null = null;
 	public geIconBuy: Image | null = null;
 	public geIconSell: Image | null = null;
-	public itemIconsList: Set<number>;
-	public itemIconImagesCache: Map<number, Image>;
-
-	public constructor() {
-		// This tells us simply whether the file exists or not on disk.
-		this.itemIconsList = new Set();
-
-		// If this file does exist, it might be cached in this, or need to be read from fs.
-		this.itemIconImagesCache = new Map();
-	}
 
 	async init() {
 		await this.prepare();
-		await this.run();
 	}
 
 	async prepare() {
@@ -74,31 +58,7 @@ class GeImageTask {
 		);
 	}
 
-	async run() {
-		await this.cacheFiles();
-	}
-
-	async cacheFiles() {
-		// Ensure that the icon_cache dir exists.
-		await fs.mkdir(CACHE_DIR).catch(() => null);
-		CACHE_DIR;
-		// Get a list of all files (images) in the dir.
-		const filesInDir = await fs.readdir(CACHE_DIR);
-
-		// For each one, set a cache value that it exists.
-		for (const fileName of filesInDir) {
-			this.itemIconsList.add(parseInt(path.parse(fileName).name));
-		}
-	}
-
-	drawText(
-		ctx: SKRSContext2D,
-		text: string,
-		x: number,
-		y: number,
-		maxWidth: number | undefined = undefined,
-		lineHeight: number
-	) {
+	drawText(ctx: SKRSContext2D, text: string, x: number, y: number, maxWidth: number | undefined, lineHeight: number) {
 		// If max width is set, we have to line break the text
 		const textLines = [];
 		const measuredText = ctx.measureText(text);
@@ -127,7 +87,7 @@ class GeImageTask {
 	async getSlotImage(
 		ctx: SKRSContext2D,
 		slot: number,
-		locked: boolean = false,
+		locked: boolean,
 		listing: GEListingWithTransactions | undefined
 	) {
 		const slotImage = listing ? this.geSlotActive! : locked ? this.geSlotLocked! : this.geSlotOpen!;
@@ -136,7 +96,7 @@ class GeImageTask {
 		// Draw Bank Title
 		ctx.textAlign = 'center';
 		ctx.font = '16px RuneScape Bold 12';
-		let type = listing ? ` - ${toTitleCase(listing.type.toString())}` : ' - Empty';
+		const type = listing ? ` - ${toTitleCase(listing.type.toString())}` : ' - Empty';
 		this.drawText(
 			ctx,
 			locked ? 'Locked' : `Slot ${slot}${type}`,
@@ -148,7 +108,7 @@ class GeImageTask {
 
 		if (listing) {
 			// Get item
-			const itemImage = await this.getItemImage(listing.item_id);
+			const itemImage = await bankImageGenerator.getItemImage(listing.item_id);
 
 			// Draw item
 			ctx.textAlign = 'left';
@@ -158,10 +118,10 @@ class GeImageTask {
 			ctx.translate(8, 34);
 			ctx.drawImage(
 				itemImage,
-				Math.floor((32 - itemImage!.width) / 2) + 2,
-				Math.floor((32 - itemImage!.height) / 2),
-				itemImage!.width,
-				itemImage!.height
+				Math.floor((32 - itemImage?.width) / 2) + 2,
+				Math.floor((32 - itemImage?.height) / 2),
+				itemImage?.width,
+				itemImage?.height
 			);
 			if (listing.total_quantity > 1) {
 				const formattedQuantity = formatItemStackQuantity(listing.total_quantity);
@@ -221,40 +181,6 @@ class GeImageTask {
 		}
 	}
 
-	async getItemImage(itemID: number): Promise<Image> {
-		const cachedImage = this.itemIconImagesCache.get(itemID);
-		if (cachedImage) return cachedImage;
-
-		const isOnDisk = this.itemIconsList.has(itemID);
-		if (!isOnDisk) {
-			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID);
-		}
-
-		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
-		try {
-			const image = await loadImage(imageBuffer);
-			this.itemIconImagesCache.set(itemID, image);
-			return image;
-		} catch (err) {
-			logError(`Failed to load item icon with id: ${itemID}`);
-			return this.getItemImage(1);
-		}
-	}
-
-	async fetchAndCacheImage(itemID: number) {
-		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.buffer()
-		);
-
-		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
-
-		const image = await loadImage(imageBuffer);
-
-		this.itemIconsList.add(itemID);
-		this.itemIconImagesCache.set(itemID, image);
-	}
-
 	async createInterface(opts: {
 		user: MUser;
 		page: number;
@@ -293,7 +219,7 @@ class GeImageTask {
 			}
 			ctx.save();
 			ctx.translate(x * (this.geSlotOpen!.width + 2), y);
-			await this.getSlotImage(ctx, i + 1, i >= slots ? true : false, listing);
+			await this.getSlotImage(ctx, i + 1, i >= slots, listing);
 			ctx.restore();
 			x++;
 			if (i > (page - 1) * chunkSize + 8) break;
@@ -305,15 +231,9 @@ class GeImageTask {
 }
 
 declare global {
-	const geImageGenerator: GeImageTask;
+	var geImageGenerator: GeImageTask;
 }
-declare global {
-	namespace NodeJS {
-		interface Global {
-			geImageGenerator: GeImageTask;
-		}
-	}
-}
+
 global.geImageGenerator = new GeImageTask();
 
 geImageGenerator.init();

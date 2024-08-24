@@ -1,14 +1,13 @@
-import { Time } from 'e';
+import { Time, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { QuestID } from '../../../../../mahoji/lib/abstracted_commands/questCommand';
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
-import { roll } from '../../../../util';
 import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import { KillableMonster } from '../../../types';
+import type { KillableMonster } from '../../../types';
+import { QuestID } from '../../quests';
 
 const awakenedDeathProps = {
 	hardness: 0.9,
@@ -115,10 +114,6 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
 		equippedItemBoosts: [
-			{
-				items: [{ boostPercent: 3, itemID: itemID('Avernic defender') }],
-				gearSetup: 'melee'
-			},
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Ferocious gloves') }],
 				gearSetup: 'melee'
@@ -472,6 +467,16 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 						boostPercent: 7
 					}
 				]
+			},
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 5
+					}
+				]
 			}
 		],
 		deathProps: {
@@ -575,6 +580,16 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					{
 						itemID: itemID('Sanguinesti staff'),
 						boostPercent: 7
+					}
+				]
+			},
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 5
 					}
 				]
 			}
@@ -682,10 +697,6 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		notifyDrops: resolveItems(['Virtus robe top', 'Butch', 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
 		equippedItemBoosts: [
-			{
-				items: [{ boostPercent: 3, itemID: itemID('Avernic defender') }],
-				gearSetup: 'melee'
-			},
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Ferocious gloves') }],
 				gearSetup: 'melee'

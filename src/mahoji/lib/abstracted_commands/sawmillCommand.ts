@@ -1,9 +1,8 @@
-import { clamp, Time } from 'e';
+import { Time, clamp } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { Planks } from '../../../lib/minions/data/planks';
-import { SawmillActivityTaskOptions } from '../../../lib/types/minions';
+import type { SawmillActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -34,9 +33,8 @@ export async function sawmillCommand(
 		timePerPlank *= 0.9;
 		boosts.push('10% for Graceful');
 	}
-	const [hasFavour] = gotFavour(user, Favours.Hosidius, 75);
 	const skills = user.skillsAsLevels;
-	if (skills.woodcutting >= 60 && user.QP >= 50 && hasFavour) {
+	if (skills.woodcutting >= 60 && user.QP >= 50) {
 		timePerPlank *= 0.9;
 		boosts.push('10% for Woodcutting Guild unlocked');
 	}
@@ -58,7 +56,7 @@ export async function sawmillCommand(
 	}
 
 	const { GP } = user;
-	let cost = plank!.gpCost * quantity;
+	const cost = plank?.gpCost * quantity;
 
 	if (GP < cost) {
 		return `You need ${toKMB(cost)} GP to create ${quantity} planks.`;
@@ -74,15 +72,15 @@ export async function sawmillCommand(
 		)}.`;
 	}
 
-	const costBank = new Bank().add('Coins', plank!.gpCost * quantity).add(plank!.inputItem, quantity);
+	const costBank = new Bank().add('Coins', plank?.gpCost * quantity).add(plank?.inputItem, quantity);
 	await transactItems({ userID: user.id, itemsToRemove: costBank });
 
-	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', plank!.gpCost * quantity));
+	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', plank?.gpCost * quantity));
 
 	await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
 		type: 'Sawmill',
 		duration,
-		plankID: plank!.outputItem,
+		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
 		channelID: channelID.toString()

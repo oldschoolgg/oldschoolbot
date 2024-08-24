@@ -1,16 +1,21 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Openables } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
+import type { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
+import BrimstoneChest, { BrimstoneChestOpenable } from 'oldschooljs/dist/simulation/openables/BrimstoneChest';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
+import LarransChest, { LarransChestOpenable } from 'oldschooljs/dist/simulation/openables/LarransChest';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
-import { FarmingContract } from './minions/farming/types';
+import type { FarmingContract } from './minions/farming/types';
 import { shadeChestOpenables } from './shadesKeys';
+import { nestTable } from './simulation/birdsNest';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
@@ -19,10 +24,9 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import { ItemBank } from './types';
+import type { ItemBank } from './types';
 import { itemID, roll } from './util';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -93,7 +97,7 @@ for (const clueTier of ClueTiers) {
 		aliases: [clueTier.name.toLowerCase()],
 		output: async ({ quantity, user, self }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			let loot = new Bank(clueTier.table.open(quantity));
+			const loot = new Bank(clueTier.table.open(quantity));
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				for (let i = 0; i < quantity; i++) {
@@ -130,7 +134,7 @@ for (const clueTier of ClueTiers) {
 			// and send a notification if they got one.
 			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id), false);
 			if (gotMilestoneReward) {
-				announcedLoot.add(clueTier.milestoneReward!.itemReward);
+				announcedLoot.add(clueTier.milestoneReward?.itemReward);
 			}
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
@@ -162,7 +166,20 @@ const osjsOpenables: UnifiedOpenable[] = [
 		id: 23_083,
 		openedItem: getOSItem(23_083),
 		aliases: ['brimstone chest', 'brimstone'],
-		output: Openables.BrimstoneChest.table,
+		output: async (
+			args: OpenArgs
+		): Promise<{
+			bank: Bank;
+		}> => {
+			const chest = new BrimstoneChestOpenable(BrimstoneChest);
+			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const brimstoneOptions: OpenableOpenOptions = {
+				fishLvl
+			};
+			const openLoot: Bank = chest.open(args.quantity, brimstoneOptions);
+
+			return { bank: openLoot };
+		},
 		allItems: Openables.BrimstoneChest.table.allItems
 	},
 	{
@@ -234,7 +251,21 @@ const osjsOpenables: UnifiedOpenable[] = [
 			'larrans small chest',
 			"larran's small chest"
 		],
-		output: Openables.LarransChest.table,
+		output: async (
+			args: OpenArgs
+		): Promise<{
+			bank: Bank;
+		}> => {
+			const chest = new LarransChestOpenable(LarransChest);
+			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const larransOptions: OpenableOpenOptions = {
+				fishLvl,
+				chestSize: 'big'
+			};
+			const openLoot: Bank = chest.open(args.quantity, larransOptions);
+
+			return { bank: openLoot };
+		},
 		allItems: Openables.LarransChest.table.allItems
 	},
 	{
@@ -278,6 +309,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: Openables.NestBoxSeeds.table.allItems
 	},
 	{
+		name: 'Bird nest',
+		id: 5070,
+		openedItem: getOSItem(5070),
+		aliases: ['bird nest', 'nest'],
+		output: nestTable,
+		allItems: nestTable.allItems
+	},
+	{
 		name: 'Ogre coffin',
 		id: 4850,
 		openedItem: getOSItem(4850),
@@ -315,12 +354,20 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: Openables.SinisterChest.table.allItems
 	},
 	{
-		name: 'Ore pack',
+		name: "Ore pack (Giant's Foundry)",
 		id: 27_019,
 		openedItem: getOSItem(27_019),
-		aliases: ['ore pack'],
-		output: Openables.OrePack.table,
-		allItems: Openables.OrePack.table.allItems
+		aliases: ["ore pack (giant's foundry)", 'giants', 'foundry', 'giants foundry'],
+		output: Openables.GiantsFoundryOrePack.table,
+		allItems: Openables.GiantsFoundryOrePack.table.allItems
+	},
+	{
+		name: 'Ore pack (Volcanic Mine)',
+		id: 27_693,
+		openedItem: getOSItem(27_693),
+		aliases: ['ore pack (volcanic mine)', 'volcanic', 'volcanic mine'],
+		output: Openables.VolcanicMineOrePack.table,
+		allItems: Openables.VolcanicMineOrePack.table.allItems
 	},
 	{
 		name: 'Intricate pouch',

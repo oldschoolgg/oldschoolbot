@@ -1,5 +1,5 @@
 import { ActivityGroup } from '../constants';
-import { activity_type_enum } from '.prisma/client';
+import type { activity_type_enum } from '.prisma/client';
 
 export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 	switch (type) {

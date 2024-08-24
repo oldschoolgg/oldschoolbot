@@ -1,17 +1,18 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { User } from 'discord.js';
-import { round, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
-import { Skills } from '../../lib/types';
-import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
+import type { Skills } from '../../lib/types';
+import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -96,7 +97,7 @@ export const buildCommand: OSBMahojiCommand = {
 			}
 		}
 
-		let timeToBuildSingleObject = object.ticks * 300;
+		const timeToBuildSingleObject = object.ticks * 300;
 
 		const [plank, planksQtyCost] = object.input;
 

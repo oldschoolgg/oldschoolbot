@@ -1,18 +1,19 @@
-import { Minigame } from '@prisma/client';
+import type { Minigame, PlayerOwnedHouse, activity_type_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
-import { getParsedStashUnits, ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { ClueTier } from '../clues/clueTiers';
-import { BitField, BitFieldData, BOT_TYPE } from '../constants';
-import { diariesObject, DiaryTierName, userhasDiaryTier } from '../diaries';
+import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
+import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
+import type { ClueTier } from '../clues/clueTiers';
+import type { BitField } from '../constants';
+import { BOT_TYPE, BitFieldData } from '../constants';
+import { diaries, userhasDiaryTierSync } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { UserKourendFavour } from '../minions/data/kourendFavour';
-import { ClueBank } from '../minions/types';
+import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
 import type { RobochimpUser } from '../roboChimp';
-import { MinigameName } from '../settings/minigames';
+import type { MinigameName } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
-import { Skills } from '../types';
+import type { Skills } from '../types';
 import { itemNameFromID } from '../util';
 import { MUserStats } from './MUserStats';
 
@@ -27,19 +28,12 @@ interface RequirementUserArgs {
 	stats: MUserStats;
 	roboChimpUser: RobochimpUser;
 	clueCounts: ClueBank;
+	poh: PlayerOwnedHouse;
+	uniqueRunesCrafted: number[];
+	uniqueActivitiesDone: activity_type_enum[];
 }
 
-type ManualHasFunction = (
-	args: RequirementUserArgs
-) =>
-	| Promise<RequirementFailure[]>
-	| RequirementFailure[]
-	| undefined
-	| Promise<undefined | string>
-	| string
-	| Promise<string>
-	| boolean
-	| Promise<boolean>;
+type ManualHasFunction = (args: RequirementUserArgs) => RequirementFailure[] | undefined | string | boolean;
 
 type Requirement = {
 	name?: string;
@@ -51,11 +45,10 @@ type Requirement = {
 	| { qpRequirement: number }
 	| { lapsRequirement: Record<number, number> }
 	| { sacrificedItemsRequirement: Bank }
-	| { favour: Partial<UserKourendFavour> }
 	| { OR: Requirement[] }
 	| { minigames: Partial<Record<MinigameName, number>> }
 	| { bitfieldRequirement: BitField }
-	| { diaryRequirement: [keyof typeof diariesObject, DiaryTierName][] }
+	| { diaryRequirement: [DiaryID, DiaryTierName][] }
 	| { clueCompletions: Partial<Record<ClueTier['name'], number>> }
 );
 
@@ -89,7 +82,7 @@ export class Requirements {
 		if ('kcRequirement' in req) {
 			requirementParts.push(
 				`Kill Count Requirement: ${Object.entries(req.kcRequirement)
-					.map(([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))!.name}`)
+					.map(([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name}`)
 					.join(', ')}.`
 			);
 		}
@@ -101,21 +94,13 @@ export class Requirements {
 		if ('lapsRequirement' in req) {
 			requirementParts.push(
 				`Agility Course Laps Requirements: ${Object.entries(req.lapsRequirement)
-					.map(([k, v]) => `${v}x laps of ${Agility.Courses.find(i => i.id === Number(k))!.name}`)
+					.map(([k, v]) => `${v}x laps of ${Agility.Courses.find(i => i.id === Number(k))?.name}`)
 					.join(', ')}.`
 			);
 		}
 
 		if ('sacrificedItemsRequirement' in req) {
 			requirementParts.push(`Sacrificed Items Requirement: ${req.sacrificedItemsRequirement.toString()}`);
-		}
-
-		if ('favour' in req) {
-			requirementParts.push(
-				`Kourend Favour Requirement: ${Object.entries(req.favour)
-					.map(([k, v]) => `${v}% favour in ${k}`)
-					.join(', ')}.`
-			);
 		}
 
 		if ('minigames' in req) {
@@ -133,7 +118,7 @@ export class Requirements {
 		if ('diaryRequirement' in req) {
 			requirementParts.push(
 				`Achievement Diary Requirement: ${req.diaryRequirement
-					.map(i => `${i[1]} ${diariesObject[i[0]].name}`)
+					.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])?.name}`)
 					.join(', ')}`
 			);
 		}
@@ -165,15 +150,12 @@ export class Requirements {
 		return this;
 	}
 
-	async checkSingleRequirement(
-		requirement: Requirement,
-		userArgs: RequirementUserArgs
-	): Promise<RequirementFailure[]> {
+	checkSingleRequirement(requirement: Requirement, userArgs: RequirementUserArgs): RequirementFailure[] {
 		const { user, stats, minigames, clueCounts } = userArgs;
 		const results: RequirementFailure[] = [];
 
 		if ('has' in requirement) {
-			const result = await requirement.has(userArgs);
+			const result = requirement.has(userArgs);
 			if (typeof result === 'boolean') {
 				if (!result) {
 					results.push({ reason: requirement.name });
@@ -221,7 +203,7 @@ export class Requirements {
 			for (const [id, amount] of Object.entries(requirement.kcRequirement)) {
 				if (!kcs[id] || kcs[id] < amount) {
 					missingMonsterNames.push(
-						`${amount}x ${effectiveMonsters.find(m => m.id === parseInt(id))?.name ?? id}`
+						`${amount}x ${effectiveMonsters.find(m => m.id === Number.parseInt(id))?.name ?? id}`
 					);
 				}
 			}
@@ -246,7 +228,7 @@ export class Requirements {
 				if (!laps[id] || laps[id] < amount) {
 					results.push({
 						reason: `You need ${amount}x laps in the ${
-							Agility.Courses.find(i => i.id.toString() === id)!.name
+							Agility.Courses.find(i => i.id.toString() === id)?.name
 						} agility course.`
 					});
 				}
@@ -258,20 +240,6 @@ export class Requirements {
 			if (!sacBank.has(requirement.sacrificedItemsRequirement)) {
 				results.push({
 					reason: `You need to have sacrificed these items: ${requirement.sacrificedItemsRequirement}.`
-				});
-			}
-		}
-
-		if ('favour' in requirement) {
-			const insufficientFavour = [];
-			for (const [house, favour] of objectEntries(requirement.favour)) {
-				if (user.kourendFavour[house] < favour!) {
-					insufficientFavour.push(`${favour}% favour in ${house}`);
-				}
-			}
-			if (insufficientFavour.length > 0) {
-				results.push({
-					reason: `You need these favour: ${insufficientFavour.join(', ')}.`
 				});
 			}
 		}
@@ -300,14 +268,18 @@ export class Requirements {
 		}
 
 		if ('diaryRequirement' in requirement) {
-			const unmetDiaries = (
-				await Promise.all(
-					requirement.diaryRequirement.map(async ([diary, tier]) => ({
-						has: await userhasDiaryTier(user, diariesObject[diary][tier]),
-						tierName: `${tier} ${diariesObject[diary].name}`
-					}))
-				)
-			).filter(i => !i.has[0]);
+			const unmetDiaries = requirement.diaryRequirement
+				.map(([diary, tier]) => {
+					const { hasDiary, diaryGroup } = userhasDiaryTierSync(user, [diary, tier], {
+						stats,
+						minigameScores: minigames
+					});
+					return {
+						has: hasDiary,
+						tierName: `${tier} ${diaryGroup.name}`
+					};
+				})
+				.filter(i => !i.has);
 			if (unmetDiaries.length > 0) {
 				results.push({
 					reason: `You need to finish these achievement diaries: ${unmetDiaries
@@ -328,7 +300,7 @@ export class Requirements {
 		}
 
 		if ('OR' in requirement) {
-			const orResults = await Promise.all(requirement.OR.map(req => this.checkSingleRequirement(req, userArgs)));
+			const orResults = requirement.OR.map(req => this.checkSingleRequirement(req, userArgs));
 			if (!orResults.some(i => i.length === 0)) {
 				results.push({
 					reason: `You need to meet one of these requirements:\n${orResults.map((res, index) => {
@@ -341,7 +313,7 @@ export class Requirements {
 		return results;
 	}
 
-	async check(user: MUser) {
+	static async fetchRequiredData(user: MUser) {
 		const minigames = await user.fetchMinigames();
 		const stashUnits = await getParsedStashUnits(user.id);
 		const stats = await MUserStats.fromID(user.id);
@@ -349,21 +321,44 @@ export class Requirements {
 		const clueCounts =
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
 
-		const requirementResults = this.requirements.map(async i => ({
-			result: await this.checkSingleRequirement(i, {
-				user,
-				minigames,
-				stashUnits,
-				stats,
-				roboChimpUser,
-				clueCounts
-			}),
+		const [_uniqueRunesCrafted, uniqueActivitiesDone, poh] = await prisma.$transaction([
+			prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+AND type = 'Runecraft'
+AND data->>'runeID' IS NOT NULL;`,
+			prisma.$queryRaw<{ type: activity_type_enum }[]>`SELECT DISTINCT(type)
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+GROUP BY type;`,
+			prisma.playerOwnedHouse.upsert({ where: { user_id: user.id }, update: {}, create: { user_id: user.id } })
+		]);
+		const uniqueRunesCrafted = _uniqueRunesCrafted.map(i => Number(i.rune_id));
+		return {
+			user,
+			minigames,
+			stashUnits,
+			stats,
+			roboChimpUser,
+			clueCounts,
+			poh,
+			uniqueRunesCrafted,
+			uniqueActivitiesDone: uniqueActivitiesDone.map(i => i.type)
+		};
+	}
+
+	static async checkMany(user: MUser, requirements: Requirements[]) {
+		const data = await Requirements.fetchRequiredData(user);
+		return requirements.map(i => i.check(data));
+	}
+
+	check(data: Awaited<ReturnType<typeof Requirements.fetchRequiredData>>) {
+		const results = this.requirements.map(i => ({
+			result: this.checkSingleRequirement(i, data),
 			requirement: i
 		}));
 
-		const results = await Promise.all(requirementResults);
-		const flatReasons = results.map(r => r.result).flat();
-
+		const flatReasons = results.flatMap(r => r.result);
 		const totalRequirements = this.requirements.length;
 		const metRequirements = results.filter(i => i.result.length === 0).length;
 		const completionPercentage = calcWhatPercent(metRequirements, totalRequirements);

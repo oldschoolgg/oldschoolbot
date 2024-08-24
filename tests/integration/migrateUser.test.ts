@@ -1,49 +1,47 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import {
-	Activity,
-	activity_type_enum,
-	Bingo,
-	BingoParticipant,
-	BuyCommandTransaction,
-	CommandUsage,
-	EconomyTransaction,
-	FarmedCrop,
-	GearPreset,
-	Giveaway,
-	HistoricalData,
-	LastManStandingGame,
-	LootTrack,
-	Minigame,
-	PinnedTrip,
-	PlayerOwnedHouse,
-	Prisma,
-	ReclaimableItem,
-	SlayerTask,
-	UserStats,
-	XPGain
+	type Activity,
+	type Bingo,
+	type BingoParticipant,
+	type BuyCommandTransaction,
+	type CommandUsage,
+	type EconomyTransaction,
+	type FarmedCrop,
+	type GearPreset,
+	type Giveaway,
+	type HistoricalData,
+	type LastManStandingGame,
+	type LootTrack,
+	type Minigame,
+	type PinnedTrip,
+	type PlayerOwnedHouse,
+	type Prisma,
+	type ReclaimableItem,
+	type SlayerTask,
+	type UserStats,
+	type XPGain,
+	type activity_type_enum,
+	command_name_enum
 } from '@prisma/client';
-import { deepClone, randArrItem, randInt, shuffleArr, sumArr, Time } from 'e';
+import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { describe, expect, test, vi } from 'vitest';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { beforeAll, expect, test, vi } from 'vitest';
 
+import { processPendingActivities } from '../../src/lib/Task';
 import { BitField } from '../../src/lib/constants';
-import { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
-import { GrandExchange } from '../../src/lib/grandExchange';
+import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { trackLoot } from '../../src/lib/lootTrack';
-import { incrementMinigameScore, MinigameName } from '../../src/lib/settings/minigames';
-import { prisma } from '../../src/lib/settings/prisma';
-import { SkillsEnum } from '../../src/lib/skilling/types';
+import type { MinigameName } from '../../src/lib/settings/minigames';
+import { incrementMinigameScore } from '../../src/lib/settings/minigames';
+import type { SkillsEnum } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
-import { processPendingActivities } from '../../src/lib/Task';
-import { Skills } from '../../src/lib/types';
-import { isGroupActivity } from '../../src/lib/util';
+import type { Skills } from '../../src/lib/types';
+import { isGroupActivity, resolveItems } from '../../src/lib/util';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
 import { findPlant } from '../../src/lib/util/farmingHelpers';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { migrateUser } from '../../src/lib/util/migrateUser';
-import resolveItems from '../../src/lib/util/resolveItems';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
 import { updateBankSetting } from '../../src/lib/util/updateBankSetting';
 import { pinTripCommand } from '../../src/mahoji/commands/config';
@@ -55,26 +53,27 @@ import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
-import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
-import { createTestUser, mockClient, TestUser } from './util';
-import { BotItemSell, GEListing, StashUnit } from '.prisma/client';
+import type { TestUser } from './util';
+import { createTestUser, mockClient, mockedId } from './util';
+import type { BotItemSell, GEListing, StashUnit } from '.prisma/client';
 
 interface TestCommand {
 	name: string;
-	cmd: [OSBMahojiCommand, Object] | ((user: TestUser) => Promise<any>);
+	cmd: [OSBMahojiCommand, object] | ((user: TestUser) => Promise<any>);
 	activity?: boolean;
 	priority?: boolean;
 }
 class UserData {
 	// Class Data
-	private loaded: boolean = false;
+	private loaded = false;
 	private mUser: MUser | null = null;
 
 	// Robochimp:
 	githubId: number | null;
+	migratedUserId: bigint | null;
 
 	// User info
 	id: string;
@@ -111,6 +110,7 @@ class UserData {
 	constructor(_user: string | MUser) {
 		this.id = typeof _user === 'string' ? _user : _user.id;
 		this.githubId = null;
+		this.migratedUserId = null;
 	}
 
 	async sync() {
@@ -119,7 +119,7 @@ class UserData {
 		} else {
 			await this.mUser.sync();
 		}
-		const newUser = await prisma.newUser.findFirst({ where: { id: this.id }, select: { username: true } });
+		const newUser = await global.prisma!.newUser.findFirst({ where: { id: this.id }, select: { username: true } });
 		if (newUser) this.username = newUser.username;
 
 		this.bank = new Bank(this.mUser.bank);
@@ -129,117 +129,129 @@ class UserData {
 
 		const robochimpUser = await roboChimpClient.user.findFirst({
 			where: { id: BigInt(this.id) },
-			select: { github_id: true }
+			select: { github_id: true, migrated_user_id: true }
 		});
-		if (robochimpUser) this.githubId = robochimpUser.github_id;
+		if (robochimpUser) {
+			this.githubId = robochimpUser.github_id;
+			this.migratedUserId = robochimpUser.migrated_user_id;
+		}
 
-		const stashUnits = await prisma.stashUnit.findMany({
+		const stashUnits = await global.prisma!.stashUnit.findMany({
 			where: { user_id: BigInt(this.id) },
 			orderBy: { stash_id: 'asc' }
 		});
 		if (stashUnits.length > 0) this.stashUnits = stashUnits;
 
-		const gearPresets = await prisma.gearPreset.findMany({
+		const gearPresets = await global.prisma!.gearPreset.findMany({
 			where: { user_id: this.id },
 			orderBy: { name: 'asc' }
 		});
 		if (gearPresets.length > 0) this.gearPresets = gearPresets;
 
-		const activities = await prisma.activity.findMany({
+		const activities = await global.prisma!.activity.findMany({
 			where: { user_id: BigInt(this.id) },
 			orderBy: { start_date: 'asc' }
 		});
 		if (activities.length > 0) this.activities = activities;
 
-		const slayerTasks = await prisma.slayerTask.findMany({ where: { user_id: this.id }, orderBy: { id: 'asc' } });
+		const slayerTasks = await global.prisma!.slayerTask.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
 		if (slayerTasks.length > 0) this.slayerTasks = slayerTasks;
 
-		const poh = await prisma.playerOwnedHouse.findFirst({ where: { user_id: this.id } });
+		const poh = await global.prisma!.playerOwnedHouse.findFirst({ where: { user_id: this.id } });
 		if (poh) this.poh = poh;
 
-		const giveaways = await prisma.giveaway.findMany({ where: { user_id: this.id }, orderBy: { id: 'asc' } });
+		const giveaways = await global.prisma!.giveaway.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
 		if (giveaways.length > 0) this.giveaways = giveaways;
 
-		const farmedCrops = await prisma.farmedCrop.findMany({ where: { user_id: this.id }, orderBy: { id: 'asc' } });
+		const farmedCrops = await global.prisma!.farmedCrop.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
 		if (farmedCrops.length > 0) this.farmedCrops = farmedCrops;
 
-		const minigames = await prisma.minigame.findFirst({ where: { user_id: this.id } });
+		const minigames = await global.prisma!.minigame.findFirst({ where: { user_id: this.id } });
 		if (minigames) this.minigames = minigames;
 
-		const pinnedTrips = await prisma.pinnedTrip.findMany({
+		const pinnedTrips = await global.prisma!.pinnedTrip.findMany({
 			where: { user_id: this.id },
 			orderBy: { activity_id: 'asc' }
 		});
 		if (pinnedTrips.length > 0) this.pinnedTrips = pinnedTrips;
 
-		const lms = await prisma.lastManStandingGame.findMany({
+		const lms = await global.prisma!.lastManStandingGame.findMany({
 			where: { user_id: BigInt(this.id) },
 			orderBy: { id: 'asc' }
 		});
 		if (lms.length > 0) this.lms = lms;
 
-		const lootTrack = await prisma.lootTrack.findMany({
+		const lootTrack = await global.prisma!.lootTrack.findMany({
 			where: { user_id: BigInt(this.id) },
 			orderBy: { id: 'asc' }
 		});
 		if (lootTrack.length > 0) this.lootTrack = lootTrack;
 
-		const botItemSell = await prisma.botItemSell.findMany({
+		const botItemSell = await global.prisma!.botItemSell.findMany({
 			where: { user_id: this.id },
 			orderBy: { item_id: 'asc' }
 		});
 		if (botItemSell.length > 0) this.botItemSell = botItemSell;
 
-		const buyCommandTx = await prisma.buyCommandTransaction.findMany({
+		const buyCommandTx = await global.prisma!.buyCommandTransaction.findMany({
 			where: { user_id: BigInt(this.id) },
 			orderBy: { id: 'asc' }
 		});
 		if (buyCommandTx.length > 0) this.buyCommandTx = buyCommandTx;
 
-		const reclaimableItems = await prisma.reclaimableItem.findMany({
+		const reclaimableItems = await global.prisma!.reclaimableItem.findMany({
 			where: { user_id: this.id },
 			orderBy: { key: 'asc' }
 		});
 		if (reclaimableItems.length > 0) this.reclaimableItems = reclaimableItems;
 
-		const xpGains = await prisma.xPGain.findMany({
+		const xpGains = await global.prisma!.xPGain.findMany({
 			where: { user_id: BigInt(this.id) },
 			orderBy: { id: 'asc' }
 		});
 		if (xpGains.length > 0) this.xpGains = xpGains;
 
-		const economyTx = await prisma.economyTransaction.findMany({
+		const economyTx = await global.prisma!.economyTransaction.findMany({
 			where: { OR: [{ sender: BigInt(this.id) }, { recipient: BigInt(this.id) }] },
 			orderBy: { date: 'asc' }
 		});
 
 		if (economyTx.length > 0) this.economyTx = economyTx;
 
-		const bingoParticipant = await prisma.bingoParticipant.findMany({
+		const bingoParticipant = await global.prisma!.bingoParticipant.findMany({
 			where: { user_id: this.id },
 			orderBy: { bingo_id: 'asc' }
 		});
 		if (bingoParticipant.length > 0) this.bingoParticipant = bingoParticipant;
 
-		const userStats = await prisma.userStats.findFirst({ where: { user_id: BigInt(this.id) } });
+		const userStats = await global.prisma!.userStats.findFirst({ where: { user_id: BigInt(this.id) } });
 		if (userStats) this.userStats = userStats;
 
-		const bingos = await prisma.bingo.findMany({ where: { creator_id: this.id }, orderBy: { id: 'asc' } });
+		const bingos = await global.prisma!.bingo.findMany({ where: { creator_id: this.id }, orderBy: { id: 'asc' } });
 		if (bingos.length > 0) this.bingos = bingos;
 
-		const historicalData = await prisma.historicalData.findMany({
+		const historicalData = await global.prisma!.historicalData.findMany({
 			where: { user_id: this.id },
 			orderBy: { date: 'asc' }
 		});
 		if (historicalData.length > 0) this.historicalData = historicalData;
 
-		const commandUsage = await prisma.commandUsage.findMany({
+		const commandUsage = await global.prisma!.commandUsage.findMany({
 			where: { user_id: BigInt(this.id) },
 			orderBy: { date: 'asc' }
 		});
 		if (commandUsage.length > 0) this.commandUsage = commandUsage;
 
-		const geListings = await prisma.gEListing.findMany({
+		const geListings = await global.prisma!.gEListing.findMany({
 			where: { user_id: this.id },
 			orderBy: { id: 'asc' }
 		});
@@ -248,7 +260,7 @@ class UserData {
 		this.loaded = true;
 	}
 
-	equals(target: UserData): { result: boolean; errors: string[] } {
+	equals(target: UserData, ignoreRoboChimp = false): { result: boolean; errors: string[] } {
 		const errors: string[] = [];
 		if (!this.loaded || !target.loaded) {
 			errors.push('Both UserData object must be loaded. Try .sync()');
@@ -259,7 +271,8 @@ class UserData {
 			errors.push(`Usernames don't match (new_users) - ${this.username}:${target.username}`);
 		}
 
-		if (this.githubId !== target.githubId) {
+		if (!ignoreRoboChimp && this.githubId !== target.githubId) {
+			// RoboChimp can be ignored ONLY when it's the second migration (both bots)
 			errors.push("Robochimp user doesn't match");
 		}
 
@@ -630,14 +643,14 @@ const allTableCommands: TestCommand[] = [
 					channel_id: 11_111_111_111n,
 					duration
 				};
-				await prisma.activity.create({ data });
+				await global.prisma!.activity.create({ data });
 			}
 		}
 	},
 	{
 		name: 'Group Activity',
 		cmd: async user => {
-			const users = shuffleArr([user.id, randomSnowflake(), randomSnowflake()]);
+			const users = shuffleArr([user.id, mockedId(), mockedId()]);
 			const data = {
 				leader: user.id,
 				users,
@@ -649,7 +662,7 @@ const allTableCommands: TestCommand[] = [
 			const duration = 30 * 60 * 1000;
 			const start_date = new Date();
 			const finish_date = new Date(start_date.getTime() + duration);
-			await prisma.activity.create({
+			await global.prisma!.activity.create({
 				data: {
 					type: 'TombsOfAmascut',
 					user_id: BigInt(user.id),
@@ -677,13 +690,6 @@ const allTableCommands: TestCommand[] = [
 		}
 	},
 	{
-		name: 'Create new_users entry',
-		cmd: async user => {
-			await syncNewUserUsername(user, `testUser${randInt(1000, 9999).toString()}`);
-		},
-		priority: true
-	},
-	{
 		name: 'Buy command transaction',
 		cmd: async user => {
 			const randomBuyItems: string[] = [
@@ -695,7 +701,7 @@ const allTableCommands: TestCommand[] = [
 				'Fishing bait'
 			];
 			const lootBank = new Bank().add(randArrItem(randomBuyItems), randInt(10, 999));
-			await prisma.buyCommandTransaction.create({
+			await global.prisma!.buyCommandTransaction.create({
 				data: {
 					user_id: BigInt(user.id),
 					cost_gp: randInt(10_000, 10_000_000),
@@ -710,7 +716,7 @@ const allTableCommands: TestCommand[] = [
 		cmd: async user => {
 			const randomItems = ['Cannonball', 'Blood rune', 'Twisted bow', 'Kodai wand', 'Bandos tassets'];
 			const recvBank = new Bank().add(randArrItem(randomItems), randInt(10, 99)).add(randArrItem(randomItems));
-			const partner = await createTestUser(randomSnowflake(), recvBank);
+			const partner = await createTestUser(recvBank);
 			await tradePlayerItems(user, partner, undefined, recvBank);
 		}
 	},
@@ -719,7 +725,7 @@ const allTableCommands: TestCommand[] = [
 		cmd: async user => {
 			const randomItems = ['Feather', 'Soul rune', 'Dragon claws', 'Ghrazi rapier', 'Bandos boots'];
 			const recvBank = new Bank().add(randArrItem(randomItems), randInt(10, 99)).add(randArrItem(randomItems));
-			const partner = await createTestUser(randomSnowflake(), recvBank);
+			const partner = await createTestUser(recvBank);
 			await tradePlayerItems(partner, user, recvBank, undefined);
 		}
 	},
@@ -731,7 +737,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
 		}
 	},
 	{
@@ -741,8 +747,8 @@ const allTableCommands: TestCommand[] = [
 			const items = 'Bandos chestplate, Bandos tassets, Berserker ring, Ghrazi rapier';
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
-
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			if (!equippedGear) throw new Error('Equipped gear is undefined');
+			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
 		}
 	},
 	{
@@ -768,7 +774,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Create giveaway',
 		cmd: async user => {
-			await prisma.giveaway.create({
+			await global.prisma!.giveaway.create({
 				data: {
 					id: randInt(1_000_000, 9_999_999),
 					channel_id: '1111111111111',
@@ -794,7 +800,7 @@ const allTableCommands: TestCommand[] = [
 		name: 'Farmed crop',
 		cmd: async user => {
 			const plant = findPlant('Potato')!;
-			await prisma.farmedCrop.create({
+			await global.prisma!.farmedCrop.create({
 				data: {
 					user_id: user.id,
 					date_planted: new Date(),
@@ -824,7 +830,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Pin Trip',
 		cmd: async user => {
-			const result = await prisma.activity.findFirst({
+			const result = await global.prisma!.activity.findFirst({
 				where: { user_id: BigInt(user.id) },
 				select: { id: true }
 			});
@@ -841,7 +847,7 @@ const allTableCommands: TestCommand[] = [
 
 			const result = calculateResultOfLMSGames(quantity, lmsStats);
 
-			await prisma.lastManStandingGame.createMany({
+			await global.prisma!.lastManStandingGame.createMany({
 				data: result.map(i => ({ ...i, user_id: BigInt(user.id), points: undefined }))
 			});
 			const points = sumArr(result.map(i => i.points));
@@ -930,20 +936,21 @@ const allTableCommands: TestCommand[] = [
 				user_id: user.id
 			});
 
+			const stats = await user.fetchStats({ items_sold_bank: true });
 			await Promise.all([
 				updateClientGPTrackSetting('gp_sell', totalPrice),
 				updateBankSetting('sold_items_bank', bankToSell),
 				userStatsUpdate(
 					user.id,
-					userStats => ({
-						items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+					{
+						items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).bank,
 						sell_gp: {
 							increment: totalPrice
 						}
-					}),
+					},
 					{}
 				),
-				prisma.botItemSell.createMany({ data: botItemSellData })
+				global.prisma!.botItemSell.createMany({ data: botItemSellData })
 			]);
 		}
 	},
@@ -978,21 +985,21 @@ const allTableCommands: TestCommand[] = [
 				creator_id: user.id,
 				guild_id: '342983479501389826'
 			};
-			await prisma.bingo.create({ data: createOptions });
+			await global.prisma!.bingo.create({ data: createOptions });
 		}
 	},
 	{
 		name: 'Bingo Participant',
 		cmd: async user => {
-			const activeBingos = await prisma.bingo.findMany({ select: { id: true } });
+			const activeBingos = await global.prisma!.bingo.findMany({ select: { id: true } });
 			if (activeBingos.length === 0) return;
 			const myBingo = randArrItem(activeBingos).id;
 			// Check if we're in this bingo already:
-			const existingTeam = await prisma.bingoParticipant.findFirst({
+			const existingTeam = await global.prisma!.bingoParticipant.findFirst({
 				where: { user_id: user.id, bingo_id: myBingo }
 			});
 			if (existingTeam) return;
-			await prisma.bingoTeam.create({
+			await global.prisma!.bingoTeam.create({
 				data: {
 					bingo_id: myBingo,
 					users: {
@@ -1013,7 +1020,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Create robochimp user',
 		cmd: async user => {
-			const updateObj = { github_id: 123_456 };
+			const updateObj = { github_id: randInt(100_000, 999_999) };
 			await roboChimpClient.user.upsert({
 				where: {
 					id: BigInt(user.id)
@@ -1029,7 +1036,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Historical data',
 		cmd: async user => {
-			await prisma.historicalData.create({
+			await global.prisma!.historicalData.create({
 				data: {
 					user_id: user.id,
 					GP: 100_000,
@@ -1044,12 +1051,17 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Command usage',
 		cmd: async user => {
-			const randCommands = ['minion', 'runecraft', 'chop', 'mine', 'buy'];
-			await prisma.commandUsage.create({
+			const randCommands = [
+				command_name_enum.minion,
+				command_name_enum.runecraft,
+				command_name_enum.chop,
+				command_name_enum.mine,
+				command_name_enum.buy
+			];
+			await global.prisma!.commandUsage.create({
 				data: {
 					user_id: BigInt(user.id),
 					channel_id: 1_111_111_111n,
-					status: 'Unknown',
 					args: {},
 					command_name: randArrItem(randCommands),
 					guild_id: null,
@@ -1071,7 +1083,7 @@ const allTableCommands: TestCommand[] = [
 			}
 			const itemId = randInt(10_000, 25_000);
 			key += `${itemId}`;
-			await prisma.reclaimableItem.create({
+			await global.prisma!.reclaimableItem.create({
 				data: {
 					user_id: user.id,
 					key,
@@ -1102,7 +1114,7 @@ async function runAllTestCommandsOnUser(user: TestUser) {
 	return user;
 }
 
-async function runRandomTestCommandsOnUser(user: TestUser, numCommands: number = 6) {
+async function runRandomTestCommandsOnUser(user: TestUser, numCommands = 6, forceRoboChimp = false) {
 	const commandHistory: string[] = [];
 	const priorityCommands = allTableCommands.filter(c => c.priority);
 	const otherCommands = allTableCommands.filter(c => !c.priority);
@@ -1112,6 +1124,11 @@ async function runRandomTestCommandsOnUser(user: TestUser, numCommands: number =
 	}
 	for (let i = 0; i < numCommands; i++) {
 		const command = randArrItem(otherCommands);
+		commandHistory.push(`${new Date().toISOString()}:${command.name}`);
+		await runTestCommand(user, command);
+	}
+	if (forceRoboChimp) {
+		const command = allTableCommands.filter(c => c.name.toLowerCase().includes('robochimp'))![0];
 		commandHistory.push(`${new Date().toISOString()}:${command.name}`);
 		await runTestCommand(user, command);
 	}
@@ -1154,6 +1171,7 @@ async function buildBaseUser(userId: string) {
 		.add('Ghrazi rapier');
 
 	const userData: Partial<Prisma.UserCreateInput> = {
+		id: userId,
 		skills_runecraft: 13_034_431,
 		skills_woodcutting: 13_034_431,
 		skills_mining: 13_034_431,
@@ -1165,189 +1183,222 @@ async function buildBaseUser(userId: string) {
 		skills_strength: 13_034_431,
 		skills_agility: randInt(1_000_000, 5_000_000),
 		bitfield: [BitField.HasHosidiusWallkit],
-		kourend_favour: { Hosidius: 100, Arceuus: 0, Shayzien: 0, Lovakengj: 0 },
 		GP: 100_000_000
 	};
-	const user = await createTestUser(userId, startBank, userData);
+	const user = await createTestUser(startBank, userData);
 	return user;
 }
-describe('migrate user test', async () => {
-	await mockClient();
-	vi.doMock('../../src/lib/util', async () => {
-		const actual: any = await vi.importActual('../../src/lib/util');
-		return {
-			...actual,
-			channelIsSendable: () => false
-		};
-	});
 
-	const logResult = (
-		result: { result: boolean; errors: string[] },
-		sourceData: UserData,
-		newData: UserData,
-		srcHistory?: string[],
-		dstHistory?: string[]
-	) => {
-		if (!result.result) {
-			if (srcHistory) {
-				console.log(`Source Command History: ${sourceData.id}`);
-				console.log(srcHistory);
-			}
-			if (dstHistory) {
-				console.log(`Target Command History: ${newData.id}`);
-				console.log(dstHistory);
-			}
-			console.log(`source: ${sourceData.id}  dest: ${newData.id}`);
-			console.log(result.errors);
-			console.log(JSON.stringify(sourceData));
-			console.log(JSON.stringify(newData));
-		}
+vi.doMock('../../src/lib/util', async () => {
+	const actual: any = await vi.importActual('../../src/lib/util');
+	return {
+		...actual,
+		channelIsSendable: () => false
 	};
+});
 
-	await GrandExchange.totalReset();
-	await GrandExchange.init();
+const logResult = (
+	result: { result: boolean; errors: string[] },
+	sourceData: UserData,
+	newData: UserData,
+	srcHistory?: string[],
+	dstHistory?: string[]
+) => {
+	if (!result.result) {
+		if (srcHistory) {
+			console.log(`Source Command History: ${sourceData.id}`);
+			console.log(srcHistory);
+		}
+		if (dstHistory) {
+			console.log(`Target Command History: ${newData.id}`);
+			console.log(dstHistory);
+		}
+		console.log(`source: ${sourceData.id}  dest: ${newData.id}`);
+		console.log(result.errors);
+		console.log(JSON.stringify(sourceData));
+		console.log(JSON.stringify(newData));
+	}
+};
 
-	test('test migrating existing user to target with no records', async () => {
-		const sourceUser = await buildBaseUser(randomSnowflake());
-		await runAllTestCommandsOnUser(sourceUser);
+test.concurrent('test preventing a double (clobber) robochimp migration (two bot-migration)', async () => {
+	const sourceUserId = mockedId();
+	const destUserId = mockedId();
 
-		const destUserId = randomSnowflake();
+	// Create source user, and populate data:
+	const sourceUser = await buildBaseUser(sourceUserId);
+	const srcHistory = await runRandomTestCommandsOnUser(sourceUser, 5, true);
 
-		const sourceData = new UserData(sourceUser);
-		await sourceData.sync();
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-		const migrateResult = await migrateUser(sourceUser.id, destUserId);
-		expect(migrateResult).toEqual(true);
+	const migrateResult = await migrateUser(sourceUser.id, destUserId);
+	expect(migrateResult).toEqual(true);
 
-		const newData = new UserData(destUserId);
-		await newData.sync();
+	const destData = new UserData(destUserId);
+	await destData.sync();
 
-		const compareResult = sourceData.equals(newData);
-		logResult(compareResult, sourceData, newData);
+	const compareResult = sourceData.equals(destData);
+	logResult(compareResult, sourceData, destData, srcHistory, []);
+	expect(compareResult.result).toBe(true);
 
-		expect(compareResult.result).toBe(true);
-	});
+	// Now the actual test, everything above has to happen first...
+	await runAllTestCommandsOnUser(sourceUser);
 
-	test('test migrating full user on top of full profile', async () => {
-		const sourceUser = await buildBaseUser(randomSnowflake());
-		const destUser = await buildBaseUser(randomSnowflake());
-		await runAllTestCommandsOnUser(sourceUser);
-		await runAllTestCommandsOnUser(destUser);
+	const newSourceData = new UserData(sourceUser);
+	await newSourceData.sync();
 
-		const sourceData = new UserData(sourceUser);
-		await sourceData.sync();
+	const secondMigrateResult = await migrateUser(sourceUser.id, destUserId);
+	expect(secondMigrateResult).toEqual(true);
 
-		const migrateResult = await migrateUser(sourceUser.id, destUser.id);
-		expect(migrateResult).toEqual(true);
+	const newDestData = new UserData(destUserId);
+	await newDestData.sync();
 
-		const newData = new UserData(destUser.id);
-		await newData.sync();
-		const compareResult = sourceData.equals(newData);
-		logResult(compareResult, sourceData, newData);
+	const newCompareResult = sourceData.equals(destData);
+	logResult(newCompareResult, newSourceData, newDestData);
+	expect(newCompareResult.result).toBe(true);
 
-		expect(compareResult.result).toBe(true);
+	expect(newDestData.githubId).toEqual(sourceData.githubId);
+	expect(newDestData.githubId).toEqual(destData.githubId);
 
-		if (newData.poh) newData.poh.spellbook_altar = 33;
-		if (newData.userStats) newData.userStats.sacrificed_bank = new Bank().add('Cannonball').bank;
-		newData.skillsAsLevels!.cooking = 1_000_000;
-		newData.bingos = [];
-		newData.botItemSell = [];
-		if (newData.gear?.melee) newData.gear.melee.weapon = null;
+	// Make sure the 2nd transfer didn't overwrite robochimp:
+	expect(newDestData.githubId !== newSourceData.githubId).toBeTruthy();
 
-		const badResult = sourceData.equals(newData);
-		expect(badResult.result).toBe(false);
+	// Verify migrated id is correct
+	expect(newDestData.migratedUserId).toEqual(BigInt(sourceData.id));
+});
 
-		const expectedBadResult = [
-			`Failed comparing ${sourceUser.id} vs ${destUser.id}:`,
-			"melee gear doesn't match",
-			"cooking level doesn't match. 1 vs 1000000",
-			"POH Object doesn't match: null !== 33",
-			'User Stats doesn\'t match: {} !== {"2":1}',
-			'Wrong number of BotItemSell rows. 1 vs 0'
-		];
-		expect(badResult.errors).toEqual(expectedBadResult);
-	});
+beforeAll(async () => {
+	await mockClient();
+});
 
-	test(
-		'test migrating random user on top of empty profile',
-		async () => {
-			const sourceUser = await buildBaseUser(randomSnowflake());
-			const destUserId = randomSnowflake();
+test.concurrent('test migrating existing user to target with no records', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	await runAllTestCommandsOnUser(sourceUser);
 
-			const sourceRolls = randInt(6, 11);
-			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
+	const destUserId = mockedId();
 
-			const sourceData = new UserData(sourceUser);
-			await sourceData.sync();
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-			const result = await migrateUser(sourceUser, destUserId);
+	const migrateResult = await migrateUser(sourceUser.id, destUserId);
+	expect(migrateResult).toEqual(true);
 
-			if (result !== true) throw new Error(`${sourceUser.id} - ${result}`);
-			expect(result).toEqual(true);
+	const newData = new UserData(destUserId);
+	await newData.sync();
 
-			const newData = new UserData(destUserId);
-			await newData.sync();
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData);
 
-			const compareResult = sourceData.equals(newData);
-			logResult(compareResult, sourceData, newData, cmdHistory, []);
+	expect(compareResult.result).toBe(true);
+});
 
-			expect(compareResult.result).toBe(true);
-		},
-		{ repeats: 2 }
-	);
+test.concurrent('test migrating full user on top of full profile', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	const destUser = await buildBaseUser(mockedId());
+	await runAllTestCommandsOnUser(sourceUser);
+	await runAllTestCommandsOnUser(destUser);
 
-	test(
-		'test migrating random user on top of random profile',
-		async () => {
-			const sourceUser = await buildBaseUser(randomSnowflake());
-			const destUser = await buildBaseUser(randomSnowflake());
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-			const sourceRolls = randInt(5, 12);
-			const destRolls = randInt(5, 12);
+	const migrateResult = await migrateUser(sourceUser.id, destUser.id);
+	expect(migrateResult).toEqual(true);
 
-			const srcHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
-			const dstHistory = await runRandomTestCommandsOnUser(destUser, destRolls);
+	const newData = new UserData(destUser.id);
+	await newData.sync();
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData);
 
-			const sourceData = new UserData(sourceUser);
-			await sourceData.sync();
+	expect(compareResult.result).toBe(true);
 
-			const result = await migrateUser(sourceUser, destUser);
-			expect(result).toEqual(true);
+	if (newData.poh) newData.poh.spellbook_altar = 33;
+	if (newData.userStats) newData.userStats.sacrificed_bank = new Bank().add('Cannonball').bank;
+	newData.skillsAsLevels!.cooking = 1_000_000;
+	newData.bingos = [];
+	newData.botItemSell = [];
+	if (newData.gear?.melee) newData.gear.melee.weapon = null;
 
-			const newData = new UserData(destUser);
-			await newData.sync();
+	const badResult = sourceData.equals(newData);
+	expect(badResult.result).toBe(false);
 
-			const compareResult = sourceData.equals(newData);
-			logResult(compareResult, sourceData, newData, srcHistory, dstHistory);
+	const expectedBadResult = [
+		`Failed comparing ${sourceUser.id} vs ${destUser.id}:`,
+		"melee gear doesn't match",
+		"cooking level doesn't match. 1 vs 1000000",
+		"POH Object doesn't match: null !== 33",
+		'User Stats doesn\'t match: {} !== {"2":1}',
+		'Wrong number of BotItemSell rows. 1 vs 0'
+	];
+	expect(badResult.errors).toEqual(expectedBadResult);
+});
 
-			expect(compareResult.result).toBe(true);
-		},
-		{ repeats: 2 }
-	);
+test.concurrent('test migrating random user on top of empty profile', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	const destUserId = mockedId();
 
-	test(
-		'test migrating random user on top of full profile',
-		async () => {
-			const sourceUser = await buildBaseUser(randomSnowflake());
-			const destUser = await buildBaseUser(randomSnowflake());
+	const sourceRolls = randInt(6, 11);
+	const cmdHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 
-			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser);
-			await runAllTestCommandsOnUser(destUser);
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-			const sourceData = new UserData(sourceUser);
-			await sourceData.sync();
+	const result = await migrateUser(sourceUser, destUserId);
 
-			const result = await migrateUser(sourceUser, destUser);
-			expect(result).toEqual(true);
+	if (result !== true) throw new Error(`${sourceUser.id} - ${result}`);
+	expect(result).toEqual(true);
 
-			const newData = new UserData(destUser);
-			await newData.sync();
+	const newData = new UserData(destUserId);
+	await newData.sync();
 
-			const compareResult = sourceData.equals(newData);
-			logResult(compareResult, sourceData, newData, cmdHistory, []);
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData, cmdHistory, []);
 
-			expect(compareResult.result).toBe(true);
-		},
-		{ repeats: 2 }
-	);
+	expect(compareResult.result).toBe(true);
+});
+
+test.concurrent('test migrating random user on top of random profile', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	const destUser = await buildBaseUser(mockedId());
+
+	const sourceRolls = randInt(5, 12);
+	const destRolls = randInt(5, 12);
+
+	const srcHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
+	const dstHistory = await runRandomTestCommandsOnUser(destUser, destRolls);
+
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
+
+	const result = await migrateUser(sourceUser, destUser);
+	expect(result).toEqual(true);
+
+	const newData = new UserData(destUser);
+	await newData.sync();
+
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData, srcHistory, dstHistory);
+
+	expect(compareResult.result).toBe(true);
+});
+
+test.concurrent('test migrating random user on top of full profile', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	const destUser = await buildBaseUser(mockedId());
+
+	const cmdHistory = await runRandomTestCommandsOnUser(sourceUser);
+	await runAllTestCommandsOnUser(destUser);
+
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
+
+	const result = await migrateUser(sourceUser, destUser);
+	expect(result).toEqual(true);
+
+	const newData = new UserData(destUser);
+	await newData.sync();
+
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData, cmdHistory, []);
+
+	expect(compareResult.result).toBe(true);
 });

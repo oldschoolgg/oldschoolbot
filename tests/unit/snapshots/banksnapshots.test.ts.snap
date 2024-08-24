@@ -46,7 +46,7 @@ exports[`OSB Buyables 1`] = `
       "feather",
     ],
     "gpCost": 50,
-    "ironmanPrice": 2,
+    "ironmanPrice": 4,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -123,7 +123,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 30,
-    "ironmanPrice": 5,
+    "ironmanPrice": 10,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -323,7 +323,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 2000,
-    "ironmanPrice": 500,
+    "ironmanPrice": 600,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -563,7 +563,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 9600,
+    "ironmanPrice": 50000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -761,8 +761,8 @@ exports[`OSB Buyables 1`] = `
     "qpRequired": 10,
   },
   {
-    "gpCost": 5000,
-    "ironmanPrice": 600,
+    "gpCost": 25000,
+    "ironmanPrice": 10000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -779,8 +779,8 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
-    "ironmanPrice": 600,
+    "gpCost": 25000,
+    "ironmanPrice": 10000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -902,6 +902,20 @@ exports[`OSB Buyables 1`] = `
     "name": "Mask of rebirth",
     "outputItems": undefined,
     "qpRequired": 172,
+  },
+  {
+    "gpCost": 5000,
+    "ironmanPrice": 500,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Lockpick",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "agility": 50,
+      "thieving": 50,
+    },
   },
   {
     "itemCost": Bank {
@@ -1111,7 +1125,6 @@ exports[`OSB Buyables 1`] = `
     },
     "name": "Arceuus signet",
     "outputItems": undefined,
-    "requiredFavour": "arceuus",
   },
   {
     "gpCost": 100000,
@@ -1707,7 +1720,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 780000,
-    "ironmanPrice": 78000,
+    "ironmanPrice": 98000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -3403,7 +3416,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 298,
+    "qpRequired": 308,
   },
   {
     "aliases": [
@@ -3422,7 +3435,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 298,
+    "qpRequired": 308,
   },
   {
     "aliases": [
@@ -3460,7 +3473,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 298,
+    "qpRequired": 308,
   },
   {
     "customReq": [Function],
@@ -5747,28 +5760,6 @@ exports[`OSB Buyables 1`] = `
   {
     "itemCost": Bank {
       "bank": {
-        "1521": 15,
-        "28134": 200,
-      },
-      "frozen": false,
-    },
-    "name": "Clover insignia",
-    "outputItems": undefined,
-  },
-  {
-    "itemCost": Bank {
-      "bank": {
-        "1519": 15,
-        "28134": 300,
-      },
-      "frozen": false,
-    },
-    "name": "Powdered pollen",
-    "outputItems": undefined,
-  },
-  {
-    "itemCost": Bank {
-      "bank": {
         "1515": 300,
         "1517": 300,
         "28134": 3000,
@@ -5793,6 +5784,16 @@ exports[`OSB Buyables 1`] = `
   {
     "itemCost": Bank {
       "bank": {
+        "28134": 2500,
+      },
+      "frozen": false,
+    },
+    "name": "Cape pouch",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
         "1519": 300,
         "1521": 300,
         "28134": 5000,
@@ -5800,6 +5801,28 @@ exports[`OSB Buyables 1`] = `
       "frozen": false,
     },
     "name": "Log basket",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1521": 500,
+        "28134": 10000,
+      },
+      "frozen": false,
+    },
+    "name": "Felling axe handle",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1519": 500,
+        "28134": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Twitcher's gloves",
     "outputItems": undefined,
   },
   {
@@ -5820,6 +5843,21 @@ exports[`OSB Buyables 1`] = `
     },
     "name": "Funky shaped log",
     "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "28134": 150,
+      },
+      "frozen": false,
+    },
+    "name": "Sawmill voucher",
+    "outputItems": Bank {
+      "bank": {
+        "28628": 10,
+      },
+      "frozen": false,
+    },
   },
   {
     "itemCost": Bank {
@@ -6275,7 +6313,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6289,7 +6327,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6303,7 +6341,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6317,7 +6355,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6331,7 +6369,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6345,7 +6383,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6359,7 +6397,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6373,7 +6411,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6387,7 +6425,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6401,7 +6439,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6415,7 +6453,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6429,7 +6467,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6443,7 +6481,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6457,7 +6495,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6471,7 +6509,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6485,7 +6523,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6499,7 +6537,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6513,7 +6551,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6527,7 +6565,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6541,7 +6579,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6555,7 +6593,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6569,7 +6607,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6583,7 +6621,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6597,7 +6635,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6611,7 +6649,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6625,7 +6663,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6639,7 +6677,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6653,7 +6691,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6667,7 +6705,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6681,7 +6719,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6695,7 +6733,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6709,7 +6747,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6723,7 +6761,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6737,7 +6775,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6751,7 +6789,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6765,7 +6803,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6779,7 +6817,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6793,7 +6831,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6807,7 +6845,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6821,7 +6859,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6835,7 +6873,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6849,7 +6887,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6863,7 +6901,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6877,7 +6915,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6891,7 +6929,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6905,7 +6943,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6919,7 +6957,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6933,7 +6971,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6947,7 +6985,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6961,7 +6999,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7221,6 +7259,7 @@ exports[`OSB Creatables 1`] = `
       "frozen": false,
     },
     "name": "Hell cat ears",
+    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "24527": 1,
@@ -8439,6 +8478,24 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
+    "GPCost": 50000,
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "12783": 1,
+        "2572": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Ring of wealth (i)",
+    "outputItems": Bank {
+      "bank": {
+        "12785": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
@@ -8653,6 +8710,119 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "27652": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1432": 1,
+        "28798": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Bone mace",
+    "outputItems": Bank {
+      "bank": {
+        "28792": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "smithing": 35,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28798": 1,
+        "857": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Bone shortbow",
+    "outputItems": Bank {
+      "bank": {
+        "28794": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "fletching": 35,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1391": 1,
+        "28798": 1,
+        "562": 1000,
+      },
+      "frozen": false,
+    },
+    "name": "Bone staff",
+    "outputItems": Bank {
+      "bank": {
+        "28796": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 35,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27614": 5,
+      },
+      "frozen": false,
+    },
+    "name": "Venator bow (uncharged)",
+    "outputItems": Bank {
+      "bank": {
+        "27612": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28924": 150000,
+        "28947": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Blessed dizana's quiver",
+    "outputItems": Bank {
+      "bank": {
+        "28955": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "13280": 1,
+        "13281": 1,
+        "28955": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dizana's max cape",
+    "outputItems": Bank {
+      "bank": {
+        "28902": 1,
+        "28904": 1,
       },
       "frozen": false,
     },
@@ -9771,6 +9941,23 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "13391": 100,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28947": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Dizana's quiver (uncharged)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "28924": 4000,
       },
       "frozen": false,
     },
@@ -17366,7 +17553,6 @@ exports[`OSB Creatables 1`] = `
       "frozen": false,
     },
     "name": "Dagon'hai robes set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "24333": 1,
@@ -17406,7 +17592,6 @@ exports[`OSB Creatables 1`] = `
       "frozen": false,
     },
     "name": "Masori armour set (f)",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "27355": 1,
@@ -17430,6 +17615,45 @@ exports[`OSB Creatables 1`] = `
         "27235": 1,
         "27238": 1,
         "27241": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28933": 1,
+        "28936": 1,
+        "28939": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Sunfire fanatic armour set",
+    "outputItems": Bank {
+      "bank": {
+        "29424": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "29424": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Sunfire fanatic armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "28933": 1,
+        "28936": 1,
+        "28939": 1,
       },
       "frozen": false,
     },
@@ -17824,7 +18048,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17842,7 +18065,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17860,7 +18082,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17878,7 +18099,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17896,7 +18116,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17914,7 +18133,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17932,7 +18150,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17960,7 +18177,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17978,7 +18194,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17996,7 +18211,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18014,7 +18228,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18032,7 +18245,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18050,7 +18262,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18068,7 +18279,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18096,7 +18306,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18114,7 +18323,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18132,7 +18340,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18150,7 +18357,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18168,7 +18374,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18186,7 +18391,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18204,7 +18408,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18232,7 +18435,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18250,7 +18452,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18268,7 +18469,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18286,7 +18486,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18304,7 +18503,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18322,7 +18520,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18340,7 +18537,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18368,7 +18564,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18386,7 +18581,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18404,7 +18598,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18422,7 +18615,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18440,7 +18632,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18458,7 +18649,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18476,7 +18666,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18504,7 +18693,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18522,7 +18710,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18540,7 +18727,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18558,7 +18744,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18576,7 +18761,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18594,7 +18778,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18612,7 +18795,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18640,7 +18822,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18658,7 +18839,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18676,7 +18856,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18694,7 +18873,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18712,7 +18890,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18730,7 +18907,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18748,7 +18924,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18776,7 +18951,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18794,7 +18968,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18812,7 +18985,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18830,7 +19002,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18848,7 +19019,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18866,7 +19036,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18884,7 +19053,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18912,7 +19080,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -18930,7 +19097,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -18948,7 +19114,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -18966,7 +19131,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -18984,7 +19148,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19002,7 +19165,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19020,7 +19182,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19048,7 +19209,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19066,7 +19226,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19084,7 +19243,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19102,7 +19260,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19120,7 +19277,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19138,7 +19294,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19156,7 +19311,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -21410,7 +21564,7 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Revert Elite void robe (or))",
+    "name": "Revert Elite void robe (or)",
     "noCl": true,
     "outputItems": Bank {
       "bank": {
@@ -22680,6 +22834,108 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "26809": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal green dye (using Abyssal blue dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26807": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26811": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal green dye (using Abyssal red dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26807": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26807": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal blue dye (using Abyssal green dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26809": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26811": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal blue dye (using Abyssal red dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26809": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26807": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal red dye (using Abyssal green dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26811": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26809": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal red dye (using Abyssal blue dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26811": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "25442": 1,
         "25457": 1,
       },
@@ -22698,7 +22954,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25445": 1,
-        "25459": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -22715,7 +22971,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25448": 1,
-        "25461": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -22732,7 +22988,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25451": 1,
-        "25463": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -22749,7 +23005,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25454": 1,
-        "25465": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -22825,7 +23081,7 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Revert Elidinis' ward (f))",
+    "name": "Revert Elidinis' ward (f)",
     "noCl": true,
     "outputItems": Bank {
       "bank": {
@@ -23791,6 +24047,23 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25898": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tztok slayer helmet",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
@@ -23802,6 +24075,23 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25900": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25900": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tztok slayer helmet (i)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11865": 1,
       },
       "frozen": false,
     },
@@ -23897,6 +24187,23 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25910": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tzkal slayer helmet",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
@@ -23908,6 +24215,23 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25912": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25912": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tzkal slayer helmet (i)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11865": 1,
       },
       "frozen": false,
     },
@@ -23931,6 +24255,23 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25904": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Vampyric slayer helmet",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
@@ -23942,6 +24283,23 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25906": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25906": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Vampyric slayer helmet (i)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11865": 1,
       },
       "frozen": false,
     },
@@ -24056,51 +24414,6 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "1605": 1,
-        "1759": 1,
-        "28181": 1,
-      },
-      "frozen": false,
-    },
-    "name": "Leprechaun charm",
-    "outputItems": Bank {
-      "bank": {
-        "28179": 10,
-      },
-      "frozen": false,
-    },
-    "requiredSkills": {
-      "crafting": 70,
-      "farming": 35,
-      "woodcutting": 70,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {
-        "1511": 1,
-        "1759": 1,
-        "28190": 1,
-      },
-      "frozen": false,
-    },
-    "name": "Bee on a stick",
-    "outputItems": Bank {
-      "bank": {
-        "28184": 10,
-      },
-      "frozen": false,
-    },
-    "requiredSkills": {
-      "hunter": 50,
-      "woodcutting": 35,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {
         "1539": 45,
         "2361": 3,
         "28146": 1,
@@ -24112,6 +24425,28 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "28149": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "smithing": 75,
+      "woodcutting": 75,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28136": 1,
+        "28140": 1,
+        "28149": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Forestry basket",
+    "outputItems": Bank {
+      "bank": {
+        "28143": 1,
       },
       "frozen": false,
     },
@@ -24140,6 +24475,326 @@ exports[`OSB Creatables 1`] = `
     "requiredSkills": {
       "crafting": 50,
       "woodcutting": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1734": 1,
+        "28624": 15,
+      },
+      "frozen": false,
+    },
+    "name": "Pheasant hat",
+    "outputItems": Bank {
+      "bank": {
+        "28620": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 2,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1734": 1,
+        "28624": 15,
+      },
+      "frozen": false,
+    },
+    "name": "Pheasant legs",
+    "outputItems": Bank {
+      "bank": {
+        "28622": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 2,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1734": 1,
+        "28624": 15,
+      },
+      "frozen": false,
+    },
+    "name": "Pheasant boots",
+    "outputItems": Bank {
+      "bank": {
+        "28618": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 2,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1734": 1,
+        "28624": 15,
+      },
+      "frozen": false,
+    },
+    "name": "Pheasant cape",
+    "outputItems": Bank {
+      "bank": {
+        "28616": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 2,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1351": 1,
+        "28177": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Bronze felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28196": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1349": 1,
+        "28177": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Iron felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28199": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1353": 1,
+        "28177": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Steel felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28202": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1361": 1,
+        "28177": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Black felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28205": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1355": 1,
+        "28177": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Mithril felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28208": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1357": 1,
+        "28177": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Adamant felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28211": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1359": 1,
+        "28177": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Rune felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28214": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28177": 1,
+        "6739": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dragon felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28217": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "23673": 1,
+        "28177": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Crystal felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28220": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "20011": 1,
+        "28177": 1,
+      },
+      "frozen": false,
+    },
+    "name": "3rd age felling axe",
+    "outputItems": Bank {
+      "bank": {
+        "28226": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "13322": 1,
+        "28663": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Pheasant",
+    "outputItems": Bank {
+      "bank": {
+        "28669": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28669": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Pheasant",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "13322": 1,
+        "28663": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "13322": 1,
+        "28626": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Fox",
+    "outputItems": Bank {
+      "bank": {
+        "28670": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28670": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Fox",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "13322": 1,
+        "28626": 1,
+      },
+      "frozen": false,
     },
   },
   {

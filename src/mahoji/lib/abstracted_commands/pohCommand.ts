@@ -1,12 +1,11 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
+import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh';
 import { pohImageGenerator } from '../../../lib/pohImage';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { formatSkillRequirements, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -98,12 +97,6 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		return `You need level ${formatSkillRequirements(obj.level)} to build a ${obj.name} in your house.`;
 	}
 
-	if (obj.id === 29_149 || obj.id === 31_858) {
-		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Arceuus, 100);
-		if (!hasFavour) {
-			return `Build Dark Altar/Occult altar requires ${requiredPoints}% Arceuus Favour.`;
-		}
-	}
 	const inPlace = poh[obj.slot];
 	if (obj.slot === 'mounted_item' && inPlace !== null) {
 		return 'You already have a item mount built.';

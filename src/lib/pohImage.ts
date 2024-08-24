@@ -1,12 +1,13 @@
-import { Canvas, Image, SKRSContext2D } from '@napi-rs/canvas';
+import * as fs from 'node:fs';
+import path from 'node:path';
+import type { Image, SKRSContext2D } from '@napi-rs/canvas';
+import { Canvas, loadImage } from '@napi-rs/canvas';
 import { objectEntries, randInt } from 'e';
-import * as fs from 'fs';
-import path from 'path';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
-import { canvasImageFromBuffer, loadAndCacheLocalImage } from './util/canvasUtil';
+import { loadAndCacheLocalImage } from './util/canvasUtil';
 import { getActivityOfUser } from './util/minionIsBusy';
-import { PlayerOwnedHouse } from '.prisma/client';
+import type { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
@@ -33,7 +34,7 @@ class PoHImage {
 	public imageCache: Map<number, Image> = new Map();
 	public bgImages: Image[] = [];
 	initPromise: Promise<void> | null = this.init();
-	initFinished: boolean = false;
+	initFinished = false;
 
 	async init() {
 		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_1.jpg'));
@@ -42,9 +43,9 @@ class PoHImage {
 			const currentPath = path.join(CONSTRUCTION_IMG_DIR, folder);
 			const filesInDir = await fs.promises.readdir(currentPath);
 			for (const fileName of filesInDir) {
-				const id = parseInt(path.parse(fileName).name);
+				const id = Number.parseInt(path.parse(fileName).name);
 				const imageBuffer = await fs.promises.readFile(path.join(currentPath, `${id}.png`));
-				const image = await canvasImageFromBuffer(imageBuffer);
+				const image = await loadImage(imageBuffer);
 
 				this.imageCache.set(id, image);
 			}
@@ -61,7 +62,6 @@ class PoHImage {
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(bgImage, 0, 0, bgImage.width, bgImage.height);
-		debugLog('Generating a POH image');
 		return [canvas, ctx];
 	}
 
@@ -93,7 +93,7 @@ class PoHImage {
 			const [placeholder, coordArr] = objects;
 			for (const obj of coordArr) {
 				const [x, y] = obj;
-				let id = poh[key] ?? placeholder;
+				const id = poh[key] ?? placeholder;
 				const isMountedItem = key === 'mounted_item' && id !== 1111;
 				if (isMountedItem) {
 					const hasCustomItem = id !== 1112;

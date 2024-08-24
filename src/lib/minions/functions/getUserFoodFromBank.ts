@@ -27,7 +27,7 @@ export default function getUserFoodFromBank({
 	let userBank = user.bank;
 	if (unavailableBank) userBank = userBank.clone().remove(unavailableBank);
 	let totalHealingCalc = totalHealingNeeded;
-	let foodToRemove = new Bank();
+	const foodToRemove = new Bank();
 
 	let sorted = [...Eatables.filter(e => (isWilderness ? true : !e.wildyOnly))]
 		.sort((i, j) => (getRealHealAmount(user, i.healAmount) > getRealHealAmount(user, j.healAmount) ? 1 : -1))

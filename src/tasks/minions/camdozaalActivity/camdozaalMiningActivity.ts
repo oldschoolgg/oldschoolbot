@@ -4,7 +4,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -12,7 +12,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',
 	async run(data: ActivityTaskOptionsWithQuantity) {
-		let { quantity, userID, channelID, duration } = data;
+		const { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 		const camdozaalMine = Mining.CamdozaalMine;
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
@@ -62,7 +62,7 @@ export const camdozaalMiningTask: MinionTask = {
 		// If user has the entire prospector outfit, give an extra 2.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
-				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
+				Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
 				true
 			)
 		) {
@@ -72,7 +72,7 @@ export const camdozaalMiningTask: MinionTask = {
 		} else {
 			// For each prospector item, check if they have it, give its' XP boost
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquipped(Number.parseInt(itemID))) {
 					const amountToAdd = Math.floor(miningXpReceived * (bonus / 100));
 					miningXpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -95,7 +95,7 @@ export const camdozaalMiningTask: MinionTask = {
 		}
 
 		// Add clue scrolls
-		let clueScrollChance = Mining.CamdozaalMine.clueScrollChance!;
+		const clueScrollChance = Mining.CamdozaalMine.clueScrollChance!;
 		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
 
 		// Rock golem roll

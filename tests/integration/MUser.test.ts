@@ -1,10 +1,12 @@
-import { objectEntries } from 'e';
+import { activity_type_enum } from '@prisma/client';
+import { Time, objectEntries, randArrItem, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
-import { prisma } from '../../src/lib/settings/prisma';
+import { ClueTiers } from '../../src/lib/clues/clueTiers';
+
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { assert } from '../../src/lib/util/logError';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
@@ -88,16 +90,15 @@ describe('MUser', () => {
 	});
 
 	test('Should add XP', async () => {
-		const userId = '123456789';
-		const user = await mUserFetch(userId);
+		const user = await createTestUser();
 		expect(user.skillsAsLevels.agility).toEqual(1);
 		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
 		expect(user.skillsAsLevels.agility).toEqual(9);
-		expect(result).toEqual(`You received 1,000 <:agility:630911040355565568> XP
+		expect(result).toEqual(`You received 1,000 <:agility:630911040355565568> XP.
 **Congratulations! Your Agility level is now 9** 🎉`);
-		const xpAdded = await prisma.xPGain.findMany({
+		const xpAdded = await global.prisma!.xPGain.findMany({
 			where: {
-				user_id: BigInt(userId),
+				user_id: BigInt(user.id),
 				skill: 'agility',
 				xp: 1000
 			}
@@ -109,11 +110,11 @@ describe('MUser', () => {
 	test('skillsAsLevels/skillsAsXP', async () => {
 		const user = await createTestUser();
 		for (const [key, val] of objectEntries(user.skillsAsLevels)) {
-			let expectedVal = key === 'hitpoints' ? 10 : 1;
+			const expectedVal = key === 'hitpoints' ? 10 : 1;
 			expect(val).toEqual(expectedVal);
 		}
 		for (const [key, val] of objectEntries(user.skillsAsXP)) {
-			let expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
+			const expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
 			expect(val).toEqual(expectedVal);
 		}
 		await user.addXP({ skillName: SkillsEnum.Agility, amount: convertLVLtoXP(50) });
@@ -141,5 +142,33 @@ describe('MUser', () => {
 			expect(previousCL.equals(loot)).toEqual(true);
 			expect(itemsAdded).toEqual(loot);
 		}
+	});
+
+	test('calcActualClues', async () => {
+		const user = await createTestUser();
+		const clues = [];
+		for (let i = 0; i < 100; i++) {
+			const tier = randArrItem(ClueTiers);
+			clues.push({
+				id: randInt(1, 100_000_000),
+				user_id: BigInt(user.id),
+				start_date: new Date(Date.now() - Time.Hour),
+				duration: Time.Hour,
+				finish_date: new Date(),
+				completed: true,
+				type: activity_type_enum.ClueCompletion,
+				channel_id: BigInt(1),
+				group_activity: false,
+				data: {
+					userID: user.id,
+					ci: tier.id,
+					q: randInt(1, 10)
+				}
+			});
+		}
+		await prisma.activity.createMany({
+			data: clues
+		});
+		await user.calcActualClues();
 	});
 });

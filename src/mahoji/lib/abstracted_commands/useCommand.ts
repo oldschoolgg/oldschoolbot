@@ -1,6 +1,6 @@
 import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
 import { assert } from '../../../lib/util';
@@ -11,7 +11,7 @@ interface Usable {
 	items: Item[];
 	run: (user: MUser) => Promise<string>;
 }
-export const usables: Usable[] = [];
+const usables: Usable[] = [];
 
 interface UsableUnlock {
 	item: Item;
