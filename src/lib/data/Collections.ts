@@ -93,6 +93,7 @@ import {
 	monkeyBackpacksCL,
 	motherlodeMineCL,
 	muspahCL,
+	myNotesCL,
 	oborCL,
 	pestControlCL,
 	questCL,
@@ -942,6 +943,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['mlm'],
 				items: motherlodeMineCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
+			},
+			'My Notes': {
+				alias: ['my notes'],
+				items: myNotesCL
 			},
 			'Random Events': {
 				alias: ['random'],

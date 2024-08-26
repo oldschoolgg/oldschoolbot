@@ -501,6 +501,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		wildy: true,
 		wildyMulti: true,
 		canBePked: true,
+		canCannon: true,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 9,
 
