@@ -27,7 +27,8 @@ export enum QuestID {
 	TheRibbitingTaleOfALillyPadLabourDispute = 5,
 	PerilousMoons = 6,
 	AtFirstLight = 7,
-	TwilightsPromise = 8
+	TwilightsPromise = 8,
+	WhileGuthixSleeps = 9
 }
 
 export const quests: Quest[] = [
@@ -206,6 +207,48 @@ export const quests: Quest[] = [
 			let duration = Time.Minute * 9;
 			if (user.combatLevel < 75) {
 				duration += Time.Minute * 5;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID.WhileGuthixSleeps,
+		qp: 5,
+		name: 'While Guthix Sleeps',
+		combatLevelReq: 95,
+		prerequisitesQuests: [QuestID.DefenderOfVarrock, QuestID.ThePathOfGlouphrie],
+		qpReq: 180,
+		skillReqs: {
+			thieving: 72,
+			magic: 67,
+			agility: 66,
+			farming: 65,
+			herblore: 65,
+			hunter: 62
+		},
+		rewards: new Bank()
+			.add(560, 100)
+			.add(554, 100)
+			.add(453, 100)
+			.add(1_513, 100)
+			.add(29_596)
+			.add(29_566)
+			.add(29_568)
+			.add(29_570)
+			.add(29_560)
+			.add(29_562)
+			.add(29_564)
+			.freeze(),
+		skillsRewards: {
+			thieving: 80_000,
+			farming: 75_000,
+			herblore: 75_000,
+			hunter: 50_000
+		},
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 90;
+			if (user.combatLevel < 105) {
+				duration += Time.Minute * 20;
 			}
 			return duration;
 		}

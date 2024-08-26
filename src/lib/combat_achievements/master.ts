@@ -1520,5 +1520,16 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 28
 		}
+	},
+	{
+		id: 2134,
+		name: 'Three Times the Thrashing',
+		desc: 'Kill three Tormented Demons within 3 seconds.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
+		}
 	}
 ];

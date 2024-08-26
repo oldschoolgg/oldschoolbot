@@ -247,6 +247,7 @@ const killableBosses: KillableMonster[] = [
 				'Zamorakian spear',
 				'Zamorakian hasta',
 				'Arclight',
+				'Emberlight',
 				'Abyssal whip',
 				'Abyssal tentacle',
 				'Abyssal bludgeon',
@@ -272,7 +273,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Abyssal whip')]: 10,
 				[itemID('Abyssal tentacle')]: 11,
 				[itemID('Abyssal bludgeon')]: 13,
-				[itemID("Inquisitor's mace")]: 15
+				[itemID("Inquisitor's mace")]: 15,
+				[itemID('Emberlight')]: 15
 			}
 		],
 		levelRequirements: {
