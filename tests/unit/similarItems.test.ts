@@ -274,7 +274,8 @@ describe('Gear', () => {
 		gear.equip('Completionist cape');
 		expect(gear.hasEquipped('Invention master cape')).toEqual(true);
 		expect(gear.hasEquipped('Master quest cape')).toEqual(true);
-		expect(gear.hasEquipped('Achievement diary cape (t)')).toEqual(true);
+		expect(gear.hasEquipped('Achievement diary cape')).toEqual(true);
+		expect(gear.hasEquipped('Music cape')).toEqual(true);
 		expect(gear.hasEquipped('Slayer master cape')).toEqual(true);
 		expect(gear.hasEquipped('Attack master cape')).toEqual(true);
 		expect(gear.hasEquipped('Strength master cape')).toEqual(true);

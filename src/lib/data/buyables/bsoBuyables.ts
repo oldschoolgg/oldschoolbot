@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calculateCompCapeProgress } from '../../bso/calculateCompCapeProgress';
-import { allMasterCapesBank } from '../../skilling/skillcapes';
+import { compCapeCreatableBank } from '../../skilling/skillcapes';
 import type { Buyable } from './buyables';
 import { circusBuyables } from './circusBuyables';
 import { fistOfGuthixBuyables } from './fistOfGuthixBuyables';
@@ -103,7 +103,7 @@ export const bsoBuyables: Buyable[] = [
 	{
 		name: 'Completionist cape',
 		outputItems: new Bank().add('Completionist cape').add('Completionist hood'),
-		itemCost: allMasterCapesBank,
+		itemCost: compCapeCreatableBank,
 		customReq: async user => {
 			const { totalPercentUntrimmed } = await calculateCompCapeProgress(user);
 			if (totalPercentUntrimmed < 100) {
