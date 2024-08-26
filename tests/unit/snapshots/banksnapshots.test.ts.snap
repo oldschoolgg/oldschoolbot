@@ -3416,7 +3416,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 308,
+    "qpRequired": 313,
   },
   {
     "aliases": [
@@ -3435,7 +3435,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 308,
+    "qpRequired": 313,
   },
   {
     "aliases": [
@@ -3473,7 +3473,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 308,
+    "qpRequired": 313,
   },
   {
     "customReq": [Function],
@@ -13165,6 +13165,89 @@ exports[`OSB Creatables 1`] = `
       2,
       17,
     ],
+  },
+  {
+    "GPCost": 0,
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "19675": 1,
+        "19677": 10,
+        "29580": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Emberlight",
+    "outputItems": Bank {
+      "bank": {
+        "29589": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "smithing": 74,
+    },
+  },
+  {
+    "GPCost": 0,
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "29580": 1,
+        "70": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Scorching bow",
+    "outputItems": Bank {
+      "bank": {
+        "29591": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "fletching": 74,
+    },
+  },
+  {
+    "GPCost": 0,
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1391": 1,
+        "2351": 1,
+        "29580": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Purging staff",
+    "outputItems": Bank {
+      "bank": {
+        "29594": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 74,
+      "smithing": 55,
+    },
+  },
+  {
+    "GPCost": 0,
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "29574": 2,
+      },
+      "frozen": false,
+    },
+    "name": "Burning claws",
+    "outputItems": Bank {
+      "bank": {
+        "29577": 1,
+      },
+      "frozen": false,
+    },
   },
   {
     "cantHaveItems": undefined,
