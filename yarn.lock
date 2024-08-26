@@ -3969,14 +3969,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@file:.yalc/oldschooljs::locator=root-workspace-0b6124%40workspace%3A.":
+"oldschooljs@npm:^2.5.10":
   version: 2.5.10
-  resolution: "oldschooljs@file:.yalc/oldschooljs#.yalc/oldschooljs::hash=b6e632&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "oldschooljs@npm:2.5.10"
   dependencies:
     deepmerge: "npm:4.3.1"
     e: "npm:^0.2.33"
     node-fetch: "npm:2.6.7"
-  checksum: 10c0/31bfc03e7bcba520446537fbf59923a160f47a9d6912765e26532428f134fef5281be30217114a832ef56d1eafc0ca8d5f5e0823d2adc6a1dcd33f08e352fbf2
+  checksum: 10c0/c8ff7fcaee60ebcc27c918fb315e226c3b0de93d45d2779733b6530156761a94aca760f7b247c8d4812cc46b865bc9a9916359be0fee996e018c37c927ec2696
   languageName: node
   linkType: hard
 
@@ -4764,7 +4764,7 @@ __metadata:
     node-cron: "npm:^3.0.3"
     node-fetch: "npm:^2.6.7"
     nodemon: "npm:^3.1.4"
-    oldschooljs: "file:.yalc/oldschooljs"
+    oldschooljs: "npm:^2.5.10"
     p-queue: "npm:^6.6.2"
     piscina: "npm:^4.6.1"
     prettier: "npm:^3.3.2"
