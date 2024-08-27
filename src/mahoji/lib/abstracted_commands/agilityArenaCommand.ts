@@ -67,7 +67,7 @@ export async function agilityArenaCommand(
 ): CommandResponse {
 	const userMaxTrip = calcMaxTripLength(user, 'AgilityArena');
 	let duration = undefined;
-	if (!quantity || quantity === 0) {
+	if (!quantity) {
 		duration = userMaxTrip;
 		quantity = userMaxTrip / Time.Minute;
 	} else if (quantity * Time.Minute > userMaxTrip) {
