@@ -320,7 +320,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		name: 'Amylase pack',
 		id: 12641,
 		openedItem: getOSItem(12641),
-		aliases: ['amylase'],
+		aliases: ['amylase pack', 'amylase'],
 		output: new LootTable().every('Amylase crystal', 100),
 		allItems: resolveItems(['Amylase crystal'])
 	},
