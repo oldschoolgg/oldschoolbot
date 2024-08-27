@@ -312,22 +312,17 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 }
 
 async function kcGains(interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
-	let intervalValue = '';
+	const intervalValue = {
+		[INTERVAL_DAY]: 'day',
+		[INTERVAL_WEEK]: 'week',
+		[INTERVAL_MONTH]: 'month'
+	}[interval.toLowerCase()];
 
-	switch (interval.toLowerCase()) {
-		case INTERVAL_DAY:
-			intervalValue = 'day';
-			break;
-		case INTERVAL_WEEK:
-			intervalValue = 'week';
-			break;
-		case INTERVAL_MONTH:
-			intervalValue = 'month';
-			break;
-		default:
-			return 'Invalid time interval.';
+	if (!intervalValue) {
+		return 'Invalid time interval.';
 	}
-	const monster = killableMonsters.find(
+
+	const monster = effectiveMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
 	);
 
@@ -335,32 +330,40 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 		return 'Invalid monster.';
 	}
 
-	const query = `
-    SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate 
-    FROM activity a
-    JOIN users u ON a.user_id::text = u.id
-    WHERE a.type = 'MonsterKilling' AND (a."data"->>'mi')::int = ${monster.id}
-    AND a.finish_date >= now() - interval '1 ${intervalValue}'  -- Corrected interval usage
-    AND a.completed = true
-    ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
-    GROUP BY a.user_id
-    ORDER BY qty DESC, lastDate ASC
-    LIMIT 10`;
+	let query = `
+	SELECT a.user_id::text, 
+		   SUM(COALESCE((a."data"->>'q')::int, (a."data"->>'quantity')::int, (a."data"->>'qty')::int)) AS qty, 
+		   MAX(a.finish_date) AS lastDate 
+	FROM activity a
+	JOIN users u ON a.user_id::text = u.id
+	WHERE a.type = '${monster.name.replace(/\s+/g, '')}'
+	AND a.finish_date >= now() - interval '1 ${intervalValue}'
+	AND a.completed = true
+	${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+	GROUP BY a.user_id
+	ORDER BY qty DESC, lastDate ASC
+	LIMIT 10`;
+
+	if (killableMonsters.some(k => k.name === monster.name)) {
+		query = query.replace(
+			`a.type = '${monster.name.replace(/\s+/g, '')}'`,
+			`a.type = 'MonsterKilling' AND (a."data"->>'mi')::int = ${monster.id}`
+		);
+	}
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
 		return 'No results found.';
 	}
 
-	let place = 0;
 	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
 			(
 				await Promise.all(
 					res.map(
-						async (i: any) =>
-							`${++place}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
+						async (i, index) =>
+							`${index + 1}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
 					)
 				)
 			).join('\n')
