@@ -66,17 +66,13 @@ export async function agilityArenaCommand(
 	quantity: number | undefined
 ): CommandResponse {
 	const userMaxTrip = calcMaxTripLength(user, 'AgilityArena');
-	let duration = undefined;
-	if (!quantity) {
-		duration = userMaxTrip;
-		quantity = userMaxTrip / Time.Minute;
-	} else if (quantity * Time.Minute > userMaxTrip) {
-		duration = userMaxTrip;
-		quantity = userMaxTrip / Time.Minute;
-	} else {
-		duration = quantity * Time.Minute;
-		quantity = duration / Time.Minute;
+	const maxQuantity = userMaxTrip / Time.Minute;
+	
+	if (!quantity || quantity * Time.Minute > userMaxTrip) {
+		quantity = maxQuantity;
 	}
+
+	const duration = quantity * Time.Minute;
 
 	if (!userHasGracefulEquipped(user)) {
 		return mahojiChatHead({
