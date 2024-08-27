@@ -317,6 +317,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: nestTable.allItems
 	},
 	{
+		name: 'Amylase pack',
+		id: 12641,
+		openedItem: getOSItem(12641),
+		aliases: ['amylase',],
+		output: new LootTable().every('Amylase crystal', 100),
+		allItems: resolveItems(['Amylase crystal'])
+	},
+	{
 		name: 'Ogre coffin',
 		id: 4850,
 		openedItem: getOSItem(4850),
