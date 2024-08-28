@@ -192,3 +192,12 @@ export function makeTable(headers: string[], rows: unknown[][]) {
 		.addRowMatrix(rows)
 		.toString();
 }
+
+export const staticTimeIntervals = ['day', 'week', 'month'] as const;
+type StaticTimeInterval = (typeof staticTimeIntervals)[number];
+export function parseStaticTimeInterval(input: string): input is StaticTimeInterval {
+	if (staticTimeIntervals.includes(input as any)) {
+		return true;
+	}
+	return false;
+}
