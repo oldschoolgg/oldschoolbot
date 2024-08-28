@@ -485,10 +485,12 @@ export async function minionKillCommand(
 		if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
 			usingCannon = isInWilderness;
 		}
-		if (monster.id === Monsters.Spider.id || Monsters.Scorpion.id) {
+
+		if (monster.id === Monsters.Spider.id || monster.id === Monsters.Scorpion.id) {
 			usingCannon = isInWilderness;
 			cannonMulti = isInWilderness;
 		}
+
 		if (monster.wildySlayerCave) {
 			usingCannon = isInWilderness;
 			cannonMulti = isInWilderness;
@@ -526,11 +528,15 @@ export async function minionKillCommand(
 		} else return `${monster?.name} cannot be barraged or burst.`;
 	}
 
+	console.log(`combatMethods ${combatMethods}`);
+
 	if (!usingCannon) {
 		if (combatMethods.includes('cannon') && !monster?.canCannon) {
 			combatMethods = combatMethods.filter(method => method !== 'cannon');
 		}
 	}
+
+	console.log(`combatMethods ${combatMethods}`);
 
 	if (
 		combatMethods.includes('barrage') &&
