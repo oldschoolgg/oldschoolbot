@@ -97,6 +97,7 @@ import { temporossCommand } from './temporossCommand';
 import { vasaCommand } from './vasaCommand';
 import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
+import { wildyKillableMonsters } from '../../../lib/minions/data/killableMonsters/bosses/wildy';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -258,7 +259,7 @@ export async function minionKillCommand(
 	// determines what pvm methods the user can use
 	const myCBOpts = user.combatOptions;
 	const methods = [method] as PvMMethod[];
-	const combatMethods = determineCombatBoosts({
+	let combatMethods = determineCombatBoosts({
 		cbOpts: myCBOpts as CombatOptionsEnum[],
 		user,
 		monster,
@@ -372,7 +373,6 @@ export async function minionKillCommand(
 	const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
 
 	function applyRevWeaponBoost() {
-		const style = convertAttackStylesToSetup(user.user.attack_style);
 		const specialWeapon = revSpecialWeapons[style];
 		const upgradedWeapon = revUpgradedWeapons[style];
 
@@ -454,10 +454,6 @@ export async function minionKillCommand(
 		}
 	}
 
-	if (isInWilderness && monster.revsWeaponBoost) {
-		applyRevWeaponBoost();
-	}
-
 	function calculateVirtusBoost() {
 		let virtusPiecesEquipped = 0;
 
@@ -476,6 +472,12 @@ export async function minionKillCommand(
 					: '';
 	}
 
+	if (isInWilderness && monster.revsWeaponBoost) {
+		if (!combatMethods.includes('barrage') || !combatMethods.includes('burst')) {
+			applyRevWeaponBoost();
+		}
+	}
+
 	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
 		applyDragonBoost();
 	}
@@ -486,6 +488,18 @@ export async function minionKillCommand(
 
 	if (isUndead) {
 		calculateSalveAmuletBoost();
+	}
+
+	// Kodai boost
+	if (style === 'mage' && (combatMethods.includes('barrage') || combatMethods.includes('burst'))) {
+		const kodaiEquipped = isInWilderness
+			? wildyGear.hasEquipped('Kodai wand')
+			: user.gear.mage.hasEquipped('Kodai wand');
+
+		if (kodaiEquipped) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push('15% boost for Kodai wand');
+		}
 	}
 
 	// Only choose greater boost:
@@ -532,13 +546,21 @@ export async function minionKillCommand(
 	const hasSuperiorCannon = user.owns('Superior dwarf multicannon');
 	const hasCannon = cannonBanks.some(i => user.owns(i)) || hasSuperiorCannon;
 
-	if (!isOnTask && method && method !== 'none') {
-		return 'You can only burst/barrage/cannon while on task in BSO.';
+	// Custom BSO checks
+	if (
+		!isOnTask &&
+		combatMethods &&
+		(["barrage", "burst", "cannon"] as Array<"barrage" | "cannon" | "burst">)
+			.some(method => combatMethods.includes(method))
+	) {
+		combatMethods = ["none"];
 	}
-	if (!wildyBurst && (method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
-		return `${monster!.name} cannot be barraged or burst.`;
+	if (!wildyBurst && combatMethods.includes('burst') || combatMethods.includes('barrage') && !monster!.canBarrage) {
+		combatMethods = ["none"];
 	}
-	if (method === 'cannon' && !hasCannon) {
+
+	// Check for cannon
+	if (combatMethods.includes('cannon') && !hasCannon) {
 		return "You don't own a Dwarf multicannon, so how could you use one?";
 	}
 
@@ -560,10 +582,12 @@ export async function minionKillCommand(
 		if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
 			usingCannon = isInWilderness;
 		}
-		if (monster.id === Monsters.Spider.id || Monsters.Scorpion.id) {
+
+		if (monster.id === Monsters.Spider.id || monster.id === Monsters.Scorpion.id) {
 			usingCannon = isInWilderness;
 			cannonMulti = isInWilderness;
 		}
+
 		if (monster.wildySlayerCave) {
 			usingCannon = isInWilderness;
 			cannonMulti = isInWilderness;
@@ -572,20 +596,38 @@ export async function minionKillCommand(
 				cannonMulti = false;
 			}
 		}
+
+		// wildy bosses
+		for (const wildyMonster of wildyKillableMonsters) {
+			if (monster.id === wildyMonster.id) {
+				usingCannon = false;
+				cannonMulti = false;
+				break;
+			}
+		}
+
+		// revenants
+		for (const revenant of revenantMonsters) {
+			if (monster.id === revenant.id) {
+				usingCannon = false;
+				cannonMulti = false;
+				break;
+			}
+		}
 	}
 
 	// Burst/barrage check with wilderness conditions
-	if ((method === 'burst' || method === 'barrage') && !monster?.canBarrage) {
+	if ((combatMethods.includes('burst') || combatMethods.includes('barrage')) && !monster?.canBarrage) {
 		if (jelly) {
 			if (!isInWilderness) {
 				return `${monster.name} can only be barraged or burst in the wilderness.`;
 			}
-		} else return `${monster!.name} cannot be barraged or burst.`;
+		} else return `${monster?.name} cannot be barraged or burst.`;
 	}
 
 	if (!usingCannon) {
-		if (method === 'cannon' && !monster!.canCannon) {
-			return `${monster!.name} cannot be killed with a cannon.`;
+		if (combatMethods.includes('cannon') && !monster?.canCannon) {
+			combatMethods = combatMethods.filter(method => method !== 'cannon');
 		}
 	}
 
@@ -639,7 +681,7 @@ export async function minionKillCommand(
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
-	} else if ((method as string) === 'chinning' && attackStyles.includes(SkillsEnum.Ranged) && monster!.canChinning) {
+	} else if (combatMethods.includes('chinning') && attackStyles.includes(SkillsEnum.Ranged) && monster?.canChinning) {
 		chinning = true;
 		// Check what Chinchompa to use
 		const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
@@ -665,6 +707,7 @@ export async function minionKillCommand(
 		}
 		consumableCosts.push(chinningConsumables);
 	}
+	
 
 	const hasBlessing = user.hasEquipped('Dwarven blessing');
 	const hasZealotsAmulet = user.hasEquipped('Amulet of zealots');
