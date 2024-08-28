@@ -42,6 +42,7 @@ import {
 	iceBurstConsumables,
 	superiorCannonSingleConsumables
 } from '../../../lib/minions/data/combatConstants';
+import { wildyKillableMonsters } from '../../../lib/minions/data/killableMonsters/bosses/wildy';
 import { BSOMonsters } from '../../../lib/minions/data/killableMonsters/custom/customMonsters';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { quests } from '../../../lib/minions/data/quests';
@@ -97,7 +98,6 @@ import { temporossCommand } from './temporossCommand';
 import { vasaCommand } from './vasaCommand';
 import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
-import { wildyKillableMonsters } from '../../../lib/minions/data/killableMonsters/bosses/wildy';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -550,13 +550,17 @@ export async function minionKillCommand(
 	if (
 		!isOnTask &&
 		combatMethods &&
-		(["barrage", "burst", "cannon"] as Array<"barrage" | "cannon" | "burst">)
-			.some(method => combatMethods.includes(method))
+		(['barrage', 'burst', 'cannon'] as Array<'barrage' | 'cannon' | 'burst'>).some(method =>
+			combatMethods.includes(method)
+		)
 	) {
-		combatMethods = ["none"];
+		combatMethods = ['none'];
 	}
-	if (!wildyBurst && combatMethods.includes('burst') || combatMethods.includes('barrage') && !monster!.canBarrage) {
-		combatMethods = ["none"];
+	if (
+		(!wildyBurst && combatMethods.includes('burst')) ||
+		(combatMethods.includes('barrage') && !monster!.canBarrage)
+	) {
+		combatMethods = ['none'];
 	}
 
 	// Check for cannon
@@ -707,7 +711,6 @@ export async function minionKillCommand(
 		}
 		consumableCosts.push(chinningConsumables);
 	}
-	
 
 	const hasBlessing = user.hasEquipped('Dwarven blessing');
 	const hasZealotsAmulet = user.hasEquipped('Amulet of zealots');
