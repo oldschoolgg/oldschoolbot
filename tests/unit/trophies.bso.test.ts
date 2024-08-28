@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { allMbTables } from '../../src/lib/bsoOpenables';
+import { combinedTmbUmbEmbTables } from '../../src/lib/bsoOpenables';
 import { allTrophyItems } from '../../src/lib/data/itemAliases';
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
@@ -19,6 +19,6 @@ test('trophies', async () => {
 	for (const trophy of resolveItems(allTrophyItems).map(getOSItem)) {
 		expect(itemIsTradeable(trophy.id)).toEqual(false);
 		expect(trophy.customItemData?.isSuperUntradeable).toEqual(true);
-		expect(allMbTables.includes(trophy.id)).toEqual(false);
+		expect(combinedTmbUmbEmbTables.includes(trophy.id)).toEqual(false);
 	}
 });
