@@ -58,6 +58,15 @@ for (const pet of allPetsCL) {
 	PMBTable.add(pet);
 }
 
+export const IronmanPMBTable = new LootTable()
+	.add(PMBTable, 1, PMBTable.length)
+	.add('Smokey')
+	.add('Craig')
+	.add('Hoppy')
+	.add('Flappy')
+	.add('Cob')
+	.add('Gregoyle');
+
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
 	.add('Dwarven stout', 2, 2)
@@ -163,15 +172,6 @@ const testerGiftTable = new LootTable()
 	.add('Rocktail', [30, 60])
 	.add('Tradeable mystery box', [1, 3])
 	.add(baseTGBTable);
-
-export const IronmanPMBTable = new LootTable()
-	.add(PMBTable, 1, PMBTable.length)
-	.add('Smokey')
-	.add('Craig')
-	.add('Hoppy')
-	.add('Flappy')
-	.add('Cob')
-	.add('Gregoyle');
 
 const MonkeyCrateTable = new LootTable()
 	.add('Avocado seed', [2, 5], 2)
