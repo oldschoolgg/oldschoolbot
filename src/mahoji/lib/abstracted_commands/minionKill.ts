@@ -528,15 +528,11 @@ export async function minionKillCommand(
 		} else return `${monster?.name} cannot be barraged or burst.`;
 	}
 
-	console.log(`combatMethods ${combatMethods}`);
-
 	if (!usingCannon) {
 		if (combatMethods.includes('cannon') && !monster?.canCannon) {
 			combatMethods = combatMethods.filter(method => method !== 'cannon');
 		}
 	}
-
-	console.log(`combatMethods ${combatMethods}`);
 
 	if (
 		combatMethods.includes('barrage') &&
