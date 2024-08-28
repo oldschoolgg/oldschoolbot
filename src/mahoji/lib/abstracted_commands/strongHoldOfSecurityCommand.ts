@@ -1,8 +1,9 @@
 import { Time } from 'e';
 
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
+import { randomVariation, resolveItems } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { Bank } from 'oldschooljs';
 
 export async function strongHoldOfSecurityCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) {
@@ -14,8 +15,23 @@ export async function strongHoldOfSecurityCommand(user: MUser, channelID: string
 			type: 'StrongholdOfSecurity'
 		}
 	});
+	const strongHoldBoots = resolveItems(['Fancy boots', 'Fighting boots', 'Fancier boots']);
+
 	if (count !== 0) {
-		return "You've already completed the Stronghold of Security!";
+		const bootsBank = new Bank();
+		for (const boots of strongHoldBoots){
+			if (!user.owns(boots)){
+				bootsBank.add(boots);
+			}
+		}
+
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: bootsBank
+		});
+
+		return `You've already completed the Stronghold of Security!${bootsBank.length > 0 ? ` You reclaimed these items: ${bootsBank}.` : ''}`;
 	}
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
