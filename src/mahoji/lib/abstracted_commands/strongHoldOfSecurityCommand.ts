@@ -1,9 +1,9 @@
 import { Time } from 'e';
 
+import { Bank } from 'oldschooljs';
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { randomVariation, resolveItems } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { Bank } from 'oldschooljs';
 
 export async function strongHoldOfSecurityCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) {
@@ -19,8 +19,8 @@ export async function strongHoldOfSecurityCommand(user: MUser, channelID: string
 
 	if (count !== 0) {
 		const bootsBank = new Bank();
-		for (const boots of strongHoldBoots){
-			if (!user.owns(boots)){
+		for (const boots of strongHoldBoots) {
+			if (!user.owns(boots)) {
 				bootsBank.add(boots);
 			}
 		}
