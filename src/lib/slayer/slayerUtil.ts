@@ -40,15 +40,12 @@ interface DetermineBoostParams {
 	wildyBurst?: boolean;
 }
 export function determineCombatBoosts(params: DetermineBoostParams) {
-	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
-	let boostMethods = ['none'];
+	const boostMethods = params.methods?.flat().filter(method => method) ?? ['none'];
 
 	// the user can only burst/barrage/cannon while on task in BSO
-	if (!params.isOnTask) {
-		return (params.methods ?? ['none']).filter(method => !['barrage', 'burst', 'cannon'].includes(method));
-	}
-
-	boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
+    if (!params.isOnTask) {
+        return boostMethods.filter(method => !['barrage', 'burst', 'cannon'].includes(method));
+    }
 
 	// check if user has cannon combat option turned on
 	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
