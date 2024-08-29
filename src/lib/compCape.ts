@@ -505,6 +505,20 @@ miscRequirements
 		name: 'Buy a trimmed Music cape',
 		has: ({ stats }) => {
 			const itemsBought = new Bank(stats.userStats.buy_loot_bank as ItemBank);
+			if (!itemsBought.has('Music cape')) {
+				return [
+					{
+						reason: 'You need to buy a trimmed Music cape.'
+					}
+				];
+			}
+			return [];
+		}
+	})
+	.add({
+		name: 'Buy a trimmed Music cape',
+		has: ({ stats }) => {
+			const itemsBought = new Bank(stats.userStats.buy_loot_bank as ItemBank);
 			if (!itemsBought.has('Music cape (t)')) {
 				return [
 					{
