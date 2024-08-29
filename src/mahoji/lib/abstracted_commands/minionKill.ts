@@ -252,7 +252,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	// Add jelly & bloodveld check as can barrage in wilderness
+	// Add check for burstable monsters in wilderness
 	const jelly = monster.id === Monsters.Jelly.id;
 	const wildyBurst = jelly && isInWilderness;
 
@@ -546,23 +546,6 @@ export async function minionKillCommand(
 	const hasSuperiorCannon = user.owns('Superior dwarf multicannon');
 	const hasCannon = cannonBanks.some(i => user.owns(i)) || hasSuperiorCannon;
 
-	// Custom BSO checks
-	if (
-		!isOnTask &&
-		combatMethods &&
-		(['barrage', 'burst', 'cannon'] as Array<'barrage' | 'cannon' | 'burst'>).some(method =>
-			combatMethods.includes(method)
-		)
-	) {
-		combatMethods = ['none'];
-	}
-	if (
-		(!wildyBurst && combatMethods.includes('burst')) ||
-		(combatMethods.includes('barrage') && !monster!.canBarrage)
-	) {
-		combatMethods = ['none'];
-	}
-
 	// Check for cannon
 	if (combatMethods.includes('cannon') && !hasCannon) {
 		return "You don't own a Dwarf multicannon, so how could you use one?";
@@ -575,22 +558,32 @@ export async function minionKillCommand(
 	if (combatMethods.includes('burst') && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
+	if (combatMethods.includes('chinning') && user.skillLevel(SkillsEnum.Ranged) < 65) {
+		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
+	}
 
 	timeToFinish = Math.floor(timeToFinish);
 
 	const { canAfford } = await canAffordInventionBoost(user, InventionID.SuperiorDwarfMultiCannon, timeToFinish);
 	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
 
+	console.log(`combatMethods1: ${combatMethods}`);
+	console.log(`usingCannon1: ${usingCannon}`);
+
 	// Wildy monster cannon checks
 	if (isInWilderness === true && combatMethods.includes('cannon')) {
 		if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
 			usingCannon = isInWilderness;
 		}
+		console.log(`combatMethods2: ${combatMethods}`);
+		console.log(`usingCannon2: ${usingCannon}`);
 
 		if (monster.id === Monsters.Spider.id || monster.id === Monsters.Scorpion.id) {
 			usingCannon = isInWilderness;
 			cannonMulti = isInWilderness;
 		}
+		console.log(`combatMethods3: ${combatMethods}`);
+		console.log(`usingCannon3: ${usingCannon}`);
 
 		if (monster.wildySlayerCave) {
 			usingCannon = isInWilderness;
@@ -600,6 +593,8 @@ export async function minionKillCommand(
 				cannonMulti = false;
 			}
 		}
+		console.log(`combatMethods4: ${combatMethods}`);
+		console.log(`usingCannon4: ${usingCannon}`);
 
 		// wildy bosses
 		for (const wildyMonster of wildyKillableMonsters) {
@@ -609,6 +604,8 @@ export async function minionKillCommand(
 				break;
 			}
 		}
+		console.log(`combatMethods5: ${combatMethods}`);
+		console.log(`usingCannon5: ${usingCannon}`);
 
 		// revenants
 		for (const revenant of revenantMonsters) {
@@ -618,7 +615,11 @@ export async function minionKillCommand(
 				break;
 			}
 		}
+		console.log(`combatMethods6: ${combatMethods}`);
+		console.log(`usingCannon6: ${usingCannon}`);
 	}
+	console.log(`combatMethods7: ${combatMethods}`);
+	console.log(`usingCannon7: ${usingCannon}`);
 
 	// Burst/barrage check with wilderness conditions
 	if ((combatMethods.includes('burst') || combatMethods.includes('barrage')) && !monster?.canBarrage) {
@@ -628,12 +629,16 @@ export async function minionKillCommand(
 			}
 		} else return `${monster?.name} cannot be barraged or burst.`;
 	}
+	console.log(`combatMethods8: ${combatMethods}`);
+	console.log(`usingCannon8: ${usingCannon}`);
 
 	if (!usingCannon) {
 		if (combatMethods.includes('cannon') && !monster?.canCannon) {
 			combatMethods = combatMethods.filter(method => method !== 'cannon');
 		}
 	}
+	console.log(`combatMethods9: ${combatMethods}`);
+	console.log(`usingCannon9: ${usingCannon}`);
 
 	if (
 		combatMethods.includes('barrage') &&
@@ -674,7 +679,8 @@ export async function minionKillCommand(
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst + virtusBoost);
 		boosts.push(`${boostIceBurst + virtusBoost}% for Ice Burst${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBurst;
-	} else if ((combatMethods.includes('cannon') && hasCannon && monster!.cannonMulti) || cannonMulti) {
+	}
+	if ((combatMethods.includes('cannon') && hasCannon && monster!.cannonMulti) || cannonMulti) {
 		usingCannon = true;
 		cannonMulti = true;
 		consumableCosts.push(cannonMultiConsumables);

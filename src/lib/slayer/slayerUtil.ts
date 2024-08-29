@@ -41,9 +41,12 @@ interface DetermineBoostParams {
 }
 export function determineCombatBoosts(params: DetermineBoostParams) {
 	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
-	const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
+	let boostMethods = ['none'];
 
-	if (!params.isOnTask) return [];
+	// the user can only burst/barrage/cannon while on task in BSO
+	if (!params.isOnTask) return boostMethods;
+
+	boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
 
 	// check if user has cannon combat option turned on
 	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
