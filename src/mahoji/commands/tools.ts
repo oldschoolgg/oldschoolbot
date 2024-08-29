@@ -330,13 +330,17 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 		return 'Invalid monster.';
 	}
 
-	let query = `
+	const queryActivityType = killableMonsters.some(k => k.name === monster.name)
+		? `'MonsterKilling' AND (a."data"->>'mi')::int = ${monster.id}`
+		: `'${monster.name.replace(/\s+/g, '')}'`;
+
+	const query = `
 	SELECT a.user_id::text, 
 		   SUM(COALESCE((a."data"->>'q')::int, (a."data"->>'quantity')::int, (a."data"->>'qty')::int)) AS qty, 
 		   MAX(a.finish_date) AS lastDate 
 	FROM activity a
 	JOIN users u ON a.user_id::text = u.id
-	WHERE a.type = '${monster.name.replace(/\s+/g, '')}'
+	WHERE a.type = ${queryActivityType}
 	AND a.finish_date >= now() - interval '1 ${intervalValue}'
 	AND a.completed = true
 	${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
@@ -344,12 +348,6 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 	ORDER BY qty DESC, lastDate ASC
 	LIMIT 10`;
 
-	if (killableMonsters.some(k => k.name === monster.name)) {
-		query = query.replace(
-			`a.type = '${monster.name.replace(/\s+/g, '')}'`,
-			`a.type = 'MonsterKilling' AND (a."data"->>'mi')::int = ${monster.id}`
-		);
-	}
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
