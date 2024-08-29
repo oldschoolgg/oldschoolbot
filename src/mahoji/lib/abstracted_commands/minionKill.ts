@@ -623,25 +623,6 @@ export async function minionKillCommand(
 
 	if (
 		combatMethods.includes('barrage') &&
-		!user.user.disabled_inventions.includes(InventionID.SuperiorDwarfMultiCannon) &&
-		canAffordSuperiorCannonBoost &&
-		(monster.canCannon || monster.cannonMulti)
-	) {
-		const qty = quantity || floor(maxTripLength / timeToFinish);
-		const res = await inventionItemBoost({
-			user,
-			inventionID: InventionID.SuperiorDwarfMultiCannon,
-			duration: timeToFinish * qty
-		});
-		if (res.success) {
-			usingCannon = true;
-			consumableCosts.push(superiorCannonSingleConsumables);
-			const boost = monster.cannonMulti ? boostSuperiorCannonMulti : boostSuperiorCannon;
-			timeToFinish = reduceNumByPercent(timeToFinish, boost);
-			boosts.push(`${boost}% for Superior Cannon (${res.messages})`);
-		}
-	} else if (
-		combatMethods.includes('barrage') &&
 		attackStyles.includes(SkillsEnum.Magic) &&
 		(monster!.canBarrage || wildyBurst)
 	) {
@@ -661,7 +642,26 @@ export async function minionKillCommand(
 		boosts.push(`${boostIceBurst + virtusBoost}% for Ice Burst${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBurst;
 	}
-	if ((combatMethods.includes('cannon') && hasCannon && monster!.cannonMulti) || cannonMulti) {
+	if (
+		combatMethods.includes('cannon') &&
+		!user.user.disabled_inventions.includes(InventionID.SuperiorDwarfMultiCannon) &&
+		canAffordSuperiorCannonBoost &&
+		(monster.canCannon || monster.cannonMulti || usingCannon || cannonMulti)
+	) {
+		const qty = quantity || floor(maxTripLength / timeToFinish);
+		const res = await inventionItemBoost({
+			user,
+			inventionID: InventionID.SuperiorDwarfMultiCannon,
+			duration: timeToFinish * qty
+		});
+		if (res.success) {
+			consumableCosts.push(superiorCannonSingleConsumables);
+			const multiBoost = monster.cannonMulti || cannonMulti;
+			const boost = multiBoost ? boostSuperiorCannonMulti : boostSuperiorCannon;
+			timeToFinish = reduceNumByPercent(timeToFinish, boost);
+			boosts.push(`${boost}% for Superior Cannon ${multiBoost ? 'in multi' : 'in singles'}. (${res.messages})`);
+		}
+	} else if ((combatMethods.includes('cannon') && hasCannon && monster!.cannonMulti) || cannonMulti) {
 		usingCannon = true;
 		cannonMulti = true;
 		consumableCosts.push(cannonMultiConsumables);
