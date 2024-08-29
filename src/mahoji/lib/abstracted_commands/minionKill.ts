@@ -252,7 +252,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	// Add jelly & bloodveld check as can barrage in wilderness
+	// Add check for burstable monsters in wilderness
 	const jelly = monster.id === Monsters.Jelly.id;
 	const wildyBurst = jelly && isInWilderness;
 
@@ -546,23 +546,6 @@ export async function minionKillCommand(
 	const hasSuperiorCannon = user.owns('Superior dwarf multicannon');
 	const hasCannon = cannonBanks.some(i => user.owns(i)) || hasSuperiorCannon;
 
-	// Custom BSO checks
-	if (
-		!isOnTask &&
-		combatMethods &&
-		(['barrage', 'burst', 'cannon'] as Array<'barrage' | 'cannon' | 'burst'>).some(method =>
-			combatMethods.includes(method)
-		)
-	) {
-		combatMethods = ['none'];
-	}
-	if (
-		(!wildyBurst && combatMethods.includes('burst')) ||
-		(combatMethods.includes('barrage') && !monster!.canBarrage)
-	) {
-		combatMethods = ['none'];
-	}
-
 	// Check for cannon
 	if (combatMethods.includes('cannon') && !hasCannon) {
 		return "You don't own a Dwarf multicannon, so how could you use one?";
@@ -574,6 +557,9 @@ export async function minionKillCommand(
 	}
 	if (combatMethods.includes('burst') && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
+	}
+	if (combatMethods.includes('chinning') && user.skillLevel(SkillsEnum.Ranged) < 65) {
+		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
 	}
 
 	timeToFinish = Math.floor(timeToFinish);
@@ -674,7 +660,8 @@ export async function minionKillCommand(
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst + virtusBoost);
 		boosts.push(`${boostIceBurst + virtusBoost}% for Ice Burst${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBurst;
-	} else if ((combatMethods.includes('cannon') && hasCannon && monster!.cannonMulti) || cannonMulti) {
+	}
+	if ((combatMethods.includes('cannon') && hasCannon && monster!.cannonMulti) || cannonMulti) {
 		usingCannon = true;
 		cannonMulti = true;
 		consumableCosts.push(cannonMultiConsumables);
