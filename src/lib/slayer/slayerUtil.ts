@@ -44,7 +44,9 @@ export function determineCombatBoosts(params: DetermineBoostParams) {
 	let boostMethods = ['none'];
 
 	// the user can only burst/barrage/cannon while on task in BSO
-	if (!params.isOnTask) return boostMethods;
+	if (!params.isOnTask) {
+		return (params.methods ?? ['none']).filter(method => !['barrage', 'burst', 'cannon'].includes(method));
+	}
 
 	boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
 
