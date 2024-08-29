@@ -7,7 +7,8 @@ import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
-import type { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
+import type { AddMonsterXpParams, ResolveAttackStylesParams } from '../types';
+import type { PrimaryGearSetupType } from '../../gear/types';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -27,14 +28,13 @@ const miscHpMap: Record<number, number> = {
 };
 
 export function resolveAttackStyles(
-	user: MUser,
 	params: ResolveAttackStylesParams
-): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
+) {
 	const killableMon = params.monsterID ? killableMonsters.find(m => m.id === params.monsterID) : undefined;
 	const osjsMon = params.monsterID ? Monsters.get(params.monsterID) : undefined;
 
 	// The styles chosen by this user to use.
-	let attackStyles = user.getAttackStyles();
+	let attackStyles = params.attackStyles ?? [];
 
 	// The default attack styles to use for this monster, defaults to shared (melee)
 	const monsterStyles =
@@ -59,15 +59,16 @@ export function resolveAttackStyles(
 			attackStyles = [SkillsEnum.Magic];
 		}
 	}
-	return [killableMon, osjsMon, attackStyles];
+	return { killableMon, osjsMon, attackStyles };
 }
 
 export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	const boostMethod = params.burstOrBarrage ? ['barrage'] : ['none'];
 
-	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
+	const [, osjsMon, attackStyles] = resolveAttackStyles( {
 		monsterID: params.monsterID,
-		boostMethod
+		boostMethod,
+		attackStyles: user.getAttackStyles()
 	});
 	const monster = killableMonsters.find(mon => mon.id === params.monsterID);
 	let hp = miscHpMap[params.monsterID] ?? 1;
@@ -179,7 +180,7 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	return `**XP Gains:** ${res.join(' ')}`;
 }
 
-export function convertAttackStylesToSetup(styles: AttackStyles | User['attack_style']): 'melee' | 'range' | 'mage' {
+export function convertAttackStylesToSetup(styles: AttackStyles | User['attack_style']): PrimaryGearSetupType {
 	if (styles.includes(SkillsEnum.Magic)) return 'mage';
 	if (styles.includes(SkillsEnum.Ranged)) return 'range';
 	return 'melee';

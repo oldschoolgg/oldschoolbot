@@ -32,13 +32,12 @@ export enum SlayerMasterEnum {
 
 interface DetermineBoostParams {
 	cbOpts: CombatOptionsEnum[];
-	user: MUser;
 	monster: KillableMonster;
 	methods?: PvMMethod[] | null;
 	isOnTask?: boolean;
 	wildyBurst?: boolean;
 }
-export function determineCombatBoosts(params: DetermineBoostParams) {
+export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[] {
 	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
 	const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
 
@@ -309,6 +308,7 @@ export function getCommonTaskName(task: Monster) {
 	return commonName;
 }
 
+export type CurrentSlayerInfo = Awaited<ReturnType<typeof getUsersCurrentSlayerInfo>>;
 export async function getUsersCurrentSlayerInfo(id: string) {
 	const currentTask = await prisma.slayerTask.findFirst({
 		where: {

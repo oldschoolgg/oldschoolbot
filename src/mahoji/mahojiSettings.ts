@@ -19,6 +19,7 @@ import {
 	readableStatName,
 	resolveItems
 } from '../lib/util';
+import { userhasDiaryTier } from '../lib/diaries';
 
 export function mahojiParseNumber({
 	input,
@@ -216,7 +217,7 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 	return amountEquipped * 20;
 }
 
-export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
+export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	if (monster.qpRequired && user.QP < monster.qpRequired) {
 		return [
 			false,
@@ -263,6 +264,14 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 					];
 				}
 			}
+		}
+	}
+
+		
+	if (monster.diaryRequirement) {
+		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
+		if (!hasDiary) {
+			return `${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`;
 		}
 	}
 

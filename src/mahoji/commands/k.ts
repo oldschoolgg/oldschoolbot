@@ -6,7 +6,7 @@ import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 
 import { returnStringOrFile } from '../../lib/util/smallUtils';
-import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
+import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const autocompleteMonsters = [
