@@ -20,6 +20,7 @@ import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLost
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
@@ -50,6 +51,9 @@ export const monsterTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
 		const currentKCs = await user.fetchMonsterScores();
+		if (isInWilderness) {
+			await increaseWildEvasionXp(user, duration);
+		}
 
 		// Wilderness PK Encounters and PK Deaths
 		// Handle remaining anti-pk supplies if any

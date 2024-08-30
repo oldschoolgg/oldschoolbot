@@ -137,7 +137,7 @@ export class MUserClass {
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
 
-		this.gearBank = new GearBank(this.gear, this.bank);
+		this.gearBank = new GearBank({gear: this.gear,bank:this.bank,skillsAsLevels:this.skillsAsLevels});
 	}
 
 	countSkillsAtLeast99() {

@@ -31,7 +31,7 @@ export enum SlayerMasterEnum {
 }
 
 interface DetermineBoostParams {
-	cbOpts: CombatOptionsEnum[];
+	cbOpts: readonly CombatOptionsEnum[];
 	monster: KillableMonster;
 	methods?: PvMMethod[] | null;
 	isOnTask?: boolean;

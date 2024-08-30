@@ -237,6 +237,21 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		}
 	}
 
+	if (monster.degradeableItemUsage) {
+		for (const set of monster.degradeableItemUsage) {
+			const equippedInThisSet = set.items.find(item => user.gear[set.gearSetup].hasEquipped(item.itemID));
+
+			if (set.required && !equippedInThisSet) {
+				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+					monster.name
+				}: ${set.items
+					.map(i => i.itemID)
+					.map(itemNameFromID)
+					.join(', ')}.`;
+			}
+		}
+	}
+
 	if (monster.itemsRequired) {
 		const itemsRequiredStr = formatItemReqs(monster.itemsRequired);
 		for (const item of monster.itemsRequired) {

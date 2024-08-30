@@ -1,11 +1,10 @@
 import { Bank, Monsters } from "oldschooljs";
-import type { PvMMethod } from "../../../../lib/constants";
+import type { BitField, PvMMethod } from "../../../../lib/constants";
 import type { CombatOptionsEnum } from "../../../../lib/minions/data/combatConstants";
 import { revenantMonsters } from "../../../../lib/minions/data/killableMonsters/revs";
 import { type AttackStyles, convertAttackStylesToSetup, resolveAttackStyles } from "../../../../lib/minions/functions";
 import type { Consumable, KillableMonster } from "../../../../lib/minions/types";
 import { type CurrentSlayerInfo, determineCombatBoosts } from "../../../../lib/slayer/slayerUtil";
-import type { SkillsRequired } from "../../../../lib/types";
 import type { GearBank } from "../../../../lib/structures/GearBank";
 import { speedCalculations } from "./timeAndSpeed";
 import type { PlayerOwnedHouse } from "@prisma/client";
@@ -16,6 +15,7 @@ import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, random
 import { floor } from "lodash";
 import { minionName } from "../../../../lib/util/minionUtils";
 import { handleConsumables } from "./handleConsumables";
+import { type PostBoostEffect, postBoostEffects } from "./speedBoosts";
 
 export interface MinionKillOptions {
 	attackStyles: AttackStyles[];
@@ -23,21 +23,20 @@ export interface MinionKillOptions {
 	currentSlayerTask: CurrentSlayerInfo;
 	monster: KillableMonster;
 	isTryingToUseWildy: boolean;
-	combatOptions: CombatOptionsEnum[];
-	inputPVMMethod: PvMMethod;
+	combatOptions: readonly CombatOptionsEnum[];
+	inputPVMMethod: PvMMethod | undefined;
 	monsterKC: number;
-	skillsAsLevels: SkillsRequired;
 	poh: PlayerOwnedHouse;
 	maxTripLength: number;
-	inputQuantity: number;
+	inputQuantity?: number;
 	slayerUnlocks: SlayerTaskUnlocksEnum[];
+	favoriteFood: number[];
+	bitfield: readonly BitField[];
+	pkEvasionExperience: number;
 }
 
-type NewMinionKillReturn = string | {
-};
-
-function newMinionKillCommand(args: MinionKillOptions): NewMinionKillReturn {
-	let { monsterKC,combatOptions,attackStyles, gearBank, currentSlayerTask, monster,isTryingToUseWildy,inputPVMMethod,skillsAsLevels,poh,maxTripLength,inputQuantity,slayerUnlocks }  = args;
+export function newMinionKillCommand(args: MinionKillOptions) {
+	let { combatOptions,attackStyles, gearBank, currentSlayerTask, monster,isTryingToUseWildy,inputPVMMethod, maxTripLength,inputQuantity,slayerUnlocks }  = args;
 	const messages: string[] = [];
 	const primaryStyle = convertAttackStylesToSetup(attackStyles);
 	const relevantGearStat: OffenceGearStat = ({ melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, range: GearStat.AttackRanged } as const)[primaryStyle];
@@ -79,7 +78,7 @@ function newMinionKillCommand(args: MinionKillOptions): NewMinionKillReturn {
 	const combatMethods = determineCombatBoosts({
 		cbOpts: combatOptions,
 		monster,
-		methods: [inputPVMMethod],
+		methods: [inputPVMMethod ?? "none"],
 		isOnTask,
 		wildyBurst: isAbleToBurstInWilderness
 	});
@@ -91,7 +90,9 @@ function newMinionKillCommand(args: MinionKillOptions): NewMinionKillReturn {
 	});
 	attackStyles = resolveAttackStyleResult.attackStyles;
 
-
+	const {
+		skillsAsLevels
+	} = gearBank;
 	if (combatMethods.includes('barrage') && skillsAsLevels.magic < 94) {
 		return `You need 94 Magic to use Ice Barrage. You have ${skillsAsLevels.magic}`;
 	}
@@ -111,22 +112,21 @@ function newMinionKillCommand(args: MinionKillOptions): NewMinionKillReturn {
 	}
 
 
-
 	const consumableCosts: Consumable[] = [];
-
-
+	const osjsMon = resolveAttackStyleResult.osjsMon;
+	const ephemeralPostTripEffects: PostBoostEffect[] = [];
 
 	const speedDurationResult = speedCalculations({...args,	isOnTask,
-	osjsMon:  resolveAttackStyleResult.osjsMon,
+	osjsMon,
 	primaryStyle,
 	isInWilderness: isInWilderness,
 	combatMethods,
-    relevantGearStat
+    relevantGearStat,
+	addPostBoostEffect: (effect: PostBoostEffect) => ephemeralPostTripEffects.push(effect)		
 });
-if (typeof speedDurationResult === 'string') {
+	if (typeof speedDurationResult === 'string') {
 		return speedDurationResult;
 	}
-
 
 	const maxCanKill = Math.floor(maxTripLength / speedDurationResult.timeToFinish);
 	let quantity = inputQuantity ?? maxCanKill;
@@ -136,16 +136,14 @@ if (typeof speedDurationResult === 'string') {
 	quantity = changeQuantityForTaskKillsRemaining({isOnTask,quantity,monster,task:currentSlayerTask,slayerUnlocks});
 	
 	quantity = Math.max(1, quantity);
-	let duration = timeToFinish * quantity;
+	let duration = speedDurationResult.timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
 		return `${minionName} can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
 		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
-			maxTripLength / timeToFinish
+			maxCanKill
 		)}.`;
 	}
-
-
 	
 
 	duration = randomVariation(duration, 3);
@@ -154,19 +152,13 @@ if (typeof speedDurationResult === 'string') {
 		duration *= 0.9;
 	}
 
-
-	/**
-	 * 
-	 */
-
-	const totalCost = new Bank();
 	const lootToRemove = new Bank();
 
 	if (monster.itemCost) {
 		consumableCosts.push(monster.itemCost);
 	}
 
-	const consumablesCost = handleConsumables({consumableCosts, gearBank, quantity, duration, timeToFinish});
+	const consumablesCost = handleConsumables({consumableCosts, gearBank, quantity, duration, timeToFinish: speedDurationResult.timeToFinish});
 	lootToRemove.add(consumablesCost);
 
 	if (monster.projectileUsage?.required) {
@@ -187,5 +179,25 @@ if (typeof speedDurationResult === 'string') {
 			}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
 		}
 	}
+
+	for (const effect of [...postBoostEffects, ...ephemeralPostTripEffects]) {
+		const result = effect.run({
+			duration,quantity,isOnTask,isInWilderness,osjsMon ,primaryStyle,combatMethods,relevantGearStat, ...args, currentTaskOptions:speedDurationResult.currentTaskOptions,
+		});
+		if (typeof result === 'string') {
+			return result;
+		}
+	}
 	
+	return {
+		duration,
+		quantity,
+		lootToRemove,
+		consumableCosts,
+		isOnTask,
+		isInWilderness,
+		attackStyles,
+		ephemeralPostTripEffects,
+		...speedDurationResult
+	}
 }

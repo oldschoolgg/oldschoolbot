@@ -5,8 +5,7 @@ import type { PvMMethod } from '../../lib/constants';
 import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 
-import { returnStringOrFile } from '../../lib/util/smallUtils';
-import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill/minionKill';
+import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const autocompleteMonsters = [
@@ -145,7 +144,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await mUserFetch(userID);
 		if (options.show_info) {
-			return returnStringOrFile(await monsterInfo(user, options.name));
+			return "This feature is currently disabled.";
 		}
 		return minionKillCommand(
 			user,

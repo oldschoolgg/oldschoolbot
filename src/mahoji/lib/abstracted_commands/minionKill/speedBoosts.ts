@@ -1,21 +1,29 @@
 import { SkillsEnum } from "oldschooljs/dist/constants";
 import getOSItem from "../../../../lib/util/getOSItem";
-import type { OffenceGearStat, PrimaryGearSetupType } from "../../../../lib/gear/types";
+import type { GearSetupType, OffenceGearStat, PrimaryGearSetupType } from "../../../../lib/gear/types";
 import type { Consumable } from "../../../../lib/minions/types";
-import type { PvMMethod } from "../../../../lib/constants";
-import { dragonHunterWeapons } from "./minionKillData";
+import { BitField, PeakTier, type PvMMethod } from "../../../../lib/constants";
+import { dragonHunterWeapons, noFoodBoost } from "./minionKillData";
 import type Monster from "oldschooljs/dist/structures/Monster";
 import { MonsterAttribute } from "oldschooljs/dist/meta/monsterData";
 import { staticEquippedItemBoosts } from "./staticEquippedItemBoosts";
 import { revenantMonsters } from "../../../../lib/minions/data/killableMonsters/revs";
-import { calcWhatPercent } from "e";
+import { calcPercentOfNum, calcWhatPercent, objectKeys, Time, uniqueArr } from "e";
 import { maxOffenceStats } from "../../../../lib/structures/Gear";
 import { Bank } from "oldschooljs";
 import { determineIfUsingCannon } from "./determineIfUsingCannon";
 import { cannonMultiConsumables, boostCannonMulti, cannonSingleConsumables, boostCannon, SlayerActivityConstants, iceBarrageConsumables, boostIceBarrage, boostIceBurst, iceBurstConsumables } from "../../../../lib/minions/data/combatConstants";
-import { degradeablePvmBoostItems } from "../../../../lib/degradeableItems";
-import { convertPvmStylesToGearSetup, itemNameFromID } from "../../../../lib/util";
+import { degradeableItems, degradeablePvmBoostItems } from "../../../../lib/degradeableItems";
+import { convertAttackStyleToGearSetup, itemNameFromID } from "../../../../lib/util";
 import type { MinionKillOptions } from "./newMinionKill";
+import { Eatables } from "../../../../lib/data/eatables";
+import { removeFoodFromUserRaw } from "../../../../lib/minions/functions/removeFoodFromUser";
+import { calculateMonsterFoodRaw } from "../../../../lib/minions/functions/calculateMonsterFood";
+import { ChargeBank } from "../../../../lib/structures/Bank";
+import type { Item } from "oldschooljs/dist/meta/types";
+import { calcWildyPKChance } from "../../../../lib/util/calcWildyPkChance";
+import type { MonsterActivityTaskOptions } from "../../../../lib/types/minions";
+import reducedTimeFromKC from "../../../../lib/minions/functions/reducedTimeFromKC";
 
 const revSpecialWeapons = {
 	melee: getOSItem("Viggora's chainmace"),
@@ -29,18 +37,21 @@ const revUpgradedWeapons = {
 	mage: getOSItem('Accursed sceptre')
 } as const;
 
+export type CombatMethodOptions = Pick<MonsterActivityTaskOptions,'cannonMulti' | 'usingCannon' | 'chinning' | 'bob' | 'died' | 'pkEncounters' | 'pkEncounters' | 'hasWildySupplies' |  'isInWilderness'>;
+
 export type BoostResult = {
-    percentageReduction: number;
-    message: string;
+    percentageIncrease?: number;
+    percentageReduction?: number;
+    message?: string;
     consumables?: Consumable[];
-    changes?: Partial<{
-        usingCannon:boolean,
-		cannonMulti: boolean
-		chinning: boolean,
-		bob:boolean,
-    }>
+    itemCost?: Bank;
+    charges?: ChargeBank;
+    changes?: CombatMethodOptions;
+    confirmation?: string;
 };
-type BoostReturn = undefined | string | BoostResult | BoostResult[];
+
+type BoostReturn = null | undefined | string | BoostResult | BoostResult[];
+
 export type BoostArgs = MinionKillOptions & {
 	isOnTask: boolean;
 	osjsMon: Monster | undefined;
@@ -48,20 +59,15 @@ export type BoostArgs = MinionKillOptions & {
 	isInWilderness: boolean;
 	combatMethods: PvMMethod[];
     relevantGearStat: OffenceGearStat;
+	currentTaskOptions: CombatMethodOptions;
+	addPostBoostEffect: (effect: PostBoostEffect) => void;
 }
 
 export type Boost = {
     description: string;
     run: (opts: BoostArgs ) => BoostReturn;
 }
-//  const staticEquippedItemBoosts = [{
-//                 item: getOSItem('Dragon hunter lance'),
-//                 attackStyles: ['melee']
-//             },
-//         {
-//             item: getOSItem('Dragon hunter crossbow'),
-//             attackStyles: ['ranged']
-//         }]
+
 const oneSixthBoost = 16.67;
 
 // needs to check if they got blackmaskboost
@@ -98,13 +104,15 @@ const cannonBoost: Boost =  {
     description: "Cannon",
     run: ({ gearBank,monster, combatMethods,isOnTask,isInWilderness}) => {
         const cannonResult = determineIfUsingCannon({ gearBank, monster, isOnTask, combatMethods, isInWilderness });
-	    if (!cannonResult.usingCannon) return;
-		// combatMethods = removeFromArr(combatMethods, 'cannon');
+	    if (!cannonResult.usingCannon) return null;
         if ((monster?.cannonMulti) && cannonResult.cannonMulti) {
              return {
                     percentageReduction: boostCannonMulti,
                     consumables: [cannonMultiConsumables],
-                    message: `${boostCannonMulti}% for Cannon in multi`
+                    message: `${boostCannonMulti}% for Cannon in multi`,
+					changes: {
+						cannonMulti: true
+					}
                 }
             } else if ((monster?.canCannon)) {
                 return {
@@ -113,13 +121,15 @@ const cannonBoost: Boost =  {
                     message: `${boostCannon}% for Cannon in singles`
                 }
             }
+
+			return null;
 	}
    };
 const chinningBoost: Boost = {
     description: "Chinning boost",
     run: ({combatMethods,attackStyles,monster,gearBank,isOnTask,isInWilderness}) => {
         const cannonResult = determineIfUsingCannon({ gearBank, monster, isOnTask, combatMethods, isInWilderness });
-	    if (cannonResult.usingCannon) return; 	
+	    if (cannonResult.usingCannon) return null;
 	    if (combatMethods.includes('chinning') && attackStyles.includes(SkillsEnum.Ranged) && monster?.canChinning) {
 		// Check what Chinchompa to use
 		const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
@@ -156,7 +166,7 @@ const salveBoost: Boost =  {
 					description: 'Salve amulet boost',
 					run: ({ gearBank, isInWilderness, primaryStyle: style, osjsMon }) => {
 						const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
-						if (!isUndead) return;
+						if (!isUndead) return null;
 						let salveBoost = false;
 						let salveEnhanced = false;
 						if (style === 'range' || style === 'mage') {
@@ -181,7 +191,7 @@ const dragonHunterBoost: Boost =   {
         description: "A boost for dragon-hunter gear when killing dragons",
         run: ({monster,isInWilderness,osjsMon,primaryStyle: style,gearBank}) => {
             const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
-            if (!isDragon || monster.name.toLowerCase() === 'vorkath') return;
+            if (!isDragon || monster.name.toLowerCase() === 'vorkath') return null;
 
             for (const wep of dragonHunterWeapons) {
             const hasWep = gearBank.wildyGearCheck(wep.item.id, isInWilderness);
@@ -198,9 +208,9 @@ const dragonHunterBoost: Boost =   {
         description: "A boost for using a wilderness weapon for killing revenants.",
         run: ({monster,isInWilderness,combatMethods,primaryStyle: style,gearBank}) => {
             const matchedRevenantMonster = revenantMonsters.find(m => m.id === monster.id);
-            if (!matchedRevenantMonster) return;
-            	if (!isInWilderness || !monster.revsWeaponBoost) return;
-                if (combatMethods.includes('barrage') || combatMethods.includes('burst')) return;
+            if (!matchedRevenantMonster) return null;
+            	if (!isInWilderness || !monster.revsWeaponBoost) return null;
+                if (combatMethods.includes('barrage') || combatMethods.includes('burst')) return null;
            
             	const specialWeapon = revSpecialWeapons[style];
                 const upgradedWeapon = revUpgradedWeapons[style];
@@ -224,10 +234,10 @@ const dragonHunterBoost: Boost =   {
     const blackMaskBoost: Boost =  {
         description: "Slayer Helm/Black mask boost for being on task",
         run: ({isInWilderness,gearBank,primaryStyle: style,isOnTask}) => {
-           if (!isOnTask) return;
-		const hasBlackMask = gearBank.wildyGearCheck('Black mask', isInWilderness);
-		const hasBlackMaskI = gearBank.wildyGearCheck('Black mask (i)', isInWilderness);
-         
+           if (!isOnTask) return null;
+				const hasBlackMask = gearBank.wildyGearCheck('Black mask', isInWilderness);
+				const hasBlackMaskI = gearBank.wildyGearCheck('Black mask (i)', isInWilderness);
+
             if (hasBlackMaskI && [SkillsEnum.Magic,SkillsEnum.Ranged].every(s => style.includes(s))) {
                 return {
                     percentageReduction: oneSixthBoost,
@@ -239,6 +249,7 @@ const dragonHunterBoost: Boost =   {
                     message: `${oneSixthBoost}% for Black mask on melee task`
                 }
             }
+			return null;
         }
     };
     // if an array, only the highest applies
@@ -257,6 +268,7 @@ export const boosts: (Boost | Boost[])[] = [
                     message: `15% boost for ${item.item.name}`
                 }
             }
+			return null;
     }
     },
    [dragonHunterBoost,revWildyGearBoost] ,
@@ -265,7 +277,7 @@ export const boosts: (Boost | Boost[])[] = [
     description: "Revs",
     run: ({gearBank,primaryStyle: style,monster,relevantGearStat}) => {
                  const matchedRevenantMonster = revenantMonsters.find(m => m.id === monster.id);
-                 if (!matchedRevenantMonster) return;
+                 if (!matchedRevenantMonster) return null;
 
                  const wildyGearStat = gearBank.gear.wildy.getStats()[relevantGearStat];
 	            const revGearPercent = Math.max(0, calcWhatPercent(wildyGearStat, maxOffenceStats[relevantGearStat]));
@@ -292,7 +304,7 @@ export const boosts: (Boost | Boost[])[] = [
     run: ({monster,attackStyles,combatMethods}) => {
         const isBarraging = combatMethods.includes('barrage');
         const isBursting = combatMethods.includes('burst');
-        if (!isBarraging && !isBursting) return;
+        if (!isBarraging && !isBursting) return null;
         	if (
 		isBarraging &&
 		attackStyles.includes(SkillsEnum.Magic) &&
@@ -323,53 +335,62 @@ export const boosts: (Boost | Boost[])[] = [
             }
         }
 	}
-	
     }
-  },{
+  },
+  {
     description: "Degradeable Items",
-    run: ({isInWilderness,gearBank,monster,attackStyles}) => {
-        const degItemBeingUsed: BoostResult[] = [];
+    run: ({isInWilderness,gearBank,monster,primaryStyle,osjsMon,addPostBoostEffect}) => {
+        const degItemBeingUsed: Item[] = [];
     	if (monster.degradeableItemUsage) {
-		for (const set of monster.degradeableItemUsage) {
-			const equippedInThisSet = set.items.find(item => gearBank.gear[set.gearSetup].hasEquipped(item.itemID));
-
-			if (set.required && !equippedInThisSet) {
-				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
-					monster.name
-				}: ${set.items
-					.map(i => i.itemID)
-					.map(itemNameFromID)
-					.join(', ')}.`;
+		    for (const set of monster.degradeableItemUsage) {
+				const equippedInThisSet = set.items.find(item => gearBank.gear[set.gearSetup].hasEquipped(item.itemID));
+				if (equippedInThisSet) {
+            	    degItemBeingUsed.push(getOSItem(equippedInThisSet.itemID));
+				}
 			}
-
-			if (equippedInThisSet) {
-				degItemBeingUsed.push({
-                    percentageReduction: equippedInThisSet.boostPercent,
-                    message: `${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`
-                });
+		} else {
+			for (const degItem of degradeablePvmBoostItems) {
+				const isUsing = primaryStyle === (degItem.attackStyle);
+				const gearCheck = gearBank.gear[isInWilderness ? "wildy" : degItem.attackStyle].hasEquipped(degItem.item.id);
+				if (isUsing && gearCheck) {
+		             degItemBeingUsed.push((degItem.item));
+				}
 			}
 		}
-	} else {
-		for (const degItem of degradeablePvmBoostItems) {
-			const isUsing = convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle);
-			const gearCheck = isInWilderness
-				? gearBank.gear.wildy.hasEquipped(degItem.item.id)
-				: gearBank.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
 
-			if (isUsing && gearCheck) {
-                degItemBeingUsed.push({
-                    percentageReduction: degItem.boost,
-                    message: `${degItem.boost}% for ${degItem.item.name}`
-                });
-			}
-		}
-	}
+		addPostBoostEffect({
+			description: "Degradeable Items",
+			run: ({quantity,duration}) => {
+					    const charges = new ChargeBank();
+					for (const rawItem of degItemBeingUsed) {
+						const degItem = degradeablePvmBoostItems.find(i => i.item.id === rawItem.id);
+						if (!degItem) throw new Error(`Missing degradeable item for ${rawItem.name}`);
+									const chargesNeeded = Math.ceil(
+										degItem.charges({
+											killableMon: monster,
+											osjsMonster: osjsMon!,
+											totalHP: (osjsMon?.data.hitpoints ?? 100) * quantity,
+											duration
+										})
+									);
+									const actualDegItem = degradeableItems.find(i => i.item.id === degItem.item.id);
+									if (!actualDegItem) throw new Error(`Missing actual degradeable item for ${rawItem.name}`);
+									charges.add(actualDegItem.settingsKey, chargesNeeded);
+						}
+						
+						return {
+							charges
+						}
+						}
+		});
+
+		return null;
     }
   },
   {
     description: "Equipped item boosts",
     run: ({monster,gearBank}) => {
-	if (!monster.equippedItemBoosts) return;
+	if (!monster.equippedItemBoosts) return null;
     const results: BoostResult[] = [];
 		for (const boostSet of monster.equippedItemBoosts) {
 			const equippedInThisSet = boostSet.items.find(item =>
@@ -384,5 +405,148 @@ export const boosts: (Boost | Boost[])[] = [
 		}
         return results;
 	}
-  }
+  },
 ];
+
+// Runs after we know the quantity/duration/etc
+export type PostBoostEffect = {description: string; run: (args: {duration:number;quantity:number;} & Omit<BoostArgs, 'addPostBoostEffect'>) => BoostReturn};
+export const postBoostEffects: PostBoostEffect[]= [{
+    description: "Food",
+    run: ({monster,isInWilderness,quantity,monsterKC,gearBank,favoriteFood}) => {
+					if (!monster.healAmountNeeded || !monster.attackStyleToUse || !monster.attackStylesUsed) {
+						return {
+							percentageReduction: noFoodBoost,
+							message: `${noFoodBoost}% for no food`
+						};
+					}
+					let foodStr = '';
+					const [healAmountNeeded, foodMessages] = calculateMonsterFoodRaw(gearBank, monster);
+					foodStr += foodMessages;
+
+					let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
+					if (isInWilderness) gearToCheck = 'wildy';
+
+					const [, percentReduced] = reducedTimeFromKC(monster, monsterKC);
+					const foodRemoveResult = removeFoodFromUserRaw({
+						gearBank: gearBank,
+						favoriteFood,
+						totalHealingNeeded: healAmountNeeded * quantity,
+						attackStylesUsed: isInWilderness
+							? ['wildy']
+							: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+						learningPercentage: percentReduced,
+						isWilderness: isInWilderness
+					});
+
+					if (foodRemoveResult === null || foodRemoveResult.foodToRemove.length === 0) {
+						return {
+							percentageReduction: noFoodBoost,
+							message: `${noFoodBoost}% for no food`
+						};
+					} 
+
+                    const results: BoostResult[] = [];
+					for (const [item, qty] of foodRemoveResult.foodToRemove.items()) {
+							const eatable = Eatables.find(e => e.id === item.id);
+							if (!eatable) continue;
+
+							const healAmount =
+								typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(gearBank);
+							const amountHealed = qty * healAmount;
+							if (amountHealed < calcPercentOfNum(75 * foodRemoveResult.reductionRatio, healAmountNeeded * quantity))
+								continue;
+							const boost = eatable.pvmBoost;
+							if (boost) {
+								if (boost < 0) {
+                                    results.push({
+                                        percentageIncrease: Math.abs(boost),
+                                        message: `${boost}% slower for using ${eatable.name}`
+                                    });
+								} else {
+                                    results.push({
+                                        percentageReduction: boost,
+                                        message: `${boost}% for ${eatable.name}`
+                                    });
+								}
+							}
+							break;
+						}
+
+                    results.push({
+                        itemCost: foodRemoveResult.foodToRemove,
+                        message: foodStr
+                    });
+                    return results; 
+				}
+
+},
+{
+    description: "PVP",
+    run: ({monster,isInWilderness,currentTaskOptions,duration,gearBank,pkEvasionExperience,bitfield}) => {
+	if (!isInWilderness) return null;
+        
+    let confirmationString: string | undefined = undefined;
+    const messages: string[] = [];
+
+	const wildyPeak = null;
+	let hasWildySupplies = undefined;
+
+
+
+		const antiPkBrewsNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
+		const antiPkRestoresNeeded = Math.max(1, Math.floor(duration / (8 * Time.Minute)));
+		const antiPkKarambwanNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
+
+		const antiPKSupplies = new Bank().add('Saradomin brew(4)', antiPkBrewsNeeded);
+
+		// Restores
+		if (gearBank.bank.amount('Blighted super restore(4)') >= antiPkRestoresNeeded) {
+			antiPKSupplies.add('Blighted super restore(4)', antiPkRestoresNeeded);
+		} else {
+			antiPKSupplies.add('Super restore(4)', antiPkRestoresNeeded);
+		}
+
+		// Food
+		if (gearBank.bank.amount('Blighted karambwan') >= antiPkKarambwanNeeded + 20) {
+			antiPKSupplies.add('Blighted karambwan', antiPkKarambwanNeeded);
+		} else {
+			antiPKSupplies.add('Cooked karambwan', antiPkKarambwanNeeded);
+		}
+
+		hasWildySupplies = true;
+		if (!gearBank.bank.has(antiPKSupplies)) {
+			hasWildySupplies = false;
+			confirmationString = `Are you sure you want to kill ${monster.name} without anti-pk supplies? You should bring at least ${antiPKSupplies} on this trip for safety to not die and potentially get smited.`;
+		} else {
+			messages.push('Your minion brought some supplies to survive potential pkers. (Handed back after trip if lucky)');
+		}
+		const {
+			pkCount,
+			died,
+			chanceString,
+			currentPeak
+		}= calcWildyPKChance(
+			gearBank,
+			wildyPeak!,
+			monster,
+			duration,
+			hasWildySupplies,
+			Boolean(currentTaskOptions.usingCannon),
+			pkEvasionExperience
+		);
+		messages.push(chanceString);
+			if (currentPeak.peakTier === PeakTier.High && !bitfield.includes(BitField.DisableHighPeakTimeWarning)) {
+             confirmationString = (	`Are you sure you want to kill ${monster.name} during high peak time? PKers are more active.`);
+			}
+
+		return {
+			message: messages.join(', '),
+			confirmation: confirmationString,
+			changes: {
+				pkEncounters: pkCount,
+				died: died,
+				hasWildySupplies
+			}
+		}
+	}
+}]

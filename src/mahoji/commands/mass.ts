@@ -18,7 +18,7 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import type { OSBMahojiCommand } from '../lib/util';
 import { hasMonsterRequirements } from '../mahojiSettings';
 
-function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
+async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.user.minion_hasBought) {
@@ -33,7 +33,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 			return `${user.usernameOrMention} is an ironman, so they can't join!`;
 		}
 
-		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -98,7 +98,7 @@ export const massCommand: OSBMahojiCommand = {
 					if (user.minionIsBusy) {
 						return [true, 'your minion is busy.'];
 					}
-					const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+					const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 					if (!hasReqs) {
 						return [true, `you don't have the requirements for this monster; ${reason}`];
 					}

@@ -2,14 +2,17 @@ import type { Bank } from "oldschooljs";
 import type { UserFullGearSetup } from "../gear/types";
 import { getSimilarItems } from "../data/similarItems";
 import { resolveItems } from "../util";
+import type { SkillsRequired } from "../types";
 
 export class GearBank {
     gear: UserFullGearSetup;
     bank: Bank;
+	skillsAsLevels: SkillsRequired;
 
-    constructor(gear: UserFullGearSetup, bank: Bank) {
+    constructor({gear,bank,skillsAsLevels}: {gear: UserFullGearSetup, bank: Bank, skillsAsLevels: SkillsRequired}) {
         this.gear = gear;
         this.bank = bank;
+		this.skillsAsLevels = skillsAsLevels;
     }
 
 	wildyGearCheck(item: string | number, isWildy: boolean) {

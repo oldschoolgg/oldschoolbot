@@ -63,9 +63,9 @@ export function resolveAttackStyles(
 }
 
 export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
-	const boostMethod = params.burstOrBarrage ? ['barrage'] : ['none'];
+	const boostMethod = params.burstOrBarrage ? ['barrage'] as const : ['none'] as const ;
 
-	const [, osjsMon, attackStyles] = resolveAttackStyles( {
+	const {osjsMon, attackStyles} = resolveAttackStyles( {
 		monsterID: params.monsterID,
 		boostMethod,
 		attackStyles: user.getAttackStyles()
