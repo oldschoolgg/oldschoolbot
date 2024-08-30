@@ -63,9 +63,11 @@ export function getItemCostFromConsumables({
 	if (hasInfiniteWaterRunes) perKillCost.remove('Water rune', perKillCost.amount('Water rune'));
 
 	const fits = gearBank.bank.fits(perKillCost);
+	let newDuration = duration;
+	let newQuantity = quantity;
 	if (fits < Number(quantity)) {
-		duration = Math.floor(duration * (fits / Number(quantity)));
-		quantity = fits;
+		newDuration = Math.floor(duration * (fits / Number(quantity)));
+		newQuantity = fits;
 	}
 	const { bank } = perKillCost.clone().multiply(Number(quantity));
 
@@ -73,5 +75,9 @@ export function getItemCostFromConsumables({
 		bank[item] = Math.ceil(qty);
 	}
 
-	return new Bank(bank);
+	return {
+		itemCost: new Bank(bank),
+		newDuration,
+		newQuantity
+	};
 }

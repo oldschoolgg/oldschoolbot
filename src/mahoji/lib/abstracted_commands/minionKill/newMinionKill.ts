@@ -182,7 +182,11 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		duration,
 		timeToFinish: speedDurationResult.timeToFinish
 	});
-	lootToRemove.add(consumablesCost);
+	if (consumablesCost) {
+		lootToRemove.add(consumablesCost.itemCost);
+		quantity = consumablesCost.newQuantity;
+		duration = consumablesCost.newDuration;
+	}
 
 	if (monster.projectileUsage?.required) {
 		if (!gearBank.gear.range.ammo?.item) {

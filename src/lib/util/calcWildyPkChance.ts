@@ -31,17 +31,26 @@ export async function increaseWildEvasionXp(user: MUser, duration: number) {
 }
 export function calcWildyPKChance(
 	gearBank: GearBank,
-	peak: Peak,
 	monster: KillableMonster,
 	duration: number,
 	supplies: boolean,
 	cannonMulti: boolean,
 	pkEvasionExperience: number
 ) {
+	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
+	let currentPeak = cachedPeakInterval[0];
+	const date = new Date().getTime();
+	for (const peak of cachedPeakInterval) {
+		if (peak.startTime < date && peak.finishTime > date) {
+			currentPeak = peak;
+			break;
+		}
+	}
+
 	// Chance per minute, Difficulty from 1 to 10, and factor a million difference, High peak 5x as likley encounter, Medium peak 1x, Low peak 5x as unlikley
-	const peakInfluence = peakFactor.find(_peaktier => _peaktier.peakTier === peak?.peakTier)?.factor ?? 1;
+	const peakInfluence = peakFactor.find(_peaktier => _peaktier.peakTier === currentPeak?.peakTier)?.factor ?? 1;
 	const pkChance = (1 / (7_000_000 / (Math.pow(monster.pkActivityRating ?? 1, 6) * peakInfluence))) * 100;
-	let chanceString = `**PK Chance:** ${pkChance.toFixed(2)}% per min (${peak.peakTier} peak time)`;
+	let chanceString = `**PK Chance:** ${pkChance.toFixed(2)}% per min (${currentPeak.peakTier} peak time)`;
 
 	const maxReductionPercent = 75;
 	const maxBoostDuration = Time.Hour * 10;
@@ -123,16 +132,6 @@ export function calcWildyPKChance(
 	).toFixed(2)}x from risky Wilderness experience, ${wildyMultiMultiplier}x from being in${
 		wildyMultiMultiplier === 1 ? ' no' : ''
 	} multi)`;
-
-	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
-	let currentPeak = cachedPeakInterval[0];
-	const date = new Date().getTime();
-	for (const peak of cachedPeakInterval) {
-		if (peak.startTime < date && peak.finishTime > date) {
-			currentPeak = peak;
-			break;
-		}
-	}
 
 	return { pkCount, died, chanceString, currentPeak };
 }

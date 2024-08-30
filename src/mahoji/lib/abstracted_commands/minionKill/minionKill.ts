@@ -7,6 +7,7 @@ import { trackLoot } from '../../../../lib/lootTrack';
 
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 
+import { degradeChargeBank } from '../../../../lib/degradeableItems';
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../../lib/util';
@@ -89,10 +90,17 @@ export async function minionKillCommand(
 		return result;
 	}
 
-	if (result.charges) {
-		if (!user.hasCharges(result.charges)) {
-			return `You need ${result.charges.toLocaleString()} charges to kill this monster.`;
+	if (result.charges.length() > 0) {
+		const hasChargesResult = user.hasCharges(result.charges);
+		if (!hasChargesResult.hasCharges) {
+			return hasChargesResult.fullUserString!;
 		}
+		const degradeResults = await degradeChargeBank(user, result.charges);
+		result.messages.push(degradeResults.map(i => i.userMessage).join(', '));
+	}
+
+	if (!user.bank.has(result.lootToRemove)) {
+		return `You don't have the items needed to kill this monster. You need: ${result.lootToRemove}`;
 	}
 
 	if (result.lootToRemove.length > 0) {
@@ -112,6 +120,11 @@ export async function minionKillCommand(
 		});
 	}
 
+	if (result.charges.length() > 0) {
+		const degradeResults = await degradeChargeBank(user, result.charges);
+		result.messages.push(degradeResults.map(i => i.userMessage).join(', '));
+	}
+
 	const { bob, usingCannon, cannonMulti, chinning, hasWildySupplies } = result.currentTaskOptions;
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 		mi: monster.id,
@@ -128,9 +141,13 @@ export async function minionKillCommand(
 		hasWildySupplies,
 		isInWilderness: result.isInWilderness
 	});
-	const response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
+
+	if (result.messages.length > 0) {
+		response += `\n\n${result.messages.join('\n')}`;
+	}
 
 	return response;
 }

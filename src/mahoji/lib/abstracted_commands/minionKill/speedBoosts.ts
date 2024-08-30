@@ -509,7 +509,6 @@ export const postBoostEffects: PostBoostEffect[] = [
 			let confirmationString: string | undefined = undefined;
 			const messages: string[] = [];
 
-			const wildyPeak = null;
 			let hasWildySupplies = undefined;
 
 			const antiPkBrewsNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
@@ -543,7 +542,6 @@ export const postBoostEffects: PostBoostEffect[] = [
 			}
 			const { pkCount, died, chanceString, currentPeak } = calcWildyPKChance(
 				gearBank,
-				wildyPeak!,
 				monster,
 				duration,
 				hasWildySupplies,
