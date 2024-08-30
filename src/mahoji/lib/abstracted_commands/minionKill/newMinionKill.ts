@@ -48,7 +48,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		inputQuantity,
 		slayerUnlocks
 	} = args;
-	const messages: string[] = [];
 	const primaryStyle = convertAttackStylesToSetup(attackStyles);
 	const relevantGearStat: OffenceGearStat = (
 		{ melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, range: GearStat.AttackRanged } as const
@@ -116,7 +115,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		return `You need 65 Ranged to use Chinning method. You have ${skillsAsLevels.ranged}`;
 	}
 
-	if ((combatMethods.includes('burst') || combatMethods.includes('barrage')) && !monster?.canBarrage) {
+	if ((combatMethods.includes('burst') || combatMethods.includes('barrage')) && !monster.canBarrage) {
 		if (isKillingJelly) {
 			if (!isInWilderness) {
 				return `${monster.name} can only be barraged or burst in the wilderness.`;
@@ -164,7 +163,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	duration = randomVariation(duration, 3);
 	if (isWeekend()) {
-		messages.push('10% for Weekend');
+		speedDurationResult.messages.push('10% for Weekend');
 		duration *= 0.9;
 	}
 
