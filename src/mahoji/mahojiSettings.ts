@@ -20,6 +20,9 @@ import {
 	resolveItems
 } from '../lib/util';
 import { userhasDiaryTier } from '../lib/diaries';
+import type { GearBank } from '../lib/structures/GearBank';
+import { quests } from '../lib/minions/data/quests';
+import { bold } from 'discord.js';
 
 export function mahojiParseNumber({
 	input,
@@ -225,6 +228,15 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		];
 	}
 
+		if (monster.requiredQuests) {
+		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to kill ${monster.name}.`;
+		}
+	}
+
 	if (monster.itemsRequired) {
 		const itemsRequiredStr = formatItemReqs(monster.itemsRequired);
 		for (const item of monster.itemsRequired) {
@@ -278,7 +290,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, isInWilderness = false) {
+export function resolveAvailableItemBoosts(gearBank: GearBank,monster: KillableMonster, isInWilderness = false) {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -288,7 +300,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			// find the highest boost that the player has
 			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 				const parsedId = Number.parseInt(itemID);
-				if (isInWilderness ? !user.hasEquipped(parsedId) : !user.hasEquippedOrInBank(parsedId)) {
+				if (!gearBank.wildyGearCheck(parsedId, isInWilderness)) {
 					continue;
 				}
 				if (boostAmount > highestBoostAmount) {

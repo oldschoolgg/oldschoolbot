@@ -19,7 +19,8 @@
 			"suspicious": {
 				"noExplicitAny": "warn",
 				"noAssignInExpressions": "warn",
-				"noAsyncPromiseExecutor": "off"
+				"noAsyncPromiseExecutor": "off",
+				"noConfusingVoidType": "off"
 			},
 			"style": {
 				"noNonNullAssertion": "off",

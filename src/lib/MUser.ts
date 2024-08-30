@@ -18,7 +18,6 @@ import { CombatAchievements } from './combat_achievements/combatAchievements';
 import { BitField, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
-import { getSimilarItems } from './data/similarItems';
 import { degradeableItems } from './degradeableItems';
 import type { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
@@ -50,6 +49,7 @@ import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
+import { GearBank } from './structures/GearBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -97,6 +97,7 @@ export class MUserClass {
 	skillsAsLevels!: Required<Skills>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
+	gearBank!: GearBank;
 
 	constructor(user: User) {
 		this.user = user;
@@ -135,6 +136,8 @@ export class MUserClass {
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
+
+		this.gearBank = new GearBank(this.gear, this.bank);
 	}
 
 	countSkillsAtLeast99() {
@@ -377,6 +380,10 @@ GROUP BY data->>'ci';`);
 		return false;
 	}
 
+	hasEquippedOrInBank(...args: Parameters<InstanceType<typeof GearBank>['hasEquippedOrInBank']>) {
+		return this.gearBank.hasEquippedOrInBank(...args);
+	}
+
 	private calculateAllItemsOwned(): Bank {
 		const bank = new Bank(this.bank);
 
@@ -408,23 +415,6 @@ GROUP BY data->>'ci';`);
 
 	async fetchMinigames() {
 		return getMinigameEntity(this.id);
-	}
-
-	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
-		const { bank } = this;
-		const items = resolveItems(_items);
-		for (const baseID of items) {
-			const similarItems = getSimilarItems(baseID);
-			const hasOneEquipped = similarItems.some(id => this.hasEquipped(id, true));
-			const hasOneInBank = similarItems.some(id => bank.has(id));
-			// If only one needs to be equipped, return true now if it is equipped.
-			if (type === 'one' && (hasOneEquipped || hasOneInBank)) return true;
-			// If all need to be equipped, return false now if not equipped.
-			else if (type === 'every' && !hasOneEquipped && !hasOneInBank) {
-				return false;
-			}
-		}
-		return type !== 'one';
 	}
 
 	getSkills(levels: boolean) {
