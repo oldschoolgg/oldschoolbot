@@ -177,7 +177,7 @@ export interface AddMonsterXpParams {
 
 export interface ResolveAttackStylesParams {
 	monsterID: number | undefined;
-	boostMethod?: PvMMethod[] |  readonly PvMMethod[];
+	boostMethod?: PvMMethod[] | readonly PvMMethod[];
 	attackStyles: AttackStyles[];
 }
 

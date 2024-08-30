@@ -31,7 +31,9 @@ export default function getUserFoodFromBank({
 	const foodToRemove = new Bank();
 
 	let sorted = [...Eatables.filter(e => (isWilderness ? true : !e.wildyOnly))]
-		.sort((i, j) => (getRealHealAmount(gearBank, i.healAmount) > getRealHealAmount(gearBank, j.healAmount) ? 1 : -1))
+		.sort((i, j) =>
+			getRealHealAmount(gearBank, i.healAmount) > getRealHealAmount(gearBank, j.healAmount) ? 1 : -1
+		)
 		.sort((k, l) => {
 			if (isWilderness) {
 				if (k.wildyOnly && !l.wildyOnly) return -1;

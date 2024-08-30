@@ -4,13 +4,13 @@ import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import type { GearSetupType } from '../../gear/types';
 import { GearStat } from '../../gear/types';
 import { maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
+import type { GearBank } from '../../structures/GearBank';
 import { readableStatName } from '../../util/smallUtils';
 import type { KillableMonster } from '../types';
-import type { GearBank } from '../../structures/GearBank';
 
 const { floor, max } = Math;
 
-export  function calculateMonsterFoodRaw(gearBank: GearBank, monster: Readonly<KillableMonster>): [number, string] {
+export function calculateMonsterFoodRaw(gearBank: GearBank, monster: Readonly<KillableMonster>): [number, string] {
 	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
 
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
@@ -64,7 +64,6 @@ export  function calculateMonsterFoodRaw(gearBank: GearBank, monster: Readonly<K
 	];
 }
 
-
-export default function calculateMonsterFood(monster: Readonly<KillableMonster>, user:MUser): [number, string] {
+export default function calculateMonsterFood(monster: Readonly<KillableMonster>, user: MUser): [number, string] {
 	return calculateMonsterFoodRaw(user.gearBank, monster);
 }

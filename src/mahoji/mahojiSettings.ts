@@ -7,8 +7,12 @@ import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import type { KillableMonster } from '../lib/minions/types';
 
+import { bold } from 'discord.js';
+import { userhasDiaryTier } from '../lib/diaries';
+import { quests } from '../lib/minions/data/quests';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
+import type { GearBank } from '../lib/structures/GearBank';
 import type { ItemBank } from '../lib/types';
 import {
 	type JsonKeys,
@@ -19,10 +23,6 @@ import {
 	readableStatName,
 	resolveItems
 } from '../lib/util';
-import { userhasDiaryTier } from '../lib/diaries';
-import type { GearBank } from '../lib/structures/GearBank';
-import { quests } from '../lib/minions/data/quests';
-import { bold } from 'discord.js';
 
 export function mahojiParseNumber({
 	input,
@@ -228,7 +228,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		];
 	}
 
-		if (monster.requiredQuests) {
+	if (monster.requiredQuests) {
 		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
 		if (incompleteQuest) {
 			return `You need to have completed the ${bold(
@@ -294,7 +294,6 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		}
 	}
 
-		
 	if (monster.diaryRequirement) {
 		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
 		if (!hasDiary) {
@@ -305,7 +304,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(gearBank: GearBank,monster: KillableMonster, isInWilderness = false) {
+export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster, isInWilderness = false) {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {

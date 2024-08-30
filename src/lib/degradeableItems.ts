@@ -49,7 +49,7 @@ interface DegradeableItemPVMBoost {
 		killableMon,
 		osjsMonster,
 		totalHP,
-		duration,
+		duration
 	}: {
 		killableMon?: KillableMonster;
 		osjsMonster?: Monster;

@@ -16,11 +16,11 @@ import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUt
 import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { calculateSimpleMonsterDeathChance, hasSkillReqs, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
+import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',

@@ -5,9 +5,9 @@ import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { PeakTier } from '../constants';
 import type { KillableMonster } from '../minions/types';
 import { maxDefenceStats } from '../structures/Gear';
+import type { GearBank } from '../structures/GearBank';
 import type { Peak } from '../tickers';
 import { percentChance } from '../util';
-import type { GearBank } from '../structures/GearBank';
 
 const peakFactor = [
 	{
@@ -23,7 +23,6 @@ const peakFactor = [
 		factor: 0.2
 	}
 ];
-
 
 export async function increaseWildEvasionXp(user: MUser, duration: number) {
 	const oldPkXp: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
@@ -49,7 +48,6 @@ export function calcWildyPKChance(
 	const scaledExp = Math.min(100, (pkEvasionExperience / maxBoostDuration) * 100);
 	const evasionReduction = randomVariation(calcPercentOfNum(scaledExp, maxReductionPercent), 10);
 
-
 	const tripMinutes = Math.round(duration / Time.Minute);
 	let pkCount = 0;
 	for (let i = 0; i < tripMinutes; i++) {
@@ -62,7 +60,7 @@ export function calcWildyPKChance(
 	let deathChance = monster.pkBaseDeathChance ?? 0;
 
 	const statLvls =
-		gearBank.skillsAsLevels.defence+ gearBank.skillsAsLevels.magic + gearBank.skillsAsLevels.hitpoints;
+		gearBank.skillsAsLevels.defence + gearBank.skillsAsLevels.magic + gearBank.skillsAsLevels.hitpoints;
 	const deathChanceFromLevels = Math.max(0, (100 - (statLvls / 297) * 100) / 5);
 	deathChance += deathChanceFromLevels;
 
@@ -73,9 +71,12 @@ export function calcWildyPKChance(
 
 	// Weighted Melee gear percent protection 60% slash, 30% crush, 10% stab
 	const defensiveMeleeGearPercent =
-		(Math.max(0, calcWhatPercent(gearBank.gear.wildy.getStats().defence_slash, maxDefenceStats.defence_slash)) * 60 +
-			Math.max(0, calcWhatPercent(gearBank.gear.wildy.getStats().defence_crush, maxDefenceStats.defence_crush)) * 30 +
-			Math.max(0, calcWhatPercent(gearBank.gear.wildy.getStats().defence_stab, maxDefenceStats.defence_stab)) * 10) /
+		(Math.max(0, calcWhatPercent(gearBank.gear.wildy.getStats().defence_slash, maxDefenceStats.defence_slash)) *
+			60 +
+			Math.max(0, calcWhatPercent(gearBank.gear.wildy.getStats().defence_crush, maxDefenceStats.defence_crush)) *
+				30 +
+			Math.max(0, calcWhatPercent(gearBank.gear.wildy.getStats().defence_stab, maxDefenceStats.defence_stab)) *
+				10) /
 		100;
 
 	const defensiveRangeGearPercent = Math.max(
@@ -123,18 +124,15 @@ export function calcWildyPKChance(
 		wildyMultiMultiplier === 1 ? ' no' : ''
 	} multi)`;
 
-
-		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
-		let currentPeak = cachedPeakInterval[0];
-		const date = new Date().getTime();
-		for (const peak of cachedPeakInterval) {
-			if (peak.startTime < date && peak.finishTime > date) {
-				currentPeak = peak
-				break;
-			}
+	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
+	let currentPeak = cachedPeakInterval[0];
+	const date = new Date().getTime();
+	for (const peak of cachedPeakInterval) {
+		if (peak.startTime < date && peak.finishTime > date) {
+			currentPeak = peak;
+			break;
 		}
+	}
 
-
-
-	return { pkCount, died, chanceString,currentPeak };
+	return { pkCount, died, chanceString, currentPeak };
 }

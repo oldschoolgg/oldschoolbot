@@ -1,22 +1,33 @@
-import { Monsters } from "oldschooljs";
-import { wildyKillableMonsters } from "../../../../lib/minions/data/killableMonsters/bosses/wildy";
-import { revenantMonsters } from "../../../../lib/minions/data/killableMonsters/revs";
-import type { KillableMonster } from "../../../../lib/minions/types";
-import type { PvMMethod } from "../../../../lib/constants";
-import { cannonBanks } from "../../../../lib/minions/data/combatConstants";
-import type { GearBank } from "../../../../lib/structures/GearBank";
+import { Monsters } from 'oldschooljs';
+import type { PvMMethod } from '../../../../lib/constants';
+import { cannonBanks } from '../../../../lib/minions/data/combatConstants';
+import { wildyKillableMonsters } from '../../../../lib/minions/data/killableMonsters/bosses/wildy';
+import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
+import type { KillableMonster } from '../../../../lib/minions/types';
+import type { GearBank } from '../../../../lib/structures/GearBank';
 
-export function determineIfUsingCannon({ gearBank,monster, isOnTask, combatMethods,isInWilderness }: {gearBank:GearBank;isInWilderness:boolean; monster: KillableMonster; isOnTask: boolean; combatMethods: PvMMethod[] }) {
-    
+export function determineIfUsingCannon({
+	gearBank,
+	monster,
+	isOnTask,
+	combatMethods,
+	isInWilderness
+}: {
+	gearBank: GearBank;
+	isInWilderness: boolean;
+	monster: KillableMonster;
+	isOnTask: boolean;
+	combatMethods: PvMMethod[];
+}) {
 	const hasCannon = cannonBanks.some(i => gearBank.bank.has(i));
 	if (combatMethods.includes('cannon') && !hasCannon) {
 		return {
-            usingCannon: false,
-            cannonMulti: false
-        };
+			usingCannon: false,
+			cannonMulti: false
+		};
 	}
-    
-    let usingCannon = false;
+
+	let usingCannon = false;
 	let cannonMulti = false;
 
 	if (isInWilderness && combatMethods.includes('cannon')) {
@@ -57,8 +68,8 @@ export function determineIfUsingCannon({ gearBank,monster, isOnTask, combatMetho
 		}
 	}
 
-    return {
-        usingCannon,
-        cannonMulti
-    }
+	return {
+		usingCannon,
+		cannonMulti
+	};
 }

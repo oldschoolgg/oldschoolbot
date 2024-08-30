@@ -11,7 +11,7 @@ export default function hasEnoughFoodForMonster(
 	if (monster.healAmountNeeded) {
 		return (
 			getUserFoodFromBank({
-				gearBank:user.gearBank,
+				gearBank: user.gearBank,
 				totalHealingNeeded: Math.ceil(calculateMonsterFood(monster, user)[0] / totalPartySize) * quantity,
 				favoriteFood: user.user.favorite_food
 			}) !== false

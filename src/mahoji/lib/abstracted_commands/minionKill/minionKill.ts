@@ -7,13 +7,9 @@ import { trackLoot } from '../../../../lib/lootTrack';
 
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 
-
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import {
-
-	formatDuration, stringMatches
-} from '../../../../lib/util';
+import { formatDuration, stringMatches } from '../../../../lib/util';
 import addSubTaskToActivityTask from '../../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../../lib/util/findMonster';
@@ -21,14 +17,13 @@ import { updateBankSetting } from '../../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../../mahojiSettings';
 import { nexCommand } from '../nexCommand';
 import { nightmareCommand } from '../nightmareCommand';
+import { getPOH } from '../pohCommand';
 import { temporossCommand } from '../temporossCommand';
 import { wintertodtCommand } from '../wintertodtCommand';
 import { zalcanoCommand } from '../zalcanoCommand';
 import { newMinionKillCommand } from './newMinionKill';
-import { getPOH } from '../pohCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
-
 
 export async function minionKillCommand(
 	user: MUser,
@@ -64,12 +59,12 @@ export async function minionKillCommand(
 	}
 
 	if (!monster) return invalidMonsterMsg;
-		
+
 	const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 	if (!hasReqs) {
 		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
 	}
-	
+
 	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
 
 	const result = newMinionKillCommand({
@@ -84,11 +79,20 @@ export async function minionKillCommand(
 		pkEvasionExperience: stats.pk_evasion_exp,
 		poh: await getPOH(user.id),
 		inputQuantity,
-		combatOptions:user.combatOptions, slayerUnlocks:user.user.slayer_unlocks, favoriteFood:user.user.favorite_food, bitfield:user.bitfield
+		combatOptions: user.combatOptions,
+		slayerUnlocks: user.user.slayer_unlocks,
+		favoriteFood: user.user.favorite_food,
+		bitfield: user.bitfield
 	});
 
 	if (typeof result === 'string') {
 		return result;
+	}
+
+	if (result.charges) {
+		if (!user.hasCharges(result.charges)) {
+			return `You need ${result.charges.toLocaleString()} charges to kill this monster.`;
+		}
 	}
 
 	if (result.lootToRemove.length > 0) {
@@ -108,7 +112,7 @@ export async function minionKillCommand(
 		});
 	}
 
-	const {bob, usingCannon, cannonMulti, chinning,hasWildySupplies} = result.currentTaskOptions;
+	const { bob, usingCannon, cannonMulti, chinning, hasWildySupplies } = result.currentTaskOptions;
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 		mi: monster.id,
 		userID: user.id,
@@ -127,7 +131,6 @@ export async function minionKillCommand(
 	const response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
-
 
 	return response;
 }

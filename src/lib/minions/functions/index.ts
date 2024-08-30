@@ -3,12 +3,12 @@ import { Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
+import type { PrimaryGearSetupType } from '../../gear/types';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import type { AddMonsterXpParams, ResolveAttackStylesParams } from '../types';
-import type { PrimaryGearSetupType } from '../../gear/types';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -27,9 +27,7 @@ const miscHpMap: Record<number, number> = {
 	3127: 250
 };
 
-export function resolveAttackStyles(
-	params: ResolveAttackStylesParams
-) {
+export function resolveAttackStyles(params: ResolveAttackStylesParams) {
 	const killableMon = params.monsterID ? killableMonsters.find(m => m.id === params.monsterID) : undefined;
 	const osjsMon = params.monsterID ? Monsters.get(params.monsterID) : undefined;
 
@@ -63,9 +61,9 @@ export function resolveAttackStyles(
 }
 
 export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
-	const boostMethod = params.burstOrBarrage ? ['barrage'] as const : ['none'] as const ;
+	const boostMethod = params.burstOrBarrage ? (['barrage'] as const) : (['none'] as const);
 
-	const {osjsMon, attackStyles} = resolveAttackStyles( {
+	const { osjsMon, attackStyles } = resolveAttackStyles({
 		monsterID: params.monsterID,
 		boostMethod,
 		attackStyles: user.getAttackStyles()

@@ -1,21 +1,21 @@
-import { Bank, Monsters } from "oldschooljs";
-import type { BitField, PvMMethod } from "../../../../lib/constants";
-import type { CombatOptionsEnum } from "../../../../lib/minions/data/combatConstants";
-import { revenantMonsters } from "../../../../lib/minions/data/killableMonsters/revs";
-import { type AttackStyles, convertAttackStylesToSetup, resolveAttackStyles } from "../../../../lib/minions/functions";
-import type { Consumable, KillableMonster } from "../../../../lib/minions/types";
-import { type CurrentSlayerInfo, determineCombatBoosts } from "../../../../lib/slayer/slayerUtil";
-import type { GearBank } from "../../../../lib/structures/GearBank";
-import { speedCalculations } from "./timeAndSpeed";
-import type { PlayerOwnedHouse } from "@prisma/client";
-import { GearStat, type OffenceGearStat } from "../../../../lib/gear/types";
-import { changeQuantityForTaskKillsRemaining } from "./calcTaskMonstersRemaining";
-import type { SlayerTaskUnlocksEnum } from "../../../../lib/slayer/slayerUnlocks";
-import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, randomVariation } from "../../../../lib/util";
-import { floor } from "lodash";
-import { minionName } from "../../../../lib/util/minionUtils";
-import { handleConsumables } from "./handleConsumables";
-import { type PostBoostEffect, postBoostEffects } from "./speedBoosts";
+import type { PlayerOwnedHouse } from '@prisma/client';
+import { floor } from 'lodash';
+import { Bank, Monsters } from 'oldschooljs';
+import type { BitField, PvMMethod } from '../../../../lib/constants';
+import { GearStat, type OffenceGearStat } from '../../../../lib/gear/types';
+import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
+import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
+import { type AttackStyles, convertAttackStylesToSetup, resolveAttackStyles } from '../../../../lib/minions/functions';
+import type { Consumable, KillableMonster } from '../../../../lib/minions/types';
+import type { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
+import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/slayer/slayerUtil';
+import type { GearBank } from '../../../../lib/structures/GearBank';
+import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, randomVariation } from '../../../../lib/util';
+import { minionName } from '../../../../lib/util/minionUtils';
+import { changeQuantityForTaskKillsRemaining } from './calcTaskMonstersRemaining';
+import { getItemCostFromConsumables } from './handleConsumables';
+import { type PostBoostEffect, postBoostEffects } from './speedBoosts';
+import { speedCalculations } from './timeAndSpeed';
 
 export interface MinionKillOptions {
 	attackStyles: AttackStyles[];
@@ -36,10 +36,23 @@ export interface MinionKillOptions {
 }
 
 export function newMinionKillCommand(args: MinionKillOptions) {
-	let { combatOptions,attackStyles, gearBank, currentSlayerTask, monster,isTryingToUseWildy,inputPVMMethod, maxTripLength,inputQuantity,slayerUnlocks }  = args;
+	let {
+		combatOptions,
+		attackStyles,
+		gearBank,
+		currentSlayerTask,
+		monster,
+		isTryingToUseWildy,
+		inputPVMMethod,
+		maxTripLength,
+		inputQuantity,
+		slayerUnlocks
+	} = args;
 	const messages: string[] = [];
 	const primaryStyle = convertAttackStylesToSetup(attackStyles);
-	const relevantGearStat: OffenceGearStat = ({ melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, range: GearStat.AttackRanged } as const)[primaryStyle];
+	const relevantGearStat: OffenceGearStat = (
+		{ melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, range: GearStat.AttackRanged } as const
+	)[primaryStyle];
 
 	const isOnTask =
 		currentSlayerTask.assignedTask !== null &&
@@ -54,7 +67,9 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		return `You can't kill ${monster.name} outside the wilderness.`;
 	}
 
-	const isInWilderness = Boolean(isTryingToUseWildy || (isOnTask && currentSlayerTask.assignedTask?.wilderness) || monster.canBePked);
+	const isInWilderness = Boolean(
+		isTryingToUseWildy || (isOnTask && currentSlayerTask.assignedTask?.wilderness) || monster.canBePked
+	);
 
 	if (!monster.wildy && isInWilderness) {
 		return `You can't kill ${monster.name} in the wilderness.`;
@@ -78,7 +93,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	const combatMethods = determineCombatBoosts({
 		cbOpts: combatOptions,
 		monster,
-		methods: [inputPVMMethod ?? "none"],
+		methods: [inputPVMMethod ?? 'none'],
 		isOnTask,
 		wildyBurst: isAbleToBurstInWilderness
 	});
@@ -86,13 +101,11 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	const resolveAttackStyleResult = resolveAttackStyles({
 		monsterID: monster.id,
 		boostMethod: combatMethods,
-		attackStyles 
+		attackStyles
 	});
 	attackStyles = resolveAttackStyleResult.attackStyles;
 
-	const {
-		skillsAsLevels
-	} = gearBank;
+	const { skillsAsLevels } = gearBank;
 	if (combatMethods.includes('barrage') && skillsAsLevels.magic < 94) {
 		return `You need 94 Magic to use Ice Barrage. You have ${skillsAsLevels.magic}`;
 	}
@@ -111,19 +124,19 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		} else return `${monster.name} cannot be barraged or burst.`;
 	}
 
-
-	const consumableCosts: Consumable[] = [];
 	const osjsMon = resolveAttackStyleResult.osjsMon;
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
 
-	const speedDurationResult = speedCalculations({...args,	isOnTask,
-	osjsMon,
-	primaryStyle,
-	isInWilderness: isInWilderness,
-	combatMethods,
-    relevantGearStat,
-	addPostBoostEffect: (effect: PostBoostEffect) => ephemeralPostTripEffects.push(effect)		
-});
+	const speedDurationResult = speedCalculations({
+		...args,
+		isOnTask,
+		osjsMon,
+		primaryStyle,
+		isInWilderness: isInWilderness,
+		combatMethods,
+		relevantGearStat,
+		addPostBoostEffect: (effect: PostBoostEffect) => ephemeralPostTripEffects.push(effect)
+	});
 	if (typeof speedDurationResult === 'string') {
 		return speedDurationResult;
 	}
@@ -131,20 +144,23 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	const maxCanKill = Math.floor(maxTripLength / speedDurationResult.timeToFinish);
 	let quantity = inputQuantity ?? maxCanKill;
 	if ([Monsters.Skotizo.id].includes(monster.id)) {
-			quantity = 1;
+		quantity = 1;
 	}
-	quantity = changeQuantityForTaskKillsRemaining({isOnTask,quantity,monster,task:currentSlayerTask,slayerUnlocks});
-	
+	quantity = changeQuantityForTaskKillsRemaining({
+		isOnTask,
+		quantity,
+		monster,
+		task: currentSlayerTask,
+		slayerUnlocks
+	});
+
 	quantity = Math.max(1, quantity);
 	let duration = speedDurationResult.timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
 		return `${minionName} can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
-			maxCanKill
-		)}.`;
+		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(maxCanKill)}.`;
 	}
-	
 
 	duration = randomVariation(duration, 3);
 	if (isWeekend()) {
@@ -152,13 +168,20 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		duration *= 0.9;
 	}
 
-	const lootToRemove = new Bank();
+	const lootToRemove = new Bank().add(speedDurationResult.itemCost);
 
+	const consumableCosts: Consumable[] = [...speedDurationResult.consumables];
 	if (monster.itemCost) {
 		consumableCosts.push(monster.itemCost);
 	}
 
-	const consumablesCost = handleConsumables({consumableCosts, gearBank, quantity, duration, timeToFinish: speedDurationResult.timeToFinish});
+	const consumablesCost = getItemCostFromConsumables({
+		consumableCosts,
+		gearBank,
+		quantity,
+		duration,
+		timeToFinish: speedDurationResult.timeToFinish
+	});
 	lootToRemove.add(consumablesCost);
 
 	if (monster.projectileUsage?.required) {
@@ -182,22 +205,31 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	for (const effect of [...postBoostEffects, ...ephemeralPostTripEffects]) {
 		const result = effect.run({
-			duration,quantity,isOnTask,isInWilderness,osjsMon ,primaryStyle,combatMethods,relevantGearStat, ...args, currentTaskOptions:speedDurationResult.currentTaskOptions,
+			duration,
+			quantity,
+			isOnTask,
+			isInWilderness,
+			osjsMon,
+			primaryStyle,
+			combatMethods,
+			relevantGearStat,
+			...args,
+			currentTaskOptions: speedDurationResult.currentTaskOptions
 		});
 		if (typeof result === 'string') {
 			return result;
 		}
 	}
-	
+
 	return {
 		duration,
 		quantity,
 		lootToRemove,
-		consumableCosts,
 		isOnTask,
 		isInWilderness,
 		attackStyles,
-		ephemeralPostTripEffects,
-		...speedDurationResult
-	}
+		charges: speedDurationResult.charges,
+		currentTaskOptions: speedDurationResult.currentTaskOptions,
+		messages: speedDurationResult.messages
+	};
 }

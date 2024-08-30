@@ -144,7 +144,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await mUserFetch(userID);
 		if (options.show_info) {
-			return "This feature is currently disabled.";
+			return 'This feature is currently disabled.';
 		}
 		return minionKillCommand(
 			user,

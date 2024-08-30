@@ -330,7 +330,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 
 	let timePerMonster = Time.Minute * 2;
 	// combat stat boosts
-	const {attackStyles} = resolveAttackStyles({
+	const { attackStyles } = resolveAttackStyles({
 		monsterID: -1,
 		attackStyles: user.getAttackStyles()
 	});

@@ -1,16 +1,16 @@
-import { calcWhatPercent, increaseNumByPercent, notEmpty, reduceNumByPercent, round, sumArr } from "e";
-import type { AttackStyles } from "../../../../lib/minions/functions";
-import reducedTimeFromKC from "../../../../lib/minions/functions/reducedTimeFromKC";
-import { calcPOHBoosts } from "../../../../lib/poh";
-import { itemNameFromID } from "../../../../lib/util";
-import { resolveAvailableItemBoosts } from "../../../mahojiSettings";
-import type { SkillsRequired } from "../../../../lib/types";
-import { type BoostArgs, type BoostResult, boosts, type CombatMethodOptions } from "./speedBoosts";
-import type { Consumable } from "../../../../lib/minions/types";
-import { ChargeBank } from "../../../../lib/structures/Bank";
-import { Bank } from "oldschooljs";
+import { calcWhatPercent, increaseNumByPercent, notEmpty, reduceNumByPercent, round, sumArr } from 'e';
+import { Bank } from 'oldschooljs';
+import type { AttackStyles } from '../../../../lib/minions/functions';
+import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
+import type { Consumable } from '../../../../lib/minions/types';
+import { calcPOHBoosts } from '../../../../lib/poh';
+import { ChargeBank } from '../../../../lib/structures/Bank';
+import type { SkillsRequired } from '../../../../lib/types';
+import { itemNameFromID } from '../../../../lib/util';
+import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
+import { type BoostArgs, type BoostResult, type CombatMethodOptions, boosts } from './speedBoosts';
 
-function applySkillBoost(skillsAsLevels:SkillsRequired, duration: number, styles: AttackStyles[]): [number, string] {
+function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = sumArr(styles.map(s => skillsAsLevels[s]));
 	let newDuration = duration;
 	let str = '';
@@ -27,11 +27,11 @@ function applySkillBoost(skillsAsLevels:SkillsRequired, duration: number, styles
 	return [newDuration, str];
 }
 
-export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>){
-    const {monster, monsterKC,attackStyles, poh, isInWilderness,gearBank} = args;
-	const {skillsAsLevels} = args.gearBank;
+export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
+	const { monster, monsterKC, attackStyles, poh, isInWilderness, gearBank } = args;
+	const { skillsAsLevels } = args.gearBank;
 	const messages: string[] = [];
-    let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
+	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
 	const [newTime, skillBoostMsg] = applySkillBoost(skillsAsLevels, timeToFinish, attackStyles);
 
 	timeToFinish = newTime;
@@ -51,37 +51,37 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>){
 		timeToFinish *= (100 - boostAmount) / 100;
 		messages.push(`${boostAmount}% for ${itemNameFromID(Number.parseInt(itemID))}`);
 	}
- 
+
 	const currentTaskOptions: CombatMethodOptions = {};
 
-    const boostsApplying: BoostResult[] = [];
+	const boostsApplying: BoostResult[] = [];
 	for (const boost of boosts) {
-        const boostArr = Array.isArray(boost) ? boost : [boost];
-        const results =  boostArr
-				.flatMap(b => b.run({...args,currentTaskOptions}))
-				.filter(notEmpty);
+		const boostArr = Array.isArray(boost) ? boost : [boost];
+		const results = boostArr.flatMap(b => b.run({ ...args, currentTaskOptions })).filter(notEmpty);
 		const errorResult = results.find(r => typeof r === 'string');
 		if (errorResult) {
 			return errorResult;
 		}
-		const goodResult = results.filter(i => typeof i !== "string").sort((a, b) =>{
-			if (a.percentageReduction && b.percentageReduction) {
-				return b.percentageReduction - a.percentageReduction;
-			}
-			return 0;
-		})[0];
-        if (goodResult) {
-          boostsApplying.push(goodResult);
-        }
-    }
+		const goodResult = results
+			.filter(i => typeof i !== 'string')
+			.sort((a, b) => {
+				if (a.percentageReduction && b.percentageReduction) {
+					return b.percentageReduction - a.percentageReduction;
+				}
+				return 0;
+			})[0];
+		if (goodResult) {
+			boostsApplying.push(goodResult);
+		}
+	}
 
 	const itemCost = new Bank();
 	const charges = new ChargeBank();
 	const consumables: Consumable[] = [];
 	const confirmations: string[] = [];
-    for (const boost of boostsApplying) {
+	for (const boost of boostsApplying) {
 		if (boost.percentageReduction) {
-	        timeToFinish = reduceNumByPercent(timeToFinish, boost.percentageReduction);
+			timeToFinish = reduceNumByPercent(timeToFinish, boost.percentageReduction);
 		} else if (boost.percentageIncrease) {
 			timeToFinish = increaseNumByPercent(timeToFinish, boost.percentageIncrease);
 		}
@@ -108,14 +108,15 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>){
 		if (boost.confirmation) confirmations.push(boost.confirmation);
 
 		if (boost.message) messages.push(boost.message);
-    }
+	}
 
-    return {
-        timeToFinish,
-        messages,
+	return {
+		timeToFinish,
+		messages,
 		consumables,
-currentTaskOptions,
-charges,
-itemCost,
-confirmations    }
+		currentTaskOptions,
+		charges,
+		itemCost,
+		confirmations
+	};
 }

@@ -1,19 +1,23 @@
-import type { Bank } from "oldschooljs";
-import type { UserFullGearSetup } from "../gear/types";
-import { getSimilarItems } from "../data/similarItems";
-import { resolveItems } from "../util";
-import type { SkillsRequired } from "../types";
+import type { Bank } from 'oldschooljs';
+import { getSimilarItems } from '../data/similarItems';
+import type { UserFullGearSetup } from '../gear/types';
+import type { SkillsRequired } from '../types';
+import { resolveItems } from '../util';
 
 export class GearBank {
-    gear: UserFullGearSetup;
-    bank: Bank;
+	gear: UserFullGearSetup;
+	bank: Bank;
 	skillsAsLevels: SkillsRequired;
 
-    constructor({gear,bank,skillsAsLevels}: {gear: UserFullGearSetup, bank: Bank, skillsAsLevels: SkillsRequired}) {
-        this.gear = gear;
-        this.bank = bank;
+	constructor({
+		gear,
+		bank,
+		skillsAsLevels
+	}: { gear: UserFullGearSetup; bank: Bank; skillsAsLevels: SkillsRequired }) {
+		this.gear = gear;
+		this.bank = bank;
 		this.skillsAsLevels = skillsAsLevels;
-    }
+	}
 
 	wildyGearCheck(item: string | number, isWildy: boolean) {
 		if (isWildy) {
@@ -21,7 +25,7 @@ export class GearBank {
 		}
 		return this.hasEquippedOrInBank(item);
 	}
-    
+
 	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
 		const { bank } = this;
 		const items = resolveItems(_items);

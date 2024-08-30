@@ -39,6 +39,7 @@ import { SkillsEnum } from './skilling/types';
 import type { BankSortMethod } from './sorts';
 import type { ChargeBank } from './structures/Bank';
 import { Gear, defaultGear } from './structures/Gear';
+import { GearBank } from './structures/GearBank';
 import type { ItemBank, Skills } from './types';
 import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
@@ -49,7 +50,6 @@ import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
-import { GearBank } from './structures/GearBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -137,7 +137,7 @@ export class MUserClass {
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
 
-		this.gearBank = new GearBank({gear: this.gear,bank:this.bank,skillsAsLevels:this.skillsAsLevels});
+		this.gearBank = new GearBank({ gear: this.gear, bank: this.bank, skillsAsLevels: this.skillsAsLevels });
 	}
 
 	countSkillsAtLeast99() {

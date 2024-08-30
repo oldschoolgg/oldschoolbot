@@ -74,13 +74,13 @@ export const massCommand: OSBMahojiCommand = {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
-		const channel = globalClient.channels.cache.get(channelID.toString());
+		const channel = globalClient.channels.cache.get(channelID);
 		if (!channel || !channelIsSendable(channel)) return 'Invalid channel.';
 		const monster = findMonster(options.monster);
 		if (!monster) return "That monster doesn't exist!";
 		if (!monster.groupKillable) return "This monster can't be killed in groups!";
 
-		const check = checkReqs([user], monster, 2);
+		const check = await checkReqs([user], monster, 2);
 		if (check) return check;
 
 		let users: MUser[] = [];
@@ -139,7 +139,7 @@ export const massCommand: OSBMahojiCommand = {
 		if (typeof durQtyRes === 'string') return durQtyRes;
 		const [quantity, duration, perKillTime, boostMsgs] = durQtyRes;
 
-		const checkRes = checkReqs(users, monster, quantity);
+		const checkRes = await checkReqs(users, monster, quantity);
 		if (checkRes) return checkRes;
 
 		if (1 > 2 && monster.healAmountNeeded) {

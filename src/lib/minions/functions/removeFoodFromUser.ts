@@ -6,9 +6,9 @@ import { itemID } from 'oldschooljs/dist/util';
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
 import type { GearSetupType } from '../../gear/types';
+import type { GearBank } from '../../structures/GearBank';
 import { updateBankSetting } from '../../util/updateBankSetting';
 import getUserFoodFromBank from './getUserFoodFromBank';
-import type { GearBank } from '../../structures/GearBank';
 
 export function removeFoodFromUserRaw({
 	totalHealingNeeded,
@@ -37,7 +37,11 @@ export function removeFoodFromUserRaw({
 	}
 	if (
 		gearSetupsUsed.some(i => i[0] === 'melee') &&
-		gearBank.gear.melee.hasEquipped(['Justiciar faceguard', 'Justiciar chestguard', 'Justiciar legguards'], true, true)
+		gearBank.gear.melee.hasEquipped(
+			['Justiciar faceguard', 'Justiciar chestguard', 'Justiciar legguards'],
+			true,
+			true
+		)
 	) {
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 6.5);
 		reductions.push('-6.5% for Justiciar');
@@ -66,7 +70,6 @@ export function removeFoodFromUserRaw({
 	}
 }
 
-
 export default async function removeFoodFromUser({
 	user,
 	totalHealingNeeded,
@@ -92,7 +95,7 @@ export default async function removeFoodFromUser({
 		attackStylesUsed,
 		learningPercentage,
 		isWilderness,
-		unavailableBank ,
+		unavailableBank,
 		favoriteFood: user.user.favorite_food
 	});
 	if (!result) {

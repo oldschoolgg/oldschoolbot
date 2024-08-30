@@ -45,7 +45,7 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 	results.push(
 		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'TheatreOfBlood' })
 	);
-	let {attackStyles: styles} = resolveAttackStyles({
+	let { attackStyles: styles } = resolveAttackStyles({
 		monsterID: -1,
 		attackStyles: user.getAttackStyles()
 	});
