@@ -375,6 +375,7 @@ interface ColosseumResult {
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+	voidCharges: number;
 }
 
 export const colosseumWaveTime = (options: {
@@ -432,6 +433,7 @@ export const startColosseumRun = (options: {
 	hasClaws: boolean;
 	hasSGS: boolean;
 	hasTorture: boolean;
+	voidCharges: number;
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
@@ -464,10 +466,6 @@ export const startColosseumRun = (options: {
 	let realDuration = 0;
 	let maxGlory = 0;
 
-	// Calculate charges used
-	const scytheCharges = 300;
-	const calculateVenCharges = () => 50;
-
 	for (const wave of colosseumWaves) {
 		realDuration += waveDuration;
 		const kcForThisWave = options.kcBank.amount(wave.waveNumber);
@@ -485,9 +483,10 @@ export const startColosseumRun = (options: {
 				realDuration,
 				totalDeathChance: combinedChance(deathChances),
 				deathChances,
-				scytheCharges: options.hasScythe ? scytheCharges : 0,
-				venatorBowCharges: options.hasVenBow ? calculateVenCharges() : 0,
-				bloodFuryCharges: options.hasBF ? scytheCharges * 3 : 0
+				scytheCharges: options.hasScythe ? options.scytheCharges : 0,
+				venatorBowCharges: options.hasVenBow ? options.venatorBowCharges : 0,
+				bloodFuryCharges: options.hasBF ? options.scytheCharges * 3 : 0,
+				voidCharges: options.hasVoidStaff ? options.voidCharges : 0
 			};
 		}
 		addedWaveKCBank.add(wave.waveNumber);
@@ -502,9 +501,10 @@ export const startColosseumRun = (options: {
 				realDuration,
 				totalDeathChance: combinedChance(deathChances),
 				deathChances,
-				scytheCharges: options.hasScythe ? scytheCharges : 0,
-				venatorBowCharges: options.hasVenBow ? calculateVenCharges() : 0,
-				bloodFuryCharges: options.hasBF ? scytheCharges * 3 : 0
+				scytheCharges: options.hasScythe ? options.scytheCharges : 0,
+				venatorBowCharges: options.hasVenBow ? options.venatorBowCharges : 0,
+				bloodFuryCharges: options.hasBF ? options.scytheCharges * 3 : 0,
+				voidCharges: options.hasVoidStaff ? options.voidCharges : 0
 			};
 		}
 	}
@@ -623,7 +623,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	const hasGora = gorajanGearBoost(user, 'Colosseum');
 	const hasBHook = !hasBF && user.gear.melee.hasEquipped("Brawler's hook necklace");
 	const hasBulwark = user.owns('Infernal bulwark');
-	const voidCharges = 20;
+	const voidCharges = 35;
 
 	// Get trip time and calculate max attempts the user can do per trip
 	const kcBank: ColosseumWaveBank = new ColosseumWaveBank(
@@ -666,6 +666,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 			scytheCharges,
 			venatorBowCharges,
 			bloodFuryCharges,
+			voidCharges,
 			hasHFB,
 			hasVoidStaff,
 			hasSungodAxe,
@@ -816,6 +817,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	let totalScytheCharges = 0;
 	let totalVenatorBowCharges = 0;
 	let totalBloodFuryCharges = 0;
+	let totalVoidStaffCharges = 0;
 
 	// go through the results and combine them
 	for (const result of results) {
@@ -827,6 +829,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		totalScytheCharges += result.scytheCharges;
 		totalVenatorBowCharges += result.venatorBowCharges;
 		totalBloodFuryCharges += result.bloodFuryCharges;
+		totalVoidStaffCharges += result.voidCharges;
 	}
 
 	await addSubTaskToActivityTask<ColoTaskOptions>({
@@ -841,7 +844,8 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		loot: totalLoot.bank,
 		scytheCharges: totalScytheCharges,
 		venatorBowCharges: totalVenatorBowCharges,
-		bloodFuryCharges: totalBloodFuryCharges
+		bloodFuryCharges: totalBloodFuryCharges,
+		voidStaffCharges: totalVoidStaffCharges
 	});
 
 	if (missedBoosts.length === 0) missedBoosts.push('None');

@@ -531,6 +531,7 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+	voidStaffCharges: number;
 }
 
 type UserID = string;

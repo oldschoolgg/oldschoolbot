@@ -29,7 +29,8 @@ export const colosseumTask: MinionTask = {
 			maxGlory,
 			scytheCharges,
 			venatorBowCharges,
-			bloodFuryCharges
+			bloodFuryCharges,
+			voidStaffCharges
 		} = data;
 		const user = await mUserFetch(userID);
 
@@ -85,6 +86,7 @@ export const colosseumTask: MinionTask = {
 				let scytheRefund = 0;
 				let venatorBowRefund = 0;
 				let bloodFuryRefund = 0;
+				let voidStaffRefund = 0;
 
 				// Calculate refund for unused charges
 				const completionPercentage = (diedAt?.[i]! - 1) / 12;
@@ -100,18 +102,23 @@ export const colosseumTask: MinionTask = {
 					bloodFuryRefund = Math.floor((bloodFuryCharges / quantity) * (1 - completionPercentage));
 					bloodFuryRefund = Math.min(bloodFuryRefund, bloodFuryCharges / quantity);
 				}
+				if (voidStaffCharges > 0) {
+					voidStaffRefund = Math.floor((voidStaffCharges / quantity) * (1 - completionPercentage));
+					voidStaffRefund = Math.min(voidStaffRefund, voidStaffCharges / quantity);
+				}
 
 				const chargeBank = new ChargeBank();
 				if (scytheRefund > 0) chargeBank.add('scythe_of_vitur_charges', scytheRefund);
 				if (venatorBowRefund > 0) chargeBank.add('venator_bow_charges', venatorBowRefund);
 				if (bloodFuryRefund > 0) chargeBank.add('blood_fury_charges', bloodFuryRefund);
+				if (voidStaffRefund > 0) chargeBank.add('void_staff_charges', voidStaffRefund);
 
 				if (chargeBank.length() > 0) {
 					const refundResults = await refundChargeBank(user, chargeBank);
 
 					const refundMessages = refundResults
-						.map(result => `${result.userMessage} Total charges: ${result.totalCharges}.`)
-						.join('');
+						.map(result => `${result.userMessage} (total charges: ${result.totalCharges}).`)
+						.join(' ');
 					deathStr.push(`${refundMessages}`);
 				}
 				deathStr.push('\n');
