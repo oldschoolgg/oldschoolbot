@@ -27,7 +27,6 @@ import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
 import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
-import { itemID } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import resolveItems from './util/resolveItems';
@@ -688,7 +687,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		}
 		if (hasHFB) cost.add('Hellfire arrow', Math.ceil(minutes * 3.5));
 		if (hasTBow) cost.add('Dragon arrow', Math.ceil(minutes * 3));
-		if (hasVoidStaff) cost.add('void_staff_charges', voidCharges)
+		if (hasVoidStaff) cost.add('void_staff_charges', voidCharges);
 		if (hasScythe) chargeBank.add('scythe_of_vitur_charges', scytheCharges);
 		if (hasBF) chargeBank.add('blood_fury_charges', bloodFuryCharges);
 		if (hasVenBow) {
@@ -720,7 +719,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		missedBoosts.push('+10% for TBow, +20% for Hellfire bow');
 	}
 
-	if(hasVoidStaff){
+	if (hasVoidStaff) {
 		boosts.push('+12% for Void staff');
 	} else {
 		missedBoosts.push('12% for Void staff');
