@@ -161,12 +161,13 @@ const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
 export const combatAchievementTripEffect = async ({ data, messages, user }: Parameters<TripFinishEffect['fn']>[0]) => {
 	const dataCopy = deepClone(data);
-	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
-		(dataCopy as any).q = 1;
+	
+	let quantity = 1;
+	if ('q' in dataCopy) {
+		quantity = (dataCopy as any).q;
+	} else if ('quantity' in dataCopy) {
+		quantity = (dataCopy as any).quantity;
 	}
-
-	if (!('quantity' in dataCopy)) return;
-	let quantity = Number(dataCopy.quantity);
 	if (Number.isNaN(quantity)) return;
 
 	if (data.type === 'TombsOfAmascut') {
