@@ -26,6 +26,7 @@ import { ChargeBank } from './structures/Bank';
 import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
+import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
@@ -383,6 +384,8 @@ export const startColosseumRun = (options: {
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+	hasVoidStaff: boolean;
+	hasHellfireBow: boolean;
 }): ColosseumResult => {
 	const waveTwelveKC = options.kcBank.amount(12);
 
@@ -394,17 +397,25 @@ export const startColosseumRun = (options: {
 	if (!options.hasScythe) {
 		waveDuration = increaseNumByPercent(waveDuration, 10);
 	}
-	if (!options.hasTBow) {
-		waveDuration = increaseNumByPercent(waveDuration, 10);
-	}
-	if (!options.hasVenBow) {
-		waveDuration = increaseNumByPercent(waveDuration, 7);
+	if (!options.hasHellfireBow) {
+		if (!options.hasTBow) {
+			waveDuration = increaseNumByPercent(waveDuration, 10);
+		}
+		if (!options.hasVenBow) {
+			waveDuration = increaseNumByPercent(waveDuration, 7);
+		}
 	}
 	if (!options.hasClaws) {
 		waveDuration = increaseNumByPercent(waveDuration, 4);
 	}
 	if (!options.hasTorture) {
 		waveDuration = increaseNumByPercent(waveDuration, 5);
+	}
+	if (options.hasVoidStaff) {
+		waveDuration = reduceNumByPercent(waveDuration, 12);
+	}
+	if (options.hasHellfireBow) {
+		waveDuration = reduceNumByPercent(waveDuration, 12);
 	}
 
 	const fakeDuration = 12 * waveDuration;
@@ -546,9 +557,14 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		return 50;
 	}
 	const hasVenBow = user.hasEquippedOrInBank('Venator bow') && user.user.venator_bow_charges >= calculateVenCharges();
+	const hasHellfireBow =
+		user.hasEquippedOrInBank('Hellfire bow') &&
+		user.gear.range.ammo?.item === itemID('Hellfire arrow') &&
+		user.gear.range.ammo?.quantity >= 100;
 	const hasClaws = user.hasEquippedOrInBank('Dragon claws');
 	const hasSGS = user.hasEquippedOrInBank('Saradomin godsword');
 	const hasTorture = !hasBF && user.gear.melee.hasEquipped('Amulet of torture');
+	const hasVoidStaff = user.gear.mage.hasEquipped('Void staff');
 	const scytheCharges = 300;
 	const bloodFuryCharges = scytheCharges * 3;
 	const venatorBowCharges = calculateVenCharges();
@@ -564,7 +580,9 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		hasTorture,
 		scytheCharges,
 		venatorBowCharges,
-		bloodFuryCharges
+		bloodFuryCharges,
+		hasHellfireBow,
+		hasVoidStaff
 	});
 	const minutes = res.realDuration / Time.Minute;
 
@@ -585,23 +603,31 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	} else {
 		messages.push('Missed 10% Scythe boost. If you have one, charge it and equip to melee.');
 	}
-	if (hasTBow) {
-		messages.push('10% boost for TBow');
-		const arrowsNeeded = Math.ceil(minutes * 3);
-		cost.add('Dragon arrow', arrowsNeeded);
+
+	const arrowsNeeded = Math.ceil(minutes * 3);
+
+	if (hasHellfireBow) {
+		messages.push('12% boost for TBow');
+		cost.add('Hellfire arrow', arrowsNeeded);
 	} else {
-		messages.push(
-			'Missed 10% TBow boost. If you have one, equip it to range. You also need dragon arrows equipped.'
-		);
-	}
-	if (hasVenBow) {
-		messages.push('7% boost for Venator bow');
-		chargeBank.add('venator_bow_charges', calculateVenCharges());
-		cost.add('Dragon arrow', 50);
-	} else {
-		messages.push(
-			'Missed 7% Venator bow boost. If you have one, charge it and keep it in your bank. You also need at least 50 dragon arrows equipped.'
-		);
+		messages.push('Missed Hellfire bow boost');
+		if (hasTBow) {
+			messages.push('10% boost for TBow');
+			cost.add('Dragon arrow', arrowsNeeded);
+		} else {
+			messages.push(
+				'Missed 10% TBow boost. If you have one, equip it to range. You also need dragon arrows equipped.'
+			);
+		}
+		if (hasVenBow) {
+			messages.push('7% boost for Venator bow');
+			chargeBank.add('venator_bow_charges', calculateVenCharges());
+			cost.add('Dragon arrow', 50);
+		} else {
+			messages.push(
+				'Missed 7% Venator bow boost. If you have one, charge it and keep it in your bank. You also need at least 50 dragon arrows equipped.'
+			);
+		}
 	}
 
 	if (hasClaws) {
@@ -614,6 +640,13 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		messages.push('5% boost for Torture');
 	} else {
 		messages.push('Missed 5% Torture boost.');
+	}
+
+	if (hasVoidStaff) {
+		messages.push('12% boost for Void staff');
+		chargeBank.add('void_staff_charges', 35);
+	} else {
+		messages.push('Missed Void staff boost.');
 	}
 
 	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {

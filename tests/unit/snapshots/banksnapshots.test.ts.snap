@@ -23447,7 +23447,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Pernix cowl (broken)",
     "outputItems": Bank {
       "bank": {
-        "51016": 1,
+        "73224": 1,
       },
       "frozen": false,
     },
@@ -23464,7 +23464,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Pernix body (broken)",
     "outputItems": Bank {
       "bank": {
-        "51016": 1,
+        "73224": 1,
       },
       "frozen": false,
     },
@@ -23481,7 +23481,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Pernix chaps (broken)",
     "outputItems": Bank {
       "bank": {
-        "51016": 1,
+        "73224": 1,
       },
       "frozen": false,
     },
@@ -23498,7 +23498,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Pernix boots (broken)",
     "outputItems": Bank {
       "bank": {
-        "51016": 1,
+        "73224": 1,
       },
       "frozen": false,
     },
@@ -23515,7 +23515,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Pernix gloves (broken)",
     "outputItems": Bank {
       "bank": {
-        "51016": 1,
+        "73224": 1,
       },
       "frozen": false,
     },
@@ -26242,6 +26242,26 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "73123": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28951": 10,
+        "51016": 10,
+        "70432": 1,
+        "70447": 4,
+        "73224": 3,
+      },
+      "frozen": false,
+    },
+    "name": "Tidal collector (i)",
+    "outputItems": Bank {
+      "bank": {
+        "73223": 1,
       },
       "frozen": false,
     },
