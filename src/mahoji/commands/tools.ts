@@ -335,9 +335,7 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 		: `'${monster.name.replace(/\s+/g, '')}'`;
 
 	const query = `
-	SELECT a.user_id::text, 
-		   SUM(COALESCE((a."data"->>'q')::int, (a."data"->>'quantity')::int, (a."data"->>'qty')::int)) AS qty, 
-		   MAX(a.finish_date) AS lastDate 
+	SELECT a.user_id::text, SUM(COALESCE((a."data"->>'q')::int, (a."data"->>'quantity')::int, (a."data"->>'qty')::int)) AS qty, MAX(a.finish_date) AS lastDate 
 	FROM activity a
 	JOIN users u ON a.user_id::text = u.id
 	WHERE a.type = ${queryActivityType}
