@@ -12784,6 +12784,40 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	73_223,
+	'Tidal collector (i)',
+	'Tidal collector',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		},
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 25,
+			defence_stab: 1,
+			defence_slash: 1,
+			defence_crush: 1,
+			defence_magic: 8,
+			defence_ranged: 2,
+			melee_strength: 0,
+			ranged_strength: 6,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Cape,
+			requirements: {
+				ranged: 120
+			}
+		}
+	},
+	100_000
+);
+
 setCustomItem(
 	73_224,
 	'Pernix components',
