@@ -379,8 +379,8 @@ async function infernoRun({
 			'Offhand drygore mace',
 			'Offhand spidergore rapier'
 		]).filter(i => allMeleeGearItems.includes(i)).length;
-		if (amountOfDrygoreEquipped < 2) {
-			return 'You need strong kalphite weapons to pierce TzKal-Zuk skin!';
+		if (!allMeleeGearItems.includes(itemID('Axe of the high sungod')) && amountOfDrygoreEquipped < 2) {
+			return 'You need strong kalphite weapons or an exceptionally powerful axe to pierce the skin of TzKal-Zuk!';
 		}
 		if (
 			!resolveItems(['Torva platebody', 'Torva platelegs', 'Torva boots', 'Torva gloves']).every(i =>
