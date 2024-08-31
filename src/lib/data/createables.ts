@@ -2460,4 +2460,3 @@ export const creatablesCL = uniqueArr(
 		.flatMap(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
 		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
 );
-
