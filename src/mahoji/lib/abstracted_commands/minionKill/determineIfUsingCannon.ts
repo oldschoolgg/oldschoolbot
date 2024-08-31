@@ -6,6 +6,8 @@ import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/
 import type { KillableMonster } from '../../../../lib/minions/types';
 import type { GearBank } from '../../../../lib/structures/GearBank';
 
+const monstersCantBeCannoned = [...wildyKillableMonsters, ...revenantMonsters].map(m => m.id);
+
 export function determineIfUsingCannon({
 	gearBank,
 	monster,
@@ -21,10 +23,7 @@ export function determineIfUsingCannon({
 }) {
 	const hasCannon = cannonBanks.some(i => gearBank.bank.has(i));
 	if (combatMethods.includes('cannon') && !hasCannon) {
-		return {
-			usingCannon: false,
-			cannonMulti: false
-		};
+		return "You don't have a cannon in your bank.";
 	}
 
 	let usingCannon = false;
@@ -50,21 +49,11 @@ export function determineIfUsingCannon({
 		}
 
 		// wildy bosses
-		for (const wildyMonster of wildyKillableMonsters) {
-			if (monster.id === wildyMonster.id) {
-				usingCannon = false;
-				cannonMulti = false;
-				break;
-			}
-		}
-
-		// revenants
-		for (const revenant of revenantMonsters) {
-			if (monster.id === revenant.id) {
-				usingCannon = false;
-				cannonMulti = false;
-				break;
-			}
+		if (monstersCantBeCannoned.includes(monster.id)) {
+			return {
+				usingCannon: false,
+				cannonMulti: false
+			};
 		}
 	}
 

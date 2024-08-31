@@ -1,5 +1,6 @@
-import { calcWhatPercent, increaseNumByPercent, notEmpty, reduceNumByPercent, round, sumArr } from 'e';
+import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
+import { mergeDeep } from 'remeda';
 import type { AttackStyles } from '../../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import type { Consumable } from '../../../../lib/minions/types';
@@ -52,62 +53,44 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 		messages.push(`${boostAmount}% for ${itemNameFromID(Number.parseInt(itemID))}`);
 	}
 
-	const currentTaskOptions: CombatMethodOptions = {};
-
-	const boostsApplying: BoostResult[] = [];
-	for (const boost of boosts) {
-		const boostArr = Array.isArray(boost) ? boost : [boost];
-		const results = boostArr.flatMap(b => b.run({ ...args, currentTaskOptions })).filter(notEmpty);
-		const errorResult = results.find(r => typeof r === 'string');
-		if (errorResult) {
-			return errorResult;
-		}
-		const goodResult = results
-			.filter(i => typeof i !== 'string')
-			.sort((a, b) => {
-				if (a.percentageReduction && b.percentageReduction) {
-					return b.percentageReduction - a.percentageReduction;
-				}
-				return 0;
-			})[0];
-		if (goodResult) {
-			boostsApplying.push(goodResult);
-		}
-	}
-
+	let currentTaskOptions: CombatMethodOptions = {};
 	const itemCost = new Bank();
 	const charges = new ChargeBank();
 	const consumables: Consumable[] = [];
 	const confirmations: string[] = [];
-	for (const boost of boostsApplying) {
-		if (boost.percentageReduction) {
-			timeToFinish = reduceNumByPercent(timeToFinish, boost.percentageReduction);
-		} else if (boost.percentageIncrease) {
-			timeToFinish = increaseNumByPercent(timeToFinish, boost.percentageIncrease);
-		}
 
-		if (boost.itemCost) {
-			itemCost.add(boost.itemCost);
-		}
+	for (const boost of boosts) {
+		const results: BoostResult[] = [];
+		for (const b of  Array.isArray(boost) ? boost : [boost]) {
+			const res = b.run({ ...args, currentTaskOptions });
+			if (!res) continue;
+			if (typeof res === 'string') return res;
+			const subResults = (Array.isArray(res) ? res : [res]).flat().sort((a, b) => {
+				if (a.percentageReduction && b.percentageReduction) {
+					return b.percentageReduction - a.percentageReduction;
+				}
+				return 0;
+			});
+			for (const boostResult of subResults) {
+				if (boostResult.changes) {
+					currentTaskOptions = mergeDeep(currentTaskOptions, boostResult.changes);
+				}
 
-		if (boost.consumables) {
-			consumables.push(...boost.consumables);
-		}
+				if (boostResult.percentageReduction) {
+					timeToFinish = reduceNumByPercent(timeToFinish, boostResult.percentageReduction);
+				} else if (boostResult.percentageIncrease) {
+					timeToFinish = increaseNumByPercent(timeToFinish, boostResult.percentageIncrease);
+				}
 
-		if (boost.charges) {
-			charges.add(boost.charges);
-		}
+				if (boostResult.itemCost) itemCost.add(boostResult.itemCost);
+				if (boostResult.consumables) 
+				if (boostResult.charges) charges.add(boostResult.charges);
+				if (boostResult.confirmation) confirmations.push(boostResult.confirmation);
+				if (boostResult.message) messages.push(boostResult.message);
 
-		if (boost.changes) {
-			for (const [key, value] of Object.entries(boost.changes)) {
-				// @ts-ignore
-				combatMethodOptions[key as keyof CombatMethodOptions] = value;
+				results.push(boostResult);
 			}
 		}
-
-		if (boost.confirmation) confirmations.push(boost.confirmation);
-
-		if (boost.message) messages.push(boost.message);
 	}
 
 	return {

@@ -146,7 +146,7 @@ export async function minionKillCommand(
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
 	if (result.messages.length > 0) {
-		response += `\n\n${result.messages.join('\n')}`;
+		response += `\n\n${result.messages.join(', ')}`;
 	}
 
 	return response;

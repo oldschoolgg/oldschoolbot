@@ -71,7 +71,7 @@ export type BoostResult = {
 	confirmation?: string;
 };
 
-type BoostReturn = null | undefined | string | BoostResult | BoostResult[];
+export type BoostReturn = null | undefined | string | BoostResult | BoostResult[];
 
 export type BoostArgs = MinionKillOptions & {
 	isOnTask: boolean;
@@ -125,6 +125,7 @@ const cannonBoost: Boost = {
 	description: 'Cannon',
 	run: ({ gearBank, monster, combatMethods, isOnTask, isInWilderness }) => {
 		const cannonResult = determineIfUsingCannon({ gearBank, monster, isOnTask, combatMethods, isInWilderness });
+		if (typeof cannonResult === 'string') return cannonResult;
 		if (!cannonResult.usingCannon) return null;
 		if (monster?.cannonMulti && cannonResult.cannonMulti) {
 			return {
@@ -150,9 +151,10 @@ const chinningBoost: Boost = {
 	description: 'Chinning boost',
 	run: ({ combatMethods, attackStyles, monster, gearBank, isOnTask, isInWilderness }) => {
 		const cannonResult = determineIfUsingCannon({ gearBank, monster, isOnTask, combatMethods, isInWilderness });
+		if (typeof cannonResult === 'string') return cannonResult;
 		if (cannonResult.usingCannon) return null;
+
 		if (combatMethods.includes('chinning') && attackStyles.includes(SkillsEnum.Ranged) && monster?.canChinning) {
-			// Check what Chinchompa to use
 			const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
 			let chinchompa = chinchompas[0];
 			for (const chin of chinchompas) {
