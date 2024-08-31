@@ -249,12 +249,6 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		slayerOnly: true,
 		superior: Monsters.NuclearSmokeDevil,
-		itemInBankBoosts: [
-			{
-				[itemID('Kodai wand')]: 12,
-				[itemID('Staff of the dead')]: 8
-			}
-		],
 		healAmountNeeded: 16,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],

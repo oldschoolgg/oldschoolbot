@@ -61,6 +61,8 @@ function simulateColosseumRuns(samples = 100) {
 				scytheCharges: 300,
 				venatorBowCharges: 50,
 				bloodFuryCharges: 0,
+				hasHellfireBow: true,
+				hasVoidStaff: true,
 				hasHFB: true,
 				hasSungodAxe: true,
 				hasGora: true,

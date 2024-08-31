@@ -147,7 +147,7 @@ async function checkTOBUser(
 		'Scythe of vitur',
 		'Drygore longsword'
 	];
-	const requiredMeleeCapes = ['Fire cape', 'Infernal cape', 'TzKal cape'];
+	const requiredMeleeCapes = ['Fire cape', 'Infernal cape', 'TzKal cape', 'Abyssal cape'];
 	if (!meleeGear.hasEquipped(requiredMeleeWeapons) || !meleeGear.hasEquipped(requiredMeleeCapes)) {
 		return [
 			true,
@@ -235,8 +235,8 @@ async function checkTOBUser(
 		if (kc < 250) {
 			return [true, `${user.usernameOrMention} needs at least 250 Theatre of Blood KC before doing Hard mode.`];
 		}
-		if (!meleeGear.hasEquipped('Infernal cape')) {
-			return [true, `${user.usernameOrMention} needs at least an Infernal cape to do Hard mode.`];
+		if (!meleeGear.hasEquipped(['Infernal cape', 'Abyssal cape'], false, true)) {
+			return [true, `${user.usernameOrMention} needs at least an Infernal or Abyssal cape to do Hard mode.`];
 		}
 	}
 	if (teamSize === 1) {

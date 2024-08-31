@@ -75,7 +75,7 @@ const nexCreatables: Createable[] = [
 		name: `Revert ${getOSItem(piece).name}`,
 		inputItems: new Bank().add(piece),
 		outputItems: {
-			[itemID('Armadylean components')]: 1
+			[itemID('Pernix components')]: 1
 		},
 		forceAddToCl: true
 	})),
@@ -1192,23 +1192,7 @@ const dragonBoneCreatables: Createable[] = [
 	}
 ];
 
-const divineWaterBones = [
-	'Bones',
-	'Big bones',
-	'Jogre bones',
-	'Babydragon bones',
-	'Dragon bones',
-	'Wyrm bones',
-	'Wyvern bones',
-	'Drake bones',
-	'Lava dragon bones',
-	'Hydra bones',
-	'Dagannoth bones',
-	'Superior dragon bones',
-	'Abyssal dragon bones',
-	'Frost dragon bones',
-	'Royal dragon bones'
-];
+const divineWaterBones = bones.map(bone => bone.name);
 
 function divineWaterInputItems(user: MUser, preferredBone?: Bone) {
 	const userBank = user.bank;
@@ -1389,6 +1373,16 @@ export const BsoCreateables: Createable[] = [
 		name: 'Clue scroll (elder)',
 		inputItems: new Bank().add('Elder scroll piece', 3),
 		outputItems: new Bank().add('Clue scroll (elder)')
+	},
+	{
+		name: 'Tidal collector (i)',
+		inputItems: new Bank()
+			.add('Masori components', 4)
+			.add("Dizana's quiver", 10)
+			.add('Tidal collector')
+			.add('Armadylean components', 10)
+			.add('Pernix components', 3),
+		outputItems: new Bank().add('Tidal collector (i)')
 	}
 ];
 

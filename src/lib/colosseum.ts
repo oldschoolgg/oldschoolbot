@@ -27,6 +27,7 @@ import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
 import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
+import { itemID } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import resolveItems from './util/resolveItems';
@@ -385,6 +386,7 @@ export const colosseumWaveTime = (options: {
 	hasClaws: boolean;
 	hasTorture: boolean;
 	hasHFB: boolean;
+	hasVoidStaff: boolean;
 	hasSungodAxe: boolean;
 	hasGora: boolean;
 	hasBHook: boolean;
@@ -398,11 +400,14 @@ export const colosseumWaveTime = (options: {
 	} else if (!options.hasScythe) {
 		waveDuration = increaseNumByPercent(waveDuration, 10);
 	}
-	// reduce wave by 10% for HFB (Effectively 20% boost since waveDuration wasn't increased by 10%)
+	// reduce wave by 12% for HFB (Effectively 22% boost since waveDuration wasn't increased by 10%)
 	if (options.hasHFB) {
-		waveDuration = reduceNumByPercent(waveDuration, 10);
+		waveDuration = reduceNumByPercent(waveDuration, 12);
 	} else if (!options.hasTBow) {
 		waveDuration = increaseNumByPercent(waveDuration, 10);
+	}
+	if (options.hasVoidStaff) {
+		waveDuration = reduceNumByPercent(waveDuration, 12);
 	}
 	if (options.hasGora) {
 		waveDuration = reduceNumByPercent(waveDuration, 10);
@@ -432,6 +437,7 @@ export const startColosseumRun = (options: {
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
 	hasHFB: boolean;
+	hasVoidStaff: boolean;
 	hasSungodAxe: boolean;
 	hasGora: boolean;
 	hasBHook: boolean;
@@ -448,6 +454,7 @@ export const startColosseumRun = (options: {
 		hasClaws: options.hasClaws,
 		hasTorture: options.hasTorture,
 		hasHFB: options.hasHFB,
+		hasVoidStaff: options.hasVoidStaff,
 		hasSungodAxe: options.hasSungodAxe,
 		hasGora: options.hasGora,
 		hasBHook: options.hasBHook
@@ -611,11 +618,13 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	const venatorBowCharges = calculateVenCharges();
 
 	//BSO boost items:
-	const hasHFB = user.gear.range.hasEquipped('Hellfire bow', true, true);
 	const hasSungodAxe = user.gear.melee.hasEquipped('Axe of the high sungod', true, true);
+	const hasHFB = user.gear.range.hasEquipped('Hellfire bow', true, true);
+	const hasVoidStaff = user.gear.mage.hasEquipped('Void Staff', true, true);
 	const hasGora = gorajanGearBoost(user, 'Colosseum');
 	const hasBHook = !hasBF && user.gear.melee.hasEquipped("Brawler's hook necklace");
 	const hasBulwark = user.owns('Infernal bulwark');
+	const voidCharges = 150;
 
 	// Get trip time and calculate max attempts the user can do per trip
 	const kcBank: ColosseumWaveBank = new ColosseumWaveBank(
@@ -629,6 +638,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		hasClaws,
 		hasTorture,
 		hasHFB,
+		hasVoidStaff,
 		hasSungodAxe,
 		hasGora,
 		hasBHook
@@ -658,6 +668,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 			venatorBowCharges,
 			bloodFuryCharges,
 			hasHFB,
+			hasVoidStaff,
 			hasSungodAxe,
 			hasGora,
 			hasBHook,
@@ -677,6 +688,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		}
 		if (hasHFB) cost.add('Hellfire arrow', Math.ceil(minutes * 3.5));
 		if (hasTBow) cost.add('Dragon arrow', Math.ceil(minutes * 3));
+		if (hasVoidStaff) cost.add('void_staff_charges', voidCharges)
 		if (hasScythe) chargeBank.add('scythe_of_vitur_charges', scytheCharges);
 		if (hasBF) chargeBank.add('blood_fury_charges', bloodFuryCharges);
 		if (hasVenBow) {
@@ -701,11 +713,17 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	}
 
 	if (hasHFB) {
-		boosts.push('+20% for Hellfire bow');
+		boosts.push('+22% for Hellfire bow');
 	} else if (hasTBow) {
 		boosts.push('+10% for TBow');
 	} else {
 		missedBoosts.push('+10% for TBow, +20% for Hellfire bow');
+	}
+
+	if(hasVoidStaff){
+		boosts.push('+12% for Void staff');
+	} else {
+		missedBoosts.push('12% for Void staff');
 	}
 
 	if (hasGora) {

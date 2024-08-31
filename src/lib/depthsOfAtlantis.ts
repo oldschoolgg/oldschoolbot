@@ -65,7 +65,7 @@ export const maxRange = new Gear({
 	head: 'Gorajan archer helmet',
 	neck: 'Farsight snapshot necklace',
 	body: 'Gorajan archer top',
-	cape: 'Tidal collector',
+	cape: 'Tidal collector (i)',
 	hands: 'Gorajan archer gloves',
 	legs: 'Gorajan archer legs',
 	feet: 'Gorajan archer boots',
@@ -326,9 +326,14 @@ export const DOARooms: AtlantisRoom[] = [
 				has: user => user.gear.range.hasEquipped('Ring of piercing')
 			},
 			{
+				name: 'Tidal collector (i)',
+				percent: 12,
+				has: user => user.gear.range.hasEquipped('Tidal collector (i)', true, false)
+			},
+			{
 				name: 'Tidal collector',
 				percent: 7,
-				has: user => user.gear.range.hasEquipped('Tidal collector')
+				has: user => user.gear.range.hasEquipped('Tidal collector', true, false)
 			},
 			{
 				name: '120 Fishing',

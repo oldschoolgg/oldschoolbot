@@ -43,8 +43,8 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	}
 
 	if (user.hasEquipped('Kuro')) {
-		deliveryLength = reduceNumByPercent(deliveryLength, 5);
-		boosts.push(`${Emoji.Kuro} 5% faster with Kuro's help`);
+		deliveryLength = reduceNumByPercent(deliveryLength, 50);
+		boosts.push(`${Emoji.Kuro} 2x faster with Kuro's help`);
 	}
 
 	const poh = await getPOH(user.id);
