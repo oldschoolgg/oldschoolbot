@@ -847,7 +847,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 10,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -858,7 +858,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 12,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -880,7 +880,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 6,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -891,7 +891,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 3,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -914,7 +914,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 6,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{

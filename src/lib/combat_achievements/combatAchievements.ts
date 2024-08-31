@@ -161,7 +161,7 @@ const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
 export const combatAchievementTripEffect = async ({ data, messages, user }: Parameters<TripFinishEffect['fn']>[0]) => {
 	const dataCopy = deepClone(data);
-	
+
 	let quantity = 1;
 	if ('q' in dataCopy) {
 		quantity = (dataCopy as any).q;
