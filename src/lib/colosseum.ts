@@ -623,7 +623,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	const hasGora = gorajanGearBoost(user, 'Colosseum');
 	const hasBHook = !hasBF && user.gear.melee.hasEquipped("Brawler's hook necklace");
 	const hasBulwark = user.owns('Infernal bulwark');
-	const voidCharges = 150;
+	const voidCharges = 20;
 
 	// Get trip time and calculate max attempts the user can do per trip
 	const kcBank: ColosseumWaveBank = new ColosseumWaveBank(
