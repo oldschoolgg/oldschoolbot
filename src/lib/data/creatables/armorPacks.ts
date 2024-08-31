@@ -2366,7 +2366,8 @@ export const armorAndItemPacks: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Partyhat set')]: 1
-		}
+		},
+		noCreatablesCl: true
 	},
 	{
 		name: 'Unpack halloween mask set',

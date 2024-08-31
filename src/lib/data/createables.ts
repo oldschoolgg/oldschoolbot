@@ -48,6 +48,7 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	maxCanOwn?: number;
 	materialCost?: MaterialBank;
+	noCreatablesCl?: boolean;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
 	type?: 'pack' | 'unpack';
 	customReq?: (user: MUser) => Promise<string | null>;
@@ -2110,7 +2111,8 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Partyhat & specs')]: 1
-		}
+		},
+		noCreatablesCl: true
 	},
 	{
 		name: 'Ivandis Flail',
@@ -2454,7 +2456,8 @@ const Createables: Createable[] = [
 
 export default Createables;
 export const creatablesCL = uniqueArr(
-	Createables.filter(i => i.noCl !== true)
+	Createables.filter(i => i.noCl !== true && i.noCreatablesCl !== true)
 		.flatMap(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
 		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
 );
+

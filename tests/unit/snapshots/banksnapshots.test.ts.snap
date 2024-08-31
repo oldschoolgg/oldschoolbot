@@ -9707,6 +9707,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Partyhat & specs",
+    "noCreatablesCl": true,
     "outputItems": Bank {
       "bank": {
         "12399": 1,
@@ -18864,6 +18865,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Partyhat set",
+    "noCreatablesCl": true,
     "outputItems": Bank {
       "bank": {
         "13173": 1,
