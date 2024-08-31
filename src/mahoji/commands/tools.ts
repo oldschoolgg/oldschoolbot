@@ -335,16 +335,16 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 		: `'${monster.name.replace(/\s+/g, '')}'`;
 
 	const query = `
-	SELECT a.user_id::text, SUM(COALESCE((a."data"->>'q')::int, (a."data"->>'quantity')::int, (a."data"->>'qty')::int)) AS qty, MAX(a.finish_date) AS lastDate 
-	FROM activity a
-	JOIN users u ON a.user_id::text = u.id
-	WHERE a.type = ${queryActivityType}
-	AND a.finish_date >= now() - interval '1 ${intervalValue}'
-	AND a.completed = true
-	${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
-	GROUP BY a.user_id
-	ORDER BY qty DESC, lastDate ASC
-	LIMIT 10`;
+    SELECT a.user_id::text, SUM(COALESCE((a."data"->>'q')::int, (a."data"->>'quantity')::int, (a."data"->>'qty')::int)) AS qty, MAX(a.finish_date) AS lastDate 
+    FROM activity a
+    JOIN users u ON a.user_id::text = u.id
+    WHERE a.type = ${queryActivityType}
+    AND a.finish_date >= now() - interval '1 ${intervalValue}'
+    AND a.completed = true
+    ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+    GROUP BY a.user_id
+    ORDER BY qty DESC, lastDate ASC
+    LIMIT 10`;
 
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
