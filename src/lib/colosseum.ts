@@ -687,7 +687,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		}
 		if (hasHFB) cost.add('Hellfire arrow', Math.ceil(minutes * 3.5));
 		if (hasTBow) cost.add('Dragon arrow', Math.ceil(minutes * 3));
-		if (hasVoidStaff) cost.add('void_staff_charges', voidCharges);
+		if (hasVoidStaff) chargeBank.add('void_staff_charges', voidCharges);
 		if (hasScythe) chargeBank.add('scythe_of_vitur_charges', scytheCharges);
 		if (hasBF) chargeBank.add('blood_fury_charges', bloodFuryCharges);
 		if (hasVenBow) {

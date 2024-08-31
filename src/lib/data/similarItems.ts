@@ -192,7 +192,8 @@ const source: [string, (string | number)[]][] = [
 	['Fire cape', ['Fire max cape', 'Fire max cape (l)']],
 	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)', 'TzKal cape']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
-	["Ava's accumulator", ['Accumulator max cape', 'Tidal collector']],
+	['Tidal collector', ['Tidal collector (i)']],
+	["Ava's accumulator", ['Accumulator max cape', 'Tidal collector', 'Tidal collector (i)']],
 	[
 		"Ava's assembler",
 		[
@@ -204,7 +205,8 @@ const source: [string, (string | number)[]][] = [
 			'Masori assembler max cape',
 			"Blessed dizana's quiver",
 			"Dizana's max cape",
-			'Tidal collector'
+			'Tidal collector', 
+			'Tidal collector (i)'
 		]
 	],
 	['Mythical cape', ['Mythical max cape']],
