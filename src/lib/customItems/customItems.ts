@@ -12784,3 +12784,14 @@ setCustomItem(
 	},
 	100_000
 );
+setCustomItem(
+	73_224,
+	'Pernix components',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);

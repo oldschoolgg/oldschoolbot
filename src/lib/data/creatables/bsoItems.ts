@@ -75,7 +75,7 @@ const nexCreatables: Createable[] = [
 		name: `Revert ${getOSItem(piece).name}`,
 		inputItems: new Bank().add(piece),
 		outputItems: {
-			[itemID('Armadylean components')]: 1
+			[itemID('Pernix components')]: 1
 		},
 		forceAddToCl: true
 	})),
