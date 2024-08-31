@@ -199,7 +199,7 @@ export const TOBMaxRangeGear = constructGearSetup({
 	head: 'Pernix cowl',
 	neck: 'Necklace of anguish',
 	body: 'Pernix body',
-	cape: 'Tidal collector',
+	cape: 'Tidal collector (i)',
 	hands: 'Pernix gloves',
 	legs: 'Pernix chaps',
 	feet: 'Pernix boots',
