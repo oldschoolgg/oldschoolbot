@@ -1588,7 +1588,7 @@ export function determineTameClueResult({
 
 	maxTripLength += extraTripLength;
 
-	let timePerClue = clueTier.timeToFinish * 1.3;
+	let timePerClue = clueTier.timeToFinish * 1.15;
 
 	const s = exponentialPercentScale(supportLevel, 0.03);
 	const base = exponentialPercentScale(50, 0.03);
