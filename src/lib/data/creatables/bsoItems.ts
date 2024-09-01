@@ -1378,7 +1378,7 @@ export const BsoCreateables: Createable[] = [
 		name: 'Tidal collector (i)',
 		inputItems: new Bank()
 			.add('Masori components', 4)
-			.add("Dizana's quiver", 10)
+			.add("Blessed dizana's quiver", 5)
 			.add('Tidal collector')
 			.add('Armadylean components', 10)
 			.add('Pernix components', 3),
