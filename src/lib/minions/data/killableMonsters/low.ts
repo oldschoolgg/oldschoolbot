@@ -25,6 +25,8 @@ const killableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 19.5,
 		table: Monsters.Jogre,
 		wildy: false,
+		canCannon: true,
+		cannonMulti: true,
 		difficultyRating: 1,
 		qpRequired: 0,
 		respawnTime: Time.Second * 1.5,
