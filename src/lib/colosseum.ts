@@ -708,6 +708,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		boosts.push('+40% for Axe of the high sungod');
 	} else if (hasScythe) {
 		boosts.push('+10% for Scythe');
+		missedBoosts.push('+40% for Axe of the high sungod');
 	} else {
 		missedBoosts.push('+10% for Scythe, +40% for Axe of the high sungod');
 	}
@@ -716,6 +717,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		boosts.push('+22% for Hellfire bow');
 	} else if (hasTBow) {
 		boosts.push('+10% for TBow');
+		missedBoosts.push('+22% for Hellfirebow');
 	} else {
 		missedBoosts.push('+10% for TBow, +20% for Hellfire bow');
 	}
