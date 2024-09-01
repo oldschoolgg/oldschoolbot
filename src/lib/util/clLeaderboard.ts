@@ -34,13 +34,11 @@ export async function fetchMultipleCLLeaderboards(
 			const userIdsList = userIds.length > 0 ? userIds.map(i => `'${i}'`).join(', ') : 'NULL';
 
 			const query = `
-SELECT id, qty
-FROM (
-    	SELECT id, CARDINALITY(cl_array & ${SQL_ITEMS}) AS qty
-    	FROM users
-    	WHERE (cl_array && ${SQL_ITEMS}
-		${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''}) ${userIds.length > 0 ? `OR id IN (${userIdsList})` : ''}
-	) AS subquery
+SELECT id, array_length(array(SELECT unnest(cl_array) INTERSECT SELECT unnest(${SQL_ITEMS})), 1) AS qty
+FROM users
+WHERE cl_array && ${SQL_ITEMS}
+${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''}
+${userIds.length > 0 ? `OR id IN (${userIdsList})` : ''}
 ORDER BY qty DESC
 LIMIT ${resultLimit};
 `;
