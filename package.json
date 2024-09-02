@@ -44,7 +44,7 @@
 		"murmurhash": "^2.0.1",
 		"node-cron": "^3.0.3",
 		"node-fetch": "^2.6.7",
-		"oldschooljs": "^2.5.11",
+		"oldschooljs": "^2.5.14",
 		"p-queue": "^6.6.2",
 		"piscina": "^4.6.1",
 		"random-js": "^2.1.0",

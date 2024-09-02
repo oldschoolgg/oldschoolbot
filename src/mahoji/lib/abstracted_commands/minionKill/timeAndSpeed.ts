@@ -61,7 +61,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	for (const boost of boosts) {
 		const results: BoostResult[] = [];
-		for (const b of  Array.isArray(boost) ? boost : [boost]) {
+		for (const b of Array.isArray(boost) ? boost : [boost]) {
 			const res = b.run({ ...args, currentTaskOptions });
 			if (!res) continue;
 			if (typeof res === 'string') return res;
@@ -83,8 +83,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 				}
 
 				if (boostResult.itemCost) itemCost.add(boostResult.itemCost);
-				if (boostResult.consumables) 
-				if (boostResult.charges) charges.add(boostResult.charges);
+				if (boostResult.consumables) if (boostResult.charges) charges.add(boostResult.charges);
 				if (boostResult.confirmation) confirmations.push(boostResult.confirmation);
 				if (boostResult.message) messages.push(boostResult.message);
 

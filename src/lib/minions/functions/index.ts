@@ -5,6 +5,7 @@ import type Monster from 'oldschooljs/dist/structures/Monster';
 import { NIGHTMARES_HP } from '../../constants';
 import type { PrimaryGearSetupType } from '../../gear/types';
 import { SkillsEnum } from '../../skilling/types';
+import { XPBank } from '../../structures/XPBank';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
@@ -13,7 +14,7 @@ import type { AddMonsterXpParams, ResolveAttackStylesParams } from '../types';
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 
-const attackStylesArr = [
+export const attackStylesArr = [
 	SkillsEnum.Attack,
 	SkillsEnum.Strength,
 	SkillsEnum.Defence,
@@ -60,13 +61,25 @@ export function resolveAttackStyles(params: ResolveAttackStylesParams) {
 	return { killableMon, osjsMon, attackStyles };
 }
 
-export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
+export function addMonsterXPRaw(params: {
+	monsterID: number;
+	quantity: number;
+	duration: number;
+	isOnTask: boolean;
+	taskQuantity: number | null;
+	minimal?: boolean;
+	usingCannon?: boolean;
+	cannonMulti?: boolean;
+	burstOrBarrage?: number;
+	superiorCount?: number;
+	attackStyles: AttackStyles[];
+}) {
 	const boostMethod = params.burstOrBarrage ? (['barrage'] as const) : (['none'] as const);
 
 	const { osjsMon, attackStyles } = resolveAttackStyles({
 		monsterID: params.monsterID,
 		boostMethod,
-		attackStyles: user.getAttackStyles()
+		attackStyles: params.attackStyles
 	});
 	const monster = killableMonsters.find(mon => mon.id === params.monsterID);
 	let hp = miscHpMap[params.monsterID] ?? 1;
@@ -114,17 +127,13 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
 	const xpPerSkill = totalXP / attackStyles.length;
 
-	const res: string[] = [];
+	const xpBank = new XPBank();
 
 	for (const style of attackStyles) {
-		res.push(
-			await user.addXP({
-				skillName: style,
-				amount: Math.floor(xpPerSkill),
-				duration: params.duration,
-				minimal: params.minimal ?? true
-			})
-		);
+		xpBank.add(style, Math.floor(xpPerSkill), {
+			duration: params.duration,
+			minimal: params.minimal ?? true
+		});
 	}
 
 	if (params.isOnTask) {
@@ -144,38 +153,32 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 		if (params.monsterID === Monsters.AbyssalSire.id) {
 			newSlayerXP += params.taskQuantity! * 200;
 		}
-		res.push(
-			await user.addXP({
-				skillName: SkillsEnum.Slayer,
-				amount: newSlayerXP + superiorSlayXp,
-				duration: params.duration,
-				minimal: params.minimal ?? true
-			})
-		);
-	}
-
-	res.push(
-		await user.addXP({
-			skillName: SkillsEnum.Hitpoints,
-			amount: Math.floor(hp * normalQty * 1.33 * xpMultiplier + superiorXp / 3),
+		xpBank.add('slayer', newSlayerXP + superiorSlayXp, {
 			duration: params.duration,
 			minimal: params.minimal ?? true
-		})
-	);
+		});
+	}
+
+	xpBank.add('hitpoints', Math.floor(hp * normalQty * 1.33 * xpMultiplier + superiorXp / 3), {
+		duration: params.duration,
+		minimal: params.minimal ?? true
+	});
 
 	// Add cannon xp last so it's easy to distinguish
 	if (params.usingCannon) {
-		res.push(
-			await user.addXP({
-				skillName: SkillsEnum.Ranged,
-				amount: Math.floor(hp * 2 * cannonQty),
-				duration: params.duration,
-				minimal: params.minimal ?? true
-			})
-		);
+		xpBank.add('ranged', Math.floor(hp * 2 * cannonQty), {
+			duration: params.duration,
+			minimal: params.minimal ?? true
+		});
 	}
 
-	return `**XP Gains:** ${res.join(' ')}`;
+	return xpBank;
+}
+
+export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
+	const res = addMonsterXPRaw({ ...params, attackStyles: user.getAttackStyles() });
+	const result = await user.addXPBank(res);
+	return `**XP Gains:** ${result.join(' ')}`;
 }
 
 export function convertAttackStylesToSetup(styles: AttackStyles | User['attack_style']): PrimaryGearSetupType {

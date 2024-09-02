@@ -5,12 +5,13 @@ import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import type { InteractionReplyOptions } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { clamp, objectEntries } from 'e';
-import { type Bank, Items } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { skillEmoji } from '../data/emojis';
+import type { UserFullGearSetup } from '../gear/types';
 import type { Skills } from '../types';
 import getOSItem from './getOSItem';
 
@@ -56,14 +57,6 @@ export function formatSkillRequirements(reqs: Record<string, number>, emojis = t
 		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
-}
-
-export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
-	const hasReqs = user.hasSkillReqs(reqs);
-	if (!hasReqs) {
-		return [false, formatSkillRequirements(reqs)];
-	}
-	return [true, null];
 }
 
 export function pluraliseItemName(name: string): string {
@@ -198,6 +191,43 @@ type StaticTimeInterval = (typeof staticTimeIntervals)[number];
 export function parseStaticTimeInterval(input: string): input is StaticTimeInterval {
 	if (staticTimeIntervals.includes(input as any)) {
 		return true;
+	}
+	return false;
+}
+
+export function hasSkillReqsRaw(skills: Skills, requirements: Skills) {
+	for (const [skillName, requiredLevel] of objectEntries(requirements)) {
+		const lvl = skills[skillName];
+		if (!lvl || lvl < requiredLevel!) {
+			return false;
+		}
+	}
+	return true;
+}
+
+export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
+	const hasReqs = hasSkillReqsRaw(user.skillsAsLevels, reqs);
+	if (!hasReqs) {
+		return [false, formatSkillRequirements(reqs)];
+	}
+	return [true, null];
+}
+
+export function fullGearToBank(gear: UserFullGearSetup) {
+	const bank = new Bank();
+	for (const setup of Object.values(gear)) {
+		for (const equipped of Object.values(setup)) {
+			if (equipped?.item) {
+				bank.add(equipped.item, equipped.quantity);
+			}
+		}
+	}
+	return bank;
+}
+
+export function objHasAnyPropInCommon(obj: object, other: object): boolean {
+	for (const key of Object.keys(obj)) {
+		if (key in other) return true;
 	}
 	return false;
 }

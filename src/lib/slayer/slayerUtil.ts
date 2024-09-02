@@ -3,7 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
+import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
 import type { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
@@ -82,7 +82,7 @@ export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[]
 	return boostMethods;
 }
 
-export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: MUser) {
+export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, hasKourendElite: boolean) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 
@@ -93,11 +93,8 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 	let { basePoints } = master;
 
 	// Boost points to 20 for Konar + Kourend Elites
-	if (master.name === 'Konar quo Maten') {
-		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
-		if (hasKourendElite) {
-			basePoints = 20;
-		}
+	if (master.name === 'Konar quo Maten' && hasKourendElite) {
+		basePoints = 20;
 	}
 	for (let i = 0; i < streaks.length; i++) {
 		if (currentStreak >= streaks[i] && currentStreak % streaks[i] === 0) {
@@ -536,33 +533,4 @@ export async function setDefaultAutoslay(
 		slayer_autoslay_options: [autoslayOption.key]
 	});
 	return { success: true, message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})` };
-}
-
-export async function isOnSlayerTask({
-	user,
-	monsterID,
-	quantityKilled
-}: {
-	user: MUser;
-	monsterID: number;
-	quantityKilled: number;
-}) {
-	const usersTask = await getUsersCurrentSlayerInfo(user.id);
-	const isOnTask =
-		usersTask.assignedTask !== null &&
-		usersTask.currentTask !== null &&
-		usersTask.assignedTask.monsters.includes(monsterID);
-
-	const hasSuperiorsUnlocked = user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder);
-
-	if (!isOnTask) return { isOnTask, hasSuperiorsUnlocked };
-
-	const quantitySlayed = Math.min(usersTask.currentTask.quantity_remaining, quantityKilled);
-
-	return {
-		isOnTask,
-		hasSuperiorsUnlocked,
-		quantitySlayed,
-		...usersTask
-	};
 }

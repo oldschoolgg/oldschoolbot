@@ -2,7 +2,7 @@ import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
-import { calcWhatPercent, objectEntries, percentChance, sumArr, uniqueArr } from 'e';
+import { calcWhatPercent, percentChance, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
@@ -37,11 +37,12 @@ import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import type { BankSortMethod } from './sorts';
-import type { ChargeBank } from './structures/Bank';
+import { ChargeBank } from './structures/Bank';
 import { Gear, defaultGear } from './structures/Gear';
 import { GearBank } from './structures/GearBank';
+import type { XPBank } from './structures/XPBank';
 import type { ItemBank, Skills } from './types';
-import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
+import { addItemToBank, convertXPtoLVL, fullGearToBank, hasSkillReqsRaw, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -97,7 +98,6 @@ export class MUserClass {
 	skillsAsLevels!: Required<Skills>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
-	gearBank!: GearBank;
 
 	constructor(user: User) {
 		this.user = user;
@@ -136,8 +136,15 @@ export class MUserClass {
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
+	}
 
-		this.gearBank = new GearBank({ gear: this.gear, bank: this.bank, skillsAsLevels: this.skillsAsLevels });
+	public get gearBank() {
+		return new GearBank({
+			gear: this.gear,
+			bank: this.bank,
+			skillsAsLevels: this.skillsAsLevels,
+			chargeBank: this.ownedChargeBank()
+		});
 	}
 
 	countSkillsAtLeast99() {
@@ -392,13 +399,7 @@ GROUP BY data->>'ci';`);
 			bank.add(this.user.minion_equippedPet);
 		}
 
-		for (const setup of Object.values(this.gear)) {
-			for (const equipped of Object.values(setup)) {
-				if (equipped?.item) {
-					bank.add(equipped.item, equipped.quantity);
-				}
-			}
-		}
+		bank.add(fullGearToBank(this.gear));
 
 		return bank;
 	}
@@ -658,14 +659,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	hasSkillReqs(requirements: Skills) {
-		for (const [skillName, level] of objectEntries(requirements)) {
-			if ((skillName as string) === 'combat') {
-				if (this.combatLevel < level!) return false;
-			} else if (this.skillLevel(skillName) < level!) {
-				return false;
-			}
-		}
-		return true;
+		return hasSkillReqsRaw(this.skillsAsLevels, requirements);
 	}
 
 	allEquippedGearBank() {
@@ -738,7 +732,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	buildTertiaryItemChanges(hasRingOfWealthI = false, inWildy = false, onTask = false) {
-		const changes = new Map();
+		const changes = new Map<string, number>();
 
 		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
 		for (const tier of tiers) {
@@ -760,6 +754,21 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		}
 
 		return changes;
+	}
+
+	ownedChargeBank() {
+		const chargeBank = new ChargeBank();
+		for (const degradeableItem of degradeableItems) {
+			const charges = this.user[degradeableItem.settingsKey];
+			if (charges) {
+				chargeBank.add(degradeableItem.settingsKey, charges);
+			}
+		}
+		return chargeBank;
+	}
+
+	async addXPBank(xpBank: XPBank) {
+		return Promise.all(xpBank.xpList.map(options => this.addXP(options)));
 	}
 
 	async checkBankBackground() {
