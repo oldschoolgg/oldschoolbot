@@ -8,7 +8,8 @@ import { degradeChargeBank } from '../degradeableItems';
 import type { GearSetup } from '../gear/types';
 import type { ItemBank } from '../types';
 import { objHasAnyPropInCommon } from '../util';
-import { ChargeBank, KCBank, XPBank } from './Bank';
+import { ChargeBank, XPBank } from './Bank';
+import { KCBank } from './KCBank';
 
 export class UpdateBank {
 	// Things removed
