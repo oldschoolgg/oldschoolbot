@@ -374,6 +374,10 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'mage',
 				items: [
 					{
+						itemID: itemID('Void Staff'),
+						boostPercent: 20
+					},
+					{
 						itemID: itemID("Tumeken's shadow"),
 						boostPercent: 15
 					},
@@ -400,11 +404,15 @@ const killableBosses: KillableMonster[] = [
 		},
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 10, itemID: itemID('Twisted bow') }],
+				items: [
+					{ boostPercent: 10, itemID: itemID('Twisted bow') },
+					{ boostPercent: 15, itemID: itemID('Hellfire bow') }
+				],
 				gearSetup: 'range'
 			},
 			{
 				items: [
+					{ boostPercent: 15, itemID: itemID('Hellfire arrow') },
 					{ boostPercent: 10, itemID: itemID('Dragon arrow') },
 					{ boostPercent: 6, itemID: itemID('Amethyst arrow') }
 				],
@@ -412,6 +420,8 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: [
+					{ boostPercent: 10, itemID: itemID('Gorajan archer top') },
+					{ boostPercent: 8, itemID: itemID('Pernix body') },
 					{ boostPercent: 6, itemID: itemID('Masori body (f)') },
 					{ boostPercent: 3, itemID: itemID('Masori body') }
 				],
@@ -419,6 +429,8 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: [
+					{ boostPercent: 10, itemID: itemID('Gorajan archer legs') },
+					{ boostPercent: 8, itemID: itemID('Pernix chaps') },
 					{ boostPercent: 6, itemID: itemID('Masori chaps (f)') },
 					{ boostPercent: 3, itemID: itemID('Masori chaps') }
 				],
@@ -426,33 +438,53 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: [
-					{ boostPercent: 11, itemID: itemID("Tumeken's shadow") },
-					{ boostPercent: 6, itemID: itemID('Sanguinesti staff') }
+					{ boostPercent: 10, itemID: itemID('Gorajan occult legs') },
+					{ boostPercent: 8, itemID: itemID('Virtus robe legs') },
+					{ boostPercent: 6, itemID: itemID('Ancestral robe top') }
 				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 6, itemID: itemID('Ancestral robe top') }],
+				items: [
+					{ boostPercent: 10, itemID: itemID('Gorajan occult top') },
+					{ boostPercent: 8, itemID: itemID('Virtus robe top') },
+					{ boostPercent: 6, itemID: itemID('Ancestral robe bottom') }
+				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 6, itemID: itemID('Ancestral robe bottom') }],
+				items: [
+					{ boostPercent: 6, itemID: itemID('Tidal collector') },
+					{ boostPercent: 3, itemID: itemID("Ava's assembler") }
+				],
+				gearSetup: 'range'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan archer gloves') },
+					{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }
+				],
+				gearSetup: 'range'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan occult gloves') },
+					{ boostPercent: 3, itemID: itemID('Tormented bracelet') }
+				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID("Ava's assembler") }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan archer boots') },
+					{ boostPercent: 3, itemID: itemID('Pegasian boots') }
+				],
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }],
-				gearSetup: 'range'
-			},
-			{
-				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
-				gearSetup: 'range'
-			},
-			{
-				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan occult boots') },
+					{ boostPercent: 3, itemID: itemID('Eternal boots') }
+				],
 				gearSetup: 'mage'
 			}
 		],
