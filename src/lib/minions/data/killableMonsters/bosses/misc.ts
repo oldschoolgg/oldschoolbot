@@ -438,16 +438,17 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: [
-					{ boostPercent: 10, itemID: itemID('Gorajan occult legs') },
-					{ boostPercent: 8, itemID: itemID('Virtus robe legs') },
+					{ boostPercent: 10, itemID: itemID('Gorajan occult top') },
+					{ boostPercent: 8, itemID: itemID('Virtus robe top') },
+
 					{ boostPercent: 6, itemID: itemID('Ancestral robe top') }
 				],
 				gearSetup: 'mage'
 			},
 			{
 				items: [
-					{ boostPercent: 10, itemID: itemID('Gorajan occult top') },
-					{ boostPercent: 8, itemID: itemID('Virtus robe top') },
+					{ boostPercent: 10, itemID: itemID('Gorajan occult legs') },
+					{ boostPercent: 8, itemID: itemID('Virtus robe legs') },
 					{ boostPercent: 6, itemID: itemID('Ancestral robe bottom') }
 				],
 				gearSetup: 'mage'
