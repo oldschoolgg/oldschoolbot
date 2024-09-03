@@ -35,8 +35,17 @@ const riskDeathNumbers = [
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
-			data;
+		const {
+			creatureName,
+			quantity,
+			userID,
+			channelID,
+			usingHuntPotion,
+			wildyPeak,
+			duration,
+			usingStaminaPotion,
+			outfitMod
+		} = data;
 		const user = await mUserFetch(userID);
 		const userBank = user.bank;
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
@@ -70,6 +79,7 @@ export const hunterTask: MinionTask = {
 			quantity,
 			usingStaminaPotion,
 			graceful,
+			outfitMod,
 			experienceScore
 		);
 

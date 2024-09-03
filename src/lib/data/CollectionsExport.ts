@@ -1547,7 +1547,8 @@ export const allPetsCL = resolveItems([
 	'Butch',
 	'Baron',
 	'Scurry',
-	'Smol heredit'
+	'Smol heredit',
+	'Quetzin'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2348,4 +2349,13 @@ export const vardorvisCL = resolveItems([
 	"Awakener's orb",
 	'Blood quartz',
 	'Strangled tablet'
+]);
+
+export const rumourCL = resolveItems([
+	'Quetzin',
+	"Huntsman's kit",
+	'Guild hunter headwear',
+	'Guild hunter top',
+	'Guild hunter legs',
+	'Guild hunter boots'
 ]);

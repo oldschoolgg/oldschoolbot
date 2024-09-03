@@ -61,6 +61,20 @@ const boxTrappingCreatures: Creature[] = [
 		qpRequired: 2,
 		slope: 1.22,
 		intercept: -31.33
+	},
+	{
+		name: 'Embertailed jerboa',
+		id: 43,
+		aliases: ['embertailed jerboa'],
+		level: 39,
+		hunterXP: 137,
+		table: new LootTable().every('Jerboa tail'),
+		huntTechnique: HunterTechniqueEnum.BoxTrapping,
+		multiTraps: true,
+		catchTime: 24,
+		qpRequired: 2,
+		slope: 1.034_79,
+		intercept: 1.694_95
 	}
 ];
 

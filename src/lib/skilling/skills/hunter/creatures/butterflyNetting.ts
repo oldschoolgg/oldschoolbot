@@ -68,6 +68,32 @@ const butterflyNettingCreatures: Creature[] = [
 		catchTime: 180,
 		slope: 0,
 		intercept: 0
+	},
+	{
+		name: 'Sunlight moth',
+		id: 46,
+		aliases: ['sunlight moth'],
+		level: 65,
+		hunterXP: 74,
+		itemsConsumed: new Bank().add('Butterfly jar', 1),
+		table: new LootTable().every('Sunlight moth'),
+		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
+		catchTime: 5,
+		slope: 0.01052,
+		intercept: 0.1798
+	},
+	{
+		name: 'Moonlight moth',
+		id: 48,
+		aliases: ['moonlight moth'],
+		level: 75,
+		hunterXP: 84,
+		itemsConsumed: new Bank().add('Butterfly jar', 1),
+		table: new LootTable().every('Moonlight moth'),
+		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
+		catchTime: 5,
+		slope: 1.028,
+		intercept: 9.687
 	}
 ];
 

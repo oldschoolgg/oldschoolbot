@@ -17,6 +17,7 @@ import { dtCreatables } from './creatables/dt';
 import { forestryCreatables } from './creatables/forestryCreatables';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables';
+import { hunterCreatables } from './creatables/hunter';
 import { leaguesCreatables } from './creatables/leagueCreatables';
 import { lmsCreatables } from './creatables/lms';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
@@ -2423,7 +2424,8 @@ const Createables: Createable[] = [
 	...dtCreatables,
 	...caCreatables,
 	...forestryCreatables,
-	...camdozaalItems
+	...camdozaalItems,
+	...hunterCreatables
 ];
 
 export default Createables;

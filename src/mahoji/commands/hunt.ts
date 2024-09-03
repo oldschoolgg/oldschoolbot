@@ -235,6 +235,27 @@ export const huntCommand: OSBMahojiCommand = {
 			boosts.push(`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`);
 		}
 
+		let outfitMod = 0;
+
+		if (
+			user.hasEquipped(
+				Object.keys(Hunter.hunterOutfit).map(i => Number.parseInt(i)),
+				true
+			)
+		) {
+			outfitMod = 2.5;
+		} else {
+			for (const [itemID, bonus] of Object.entries(Hunter.hunterOutfit)) {
+				if (user.hasEquipped(Number.parseInt(itemID))) {
+					outfitMod += bonus;
+				}
+			}
+		}
+
+		if (outfitMod > 0) {
+			boosts.push(`+${outfitMod}% chance of success per catch from Guild Hunter outfit item/items.`);
+		}
+
 		updateBankSetting('hunter_cost', removeBank);
 		await user.removeItemsFromBank(removeBank);
 
@@ -276,6 +297,7 @@ export const huntCommand: OSBMahojiCommand = {
 			duration,
 			usingHuntPotion,
 			usingStaminaPotion,
+			outfitMod,
 			wildyPeak,
 			type: 'Hunter'
 		});

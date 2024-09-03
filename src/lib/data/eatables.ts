@@ -255,5 +255,55 @@ export const Eatables: readonly Eatable[] = [
 		},
 		pvmBoost: 4,
 		wildyOnly: true
+	},
+	{
+		name: 'Cooked wild kebbit',
+		id: itemID('Cooked wild kebbit'),
+		healAmount: 8
+	},
+	{
+		name: 'Cooked larupia',
+		id: itemID('Cooked larupia'),
+		healAmount: 11
+	},
+	{
+		name: 'Cooked barb-tailed kebbit',
+		id: itemID('Cooked barb-tailed kebbit'),
+		healAmount: 12
+	},
+	{
+		name: 'Cooked graahk',
+		id: itemID('Cooked graahk'),
+		healAmount: 14
+	},
+	{
+		name: 'Cooked kyatt',
+		id: itemID('Cooked kyatt'),
+		healAmount: 17,
+		pvmBoost: 1
+	},
+	{
+		name: 'Cooked pyre fox',
+		id: itemID('Cooked pyre fox'),
+		healAmount: 19,
+		pvmBoost: 2
+	},
+	{
+		name: 'Cooked sunlight antelope',
+		id: itemID('Cooked sunlight antelope'),
+		healAmount: 21,
+		pvmBoost: 2
+	},
+	{
+		name: 'Cooked dashing kebbit',
+		id: itemID('Cooked dashing kebbit'),
+		healAmount: 23,
+		pvmBoost: 4
+	},
+	{
+		name: 'Cooked moonlight antelope',
+		id: itemID('Cooked moonlight antelope'),
+		healAmount: 26,
+		pvmBoost: 5
 	}
 ];

@@ -59,6 +59,24 @@ const Bolts: Fletchable[] = [
 		xp: 12,
 		inputItems: new Bank({ 'Dragon bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.08
+	},
+	{
+		name: 'Sunlight antler bolts',
+		id: itemID('Sunlight antler bolts'),
+		level: 62,
+		xp: 10,
+		inputItems: new Bank({ 'Sunlight antelope antler': 1 }),
+		outputMultiple: 12,
+		tickRate: 3
+	},
+	{
+		name: 'Moonlight antler bolts',
+		id: itemID('Moonlight antler bolts'),
+		level: 72,
+		xp: 12,
+		inputItems: new Bank({ 'Moonlight antelope antler': 1 }),
+		outputMultiple: 12,
+		tickRate: 3
 	}
 ];
 

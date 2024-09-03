@@ -5,7 +5,7 @@ exports[`OSB Collection Log Groups/Categories 1`] = `
 Achievement Diary (48)
 Aerial Fishing (9)
 Alchemical Hydra (11)
-All Pets (58)
+All Pets (59)
 Barbarian Assault (11)
 Barrows Chests (25)
 Beginner Treasure Trails (16)
@@ -25,7 +25,7 @@ Chompy Birds (19)
 Commander Zilyana (8)
 Corporeal Beast (7)
 Crazy archaeologist (3)
-Creatables (668)
+Creatables (674)
 Creature Creation (7)
 Cyclopes (8)
 Dagannoth Kings (10)
@@ -52,6 +52,7 @@ Hallowed Sepulchre (16)
 Hard Treasure Trail Rewards (Rare) (24)
 Hard Treasure Trails (134)
 Hespori (4)
+Hunter Guild (6)
 Implings (12)
 K'ril Tsutsaroth (8)
 Kalphite Queen (6)
@@ -818,6 +819,10 @@ Grey navy slacks
 Grey tricorn hat
 Gricoller's can
 Guardian's eye
+Guild hunter boots
+Guild hunter headwear
+Guild hunter legs
+Guild hunter top
 Guthan's chainskirt
 Guthan's helm
 Guthan's platebody
@@ -878,6 +883,7 @@ Hosidius banner
 Hosidius blueprints
 Hosidius hood
 Hosidius scarf
+Huntsman's kit
 Hydra leather
 Hydra tail
 Hydra's claw
@@ -1182,6 +1188,7 @@ Pyromancer boots
 Pyromancer garb
 Pyromancer hood
 Pyromancer robe
+Quetzin
 Rain bow
 Ranger boots
 Ranger gloves

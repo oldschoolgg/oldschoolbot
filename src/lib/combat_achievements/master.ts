@@ -661,7 +661,9 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 1,
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.PhantomMuspah.id)(data) &&
-				['Black salamander', 'Red salamander', 'Orange salamander'].some(sal => user.hasEquipped(sal))
+				['Tecu salamander', 'Black salamander', 'Red salamander', 'Orange salamander'].some(sal =>
+					user.hasEquipped(sal)
+				)
 		}
 	},
 	{

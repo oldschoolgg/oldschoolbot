@@ -713,26 +713,27 @@ model UserStats {
   toa_raid_levels_bank       Json @default("{}") @db.Json
   total_toa_duration_minutes Int  @default(0)
 
-  deaths                   Int @default(0)
-  pk_evasion_exp           Int @default(0)
-  dice_wins                Int @default(0)
-  dice_losses              Int @default(0)
-  duel_losses              Int @default(0)
-  duel_wins                Int @default(0)
-  fight_caves_attempts     Int @default(0)
-  firecapes_sacrificed     Int @default(0)
-  tithe_farms_completed    Int @default(0)
-  tithe_farm_points        Int @default(0)
-  pest_control_points      Int @default(0)
-  inferno_attempts         Int @default(0)
-  infernal_cape_sacrifices Int @default(0)
-  tob_attempts             Int @default(0)
-  foundry_reputation       Int @default(0)
-  tob_hard_attempts        Int @default(0)
-  total_cox_points         Int @default(0)
-  honour_level             Int @default(1)
-  high_gambles             Int @default(0)
-  honour_points            Int @default(0)
+  deaths                   Int   @default(0)
+  pk_evasion_exp           Int   @default(0)
+  dice_wins                Int   @default(0)
+  dice_losses              Int   @default(0)
+  duel_losses              Int   @default(0)
+  duel_wins                Int   @default(0)
+  fight_caves_attempts     Int   @default(0)
+  firecapes_sacrificed     Int   @default(0)
+  tithe_farms_completed    Int   @default(0)
+  tithe_farm_points        Int   @default(0)
+  pest_control_points      Int   @default(0)
+  inferno_attempts         Int   @default(0)
+  infernal_cape_sacrifices Int   @default(0)
+  tob_attempts             Int   @default(0)
+  foundry_reputation       Int   @default(0)
+  tob_hard_attempts        Int   @default(0)
+  total_cox_points         Int   @default(0)
+  honour_level             Int   @default(1)
+  high_gambles             Int   @default(0)
+  honour_points            Int   @default(0)
+  rumours                  Int[] @default([0, 0, 0, 0])
 
   slayer_task_streak       Int @default(0)
   slayer_wildy_task_streak Int @default(0)
@@ -1354,6 +1355,7 @@ enum command_name_enum {
   roles
   roll
   rp
+  rumours
   runecraft
   runelite
   s

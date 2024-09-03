@@ -34,7 +34,7 @@ const falconryCreatures: Creature[] = [
 		aliases: ['dashing kebbit'],
 		level: 69,
 		hunterXP: 156,
-		table: new LootTable().every('Bones').every('Dashing kebbit fur'),
+		table: new LootTable().every('Bones').every('Dashing kebbit fur').every('Raw dashing kebbit'),
 		huntTechnique: HunterTechniqueEnum.Falconry,
 		catchTime: 6,
 		slope: 1,

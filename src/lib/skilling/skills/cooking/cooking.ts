@@ -114,6 +114,17 @@ export const Cookables: Cookable[] = [
 		burntCookable: 343
 	},
 	{
+		level: 23,
+		xp: 73,
+		id: itemID('Cooked wild kebbit'),
+		name: 'Wild kebbit',
+		alias: ['wild kebbit', 'cooked wild kebbit'],
+		inputCookables: { [itemID('Raw wild kebbit')]: 1 },
+		stopBurnAt: 50,
+		burnKourendBonus: [47, 43, 43, 43],
+		burntCookable: 29_155
+	},
+	{
 		level: 25,
 		xp: 90,
 		id: itemID('Salmon'),
@@ -143,6 +154,28 @@ export const Cookables: Cookable[] = [
 		stopBurnAt: 99,
 		burnKourendBonus: [93, 87, 93, 87],
 		burntCookable: itemID('Burnt karambwan')
+	},
+	{
+		level: 31,
+		xp: 92,
+		id: itemID('Cooked larupia'),
+		name: 'Larupia',
+		alias: ['larupia', 'cooked larupia'],
+		inputCookables: { [itemID('Raw larupia')]: 1 },
+		stopBurnAt: 59,
+		burnKourendBonus: [55, 51, 51, 51],
+		burntCookable: 29_157
+	},
+	{
+		level: 32,
+		xp: 106,
+		id: itemID('Cooked barb-tailed kebbit'),
+		name: 'Barb-tailed kebbit',
+		alias: ['barb-tailed kebbit', 'cooked barb-tailed kebbit'],
+		inputCookables: { [itemID('Raw barb-tailed kebbit')]: 1 },
+		stopBurnAt: 63,
+		burnKourendBonus: [60, 56, 56, 56],
+		burntCookable: 29_155
 	},
 	{
 		level: 35,
@@ -187,6 +220,18 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Burnt jubbly')
 	},
 	{
+		level: 41,
+		xp: 124,
+		id: itemID('Cooked graahk'),
+		name: 'Graahk',
+		alias: ['graahk', 'cooked graahk'],
+		inputCookables: { [itemID('Raw graahk')]: 1 },
+		stopBurnAt: 75,
+		burnKourendBonus: [71, 67, 67, 67],
+		burntCookable: 29_157,
+		rumoursRequired: 25
+	},
+	{
 		level: 43,
 		xp: 130,
 		id: itemID('Bass'),
@@ -207,6 +252,30 @@ export const Cookables: Cookable[] = [
 		stopBurnAtCG: 81,
 		burnKourendBonus: [76, 76, 76, 76],
 		burntCookable: itemID('Burnt swordfish')
+	},
+	{
+		level: 51,
+		xp: 143,
+		id: itemID('Cooked kyatt'),
+		name: 'Kyatt',
+		alias: ['kyatt', 'cooked kyatt'],
+		inputCookables: { [itemID('Raw kyatt')]: 1 },
+		stopBurnAt: 80,
+		burnKourendBonus: [76, 71, 71, 71],
+		burntCookable: 29_157,
+		rumoursRequired: 25
+	},
+	{
+		level: 59,
+		xp: 154,
+		id: itemID('Cooked pyre fox'),
+		name: 'Pyre fox',
+		alias: ['pyre fox', 'cooked pyre fox'],
+		inputCookables: { [itemID('Raw pyre fox')]: 1 },
+		stopBurnAt: 92,
+		burnKourendBonus: [87, 82, 82, 82],
+		burntCookable: 29_161,
+		rumoursRequired: 25
 	},
 	{
 		level: 62,
@@ -231,6 +300,18 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Jug of bad wine')
 	},
 	{
+		level: 68,
+		xp: 175,
+		id: itemID('Cooked sunlight antelope'),
+		name: 'Sunlight antelope',
+		alias: ['sunlight antelope', 'cooked sunlight antelope'],
+		inputCookables: { [itemID('Raw sunlight antelope')]: 1 },
+		stopBurnAt: 92,
+		burnKourendBonus: [95, 82, 82, 82],
+		burntCookable: 29_159,
+		rumoursRequired: 50
+	},
+	{
 		level: 80,
 		xp: 210,
 		id: itemID('Shark'),
@@ -250,6 +331,17 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw sea turtle')]: 1 },
 		stopBurnAt: 99,
 		burntCookable: itemID('Burnt sea turtle')
+	},
+	{
+		level: 82,
+		xp: 215,
+		id: itemID('Cooked dashing kebbit'),
+		name: 'Dashing kebbit',
+		alias: ['dashing kebbit', 'cooked dashing kebbit'],
+		inputCookables: { [itemID('Raw dashing kebbit')]: 1 },
+		stopBurnAt: 99,
+		burntCookable: 29_155,
+		rumoursRequired: 50
 	},
 	{
 		level: 84,
@@ -282,6 +374,17 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw manta ray')]: 1 },
 		stopBurnAt: 99,
 		burntCookable: itemID('Burnt manta ray')
+	},
+	{
+		level: 92,
+		xp: 220,
+		id: itemID('Cooked moonlight antelope'),
+		name: 'Moonlight antelope',
+		alias: ['moonlight antelope', 'cooked moonlight antelope'],
+		inputCookables: { [itemID('Raw moonlight antelope')]: 1 },
+		stopBurnAt: 99,
+		burntCookable: 29_159,
+		rumoursRequired: 50
 	}
 ];
 

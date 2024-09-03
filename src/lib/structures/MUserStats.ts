@@ -15,6 +15,7 @@ export class MUserStats {
 	kcBank: ItemBank;
 	highGambles: number;
 	gotrRiftSearches: number;
+	rumours: number[];
 
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
@@ -25,6 +26,7 @@ export class MUserStats {
 		this.kcBank = userStats.monster_scores as ItemBank;
 		this.highGambles = userStats.high_gambles;
 		this.gotrRiftSearches = userStats.gotr_rift_searches;
+		this.rumours = userStats.rumours;
 	}
 
 	static async fromID(id: string) {

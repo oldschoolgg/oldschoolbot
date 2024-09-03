@@ -24,6 +24,7 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
+import { hunterSackOpenables } from './skilling/skills/hunter/rumours/util';
 import type { ItemBank } from './types';
 import { itemID, roll } from './util';
 import getOSItem from './util/getOSItem';
@@ -488,7 +489,8 @@ export const allOpenables: UnifiedOpenable[] = [
 	},
 	...clueOpenables,
 	...osjsOpenables,
-	...shadeChestOpenables
+	...shadeChestOpenables,
+	...hunterSackOpenables
 ];
 
 for (const openable of allOpenables) {

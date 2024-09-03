@@ -57,6 +57,19 @@ const netTrappingCreatures: Creature[] = [
 		catchTime: 48,
 		slope: 1.2,
 		intercept: -5
+	},
+	{
+		name: 'Tecu salamander',
+		id: 47,
+		aliases: ['tecu salamander'],
+		level: 79,
+		hunterXP: 344,
+		table: new LootTable().add('Immature tecu salamander', 1, 999).add('Tecu salamander', 1, 1),
+		huntTechnique: HunterTechniqueEnum.NetTrapping,
+		multiTraps: true,
+		catchTime: 46,
+		slope: 0.9,
+		intercept: -5.9
 	}
 ];
 

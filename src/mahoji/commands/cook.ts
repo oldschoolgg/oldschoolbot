@@ -75,6 +75,12 @@ export const cookCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
 		}
 
+		const { rumours: rumoursCompleted } = await user.fetchStats({ rumours: true });
+		const totalrumours = rumoursCompleted.reduce((a, b) => a + b);
+		if (cookable.rumoursRequired && cookable.rumoursRequired > totalrumours) {
+			return `${user.minionName} needs ${cookable.rumoursRequired} Hunter Rumours completed to cook ${cookable.name}`;
+		}
+
 		// These are just for notifying the user, they only take effect in the Activity.
 		const boosts = [];
 		const [hasEasyDiary] = await userhasDiaryTier(user, KourendKebosDiary.easy);

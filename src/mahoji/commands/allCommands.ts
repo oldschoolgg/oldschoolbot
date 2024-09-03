@@ -66,6 +66,7 @@ import { raidCommand } from './raid';
 import { redeemCommand } from './redeem';
 import { rollCommand } from './roll';
 import { rpCommand } from './rp';
+import { rumourCommand } from './rumour';
 import { runecraftCommand } from './runecraft';
 import { sacrificeCommand } from './sacrifice';
 import { sellCommand } from './sell';
@@ -118,6 +119,7 @@ export const allCommands: OSBMahojiCommand[] = [
 	giveawayCommand,
 	helpCommand,
 	huntCommand,
+	rumourCommand,
 	giftCommand,
 	inviteCommand,
 	kcCommand,

@@ -66,8 +66,8 @@ const birdSnaringCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.BirdSnaring,
 		multiTraps: true,
 		catchTime: 17,
-		slope: 0.85,
-		intercept: 5
+		slope: 1.177,
+		intercept: 28.39
 	}
 ];
 

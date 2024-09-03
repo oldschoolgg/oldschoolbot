@@ -918,6 +918,33 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
+    "gpCost": 20000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Mixed hide base",
+    "outputItems": undefined,
+    "requiredQuests": [
+      3,
+    ],
+    "skillsNeeded": {
+      "hunter": 46,
+    },
+  },
+  {
+    "gpCost": 3000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Jaguar fur",
+    "outputItems": undefined,
+    "requiredQuests": [
+      3,
+    ],
+  },
+  {
     "itemCost": Bank {
       "bank": {
         "24711": 1,
@@ -24833,6 +24860,112 @@ exports[`OSB Creatables 1`] = `
         "25644": 1,
       },
       "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "29166": 1,
+        "29311": 5,
+        "6333": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Hunter's spear",
+    "outputItems": Bank {
+      "bank": {
+        "29305": 5,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "29177": 2,
+        "29292": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Mixed hide top",
+    "outputItems": Bank {
+      "bank": {
+        "29280": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "29163": 3,
+        "29292": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Mixed hide legs",
+    "outputItems": Bank {
+      "bank": {
+        "29280": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "29177": 1,
+        "29292": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Mixed hide boots",
+    "outputItems": Bank {
+      "bank": {
+        "29280": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "29218": 1,
+        "29292": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Mixed hide cape",
+    "outputItems": Bank {
+      "bank": {
+        "29280": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "10156": 1,
+        "29168": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Hunters' sunlight crossbow",
+    "outputItems": Bank {
+      "bank": {
+        "28869": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "fletching": 74,
     },
   },
 ]

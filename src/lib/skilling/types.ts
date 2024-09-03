@@ -149,6 +149,7 @@ export interface Cookable {
 	burnKourendBonus?: number[];
 	burntCookable: number;
 	alias?: string[];
+	rumoursRequired?: number;
 }
 
 export interface Bar {
