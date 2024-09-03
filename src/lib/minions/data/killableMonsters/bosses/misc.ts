@@ -405,8 +405,8 @@ const killableBosses: KillableMonster[] = [
 		equippedItemBoosts: [
 			{
 				items: [
-					{ boostPercent: 10, itemID: itemID('Twisted bow') },
-					{ boostPercent: 15, itemID: itemID('Hellfire bow') }
+					{ boostPercent: 15, itemID: itemID('Hellfire bow') },
+					{ boostPercent: 10, itemID: itemID('Twisted bow') }
 				],
 				gearSetup: 'range'
 			},
