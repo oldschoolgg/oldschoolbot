@@ -1,4 +1,3 @@
-import { Eatables } from '../../../../lib/data/eatables';
 import type { GearBank } from '../../../../lib/structures/GearBank';
 import { itemNameFromID, resolveItems } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
@@ -15,8 +14,6 @@ export const dragonHunterWeapons = [
 		boost: 15
 	}
 ] as const;
-
-export const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
 
 export function calculateVirtusBoost({
 	isInWilderness,

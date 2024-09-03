@@ -62,11 +62,11 @@ export default function getUserFoodFromBank({
 	for (const eatable of sorted) {
 		const healAmount = typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(gearBank);
 		const amountOwned = userBank.amount(eatable.id);
-		const toRemove = Math.ceil(totalHealingCalc / healAmount);
+		const amountNeededOfThisFood = Math.ceil(totalHealingCalc / healAmount);
 		if (!amountOwned) continue;
-		if (amountOwned >= toRemove) {
-			totalHealingCalc -= Math.ceil(healAmount * toRemove);
-			foodToRemove.add(eatable.id, toRemove);
+		if (amountOwned >= amountNeededOfThisFood) {
+			totalHealingCalc -= Math.ceil(healAmount * amountNeededOfThisFood);
+			foodToRemove.add(eatable.id, amountNeededOfThisFood);
 			break;
 		} else {
 			totalHealingCalc -= Math.ceil(healAmount * amountOwned);

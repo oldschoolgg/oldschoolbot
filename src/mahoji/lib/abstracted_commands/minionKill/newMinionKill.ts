@@ -1,20 +1,20 @@
 import type { PlayerOwnedHouse } from '@prisma/client';
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { floor } from 'lodash';
-import { Bank, Monsters } from 'oldschooljs';
+import { Monsters } from 'oldschooljs';
+import { mergeDeep } from 'remeda';
 import type { BitField, PvMMethod } from '../../../../lib/constants';
 import { GearStat, type OffenceGearStat } from '../../../../lib/gear/types';
 import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import { type AttackStyles, convertAttackStylesToSetup, resolveAttackStyles } from '../../../../lib/minions/functions';
-import type { Consumable, KillableMonster } from '../../../../lib/minions/types';
+import type { KillableMonster } from '../../../../lib/minions/types';
 import type { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
 import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/slayer/slayerUtil';
 import type { GearBank } from '../../../../lib/structures/GearBank';
 import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, randomVariation } from '../../../../lib/util';
-import { minionName } from '../../../../lib/util/minionUtils';
 import { changeQuantityForTaskKillsRemaining } from './calcTaskMonstersRemaining';
-import { getItemCostFromConsumables } from './handleConsumables';
-import { type PostBoostEffect, postBoostEffects } from './speedBoosts';
+import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { speedCalculations } from './timeAndSpeed';
 
 export interface MinionKillOptions {
@@ -48,6 +48,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		inputQuantity,
 		slayerUnlocks
 	} = args;
+	const osjsMon = Monsters.get(monster.id)!;
 	const primaryStyle = convertAttackStylesToSetup(attackStyles);
 	const relevantGearStat: OffenceGearStat = (
 		{ melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, range: GearStat.AttackRanged } as const
@@ -97,13 +98,11 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		wildyBurst: isAbleToBurstInWilderness
 	});
 
-	const resolveAttackStyleResult = resolveAttackStyles({
-		monsterID: monster.id,
+	attackStyles = resolveAttackStyles({
+		monster,
 		boostMethod: combatMethods,
 		attackStyles
 	});
-	attackStyles = resolveAttackStyleResult.attackStyles;
-
 	const { skillsAsLevels } = gearBank;
 	if (combatMethods.includes('barrage') && skillsAsLevels.magic < 94) {
 		return `You need 94 Magic to use Ice Barrage. You have ${skillsAsLevels.magic}`;
@@ -115,19 +114,20 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		return `You need 65 Ranged to use Chinning method. You have ${skillsAsLevels.ranged}`;
 	}
 
-	if ((combatMethods.includes('burst') || combatMethods.includes('barrage')) && !monster.canBarrage) {
-		if (isKillingJelly) {
-			if (!isInWilderness) {
-				return `${monster.name} can only be barraged or burst in the wilderness.`;
-			}
-		} else return `${monster.name} cannot be barraged or burst.`;
+	const isBurstingOrBarraging = combatMethods.includes('burst') || combatMethods.includes('barrage');
+	if (isBurstingOrBarraging && !monster.canBarrage) {
+		if (isKillingJelly && !isInWilderness) {
+			return `${monster.name} can only be barraged or burst in the wilderness.`;
+		} else {
+			return `${monster.name} cannot be barraged or burst.`;
+		}
 	}
 
-	const osjsMon = resolveAttackStyleResult.osjsMon;
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
 
 	const speedDurationResult = speedCalculations({
 		...args,
+		attackStyles,
 		isOnTask,
 		osjsMon,
 		primaryStyle,
@@ -140,7 +140,8 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		return speedDurationResult;
 	}
 
-	const maxCanKill = Math.floor(maxTripLength / speedDurationResult.timeToFinish);
+	const maxBasedOnTime = Math.floor(maxTripLength / speedDurationResult.timeToFinish);
+	const maxCanKill = Math.min(speedDurationResult.maxCanKillWithItemCost ?? Number.POSITIVE_INFINITY, maxBasedOnTime);
 	let quantity = inputQuantity ?? maxCanKill;
 	if ([Monsters.Skotizo.id].includes(monster.id)) {
 		quantity = 1;
@@ -156,7 +157,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	quantity = Math.max(1, quantity);
 	let duration = speedDurationResult.timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
-		return `${minionName} can't go on PvM trips longer than ${formatDuration(
+		return `You can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
 		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(maxCanKill)}.`;
 	}
@@ -165,26 +166,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	if (isWeekend()) {
 		speedDurationResult.messages.push('10% for Weekend');
 		duration *= 0.9;
-	}
-
-	const lootToRemove = new Bank().add(speedDurationResult.itemCost);
-
-	const consumableCosts: Consumable[] = [...speedDurationResult.consumables];
-	if (monster.itemCost) {
-		consumableCosts.push(monster.itemCost);
-	}
-
-	const consumablesCost = getItemCostFromConsumables({
-		consumableCosts,
-		gearBank,
-		quantity,
-		duration,
-		timeToFinish: speedDurationResult.timeToFinish
-	});
-	if (consumablesCost) {
-		lootToRemove.add(consumablesCost.itemCost);
-		quantity = consumablesCost.newQuantity;
-		duration = consumablesCost.newDuration;
 	}
 
 	if (monster.projectileUsage?.required) {
@@ -196,7 +177,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			return `Your range gear isn't right: ${rangeCheck}`;
 		}
 		const projectilesNeeded = monster.projectileUsage.calculateQuantity({ quantity });
-		lootToRemove.add(rangeCheck.ammo.item, projectilesNeeded);
+		speedDurationResult.updateBank.itemCostBank.add(rangeCheck.ammo.item, projectilesNeeded);
 		if (projectilesNeeded > rangeCheck.ammo.quantity) {
 			return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
 				rangeCheck.ammo.item
@@ -208,6 +189,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	for (const effect of [...postBoostEffects, ...ephemeralPostTripEffects]) {
 		const result = effect.run({
+			...args,
 			duration,
 			quantity,
 			isOnTask,
@@ -216,23 +198,39 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			primaryStyle,
 			combatMethods,
 			relevantGearStat,
-			...args,
 			currentTaskOptions: speedDurationResult.currentTaskOptions
 		});
-		if (typeof result === 'string') {
-			return result;
+		if (!result) continue;
+		for (const boostResult of Array.isArray(result) ? result : [result]) {
+			if (boostResult.changes) {
+				speedDurationResult.currentTaskOptions = mergeDeep(
+					speedDurationResult.currentTaskOptions,
+					boostResult.changes
+				);
+			}
+
+			if (boostResult.percentageReduction) {
+				duration = reduceNumByPercent(duration, boostResult.percentageReduction);
+			} else if (boostResult.percentageIncrease) {
+				duration = increaseNumByPercent(duration, boostResult.percentageIncrease);
+			}
+			if (boostResult.charges) speedDurationResult.updateBank.chargeBank.add(boostResult.charges);
+			if (boostResult.itemCost) speedDurationResult.updateBank.itemCostBank.add(boostResult.itemCost);
+			if (boostResult.message) speedDurationResult.messages.push(boostResult.message);
 		}
 	}
+
+	speedDurationResult.updateBank.itemCostBank.freeze();
+	speedDurationResult.updateBank.itemLootBank.freeze();
 
 	return {
 		duration,
 		quantity,
-		lootToRemove,
 		isOnTask,
 		isInWilderness,
 		attackStyles,
-		charges: speedDurationResult.charges,
 		currentTaskOptions: speedDurationResult.currentTaskOptions,
-		messages: speedDurationResult.messages
+		messages: speedDurationResult.messages,
+		updateBank: speedDurationResult.updateBank
 	};
 }

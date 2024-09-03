@@ -307,21 +307,34 @@ export function getCommonTaskName(task: Monster) {
 
 export type CurrentSlayerInfo = Awaited<ReturnType<typeof getUsersCurrentSlayerInfo>>;
 export async function getUsersCurrentSlayerInfo(id: string) {
-	const currentTask = await prisma.slayerTask.findFirst({
-		where: {
-			user_id: id,
-			quantity_remaining: {
-				gt: 0
+	const [currentTask, partialUser] = await prisma.$transaction([
+		prisma.slayerTask.findFirst({
+			where: {
+				user_id: id,
+				quantity_remaining: {
+					gt: 0
+				},
+				skipped: false
+			}
+		}),
+		prisma.user.findFirst({
+			where: {
+				id
 			},
-			skipped: false
-		}
-	});
+			select: {
+				slayer_points: true
+			}
+		})
+	]);
+
+	const slayerPoints = partialUser?.slayer_points ?? 0;
 
 	if (!currentTask) {
 		return {
 			currentTask: null,
 			assignedTask: null,
-			slayerMaster: null
+			slayerMaster: null,
+			slayerPoints
 		};
 	}
 
@@ -341,14 +354,16 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		return {
 			currentTask: null,
 			assignedTask: null,
-			slayerMaster: null
+			slayerMaster: null,
+			slayerPoints
 		};
 	}
 
 	return {
 		currentTask,
 		assignedTask,
-		slayerMaster
+		slayerMaster,
+		slayerPoints
 	};
 }
 

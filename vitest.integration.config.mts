@@ -7,7 +7,8 @@ export default defineConfig({
 		setupFiles: 'tests/integration/setup.ts',
 		coverage: {
 			provider: 'v8',
-			reporter: 'text'
+			reporter: 'text',
+			include: ['src/mahoji/lib/abstracted_commands/minionKill/*.ts']
 		},
 		testTimeout: 30_000,
 		bail: 1,

@@ -20,7 +20,8 @@
 				"noExplicitAny": "warn",
 				"noAssignInExpressions": "warn",
 				"noAsyncPromiseExecutor": "off",
-				"noConfusingVoidType": "off"
+				"noConfusingVoidType": "off",
+				"noFocusedTests": "warn"
 			},
 			"style": {
 				"noNonNullAssertion": "off",

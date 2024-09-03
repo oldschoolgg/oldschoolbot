@@ -522,13 +522,13 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		};
 	}
 
-	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean }) {
+	async specialRemoveItems(bankToRemove: Bank, options?: { isInWilderness?: boolean }) {
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;
 
-		const gearKey = options?.wildy ? 'wildy' : 'range';
+		const gearKey = options?.isInWilderness ? 'wildy' : 'range';
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearKey];
 		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
@@ -581,7 +581,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
-			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
+			const updateKey = options?.isInWilderness ? 'gear_wildy' : 'gear_range';
 			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
 		}
 
@@ -768,7 +768,11 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async addXPBank(xpBank: XPBank) {
-		return Promise.all(xpBank.xpList.map(options => this.addXP(options)));
+		const results = [];
+		for (const options of xpBank.xpList) {
+			results.push(await this.addXP(options));
+		}
+		return results.join(' ');
 	}
 
 	async checkBankBackground() {

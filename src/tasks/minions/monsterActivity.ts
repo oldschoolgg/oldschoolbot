@@ -3,11 +3,11 @@ import type { MonsterKillOptions } from 'oldschooljs';
 import { Bank, EMonster, Monsters } from 'oldschooljs';
 
 import { type BitField, Emoji } from '../../lib/constants';
+import { userhasDiaryTierSync } from '../../lib/diaries';
+import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-
-import { userhasDiaryTierSync } from '../../lib/diaries';
 import { DiaryID } from '../../lib/minions/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
@@ -18,7 +18,10 @@ import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { calculateSimpleMonsterDeathChance, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
+import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 
 function handleSlayerTaskCompletion({
 	slayerContext,
@@ -47,7 +50,7 @@ function handleSlayerTaskCompletion({
 		increment: points
 	};
 
-	let message = `\n**You've completed ${newStreak} ${isWildyTask ? 'wilderness ' : ''}tasks and received ${points} points; giving you a total of TODO; return to a Slayer master.**`;
+	let message = `**You've completed ${newStreak} ${isWildyTask ? 'wilderness ' : ''}tasks and received ${points} points; giving you a total of ${slayerContext.slayerPoints + points}; return to a Slayer master.**`;
 	if (slayerContext.assignedTask.isBoss) {
 		updateBank.xpBank.add('slayer', 5000);
 		message += ' You received 5000 bonus Slayer XP for doing a boss task.';
@@ -316,20 +319,17 @@ function doMonsterTrip(data: newOptions) {
 		}
 	}
 
-	// Regular loot
+	// Loot
 	const finalQuantity = quantity - newSuperiorCount;
 	const loot = monster.table.kill(finalQuantity, killOptions);
 	if (monster.specialLoot) {
 		monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity });
 	}
 	if (newSuperiorCount) {
-		// Superior loot and totems if in catacombs
 		loot.add(superiorTable?.kill(newSuperiorCount));
 		if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 		if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 	}
-
-	// Hill giant key wildy buff
 	if (isInWilderness && monster.name === 'Hill giant') {
 		for (let i = 0; i < quantity; i++) {
 			if (roll(128)) {
@@ -337,10 +337,11 @@ function doMonsterTrip(data: newOptions) {
 			}
 		}
 	}
+	updateBank.itemLootBank.add(loot);
 
 	updateBank.xpBank.add(
 		addMonsterXPRaw({
-			monsterID,
+			monsterID: monster.id,
 			quantity,
 			duration,
 			isOnTask: slayerContext.isOnTask,
@@ -403,8 +404,8 @@ function doMonsterTrip(data: newOptions) {
 		}
 	}
 
-	kcBank.add(monsterID, quantity);
-	const newKC = kcBank.amount(monsterID);
+	updateBank.kcBank.add(monsterID, quantity);
+	const newKC = kcBank.amount(monsterID) + quantity;
 
 	return {
 		slayerContext,
@@ -419,6 +420,7 @@ function doMonsterTrip(data: newOptions) {
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
+		const { duration } = data;
 		const user = await mUserFetch(data.userID);
 		const stats = await MUserStats.fromID(data.userID);
 		const minigameScores = await user.fetchMinigames();
@@ -444,7 +446,6 @@ export const monsterTask: MinionTask = {
 			hasEliteCA: user.hasCompletedCATier('elite'),
 			bitfield: user.bitfield
 		});
-
 		if (slayerContext.isOnTask) {
 			await prisma.slayerTask.update({
 				where: {
@@ -456,62 +457,46 @@ export const monsterTask: MinionTask = {
 			});
 		}
 
-		// 	if (isInWilderness) {
-		// 	await increaseWildEvasionXp(user, duration);
-		// }
+		if (data.isInWilderness) {
+			await increaseWildEvasionXp(user, duration);
+		}
 
-		// 		await trackLoot({
-		// 			totalCost: calc.lostItems,
-		// 			id: monster.name,
-		// 			type: 'Monster',
-		// 			changeType: 'cost',
-		// 			users: [
-		// 				{
-		// 					id: user.id,
-		// 					cost: calc.lostItems
-		// 				}
-		// 			]
-		// 		});
-		// 		// Track loot (For duration)
-		// 		await trackLoot({
-		// 			totalLoot: new Bank(),
-		// 			id: monster.name,
-		// 			type: 'Monster',
-		// 			changeType: 'loot',
-		// 			duration,
-		// 			kc: quantity,
-		// 			users: [
-		// 				{
-		// 					id: user.id,
-		// 					loot: new Bank(),
-		// 					duration
-		// 				}
-		// 			]
-		// 		});
+		await trackLoot({
+			totalCost: updateBank.itemCostBank,
+			id: monster.name,
+			type: 'Monster',
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost: updateBank.itemCostBank
+				}
+			]
+		});
 
-		// 		const { previousCL, itemsAdded } = await transactItems({
-		// 	userID: user.id,
-		// 	collectionLog: true,
-		// 	itemsToAdd: loot
-		// });
+		await trackLoot({
+			totalLoot: updateBank.itemLootBank,
+			id: monster.name.toString(),
+			type: 'Monster',
+			changeType: 'loot',
+			kc: quantity,
+			duration,
+			users: [
+				{
+					id: user.id,
+					loot: updateBank.itemLootBank,
+					duration
+				}
+			]
+		});
 
-		// await trackLoot({
-		// 	totalLoot: itemsAdded,
-		// 	id: monster.name.toString(),
-		// 	type: 'Monster',
-		// 	changeType: 'loot',
-		// 	kc: quantity,
-		// 	duration,
-		// 	users: [
-		// 		{
-		// 			id: user.id,
-		// 			loot: itemsAdded,
-		// 			duration
-		// 		}
-		// 	]
-		// });
-		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${monster.name} KC is now ${newKC}.`;
-		str += `\n\n${messages.join('\n')}`;
+		const resultOrError = await updateBank.transact(user, { isInWilderness: data.isInWilderness });
+		if (typeof resultOrError === 'string') {
+			return resultOrError;
+		}
+		const { itemTransactionResult, rawResults } = resultOrError;
+		messages.push(...rawResults.filter(r => typeof r === 'string'));
+		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${monster.name} KC is now ${newKC}.`;
 
 		announceLoot({
 			user,
@@ -520,16 +505,24 @@ export const monsterTask: MinionTask = {
 			notifyDrops: monster.notifyDrops
 		});
 
-		// const image =
-		// 	itemsAdded.length === 0
-		// 		? undefined
-		// 		: await makeBankImage({
-		// 				bank: itemsAdded,
-		// 				title: `Loot From ${quantity} ${monster.name}:`,
-		// 				user,
-		// 				previousCL
-		// 			});
+		const image =
+			updateBank.itemLootBank.length === 0
+				? undefined
+				: await makeBankImage({
+						bank: updateBank.itemLootBank,
+						title: `Loot From ${quantity} ${monster.name}:`,
+						user,
+						previousCL: itemTransactionResult?.previousCL
+					});
 
-		// return handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
+		return handleTripFinish(
+			user,
+			data.channelID,
+			str,
+			image?.file.attachment,
+			data,
+			itemTransactionResult!.itemsAdded,
+			messages
+		);
 	}
 };

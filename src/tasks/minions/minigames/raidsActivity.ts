@@ -61,8 +61,7 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	results.push(
 		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'ChambersOfXeric' })
 	);
-	let { attackStyles: styles } = resolveAttackStyles({
-		monsterID: -1,
+	let styles = resolveAttackStyles({
 		attackStyles: user.getAttackStyles()
 	});
 	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {

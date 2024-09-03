@@ -6,7 +6,7 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import type { ClueTier } from '../clues/clueTiers';
-import type { BitField, PerkTier, PvMMethod } from '../constants';
+import type { BitField, PerkTier } from '../constants';
 import type { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
@@ -174,12 +174,6 @@ export interface AddMonsterXpParams {
 	cannonMulti?: boolean;
 	burstOrBarrage?: number;
 	superiorCount?: number;
-}
-
-export interface ResolveAttackStylesParams {
-	monsterID: number | undefined;
-	boostMethod?: PvMMethod[] | readonly PvMMethod[];
-	attackStyles: AttackStyles[];
 }
 
 export interface BlowpipeData {

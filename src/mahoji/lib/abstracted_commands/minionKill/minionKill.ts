@@ -2,12 +2,8 @@ import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'disco
 
 import { colosseumCommand } from '../../../../lib/colosseum';
 import type { PvMMethod } from '../../../../lib/constants';
-
 import { trackLoot } from '../../../../lib/lootTrack';
-
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
-
-import { degradeChargeBank } from '../../../../lib/degradeableItems';
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../../lib/util';
@@ -90,39 +86,29 @@ export async function minionKillCommand(
 		return result;
 	}
 
-	if (result.charges.length() > 0) {
-		const hasChargesResult = user.hasCharges(result.charges);
-		if (!hasChargesResult.hasCharges) {
-			return hasChargesResult.fullUserString!;
-		}
-		const degradeResults = await degradeChargeBank(user, result.charges);
-		result.messages.push(degradeResults.map(i => i.userMessage).join(', '));
+	if (!user.bank.has(result.updateBank.itemCostBank)) {
+		return `You don't have the items needed to kill this monster. You need: ${result.updateBank.itemCostBank}`;
 	}
 
-	if (!user.bank.has(result.lootToRemove)) {
-		return `You don't have the items needed to kill this monster. You need: ${result.lootToRemove}`;
+	const updateResult = await result.updateBank.transact(user);
+	if (typeof updateResult === 'string') {
+		return updateResult;
 	}
 
-	if (result.lootToRemove.length > 0) {
-		await updateBankSetting('economyStats_PVMCost', result.lootToRemove);
-		await user.specialRemoveItems(result.lootToRemove, { wildy: !!result.isInWilderness });
+	if (result.updateBank.itemCostBank.length > 0) {
+		await updateBankSetting('economyStats_PVMCost', result.updateBank.itemCostBank);
 		await trackLoot({
 			id: monster.name,
-			totalCost: result.lootToRemove,
+			totalCost: result.updateBank.itemCostBank,
 			type: 'Monster',
 			changeType: 'cost',
 			users: [
 				{
 					id: user.id,
-					cost: result.lootToRemove
+					cost: result.updateBank.itemCostBank
 				}
 			]
 		});
-	}
-
-	if (result.charges.length() > 0) {
-		const degradeResults = await degradeChargeBank(user, result.charges);
-		result.messages.push(degradeResults.map(i => i.userMessage).join(', '));
 	}
 
 	const { bob, usingCannon, cannonMulti, chinning, hasWildySupplies } = result.currentTaskOptions;

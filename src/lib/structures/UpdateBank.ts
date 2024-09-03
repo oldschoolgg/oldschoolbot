@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { objectEntries } from 'e';
 import { mergeDeep } from 'remeda';
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
+import type { MUserClass } from '../MUser';
 import { degradeChargeBank } from '../degradeableItems';
 import type { GearSetup } from '../gear/types';
 import type { ItemBank } from '../types';
@@ -44,20 +45,20 @@ export class UpdateBank {
 		}
 		this.gearChanges = mergeDeep(this.gearChanges, other.gearChanges);
 		this.userStats = mergeDeep(this.userStats, other.userStats);
-		// this.userUpdates = mergeDeep(this.userUpdates, other.userUpdates);
+		this.userUpdates = mergeDeep(this.userUpdates, other.userUpdates);
 	}
 
-	async transact(user: MUser) {
+	async transact(user: MUser, { isInWilderness }: { isInWilderness?: boolean } = { isInWilderness: false }) {
 		// Check everything first
 		if (this.chargeBank.length() > 0) {
 			const charges = user.hasCharges(this.chargeBank);
 			if (!charges.hasCharges) {
-				return { error: charges.fullUserString! };
+				return charges.fullUserString!;
 			}
 		}
 
 		if (this.itemCostBank.length > 0 && !user.bank.has(this.itemCostBank)) {
-			return { error: `You need these items: ${this.itemCostBank}` };
+			return `You need these items: ${this.itemCostBank}`;
 		}
 
 		// Start removing/updating things
@@ -69,14 +70,12 @@ export class UpdateBank {
 		}
 
 		// Loot/Cost
-		if (this.itemCostBank.length > 0 || this.itemLootBank.length > 0) {
-			promises.push(
-				user.transactItems({
-					itemsToAdd: this.itemLootBank,
-					itemsToRemove: this.itemCostBank,
-					collectionLog: true
-				})
-			);
+		if (this.itemCostBank.length > 0) {
+			await user.specialRemoveItems(this.itemCostBank, { isInWilderness });
+		}
+		let itemTransactionResult: Awaited<ReturnType<MUserClass['addItemsToBank']>> | null = null;
+		if (this.itemLootBank.length > 0) {
+			itemTransactionResult = await user.addItemsToBank({ items: this.itemLootBank, collectionLog: true });
 		}
 
 		// XP
@@ -114,7 +113,9 @@ export class UpdateBank {
 		}
 
 		const results = await Promise.all(promises);
+		await user.sync();
 		return {
+			itemTransactionResult,
 			rawResults: results,
 			message: results.filter(r => typeof r === 'string').join(', ')
 		};

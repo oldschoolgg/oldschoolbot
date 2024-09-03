@@ -1,13 +1,12 @@
-import { Time, calcPercentOfNum, calcWhatPercent, objectKeys, uniqueArr } from 'e';
+import { calcWhatPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
-import { BitField, PeakTier, type PvMMethod } from '../../../../lib/constants';
-import { Eatables } from '../../../../lib/data/eatables';
+import type { PvMMethod } from '../../../../lib/constants';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
-import type { GearSetupType, OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
+import type { OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
 import {
 	SlayerActivityConstants,
 	boostCannon,
@@ -20,19 +19,17 @@ import {
 	iceBurstConsumables
 } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
-import { calculateMonsterFoodRaw } from '../../../../lib/minions/functions/calculateMonsterFood';
-import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
-import { removeFoodFromUserRaw } from '../../../../lib/minions/functions/removeFoodFromUser';
+import type { AttackStyles } from '../../../../lib/minions/functions';
 import type { Consumable } from '../../../../lib/minions/types';
 import { ChargeBank } from '../../../../lib/structures/Bank';
 import { maxOffenceStats } from '../../../../lib/structures/Gear';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import { convertAttackStyleToGearSetup, itemNameFromID } from '../../../../lib/util';
-import { calcWildyPKChance } from '../../../../lib/util/calcWildyPkChance';
+import { itemNameFromID } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
 import { determineIfUsingCannon } from './determineIfUsingCannon';
-import { calculateVirtusBoost, dragonHunterWeapons, noFoodBoost } from './minionKillData';
+import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData';
 import type { MinionKillOptions } from './newMinionKill';
+import type { PostBoostEffect } from './postBoostEffects';
 import { staticEquippedItemBoosts } from './staticEquippedItemBoosts';
 
 const revSpecialWeapons = {
@@ -67,7 +64,7 @@ export type BoostResult = {
 	consumables?: Consumable[];
 	itemCost?: Bank;
 	charges?: ChargeBank;
-	changes?: CombatMethodOptions;
+	changes?: { attackStyles?: AttackStyles[] } & CombatMethodOptions;
 	confirmation?: string;
 };
 
@@ -275,8 +272,9 @@ const blackMaskBoost: Boost = {
 		return null;
 	}
 };
+
 // if an array, only the highest applies
-export const boosts: (Boost | Boost[])[] = [
+export const mainBoostEffects: (Boost | Boost[])[] = [
 	{
 		description: 'Static Item Boosts',
 		run: ({ isInWilderness, gearBank, primaryStyle: style, combatMethods }) => {
@@ -328,7 +326,17 @@ export const boosts: (Boost | Boost[])[] = [
 		run: ({ monster, attackStyles, combatMethods, isOnTask, isInWilderness, gearBank }) => {
 			const isBarraging = combatMethods.includes('barrage');
 			const isBursting = combatMethods.includes('burst');
+
 			if (!isBarraging && !isBursting) return null;
+
+			let newAttackStyles = [...attackStyles];
+			if (!newAttackStyles.includes(SkillsEnum.Magic)) {
+				newAttackStyles = [SkillsEnum.Magic];
+				if (attackStyles.includes(SkillsEnum.Defence)) {
+					newAttackStyles.push(SkillsEnum.Defence);
+				}
+			}
+
 			const { virtusBoost } = calculateVirtusBoost({ isInWilderness, gearBank, isOnTask });
 			if (isBarraging && attackStyles.includes(SkillsEnum.Magic) && monster.canBarrage) {
 				return {
@@ -336,7 +344,8 @@ export const boosts: (Boost | Boost[])[] = [
 					consumables: [iceBarrageConsumables],
 					message: `${boostIceBarrage + virtusBoost}% for Ice Barrage`,
 					changes: {
-						bob: SlayerActivityConstants.IceBarrage
+						bob: SlayerActivityConstants.IceBarrage,
+						attackStyles: newAttackStyles
 					}
 				};
 			}
@@ -347,7 +356,8 @@ export const boosts: (Boost | Boost[])[] = [
 					consumables: [iceBurstConsumables],
 					message: `${boostIceBurst + virtusBoost}% for Ice Burst`,
 					changes: {
-						bob: SlayerActivityConstants.IceBurst
+						bob: SlayerActivityConstants.IceBurst,
+						attackStyles: newAttackStyles
 					}
 				};
 			}
@@ -424,146 +434,6 @@ export const boosts: (Boost | Boost[])[] = [
 				}
 			}
 			return results;
-		}
-	}
-];
-
-// Runs after we know the quantity/duration/etc
-export type PostBoostEffect = {
-	description: string;
-	run: (args: { duration: number; quantity: number } & Omit<BoostArgs, 'addPostBoostEffect'>) => BoostReturn;
-};
-export const postBoostEffects: PostBoostEffect[] = [
-	{
-		description: 'Food',
-		run: ({ monster, isInWilderness, quantity, monsterKC, gearBank, favoriteFood }) => {
-			if (!monster.healAmountNeeded || !monster.attackStyleToUse || !monster.attackStylesUsed) {
-				return {
-					percentageReduction: noFoodBoost,
-					message: `${noFoodBoost}% for no food`
-				};
-			}
-			let foodStr = '';
-			const [healAmountNeeded, foodMessages] = calculateMonsterFoodRaw(gearBank, monster);
-			foodStr += foodMessages;
-
-			let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
-			if (isInWilderness) gearToCheck = 'wildy';
-
-			const [, percentReduced] = reducedTimeFromKC(monster, monsterKC);
-			const foodRemoveResult = removeFoodFromUserRaw({
-				gearBank: gearBank,
-				favoriteFood,
-				totalHealingNeeded: healAmountNeeded * quantity,
-				attackStylesUsed: isInWilderness
-					? ['wildy']
-					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced,
-				isWilderness: isInWilderness
-			});
-
-			if (foodRemoveResult === null || foodRemoveResult.foodToRemove.length === 0) {
-				return {
-					percentageReduction: noFoodBoost,
-					message: `${noFoodBoost}% for no food`
-				};
-			}
-
-			const results: BoostResult[] = [];
-			for (const [item, qty] of foodRemoveResult.foodToRemove.items()) {
-				const eatable = Eatables.find(e => e.id === item.id);
-				if (!eatable) continue;
-
-				const healAmount =
-					typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(gearBank);
-				const amountHealed = qty * healAmount;
-				if (amountHealed < calcPercentOfNum(75 * foodRemoveResult.reductionRatio, healAmountNeeded * quantity))
-					continue;
-				const boost = eatable.pvmBoost;
-				if (boost) {
-					if (boost < 0) {
-						results.push({
-							percentageIncrease: Math.abs(boost),
-							message: `${boost}% slower for using ${eatable.name}`
-						});
-					} else {
-						results.push({
-							percentageReduction: boost,
-							message: `${boost}% for ${eatable.name}`
-						});
-					}
-				}
-				break;
-			}
-
-			results.push({
-				itemCost: foodRemoveResult.foodToRemove,
-				message: foodStr
-			});
-			return results;
-		}
-	},
-	{
-		description: 'PVP',
-		run: ({ monster, isInWilderness, currentTaskOptions, duration, gearBank, pkEvasionExperience, bitfield }) => {
-			if (!isInWilderness) return null;
-
-			let confirmationString: string | undefined = undefined;
-			const messages: string[] = [];
-
-			let hasWildySupplies = undefined;
-
-			const antiPkBrewsNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
-			const antiPkRestoresNeeded = Math.max(1, Math.floor(duration / (8 * Time.Minute)));
-			const antiPkKarambwanNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
-
-			const antiPKSupplies = new Bank().add('Saradomin brew(4)', antiPkBrewsNeeded);
-
-			// Restores
-			if (gearBank.bank.amount('Blighted super restore(4)') >= antiPkRestoresNeeded) {
-				antiPKSupplies.add('Blighted super restore(4)', antiPkRestoresNeeded);
-			} else {
-				antiPKSupplies.add('Super restore(4)', antiPkRestoresNeeded);
-			}
-
-			// Food
-			if (gearBank.bank.amount('Blighted karambwan') >= antiPkKarambwanNeeded + 20) {
-				antiPKSupplies.add('Blighted karambwan', antiPkKarambwanNeeded);
-			} else {
-				antiPKSupplies.add('Cooked karambwan', antiPkKarambwanNeeded);
-			}
-
-			hasWildySupplies = true;
-			if (!gearBank.bank.has(antiPKSupplies)) {
-				hasWildySupplies = false;
-				confirmationString = `Are you sure you want to kill ${monster.name} without anti-pk supplies? You should bring at least ${antiPKSupplies} on this trip for safety to not die and potentially get smited.`;
-			} else {
-				messages.push(
-					'Your minion brought some supplies to survive potential pkers. (Handed back after trip if lucky)'
-				);
-			}
-			const { pkCount, died, chanceString, currentPeak } = calcWildyPKChance(
-				gearBank,
-				monster,
-				duration,
-				hasWildySupplies,
-				Boolean(currentTaskOptions.usingCannon),
-				pkEvasionExperience
-			);
-			messages.push(chanceString);
-			if (currentPeak.peakTier === PeakTier.High && !bitfield.includes(BitField.DisableHighPeakTimeWarning)) {
-				confirmationString = `Are you sure you want to kill ${monster.name} during high peak time? PKers are more active.`;
-			}
-
-			return {
-				message: messages.join(', '),
-				confirmation: confirmationString,
-				changes: {
-					pkEncounters: pkCount,
-					died: died,
-					hasWildySupplies
-				}
-			};
 		}
 	}
 ];

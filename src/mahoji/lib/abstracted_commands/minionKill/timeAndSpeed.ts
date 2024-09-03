@@ -6,10 +6,12 @@ import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFrom
 import type { Consumable } from '../../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../../lib/poh';
 import { ChargeBank } from '../../../../lib/structures/Bank';
+import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { SkillsRequired } from '../../../../lib/types';
 import { itemNameFromID } from '../../../../lib/util';
 import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
-import { type BoostArgs, type BoostResult, type CombatMethodOptions, boosts } from './speedBoosts';
+import { getItemCostFromConsumables } from './handleConsumables';
+import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
 
 function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = sumArr(styles.map(s => skillsAsLevels[s]));
@@ -29,7 +31,7 @@ function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, style
 }
 
 export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
-	const { monster, monsterKC, attackStyles, poh, isInWilderness, gearBank } = args;
+	const { monster, monsterKC, attackStyles, poh, isInWilderness, gearBank, maxTripLength } = args;
 	const { skillsAsLevels } = args.gearBank;
 	const messages: string[] = [];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
@@ -59,7 +61,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	const consumables: Consumable[] = [];
 	const confirmations: string[] = [];
 
-	for (const boost of boosts) {
+	for (const boost of mainBoostEffects) {
 		const results: BoostResult[] = [];
 		for (const b of Array.isArray(boost) ? boost : [boost]) {
 			const res = b.run({ ...args, currentTaskOptions });
@@ -75,30 +77,47 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 				if (boostResult.changes) {
 					currentTaskOptions = mergeDeep(currentTaskOptions, boostResult.changes);
 				}
-
 				if (boostResult.percentageReduction) {
 					timeToFinish = reduceNumByPercent(timeToFinish, boostResult.percentageReduction);
 				} else if (boostResult.percentageIncrease) {
 					timeToFinish = increaseNumByPercent(timeToFinish, boostResult.percentageIncrease);
 				}
-
 				if (boostResult.itemCost) itemCost.add(boostResult.itemCost);
-				if (boostResult.consumables) if (boostResult.charges) charges.add(boostResult.charges);
+				if (boostResult.consumables) consumables.push(...boostResult.consumables);
+				if (boostResult.charges) charges.add(boostResult.charges);
 				if (boostResult.confirmation) confirmations.push(boostResult.confirmation);
 				if (boostResult.message) messages.push(boostResult.message);
-
 				results.push(boostResult);
 			}
 		}
 	}
 
+	if (monster.itemCost) consumables.push(monster.itemCost);
+
+	const consumablesCost = getItemCostFromConsumables({
+		consumableCosts: consumables,
+		gearBank,
+		quantity: args.inputQuantity ?? Math.floor(maxTripLength / monster.timeToFinish),
+		timeToFinish
+	});
+
+	const updateBank = new UpdateBank();
+	updateBank.itemCostBank.add(itemCost);
+	updateBank.chargeBank.add(charges);
+
+	if (consumablesCost) {
+		if (consumablesCost?.maxCanKillWithItemCost < 1) {
+			return `You don't have the items needed to kill this monster. You need: ${monster.itemCost!.itemCost}`;
+		}
+		updateBank.itemCostBank.add(consumablesCost.itemCost);
+	}
+
 	return {
 		timeToFinish,
 		messages,
-		consumables,
 		currentTaskOptions,
-		charges,
-		itemCost,
-		confirmations
+		maxCanKillWithItemCost: consumablesCost?.maxCanKillWithItemCost,
+		confirmations,
+		updateBank
 	};
 }

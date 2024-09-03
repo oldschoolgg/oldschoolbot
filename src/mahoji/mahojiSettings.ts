@@ -301,6 +301,13 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		}
 	}
 
+	if (monster.itemCost) {
+		const cost = new Bank(monster.itemCost.itemCost);
+		if (!user.bank.has(cost)) {
+			return [false, `You don't have the items needed to kill this monster. You need: ${cost}.`];
+		}
+	}
+
 	return [true];
 }
 

@@ -10,10 +10,11 @@ export function getItemCostFromConsumables({
 	consumableCosts,
 	gearBank,
 	quantity,
-	duration,
 	timeToFinish
-}: { timeToFinish: number; quantity: number; duration: number; consumableCosts: Consumable[]; gearBank: GearBank }) {
+}: { timeToFinish: number; quantity: number; consumableCosts: Consumable[]; gearBank: GearBank }) {
 	if (consumableCosts.length === 0) return;
+
+	const duration = timeToFinish * quantity;
 	const perKillCost = new Bank();
 
 	for (const cc of consumableCosts) {
@@ -62,13 +63,8 @@ export function getItemCostFromConsumables({
 
 	if (hasInfiniteWaterRunes) perKillCost.remove('Water rune', perKillCost.amount('Water rune'));
 
-	const fits = gearBank.bank.fits(perKillCost);
-	let newDuration = duration;
-	let newQuantity = quantity;
-	if (fits < Number(quantity)) {
-		newDuration = Math.floor(duration * (fits / Number(quantity)));
-		newQuantity = fits;
-	}
+	const maxCanKillWithItemCost = Math.floor(gearBank.bank.fits(perKillCost));
+
 	const { bank } = perKillCost.clone().multiply(Number(quantity));
 
 	for (const [item, qty] of Object.entries(bank)) {
@@ -77,7 +73,6 @@ export function getItemCostFromConsumables({
 
 	return {
 		itemCost: new Bank(bank),
-		newDuration,
-		newQuantity
+		maxCanKillWithItemCost
 	};
 }
