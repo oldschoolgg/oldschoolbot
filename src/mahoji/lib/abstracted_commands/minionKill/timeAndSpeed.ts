@@ -107,7 +107,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	if (consumablesCost) {
 		if (consumablesCost?.maxCanKillWithItemCost < 1) {
-			return `You don't have the items needed to kill this monster. You need: ${monster.itemCost!.itemCost}`;
+			return `You don't have the items needed to kill this monster. You need: ${consumablesCost?.itemCost}`;
 		}
 		updateBank.itemCostBank.add(consumablesCost.itemCost);
 	}
