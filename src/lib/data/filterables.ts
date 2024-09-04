@@ -1,5 +1,5 @@
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import { Lampables, XPLamps } from '../../mahoji/lib/abstracted_commands/lampCommand';
+import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
 import Potions from '../minions/data/potions';
 import { allOpenables } from '../openables';
 import { gracefulItems } from '../skilling/skills/agility';
@@ -903,7 +903,7 @@ export const baseFilters: Filterable[] = [
 		name: 'Lamps',
 		aliases: ['lamps'],
 		items: () => Lampables.flatMap(i => i.items)
-		},
+	},
 	{
 		name: 'Openables',
 		aliases: ['opens'],
