@@ -18,12 +18,12 @@ export async function forestersRationCommand({
 	name: string;
 	quantity?: number;
 }) {
-	const foresrtyFood = ForestryRations.find(
+	const forestryFood = ForestryRations.find(
 		foresterRation =>
 			stringMatches(foresterRation.name, name) || stringMatches(foresterRation.name.split(' ')[0], name)
 	);
 
-	if (!foresrtyFood) return 'That is not a valid ration';
+	if (!forestryFood) return 'That is not a valid ration';
 
 	if (user.skillLevel('woodcutting') < 35 || user.skillLevel('cooking') < 35) {
 		return 'You need 35 woodcutting and 35 cooking to create forestry rations.';
@@ -34,11 +34,11 @@ export async function forestersRationCommand({
 
 	if (!quantity) quantity = Math.floor(maxTripLength / rationCookTime);
 
-	const baseCost = new Bank().add(foresrtyFood.inputFood).add(foresrtyFood.inputLeaf);
+	const baseCost = new Bank().add(forestryFood.inputFood).add(forestryFood.inputLeaf);
 
 	const maxCanDo = user.bank.fits(baseCost);
 	if (maxCanDo === 0) {
-		return `You don't have enough supplies to create even one of this item!\nTo create a ${foresrtyFood.name}, you need to have ${baseCost}.`;
+		return `You don't have enough supplies to create even one of this item!\nTo create a ${forestryFood.name}, you need to have ${baseCost}.`;
 	}
 	if (maxCanDo < quantity) {
 		quantity = maxCanDo;
@@ -49,7 +49,7 @@ export async function forestersRationCommand({
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${foresrtyFood.name}'s you can create is ${Math.floor(
+		)}, try a lower quantity. The highest amount of ${forestryFood.name}'s you can create is ${Math.floor(
 			maxTripLength / rationCookTime
 		)}.`;
 	}
@@ -65,13 +65,13 @@ export async function forestersRationCommand({
 	await addSubTaskToActivityTask<CreateForestersRationsActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
-		rationName: foresrtyFood.name,
+		rationName: forestryFood.name,
 		quantity,
 		duration,
 		type: 'CreateForestersRations'
 	});
 
 	return `${user.minionName} is now creating ${quantity}x ${
-		foresrtyFood.name
+		forestryFood.name
 	}, it'll take around ${formatDuration(duration)} to finish.`;
 }

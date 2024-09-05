@@ -65,12 +65,12 @@ export const cookCommand: OSBMahojiCommand = {
 			return cutLeapingFishCommand({ user, channelID, name, quantity });
 		}
 
-		const foresrtyFood = ForestryRations.find(
+		const forestryFood = ForestryRations.find(
 			foresterRation =>
 				stringMatches(foresterRation.name, name) || stringMatches(foresterRation.name.split(' ')[0], name)
 		);
 
-		if (foresrtyFood) {
+		if (forestryFood) {
 			return forestersRationCommand({ user, channelID, name, quantity });
 		}
 
