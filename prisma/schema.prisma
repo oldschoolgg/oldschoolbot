@@ -944,6 +944,7 @@ enum activity_type_enum {
   CamdozaalSmithing
   MyNotes
   Colosseum
+  CreateForestersRations
 }
 
 enum xp_gains_skill_enum {

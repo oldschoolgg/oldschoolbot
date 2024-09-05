@@ -151,6 +151,13 @@ export interface Cookable {
 	alias?: string[];
 }
 
+export interface ForesterRation {
+	name: string;
+	inputLeaf: ItemBank;
+	inputFood: ItemBank;
+	rationsAmount: number;
+}
+
 export interface Bar {
 	level: number;
 	xp: number;

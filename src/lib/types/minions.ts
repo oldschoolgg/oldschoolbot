@@ -268,6 +268,12 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	wesley: boolean;
 }
 
+export interface CreateForestersRationsActivityTaskOptions extends ActivityTaskOptions {
+	type: 'CreateForestersRations';
+	rationName: string;
+	quantity: number;
+}
+
 export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
 	type: 'CutLeapingFish';
 	fishID: number;
@@ -614,4 +620,5 @@ export type ActivityTaskData =
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
+	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions;
