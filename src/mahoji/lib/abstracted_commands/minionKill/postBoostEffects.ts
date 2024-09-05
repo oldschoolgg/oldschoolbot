@@ -6,6 +6,7 @@ import { Eatables } from '../../../../lib/data/eatables';
 import { calculateMonsterFoodRaw } from '../../../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import { removeFoodFromUserRaw } from '../../../../lib/minions/functions/removeFoodFromUser';
+import type { Peak } from '../../../../lib/tickers';
 import { convertAttackStyleToGearSetup } from '../../../../lib/util';
 import { calcWildyPKChance } from '../../../../lib/util/calcWildyPkChance';
 import type { BoostArgs, BoostResult } from './speedBoosts';
@@ -20,7 +21,10 @@ type PostBoostEffectReturn = Pick<
 export type PostBoostEffect = {
 	description: string;
 	run: (
-		args: { duration: number; quantity: number } & Omit<BoostArgs, 'addPostBoostEffect' | 'itemCost'>
+		args: { currentPeak: Peak; duration: number; quantity: number } & Omit<
+			BoostArgs,
+			'addPostBoostEffect' | 'itemCost'
+		>
 	) => null | undefined | PostBoostEffectReturn | PostBoostEffectReturn[];
 };
 export const postBoostEffects: PostBoostEffect[] = [
@@ -93,7 +97,16 @@ export const postBoostEffects: PostBoostEffect[] = [
 	},
 	{
 		description: 'PVP',
-		run: ({ monster, isInWilderness, currentTaskOptions, duration, gearBank, pkEvasionExperience, bitfield }) => {
+		run: ({
+			monster,
+			isInWilderness,
+			currentTaskOptions,
+			duration,
+			gearBank,
+			pkEvasionExperience,
+			bitfield,
+			currentPeak
+		}) => {
 			if (!isInWilderness) return;
 
 			let confirmationString: string | undefined = undefined;
@@ -130,7 +143,8 @@ export const postBoostEffects: PostBoostEffect[] = [
 					'Your minion brought some supplies to survive potential pkers. (Handed back after trip if lucky)'
 				);
 			}
-			const { pkCount, died, chanceString, currentPeak } = calcWildyPKChance(
+			const { pkCount, died, chanceString } = calcWildyPKChance(
+				currentPeak,
 				gearBank,
 				monster,
 				duration,

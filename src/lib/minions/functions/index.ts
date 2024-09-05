@@ -3,7 +3,7 @@ import { Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP, type PvMMethod } from '../../constants';
-import type { PrimaryGearSetupType } from '../../gear/types';
+import { GearStat, type OffenceGearStat, type PrimaryGearSetupType } from '../../gear/types';
 import { SkillsEnum } from '../../skilling/types';
 import { XPBank } from '../../structures/XPBank';
 import { randomVariation } from '../../util';
@@ -64,6 +64,10 @@ export function resolveAttackStyles({
 		} else {
 			attackStyles = [SkillsEnum.Magic];
 		}
+	}
+
+	if (attackStyles.includes(SkillsEnum.Magic) && attackStyles.includes(SkillsEnum.Ranged)) {
+		attackStyles = [SkillsEnum.Magic];
 	}
 	return attackStyles;
 }
@@ -188,8 +192,15 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	return `**XP Gains:** ${result}`;
 }
 
-export function convertAttackStylesToSetup(styles: AttackStyles | User['attack_style']): PrimaryGearSetupType {
-	if (styles.includes(SkillsEnum.Magic)) return 'mage';
-	if (styles.includes(SkillsEnum.Ranged)) return 'range';
-	return 'melee';
+const gearStyleMap = { melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, range: GearStat.AttackRanged } as const;
+
+export function getAttackStylesContext(styles: AttackStyles | User['attack_style']) {
+	let primaryStyle: PrimaryGearSetupType = 'melee';
+	if (styles.includes(SkillsEnum.Magic)) primaryStyle = 'mage';
+	else if (styles.includes(SkillsEnum.Ranged)) primaryStyle = 'range';
+	const relevantGearStat: OffenceGearStat = gearStyleMap[primaryStyle];
+	return {
+		primaryStyle,
+		relevantGearStat
+	};
 }

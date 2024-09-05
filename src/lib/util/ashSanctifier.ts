@@ -50,7 +50,7 @@ export function ashSanctifierEffect({
 
 	const updateBank = new UpdateBank();
 	updateBank.xpBank.add('prayer', totalXP, { duration, minimal: true, multiplier: false, source: 'AshSanctifier' });
-	updateBank.chargeBank.add('ash_sanctifier_charges', -1 * (startingAshSanctifierCharges - chargesLeft));
+	updateBank.chargeBank.add('ash_sanctifier_charges', startingAshSanctifierCharges - chargesLeft);
 	updateBank.userStats.ash_sanctifier_prayer_xp = {
 		increment: Math.floor(totalXP)
 	};

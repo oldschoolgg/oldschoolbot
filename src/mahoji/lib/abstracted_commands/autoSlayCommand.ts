@@ -555,7 +555,7 @@ export async function autoSlayCommand({
 	}
 	await runCommand({
 		commandName: 'k',
-		args: { name: usersTask.assignedTask?.monster.name },
+		args: { name: usersTask.assignedTask?.monster.name, wilderness: Boolean(usersTask.assignedTask.wilderness) },
 		bypassInhibitors: true,
 		...cmdRunOptions
 	});

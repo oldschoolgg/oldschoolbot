@@ -21,13 +21,19 @@ export function determineIfUsingCannon({
 	isOnTask: boolean;
 	combatMethods: PvMMethod[];
 }) {
+	if (!combatMethods.includes('cannon')) {
+		return {
+			usingCannon: false,
+			cannonMulti: false
+		};
+	}
 	const hasCannon = cannonBanks.some(i => gearBank.bank.has(i));
 	if (combatMethods.includes('cannon') && !hasCannon) {
 		return "You don't have a cannon in your bank.";
 	}
 
-	let usingCannon = false;
-	let cannonMulti = false;
+	let usingCannon = monster.canCannon;
+	let cannonMulti = monster.cannonMulti;
 
 	if (isInWilderness && combatMethods.includes('cannon')) {
 		if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
@@ -48,7 +54,6 @@ export function determineIfUsingCannon({
 			}
 		}
 
-		// wildy bosses
 		if (monstersCantBeCannoned.includes(monster.id)) {
 			return {
 				usingCannon: false,

@@ -4,6 +4,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
+
 import type { PvMMethod } from '../../../../lib/constants';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
 import type { OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
@@ -155,7 +156,7 @@ const chinningBoost: Boost = {
 			const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
 			let chinchompa = chinchompas[0];
 			for (const chin of chinchompas) {
-				if (gearBank.bank.has(chin) && gearBank.bank.amount(chin) > 5000) {
+				if (gearBank.bank.has(chin) && gearBank.bank.amount(chin) >= 5000) {
 					chinchompa = chin;
 					break;
 				}
@@ -170,13 +171,19 @@ const chinningBoost: Boost = {
 				return {
 					percentageReduction: chinBoostLongRanged,
 					consumables: [chinningConsumables],
-					message: `${chinBoostLongRanged}% for ${chinchompa} Longrange`
+					message: `${chinBoostLongRanged}% for ${chinchompa} Longrange`,
+					changes: {
+						chinning: true
+					}
 				};
 			} else {
 				return {
 					percentageReduction: chinBoostRapid,
 					consumables: [chinningConsumables],
-					message: `${chinBoostRapid}% for ${chinchompa} Rapid`
+					message: `${chinBoostRapid}% for ${chinchompa} Rapid`,
+					changes: {
+						chinning: true
+					}
 				};
 			}
 		}
@@ -275,23 +282,6 @@ const blackMaskBoost: Boost = {
 
 // if an array, only the highest applies
 export const mainBoostEffects: (Boost | Boost[])[] = [
-	{
-		description: 'Static Item Boosts',
-		run: ({ isInWilderness, gearBank, primaryStyle: style, combatMethods }) => {
-			for (const item of staticEquippedItemBoosts) {
-				const equipped = gearBank.wildyGearCheck(item.item.id, isInWilderness);
-				if (!equipped) continue;
-				if (style !== item.attackStyle) continue;
-				if (item.anyRequiredPVMMethod.every(m => !combatMethods.includes(m))) continue;
-
-				return {
-					percentageReduction: item.percentageBoost,
-					message: `15% boost for ${item.item.name}`
-				};
-			}
-			return null;
-		}
-	},
 	[dragonHunterBoost, revWildyGearBoost],
 	[salveBoost, blackMaskBoost],
 	{
@@ -320,7 +310,8 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			return results;
 		}
 	},
-	[cannonBoost, chinningBoost],
+	chinningBoost,
+	cannonBoost,
 	{
 		description: 'Barrage/Bursting',
 		run: ({ monster, attackStyles, combatMethods, isOnTask, isInWilderness, gearBank }) => {
@@ -434,6 +425,23 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				}
 			}
 			return results;
+		}
+	},
+	{
+		description: 'Static Item Boosts',
+		run: ({ isInWilderness, gearBank, primaryStyle: style, combatMethods }) => {
+			for (const item of staticEquippedItemBoosts) {
+				const equipped = gearBank.wildyGearCheck(item.item.id, isInWilderness);
+				if (!equipped) continue;
+				if (style !== item.attackStyle) continue;
+				if (item.anyRequiredPVMMethod.every(m => !combatMethods.includes(m))) continue;
+
+				return {
+					percentageReduction: item.percentageBoost,
+					message: `15% boost for ${item.item.name}`
+				};
+			}
+			return null;
 		}
 	}
 ];

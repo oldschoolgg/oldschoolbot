@@ -6,7 +6,7 @@ import { Bank, type EMonster, Monsters } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
-import { vi } from 'vitest';
+import { expect, vi } from 'vitest';
 import { MUserClass } from '../../src/lib/MUser';
 import { completeActivity, processPendingActivities } from '../../src/lib/Task';
 import { type PvMMethod, globalConfig } from '../../src/lib/constants';
@@ -126,7 +126,7 @@ export class TestUser extends MUserClass {
 		this.user = user;
 	}
 
-	async kill(monster: EMonster, { method }: { method?: PvMMethod } = {}) {
+	async kill(monster: EMonster, { method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean } = {}) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
 		const commandResult = await this.runCommand(
@@ -134,7 +134,10 @@ export class TestUser extends MUserClass {
 			{ name: Monsters.get(monster)!.name, method },
 			true
 		);
-		await this.runActivity();
+		if (shouldFail) {
+			expect(commandResult).not.toContain('is now killing');
+		}
+		const activityResult = await this.runActivity();
 		const newKC = await this.getKC(monster);
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
@@ -143,7 +146,7 @@ export class TestUser extends MUserClass {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
 
-		return { commandResult, newKC, xpGained, previousBank };
+		return { commandResult, newKC, xpGained, previousBank, activityResult };
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
@@ -210,6 +213,8 @@ export async function mockUser(
 		slayerLevel: number;
 		venatorBowCharges: number;
 		bank: Bank;
+		QP: number;
+		maxed: boolean;
 	}>
 ) {
 	const rangeGear = new Gear();
@@ -228,10 +233,14 @@ export async function mockUser(
 		skills_ranged: options.rangeLevel ? convertLVLtoXP(options.rangeLevel) : undefined,
 		skills_slayer: options.slayerLevel ? convertLVLtoXP(options.slayerLevel) : undefined,
 		skills_magic: options.mageLevel ? convertLVLtoXP(options.mageLevel) : undefined,
-		gear_mage: options.rangeGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_mage: options.mageGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
-		venator_bow_charges: options.venatorBowCharges
+		venator_bow_charges: options.venatorBowCharges,
+		QP: options.QP
 	});
+	if (options.maxed) {
+		await user.max();
+	}
 	await prisma.newUser.create({
 		data: {
 			id: user.id

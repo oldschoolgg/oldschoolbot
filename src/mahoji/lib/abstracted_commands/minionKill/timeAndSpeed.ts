@@ -1,7 +1,8 @@
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
-import type { AttackStyles } from '../../../../lib/minions/functions';
+
+import { type AttackStyles, getAttackStylesContext } from '../../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import type { Consumable } from '../../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../../lib/poh';
@@ -36,12 +37,10 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	const messages: string[] = [];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
 	const [newTime, skillBoostMsg] = applySkillBoost(skillsAsLevels, timeToFinish, attackStyles);
-
 	timeToFinish = newTime;
 	messages.push(skillBoostMsg);
 
 	if (percentReduced >= 1) messages.push(`${percentReduced}% for KC`);
-
 	if (monster.pohBoosts) {
 		const [boostPercent, messages] = calcPOHBoosts(poh, monster.pohBoosts);
 		if (boostPercent > 0) {
@@ -64,7 +63,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	for (const boost of mainBoostEffects) {
 		const results: BoostResult[] = [];
 		for (const b of Array.isArray(boost) ? boost : [boost]) {
-			const res = b.run({ ...args, currentTaskOptions });
+			const res = b.run({ ...args, currentTaskOptions, ...getAttackStylesContext(attackStyles) });
 			if (!res) continue;
 			if (typeof res === 'string') return res;
 			const subResults = (Array.isArray(res) ? res : [res]).flat().sort((a, b) => {

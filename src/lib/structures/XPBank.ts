@@ -23,4 +23,8 @@ export class XPBank {
 	public get length() {
 		return this.xpList.length;
 	}
+
+	public totalXP() {
+		return this.xpList.reduce((acc, curr) => acc + curr.amount, 0);
+	}
 }

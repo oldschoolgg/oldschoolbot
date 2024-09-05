@@ -139,7 +139,7 @@ interface newOptions {
 	bitfield: readonly BitField[];
 }
 
-function doMonsterTrip(data: newOptions) {
+export function doMonsterTrip(data: newOptions) {
 	let {
 		mi: monsterID,
 		q: quantity,
@@ -258,6 +258,7 @@ function doMonsterTrip(data: newOptions) {
 		}
 	}
 	quantity -= deaths;
+	const wiped = quantity === 0;
 
 	const awakenedMonsters = [
 		Monsters.AwakenedDukeSucellus.id,
@@ -321,51 +322,52 @@ function doMonsterTrip(data: newOptions) {
 
 	// Loot
 	const finalQuantity = quantity - newSuperiorCount;
-	const loot = monster.table.kill(finalQuantity, killOptions);
-	if (monster.specialLoot) {
-		monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity });
-	}
-	if (newSuperiorCount) {
-		loot.add(superiorTable?.kill(newSuperiorCount));
-		if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
-		if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
-	}
-	if (isInWilderness && monster.name === 'Hill giant') {
-		for (let i = 0; i < quantity; i++) {
-			if (roll(128)) {
-				loot.add('Giant key');
+
+	const loot = wiped ? new Bank() : monster.table.kill(finalQuantity, killOptions);
+	if (!wiped) {
+		if (monster.specialLoot) {
+			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity });
+		}
+		if (newSuperiorCount) {
+			loot.add(superiorTable?.kill(newSuperiorCount));
+			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
+			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
+		}
+		if (isInWilderness && monster.name === 'Hill giant') {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(128)) {
+					loot.add('Giant key');
+				}
 			}
 		}
-	}
-	updateBank.itemLootBank.add(loot);
-
-	updateBank.xpBank.add(
-		addMonsterXPRaw({
-			monsterID: monster.id,
-			quantity,
-			duration,
-			isOnTask: slayerContext.isOnTask,
-			taskQuantity: slayerContext.isOnTask ? slayerContext.quantitySlayed : null,
-			minimal: true,
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage,
-			superiorCount: newSuperiorCount,
-			attackStyles
-		})
-	);
-
-	if (hasKourendHard) {
-		const ashSanctifierResult = ashSanctifierEffect({
-			hasKourendElite,
-			mutableLootToReceive: loot,
-			gearBank,
-			bitfield,
-			duration
-		});
-		if (ashSanctifierResult) {
-			updateBank.merge(ashSanctifierResult.updateBank);
-			messages.push(ashSanctifierResult.message);
+		updateBank.itemLootBank.add(loot);
+		updateBank.xpBank.add(
+			addMonsterXPRaw({
+				monsterID: monster.id,
+				quantity,
+				duration,
+				isOnTask: slayerContext.isOnTask,
+				taskQuantity: slayerContext.isOnTask ? slayerContext.quantitySlayed : null,
+				minimal: true,
+				usingCannon,
+				cannonMulti,
+				burstOrBarrage,
+				superiorCount: newSuperiorCount,
+				attackStyles
+			})
+		);
+		if (hasKourendHard) {
+			const ashSanctifierResult = ashSanctifierEffect({
+				hasKourendElite,
+				mutableLootToReceive: loot,
+				gearBank,
+				bitfield,
+				duration
+			});
+			if (ashSanctifierResult) {
+				updateBank.merge(ashSanctifierResult.updateBank);
+				messages.push(ashSanctifierResult.message);
+			}
 		}
 	}
 
@@ -404,7 +406,7 @@ function doMonsterTrip(data: newOptions) {
 		}
 	}
 
-	updateBank.kcBank.add(monsterID, quantity);
+	if (!wiped) updateBank.kcBank.add(monsterID, quantity);
 	const newKC = kcBank.amount(monsterID) + quantity;
 
 	return {

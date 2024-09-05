@@ -2,6 +2,7 @@ import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'disco
 
 import { colosseumCommand } from '../../../../lib/colosseum';
 import type { PvMMethod } from '../../../../lib/constants';
+import { getCurrentPeak } from '../../../../lib/getCurrentPeak';
 import { trackLoot } from '../../../../lib/lootTrack';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
@@ -79,7 +80,8 @@ export async function minionKillCommand(
 		combatOptions: user.combatOptions,
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
-		bitfield: user.bitfield
+		bitfield: user.bitfield,
+		currentPeak: getCurrentPeak()
 	});
 
 	if (typeof result === 'string') {

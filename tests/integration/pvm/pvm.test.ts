@@ -1,7 +1,9 @@
 import { Bank, EMonster, Monsters } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { convertLVLtoXP, resolveItems } from '../../../src/lib/util';
+import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
+import { SkillsEnum } from '../../../src/lib/skilling/types';
+import { convertLVLtoXP, itemID, resolveItems } from '../../../src/lib/util';
 import { minionKCommand } from '../../../src/mahoji/commands/k';
 import { createTestUser, mockClient, mockUser } from '../util';
 
@@ -105,7 +107,7 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
-		const result = await user.kill(EMonster.BLOODVELD, { method: 'barrage' });
+		const result = await user.kill(EMonster.BLOODVELD, { method: 'barrage', shouldFail: true });
 		expect(result.commandResult).toEqual('Bloodveld cannot be barraged or burst.');
 	});
 
@@ -116,7 +118,7 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
-		const result = await user.kill(EMonster.NECHRYAEL, { method: 'barrage' });
+		const result = await user.kill(EMonster.NECHRYAEL, { method: 'barrage', shouldFail: true });
 		expect(result.commandResult).toContain("You don't meet the skill requirements");
 	});
 
@@ -127,7 +129,7 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
-		const result = await user.kill(EMonster.NECHRYAEL, { method: 'barrage' });
+		const result = await user.kill(EMonster.NECHRYAEL, { method: 'barrage', shouldFail: true });
 		expect(result.commandResult).toEqual('Nechryael cannot be barraged or burst.');
 	});
 
@@ -145,5 +147,79 @@ describe('PVM', async () => {
 		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
 		expect(result.commandResult).toContain('is now killing ');
 		expect(result.newKC).toBeGreaterThan(0);
+	});
+
+	it('should get kodai buff', async () => {
+		const user = await client.mockUser({
+			slayerLevel: 99,
+			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			mageLevel: 99,
+			mageGear: resolveItems(['Kodai wand'])
+		});
+		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
+		await user.setAttackStyle([SkillsEnum.Magic]);
+		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
+		expect(result.xpGained.magic).toBeGreaterThan(0);
+		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
+		expect(result.newKC).toBeGreaterThan(0);
+	});
+
+	it('should get kodai buff even if forced to switch to mage', async () => {
+		const user = await client.mockUser({
+			slayerLevel: 99,
+			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			mageLevel: 99,
+			mageGear: resolveItems(['Kodai wand'])
+		});
+		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
+		await user.setAttackStyle([SkillsEnum.Attack]);
+		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
+		expect(result.xpGained.magic).toBeGreaterThan(0);
+		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
+		expect(result.commandResult).toContain('% boost for Kodai wand');
+		expect(result.commandResult).toContain('% for Ice Barrage');
+		expect(result.newKC).toBeGreaterThan(0);
+	});
+
+	it('should use cannon', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Cannonball', 100_000).add(CombatCannonItemBank),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true
+		});
+		await user.setAttackStyle([SkillsEnum.Ranged]);
+		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
+		expect(result.xpGained.ranged).toBeGreaterThan(0);
+		expect(user.bank.amount('Cannonball')).toBeLessThan(100_000);
+		expect(result.newKC).toBeGreaterThan(0);
+	});
+
+	it('shouldnt use cannon if no cannonballs', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add(CombatCannonItemBank),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true
+		});
+		await user.setAttackStyle([SkillsEnum.Ranged]);
+		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon', shouldFail: true });
+		expect(result.commandResult).toContain("You don't have the items needed to kill this monster");
+		expect(user.bank.amount('Cannonball')).toEqual(0);
+	});
+
+	it('should use chins', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Red chinchompa', 5000),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true
+		});
+		await user.setAttackStyle([SkillsEnum.Ranged]);
+		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'chinning' });
+		expect(result.commandResult).toContain('% for Red chinchomp');
+		expect(user.bank.amount('Red chinchompa')).toBeLessThan(5000);
 	});
 });

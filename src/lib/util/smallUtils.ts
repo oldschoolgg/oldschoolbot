@@ -14,6 +14,7 @@ import { skillEmoji } from '../data/emojis';
 import type { UserFullGearSetup } from '../gear/types';
 import type { Skills } from '../types';
 import getOSItem from './getOSItem';
+import z from 'zod';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -230,4 +231,20 @@ export function objHasAnyPropInCommon(obj: object, other: object): boolean {
 		if (key in other) return true;
 	}
 	return false;
+}
+
+export const zodEnum = <T>(arr: T[] | readonly T[]): [T, ...T[]] => arr as [T, ...T[]];
+
+export function numberEnum<T extends number>(values: readonly T[]) {
+  const set = new Set<unknown>(values);
+  return (v: number, ctx: z.RefinementCtx): v is T => {
+    if (!set.has(v)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.invalid_enum_value,
+        received: v,
+        options: [...values]
+      });
+    }
+    return z.NEVER;
+  };
 }

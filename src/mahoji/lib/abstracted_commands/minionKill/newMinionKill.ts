@@ -1,21 +1,42 @@
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { floor } from 'lodash';
+import z from 'zod';
 import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import type { BitField, PvMMethod } from '../../../../lib/constants';
-import { GearStat, type OffenceGearStat } from '../../../../lib/gear/types';
-import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
+import { SlayerActivityConstants, type CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
-import { type AttackStyles, convertAttackStylesToSetup, resolveAttackStyles } from '../../../../lib/minions/functions';
+import { type AttackStyles, attackStylesArr, getAttackStylesContext, resolveAttackStyles } from '../../../../lib/minions/functions';
 import type { KillableMonster } from '../../../../lib/minions/types';
 import type { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
 import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/slayer/slayerUtil';
 import type { GearBank } from '../../../../lib/structures/GearBank';
-import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, randomVariation } from '../../../../lib/util';
+import type { Peak } from '../../../../lib/tickers';
+import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, numberEnum, randomVariation, zodEnum } from '../../../../lib/util';
 import { changeQuantityForTaskKillsRemaining } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { speedCalculations } from './timeAndSpeed';
+import { UpdateBank } from '../../../../lib/structures/UpdateBank';
+
+const returnSchema = z.object({
+	duration: z.number().int().positive(),
+	quantity: z.number().int().positive(),
+	isOnTask: z.boolean(),
+	isInWilderness: z.boolean(),	
+	attackStyles: z.array(z.enum(zodEnum(attackStylesArr))),
+	currentTaskOptions: z.object({
+		bob:  z.number().superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst])).optional(),
+		usingCannon: z.boolean().optional(),
+		cannonMulti: z.boolean().optional(),
+		chinning: z.boolean().optional(),
+		hasWildySupplies: z.boolean().optional(),
+		died: z.boolean().optional(),
+		pkEncounters: z.number().int().min(0).optional(),
+		isInWilderness: z.boolean().optional()
+	}),
+	messages: z.array(z.string()),
+	updateBank: z.instanceof(UpdateBank)
+})
 
 export interface MinionKillOptions {
 	attackStyles: AttackStyles[];
@@ -33,6 +54,7 @@ export interface MinionKillOptions {
 	favoriteFood: number[];
 	bitfield: readonly BitField[];
 	pkEvasionExperience: number;
+	currentPeak: Peak;
 }
 
 export function newMinionKillCommand(args: MinionKillOptions) {
@@ -49,10 +71,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		slayerUnlocks
 	} = args;
 	const osjsMon = Monsters.get(monster.id)!;
-	const primaryStyle = convertAttackStylesToSetup(attackStyles);
-	const relevantGearStat: OffenceGearStat = (
-		{ melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, range: GearStat.AttackRanged } as const
-	)[primaryStyle];
+	let { primaryStyle, relevantGearStat } = getAttackStylesContext(attackStyles);
 
 	const isOnTask =
 		currentSlayerTask.assignedTask !== null &&
@@ -159,7 +178,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	if (quantity > 1 && duration > maxTripLength) {
 		return `You can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(maxCanKill)}.`;
+		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${Math.floor(maxCanKill)}.`;
 	}
 
 	duration = randomVariation(duration, 3);
@@ -207,6 +226,9 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 					speedDurationResult.currentTaskOptions,
 					boostResult.changes
 				);
+				const newStyles = getAttackStylesContext(attackStyles);
+				primaryStyle = newStyles.primaryStyle;
+				relevantGearStat = newStyles.relevantGearStat;
 			}
 
 			if (boostResult.percentageReduction) {
@@ -219,11 +241,12 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			if (boostResult.message) speedDurationResult.messages.push(boostResult.message);
 		}
 	}
+	duration = Math.ceil(duration);
 
 	speedDurationResult.updateBank.itemCostBank.freeze();
 	speedDurationResult.updateBank.itemLootBank.freeze();
 
-	return {
+	const result = returnSchema.parse({
 		duration,
 		quantity,
 		isOnTask,
@@ -232,5 +255,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		currentTaskOptions: speedDurationResult.currentTaskOptions,
 		messages: speedDurationResult.messages,
 		updateBank: speedDurationResult.updateBank
-	};
+	});
+
+	return result;
 }

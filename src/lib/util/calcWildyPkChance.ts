@@ -30,6 +30,7 @@ export async function increaseWildEvasionXp(user: MUser, duration: number) {
 	await userStatsUpdate(user.id, { pk_evasion_exp: newPkXp });
 }
 export function calcWildyPKChance(
+	currentPeak: Peak,
 	gearBank: GearBank,
 	monster: KillableMonster,
 	duration: number,
@@ -37,16 +38,6 @@ export function calcWildyPKChance(
 	cannonMulti: boolean,
 	pkEvasionExperience: number
 ) {
-	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
-	let currentPeak = cachedPeakInterval[0];
-	const date = new Date().getTime();
-	for (const peak of cachedPeakInterval) {
-		if (peak.startTime < date && peak.finishTime > date) {
-			currentPeak = peak;
-			break;
-		}
-	}
-
 	// Chance per minute, Difficulty from 1 to 10, and factor a million difference, High peak 5x as likley encounter, Medium peak 1x, Low peak 5x as unlikley
 	const peakInfluence = peakFactor.find(_peaktier => _peaktier.peakTier === currentPeak?.peakTier)?.factor ?? 1;
 	const pkChance = (1 / (7_000_000 / (Math.pow(monster.pkActivityRating ?? 1, 6) * peakInfluence))) * 100;
