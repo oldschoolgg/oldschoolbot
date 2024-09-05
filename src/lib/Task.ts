@@ -32,6 +32,7 @@ import { farmingTask } from '../tasks/minions/farmingActivity';
 import { firemakingTask } from '../tasks/minions/firemakingActivity';
 import { fishingTask } from '../tasks/minions/fishingActivity';
 import { fletchingTask } from '../tasks/minions/fletchingActivity';
+import { CreateForestersRationsTask } from '../tasks/minions/forestersRationActivity';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
@@ -98,7 +99,6 @@ import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
-import { CreateForestersRationsTask } from '../tasks/minions/forestersRationActivity';
 
 const tasks: MinionTask[] = [
 	aerialFishingTask,
