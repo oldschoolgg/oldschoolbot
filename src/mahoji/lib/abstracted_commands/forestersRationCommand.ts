@@ -29,7 +29,7 @@ export async function forestersRationCommand({
 		return 'You need 35 woodcutting and 35 cooking to create forestry rations.';
 	}
 
-	const rationCookTime = Time.Second * 1.8;
+	const rationCookTime = Time.Second * 1.9;
 	const maxTripLength = calcMaxTripLength(user, 'Cooking');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / rationCookTime);
