@@ -6,6 +6,7 @@ import type { Emoji } from '../constants';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank } from '../types';
 import type { FarmingPatchName } from '../util/farmingHelpers';
+import { RumourOption } from './skills/hunter/rumours/util';
 
 export enum SkillsEnum {
 	Agility = 'agility',
@@ -342,4 +343,5 @@ export interface Creature {
 	qpRequired?: number;
 	slope: number;
 	intercept: number;
+	tier?: RumourOption[];
 }

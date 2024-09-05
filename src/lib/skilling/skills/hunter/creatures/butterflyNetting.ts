@@ -80,7 +80,8 @@ const butterflyNettingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 5,
 		slope: 0.01052,
-		intercept: 0.1798
+		intercept: 0.1798,
+		tier: ['master']
 	},
 	{
 		name: 'Moonlight moth',
@@ -93,7 +94,8 @@ const butterflyNettingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 5,
 		slope: 1.028,
-		intercept: 9.687
+		intercept: 9.687,
+		tier: ['master']
 	}
 ];
 

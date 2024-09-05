@@ -12,7 +12,8 @@ export type RumourOption = (typeof RumourOptions)[number];
 
 export interface Rumour {
 	creature: Creature,
-	duration: Time.Second
+	duration: Time.Second,
+	quantity: number
 };
 
 const sacks = [BasicSack, AdeptSack, ExpertSack, MasterSack];

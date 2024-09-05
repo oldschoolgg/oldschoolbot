@@ -67,7 +67,8 @@ const birdSnaringCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 17,
 		slope: 1.177,
-		intercept: 28.39
+		intercept: 28.39,
+		tier: ['novice']
 	}
 ];
 

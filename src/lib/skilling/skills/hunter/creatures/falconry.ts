@@ -38,7 +38,8 @@ const falconryCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.Falconry,
 		catchTime: 6,
 		slope: 1,
-		intercept: 10
+		intercept: 10,
+		tier: ['master']
 	}
 ];
 

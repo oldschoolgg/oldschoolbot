@@ -37,13 +37,14 @@ export const rumourCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		userID,
-		options
+		options,
+		channelID
 	}: CommandRunOptions<{
-		task?: { tier?: RumourOption };
-		view?: {};
+		start?: { tier?: RumourOption };
+		count?: {};
 	}>) => {
-		if (options.task) {
-			return rumoursCommand(userID, options.task.tier);
+		if (options.start) {
+			return rumoursCommand(userID, channelID, options.start.tier);
 		} else {
 			return rumourCount(userID);
 		}

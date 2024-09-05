@@ -44,7 +44,8 @@ const boxTrappingCreatures: Creature[] = [
 		catchTime: 28,
 		qpRequired: 2,
 		slope: 1.22,
-		intercept: -31.33
+		intercept: -31.33,
+		tier: ['master']
 	},
 	{
 		name: 'Black chinchompa',

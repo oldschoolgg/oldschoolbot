@@ -41,7 +41,8 @@ const netTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 40,
 		slope: 0.9,
-		intercept: 25
+		intercept: 25,
+		tier: ['master']
 	},
 	{
 		name: 'Black salamander',
@@ -69,7 +70,8 @@ const netTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 46,
 		slope: 0.9,
-		intercept: -5.9
+		intercept: -5.9,
+		tier: ['master']
 	}
 ];
 

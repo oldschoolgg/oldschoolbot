@@ -7,6 +7,7 @@ import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import { Rumour } from '../skilling/skills/hunter/rumours/util';
 
 export interface ActivityTaskOptions {
 	userID: string;
@@ -282,6 +283,12 @@ export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	wildyPeak: Peak | null;
 	usingStaminaPotion: boolean;
 	outfitMod: number;
+}
+
+export interface RumourActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Rumour';
+	quantity: number;
+	rumours: Rumour[];
 }
 
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
@@ -615,4 +622,5 @@ export type ActivityTaskData =
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| RumourActivityTaskOptions;

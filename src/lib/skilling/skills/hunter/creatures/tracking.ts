@@ -76,7 +76,8 @@ const trackingCreatures: Creature[] = [
 		herbloreLvl: 31,
 		catchTime: 91,
 		slope: 0,
-		intercept: 99
+		intercept: 99,
+		tier: ['master']
 	}
 ];
 

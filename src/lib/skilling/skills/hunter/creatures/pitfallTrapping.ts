@@ -59,7 +59,8 @@ const pitfallTrappingCreatures: Creature[] = [
 		multiTraps: false,
 		catchTime: 17,
 		slope: 0.5,
-		intercept: 100
+		intercept: 99,
+		tier: ['master']
 	},
 	{
 		name: 'Moonlight antelope',
@@ -76,7 +77,8 @@ const pitfallTrappingCreatures: Creature[] = [
 		multiTraps: false,
 		catchTime: 19,
 		slope: 0.5,
-		intercept: 100
+		intercept: 99,
+		tier: ['master']
 	}
 ];
 
