@@ -7,7 +7,7 @@ import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import { Rumour } from '../skilling/skills/hunter/rumours/util';
+import { Rumour, RumourOption } from '../skilling/skills/hunter/rumours/util';
 
 export interface ActivityTaskOptions {
 	userID: string;
@@ -287,6 +287,7 @@ export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 
 export interface RumourActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Rumour';
+	tier: RumourOption;
 	quantity: number;
 	rumours: Rumour[];
 }

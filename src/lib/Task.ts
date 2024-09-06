@@ -98,12 +98,14 @@ import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
+import { rumourTask } from '../tasks/minions/rumourActivity';
 
 const tasks: MinionTask[] = [
 	aerialFishingTask,
 	birdHouseTask,
 	driftNetTask,
 	hunterTask,
+	rumourTask,
 	animatedArmorTask,
 	cyclopsTask,
 	agilityArenaTask,

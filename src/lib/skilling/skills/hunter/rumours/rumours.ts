@@ -64,6 +64,7 @@ export async function rumoursCommand(userID: string, channelID: string, input?: 
 		userID: user.id,
 		channelID: channelID,
 		quantity: Rumours.length,
+		tier: input,
 		rumours: Rumours,
 		duration: totalDuration,
 		type: 'Rumour'
