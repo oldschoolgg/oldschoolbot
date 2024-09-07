@@ -165,7 +165,17 @@ for (const monster of killableMonsters) {
 
 results.sort((a, b) => b.tripTresult.updateBank.xpBank.totalXP() - a.tripTresult.updateBank.xpBank.totalXP());
 
-const headers = ['Monster', 'AttackStyle', 'XP/hr', 'GP/hr', 'Cost/hr', 'Profitability', 'XP', 'Options'];
+const headers = [
+	'Monster',
+	'AttackStyle',
+	'XP/hr',
+	'GP/hr',
+	'Cost/hr',
+	'Profit (loot÷cost)',
+	'Raw XP',
+	'Options',
+	'Food'
+];
 const rows = results
 	.map(({ tripTresult, commandResult }) => {
 		const xpHr = calcPerHour(tripTresult.updateBank.xpBank.totalXP(), commandResult.duration);
@@ -188,6 +198,9 @@ const rows = results
 
 		if (xpHr < 35_000 && gpHr < 300_000) return null;
 
+		const totalSharks = commandResult.updateBank.itemCostBank.amount('Shark');
+		const sharksPerHour = calcPerHour(totalSharks, commandResult.duration);
+
 		return [
 			tripTresult.monster.name,
 			commandResult.attackStyles
@@ -202,10 +215,11 @@ const rows = results
 			`${toKMB(costHr)} cost gp/hr`,
 			costHr > 0 ? (gpHr / costHr).toFixed(1) : '',
 			tripTresult.updateBank.xpBank.totalXP(),
-			options.join(' ')
+			options.join(' '),
+			`${sharksPerHour.toFixed(1)} Sharks/hr`
 		];
 	})
 	.filter(i => Boolean(i));
-writeFileSync('data/monster_data.csv', [headers, ...rows].map(row => row.join('\t')).join('\n'));
+writeFileSync('data/monster_data.tsv', [headers, ...rows].map(row => row.join('\t')).join('\n'));
 // writeFileSync('data/monster_data.md', makeTable(headers, rows));
 process.exit();

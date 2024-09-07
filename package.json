@@ -65,6 +65,8 @@
 		"dpdm": "^3.14.0",
 		"esbuild": "0.21.5",
 		"fast-glob": "^3.3.2",
+		"google-auth-library": "^9.14.1",
+		"google-spreadsheet": "^4.1.4",
 		"nodemon": "^3.1.4",
 		"prettier": "^3.3.2",
 		"prisma": "^5.17.0",
