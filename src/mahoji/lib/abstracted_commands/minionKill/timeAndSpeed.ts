@@ -12,7 +12,7 @@ import type { SkillsRequired } from '../../../../lib/types';
 import { itemNameFromID } from '../../../../lib/util';
 import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
 import { getItemCostFromConsumables } from './handleConsumables';
-import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
+import { type BoostArgs, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
 
 function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = sumArr(styles.map(s => skillsAsLevels[s]));
@@ -61,7 +61,6 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	const confirmations: string[] = [];
 
 	for (const boost of mainBoostEffects) {
-		const results: BoostResult[] = [];
 		for (const b of Array.isArray(boost) ? boost : [boost]) {
 			const res = b.run({ ...args, currentTaskOptions, ...getAttackStylesContext(attackStyles) });
 			if (!res) continue;
@@ -86,7 +85,6 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 				if (boostResult.charges) charges.add(boostResult.charges);
 				if (boostResult.confirmation) confirmations.push(boostResult.confirmation);
 				if (boostResult.message) messages.push(boostResult.message);
-				results.push(boostResult);
 			}
 		}
 	}

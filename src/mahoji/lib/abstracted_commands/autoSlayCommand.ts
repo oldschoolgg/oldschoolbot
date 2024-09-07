@@ -473,7 +473,7 @@ export async function autoSlayCommand({
 			runCommand({
 				commandName: 'k',
 				args: {
-					name: usersTask.assignedTask?.monster.name,
+					name: usersTask.assignedTask.monster.name,
 					wilderness: Boolean(usersTask.assignedTask.wilderness)
 				},
 				bypassInhibitors: true,
@@ -500,7 +500,7 @@ export async function autoSlayCommand({
 		runCommand({
 			commandName: 'k',
 			args: {
-				name: usersTask.assignedTask?.monster.name,
+				name: usersTask.assignedTask.monster.name,
 				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			},
 			bypassInhibitors: true,
@@ -558,7 +558,7 @@ export async function autoSlayCommand({
 	}
 	await runCommand({
 		commandName: 'k',
-		args: { name: usersTask.assignedTask?.monster.name, wilderness: Boolean(usersTask.assignedTask.wilderness) },
+		args: { name: usersTask.assignedTask.monster.name, wilderness: Boolean(usersTask.assignedTask.wilderness) },
 		bypassInhibitors: true,
 		...cmdRunOptions
 	});
