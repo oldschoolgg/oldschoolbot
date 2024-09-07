@@ -4,12 +4,13 @@ import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import type { GearSetupType } from '../../gear/types';
 import { GearStat } from '../../gear/types';
 import { maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
+import type { GearBank } from '../../structures/GearBank';
 import { readableStatName } from '../../util/smallUtils';
 import type { KillableMonster } from '../types';
 
 const { floor, max } = Math;
 
-export default function calculateMonsterFood(monster: Readonly<KillableMonster>, user: MUser): [number, string] {
+export function calculateMonsterFoodRaw(gearBank: GearBank, monster: Readonly<KillableMonster>): [number, string] {
 	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
 
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
@@ -29,7 +30,7 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 			break;
 	}
 
-	const gearStats = user.gear[gearToCheck].stats;
+	const gearStats = gearBank.gear[gearToCheck].stats;
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;
@@ -61,4 +62,8 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 			totalOffensivePercent
 		)}% for offensive stats(${readableStatName(attackStyleToUse)})`
 	];
+}
+
+export default function calculateMonsterFood(monster: Readonly<KillableMonster>, user: MUser): [number, string] {
+	return calculateMonsterFoodRaw(user.gearBank, monster);
 }

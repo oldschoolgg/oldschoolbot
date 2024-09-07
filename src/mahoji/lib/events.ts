@@ -2,6 +2,7 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
 import { ActivityType, bold, time } from 'discord.js';
+import { startBlacklistSyncing } from '../../lib/blacklists';
 import { Channel, META_CONSTANTS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 import { initTickers } from '../../lib/tickers';
@@ -95,6 +96,7 @@ export const onStartup = logWrapFn('onStartup', async () => {
 		}),
 		updateTestBotStatus(),
 		sendStartupMessage,
-		syncTestBotCommands
+		syncTestBotCommands,
+		startBlacklistSyncing()
 	]);
 });

@@ -490,18 +490,19 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'mage'
 			}
 		],
-		effect: async ({ quantity, user, messages }) => {
-			if (user.bank.has('Charged ice')) return;
-			let gotIce = false;
+		effect: ({ quantity, gearBank }) => {
+			if (gearBank.bank.has('Charged ice')) return;
+			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {
-					gotIce = true;
+					loot.add('Charged ice');
 					break;
 				}
 			}
-			if (!gotIce) return;
-			await user.addItemsToBank({ items: new Bank().add('Charged ice'), collectionLog: true });
-			messages.push('You got a Charged ice for killing the Phantom Muspah in under 3 minutes!');
+			return {
+				messages: ['You got a Charged ice for killing the Phantom Muspah in under 3 minutes!'],
+				loot
+			};
 		},
 		healAmountNeeded: 150
 	},
