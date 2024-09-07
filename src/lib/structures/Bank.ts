@@ -8,3 +8,5 @@ export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 		super({ initialBank, allowedKeys: degradeableItems.map(i => i.settingsKey) });
 	}
 }
+
+export { XPBank } from './XPBank';

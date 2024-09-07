@@ -7,8 +7,12 @@ import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import type { KillableMonster } from '../lib/minions/types';
 
+import { bold } from 'discord.js';
+import { userhasDiaryTier } from '../lib/diaries';
+import { quests } from '../lib/minions/data/quests';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
+import type { GearBank } from '../lib/structures/GearBank';
 import type { ItemBank } from '../lib/types';
 import {
 	type JsonKeys,
@@ -216,12 +220,36 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 	return amountEquipped * 20;
 }
 
-export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
+export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	if (monster.qpRequired && user.QP < monster.qpRequired) {
 		return [
 			false,
 			`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/activities quest\``
 		];
+	}
+
+	if (monster.requiredQuests) {
+		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to kill ${monster.name}.`;
+		}
+	}
+
+	if (monster.degradeableItemUsage) {
+		for (const set of monster.degradeableItemUsage) {
+			const equippedInThisSet = set.items.find(item => user.gear[set.gearSetup].hasEquipped(item.itemID));
+
+			if (set.required && !equippedInThisSet) {
+				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+					monster.name
+				}: ${set.items
+					.map(i => i.itemID)
+					.map(itemNameFromID)
+					.join(', ')}.`;
+			}
+		}
 	}
 
 	if (monster.itemsRequired) {
@@ -266,10 +294,24 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 		}
 	}
 
+	if (monster.diaryRequirement) {
+		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
+		if (!hasDiary) {
+			return `${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`;
+		}
+	}
+
+	if (monster.itemCost) {
+		const cost = new Bank(monster.itemCost.itemCost);
+		if (!user.bank.has(cost)) {
+			return [false, `You don't have the items needed to kill this monster. You need: ${cost}.`];
+		}
+	}
+
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, isInWilderness = false) {
+export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster, isInWilderness = false) {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -279,7 +321,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			// find the highest boost that the player has
 			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 				const parsedId = Number.parseInt(itemID);
-				if (isInWilderness ? !user.hasEquipped(parsedId) : !user.hasEquippedOrInBank(parsedId)) {
+				if (!gearBank.wildyGearCheck(parsedId, isInWilderness)) {
 					continue;
 				}
 				if (boostAmount > highestBoostAmount) {
