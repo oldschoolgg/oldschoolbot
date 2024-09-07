@@ -24,8 +24,11 @@ import { MUserStats } from '../src/lib/structures/MUserStats';
 import { newMinionKillCommand } from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill';
 import { doMonsterTrip } from '../src/tasks/minions/monsterActivity';
 
-const MAX_TRIP_LENGTH = Time.Hour * 1;
+const MAX_TRIP_LENGTH = Time.Hour * 20;
 
+function round(int: number) {
+	return Math.round(int / 1000) * 1000;
+}
 const slayerUnlocks: SlayerTaskUnlocksEnum[] = [];
 const bank = new Bank();
 for (const item of Items.values()) bank.add(item.id, 1000000);
@@ -178,9 +181,9 @@ const headers = [
 ];
 const rows = results
 	.map(({ tripTresult, commandResult }) => {
-		const xpHr = calcPerHour(tripTresult.updateBank.xpBank.totalXP(), commandResult.duration);
-		const gpHr = calcPerHour(tripTresult.updateBank.itemLootBank.value(), commandResult.duration);
-		const costHr = calcPerHour(commandResult.updateBank.itemCostBank.value(), commandResult.duration);
+		const xpHr = round(calcPerHour(tripTresult.updateBank.xpBank.totalXP(), commandResult.duration));
+		const gpHr = round(calcPerHour(tripTresult.updateBank.itemLootBank.value(), commandResult.duration));
+		const costHr = round(calcPerHour(commandResult.updateBank.itemCostBank.value(), commandResult.duration));
 
 		const options: any = [];
 		if (commandResult.currentTaskOptions.bob === SlayerActivityConstants.IceBarrage) {
