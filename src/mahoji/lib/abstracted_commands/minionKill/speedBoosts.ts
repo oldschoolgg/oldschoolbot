@@ -89,36 +89,6 @@ export type Boost = {
 
 const oneSixthBoost = 16.67;
 
-// needs to check if they got blackmaskboost
-// const virtusBoost: Boost = {
-// 					description: 'Virtus',
-// 					run: ({ gearBank, isInWilderness, style, osjsMon }) => {
-// 						let virtusPiecesEquipped = 0;
-
-// 		for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe bottom'])) {
-// 			if (isInWilderness) {
-// 				if (gearBank.gear.wildy.hasEquipped(item)) {
-// 					virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
-// 				}
-// 			} else if (gearBank.gear.mage.hasEquipped(item)) {
-// 				virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
-// 			}
-// 		}
-
-// 		virtusBoost = virtusPiecesEquipped * 2;
-// 		virtusBoostMsg =
-// 			virtusPiecesEquipped > 1
-// 				? ` with ${virtusPiecesEquipped} Virtus pieces`
-// 				: virtusPiecesEquipped === 1
-// 					? ` with ${virtusPiecesEquipped} Virtus piece`
-// 					: '';
-
-//                     return {
-//                         percentageReduction: virtusBoost,
-//                         message: `${virtusBoost}% for Virtus${virtusBoostMsg}`
-//                     }
-// 					}
-// 				}
 const cannonBoost: Boost = {
 	description: 'Cannon',
 	run: ({ gearBank, monster, combatMethods, isOnTask, isInWilderness }) => {

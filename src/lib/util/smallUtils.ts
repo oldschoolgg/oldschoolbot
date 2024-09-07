@@ -10,11 +10,11 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
+import z from 'zod';
 import { skillEmoji } from '../data/emojis';
 import type { UserFullGearSetup } from '../gear/types';
 import type { Skills } from '../types';
 import getOSItem from './getOSItem';
-import z from 'zod';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -179,6 +179,7 @@ export function returnStringOrFile(string: string | InteractionReplyOptions): Aw
 
 export function makeTable(headers: string[], rows: unknown[][]) {
 	return new AsciiTable3()
+		.setStyle('github-markdown')
 		.setHeading(...headers)
 		.setAlign(1, AlignmentEnum.RIGHT)
 		.setAlign(2, AlignmentEnum.CENTER)
@@ -236,15 +237,15 @@ export function objHasAnyPropInCommon(obj: object, other: object): boolean {
 export const zodEnum = <T>(arr: T[] | readonly T[]): [T, ...T[]] => arr as [T, ...T[]];
 
 export function numberEnum<T extends number>(values: readonly T[]) {
-  const set = new Set<unknown>(values);
-  return (v: number, ctx: z.RefinementCtx): v is T => {
-    if (!set.has(v)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.invalid_enum_value,
-        received: v,
-        options: [...values]
-      });
-    }
-    return z.NEVER;
-  };
+	const set = new Set<unknown>(values);
+	return (v: number, ctx: z.RefinementCtx): v is T => {
+		if (!set.has(v)) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.invalid_enum_value,
+				received: v,
+				options: [...values]
+			});
+		}
+		return z.NEVER;
+	};
 }

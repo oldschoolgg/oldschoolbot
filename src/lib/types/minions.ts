@@ -2,12 +2,12 @@ import type { CropUpgradeType } from '@prisma/client';
 
 import type { ItemBank } from '.';
 import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
+import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 
 export interface ActivityTaskOptions {
 	userID: string;

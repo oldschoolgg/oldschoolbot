@@ -1,31 +1,47 @@
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import z from 'zod';
 import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
+import z from 'zod';
 import type { BitField, PvMMethod } from '../../../../lib/constants';
-import { SlayerActivityConstants, type CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
+import { type CombatOptionsEnum, SlayerActivityConstants } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
-import { type AttackStyles, attackStylesArr, getAttackStylesContext, resolveAttackStyles } from '../../../../lib/minions/functions';
+import {
+	type AttackStyles,
+	attackStylesArr,
+	getAttackStylesContext,
+	resolveAttackStyles
+} from '../../../../lib/minions/functions';
 import type { KillableMonster } from '../../../../lib/minions/types';
 import type { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
 import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/slayer/slayerUtil';
 import type { GearBank } from '../../../../lib/structures/GearBank';
+import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { Peak } from '../../../../lib/tickers';
-import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, numberEnum, randomVariation, zodEnum } from '../../../../lib/util';
+import {
+	checkRangeGearWeapon,
+	formatDuration,
+	isWeekend,
+	itemNameFromID,
+	numberEnum,
+	randomVariation,
+	zodEnum
+} from '../../../../lib/util';
 import { changeQuantityForTaskKillsRemaining } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { speedCalculations } from './timeAndSpeed';
-import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 
 const returnSchema = z.object({
 	duration: z.number().int().positive(),
 	quantity: z.number().int().positive(),
 	isOnTask: z.boolean(),
-	isInWilderness: z.boolean(),	
+	isInWilderness: z.boolean(),
 	attackStyles: z.array(z.enum(zodEnum(attackStylesArr))),
 	currentTaskOptions: z.object({
-		bob:  z.number().superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst])).optional(),
+		bob: z
+			.number()
+			.superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst]))
+			.optional(),
 		usingCannon: z.boolean().optional(),
 		cannonMulti: z.boolean().optional(),
 		chinning: z.boolean().optional(),
@@ -36,7 +52,7 @@ const returnSchema = z.object({
 	}),
 	messages: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)
-})
+});
 
 export interface MinionKillOptions {
 	attackStyles: AttackStyles[];
