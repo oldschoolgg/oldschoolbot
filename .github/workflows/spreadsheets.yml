@@ -28,4 +28,4 @@ jobs:
       - name: Run update spreadsheet script
         env:
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: npx ts-node scripts/spreadsheet.ts
+        run: npx tsx ./scripts/spreadsheets.ts
