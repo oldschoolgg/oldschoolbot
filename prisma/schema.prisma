@@ -1254,6 +1254,7 @@ enum activity_type_enum {
   MemoryHarvest
   GuthixianCache
   TuraelsTrials
+  MyNotes
   Colosseum
 }
 

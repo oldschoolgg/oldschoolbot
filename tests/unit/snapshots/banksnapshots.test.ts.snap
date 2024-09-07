@@ -19747,6 +19747,46 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "28933": 1,
+        "28936": 1,
+        "28939": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Sunfire fanatic armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "29424": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "29424": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Sunfire fanatic armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "28933": 1,
+        "28936": 1,
+        "28939": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "12592": 1,
         "12831": 1,
       },
@@ -32577,7 +32617,7 @@ exports[`BSO Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25445": 1,
-        "25459": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -32594,7 +32634,7 @@ exports[`BSO Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25448": 1,
-        "25461": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -32611,7 +32651,7 @@ exports[`BSO Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25451": 1,
-        "25463": 1,
+        "25457": 1,
       },
       "frozen": false,
     },
@@ -32628,7 +32668,7 @@ exports[`BSO Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "25454": 1,
-        "25465": 1,
+        "25457": 1,
       },
       "frozen": false,
     },

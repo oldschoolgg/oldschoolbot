@@ -438,6 +438,10 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently doing the **Champion's Challenge**. ${formattedDuration}`;
 		}
 
+		case 'MyNotes': {
+			return `${name} is currently rummaging skeletons for Ancient pages. ${formattedDuration}`;
+		}
+
 		case 'Hunter': {
 			const data = currentTask as HunterActivityTaskOptions;
 

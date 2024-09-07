@@ -43,9 +43,19 @@ export const fishCommand: OSBMahojiCommand = {
 			description: 'The quantity you want to fish (optional).',
 			required: false,
 			min_value: 1
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'flakes',
+			description: 'Use spirit flakes?',
+			required: false
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({
+		options,
+		userID,
+		channelID
+	}: CommandRunOptions<{ name: string; quantity?: number; flakes?: boolean }>) => {
 		const user = await mUserFetch(userID);
 		const fish = Fishing.Fishes.find(
 			fish =>
@@ -171,8 +181,21 @@ export const fishCommand: OSBMahojiCommand = {
 			);
 		}
 
-		let { quantity } = options;
+		let { quantity, flakes } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / scaledTimePerFish);
+
+		let flakesQuantity: number | undefined;
+		const cost = new Bank();
+
+		if (flakes) {
+			if (!user.bank.has('Spirit flakes')) {
+				return 'You need to have at least one spirit flake!';
+			}
+
+			flakesQuantity = Math.min(user.bank.amount('Spirit flakes'), quantity);
+			boosts.push(`More fish from using ${flakesQuantity}x Spirit flakes`);
+			cost.add('Spirit flakes', flakesQuantity);
+		}
 
 		if (fish.bait) {
 			const baseCost = new Bank().add(fish.bait);
@@ -185,11 +208,12 @@ export const fishCommand: OSBMahojiCommand = {
 				quantity = maxCanDo;
 			}
 
-			const cost = new Bank();
-			cost.add(baseCost.multiply(quantity));
+			cost.add(fish.bait, quantity);
+		}
 
-			// Remove the bait from their bank.
-			await user.removeItemsFromBank(new Bank().add(fish.bait, quantity));
+		if (cost.length > 0) {
+			// Remove the bait and/or spirit flakes from their bank.
+			await user.removeItemsFromBank(cost);
 		}
 
 		let duration = quantity * scaledTimePerFish;
@@ -212,7 +236,8 @@ export const fishCommand: OSBMahojiCommand = {
 			quantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			duration,
-			type: 'Fishing'
+			type: 'Fishing',
+			flakesQuantity
 		});
 
 		let response = `${user.minionName} is now fishing ${quantity}x ${fish.name}, it'll take around ${formatDuration(
