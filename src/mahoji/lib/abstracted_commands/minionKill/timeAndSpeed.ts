@@ -91,10 +91,11 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	if (monster.itemCost) consumables.push(monster.itemCost);
 
+	const consumablesQuantity = Math.max(1, args.inputQuantity ?? Math.floor(maxTripLength / monster.timeToFinish));
 	const consumablesCost = getItemCostFromConsumables({
 		consumableCosts: consumables,
 		gearBank,
-		quantity: args.inputQuantity ?? Math.floor(maxTripLength / monster.timeToFinish),
+		quantity: consumablesQuantity,
 		timeToFinish
 	});
 

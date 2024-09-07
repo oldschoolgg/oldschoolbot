@@ -7,9 +7,13 @@ import { expect } from 'vitest';
 
 import { MUserClass } from '../../src/lib/MUser';
 import type { BitField } from '../../src/lib/constants';
-import type { GearSetup } from '../../src/lib/gear/types';
+import { type GearSetup, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types';
+import { SkillsArray } from '../../src/lib/skilling/types';
+import { ChargeBank } from '../../src/lib/structures/Bank';
 import type { PartialGearSetup } from '../../src/lib/structures/Gear';
 import { Gear, constructGearSetup } from '../../src/lib/structures/Gear';
+import { GearBank } from '../../src/lib/structures/GearBank';
+import type { SkillsRequired } from '../../src/lib/types';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
@@ -128,4 +132,27 @@ export async function testRunCmd({
 	const commandResponse = await cmd.run(options);
 	Math.random = originalMathRandom;
 	return expect(commandResponse).toEqual(result);
+}
+
+function makeSkillsAsLevels(lvl = 99) {
+	const obj: any = {};
+	for (const skill of SkillsArray) {
+		obj[skill] = lvl;
+	}
+	return obj as SkillsRequired;
+}
+function makeFullGear() {
+	const obj: any = {};
+	for (const type of GearSetupTypes) {
+		obj[type] = new Gear();
+	}
+	return obj as UserFullGearSetup;
+}
+export function makeGearBank() {
+	return new GearBank({
+		gear: makeFullGear(),
+		bank: new Bank(),
+		skillsAsLevels: makeSkillsAsLevels(),
+		chargeBank: new ChargeBank()
+	});
 }

@@ -375,6 +375,7 @@ export function doMonsterTrip(data: newOptions) {
 		updateBank.userStats.slayer_superior_count = {
 			increment: newSuperiorCount
 		};
+		messages.push(`You slayed ${newSuperiorCount}x superior monsters.`);
 	}
 
 	if (slayerContext.isOnTask) {

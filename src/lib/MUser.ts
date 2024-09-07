@@ -558,7 +558,9 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 				throw new UserError('No ammo equipped.');
 			}
 			if (equippedAmmo !== ammoRemove[0].id) {
-				throw new UserError(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
+				throw new UserError(
+					`You have ${itemNameFromID(equippedAmmo)} equipped as your range ammo, but you need: ${ammoRemove[0].name}.`
+				);
 			}
 			const newRangeGear = { ...this.gear[gearKey] };
 			const ammo = newRangeGear.ammo?.quantity;
