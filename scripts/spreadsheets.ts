@@ -15,9 +15,7 @@ const jwt = new JWT({
 
 const fileToSpreadsheetMappings = [
 	{
-		branch: 'master',
 		filePath: 'data/monster_data.tsv',
-		spreadsheetId: '1XztqUjjfR_dDD2OIgURF5YLreumPQ1J9Ez7ncDwJEE8',
 		sheetIndex: 1,
 		metaCell: [1, 1]
 	}
@@ -71,12 +69,16 @@ async function updateSpreadsheet(doc: GoogleSpreadsheet, sheetIndex: number, row
 }
 
 (async () => {
-	const branch = 'master';
-	const mapping = fileToSpreadsheetMappings.find(m => m.branch === branch);
+	const branch = process.env.GITHUB_REF?.split('/').pop()!;
+	if (!['master', 'bso'].includes(branch)) return;
+	const spreadsheetID =
+		branch === 'master'
+			? '1XztqUjjfR_dDD2OIgURF5YLreumPQ1J9Ez7ncDwJEE8'
+			: '1PdiN5y3uIdTdEfS0gYXVlO9QGz2WfckV1Y1MVIyaOTs';
 
-	if (mapping) {
+	for (const mapping of fileToSpreadsheetMappings) {
 		const rows = await parseTsv(mapping.filePath);
-		const doc = new GoogleSpreadsheet(mapping.spreadsheetId, jwt);
+		const doc = new GoogleSpreadsheet(spreadsheetID, jwt);
 		await doc.loadInfo();
 		await updateSpreadsheet(doc, mapping.sheetIndex, rows);
 		await updateMeta(
@@ -85,7 +87,5 @@ async function updateSpreadsheet(doc: GoogleSpreadsheet, sheetIndex: number, row
 			mapping.metaCell[1],
 			new Date().toISOString().slice(0, '2024-09-07'.length)
 		);
-	} else {
-		console.log(`No mapping found for branch: ${branch}`);
 	}
 })();
