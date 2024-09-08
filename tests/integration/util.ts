@@ -210,6 +210,7 @@ export async function mockUser(
 		rangeLevel: number;
 		mageGear: number[];
 		mageLevel: number;
+		meleeGear: number[];
 		slayerLevel: number;
 		venatorBowCharges: number;
 		bank: Bank;
@@ -229,11 +230,20 @@ export async function mockUser(
 			mageGear.equip(getOSItem(item));
 		}
 	}
+
+	const meleeGear = new Gear();
+	if (options.meleeGear) {
+		for (const item of options.meleeGear) {
+			meleeGear.equip(getOSItem(item));
+		}
+	}
+
 	const user = await createTestUser(options.bank, {
 		skills_ranged: options.rangeLevel ? convertLVLtoXP(options.rangeLevel) : undefined,
 		skills_slayer: options.slayerLevel ? convertLVLtoXP(options.slayerLevel) : undefined,
 		skills_magic: options.mageLevel ? convertLVLtoXP(options.mageLevel) : undefined,
 		gear_mage: options.mageGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
 		venator_bow_charges: options.venatorBowCharges,
 		QP: options.QP

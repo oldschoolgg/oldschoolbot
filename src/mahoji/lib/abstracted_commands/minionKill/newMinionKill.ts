@@ -174,7 +174,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	if (typeof speedDurationResult === 'string') {
 		return speedDurationResult;
 	}
-
 	const maxBasedOnTime = Math.floor(maxTripLength / speedDurationResult.timeToFinish);
 	const maxCanKill = Math.min(speedDurationResult.maxCanKillWithItemCost ?? Number.POSITIVE_INFINITY, maxBasedOnTime);
 	let quantity = inputQuantity ?? maxCanKill;
