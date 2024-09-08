@@ -1,4 +1,4 @@
-import type { GearSetupType, Prisma } from '@prisma/client';
+import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { objectEntries } from 'e';
@@ -8,7 +8,7 @@ import type { MUserClass } from '../MUser';
 import { degradeChargeBank } from '../degradeableItems';
 import type { GearSetup } from '../gear/types';
 import type { ItemBank } from '../types';
-import { objHasAnyPropInCommon } from '../util';
+import { type JsonKeys, objHasAnyPropInCommon } from '../util';
 import { ChargeBank, XPBank } from './Bank';
 import { KCBank } from './KCBank';
 
@@ -21,10 +21,12 @@ export class UpdateBank {
 	public itemLootBank: Bank = new Bank();
 	public xpBank: XPBank = new XPBank();
 	public kcBank: KCBank = new KCBank();
+	public itemLootBankNoCL: Bank = new Bank();
 
 	// Things changed
 	public gearChanges: Partial<Record<GearSetupType, GearSetup>> = {};
 	public userStats: Omit<Prisma.UserStatsUpdateInput, 'user_id'> = {};
+	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
 	public userUpdates: Pick<Prisma.UserUpdateInput, 'slayer_points'> = {};
 
 	public merge(other: UpdateBank) {
@@ -33,6 +35,8 @@ export class UpdateBank {
 		this.itemLootBank.add(other.itemLootBank);
 		this.xpBank.add(other.xpBank);
 		this.kcBank.add(other.kcBank);
+		this.itemLootBankNoCL.add(other.itemLootBankNoCL);
+		this.userStatsBankUpdates = mergeDeep(this.userStatsBankUpdates, other.userStatsBankUpdates);
 
 		if (objHasAnyPropInCommon(this.gearChanges, other.gearChanges)) {
 			throw new Error('Gear changes conflict');
@@ -83,23 +87,35 @@ export class UpdateBank {
 			promises.push(user.addXPBank(this.xpBank));
 		}
 
+		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
 		// KC
 		if (this.kcBank.length() > 0) {
 			const currentScores = (await user.fetchStats({ monster_scores: true })).monster_scores as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}
-			promises.push(
-				userStatsUpdate(user.id, {
-					monster_scores: currentScores
-				})
-			);
+			userStatsUpdates.monster_scores = currentScores;
 		}
 
 		// User stats
 		if (Object.keys(this.userStats).length > 0) {
-			promises.push(userStatsUpdate(user.id, this.userStats));
+			userStatsUpdates = mergeDeep(userStatsUpdates, this.userStats);
 		}
+		if (Object.keys(userStatsUpdates).length > 0) {
+			const currentStats = await prisma.userStats.upsert({
+				where: {
+					user_id: BigInt(user.id)
+				},
+				create: { user_id: BigInt(user.id) },
+				update: {}
+			});
+			for (const [key, value] of objectEntries(this.userStatsBankUpdates)) {
+				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
+				userStatsUpdates[key] = newValue.bank;
+			}
+		}
+
+		await userStatsUpdate(user.id, userStatsUpdates);
 
 		const userUpdates: Prisma.UserUpdateInput = this.userUpdates;
 
@@ -113,6 +129,11 @@ export class UpdateBank {
 		}
 
 		const results = await Promise.all(promises);
+
+		if (this.itemLootBankNoCL.length > 0) {
+			await user.transactItems({ itemsToAdd: this.itemLootBankNoCL, collectionLog: false });
+		}
+
 		await user.sync();
 		return {
 			itemTransactionResult,

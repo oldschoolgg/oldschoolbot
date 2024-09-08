@@ -58,10 +58,55 @@ describe('UpdateBank', async () => {
 		const updateBank = new UpdateBank();
 		updateBank.itemCostBank.add('Coal', 50);
 		updateBank.itemLootBank.add('Egg', 50);
+		updateBank.itemLootBankNoCL.add('Trout', 50);
 		await updateBank.transact(user);
 		await user.sync();
 
 		expect(user.bank.amount('Coal')).toBe(50);
 		expect(user.bank.amount('Egg')).toBe(50);
+		expect(user.bank.amount('Trout')).toBe(50);
+		expect(user.cl.amount('Trout')).toBe(0);
+		expect(user.cl.amount('Egg')).toBe(50);
+	});
+
+	it('should add items with no cl', async () => {
+		const user = await createTestUser();
+		const updateBank = new UpdateBank();
+		updateBank.itemLootBankNoCL.add('Trout', 50);
+		await updateBank.transact(user);
+		expect(user.bank.amount('Trout')).toBe(50);
+		expect(user.cl.amount('Trout')).toBe(0);
+	});
+
+	it('should update user stats', async () => {
+		const user = await createTestUser();
+		const updateBank = new UpdateBank();
+		updateBank.userStats.ash_sanctifier_prayer_xp = 123;
+		updateBank.userStats.gp_luckypick = {
+			increment: 100
+		};
+		updateBank.userStatsBankUpdates.buy_cost_bank = new Bank().add('Trout', 50);
+		await updateBank.transact(user);
+		const stats = await prisma.userStats.findFirstOrThrow({
+			where: {
+				user_id: BigInt(user.id)
+			}
+		});
+		expect(Number(stats.ash_sanctifier_prayer_xp)).toBe(123);
+		expect(Number(stats.gp_luckypick)).toBe(100);
+		expect(stats.buy_cost_bank).toMatchObject(new Bank().add('Trout', 50).bank);
+
+		// Second update
+		const secondUpdateBank = new UpdateBank();
+		secondUpdateBank.userStats.ash_sanctifier_prayer_xp = {
+			increment: 50
+		};
+		secondUpdateBank.userStatsBankUpdates.buy_cost_bank = new Bank().add('Trout', 50).add('Shark', 50);
+		await secondUpdateBank.transact(user);
+		expect((await user.fetchStats({ buy_cost_bank: true })).buy_cost_bank).toMatchObject(
+			new Bank().add('Trout', 100).add('Shark', 50).bank
+		);
+		expect(Number(stats.ash_sanctifier_prayer_xp)).toBe(123);
+		expect(Number(stats.gp_luckypick)).toBe(100);
 	});
 });
