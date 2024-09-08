@@ -42,7 +42,8 @@ import {
 	contractTiers,
 	mahoganyHomesBuildCommand,
 	mahoganyHomesBuyCommand,
-	mahoganyHomesBuyables
+	mahoganyHomesBuyables,
+	mahoganyHomesPointsCommand
 } from '../lib/abstracted_commands/mahoganyHomesCommand';
 import {
 	nightmareZoneShopCommand,
@@ -612,6 +613,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 							max_value: 1000
 						}
 					]
+				},
+				{
+					name: 'points',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Mahogany Homes point balance.'
 				}
 			]
 		},
@@ -1073,7 +1079,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { name: string };
 			points?: {};
 		};
-		mahogany_homes?: { start?: { tier?: number }; buy?: { name: string; quantity?: number } };
+		mahogany_homes?: {
+			start?: { tier?: number };
+			buy?: { name: string; quantity?: number };
+			points?: {};
+		};
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
@@ -1278,6 +1288,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 			}
 			if (options.mahogany_homes.start) {
 				return mahoganyHomesBuildCommand(user, channelID, options.mahogany_homes.start.tier);
+			}
+			if (options.mahogany_homes.points) {
+				return mahoganyHomesPointsCommand(user);
 			}
 		}
 

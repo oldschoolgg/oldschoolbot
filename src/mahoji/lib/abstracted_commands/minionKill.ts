@@ -1410,7 +1410,7 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	}
 	if (totalBoost.length > 0) {
 		str.push(
-			`**Boosts**\nAvailable Boosts: ${totalBoost.join(',')}\n${
+			`**Boosts**\nAvailable Boosts: ${totalBoost.join(', ')}\n${
 				ownedBoostItems.length > 0 ? `Your boosts: ${ownedBoostItems.join(', ')} for ${totalItemBoost}%` : ''
 			}\n${skillString}`
 		);

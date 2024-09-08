@@ -165,10 +165,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon warhammer')]: 10
-			},
-			{
-				[itemID('Elder maul')]: 5
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Elder maul')]: 12
 			},
 			{
 				[itemID('Keris partisan of breaching')]: 5
@@ -213,7 +211,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 6,
-		itemsRequired: resolveItems(['Zamorakian spear']),
+		itemsRequired: deepResolveItems([['Zamorakian spear', "Osmumten's fang"]]),
 		notifyDrops: resolveItems([
 			'Spectral sigil',
 			'Arcane sigil',
@@ -223,7 +221,66 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 10 }, { [itemID('Bandos godsword')]: 5 }],
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Elder maul')]: 12
+			},
+			{
+				[itemID('Bandos godsword')]: 5,
+				[itemID('Voidwaker')]: 6
+			}
+		],
+		equippedItemBoosts: [
+			{
+				items: [{ boostPercent: 10, itemID: itemID("Osmumten's fang") }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 8, itemID: itemID('Elysian spirit shield') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 2, itemID: itemID('Torva full helm') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori body (f)') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori chaps (f)') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 2, itemID: itemID('Infernal cape') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Ring of suffering (i)') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Primordial boots') }],
+				gearSetup: 'melee'
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID('Amulet of blood fury'),
+						boostPercent: 8
+					}
+				]
+			}
+		],
 		groupKillable: true,
 		respawnTime: 20_000,
 		levelRequirements: {
@@ -374,6 +431,10 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'mage',
 				items: [
 					{
+						itemID: itemID('Void Staff'),
+						boostPercent: 20
+					},
+					{
 						itemID: itemID("Tumeken's shadow"),
 						boostPercent: 15
 					},
@@ -400,11 +461,15 @@ const killableBosses: KillableMonster[] = [
 		},
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 10, itemID: itemID('Twisted bow') }],
+				items: [
+					{ boostPercent: 15, itemID: itemID('Hellfire bow') },
+					{ boostPercent: 10, itemID: itemID('Twisted bow') }
+				],
 				gearSetup: 'range'
 			},
 			{
 				items: [
+					{ boostPercent: 15, itemID: itemID('Hellfire arrow') },
 					{ boostPercent: 10, itemID: itemID('Dragon arrow') },
 					{ boostPercent: 6, itemID: itemID('Amethyst arrow') }
 				],
@@ -412,6 +477,8 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: [
+					{ boostPercent: 10, itemID: itemID('Gorajan archer top') },
+					{ boostPercent: 8, itemID: itemID('Pernix body') },
 					{ boostPercent: 6, itemID: itemID('Masori body (f)') },
 					{ boostPercent: 3, itemID: itemID('Masori body') }
 				],
@@ -419,6 +486,8 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: [
+					{ boostPercent: 10, itemID: itemID('Gorajan archer legs') },
+					{ boostPercent: 8, itemID: itemID('Pernix chaps') },
 					{ boostPercent: 6, itemID: itemID('Masori chaps (f)') },
 					{ boostPercent: 3, itemID: itemID('Masori chaps') }
 				],
@@ -426,33 +495,53 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: [
-					{ boostPercent: 11, itemID: itemID("Tumeken's shadow") },
-					{ boostPercent: 6, itemID: itemID('Sanguinesti staff') }
+					{ boostPercent: 10, itemID: itemID('Gorajan occult top') },
+					{ boostPercent: 8, itemID: itemID('Virtus robe top') },
+					{ boostPercent: 6, itemID: itemID('Ancestral robe top') }
 				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 6, itemID: itemID('Ancestral robe top') }],
+				items: [
+					{ boostPercent: 10, itemID: itemID('Gorajan occult legs') },
+					{ boostPercent: 8, itemID: itemID('Virtus robe legs') },
+					{ boostPercent: 6, itemID: itemID('Ancestral robe bottom') }
+				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 6, itemID: itemID('Ancestral robe bottom') }],
+				items: [
+					{ boostPercent: 6, itemID: itemID('Tidal collector') },
+					{ boostPercent: 3, itemID: itemID("Ava's assembler") }
+				],
+				gearSetup: 'range'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan archer gloves') },
+					{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }
+				],
+				gearSetup: 'range'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan occult gloves') },
+					{ boostPercent: 3, itemID: itemID('Tormented bracelet') }
+				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID("Ava's assembler") }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan archer boots') },
+					{ boostPercent: 3, itemID: itemID('Pegasian boots') }
+				],
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }],
-				gearSetup: 'range'
-			},
-			{
-				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
-				gearSetup: 'range'
-			},
-			{
-				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan occult boots') },
+					{ boostPercent: 3, itemID: itemID('Eternal boots') }
+				],
 				gearSetup: 'mage'
 			}
 		],
@@ -476,13 +565,55 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.Scurrius.name,
 		aliases: Monsters.Scurrius.aliases,
 		timeToFinish: Time.Minute * 2,
+		respawnTime: 20_000,
 		table: Monsters.Scurrius,
 		notifyDrops: resolveItems(['Scurry']),
 		qpRequired: 0,
+		equippedItemBoosts: [
+			{
+				items: [
+					{ boostPercent: 15, itemID: itemID('Scythe of vitur') },
+					{ boostPercent: 12, itemID: itemID('Soulreaper axe') },
+					{ boostPercent: 5, itemID: itemID('Bone mace') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Amulet of torture') },
+					{ boostPercent: 2, itemID: itemID('Amulet of fury') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee'
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 575,
+		combatXpMultiplier: 1.2,
+		healAmountNeeded: 20
 	}
 ];
 

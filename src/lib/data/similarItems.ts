@@ -471,7 +471,8 @@ const source: [string, (string | number)[]][] = [
 	['Log basket', ['Forestry basket']],
 	['Forestry kit', ['Forestry basket']],
 	['Dwarven greataxe', ['Drygore axe']],
-	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']]
+	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']],
+	['Ring of suffering (i)', ['Ring of suffering (ri)']]
 ];
 
 // Make max cape count as all master capes

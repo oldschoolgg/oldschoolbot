@@ -2581,6 +2581,10 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 			.add('Virtus boots')
 			.add('Virtus gloves'),
 		packed: getOSItem('Virtus armour set')
+	},
+	{
+		unpacked: new Bank().add('Sunfire fanatic helm').add('Sunfire fanatic cuirass').add('Sunfire fanatic chausses'),
+		packed: getOSItem('Sunfire fanatic armour set')
 	}
 ];
 
