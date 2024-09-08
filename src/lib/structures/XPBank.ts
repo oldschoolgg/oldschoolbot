@@ -1,3 +1,4 @@
+import { sumArr } from 'e';
 import type { AddXpParams } from '../minions/types';
 import type { SkillNameType, SkillsEnum } from '../skilling/types';
 
@@ -26,5 +27,9 @@ export class XPBank {
 
 	public totalXP() {
 		return this.xpList.reduce((acc, curr) => acc + curr.amount, 0);
+	}
+
+	public amount(skill: SkillNameType) {
+		return sumArr(this.xpList.filter(i => i.skillName === skill).map(i => i.amount));
 	}
 }

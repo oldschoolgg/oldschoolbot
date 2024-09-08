@@ -2,6 +2,7 @@ import { Bank, EMonster, Monsters } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
+import { getPOHObject } from '../../../src/lib/poh';
 import { SkillsEnum } from '../../../src/lib/skilling/types';
 import { convertLVLtoXP, itemID, resolveItems } from '../../../src/lib/util';
 import { minionKCommand } from '../../../src/mahoji/commands/k';
@@ -221,5 +222,25 @@ describe('PVM', async () => {
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'chinning' });
 		expect(result.commandResult).toContain('% for Red chinchomp');
 		expect(user.bank.amount('Red chinchompa')).toBeLessThan(5000);
+	});
+
+	it('should give poh boost', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Red chinchompa', 5000).add("Verac's plateskirt"),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+		});
+		await prisma.playerOwnedHouse.create({
+			data: {
+				user_id: user.id,
+				pool: getPOHObject('Rejuvenation pool').id
+			}
+		});
+		const result = await user.kill(EMonster.KALPHITE_QUEEN);
+		expect(result.commandResult).toContain('10% for Rejuvenation pool');
+		expect(result.commandResult).toContain('5% for no food');
+		expect(result.commandResult).toContain('15.00% for stats');
 	});
 });

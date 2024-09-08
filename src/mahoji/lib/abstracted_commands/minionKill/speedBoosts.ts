@@ -22,11 +22,13 @@ import {
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import type { AttackStyles } from '../../../../lib/minions/functions';
 import type { Consumable } from '../../../../lib/minions/types';
+import { calcPOHBoosts } from '../../../../lib/poh';
 import { ChargeBank } from '../../../../lib/structures/Bank';
 import { maxOffenceStats } from '../../../../lib/structures/Gear';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
 import { itemNameFromID } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
+import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
 import { determineIfUsingCannon } from './determineIfUsingCannon';
 import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData';
 import type { MinionKillOptions } from './newMinionKill';
@@ -252,6 +254,34 @@ const blackMaskBoost: Boost = {
 
 // if an array, only the highest applies
 export const mainBoostEffects: (Boost | Boost[])[] = [
+	{
+		description: 'Item Boosts',
+		run: ({ monster, gearBank, isInWilderness }) => {
+			const results: BoostResult[] = [];
+			for (const [itemID, boostAmount] of Object.entries(
+				resolveAvailableItemBoosts(gearBank, monster, isInWilderness)
+			)) {
+				results.push({
+					percentageReduction: boostAmount,
+					message: `${boostAmount}% for ${itemNameFromID(Number.parseInt(itemID))}`
+				});
+			}
+			return results;
+		}
+	},
+	{
+		description: 'POH Boosts',
+		run: ({ poh, monster }) => {
+			if (!monster.pohBoosts) return null;
+			const pohBoostResult = calcPOHBoosts(poh, monster.pohBoosts);
+			if (pohBoostResult.boost > 0) {
+				return {
+					percentageReduction: pohBoostResult.boost,
+					message: pohBoostResult.messages.join(' + ')
+				};
+			}
+		}
+	},
 	[dragonHunterBoost, revWildyGearBoost],
 	[salveBoost, blackMaskBoost],
 	{
