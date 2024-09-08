@@ -15,4 +15,4 @@ export async function syncBlacklists() {
 	}
 }
 
-TimerManager.setInterval(syncBlacklists, Time.Minute * 10);
+export const startBlacklistSyncing = () => TimerManager.setInterval(syncBlacklists, Time.Minute * 10);

@@ -5,6 +5,6 @@
 		"composite": true,
 		"noEmit": true
 	},
-	"include": ["scripts", "src"],
+	"include": ["scripts", "src/**/*"],
 	"exclude": ["**/node_modules"]
 }

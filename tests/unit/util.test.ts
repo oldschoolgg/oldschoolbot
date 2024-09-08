@@ -34,31 +34,32 @@ describe('util', () => {
 	});
 
 	test('getUserFoodFromBank', () => {
-		const fakeUser = (b: Bank) =>
-			({
-				bank: b,
-				skillLevel: () => 99
-			}) as any as MUser;
+		const fakeUser = (b: Bank) => mockMUser({ bank: b });
 		expect(
-			getUserFoodFromBank({ user: fakeUser(new Bank().add('Shark')), totalHealingNeeded: 500, favoriteFood: [] })
+			getUserFoodFromBank({
+				gearBank: fakeUser(new Bank().add('Shark')).gearBank,
+				totalHealingNeeded: 500,
+				favoriteFood: []
+			})
 		).toStrictEqual(false);
 		expect(
 			getUserFoodFromBank({
-				user: fakeUser(new Bank().add('Shark', 100)),
+				gearBank: fakeUser(new Bank().add('Shark', 100)).gearBank,
 				totalHealingNeeded: 500,
 				favoriteFood: []
 			})
 		).toStrictEqual(new Bank().add('Shark', 25));
 		expect(
 			getUserFoodFromBank({
-				user: fakeUser(new Bank().add('Shark', 30).add('Tuna', 20)),
+				gearBank: fakeUser(new Bank().add('Shark', 30).add('Tuna', 20)).gearBank,
 				totalHealingNeeded: 750,
 				favoriteFood: []
 			})
 		).toStrictEqual(new Bank().add('Shark', 28).add('Tuna', 20));
 		expect(
 			getUserFoodFromBank({
-				user: fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
+				gearBank: fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal'))
+					.gearBank,
 				totalHealingNeeded: 1700,
 				favoriteFood: []
 			})

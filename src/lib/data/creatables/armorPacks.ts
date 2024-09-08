@@ -2593,14 +2593,13 @@ for (const set of armorSetsSrc) {
 		name: set.packed.name,
 		inputItems: set.unpacked,
 		outputItems: new Bank().add(set.packed.id, 1),
-		type: 'pack',
-		noCl: true
+		type: 'pack'
 	});
 	armorAndItemPacks.push({
 		name: `Unpack ${set.packed.name}`,
 		inputItems: new Bank().add(set.packed.id, 1),
 		outputItems: set.unpacked,
-		noCl: true,
-		type: 'unpack'
+		type: 'unpack',
+		noCl: true
 	});
 }

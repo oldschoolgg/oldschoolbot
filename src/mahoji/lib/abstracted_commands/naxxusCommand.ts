@@ -116,7 +116,7 @@ function calcSetupPercent(
 }
 
 export async function naxxusCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	const [hasReqs, rejectReason] = hasMonsterRequirements(user, Naxxus);
+	const [hasReqs, rejectReason] = await hasMonsterRequirements(user, Naxxus);
 	if (!hasReqs) {
 		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${rejectReason}`;
 	}
@@ -214,7 +214,7 @@ export async function naxxusCommand(user: MUser, channelID: string, quantity: nu
 			user.gear[degItem.degradeable.setup].hasEquipped(degItem.item.name) &&
 			['melee', 'mage'].includes(degItem.degradeable.setup)
 		) {
-			const chargesNeeded = degItem.charges({ totalHP: NAXXUS_HP * quantity, duration, user });
+			const chargesNeeded = degItem.charges({ totalHP: NAXXUS_HP * quantity, duration, gearBank: user.gearBank });
 			const res = checkUserCanUseDegradeableItem({
 				item: degItem.item,
 				chargesToDegrade: chargesNeeded,

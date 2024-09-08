@@ -30,7 +30,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -80,7 +80,7 @@ export async function nexCommand(
 			if (user.minionIsBusy) {
 				return [true, 'your minion is busy.'];
 			}
-			const [hasReqs, reason] = hasMonsterRequirements(user, NexMonster);
+			const [hasReqs, reason] = await hasMonsterRequirements(user, NexMonster);
 			if (!hasReqs) {
 				return [true, `you don't have the requirements for this monster; ${reason}`];
 			}

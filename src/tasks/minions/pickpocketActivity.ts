@@ -3,9 +3,11 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
+import { clueUpgraderEffect } from '../../lib/bso/inventionEffects';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { type Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
+import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { perHourChance, skillingPetDropRate } from '../../lib/util';
 import { forcefullyUnequipItem } from '../../lib/util/forcefullyUnequipItem';
@@ -14,7 +16,6 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { clueUpgraderEffect } from './monsterActivity';
 
 const notMultiplied = resolveItems([
 	'Blood shard',
@@ -103,8 +104,16 @@ export const pickpocketTask: MinionTask = {
 			}
 		}
 
+		const updateBank = new UpdateBank();
 		const boosts: string[] = [];
-		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
+		await clueUpgraderEffect({
+			gearBank: user.gearBank,
+			messages: boosts,
+			disabledInventions: user.user.disabled_inventions,
+			updateBank,
+			type: 'pickpocketing',
+			bitfield: user.bitfield
+		});
 		if (user.hasEquipped("Thieves' armband")) {
 			boosts.push('3x loot for Thieves armband');
 			loot.multiply(3, notMultiplied);
