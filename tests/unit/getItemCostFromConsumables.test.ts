@@ -23,4 +23,17 @@ test('getItemCostFromConsumables.test', () => {
 		expect(consumablesCost?.itemCost.amount('Ruby dragon bolts (e)')).toEqual(1 * 100);
 		expect(consumablesCost?.finalQuantity).toEqual(1);
 	}
+
+	const skotizo = killableMonsters.find(m => m.name === 'Skotizo')!;
+	const gearBank2 = makeGearBank();
+	gearBank2.bank.add('Dark totem', 10);
+	const consumablesCost2 = getItemCostFromConsumables({
+		consumableCosts: [skotizo.itemCost!],
+		gearBank: gearBank2,
+		quantity: 5,
+		timeToFinish: skotizo.timeToFinish,
+		maxTripLength: Time.Hour
+	});
+	expect(consumablesCost2?.itemCost.amount('Dark totem')).toEqual(5);
+	expect(consumablesCost2?.finalQuantity).toEqual(5);
 });

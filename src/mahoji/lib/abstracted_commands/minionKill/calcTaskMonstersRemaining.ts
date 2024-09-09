@@ -3,9 +3,8 @@ import type { KillableMonster } from '../../../../lib/minions/types';
 import { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
 import type { CurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 
-export function changeQuantityForTaskKillsRemaining({
+export function killsRemainingOnTask({
 	isOnTask,
-	quantity,
 	monster,
 	task,
 	slayerUnlocks
@@ -14,9 +13,8 @@ export function changeQuantityForTaskKillsRemaining({
 	isOnTask: boolean;
 	task: CurrentSlayerInfo;
 	monster: KillableMonster;
-	quantity: number;
 }) {
-	if (!isOnTask || !task.currentTask) return quantity;
+	if (!isOnTask || !task.currentTask) return null;
 	let effectiveQtyRemaining = task.currentTask.quantity_remaining;
 	if (monster.id === Monsters.KrilTsutsaroth.id && task.currentTask?.monster_id !== Monsters.KrilTsutsaroth.id) {
 		effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
@@ -28,5 +26,5 @@ export function changeQuantityForTaskKillsRemaining({
 	) {
 		effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 	}
-	return Math.min(quantity, effectiveQtyRemaining);
+	return effectiveQtyRemaining;
 }

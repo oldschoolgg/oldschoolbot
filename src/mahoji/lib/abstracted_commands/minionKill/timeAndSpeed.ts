@@ -1,4 +1,4 @@
-import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, sumArr } from 'e';
+import { calcWhatPercent, clamp, increaseNumByPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
@@ -76,7 +76,8 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	if (monster.itemCost) consumables.push(monster.itemCost);
 
-	const consumablesQuantity = Math.max(1, inputQuantity ?? Math.floor(maxTripLength / monster.timeToFinish));
+	const maxQuantityBasedOnTime = Math.floor(maxTripLength / timeToFinish);
+	const consumablesQuantity = clamp(inputQuantity ?? maxQuantityBasedOnTime, 1, maxQuantityBasedOnTime);
 	const consumablesCost = getItemCostFromConsumables({
 		consumableCosts: consumables,
 		gearBank,
@@ -93,11 +94,13 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 		updateBank.itemCostBank.add(consumablesCost.itemCost);
 	}
 
+	const finalQuantity = consumablesCost?.finalQuantity ?? consumablesQuantity;
+
 	return {
 		timeToFinish,
 		messages,
 		currentTaskOptions,
-		finalQuantity: consumablesCost?.finalQuantity ?? consumablesQuantity,
+		finalQuantity,
 		confirmations,
 		updateBank
 	};

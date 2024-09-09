@@ -259,7 +259,7 @@ describe('PVM', async () => {
 
 	describe('should default to 1 skotizo kill', async () => {
 		const user = await client.mockUser({
-			bank: new Bank().add('Dark totem', 1),
+			bank: new Bank().add('Dark totem', 5),
 			rangeLevel: 99,
 			QP: 300,
 			maxed: true,
@@ -267,10 +267,10 @@ describe('PVM', async () => {
 		});
 		for (const quantity of [undefined, 1, 2, 5]) {
 			it(`should default to 1 skotizo kill with input of ${quantity}`, async () => {
-				await user.update({ bank: new Bank().add('Dark totem', 1).bank });
+				await user.update({ bank: new Bank().add('Dark totem', 5).bank });
 				const result = await user.kill(EMonster.SKOTIZO, { quantity });
 				expect(result.commandResult).toContain('is now killing 1x Skotizo');
-				expect(user.bank.amount('Dark totem')).toBe(0);
+				expect(user.bank.amount('Dark totem')).toBe(4);
 			});
 		}
 	});
