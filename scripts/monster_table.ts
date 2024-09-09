@@ -21,10 +21,13 @@ import { Gear } from '../src/lib/structures/Gear';
 import { GearBank } from '../src/lib/structures/GearBank';
 import { KCBank } from '../src/lib/structures/KCBank';
 import { MUserStats } from '../src/lib/structures/MUserStats';
-import { newMinionKillCommand } from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill';
+import {
+	type MinionKillReturn,
+	newMinionKillCommand
+} from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill';
 import { doMonsterTrip } from '../src/tasks/minions/monsterActivity';
 
-const MAX_TRIP_LENGTH = Time.Hour * 20;
+const MAX_TRIP_LENGTH = Time.Hour * 5;
 
 function round(int: number) {
 	return Math.round(int / 1000) * 1000;
@@ -32,9 +35,10 @@ function round(int: number) {
 const slayerUnlocks: SlayerTaskUnlocksEnum[] = [];
 const bank = new Bank();
 for (const item of Items.values()) bank.add(item.id, 1000000);
+bank.add('Black chinchompa', 100000000);
 const chargeBank = new ChargeBank();
 for (const deg of degradeableItems) chargeBank.add(deg.settingsKey, 1000000);
-const results: any = [];
+const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: MinionKillReturn }[] = [];
 const userStats = new MUserStats({} as any);
 
 const attackStyleSets: AttackStyles[][] = [
@@ -134,7 +138,7 @@ for (const monster of killableMonsters) {
 					pkEncounters,
 					isInWilderness
 				} = commandResult.currentTaskOptions;
-				const tripTresult = doMonsterTrip({
+				const tripResult = doMonsterTrip({
 					type: 'MonsterKilling',
 					mi: monster.id,
 					q: commandResult.quantity,
@@ -160,13 +164,16 @@ for (const monster of killableMonsters) {
 					chinning
 				});
 
-				results.push({ tripTresult, commandResult });
+				results.push({ tripResult, commandResult });
 			}
 		}
 	}
 }
 
-results.sort((a, b) => b.tripTresult.updateBank.xpBank.totalXP() - a.tripTresult.updateBank.xpBank.totalXP());
+function sortingKey(a: (typeof results)[0]) {
+	return `${a.tripResult.monster.name}.${a.commandResult.attackStyles.join('-')}.${JSON.stringify(a.commandResult.currentTaskOptions)}`;
+}
+results.sort((a, b) => sortingKey(a).localeCompare(sortingKey(b)));
 
 const headers = [
 	'Monster',
@@ -180,9 +187,9 @@ const headers = [
 	'Food'
 ];
 const rows = results
-	.map(({ tripTresult, commandResult }) => {
-		const xpHr = round(calcPerHour(tripTresult.updateBank.xpBank.totalXP(), commandResult.duration));
-		const gpHr = round(calcPerHour(tripTresult.updateBank.itemLootBank.value(), commandResult.duration));
+	.map(({ tripResult, commandResult }) => {
+		const xpHr = round(calcPerHour(tripResult.updateBank.xpBank.totalXP(), commandResult.duration));
+		const gpHr = round(calcPerHour(tripResult.updateBank.itemLootBank.value(), commandResult.duration));
 		const costHr = round(calcPerHour(commandResult.updateBank.itemCostBank.value(), commandResult.duration));
 
 		const options: any = [];
@@ -205,7 +212,7 @@ const rows = results
 		const sharksPerHour = calcPerHour(totalSharks, commandResult.duration);
 
 		return [
-			tripTresult.monster.name,
+			tripResult.monster.name,
 			commandResult.attackStyles
 				.join('-')
 				.replace('attack', 'atk')
@@ -217,12 +224,12 @@ const rows = results
 			`${toKMB(gpHr)} GP/hr`,
 			`${toKMB(costHr)} cost gp/hr`,
 			costHr > 0 ? (gpHr / costHr).toFixed(1) : '',
-			tripTresult.updateBank.xpBank.totalXP(),
+			tripResult.updateBank.xpBank.totalXP(),
 			options.join(' '),
 			`${sharksPerHour.toFixed(1)} Sharks/hr`
 		];
 	})
 	.filter(i => Boolean(i));
-writeFileSync('data/monster_data.tsv', [headers, ...rows].map(row => row.join('\t')).join('\n'));
+writeFileSync('data/monster_data.tsv', [headers, ...rows].map(row => row?.join('\t')).join('\n'));
 // writeFileSync('data/monster_data.md', makeTable(headers, rows));
 process.exit();
