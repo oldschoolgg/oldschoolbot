@@ -24,7 +24,6 @@ import {
 	isWeekend,
 	itemNameFromID,
 	numberEnum,
-	randomVariation,
 	zodEnum
 } from '../../../../lib/util';
 import { changeQuantityForTaskKillsRemaining } from './calcTaskMonstersRemaining';
@@ -196,7 +195,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${Math.floor(maxTripLength / speedDurationResult.timeToFinish)}.`;
 	}
 
-	duration = randomVariation(duration, 3);
 	if (isWeekend()) {
 		speedDurationResult.messages.push('10% for Weekend');
 		duration *= 0.9;
