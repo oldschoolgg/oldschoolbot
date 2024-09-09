@@ -123,12 +123,12 @@ export class TestUser extends MUserClass {
 		this.user = user;
 	}
 
-	async kill(monster: EMonster, { method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean } = {}) {
+	async kill(monster: EMonster, { quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean;quantity?: number; } = {}) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
 		const commandResult = await this.runCommand(
 			minionKCommand,
-			{ name: Monsters.get(monster)!.name, method },
+			{ name: Monsters.get(monster)!.name, method, quantity },
 			true
 		);
 		if (shouldFail) {
@@ -211,6 +211,7 @@ export async function mockUser(
 		rangeLevel: number;
 		mageGear: number[];
 		mageLevel: number;
+		meleeGear: number[];
 		slayerLevel: number;
 		venatorBowCharges: number;
 		bank: Bank;
@@ -230,11 +231,20 @@ export async function mockUser(
 			mageGear.equip(getOSItem(item));
 		}
 	}
+
+	const meleeGear = new Gear();
+	if (options.meleeGear) {
+		for (const item of options.meleeGear) {
+			meleeGear.equip(getOSItem(item));
+		}
+	}
+
 	const user = await createTestUser(options.bank, {
 		skills_ranged: options.rangeLevel ? convertLVLtoXP(options.rangeLevel) : undefined,
 		skills_slayer: options.slayerLevel ? convertLVLtoXP(options.slayerLevel) : undefined,
 		skills_magic: options.mageLevel ? convertLVLtoXP(options.mageLevel) : undefined,
 		gear_mage: options.mageGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
 		venator_bow_charges: options.venatorBowCharges,
 		QP: options.QP

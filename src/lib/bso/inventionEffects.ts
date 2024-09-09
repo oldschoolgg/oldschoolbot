@@ -102,6 +102,7 @@ export function portableTannerEffect({
 
 	updateBank.userStatsBankUpdates.portable_tanner_bank = toAdd;
 	updateBank.clientStatsBankUpdates.portable_tanner_loot = toAdd;
+	updateBank.itemLootBank.add(toAdd);
 	if (!triggered) return;
 	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
 }

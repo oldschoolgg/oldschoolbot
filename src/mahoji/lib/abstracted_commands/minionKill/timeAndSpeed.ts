@@ -5,12 +5,9 @@ import { mergeDeep } from 'remeda';
 import { type AttackStyles, getAttackStylesContext } from '../../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import type { Consumable } from '../../../../lib/minions/types';
-import { calcPOHBoosts } from '../../../../lib/poh';
 import { ChargeBank } from '../../../../lib/structures/Bank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { SkillsRequired } from '../../../../lib/types';
-import { itemNameFromID } from '../../../../lib/util';
-import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
 import { getItemCostFromConsumables } from './handleConsumables';
 import { type BoostArgs, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
 
@@ -32,7 +29,7 @@ function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, style
 }
 
 export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
-	const { monster, monsterKC, attackStyles, poh, isInWilderness, gearBank, maxTripLength } = args;
+	const { monster, monsterKC, attackStyles, gearBank, maxTripLength } = args;
 	const { skillsAsLevels } = args.gearBank;
 	const messages: string[] = [];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
@@ -41,18 +38,6 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	messages.push(skillBoostMsg);
 
 	if (percentReduced >= 1) messages.push(`${percentReduced}% for KC`);
-	if (monster.pohBoosts) {
-		const [boostPercent, messages] = calcPOHBoosts(poh, monster.pohBoosts);
-		if (boostPercent > 0) {
-			timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
-			messages.push(messages.join(' + '));
-		}
-	}
-
-	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(gearBank, monster, isInWilderness))) {
-		timeToFinish *= (100 - boostAmount) / 100;
-		messages.push(`${boostAmount}% for ${itemNameFromID(Number.parseInt(itemID))}`);
-	}
 
 	let currentTaskOptions: CombatMethodOptions = {};
 	const itemCost = new Bank();

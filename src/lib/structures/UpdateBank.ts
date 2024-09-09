@@ -41,9 +41,9 @@ export class UpdateBank {
 		this.xpBank.add(other.xpBank);
 		this.kcBank.add(other.kcBank);
 		this.materialsCostBank.add(other.materialsCostBank);
+		this.clientStatsBankUpdates = mergeDeep(this.clientStatsBankUpdates, other.clientStatsBankUpdates);
 		this.itemLootBankNoCL.add(other.itemLootBankNoCL);
 		this.userStatsBankUpdates = mergeDeep(this.userStatsBankUpdates, other.userStatsBankUpdates);
-		this.clientStatsBankUpdates = mergeDeep(this.clientStatsBankUpdates, other.clientStatsBankUpdates);
 
 		if (objHasAnyPropInCommon(this.gearChanges, other.gearChanges)) {
 			throw new Error('Gear changes conflict');
