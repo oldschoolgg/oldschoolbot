@@ -1,6 +1,7 @@
 import { Bank, EMonster } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
+import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
 import { UpdateBank } from '../../src/lib/structures/UpdateBank';
 import { createTestUser } from './util';
 
@@ -47,9 +48,9 @@ describe('UpdateBank', async () => {
 		await updateBank.transact(user);
 		await user.sync();
 
-		expect(user.skillsAsXP.slayer).toBe(555);
-		expect(user.skillsAsXP.attack).toBe(123 * 2);
-		expect(user.skillsAsXP.strength).toBe(123);
+		expect(user.skillsAsXP.slayer).toBe(555 * GLOBAL_BSO_XP_MULTIPLIER);
+		expect(user.skillsAsXP.attack).toBe(123 * 2 * GLOBAL_BSO_XP_MULTIPLIER);
+		expect(user.skillsAsXP.strength).toBe(123 * GLOBAL_BSO_XP_MULTIPLIER);
 	});
 
 	it('should add/remove items', async () => {

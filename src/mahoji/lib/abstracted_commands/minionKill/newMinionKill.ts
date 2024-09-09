@@ -28,7 +28,7 @@ import {
 	numberEnum,
 	zodEnum
 } from '../../../../lib/util';
-import { changeQuantityForTaskKillsRemaining } from './calcTaskMonstersRemaining';
+import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { speedCalculations } from './timeAndSpeed';
 
@@ -159,9 +159,26 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		}
 	}
 
-	const ephemeralPostTripEffects: PostBoostEffect[] = [];
-	const inventionsBeingUsed: InventionID[] = [];
+	if (currentSlayerTask) {
+		args.inputQuantity =
+			killsRemainingOnTask({
+				isOnTask,
+				monster,
+				task: currentSlayerTask,
+				slayerUnlocks
+			}) ?? args.inputQuantity;
+	}
 
+	if ([Monsters.Skotizo.id].includes(monster.id)) {
+		args.inputQuantity = 1;
+	}
+
+	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {
+		args.inputQuantity = 1;
+	}
+
+	const inventionsBeingUsed: InventionID[] = [];
+	const ephemeralPostTripEffects: PostBoostEffect[] = [];
 	const speedDurationResult = speedCalculations({
 		...args,
 		attackStyles,
@@ -186,31 +203,13 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		speedDurationResult.messages.push('3x boost for Hellfire bow');
 	}
 
-	const maxBasedOnTime = Math.floor(maxTripLength / speedDurationResult.timeToFinish);
-	let quantity = Math.min(speedDurationResult.finalQuantity ?? Number.POSITIVE_INFINITY, maxBasedOnTime);
-
-	if ([Monsters.Skotizo.id].includes(monster.id)) {
-		quantity = 1;
-	}
-
-	quantity = changeQuantityForTaskKillsRemaining({
-		isOnTask,
-		quantity,
-		monster,
-		task: currentSlayerTask,
-		slayerUnlocks
-	});
-
-	quantity = Math.max(1, quantity);
-	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {
-		quantity = 1;
-	}
-
+	const quantity = speedDurationResult.finalQuantity;
 	let duration = speedDurationResult.timeToFinish * quantity;
+
 	if (quantity > 1 && duration > maxTripLength) {
 		return `You can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${Math.floor(maxTripLength / speedDurationResult.timeToFinish)}.`;
+		)}, try a lower quantity. Killing ${quantity}x would take ${formatDuration(duration)}. The highest amount you can do for ${monster.name} is ${Math.floor(maxTripLength / speedDurationResult.timeToFinish)}.`;
 	}
 
 	if (isWeekend()) {
