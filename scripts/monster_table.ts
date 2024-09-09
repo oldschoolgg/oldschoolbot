@@ -1,5 +1,5 @@
 import { writeFileSync } from 'node:fs';
-import { calcPerHour, convertBankToPerHourStats } from '@oldschoolgg/toolkit';
+import { calcPerHour } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
@@ -30,7 +30,7 @@ import {
 } from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill';
 import { doMonsterTrip } from '../src/tasks/minions/monsterActivity';
 
-const MAX_TRIP_LENGTH = Time.Hour * 2.5;
+const MAX_TRIP_LENGTH = Time.Hour * 5;
 
 function round(int: number) {
 	return Math.round(int / 1000) * 1000;
@@ -38,6 +38,7 @@ function round(int: number) {
 const slayerUnlocks: SlayerTaskUnlocksEnum[] = SlayerRewardsShop.map(i => i.id);
 const bank = new Bank();
 for (const item of Items.values()) bank.add(item.id, 1000000);
+bank.add('Black chinchompa', 100000000);
 const chargeBank = new ChargeBank();
 for (const deg of degradeableItems) chargeBank.add(deg.settingsKey, 1000000);
 const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: MinionKillReturn }[] = [];
@@ -206,23 +207,27 @@ for (const monster of killableMonsters) {
 	}
 }
 
-results.sort((a, b) => b.tripResult.updateBank.xpBank.totalXP() - a.tripResult.updateBank.xpBank.totalXP());
+function sortingKey(a: (typeof results)[0]) {
+	return `${a.tripResult.monster.name}.${a.commandResult.attackStyles.join('-')}.${JSON.stringify(a.commandResult.currentTaskOptions)}`;
+}
+results.sort((a, b) => sortingKey(a).localeCompare(sortingKey(b)));
 
 const headers = [
 	'Monster',
 	'AttackStyle',
-	'Total XP/hr',
-	'Raw Total XP/hr',
 	'XP/hr',
-	'Options',
-	'Food',
+	'GP/hr',
 	'Cost/hr',
-	'Loot/hr'
+	'Profit (loot÷cost)',
+	'Raw XP',
+	'Options',
+	'Food'
 ];
 const rows = results
 	.map(({ tripResult, commandResult }) => {
 		const xpHr = round(calcPerHour(tripResult.updateBank.xpBank.totalXP(), commandResult.duration));
 		const gpHr = round(calcPerHour(tripResult.updateBank.itemLootBank.value(), commandResult.duration));
+		const costHr = round(calcPerHour(commandResult.updateBank.itemCostBank.value(), commandResult.duration));
 
 		const options: any = [];
 		if (commandResult.currentTaskOptions.bob === SlayerActivityConstants.IceBarrage) {
@@ -262,18 +267,15 @@ const rows = results
 				.replace('ranged', 'range')
 				.replace('strength', 'str'),
 			`${toKMB(xpHr)} XP/hr`,
-			Math.floor(xpHr).toLocaleString(),
-			xpHrBreakdown.join(' | '),
+			`${toKMB(gpHr)} GP/hr`,
+			`${toKMB(costHr)} cost gp/hr`,
+			costHr > 0 ? (gpHr / costHr).toFixed(1) : '',
+			tripResult.updateBank.xpBank.totalXP(),
 			options.join(' '),
-			`${sharksPerHour.toFixed(1)} Sharks/hr`,
-			convertBankToPerHourStats(tripResult.updateBank.itemCostBank, commandResult.duration).toString(),
-			convertBankToPerHourStats(
-				tripResult.updateBank.itemLootBank.clone().add(tripResult.updateBank.itemLootBankNoCL),
-				commandResult.duration
-			).toString()
+			`${sharksPerHour.toFixed(1)} Sharks/hr`
 		];
 	})
 	.filter(i => Boolean(i));
-writeFileSync('data/monster_data.tsv', [headers, ...rows].map(row => row.join('\t')).join('\n'));
+writeFileSync('data/monster_data.tsv', [headers, ...rows].map(row => row?.join('\t')).join('\n'));
 // writeFileSync('data/monster_data.md', makeTable(headers, rows));
 process.exit();

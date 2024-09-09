@@ -55,7 +55,6 @@ const newMinionKillReturnSchema = z.object({
 	updateBank: z.instanceof(UpdateBank)
 });
 export type MinionKillReturn = z.infer<typeof newMinionKillReturnSchema>;
-
 export interface MinionKillOptions {
 	attackStyles: AttackStyles[];
 	gearBank: GearBank;
