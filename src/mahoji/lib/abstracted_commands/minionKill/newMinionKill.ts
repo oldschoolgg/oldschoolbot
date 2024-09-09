@@ -30,7 +30,7 @@ import { changeQuantityForTaskKillsRemaining } from './calcTaskMonstersRemaining
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { speedCalculations } from './timeAndSpeed';
 
-const returnSchema = z.object({
+const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),
 	quantity: z.number().int().positive(),
 	isOnTask: z.boolean(),
@@ -52,7 +52,7 @@ const returnSchema = z.object({
 	messages: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)
 });
-
+export type MinionKillReturn = z.infer<typeof newMinionKillReturnSchema>;
 export interface MinionKillOptions {
 	attackStyles: AttackStyles[];
 	gearBank: GearBank;
@@ -263,7 +263,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		speedDurationResult.messages.push(`Removing items: ${speedDurationResult.updateBank.itemCostBank}`);
 	}
 
-	const result = returnSchema.parse({
+	const result = newMinionKillReturnSchema.parse({
 		duration,
 		quantity,
 		isOnTask,
