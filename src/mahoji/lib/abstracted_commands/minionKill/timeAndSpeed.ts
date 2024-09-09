@@ -29,7 +29,7 @@ function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, style
 }
 
 export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
-	const { monster, monsterKC, attackStyles, gearBank, maxTripLength } = args;
+	const { monster, monsterKC, attackStyles, gearBank, maxTripLength, inputQuantity } = args;
 	const { skillsAsLevels } = args.gearBank;
 	const messages: string[] = [];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
@@ -76,12 +76,13 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	if (monster.itemCost) consumables.push(monster.itemCost);
 
-	const consumablesQuantity = Math.max(1, args.inputQuantity ?? Math.floor(maxTripLength / monster.timeToFinish));
+	const consumablesQuantity = Math.max(1, inputQuantity ?? Math.floor(maxTripLength / monster.timeToFinish));
 	const consumablesCost = getItemCostFromConsumables({
 		consumableCosts: consumables,
 		gearBank,
 		quantity: consumablesQuantity,
-		timeToFinish
+		timeToFinish,
+		maxTripLength
 	});
 
 	const updateBank = new UpdateBank();
@@ -89,9 +90,6 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	updateBank.chargeBank.add(charges);
 
 	if (consumablesCost) {
-		if (consumablesCost?.maxCanKillWithItemCost < 1) {
-			return `You don't have the items needed to kill this monster. You need: ${consumablesCost?.itemCost}`;
-		}
 		updateBank.itemCostBank.add(consumablesCost.itemCost);
 	}
 
@@ -99,7 +97,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 		timeToFinish,
 		messages,
 		currentTaskOptions,
-		maxCanKillWithItemCost: consumablesCost?.maxCanKillWithItemCost,
+		finalQuantity: consumablesCost?.finalQuantity ?? consumablesQuantity,
 		confirmations,
 		updateBank
 	};

@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
 
+import { Time } from 'e';
 import killableMonsters from '../../src/lib/minions/data/killableMonsters';
 import { getItemCostFromConsumables } from '../../src/mahoji/lib/abstracted_commands/minionKill/handleConsumables';
 import { makeGearBank } from './utils';
@@ -15,10 +16,11 @@ test('getItemCostFromConsumables.test', () => {
 			consumableCosts: [monster.itemCost!],
 			gearBank,
 			quantity,
-			timeToFinish: monster.timeToFinish
+			timeToFinish: monster.timeToFinish,
+			maxTripLength: Time.Hour
 		});
-		expect(consumablesCost?.itemCost.amount('Stamina potion(4)')).toEqual(quantity * 5);
-		expect(consumablesCost?.itemCost.amount('Ruby dragon bolts (e)')).toEqual(quantity * 100);
-		expect(consumablesCost?.maxCanKillWithItemCost).toEqual(10);
+		expect(consumablesCost?.itemCost.amount('Stamina potion(4)')).toEqual(1 * 5);
+		expect(consumablesCost?.itemCost.amount('Ruby dragon bolts (e)')).toEqual(1 * 100);
+		expect(consumablesCost?.finalQuantity).toEqual(1);
 	}
 });

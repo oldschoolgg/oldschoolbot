@@ -123,7 +123,10 @@ export class TestUser extends MUserClass {
 		this.user = user;
 	}
 
-	async kill(monster: EMonster, { quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean;quantity?: number; } = {}) {
+	async kill(
+		monster: EMonster,
+		{ quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean; quantity?: number } = {}
+	) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
 		const commandResult = await this.runCommand(

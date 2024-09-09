@@ -26,7 +26,6 @@ import {
 	isWeekend,
 	itemNameFromID,
 	numberEnum,
-	randomVariation,
 	zodEnum
 } from '../../../../lib/util';
 import { changeQuantityForTaskKillsRemaining } from './calcTaskMonstersRemaining';
@@ -87,7 +86,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		isTryingToUseWildy,
 		inputPVMMethod,
 		maxTripLength,
-		inputQuantity,
 		slayerUnlocks
 	} = args;
 	const osjsMon = Monsters.get(monster.id)!;
@@ -190,11 +188,12 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	}
 
 	const maxBasedOnTime = Math.floor(maxTripLength / speedDurationResult.timeToFinish);
-	const maxCanKill = Math.min(speedDurationResult.maxCanKillWithItemCost ?? Number.POSITIVE_INFINITY, maxBasedOnTime);
-	let quantity = inputQuantity ?? maxCanKill;
+	let quantity = Math.min(speedDurationResult.finalQuantity ?? Number.POSITIVE_INFINITY, maxBasedOnTime);
+
 	if ([Monsters.Skotizo.id].includes(monster.id)) {
 		quantity = 1;
 	}
+
 	quantity = changeQuantityForTaskKillsRemaining({
 		isOnTask,
 		quantity,
@@ -212,10 +211,9 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	if (quantity > 1 && duration > maxTripLength) {
 		return `You can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${Math.floor(maxCanKill)}.`;
+		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${Math.floor(maxTripLength / speedDurationResult.timeToFinish)}.`;
 	}
 
-	duration = randomVariation(duration, 3);
 	if (isWeekend()) {
 		speedDurationResult.messages.push('10% for Weekend');
 		duration *= 0.9;
