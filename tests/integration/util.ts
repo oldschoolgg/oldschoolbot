@@ -126,12 +126,15 @@ export class TestUser extends MUserClass {
 		this.user = user;
 	}
 
-	async kill(monster: EMonster, { method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean } = {}) {
+	async kill(
+		monster: EMonster,
+		{ quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean; quantity?: number } = {}
+	) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
 		const commandResult = await this.runCommand(
 			minionKCommand,
-			{ name: Monsters.get(monster)!.name, method },
+			{ name: Monsters.get(monster)!.name, method, quantity },
 			true
 		);
 		if (shouldFail) {
