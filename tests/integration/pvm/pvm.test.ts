@@ -243,4 +243,50 @@ describe('PVM', async () => {
 		expect(result.commandResult).toContain('5% for no food');
 		expect(result.commandResult).toContain('15.00% for stats');
 	});
+
+	it('should only use 1 skotizo totem', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Dark totem', 100),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+		});
+		const result = await user.kill(EMonster.SKOTIZO, { quantity: 1 });
+		expect(result.commandResult).toContain('is now killing 1x Skotizo');
+		expect(user.bank.amount('Dark totem')).toBe(99);
+	});
+
+	describe('should default to 1 skotizo kill', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Dark totem', 1),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+		});
+		for (const quantity of [undefined, 1, 2, 5]) {
+			it(`should default to 1 skotizo kill with input of ${quantity}`, async () => {
+				await user.update({ bank: new Bank().add('Dark totem', 1).bank });
+				const result = await user.kill(EMonster.SKOTIZO, { quantity });
+				expect(result.commandResult).toContain('is now killing 1x Skotizo');
+				expect(user.bank.amount('Dark totem')).toBe(0);
+			});
+		}
+	});
+
+	describe('should fail to kill skotizo with no totems', async () => {
+		const user = await client.mockUser({
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+		});
+		for (const quantity of [undefined, 1, 2, 5]) {
+			it(`should default to 1 skotizo kill with input of ${quantity}`, async () => {
+				const result = await user.kill(EMonster.SKOTIZO, { quantity });
+				expect(result.commandResult).toContain("You don't have the items");
+			});
+		}
+	});
 });
