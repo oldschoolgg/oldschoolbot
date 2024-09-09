@@ -5,9 +5,9 @@ import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkil
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
+import type { Rumour, RumourOption } from '../skilling/skills/hunter/rumours/util';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import { Rumour, RumourOption } from '../skilling/skills/hunter/rumours/util';
 
 export interface ActivityTaskOptions {
 	userID: string;

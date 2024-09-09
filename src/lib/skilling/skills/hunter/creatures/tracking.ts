@@ -62,7 +62,8 @@ const trackingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.Tracking,
 		catchTime: 47,
 		slope: 0,
-		intercept: 99
+		intercept: 99,
+		tier: ['novice', 'adept']
 	},
 	{
 		name: 'Herbiboar',
@@ -77,7 +78,7 @@ const trackingCreatures: Creature[] = [
 		catchTime: 91,
 		slope: 0,
 		intercept: 99,
-		tier: ['master']
+		tier: ['novice', 'expert', 'master']
 	}
 ];
 

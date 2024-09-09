@@ -14,7 +14,8 @@ const falconryCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.Falconry,
 		catchTime: 4,
 		slope: 1,
-		intercept: 10
+		intercept: 10,
+		tier: ['novice', 'adept']
 	},
 	{
 		name: 'Dark kebbit',
@@ -26,7 +27,8 @@ const falconryCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.Falconry,
 		catchTime: 4.8,
 		slope: 1,
-		intercept: 10
+		intercept: 10,
+		tier: ['novice', 'adept', 'expert']
 	},
 	{
 		name: 'Dashing kebbit',
@@ -39,7 +41,7 @@ const falconryCreatures: Creature[] = [
 		catchTime: 6,
 		slope: 1,
 		intercept: 10,
-		tier: ['master']
+		tier: ['novice', 'expert', 'master']
 	}
 ];
 

@@ -15,7 +15,8 @@ const deadfallTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 17,
 		slope: 1,
-		intercept: 15
+		intercept: 15,
+		tier: ['novice']
 	},
 	{
 		name: 'Barb-tailed kebbit',
@@ -27,7 +28,8 @@ const deadfallTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 20,
 		slope: 1.2,
-		intercept: 17
+		intercept: 17,
+		tier: ['novice']
 	},
 	{
 		name: 'Prickly kebbit',
@@ -39,7 +41,8 @@ const deadfallTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 17,
 		slope: 1.3,
-		intercept: 10
+		intercept: 10,
+		tier: ['novice']
 	},
 	{
 		name: 'Sabre-toothed kebbit',
@@ -51,7 +54,8 @@ const deadfallTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 25,
 		slope: 1.6,
-		intercept: -3
+		intercept: -3,
+		tier: ['novice', 'adept', 'expert']
 	},
 	{
 		name: 'Maniacal monkey',
@@ -77,7 +81,8 @@ const deadfallTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 26,
 		slope: 0.2,
-		intercept: 51.8
+		intercept: 51.8,
+		tier: ['novice', 'adept']
 	}
 ];
 

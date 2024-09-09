@@ -1,12 +1,12 @@
-import { formatDuration, mentionCommand, type CommandResponse } from '@oldschoolgg/toolkit';
-import type { Rumour, RumourOption } from './util';
+import { type CommandResponse, formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
+import { Time, roll } from 'e';
 import { QuestID } from '../../../../minions/data/quests';
-import { calcMaxTripLength } from '../../../../util/calcMaxTripLength';
-import { roll, Time } from 'e';
-import creatures from '../creatures';
-import { Creature, HunterTechniqueEnum } from '../../../types';
+import type { RumourActivityTaskOptions } from '../../../../types/minions';
 import addSubTaskToActivityTask from '../../../../util/addSubTaskToActivityTask';
-import { RumourActivityTaskOptions } from '../../../../types/minions';
+import { calcMaxTripLength } from '../../../../util/calcMaxTripLength';
+import { type Creature, HunterTechniqueEnum } from '../../../types';
+import creatures from '../creatures';
+import type { Rumour, RumourOption } from './util';
 
 const tierToHunterLevel = {
 	novice: 46,
@@ -16,18 +16,18 @@ const tierToHunterLevel = {
 };
 
 const hunterTechniqueToRate: { [key in HunterTechniqueEnum]: number } = {
-    [HunterTechniqueEnum.AerialFishing]: -1,
-    [HunterTechniqueEnum.DriftNet]: -1,
-    [HunterTechniqueEnum.BirdSnaring]: 20,
-    [HunterTechniqueEnum.BoxTrapping]: 50,
-    [HunterTechniqueEnum.ButterflyNetting]: 75,
-    [HunterTechniqueEnum.DeadfallTrapping]: 15,
-    [HunterTechniqueEnum.Falconry]: 10,
-    [HunterTechniqueEnum.MagicBoxTrapping]: -1,
-    [HunterTechniqueEnum.NetTrapping]: 25,
-    [HunterTechniqueEnum.PitfallTrapping]: 15,
-    [HunterTechniqueEnum.RabbitSnaring]: -1,
-    [HunterTechniqueEnum.Tracking]: 15,
+	[HunterTechniqueEnum.AerialFishing]: -1,
+	[HunterTechniqueEnum.DriftNet]: -1,
+	[HunterTechniqueEnum.BirdSnaring]: 20,
+	[HunterTechniqueEnum.BoxTrapping]: 50,
+	[HunterTechniqueEnum.ButterflyNetting]: 75,
+	[HunterTechniqueEnum.DeadfallTrapping]: 15,
+	[HunterTechniqueEnum.Falconry]: 10,
+	[HunterTechniqueEnum.MagicBoxTrapping]: -1,
+	[HunterTechniqueEnum.NetTrapping]: 25,
+	[HunterTechniqueEnum.PitfallTrapping]: 15,
+	[HunterTechniqueEnum.RabbitSnaring]: -1,
+	[HunterTechniqueEnum.Tracking]: 15
 };
 
 export async function rumoursCommand(userID: string, channelID: string, input?: RumourOption): CommandResponse {
@@ -59,7 +59,7 @@ export async function rumoursCommand(userID: string, channelID: string, input?: 
 	const Rumours: Rumour[] = generateRumourTasks(user, input, maxTripLength);
 
 	const totalDuration = Rumours.reduce((acc, rumour) => acc + rumour.duration, 0);
-	
+
 	await addSubTaskToActivityTask<RumourActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID,
@@ -68,20 +68,22 @@ export async function rumoursCommand(userID: string, channelID: string, input?: 
 		rumours: Rumours,
 		duration: totalDuration,
 		type: 'Rumour'
-	}) 
-	
+	});
+
 	return `${user.minionName} is now completing ${Rumours.length} ${input} tier rumours. It'll take around ${formatDuration(totalDuration)} to finish.`;
 }
 
 function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: Time.Minute) {
-	const hunterLevel = user.skillsAsLevels.hunter;
-
-	let Rumours: Rumour[] = [];
+	const Rumours: Rumour[] = [];
 	let totalDuration = 0;
 	const maxDurationInSeconds = maxLength / 1000;
 
 	const filteredCreatures = creatures.filter(
-		creature => creature.tier && creature.tier.includes(tier) && creature.level <= hunterLevel
+		creature =>
+			creature.tier?.includes(tier) &&
+			creature.level <= user.skillsAsLevels.hunter &&
+			(!creature.qpRequired || user.QP >= creature.qpRequired) &&
+			(!creature.herbloreLvl || user.skillsAsLevels.herblore >= creature.herbloreLvl)
 	);
 
 	let lastSelectedCreature: Creature | null = null;
@@ -101,7 +103,7 @@ function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: Time.Mi
 
 		const DurationAndQty = calcDurationAndQty(selectedCreature);
 
-		if (totalDuration + DurationAndQty[0] > (maxDurationInSeconds + (maxDurationInSeconds / 3))) {
+		if (totalDuration + DurationAndQty[0] > maxDurationInSeconds + maxDurationInSeconds / 3) {
 			break;
 		}
 
@@ -115,8 +117,8 @@ function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: Time.Mi
 		lastSelectedCreature = selectedCreature;
 	}
 
-	console.log(`Rumours generated: ${Rumours.length} for a total of ${totalDuration} seconds`);
-	console.log('Rumours: ', Rumours);
+	//console.log(`Rumours generated: ${Rumours.length} for a total of ${totalDuration} seconds`);
+	//console.log('Rumours: ', Rumours);
 
 	return Rumours;
 }
@@ -125,7 +127,9 @@ function calcDurationAndQty(creature: Creature): [number, number] {
 	const dropRate = hunterTechniqueToRate[creature.huntTechnique];
 
 	if (dropRate === -1) {
-		throw new Error(`Drop rate not defined for hunting technique: ${creature.huntTechnique} This shouldn't be possible as all possible rumours have assigned droprates`);
+		throw new Error(
+			`Drop rate not defined for hunting technique: ${creature.huntTechnique} This shouldn't be possible as all possible rumours have assigned droprates`
+		);
 	}
 
 	let creaturesHunted = 0;
@@ -138,7 +142,7 @@ function calcDurationAndQty(creature: Creature): [number, number] {
 		}
 	}
 
-	const timeTaken = (creaturesHunted * creature.catchTime) + 90; //90 Seconds assumed for time taken to get hunter gear out and make it to the location.
+	const timeTaken = creaturesHunted * creature.catchTime + 70; //70 Seconds assumed for time taken to get hunter gear out and make it to the location.
 
 	return [timeTaken, creaturesHunted];
 }
@@ -152,10 +156,10 @@ function highestLevelRumour(user: MUser) {
 export async function rumourCount(userID: string): CommandResponse {
 	const user = await mUserFetch(userID);
 	const { rumours: rumoursCompleted } = await user.fetchStats({ rumours: true });
-	let totalrumours = rumoursCompleted.reduce((a, b) => a + b)
+	const totalrumours = rumoursCompleted.reduce((a, b) => a + b);
 
 	if (totalrumours) {
-		return `Your minion has completed:\n${rumoursCompleted[0]} Novice rumours.\n${rumoursCompleted[1]} Adept rumours.\n${rumoursCompleted[2]} Expert rumours.\n${rumoursCompleted[3]} Master rumours.\nTotal: ${totalrumours}`
+		return `Your minion has completed:\n${rumoursCompleted[0]} Novice rumours.\n${rumoursCompleted[1]} Adept rumours.\n${rumoursCompleted[2]} Expert rumours.\n${rumoursCompleted[3]} Master rumours.\nTotal: ${totalrumours}`;
 	} else {
 		return `Your minion has not completed any rumours yet. You can send your minion to complete rumours by running ${mentionCommand(
 			globalClient,

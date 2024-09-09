@@ -934,8 +934,7 @@ export const allCollectionLogs: ICollection = {
 			'Hunter Guild': {
 				alias: ['hunter guild', 'hunter', 'rumours'],
 				kcActivity: {
-					Default: async (_, __, stats) =>
-						stats.rumours.reduce((a, b) => a + b)
+					Default: async (_, __, stats) => stats.rumours.reduce((a, b) => a + b)
 				},
 				items: rumourCL,
 				isActivity: true

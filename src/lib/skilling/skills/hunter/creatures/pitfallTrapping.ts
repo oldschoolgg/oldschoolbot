@@ -15,7 +15,8 @@ const pitfallTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 35,
 		slope: 0.4,
-		intercept: 15
+		intercept: 15,
+		tier: ['novice', 'adept']
 	},
 	{
 		name: 'Horned graahk',
@@ -28,7 +29,8 @@ const pitfallTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 50,
 		slope: 0.7,
-		intercept: 15
+		intercept: 15,
+		tier: ['novice', 'adept']
 	},
 	{
 		name: 'Sabre-toothed kyatt',
@@ -41,7 +43,8 @@ const pitfallTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 45,
 		slope: 0.5,
-		intercept: 15
+		intercept: 15,
+		tier: ['novice', 'adept', 'expert']
 	},
 	{
 		name: 'Sunlight antelope',
@@ -60,7 +63,7 @@ const pitfallTrappingCreatures: Creature[] = [
 		catchTime: 17,
 		slope: 0.5,
 		intercept: 99,
-		tier: ['master']
+		tier: ['novice', 'expert', 'master']
 	},
 	{
 		name: 'Moonlight antelope',
@@ -78,7 +81,7 @@ const pitfallTrappingCreatures: Creature[] = [
 		catchTime: 19,
 		slope: 0.5,
 		intercept: 99,
-		tier: ['master']
+		tier: ['novice', 'master']
 	}
 ];
 

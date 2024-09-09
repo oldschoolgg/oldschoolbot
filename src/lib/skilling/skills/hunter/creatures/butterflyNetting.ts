@@ -29,7 +29,8 @@ const butterflyNettingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 5.8,
 		slope: 1.2,
-		intercept: 40
+		intercept: 40,
+		tier: ['novice']
 	},
 	{
 		name: 'Snowy knight',
@@ -42,7 +43,8 @@ const butterflyNettingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 6,
 		slope: 1.35,
-		intercept: 30
+		intercept: 30,
+		tier: ['novice', 'adept']
 	},
 	{
 		name: 'Black warlock',
@@ -55,7 +57,8 @@ const butterflyNettingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 5,
 		slope: 1.35,
-		intercept: 35
+		intercept: 35,
+		tier: ['novice', 'adept']
 	},
 	{
 		name: 'Crystal impling',
@@ -81,7 +84,7 @@ const butterflyNettingCreatures: Creature[] = [
 		catchTime: 5,
 		slope: 0.01052,
 		intercept: 0.1798,
-		tier: ['master']
+		tier: ['novice', 'adept', 'expert']
 	},
 	{
 		name: 'Moonlight moth',
@@ -95,7 +98,7 @@ const butterflyNettingCreatures: Creature[] = [
 		catchTime: 5,
 		slope: 1.028,
 		intercept: 9.687,
-		tier: ['master']
+		tier: ['novice', 'expert', 'master']
 	}
 ];
 

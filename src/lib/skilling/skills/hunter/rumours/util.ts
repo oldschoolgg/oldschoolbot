@@ -1,20 +1,20 @@
-import { randArrItem, roll, Time } from 'e';
+import { type Time, randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import { AdeptSack, BasicSack, ExpertSack, MasterSack } from 'oldschooljs/dist/simulation/openables/HuntersLootSack';
 import { resolveItems } from 'oldschooljs/dist/util';
 import type { UnifiedOpenable } from '../../../../openables';
 import getOSItem from '../../../../util/getOSItem';
-import { Creature } from '../../../types';
+import type { Creature } from '../../../types';
 
 export const RumourOptions = ['novice', 'adept', 'expert', 'master'] as const;
 export type RumourOption = (typeof RumourOptions)[number];
 
 export interface Rumour {
-	creature: Creature,
-	duration: Time.Second,
-	quantity: number
-};
+	creature: Creature;
+	duration: Time.Second;
+	quantity: number;
+}
 
 const sacks = [BasicSack, AdeptSack, ExpertSack, MasterSack];
 

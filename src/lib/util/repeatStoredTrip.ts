@@ -368,9 +368,9 @@ const tripHandlers = {
 		})
 	},
 	[activity_type_enum.Rumour]: {
-		commandName: 'rumour',
+		commandName: 'rumours',
 		args: (data: RumourActivityTaskOptions) => ({
-			tier: data.tier
+			start: {tier: data.tier},
 		})
 	},
 	[activity_type_enum.Inferno]: {

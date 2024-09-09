@@ -77,6 +77,7 @@ import { myNotesTask } from '../tasks/minions/myNotesActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
+import { rumourTask } from '../tasks/minions/rumourActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
@@ -98,7 +99,6 @@ import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
-import { rumourTask } from '../tasks/minions/rumourActivity';
 
 const tasks: MinionTask[] = [
 	aerialFishingTask,
