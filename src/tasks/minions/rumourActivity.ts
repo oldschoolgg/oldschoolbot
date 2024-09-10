@@ -10,6 +10,8 @@ import { itemID, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { RumourOptions } from '../../lib/skilling/skills/hunter/rumours/util';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 export const rumourTask: MinionTask = {
 	type: 'Rumour',
@@ -19,7 +21,7 @@ export const rumourTask: MinionTask = {
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity} ${tier} rumours.\n\nThey caught: `;
+		let str = `${user}, ${user.minionName} finished completing ${quantity} ${tier} rumours.\nThey caught: `;
 		let xpStr = '';
 		let chinPetSource = '';
 
@@ -120,6 +122,19 @@ export const rumourTask: MinionTask = {
 				break;
 		}
 
+		const { rumours: rumoursCompleted } = await user.fetchStats({ rumours: true });
+		const oldTotalrumours = rumoursCompleted.reduce((a, b) => a + b);
+
+		rumoursCompleted[RumourOptions.indexOf(tier)] += quantity;
+		await userStatsUpdate(user.id, { "rumours": rumoursCompleted }, {});
+
+		const newTotalrumours = rumoursCompleted.reduce((a, b) => a + b);
+
+		if(oldTotalrumours < 10 && newTotalrumours >= 10) totalLoot.add('Basic quetzal whistle blueprint');
+		if(oldTotalrumours < 100 && newTotalrumours >= 100) totalLoot.add('Torn enhanced quetzal whistle blueprint');
+		if(oldTotalrumours < 250 && newTotalrumours >= 250) totalLoot.add('Torn perfected quetzal whistle blueprint');
+
+		huntXP += ((user.skillsAsLevels.hunter + 5) * (tier === 'master' ? 60 : tier === 'expert' ? 55 : 50) * quantity);
 		xpStr = await user.addXP({
 			skillName: SkillsEnum.Hunter,
 			amount: huntXP,
@@ -138,7 +153,9 @@ export const rumourTask: MinionTask = {
 			itemsToAdd: totalLoot
 		});
 
-		str += `\n\n${xpStr}`;
+		str += `\n${xpStr}`;
+
+		str += `\nYour minion has now completed a total of ${rumoursCompleted[RumourOptions.indexOf(tier)]} ${tier} rumours.`
 
 		if (totalLoot.amount('Baby chinchompa') > 0 || totalLoot.amount('Herbi') > 0) {
 			str += "\n\n**You have a funny feeling like you're being followed....**";

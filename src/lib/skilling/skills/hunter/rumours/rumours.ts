@@ -7,6 +7,7 @@ import { calcMaxTripLength } from '../../../../util/calcMaxTripLength';
 import { type Creature, HunterTechniqueEnum } from '../../../types';
 import creatures from '../creatures';
 import type { Rumour, RumourOption } from './util';
+import { getRumourBlockList } from './rumourBlocks';
 
 const tierToHunterLevel = {
 	novice: 46,
@@ -56,7 +57,7 @@ export async function rumoursCommand(userID: string, channelID: string, input?: 
 	}
 
 	const maxTripLength = calcMaxTripLength(user);
-	const Rumours: Rumour[] = generateRumourTasks(user, input, maxTripLength);
+	const Rumours: Rumour[] = await generateRumourTasks(user, input, maxTripLength);
 
 	const totalDuration = Rumours.reduce((acc, rumour) => acc + rumour.duration, 0);
 
@@ -73,17 +74,19 @@ export async function rumoursCommand(userID: string, channelID: string, input?: 
 	return `${user.minionName} is now completing ${input} tier rumours. It'll return in ${formatDuration(totalDuration)}.`;
 }
 
-function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: Time.Minute) {
+async function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: Time.Minute) {
 	const Rumours: Rumour[] = [];
 	let totalDuration = 0;
 	const maxDurationInSeconds = maxLength / 1000;
+	const blockList = (await getRumourBlockList(user.id)).rumour_blocked_ids;
 
 	const filteredCreatures = creatures.filter(
 		creature =>
 			creature.tier?.includes(tier) &&
 			creature.level <= user.skillsAsLevels.hunter &&
 			(!creature.qpRequired || user.QP >= creature.qpRequired) &&
-			(!creature.herbloreLvl || user.skillsAsLevels.herblore >= creature.herbloreLvl)
+			(!creature.herbloreLvl || user.skillsAsLevels.herblore >= creature.herbloreLvl) &&
+			!blockList.includes(creature.id)
 	);
 
 	let lastSelectedCreature: Creature | null = null;
@@ -104,7 +107,7 @@ function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: Time.Mi
 		const DurationAndQty = calcDurationAndQty(selectedCreature);
 
 		if (totalDuration + DurationAndQty[0] > maxDurationInSeconds + maxDurationInSeconds / 3) {
-			console.log(`Discarded ${selectedCreature} with a time of ${DurationAndQty[0]}`);
+			console.log(`Discarded ${selectedCreature.name} with a time of ${DurationAndQty[0]}`);
 			break;
 		}
 
