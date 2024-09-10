@@ -88,7 +88,7 @@ export async function minionKillCommand(
 		return result;
 	}
 
-	if (!user.bank.has(result.updateBank.itemCostBank)) {
+	if (!user.allItemsOwned.has(result.updateBank.itemCostBank)) {
 		return `You don't have the items needed to kill this monster. You need: ${result.updateBank.itemCostBank}`;
 	}
 
