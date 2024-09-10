@@ -70,7 +70,7 @@ export async function rumoursCommand(userID: string, channelID: string, input?: 
 		type: 'Rumour'
 	});
 
-	return `${user.minionName} is now completing ${Rumours.length} ${input} tier rumours. It'll take around ${formatDuration(totalDuration)} to finish.`;
+	return `${user.minionName} is now completing ${input} tier rumours. It'll return in ${formatDuration(totalDuration)}.`;
 }
 
 function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: Time.Minute) {
@@ -104,6 +104,7 @@ function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: Time.Mi
 		const DurationAndQty = calcDurationAndQty(selectedCreature);
 
 		if (totalDuration + DurationAndQty[0] > maxDurationInSeconds + maxDurationInSeconds / 3) {
+			console.log(`Discarded ${selectedCreature} with a time of ${DurationAndQty[0]}`);
 			break;
 		}
 

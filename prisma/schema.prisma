@@ -315,6 +315,7 @@ model User {
   minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
   finished_quest_ids     Int[]     @default([])
+  rumour_blocked_ids     Int[]     @default([0, 0, 0, 0])
 
   // Relations
   farmedCrops    FarmedCrop[]

@@ -370,7 +370,7 @@ const tripHandlers = {
 	[activity_type_enum.Rumour]: {
 		commandName: 'rumours',
 		args: (data: RumourActivityTaskOptions) => ({
-			start: {tier: data.tier},
+			start: { tier: data.tier }
 		})
 	},
 	[activity_type_enum.Inferno]: {

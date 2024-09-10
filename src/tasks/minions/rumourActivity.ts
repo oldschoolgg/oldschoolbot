@@ -4,11 +4,12 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Events, HERBIBOAR_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../lib/skilling/functions/calcsHunter';
+import { HunterTechniqueEnum } from '../../lib/skilling/types';
 import type { RumourActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { HunterTechniqueEnum } from '../../lib/skilling/types';
 
 export const rumourTask: MinionTask = {
 	type: 'Rumour',
@@ -18,12 +19,17 @@ export const rumourTask: MinionTask = {
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity} ${tier} rumours.\nThey caught: `;
-		let chinPetSource = ''
-		let totalLoot = new Bank();
+		let str = `${user}, ${user.minionName} finished completing ${quantity} ${tier} rumours.\n\nThey caught: `;
+		let xpStr = '';
+		let chinPetSource = '';
+
+		let herbXP = 0;
+		let huntXP = 0;
+
+		const totalLoot = new Bank();
 
 		for (const rumour of rumours) {
-			const [a, xpReceived] = calcLootXPHunting(
+			const [, xpReceived] = calcLootXPHunting(
 				currentLevel,
 				rumour.creature,
 				rumour.quantity,
@@ -50,8 +56,6 @@ export const rumourTask: MinionTask = {
 
 			let creatureTable = rumour.creature.table;
 
-			let herbXP = 0;
-			let xpStr = '';
 			if (rumour.creature.id === HERBIBOAR_ID) {
 				creatureTable = generateHerbiTable(
 					user.skillLevel('herblore'),
@@ -60,17 +64,12 @@ export const rumourTask: MinionTask = {
 				// TODO: Check wiki in future for herblore xp from herbiboar
 				if (currentHerbLevel >= 31) {
 					herbXP += rumour.quantity * randInt(25, 75);
-					xpStr = await user.addXP({
-						skillName: SkillsEnum.Herblore,
-						amount: herbXP,
-						duration
-					});
 				}
 			}
 
 			const loot = new Bank();
 
-			if(rumour.creature.huntTechnique != HunterTechniqueEnum.ButterflyNetting) {
+			if (rumour.creature.huntTechnique !== HunterTechniqueEnum.ButterflyNetting) {
 				for (let i = 0; i < rumour.quantity; i++) {
 					loot.add(creatureTable.roll());
 					if (roll(petDropRate) && rumour.creature.name.toLowerCase().includes('chinchompa')) {
@@ -82,16 +81,7 @@ export const rumourTask: MinionTask = {
 
 			await user.incrementCreatureScore(rumour.creature.id, Math.floor(rumour.quantity));
 
-			await transactItems({
-				userID: user.id,
-				collectionLog: true,
-				itemsToAdd: loot
-			});
-			xpStr += await user.addXP({
-				skillName: SkillsEnum.Hunter,
-				amount: xpReceived,
-				duration
-			});
+			huntXP += xpReceived;
 
 			updateBankSetting('hunter_loot', loot);
 			await trackLoot({
@@ -130,7 +120,25 @@ export const rumourTask: MinionTask = {
 				break;
 		}
 
-		str += `\n\nAnd received: ${totalLoot}.`;
+		xpStr = await user.addXP({
+			skillName: SkillsEnum.Hunter,
+			amount: huntXP,
+			duration
+		});
+
+		xpStr += await user.addXP({
+			skillName: SkillsEnum.Herblore,
+			amount: herbXP,
+			duration
+		});
+
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: totalLoot
+		});
+
+		str += `\n\n${xpStr}`;
 
 		if (totalLoot.amount('Baby chinchompa') > 0 || totalLoot.amount('Herbi') > 0) {
 			str += "\n\n**You have a funny feeling like you're being followed....**";
@@ -144,6 +152,13 @@ export const rumourTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, totalLoot);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot from ${quantity}x ${tier} hunter rumours.`,
+			user,
+			previousCL
+		});
+
+		handleTripFinish(user, channelID, str, image.file.attachment, data, totalLoot);
 	}
 };
