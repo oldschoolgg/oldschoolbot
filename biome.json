@@ -27,7 +27,8 @@
 				"noNonNullAssertion": "off",
 				"noParameterAssign": "off",
 				"useExponentiationOperator": "off",
-				"noUselessElse": "off"
+				"noUselessElse": "off",
+				"useLiteralEnumMembers": "warn"
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "warn",

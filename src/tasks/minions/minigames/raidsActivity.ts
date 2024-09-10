@@ -124,8 +124,8 @@ export const raidsTask: MinionTask = {
 
 				const hasDust = userData.loot.has('Metamorphic dust') || userData.mUser.cl.has('Metamorphic dust');
 				if (challengeMode && roll(50) && hasDust) {
-					const { bank } = userData.loot.clone().add(userData.mUser.allItemsOwned);
-					const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
+					const result = userData.loot.clone().add(userData.mUser.allItemsOwned);
+					const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !result.has(pet));
 					if (unownedPet) {
 						userLoot.add(unownedPet);
 					}
@@ -180,7 +180,7 @@ export const raidsTask: MinionTask = {
 			const specialLoot = isPurple;
 			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
 			if (items.some(([item]) => coxPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
-				const itemsToAnnounce = itemsAdded.filter(item => coxPurpleItems.includes(item.id), false);
+				const itemsToAnnounce = itemsAdded.filter(item => coxPurpleItems.includes(item.id));
 				globalClient.emit(
 					Events.ServerNotification,
 					`${emote} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(

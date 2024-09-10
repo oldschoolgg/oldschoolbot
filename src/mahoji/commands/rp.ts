@@ -866,7 +866,7 @@ Date: ${dateFm(date)}`;
 						}
 					} catch (e) {
 						// This means item doesn't exist at this point in time.
-						delete sentBank.bank[itemId];
+						sentBank.clear(itemId);
 					}
 				}
 				for (const [itemId, qty] of Object.entries(recvBank.bank)) {
@@ -883,7 +883,7 @@ Date: ${dateFm(date)}`;
 						}
 					} catch (e) {
 						// This means item doesn't exist at this point in time.
-						delete recvBank.bank[itemId];
+						recvBank.clear(itemId);
 					}
 				}
 				totalsSent.add(row.sender_id, 'Coins', sentValueLast100);

@@ -182,7 +182,7 @@ export function doMonsterTrip(data: newOptions) {
 
 		for (let i = 0; i < (pkEncounters ?? -1); i++) {
 			if (percentChance(2) || died) {
-				antiPKSupplies.bank = {};
+				antiPKSupplies.clear();
 				break;
 			} else if (percentChance(10)) {
 				antiPKSupplies

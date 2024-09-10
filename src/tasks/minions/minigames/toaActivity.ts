@@ -174,7 +174,7 @@ export const toaTask: MinionTask = {
 
 			const isPurple = items.some(([item]) => toaPurpleItems.includes(item.id));
 			if (items.some(([item]) => toaPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
-				const itemsToAnnounce = itemsAdded.filter(item => toaPurpleItems.includes(item.id), false);
+				const itemsToAnnounce = itemsAdded.filter(item => toaPurpleItems.includes(item.id));
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Purple} ${

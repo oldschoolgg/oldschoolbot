@@ -416,7 +416,9 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 		return { bankLoot: myLoot, clLoot: myLoot };
 	}
 
-	myLoot.filter(i => !filterLootItems.includes(i.id), true);
+	for (const item of filterLootItems) {
+		myLoot.set(item, 0);
+	}
 
 	const myClLoot = new Bank(myLoot.bank);
 

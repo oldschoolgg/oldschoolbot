@@ -4137,13 +4137,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@npm:^2.5.14":
-  version: 2.5.14
-  resolution: "oldschooljs@npm:2.5.14"
+"oldschooljs@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "oldschooljs@npm:2.6.0"
   dependencies:
     e: "npm:^0.2.33"
     node-fetch: "npm:2.6.7"
-  checksum: 10c0/93939590d94cfe17d29b67fa667f68468179e5c8d2670ec4723e05490c630fd233ac47a7c180e1ff707c6bbc0220b19a99db1f839e41c0e33b7dc91a760b63bc
+  checksum: 10c0/1b232fd353dab08b0f44250b001fca54c3dca065c027f8a3156fcda2e692e1d4912b2b4932ba857892dde199a8acb05b53d5fe0a974893d429a24f5fbca7646e
   languageName: node
   linkType: hard
 
@@ -4933,7 +4933,7 @@ __metadata:
     node-cron: "npm:^3.0.3"
     node-fetch: "npm:^2.6.7"
     nodemon: "npm:^3.1.4"
-    oldschooljs: "npm:^2.5.14"
+    oldschooljs: "npm:^2.6.0"
     p-queue: "npm:^6.6.2"
     piscina: "npm:^4.6.1"
     prettier: "npm:^3.3.2"

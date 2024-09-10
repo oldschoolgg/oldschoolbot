@@ -161,7 +161,7 @@ export const tobTask: MinionTask = {
 				const isPurple = items.some(([item]) => TOBUniques.includes(item.id));
 				const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
 				if (shouldAnnounce) {
-					const itemsToAnnounce = userLoot.filter(item => TOBUniques.includes(item.id), false);
+					const itemsToAnnounce = userLoot.filter(item => TOBUniques.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
 						`${Emoji.Purple} ${

@@ -59,9 +59,8 @@ export function getItemCostFromConsumables({
 			const oneKcCost = consumable.itemCost.clone().multiply(multiply);
 
 			// Can't use Bank.add() because it discards < 1 qty.
-			for (const [itemID, qty] of Object.entries(oneKcCost.bank)) {
-				if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
-				else perKillCost.bank[itemID] = qty;
+			for (const [item, qty] of (oneKcCost.items())) {
+				perKillCost.add(item.id, qty);
 			}
 		}
 	}

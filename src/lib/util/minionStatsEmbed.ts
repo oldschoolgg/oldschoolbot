@@ -49,8 +49,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		high_gambles: true
 	});
 
-	const openableScores = new Bank(userStats.openable_scores as ItemBank);
-	getClueScoresFromOpenables(openableScores, true);
+	const openableScores = getClueScoresFromOpenables(new Bank(userStats.openable_scores as ItemBank));
 
 	const clueEntries = Object.entries(openableScores.bank);
 	const minigameScores = (await user.fetchMinigameScores())
