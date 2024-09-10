@@ -12,7 +12,7 @@ import { calcWildyPKChance } from '../../../../lib/util/calcWildyPkChance';
 import { getOSItem } from '../../../../lib/util/getOSItem';
 import type { BoostArgs, BoostResult } from './speedBoosts';
 
-const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
+const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)));
 
 // Runs after we know the quantity/duration/etc
 type PostBoostEffectReturn = Pick<
@@ -178,27 +178,26 @@ export const postBoostEffects: PostBoostEffect[] = [
 			);
 			const hasBlessing = gearBank.hasEquipped('Dwarven blessing');
 			if (!hasBlessing) return;
-			const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
-
-			let dwarvenBlessingPotsNeeded = Math.max(1, fiveMinIncrements);
 
 			const hasPrayerMasterCape = gearBank.hasEquipped('Prayer master cape');
 
 			const prayerMasterCapeBoost = hasPrayerMasterCape && hasBlessing;
-			if (prayerMasterCapeBoost) {
-				dwarvenBlessingPotsNeeded = Math.floor(0.6 * dwarvenBlessingPotsNeeded);
-			}
-			dwarvenBlessingPotsNeeded = Math.max(1, dwarvenBlessingPotsNeeded);
-			const prayerPotsBank = new Bank().add(dwarvenBlessingItem, dwarvenBlessingPotsNeeded);
 
-			if (!gearBank.bank) {
+			const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
+			let dwarvenBlessingPotsNeeded = Math.max(1, fiveMinIncrements);
+
+			if (prayerMasterCapeBoost) {
+				dwarvenBlessingPotsNeeded = Math.max(1, Math.floor(0.6 * dwarvenBlessingPotsNeeded));
+			}
+			const cost = new Bank().add(dwarvenBlessingItem, dwarvenBlessingPotsNeeded);
+
+			if (!gearBank.bank.has(cost)) {
 				return `You don't have enough ${dwarvenBlessingItem}'s to power your Dwarven blessing.`;
 			}
 
 			return {
-				percentageReduction: 40,
 				message: `40% less ${dwarvenBlessingItem}${prayerMasterCapeBoost ? ' (40% less cost for prayer cape)' : ''}`,
-				itemCost: prayerPotsBank
+				itemCost: cost
 			};
 		}
 	}

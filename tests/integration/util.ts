@@ -14,6 +14,7 @@ import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/pris
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { getOSItem } from '../../src/lib/util/getOSItem';
 import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
@@ -123,6 +124,24 @@ export class TestUser extends MUserClass {
 		this.user = user;
 	}
 
+	async giveSlayerTask(monster: EMonster) {
+		await prisma.slayerTask.deleteMany({
+			where: {
+				user_id: this.id
+			}
+		});
+		await prisma.slayerTask.create({
+			data: {
+				user_id: this.id,
+				quantity: 1000,
+				quantity_remaining: 1000,
+				slayer_master_id: 4,
+				monster_id: monster,
+				skipped: false
+			}
+		});
+	}
+
 	async kill(
 		monster: EMonster,
 		{ quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean; quantity?: number } = {}
@@ -137,7 +156,7 @@ export class TestUser extends MUserClass {
 		if (shouldFail) {
 			expect(commandResult).not.toContain('is now killing');
 		}
-		const activityResult = await this.runActivity();
+		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
 		const newKC = await this.getKC(monster);
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;

@@ -11,6 +11,7 @@ import { MaterialBank } from '../invention/MaterialBank';
 import { transactMaterialsFromUser } from '../invention/inventions';
 import type { ItemBank } from '../types';
 import { type JsonKeys, objHasAnyPropInCommon } from '../util';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
 import { ChargeBank, XPBank } from './Bank';
 import { KCBank } from './KCBank';
 
@@ -68,7 +69,7 @@ export class UpdateBank {
 			}
 		}
 
-		if (this.itemCostBank.length > 0 && !user.bank.has(this.itemCostBank)) {
+		if (this.itemCostBank.length > 0 && !user.allItemsOwned.has(this.itemCostBank)) {
 			return `You need these items: ${this.itemCostBank}`;
 		}
 
@@ -147,6 +148,21 @@ export class UpdateBank {
 
 		if (this.itemLootBankNoCL.length > 0) {
 			await user.transactItems({ itemsToAdd: this.itemLootBankNoCL, collectionLog: false });
+		}
+
+		if (Object.keys(this.clientStatsBankUpdates).length > 0) {
+			const clientUpdates: Prisma.ClientStorageUpdateInput = {};
+			const keysToSelect = Object.keys(this.clientStatsBankUpdates).reduce(
+				(acc, key) => ({ ...acc, [key]: true }),
+				{} as Record<string, boolean>
+			);
+			console.log(keysToSelect);
+			const currentStats = await mahojiClientSettingsFetch(keysToSelect);
+			for (const [key, value] of objectEntries(this.clientStatsBankUpdates)) {
+				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
+				clientUpdates[key] = newValue.bank;
+			}
+			await mahojiClientSettingsUpdate(clientUpdates);
 		}
 
 		await user.sync();

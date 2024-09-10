@@ -39,6 +39,9 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	if (percentReduced >= 1) messages.push(`${percentReduced}% for KC`);
 
+	timeToFinish /= 2;
+	messages.push('2x BSO Boost');
+
 	let currentTaskOptions: CombatMethodOptions = {};
 	const itemCost = new Bank();
 	const charges = new ChargeBank();

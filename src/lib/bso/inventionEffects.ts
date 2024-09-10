@@ -54,6 +54,7 @@ export function clueUpgraderEffect({
 	updateBank.itemLootBank.add(upgradedClues);
 	assert(updateBank.itemLootBank.has(removeBank));
 	updateBank.itemLootBank.remove(removeBank);
+	updateBank.materialsCostBank.add(boostRes.materialCost!);
 	const totalCluesUpgraded = sumArr(upgradedClues.items().map(i => i[1]));
 	messages.push(`<:Clue_upgrader:986830303001722880> Upgraded ${totalCluesUpgraded} clues (${boostRes.messages})`);
 }
@@ -88,22 +89,23 @@ export function portableTannerEffect({
 		disabledInventions
 	});
 
-	if (!boostRes.success) return;
-	let triggered = false;
+	if (!boostRes.success || !boostRes.materialCost) return;
+
 	const toAdd = new Bank();
 	for (const [hide, leather] of hideLeatherMap) {
 		const qty = updateBank.itemLootBank.amount(hide.id);
 		if (qty > 0) {
-			triggered = true;
 			updateBank.itemLootBank.remove(hide.id, qty);
 			toAdd.add(leather.id, qty);
 		}
 	}
 
+	if (toAdd.length === 0) return;
+
 	updateBank.userStatsBankUpdates.portable_tanner_bank = toAdd;
 	updateBank.clientStatsBankUpdates.portable_tanner_loot = toAdd;
 	updateBank.itemLootBank.add(toAdd);
-	if (!triggered) return;
+	updateBank.materialsCostBank.add(boostRes.materialCost);
 	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
 }
 
@@ -147,10 +149,11 @@ export function bonecrusherEffect({
 				})
 			: { success: false };
 
-	if (!inventionResult.success) {
+	if (!inventionResult.success || !inventionResult.materialCost) {
 		hasSuperior = false;
 	} else {
 		totalXP = increaseNumByPercent(totalXP, inventionBoosts.superiorBonecrusher.xpBoostPercent);
+		updateBank.materialsCostBank.add(inventionResult.materialCost);
 	}
 
 	totalXP *= 5;

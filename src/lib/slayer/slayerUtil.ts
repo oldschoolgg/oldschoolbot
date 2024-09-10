@@ -9,6 +9,7 @@ import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import type { KillableMonster } from '../minions/types';
 
+import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { roll, stringMatches } from '../util';
 import { logError } from '../util/logError';
@@ -40,12 +41,7 @@ interface DetermineBoostParams {
 }
 export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[] {
 	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
-	let boostMethods: PvMMethod[] = ['none'];
-
-	// the user can only burst/barrage/cannon while on task in BSO
-	if (!params.isOnTask) return boostMethods;
-
-	boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
+	const boostMethods: PvMMethod[] = (params.methods ?? ['none']).flat().filter(method => method);
 
 	// check if user has cannon combat option turned on
 	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
@@ -239,15 +235,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		assignedTask = weightedPick(baseTasks);
 	}
 
-	const newUser = await prisma.newUser.upsert({
-		where: {
-			id: _user.id
-		},
-		create: {
-			id: _user.id
-		},
-		update: {}
-	});
+	const newUser = await getNewUser(_user.id);
 
 	let maxQuantity = assignedTask?.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {

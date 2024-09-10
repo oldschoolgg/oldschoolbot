@@ -35,18 +35,18 @@ export function oriEffect({
 	duration,
 	messages
 }: Pick<MidPVMEffectArgs, 'gearBank' | 'quantity' | 'duration' | 'messages'>) {
+	if (!gearBank.usingPet('Ori')) return quantity;
 	let newQuantity = quantity;
-	if (gearBank.usingPet('Ori')) {
-		if (duration > Time.Minute * 5) {
-			// Original boost for 5+ minute task:
-			newQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
-			messages.push(`${newQuantity - quantity}x kills bonus kills from Ori.`);
-		} else {
-			// 25% chance at extra kill otherwise:
-			for (let i = 0; i < quantity; i++) {
-				if (roll(4)) {
-					newQuantity++;
-				}
+
+	if (duration > Time.Minute * 5) {
+		// Original boost for 5+ minute task:
+		newQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
+		messages.push(`${newQuantity - quantity}x kills bonus kills from Ori.`);
+	} else {
+		// 25% chance at extra kill otherwise:
+		for (let i = 0; i < quantity; i++) {
+			if (roll(4)) {
+				newQuantity++;
 			}
 		}
 	}

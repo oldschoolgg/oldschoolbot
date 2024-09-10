@@ -158,6 +158,9 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			return `${monster.name} cannot be barraged or burst.`;
 		}
 	}
+	if (isBurstingOrBarraging && !isOnTask) {
+		return `You can't barrage or burst ${monster.name}, because you're not on a slayer task.`;
+	}
 
 	if (currentSlayerTask) {
 		args.inputQuantity =
@@ -194,9 +197,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	if (typeof speedDurationResult === 'string') {
 		return speedDurationResult;
 	}
-
-	speedDurationResult.timeToFinish /= 2;
-	speedDurationResult.messages.push('2x BSO Boost');
 
 	if (gearBank.gear.wildy.hasEquipped(['Hellfire bow']) && isInWilderness) {
 		speedDurationResult.timeToFinish /= 3;

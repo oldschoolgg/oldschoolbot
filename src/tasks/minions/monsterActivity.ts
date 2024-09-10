@@ -608,7 +608,7 @@ export const monsterTask: MinionTask = {
 			str,
 			image?.file.attachment,
 			data,
-			itemTransactionResult!.itemsAdded,
+			itemTransactionResult?.itemsAdded ?? null,
 			messages
 		);
 	}

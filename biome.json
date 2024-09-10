@@ -39,6 +39,9 @@
 				"noExtraBooleanCast": "warn",
 				"noBannedTypes": "warn",
 				"noForEach": "warn"
+			},
+			"performance": {
+				"noAccumulatingSpread": "off"
 			}
 		}
 	},
