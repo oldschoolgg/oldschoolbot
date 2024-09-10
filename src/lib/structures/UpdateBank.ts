@@ -61,7 +61,7 @@ export class UpdateBank {
 			}
 		}
 
-		if (this.itemCostBank.length > 0 && !user.bank.has(this.itemCostBank)) {
+		if (this.itemCostBank.length > 0 && !user.allItemsOwned.has(this.itemCostBank)) {
 			return `You need these items: ${this.itemCostBank}`;
 		}
 
