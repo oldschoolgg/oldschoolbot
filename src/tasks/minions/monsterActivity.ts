@@ -182,7 +182,7 @@ export function doMonsterTrip(data: newOptions) {
 
 		for (let i = 0; i < (pkEncounters ?? -1); i++) {
 			if (percentChance(2) || died) {
-				antiPKSupplies.bank = {};
+				antiPKSupplies.clear();
 				break;
 			} else if (percentChance(10)) {
 				antiPKSupplies
@@ -429,6 +429,7 @@ export const monsterTask: MinionTask = {
 		const minigameScores = await user.fetchMinigames();
 		const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
 
+		const attackStyles = data.attackStyles ?? user.getAttackStyles();
 		const { slayerContext, monster, quantity, newKC, messages, updateBank } = doMonsterTrip({
 			...data,
 			tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
@@ -445,7 +446,7 @@ export const monsterTask: MinionTask = {
 			slayerInfo,
 			slayerUnlocks: user.user.slayer_unlocks,
 			userStats: stats,
-			attackStyles: user.getAttackStyles(),
+			attackStyles,
 			hasEliteCA: user.hasCompletedCATier('elite'),
 			bitfield: user.bitfield
 		});

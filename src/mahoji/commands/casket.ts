@@ -1,6 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';
@@ -59,10 +58,10 @@ export const casketCommand: OSBMahojiCommand = {
 
 		const [loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
 
-		if (Object.keys(loot.bank).length === 0) return `${title} and got nothing :(`;
+		if (loot.length === 0) return `${title} and got nothing :(`;
 
 		const image = await makeBankImage({
-			bank: new Bank(loot.bank),
+			bank: loot,
 			title,
 			user
 		});

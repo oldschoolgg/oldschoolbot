@@ -1,10 +1,8 @@
 import { writeFileSync } from 'node:fs';
-import { calcPerHour } from '@oldschoolgg/toolkit';
+import { calcPerHour, convertBankToPerHourStats } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { resolveItems, toKMB } from 'oldschooljs/dist/util';
 
 import '../src/lib/safeglobals';
 
@@ -13,7 +11,7 @@ import { degradeableItems } from '../src/lib/degradeableItems';
 import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import type { AttackStyles } from '../src/lib/minions/functions';
-import { SkillsArray } from '../src/lib/skilling/types';
+import { SkillsArray, SkillsEnum } from '../src/lib/skilling/types';
 import { slayerMasters } from '../src/lib/slayer/slayerMasters';
 import type { SlayerTaskUnlocksEnum } from '../src/lib/slayer/slayerUnlocks';
 import { ChargeBank } from '../src/lib/structures/Bank';
@@ -21,13 +19,15 @@ import { Gear } from '../src/lib/structures/Gear';
 import { GearBank } from '../src/lib/structures/GearBank';
 import { KCBank } from '../src/lib/structures/KCBank';
 import { MUserStats } from '../src/lib/structures/MUserStats';
+import { resolveItems, toKMB } from '../src/lib/util';
 import {
 	type MinionKillReturn,
 	newMinionKillCommand
 } from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill';
 import { doMonsterTrip } from '../src/tasks/minions/monsterActivity';
 
-const MAX_TRIP_LENGTH = Time.Hour * 5;
+const MAX_TRIP_LENGTH = Time.Hour * 50;
+const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints', 'slayer'];
 
 function round(int: number) {
 	return Math.round(int / 1000) * 1000;
@@ -179,18 +179,15 @@ const headers = [
 	'Monster',
 	'AttackStyle',
 	'XP/hr',
-	'GP/hr',
-	'Cost/hr',
-	'Profit (loot÷cost)',
-	'Raw XP',
+	...skills.map(s => `${s} XP/hr`),
 	'Options',
-	'Food'
+	'Food',
+	'GP/hr',
+	'Cost/hr'
 ];
 const rows = results
 	.map(({ tripResult, commandResult }) => {
 		const xpHr = round(calcPerHour(tripResult.updateBank.xpBank.totalXP(), commandResult.duration));
-		const gpHr = round(calcPerHour(tripResult.updateBank.itemLootBank.value(), commandResult.duration));
-		const costHr = round(calcPerHour(commandResult.updateBank.itemCostBank.value(), commandResult.duration));
 
 		const options: any = [];
 		if (commandResult.currentTaskOptions.bob === SlayerActivityConstants.IceBarrage) {
@@ -206,27 +203,30 @@ const rows = results
 			options.push('Is In Wilderness');
 		}
 
-		if (xpHr < 35_000 && gpHr < 300_000) return null;
+		if (xpHr < 35_000) return null;
 
 		const totalSharks = commandResult.updateBank.itemCostBank.amount('Shark');
 		const sharksPerHour = calcPerHour(totalSharks, commandResult.duration);
 
+		const styles = commandResult.attackStyles
+			.join('-')
+			.replace('attack', 'atk')
+			.replace('defence', 'def')
+			.replace('magic', 'mage')
+			.replace('ranged', 'range')
+			.replace('strength', 'str');
+
 		return [
 			tripResult.monster.name,
-			commandResult.attackStyles
-				.join('-')
-				.replace('attack', 'atk')
-				.replace('defence', 'def')
-				.replace('magic', 'mage')
-				.replace('ranged', 'range')
-				.replace('strength', 'str'),
+			styles,
 			`${toKMB(xpHr)} XP/hr`,
-			`${toKMB(gpHr)} GP/hr`,
-			`${toKMB(costHr)} cost gp/hr`,
-			costHr > 0 ? (gpHr / costHr).toFixed(1) : '',
-			tripResult.updateBank.xpBank.totalXP(),
+			...skills.map(s =>
+				toKMB(calcPerHour(tripResult.updateBank.xpBank.amount(s as any), commandResult.duration))
+			),
 			options.join(' '),
-			`${sharksPerHour.toFixed(1)} Sharks/hr`
+			`${sharksPerHour.toFixed(1)} Sharks/hr`,
+			`${convertBankToPerHourStats(commandResult.updateBank.itemLootBank.clone().add(commandResult.updateBank.itemLootBankNoCL), commandResult.duration)} Loot/hr`,
+			`${convertBankToPerHourStats(commandResult.updateBank.itemCostBank, commandResult.duration)} Cost/hr`
 		];
 	})
 	.filter(i => Boolean(i));

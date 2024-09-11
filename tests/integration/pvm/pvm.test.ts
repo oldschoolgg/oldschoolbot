@@ -86,7 +86,8 @@ describe('PVM', async () => {
 	it('Should fail to kill without itemCost', async () => {
 		const user = await client.mockUser({
 			venatorBowCharges: 1000,
-			slayerLevel: 70
+			slayerLevel: 70,
+			bank: new Bank().add('Shark', 10000)
 		});
 		expect(await user.runCommand(minionKCommand, { name: 'hydra' }, true)).to.contain('You need Boots of stone');
 		await user.equip('melee', resolveItems(['Boots of stone']));
@@ -142,12 +143,12 @@ describe('PVM', async () => {
 			mageGear: resolveItems(['Ancient staff'])
 		});
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
-		expect(result.xpGained.magic).toBeGreaterThan(0);
+		expect(result.commandResult).toContain('is now killing ');
 		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
 		expect(user.bank.amount('Water rune')).toBeLessThan(10000000);
 		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
-		expect(result.commandResult).toContain('is now killing ');
 		expect(result.newKC).toBeGreaterThan(0);
+		expect(result.xpGained.magic).toBeGreaterThan(0);
 	});
 
 	it('should get kodai buff', async () => {
@@ -267,7 +268,7 @@ describe('PVM', async () => {
 		});
 		for (const quantity of [undefined, 1, 2, 5]) {
 			it(`should default to 1 skotizo kill with input of ${quantity}`, async () => {
-				await user.update({ bank: new Bank().add('Dark totem', 5).bank });
+				await user.update({ bank: new Bank().add('Dark totem', 5).toJSON() });
 				const result = await user.kill(EMonster.SKOTIZO, { quantity });
 				expect(result.commandResult).toContain('is now killing 1x Skotizo');
 				expect(user.bank.amount('Dark totem')).toBe(4);

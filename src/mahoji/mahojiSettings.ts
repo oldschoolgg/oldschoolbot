@@ -137,7 +137,7 @@ export async function userStatsBankUpdate(user: MUser | string, key: JsonKeys<Us
 	await userStatsUpdate(
 		userID,
 		{
-			[key]: bank.clone().add(currentItemBank).bank
+			[key]: bank.clone().add(currentItemBank).toJSON()
 		},
 		{ [key]: true }
 	);
@@ -311,7 +311,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster, isInWilderness = false) {
+export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster, isInWilderness = false): Bank {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -335,7 +335,7 @@ export function resolveAvailableItemBoosts(gearBank: GearBank, monster: Killable
 			}
 		}
 	}
-	return boosts.bank;
+	return boosts;
 }
 
 export function calcMaxRCQuantity(rune: Rune, user: MUser) {
@@ -380,7 +380,7 @@ export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
 	const { openable_scores: newOpenableScores } = await userStatsUpdate(
 		user.id,
 		{
-			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).bank
+			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
 		},
 		{ openable_scores: true }
 	);

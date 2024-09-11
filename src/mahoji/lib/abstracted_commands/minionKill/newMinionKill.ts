@@ -86,7 +86,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	} = args;
 	const osjsMon = Monsters.get(monster.id)!;
 	let { primaryStyle, relevantGearStat } = getAttackStylesContext(attackStyles);
-
 	const isOnTask =
 		currentSlayerTask.assignedTask !== null &&
 		currentSlayerTask.currentTask !== null &&

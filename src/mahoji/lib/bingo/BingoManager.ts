@@ -297,7 +297,7 @@ ${teams
 		if (!bingoParticipant) return;
 		const beforeTeamProgress = await this.determineProgressOfTeam(bingoParticipant.bingo_team_id);
 		const beforeUserProgress = this.determineProgressOfBank(bingoParticipant.cl);
-		const newCL = addBanks([bingoParticipant.cl as ItemBank, itemsAdded.bank]);
+		const newCL = new Bank(bingoParticipant.cl as ItemBank).add(itemsAdded);
 		await prisma.bingoParticipant.update({
 			where: {
 				user_id_bingo_id: {
@@ -306,7 +306,7 @@ ${teams
 				}
 			},
 			data: {
-				cl: newCL.bank
+				cl: newCL.toJSON()
 			}
 		});
 		const afterUserProgress = this.determineProgressOfBank(newCL);

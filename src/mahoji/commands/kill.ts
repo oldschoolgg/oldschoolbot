@@ -91,7 +91,7 @@ export const killCommand: OSBMahojiCommand = {
 		}
 
 		const image = await makeBankImage({
-			bank: new Bank(result.bank?.bank),
+			bank: new Bank(result.bank),
 			title: result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
 			user
 		});

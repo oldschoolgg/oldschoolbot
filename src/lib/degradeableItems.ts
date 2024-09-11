@@ -1,6 +1,6 @@
 import { percentChance } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
+
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import type { GearSetupType, PrimaryGearSetupType } from './gear/types';

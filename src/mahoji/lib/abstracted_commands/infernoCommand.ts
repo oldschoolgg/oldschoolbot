@@ -485,7 +485,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		fakeDuration,
 		diedPreZuk,
 		diedZuk,
-		cost: realCost.bank
+		cost: realCost.toJSON()
 	});
 
 	updateBankSetting('inferno_cost', realCost);

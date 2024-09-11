@@ -1,8 +1,8 @@
 import type { Image } from '@napi-rs/canvas';
 import type { StoreBitfield } from '@oldschoolgg/toolkit';
 import type { XpGainSource } from '@prisma/client';
-import type { Bank, MonsterKillOptions } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Bank, Item, MonsterKillOptions } from 'oldschooljs';
+
 import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import type { ClueTier } from '../clues/clueTiers';

@@ -21,13 +21,14 @@
 				"noAssignInExpressions": "warn",
 				"noAsyncPromiseExecutor": "off",
 				"noConfusingVoidType": "off",
-				"noFocusedTests": "warn"
+				"noFocusedTests": "off"
 			},
 			"style": {
 				"noNonNullAssertion": "off",
 				"noParameterAssign": "off",
 				"useExponentiationOperator": "off",
-				"noUselessElse": "off"
+				"noUselessElse": "off",
+				"useLiteralEnumMembers": "warn"
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "warn",
