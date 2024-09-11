@@ -24968,5 +24968,94 @@ exports[`OSB Creatables 1`] = `
       "fletching": 74,
     },
   },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1519": 1,
+        "29251": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Basic quetzal whistle",
+    "outputItems": Bank {
+      "bank": {
+        "29271": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1515": 1,
+        "29253": 1,
+        "29271": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Enhanced quetzal whistle",
+    "outputItems": Bank {
+      "bank": {
+        "29273": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1515": 1,
+        "29259": 1,
+        "29271": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Enhanced quetzal whistle (Torn)",
+    "outputItems": Bank {
+      "bank": {
+        "29273": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "19669": 1,
+        "29256": 1,
+        "29273": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Perfected quetzal whistle",
+    "outputItems": Bank {
+      "bank": {
+        "29275": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "19669": 1,
+        "29261": 1,
+        "29273": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Perfected quetzal whistle (Torn)",
+    "outputItems": Bank {
+      "bank": {
+        "29275": 1,
+      },
+      "frozen": false,
+    },
+  },
 ]
 `;

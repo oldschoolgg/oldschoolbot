@@ -33,5 +33,39 @@ export const hunterCreatables: Createable[] = [
 		inputItems: new Bank().add("Hunters' crossbow").add('Sunlight antelope antler'),
 		outputItems: new Bank().add("Hunters' sunlight crossbow"),
 		requiredSkills: { fletching: 74 }
+	},
+	{
+		name: 'Basic quetzal whistle',
+		inputItems: new Bank().add('Basic quetzal whistle blueprint').add('Willow logs'),
+		outputItems: new Bank().add('Basic quetzal whistle')
+	},
+	{
+		name: 'Enhanced quetzal whistle',
+		inputItems: new Bank().add('Basic quetzal whistle').add('Enhanced quetzal whistle blueprint').add('Yew logs'),
+		outputItems: new Bank().add('Enhanced quetzal whistle')
+	},
+	{
+		name: 'Enhanced quetzal whistle (Torn)',
+		inputItems: new Bank()
+			.add('Basic quetzal whistle')
+			.add('Torn enhanced quetzal whistle blueprint')
+			.add('Yew logs'),
+		outputItems: new Bank().add('Enhanced quetzal whistle')
+	},
+	{
+		name: 'Perfected quetzal whistle',
+		inputItems: new Bank()
+			.add('Enhanced quetzal whistle')
+			.add('Perfected quetzal whistle blueprint')
+			.add('Redwood logs'),
+		outputItems: new Bank().add('Perfected quetzal whistle')
+	},
+	{
+		name: 'Perfected quetzal whistle (Torn)',
+		inputItems: new Bank()
+			.add('Enhanced quetzal whistle')
+			.add('Torn perfected quetzal whistle blueprint')
+			.add('Redwood logs'),
+		outputItems: new Bank().add('Perfected quetzal whistle')
 	}
 ];

@@ -6,8 +6,8 @@ import addSubTaskToActivityTask from '../../../../util/addSubTaskToActivityTask'
 import { calcMaxTripLength } from '../../../../util/calcMaxTripLength';
 import { type Creature, HunterTechniqueEnum } from '../../../types';
 import creatures from '../creatures';
-import type { Rumour, RumourOption } from './util';
 import { getRumourBlockList } from './rumourBlocks';
+import type { Rumour, RumourOption } from './util';
 
 const tierToHunterLevel = {
 	novice: 46,
