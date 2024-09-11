@@ -4,7 +4,7 @@ import { QuestID } from '../../../../minions/data/quests';
 import type { RumourActivityTaskOptions } from '../../../../types/minions';
 import addSubTaskToActivityTask from '../../../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../../util/calcMaxTripLength';
-import { type Creature, HunterTechniqueEnum } from '../../../types';
+import { type Creature, HunterTechniqueEnum, SkillsEnum } from '../../../types';
 import creatures from '../creatures';
 import { getRumourBlockList } from './rumourBlocks';
 import type { Rumour, RumourOption } from './util';
@@ -104,7 +104,7 @@ async function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: T
 
 		if (!selectedCreature) break;
 
-		const DurationAndQty = calcDurationAndQty(selectedCreature);
+		const DurationAndQty = calcDurationAndQty(selectedCreature, user);
 
 		if (totalDuration + DurationAndQty[0] > maxDurationInSeconds + maxDurationInSeconds / 3) {
 			console.log(`Discarded ${selectedCreature.name} with a time of ${DurationAndQty[0]}`);
@@ -127,7 +127,7 @@ async function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: T
 	return Rumours;
 }
 
-function calcDurationAndQty(creature: Creature): [number, number] {
+function calcDurationAndQty(creature: Creature, user: MUser): [number, number] {
 	const dropRate = hunterTechniqueToRate[creature.huntTechnique];
 
 	if (dropRate === -1) {
@@ -146,7 +146,19 @@ function calcDurationAndQty(creature: Creature): [number, number] {
 		}
 	}
 
-	const timeTaken = creaturesHunted * creature.catchTime + 70; //70 Seconds assumed for time taken to get hunter gear out and make it to the location.
+	const chanceOfSuccess = creature.slope * user.skillsAsLevels.hunter + creature.intercept;
+	let totalCreaturesHunted = creaturesHunted;
+	if (chanceOfSuccess < 1) totalCreaturesHunted = Math.floor(creaturesHunted / chanceOfSuccess);
+
+	let catchtime = creature.catchTime;
+	let traps = 1;
+	if (creature.multiTraps) {
+		traps += Math.min(Math.floor(user.skillLevel(SkillsEnum.Hunter) / 20), 5);
+	}
+
+	catchtime = catchtime / traps;
+
+	const timeTaken = totalCreaturesHunted * catchtime + 70; //70 Seconds assumed for time taken to get hunter gear out and make it to the location.
 
 	return [timeTaken, creaturesHunted];
 }

@@ -238,7 +238,13 @@ const forcedShortNameMap = new Map<number, string>([
 
 	// Ore Packs
 	[27_019, 'GF Pack'],
-	[27_693, 'VM Pack']
+	[27_693, 'VM Pack'],
+
+	//Rumour loot
+	[i("Hunters' loot sack (basic)"), 'Basic'],
+	[i("Hunters' loot sack (adept)"), 'Adept'],
+	[i("Hunters' loot sack (expert)"), 'Expert'],
+	[i("Hunters' loot sack (master)"), 'Master']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
