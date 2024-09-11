@@ -2,6 +2,7 @@ import { Bank, EMonster } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { UpdateBank } from '../../src/lib/structures/UpdateBank';
+import type { ItemBank } from '../../src/lib/types';
 import { createTestUser } from './util';
 
 describe('UpdateBank', async () => {
@@ -94,7 +95,7 @@ describe('UpdateBank', async () => {
 		});
 		expect(Number(stats.ash_sanctifier_prayer_xp)).toBe(123);
 		expect(Number(stats.gp_luckypick)).toBe(100);
-		expect(stats.buy_cost_bank).toMatchObject(new Bank().add('Trout', 50).bank);
+		expect(new Bank(stats.buy_cost_bank as ItemBank).equals(new Bank().add('Trout', 50))).toBeTruthy();
 
 		// Second update
 		const secondUpdateBank = new UpdateBank();
@@ -103,9 +104,9 @@ describe('UpdateBank', async () => {
 		};
 		secondUpdateBank.userStatsBankUpdates.buy_cost_bank = new Bank().add('Trout', 50).add('Shark', 50);
 		await secondUpdateBank.transact(user);
-		expect((await user.fetchStats({ buy_cost_bank: true })).buy_cost_bank).toMatchObject(
-			new Bank().add('Trout', 100).add('Shark', 50).bank
-		);
+
+		const res = new Bank((await user.fetchStats({ buy_cost_bank: true })).buy_cost_bank as ItemBank);
+		expect(res.equals(new Bank().add('Trout', 100).add('Shark', 50))).toBeTruthy();
 		expect(Number(stats.ash_sanctifier_prayer_xp)).toBe(123);
 		expect(Number(stats.gp_luckypick)).toBe(100);
 	});

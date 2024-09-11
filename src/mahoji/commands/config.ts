@@ -386,7 +386,7 @@ async function bankSortConfig(
 	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.clear;
 
 	await user.update({
-		bank_sort_weightings: newBank.bank
+		bank_sort_weightings: newBank.toJSON()
 	});
 
 	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined, undefined);

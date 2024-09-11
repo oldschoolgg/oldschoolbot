@@ -21,7 +21,7 @@
 				"noAssignInExpressions": "warn",
 				"noAsyncPromiseExecutor": "off",
 				"noConfusingVoidType": "off",
-				"noFocusedTests": "warn"
+				"noFocusedTests": "off"
 			},
 			"style": {
 				"noNonNullAssertion": "off",

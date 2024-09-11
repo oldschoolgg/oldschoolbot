@@ -7,8 +7,7 @@ import { Duration } from '@sapphire/time-utilities';
 import { SnowflakeUtil, codeBlock } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, objectValues, randArrItem, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { BitField, Channel, globalConfig } from '../../lib/constants';
@@ -25,7 +24,6 @@ import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ItemBank } from '../../lib/types';
 import { dateFm, isValidDiscordSnowflake } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -653,7 +651,7 @@ Date: ${dateFm(date)}`;
 			const userToCheck = await mUserFetch(options.player.viewbank.user.user.id);
 			const bank = userToCheck.allItemsOwned;
 			if (options.player?.viewbank.json) {
-				const json = JSON.stringify(bank.bank);
+				const json = JSON.stringify(bank.toJSON());
 				if (json.length > 1900) {
 					return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
 				}
@@ -852,38 +850,26 @@ Date: ${dateFm(date)}`;
 				let recvValueLast100 = 0;
 
 				// We use Object.entries(bank) instead of bank.items() so we can filter out deleted/broken items:
-				for (const [itemId, qty] of Object.entries(sentBank.bank)) {
-					try {
-						const item = getOSItem(Number(itemId));
-						const marketData = marketPricemap.get(item.id);
-						if (marketData) {
-							sentValueGuide += marketData.guidePrice * qty;
-							sentValueLast100 += marketData.averagePriceLast100 * qty;
-						} else {
-							const { price } = sellPriceOfItem(item, 0);
-							sentValueGuide += price * qty;
-							sentValueLast100 += price * qty;
-						}
-					} catch (e) {
-						// This means item doesn't exist at this point in time.
-						sentBank.clear(itemId);
+				for (const [item, qty] of sentBank.items()) {
+					const marketData = marketPricemap.get(item.id);
+					if (marketData) {
+						sentValueGuide += marketData.guidePrice * qty;
+						sentValueLast100 += marketData.averagePriceLast100 * qty;
+					} else {
+						const { price } = sellPriceOfItem(item, 0);
+						sentValueGuide += price * qty;
+						sentValueLast100 += price * qty;
 					}
 				}
-				for (const [itemId, qty] of Object.entries(recvBank.bank)) {
-					try {
-						const item = getOSItem(Number(itemId));
-						const marketData = marketPricemap.get(item.id);
-						if (marketData) {
-							recvValueGuide += marketData.guidePrice * qty;
-							recvValueLast100 += marketData.averagePriceLast100 * qty;
-						} else {
-							const { price } = sellPriceOfItem(item, 0);
-							recvValueGuide += price * qty;
-							recvValueLast100 += price * qty;
-						}
-					} catch (e) {
-						// This means item doesn't exist at this point in time.
-						recvBank.clear(itemId);
+				for (const [item, qty] of recvBank.items()) {
+					const marketData = marketPricemap.get(item.id);
+					if (marketData) {
+						recvValueGuide += marketData.guidePrice * qty;
+						recvValueLast100 += marketData.averagePriceLast100 * qty;
+					} else {
+						const { price } = sellPriceOfItem(item, 0);
+						recvValueGuide += price * qty;
+						recvValueLast100 += price * qty;
 					}
 				}
 				totalsSent.add(row.sender_id, 'Coins', sentValueLast100);

@@ -89,7 +89,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
 	}
 
-	if (!userBankWithEquippedItems.has(toRemove.bank)) {
+	if (!userBankWithEquippedItems.has(toRemove)) {
 		return `You don't have the items in this preset. You're missing: ${toRemove.remove(user.bank)}.`;
 	}
 

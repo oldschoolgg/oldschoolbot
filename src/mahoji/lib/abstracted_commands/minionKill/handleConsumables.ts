@@ -1,10 +1,25 @@
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { EItem } from 'oldschooljs';
+
 import { getSimilarItems } from '../../../../lib/data/similarItems';
 import type { Consumable } from '../../../../lib/minions/types';
+import { FloatBank } from '../../../../lib/structures/Bank';
 import type { GearBank } from '../../../../lib/structures/GearBank';
-import { calculateTripConsumableCost } from '../../../../lib/util/calculateTripConsumableCost';
 import itemID from '../../../../lib/util/itemID';
+
+// TODO: should use a FloatBank instead of a Bank
+export const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
+	const consumableCost = c.itemCost.clone();
+	if (c.qtyPerKill) {
+		consumableCost.multiply(quantity);
+	} else if (c.qtyPerMinute) {
+		consumableCost.multiply(duration / Time.Minute);
+	}
+	for (const [item, qty] of consumableCost.items()) {
+		consumableCost.set(item.id, Math.ceil(qty));
+	}
+	return consumableCost;
+};
 
 export function getItemCostFromConsumables({
 	consumableCosts,
@@ -22,7 +37,7 @@ export function getItemCostFromConsumables({
 	if (consumableCosts.length === 0) return;
 
 	const duration = timeToFinish * quantity;
-	const perKillCost = new Bank();
+	const floatCosts = new FloatBank();
 
 	for (const cc of consumableCosts) {
 		let consumable = cc;
@@ -55,32 +70,27 @@ export function getItemCostFromConsumables({
 			// Calculate the duration for 1 kill and check how much will be used in 1 kill
 			if (consumable.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
 
-			// Calculate supply for 1 kill
-			const oneKcCost = consumable.itemCost.clone().multiply(multiply);
-
-			// Can't use Bank.add() because it discards < 1 qty.
-			for (const [item, qty] of (oneKcCost.items())) {
-				perKillCost.add(item.id, qty);
+			for (const [item, qty] of consumable.itemCost.items()) {
+				floatCosts.add(item.id, qty);
 			}
+			if (multiply) floatCosts.multiply(multiply);
 		}
 	}
 
 	const hasInfiniteWaterRunes = gearBank.hasEquipped(getSimilarItems(itemID('Staff of water')), false);
 
-	if (hasInfiniteWaterRunes) perKillCost.remove('Water rune', perKillCost.amount('Water rune'));
-
-	const maxBasedOnTime = Math.floor(maxTripLength / timeToFinish);
-	const maxCanKillWithItemCost = Math.floor(gearBank.bank.fits(perKillCost));
-	const finalQuantity = Math.max(1, Math.min(quantity, maxCanKillWithItemCost, maxBasedOnTime));
-
-	const { bank } = perKillCost.clone().multiply(finalQuantity);
-
-	for (const [item, qty] of Object.entries(bank)) {
-		bank[item] = Math.ceil(qty);
+	if (hasInfiniteWaterRunes) {
+		floatCosts.remove(EItem.WATER_RUNE, floatCosts.amount(EItem.WATER_RUNE));
 	}
 
+	const maxBasedOnTime = Math.floor(maxTripLength / timeToFinish);
+	const maxCanKillWithItemCost = Math.floor(floatCosts.fits(gearBank.bank));
+	const finalQuantity = Math.max(1, Math.min(quantity, maxCanKillWithItemCost, maxBasedOnTime));
+
+	const itemCost = floatCosts.multiply(finalQuantity).toItemBankRoundedUp();
+
 	return {
-		itemCost: new Bank(bank),
+		itemCost,
 		finalQuantity
 	};
 }

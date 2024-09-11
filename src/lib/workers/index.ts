@@ -21,7 +21,7 @@ export interface KillWorkerArgs {
 }
 
 export type KillWorkerReturn = Promise<{
-	bank?: Bank;
+	bank?: ItemBank;
 	error?: string;
 	title?: string;
 	content?: string;

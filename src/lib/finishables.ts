@@ -11,6 +11,7 @@ import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import { calculateTripConsumableCost } from '../mahoji/lib/abstracted_commands/minionKill/handleConsumables';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
 	NexCL,
@@ -40,7 +41,6 @@ import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { calculateTripConsumableCost } from './util/calculateTripConsumableCost';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 

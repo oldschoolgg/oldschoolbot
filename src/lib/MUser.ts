@@ -4,8 +4,8 @@ import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from
 import { userMention } from 'discord.js';
 import { calcWhatPercent, percentChance, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+
+import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
@@ -322,7 +322,7 @@ GROUP BY data->>'ci';`);
 		await userStatsUpdate(
 			this.id,
 			{
-				monster_scores: newKCs.bank
+				monster_scores: newKCs.toJSON()
 			},
 			{}
 		);
@@ -508,7 +508,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
-		const previousCL = new Bank(this.cl.bank);
+		const previousCL = this.cl.clone();
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
@@ -651,11 +651,11 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		dontAddToTempCL?: boolean;
 	}): Prisma.UserUpdateArgs['data'] {
 		const updates: Prisma.UserUpdateArgs['data'] = {
-			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).bank
+			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).toJSON()
 		};
 
 		if (!dontAddToTempCL) {
-			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).bank;
+			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).toJSON();
 		}
 		return updates;
 	}

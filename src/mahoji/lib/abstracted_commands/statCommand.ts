@@ -25,7 +25,7 @@ import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestr
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import type { InfernoOptions } from '../../../lib/types/minions';
-import { SQL_sumOfAllCLItems, formatDuration, getUsername, sanitizeBank, stringMatches } from '../../../lib/util';
+import { SQL_sumOfAllCLItems, formatDuration, getUsername, stringMatches } from '../../../lib/util';
 import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -287,7 +287,7 @@ GROUP BY data->>'collectableID';`);
 }
 
 async function makeResponseForBank(bank: Bank, title: string, content?: string) {
-	sanitizeBank(bank);
+	bank.removeInvalidValues();
 	if (bank.length === 0) {
 		return { content: 'No results.' };
 	}
@@ -928,8 +928,8 @@ GROUP BY "bankBackground";`);
 			if (clueScores.length === 0) return "You haven't done any clues yet.";
 
 			let res = `${Emoji.Casket} **${user.minionName}'s Clue Scores:**\n\n`;
-			for (const [clueID, clueScore] of Object.entries(clueScores.bank)) {
-				const clue = ClueTiers.find(c => c.id === Number.parseInt(clueID));
+			for (const [item, clueScore] of clueScores.items()) {
+				const clue = ClueTiers.find(c => c.id === item.id);
 				res += `**${clue?.name}**: ${clueScore.toLocaleString()}\n`;
 			}
 			return res;
@@ -1073,7 +1073,7 @@ GROUP BY "bankBackground";`);
 			for (const g of giveaways) {
 				items.add(g.items_sent as ItemBank);
 			}
-			sanitizeBank(items);
+			items.removeInvalidValues();
 			return makeResponseForBank(items, "You've given away...");
 		}
 	},
@@ -1094,7 +1094,7 @@ GROUP BY "bankBackground";`);
 			for (const g of giveaways) {
 				items.add(g.items_sent as ItemBank);
 			}
-			sanitizeBank(items);
+			items.removeInvalidValues();
 			return makeResponseForBank(items, "You've received from giveaways...");
 		}
 	},

@@ -113,7 +113,7 @@ export class UpdateBank {
 			});
 			for (const [key, value] of objectEntries(this.userStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
-				userStatsUpdates[key] = newValue.bank;
+				userStatsUpdates[key] = newValue.toJSON();
 			}
 		}
 

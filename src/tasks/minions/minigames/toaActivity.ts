@@ -163,11 +163,12 @@ export const toaTask: MinionTask = {
 			await userStatsUpdate(user.id, {
 				toa_raid_levels_bank: new Bank()
 					.add(currentStats.toa_raid_levels_bank as ItemBank)
-					.add(raidLevel, quantity).bank,
+					.add(raidLevel, quantity)
+					.toJSON(),
 				total_toa_duration_minutes: {
 					increment: Math.floor(duration / Time.Minute)
 				},
-				toa_loot: new Bank(currentStats.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
+				toa_loot: new Bank(currentStats.toa_loot as ItemBank).add(totalLoot.get(userID)).toJSON()
 			});
 
 			const items = itemsAdded.items();

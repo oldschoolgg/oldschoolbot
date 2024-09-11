@@ -8,8 +8,8 @@ import { UserError } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
+
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 

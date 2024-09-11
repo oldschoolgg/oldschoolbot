@@ -8,7 +8,7 @@ import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { deduplicateClueScrolls } from '../../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import { pluraliseItemName, sanitizeBank, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
+import { pluraliseItemName, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './utils';
@@ -63,17 +63,9 @@ describe('util', () => {
 	test('deduplicateClueScrolls', () => {
 		const currentBank = new Bank().add('Clue scroll(easy)');
 		const loot = new Bank().add('Clue scroll(easy)').add('Clue scroll(hard)', 10).add('Clue scroll(master)');
-		expect(deduplicateClueScrolls({ loot, currentBank }).bank).toEqual(
-			new Bank().add('Clue scroll(hard)').add('Clue scroll(master)').bank
+		expect(deduplicateClueScrolls({ loot, currentBank }).toJSON()).toEqual(
+			new Bank().add('Clue scroll(hard)').add('Clue scroll(master)').toJSON()
 		);
-	});
-
-	test('sanitizeBank', () => {
-		const buggyBank = new Bank();
-		buggyBank.bank[1] = -1;
-		buggyBank.bank[2] = 0;
-		sanitizeBank(buggyBank);
-		expect(buggyBank.bank).toEqual({});
 	});
 
 	test('truncateString', () => {

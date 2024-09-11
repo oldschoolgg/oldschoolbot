@@ -18,7 +18,7 @@ export function deduplicateClueScrolls({ loot, currentBank }: { loot: Bank; curr
 		if (currentBank.has(scrollID)) {
 			newLoot.remove(scrollID, newLoot.amount(scrollID));
 		} else {
-			newLoot.set(scrollID,1);
+			newLoot.set(scrollID, 1);
 		}
 	}
 	return newLoot;
