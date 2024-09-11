@@ -1,4 +1,4 @@
-import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs';
 import type { PvMMethod } from '../../../../lib/constants';
 import type { PrimaryGearSetupType } from '../../../../lib/gear/types';
 import getOSItem from '../../../../lib/util/getOSItem';

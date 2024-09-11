@@ -36,7 +36,9 @@ export class UpdateBank {
 		this.xpBank.add(other.xpBank);
 		this.kcBank.add(other.kcBank);
 		this.itemLootBankNoCL.add(other.itemLootBankNoCL);
-		this.userStatsBankUpdates = mergeDeep(this.userStatsBankUpdates, other.userStatsBankUpdates);
+		for (const [key, value] of objectEntries(other.userStatsBankUpdates)) {
+			this.userStatsBankUpdates[key] = (this.userStatsBankUpdates[key] ?? new Bank()).add(value);
+		}
 
 		if (objHasAnyPropInCommon(this.gearChanges, other.gearChanges)) {
 			throw new Error('Gear changes conflict');
@@ -111,7 +113,7 @@ export class UpdateBank {
 			});
 			for (const [key, value] of objectEntries(this.userStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
-				userStatsUpdates[key] = newValue.bank;
+				userStatsUpdates[key] = newValue.toJSON();
 			}
 		}
 

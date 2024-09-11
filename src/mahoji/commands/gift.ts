@@ -208,7 +208,7 @@ ${truncateString(giftsOwnedButNotOpened.map(g => `${g.name ? `${g.name} (${g.id}
 				}
 			}
 
-			if (!user.bankWithGP.has(items.bank)) {
+			if (!user.bankWithGP.has(items)) {
 				return 'You do not have the required items to create this gift box.';
 			}
 
@@ -224,7 +224,7 @@ ${items}`
 				data: {
 					id: miniID(5),
 					creator_id: user.id,
-					items: items.bank,
+					items: items.toJSON(),
 					name: options.create.name,
 					status: GiftBoxStatus.Created
 				}

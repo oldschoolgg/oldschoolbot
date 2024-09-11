@@ -219,7 +219,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 				imbueCasts = numberOfInventories;
 			} else {
 				removeTalismanAndOrRunes.add(runeObj.inputTalisman.clone().multiply(numberOfInventories));
-				if (!bank.has(removeTalismanAndOrRunes.bank)) {
+				if (!bank.has(removeTalismanAndOrRunes)) {
 					return `You need enough Magic Imbue runes and 82 Magic, *or* Talismans to craft this rune. You don't have enough talismans for this trip. You need ${runeObj.inputTalisman
 						.clone()
 						.multiply(numberOfInventories)}.`;

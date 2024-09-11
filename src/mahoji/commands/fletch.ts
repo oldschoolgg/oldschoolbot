@@ -97,7 +97,7 @@ export const fletchCommand: OSBMahojiCommand = {
 		}
 
 		const itemsNeeded = fletchable.inputItems.clone().multiply(quantity);
-		if (!userBank.has(itemsNeeded.bank)) {
+		if (!userBank.has(itemsNeeded)) {
 			return `You don't have enough items. For ${quantity}x ${fletchable.name}, you're missing **${itemsNeeded
 				.clone()
 				.remove(userBank)}**.`;

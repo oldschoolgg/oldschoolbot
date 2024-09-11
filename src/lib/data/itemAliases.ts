@@ -1,8 +1,6 @@
 import { deepMerge, modifyItem } from '@oldschoolgg/toolkit';
 import { omit } from 'lodash';
-import { EItem, Items } from 'oldschooljs';
-import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { EItem, Items, allTeamCapes, itemNameMap } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 
@@ -31,6 +29,9 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 			name: firstName!,
 			id
 		});
+	}
+	if (Items.get(id)!.name !== firstName) {
+		throw new Error(`Failed to set item alias for item ${id}`);
 	}
 }
 
