@@ -383,7 +383,7 @@ async function bankSortConfig(
 
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
-	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.clear;
+	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.clear();
 
 	await user.update({
 		bank_sort_weightings: newBank.toJSON()
