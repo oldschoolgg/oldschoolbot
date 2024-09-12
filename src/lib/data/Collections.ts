@@ -1,6 +1,6 @@
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, Clues, Monsters } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, Clues, type Item, Monsters } from 'oldschooljs';
+
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 

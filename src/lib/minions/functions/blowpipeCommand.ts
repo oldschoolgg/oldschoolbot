@@ -126,7 +126,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 		currentData.dartQuantity += itemsToRemove.amount(dart[0].id);
 	}
 	validateBlowpipeData(currentData);
-	if (!userBank.has(itemsToRemove.bank)) {
+	if (!userBank.has(itemsToRemove)) {
 		return `You don't own ${itemsToRemove}.`;
 	}
 	await user.removeItemsFromBank(itemsToRemove);

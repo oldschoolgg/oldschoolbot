@@ -29,7 +29,7 @@ async function addToLotteryBank(userID: string, bankToAdd: Bank) {
 	const newBank = new Bank(current).add(bankToAdd);
 
 	const res = await mahojiUserSettingsUpdate(userID, {
-		lottery_input: newBank.bank
+		lottery_input: newBank.toJSON()
 	});
 	return res;
 }
@@ -362,7 +362,11 @@ export const lotteryCommand: OSBMahojiCommand = {
 				filters: [options.deposit_items.filter],
 				user
 			});
-			bankToSell.filter(i => !isSuperUntradeable(i), true);
+			for (const [item] of bankToSell.items()) {
+				if (isSuperUntradeable(item.id)) {
+					bankToSell.clear(item);
+				}
+			}
 
 			if (bankToSell.items().some(i => isSuperUntradeable(i[0].id))) {
 				return 'You cannot put in super untradeable items.';

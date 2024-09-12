@@ -156,7 +156,8 @@ export async function minionKillCommand(
 		chinning: !chinning ? undefined : chinning,
 		bob: !bob ? undefined : bob,
 		hasWildySupplies,
-		isInWilderness: result.isInWilderness
+		isInWilderness: result.isInWilderness,
+		attackStyles: result.attackStyles
 	});
 
 	if (dtdResult) {

@@ -33,7 +33,7 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
-import { calcPerHour, cleanString, formatDuration, sanitizeBank, stringMatches, toKMB } from '../../lib/util';
+import { calcPerHour, cleanString, formatDuration, stringMatches, toKMB } from '../../lib/util';
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
@@ -241,11 +241,10 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 				economyBank.add("Zulrah's scales", scales);
 				economyBank.add(dart, qty);
 			}
-			sanitizeBank(economyBank);
 			return {
 				files: [
 					(await makeBankImage({ bank: economyBank })).file,
-					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.bank, null, 4)), {
+					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4)), {
 						name: 'bank.json'
 					})
 				]
@@ -1142,10 +1141,8 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			for (const res of results) {
 				if (!res.total_duration || !res.total_kc) continue;
 				if (Object.keys({ ...(res.cost as ItemBank), ...(res.loot as ItemBank) }).length === 0) continue;
-				const cost = new Bank(res.cost as ItemBank);
-				const loot = new Bank(res.loot as ItemBank);
-				sanitizeBank(cost);
-				sanitizeBank(loot);
+				const cost = Bank.withSanitizedValues(res.cost as ItemBank);
+				const loot = Bank.withSanitizedValues(res.loot as ItemBank);
 				const marketValueCost = Math.round(cost.value());
 				const marketValueLoot = Math.round(loot.value());
 				const ratio = marketValueLoot / marketValueCost;
@@ -1200,11 +1197,11 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 					},
 					{
 						name: 'totalloot.json',
-						attachment: Buffer.from(JSON.stringify(actualLootBank.bank))
+						attachment: Buffer.from(JSON.stringify(actualLootBank.toJSON()))
 					},
 					{
 						name: 'taxedbank.json',
-						attachment: Buffer.from(JSON.stringify(taxedBank.bank))
+						attachment: Buffer.from(JSON.stringify(taxedBank.toJSON()))
 					},
 					(await makeBankImage({ bank: taxedBank, title: 'Taxed Bank' })).file,
 					(await makeBankImage({ bank: actualLootBank, title: 'Actual Loot' })).file

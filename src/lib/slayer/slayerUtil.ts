@@ -460,9 +460,11 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 		return { bankLoot: myLoot, clLoot: myLoot };
 	}
 
-	myLoot.filter(i => !filterLootItems.includes(i.id), true);
+	for (const item of filterLootItems) {
+		myLoot.set(item, 0);
+	}
 
-	const myClLoot = new Bank(myLoot.bank);
+	const myClLoot = myLoot.clone();
 
 	const combinedBank = new Bank(myBank).add(myLoot);
 	if (numBludgeonPieces) {

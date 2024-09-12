@@ -205,7 +205,6 @@ describe('BSO PVM', async () => {
 
 	it('should use ori', async () => {
 		const user = await client.mockUser({
-			bank: new Bank().add('Prayer potion(4)', 100),
 			QP: 300,
 			maxed: true
 		});
@@ -218,7 +217,6 @@ describe('BSO PVM', async () => {
 
 	it('should use ori', async () => {
 		const user = await client.mockUser({
-			bank: new Bank().add('Prayer potion(4)', 100),
 			QP: 300,
 			maxed: true
 		});

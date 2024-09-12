@@ -1,17 +1,10 @@
 import { deepMerge, modifyItem } from '@oldschoolgg/toolkit';
 import { omit } from 'lodash';
-import { EItem, Items } from 'oldschooljs';
-import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { EItem, Items, allTeamCapes, itemNameMap } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 
-import { customItems } from '../customItems/util';
-
 export function setItemAlias(id: number, name: string | string[], rename = true) {
-	if (customItems.length === 0) {
-		throw new Error('Custom items have not been loaded yet.');
-	}
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
@@ -36,6 +29,9 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 			name: firstName!,
 			id
 		});
+		if (Items.get(id)!.name !== firstName) {
+			throw new Error(`Failed to set item alias for item ${id}`);
+		}
 	}
 }
 

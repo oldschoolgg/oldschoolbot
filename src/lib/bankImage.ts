@@ -779,9 +779,11 @@ export class BankImageTask {
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
 
 		if (flags.has('alch')) {
-			bank.filter(item => {
-				return item.price > 1000 && item.price < (item.highalch ?? 0) * 3;
-			}, true);
+			for (const [item] of bank.items()) {
+				if (!(item.price > 1000 && item.price < (item.highalch ?? 0) * 3)) {
+					bank.clear(item);
+				}
+			}
 		}
 
 		// Filtering
@@ -791,10 +793,14 @@ export class BankImageTask {
 			? filterableTypes.find(type => type.aliases.some(alias => filterInput === alias)) ?? null
 			: null;
 		if (filter || searchQuery) {
-			bank.filter(item => {
-				if (searchQuery) return cleanString(item.name).includes(cleanString(searchQuery));
-				return filter!.items(user!).includes(item.id);
-			}, true);
+			for (const [item] of bank.items()) {
+				if (
+					filter?.items(user!).includes(item.id) ||
+					(searchQuery && cleanString(item.name).includes(cleanString(searchQuery)))
+				) {
+					bank.set(item.id, 0);
+				}
+			}
 		}
 
 		let items = bank.items();

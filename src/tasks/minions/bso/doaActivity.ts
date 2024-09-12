@@ -88,7 +88,7 @@ export const doaTask: MinionTask = {
 				userStatsUpdate(
 					u.id,
 					{
-						doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).bank,
+						doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).toJSON(),
 						doa_attempts: {
 							increment: quantity
 						}
@@ -198,7 +198,7 @@ export const doaTask: MinionTask = {
 						doa_total_minutes_raided: {
 							increment: Math.floor(duration / Time.Minute)
 						},
-						doa_loot: new Bank(stats.doa_loot as ItemBank).add(totalLoot.get(userID)).bank
+						doa_loot: new Bank(stats.doa_loot as ItemBank).add(totalLoot.get(userID)).toJSON()
 					},
 					{}
 				);
@@ -208,7 +208,7 @@ export const doaTask: MinionTask = {
 				const isPurple = items.some(([item]) => doaCL.includes(item.id));
 				const announcedItems = resolveItems(['Shark jaw', 'Oceanic relic', 'Aquifer aegis', 'Crush']);
 				if (items.some(([item]) => announcedItems.includes(item.id))) {
-					const itemsToAnnounce = itemsAdded.filter(item => doaCL.includes(item.id), false);
+					const itemsToAnnounce = itemsAdded.filter(item => doaCL.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
 						`${Emoji.Purple} ${

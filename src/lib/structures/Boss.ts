@@ -489,7 +489,7 @@ export class BossInstance {
 			duration: this.duration,
 			type: this.activity,
 			users: this.bossUsers.map(u => u.user.id),
-			bossUsers: this.bossUsers.map(u => ({ ...u, itemsToRemove: u.itemsToRemove.bank, user: u.user.id })),
+			bossUsers: this.bossUsers.map(u => ({ ...u, itemsToRemove: u.itemsToRemove.toJSON(), user: u.user.id })),
 			bossID: this.id
 		});
 		return {

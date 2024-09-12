@@ -48,7 +48,7 @@ export default async ({
 			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity, cl: new Bank() });
 		}
 
-		return result;
+		return { bank: result.bank.toJSON() };
 	}
 
 	const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, bossName));
@@ -59,7 +59,7 @@ export default async ({
 			};
 		}
 
-		return { bank: simulatedKillable.loot(quantity) };
+		return { bank: simulatedKillable.loot(quantity).toJSON() };
 	}
 
 	return { error: "I don't have that monster!" };

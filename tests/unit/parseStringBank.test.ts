@@ -209,8 +209,8 @@ describe('Bank Parsers', () => {
 	});
 
 	test('parseBank - with no inputBank', async () => {
-		expect(parseBank({ inputBank: undefined, inputStr: '100 trout, 100 twisted bow' }).bank).toEqual(
-			new Bank().add('Trout', 100).add('Twisted bow', 100).bank
+		expect(parseBank({ inputBank: undefined, inputStr: '100 trout, 100 twisted bow' }).toJSON()).toEqual(
+			new Bank().add('Trout', 100).add('Twisted bow', 100).toJSON()
 		);
 	});
 
@@ -297,6 +297,6 @@ describe('Bank Parsers', () => {
 				inputBank: usersBank,
 				inputStr: 'Huge lamp, Lil lamb, average lamp'
 			}).toString()
-		).toEqual('33x Huge lamp, 10x Lil Lamb, 1x Average lamp');
+		).toEqual('1x Average lamp, 33x Huge lamp, 10x Lil Lamb');
 	});
 });

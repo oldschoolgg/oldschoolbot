@@ -15,7 +15,7 @@ describe.skip('Roles Task', async () => {
 		await userStatsBankUpdate(user.id, 'openable_scores', new Bank().add('Tradeable mystery box', 10_000));
 		await user.update({
 			monkeys_fought: ['a'],
-			disassembled_items_bank: new Bank().add('Twisted bow').bank,
+			disassembled_items_bank: new Bank().add('Twisted bow').toJSON(),
 			skills_invention: 1000
 		});
 		const ironUser = await createTestUser();

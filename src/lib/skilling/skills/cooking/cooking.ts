@@ -319,7 +319,8 @@ export const Cookables: Cookable[] = [
 			.add('Banana-butter')
 			.add('Fresh rat milk')
 			.add('Pristine chocolate bar')
-			.add('Smokey egg').bank,
+			.add('Smokey egg')
+			.toJSON(),
 		stopBurnAt: 150,
 		stopBurnAtCG: 150,
 		burntCookable: itemID('Burnt christmas cake')

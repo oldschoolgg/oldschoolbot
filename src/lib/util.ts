@@ -46,14 +46,14 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import getOSItem, { getItem } from './util/getOSItem';
+import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import resolveItems from './util/resolveItems';
 import { itemNameFromID } from './util/smallUtils';
 
 export * from '@oldschoolgg/toolkit';
-export * from 'oldschooljs/dist/util/index';
+export * from 'oldschooljs/dist/util';
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
@@ -354,45 +354,6 @@ export function convertPvmStylesToGearSetup(attackStyles: SkillsEnum[]) {
 	}
 	if (usedSetups.length === 0) usedSetups.push('melee');
 	return usedSetups;
-}
-
-export function sanitizeBank(bank: Bank) {
-	for (const [key, value] of Object.entries(bank.bank)) {
-		if (value < 1) {
-			delete bank.bank[key];
-		}
-		// If this bank contains a fractional/float,
-		// round it down.
-		if (!Number.isInteger(value)) {
-			bank.bank[key] = Math.floor(value);
-		}
-
-		const item = getItem(key);
-		if (!item) {
-			delete bank.bank[key];
-		}
-	}
-}
-
-export function validateBankAndThrow(bank: Bank) {
-	if (!bank || typeof bank !== 'object') {
-		throw new Error('Invalid bank object');
-	}
-	for (const [key, value] of Object.entries(bank.bank)) {
-		const pair = [key, value].join('-');
-		if (value < 1) {
-			throw new Error(`Less than 1 qty: ${pair}`);
-		}
-
-		if (!Number.isInteger(value)) {
-			throw new Error(`Non-integer value: ${pair}`);
-		}
-
-		const item = getItem(key);
-		if (!item) {
-			throw new Error(`Invalid item ID: ${pair}`);
-		}
-	}
 }
 
 export function removeMarkdownEmojis(str: string) {

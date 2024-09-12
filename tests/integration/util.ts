@@ -303,12 +303,12 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		create: {
 			id,
 			...userData,
-			bank: bank?.bank,
+			bank: bank?.toJSON(),
 			GP: GP ?? undefined
 		},
 		update: {
 			...userData,
-			bank: bank?.bank,
+			bank: bank?.toJSON(),
 			GP
 		},
 		where: {

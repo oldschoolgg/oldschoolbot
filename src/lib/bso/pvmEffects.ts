@@ -137,8 +137,8 @@ export function slayerMasksHelms({
 			}
 		}
 	}
-	updateBank.userStats.on_task_monster_scores = new Bank(userStats.on_task_monster_scores as ItemBank).add(
-		bankToAdd
-	).bank;
-	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores.bank : undefined;
+	updateBank.userStats.on_task_monster_scores = new Bank(userStats.on_task_monster_scores as ItemBank)
+		.add(bankToAdd)
+		.toJSON();
+	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores.toJSON() : undefined;
 }

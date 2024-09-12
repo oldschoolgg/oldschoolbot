@@ -86,7 +86,8 @@ describe('PVM', async () => {
 	it('Should fail to kill without itemCost', async () => {
 		const user = await client.mockUser({
 			venatorBowCharges: 1000,
-			slayerLevel: 70
+			slayerLevel: 70,
+			bank: new Bank().add('Shark', 10000)
 		});
 		expect(await user.runCommand(minionKCommand, { name: 'hydra' }, true)).to.contain('You need Boots of stone');
 		await user.equip('melee', resolveItems(['Boots of stone']));
@@ -191,7 +192,7 @@ describe('PVM', async () => {
 		});
 		for (const quantity of [undefined, 1, 2, 5]) {
 			it(`should default to 1 skotizo kill with input of ${quantity}`, async () => {
-				await user.update({ bank: new Bank().add('Dark totem', 5).bank });
+				await user.update({ bank: new Bank().add('Dark totem', 5).toJSON() });
 				const result = await user.kill(EMonster.SKOTIZO, { quantity });
 				expect(result.commandResult).toContain('is now killing 1x Skotizo');
 				expect(user.bank.amount('Dark totem')).toBe(4);

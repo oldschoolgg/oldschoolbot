@@ -620,7 +620,7 @@ ${zygomiteFarmingSource
 
 									const smeltedOre = Smithing.Bars.find(
 										o =>
-											o.inputOres.bank[ore.id] &&
+											o.inputOres.has(ore.id) &&
 											o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
 									);
 									if (usingAdze && (!smeltedOre || isPowerminingInput)) continue;

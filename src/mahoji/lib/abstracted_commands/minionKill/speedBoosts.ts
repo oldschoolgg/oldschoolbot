@@ -1,8 +1,7 @@
 import { calcWhatPercent } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, type Item, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { gearstatToSetup, gorajanBoosts } from '../../../../lib/bso/misc';
@@ -295,12 +294,10 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 		description: 'Item Boosts',
 		run: ({ monster, gearBank, isInWilderness }) => {
 			const results: BoostResult[] = [];
-			for (const [itemID, boostAmount] of Object.entries(
-				resolveAvailableItemBoosts(gearBank, monster, isInWilderness)
-			)) {
+			for (const [item, boostAmount] of resolveAvailableItemBoosts(gearBank, monster, isInWilderness).items()) {
 				results.push({
 					percentageReduction: boostAmount,
-					message: `${boostAmount}% for ${itemNameFromID(Number.parseInt(itemID))}`
+					message: `${boostAmount}% for ${item.name}`
 				});
 			}
 			return results;

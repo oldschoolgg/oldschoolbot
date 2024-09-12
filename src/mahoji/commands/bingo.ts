@@ -231,7 +231,8 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	}
 
 	if (!plus && !pipe) {
-		return { bank: parseBank({ inputStr: input, noDuplicateItems: true }) }.bank;
+		const bank = parseBank({ inputStr: input, noDuplicateItems: true });
+		return { bank: bank.toJSON() };
 	}
 
 	const delimiter = plus ? '+' : '|';

@@ -277,7 +277,7 @@ export async function kkCommand(
 	const foodRemoved: string[] = [];
 	for (const user of users) {
 		const food = await calcBossFood(user, KalphiteKingMonster, users.length, quantity);
-		if (!user.bank.has(food.bank)) {
+		if (!user.bank.has(food)) {
 			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
 	}

@@ -632,7 +632,7 @@ export async function removeRawFood({
 			id: tame.id
 		},
 		data: {
-			total_cost: new Bank(tame.total_cost as ItemBank).add(itemCost).bank
+			total_cost: new Bank(tame.total_cost as ItemBank).add(itemCost).toJSON()
 		}
 	});
 
@@ -725,8 +725,8 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 	}
 
 	const mergeStuff = {
-		totalLoot: new Bank(tame!.max_total_loot as ItemBank).add(toSelect.totalLoot).bank,
-		fedItems: new Bank(tame!.fed_items as ItemBank).add(toSelect.fedItems).bank,
+		totalLoot: new Bank(tame!.max_total_loot as ItemBank).add(toSelect.totalLoot).toJSON(),
+		fedItems: new Bank(tame!.fed_items as ItemBank).add(toSelect.fedItems).toJSON(),
 		maxCombatLevel: Math.max(tame!.max_combat_level, toSelect.maxCombatLevel),
 		maxArtisanLevel: Math.max(tame!.max_artisan_level, toSelect.maxArtisanLevel),
 		maxGathererLevel: Math.max(tame!.max_gatherer_level, toSelect.maxGathererLevel),
@@ -865,7 +865,10 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 				id: tame.id
 			},
 			data: {
-				fed_items: new Bank().add(tame.fed_items as ItemBank).add(bankToAdd).bank
+				fed_items: new Bank()
+					.add(tame.fed_items as ItemBank)
+					.add(bankToAdd)
+					.toJSON()
 			}
 		});
 
@@ -917,7 +920,10 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 			id: tame.id
 		},
 		data: {
-			fed_items: new Bank().add(tame.fed_items as ItemBank).add(bankToAdd).bank
+			fed_items: new Bank()
+				.add(tame.fed_items as ItemBank)
+				.add(bankToAdd)
+				.toJSON()
 		}
 	});
 
@@ -1284,7 +1290,7 @@ async function monkeyMagicHandler(
 			id: tame.id
 		},
 		data: {
-			total_cost: new Bank(tame.total_cost as ItemBank).add(finalCost).bank
+			total_cost: new Bank(tame.total_cost as ItemBank).add(finalCost).toJSON()
 		}
 	});
 	await updateBankSetting('economyStats_PVMCost', finalCost);
@@ -1300,7 +1306,7 @@ async function monkeyMagicHandler(
 			itemID: spellOptions.itemID,
 			quantity,
 			spellID: spellOptions.spell.id,
-			loot: spellOptions.lootPerItem.clone().multiply(quantity).bank
+			loot: spellOptions.lootPerItem.clone().multiply(quantity).toJSON()
 		},
 		type: TameType.Gatherer,
 		duration,

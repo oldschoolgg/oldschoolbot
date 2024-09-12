@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { objectEntries } from 'e';
 import { mergeDeep } from 'remeda';
-import { type trackClientBankStats, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { type ClientBankKey, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import type { MUserClass } from '../MUser';
 import { degradeChargeBank } from '../degradeableItems';
 import type { GearSetup } from '../gear/types';
@@ -33,7 +33,7 @@ export class UpdateBank {
 	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
 	public userUpdates: Pick<Prisma.UserUpdateInput, 'slayer_points'> = {};
 
-	public clientStatsBankUpdates: Partial<Record<Parameters<typeof trackClientBankStats>['0'], Bank>> = {};
+	public clientStatsBankUpdates: Partial<Record<ClientBankKey, Bank>> = {};
 
 	public merge(other: UpdateBank) {
 		this.chargeBank.add(other.chargeBank);
@@ -42,9 +42,15 @@ export class UpdateBank {
 		this.xpBank.add(other.xpBank);
 		this.kcBank.add(other.kcBank);
 		this.materialsCostBank.add(other.materialsCostBank);
-		this.clientStatsBankUpdates = mergeDeep(this.clientStatsBankUpdates, other.clientStatsBankUpdates);
 		this.itemLootBankNoCL.add(other.itemLootBankNoCL);
-		this.userStatsBankUpdates = mergeDeep(this.userStatsBankUpdates, other.userStatsBankUpdates);
+
+		for (const [key, value] of objectEntries(other.clientStatsBankUpdates)) {
+			this.clientStatsBankUpdates[key] = (this.clientStatsBankUpdates[key] ?? new Bank()).add(value);
+		}
+
+		for (const [key, value] of objectEntries(other.userStatsBankUpdates)) {
+			this.userStatsBankUpdates[key] = (this.userStatsBankUpdates[key] ?? new Bank()).add(value);
+		}
 
 		if (objHasAnyPropInCommon(this.gearChanges, other.gearChanges)) {
 			throw new Error('Gear changes conflict');
@@ -119,7 +125,7 @@ export class UpdateBank {
 			});
 			for (const [key, value] of objectEntries(this.userStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
-				userStatsUpdates[key] = newValue.bank;
+				userStatsUpdates[key] = newValue.toJSON();
 			}
 		}
 
@@ -156,11 +162,10 @@ export class UpdateBank {
 				(acc, key) => ({ ...acc, [key]: true }),
 				{} as Record<string, boolean>
 			);
-			console.log(keysToSelect);
 			const currentStats = await mahojiClientSettingsFetch(keysToSelect);
 			for (const [key, value] of objectEntries(this.clientStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
-				clientUpdates[key] = newValue.bank;
+				clientUpdates[key] = newValue.toJSON();
 			}
 			await mahojiClientSettingsUpdate(clientUpdates);
 		}

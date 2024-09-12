@@ -217,7 +217,10 @@ export async function handInContract(interaction: ChatInputCommandInteraction | 
 			increment: 1
 		},
 		current_item_contract: pickItemContract(newStreak),
-		item_contract_bank: new Bank().add(currentItem.id).add(user.user.item_contract_bank as ItemBank).bank,
+		item_contract_bank: new Bank()
+			.add(currentItem.id)
+			.add(user.user.item_contract_bank as ItemBank)
+			.toJSON(),
 		item_contract_streak: {
 			increment: 1
 		}

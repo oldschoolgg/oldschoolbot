@@ -115,7 +115,7 @@ export const nexTask: MinionTask = {
 
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementKC(NexMonster.id, kcToAdd);
-			const purple = Object.keys(loot.bank).some(id => nexCL.includes(Number.parseInt(id)));
+			const purple = loot.itemIDs.some(id => nexCL.includes(id));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 

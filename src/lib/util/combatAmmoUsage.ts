@@ -60,7 +60,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 					}
 				}
 			}
-			if (!user.bank.has(requiredBank.multiply(toRemove).bank)) {
+			if (!user.bank.has(requiredBank.multiply(toRemove))) {
 				errors.push(`You need at least ${requiredBank} to go on a trip using ${item.name}`);
 			}
 			toConsume.add(requiredBank);

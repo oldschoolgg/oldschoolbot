@@ -167,7 +167,7 @@ export const toaTask: MinionTask = {
 				if (
 					items.some(([item]) => toaPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))
 				) {
-					const itemsToAnnounce = itemsAdded.filter(item => toaPurpleItems.includes(item.id), false);
+					const itemsToAnnounce = itemsAdded.filter(item => toaPurpleItems.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
 						`${Emoji.Purple} ${
@@ -184,12 +184,13 @@ export const toaTask: MinionTask = {
 			userStatsUpdate(user.id, {
 				toa_raid_levels_bank: new Bank()
 					.add(currentStats.toa_raid_levels_bank as ItemBank)
-					.add(raidLevel, quantity).bank,
+					.add(raidLevel, quantity)
+					.toJSON(),
 				total_toa_duration_minutes: {
 					increment: Math.floor(duration / Time.Minute)
 				},
 				toa_loot: !chincannonUser
-					? new Bank(currentStats.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
+					? new Bank(currentStats.toa_loot as ItemBank).add(totalLoot.get(userID)).toJSON()
 					: undefined
 			});
 

@@ -61,12 +61,12 @@ export const casketCommand: OSBMahojiCommand = {
 		await deferInteraction(interaction);
 
 		const [_loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
-		const loot = new Bank(_loot.bank);
+		const loot = new Bank(_loot.toJSON());
 
-		if (Object.keys(loot.bank).length === 0) return `${title} and got nothing :(`;
+		if (loot.length === 0) return `${title} and got nothing :(`;
 
 		const image = await makeBankImage({
-			bank: new Bank(loot.bank),
+			bank: loot,
 			title,
 			user
 		});

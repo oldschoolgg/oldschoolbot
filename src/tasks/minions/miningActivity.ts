@@ -180,7 +180,7 @@ export function calculateMiningResult({
 		const hasKlik = equippedPet === itemID('Klik');
 
 		if (hasKlik && !hasAdze) {
-			const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
+			const smeltedOre = Smithing.Bars.find(o => o.inputOres.has(ore.id) && o.inputOres.length === 1);
 			if (smeltedOre) {
 				barsFromKlikBank.add(smeltedOre.id, quantity);
 				loot.remove(ore.id, loot.amount(ore.id));
@@ -220,7 +220,7 @@ export function calculateMiningResult({
 	let smithingXPFromAdze = 0;
 	if (hasAdze && !adzeIsDisabled) {
 		const smeltedOre = Smithing.Bars.find(
-			o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
+			o => o.inputOres.has(ore.id) && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
 		);
 		if (smeltedOre) {
 			if (!isPowermining) {

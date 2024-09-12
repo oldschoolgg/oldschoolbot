@@ -2,6 +2,7 @@ import { calcWhatPercent, clamp, increaseNumByPercent, reduceNumByPercent, round
 import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
+import z from 'zod';
 import { type AttackStyles, getAttackStylesContext } from '../../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import type { Consumable } from '../../../../lib/minions/types';
@@ -10,7 +11,14 @@ import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { SkillsRequired } from '../../../../lib/types';
 import { getItemCostFromConsumables } from './handleConsumables';
 import { type BoostArgs, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
-
+const schema = z.object({
+	timeToFinish: z.number().int().positive(),
+	messages: z.array(z.string()),
+	currentTaskOptions: z.object({}),
+	finalQuantity: z.number().int().positive(),
+	confirmations: z.array(z.string()),
+	updateBank: z.instanceof(UpdateBank)
+});
 function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = sumArr(styles.map(s => skillsAsLevels[s]));
 	let newDuration = duration;
@@ -77,10 +85,13 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 		}
 	}
 
+	timeToFinish = Math.ceil(timeToFinish);
+
 	if (monster.itemCost) consumables.push(monster.itemCost);
 
 	const maxQuantityBasedOnTime = Math.floor(maxTripLength / timeToFinish);
 	const consumablesQuantity = clamp(inputQuantity ?? maxQuantityBasedOnTime, 1, maxQuantityBasedOnTime);
+
 	const consumablesCost = getItemCostFromConsumables({
 		consumableCosts: consumables,
 		gearBank,
@@ -99,12 +110,14 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	const finalQuantity = consumablesCost?.finalQuantity ?? consumablesQuantity;
 
-	return {
+	const result = schema.parse({
 		timeToFinish,
 		messages,
 		currentTaskOptions,
 		finalQuantity,
 		confirmations,
 		updateBank
-	};
+	});
+
+	return result;
 }

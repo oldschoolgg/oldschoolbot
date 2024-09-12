@@ -20,14 +20,12 @@ export const plunderTask: MinionTask = {
 			allRooms[allRooms.length - 1]
 		];
 		const loot = new Bank();
-		let amountUrns = 0;
 		let totalAmountUrns = 0;
-		let currentLootRoom = {};
 		let thievingXP = 0;
 
 		for (let i = 0; i < quantity; i++) {
 			for (const room of completedRooms) {
-				[currentLootRoom, amountUrns] = lootRoom(user, room.number);
+				const [currentLootRoom, amountUrns] = lootRoom(user, room.number);
 				totalAmountUrns += amountUrns;
 				loot.add(currentLootRoom);
 				thievingXP += room.xp;

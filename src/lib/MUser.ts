@@ -338,7 +338,7 @@ GROUP BY data->>'ci';`);
 		await userStatsUpdate(
 			this.id,
 			{
-				monster_scores: newKCs.bank
+				monster_scores: newKCs.toJSON()
 			},
 			{}
 		);
@@ -527,7 +527,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
-		const previousCL = new Bank(this.cl.bank);
+		const previousCL = this.cl.clone();
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
@@ -670,11 +670,11 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		dontAddToTempCL?: boolean;
 	}): Prisma.UserUpdateArgs['data'] {
 		const updates: Prisma.UserUpdateArgs['data'] = {
-			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).bank
+			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).toJSON()
 		};
 
 		if (!dontAddToTempCL) {
-			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).bank;
+			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).toJSON();
 		}
 		return updates;
 	}
@@ -1031,10 +1031,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			},
 			create: {
 				user_id: BigInt(this.id),
-				tame_cl_bank: totalBank.bank
+				tame_cl_bank: totalBank.toJSON()
 			},
 			update: {
-				tame_cl_bank: totalBank.bank
+				tame_cl_bank: totalBank.toJSON()
 			}
 		});
 
