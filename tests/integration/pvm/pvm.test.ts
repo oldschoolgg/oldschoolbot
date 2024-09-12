@@ -1,5 +1,5 @@
 import { Bank, EMonster, Monsters } from 'oldschooljs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, test } from 'vitest';
 
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
 import { getPOHObject } from '../../../src/lib/poh';
@@ -289,5 +289,27 @@ describe('PVM', async () => {
 				expect(result.commandResult).toContain("You don't have the items");
 			});
 		}
+	});
+
+	test('salve and slayer helm shouldnt stack', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Dark totem', 100),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems([
+				"Verac's flail",
+				"Black d'hide body",
+				"Black d'hide chaps",
+				'Salve amulet (e)',
+				'Slayer helmet'
+			])
+		});
+		await user.setAttackStyle([SkillsEnum.Attack]);
+		await user.giveSlayerTask(EMonster.ZOMBIE);
+		const result = await user.kill(EMonster.ZOMBIE);
+		const resultStr = result.commandResult as string;
+		expect(resultStr.includes('Salve') && resultStr.includes('Black mask')).toBe(false);
+		expect(resultStr).toContain('is now killing');
 	});
 });
