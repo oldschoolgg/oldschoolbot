@@ -1,12 +1,16 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { mahojiUsersSettingsFetch } from '../../../../../mahoji/mahojiSettings';
 import creatures from '../creatures';
-import { type RumourOption, RumourOptions } from './util';
+import { type RumourOption, RumourOptions, tierToHunterLevel } from './util';
 
 export async function rumourBlock(user: MUser, tier: RumourOption, creature: string) {
 	const blockList = (await getRumourBlockList(user.id)).rumour_blocked_ids;
 	const tierNumber = RumourOptions.indexOf(tier);
 	const blockedTask = blockList[tierNumber];
+
+	if (user.skillsAsLevels.hunter < tierToHunterLevel[tier]) {
+		return `You need level ${tierToHunterLevel[tier]} hunter to block creatures in the ${tier} slot.`;
+	}
 
 	const resolvedCreature = creatures.find(c =>
 		c.aliases.some(alias => stringMatches(alias, creature) || stringMatches(alias.split(' ')[0], creature))
@@ -19,7 +23,7 @@ export async function rumourBlock(user: MUser, tier: RumourOption, creature: str
 		return `That creature is not part of the ${tier} tier.`;
 	}
 
-	if (resolvedCreature === blockedCreature) return 'That creature is already blocked.';
+	if (blockList.some(i => i === resolvedCreature.id)) return 'That creature is already blocked.';
 
 	blockList[tierNumber] = resolvedCreature.id;
 

@@ -25,6 +25,13 @@ const outfitPieces = resolveItems([
 	'Guild hunter boots'
 ]);
 
+export const tierToHunterLevel = {
+	novice: 46,
+	adept: 57,
+	expert: 72,
+	master: 91
+};
+
 export function openHunterSack({ item, qty, allItemsOwned }: { allItemsOwned: Bank; item: Item; qty: number }) {
 	const sack = sacks.find(i => i.id === item.id);
 	if (!sack) throw new Error(`No sack found for item ${item.name}.`);
