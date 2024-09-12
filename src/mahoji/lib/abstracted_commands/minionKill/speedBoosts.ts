@@ -239,12 +239,12 @@ const blackMaskBoost: Boost = {
 		if (hasBlackMaskI && [SkillsEnum.Magic, SkillsEnum.Ranged].every(s => style.includes(s))) {
 			return {
 				percentageReduction: oneSixthBoost,
-				message: `${oneSixthBoost}% for Black mask (i) on non-melee task`
+				message: `${oneSixthBoost}% for Black mask (i) on task`
 			};
 		} else if (hasBlackMask) {
 			return {
 				percentageReduction: oneSixthBoost,
-				message: `${oneSixthBoost}% for Black mask on melee task`
+				message: `${oneSixthBoost}% for Black mask on task`
 			};
 		}
 		return null;
