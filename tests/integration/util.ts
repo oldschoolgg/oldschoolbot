@@ -12,6 +12,7 @@ import { completeActivity, processPendingActivities } from '../../src/lib/Task';
 import { type PvMMethod, globalConfig } from '../../src/lib/constants';
 import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
@@ -135,7 +136,7 @@ export class TestUser extends MUserClass {
 				user_id: this.id,
 				quantity: 1000,
 				quantity_remaining: 1000,
-				slayer_master_id: 4,
+				slayer_master_id: slayerMasters.find(m => m.tasks.some(t => t.monster.id === monster))!.id,
 				monster_id: monster,
 				skipped: false
 			}

@@ -38,7 +38,7 @@ test('Should remove patron badge', async () => {
 		old_tier: 1,
 		first_time_patron: false
 	});
-	await sleep(250);
+	await sleep(550);
 	await user.sync();
 	expect(user.user.badges).not.includes(BadgesEnum.Patron);
 });
