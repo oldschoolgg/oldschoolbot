@@ -7,7 +7,7 @@ import { calcMaxTripLength } from '../../../../util/calcMaxTripLength';
 import { type Creature, HunterTechniqueEnum, SkillsEnum } from '../../../types';
 import creatures from '../creatures';
 import { getRumourBlockList } from './rumourBlocks';
-import { tierToHunterLevel, type Rumour, type RumourOption } from './util';
+import { type Rumour, type RumourOption, tierToHunterLevel } from './util';
 
 const hunterTechniqueToRate: { [key in HunterTechniqueEnum]: number } = {
 	[HunterTechniqueEnum.AerialFishing]: -1,
@@ -97,8 +97,8 @@ async function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: T
 
 		if (!selectedCreature) break;
 
-		let DurationAndQty = calcDurationAndQty(selectedCreature, user);
-		if (tier === "novice" || tier === "adept") DurationAndQty[0] += 50; //Extra 50 seconds per task for low rumour tier (creatures are more spread out)
+		const DurationAndQty = calcDurationAndQty(selectedCreature, user);
+		if (tier === 'novice' || tier === 'adept') DurationAndQty[0] += 50; //Extra 50 seconds per task for low rumour tier (creatures are more spread out)
 
 		if (totalDuration + DurationAndQty[0] > maxDurationInSeconds + maxDurationInSeconds / 3) {
 			break;
