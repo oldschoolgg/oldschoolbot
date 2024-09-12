@@ -19,8 +19,8 @@ export default async function reducedTimeForGroup(
 				messages.push(`${users[i].usernameOrMention} has no pool`);
 				continue;
 			}
-			const [boosts] = calcPOHBoosts(poh, monster.pohBoosts!);
-			reductionMultiplier += boosts / 100;
+			const { boost } = calcPOHBoosts(poh, monster.pohBoosts!);
+			reductionMultiplier += boost / 100;
 		}
 	}
 
@@ -29,7 +29,7 @@ export default async function reducedTimeForGroup(
 		const userKc = await user.getKC(monster.id);
 		const [, userKcReduction] = reducedTimeFromKC(monster, userKc);
 		let userItemBoost = 0;
-		for (const [, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
+		for (const [, boostAmount] of Object.entries(resolveAvailableItemBoosts(user.gearBank, monster))) {
 			userItemBoost += boostAmount;
 		}
 		// 1 per user, i/15 for incentive to group (more people compounding i bonus), then add the users kc and item boost percent

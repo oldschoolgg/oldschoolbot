@@ -90,3 +90,8 @@ export const superiorCannonSingleConsumables: Consumable = {
 	itemCost: new Bank().add('Cannonball', 1),
 	qtyPerMinute: 20
 };
+
+export const superiorCannonMultiConsumables: Consumable = {
+	itemCost: new Bank().add('Cannonball', 1),
+	qtyPerMinute: 60
+};

@@ -19032,7 +19032,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Dagon'hai robes set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "24333": 1,
@@ -19072,7 +19071,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Masori armour set (f)",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "27355": 1,
@@ -19113,7 +19111,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Clown set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "70390": 1,
@@ -19155,7 +19152,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Acrobat set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "70389": 1,
@@ -19197,7 +19193,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Ringmaster set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "70388": 1,
@@ -19239,7 +19234,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Acrylic set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71478": 1,
@@ -19283,7 +19277,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Warpriest of Zamorak set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71498": 1,
@@ -19329,7 +19322,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Warpriest of Saradomin set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71505": 1,
@@ -19375,7 +19367,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Warpriest of Armadyl set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71512": 1,
@@ -19421,7 +19412,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Warpriest of Bandos set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71519": 1,
@@ -19466,7 +19456,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Dwarven armour set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71706": 1,
@@ -19507,7 +19496,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Drygore longsword set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71705": 1,
@@ -19545,7 +19533,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Drygore rapier set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71703": 1,
@@ -19583,7 +19570,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Drygore mace set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71704": 1,
@@ -19624,7 +19610,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Torva armour set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71700": 1,
@@ -19668,7 +19653,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Pernix armour set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71701": 1,
@@ -19712,7 +19696,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Virtus armour set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "71702": 1,
@@ -19754,7 +19737,6 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Sunfire fanatic armour set",
-    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "29424": 1,

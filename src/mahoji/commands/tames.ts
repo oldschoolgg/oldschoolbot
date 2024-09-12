@@ -598,7 +598,7 @@ export async function removeRawFood({
 	}
 
 	const foodToRemove = getUserFoodFromBank({
-		user,
+		gearBank: user.gearBank,
 		totalHealingNeeded,
 		favoriteFood: user.user.favorite_food,
 		raw: true

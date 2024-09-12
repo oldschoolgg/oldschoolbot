@@ -5,6 +5,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
+import { DiaryID } from '../../../lib/minions/types';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -148,7 +149,11 @@ export const infernoTask: MinionTask = {
 			);
 
 			const currentStreak = newUserStats.slayer_task_streak;
-			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
+			const points = await calculateSlayerPoints(
+				currentStreak,
+				usersTask.slayerMaster!,
+				(await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+			);
 			const secondNewUser = await user.update({
 				slayer_points: {
 					increment: points

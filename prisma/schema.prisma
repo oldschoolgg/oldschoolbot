@@ -609,6 +609,7 @@ enum XpGainSource {
   GuthixianCache
   ForestryEvents
   TuraelsTrials
+  MonsterKilling
 }
 
 model XPGain {

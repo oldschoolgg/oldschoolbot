@@ -15,7 +15,7 @@ import {
 	durationPerBaxBath
 } from '../../lib/baxtorianBathhouses';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
-import { gearstatToSetup, gorajanBoosts } from '../../lib/bso/gorajanGearBoost';
+import { gearstatToSetup, gorajanBoosts } from '../../lib/bso/misc';
 import { TuraelsTrialsMethods, calculateTuraelsTrialsInput } from '../../lib/bso/turaelsTrials';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
@@ -555,7 +555,11 @@ ${zygomiteFarmingSource
 
 			for (const method of TuraelsTrialsMethods) {
 				const input = calculateTuraelsTrialsInput({ maxTripLength, method, isUsingBloodFury: true });
-				const result = calculateTuraelsTrialsResult({ quantity: input.quantity, method });
+				const result = calculateTuraelsTrialsResult({
+					quantity: input.quantity,
+					method,
+					duration: maxTripLength
+				});
 				const { duration } = input;
 				if (input.chargeBank.amount('scythe_of_vitur_charges') !== 0) {
 					input.cost.add('Scythe of vitur', input.chargeBank.amount('scythe_of_vitur_charges'));

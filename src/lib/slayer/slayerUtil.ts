@@ -2,13 +2,14 @@ import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
-import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
+import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
 import { BitField, type PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import type { KillableMonster } from '../minions/types';
 
+import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { roll, stringMatches } from '../util';
 import { logError } from '../util/logError';
@@ -32,21 +33,15 @@ export enum SlayerMasterEnum {
 }
 
 interface DetermineBoostParams {
-	cbOpts: CombatOptionsEnum[];
-	user: MUser;
+	cbOpts: readonly CombatOptionsEnum[];
 	monster: KillableMonster;
 	methods?: PvMMethod[] | null;
 	isOnTask?: boolean;
 	wildyBurst?: boolean;
 }
-export function determineCombatBoosts(params: DetermineBoostParams) {
+export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[] {
 	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
-	let boostMethods = ['none'];
-
-	// the user can only burst/barrage/cannon while on task in BSO
-	if (!params.isOnTask) return boostMethods;
-
-	boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
+	const boostMethods: PvMMethod[] = (params.methods ?? ['none']).flat().filter(method => method);
 
 	// check if user has cannon combat option turned on
 	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
@@ -89,7 +84,7 @@ export function determineCombatBoosts(params: DetermineBoostParams) {
 	return boostMethods;
 }
 
-export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: MUser) {
+export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, hasKourendElite: boolean) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 
@@ -100,11 +95,8 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 	let { basePoints } = master;
 
 	// Boost points to 20 for Konar + Kourend Elites
-	if (master.name === 'Konar quo Maten') {
-		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
-		if (hasKourendElite) {
-			basePoints = 20;
-		}
+	if (master.name === 'Konar quo Maten' && hasKourendElite) {
+		basePoints = 20;
 	}
 	for (let i = 0; i < streaks.length; i++) {
 		if (currentStreak >= streaks[i] && currentStreak % streaks[i] === 0) {
@@ -243,15 +235,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		assignedTask = weightedPick(baseTasks);
 	}
 
-	const newUser = await prisma.newUser.upsert({
-		where: {
-			id: _user.id
-		},
-		create: {
-			id: _user.id
-		},
-		update: {}
-	});
+	const newUser = await getNewUser(_user.id);
 
 	let maxQuantity = assignedTask?.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
@@ -365,22 +349,36 @@ export function getCommonTaskName(task: Monster) {
 	return commonName;
 }
 
+export type CurrentSlayerInfo = Awaited<ReturnType<typeof getUsersCurrentSlayerInfo>>;
 export async function getUsersCurrentSlayerInfo(id: string) {
-	const currentTask = await prisma.slayerTask.findFirst({
-		where: {
-			user_id: id,
-			quantity_remaining: {
-				gt: 0
+	const [currentTask, partialUser] = await prisma.$transaction([
+		prisma.slayerTask.findFirst({
+			where: {
+				user_id: id,
+				quantity_remaining: {
+					gt: 0
+				},
+				skipped: false
+			}
+		}),
+		prisma.user.findFirst({
+			where: {
+				id
 			},
-			skipped: false
-		}
-	});
+			select: {
+				slayer_points: true
+			}
+		})
+	]);
+
+	const slayerPoints = partialUser?.slayer_points ?? 0;
 
 	if (!currentTask) {
 		return {
 			currentTask: null,
 			assignedTask: null,
-			slayerMaster: null
+			slayerMaster: null,
+			slayerPoints
 		};
 	}
 
@@ -400,14 +398,16 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		return {
 			currentTask: null,
 			assignedTask: null,
-			slayerMaster: null
+			slayerMaster: null,
+			slayerPoints
 		};
 	}
 
 	return {
 		currentTask,
 		assignedTask,
-		slayerMaster
+		slayerMaster,
+		slayerPoints
 	};
 }
 

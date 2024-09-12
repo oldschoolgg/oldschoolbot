@@ -10,10 +10,6 @@ import { allCLItems } from '../src/lib/data/Collections';
 import Buyables from '../src/lib/data/buyables/buyables';
 import Createables from '../src/lib/data/createables';
 
-const iconsDir = './item/icon';
-const outputImageFilePath = './src/lib/resources/images/spritesheet.png';
-const outputJsonFilePath = './src/lib/resources/images/spritesheet.json';
-
 const manualIDs = [
 	11139, 25500, 21724, 26280, 24301, 19687, 22695, 24327, 3469, 13283, 12895, 21845, 22715, 21842, 7775, 25920, 26310,
 	27576, 21046, 11862, 27574, 25633, 26256, 27584, 21841, 25054, 3462, 25048, 7774, 25044, 21846, 19697, 3451, 12892,
@@ -88,7 +84,12 @@ const generateJsonData = (result: Spritesmith.Result): Record<string, any> => {
 	return jsonData;
 };
 
-const main = async () => {
+async function makeSpritesheet(
+	iconsDir: string,
+	outputImageFilePath: string,
+	outputJsonFilePath: string,
+	allItems?: number[]
+) {
 	try {
 		const pngFiles = await getPngFiles(iconsDir);
 		if (pngFiles.length === 0) {
@@ -96,20 +97,17 @@ const main = async () => {
 		}
 
 		const filesToDo = [];
-		for (const id of itemsMustBeInSpritesheet) {
-			const item = Items.get(id);
-			if (!item) {
-				throw new Error(`Item with ID ${id} not found`);
-			}
-			if (!pngFiles.some(file => file.endsWith(`${item.id}.png`))) {
-				console.log(`Item ${item.name} (${item.id}) not found in spritesheet, adding...`);
+		if (!allItems) allItems = pngFiles.map(file => Number.parseInt(path.basename(file, '.png')));
+		for (const id of allItems) {
+			if (!pngFiles.some(file => file.endsWith(`${id}.png`))) {
+				console.log(`Item ${id} not found in spritesheet, adding...`);
 			} else {
-				filesToDo.push(`${item.id}.png`);
+				filesToDo.push(`${id}.png`);
 			}
 		}
 
 		const result = await createSpriteSheet(
-			filesToDo.map(p => path.join('item', 'icon', p)),
+			filesToDo.map(p => path.join(iconsDir, p)),
 			outputImageFilePath
 		);
 		const jsonData = generateJsonData(result);
@@ -119,6 +117,16 @@ const main = async () => {
 	} catch (error) {
 		console.error('Error creating spritesheet:', error);
 	}
-};
+}
 
-main();
+makeSpritesheet(
+	'./item/icon',
+	'./src/lib/resources/images/spritesheet.png',
+	'./src/lib/resources/images/spritesheet.json',
+	itemsMustBeInSpritesheet
+);
+makeSpritesheet(
+	'./src/lib/resources/images/bso_icons',
+	'./src/lib/resources/images/bso_spritesheet.png',
+	'./src/lib/resources/images/bso_spritesheet.json'
+);

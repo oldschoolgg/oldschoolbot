@@ -1,14 +1,22 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
-import { Time, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import type { GearSetupType, Prisma } from '@prisma/client';
+import { Time, objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
+import { Bank, type EMonster, Monsters } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
-import { vi } from 'vitest';
+import { expect, vi } from 'vitest';
 
+import { clone } from 'lodash';
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { MUserClass } from '../../src/lib/MUser';
-import { processPendingActivities } from '../../src/lib/Task';
-import { globalConfig } from '../../src/lib/constants';
-import type { ItemBank } from '../../src/lib/types';
+import { completeActivity, processPendingActivities } from '../../src/lib/Task';
+import { type PvMMethod, globalConfig } from '../../src/lib/constants';
+import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
+import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
+import { Gear } from '../../src/lib/structures/Gear';
+import type { ItemBank, SkillsRequired } from '../../src/lib/types';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
+import { getOSItem } from '../../src/lib/util/getOSItem';
+import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
@@ -31,8 +39,57 @@ const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> =
 });
 
 export class TestUser extends MUserClass {
-	constructor(user: MUser | User) {
+	public client!: TestClient;
+
+	constructor(user: MUser | User, client?: TestClient) {
 		super(user instanceof MUserClass ? user.user : user);
+		this.client = client!;
+	}
+
+	async runActivity() {
+		const activity = await prisma.activity.findFirst({
+			where: {
+				user_id: BigInt(this.id),
+				completed: false
+			}
+		});
+		if (!activity) {
+			console.warn('No activity found');
+			return;
+		}
+
+		await prisma.activity.update({
+			where: {
+				id: activity.id
+			},
+			data: {
+				completed: true
+			}
+		});
+
+		await completeActivity(activity);
+		await this.sync();
+		return convertStoredActivityToFlatActivity(activity);
+	}
+	async setLevel(skill: SkillNameType, level: number) {
+		await this.update({ [`skills_${skill}`]: convertLVLtoXP(level) });
+		return this;
+	}
+
+	async equip(setup: GearSetupType, gear: number[]) {
+		const gearObj = new Gear();
+		for (const item of gear) {
+			gearObj.equip(getOSItem(item));
+		}
+		await this.update({
+			[`gear_${setup}`]: gearObj.raw()
+		});
+		return this;
+	}
+
+	async processActivities(client: TestClient) {
+		await client.processActivities();
+		await this.sync();
 	}
 
 	async openedBankMatch(bankToMatch: Bank) {
@@ -67,8 +124,55 @@ export class TestUser extends MUserClass {
 		this.user = user;
 	}
 
-	async runCommand(command: OSBMahojiCommand, options: object = {}) {
+	async giveSlayerTask(monster: EMonster) {
+		await prisma.slayerTask.deleteMany({
+			where: {
+				user_id: this.id
+			}
+		});
+		await prisma.slayerTask.create({
+			data: {
+				user_id: this.id,
+				quantity: 1000,
+				quantity_remaining: 1000,
+				slayer_master_id: 4,
+				monster_id: monster,
+				skipped: false
+			}
+		});
+	}
+
+	async kill(
+		monster: EMonster,
+		{ quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean; quantity?: number } = {}
+	) {
+		const previousBank = this.bank.clone();
+		const currentXP = clone(this.skillsAsXP);
+		const commandResult = await this.runCommand(
+			minionKCommand,
+			{ name: Monsters.get(monster)!.name, method, quantity },
+			true
+		);
+		if (shouldFail) {
+			expect(commandResult).not.toContain('is now killing');
+		}
+		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
+		const newKC = await this.getKC(monster);
+		const newXP = clone(this.skillsAsXP);
+		const xpGained: SkillsRequired = {} as SkillsRequired;
+		for (const skill of SkillsArray) xpGained[skill] = 0;
+		for (const skill of objectKeys(newXP)) {
+			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
+		}
+
+		return { commandResult, newKC, xpGained, previousBank, activityResult };
+	}
+
+	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
 		const result = await command.run({ ...commandRunOptions(this.id), options });
+		if (syncAfter) {
+			await this.sync();
+		}
 		return result;
 	}
 
@@ -123,6 +227,60 @@ export function mockedId() {
 	return unMockedCyptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
 }
 
+export async function mockUser(
+	options: Partial<{
+		rangeGear: number[];
+		rangeLevel: number;
+		mageGear: number[];
+		mageLevel: number;
+		meleeGear: number[];
+		slayerLevel: number;
+		venatorBowCharges: number;
+		bank: Bank;
+		QP: number;
+		maxed: boolean;
+	}>
+) {
+	const rangeGear = new Gear();
+	if (options.rangeGear) {
+		for (const item of options.rangeGear) {
+			rangeGear.equip(getOSItem(item));
+		}
+	}
+	const mageGear = new Gear();
+	if (options.mageGear) {
+		for (const item of options.mageGear) {
+			mageGear.equip(getOSItem(item));
+		}
+	}
+
+	const meleeGear = new Gear();
+	if (options.meleeGear) {
+		for (const item of options.meleeGear) {
+			meleeGear.equip(getOSItem(item));
+		}
+	}
+
+	const user = await createTestUser(options.bank, {
+		skills_ranged: options.rangeLevel ? convertLVLtoXP(options.rangeLevel) : undefined,
+		skills_slayer: options.slayerLevel ? convertLVLtoXP(options.slayerLevel) : undefined,
+		skills_magic: options.mageLevel ? convertLVLtoXP(options.mageLevel) : undefined,
+		gear_mage: options.mageGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
+		venator_bow_charges: options.venatorBowCharges,
+		QP: options.QP
+	});
+	if (options.maxed) {
+		await user.max();
+	}
+	await prisma.newUser.create({
+		data: {
+			id: user.id
+		}
+	});
+	return user;
+}
 export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
 	if (idsUsed.has(id)) {
@@ -176,6 +334,12 @@ class TestClient {
 	data: ClientStorage;
 	constructor(data: ClientStorage) {
 		this.data = data;
+	}
+
+	async mockUser(...args: Parameters<typeof mockUser>) {
+		const user = await mockUser(...args);
+		user.client = this;
+		return user;
 	}
 
 	async reset() {

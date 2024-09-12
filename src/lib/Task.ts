@@ -282,7 +282,7 @@ const ActivityTaskOptionsSchema = z.object({
 	channelID: z.string()
 });
 
-async function completeActivity(_activity: Activity) {
+export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
 
 	if (_activity.completed) {

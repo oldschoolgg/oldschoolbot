@@ -5,12 +5,14 @@ import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import type { InteractionReplyOptions } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { clamp, objectEntries, roll } from 'e';
-import { type Bank, Items, LootTable } from 'oldschooljs';
+import { Bank, Items, LootTable } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
+import z from 'zod';
 import { skillEmoji } from '../data/emojis';
+import type { UserFullGearSetup } from '../gear/types';
 import type { Skills } from '../types';
 import getOSItem from './getOSItem';
 
@@ -56,14 +58,6 @@ export function formatSkillRequirements(reqs: Record<string, number>, emojis = t
 		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
-}
-
-export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
-	const hasReqs = user.hasSkillReqs(reqs);
-	if (!hasReqs) {
-		return [false, formatSkillRequirements(reqs)];
-	}
-	return [true, null];
 }
 
 export function pluraliseItemName(name: string): string {
@@ -228,6 +222,7 @@ export function returnStringOrFile(
 
 export function makeTable(headers: string[], rows: unknown[][]) {
 	return new AsciiTable3()
+		.setStyle('github-markdown')
 		.setHeading(...headers)
 		.setAlign(1, AlignmentEnum.RIGHT)
 		.setAlign(2, AlignmentEnum.CENTER)
@@ -243,4 +238,57 @@ export function parseStaticTimeInterval(input: string): input is StaticTimeInter
 		return true;
 	}
 	return false;
+}
+
+export function hasSkillReqsRaw(skills: Skills, requirements: Skills) {
+	for (const [skillName, requiredLevel] of objectEntries(requirements)) {
+		const lvl = skills[skillName];
+		if (!lvl || lvl < requiredLevel!) {
+			return false;
+		}
+	}
+	return true;
+}
+
+export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
+	const hasReqs = hasSkillReqsRaw(user.skillsAsLevels, reqs);
+	if (!hasReqs) {
+		return [false, formatSkillRequirements(reqs)];
+	}
+	return [true, null];
+}
+
+export function fullGearToBank(gear: UserFullGearSetup) {
+	const bank = new Bank();
+	for (const setup of Object.values(gear)) {
+		for (const equipped of Object.values(setup)) {
+			if (equipped?.item) {
+				bank.add(equipped.item, equipped.quantity);
+			}
+		}
+	}
+	return bank;
+}
+
+export function objHasAnyPropInCommon(obj: object, other: object): boolean {
+	for (const key of Object.keys(obj)) {
+		if (key in other) return true;
+	}
+	return false;
+}
+
+export const zodEnum = <T>(arr: T[] | readonly T[]): [T, ...T[]] => arr as [T, ...T[]];
+
+export function numberEnum<T extends number>(values: readonly T[]) {
+	const set = new Set<unknown>(values);
+	return (v: number, ctx: z.RefinementCtx): v is T => {
+		if (!set.has(v)) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.invalid_enum_value,
+				received: v,
+				options: [...values]
+			});
+		}
+		return z.NEVER;
+	};
 }

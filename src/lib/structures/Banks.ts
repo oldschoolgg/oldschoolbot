@@ -1,6 +1,5 @@
 import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
 import { type DegradeableItem, degradeableItems } from '../degradeableItems';
-import { type SkillNameType, SkillsArray } from '../skilling/types';
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>) {
@@ -8,8 +7,4 @@ export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	}
 }
 
-export class XPBank extends GeneralBank<SkillNameType> {
-	constructor(initialBank?: GeneralBankType<SkillNameType>) {
-		super({ initialBank, allowedKeys: SkillsArray });
-	}
-}
+export { XPBank } from './XPBank';
