@@ -206,7 +206,7 @@ const source: [string, (string | number)[]][] = [
 			"Blessed dizana's quiver",
 			"Dizana's max cape",
 			'Tidal collector',
-			'Tidal collector (i)
+			'Tidal collector (i)'
 		]
 	],
 	['Mythical cape', ['Mythical max cape']],
