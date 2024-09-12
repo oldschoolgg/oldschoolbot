@@ -253,7 +253,7 @@ export const huntCommand: OSBMahojiCommand = {
 		}
 
 		if (outfitMod > 0) {
-			boosts.push(`+${outfitMod}% chance of success per catch from Guild Hunter outfit item/items.`);
+			boosts.push(`+${outfitMod}% chance of success per catch from Guild Hunter outfit item/items`);
 		}
 
 		updateBankSetting('hunter_cost', removeBank);
