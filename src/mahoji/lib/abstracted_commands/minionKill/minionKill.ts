@@ -24,6 +24,7 @@ import { nexCommand } from '../nexCommand';
 import { nightmareCommand } from '../nightmareCommand';
 import { getPOH } from '../pohCommand';
 import { temporossCommand } from '../temporossCommand';
+import { vasaCommand } from '../vasaCommand';
 import { wintertodtCommand } from '../wintertodtCommand';
 import { zalcanoCommand } from '../zalcanoCommand';
 import { newMinionKillCommand } from './newMinionKill';
@@ -69,6 +70,9 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name, inputQuantity);
 	if (name.toLowerCase().includes('moktang')) return moktangCommand(user, channelID, inputQuantity);
 	if (name.toLowerCase().includes('naxxus')) return naxxusCommand(user, channelID, inputQuantity);
+	if (['vasa', 'vasa magus'].some(i => name.toLowerCase().includes(i))) {
+		return vasaCommand(user, channelID, inputQuantity);
+	}
 
 	let monster = findMonster(name);
 

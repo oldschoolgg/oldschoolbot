@@ -305,12 +305,14 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 			id,
 			...userData,
 			bank: bank?.toJSON(),
-			GP: GP ?? undefined
+			GP: GP ?? undefined,
+			minion_hasBought: true
 		},
 		update: {
 			...userData,
 			bank: bank?.toJSON(),
-			GP
+			GP,
+			minion_hasBought: true
 		},
 		where: {
 			id

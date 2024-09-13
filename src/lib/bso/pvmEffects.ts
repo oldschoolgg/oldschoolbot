@@ -41,7 +41,6 @@ export function oriEffect({
 	if (duration > Time.Minute * 5) {
 		// Original boost for 5+ minute task:
 		newQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
-		messages.push(`${newQuantity - quantity}x kills bonus kills from Ori.`);
 	} else {
 		// 25% chance at extra kill otherwise:
 		for (let i = 0; i < quantity; i++) {
