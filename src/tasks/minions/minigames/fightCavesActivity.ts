@@ -4,6 +4,8 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 
+import { userhasDiaryTier } from '../../../lib/diaries';
+import { DiaryID } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
@@ -169,7 +171,11 @@ export const fightCavesTask: MinionTask = {
 
 			// 25,250 for Jad + 11,760 for waves.
 			const slayerXP = 37_010;
-			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
+			const points = await calculateSlayerPoints(
+				currentStreak,
+				usersTask.slayerMaster!,
+				(await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+			);
 
 			const secondNewUser = await user.update({
 				slayer_points: {

@@ -228,6 +228,10 @@ const tripHandlers = {
 		commandName: 'activities',
 		args: () => ({ champions_challenge: {} })
 	},
+	[activity_type_enum.MyNotes]: {
+		commandName: 'activities',
+		args: () => ({ my_notes: {} })
+	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
 		args: (data: CollectingOptions) => ({

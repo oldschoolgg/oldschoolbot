@@ -1,5 +1,5 @@
-import type { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Bank, Item } from 'oldschooljs';
+
 import type LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import type { Emoji } from '../constants';

@@ -10,10 +10,6 @@ import { allCLItems } from '../src/lib/data/Collections';
 import Buyables from '../src/lib/data/buyables/buyables';
 import Createables from '../src/lib/data/createables';
 
-const iconsDir = './item/icon';
-const outputImageFilePath = './src/lib/resources/images/spritesheet.png';
-const outputJsonFilePath = './src/lib/resources/images/spritesheet.json';
-
 const manualIDs = [
 	11139, 25500, 21724, 26280, 24301, 19687, 22695, 24327, 3469, 13283, 12895, 21845, 22715, 21842, 7775, 25920, 26310,
 	27576, 21046, 11862, 27574, 25633, 26256, 27584, 21841, 25054, 3462, 25048, 7774, 25044, 21846, 19697, 3451, 12892,
@@ -31,7 +27,15 @@ const manualIDs = [
 	21844, 11772, 12887, 25606, 24304, 24374, 19691, 11863, 25840, 28134, 3450, 27580, 3458, 24384, 12896, 25541, 24977,
 	22719, 3454, 6722, 20773, 25432, 27477, 25314, 1037, 6858, 25684, 25926, 8950, 25052, 12894, 28409, 10508, 23083,
 	6861, 25664, 27481, 25282, 7927, 13571, 24378, 1, 24430, 25609, 19695, 11847, 20747, 21752, 24431, 20832, 27610,
-	21214, 25922, 27473, 9923, 28184, 24535, 3456, 25928, 24525, 21843, 12845, 11026, 3457, 25050, 19693, 6857, 12958
+	21214, 25922, 27473, 9923, 28184, 24535, 3456, 25928, 24525, 21843, 12845, 11026, 3457, 25050, 19693, 6857, 12958,
+	29489, 29491, 29493, 29495, 29497, 29499, 29501, 29503, 29505, 29507, 29509, 29510, 29511, 29512, 29513, 29514,
+	29515, 29516, 29517, 29518, 29519, 29521, 29522, 29523, 29524, 29525, 29526, 29527, 29528, 29529, 29530, 29531,
+	29532, 29533, 29534, 29535, 29536, 29537, 29538, 29539, 29540, 29541, 29542, 29543, 29544, 29545, 29546, 29547,
+	29548, 29549, 29550, 29551, 29552, 29553, 29554, 29555, 29556, 29558, 29560, 29562, 29564, 29566, 29568, 29570,
+	29572, 29573, 29574, 29577, 29580, 29583, 29585, 29587, 29589, 29591, 29594, 29596, 29598, 29599, 29602, 29605,
+	29607, 29609, 29611, 29613, 29615, 29617, 29619, 29622, 29625, 29628, 29631, 29634, 29637, 29640, 29643, 29648,
+	29649, 29651, 29652, 29654, 29655, 29657, 29658, 29660, 29661, 29663, 29664, 29666, 29667, 29669, 29670, 29672,
+	29673, 29675, 29676, 29678, 29679, 29684
 ];
 const trades = Items.filter(i => Boolean(i.tradeable_on_ge)).map(i => i.id);
 const itemsMustBeInSpritesheet: number[] = uniqueArr([
@@ -80,7 +84,12 @@ const generateJsonData = (result: Spritesmith.Result): Record<string, any> => {
 	return jsonData;
 };
 
-const main = async () => {
+async function makeSpritesheet(
+	iconsDir: string,
+	outputImageFilePath: string,
+	outputJsonFilePath: string,
+	allItems?: number[]
+) {
 	try {
 		const pngFiles = await getPngFiles(iconsDir);
 		if (pngFiles.length === 0) {
@@ -88,28 +97,36 @@ const main = async () => {
 		}
 
 		const filesToDo = [];
-		for (const id of itemsMustBeInSpritesheet) {
-			const item = Items.get(id);
-			if (!item) {
-				throw new Error(`Item with ID ${id} not found`);
-			}
-			if (!pngFiles.some(file => file.endsWith(`${item.id}.png`))) {
-				console.log(`Item ${item.name} (${item.id}) not found in spritesheet, adding...`);
+		if (!allItems) allItems = pngFiles.map(file => Number.parseInt(path.basename(file, '.png')));
+		for (const id of allItems) {
+			if (!pngFiles.some(file => file.endsWith(`${id}.png`))) {
+				console.log(`Item ${id} not found in spritesheet, adding...`);
 			} else {
-				filesToDo.push(`${item.id}.png`);
+				filesToDo.push(`${id}.png`);
 			}
 		}
 
 		const result = await createSpriteSheet(
-			filesToDo.map(p => path.join('item', 'icon', p)),
+			filesToDo.map(p => path.join(iconsDir, p)),
 			outputImageFilePath
 		);
 		const jsonData = generateJsonData(result);
 		await fs.writeFile(outputJsonFilePath, JSON.stringify(jsonData, null, 2));
 		console.log('Spritesheet and JSON created successfully!');
+		process.exit(0);
 	} catch (error) {
 		console.error('Error creating spritesheet:', error);
 	}
-};
+}
 
-main();
+makeSpritesheet(
+	'./item/icon',
+	'./src/lib/resources/images/spritesheet.png',
+	'./src/lib/resources/images/spritesheet.json',
+	itemsMustBeInSpritesheet
+);
+makeSpritesheet(
+	'./src/lib/resources/images/bso_icons',
+	'./src/lib/resources/images/bso_spritesheet.png',
+	'./src/lib/resources/images/bso_spritesheet.json'
+);

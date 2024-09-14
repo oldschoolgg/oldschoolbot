@@ -493,6 +493,7 @@ enum XpGainSource {
   CamdozaalSmithing
   CamdozaalFishing
   ForestryEvents
+  MonsterKilling
 }
 
 model XPGain {
@@ -942,6 +943,7 @@ enum activity_type_enum {
   CamdozaalFishing
   CamdozaalMining
   CamdozaalSmithing
+  MyNotes
   Colosseum
 }
 
