@@ -249,7 +249,7 @@ export const Lampables: IXPObject[] = [
 					continue;
 				}
 				skills[skill] =
-					([SkillsEnum.Prayer].includes(skill) ? 3500 : 5000) * data.quantity;
+					(skills[skill] = skill === SkillsEnum.Prayer ? 3500 : 5000) * data.quantity;
 			}
 			return [skills, undefined];
 		}
