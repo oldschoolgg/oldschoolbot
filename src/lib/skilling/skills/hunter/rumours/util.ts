@@ -32,7 +32,12 @@ export const tierToHunterLevel = {
 	master: 91
 };
 
-export function openHunterSack({ item, qty, allItemsOwned, hunterXP }: { allItemsOwned: Bank; item: Item; qty: number; hunterXP: number }) {
+export function openHunterSack({
+	item,
+	qty,
+	allItemsOwned,
+	hunterXP
+}: { allItemsOwned: Bank; item: Item; qty: number; hunterXP: number }) {
 	const sack = sacks.find(i => i.id === item.id);
 	if (!sack) throw new Error(`No sack found for item ${item.name}.`);
 
@@ -76,7 +81,7 @@ export function openHunterSack({ item, qty, allItemsOwned, hunterXP }: { allItem
 			}
 		}
 
-		if(!thisLoot.has('Quetzin') && hunterXP >= 200_000_000) {
+		if (!thisLoot.has('Quetzin') && hunterXP >= 200_000_000) {
 			if (sack.id === 29_248 || sack.id === 29_246) {
 				if (roll(67)) thisLoot.add('Quetzin');
 			}

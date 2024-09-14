@@ -148,7 +148,7 @@ function calcDurationAndQty(creature: Creature, user: MUser): [number, number] {
 
 	catchtime = catchtime / traps;
 
-	const timeTaken = totalCreaturesHunted * catchtime + 70; //70 Seconds assumed for time taken to get hunter gear out and make it to the location.
+	const timeTaken = totalCreaturesHunted * catchtime + 40; //40 Seconds assumed for time taken to get hunter gear out and make it to the location.
 
 	return [timeTaken, creaturesHunted];
 }
