@@ -79,8 +79,8 @@ export const hunterTask: MinionTask = {
 			quantity,
 			usingStaminaPotion,
 			graceful,
-			outfitMod,
-			experienceScore
+			experienceScore,
+			outfitMod
 		);
 
 		if (crystalImpling) {
