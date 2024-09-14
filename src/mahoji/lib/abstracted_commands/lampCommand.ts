@@ -241,6 +241,7 @@ export const Lampables: IXPObject[] = [
 	    items: resolveItems(["Scurrius' spine"]),
 	    function: data => {
 	        const skills: Skills = {};
+	
 	        for (const skill of objectValues(SkillsEnum)) {
 	            if (
 	                ![
@@ -255,11 +256,13 @@ export const Lampables: IXPObject[] = [
 	            ) {
 	                continue;
 	            }
+	
 	            skills[skill] = (skill === SkillsEnum.Prayer ? 3500 : 5000) * data.quantity;
 	        }
-       		return [skills, undefined];
-		}
-   	}
+	
+	        return [skills, undefined];
+	    }
+	}
 ];
 
 export async function lampCommand(user: MUser, itemToUse: string, skill: string, _quantity: number | undefined) {
