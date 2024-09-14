@@ -8,7 +8,7 @@ import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { DiaryID } from '../../lib/minions/types';
+import { DiaryID, type KillableMonster } from '../../lib/minions/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import type { GearBank } from '../../lib/structures/GearBank';
@@ -114,7 +114,7 @@ function getSlayerContext({
 
 interface newOptions {
 	type: 'MonsterKilling';
-	mi: number;
+	monster: KillableMonster;
 	q: number;
 	iQty?: number;
 	usingCannon?: boolean;
@@ -141,7 +141,7 @@ interface newOptions {
 
 export function doMonsterTrip(data: newOptions) {
 	let {
-		mi: monsterID,
+		monster,
 		q: quantity,
 		usingCannon,
 		cannonMulti,
@@ -163,9 +163,9 @@ export function doMonsterTrip(data: newOptions) {
 		duration,
 		bitfield
 	} = data;
-	const currentKC = kcBank.amount(monsterID);
+	const currentKC = kcBank.amount(monster.id);
 	const updateBank = new UpdateBank();
-	const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+
 	const isRevenantMonster = monster.name.includes('Revenant');
 
 	let skulled = false;
@@ -266,18 +266,23 @@ export function doMonsterTrip(data: newOptions) {
 		Monsters.AwakenedTheWhisperer.id,
 		Monsters.AwakenedVardorvis.id
 	];
-	const isAwakened = awakenedMonsters.includes(monsterID);
+	const isAwakened = awakenedMonsters.includes(monster.id);
 	if (
 		quantity > 0 &&
 		!gearBank.bank.has('Ancient blood ornament kit') &&
-		awakenedMonsters.every(id => Boolean(kcBank.has(id)) || monsterID === id) &&
+		awakenedMonsters.every(id => kcBank.has(id) || monster.id === id) &&
 		isAwakened
 	) {
 		messages.push('You received an **Ancient blood ornament kit**!');
 		updateBank.itemLootBank.add('Ancient blood ornament kit', 1);
 	}
 
-	const slayerContext = getSlayerContext({ slayerInfo, monsterID, quantityKilled: quantity, slayerUnlocks });
+	const slayerContext = getSlayerContext({
+		slayerInfo,
+		monsterID: monster.id,
+		quantityKilled: quantity,
+		slayerUnlocks
+	});
 
 	const superiorTable = slayerContext.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 	const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
@@ -407,16 +412,16 @@ export function doMonsterTrip(data: newOptions) {
 		}
 	}
 
-	if (!wiped) updateBank.kcBank.add(monsterID, quantity);
-	const newKC = kcBank.amount(monsterID) + quantity;
+	if (!wiped) updateBank.kcBank.add(monster.id, quantity);
+	const newKC = kcBank.amount(monster.id) + quantity;
 
 	return {
 		slayerContext,
 		quantity,
 		messages,
-		monster,
 		newKC,
-		updateBank
+		updateBank,
+		monster
 	};
 }
 
@@ -428,10 +433,11 @@ export const monsterTask: MinionTask = {
 		const stats = await MUserStats.fromID(data.userID);
 		const minigameScores = await user.fetchMinigames();
 		const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
-
+		const monster = killableMonsters.find(mon => mon.id === data.mi)!;
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
-		const { slayerContext, monster, quantity, newKC, messages, updateBank } = doMonsterTrip({
+		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({
 			...data,
+			monster,
 			tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
 				user.hasEquipped('Ring of wealth (i)'),
 				data.isInWilderness,
