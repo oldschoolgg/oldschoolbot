@@ -238,30 +238,30 @@ export const Lampables: IXPObject[] = [
 		}
 	},
 	{
-	    items: resolveItems(["Scurrius' spine"]),
-	    function: data => {
-	        const skills: Skills = {};
-	
-	        for (const skill of objectValues(SkillsEnum)) {
-	            if (
-	                ![
-	                    SkillsEnum.Attack,
-	                    SkillsEnum.Strength,
-	                    SkillsEnum.Defence,
-	                    SkillsEnum.Hitpoints,
-	                    SkillsEnum.Ranged,
-	                    SkillsEnum.Magic,
-	                    SkillsEnum.Prayer
-	                ].includes(skill)
-	            ) {
-	                continue;
-	            }
-	
-	            skills[skill] = (skill === SkillsEnum.Prayer ? 3500 : 5000) * data.quantity;
-	        }
-	
-	        return [skills, undefined];
-	    }
+		items: resolveItems(["Scurrius' spine"]),
+		function: data => {
+			const skills: Skills = {};
+
+			for (const skill of objectValues(SkillsEnum)) {
+				if (
+					![
+						SkillsEnum.Attack,
+						SkillsEnum.Strength,
+						SkillsEnum.Defence,
+						SkillsEnum.Hitpoints,
+						SkillsEnum.Ranged,
+						SkillsEnum.Magic,
+						SkillsEnum.Prayer
+					].includes(skill)
+				) {
+					continue;
+				}
+
+				skills[skill] = (skill === SkillsEnum.Prayer ? 3500 : 5000) * data.quantity;
+			}
+
+			return [skills, undefined];
+		}
 	}
 ];
 
