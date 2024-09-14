@@ -215,7 +215,7 @@ export const Lampables: IXPObject[] = [
 					continue;
 				}
 				skills[skill] =
-					data.user.skillLevel(skill) * ([SkillsEnum.Magic].includes(skill) ? 11 : 4) * data.quantity;
+					data.user.skillLevel(skill) * ([SkillsEnum.Magic].includes(skill) ? 15 : 5) * data.quantity;
 			}
 			return [skills, undefined];
 		}
@@ -233,6 +233,23 @@ export const Lampables: IXPObject[] = [
 				skills[skill] =
 					Math.round(Number(Math.pow(data.user.skillLevel(skill), 2)) / 4 + 7 * data.user.skillLevel(skill)) *
 					data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
+	{
+		items: resolveItems(["Scurrius' spine"]),
+		function: data => {
+			const skills: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				if (
+					![SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Hitpoints,
+					SkillsEnum.Ranged, SkillsEnum.Magic, SkillsEnum.Prayer].includes(skill)
+				) {
+					continue;
+				}
+				skills[skill] =
+					([SkillsEnum.Prayer].includes(skill) ? 3500 : 5000) * data.quantity;
 			}
 			return [skills, undefined];
 		}
