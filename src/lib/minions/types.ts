@@ -1,8 +1,8 @@
 import type { Image } from '@napi-rs/canvas';
 import type { StoreBitfield } from '@oldschoolgg/toolkit';
 import type { XpGainSource } from '@prisma/client';
-import type { Bank, MonsterKillOptions } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Bank, Item, MonsterKillOptions } from 'oldschooljs';
+
 import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import type { ClueTier } from '../clues/clueTiers';
@@ -11,12 +11,20 @@ import type { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
 import type { LevelRequirements, SkillsEnum } from '../skilling/types';
+import type { XPBank } from '../structures/Bank';
+import type { GearBank } from '../structures/GearBank';
 import type { MUserStats } from '../structures/MUserStats';
 import type { ItemBank, Skills } from '../types';
-import type { MonsterActivityTaskOptions } from '../types/minions';
 import type { ArrayItemsResolved, calculateSimpleMonsterDeathChance } from '../util';
 import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';
+
+export type KillableMonsterEffect = (opts: {
+	gearBank: GearBank;
+	quantity: number;
+	monster: KillableMonster;
+	loot: Bank;
+}) => void | { xpBank?: XPBank; loot?: Bank; messages: string[] };
 
 export type BankBackground = {
 	image: Image | null;
@@ -112,14 +120,7 @@ export interface KillableMonster {
 	canCannon?: boolean;
 	cannonMulti?: boolean;
 	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number }) => void;
-	effect?: (opts: {
-		messages: string[];
-		user: MUser;
-		quantity: number;
-		monster: KillableMonster;
-		loot: Bank;
-		data: MonsterActivityTaskOptions;
-	}) => Promise<unknown>;
+	effect?: KillableMonsterEffect;
 	degradeableItemUsage?: {
 		required: boolean;
 		gearSetup: GearSetupType;
@@ -173,11 +174,6 @@ export interface AddMonsterXpParams {
 	cannonMulti?: boolean;
 	burstOrBarrage?: number;
 	superiorCount?: number;
-}
-
-export interface ResolveAttackStylesParams {
-	monsterID: number | undefined;
-	boostMethod?: string[];
 }
 
 export interface BlowpipeData {

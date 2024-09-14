@@ -146,25 +146,29 @@ export const buyCommand: OSBMahojiCommand = {
 			itemsToRemove: totalCost
 		});
 
-		let costBankExcludingGP: ItemBank | undefined = totalCost
-			.clone()
-			.remove('Coins', totalCost.amount('Coins')).bank;
-		if (Object.keys(costBankExcludingGP).length === 0) costBankExcludingGP = undefined;
+		let costBankExcludingGP: Bank | undefined = totalCost.clone().remove('Coins', totalCost.amount('Coins'));
+		if (costBankExcludingGP.length === 0) costBankExcludingGP = undefined;
 
 		const currentStats = await user.fetchStats({ buy_cost_bank: true, buy_loot_bank: true });
 		await Promise.all([
 			updateBankSetting('buy_cost_bank', totalCost),
 			updateBankSetting('buy_loot_bank', outItems),
 			userStatsUpdate(user.id, {
-				buy_cost_bank: totalCost.clone().add(currentStats.buy_cost_bank as ItemBank).bank,
-				buy_loot_bank: outItems.clone().add(currentStats.buy_loot_bank as ItemBank).bank
+				buy_cost_bank: totalCost
+					.clone()
+					.add(currentStats.buy_cost_bank as ItemBank)
+					.toJSON(),
+				buy_loot_bank: outItems
+					.clone()
+					.add(currentStats.buy_loot_bank as ItemBank)
+					.toJSON()
 			}),
 			prisma.buyCommandTransaction.create({
 				data: {
 					user_id: BigInt(user.id),
 					cost_gp: totalCost.amount('Coins'),
 					cost_bank_excluding_gp: costBankExcludingGP,
-					loot_bank: outItems.bank
+					loot_bank: outItems.toJSON()
 				}
 			})
 		]);

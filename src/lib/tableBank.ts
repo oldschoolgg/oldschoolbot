@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import type { ItemBank } from './types';
-import { validateBankAndThrow } from './util';
 
 export function makeTransactFromTableBankQueries({
 	bankToAdd,
@@ -40,6 +39,6 @@ export async function fetchTableBank() {
 		'SELECT json_object_agg(item_id, quantity) as bank FROM ge_bank WHERE quantity != 0;'
 	);
 	const bank = new Bank(result[0].bank);
-	validateBankAndThrow(bank);
+	bank.validateOrThrow();
 	return bank;
 }

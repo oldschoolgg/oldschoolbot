@@ -1,7 +1,6 @@
 import type { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
-import type { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Bank, Item } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { growablePets } from '../growablePets';

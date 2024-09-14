@@ -8,8 +8,8 @@ import { UserError } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
+
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 
@@ -704,10 +704,14 @@ export class BankImageTask {
 			? filterableTypes.find(type => type.aliases.some(alias => filterInput === alias)) ?? null
 			: null;
 		if (filter || searchQuery) {
-			bank.filter(item => {
-				if (searchQuery) return cleanString(item.name).includes(cleanString(searchQuery));
-				return filter!.items(user!).includes(item.id);
-			}, true);
+			for (const [item] of bank.items()) {
+				if (
+					filter?.items(user!).includes(item.id) ||
+					(searchQuery && cleanString(item.name).includes(cleanString(searchQuery)))
+				) {
+					bank.set(item.id, 0);
+				}
+			}
 		}
 
 		let items = bank.items();

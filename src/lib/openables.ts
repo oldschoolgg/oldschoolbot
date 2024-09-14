@@ -133,7 +133,7 @@ for (const clueTier of ClueTiers) {
 
 			// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 			// and send a notification if they got one.
-			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id), false);
+			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id));
 			if (gotMilestoneReward) {
 				announcedLoot.add(clueTier.milestoneReward?.itemReward);
 			}

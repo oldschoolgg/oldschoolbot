@@ -16,6 +16,8 @@ export class MUserStats {
 	highGambles: number;
 	gotrRiftSearches: number;
 	rumours: number[];
+	slayerWildyTaskStreak: number;
+	slayerTaskStreak: number;
 
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
@@ -27,6 +29,8 @@ export class MUserStats {
 		this.highGambles = userStats.high_gambles;
 		this.gotrRiftSearches = userStats.gotr_rift_searches;
 		this.rumours = userStats.rumours;
+		this.slayerWildyTaskStreak = userStats.slayer_wildy_task_streak;
+		this.slayerTaskStreak = userStats.slayer_task_streak;
 	}
 
 	static async fromID(id: string) {

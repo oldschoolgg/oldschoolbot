@@ -494,6 +494,7 @@ enum XpGainSource {
   CamdozaalSmithing
   CamdozaalFishing
   ForestryEvents
+  MonsterKilling
 }
 
 model XPGain {

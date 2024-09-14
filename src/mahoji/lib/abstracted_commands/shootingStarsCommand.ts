@@ -241,13 +241,12 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 
 	// Add all stardust
 	loot.add('Stardust', dustReceived);
-	const lootItems = loot.bank;
 
 	await addSubTaskToActivityTask<ShootingStarsOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
-		lootItems,
+		lootItems: loot.toJSON(),
 		usersWith,
 		totalXp,
 		type: 'ShootingStars',

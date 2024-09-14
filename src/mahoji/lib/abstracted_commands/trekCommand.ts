@@ -252,7 +252,7 @@ export async function trekShop(
 			outItems.add(specifiedItem.name, outputTotal);
 		}
 	}
-	if (!userBank.has(inItems.bank)) {
+	if (!userBank.has(inItems)) {
 		return "You don't have enough reward tokens for that.";
 	}
 

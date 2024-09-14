@@ -2,7 +2,7 @@ import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, noOp } from 'e';
-import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
+import { convertXPtoLVL, toKMB } from './util';
 
 import { MAXING_MESSAGE, SupportServer } from '../config';
 import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';

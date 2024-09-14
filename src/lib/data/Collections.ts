@@ -1,6 +1,6 @@
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, Clues, Monsters } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, Clues, type Item, Monsters } from 'oldschooljs';
+
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
@@ -1247,7 +1247,7 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 					items = [...new Set(attributes.items)];
 				}
 				if (removeCoins && items.includes(995)) items.splice(items.indexOf(995), 1);
-				const [totalCl, userAmount] = getUserClData(userBank.bank, items);
+				const [totalCl, userAmount] = getUserClData(userBank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
 			}
@@ -1276,7 +1276,7 @@ export function getTotalCl(
 	logType: 'sacrifice' | 'bank' | 'collection' | 'temp',
 	userStats: MUserStats | null
 ) {
-	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
+	return getUserClData(getBank(user, logType, userStats), allCLItemsFiltered);
 }
 
 export function getCollectionItems(
@@ -1339,8 +1339,8 @@ export function getCollectionItems(
 	return returnValue(_clName, _items);
 }
 
-function getUserClData(usarBank: ItemBank, clItems: number[]): [number, number] {
-	const owned = Object.keys(usarBank).filter(i => clItems.includes(Number(i)));
+function getUserClData(userBank: Bank, clItems: number[]): [number, number] {
+	const owned = userBank.itemIDs.filter(i => clItems.includes(i));
 	return [clItems.length, owned.length];
 }
 
@@ -1376,7 +1376,7 @@ export async function getCollection(options: {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
 	}
 
-	const [totalCl, userAmount] = getUserClData(userCheckBank.bank, clItems);
+	const [totalCl, userAmount] = getUserClData(userCheckBank, clItems);
 
 	if (stringMatches(search, 'overall+')) {
 		return {
