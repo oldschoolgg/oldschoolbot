@@ -1,5 +1,5 @@
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { clamp, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
@@ -171,8 +171,8 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			}) ?? args.inputQuantity;
 	}
 
-	if ([Monsters.Skotizo.id].includes(monster.id)) {
-		args.inputQuantity = 1;
+	if (monster.maxQuantity) {
+		args.inputQuantity = clamp(args.inputQuantity ?? 1, 1, monster.maxQuantity);
 	}
 
 	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {

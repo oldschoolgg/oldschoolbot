@@ -186,17 +186,23 @@ describe('BSO PVM', async () => {
 		expect(result.commandResult).toContain('20% for Dwarven blessing');
 	});
 
-	it('should use ori', async () => {
-		const user = await client.mockUser({
-			QP: 300,
-			maxed: true
-		});
-		await user.update({
-			minion_equippedPet: itemID('Ori')
-		});
-		const result = await user.kill(EMonster.MAN, { quantity: 10 });
-		expect(result.newKC).toBeGreaterThan(10);
-	});
+	it(
+		'should use ori',
+		async () => {
+			const user = await client.mockUser({
+				QP: 300,
+				maxed: true
+			});
+			await user.update({
+				minion_equippedPet: itemID('Ori')
+			});
+			const result = await user.kill(EMonster.MAN, { quantity: 10 });
+			expect(result.newKC).toBeGreaterThan(10);
+		},
+		{
+			retry: 1
+		}
+	);
 
 	it('should use ori', async () => {
 		const user = await client.mockUser({

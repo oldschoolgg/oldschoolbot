@@ -55,7 +55,6 @@ export class TestUser extends MUserClass {
 			}
 		});
 		if (!activity) {
-			console.warn('No activity found');
 			return;
 		}
 
