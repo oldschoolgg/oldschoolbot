@@ -1115,6 +1115,44 @@ export const cluesGrandmasterRareCL = resolveItems([
 	'Shadow dye'
 ]);
 
+export const cluesElderCL = resolveItems([
+	'Lord marshal boots',
+	'Lord marshal gloves',
+	'Lord marshal trousers',
+	'Lord marshal top',
+	'Lord marshal cap',
+	'Akumu mask',
+	'Commander boots',
+	'Commander gloves',
+	'Commander trousers',
+	'Commander top',
+	'Commander cap',
+	'Apple parasol',
+	'Watermelon parasol',
+	'Lemon parasol',
+	'Strawberry parasol',
+	'Blueberry parasol',
+	'Grape parasol',
+	'Coconut parasol',
+	'Detective hat',
+	'Detective trenchcoat',
+	'Detective pants',
+	'2nd age range legs',
+	'2nd age range top',
+	'2nd age range coif',
+	'2nd age bow',
+	'2nd age mage top',
+	'2nd age mage bottom',
+	'2nd age mage mask',
+	'2nd age staff',
+	'First age robe top',
+	'First age robe bottom',
+	'Clue bag',
+	'Inventors tools',
+	'Elder knowledge',
+	'Octo'
+]);
+
 export const cluesHardRareCL = resolveItems([
 	'3rd age range coif',
 	'3rd age range top',

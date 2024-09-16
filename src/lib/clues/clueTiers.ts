@@ -13,6 +13,16 @@ import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import type { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
+import {
+	cluesBeginnerCL,
+	cluesEasyCL,
+	cluesElderCL,
+	cluesEliteCL,
+	cluesGrandmasterCL,
+	cluesHardCL,
+	cluesMasterCL,
+	cluesMediumCL
+} from '../data/CollectionsExport';
 import { type ElderClue, ElderClueTable } from '../simulation/elderClue';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import itemID from '../util/itemID';
@@ -44,6 +54,7 @@ export interface ClueTier {
 	implings?: number[];
 	qtyForGrandmasters: number;
 	trickableItems?: number[];
+	cl: number[];
 }
 
 export const ClueTiers: ClueTier[] = [
@@ -59,7 +70,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: beginnerStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Baby impling jar', 'Young impling jar']),
-		qtyForGrandmasters: 0
+		qtyForGrandmasters: 0,
+		cl: cluesBeginnerCL
 	},
 	{
 		name: 'Easy',
@@ -77,7 +89,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: easyStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar']),
-		qtyForGrandmasters: 300
+		qtyForGrandmasters: 300,
+		cl: cluesEasyCL
 	},
 	{
 		name: 'Medium',
@@ -95,7 +108,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: mediumStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar']),
-		qtyForGrandmasters: 250
+		qtyForGrandmasters: 250,
+		cl: cluesMediumCL
 	},
 	{
 		name: 'Hard',
@@ -109,7 +123,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: hardStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar']),
-		qtyForGrandmasters: 200
+		qtyForGrandmasters: 200,
+		cl: cluesHardCL
 	},
 	{
 		name: 'Elite',
@@ -127,7 +142,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: eliteStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar']),
-		qtyForGrandmasters: 150
+		qtyForGrandmasters: 150,
+		cl: cluesEliteCL
 	},
 	{
 		name: 'Master',
@@ -144,7 +160,8 @@ export const ClueTiers: ClueTier[] = [
 		allItems: MasterClueTable.allItems,
 		stashUnits: masterStashes,
 		reqs: beginnerReqs,
-		qtyForGrandmasters: 100
+		qtyForGrandmasters: 100,
+		cl: cluesMasterCL
 	},
 	{
 		name: 'Grandmaster',
@@ -164,7 +181,8 @@ export const ClueTiers: ClueTier[] = [
 			'First age cape',
 			'First age bracelet',
 			'First age ring'
-		])
+		]),
+		cl: cluesGrandmasterCL
 	},
 	{
 		name: 'Elder',
@@ -177,6 +195,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: resolveItems([...ElderClueTable.allItems, 'Clue bag', 'Inventors tools', 'Elder knowledge', 'Octo']),
 		stashUnits: masterStashes,
 		reqs: beginnerReqs,
-		qtyForGrandmasters: 0
+		qtyForGrandmasters: 0,
+		cl: cluesElderCL
 	}
 ];

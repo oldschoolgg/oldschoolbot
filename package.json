@@ -22,7 +22,7 @@
 		"test:circular": "dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js",
 		"test:ci:unit": "concurrently --raw --kill-others-on-fail \"yarn test:unit\" \"yarn test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\" \"yarn test:circular\"",
 		"spritesheet": "tsx ./scripts/spritesheet.ts",
-		"data": "tsx ./scripts/monster_table.ts && yarn lint"
+		"data": "concurrently \"tsx ./scripts/monster_table.ts\" \"tsx ./scripts/clue_table.ts\" && yarn lint"
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.54",
