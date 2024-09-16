@@ -15,6 +15,7 @@ import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { getOSItem } from '../../src/lib/util/getOSItem';
 import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
@@ -54,7 +55,6 @@ export class TestUser extends MUserClass {
 			}
 		});
 		if (!activity) {
-			console.warn('No activity found');
 			return;
 		}
 
@@ -159,7 +159,7 @@ export class TestUser extends MUserClass {
 		if (shouldFail) {
 			expect(commandResult).not.toContain('is now killing');
 		}
-		const activityResult = await this.runActivity();
+		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
 		const newKC = await this.getKC(monster);
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
