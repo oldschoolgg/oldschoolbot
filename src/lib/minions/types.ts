@@ -138,6 +138,7 @@ export interface KillableMonster {
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 	diaryRequirement?: [DiaryID, DiaryTierName];
 	wildySlayerCave?: boolean;
+	maxQuantity?: number;
 }
 /*
  * Monsters will have an array of Consumables

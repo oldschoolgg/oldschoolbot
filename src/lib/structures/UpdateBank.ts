@@ -68,11 +68,16 @@ export class UpdateBank {
 		}
 
 		// Start removing/updating things
-		const promises = [];
+		const results: string[] = [];
 
 		// Charges
 		if (this.chargeBank.length() > 0) {
-			promises.push(degradeChargeBank(user, this.chargeBank).then(res => res.map(p => p.userMessage).join(', ')));
+			const res = await degradeChargeBank(user, this.chargeBank).then(res =>
+				res.map(p => p.userMessage).join(', ')
+			);
+			if (res) {
+				results.push(res);
+			}
 		}
 
 		// Loot/Cost
@@ -86,7 +91,7 @@ export class UpdateBank {
 
 		// XP
 		if (this.xpBank.length > 0) {
-			promises.push(user.addXPBank(this.xpBank));
+			await user.addXPBank(this.xpBank);
 		}
 
 		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
@@ -127,10 +132,8 @@ export class UpdateBank {
 		}
 
 		if (Object.keys(userUpdates).length > 0) {
-			promises.push(user.update(userUpdates));
+			await user.update(userUpdates);
 		}
-
-		const results = await Promise.all(promises);
 
 		if (this.itemLootBankNoCL.length > 0) {
 			await user.transactItems({ itemsToAdd: this.itemLootBankNoCL, collectionLog: false });
