@@ -23,7 +23,15 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'check',
-			description: 'Check your current progress.'
+			description: 'Check your current progress.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'minion_stats',
+					description: 'check tasks based on minion stats, not completed tasks',
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -57,6 +65,12 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Boolean,
 					name: 'exclude_finished',
 					description: 'Exclude tasks you have finished?'
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'minion_stats',
+					description: 'check tasks based on minion stats, not completed tasks',
+					required: false
 				}
 			]
 		}
@@ -66,10 +80,10 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{
-		check?: {};
+		check?: { minion_stats: boolean };
 		view_task?: { task: string };
 		claim?: {};
-		view_all_tasks?: { exclude_finished?: boolean };
+		view_all_tasks?: { exclude_finished?: boolean; minion_stats: boolean };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -81,7 +95,10 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 		if (cooldown && production) {
 			return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}.`;
 		}
-		const { content, finished } = await leaguesCheckUser(userID.toString());
+		const { content, finished } = await leaguesCheckUser(
+			userID.toString(),
+			(options.check?.minion_stats ?? false) || (options.view_all_tasks?.minion_stats ?? false)
+		);
 		if (options.check) {
 			return content;
 		}
