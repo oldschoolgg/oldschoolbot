@@ -80,10 +80,10 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{
-		check?: { minion_stats: boolean };
+		check?: { minion_stats?: boolean };
 		view_task?: { task: string };
 		claim?: {};
-		view_all_tasks?: { exclude_finished?: boolean; minion_stats: boolean };
+		view_all_tasks?: { exclude_finished?: boolean; minion_stats?: boolean };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
