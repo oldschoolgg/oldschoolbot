@@ -1239,7 +1239,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 
 						const user = await mUserFetch(_msg.author.id);
 						await user.addItemsToBank({ items: loot, collectionLog: true });
-						_msg.channel.send(`${_msg.author} won ${loot}.`);
+						sendToChannelID(_msg.channelId, { content: `${_msg.author} won ${loot}.` });
 						return false;
 					}
 				})
