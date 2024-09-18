@@ -40,13 +40,19 @@ export const trawlerTask: MinionTask = {
 			totalXP += bonusXP;
 		}
 
-		let str = `${user}, ${
-			user.minionName
-		} finished completing the Fishing Trawler ${quantity}x times. ${await user.addXP({
+		let str = `${user}, ${user.minionName} finished completing the Fishing Trawler ${quantity}x times.`;
+
+		if (user.usingPet('Shelldon')) {
+			loot.multiply(2);
+			totalXP *= 1.5;
+			str += '\nYou received **2x** extra fish from Shelldon helping you.';
+		}
+
+		str += await user.addXP({
 			skillName: SkillsEnum.Fishing,
 			amount: totalXP,
 			duration: data.duration
-		})}`;
+		});
 
 		if (xpBonusPercent > 0) {
 			str += ` ${xpBonusPercent}% Bonus XP for Angler outfit pieces.`;
@@ -60,12 +66,6 @@ export const trawlerTask: MinionTask = {
 				if (roll(2)) loot.add(MysteryBoxes.roll());
 			}
 			str += '\n\nYou received **4x** extra fish because you are a master at Fishing.';
-		}
-
-		if (user.usingPet('Shelldon')) {
-			loot.multiply(2);
-			totalXP *= 1.5;
-			str += '\nYou received **2x** extra fish from Shelldon helping you.';
 		}
 
 		const { previousCL, itemsAdded } = await transactItems({

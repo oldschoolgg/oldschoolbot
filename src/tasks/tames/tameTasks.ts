@@ -360,7 +360,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 				clueTier.scrollID
 			)}. (${Math.floor(calcPerHour(activityData.quantity, activity.duration)).toFixed(1)} clues/hr)`;
 
-			if (messages) {
+			if (messages.length > 0) {
 				str += `\n\n${messages.join('\n')}`;
 			}
 

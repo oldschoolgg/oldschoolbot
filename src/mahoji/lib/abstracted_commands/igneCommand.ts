@@ -102,12 +102,6 @@ export async function igneCommand(
 		allowMoreThan1Solo: true,
 		allowMoreThan1Group: true
 	});
-	const hasNormalFood = [];
-	for (const user of instance.bossUsers) {
-		if (user.itemsToRemove.has('Saradomin brew(4)')) {
-			hasNormalFood.push(user.user.id);
-		}
-	}
 
 	try {
 		const { bossUsers } = await instance.start();

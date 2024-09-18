@@ -274,12 +274,12 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 			quantity,
 			quantity_remaining: quantity,
 			slayer_master_id: master.id,
-			monster_id: assignedTask?.monster.id,
+			monster_id: assignedTask.monster.id,
 			skipped: false
 		}
 	});
 	await _user.update({
-		slayer_last_task: assignedTask?.monster.id
+		slayer_last_task: assignedTask.monster.id
 	});
 
 	return { currentTask, assignedTask, messages };

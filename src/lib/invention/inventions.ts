@@ -714,7 +714,7 @@ export async function inventionItemBoost({
 	inventionID: InventionID;
 	duration: number;
 }): Promise<InventionItemBoostResult> {
-	const result = await inventionItemBoostRaw({
+	const result = inventionItemBoostRaw({
 		gearBank: user.gearBank,
 		inventionID,
 		duration,
