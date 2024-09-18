@@ -238,7 +238,7 @@ export const Lampables: IXPObject[] = [
 		}
 	},
 	{
-		items: resolveItems(["Antique lamp (Historian Aldo)"]),
+		items: resolveItems(['Antique lamp (Historian Aldo)']),
 		function: data => {
 			const skills: Skills = {};
 
