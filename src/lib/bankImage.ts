@@ -533,23 +533,27 @@ export class BankImageTask {
 		}
 		// END GLOW
 
-		drawOptions.image = await applyCustomItemEffects(user ?? null, drawOptions.image, itemID);
+		const customImage = await applyCustomItemEffects(user ?? null, drawOptions.image, itemID);
 
 		if (outline) {
 			ctx.filter = `drop-shadow(0px 0px 2px ${outline.outlineColor})`;
 		}
 
-		ctx.drawImage(
-			drawOptions.image,
-			drawOptions.sourceX,
-			drawOptions.sourceY,
-			drawOptions.sourceWidth,
-			drawOptions.sourceHeight,
-			drawOptions.destX,
-			drawOptions.destY,
-			drawOptions.sourceWidth,
-			drawOptions.sourceHeight
-		);
+		if (customImage) {
+			ctx.drawImage(customImage, drawOptions.destX, drawOptions.destY);
+		} else {
+			ctx.drawImage(
+				drawOptions.image,
+				drawOptions.sourceX,
+				drawOptions.sourceY,
+				drawOptions.sourceWidth,
+				drawOptions.sourceHeight,
+				drawOptions.destX,
+				drawOptions.destY,
+				drawOptions.sourceWidth,
+				drawOptions.sourceHeight
+			);
+		}
 
 		ctx.filter = 'none';
 	}

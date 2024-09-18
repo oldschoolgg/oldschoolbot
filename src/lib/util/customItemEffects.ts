@@ -21,7 +21,7 @@ export const customItemEffect = new Map([
 export const itemEffectImageCache = new LRUCache<string, Image>({ max: 1000 });
 
 export async function applyCustomItemEffects(user: MUser | null, img: Image, item: number) {
-	if (!user) return img;
+	if (!user) return null;
 	const key = `${user.id}-${item}`;
 	const cached = itemEffectImageCache.get(key);
 	if (cached) return cached;
@@ -29,13 +29,15 @@ export async function applyCustomItemEffects(user: MUser | null, img: Image, ite
 	const paintedColor = user.paintedItems.get(item);
 	if (paintedColor) {
 		const paint = paintColorsMap.get(paintedColor)!;
-		const image = await loadImage(await (await getPaintedItemImage(paint, item)).encode('png'));
+		const canvas = await getPaintedItemImage(paint, item);
+		const paintedImg = await canvas.encode('png');
+		const image = await loadImage(paintedImg);
 		itemEffectImageCache.set(key, image);
 		return image;
 	}
 
 	const effect = customItemEffect.get(item);
-	if (!effect) return img;
+	if (!effect) return null;
 	const image = await loadImage(await (await effect(img, user.id)).encode('png'));
 	itemEffectImageCache.set(key, image);
 	return image;
