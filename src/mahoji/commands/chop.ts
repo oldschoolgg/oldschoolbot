@@ -242,7 +242,7 @@ export const chopCommand: OSBMahojiCommand = {
 		});
 
 		let response = `${minionName(user)} is now chopping ${log.name} until your minion ${
-			quantity ? `chopped ${quantity}x or gets tired` : 'is satisfied'
+			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
 				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
