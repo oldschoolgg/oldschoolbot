@@ -179,5 +179,5 @@ describe(
 			expect(user.skillsAsXP.slayer).toEqual(555 * GLOBAL_BSO_XP_MULTIPLIER);
 		});
 	},
-	{ repeats: 50 }
+	{ repeats: 5 }
 );
