@@ -1,6 +1,7 @@
 import type { GearSetupType } from '@prisma/client';
 import { Time, calcPercentOfNum, objectKeys, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
+import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { BitField, PeakTier } from '../../../../lib/constants';
 import { Eatables } from '../../../../lib/data/eatables';
 import { calculateMonsterFoodRaw } from '../../../../lib/minions/functions/calculateMonsterFood';
@@ -9,7 +10,6 @@ import { removeFoodFromUserRaw } from '../../../../lib/minions/functions/removeF
 import type { Peak } from '../../../../lib/tickers';
 import { convertAttackStyleToGearSetup } from '../../../../lib/util';
 import { calcWildyPKChance } from '../../../../lib/util/calcWildyPkChance';
-import { getOSItem } from '../../../../lib/util/getOSItem';
 import type { BoostArgs, BoostResult } from './speedBoosts';
 
 const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)));
@@ -171,34 +171,14 @@ export const postBoostEffects: PostBoostEffect[] = [
 		}
 	},
 	{
-		description: 'Dwarven Blessing',
+		description: 'Dwarven Blessing Cost',
 		run: ({ gearBank, bitfield, duration }) => {
-			const dwarvenBlessingItem = getOSItem(
-				bitfield.includes(BitField.UseSuperRestoresForDwarvenBlessing) ? 'Super restore(4)' : 'Prayer potion(4)'
-			);
-			const hasBlessing = gearBank.hasEquipped('Dwarven blessing');
-			if (!hasBlessing) return;
-
-			const hasPrayerMasterCape = gearBank.hasEquipped('Prayer master cape');
-
-			const prayerMasterCapeBoost = hasPrayerMasterCape && hasBlessing;
-
-			const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
-			let dwarvenBlessingPotsNeeded = Math.max(1, fiveMinIncrements);
-
-			if (prayerMasterCapeBoost) {
-				dwarvenBlessingPotsNeeded = Math.max(1, Math.floor(0.6 * dwarvenBlessingPotsNeeded));
+			const blessingResult = dwarvenBlessing({ gearBank, duration, bitfield });
+			if (blessingResult) {
+				return {
+					itemCost: blessingResult.itemCost
+				};
 			}
-			const cost = new Bank().add(dwarvenBlessingItem, dwarvenBlessingPotsNeeded);
-
-			if (!gearBank.bank.has(cost)) {
-				return `You don't have enough ${dwarvenBlessingItem}'s to power your Dwarven blessing.`;
-			}
-
-			return {
-				message: `40% less ${dwarvenBlessingItem}${prayerMasterCapeBoost ? ' (40% less cost for prayer cape)' : ''}`,
-				itemCost: cost
-			};
 		}
 	}
 ];

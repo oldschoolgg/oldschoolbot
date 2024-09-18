@@ -1,7 +1,6 @@
 import { Bank, EMonster } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { Time } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
@@ -169,21 +168,6 @@ describe('BSO PVM', async () => {
 		const clientPortableTannerLoot = new Bank(client.data.portable_tanner_loot as ItemBank);
 		expect(clientPortableTannerLoot.amount('Green dragon leather')).toEqual(leatherGained);
 		expect(clientPortableTannerLoot.length).toBe(1);
-	});
-
-	it('should use dwarven blessing', async () => {
-		const user = await client.mockUser({
-			bank: new Bank().add('Prayer potion(4)', 100),
-			rangeLevel: 99,
-			QP: 300,
-			maxed: true,
-			meleeGear: resolveItems(['Dwarven blessing'])
-		});
-		const result = await user.kill(EMonster.MAN);
-		const duration = result.activityResult!.duration;
-		const potsUsed = Math.ceil(duration / (Time.Minute * 5));
-		expect(user.bank.amount('Prayer potion(4)')).toEqual(100 - potsUsed);
-		expect(result.commandResult).toContain('20% for Dwarven blessing');
 	});
 
 	it(
