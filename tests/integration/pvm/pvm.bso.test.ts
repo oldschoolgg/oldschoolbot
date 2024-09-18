@@ -164,9 +164,10 @@ describe('BSO PVM', async () => {
 		const userTannerStats = new Bank(
 			(await user.fetchStats({ portable_tanner_bank: true })).portable_tanner_bank as ItemBank
 		);
-		expect(userTannerStats.amount('Green dragon leather'), 'User stats should reflect the tanned leathers').toEqual(
-			leatherGained
-		);
+		expect(
+			userTannerStats.amount('Green dragon leather'),
+			`User stats should reflect the tanned leathers (got ${leatherGained}x leather from the trip)`
+		).toEqual(leatherGained);
 		await client.sync();
 		const clientPortableTannerLoot = new Bank(client.data.portable_tanner_loot as ItemBank);
 		expect(clientPortableTannerLoot.amount('Green dragon leather')).toEqual(leatherGained);
