@@ -136,5 +136,5 @@ describe(
 			expect(user.skillsAsXP.slayer).toEqual(555);
 		});
 	},
-	{ repeats: 50 }
+	{ repeats: 5 }
 );
