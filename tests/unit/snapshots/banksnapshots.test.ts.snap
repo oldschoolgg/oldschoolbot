@@ -6524,6 +6524,7 @@ exports[`BSO Creatables 1`] = `
       "12337": 1,
     },
     "name": "Partyhat & specs",
+    "noCreatablesCl": true,
     "outputItems": {
       "12399": 1,
     },
@@ -12771,6 +12772,7 @@ exports[`BSO Creatables 1`] = `
       "1048": 1,
     },
     "name": "Partyhat set",
+    "noCreatablesCl": true,
     "outputItems": {
       "13173": 1,
     },
