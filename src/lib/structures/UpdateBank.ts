@@ -66,6 +66,20 @@ export class UpdateBank {
 		this.userUpdates = mergeDeep(this.userUpdates, other.userUpdates);
 	}
 
+	async transactWithItemsOrThrow(...args: Parameters<UpdateBank['transact']>) {
+		const res = await this.transact(...args);
+		if (typeof res === 'string') {
+			throw new Error(res);
+		}
+		if (!res.itemTransactionResult) {
+			throw new Error('No item transaction result');
+		}
+		return {
+			...res,
+			itemTransactionResult: res.itemTransactionResult!
+		};
+	}
+
 	async transact(user: MUser, { isInWilderness }: { isInWilderness?: boolean } = { isInWilderness: false }) {
 		// Check everything first
 		if (this.chargeBank.length() > 0) {
@@ -120,7 +134,7 @@ export class UpdateBank {
 		if (Object.keys(this.userStats).length > 0) {
 			userStatsUpdates = mergeDeep(userStatsUpdates, this.userStats);
 		}
-		if (Object.keys(userStatsUpdates).length > 0) {
+		if (Object.keys(this.userStatsBankUpdates).length > 0) {
 			const currentStats = await prisma.userStats.upsert({
 				where: {
 					user_id: BigInt(user.id)

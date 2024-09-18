@@ -18,6 +18,7 @@ import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { getOSItem } from '../../src/lib/util/getOSItem';
 import { minionKCommand } from '../../src/mahoji/commands/k';
+import { stealCommand } from '../../src/mahoji/commands/steal';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
@@ -166,6 +167,31 @@ export class TestUser extends MUserClass {
 		}
 
 		return { commandResult, newKC, xpGained, previousBank, activityResult };
+	}
+
+	async pickpocket(
+		monster: EMonster,
+		{ quantity, shouldFail = false }: { shouldFail?: boolean; quantity?: number } = {}
+	) {
+		const previousBank = this.bank.clone();
+		const currentXP = clone(this.skillsAsXP);
+		const commandResult = await this.runCommand(
+			stealCommand,
+			{ name: Monsters.get(monster)!.name, quantity },
+			true
+		);
+		if (shouldFail) {
+			expect(commandResult).not.toContain('is now going to');
+		}
+		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
+		const newXP = clone(this.skillsAsXP);
+		const xpGained: SkillsRequired = {} as SkillsRequired;
+		for (const skill of SkillsArray) xpGained[skill] = 0;
+		for (const skill of objectKeys(newXP)) {
+			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
+		}
+
+		return { commandResult, xpGained, previousBank, activityResult };
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
