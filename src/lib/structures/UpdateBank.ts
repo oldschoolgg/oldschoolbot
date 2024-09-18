@@ -166,7 +166,6 @@ export class UpdateBank {
 				user,
 				remove: this.materialsCostBank
 			});
-			results.push(`Removed ${this.materialsCostBank}`);
 		}
 
 		if (this.itemLootBankNoCL.length > 0) {
