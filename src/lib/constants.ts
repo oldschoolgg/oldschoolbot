@@ -13,14 +13,12 @@ import { Items } from 'oldschooljs';
 import { convertLVLtoXP, getItemOrThrow } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { customItems } from './customItems/util';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
-import resolveItems from './util/resolveItems';
-
-import '../lib/data/itemAliases';
 
 export { PerkTier };
 
@@ -76,7 +74,11 @@ export const Roles = {
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
 	TopInventor: '992799099801833582',
 	TopLeagues: '1005417171112972349',
-	EventOrganizer: '1149907536749801542'
+	EventOrganizer: '1149907536749801542',
+	TopTamer: '1054356709222666240',
+	TopMysterious: '1074592096968785960',
+	TopGlobalCL: '848966773885763586',
+	TopFarmer: '894194259731828786'
 };
 
 export enum DefaultPingableRoles {
@@ -540,7 +542,10 @@ export const BadgesEnum = {
 	TopSkiller: 9,
 	TopCollector: 10,
 	TopMinigame: 11,
-	SotWTrophy: 12
+	SotWTrophy: 12,
+	Slayer: 13,
+	TopGiveawayer: 14,
+	Farmer: 15
 } as const;
 
 export const badges: { [key: number]: string } = {
@@ -556,7 +561,10 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.TopSkiller]: Emoji.Skiller,
 	[BadgesEnum.TopCollector]: Emoji.CollectionLog,
 	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
-	[BadgesEnum.SotWTrophy]: Emoji.SOTW
+	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy,
+	[BadgesEnum.Slayer]: Emoji.Slayer,
+	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat,
+	[BadgesEnum.Farmer]: Emoji.Farming
 };
 
 export const MAX_XP = 5_000_000_000;
@@ -706,7 +714,7 @@ export function getCommandArgs(
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
 
 export const DISABLED_COMMANDS = new Set<string>();
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;

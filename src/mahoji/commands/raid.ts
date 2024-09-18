@@ -371,7 +371,7 @@ export const raidCommand: OSBMahojiCommand = {
 
 					const team = [];
 					for (let a = 0; a < teamSize; a++) {
-						team.push({ user, kc: a, attempts: a, roomKCs: kcBank.bank as any });
+						team.push({ user, kc: a, attempts: a, roomKCs: kcBank.toJSON() as any });
 					}
 
 					const result = createDOATeam({

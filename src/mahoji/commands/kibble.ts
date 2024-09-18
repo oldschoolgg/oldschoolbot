@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { type Eatable, Eatables } from '../../lib/data/eatables';
 import { kibbles } from '../../lib/data/kibble';
+import { getRealHealAmount } from '../../lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { KibbleOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
@@ -74,18 +75,11 @@ export const kibbleCommand: OSBMahojiCommand = {
 
 		const healAmountNeeded = qtyPerComponent * kibble.minimumFishHeal;
 		const calcFish = (fish: Eatable) =>
-			Math.ceil(
-				(healAmountNeeded * options.quantity) /
-					(typeof fish.healAmount === 'number' ? fish.healAmount : fish.healAmount(user))
-			);
+			Math.ceil((healAmountNeeded * options.quantity) / getRealHealAmount(user.gearBank, fish.healAmount));
 		const suitableFish = Eatables.filter(
-			i =>
-				i.raw &&
-				(typeof i.healAmount === 'number' ? i.healAmount : i.healAmount(user)) >= kibble.minimumFishHeal
+			i => i.raw && getRealHealAmount(user.gearBank, i.healAmount) >= kibble.minimumFishHeal
 		).sort(
-			(a, b) =>
-				(typeof a.healAmount === 'number' ? a.healAmount : a.healAmount(user)) -
-				(typeof b.healAmount === 'number' ? b.healAmount : b.healAmount(user))
+			(a, b) => getRealHealAmount(user.gearBank, a.healAmount) - getRealHealAmount(user.gearBank, b.healAmount)
 		);
 
 		const rawFishComponent = suitableFish.find(i => userBank.amount(i.raw!) >= calcFish(i));

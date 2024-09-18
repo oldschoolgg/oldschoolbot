@@ -1,4 +1,3 @@
-import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
 import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
@@ -99,18 +98,14 @@ const table = new LootTable()
 	.add(LogsTable, 2)
 	.add(Supplies, 1, 5);
 
+const RawTable = new LootTable().every(table, [5, 11]);
+
 class GrandmasterClue extends Clue {
-	open(quantity: number) {
-		const loot = new Bank();
-
-		for (let i = 0; i < quantity; i++) {
-			const numberOfRolls = randInt(5, 11);
-
-			for (let i = 0; i < numberOfRolls; i++) {
-				loot.add(table.roll());
-			}
-		}
-
+	open(quantity: number, targetBank?: undefined): Bank;
+	open(quantity: number, targetBank: Bank): null;
+	open(quantity: number, targetBank?: Bank | undefined): Bank | null {
+		const loot = targetBank ?? new Bank();
+		RawTable.roll(quantity, { targetBank: loot });
 		return loot;
 	}
 }

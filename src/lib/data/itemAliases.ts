@@ -1,17 +1,10 @@
-import { deepMerge, modifyItem } from '@oldschoolgg/toolkit';
-import { omit } from 'lodash';
-import { EItem, Items } from 'oldschooljs';
-import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { modifyItem } from '@oldschoolgg/toolkit';
+import { EItem, Items, allTeamCapes, itemNameMap } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
-
-import { customItems } from '../customItems/util';
+import { mergeDeep, omit } from 'remeda';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
-	if (customItems.length === 0) {
-		throw new Error('Custom items have not been loaded yet.');
-	}
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
@@ -36,6 +29,9 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 			name: firstName!,
 			id
 		});
+		if (Items.get(id)!.name !== firstName) {
+			throw new Error(`Failed to set item alias for item ${id}`);
+		}
 	}
 }
 
@@ -195,11 +191,14 @@ setItemAlias(2993, 'Chompy bird hat (dragon archer)');
 setItemAlias(2994, 'Chompy bird hat (expert ogre dragon archer)');
 setItemAlias(2995, 'Chompy bird hat (expert dragon archer)');
 
-// Item aliases
+// Achievement diary lamps
 setItemAlias(11_137, 'Antique lamp 1');
 setItemAlias(11_139, 'Antique lamp 2');
 setItemAlias(11_141, 'Antique lamp 3');
 setItemAlias(11_185, 'Antique lamp 4');
+
+// Defender of varrock quest lamp
+setItemAlias(28_820, 'Antique lamp (defender of varrock)');
 
 // Dragonfire shields
 setItemAlias(11_284, 'Uncharged dragonfire shield');
@@ -482,5 +481,5 @@ export const itemDataSwitches = [
 for (const items of itemDataSwitches) {
 	const from = getItemOrThrow(items.from);
 	const to = getItemOrThrow(items.to);
-	modifyItem(to.id, deepMerge(omit(to, 'id'), omit(from, 'id')));
+	modifyItem(to.id, mergeDeep(omit(to, ['id']), omit(from, ['id'])));
 }

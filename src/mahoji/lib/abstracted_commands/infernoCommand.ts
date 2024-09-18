@@ -330,7 +330,7 @@ async function infernoRun({
 	const dartIndex = blowpipeDarts.indexOf(dartItem);
 	const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
 	if (dartIndex < 5) {
-		return 'Your darts are simply too weak, to work in the Inferno!';
+		return 'Your darts are simply too weak to work in the Inferno!';
 	}
 	if (isEmergedZuk) {
 		if (!['Dragon dart', 'Rune dart', 'Amethyst dart'].includes(dartItem.name)) {
@@ -379,8 +379,8 @@ async function infernoRun({
 			'Offhand drygore mace',
 			'Offhand spidergore rapier'
 		]).filter(i => allMeleeGearItems.includes(i)).length;
-		if (amountOfDrygoreEquipped < 2) {
-			return 'You need strong kalphite weapons to pierce TzKal-Zuk skin!';
+		if (!allMeleeGearItems.includes(itemID('Axe of the high sungod')) && amountOfDrygoreEquipped < 2) {
+			return 'You need strong kalphite weapons or an exceptionally powerful axe to pierce the skin of TzKal-Zuk!';
 		}
 		if (
 			!resolveItems(['Torva platebody', 'Torva platelegs', 'Torva boots', 'Torva gloves']).every(i =>
@@ -682,7 +682,7 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 		fakeDuration,
 		diedPreZuk,
 		diedZuk,
-		cost: realCost.bank,
+		cost: realCost.toJSON(),
 		isEmergedZuk: emerged,
 		emergedZukDeathChance: emergedZukDeathChance.value,
 		diedEmergedZuk
@@ -724,7 +724,7 @@ ${emergedZukDeathMsg}
 			{
 				name: 'image.jpg',
 				attachment: await newChatHeadImage({
-					content: "You're on your own now JalYt, you face certain death... prepare to fight for your life.",
+					content: "You're on your own now JalYt, you face certain death... Prepare to fight for your life.",
 					head: 'ketKeh'
 				})
 			}

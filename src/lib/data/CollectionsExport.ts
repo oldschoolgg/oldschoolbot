@@ -1115,6 +1115,44 @@ export const cluesGrandmasterRareCL = resolveItems([
 	'Shadow dye'
 ]);
 
+export const cluesElderCL = resolveItems([
+	'Lord marshal boots',
+	'Lord marshal gloves',
+	'Lord marshal trousers',
+	'Lord marshal top',
+	'Lord marshal cap',
+	'Akumu mask',
+	'Commander boots',
+	'Commander gloves',
+	'Commander trousers',
+	'Commander top',
+	'Commander cap',
+	'Apple parasol',
+	'Watermelon parasol',
+	'Lemon parasol',
+	'Strawberry parasol',
+	'Blueberry parasol',
+	'Grape parasol',
+	'Coconut parasol',
+	'Detective hat',
+	'Detective trenchcoat',
+	'Detective pants',
+	'2nd age range legs',
+	'2nd age range top',
+	'2nd age range coif',
+	'2nd age bow',
+	'2nd age mage top',
+	'2nd age mage bottom',
+	'2nd age mage mask',
+	'2nd age staff',
+	'First age robe top',
+	'First age robe bottom',
+	'Clue bag',
+	'Inventors tools',
+	'Elder knowledge',
+	'Octo'
+]);
+
 export const cluesHardRareCL = resolveItems([
 	'3rd age range coif',
 	'3rd age range top',
@@ -1849,6 +1887,10 @@ export const motherlodeMineCL = resolveItems([
 	'Prospector jacket',
 	'Prospector legs',
 	'Prospector boots'
+]);
+export const myNotesCL = resolveItems([
+	11_341, 11_342, 11_343, 11_344, 11_345, 11_346, 11_347, 11_348, 11_349, 11_350, 11_351, 11_352, 11_353, 11_354,
+	11_355, 11_356, 11_357, 11_358, 11_359, 11_360, 11_361, 11_362, 11_363, 11_364, 11_365, 11_366
 ]);
 export const randomEventsCL = resolveItems([
 	'Camo top',

@@ -2,7 +2,7 @@ import { SimpleTable } from '@oldschoolgg/toolkit';
 import { percentChance, roll, sumArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import type { LootBank } from 'oldschooljs/dist/meta/types';
-import { JSONClone, convertLootBanksToItemBanks } from 'oldschooljs/dist/util';
+import { JSONClone } from 'oldschooljs/dist/util';
 
 import { TOBRooms } from '../data/tob';
 import { assert } from '../util/logError';
@@ -98,16 +98,19 @@ class TheatreOfBloodClass {
 			loot.add(NonUniqueTable.roll());
 		}
 
+		let clueRate = 3 / 25;
 		if (isHardMode) {
 			// Add 15% extra regular loot for hard mode:
-			for (const [itemID] of Object.entries(loot.bank)) {
-				loot.bank[Number.parseInt(itemID)] = Math.ceil(loot.bank[Number.parseInt(itemID)] * 1.15);
+			for (const [item] of loot.items()) {
+				loot.set(item.id, Math.ceil(loot.amount(item.id) * 1.15));
 			}
 			// Add HM Tertiary drops: dust / kits
 			loot.add(HardModeExtraTable.roll());
+
+			clueRate = 3.5 / 25;
 		}
 
-		if (roll(25)) {
+		if (Math.random() < clueRate) {
 			loot.add('Clue scroll (elite)');
 		}
 
@@ -169,7 +172,7 @@ class TheatreOfBloodClass {
 		}
 
 		return {
-			loot: convertLootBanksToItemBanks(lootResult),
+			loot: lootResult,
 			percentChanceOfUnique: percentBaseChanceOfUnique,
 			totalDeaths,
 			teamPoints

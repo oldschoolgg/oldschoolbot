@@ -264,7 +264,7 @@ export const gambleCommand: OSBMahojiCommand = {
 					guild_id: guildID ? BigInt(guildID) : undefined,
 					sender: BigInt(senderUser.id),
 					recipient: BigInt(recipientuser.id),
-					items_sent: loot.bank,
+					items_sent: loot.toJSON(),
 					items_received: undefined,
 					type: 'gri'
 				}

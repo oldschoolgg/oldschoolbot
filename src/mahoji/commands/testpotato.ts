@@ -77,6 +77,8 @@ export async function giveMaxStats(user: MUser) {
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(120);
 	}
+	const materials = new MaterialBank();
+	for (const t of materialTypes) materials.add(t, 100000000);
 	await user.update({
 		QP: MAX_QP,
 		slayer_points: 50_000,
@@ -85,6 +87,7 @@ export async function giveMaxStats(user: MUser) {
 		carpenter_points: 5_000_000,
 		zeal_tokens: 500_000,
 		lms_points: 500_000,
+		materials_owned: materials.bank,
 		...updates
 	});
 }
@@ -956,7 +959,7 @@ ${droprates.join('\n')}`),
 							},
 							data: {
 								growth_stage: tame_growth.adult,
-								fed_items: fedItems.bank
+								fed_items: fedItems.toJSON()
 							}
 						});
 						if (tame.species_id === TameSpeciesID.Igne) {

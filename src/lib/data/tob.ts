@@ -2,11 +2,11 @@ import { Time, calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumB
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { GearStats } from '../gear/types';
 import { inventionBoosts } from '../invention/inventions';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
 import { Gear, constructGearSetup } from '../structures/Gear';
+import { resolveItems } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, pernixOutfit } from './CollectionsExport';
@@ -199,7 +199,7 @@ export const TOBMaxRangeGear = constructGearSetup({
 	head: 'Pernix cowl',
 	neck: 'Necklace of anguish',
 	body: 'Pernix body',
-	cape: 'Tidal collector',
+	cape: 'Tidal collector (i)',
 	hands: 'Pernix gloves',
 	legs: 'Pernix chaps',
 	feet: 'Pernix boots',

@@ -142,7 +142,7 @@ export class MTame {
 				id: this.id
 			},
 			data: {
-				[key]: new Bank(this.tame[key] as ItemBank).add(bank).bank
+				[key]: new Bank(this.tame[key] as ItemBank).add(bank).toJSON()
 			}
 		});
 	}

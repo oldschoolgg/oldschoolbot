@@ -59,7 +59,7 @@ export async function handleFinish({
 			id: tame.id
 		},
 		data: {
-			max_total_loot: previousTameCl.clone().add(lootToAdd).bank,
+			max_total_loot: previousTameCl.clone().add(lootToAdd).toJSON(),
 			last_activity_date: new Date()
 		}
 	});
@@ -125,7 +125,7 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 				loot.add(
 					WintertodtCrate.open({
 						points: randArrItem([500, 500, 750, 1000]),
-						itemsOwned: user.bank.bank,
+						itemsOwned: user.bank,
 						skills: user.skillsAsXP,
 						firemakingXP: user.skillsAsXP.firemaking
 					})
@@ -321,7 +321,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			if (user.bitfield.includes(BitField.DisabledTameClueOpening)) {
 				loot.add(clueTier.id, activityData.quantity);
 			} else {
-				const openingLoot = clueTier.table.open(actualOpenQuantityWithBonus, user);
+				const openingLoot = clueTier.table.open(actualOpenQuantityWithBonus, undefined, user.cl);
 
 				if (tame.hasEquipped('Abyssal jibwings') && clueTier !== ClueTiers[0]) {
 					const lowerTier = ClueTiers[ClueTiers.indexOf(clueTier) - 1];
@@ -330,7 +330,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 					for (let i = 0; i < activityData.quantity; i++) {
 						if (percentChance(5)) {
 							bonusClues++;
-							abysJwLoot.add(lowerTier.table.open(1, user));
+							abysJwLoot.add(lowerTier.table.open(1, undefined, user.cl));
 						}
 					}
 					if (abysJwLoot.length > 0) {
@@ -360,7 +360,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 				clueTier.scrollID
 			)}. (${Math.floor(calcPerHour(activityData.quantity, activity.duration)).toFixed(1)} clues/hr)`;
 
-			if (messages) {
+			if (messages.length > 0) {
 				str += `\n\n${messages.join('\n')}`;
 			}
 

@@ -19,7 +19,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	const itemsToRemove = new Bank();
 	const gp = user.GP;
 	if (gp < 5000) {
-		return 'You need atleast 5k GP to work at the Gnome Restaurant.';
+		return 'You need at least 5k GP to work at the Gnome Restaurant.';
 	}
 	itemsToRemove.add('Coins', 5000);
 
@@ -43,8 +43,8 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	}
 
 	if (user.hasEquipped('Kuro')) {
-		deliveryLength = reduceNumByPercent(deliveryLength, 5);
-		boosts.push(`${Emoji.Kuro} 5% faster with Kuro's help`);
+		deliveryLength = reduceNumByPercent(deliveryLength, 50);
+		boosts.push(`${Emoji.Kuro} 2x faster with Kuro's help`);
 	}
 
 	const poh = await getPOH(user.id);

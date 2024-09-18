@@ -89,7 +89,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
 	}
 
-	if (!userBankWithEquippedItems.has(toRemove.bank)) {
+	if (!userBankWithEquippedItems.has(toRemove)) {
 		return `You don't have the items in this preset. You're missing: ${toRemove.remove(user.bank)}.`;
 	}
 
@@ -406,7 +406,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 			})
 			.join('\n\n');
 
-		const updatedContent = `${content}\n\nThese assume you have atleast 25 prayer for the protect item prayer.`;
+		const updatedContent = `${content}\n\nThese assume you have at least 25 prayer for the protect item prayer.`;
 
 		return { content: updatedContent };
 	}

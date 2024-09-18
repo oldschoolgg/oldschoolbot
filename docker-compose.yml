@@ -3,7 +3,7 @@ services:
     image: postgres:16-alpine
     command: -c 'max_connections=5000'
     restart: always
-    container_name: osb_database
+    container_name: bso_database
     ports:
       - "5435:5435"
     environment:
@@ -20,7 +20,7 @@ services:
       - db
     environment:
       ROBOCHIMP_DATABASE_URL: postgresql://postgres:postgres@db:5435/robochimp_integration_test?connection_limit=10&pool_timeout=0&schema=public
-      DATABASE_URL: postgresql://postgres:postgres@db:5435/osb_integration_test?connection_limit=10&pool_timeout=0&schema=public
+      DATABASE_URL: postgresql://postgres:postgres@db:5435/bso_integration_test?connection_limit=10&pool_timeout=0&schema=public
       WAIT_HOSTS: db:5435
 
 volumes:

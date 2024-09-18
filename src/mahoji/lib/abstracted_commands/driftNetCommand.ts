@@ -21,7 +21,7 @@ export async function driftNetCommand(
 	}
 
 	if (user.skillLevel(SkillsEnum.Fishing) < 47 || user.skillLevel(SkillsEnum.Hunter) < 44) {
-		return 'You need atleast level 44 Hunter and 47 Fishing to do Drift net fishing.';
+		return 'You need at least level 44 Hunter and 47 Fishing to do Drift net fishing.';
 	}
 
 	if (
@@ -75,7 +75,7 @@ export async function driftNetCommand(
 
 	itemsToRemove.add('Drift net', quantity);
 
-	if (!userBank.has(itemsToRemove.bank)) {
+	if (!userBank.has(itemsToRemove)) {
 		return `You need ${quantity}x Drift net for the whole trip, try a lower trip length or make/buy more Drift net.`;
 	}
 

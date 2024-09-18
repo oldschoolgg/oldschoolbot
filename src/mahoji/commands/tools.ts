@@ -44,7 +44,9 @@ import {
 	isTOBOrTOAActivity,
 	itemID,
 	itemNameFromID,
+	parseStaticTimeInterval,
 	roll,
+	staticTimeIntervals,
 	stringMatches
 } from '../../lib/util';
 import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
@@ -69,9 +71,6 @@ import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOpti
 import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
-const INTERVAL_DAY = 'day';
-const INTERVAL_WEEK = 'week';
-const INTERVAL_MONTH = 'month';
 const skillsVals = Object.values(Skills);
 
 function dateDiff(first: number, second: number) {
@@ -170,23 +169,13 @@ ${whereInMassClause(id)};`)
 }
 
 async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean) {
+	if (!parseStaticTimeInterval(interval)) {
+		return 'Invalid time interval.';
+	}
+
 	let tierFilter = '';
 	let title = '';
-	let intervalValue = '';
 
-	switch (interval.toLowerCase()) {
-		case INTERVAL_DAY:
-			intervalValue = 'day';
-			break;
-		case INTERVAL_WEEK:
-			intervalValue = 'week';
-			break;
-		case INTERVAL_MONTH:
-			intervalValue = 'month';
-			break;
-		default:
-			return 'Invalid time interval.';
-	}
 	if (tier) {
 		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
 		if (!clueTier) return 'Invalid clue scroll tier.';
@@ -201,7 +190,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 	  FROM activity a
 	  JOIN users u ON a.user_id::text = u.id
 	  WHERE a.type = 'ClueCompletion'
-	  AND a.finish_date >= now() - interval '1 ${intervalValue}' AND a.completed = true
+	  AND a.finish_date >= now() - interval '1 ${interval}' AND a.completed = true
 	  ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
 	  ${tierFilter}
 	  GROUP BY a.user_id
@@ -268,27 +257,15 @@ async function executeXPGainsQuery(
 }
 
 async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
-	let intervalValue = '';
-
-	switch (interval.toLowerCase()) {
-		case INTERVAL_DAY:
-			intervalValue = 'day';
-			break;
-		case INTERVAL_WEEK:
-			intervalValue = 'week';
-			break;
-		case INTERVAL_MONTH:
-			intervalValue = 'month';
-			break;
-		default:
-			return 'Invalid time interval.';
+	if (!parseStaticTimeInterval(interval)) {
+		return 'Invalid time interval.';
 	}
 
 	const skillObj = skill
 		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 		: undefined;
 
-	const xpRecords = await executeXPGainsQuery(intervalValue, skillObj?.id, Boolean(ironmanOnly));
+	const xpRecords = await executeXPGainsQuery(interval, skillObj?.id, Boolean(ironmanOnly));
 
 	if (xpRecords.length === 0) {
 		return 'No results found.';
@@ -311,23 +288,12 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 	return { embeds: [embed.data] };
 }
 
-async function kcGains(interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
-	let intervalValue = '';
-
-	switch (interval.toLowerCase()) {
-		case INTERVAL_DAY:
-			intervalValue = 'day';
-			break;
-		case INTERVAL_WEEK:
-			intervalValue = 'week';
-			break;
-		case INTERVAL_MONTH:
-			intervalValue = 'month';
-			break;
-		default:
-			return 'Invalid time interval.';
+export async function kcGains(interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
+	if (!parseStaticTimeInterval(interval)) {
+		return 'Invalid time interval.';
 	}
-	const monster = killableMonsters.find(
+
+	const monster = effectiveMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
 	);
 
@@ -335,32 +301,36 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 		return 'Invalid monster.';
 	}
 
+	const queryActivityType = killableMonsters.some(k => k.name === monster.name)
+		? `'MonsterKilling' AND (a."data"->>'mi')::int = ${monster.id}`
+		: `'${monster.name.replace(/\s+/g, '')}'`;
+
 	const query = `
-    SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate 
+    SELECT a.user_id::text, SUM(COALESCE((a."data"->>'q')::int, (a."data"->>'quantity')::int, (a."data"->>'qty')::int)) AS qty, MAX(a.finish_date) AS lastDate 
     FROM activity a
     JOIN users u ON a.user_id::text = u.id
-    WHERE a.type = 'MonsterKilling' AND (a."data"->>'mi')::int = ${monster.id}
-    AND a.finish_date >= now() - interval '1 ${intervalValue}'  -- Corrected interval usage
+    WHERE a.type = ${queryActivityType}
+    AND a.finish_date >= now() - interval '1 ${interval}'
     AND a.completed = true
     ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
     GROUP BY a.user_id
     ORDER BY qty DESC, lastDate ASC
     LIMIT 10`;
+
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
 		return 'No results found.';
 	}
 
-	let place = 0;
 	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
 			(
 				await Promise.all(
 					res.map(
-						async (i: any) =>
-							`${++place}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
+						async (i, index) =>
+							`${index + 1}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
 					)
 				)
 			).join('\n')
@@ -971,7 +941,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'time',
 							description: 'The time period.',
 							required: true,
-							choices: ['day', 'week', 'month'].map(i => ({ name: i, value: i }))
+							choices: staticTimeIntervals.map(i => ({ name: i, value: i }))
 						},
 						{
 							type: ApplicationCommandOptionType.String,

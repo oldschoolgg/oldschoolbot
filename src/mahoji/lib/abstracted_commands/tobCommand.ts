@@ -67,7 +67,7 @@ async function calcTOBInput(u: MUser) {
 
 	items.add(
 		getUserFoodFromBank({
-			user: u,
+			gearBank: u.gearBank,
 			totalHealingNeeded: healingNeeded,
 			favoriteFood: u.user.favorite_food,
 			minimumHealAmount: 20
@@ -147,7 +147,7 @@ async function checkTOBUser(
 		'Scythe of vitur',
 		'Drygore longsword'
 	];
-	const requiredMeleeCapes = ['Fire cape', 'Infernal cape', 'TzKal cape'];
+	const requiredMeleeCapes = ['Fire cape', 'Infernal cape', 'TzKal cape', 'Abyssal cape'];
 	if (!meleeGear.hasEquipped(requiredMeleeWeapons) || !meleeGear.hasEquipped(requiredMeleeCapes)) {
 		return [
 			true,
@@ -189,11 +189,11 @@ async function checkTOBUser(
 	}
 	const dartsNeeded = 150 * quantity;
 	if (blowpipeData.dartQuantity < dartsNeeded) {
-		return [true, `${user.usernameOrMention}, you need atleast ${dartsNeeded} darts in your blowpipe.`];
+		return [true, `${user.usernameOrMention}, you need at least ${dartsNeeded} darts in your blowpipe.`];
 	}
 	const scalesNeeded = 1000 * quantity;
 	if (blowpipeData.scales < scalesNeeded) {
-		return [true, `${user.usernameOrMention}, you need atleast ${scalesNeeded} scales in your blowpipe.`];
+		return [true, `${user.usernameOrMention}, you need at least ${scalesNeeded} scales in your blowpipe.`];
 	}
 	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
 	if (dartIndex < 5) {
@@ -225,7 +225,7 @@ async function checkTOBUser(
 	if (!user.hasEquipped('Chincannon') && rangeGear.ammo!.quantity < arrowsRequired) {
 		return [
 			true,
-			`${user.usernameOrMention}, you need atleast ${arrowsRequired} arrows equipped in your range setup.`
+			`${user.usernameOrMention}, you need at least ${arrowsRequired} arrows equipped in your range setup.`
 		];
 	}
 
@@ -233,10 +233,10 @@ async function checkTOBUser(
 		const kc = await getMinigameScore(user.id, 'tob');
 
 		if (kc < 250) {
-			return [true, `${user.usernameOrMention} needs atleast 250 Theatre of Blood KC before doing Hard mode.`];
+			return [true, `${user.usernameOrMention} needs at least 250 Theatre of Blood KC before doing Hard mode.`];
 		}
-		if (!meleeGear.hasEquipped('Infernal cape')) {
-			return [true, `${user.usernameOrMention} needs at least an Infernal cape to do Hard mode.`];
+		if (!meleeGear.hasEquipped(['Infernal cape', 'Abyssal cape'], false, true)) {
+			return [true, `${user.usernameOrMention} needs at least an Infernal or Abyssal cape to do Hard mode.`];
 		}
 	}
 	if (teamSize === 1) {
@@ -341,7 +341,7 @@ export async function tobStartCommand(
 	if (isHardMode) {
 		const normalKC = await getMinigameScore(user.id, 'tob');
 		if (normalKC < 250) {
-			return 'You need atleast 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
+			return 'You need at least 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
 		}
 	}
 	if (user.minionIsBusy) {

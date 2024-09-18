@@ -71,7 +71,7 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 		return `${user.usernameOrMention} is busy right now and can't fight the nightmare!`;
 	}
 
-	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+	const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 	if (!hasReqs) {
 		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 	}
@@ -89,7 +89,7 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 			return `${user.usernameOrMention} doesn't meet the requirements: ${requirements[1]}.`;
 		}
 		if ((await user.getKC(NightmareMonster.id)) < 50) {
-			return "You need to have killed The Nightmare atleast 50 times before you can face the Phosani's Nightmare.";
+			return "You need to have killed The Nightmare at least 50 times before you can face the Phosani's Nightmare.";
 		}
 	}
 }
@@ -100,13 +100,13 @@ function perUserCost(user: MUser, quantity: number, isPhosani: boolean, hasShado
 	const sangCharges = sangChargesPerKc * quantity;
 	if (isPhosani) {
 		if (hasShadow && user.user.tum_shadow_charges < tumCharges) {
-			return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+			return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
 				globalClient,
 				'minion',
 				'charge'
 			)}`;
 		} else if (hasSang && user.user.sang_charges < sangCharges) {
-			return `You need atleast ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+			return `You need at least ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
 				globalClient,
 				'minion',
 				'charge'

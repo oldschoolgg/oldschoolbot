@@ -16,17 +16,24 @@ export class MUserStats {
 	kcBank: ItemBank;
 	highGambles: number;
 	gotrRiftSearches: number;
+	slayerWildyTaskStreak: number;
+	slayerTaskStreak: number;
 
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
 		this.baHonourLevel = userStats.honour_level;
-		this.sacrificedBank = new Bank().add(this.userStats.sacrificed_bank as ItemBank);
+		const sacBank = this.userStats.sacrificed_bank as ItemBank;
+		// biome-ignore lint/performance/noDelete: <explanation>
+		delete sacBank['0'];
+		this.sacrificedBank = new Bank().add(sacBank);
 		this.titheFarmsCompleted = this.userStats.tithe_farms_completed;
 		this.lapsScores = userStats.laps_scores as ItemBank;
 		this.openableScores = new Bank().add(userStats.openable_scores as ItemBank);
 		this.kcBank = userStats.monster_scores as ItemBank;
 		this.highGambles = userStats.high_gambles;
 		this.gotrRiftSearches = userStats.gotr_rift_searches;
+		this.slayerWildyTaskStreak = userStats.slayer_wildy_task_streak;
+		this.slayerTaskStreak = userStats.slayer_task_streak;
 	}
 
 	static async fromID(id: string) {

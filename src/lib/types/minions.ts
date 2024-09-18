@@ -7,7 +7,9 @@ import type { TuraelsTrialsMethod } from '../bso/turaelsTrials';
 import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
 import type { Kibble } from '../data/kibble';
 import type { IMaterialBank, MaterialType } from '../invention';
+import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 import type { IPatchData } from '../minions/farming/types';
+import type { AttackStyles } from '../minions/functions';
 import type { Monkey } from '../monkeyRumble';
 import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
@@ -47,6 +49,7 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'BarbarianAssault'
 		| 'AgilityArena'
 		| 'ChampionsChallenge'
+		| 'MyNotes'
 		| 'AerialFishing'
 		| 'DriftNet'
 		| 'SoulWars'
@@ -86,7 +89,8 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'CamdozaalFishing'
 		| 'CamdozaalMining'
 		| 'CamdozaalSmithing'
-		| 'Naxxus';
+		| 'Naxxus'
+		| 'MyNotes';
 	quantity: number;
 	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
 	iQty?: number;
@@ -156,11 +160,12 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
-	bob?: number;
+	bob?: SlayerActivityConstants.IceBarrage | SlayerActivityConstants.IceBurst;
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
 	isInWilderness?: boolean;
+	attackStyles?: AttackStyles[];
 }
 
 export type UndoneChangesMonsterOptions = Omit<MonsterActivityTaskOptions, 'q' | 'mi'> & {
@@ -180,6 +185,7 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
 	quantity: number;
+	flakesQuantity?: number;
 	iQty?: number;
 }
 

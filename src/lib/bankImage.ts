@@ -20,12 +20,13 @@ import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import type { BankSortMethod } from '../lib/sorts';
 import { BankSortMethods, sorts } from '../lib/sorts';
 import type { ItemBank } from '../lib/types';
-import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
+import { fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { divinationEnergies } from './bso/divination';
 import { BOT_TYPE, BitField, ItemIconPacks, doaPurples, toaPurpleItems } from './constants';
+import { customItems } from './customItems/util';
 import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
 import { SkillsEnum } from './skilling/types';
@@ -312,6 +313,10 @@ export class BankImageTask {
 	public glows: Map<number, Image>;
 	public treeImage!: Image;
 	public ready!: Promise<void>;
+	public spriteSheetImage!: Image;
+	public spriteSheetData!: Record<string, [number, number, number, number]>;
+	public bsoSpriteSheetImage!: Image;
+	public bsoSpriteSheetData!: Record<string, [number, number, number, number]>;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -355,6 +360,15 @@ export class BankImageTask {
 			};
 		}
 
+		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.png'));
+		this.spriteSheetData = JSON.parse(
+			await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' })
+		);
+
+		this.bsoSpriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/bso_spritesheet.png'));
+		this.bsoSpriteSheetData = JSON.parse(
+			await fs.readFile('./src/lib/resources/images/bso_spritesheet.json', { encoding: 'utf-8' })
+		);
 		await this.run();
 	}
 
@@ -452,6 +466,96 @@ export class BankImageTask {
 			logError(`Failed to load item icon with id: ${itemID}`);
 			return this.getItemImage(1);
 		}
+	}
+
+	async drawItemIDSprite({
+		itemID,
+		ctx,
+		x,
+		y,
+		outline,
+		user
+	}: {
+		itemID: number;
+		ctx: SKRSContext2D;
+		x: number;
+		y: number;
+		outline?: { outlineColor: string; alpha: number };
+		user?: MUser;
+	}) {
+		const isCustom = customItems.includes(itemID);
+		const data = isCustom ? this.bsoSpriteSheetData[itemID] : this.spriteSheetData[itemID];
+		const image = isCustom ? this.bsoSpriteSheetImage : this.spriteSheetImage;
+		const drawOptions = {
+			image,
+			sourceX: -1,
+			sourceY: -1,
+			sourceWidth: -1,
+			sourceHeight: -1,
+			destX: -1,
+			destY: -1
+		};
+
+		if (!data) {
+			const image = await this.getItemImage(itemID);
+			drawOptions.sourceWidth = image.width;
+			drawOptions.sourceHeight = image.height;
+			drawOptions.sourceX = 0;
+			drawOptions.sourceY = 0;
+			drawOptions.image = image;
+		} else {
+			const [sX, sY, width, height] = data;
+			drawOptions.sourceX = sX;
+			drawOptions.sourceY = sY;
+			drawOptions.sourceWidth = width;
+			drawOptions.sourceHeight = height;
+		}
+
+		drawOptions.destX = Math.floor(x + (itemSize - drawOptions.sourceWidth) / 2) + 2;
+		drawOptions.destY = Math.floor(y + (itemSize - drawOptions.sourceHeight) / 2);
+
+		// GLOW
+		let glow = this.glows.get(itemID);
+		if (allSlayerMaskHelmsAndMasks.has(itemID)) {
+			if (slayerMaskLeaderboardCache.get(itemID) === user?.id) {
+				glow = this.redGlow!;
+			}
+		}
+		if (glow) {
+			const centerX = drawOptions.destX + drawOptions.sourceWidth / 2;
+			const centerY = drawOptions.destY + drawOptions.sourceHeight / 2;
+			const glowX = centerX - glow.width / 2;
+			const glowY = centerY - glow.width / 2;
+			ctx.save();
+			ctx.strokeStyle = 'red';
+			ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
+			ctx.restore();
+		}
+		// END GLOW
+
+		const customImage = await applyCustomItemEffects(user ?? null, itemID);
+
+		if (outline) {
+			ctx.filter = `drop-shadow(0px 0px 2px ${outline.outlineColor})`;
+		}
+
+		if (customImage) {
+			ctx.drawImage(customImage, drawOptions.destX, drawOptions.destY);
+		} else {
+			ctx.drawImage(
+				drawOptions.image,
+				drawOptions.sourceX,
+				drawOptions.sourceY,
+				drawOptions.sourceWidth,
+				drawOptions.sourceHeight,
+				drawOptions.destX,
+				drawOptions.destY,
+				drawOptions.sourceWidth,
+				drawOptions.sourceHeight
+			);
+		}
+
+		ctx.filter = 'none';
 	}
 
 	async fetchAndCacheImage(itemID: number) {
@@ -571,7 +675,7 @@ export class BankImageTask {
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
 		verticalSpacer = 0,
-		user?: MUser
+		_user?: MUser
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -588,37 +692,20 @@ export class BankImageTask {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			const [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id, user);
-			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
-			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
+
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 
-			const x = floor(xLoc + (itemSize - itemWidth) / 2) + 2;
-			const y = floor(yLoc + (itemSize - itemHeight) / 2);
-			let glow = this.glows.get(item.id);
-			if (allSlayerMaskHelmsAndMasks.has(item.id)) {
-				if (slayerMaskLeaderboardCache.get(item.id) === user?.id) {
-					glow = this.redGlow!;
-				}
-			}
-			if (glow) {
-				const centerX = xLoc + itemImage.width / 2;
-				const centerY = yLoc + itemImage.height / 2;
-				const glowX = centerX - glow.width / 2;
-				const glowY = centerY - glow.width / 2;
-				ctx.strokeStyle = 'red';
-				ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
-			}
+			await this.drawItemIDSprite({
+				itemID: item.id,
+				ctx,
+				x: xLoc,
+				y: yLoc,
+				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined,
+				user: _user
+			});
 
-			const imageAfterEffects = await applyCustomItemEffects(user ?? null, itemImage, item.id);
-
-			if (isNewCLItem) {
-				drawImageWithOutline(ctx, imageAfterEffects, x, y, itemWidth, itemHeight, '#ac7fff', 1);
-			} else {
-				ctx.drawImage(imageAfterEffects, x, y, itemWidth, itemHeight);
-				ctx.restore();
-			}
+			ctx.restore();
 
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
@@ -644,10 +731,10 @@ export class BankImageTask {
 				bottomItemText = item.id.toString();
 			} else if (flags.has('names') || mahojiFlags?.includes('show_names')) {
 				bottomItemText = item.name;
-			} else if (mahojiFlags?.includes('invention_xp') && user) {
+			} else if (mahojiFlags?.includes('invention_xp') && _user) {
 				const group = findDisassemblyGroup(item);
-				const inventionLevel = user.skillLevel(SkillsEnum.Invention);
-				const xp = group && inventionLevel >= group.data.lvl && calcWholeDisXP(user, item, quantity);
+				const inventionLevel = _user.skillLevel(SkillsEnum.Invention);
+				const xp = group && inventionLevel >= group.data.lvl && calcWholeDisXP(_user, item, quantity);
 				if (xp) {
 					bottomItemText = `${toKMB(xp)}XP`;
 				} else {
@@ -697,9 +784,11 @@ export class BankImageTask {
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
 
 		if (flags.has('alch')) {
-			bank.filter(item => {
-				return item.price > 1000 && item.price < (item.highalch ?? 0) * 3;
-			}, true);
+			for (const [item] of bank.items()) {
+				if (!(item.price > 1000 && item.price < (item.highalch ?? 0) * 3)) {
+					bank.clear(item);
+				}
+			}
 		}
 
 		// Filtering
@@ -709,10 +798,14 @@ export class BankImageTask {
 			? filterableTypes.find(type => type.aliases.some(alias => filterInput === alias)) ?? null
 			: null;
 		if (filter || searchQuery) {
-			bank.filter(item => {
-				if (searchQuery) return cleanString(item.name).includes(cleanString(searchQuery));
-				return filter!.items(user!).includes(item.id);
-			}, true);
+			for (const [item] of bank.items()) {
+				if (
+					filter?.items(user!).includes(item.id) ||
+					(searchQuery && cleanString(item.name).includes(cleanString(searchQuery)))
+				) {
+					bank.set(item.id, 0);
+				}
+			}
 		}
 
 		let items = bank.items();

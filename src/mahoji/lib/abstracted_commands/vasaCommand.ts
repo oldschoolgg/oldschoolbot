@@ -7,6 +7,19 @@ import { BossInstance } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
 import { formatDuration } from '../../../lib/util';
 
+export const vasaBISGear = new Gear({
+	head: 'Gorajan occult helmet',
+	body: 'Gorajan occult top',
+	legs: 'Gorajan occult legs',
+	hands: 'Gorajan occult gloves',
+	feet: 'Gorajan occult boots',
+	cape: 'Vasa cloak',
+	ring: 'Seers ring(i)',
+	weapon: 'Virtus wand',
+	shield: 'Virtus book',
+	neck: 'Arcane blast necklace'
+});
+
 export async function vasaCommand(user: MUser, channelID: string, quantity?: number) {
 	const instance = new BossInstance({
 		leader: user,
@@ -29,18 +42,7 @@ export async function vasaCommand(user: MUser, channelID: string, quantity?: num
 		customDenier: async () => {
 			return [false];
 		},
-		bisGear: new Gear({
-			head: 'Gorajan occult helmet',
-			body: 'Gorajan occult top',
-			legs: 'Gorajan occult legs',
-			hands: 'Gorajan occult gloves',
-			feet: 'Gorajan occult boots',
-			cape: 'Vasa cloak',
-			ring: 'Seers ring(i)',
-			weapon: 'Virtus wand',
-			shield: 'Virtus book',
-			neck: 'Arcane blast necklace'
-		}),
+		bisGear: vasaBISGear,
 		gearSetup: 'mage',
 		itemCost: async data =>
 			data.baseFood.multiply(data.kills).add(
@@ -80,6 +82,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
 		};
 	} catch (err: any) {
+		console.error(err);
 		return `The mass failed to start for this reason: ${err}.`;
 	}
 }

@@ -2,6 +2,8 @@ import { randInt } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { ZALCANO_ID } from '../../../lib/constants';
+import { userhasDiaryTier } from '../../../lib/diaries';
+import { DiaryID } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier';
@@ -49,7 +51,14 @@ export const zalcanoTask: MinionTask = {
 			await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, duration, source: 'Zalcano' })
 		);
 
-		await ashSanctifierEffect(user, loot, duration, xpRes);
+		const result = ashSanctifierEffect({
+			mutableLootToReceive: loot,
+			gearBank: user.gearBank,
+			bitfield: user.bitfield,
+			duration,
+			hasKourendElite: (await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+		});
+		if (result) await result.updateBank.transact(user);
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

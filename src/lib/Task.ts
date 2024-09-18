@@ -97,6 +97,7 @@ import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
 import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
+import { myNotesTask } from '../tasks/minions/myNotesActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
@@ -233,6 +234,7 @@ const tasks: MinionTask[] = [
 	memoryHarvestTask,
 	guthixianCacheTask,
 	turaelsTrialsTask,
+	myNotesTask,
 	colosseumTask
 ];
 
@@ -280,7 +282,7 @@ const ActivityTaskOptionsSchema = z.object({
 	channelID: z.string()
 });
 
-async function completeActivity(_activity: Activity) {
+export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
 
 	if (_activity.completed) {

@@ -51,8 +51,8 @@ const randomEventBuyables: Buyable[] = [
 			'Frog token': 1
 		}),
 		outputItems: new Bank({
-			'Prince tunic': 1,
-			'Prince leggings': 1
+			'Royal frog tunic': 1,
+			'Royal frog leggings': 1
 		})
 	},
 	{
@@ -61,8 +61,8 @@ const randomEventBuyables: Buyable[] = [
 			'Frog token': 1
 		}),
 		outputItems: new Bank({
-			'Princess blouse': 1,
-			'Princess skirt': 1
+			'Royal frog blouse': 1,
+			'Royal frog skirt': 1
 		})
 	},
 	{

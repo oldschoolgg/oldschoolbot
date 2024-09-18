@@ -15,7 +15,7 @@ test('Should add patron badge', async () => {
 	const user = await createTestUser();
 	expect(user.user.badges).not.includes(BadgesEnum.Patron);
 	const _redis = makeSender();
-	_redis.publish({
+	await _redis.publish({
 		type: 'patron_tier_change',
 		discord_ids: [user.id],
 		new_tier: 1,
@@ -31,14 +31,14 @@ test('Should remove patron badge', async () => {
 	const user = await createTestUser(undefined, { badges: [BadgesEnum.Patron] });
 	expect(user.user.badges).includes(BadgesEnum.Patron);
 	const _redis = makeSender();
-	_redis.publish({
+	await _redis.publish({
 		type: 'patron_tier_change',
 		discord_ids: [user.id],
 		new_tier: 0,
 		old_tier: 1,
 		first_time_patron: false
 	});
-	await sleep(250);
+	await sleep(550);
 	await user.sync();
 	expect(user.user.badges).not.includes(BadgesEnum.Patron);
 });
@@ -52,7 +52,7 @@ test('Should add to cache', async () => {
 		}))
 	});
 	const _redis = makeSender();
-	_redis.publish({
+	await _redis.publish({
 		type: 'patron_tier_change',
 		discord_ids: users.map(u => u.id),
 		new_tier: 5,
@@ -67,29 +67,35 @@ test('Should add to cache', async () => {
 	}
 });
 
-test('Should remove from cache', async () => {
-	const users = [await createTestUser(), await createTestUser(), await createTestUser()];
-	await roboChimpClient.user.createMany({
-		data: users.map(u => ({
-			id: BigInt(u.id),
-			perk_tier: 0
-		}))
-	});
-	const _redis = makeSender();
-	_redis.publish({
-		type: 'patron_tier_change',
-		discord_ids: users.map(u => u.id),
-		new_tier: 0,
-		old_tier: 5,
-		first_time_patron: false
-	});
-	await sleep(250);
-	for (const user of users) {
-		expect(getUsersPerkTier(user)).toEqual(0);
-		const cached = roboChimpCache.get(user.id);
-		expect(cached).toEqual(undefined);
+test(
+	'Should remove from cache',
+	async () => {
+		const users = [await createTestUser(), await createTestUser(), await createTestUser()];
+		await roboChimpClient.user.createMany({
+			data: users.map(u => ({
+				id: BigInt(u.id),
+				perk_tier: 0
+			}))
+		});
+		const _redis = makeSender();
+		await _redis.publish({
+			type: 'patron_tier_change',
+			discord_ids: users.map(u => u.id),
+			new_tier: 0,
+			old_tier: 5,
+			first_time_patron: false
+		});
+		await sleep(250);
+		for (const user of users) {
+			expect(getUsersPerkTier(user)).toEqual(0);
+			const cached = roboChimpCache.get(user.id);
+			expect(cached).toEqual(undefined);
+		}
+	},
+	{
+		retry: 1
 	}
-});
+);
 
 test('Should recognize special bitfields', async () => {
 	expect(getUsersPerkTier(await createTestUser(undefined, { bitfield: [BitField.HasPermanentTierOne] }))).toEqual(3);

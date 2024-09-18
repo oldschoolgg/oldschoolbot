@@ -3,9 +3,10 @@ import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
-import type { GearSetupType } from './gear/types';
+import type { GearSetupType, PrimaryGearSetupType } from './gear/types';
 import type { KillableMonster } from './minions/types';
 import type { ChargeBank } from './structures/Banks';
+import type { GearBank } from './structures/GearBank';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
@@ -45,19 +46,19 @@ export interface DegradeableItem {
 interface DegradeableItemPVMBoost {
 	item: Item;
 	degradeable: DegradeableItem;
-	attackStyle: GearSetupType;
+	attackStyle: PrimaryGearSetupType;
 	charges: ({
 		killableMon,
 		osjsMonster,
 		totalHP,
 		duration,
-		user
+		gearBank
 	}: {
 		killableMon?: KillableMonster;
 		osjsMonster?: Monster;
 		totalHP: number;
 		duration: number;
-		user: MUser;
+		gearBank: GearBank;
 	}) => number;
 	boost: number;
 }
@@ -308,16 +309,23 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Void staff'))!,
 		attackStyle: 'mage',
 		boost: 8,
-		charges: ({ duration, user }) => {
-			const mageGear = user.gear.mage;
+		charges: ({ duration, gearBank }) => {
+			const mageGear = gearBank.gear.mage;
 			const minutesDuration = Math.ceil(duration / Time.Minute);
-			if (user.hasEquipped('Magic master cape')) {
+			if (gearBank.hasEquipped('Magic master cape')) {
 				return Math.ceil(minutesDuration / 3);
 			} else if (mageGear.hasEquipped('Vasa cloak')) {
 				return Math.ceil(minutesDuration / 2);
 			}
 			return minutesDuration;
 		}
+	},
+	{
+		item: getOSItem('Amulet of blood fury'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Amulet of blood fury'))!,
+		attackStyle: 'melee',
+		charges: ({ totalHP }) => totalHP / 25,
+		boost: 2
 	}
 ];
 
@@ -427,10 +435,8 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		userMessage: `Your ${
-			item.name
-		} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.${
-			pennyReduction > 0 ? ` Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
+		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining${
+			pennyReduction > 0 ? `. Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
 		}`
 	};
 }

@@ -118,12 +118,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		canBarrage: true,
-		itemInBankBoosts: [
-			{
-				[itemID('Kodai wand')]: 12,
-				[itemID('Staff of the dead')]: 8
-			}
-		],
 		pkActivityRating: 4,
 		pkBaseDeathChance: 3,
 		revsWeaponBoost: true,
@@ -244,7 +238,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
-		canCannon: true,
 		pkActivityRating: 4,
 		pkBaseDeathChance: 6,
 		revsWeaponBoost: true
@@ -460,12 +453,6 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 65
 		},
 		superior: Monsters.ChokeDevil,
-		itemInBankBoosts: [
-			{
-				[itemID('Kodai wand')]: 15,
-				[itemID('Staff of the dead')]: 10
-			}
-		],
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: true,
@@ -641,9 +628,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10,
-				[itemID('Staff of the dead')]: 15,
-				[itemID('Kodai wand')]: 20
+				[itemID('Arclight')]: 10
 			}
 		],
 		existsInCatacombs: true,

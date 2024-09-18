@@ -108,9 +108,7 @@ export const ignecarusTask: MinionTask = {
 				taskQuantity: quantity
 			});
 			await user.addItemsToBank({ items: loot, collectionLog: true });
-			const purple = Object.keys(loot.bank).some(itemID =>
-				IgnecarusNotifyDrops.includes(Number.parseInt(itemID))
-			);
+			const purple = loot.itemIDs.some(itemID => IgnecarusNotifyDrops.includes(itemID));
 			resultStr += `\n${purple ? Emoji.Purple : ''}${user} received ${loot}.`;
 
 			announceLoot({

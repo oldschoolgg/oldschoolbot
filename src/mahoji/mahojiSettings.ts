@@ -1,16 +1,21 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit';
 import type { Prisma, User, UserStats } from '@prisma/client';
-import { isObject, objectEntries, round } from 'e';
+import { isObject, notEmpty, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
-import { GearStat } from '../lib/gear';
+import { type GearSetupType, GearStat } from '../lib/gear';
 import type { KillableMonster } from '../lib/minions/types';
 
+import { bold } from 'discord.js';
+import { userhasDiaryTier } from '../lib/diaries';
+import { BSOMonsters } from '../lib/minions/data/killableMonsters/custom/customMonsters';
+import { quests } from '../lib/minions/data/quests';
 import type { Rune } from '../lib/skilling/skills/runecraft';
-import { hasGracefulEquipped } from '../lib/structures/Gear';
+import { addStatsOfItemsTogether, hasGracefulEquipped } from '../lib/structures/Gear';
+import type { GearBank } from '../lib/structures/GearBank';
 import type { ItemBank } from '../lib/types';
 import {
 	type JsonKeys,
@@ -73,13 +78,14 @@ export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
 }
 
+export type ClientBankKey = Parameters<typeof trackClientBankStats>['0'];
 export async function trackClientBankStats(
 	key: 'clue_upgrader_loot' | 'portable_tanner_loot' | 'turaels_trials_cost_bank' | 'turaels_trials_loot_bank',
 	newItems: Bank
 ) {
 	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
 	await mahojiClientSettingsUpdate({
-		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
+		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).toJSON()
 	});
 }
 
@@ -146,7 +152,7 @@ export async function userStatsBankUpdate(user: MUser | string, key: JsonKeys<Us
 	await userStatsUpdate(
 		userID,
 		{
-			[key]: bank.clone().add(currentItemBank).bank
+			[key]: bank.clone().add(currentItemBank).toJSON()
 		},
 		{ [key]: true }
 	);
@@ -244,12 +250,36 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 	return amountEquipped * 20;
 }
 
-export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
+export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	if (monster.qpRequired && user.QP < monster.qpRequired) {
 		return [
 			false,
 			`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/activities quest\``
 		];
+	}
+
+	if (monster.requiredQuests) {
+		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to kill ${monster.name}.`;
+		}
+	}
+
+	if (monster.degradeableItemUsage) {
+		for (const set of monster.degradeableItemUsage) {
+			const equippedInThisSet = set.items.find(item => user.gear[set.gearSetup].hasEquipped(item.itemID));
+
+			if (set.required && !equippedInThisSet) {
+				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+					monster.name
+				}: ${set.items
+					.map(i => i.itemID)
+					.map(itemNameFromID)
+					.join(', ')}.`;
+			}
+		}
 	}
 
 	if (monster.itemsRequired) {
@@ -298,7 +328,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 						false,
 						`You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
 							unmetKey!
-						)} stat in your ${setup} setup is ${has}, but you need atleast ${
+						)} stat in your ${setup} setup is ${has}, but you need at least ${
 							monster.minimumGearRequirements[setup]?.[unmetKey!]
 						}.`
 					];
@@ -307,10 +337,82 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 		}
 	}
 
+	if (monster.diaryRequirement) {
+		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
+		if (!hasDiary) {
+			return `${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`;
+		}
+	}
+
+	if (monster.itemCost) {
+		const cost = new Bank(monster.itemCost.itemCost);
+		if (!user.bank.has(cost)) {
+			return [false, `You don't have the items needed to kill this monster. You need: ${cost}.`];
+		}
+	}
+
+	const monsterScores = await user.fetchMonsterScores();
+
+	if (monster.kcRequirements) {
+		for (const [key, val] of Object.entries(monster.kcRequirements)) {
+			const { id } = BSOMonsters[key as keyof typeof BSOMonsters];
+
+			const kc = monsterScores[id] ?? 0;
+
+			if (kc < val) {
+				return `You need at least ${val} ${key} KC to kill ${monster.name}, you have ${kc}.`;
+			}
+		}
+	}
+
+	if (monster.minimumWeaponShieldStats) {
+		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
+			const gear = user.gear[setup as GearSetupType];
+			const stats = addStatsOfItemsTogether(
+				[gear['2h']?.item, gear.weapon?.item, gear.shield?.item].filter(notEmpty)
+			);
+
+			for (const [key, requiredValue] of Object.entries(minimum)) {
+				if (requiredValue < 1) continue;
+				const theirValue = stats[key as GearStat] ?? 0;
+				if (theirValue < requiredValue) {
+					return `Your ${setup} weapons/shield need to have at least ${requiredValue} ${readableStatName(
+						key
+					)} to kill ${monster.name}, you have ${theirValue}.`;
+				}
+			}
+		}
+	}
+
+	if (monster.customRequirement && monsterScores[monster.id] === 0) {
+		const reasonDoesntHaveReq = await monster.customRequirement(user);
+		if (reasonDoesntHaveReq) {
+			return `You don't meet the requirements to kill this monster: ${reasonDoesntHaveReq}.`;
+		}
+	}
+
+	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
+		return "You haven't unlocked this monster.";
+	}
+
+	const rangeAmmo = user.gear.range.ammo?.item;
+	if (
+		monster.projectileUsage?.requiredAmmo &&
+		(!rangeAmmo || !monster.projectileUsage?.requiredAmmo.includes(rangeAmmo))
+	) {
+		return `You need to be using one of these projectiles to fight ${
+			monster.name
+		}: ${monster.projectileUsage.requiredAmmo.map(itemNameFromID).join(', ')}.`;
+	}
+
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, _isInWilderness = false) {
+export function resolveAvailableItemBoosts(
+	gearBank: GearBank,
+	monster: KillableMonster,
+	_isInWilderness = false
+): Bank {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -320,7 +422,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			// find the highest boost that the player has
 			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 				const parsedId = Number.parseInt(itemID);
-				if (!user.hasEquippedOrInBank(parsedId)) {
+				if (!gearBank.hasEquippedOrInBank(parsedId)) {
 					continue;
 				}
 				if (boostAmount > highestBoostAmount) {
@@ -334,7 +436,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			}
 		}
 	}
-	return boosts.bank;
+	return boosts;
 }
 
 export function calcMaxRCQuantity(rune: Rune, user: MUser) {
@@ -379,7 +481,7 @@ export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
 	const { openable_scores: newOpenableScores } = await userStatsUpdate(
 		user.id,
 		{
-			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).bank
+			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
 		},
 		{ openable_scores: true }
 	);

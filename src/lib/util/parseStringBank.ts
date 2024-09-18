@@ -1,7 +1,7 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit';
 import { notEmpty } from 'e';
-import { Bank, Items } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, Items } from 'oldschooljs';
+
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { ONE_TRILLION } from '../constants';
