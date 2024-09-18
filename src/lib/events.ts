@@ -58,7 +58,7 @@ function rareRoles(msg: Message) {
 	for (const [roleID, chance, name] of rareRolesSrc) {
 		if (roll(chance / 10)) {
 			if (msg.member?.roles.cache.has(roleID)) continue;
-			if (!production) {
+			if (!production && msg.channel.isSendable()) {
 				return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
 			}
 			msg.member?.roles.add(roleID);

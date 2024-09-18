@@ -133,7 +133,9 @@ async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'
 		return;
 	}
 
-	const res = await channel.send(input);
+	if (!(channel instanceof WebhookClient) && !channel.isSendable()) {
+		throw new Error('Channel is not sendable');
+	}
 
-	return res;
+	return channel.send(input);
 }
