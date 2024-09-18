@@ -697,7 +697,8 @@ export class BankImageTask {
 				ctx,
 				x: xLoc,
 				y: yLoc,
-				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined
+				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined,
+				user: _user
 			});
 
 			ctx.restore();
