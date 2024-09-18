@@ -49,7 +49,7 @@ export function oriEffect({
 			}
 		}
 	}
-	messages.push(`${newQuantity - quantity}x kills bonus kills from Ori.`);
+	messages.push(`${newQuantity - quantity}x bonus kills from Ori`);
 	return newQuantity;
 }
 

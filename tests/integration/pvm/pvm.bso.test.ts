@@ -181,24 +181,13 @@ describe('BSO PVM', async () => {
 				minion_equippedPet: itemID('Ori')
 			});
 			const result = await user.kill(EMonster.MAN, { quantity: 10 });
-			expect(result.newKC).toBeGreaterThan(10);
+			expect(result.commandResult).toContain('is now killing 10x');
+			expect(user.bank.amount('Bones')).toBeGreaterThan(10);
 		},
 		{
 			retry: 1
 		}
 	);
-
-	it('should use ori', async () => {
-		const user = await client.mockUser({
-			QP: 300,
-			maxed: true
-		});
-		await user.update({
-			minion_equippedPet: itemID('Ori')
-		});
-		const result = await user.kill(EMonster.MAN, { quantity: 1000 });
-		expect(result.newKC).toBeGreaterThan(1000);
-	});
 
 	it('should do a vasa trip', async () => {
 		const user = await client.mockUser({
