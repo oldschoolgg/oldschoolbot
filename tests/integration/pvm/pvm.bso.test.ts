@@ -1,13 +1,16 @@
 import { Bank, EMonster } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
+import { Time } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { gorajanArcherOutfit, gorajanWarriorOutfit } from '../../../src/lib/data/CollectionsExport';
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
 import { VasaMagus } from '../../../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../../../src/lib/minions/data/killableMonsters/custom/customMonsters';
 import { Gear } from '../../../src/lib/structures/Gear';
 import { itemID, resolveItems } from '../../../src/lib/util';
+import { gearCommand } from '../../../src/mahoji/commands/gear';
 import { vasaBISGear } from '../../../src/mahoji/lib/abstracted_commands/vasaCommand';
 import { mockClient } from '../util';
 
@@ -201,5 +204,41 @@ describe('BSO PVM', async () => {
 		const result = await user.kill(VasaMagus.id);
 		const resultStr = (result.commandResult as any).embeds[0].description as string;
 		expect(resultStr).toContain('Your team is off to fight');
+	});
+
+	it('should do a >30min trip with hellfire bow and consume arrows', async () => {
+		const user = await client.mockUser({
+			bank: new Bank()
+				.add('Hellfire arrow', 10000)
+				.add('Prayer potion(4)', 10000)
+				.add('Dragon hunter lance')
+				.add('Anti-dragon shield')
+				.add('Elder rune', 5000)
+				.add('Saradomin brew(4)', 1000)
+				.add('Super restore(4)', 1000)
+				.add('Saradomin godsword')
+				.add('Dragon warhammer')
+				.add('Bandos godsword')
+				.add('Rocktail', 100_000),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems([...gorajanWarriorOutfit, 'Dwarven blessing']),
+			wildyGear: resolveItems(['Ranged master cape', 'Hellfire bow', ...gorajanArcherOutfit])
+		});
+		await user.runCommand(gearCommand, {
+			equip: {
+				gear_setup: 'wildy',
+				items: '1000 hellfire arrow'
+			}
+		});
+		await global.prisma!.playerOwnedHouse.create({ data: { user_id: user.id, pool: 99_950 } });
+		await user.incrementKC(BSOMonsters.Malygos.id, 5000);
+		await user.setAttackStyle([SkillsEnum.Ranged]);
+		const result = await user.kill(BSOMonsters.Malygos.id, { wilderness: true });
+		expect(result.commandResult).toContain('Your minion is now killing ');
+		expect(result.commandResult).toContain('3x boost for Hellfire bow');
+		expect(result.activityResult?.duration).toBeGreaterThan(Time.Minute * 29.9);
+		expect(user.gear.wildy.ammo?.quantity).toBeLessThan(10000);
 	});
 });

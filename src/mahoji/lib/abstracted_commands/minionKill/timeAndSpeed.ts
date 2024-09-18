@@ -39,7 +39,7 @@ function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, style
 }
 
 export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
-	const { monster, monsterKC, attackStyles, gearBank, maxTripLength, inputQuantity } = args;
+	const { monster, monsterKC, attackStyles, gearBank, maxTripLength, inputQuantity, isInWilderness } = args;
 	const { skillsAsLevels } = args.gearBank;
 	const messages: string[] = [];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
@@ -51,6 +51,11 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	timeToFinish /= 2;
 	messages.push('2x BSO Boost');
+
+	if (gearBank.gear.wildy.hasEquipped(['Hellfire bow']) && isInWilderness) {
+		timeToFinish /= 3;
+		messages.push('3x boost for Hellfire bow');
+	}
 
 	let currentTaskOptions: CombatMethodOptions = {};
 	const itemCost = new Bank();

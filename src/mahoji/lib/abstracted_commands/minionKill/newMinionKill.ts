@@ -1,5 +1,5 @@
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { clamp, increaseNumByPercent, reduceNumByPercent } from 'e';
+import { Time, clamp, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
@@ -24,6 +24,7 @@ import {
 	checkRangeGearWeapon,
 	formatDuration,
 	isWeekend,
+	itemID,
 	itemNameFromID,
 	numberEnum,
 	zodEnum
@@ -197,11 +198,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		return speedDurationResult;
 	}
 
-	if (gearBank.gear.wildy.hasEquipped(['Hellfire bow']) && isInWilderness) {
-		speedDurationResult.timeToFinish /= 3;
-		speedDurationResult.messages.push('3x boost for Hellfire bow');
-	}
-
 	const quantity = speedDurationResult.finalQuantity;
 	let duration = speedDurationResult.timeToFinish * quantity;
 
@@ -233,6 +229,14 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 				monster.name
 			}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
 		}
+	}
+
+	if (gearBank.gear.wildy.hasEquipped('Hellfire bow') && isInWilderness) {
+		const arrowsNeeded = Math.ceil(duration / (Time.Second * 13));
+		if (gearBank.gear.wildy.ammo?.item !== itemID('Hellfire arrow')) {
+			return `You need Hellfire arrows equipped to kill ${monster.name} with a Hellfire bow.`;
+		}
+		speedDurationResult.updateBank.itemCostBank.add(itemID('Hellfire arrow'), arrowsNeeded);
 	}
 
 	for (const effect of [...postBoostEffects, ...ephemeralPostTripEffects]) {

@@ -125,7 +125,7 @@ export async function minionKillCommand(
 		return `You don't have the items needed to kill this monster. You need: ${result.updateBank.itemCostBank}`;
 	}
 
-	const updateResult = await result.updateBank.transact(user);
+	const updateResult = await result.updateBank.transact(user, { isInWilderness: result.isInWilderness });
 	if (typeof updateResult === 'string') {
 		return updateResult;
 	}
