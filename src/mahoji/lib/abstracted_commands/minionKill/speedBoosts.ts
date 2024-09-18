@@ -517,15 +517,13 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			// Gorajan
 			const allGorajan = gorajanBoosts.every(e => gearBank.gear[e[1]].hasEquipped(e[0], true));
 			for (const [outfit, setup] of gorajanBoosts) {
-				if (
-					allGorajan ||
-					(gearstatToSetup.get(monster.attackStyleToUse) === setup &&
-						gearBank.gear[setup].hasEquipped(outfit, true))
-				) {
+				const expectedSetup = monster.attackStyleToUse ? gearstatToSetup.get(monster.attackStyleToUse) : null;
+				if (allGorajan || (expectedSetup === setup && gearBank.gear[setup].hasEquipped(outfit, true))) {
 					results.push({
 						percentageReduction: 10,
-						message: '10% for Gorajan'
+						message: `10% for ${itemNameFromID(outfit[0])!.split(' ').slice(0, 2).join(' ')} gear`
 					});
+					break;
 				}
 			}
 
