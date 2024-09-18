@@ -6,6 +6,7 @@ import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { uniqueArr } from 'e';
+import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
 import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
@@ -1017,6 +1018,16 @@ export const baseFilters: Filterable[] = [
 		name: 'Lamps',
 		aliases: ['lamps'],
 		items: () => XPLamps.map(i => i.itemID)
+	},
+	{
+		name: 'Lamps',
+		aliases: ['lamps'],
+		items: () => Lampables.flatMap(i => i.items)
+	},
+	{
+		name: 'Openables',
+		aliases: ['opens'],
+		items: () => allOpenables.map(i => i.id)
 	},
 	{
 		name: 'Favourite Alchs',

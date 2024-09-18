@@ -287,14 +287,6 @@ model NewUser {
   @@map("new_users")
 }
 
-model PingableRole {
-  id      Int    @id @default(autoincrement())
-  role_id String @unique @db.VarChar(19)
-  name    String @db.VarChar(32)
-
-  @@map("pingable_roles")
-}
-
 model PlayerOwnedHouse {
   user_id            String @id @db.VarChar(19)
   background_id      Int    @default(1)

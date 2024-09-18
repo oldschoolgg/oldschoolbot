@@ -117,7 +117,7 @@ export class UpdateBank {
 
 		// XP
 		if (this.xpBank.length > 0) {
-			await user.addXPBank(this.xpBank);
+			results.push(await user.addXPBank(this.xpBank));
 		}
 
 		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
