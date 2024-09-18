@@ -204,7 +204,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 						start_date: new Date(),
 						finish_date: duration.fromNow,
 						completed: false,
-						loot: bank.bank,
+						loot: bank.toJSON(),
 						user_id: user.id,
 						duration: duration.offset,
 						message_id: message.id,

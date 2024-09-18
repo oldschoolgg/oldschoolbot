@@ -66,8 +66,8 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	results.push(
 		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'ChambersOfXeric' })
 	);
-	let [, , styles] = resolveAttackStyles(user, {
-		monsterID: -1
+	let styles = resolveAttackStyles({
+		attackStyles: user.getAttackStyles()
 	});
 	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
 		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
@@ -145,8 +145,8 @@ export const raidsTask: MinionTask = {
 
 				const hasDust = userData.loot.has('Metamorphic dust') || userData.mUser.cl.has('Metamorphic dust');
 				if (challengeMode && roll(50) && hasDust) {
-					const { bank } = userData.loot.clone().add(userData.mUser.allItemsOwned);
-					const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
+					const result = userData.loot.clone().add(userData.mUser.allItemsOwned);
+					const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !result.has(pet));
 					if (unownedPet) {
 						userLoot.add(unownedPet);
 					}

@@ -6,19 +6,20 @@ import { Bank, Misc } from 'oldschooljs';
 
 import type { CasketWorkerArgs } from '.';
 import { ClueTiers } from '../clues/clueTiers';
+import type { ItemBank } from '../types';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the casket worker!');
 }
 
-export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
+export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[ItemBank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
 
-	const loot = clueTier.table.open(quantity, { cl: new Bank() } as MUser);
+	const loot = clueTier.table.open(quantity, undefined, new Bank());
 
 	for (let i = 0; i < quantity; i++) {
 		const qty = randInt(1, 3);
-		loot.add(clueTier.table.open(qty, { cl: loot } as MUser));
+		loot.add(clueTier.table.open(qty, undefined, new Bank()));
 	}
 
 	let mimicNumber = 0;
@@ -38,5 +39,5 @@ export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank
 			: ''
 	}`;
 
-	return [new Bank(loot), opened];
+	return [loot.toJSON(), opened];
 };

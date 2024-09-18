@@ -187,7 +187,7 @@ export const bankCommand: OSBMahojiCommand = {
 			return { content: 'Here is your selected bank:', ephemeral: true };
 		}
 		if (options.format === 'json') {
-			const json = JSON.stringify(baseBank.bank);
+			const json = JSON.stringify(baseBank.toJSON());
 			if (json.length > 1900) {
 				return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
 			}

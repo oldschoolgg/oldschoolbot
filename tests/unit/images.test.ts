@@ -1,5 +1,4 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { Time } from 'e';
 import deepEqual from 'fast-deep-equal';
 import { Bank, Monsters } from 'oldschooljs';
 import { describe, test } from 'vitest';
@@ -17,7 +16,7 @@ import { mockMUser } from './utils';
 describe('Images', async () => {
 	await bankImageGenerator.ready;
 
-	test.concurrent('Chat Heads', async () => {
+	test('Chat Heads', async () => {
 		const result = await mahojiChatHead({
 			content:
 				'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
@@ -26,7 +25,7 @@ describe('Images', async () => {
 		await writeFile(`tests/unit/snapshots/chatHead.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
-	test.concurrent('Collection Log', async () => {
+	test('Collection Log', async () => {
 		// @ts-expect-error
 		global.prisma = { userStats: { upsert: () => {} } };
 		MUserClass.prototype.fetchStats = async () => {
@@ -50,7 +49,7 @@ describe('Images', async () => {
 		await writeFile(`tests/unit/snapshots/cl.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
-	test.concurrent('Bank Image', async () => {
+	test('Bank Image', async () => {
 		const bank = new Bank();
 		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
@@ -64,7 +63,7 @@ describe('Images', async () => {
 		await writeFile(`tests/unit/snapshots/bank.${BOT_TYPE}.png`, result.file.attachment);
 	});
 
-	test.concurrent('POH Image', async () => {
+	test('POH Image', async () => {
 		const result = await pohImageGenerator.run({
 			prayer_altar: 13_197,
 			throne: 13_667,
@@ -75,59 +74,53 @@ describe('Images', async () => {
 		await writeFile(`tests/unit/snapshots/poh.${BOT_TYPE}.png`, result);
 	});
 
-	test(
-		'Charts',
-		async () => {
-			const sampleData: Record<'kmb' | 'percent', ChartOptions['values'][]> = {
-				percent: [
-					[
-						['Magna', 55],
-						['Cyr', 45]
-					]
-				],
-				kmb: [
-					[
-						['Twisted bow', 5_000_000_000],
-						['Egg', 1_500_000_000],
-						['Cat', 500_000_000],
-						['Dog', 2500_000_000],
-						['Trout', 4500_000_000]
-					]
+	test('Charts', async () => {
+		const sampleData: Record<'kmb' | 'percent', ChartOptions['values'][]> = {
+			percent: [
+				[
+					['Magna', 55],
+					['Cyr', 45]
 				]
-			} as const;
+			],
+			kmb: [
+				[
+					['Twisted bow', 5_000_000_000],
+					['Egg', 1_500_000_000],
+					['Cat', 500_000_000],
+					['Dog', 2500_000_000],
+					['Trout', 4500_000_000]
+				]
+			]
+		} as const;
 
-			for (const chartType of ['bar', 'line'] as const) {
-				for (const format of ['kmb', 'percent'] as const) {
-					const chartOptions: ChartOptions = {
-						type: chartType,
-						title: `${chartType} ${format} title`,
-						values: sampleData[format][0],
-						format: format
-					};
+		for (const chartType of ['bar', 'line'] as const) {
+			for (const format of ['kmb', 'percent'] as const) {
+				const chartOptions: ChartOptions = {
+					type: chartType,
+					title: `${chartType} ${format} title`,
+					values: sampleData[format][0],
+					format: format
+				};
 
-					const config = createApexChartConfig(chartOptions);
-					const configFilePath = `tests/unit/snapshots/chart.${chartType}.${format}.json`;
-					const existingConfigRaw = await readFile(configFilePath, 'utf-8').catch(() => null);
-					if (existingConfigRaw) {
-						const existingConfig = JSON.parse(existingConfigRaw);
-						if (deepEqual(existingConfig, config)) {
-							console.log(`Skipping ${chartType} ${format} chart, no changes.`);
-							continue;
-						}
+				const config = createApexChartConfig(chartOptions);
+				const configFilePath = `tests/unit/snapshots/chart.${chartType}.${format}.json`;
+				const existingConfigRaw = await readFile(configFilePath, 'utf-8').catch(() => null);
+				if (existingConfigRaw) {
+					const existingConfig = JSON.parse(existingConfigRaw);
+					if (deepEqual(existingConfig, config)) {
+						console.log(`Skipping ${chartType} ${format} chart, no changes.`);
+						continue;
 					}
-
-					const res = await createChart(chartOptions);
-					await writeFile(`tests/unit/snapshots/chart.${chartType}.${format}.png`, res);
-					await writeFile(configFilePath, `${JSON.stringify(config, null, 4)}\n`);
 				}
-			}
-		},
-		{
-			timeout: Time.Second * 30
-		}
-	);
 
-	test.concurrent('TOA Image', async () => {
+				const res = await createChart(chartOptions);
+				await writeFile(`tests/unit/snapshots/chart.${chartType}.${format}.png`, res);
+				await writeFile(configFilePath, `${JSON.stringify(config, null, 4)}\n`);
+			}
+		}
+	});
+
+	test('TOA Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{
@@ -148,7 +141,7 @@ describe('Images', async () => {
 		await writeFile(`tests/unit/snapshots/toa.${BOT_TYPE}.png`, image.attachment);
 	});
 
-	test.concurrent('COX Image', async () => {
+	test('COX Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{

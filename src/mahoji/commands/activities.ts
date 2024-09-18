@@ -16,7 +16,6 @@ import { buryCommand } from '../lib/abstracted_commands/buryCommand';
 import { butlerCommand } from '../lib/abstracted_commands/butlerCommand';
 import { camdozaalCommand } from '../lib/abstracted_commands/camdozaalCommand';
 import { castCommand } from '../lib/abstracted_commands/castCommand';
-import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
 import { chargeWealthCommand } from '../lib/abstracted_commands/chargeWealthCommand';
 import { chompyHuntClaimCommand, chompyHuntCommand } from '../lib/abstracted_commands/chompyHuntCommand';
@@ -26,6 +25,7 @@ import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
 import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import { myNotesCommand } from '../lib/abstracted_commands/myNotesCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
@@ -96,8 +96,8 @@ export const activitiesCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'champions_challenge',
-			description: 'Send your minion to do the Champions Challenge.'
+			name: 'my_notes',
+			description: 'Send your minion to rummage skeletons for Ancient pages.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -529,7 +529,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		plank_make?: { action: string; type: string; quantity?: number; speed?: number };
 		chompy_hunt?: { action: 'start' | 'claim' };
-		champions_challenge?: {};
+		my_notes?: {};
 		warriors_guild?: { action: string; quantity?: number };
 		camdozaal?: { action: string; quantity?: number };
 		collect?: { item: string; quantity?: number; no_stams?: boolean };
@@ -600,8 +600,8 @@ export const activitiesCommand: OSBMahojiCommand = {
 		if (options.chompy_hunt?.action === 'claim') {
 			return chompyHuntClaimCommand(user);
 		}
-		if (options.champions_challenge) {
-			return championsChallengeCommand(user, channelID);
+		if (options.my_notes) {
+			return myNotesCommand(user, channelID);
 		}
 		if (options.warriors_guild) {
 			return warriorsGuildCommand(

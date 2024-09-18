@@ -35,7 +35,7 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 		items_disassembled_cost: true
 	});
 	await mahojiClientSettingsUpdate({
-		items_disassembled_cost: new Bank(items_disassembled_cost as ItemBank).add(cost).bank
+		items_disassembled_cost: new Bank(items_disassembled_cost as ItemBank).add(cost).toJSON()
 	});
 
 	const xpStr = await user.addXP({

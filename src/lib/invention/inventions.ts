@@ -7,6 +7,7 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 
 import type { IMaterialBank, MaterialType } from '.';
 import { type ClueTier, ClueTiers } from '../clues/clueTiers';
+import type { GearBank } from '../structures/GearBank';
 import type { ItemBank } from '../types';
 import { formatDuration, stringMatches, toKMB } from '../util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
@@ -559,7 +560,8 @@ export async function transactMaterialsFromUser({
 	if (addToDisassembledItemsBank) {
 		updateObject.disassembled_items_bank = addToDisassembledItemsBank
 			.clone()
-			.add(user.user.disassembled_items_bank as ItemBank).bank;
+			.add(user.user.disassembled_items_bank as ItemBank)
+			.toJSON();
 	}
 	if (addToResearchedMaterialsBank && remove) {
 		updateObject.researched_materials_bank = remove
@@ -627,12 +629,11 @@ type InventionItemBoostResult =
 			success: false;
 	  };
 
-export function canAffordInventionBoost(user: MUser, inventionID: InventionID, duration: number) {
+export function canAffordInventionBoostRaw(materialsOwned: MaterialBank, inventionID: InventionID, duration: number) {
 	const invention = Inventions.find(i => i.id === inventionID)!;
 	if (invention.usageCostMultiplier === null) {
 		throw new Error('Tried to calculate cost of invention that has no cost.');
 	}
-	const materialsOwned = user.materialsOwned();
 	const materialCost = new MaterialBank();
 	let multiplier = Math.ceil(duration / (Time.Minute * 3));
 	multiplier = clamp(Math.floor(multiplier * invention.usageCostMultiplier), 1, 1000);
@@ -655,22 +656,32 @@ export function canAffordInventionBoost(user: MUser, inventionID: InventionID, d
 	};
 }
 
-export async function inventionItemBoost({
-	user,
+export function canAffordInventionBoost(user: MUser, inventionID: InventionID, duration: number) {
+	return canAffordInventionBoostRaw(user.materialsOwned(), inventionID, duration);
+}
+
+export function inventionItemBoostRaw({
+	gearBank,
 	inventionID,
-	duration
+	duration,
+	disabledInventions
 }: {
-	user: MUser;
+	gearBank: GearBank;
 	inventionID: InventionID;
 	duration: number;
-}): Promise<InventionItemBoostResult> {
-	const { materialCost, canAfford, invention } = await canAffordInventionBoost(user, inventionID, duration);
+	disabledInventions: number[];
+}) {
+	const { materialCost, canAfford, invention } = canAffordInventionBoostRaw(
+		gearBank.materials,
+		inventionID,
+		duration
+	);
 
 	// If it has to be equipped, and isn't, or has to be in bank, and isn't, fail.
 	if (
-		user.user.disabled_inventions.includes(invention.id) ||
-		(invention.flags.includes('equipped') && !user.hasEquipped(invention.item.id)) ||
-		(invention.flags.includes('bank') && !user.hasEquippedOrInBank([invention.item.id]))
+		disabledInventions.includes(invention.id) ||
+		(invention.flags.includes('equipped') && !gearBank.hasEquipped(invention.item.id)) ||
+		(invention.flags.includes('bank') && !gearBank.hasEquippedOrInBank([invention.item.id]))
 	) {
 		return { success: false };
 	}
@@ -682,7 +693,7 @@ export async function inventionItemBoost({
 	}
 
 	const messages: string[] = [`Removed ${materialCost}`];
-	if (user.hasEquippedOrInBank('Invention master cape')) {
+	if (gearBank.hasEquippedOrInBank('Invention master cape')) {
 		materialCost.mutReduceAllValuesByPercent(inventionBoosts.inventionMasterCape.materialCostReductionPercent);
 		messages.shift();
 		messages.unshift(`Removed ${materialCost}`);
@@ -691,6 +702,27 @@ export async function inventionItemBoost({
 		);
 	}
 
+	return { success: true, materialCost, messages, invention };
+}
+
+export async function inventionItemBoost({
+	user,
+	inventionID,
+	duration
+}: {
+	user: MUser;
+	inventionID: InventionID;
+	duration: number;
+}): Promise<InventionItemBoostResult> {
+	const result = inventionItemBoostRaw({
+		gearBank: user.gearBank,
+		inventionID,
+		duration,
+		disabledInventions: user.user.disabled_inventions
+	});
+	if (!result.success || !result.messages) return { success: false };
+
+	const { materialCost, messages } = result;
 	try {
 		await transactMaterialsFromUser({
 			user,

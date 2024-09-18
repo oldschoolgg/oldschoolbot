@@ -438,3 +438,5 @@ export const effectiveMonsters = [
 		id: MOKTANG_ID
 	}
 ];
+
+export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));

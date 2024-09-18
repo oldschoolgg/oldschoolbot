@@ -96,7 +96,7 @@ export const kalphiteKingTask: MinionTask = {
 			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementKC(KalphiteKingMonster.id, kcToAdd);
-			const purple = Object.keys(loot.bank).some(id => kalphiteKingCL.includes(Number.parseInt(id)));
+			const purple = loot.itemIDs.some(id => kalphiteKingCL.includes(id));
 
 			const usersTask = await getUsersCurrentSlayerInfo(user.id);
 			const isOnTask =

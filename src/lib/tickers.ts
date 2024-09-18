@@ -388,7 +388,7 @@ export function initTickers() {
 				const stopwatch = new Stopwatch().start();
 				await ticker.cb();
 				stopwatch.stop();
-				if (stopwatch.duration > 100) {
+				if (stopwatch.duration > 500) {
 					debugLog(`Ticker ${ticker.name} took ${stopwatch}`);
 				}
 			} catch (err) {

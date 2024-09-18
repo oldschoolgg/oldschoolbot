@@ -444,7 +444,8 @@ export async function autoSlayCommand({
 		runCommand({
 			commandName: 'k',
 			args: {
-				name: Monsters.get(currentMonID)!.name
+				name: Monsters.get(currentMonID)!.name,
+				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			},
 			bypassInhibitors: true,
 			...cmdRunOptions
@@ -472,7 +473,8 @@ export async function autoSlayCommand({
 			runCommand({
 				commandName: 'k',
 				args: {
-					name: usersTask.assignedTask?.monster.name
+					name: usersTask.assignedTask.monster.name,
+					wilderness: Boolean(usersTask.assignedTask.wilderness)
 				},
 				bypassInhibitors: true,
 				...cmdRunOptions
@@ -498,7 +500,8 @@ export async function autoSlayCommand({
 		runCommand({
 			commandName: 'k',
 			args: {
-				name: usersTask.assignedTask?.monster.name
+				name: usersTask.assignedTask.monster.name,
+				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			},
 			bypassInhibitors: true,
 			...cmdRunOptions
@@ -541,7 +544,7 @@ export async function autoSlayCommand({
 		if (maxMobName) {
 			runCommand({
 				commandName: 'k',
-				args: { name: maxMobName },
+				args: { name: maxMobName, wilderness: Boolean(usersTask.assignedTask.wilderness) },
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
@@ -555,7 +558,7 @@ export async function autoSlayCommand({
 	}
 	await runCommand({
 		commandName: 'k',
-		args: { name: usersTask.assignedTask?.monster.name },
+		args: { name: usersTask.assignedTask.monster.name, wilderness: Boolean(usersTask.assignedTask.wilderness) },
 		bypassInhibitors: true,
 		...cmdRunOptions
 	});

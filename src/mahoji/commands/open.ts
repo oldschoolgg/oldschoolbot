@@ -68,7 +68,7 @@ export const openCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
-				user.bank.filter(item => allOpenablesIDs.has(item.id), false).toString(),
+				user.bank.filter(item => allOpenablesIDs.has(item.id)).toString(),
 				1950
 			)}.`;
 		}

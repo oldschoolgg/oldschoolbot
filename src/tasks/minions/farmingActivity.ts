@@ -216,7 +216,7 @@ export const farmingTask: MinionTask = {
 			await farmingLootBoosts(user, 'plant', plant, quantity, loot, infoStr);
 
 			if (loot.has('Plopper')) {
-				loot.bank[itemID('Plopper')] = 1;
+				loot.set('Plopper', 1);
 			}
 
 			if (loot.length > 0) {
@@ -573,7 +573,7 @@ export const farmingTask: MinionTask = {
 			}
 
 			if (loot.has('Plopper')) {
-				loot.bank[itemID('Plopper')] = 1;
+				loot.set('Plopper', 1);
 				infoStr.push(
 					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
 				);

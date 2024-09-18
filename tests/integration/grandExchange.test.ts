@@ -6,7 +6,7 @@ import { describe, expect, test } from 'vitest';
 import { GrandExchange } from '../../src/lib/grandExchange';
 
 import PQueue from 'p-queue';
-import { assert, Stopwatch } from '../../src/lib/util';
+import { assert } from '../../src/lib/util';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import type { TestUser } from './util';
@@ -17,8 +17,6 @@ const AMOUNT_USERS = 10;
 const COMMANDS_PER_USER = 3;
 const TICKS_PER_EXTENSIVE_VERIFICATION = 20;
 const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
-
-console.log(`G.E test will make ${itemPool.length * COMMANDS_PER_USER * AMOUNT_USERS} listings.`);
 
 const quantities = [1, 2, 38, 500, '5*5'];
 const prices = [1, 30, 33, 55];
@@ -43,8 +41,6 @@ describe('Grand Exchange', async () => {
 	test(
 		'Fuzz',
 		async () => {
-			const stopwatch = new Stopwatch();
-			stopwatch.start();
 			// biome-ignore lint/suspicious/noSelfCompare: <explanation>
 			assert(randInt(1, 100_000) !== randInt(1, 100_000));
 
@@ -66,7 +62,6 @@ describe('Grand Exchange', async () => {
 				);
 			}
 			users = await Promise.all(users);
-			stopwatch.check(`Finished initializing ${AMOUNT_USERS} users`);
 
 			// Run a bunch of commands to buy/sell
 			const commandPromises = new PQueue({ concurrency: 10 });
@@ -88,10 +83,8 @@ describe('Grand Exchange', async () => {
 					}
 				}
 			}
-			stopwatch.check('Finished initiaing commands');
 			await commandPromises.onEmpty();
 			await waitForGEToBeEmpty();
-			stopwatch.check('Finished running all commands');
 
 			// Tick the g.e to make some transactions
 			for (let i = 0; i < TICKS_TO_RUN; i++) {
@@ -102,8 +95,7 @@ describe('Grand Exchange', async () => {
 			}
 
 			await waitForGEToBeEmpty();
-			const count = await prisma.gETransaction.count();
-			stopwatch.check(`Finished ticking ${TICKS_TO_RUN} times, made ${count} transactions`);
+			await prisma.gETransaction.count();
 
 			// Cancel all remaining listings
 			const cancelPromises = [];
@@ -120,10 +112,8 @@ describe('Grand Exchange', async () => {
 			if (newCurrentOwnedBank.length !== 0) {
 				throw new Error('There should be no items in the G.E bank!');
 			}
-			stopwatch.check('Finished cancelling');
 
 			await Promise.all(users.map(u => u.sync()));
-			stopwatch.check('Finished syncing all users');
 
 			const testBank = new Bank();
 			for (const user of users) {
@@ -155,7 +145,6 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 
 			await GrandExchange.queue.onEmpty();
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
-			stopwatch.check('Finished final checks');
 		},
 		{
 			timeout: Time.Minute * 10

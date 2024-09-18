@@ -75,19 +75,19 @@ const table = new LootTable()
 	.add('Coins', [20_500_000, 50_200_000]);
 
 export class ElderClue extends Clue {
-	open(quantity: number, user: MUser) {
-		const loot = new Bank();
+	open(quantity: number, targetBank: undefined, cl: Bank): Bank;
+	open(quantity: number, targetBank: Bank, cl: Bank): null;
+	open(quantity: number, targetBank: Bank | undefined, cl: Bank): Bank | null {
+		const loot = targetBank ?? new Bank();
 
 		for (let i = 0; i < quantity; i++) {
 			const numberOfRolls = randInt(4, 7);
 
-			for (let t = 0; t < numberOfRolls; t++) {
-				loot.add(table.roll());
-			}
+			table.roll(numberOfRolls, { targetBank: loot });
 
 			const untradeableUniques = resolveItems(['Clue bag', 'Inventors tools', 'Elder knowledge']);
 			if (roll(100)) {
-				const unowned = untradeableUniques.filter(id => !user.cl.has(id) && !loot.has(id));
+				const unowned = untradeableUniques.filter(id => !cl.has(id) && !loot.has(id));
 				if (unowned.length > 0) {
 					loot.add(randArrItem(unowned));
 				} else {

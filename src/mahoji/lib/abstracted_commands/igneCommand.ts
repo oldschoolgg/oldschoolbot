@@ -69,7 +69,7 @@ export async function igneCommand(
 				.add('Saradomin brew(4)', brewsNeeded)
 				.add('Super restore(4)', restoresNeeded)
 				.multiply(data.kills);
-			return userBank.has(heatResBank.bank) ? heatResBank : normalBank;
+			return userBank.has(heatResBank) ? heatResBank : normalBank;
 		},
 		mostImportantStat: 'attack_crush',
 		ignoreStats: ['attack_ranged', 'attack_magic'],
@@ -102,12 +102,6 @@ export async function igneCommand(
 		allowMoreThan1Solo: true,
 		allowMoreThan1Group: true
 	});
-	const hasNormalFood = [];
-	for (const user of instance.bossUsers) {
-		if (user.itemsToRemove.has('Saradomin brew(4)')) {
-			hasNormalFood.push(user.user.id);
-		}
-	}
 
 	try {
 		const { bossUsers } = await instance.start();

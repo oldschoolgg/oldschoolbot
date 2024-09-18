@@ -165,10 +165,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon warhammer')]: 10
-			},
-			{
-				[itemID('Elder maul')]: 5
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Elder maul')]: 12
 			},
 			{
 				[itemID('Keris partisan of breaching')]: 5
@@ -213,7 +211,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 6,
-		itemsRequired: resolveItems(['Zamorakian spear']),
+		itemsRequired: deepResolveItems([['Zamorakian spear', "Osmumten's fang"]]),
 		notifyDrops: resolveItems([
 			'Spectral sigil',
 			'Arcane sigil',
@@ -223,7 +221,66 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 10 }, { [itemID('Bandos godsword')]: 5 }],
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Elder maul')]: 12
+			},
+			{
+				[itemID('Bandos godsword')]: 5,
+				[itemID('Voidwaker')]: 6
+			}
+		],
+		equippedItemBoosts: [
+			{
+				items: [{ boostPercent: 10, itemID: itemID("Osmumten's fang") }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 8, itemID: itemID('Elysian spirit shield') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 2, itemID: itemID('Torva full helm') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori body (f)') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori chaps (f)') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 2, itemID: itemID('Infernal cape') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Ring of suffering (i)') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Primordial boots') }],
+				gearSetup: 'melee'
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID('Amulet of blood fury'),
+						boostPercent: 8
+					}
+				]
+			}
+		],
 		groupKillable: true,
 		respawnTime: 20_000,
 		levelRequirements: {
@@ -488,18 +545,19 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'mage'
 			}
 		],
-		effect: async ({ quantity, user, messages }) => {
-			if (user.bank.has('Charged ice')) return;
-			let gotIce = false;
+		effect: ({ quantity, gearBank }) => {
+			if (gearBank.bank.has('Charged ice')) return;
+			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {
-					gotIce = true;
+					loot.add('Charged ice');
 					break;
 				}
 			}
-			if (!gotIce) return;
-			await user.addItemsToBank({ items: new Bank().add('Charged ice'), collectionLog: true });
-			messages.push('You got a Charged ice for killing the Phantom Muspah in under 3 minutes!');
+			return {
+				messages: ['You got a Charged ice for killing the Phantom Muspah in under 3 minutes!'],
+				loot
+			};
 		},
 		healAmountNeeded: 150
 	},
@@ -508,13 +566,55 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.Scurrius.name,
 		aliases: Monsters.Scurrius.aliases,
 		timeToFinish: Time.Minute * 2,
+		respawnTime: 20_000,
 		table: Monsters.Scurrius,
 		notifyDrops: resolveItems(['Scurry']),
 		qpRequired: 0,
+		equippedItemBoosts: [
+			{
+				items: [
+					{ boostPercent: 15, itemID: itemID('Scythe of vitur') },
+					{ boostPercent: 12, itemID: itemID('Soulreaper axe') },
+					{ boostPercent: 5, itemID: itemID('Bone mace') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Amulet of torture') },
+					{ boostPercent: 2, itemID: itemID('Amulet of fury') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee'
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 575,
+		combatXpMultiplier: 1.2,
+		healAmountNeeded: 20
 	}
 ];
 

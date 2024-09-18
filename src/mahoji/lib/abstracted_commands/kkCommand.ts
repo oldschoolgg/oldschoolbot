@@ -31,7 +31,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -80,7 +80,7 @@ export async function kkCommand(
 			if (user.minionIsBusy) {
 				return [true, 'your minion is busy.'];
 			}
-			const [hasReqs, reason] = hasMonsterRequirements(user, KalphiteKingMonster);
+			const [hasReqs, reason] = await hasMonsterRequirements(user, KalphiteKingMonster);
 			if (!hasReqs) {
 				return [true, `you don't have the requirements for this monster; ${reason}`];
 			}
@@ -277,7 +277,7 @@ export async function kkCommand(
 	const foodRemoved: string[] = [];
 	for (const user of users) {
 		const food = await calcBossFood(user, KalphiteKingMonster, users.length, quantity);
-		if (!user.bank.has(food.bank)) {
+		if (!user.bank.has(food)) {
 			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
 	}

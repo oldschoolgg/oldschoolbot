@@ -263,6 +263,10 @@ export const tripHandlers = {
 		commandName: 'activities',
 		args: () => ({ champions_challenge: {} })
 	},
+	[activity_type_enum.MyNotes]: {
+		commandName: 'activities',
+		args: () => ({ my_notes: {} })
+	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
 		args: (data: CollectingOptions) => ({
@@ -341,7 +345,11 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
-		args: (data: FishingActivityTaskOptions) => ({ name: data.fishID, quantity: data.iQty })
+		args: (data: FishingActivityTaskOptions) => ({
+			name: data.fishID,
+			quantity: data.iQty,
+			flakes: data.flakesQuantity !== undefined
+		})
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',

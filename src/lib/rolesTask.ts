@@ -238,9 +238,9 @@ LIMIT 2;`
 	for (const { id, desc } of res.flat()) {
 		results.push({
 			userID: id,
-			roleID: '894194027363205150',
+			roleID: Roles.TopFarmer,
 			reason: desc,
-			badge: BadgesEnum.Slayer
+			badge: BadgesEnum.Farmer
 		});
 	}
 	return results;

@@ -19,9 +19,9 @@ test('Repair Bank', async () => {
 	const temp_cl = bank.clone();
 	const favoriteItems = resolveItems(['Coins', 'Coal', 'Egg', 'Trout']);
 	const expectedData: Parameters<(typeof user)['update']>['0'] = {
-		bank: bank.bank,
-		collectionLogBank: cl.bank,
-		temp_cl: temp_cl.bank,
+		bank: bank.toJSON(),
+		collectionLogBank: cl.toJSON(),
+		temp_cl: temp_cl.toJSON(),
 		favoriteItems: favoriteItems,
 		gear_fashion: gear as any as Prisma.InputJsonValue,
 		gear_melee: gear as any as Prisma.InputJsonValue,

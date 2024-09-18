@@ -4,8 +4,7 @@ import HerbDropTable from 'oldschooljs/dist/simulation/subtables/HerbDropTable';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import type { ItemBank } from '../../types';
+import { itemTupleToTable, resolveItems } from 'oldschooljs/dist/util/util';
 
 const LowTierCoffin = new LootTable()
 	.add("Monk's robe top")
@@ -58,10 +57,10 @@ const MasterTierCoffin = new LootTable()
 const GrandmasterTierCoffin = new LootTable()
 	.add('Stamina potion(4)', [2, 4])
 	.add(
-		[
+		itemTupleToTable([
 			['Super restore(4)', 3],
 			['Saradomin brew(4)', 1]
-		],
+		]),
 		[2, 6]
 	)
 	.add('Prayer potion(4)', [4, 8])
@@ -185,7 +184,7 @@ const pages = resolveItems([
 	'Mysterious page 5'
 ]);
 
-export function openCoffin(floor: number, user: MUser): ItemBank {
+export function openCoffin(floor: number, user: MUser): Bank {
 	const loot = new Bank();
 	const floorObj = sepulchreFloors[floor - 1];
 	if (roll(floorObj.lockpickCoffinChance)) {
@@ -204,5 +203,5 @@ export function openCoffin(floor: number, user: MUser): ItemBank {
 			}
 		}
 	}
-	return loot.bank;
+	return loot;
 }

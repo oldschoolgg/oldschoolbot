@@ -67,7 +67,7 @@ async function calcTOBInput(u: MUser) {
 
 	items.add(
 		getUserFoodFromBank({
-			user: u,
+			gearBank: u.gearBank,
 			totalHealingNeeded: healingNeeded,
 			favoriteFood: u.user.favorite_food,
 			minimumHealAmount: 20

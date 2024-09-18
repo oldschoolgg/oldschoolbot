@@ -707,7 +707,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		fakeDuration: res.fakeDuration,
 		maxGlory: res.maxGlory,
 		diedAt: res.diedAt ?? undefined,
-		loot: res.loot?.bank,
+		loot: res.loot?.toJSON(),
 		scytheCharges: res.scytheCharges,
 		venatorBowCharges: res.venatorBowCharges,
 		bloodFuryCharges: res.bloodFuryCharges

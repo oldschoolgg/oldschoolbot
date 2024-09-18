@@ -11,13 +11,21 @@ import type { GearStat, OffenceGearStat } from '../gear';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
 import type { LevelRequirements, SkillsEnum } from '../skilling/types';
+import type { XPBank } from '../structures/Bank';
+import type { GearBank } from '../structures/GearBank';
 import type { MUserStats } from '../structures/MUserStats';
 import type { ArrayItemsResolved, Skills } from '../types';
-import type { MonsterActivityTaskOptions } from '../types/minions';
 import type { calculateSimpleMonsterDeathChance } from '../util';
 import type { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
 import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';
+
+export type KillableMonsterEffect = (opts: {
+	gearBank: GearBank;
+	quantity: number;
+	monster: KillableMonster;
+	loot: Bank;
+}) => void | { xpBank?: XPBank; loot?: Bank; messages: string[] };
 
 export type BankBackground = {
 	image: Image | null;
@@ -114,14 +122,7 @@ export interface KillableMonster {
 	canCannon?: boolean;
 	cannonMulti?: boolean;
 	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank }) => void;
-	effect?: (opts: {
-		messages: string[];
-		user: MUser;
-		quantity: number;
-		monster: KillableMonster;
-		loot: Bank;
-		data: MonsterActivityTaskOptions;
-	}) => Promise<unknown>;
+	effect?: KillableMonsterEffect;
 	degradeableItemUsage?: {
 		required: boolean;
 		gearSetup: GearSetupType;
@@ -148,6 +149,7 @@ export interface KillableMonster {
 	customRequirement?: (user: MUser) => Promise<string | null>;
 	setupsUsed?: GearSetupType[];
 	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
+	maxQuantity?: number;
 }
 /*
  * Monsters will have an array of Consumables
@@ -185,11 +187,6 @@ export interface AddMonsterXpParams {
 	cannonMulti?: boolean;
 	burstOrBarrage?: number;
 	superiorCount?: number;
-}
-
-export interface ResolveAttackStylesParams {
-	monsterID: number | undefined;
-	boostMethod?: string[];
 }
 
 export interface BlowpipeData {

@@ -139,8 +139,8 @@ Both parties must click confirm to make the trade.`,
 				guild_id: BigInt(guildID),
 				sender: BigInt(senderUser.id),
 				recipient: BigInt(recipientUser.id),
-				items_sent: itemsSent.bank,
-				items_received: itemsReceived.bank,
+				items_sent: itemsSent.toJSON(),
+				items_received: itemsReceived.toJSON(),
 				type: 'trade'
 			}
 		});

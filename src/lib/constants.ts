@@ -13,14 +13,12 @@ import { Items } from 'oldschooljs';
 import { convertLVLtoXP, getItemOrThrow } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { customItems } from './customItems/util';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
-import resolveItems from './util/resolveItems';
-
-import '../lib/data/itemAliases';
 
 export { PerkTier };
 
@@ -79,7 +77,8 @@ export const Roles = {
 	EventOrganizer: '1149907536749801542',
 	TopTamer: '1054356709222666240',
 	TopMysterious: '1074592096968785960',
-	TopGlobalCL: '848966773885763586'
+	TopGlobalCL: '848966773885763586',
+	TopFarmer: '894194259731828786'
 };
 
 export enum DefaultPingableRoles {
@@ -545,7 +544,8 @@ export const BadgesEnum = {
 	TopMinigame: 11,
 	SotWTrophy: 12,
 	Slayer: 13,
-	TopGiveawayer: 14
+	TopGiveawayer: 14,
+	Farmer: 15
 } as const;
 
 export const badges: { [key: number]: string } = {
@@ -563,7 +563,8 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy,
 	[BadgesEnum.Slayer]: Emoji.Slayer,
-	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat
+	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat,
+	[BadgesEnum.Farmer]: Emoji.Farming
 };
 
 export const MAX_XP = 5_000_000_000;

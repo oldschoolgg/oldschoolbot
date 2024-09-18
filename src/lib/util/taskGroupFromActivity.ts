@@ -56,6 +56,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'BarbarianAssault':
 		case 'AgilityArena':
 		case 'ChampionsChallenge':
+		case 'MyNotes':
 		case 'MahoganyHomes':
 		case 'AerialFishing':
 		case 'SoulWars':

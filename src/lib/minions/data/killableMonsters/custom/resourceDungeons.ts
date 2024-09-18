@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, LootTable, Monsters } from 'oldschooljs';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID, itemTupleToTable } from 'oldschooljs/dist/util';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
@@ -201,10 +201,12 @@ const Grifolaroo: CustomMonster = {
 		.tertiary(200, 'Clue scroll (master)')
 		.tertiary(230, new LootTable().add('Grifolic gloves').add('Grifolic orb'))
 		.oneIn(64, 'Morchella mushroom spore')
-		.add([
-			['Chaos rune', [5, 60]],
-			['Death rune', [5, 60]]
-		])
+		.add(
+			itemTupleToTable([
+				['Chaos rune', [5, 60]],
+				['Death rune', [5, 60]]
+			])
+		)
 		.add(LowSeedPackTable)
 		.add(MediumSeedPackTable)
 		.add('Polypore spore', [1, 500])
@@ -264,10 +266,12 @@ const GanodermicRunt: CustomMonster = {
 		.every('Bones')
 		.tertiary(360, 'Clue scroll (grandmaster)')
 		.tertiary(230, new LootTable().add('Ganodermic gloves').add('Ganodermic boots'))
-		.add([
-			['Blood rune', [5, 60]],
-			['Death rune', [5, 60]]
-		])
+		.add(
+			itemTupleToTable([
+				['Blood rune', [5, 60]],
+				['Death rune', [5, 60]]
+			])
+		)
 		.oneIn(64, 'Morchella mushroom spore')
 		.add(HighSeedPackTable)
 		.add('Gorajian mushroom', 5)
@@ -299,10 +303,12 @@ const GanodermicBeast: CustomMonster = {
 		.tertiary(400, 'Long bone')
 		.tertiary(380, 'Clue scroll (grandmaster)')
 		.tertiary(230, new LootTable().add('Ganodermic gloves').add('Ganodermic boots').add('Polypore stick'))
-		.add([
-			['Blood rune', [5, 60]],
-			['Death rune', [5, 60]]
-		])
+		.add(
+			itemTupleToTable([
+				['Blood rune', [5, 60]],
+				['Death rune', [5, 60]]
+			])
+		)
 		.add(HighSeedPackTable)
 		.oneIn(64, 'Tombshroom spore')
 		.add('Gorajian mushroom', 12)
