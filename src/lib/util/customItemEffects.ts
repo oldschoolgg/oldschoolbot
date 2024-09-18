@@ -20,7 +20,7 @@ export const customItemEffect = new Map([
 
 export const itemEffectImageCache = new LRUCache<string, Image>({ max: 1000 });
 
-export async function applyCustomItemEffects(user: MUser | null, img: Image, item: number) {
+export async function applyCustomItemEffects(user: MUser | null, item: number) {
 	if (!user) return null;
 	const key = `${user.id}-${item}`;
 	const cached = itemEffectImageCache.get(key);
@@ -38,7 +38,10 @@ export async function applyCustomItemEffects(user: MUser | null, img: Image, ite
 
 	const effect = customItemEffect.get(item);
 	if (!effect) return null;
-	const image = await loadImage(await (await effect(img, user.id)).encode('png'));
+	const resultingImage = await bankImageGenerator.getItemImage(item);
+	const effectedImageCanvas = await effect(resultingImage, user.id);
+	const effectedImage = await effectedImageCanvas.encode('png');
+	const image = await loadImage(effectedImage);
 	itemEffectImageCache.set(key, image);
 	return image;
 }

@@ -311,7 +311,7 @@ export async function generateGearImage(
 	// Draw items
 	if (petID) {
 		const image = await bankImageGenerator.getItemImage(petID, user);
-		const imageAfterEffects = (await applyCustomItemEffects(user, image, petID)) ?? image;
+		const imageAfterEffects = (await applyCustomItemEffects(user, petID)) ?? image;
 		ctx.drawImage(
 			imageAfterEffects,
 			(transMogImage ? 200 : 0) + 178 + slotSize / 2 - image.width / 2,
@@ -349,7 +349,7 @@ export async function generateGearImage(
 			ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
 		}
 
-		const imageAfterEffects = (await applyCustomItemEffects(user, image, item.item)) ?? image;
+		const imageAfterEffects = (await applyCustomItemEffects(user, item.item)) ?? image;
 		ctx.drawImage(imageAfterEffects, x, y, image.width, image.height);
 
 		if (item.quantity > 1) {
@@ -418,7 +418,7 @@ export async function generateAllGearImage(user: MUser) {
 			const item = gear[enumName];
 			if (!item) continue;
 			const preImage = await bankImageGenerator.getItemImage(item.item, user);
-			const image = (await applyCustomItemEffects(user, preImage, item.item)) ?? preImage;
+			const image = (await applyCustomItemEffects(user, item.item)) ?? preImage;
 			let [x, y] = slotCoordinatesCompact[enumName];
 			x = x + slotSize / 2 - image.width / 2;
 			y = y + slotSize / 2 - image.height / 2;

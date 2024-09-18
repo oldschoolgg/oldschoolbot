@@ -533,7 +533,7 @@ export class BankImageTask {
 		}
 		// END GLOW
 
-		const customImage = await applyCustomItemEffects(user ?? null, drawOptions.image, itemID);
+		const customImage = await applyCustomItemEffects(user ?? null, itemID);
 
 		if (outline) {
 			ctx.filter = `drop-shadow(0px 0px 2px ${outline.outlineColor})`;
