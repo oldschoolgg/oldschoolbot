@@ -44,15 +44,18 @@ async function deleteWebhook(channelID: string) {
 
 export async function sendToChannelID(
 	channelID: string,
-	data: {
-		content?: string;
-		image?: Buffer | AttachmentBuilder;
-		embed?: EmbedBuilder;
-		files?: BaseMessageOptions['files'];
-		components?: BaseMessageOptions['components'];
-		allowedMentions?: BaseMessageOptions['allowedMentions'];
-	}
+	_data:
+		| string
+		| {
+				content?: string;
+				image?: Buffer | AttachmentBuilder;
+				embed?: EmbedBuilder;
+				files?: BaseMessageOptions['files'];
+				components?: BaseMessageOptions['components'];
+				allowedMentions?: BaseMessageOptions['allowedMentions'];
+		  }
 ) {
+	const data = typeof _data === 'string' ? { content: _data } : _data;
 	const allowedMentions = data.allowedMentions ?? {
 		parse: ['users']
 	};
