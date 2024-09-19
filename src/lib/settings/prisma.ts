@@ -3,8 +3,6 @@ import type { activity_type_enum } from '@prisma/client';
 
 import type { ActivityTaskData } from '../types/minions';
 
-export const queryCountStore = { value: 0 };
-
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {
 		...(activity.data as Prisma.JsonObject),
