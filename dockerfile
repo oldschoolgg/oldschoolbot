@@ -27,9 +27,10 @@ RUN cp src/config.example.ts src/config.ts
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
 
-CMD /wait && \
-    yarn prisma db push --schema='./prisma/robochimp.prisma' && \
-    yarn prisma db push --schema='./prisma/schema.prisma' && \
+CMD (/wait > /dev/null 2>&1) && \
+    (yarn prisma db push --schema='./prisma/robochimp.prisma' > /dev/null 2>&1 & \
+    yarn prisma db push --schema='./prisma/schema.prisma' > /dev/null 2>&1 & \
+    wait) && \
     yarn run build:esbuild && \
     yarn vitest run --config vitest.integration.config.mts && \
     exit 0
