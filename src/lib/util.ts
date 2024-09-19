@@ -614,3 +614,8 @@ export function anyoneDiedInTOARaid(data: TOAOptions) {
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
+
+export function isInSupportServer(channelID: string) {
+	const ch = globalClient.channels.cache.get(channelID);
+	return ch && 'guildId' in ch && ch.guildId === SupportServer;
+}
