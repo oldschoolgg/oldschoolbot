@@ -1,5 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma } from '@prisma/client';
+import type { Activity, GearSetupType, Prisma } from '@prisma/client';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Monsters } from 'oldschooljs';
 
@@ -8,8 +8,9 @@ import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 import { MUserClass } from '../../src/lib/MUser';
-import { completeActivity, processPendingActivities } from '../../src/lib/Task';
+import { completeActivity } from '../../src/lib/Task';
 import { type PvMMethod, globalConfig } from '../../src/lib/constants';
+import { sql } from '../../src/lib/postgres';
 import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
@@ -363,7 +364,21 @@ class TestClient {
 	}
 
 	async processActivities() {
-		await processPendingActivities();
+		const activities: Activity[] = await sql`SELECT * FROM activity WHERE completed = false;`;
+
+		if (activities.length > 0) {
+			await prisma.activity.updateMany({
+				where: {
+					id: {
+						in: activities.map(i => i.id)
+					}
+				},
+				data: {
+					completed: true
+				}
+			});
+			await Promise.all(activities.map(completeActivity));
+		}
 	}
 }
 
