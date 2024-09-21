@@ -235,12 +235,21 @@ const actions = [
 
 			let res = '';
 			for (const debug of debugs) {
-				const start = performance.now();
-				for (let i = 0; i < 1000; i++) {
+				const results = [];
+				for (let i = 0; i < 500; i++) {
+					const start = performance.now();
 					await debug.run();
+					const end = performance.now();
+					results.push(end - start);
 				}
-				const end = performance.now();
-				res += `${debug.name} took ${(end - start) / 1000}ms\n`;
+				const avg = results.reduce((a, b) => a + b, 0) / results.length;
+				const max = Math.max(...results);
+				const min = Math.min(...results);
+				const median = results.sort((a, b) => a - b)[Math.floor(results.length / 2)];
+				const obj = { avg, max, min, median };
+				res += `${debug.name} took ${Object.entries(obj)
+					.map(t => `${t[0]}: ${t[1].toFixed(2)}ms`)
+					.join(' | ')}\n`;
 			}
 
 			return res;
