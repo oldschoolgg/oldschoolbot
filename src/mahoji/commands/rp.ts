@@ -19,6 +19,7 @@ import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
+import postgres from 'postgres';
 import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -147,6 +148,7 @@ function isProtectedAccount(user: MUser) {
 	if ([BitField.isModerator].some(bf => user.bitfield.includes(bf))) return true;
 	return false;
 }
+const sql = postgres((process.env.DATABASE_URL as string).split('?')[0]);
 
 const actions = [
 	{
@@ -173,6 +175,76 @@ const actions = [
 		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
 		run: async () => {
 			return usernameSync();
+		}
+	},
+	{
+		name: 'prismadebug',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			const debugs = [
+				{
+					name: 'pgjs activity select',
+					run: async () => {
+						await sql`
+							SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;
+						`;
+					}
+				},
+				{
+					name: 'Raw Activity Select',
+					run: async () => {
+						await prisma.$queryRawUnsafe(
+							'SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;'
+						);
+					}
+				},
+				{
+					name: 'Prisma Activity Select',
+					run: async () => {
+						await prisma.activity.findMany({
+							where: {
+								completed: false,
+								finish_date: {
+									lt: new Date()
+								}
+							},
+							take: 5
+						});
+					}
+				},
+				{
+					name: 'pgjs user select',
+					run: async () => {
+						await sql`
+							SELECT * FROM users WHERE id = '157797566833098752';
+						`;
+					}
+				},
+				{
+					name: 'muserfetch',
+					run: async () => {
+						await mUserFetch('157797566833098752');
+					}
+				},
+				{
+					name: 'raw user fetch',
+					run: async () => {
+						await prisma.$queryRawUnsafe("SELECT * FROM users WHERE id = '157797566833098752';");
+					}
+				}
+			];
+
+			let res = '';
+			for (const debug of debugs) {
+				const start = performance.now();
+				for (let i = 0; i < 1000; i++) {
+					await debug.run();
+				}
+				const end = performance.now();
+				res += `${debug.name} took ${(end - start) / 1000}ms\n`;
+			}
+
+			return res;
 		}
 	}
 ];
