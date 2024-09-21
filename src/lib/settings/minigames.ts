@@ -267,14 +267,7 @@ export async function getMinigameScore(userID: string, minigame: MinigameName) {
 }
 
 export async function getMinigameEntity(userID: string): Promise<Minigame> {
-	const value = await prisma.minigame.findUnique({ where: { user_id: userID } });
-	if (!value) {
-		return prisma.minigame.create({
-			data: {
-				user_id: userID
-			}
-		});
-	}
+	const value = await prisma.minigame.upsert({ where: { user_id: userID }, create: { user_id: userID }, update: {} });
 	return value;
 }
 
