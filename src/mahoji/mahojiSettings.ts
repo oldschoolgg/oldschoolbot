@@ -79,16 +79,25 @@ export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
 	selectKeys: T
 ): Promise<SelectedUserStats<T>> {
 	const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
-	const result = await prisma.userStats.upsert({
+	let result = await prisma.userStats.findFirst({
 		where: {
 			user_id: BigInt(userID)
 		},
-		create: {
-			user_id: BigInt(userID)
-		},
-		update: {},
 		select: keysToSelect
 	});
+
+	if (!result) {
+		result = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(userID)
+			},
+			create: {
+				user_id: BigInt(userID)
+			},
+			update: {},
+			select: keysToSelect
+		});
+	}
 
 	return result as unknown as SelectedUserStats<T>;
 }
@@ -103,16 +112,6 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 	if (!selectKeys || Object.keys(selectKeys).length === 0) {
 		keys = { user_id: true };
 	}
-	await prisma.userStats.upsert({
-		create: {
-			user_id: id
-		},
-		update: {},
-		where: {
-			user_id: id
-		},
-		select: keys
-	});
 
 	return (await prisma.userStats.update({
 		data,

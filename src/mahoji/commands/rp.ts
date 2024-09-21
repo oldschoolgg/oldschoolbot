@@ -19,7 +19,7 @@ import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
-import postgres from 'postgres';
+import { sql } from '../../lib/postgres';
 import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -148,7 +148,6 @@ function isProtectedAccount(user: MUser) {
 	if ([BitField.isModerator].some(bf => user.bitfield.includes(bf))) return true;
 	return false;
 }
-const sql = postgres((process.env.DATABASE_URL as string).split('?')[0]);
 
 const actions = [
 	{
