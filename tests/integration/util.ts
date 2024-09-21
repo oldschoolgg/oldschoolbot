@@ -124,6 +124,7 @@ export class TestUser extends MUserClass {
 		await global.prisma!.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
 		await global.prisma!.user.delete({ where: { id: this.id } });
 		const user = await global.prisma!.user.create({ data: { id: this.id } });
+		await global.prisma!.userStats.create({ data: { user_id: BigInt(this.id) } });
 		this.user = user;
 	}
 
@@ -316,8 +317,12 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 	});
 
 	try {
-		await global.prisma!.userStats.create({
-			data: {
+		await global.prisma!.userStats.upsert({
+			create: {
+				user_id: BigInt(user.id)
+			},
+			update: {},
+			where: {
 				user_id: BigInt(user.id)
 			}
 		});
