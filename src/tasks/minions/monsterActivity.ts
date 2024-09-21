@@ -421,7 +421,7 @@ export function doMonsterTrip(data: newOptions) {
 			if (ashSanctifierResult) {
 				for (const ash of ashSanctifierResult.ashesSanctified) {
 					updateBank.itemLootBank.remove(itemID(ash.name), ash.amount);
-				}				
+				}
 				updateBank.merge(ashSanctifierResult.updateBank);
 				messages.push(ashSanctifierResult.message);
 			}
