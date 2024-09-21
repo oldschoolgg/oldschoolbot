@@ -19,6 +19,7 @@ import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
+import { writeHeapSnapshot } from 'node:v8';
 import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -173,6 +174,14 @@ const actions = [
 		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
 		run: async () => {
 			return usernameSync();
+		}
+	},
+	{
+		name: 'heap_dump',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			writeHeapSnapshot();
+			return 'done';
 		}
 	}
 ];
