@@ -39,6 +39,7 @@ import {
 	generateXPLevelQuestion,
 	getUsername,
 	isGroupActivity,
+	isInSupportServer,
 	isNexActivity,
 	isRaidsActivity,
 	isTOBOrTOAActivity,
@@ -362,6 +363,9 @@ export function spawnLampIsReady(user: MUser, channelID: string): [true] | [fals
 	return [true];
 }
 async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
+	if (!isInSupportServer(channelID)) {
+		return 'You can only use this command in the support server.';
+	}
 	const isAdmin = OWNER_IDS.includes(user.id) || ADMIN_IDS.includes(user.id);
 	const [lampIsReady, reason] = isAdmin ? [true, ''] : spawnLampIsReady(user, channelID);
 	if (!lampIsReady && reason) return reason;

@@ -12,13 +12,6 @@ export default defineConfig({
 		},
 		testTimeout: 30_000,
 		bail: 1,
-		pool: 'forks',
-		maxConcurrency: 5,
-		poolOptions: {
-			forks: {
-				maxForks: 10,
-				minForks: 10
-			}
-		}
+		maxConcurrency: 10
 	}
 });

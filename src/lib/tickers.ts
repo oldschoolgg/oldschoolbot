@@ -12,7 +12,6 @@ import { processPendingActivities } from './Task';
 import { BitField, Channel, PeakTier, informationalButtons } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
-import { queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
@@ -82,12 +81,9 @@ export const tickers: {
 		timer: null,
 		interval: Time.Minute,
 		cb: async () => {
-			const storedCount = queryCountStore.value;
-			queryCountStore.value = 0;
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
-				...(await collectMetrics()),
-				qps: storedCount / 60
+				...(await collectMetrics())
 			};
 			if (Number.isNaN(data.eventLoopDelayMean)) {
 				data.eventLoopDelayMean = 0;
