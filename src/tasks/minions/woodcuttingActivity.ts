@@ -152,18 +152,22 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 		})
 		.filter(Boolean)
 		.join(' & ');
-	strForestry += `${totalEvents > 0 ? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n` : ''
-		}`;
-	strForestry += `${loot.has('Sturdy beehive parts') && !user.cl.has('Sturdy beehive parts') // only show this message once to reduce spam
-		? '- The temporary beehive was made so well you could repurpose parts of it to build a permanent hive.\n'
-		: ''
-		}`;
-	strForestry += `${loot.has('Golden pheasant egg')
-		? '- You feel a connection to the pheasants as if one wishes to travel with you...\n'
-		: ''
-		}`;
-	strForestry += `${loot.has('Fox whistle') ? '- You feel a connection to the fox as if it wishes to travel with you...\n' : ''
-		}`;
+	strForestry += `${
+		totalEvents > 0 ? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n` : ''
+	}`;
+	strForestry += `${
+		loot.has('Sturdy beehive parts') && !user.cl.has('Sturdy beehive parts') // only show this message once to reduce spam
+			? '- The temporary beehive was made so well you could repurpose parts of it to build a permanent hive.\n'
+			: ''
+	}`;
+	strForestry += `${
+		loot.has('Golden pheasant egg')
+			? '- You feel a connection to the pheasants as if one wishes to travel with you...\n'
+			: ''
+	}`;
+	strForestry += `${
+		loot.has('Fox whistle') ? '- You feel a connection to the fox as if it wishes to travel with you...\n' : ''
+	}`;
 	strForestry += `${loot.has('Petal garland') ? '- The Dryad also hands you a Petal garland.\n' : ''}`;
 
 	return strForestry;
@@ -285,13 +289,15 @@ export const woodcuttingTask: MinionTask = {
 		}
 
 		// End of trip message
-		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}${bonusXP > 0 ? ` **Bonus XP:** ${bonusXP.toLocaleString()}` : ''
-			}\n`;
+		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}${
+			bonusXP > 0 ? ` **Bonus XP:** ${bonusXP.toLocaleString()}` : ''
+		}\n`;
 
 		if (!log.clueNestsOnly) {
 			if (wcCapeNestBoost) {
-				str += `Your ${user.hasEquipped('Woodcutting cape') ? 'Woodcutting cape' : 'Forestry basket'
-					} increases the chance of receiving bird nests.\n`;
+				str += `Your ${
+					user.hasEquipped('Woodcutting cape') ? 'Woodcutting cape' : 'Forestry basket'
+				} increases the chance of receiving bird nests.\n`;
 			}
 			if (strungRabbitFoot) {
 				str +=
@@ -317,7 +323,8 @@ export const woodcuttingTask: MinionTask = {
 				str += "\n**You have a funny feeling you're being followed...**";
 				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${user.minionName
+					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
+						user.minionName
 					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
 						'woodcutting'
 					)} Woodcutting!`
@@ -328,11 +335,13 @@ export const woodcuttingTask: MinionTask = {
 		// Loot received, items used, and logs/loot rolls lost message
 		str += `\nYou received ${loot}. `;
 		str += `${itemsToRemove.length > 0 ? `You used ${itemsToRemove}. ` : ''}`;
-		str += `${lostLogs > 0 && !powerchopping
-			? `You lost ${log.lootTable ? `${lostLogs}x ${log.name} loot rolls` : `${lostLogs}x ${log.name}`
-			} due to using a felling axe.`
-			: ''
-			}`;
+		str += `${
+			lostLogs > 0 && !powerchopping
+				? `You lost ${
+						log.lootTable ? `${lostLogs}x ${log.name} loot rolls` : `${lostLogs}x ${log.name}`
+					} due to using a felling axe.`
+				: ''
+		}`;
 
 		// Update cl, give loot, and remove items used
 		await transactItems({

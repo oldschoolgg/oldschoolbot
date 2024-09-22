@@ -119,9 +119,11 @@ export const agilityTask: MinionTask = {
 			updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
-		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name
-			} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
-			}.\n${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${quantity} ${
+			course.name
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
+			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
+		}.\n${xpRes}`;
 
 		if (course.id === 6) {
 			const currentLapCount = (newLapScores as ItemBank)[course.id];
