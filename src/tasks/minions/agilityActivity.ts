@@ -90,8 +90,8 @@ export const agilityTask: MinionTask = {
 
 		// Calculate Crystal Shards for Priff
 		if (course.name === 'Prifddinas Rooftop Course') {
-			// 15 Shards per hour
-			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+			// 1 shard per lap
+			loot.add('Crystal shard', quantity);
 		}
 
 		if (course.name === 'Agility Pyramid') {
@@ -119,11 +119,9 @@ export const agilityTask: MinionTask = {
 			updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
-		let str = `${user}, ${user.minionName} finished ${quantity} ${
-			course.name
-		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
-			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
-		}.\n${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name
+			} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
+			}.\n${xpRes}`;
 
 		if (course.id === 6) {
 			const currentLapCount = (newLapScores as ItemBank)[course.id];
