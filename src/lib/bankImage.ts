@@ -1,8 +1,6 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import type { SKRSContext2D } from '@napi-rs/canvas';
-import { Canvas, GlobalFonts, Image, loadImage } from '@napi-rs/canvas';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
@@ -21,7 +19,17 @@ import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import type { BankSortMethod } from '../lib/sorts';
 import { BankSortMethods, sorts } from '../lib/sorts';
 import type { ItemBank } from '../lib/types';
-import { fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
+import {
+	type Canvas,
+	type CanvasContext,
+	CanvasImage,
+	canvasToBuffer,
+	createCanvas,
+	fillTextXTimesInCtx,
+	getClippedRegionImage,
+	loadImage,
+	registerFont
+} from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
@@ -37,7 +45,7 @@ const fonts = {
 } as const;
 
 for (const [key, val] of Object.entries(fonts)) {
-	GlobalFonts.registerFromPath(val, key);
+	registerFont(key, val);
 }
 
 interface BankImageResult {
@@ -62,12 +70,12 @@ const { floor, ceil } = Math;
 type BGSpriteName = 'dark' | 'default' | 'transparent';
 export interface IBgSprite {
 	name: BGSpriteName;
-	border: Image;
-	borderCorner: Image;
-	borderTitle: Image;
-	repeatableBg: Image;
-	tabBorderInactive: Image;
-	tabBorderActive: Image;
+	border: CanvasImage;
+	borderCorner: CanvasImage;
+	borderTitle: CanvasImage;
+	repeatableBg: CanvasImage;
+	tabBorderInactive: CanvasImage;
+	tabBorderActive: CanvasImage;
 	oddListColor: string;
 }
 
@@ -241,7 +249,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[27_693, 'VM Pack']
 ]);
 
-function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
+function drawTitle(ctx: CanvasContext, title: string, canvas: Canvas) {
 	// Draw Bank Title
 	ctx.font = '16px RuneScape Bold 12';
 	const titleWidthPx = ctx.measureText(title);
@@ -268,15 +276,15 @@ export type BankFlag = (typeof bankFlags)[number];
 
 export class BankImageTask {
 	public itemIconsList: Set<number>;
-	public itemIconImagesCache: Map<number, Image>;
+	public itemIconImagesCache: Map<number, CanvasImage>;
 	public backgroundImages: BankBackground[] = [];
-	public alternateImages: { id: number; bgId: number; image: Image }[] = [];
+	public alternateImages: { id: number; bgId: number; image: CanvasImage }[] = [];
 
-	public _bgSpriteData: Image = new Image();
+	public _bgSpriteData: CanvasImage = new CanvasImage();
 	public bgSpriteList: Record<string, IBgSprite> = {};
-	public treeImage!: Image;
+	public treeImage!: CanvasImage;
 	public ready!: Promise<void>;
-	public spriteSheetImage!: Image;
+	public spriteSheetImage!: CanvasImage;
 	public spriteSheetData!: Record<string, [number, number, number, number]>;
 
 	public constructor() {
@@ -380,7 +388,7 @@ export class BankImageTask {
 				for (const fileName of filesInThisDir) {
 					const themedItemID = Number.parseInt(path.parse(fileName).name);
 					const image = await loadImage(
-						`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`
+						await fs.readFile(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`)
 					);
 					pack.icons.set(themedItemID, image);
 				}
@@ -388,7 +396,7 @@ export class BankImageTask {
 		}
 	}
 
-	async getItemImage(itemID: number, user?: MUser): Promise<Image> {
+	async getItemImage(itemID: number, user?: MUser): Promise<CanvasImage> {
 		if (user && user.user.icon_pack_id !== null) {
 			for (const pack of ItemIconPacks) {
 				if (pack.id === user.user.icon_pack_id) {
@@ -425,7 +433,7 @@ export class BankImageTask {
 		outline
 	}: {
 		itemID: number;
-		ctx: SKRSContext2D;
+		ctx: CanvasContext;
 		x: number;
 		y: number;
 		outline?: { outlineColor: string; alpha: number };
@@ -491,7 +499,7 @@ export class BankImageTask {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	drawBorder(ctx: SKRSContext2D, sprite: IBgSprite, titleLine = true) {
+	drawBorder(ctx: CanvasContext, sprite: IBgSprite, titleLine = true) {
 		// Top border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
@@ -584,7 +592,7 @@ export class BankImageTask {
 	}
 
 	async drawItems(
-		ctx: SKRSContext2D,
+		ctx: CanvasContext,
 		compact: boolean,
 		spacer: number,
 		itemsPerRow: number,
@@ -798,7 +806,7 @@ export class BankImageTask {
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 
-		const canvas = new Canvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
+		const canvas = createCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
 		let resizeBg = -1;
 		if (!wide && !useSmallBank && !isTransparent && actualBackground && canvasHeight > 331) {
@@ -857,7 +865,7 @@ export class BankImageTask {
 			user
 		);
 
-		const image = await canvas.encode('png');
+		const image = await canvasToBuffer(canvas);
 
 		return {
 			image,
@@ -874,7 +882,7 @@ const chestLootTypes = [
 		width: 240,
 		height: 220,
 		purpleItems: toaPurpleItems,
-		position: (canvas: Canvas, image: Image) => [
+		position: (canvas: Canvas, image: CanvasImage) => [
 			canvas.width - image.width + 25,
 			44 + canvas.height / 4 - image.height / 2
 		],
@@ -887,7 +895,7 @@ const chestLootTypes = [
 		width: 260,
 		height: 180,
 		purpleItems: TOBUniques,
-		position: (canvas: Canvas, image: Image) => [
+		position: (canvas: Canvas, image: CanvasImage) => [
 			canvas.width - image.width,
 			55 + canvas.height / 4 - image.height / 2
 		],
@@ -943,7 +951,7 @@ export async function drawChestLootImage(options: {
 	let anyoneGotPurple = false;
 
 	for (const { previousCL, loot, user, customTexts } of options.entries) {
-		const canvas = new Canvas(type.width, type.height);
+		const canvas = createCanvas(type.width, type.height);
 		const ctx = canvas.getContext('2d');
 
 		const { sprite } = bankImageGenerator.getBgAndSprite();
@@ -963,7 +971,7 @@ export async function drawChestLootImage(options: {
 		const xOffset = 10;
 		const yOffset = 45;
 		const [iX, iY, iW, iH] = type.itemRect;
-		const itemCanvas = new Canvas(iW + xOffset, iH + yOffset);
+		const itemCanvas = createCanvas(iW + xOffset, iH + yOffset);
 
 		await bankImageGenerator.drawItems(
 			itemCanvas.getContext('2d'),
@@ -993,12 +1001,12 @@ export async function drawChestLootImage(options: {
 	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}toaloot-${randInt(1, 1000)}.png`;
 
 	if (canvases.length === 1) {
-		return new AttachmentBuilder(await canvases[0].encode('png'), {
+		return new AttachmentBuilder(await canvasToBuffer(canvases[0]), {
 			name: fileName
 		});
 	}
 	const spaceBetweenImages = 15;
-	const combinedCanvas = new Canvas(
+	const combinedCanvas = createCanvas(
 		canvases[0].width * canvases.length + spaceBetweenImages * canvases.length,
 		canvases[0].height
 	);
@@ -1007,7 +1015,7 @@ export async function drawChestLootImage(options: {
 		const index = canvases.indexOf(c);
 		combinedCtx.drawImage(c, index * c.width + spaceBetweenImages * index, 0);
 	}
-	return new AttachmentBuilder(await combinedCanvas.encode('png'), {
+	return new AttachmentBuilder(await canvasToBuffer(combinedCanvas), {
 		name: fileName
 	});
 }

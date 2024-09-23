@@ -3,12 +3,12 @@ import '../../src/lib/globals';
 import '../../src/lib/util/transactItemsFromBank';
 import './mocks';
 
-import { Image } from '@napi-rs/canvas';
 import { beforeEach, vi } from 'vitest';
 
 import { PrismaClient } from '@prisma/client';
 import { noOp } from 'e';
 import { BankImageTask, bankImageTask } from '../../src/lib/bankImage';
+import { CanvasImage } from '../../src/lib/util/canvasUtil';
 
 if (!roboChimpClient) {
 	throw new Error('Robochimp client not found.');
@@ -52,8 +52,8 @@ const mockBankImageTask = {
 	init: vi.fn(),
 	run: vi.fn(),
 	generateBankImage: vi.fn().mockReturnValue(Promise.resolve({ image: Buffer.from(''), isTransparent: false })),
-	getItemImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
-	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
+	getItemImage: vi.fn().mockReturnValue(Promise.resolve(new CanvasImage())),
+	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new CanvasImage())),
 	backgroundImages: []
 };
 
