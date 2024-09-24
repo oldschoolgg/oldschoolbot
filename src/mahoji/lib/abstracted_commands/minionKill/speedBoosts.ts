@@ -65,6 +65,11 @@ export type CombatMethodOptions = Pick<
 	| 'isInWilderness'
 >;
 
+interface BoostedItem {
+	item: Item;
+	boost: number;
+}
+
 export type BoostResult = {
 	percentageIncrease?: number;
 	percentageReduction?: number;
@@ -392,14 +397,17 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 	{
 		description: 'Degradeable Items',
 		run: ({ isInWilderness, gearBank, monster, primaryStyle, osjsMon, addPostBoostEffect }) => {
-			const degItemBeingUsed: Item[] = [];
+			const degItemBeingUsed: BoostedItem[] = [];
 			if (monster.degradeableItemUsage) {
 				for (const set of monster.degradeableItemUsage) {
 					const equippedInThisSet = set.items.find(item =>
 						gearBank.gear[set.gearSetup].hasEquipped(item.itemID)
 					);
 					if (equippedInThisSet) {
-						degItemBeingUsed.push(getOSItem(equippedInThisSet.itemID));
+						degItemBeingUsed.push({
+							item: getOSItem(equippedInThisSet.itemID),
+							boost: equippedInThisSet.boostPercent
+						});
 					}
 				}
 			} else {
@@ -409,7 +417,10 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 						degItem.item.id
 					);
 					if (isUsing && gearCheck) {
-						degItemBeingUsed.push(degItem.item);
+						degItemBeingUsed.push({
+							item: degItem.item,
+							boost: degItem.boost
+						});
 					}
 				}
 			}
@@ -418,9 +429,10 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				description: 'Degradeable Items',
 				run: ({ quantity, duration }) => {
 					const charges = new ChargeBank();
+					const results: BoostResult[] = [];
 					for (const rawItem of degItemBeingUsed) {
-						const degItem = degradeablePvmBoostItems.find(i => i.item.id === rawItem.id);
-						if (!degItem) throw new Error(`Missing degradeable item for ${rawItem.name}`);
+						const degItem = degradeablePvmBoostItems.find(i => i.item.id === rawItem.item.id);
+						if (!degItem) throw new Error(`Missing degradeable item for ${rawItem.item}`);
 						const chargesNeeded = Math.ceil(
 							degItem.charges({
 								killableMon: monster,
@@ -430,17 +442,19 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 								gearBank
 							})
 						);
-						const actualDegItem = degradeableItems.find(i => i.item.id === degItem.item.id);
-						if (!actualDegItem) throw new Error(`Missing actual degradeable item for ${rawItem.name}`);
-						charges.add(actualDegItem.settingsKey, chargesNeeded);
-					}
+						const actualItem = degradeableItems.find(i => i.item.id === rawItem.item.id);
+						if (!actualItem) throw new Error(`Missing actual degradeable item for ${rawItem.item.name}`);
+						charges.add(actualItem.settingsKey, chargesNeeded);
 
-					return {
-						charges
-					};
+						results.push({
+							percentageReduction: rawItem.boost,
+							message: `${rawItem.boost}% for ${rawItem.item.name}`,
+							charges
+						});
+					}
+					return results;
 				}
 			});
-
 			return null;
 		}
 	},
