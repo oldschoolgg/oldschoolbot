@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { Stopwatch, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { type Prisma, UserEventType, xp_gains_skill_enum } from '@prisma/client';
@@ -19,6 +19,7 @@ import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
+import { sql } from '../../lib/postgres';
 import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -173,6 +174,96 @@ const actions = [
 		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
 		run: async () => {
 			return usernameSync();
+		}
+	},
+	{
+		name: 'force_garbage_collection',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			const timer = new Stopwatch();
+			for (let i = 0; i < 3; i++) {
+				gc!();
+			}
+			return `Garbage collection took ${timer.stop()}`;
+		}
+	},
+	{
+		name: 'prismadebug',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			const debugs = [
+				{
+					name: 'pgjs activity select',
+					run: async () => {
+						await sql`
+							SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;
+						`;
+					}
+				},
+				{
+					name: 'Raw Activity Select',
+					run: async () => {
+						await prisma.$queryRawUnsafe(
+							'SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;'
+						);
+					}
+				},
+				{
+					name: 'Prisma Activity Select',
+					run: async () => {
+						await prisma.activity.findMany({
+							where: {
+								completed: false,
+								finish_date: {
+									lt: new Date()
+								}
+							},
+							take: 5
+						});
+					}
+				},
+				{
+					name: 'pgjs user select',
+					run: async () => {
+						await sql`
+							SELECT * FROM users WHERE id = '157797566833098752';
+						`;
+					}
+				},
+				{
+					name: 'muserfetch',
+					run: async () => {
+						await mUserFetch('157797566833098752');
+					}
+				},
+				{
+					name: 'raw user fetch',
+					run: async () => {
+						await prisma.$queryRawUnsafe("SELECT * FROM users WHERE id = '157797566833098752';");
+					}
+				}
+			];
+
+			let res = '';
+			for (const debug of debugs) {
+				const results = [];
+				for (let i = 0; i < 500; i++) {
+					const start = performance.now();
+					await debug.run();
+					const end = performance.now();
+					results.push(end - start);
+				}
+				const avg = results.reduce((a, b) => a + b, 0) / results.length;
+				const max = Math.max(...results);
+				const min = Math.min(...results);
+				const median = results.sort((a, b) => a - b)[Math.floor(results.length / 2)];
+				const obj = { avg, max, min, median };
+				res += `${debug.name} took ${Object.entries(obj)
+					.map(t => `${t[0]}: ${t[1].toFixed(2)}ms`)
+					.join(' | ')}\n`;
+			}
+
+			return res;
 		}
 	}
 ];

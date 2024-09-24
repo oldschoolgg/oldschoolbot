@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { PHOSANI_NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
@@ -12,7 +12,6 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from '../types/minions';
-import { anyoneDiedInTOARaid } from '../util';
 import { isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
@@ -738,13 +737,9 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Tombs of Amascut at raid level 500 or above without anyone dying.',
 		type: 'mechanical',
 		monster: 'Tombs of Amascut: Expert Mode',
-		rng: {
-			chancePerKill: 1,
-			hasChance: data =>
-				data.type === 'TombsOfAmascut' &&
-				(data as TOAOptions).raidLevel >= 500 &&
-				!anyoneDiedInTOARaid(data as TOAOptions)
-		}
+		requirements: new Requirements().add({
+			clRequirement: new Bank().add('Cursed phalanx', 1)
+		})
 	},
 	{
 		id: 3060,

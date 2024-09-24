@@ -5,7 +5,7 @@ import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
-import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
+import { roboChimpUserFetch } from '../../../lib/roboChimp';
 
 import { makeComponents } from '../../../lib/util';
 import {
@@ -64,7 +64,6 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		isUsersDailyReady(user)
 	]);
 
-	await roboChimpSyncData(user);
 	if (user.user.cached_networth_value === null || roll(100)) {
 		await user.update({
 			cached_networth_value: (await user.calculateNetWorth()).value
