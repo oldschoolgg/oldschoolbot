@@ -47,8 +47,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: 'Raids'
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).users.length >= 5 &&
+					!(data as RaidsOptions).isFakeMass &&
+					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).isFakeMass &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -70,8 +78,12 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			chancePerKill: 1,
+			hasChance: data =>
+				data.type === 'Raids' &&
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass &&
+				data.duration < Time.Minute * 17 * (data.quantity ?? 1)
 		}
 	},
 	{
@@ -81,8 +93,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: 'Raids'
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).users.length >= 3 &&
+					!(data as RaidsOptions).isFakeMass &&
+					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).isFakeMass &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -92,11 +112,13 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
+			chancePerKill: 1,
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass &&
+				data.duration < Time.Minute * 38.5 * (data.quantity ?? 1)
 		}
 	},
 	{
@@ -118,8 +140,18 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).users.length >= 3 &&
+					!(data as RaidsOptions).isFakeMass &&
+					data.duration < Time.Minute * 27 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).isFakeMass &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					data.duration < Time.Minute * 27 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -129,8 +161,18 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).users.length >= 5 &&
+					!(data as RaidsOptions).isFakeMass &&
+					data.duration < Time.Minute * 25 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).isFakeMass &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					data.duration < Time.Minute * 25 * (data.quantity ?? 1))
 		}
 	},
 	{
