@@ -261,7 +261,9 @@ export const woodcuttingTask: MinionTask = {
 		// Add crystal shards for chopping teaks/mahogany in priff
 		if (forestry && priffUnlocked && resolveItems(['Teak logs', 'Mahogany logs']).includes(log.id)) {
 			// 1/40 chance of receiving a crystal shard
-			loot.add('Crystal shard', Math.round(quantity / 40));
+			for (let i = 0; i < quantity; i++) {
+				if (roll(40)) loot.add()
+			}
 		}
 
 		// Check for twitcher gloves
