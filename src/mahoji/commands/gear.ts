@@ -1,4 +1,3 @@
-import { Canvas, loadImage } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -11,6 +10,7 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { itemNameFromID } from '../../lib/util';
+import { canvasToBuffer, createCanvas, loadImage } from '../../lib/util/canvasUtil';
 import { findBestGearSetups } from '../../lib/util/findBISGear';
 import {
 	gearEquipCommand,
@@ -213,7 +213,7 @@ export const gearCommand: OSBMahojiCommand = {
 
 		if (options.best_in_slot?.stat) {
 			const res = findBestGearSetups(options.best_in_slot.stat);
-			const totalCanvas = new Canvas(5 * 175, 240);
+			const totalCanvas = createCanvas(5 * 175, 240);
 			const ctx = totalCanvas.getContext('2d');
 			for (let i = 0; i < 5; i++) {
 				const gearImage = await generateGearImage(user, res[i], 'melee', null, `${i + 1}`);
@@ -231,7 +231,7 @@ ${res
 			}`
 	)
 	.join('\n')}`,
-				files: [await totalCanvas.encode('png')]
+				files: [await canvasToBuffer(totalCanvas)]
 			};
 		}
 		if ((options.equip || options.unequip) && !gearValidationChecks.has(userID)) {

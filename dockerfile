@@ -7,7 +7,9 @@ RUN apt-get update && apt-get install -y \
     python3 \
     g++ \
     make \
+    fontconfig \
     git \
+    libfontconfig1 \
     curl \
     libjemalloc-dev
 
