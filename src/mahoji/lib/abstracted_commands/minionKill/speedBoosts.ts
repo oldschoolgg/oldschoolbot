@@ -442,10 +442,10 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 								gearBank
 							})
 						);
-						const actualItem = degradeableItems.find(i => i.item.id === rawItem.item.id);
-						if (!actualItem) throw new Error(`Missing actual degradeable item for ${rawItem.item.name}`);
-						charges.add(actualItem.settingsKey, chargesNeeded);
-
+						const actualDegItem = degradeableItems.find(i => i.item.id === degItem.item.id);
+						if (!actualDegItem) throw new Error(`Missing actual degradeable item for ${rawItem.item.name}`);
+						charges.add(actualDegItem.settingsKey, chargesNeeded);
+						
 						results.push({
 							percentageReduction: rawItem.boost,
 							message: `${rawItem.boost}% for ${rawItem.item.name}`,
