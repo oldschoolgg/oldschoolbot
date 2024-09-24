@@ -262,7 +262,7 @@ export const woodcuttingTask: MinionTask = {
 		if (forestry && priffUnlocked && resolveItems(['Teak logs', 'Mahogany logs']).includes(log.id)) {
 			// 1/40 chance of receiving a crystal shard
 			for (let i = 0; i < quantity; i++) {
-				if (roll(40)) loot.add()
+				if (roll(40)) loot.add('Crystal shard', 1);
 			}
 		}
 
