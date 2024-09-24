@@ -115,7 +115,7 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 	return input;
 }
 
-export async function leaguesCheckUser(userID: string) {
+export async function leaguesCheckUser(userID: string, minion_stats: boolean) {
 	const mahojiUser = await mUserFetch(userID);
 	const roboChimpUser = await mahojiUser.fetchRobochimpUser();
 	const [
@@ -224,7 +224,9 @@ export async function leaguesCheckUser(userID: string) {
 		let finished = 0;
 		totalTasks += tasks.length;
 		for (const task of tasks) {
-			const has = await task.has(args);
+			const has = minion_stats
+				? await task.has(args)
+				: roboChimpUser.leagues_completed_tasks_ids.includes(task.id);
 			if (has) {
 				finishedIDs.push(task.id);
 				finished++;
@@ -243,7 +245,7 @@ export async function leaguesCheckUser(userID: string) {
 **Total Points:** ${roboChimpUser.leagues_points_total.toLocaleString()} (Rank ${ranking.pointsRanking})
 **Points Balance:** ${roboChimpUser.leagues_points_balance_osb.toLocaleString()} OSB / ${roboChimpUser.leagues_points_balance_bso.toLocaleString()} BSO
 ${resStr}`,
-		finished: [...finishedIDs, ...roboChimpUser.leagues_completed_tasks_ids]
+		finished: [...finishedIDs, ...(minion_stats ? [] : roboChimpUser.leagues_completed_tasks_ids)]
 	};
 }
 
