@@ -156,7 +156,7 @@ const tripHandlers = {
 	},
 	[activity_type_enum.AgilityArena]: {
 		commandName: 'minigames',
-		args: () => ({ agility_arena: { start: {} } })
+		args: (data: ActivityTaskOptionsWithQuantity) => ({ agility_arena: { start: { quantity: data.quantity } } })
 	},
 	[activity_type_enum.Alching]: {
 		commandName: 'activities',
