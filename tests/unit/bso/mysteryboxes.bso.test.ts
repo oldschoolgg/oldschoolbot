@@ -1,7 +1,7 @@
 import { itemID, resolveItems } from 'oldschooljs/dist/util';
 import { expect, test } from 'vitest';
 
-import { PMBTable, allMbTables, embTable, tmbTable, umbTable } from '../../../src/lib/bsoOpenables';
+import { PMBTable, combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '../../../src/lib/bsoOpenables';
 import { toaCL } from '../../../src/lib/data/CollectionsExport';
 import { growablePets } from '../../../src/lib/growablePets';
 import { itemNameFromID } from '../../../src/lib/util';
@@ -41,7 +41,7 @@ test("Items that shouldn't be dropped in mystery boxes", () => {
 		...toaCL
 	]);
 	for (const i of shouldntBeIn) {
-		if (allMbTables.includes(i)) {
+		if (combinedTmbUmbEmbTables.includes(i)) {
 			throw new Error(`${itemNameFromID(i)} is in the mystery box tables, but it shouldn't be.`);
 		}
 	}
@@ -91,25 +91,25 @@ test('exclude certain openables from mystery boxes', () => {
 		'Trailblazer reloaded bronze trophy'
 	]);
 	for (const i of shouldntBeIn) {
-		if (allMbTables.includes(i)) {
+		if (combinedTmbUmbEmbTables.includes(i)) {
 			console.error('wtf');
 			throw new Error(`Item ${itemNameFromID(i)} shouldn't be in Mystery Boxes, but is.`);
 		}
 	}
 	for (const i of shouldBeIn) {
-		if (!allMbTables.includes(i)) {
+		if (!combinedTmbUmbEmbTables.includes(i)) {
 			console.error('wtf');
 			throw new Error(`Item ${itemNameFromID(i)} should be in Mystery Boxes, but isn't.`);
 		}
 	}
-	expect(shouldBeIn.every(ss => allMbTables.includes(ss))).toEqual(true);
-	expect(shouldntBeIn.some(ss => allMbTables.includes(ss))).toEqual(false);
+	expect(shouldBeIn.every(ss => combinedTmbUmbEmbTables.includes(ss))).toEqual(true);
+	expect(shouldntBeIn.some(ss => combinedTmbUmbEmbTables.includes(ss))).toEqual(false);
 });
 
 test('Growable pets cant come from mystery boxes', () => {
 	const allGrowablePets = growablePets.flatMap(p => p.stages);
 	expect(allGrowablePets.every(growablePet => !PMBTable.allItems.includes(growablePet))).toEqual(true);
-	expect(allGrowablePets.every(growablePet => !allMbTables.includes(growablePet))).toEqual(true);
+	expect(allGrowablePets.every(growablePet => !combinedTmbUmbEmbTables.includes(growablePet))).toEqual(true);
 });
 
 test('CMB should not be in any boxes', () => {

@@ -1,10 +1,9 @@
 import fs from 'node:fs/promises';
-import { Canvas, type Image, loadImage } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt, roll } from 'e';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { printWrappedText } from './util/canvasUtil';
+import { type CanvasImage, canvasToBuffer, createCanvas, loadImage, printWrappedText } from './util/canvasUtil';
 import { textBoxFile } from './util/chatHeadImage';
 import getOSItem from './util/getOSItem';
 
@@ -12,7 +11,7 @@ interface MonkeyTier {
 	id: number;
 	name: string;
 	greegrees: Item[];
-	image: Promise<Image>;
+	image: Promise<CanvasImage>;
 	strengthLevelReq: number;
 	gamesReq: number;
 }
@@ -181,7 +180,7 @@ export const specialHeads: [Promise<Buffer>, number][] = [1234, 1467, 3542].map(
 ]);
 
 export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; content: string }) {
-	const canvas = new Canvas(519, 142);
+	const canvas = createCanvas(519, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	const bg = await textBoxFile;
@@ -195,7 +194,7 @@ export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; con
 	ctx.fillStyle = '#000';
 	printWrappedText(ctx, content, 316, 58, 361);
 
-	return canvas.encode('png');
+	return canvasToBuffer(canvas);
 }
 
 export interface Monkey {

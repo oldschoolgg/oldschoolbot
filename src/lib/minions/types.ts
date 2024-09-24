@@ -1,4 +1,3 @@
-import type { Image } from '@napi-rs/canvas';
 import type { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
 import type { GearSetupType, XpGainSource } from '@prisma/client';
 import type { Bank, MonsterKillOptions } from 'oldschooljs';
@@ -16,6 +15,7 @@ import type { GearBank } from '../structures/GearBank';
 import type { MUserStats } from '../structures/MUserStats';
 import type { ArrayItemsResolved, Skills } from '../types';
 import type { calculateSimpleMonsterDeathChance } from '../util';
+import type { CanvasImage } from '../util/canvasUtil';
 import type { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
 import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';
@@ -28,7 +28,7 @@ export type KillableMonsterEffect = (opts: {
 }) => void | { xpBank?: XPBank; loot?: Bank; messages: string[] };
 
 export type BankBackground = {
-	image: Image | null;
+	image: CanvasImage | null;
 	id: number;
 	name: string;
 	available: boolean;
@@ -36,7 +36,7 @@ export type BankBackground = {
 	perkTierNeeded?: PerkTier;
 	gpCost?: number;
 	itemCost?: Bank;
-	repeatImage?: Image | null;
+	repeatImage?: CanvasImage | null;
 	bitfield?: BitField;
 	sacValueRequired?: number;
 	skillsNeeded?: Skills;
@@ -47,7 +47,7 @@ export type BankBackground = {
 } & (
 	| {
 			hasPurple: true;
-			purpleImage: Image | null;
+			purpleImage: CanvasImage | null;
 	  }
 	| {
 			hasPurple?: null;
