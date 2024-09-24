@@ -1227,6 +1227,7 @@ export const barbarianAssaultCL = resolveItems([
 ]);
 export const brimhavenAgilityArenaCL = resolveItems([
 	'Agility arena ticket',
+	'Brimhaven voucher',
 	"Pirate's hook",
 	'Brimhaven graceful hood',
 	'Brimhaven graceful top',
