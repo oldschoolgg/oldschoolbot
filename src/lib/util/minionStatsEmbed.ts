@@ -51,10 +51,6 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		high_gambles: true
 	});
 
-	const openableScores = new Bank(userStats.openable_scores as ItemBank);
-	getClueScoresFromOpenables(openableScores, true);
-
-	const clueEntries = Object.entries(openableScores.bank);
 	const minigameScores = (await user.fetchMinigameScores())
 		.filter(i => i.score > 0)
 		.sort((a, b) => b.score - a.score);
@@ -121,14 +117,16 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		inline: true
 	});
 
+	const openableScores = getClueScoresFromOpenables(new Bank(userStats.openable_scores as ItemBank));
+	const clueEntries = openableScores.items();
 	if (clueEntries.length > 0) {
 		embed.addFields({
 			name: '<:Clue_scroll:365003979840552960> Clue Scores',
 			value: clueEntries
-				.map(([id, qty]) => {
-					const clueTier = ClueTiers.find(t => t.id === Number.parseInt(id));
+				.map(([item, qty]) => {
+					const clueTier = ClueTiers.find(t => t.id === item.id);
 					if (!clueTier) {
-						logError(`No clueTier: ${id}`);
+						logError(`No clueTier: ${item.id}`);
 						return;
 					}
 					return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;

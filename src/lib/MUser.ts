@@ -8,12 +8,14 @@ import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import { pick } from 'remeda';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
+import { partialUserCache } from './cache';
 import { ClueTiers } from './clues/clueTiers';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
 import { BitField, projectiles } from './constants';
@@ -114,7 +116,7 @@ export class MUserClass {
 		this.updateProperties();
 	}
 
-	private updateProperties() {
+	public updateProperties() {
 		this.bank = new Bank(this.user.bank as ItemBank);
 		this.bank.freeze();
 
@@ -338,7 +340,7 @@ GROUP BY data->>'ci';`);
 		await userStatsUpdate(
 			this.id,
 			{
-				monster_scores: newKCs.bank
+				monster_scores: newKCs.toJSON()
 			},
 			{}
 		);
@@ -527,7 +529,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
-		const previousCL = new Bank(this.cl.bank);
+		const previousCL = this.cl.clone();
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
@@ -670,11 +672,11 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		dontAddToTempCL?: boolean;
 	}): Prisma.UserUpdateArgs['data'] {
 		const updates: Prisma.UserUpdateArgs['data'] = {
-			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).bank
+			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).toJSON()
 		};
 
 		if (!dontAddToTempCL) {
-			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).bank;
+			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).toJSON();
 		}
 		return updates;
 	}
@@ -1031,10 +1033,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			},
 			create: {
 				user_id: BigInt(this.id),
-				tame_cl_bank: totalBank.bank
+				tame_cl_bank: totalBank.toJSON()
 			},
 			update: {
-				tame_cl_bank: totalBank.bank
+				tame_cl_bank: totalBank.toJSON()
 			}
 		});
 
@@ -1110,16 +1112,24 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-async function srcMUserFetch(userID: string, updates: Prisma.UserUpdateInput = {}) {
-	const user = await prisma.user.upsert({
-		create: {
-			id: userID
-		},
-		update: updates,
-		where: {
-			id: userID
-		}
-	});
+async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+	const user =
+		updates !== undefined
+			? await prisma.user.upsert({
+					create: {
+						id: userID
+					},
+					update: updates,
+					where: {
+						id: userID
+					}
+				})
+			: await prisma.user.findUnique({ where: { id: userID } });
+
+	if (!user) {
+		return srcMUserFetch(userID, {});
+	}
+	partialUserCache.set(userID, pick(user, ['bitfield', 'minion_hasBought', 'badges']));
 	return new MUserClass(user);
 }
 

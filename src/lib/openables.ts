@@ -156,7 +156,7 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 			// Roll loot, and calculate how many bonus rolls were received:
-			loot.add(clueTier.table.open(includeBuggedRolls ? totalRolls + quantity : totalRolls, user));
+			clueTier.table.open(includeBuggedRolls ? totalRolls + quantity : totalRolls, loot, user.cl);
 			const extraClueRolls = totalRolls - quantity;
 
 			let mimicNumber = 0;
@@ -196,7 +196,7 @@ for (const clueTier of ClueTiers) {
 
 			// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 			// and send a notification if they got one.
-			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id), false);
+			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id));
 			if (gotMilestoneReward) {
 				announcedLoot.add(clueTier.milestoneReward?.itemReward);
 			}

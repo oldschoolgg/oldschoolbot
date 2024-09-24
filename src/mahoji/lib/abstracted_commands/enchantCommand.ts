@@ -57,7 +57,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	const cost = determineRunes(user, enchantable.input.clone().multiply(quantity));
 
-	if (!userBank.has(cost.bank)) {
+	if (!userBank.has(cost)) {
 		return `You don't have the materials needed to enchant ${quantity}x ${enchantable.name}, you need ${
 			enchantable.input
 		}, you're missing **${cost.clone().remove(userBank)}**.`;

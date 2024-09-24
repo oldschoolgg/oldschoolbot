@@ -8,13 +8,7 @@ import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { Eatables } from '../../src/lib/data/eatables';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import {
-	clAdjustedDroprate,
-	pluraliseItemName,
-	sanitizeBank,
-	skillingPetDropRate,
-	stripEmojis
-} from '../../src/lib/util';
+import { clAdjustedDroprate, pluraliseItemName, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './utils';
@@ -78,14 +72,6 @@ describe('util', () => {
 			seen[eatable.name] = true;
 		}
 		expect(duplicates).toBeFalsy();
-	});
-
-	test('sanitizeBank', () => {
-		const buggyBank = new Bank();
-		buggyBank.bank[1] = -1;
-		buggyBank.bank[2] = 0;
-		sanitizeBank(buggyBank);
-		expect(buggyBank.bank).toEqual({});
 	});
 
 	test('truncateString', () => {

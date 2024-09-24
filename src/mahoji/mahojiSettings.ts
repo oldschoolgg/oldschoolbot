@@ -78,13 +78,14 @@ export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
 }
 
+export type ClientBankKey = Parameters<typeof trackClientBankStats>['0'];
 export async function trackClientBankStats(
 	key: 'clue_upgrader_loot' | 'portable_tanner_loot' | 'turaels_trials_cost_bank' | 'turaels_trials_loot_bank',
 	newItems: Bank
 ) {
 	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
 	await mahojiClientSettingsUpdate({
-		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
+		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).toJSON()
 	});
 }
 
@@ -93,16 +94,25 @@ export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
 	selectKeys: T
 ): Promise<SelectedUserStats<T>> {
 	const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
-	const result = await prisma.userStats.upsert({
+	let result = await prisma.userStats.findFirst({
 		where: {
 			user_id: BigInt(userID)
 		},
-		create: {
-			user_id: BigInt(userID)
-		},
-		update: {},
 		select: keysToSelect
 	});
+
+	if (!result) {
+		result = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(userID)
+			},
+			create: {
+				user_id: BigInt(userID)
+			},
+			update: {},
+			select: keysToSelect
+		});
+	}
 
 	return result as unknown as SelectedUserStats<T>;
 }
@@ -117,16 +127,6 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 	if (!selectKeys || Object.keys(selectKeys).length === 0) {
 		keys = { user_id: true };
 	}
-	await prisma.userStats.upsert({
-		create: {
-			user_id: id
-		},
-		update: {},
-		where: {
-			user_id: id
-		},
-		select: keys
-	});
 
 	return (await prisma.userStats.update({
 		data,
@@ -151,7 +151,7 @@ export async function userStatsBankUpdate(user: MUser | string, key: JsonKeys<Us
 	await userStatsUpdate(
 		userID,
 		{
-			[key]: bank.clone().add(currentItemBank).bank
+			[key]: bank.clone().add(currentItemBank).toJSON()
 		},
 		{ [key]: true }
 	);
@@ -407,7 +407,11 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster, _isInWilderness = false) {
+export function resolveAvailableItemBoosts(
+	gearBank: GearBank,
+	monster: KillableMonster,
+	_isInWilderness = false
+): Bank {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -431,7 +435,7 @@ export function resolveAvailableItemBoosts(gearBank: GearBank, monster: Killable
 			}
 		}
 	}
-	return boosts.bank;
+	return boosts;
 }
 
 export function calcMaxRCQuantity(rune: Rune, user: MUser) {
@@ -476,7 +480,7 @@ export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
 	const { openable_scores: newOpenableScores } = await userStatsUpdate(
 		user.id,
 		{
-			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).bank
+			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
 		},
 		{ openable_scores: true }
 	);

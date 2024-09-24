@@ -274,12 +274,12 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 			quantity,
 			quantity_remaining: quantity,
 			slayer_master_id: master.id,
-			monster_id: assignedTask?.monster.id,
+			monster_id: assignedTask.monster.id,
 			skipped: false
 		}
 	});
 	await _user.update({
-		slayer_last_task: assignedTask?.monster.id
+		slayer_last_task: assignedTask.monster.id
 	});
 
 	return { currentTask, assignedTask, messages };
@@ -460,9 +460,11 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 		return { bankLoot: myLoot, clLoot: myLoot };
 	}
 
-	myLoot.filter(i => !filterLootItems.includes(i.id), true);
+	for (const item of filterLootItems) {
+		myLoot.set(item, 0);
+	}
 
-	const myClLoot = new Bank(myLoot.bank);
+	const myClLoot = myLoot.clone();
 
 	const combinedBank = new Bank(myBank).add(myLoot);
 	if (numBludgeonPieces) {

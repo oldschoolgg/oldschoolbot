@@ -24,8 +24,8 @@ for (const { baseItem, dyedVersions } of dyedItems) {
 	for (const dyedVersion of dyedVersions) {
 		dyeCreatables.push({
 			name: dyedVersion.item.name,
-			inputItems: new Bank().add(baseItem.id).add(dyedVersion.dye.id).bank,
-			outputItems: new Bank().add(dyedVersion.item.id).bank
+			inputItems: new Bank().add(baseItem.id).add(dyedVersion.dye.id).toJSON(),
+			outputItems: new Bank().add(dyedVersion.item.id).toJSON()
 		});
 	}
 }

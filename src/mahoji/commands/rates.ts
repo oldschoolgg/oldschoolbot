@@ -2,10 +2,9 @@ import { bold } from '@discordjs/builders';
 import { type CommandRunOptions, calcPerHour, convertBankToPerHourStats, formatDuration } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, increaseNumByPercent, reduceNumByPercent, sumArr } from 'e';
+import { Time, increaseNumByPercent, sumArr } from 'e';
 import { uniq } from 'lodash';
 import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
 
 import {
 	BathhouseOres,
@@ -15,14 +14,10 @@ import {
 	durationPerBaxBath
 } from '../../lib/baxtorianBathhouses';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
-import { gearstatToSetup, gorajanBoosts } from '../../lib/bso/misc';
 import { TuraelsTrialsMethods, calculateTuraelsTrialsInput } from '../../lib/bso/turaelsTrials';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
-import { Eatables } from '../../lib/data/eatables';
 import { inventionBoosts } from '../../lib/invention/inventions';
-import { marketPriceOfBank } from '../../lib/marketPrices';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import Agility from '../../lib/skilling/skills/agility';
 import {
@@ -41,7 +36,7 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { HunterTechniqueEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
 import type { BathhouseTaskOptions } from '../../lib/types/minions';
-import { stringMatches, toKMB } from '../../lib/util';
+import { toKMB } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemID from '../../lib/util/itemID';
@@ -132,26 +127,6 @@ export const ratesCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
-			name: 'monster',
-			description: 'Check monster loot rates.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'monster',
-					description: 'Check monster.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'name',
-							description: 'The name of the monster.',
-							required: true
-						}
-					]
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'misc',
 			description: 'Miscelleanous rates.',
 			options: [
@@ -176,7 +151,6 @@ export const ratesCommand: OSBMahojiCommand = {
 			hunter?: {};
 			turaels_trials?: {};
 		};
-		monster?: { monster?: { name: string } };
 		tames?: { eagle?: {} };
 		misc?: { zygomite_seeds?: {} };
 		minigames?: { baxtorian_bathhouses?: {} };
@@ -298,116 +272,6 @@ ${zygomiteFarmingSource
 			};
 		}
 
-		if (options.monster?.monster) {
-			const monster = killableMonsters.find(m => stringMatches(m.name, options.monster!.monster!.name));
-			if (!monster) {
-				return 'Invalid monster.';
-			}
-
-			let { timeToFinish } = monster;
-			// 10% for learning
-			timeToFinish = reduceNumByPercent(timeToFinish, 10);
-
-			timeToFinish /= 2;
-
-			if (monster.pohBoosts) {
-				const totalBoostPercent = sumArr(Object.values(monster.pohBoosts).map(val => Object.values(val)[0]));
-				timeToFinish = reduceNumByPercent(timeToFinish, totalBoostPercent);
-			}
-
-			if (monster.itemInBankBoosts) {
-				const boosts = sumArr(monster.itemInBankBoosts.map(b => Object.values(b)[0]));
-				timeToFinish = reduceNumByPercent(timeToFinish, boosts);
-			}
-
-			if (!monster.wildy) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 40);
-			} else if (monster.wildy) {
-				timeToFinish /= 3;
-			}
-
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-
-			if (monster.equippedItemBoosts) {
-				for (const boostSet of monster.equippedItemBoosts) {
-					const equippedInThisSet = boostSet.items[0];
-					if (equippedInThisSet) {
-						timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
-					}
-				}
-			}
-
-			const hasBlessing = true;
-			const hasZealotsAmulet = true;
-			if (hasZealotsAmulet && hasBlessing) {
-				timeToFinish *= 0.75;
-			} else if (hasBlessing) {
-				timeToFinish *= 0.8;
-			}
-			if (monster.wildy && hasZealotsAmulet) {
-				timeToFinish *= 0.95;
-			}
-
-			const allGorajan = gorajanBoosts.every(e => user.gear[e[1]].hasEquipped(e[0], true));
-			for (const [outfit, setup] of gorajanBoosts) {
-				if (
-					allGorajan ||
-					(gearstatToSetup.get(monster.attackStyleToUse) === setup &&
-						user.gear[setup].hasEquipped(outfit, true))
-				) {
-					timeToFinish *= 0.9;
-					break;
-				}
-			}
-
-			timeToFinish *= 0.85;
-
-			timeToFinish *= 0.9;
-
-			const bestFood = Eatables.filter(e => e.pvmBoost !== undefined).sort((a, b) => b.pvmBoost! - a.pvmBoost!)[0]
-				.pvmBoost;
-			timeToFinish = reduceNumByPercent(timeToFinish, bestFood!);
-
-			const sampleSize = 100_000;
-			const boostedSize = increaseNumByPercent(sampleSize, 25);
-
-			const loot = monster.table.kill(boostedSize, {});
-			const totalTime = timeToFinish * sampleSize;
-
-			let str = `${monster.name}\n`;
-
-			const results: { item: Item; qty: number; perHour: number; valuePerHour: number }[] = [];
-			for (const [item, qty] of loot.items()) {
-				const perHour = calcPerHour(qty, totalTime);
-				const valuePerHour = calcPerHour(marketPriceOfBank(new Bank().add(item, qty)), totalTime);
-				results.push({ item, qty, perHour, valuePerHour });
-			}
-			results.sort((a, b) => b.valuePerHour - a.valuePerHour);
-			str += '\nTop 10 most valuable item drops:\n';
-			for (const { item, perHour, valuePerHour } of results.slice(0, 10)) {
-				str += `${item.name}: ${perHour.toFixed(2)}/hr ${toKMB(valuePerHour)} GP/hr\n`;
-			}
-
-			str += '\n';
-
-			str += `Each kill takes ${formatDuration(timeToFinish)}, killing ${calcPerHour(sampleSize, totalTime)}/hr.`;
-			str += '\n';
-
-			str += `Based on market/bot prices, this monster produces ${toKMB(
-				calcPerHour(marketPriceOfBank(loot), totalTime)
-			)}/hr in GP.`;
-
-			str += '\n\nAssumes max learning, poh boosts, all item boosts, DWWH/HFB, Ori.';
-			return {
-				content: str,
-				files: [
-					{
-						attachment: Buffer.from(`${results.map(i => [i.item.name, i.qty, i.perHour]).join('\n')}`),
-						name: `result-${monster.name}.txt`
-					}
-				]
-			};
-		}
 		if (options.xphr?.hunter) {
 			let results = `${[
 				'Creature',
@@ -620,7 +484,7 @@ ${zygomiteFarmingSource
 
 									const smeltedOre = Smithing.Bars.find(
 										o =>
-											o.inputOres.bank[ore.id] &&
+											o.inputOres.has(ore.id) &&
 											o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
 									);
 									if (usingAdze && (!smeltedOre || isPowerminingInput)) continue;

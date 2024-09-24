@@ -1,4 +1,5 @@
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../data/CollectionsExport';
+import { GearStat, type OffenceGearStat, type PrimaryGearSetupType } from '../gear';
 
 export const gorajanBoosts = [
 	[gorajanArcherOutfit, 'range'],
@@ -6,9 +7,9 @@ export const gorajanBoosts = [
 	[gorajanOccultOutfit, 'mage']
 ] as const;
 
-export const gearstatToSetup = new Map()
-	.set('attack_stab', 'melee')
-	.set('attack_slash', 'melee')
-	.set('attack_crush', 'melee')
-	.set('attack_magic', 'mage')
-	.set('attack_ranged', 'range');
+export const gearstatToSetup = new Map<OffenceGearStat, PrimaryGearSetupType>()
+	.set(GearStat.AttackStab, 'melee')
+	.set(GearStat.AttackSlash, 'melee')
+	.set(GearStat.AttackCrush, 'melee')
+	.set(GearStat.AttackMagic, 'mage')
+	.set(GearStat.AttackRanged, 'range');

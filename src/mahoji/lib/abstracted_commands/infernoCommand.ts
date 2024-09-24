@@ -682,7 +682,7 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 		fakeDuration,
 		diedPreZuk,
 		diedZuk,
-		cost: realCost.bank,
+		cost: realCost.toJSON(),
 		isEmergedZuk: emerged,
 		emergedZukDeathChance: emergedZukDeathChance.value,
 		diedEmergedZuk

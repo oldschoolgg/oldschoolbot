@@ -14,7 +14,7 @@ interface SimulatedKillable {
 	isCustom: boolean;
 	loot: (quantity: number) => Bank;
 }
-
+const emptyBank = new Bank();
 export const simulatedKillables: SimulatedKillable[] = [
 	{
 		name: 'Wintertodt',
@@ -27,7 +27,7 @@ export const simulatedKillables: SimulatedKillable[] = [
 				loot.add(
 					WintertodtCrate.open({
 						points,
-						itemsOwned: {},
+						itemsOwned: emptyBank,
 						skills: {
 							firemaking: 99,
 							herblore: 99,

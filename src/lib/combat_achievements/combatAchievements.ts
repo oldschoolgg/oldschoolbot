@@ -1,7 +1,7 @@
 import type { activity_type_enum } from '@prisma/client';
 import { deepClone, notEmpty, roll, sumArr } from 'e';
-import type { Item } from 'oldschooljs/dist/meta/types';
 
+import type { Item } from 'oldschooljs';
 import type { Requirements } from '../structures/Requirements';
 import type { ActivityTaskData, TOAOptions } from '../types/minions';
 import { assert } from '../util';

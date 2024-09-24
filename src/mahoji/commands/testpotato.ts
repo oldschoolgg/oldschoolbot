@@ -959,7 +959,7 @@ ${droprates.join('\n')}`),
 							},
 							data: {
 								growth_stage: tame_growth.adult,
-								fed_items: fedItems.bank
+								fed_items: fedItems.toJSON()
 							}
 						});
 						if (tame.species_id === TameSpeciesID.Igne) {

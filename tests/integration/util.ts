@@ -1,5 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma } from '@prisma/client';
+import type { Activity, GearSetupType, Prisma } from '@prisma/client';
 import { Time, objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Monsters } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
@@ -8,15 +8,18 @@ import { expect, vi } from 'vitest';
 import { clone } from 'lodash';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { MUserClass } from '../../src/lib/MUser';
-import { completeActivity, processPendingActivities } from '../../src/lib/Task';
+import { completeActivity } from '../../src/lib/Task';
 import { type PvMMethod, globalConfig } from '../../src/lib/constants';
+import { sql } from '../../src/lib/postgres';
 import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { getOSItem } from '../../src/lib/util/getOSItem';
 import { minionKCommand } from '../../src/mahoji/commands/k';
+import { stealCommand } from '../../src/mahoji/commands/steal';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
@@ -54,7 +57,6 @@ export class TestUser extends MUserClass {
 			}
 		});
 		if (!activity) {
-			console.warn('No activity found');
 			return;
 		}
 
@@ -121,6 +123,7 @@ export class TestUser extends MUserClass {
 		await prisma.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
 		await prisma.user.delete({ where: { id: this.id } });
 		const user = await prisma.user.create({ data: { id: this.id } });
+		await global.prisma!.userStats.create({ data: { user_id: BigInt(this.id) } });
 		this.user = user;
 	}
 
@@ -135,7 +138,7 @@ export class TestUser extends MUserClass {
 				user_id: this.id,
 				quantity: 1000,
 				quantity_remaining: 1000,
-				slayer_master_id: 4,
+				slayer_master_id: slayerMasters.find(m => m.tasks.some(t => t.monster.id === monster))!.id,
 				monster_id: monster,
 				skipped: false
 			}
@@ -144,13 +147,18 @@ export class TestUser extends MUserClass {
 
 	async kill(
 		monster: EMonster,
-		{ quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean; quantity?: number } = {}
+		{
+			quantity,
+			method,
+			shouldFail = false,
+			wilderness = false
+		}: { method?: PvMMethod; shouldFail?: boolean; quantity?: number; wilderness?: boolean } = {}
 	) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
 		const commandResult = await this.runCommand(
 			minionKCommand,
-			{ name: Monsters.get(monster)!.name, method, quantity },
+			{ name: Monsters.get(monster)!.name, method, quantity, wilderness },
 			true
 		);
 		if (shouldFail) {
@@ -166,6 +174,31 @@ export class TestUser extends MUserClass {
 		}
 
 		return { commandResult, newKC, xpGained, previousBank, activityResult };
+	}
+
+	async pickpocket(
+		monster: EMonster,
+		{ quantity, shouldFail = false }: { shouldFail?: boolean; quantity?: number } = {}
+	) {
+		const previousBank = this.bank.clone();
+		const currentXP = clone(this.skillsAsXP);
+		const commandResult = await this.runCommand(
+			stealCommand,
+			{ name: Monsters.get(monster)!.name, quantity },
+			true
+		);
+		if (shouldFail) {
+			expect(commandResult).not.toContain('is now going to');
+		}
+		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
+		const newXP = clone(this.skillsAsXP);
+		const xpGained: SkillsRequired = {} as SkillsRequired;
+		for (const skill of SkillsArray) xpGained[skill] = 0;
+		for (const skill of objectKeys(newXP)) {
+			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
+		}
+
+		return { commandResult, xpGained, previousBank, activityResult };
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
@@ -232,6 +265,7 @@ export async function mockUser(
 		rangeGear: number[];
 		rangeLevel: number;
 		mageGear: number[];
+		wildyGear: number[];
 		mageLevel: number;
 		meleeGear: number[];
 		slayerLevel: number;
@@ -261,6 +295,13 @@ export async function mockUser(
 		}
 	}
 
+	const wildyGear = new Gear();
+	if (options.wildyGear) {
+		for (const item of options.wildyGear) {
+			wildyGear.equip(getOSItem(item));
+		}
+	}
+
 	const user = await createTestUser(options.bank, {
 		skills_ranged: options.rangeLevel ? convertLVLtoXP(options.rangeLevel) : undefined,
 		skills_slayer: options.slayerLevel ? convertLVLtoXP(options.slayerLevel) : undefined,
@@ -268,6 +309,7 @@ export async function mockUser(
 		gear_mage: options.mageGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_wildy: options.wildyGear ? (wildyGear.raw() as Prisma.InputJsonValue) : undefined,
 		venator_bow_charges: options.venatorBowCharges,
 		QP: options.QP
 	});
@@ -303,13 +345,15 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		create: {
 			id,
 			...userData,
-			bank: bank?.bank,
-			GP: GP ?? undefined
+			bank: bank?.toJSON(),
+			GP: GP ?? undefined,
+			minion_hasBought: true
 		},
 		update: {
 			...userData,
-			bank: bank?.bank,
-			GP
+			bank: bank?.toJSON(),
+			GP,
+			minion_hasBought: true
 		},
 		where: {
 			id
@@ -317,8 +361,12 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 	});
 
 	try {
-		await global.prisma!.userStats.create({
-			data: {
+		await global.prisma!.userStats.upsert({
+			create: {
+				user_id: BigInt(user.id)
+			},
+			update: {},
+			where: {
 				user_id: BigInt(user.id)
 			}
 		});
@@ -359,7 +407,21 @@ class TestClient {
 	}
 
 	async processActivities() {
-		await processPendingActivities();
+		const activities: Activity[] = await sql`SELECT * FROM activity WHERE completed = false;`;
+
+		if (activities.length > 0) {
+			await prisma.activity.updateMany({
+				where: {
+					id: {
+						in: activities.map(i => i.id)
+					}
+				},
+				data: {
+					completed: true
+				}
+			});
+			await Promise.all(activities.map(completeActivity));
+		}
 	}
 }
 

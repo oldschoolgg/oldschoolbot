@@ -4,8 +4,8 @@ import type { Bank } from 'oldschooljs';
 import { BitField } from '../constants';
 import { ClueTiers } from './clueTiers';
 
-export function getClueScoresFromOpenables(openableScores: Bank, mutate = false) {
-	return openableScores.filter(item => Boolean(ClueTiers.find(ct => ct.id === item.id)), mutate);
+export function getClueScoresFromOpenables(openableScores: Bank) {
+	return openableScores.filter(item => Boolean(ClueTiers.find(ct => ct.id === item.id)));
 }
 
 export function buildClueButtons(loot: Bank | null, perkTier: number, user: MUser) {

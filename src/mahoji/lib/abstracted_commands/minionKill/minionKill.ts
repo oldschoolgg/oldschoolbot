@@ -24,6 +24,7 @@ import { nexCommand } from '../nexCommand';
 import { nightmareCommand } from '../nightmareCommand';
 import { getPOH } from '../pohCommand';
 import { temporossCommand } from '../temporossCommand';
+import { vasaCommand } from '../vasaCommand';
 import { wintertodtCommand } from '../wintertodtCommand';
 import { zalcanoCommand } from '../zalcanoCommand';
 import { newMinionKillCommand } from './newMinionKill';
@@ -69,6 +70,9 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name, inputQuantity);
 	if (name.toLowerCase().includes('moktang')) return moktangCommand(user, channelID, inputQuantity);
 	if (name.toLowerCase().includes('naxxus')) return naxxusCommand(user, channelID, inputQuantity);
+	if (['vasa', 'vasa magus'].some(i => name.toLowerCase().includes(i))) {
+		return vasaCommand(user, channelID, inputQuantity);
+	}
 
 	let monster = findMonster(name);
 
@@ -121,7 +125,7 @@ export async function minionKillCommand(
 		return `You don't have the items needed to kill this monster. You need: ${result.updateBank.itemCostBank}`;
 	}
 
-	const updateResult = await result.updateBank.transact(user);
+	const updateResult = await result.updateBank.transact(user, { isInWilderness: result.isInWilderness });
 	if (typeof updateResult === 'string') {
 		return updateResult;
 	}
@@ -156,7 +160,8 @@ export async function minionKillCommand(
 		chinning: !chinning ? undefined : chinning,
 		bob: !bob ? undefined : bob,
 		hasWildySupplies,
-		isInWilderness: result.isInWilderness
+		isInWilderness: result.isInWilderness,
+		attackStyles: result.attackStyles
 	});
 
 	if (dtdResult) {

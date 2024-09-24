@@ -175,7 +175,6 @@ export const tobTask: MinionTask = {
 				const items = userLoot.items();
 
 				const isPurple = items.some(([item]) => TOBUniques.includes(item.id));
-
 				const deathStr =
 					userDeaths.length === 0 ? '' : `${Emoji.Skull}(${userDeaths.map(i => TOBRooms[i].name)})`;
 

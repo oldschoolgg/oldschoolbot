@@ -1,6 +1,6 @@
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, Clues, Monsters } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, Clues, type Item, Monsters } from 'oldschooljs';
+
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
@@ -78,6 +78,7 @@ import {
 	chompyBirdsCL,
 	cluesBeginnerCL,
 	cluesEasyCL,
+	cluesElderCL,
 	cluesEliteCL,
 	cluesEliteRareCL,
 	cluesGrandmasterCL,
@@ -938,43 +939,7 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: {
 					Default: async (_, __, { openableScores }) => openableScores.amount(73_124)
 				},
-				items: resolveItems([
-					'Lord marshal boots',
-					'Lord marshal gloves',
-					'Lord marshal trousers',
-					'Lord marshal top',
-					'Lord marshal cap',
-					'Akumu mask',
-					'Commander boots',
-					'Commander gloves',
-					'Commander trousers',
-					'Commander top',
-					'Commander cap',
-					'Apple parasol',
-					'Watermelon parasol',
-					'Lemon parasol',
-					'Strawberry parasol',
-					'Blueberry parasol',
-					'Grape parasol',
-					'Coconut parasol',
-					'Detective hat',
-					'Detective trenchcoat',
-					'Detective pants',
-					'2nd age range legs',
-					'2nd age range top',
-					'2nd age range coif',
-					'2nd age bow',
-					'2nd age mage top',
-					'2nd age mage bottom',
-					'2nd age mage mask',
-					'2nd age staff',
-					'First age robe top',
-					'First age robe bottom',
-					'Clue bag',
-					'Inventors tools',
-					'Elder knowledge',
-					'Octo'
-				]),
+				items: cluesElderCL,
 				isActivity: true,
 				fmtProg: clueProg(['Elder'])
 			},

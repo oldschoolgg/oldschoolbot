@@ -9,6 +9,7 @@ import type { Kibble } from '../data/kibble';
 import type { IMaterialBank, MaterialType } from '../invention';
 import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 import type { IPatchData } from '../minions/farming/types';
+import type { AttackStyles } from '../minions/functions';
 import type { Monkey } from '../monkeyRumble';
 import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
@@ -164,6 +165,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
 	isInWilderness?: boolean;
+	attackStyles?: AttackStyles[];
 }
 
 export type UndoneChangesMonsterOptions = Omit<MonsterActivityTaskOptions, 'q' | 'mi'> & {

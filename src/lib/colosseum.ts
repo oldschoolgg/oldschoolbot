@@ -843,7 +843,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		fakeDuration: totalFakeDuration,
 		maxGlory,
 		diedAt: diedAt,
-		loot: totalLoot.bank,
+		loot: totalLoot.toJSON(),
 		scytheCharges: totalScytheCharges,
 		venatorBowCharges: totalVenatorBowCharges,
 		bloodFuryCharges: totalBloodFuryCharges,

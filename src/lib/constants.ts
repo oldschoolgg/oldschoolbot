@@ -13,14 +13,12 @@ import { Items } from 'oldschooljs';
 import { convertLVLtoXP, getItemOrThrow } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { customItems } from './customItems/util';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
-import resolveItems from './util/resolveItems';
-
-import '../lib/data/itemAliases';
 
 export { PerkTier };
 

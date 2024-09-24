@@ -41,7 +41,6 @@ export function oriEffect({
 	if (duration > Time.Minute * 5) {
 		// Original boost for 5+ minute task:
 		newQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
-		messages.push(`${newQuantity - quantity}x kills bonus kills from Ori.`);
 	} else {
 		// 25% chance at extra kill otherwise:
 		for (let i = 0; i < quantity; i++) {
@@ -50,7 +49,7 @@ export function oriEffect({
 			}
 		}
 	}
-	messages.push(`${newQuantity - quantity}x kills bonus kills from Ori.`);
+	messages.push(`${newQuantity - quantity}x bonus kills from Ori`);
 	return newQuantity;
 }
 
@@ -137,8 +136,8 @@ export function slayerMasksHelms({
 			}
 		}
 	}
-	updateBank.userStats.on_task_monster_scores = new Bank(userStats.on_task_monster_scores as ItemBank).add(
-		bankToAdd
-	).bank;
-	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores.bank : undefined;
+	updateBank.userStats.on_task_monster_scores = new Bank(userStats.on_task_monster_scores as ItemBank)
+		.add(bankToAdd)
+		.toJSON();
+	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores.toJSON() : undefined;
 }

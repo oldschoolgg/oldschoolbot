@@ -560,7 +560,8 @@ export async function transactMaterialsFromUser({
 	if (addToDisassembledItemsBank) {
 		updateObject.disassembled_items_bank = addToDisassembledItemsBank
 			.clone()
-			.add(user.user.disassembled_items_bank as ItemBank).bank;
+			.add(user.user.disassembled_items_bank as ItemBank)
+			.toJSON();
 	}
 	if (addToResearchedMaterialsBank && remove) {
 		updateObject.researched_materials_bank = remove
@@ -713,7 +714,7 @@ export async function inventionItemBoost({
 	inventionID: InventionID;
 	duration: number;
 }): Promise<InventionItemBoostResult> {
-	const result = await inventionItemBoostRaw({
+	const result = inventionItemBoostRaw({
 		gearBank: user.gearBank,
 		inventionID,
 		duration,

@@ -1,6 +1,7 @@
 import { calcWhatPercent, clamp, increaseNumByPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
+import z from 'zod';
 
 import { type AttackStyles, getAttackStylesContext } from '../../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
@@ -9,7 +10,16 @@ import { ChargeBank } from '../../../../lib/structures/Bank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { SkillsRequired } from '../../../../lib/types';
 import { getItemCostFromConsumables } from './handleConsumables';
-import { type BoostArgs, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
+import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
+
+const schema = z.object({
+	timeToFinish: z.number().int().positive(),
+	messages: z.array(z.string()),
+	currentTaskOptions: z.object({}),
+	finalQuantity: z.number().int().positive(),
+	confirmations: z.array(z.string()),
+	updateBank: z.instanceof(UpdateBank)
+});
 
 function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = sumArr(styles.map(s => skillsAsLevels[s]));
@@ -29,7 +39,7 @@ function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, style
 }
 
 export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
-	const { monster, monsterKC, attackStyles, gearBank, maxTripLength, inputQuantity } = args;
+	const { monster, monsterKC, attackStyles, gearBank, maxTripLength, inputQuantity, isInWilderness } = args;
 	const { skillsAsLevels } = args.gearBank;
 	const messages: string[] = [];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
@@ -42,6 +52,11 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	timeToFinish /= 2;
 	messages.push('2x BSO Boost');
 
+	if (gearBank.gear.wildy.hasEquipped(['Hellfire bow']) && isInWilderness) {
+		timeToFinish /= 3;
+		messages.push('3x boost for Hellfire bow');
+	}
+
 	let currentTaskOptions: CombatMethodOptions = {};
 	const itemCost = new Bank();
 	const charges = new ChargeBank();
@@ -49,38 +64,56 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	const confirmations: string[] = [];
 
 	for (const boost of mainBoostEffects) {
-		for (const b of Array.isArray(boost) ? boost : [boost]) {
-			const res = b.run({ ...args, currentTaskOptions, ...getAttackStylesContext(attackStyles) });
-			if (!res) continue;
-			if (typeof res === 'string') return res;
-			const subResults = (Array.isArray(res) ? res : [res]).flat().sort((a, b) => {
-				if (a.percentageReduction && b.percentageReduction) {
-					return b.percentageReduction - a.percentageReduction;
+		const arr = Array.isArray(boost) ? boost : [boost];
+		const results = arr.map(res =>
+			res.run({ ...args, currentTaskOptions, ...getAttackStylesContext(attackStyles) })
+		);
+		const error = results.find(res => typeof res === 'string');
+		if (error) return error;
+		const [res] = results
+			.filter(res => Boolean(res))
+			.sort((a, b) => {
+				if (!a || !b || !('percentageReduction' in (a as any) || !('percentageReduction' in (b as any)))) {
+					throw new Error('Shouldnt happen');
 				}
-				return 0;
+				a = a as any as BoostResult;
+				b = b as any as BoostResult;
+				if (!a.percentageReduction || !b.percentageReduction) throw new Error('Shouldnt happen');
+				return b.percentageReduction - a.percentageReduction;
 			});
-			for (const boostResult of subResults) {
-				if (boostResult.changes) {
-					currentTaskOptions = mergeDeep(currentTaskOptions, boostResult.changes);
-				}
-				if (boostResult.percentageReduction) {
-					timeToFinish = reduceNumByPercent(timeToFinish, boostResult.percentageReduction);
-				} else if (boostResult.percentageIncrease) {
-					timeToFinish = increaseNumByPercent(timeToFinish, boostResult.percentageIncrease);
-				}
-				if (boostResult.itemCost) itemCost.add(boostResult.itemCost);
-				if (boostResult.consumables) consumables.push(...boostResult.consumables);
-				if (boostResult.charges) charges.add(boostResult.charges);
-				if (boostResult.confirmation) confirmations.push(boostResult.confirmation);
-				if (boostResult.message) messages.push(boostResult.message);
+
+		if (!res) continue;
+		if (typeof res === 'string') return res;
+		const subResults = (Array.isArray(res) ? res : [res]).flat().sort((a, b) => {
+			if (a.percentageReduction && b.percentageReduction) {
+				return b.percentageReduction - a.percentageReduction;
 			}
+			return 0;
+		});
+		for (const boostResult of subResults) {
+			if (boostResult.changes) {
+				currentTaskOptions = mergeDeep(currentTaskOptions, boostResult.changes);
+			}
+			if (boostResult.percentageReduction) {
+				timeToFinish = reduceNumByPercent(timeToFinish, boostResult.percentageReduction);
+			} else if (boostResult.percentageIncrease) {
+				timeToFinish = increaseNumByPercent(timeToFinish, boostResult.percentageIncrease);
+			}
+			if (boostResult.itemCost) itemCost.add(boostResult.itemCost);
+			if (boostResult.consumables) consumables.push(...boostResult.consumables);
+			if (boostResult.charges) charges.add(boostResult.charges);
+			if (boostResult.confirmation) confirmations.push(boostResult.confirmation);
+			if (boostResult.message) messages.push(boostResult.message);
 		}
 	}
+
+	timeToFinish = Math.ceil(timeToFinish);
 
 	if (monster.itemCost) consumables.push(monster.itemCost);
 
 	const maxQuantityBasedOnTime = Math.floor(maxTripLength / timeToFinish);
 	const consumablesQuantity = clamp(inputQuantity ?? maxQuantityBasedOnTime, 1, maxQuantityBasedOnTime);
+
 	const consumablesCost = getItemCostFromConsumables({
 		consumableCosts: consumables,
 		gearBank,
@@ -99,12 +132,14 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	const finalQuantity = consumablesCost?.finalQuantity ?? consumablesQuantity;
 
-	return {
+	const result = schema.parse({
 		timeToFinish,
 		messages,
 		currentTaskOptions,
 		finalQuantity,
 		confirmations,
 		updateBank
-	};
+	});
+
+	return result;
 }

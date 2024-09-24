@@ -58,8 +58,8 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		gear_range: new Gear().raw() as Prisma.JsonValue,
 		gear_skilling: new Gear().raw() as Prisma.JsonValue,
 		gear_wildy: new Gear().raw() as Prisma.JsonValue,
-		bank: overrides?.bank?.bank ?? {},
-		collectionLogBank: overrides?.cl?.bank ?? {},
+		bank: overrides?.bank?.toJSON() ?? {},
+		collectionLogBank: overrides?.cl?.toJSON() ?? {},
 		skills_agility: overrides?.skills_agility ?? 0,
 		skills_cooking: 0,
 		skills_fishing: overrides?.skills_fishing ?? 0,
@@ -153,10 +153,10 @@ function makeFullGear() {
 	}
 	return obj as UserFullGearSetup;
 }
-export function makeGearBank() {
+export function makeGearBank(bank?: Bank) {
 	return new GearBank({
 		gear: makeFullGear(),
-		bank: new Bank(),
+		bank: bank ?? new Bank(),
 		skillsAsLevels: makeSkillsAsLevels(),
 		chargeBank: new ChargeBank(),
 		materials: new MaterialBank(),

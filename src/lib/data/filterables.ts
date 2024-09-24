@@ -5,6 +5,8 @@ import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
+import { uniqueArr } from 'e';
+import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
 import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
@@ -241,7 +243,7 @@ const gems = resolveItems([
 	'Zenyte shard'
 ]);
 
-const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems.bank).map(key => Number.parseInt(key)));
+const craftingItems = Craftables.flatMap(item => item.inputItems.itemIDs);
 
 const craftingItemsSet = [...new Set(craftingItems)];
 
@@ -365,7 +367,7 @@ export const seedsFilter = resolveItems([
 const allPotions = Potions.flatMap(potion => potion.items);
 const potions = [...new Set(allPotions)];
 
-const grimyHerbs = Grimy.flatMap(grimy => Object.keys(grimy.inputItems.bank).map(key => Number.parseInt(key)));
+const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
 const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
 cleanHerbs.push(itemID('Athelas'));
 
@@ -374,9 +376,9 @@ const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
 const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
 const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
 
-const allSecondaries = PotionsMixable.flatMap(item =>
-	Object.keys(item.inputItems.bank).map(key => Number.parseInt(key))
-).filter(item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item));
+const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).filter(
+	item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item)
+);
 
 export const secondaries = [...new Set(allSecondaries)];
 
@@ -413,9 +415,7 @@ const bones = resolveItems([
 	'Frost dragon bones'
 ]);
 
-const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => Number.parseInt(key)));
-
-const fletchingItemsSet = [...new Set(fletchingItems)];
+const fletchingItemsSet = uniqueArr(Fletchables.flatMap(item => item.inputItems.itemIDs));
 
 const skilling = resolveItems([
 	'Rune essence',
@@ -1018,6 +1018,16 @@ export const baseFilters: Filterable[] = [
 		name: 'Lamps',
 		aliases: ['lamps'],
 		items: () => XPLamps.map(i => i.itemID)
+	},
+	{
+		name: 'Lamps',
+		aliases: ['lamps'],
+		items: () => Lampables.flatMap(i => i.items)
+	},
+	{
+		name: 'Openables',
+		aliases: ['opens'],
+		items: () => allOpenables.map(i => i.id)
 	},
 	{
 		name: 'Favourite Alchs',

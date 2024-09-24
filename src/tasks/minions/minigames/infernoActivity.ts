@@ -180,7 +180,7 @@ export const infernoTask: MinionTask = {
 			const current = new Bank(currentData.inferno_cost as ItemBank);
 			const newBank = current.remove(unusedItems);
 			await mahojiClientSettingsUpdate({
-				inferno_cost: newBank.bank
+				inferno_cost: newBank.toJSON()
 			});
 		}
 

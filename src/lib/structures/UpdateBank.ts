@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { objectEntries } from 'e';
 import { mergeDeep } from 'remeda';
-import { type trackClientBankStats, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { type ClientBankKey, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import type { MUserClass } from '../MUser';
 import { degradeChargeBank } from '../degradeableItems';
 import type { GearSetup } from '../gear/types';
@@ -33,7 +33,7 @@ export class UpdateBank {
 	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
 	public userUpdates: Pick<Prisma.UserUpdateInput, 'slayer_points'> = {};
 
-	public clientStatsBankUpdates: Partial<Record<Parameters<typeof trackClientBankStats>['0'], Bank>> = {};
+	public clientStatsBankUpdates: Partial<Record<ClientBankKey, Bank>> = {};
 
 	public merge(other: UpdateBank) {
 		this.chargeBank.add(other.chargeBank);
@@ -42,9 +42,15 @@ export class UpdateBank {
 		this.xpBank.add(other.xpBank);
 		this.kcBank.add(other.kcBank);
 		this.materialsCostBank.add(other.materialsCostBank);
-		this.clientStatsBankUpdates = mergeDeep(this.clientStatsBankUpdates, other.clientStatsBankUpdates);
 		this.itemLootBankNoCL.add(other.itemLootBankNoCL);
-		this.userStatsBankUpdates = mergeDeep(this.userStatsBankUpdates, other.userStatsBankUpdates);
+
+		for (const [key, value] of objectEntries(other.clientStatsBankUpdates)) {
+			this.clientStatsBankUpdates[key] = (this.clientStatsBankUpdates[key] ?? new Bank()).add(value);
+		}
+
+		for (const [key, value] of objectEntries(other.userStatsBankUpdates)) {
+			this.userStatsBankUpdates[key] = (this.userStatsBankUpdates[key] ?? new Bank()).add(value);
+		}
 
 		if (objHasAnyPropInCommon(this.gearChanges, other.gearChanges)) {
 			throw new Error('Gear changes conflict');
@@ -58,6 +64,20 @@ export class UpdateBank {
 		this.gearChanges = mergeDeep(this.gearChanges, other.gearChanges);
 		this.userStats = mergeDeep(this.userStats, other.userStats);
 		this.userUpdates = mergeDeep(this.userUpdates, other.userUpdates);
+	}
+
+	async transactWithItemsOrThrow(...args: Parameters<UpdateBank['transact']>) {
+		const res = await this.transact(...args);
+		if (typeof res === 'string') {
+			throw new Error(res);
+		}
+		if (!res.itemTransactionResult) {
+			throw new Error('No item transaction result');
+		}
+		return {
+			...res,
+			itemTransactionResult: res.itemTransactionResult!
+		};
 	}
 
 	async transact(user: MUser, { isInWilderness }: { isInWilderness?: boolean } = { isInWilderness: false }) {
@@ -74,11 +94,16 @@ export class UpdateBank {
 		}
 
 		// Start removing/updating things
-		const promises = [];
+		const results: string[] = [];
 
 		// Charges
 		if (this.chargeBank.length() > 0) {
-			promises.push(degradeChargeBank(user, this.chargeBank).then(res => res.map(p => p.userMessage).join(', ')));
+			const res = await degradeChargeBank(user, this.chargeBank).then(res =>
+				res.map(p => p.userMessage).join(', ')
+			);
+			if (res) {
+				results.push(res);
+			}
 		}
 
 		// Loot/Cost
@@ -92,7 +117,7 @@ export class UpdateBank {
 
 		// XP
 		if (this.xpBank.length > 0) {
-			promises.push(user.addXPBank(this.xpBank));
+			results.push(await user.addXPBank(this.xpBank));
 		}
 
 		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
@@ -109,7 +134,7 @@ export class UpdateBank {
 		if (Object.keys(this.userStats).length > 0) {
 			userStatsUpdates = mergeDeep(userStatsUpdates, this.userStats);
 		}
-		if (Object.keys(userStatsUpdates).length > 0) {
+		if (Object.keys(this.userStatsBankUpdates).length > 0) {
 			const currentStats = await prisma.userStats.upsert({
 				where: {
 					user_id: BigInt(user.id)
@@ -119,7 +144,7 @@ export class UpdateBank {
 			});
 			for (const [key, value] of objectEntries(this.userStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
-				userStatsUpdates[key] = newValue.bank;
+				userStatsUpdates[key] = newValue.toJSON();
 			}
 		}
 
@@ -133,17 +158,14 @@ export class UpdateBank {
 		}
 
 		if (Object.keys(userUpdates).length > 0) {
-			promises.push(user.update(userUpdates));
+			await user.update(userUpdates);
 		}
-
-		const results = await Promise.all(promises);
 
 		if (this.materialsCostBank.values().length > 0) {
 			await transactMaterialsFromUser({
 				user,
 				remove: this.materialsCostBank
 			});
-			results.push(`Removed ${this.materialsCostBank}`);
 		}
 
 		if (this.itemLootBankNoCL.length > 0) {
@@ -156,11 +178,10 @@ export class UpdateBank {
 				(acc, key) => ({ ...acc, [key]: true }),
 				{} as Record<string, boolean>
 			);
-			console.log(keysToSelect);
 			const currentStats = await mahojiClientSettingsFetch(keysToSelect);
 			for (const [key, value] of objectEntries(this.clientStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
-				clientUpdates[key] = newValue.bank;
+				clientUpdates[key] = newValue.toJSON();
 			}
 			await mahojiClientSettingsUpdate(clientUpdates);
 		}

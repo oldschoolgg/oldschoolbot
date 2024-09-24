@@ -1,5 +1,4 @@
-import { writeFileSync } from 'node:fs';
-import { calcPerHour } from '@oldschoolgg/toolkit';
+import { calcPerHour, convertBankToPerHourStats } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
@@ -8,6 +7,7 @@ import { itemID, resolveItems, toKMB } from 'oldschooljs/dist/util';
 
 import '../src/lib/safeglobals';
 
+import { omit } from 'remeda';
 import { type BitField, PVM_METHODS } from '../src/lib/constants';
 import { degradeableItems } from '../src/lib/degradeableItems';
 import { maxMage, maxMelee, maxRange } from '../src/lib/depthsOfAtlantis';
@@ -29,8 +29,10 @@ import {
 	newMinionKillCommand
 } from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill';
 import { doMonsterTrip } from '../src/tasks/minions/monsterActivity';
+import { TSVWriter } from './TSVWriter';
 
-const MAX_TRIP_LENGTH = Time.Hour * 5;
+const MAX_TRIP_LENGTH = Time.Hour * 600;
+const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints', 'slayer'];
 
 function round(int: number) {
 	return Math.round(int / 1000) * 1000;
@@ -175,7 +177,7 @@ for (const monster of killableMonsters) {
 				} = commandResult.currentTaskOptions;
 				const tripResult = doMonsterTrip({
 					type: 'MonsterKilling',
-					mi: monster.id,
+					monster,
 					q: commandResult.quantity,
 					usingCannon,
 					cannonMulti,
@@ -216,66 +218,59 @@ const headers = [
 	'Monster',
 	'AttackStyle',
 	'XP/hr',
+	...skills.map(s => `${s} XP/hr`),
+	'Options',
+	'Food',
 	'GP/hr',
 	'Cost/hr',
-	'Profit (loot÷cost)',
-	'Raw XP',
-	'Options',
-	'Food'
+	'Raw Command',
+	'Raw Trip'
 ];
-const rows = results
-	.map(({ tripResult, commandResult }) => {
-		const xpHr = round(calcPerHour(tripResult.updateBank.xpBank.totalXP(), commandResult.duration));
-		const gpHr = round(calcPerHour(tripResult.updateBank.itemLootBank.value(), commandResult.duration));
-		const costHr = round(calcPerHour(commandResult.updateBank.itemCostBank.value(), commandResult.duration));
+const tsvWriter = new TSVWriter('data/monster_data.tsv');
 
-		const options: any = [];
-		if (commandResult.currentTaskOptions.bob === SlayerActivityConstants.IceBarrage) {
-			options.push('Barrage');
-		}
-		if (commandResult.currentTaskOptions.bob === SlayerActivityConstants.IceBurst) {
-			options.push('Burst');
-		}
-		if (commandResult.currentTaskOptions.chinning) {
-			options.push('Chinning');
-		}
-		if (commandResult.currentTaskOptions.isInWilderness) {
-			options.push('Is In Wilderness');
-		}
-		options.push(tripResult.slayerContext.isOnTask ? 'On Task' : 'Off Task');
-		if (xpHr < 35_000 && gpHr < 300_000) return null;
+tsvWriter.writeRow(headers);
 
-		const totalSharks = commandResult.updateBank.itemCostBank.amount('Shark');
-		const sharksPerHour = calcPerHour(totalSharks, commandResult.duration);
+for (const { tripResult, commandResult } of results) {
+	const xpHr = round(calcPerHour(tripResult.updateBank.xpBank.totalXP(), commandResult.duration));
 
-		const xpHrBreakdown: string[] = [];
-		for (const skill of SkillsArray) {
-			if (tripResult.updateBank.xpBank.amount(skill) > 0) {
-				xpHrBreakdown.push(
-					`${calcPerHour(tripResult.updateBank.xpBank.amount(skill), commandResult.duration).toFixed(0)}/hr ${skill}`
-				);
-			}
-		}
+	const options: string[] = [];
+	if (commandResult.currentTaskOptions.bob === SlayerActivityConstants.IceBarrage) {
+		options.push('Barrage');
+	}
+	if (commandResult.currentTaskOptions.bob === SlayerActivityConstants.IceBurst) {
+		options.push('Burst');
+	}
+	if (commandResult.currentTaskOptions.chinning) {
+		options.push('Chinning');
+	}
+	if (commandResult.currentTaskOptions.isInWilderness) {
+		options.push('Is In Wilderness');
+	}
 
-		return [
-			tripResult.monster.name,
-			commandResult.attackStyles
-				.join('-')
-				.replace('attack', 'atk')
-				.replace('defence', 'def')
-				.replace('magic', 'mage')
-				.replace('ranged', 'range')
-				.replace('strength', 'str'),
-			`${toKMB(xpHr)} XP/hr`,
-			`${toKMB(gpHr)} GP/hr`,
-			`${toKMB(costHr)} cost gp/hr`,
-			costHr > 0 ? (gpHr / costHr).toFixed(1) : '',
-			tripResult.updateBank.xpBank.totalXP(),
-			options.join(' '),
-			`${sharksPerHour.toFixed(1)} Sharks/hr`
-		];
-	})
-	.filter(i => Boolean(i));
-writeFileSync('data/monster_data.tsv', [headers, ...rows].map(row => row?.join('\t')).join('\n'));
-// writeFileSync('data/monster_data.md', makeTable(headers, rows));
-process.exit();
+	if (xpHr < 35_000) continue;
+
+	const totalSharks = commandResult.updateBank.itemCostBank.amount('Shark');
+	const sharksPerHour = calcPerHour(totalSharks, commandResult.duration);
+
+	const styles = commandResult.attackStyles
+		.join('-')
+		.replace('attack', 'atk')
+		.replace('defence', 'def')
+		.replace('magic', 'mage')
+		.replace('ranged', 'range')
+		.replace('strength', 'str');
+
+	tsvWriter.writeRow([
+		tripResult.monster.name,
+		styles,
+		`${toKMB(xpHr)} XP/hr`,
+		...skills.map(s => toKMB(calcPerHour(tripResult.updateBank.xpBank.amount(s as any), commandResult.duration))),
+		options.join(' '),
+		`${sharksPerHour.toFixed(1)} Sharks/hr`,
+		`${convertBankToPerHourStats(commandResult.updateBank.itemLootBank.clone().add(commandResult.updateBank.itemLootBankNoCL), commandResult.duration)} Loot/hr`,
+		`${convertBankToPerHourStats(commandResult.updateBank.itemCostBank, commandResult.duration)} Cost/hr`,
+		JSON.stringify(omit(commandResult, ['updateBank'])),
+		JSON.stringify(omit(tripResult, ['updateBank', 'slayerContext', 'monster']))
+	]);
+}
+tsvWriter.end().then(() => process.exit());

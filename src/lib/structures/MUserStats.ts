@@ -22,7 +22,10 @@ export class MUserStats {
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
 		this.baHonourLevel = userStats.honour_level;
-		this.sacrificedBank = new Bank().add(this.userStats.sacrificed_bank as ItemBank);
+		const sacBank = this.userStats.sacrificed_bank as ItemBank;
+		// biome-ignore lint/performance/noDelete: <explanation>
+		delete sacBank['0'];
+		this.sacrificedBank = new Bank().add(sacBank);
 		this.titheFarmsCompleted = this.userStats.tithe_farms_completed;
 		this.lapsScores = userStats.laps_scores as ItemBank;
 		this.openableScores = new Bank().add(userStats.openable_scores as ItemBank);
@@ -34,15 +37,7 @@ export class MUserStats {
 	}
 
 	static async fromID(id: string) {
-		const userStats = await prisma.userStats.upsert({
-			where: {
-				user_id: BigInt(id)
-			},
-			create: {
-				user_id: BigInt(id)
-			},
-			update: {}
-		});
+		const userStats = await prisma.userStats.findFirstOrThrow({ where: { user_id: BigInt(id) } });
 		return new MUserStats(userStats);
 	}
 

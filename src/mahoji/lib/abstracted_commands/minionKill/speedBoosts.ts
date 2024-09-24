@@ -1,10 +1,11 @@
-import { calcWhatPercent } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Time, calcWhatPercent } from 'e';
+import { Bank, type Item, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
+import { omit } from 'remeda';
+import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { gearstatToSetup, gorajanBoosts } from '../../../../lib/bso/misc';
 import type { PvMMethod } from '../../../../lib/constants';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
@@ -277,12 +278,12 @@ const blackMaskBoost: Boost = {
 		} else if (hasBlackMaskI && [SkillsEnum.Magic, SkillsEnum.Ranged].every(s => style.includes(s))) {
 			return {
 				percentageReduction: oneSixthBoost,
-				message: `${oneSixthBoost}% for Black mask (i) on non-melee task`
+				message: `${oneSixthBoost}% for Black mask (i) on task`
 			};
 		} else if (hasBlackMask) {
 			return {
 				percentageReduction: oneSixthBoost,
-				message: `${oneSixthBoost}% for Black mask on melee task`
+				message: `${oneSixthBoost}% for Black mask on task`
 			};
 		}
 		return null;
@@ -295,12 +296,10 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 		description: 'Item Boosts',
 		run: ({ monster, gearBank, isInWilderness }) => {
 			const results: BoostResult[] = [];
-			for (const [itemID, boostAmount] of Object.entries(
-				resolveAvailableItemBoosts(gearBank, monster, isInWilderness)
-			)) {
+			for (const [item, boostAmount] of resolveAvailableItemBoosts(gearBank, monster, isInWilderness).items()) {
 				results.push({
 					percentageReduction: boostAmount,
-					message: `${boostAmount}% for ${itemNameFromID(Number.parseInt(itemID))}`
+					message: `${boostAmount}% for ${item.name}`
 				});
 			}
 			return results;
@@ -483,7 +482,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 	},
 	{
 		description: 'BSO Boosts',
-		run: ({ isInWilderness, gearBank, monster, attackStyles }) => {
+		run: ({ isInWilderness, gearBank, monster, attackStyles, bitfield }) => {
 			const results: BoostResult[] = [];
 			if (
 				gearBank.hasEquipped('Gregoyle') &&
@@ -502,19 +501,12 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				});
 			}
 
-			const hasBlessing = gearBank.hasEquipped('Dwarven blessing');
 			const hasZealotsAmulet = gearBank.hasEquipped('Amulet of zealots');
 
-			if (hasZealotsAmulet && hasBlessing) {
-				results.push({
-					percentageReduction: 25,
-					message: '25% for Dwarven blessing & Amulet of zealots'
-				});
-			} else if (!hasZealotsAmulet && hasBlessing) {
-				results.push({
-					percentageReduction: 20,
-					message: '20% for Dwarven blessing'
-				});
+			// If they can afford 2 hours of using the blessing, give them the boost and charge them in postBoosts
+			const blessingResult = dwarvenBlessing({ gearBank, duration: Time.Hour * 2, bitfield });
+			if (blessingResult) {
+				results.push(omit(blessingResult, ['itemCost']));
 			} else if (isInWilderness && hasZealotsAmulet) {
 				results.push({
 					percentageReduction: 5,
@@ -525,15 +517,13 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			// Gorajan
 			const allGorajan = gorajanBoosts.every(e => gearBank.gear[e[1]].hasEquipped(e[0], true));
 			for (const [outfit, setup] of gorajanBoosts) {
-				if (
-					allGorajan ||
-					(gearstatToSetup.get(monster.attackStyleToUse) === setup &&
-						gearBank.gear[setup].hasEquipped(outfit, true))
-				) {
+				const expectedSetup = monster.attackStyleToUse ? gearstatToSetup.get(monster.attackStyleToUse) : null;
+				if (allGorajan || (expectedSetup === setup && gearBank.gear[setup].hasEquipped(outfit, true))) {
 					results.push({
 						percentageReduction: 10,
-						message: '10% for Gorajan'
+						message: `10% for ${itemNameFromID(outfit[0])!.split(' ').slice(0, 2).join(' ')} gear`
 					});
+					break;
 				}
 			}
 

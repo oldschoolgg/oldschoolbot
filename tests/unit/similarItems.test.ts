@@ -124,7 +124,7 @@ describe('Gear', () => {
 
 	test('bso tests', () => {
 		expect(bsoTestGear.allItemsBank().toString()).toEqual(
-			"1x Torva platelegs, 1x Gorajan warrior top, 1x Artisan's cape, 1x Drygore mace (ice), 1x Offhand drygore mace (shadow)"
+			"1x Artisan's cape, 1x Drygore mace (ice), 1x Gorajan warrior top, 1x Offhand drygore mace (shadow), 1x Torva platelegs"
 		);
 		expect(bsoTestGear.hasEquipped('Drygore mace (ice)')).toBeTruthy();
 		expect(bsoTestGear.hasEquipped('Drygore mace')).toBeTruthy();

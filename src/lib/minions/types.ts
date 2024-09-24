@@ -149,6 +149,7 @@ export interface KillableMonster {
 	customRequirement?: (user: MUser) => Promise<string | null>;
 	setupsUsed?: GearSetupType[];
 	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
+	maxQuantity?: number;
 }
 /*
  * Monsters will have an array of Consumables

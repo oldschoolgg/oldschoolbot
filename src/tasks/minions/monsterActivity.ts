@@ -141,7 +141,7 @@ function getSlayerContext({
 
 interface newOptions {
 	type: 'MonsterKilling';
-	mi: number;
+	monster: KillableMonster;
 	q: number;
 	iQty?: number;
 	usingCannon?: boolean;
@@ -170,7 +170,7 @@ interface newOptions {
 
 export function doMonsterTrip(data: newOptions) {
 	let {
-		mi: monsterID,
+		monster,
 		q: quantity,
 		usingCannon,
 		cannonMulti,
@@ -194,10 +194,9 @@ export function doMonsterTrip(data: newOptions) {
 		cl,
 		disabledInventions
 	} = data;
-
-	const currentKC = kcBank.amount(monsterID);
+	const currentKC = kcBank.amount(monster.id);
 	const updateBank = new UpdateBank();
-	const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+
 	const isRevenantMonster = monster.name.includes('Revenant');
 
 	let skulled = false;
@@ -214,7 +213,7 @@ export function doMonsterTrip(data: newOptions) {
 
 		for (let i = 0; i < (pkEncounters ?? -1); i++) {
 			if (percentChance(2) || died) {
-				antiPKSupplies.bank = {};
+				antiPKSupplies.clear();
 				break;
 			} else if (percentChance(10)) {
 				antiPKSupplies
@@ -285,8 +284,6 @@ export function doMonsterTrip(data: newOptions) {
 		}
 	}
 
-	quantity = oriEffect({ gearBank, quantity, duration, messages });
-
 	// Monster deaths
 	let deaths = 0;
 	if (monster.deathProps) {
@@ -306,18 +303,23 @@ export function doMonsterTrip(data: newOptions) {
 		Monsters.AwakenedTheWhisperer.id,
 		Monsters.AwakenedVardorvis.id
 	];
-	const isAwakened = awakenedMonsters.includes(monsterID);
+	const isAwakened = awakenedMonsters.includes(monster.id);
 	if (
 		quantity > 0 &&
 		!gearBank.bank.has('Ancient blood ornament kit') &&
-		awakenedMonsters.every(id => Boolean(kcBank.has(id)) || monsterID === id) &&
+		awakenedMonsters.every(id => kcBank.has(id) || monster.id === id) &&
 		isAwakened
 	) {
 		messages.push('You received an **Ancient blood ornament kit**!');
 		updateBank.itemLootBank.add('Ancient blood ornament kit', 1);
 	}
 
-	const slayerContext = getSlayerContext({ slayerInfo, monsterID, quantityKilled: quantity, slayerUnlocks });
+	const slayerContext = getSlayerContext({
+		slayerInfo,
+		monsterID: monster.id,
+		quantityKilled: quantity,
+		slayerUnlocks
+	});
 
 	const superiorTable = slayerContext.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 	const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
@@ -368,7 +370,9 @@ export function doMonsterTrip(data: newOptions) {
 	// Loot
 	const finalQuantity = quantity - newSuperiorCount;
 
-	const loot = wiped ? new Bank() : monster.table.kill(finalQuantity, killOptions);
+	const loot = wiped
+		? new Bank()
+		: monster.table.kill(oriEffect({ gearBank, quantity: finalQuantity, duration, messages }), killOptions);
 	if (isDoubleLootActive(duration)) {
 		loot.multiply(2);
 		messages.push('**Double loot activated!**');
@@ -482,16 +486,16 @@ export function doMonsterTrip(data: newOptions) {
 	};
 	rollForBSOThings(midTripArgs);
 
-	if (!wiped) updateBank.kcBank.add(monsterID, quantity);
-	const newKC = kcBank.amount(monsterID) + quantity;
+	if (!wiped) updateBank.kcBank.add(monster.id, quantity);
+	const newKC = kcBank.amount(monster.id) + quantity;
 
 	return {
 		slayerContext,
 		quantity,
 		messages,
-		monster,
 		newKC,
-		updateBank
+		updateBank,
+		monster
 	};
 }
 
@@ -510,9 +514,11 @@ export const monsterTask: MinionTask = {
 			});
 			return;
 		}
-
-		const { slayerContext, monster, quantity, newKC, messages, updateBank } = doMonsterTrip({
+		const monster = killableMonsters.find(mon => mon.id === data.mi)!;
+		const attackStyles = data.attackStyles ?? user.getAttackStyles();
+		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({
 			...data,
+			monster,
 			tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
 				user.hasEquipped('Ring of wealth (i)'),
 				data.isInWilderness,
@@ -527,7 +533,7 @@ export const monsterTask: MinionTask = {
 			slayerInfo,
 			slayerUnlocks: user.user.slayer_unlocks,
 			userStats: stats,
-			attackStyles: user.getAttackStyles(),
+			attackStyles,
 			hasEliteCA: user.hasCompletedCATier('elite'),
 			bitfield: user.bitfield,
 			cl: user.cl,

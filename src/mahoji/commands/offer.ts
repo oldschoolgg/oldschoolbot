@@ -42,7 +42,7 @@ const offerables = new Set(
 );
 
 function notifyUniques(user: MUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
-	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);
+	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id));
 	if (itemsToAnnounce.length > 0) {
 		globalClient.emit(
 			Events.ServerNotification,
