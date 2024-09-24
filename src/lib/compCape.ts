@@ -502,6 +502,20 @@ for (const [name, key] of petTripSource) {
 }
 miscRequirements
 	.add({
+		name: 'Buy a Music cape',
+		has: ({ stats }) => {
+			const itemsBought = new Bank(stats.userStats.buy_loot_bank as ItemBank);
+			if (!itemsBought.has('Music cape')) {
+				return [
+					{
+						reason: 'You need to buy a Music cape.'
+					}
+				];
+			}
+			return [];
+		}
+	})
+	.add({
 		name: 'Buy a trimmed Music cape',
 		has: ({ stats }) => {
 			const itemsBought = new Bank(stats.userStats.buy_loot_bank as ItemBank);

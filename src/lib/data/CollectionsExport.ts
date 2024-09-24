@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import { removeDiscontinuedItems } from '../bso/bsoUtil';
 import { growablePets } from '../growablePets';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
 import type { MinigameScore } from '../settings/minigames';
@@ -2650,14 +2651,16 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 
 export const holidayCL = allHolidayItems;
 
-export const gracefulCL = resolveItems([
-	...gracefulHoods,
-	...gracefulTops,
-	...gracefulLegs,
-	...gracefulFeet,
-	...gracefulHands,
-	...gracefulCapes
-]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)', 'Agility master cape']).includes(id));
+export const gracefulCL = removeDiscontinuedItems(
+	resolveItems([
+		...gracefulHoods,
+		...gracefulTops,
+		...gracefulLegs,
+		...gracefulFeet,
+		...gracefulHands,
+		...gracefulCapes
+	]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)', 'Agility master cape']).includes(id))
+);
 
 export const gorajanWarriorOutfit = resolveItems([
 	'Gorajan warrior helmet',
@@ -3233,7 +3236,7 @@ export const skillingMiscCL = resolveItems([
 	'Dwarven gauntlets'
 ]);
 
-export const crackerCL = PartyhatTable.allItems;
+export const crackerCL = resolveItems([...PartyhatTable.allItems, 'Partyhat & specs', 'Partyhat set']);
 
 export const leaguesCL = resolveItems(['Fuzzy dice', 'Karambinana']);
 export const upgradedDragonstoneOutfit = resolveItems([
