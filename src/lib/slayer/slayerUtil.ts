@@ -3,7 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
+import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
 import type { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
@@ -31,14 +31,13 @@ export enum SlayerMasterEnum {
 }
 
 interface DetermineBoostParams {
-	cbOpts: CombatOptionsEnum[];
-	user: MUser;
+	cbOpts: readonly CombatOptionsEnum[];
 	monster: KillableMonster;
 	methods?: PvMMethod[] | null;
 	isOnTask?: boolean;
 	wildyBurst?: boolean;
 }
-export function determineCombatBoosts(params: DetermineBoostParams) {
+export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[] {
 	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
 	const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
 
@@ -83,7 +82,7 @@ export function determineCombatBoosts(params: DetermineBoostParams) {
 	return boostMethods;
 }
 
-export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: MUser) {
+export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, hasKourendElite: boolean) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 
@@ -94,11 +93,8 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 	let { basePoints } = master;
 
 	// Boost points to 20 for Konar + Kourend Elites
-	if (master.name === 'Konar quo Maten') {
-		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
-		if (hasKourendElite) {
-			basePoints = 20;
-		}
+	if (master.name === 'Konar quo Maten' && hasKourendElite) {
+		basePoints = 20;
 	}
 	for (let i = 0; i < streaks.length; i++) {
 		if (currentStreak >= streaks[i] && currentStreak % streaks[i] === 0) {
@@ -309,22 +305,36 @@ export function getCommonTaskName(task: Monster) {
 	return commonName;
 }
 
+export type CurrentSlayerInfo = Awaited<ReturnType<typeof getUsersCurrentSlayerInfo>>;
 export async function getUsersCurrentSlayerInfo(id: string) {
-	const currentTask = await prisma.slayerTask.findFirst({
-		where: {
-			user_id: id,
-			quantity_remaining: {
-				gt: 0
+	const [currentTask, partialUser] = await prisma.$transaction([
+		prisma.slayerTask.findFirst({
+			where: {
+				user_id: id,
+				quantity_remaining: {
+					gt: 0
+				},
+				skipped: false
+			}
+		}),
+		prisma.user.findFirst({
+			where: {
+				id
 			},
-			skipped: false
-		}
-	});
+			select: {
+				slayer_points: true
+			}
+		})
+	]);
+
+	const slayerPoints = partialUser?.slayer_points ?? 0;
 
 	if (!currentTask) {
 		return {
 			currentTask: null,
 			assignedTask: null,
-			slayerMaster: null
+			slayerMaster: null,
+			slayerPoints
 		};
 	}
 
@@ -344,14 +354,16 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		return {
 			currentTask: null,
 			assignedTask: null,
-			slayerMaster: null
+			slayerMaster: null,
+			slayerPoints
 		};
 	}
 
 	return {
 		currentTask,
 		assignedTask,
-		slayerMaster
+		slayerMaster,
+		slayerPoints
 	};
 }
 
@@ -404,9 +416,11 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 		return { bankLoot: myLoot, clLoot: myLoot };
 	}
 
-	myLoot.filter(i => !filterLootItems.includes(i.id), true);
+	for (const item of filterLootItems) {
+		myLoot.set(item, 0);
+	}
 
-	const myClLoot = new Bank(myLoot.bank);
+	const myClLoot = myLoot.clone();
 
 	const combinedBank = new Bank(myBank).add(myLoot);
 	if (numBludgeonPieces) {
@@ -536,33 +550,4 @@ export async function setDefaultAutoslay(
 		slayer_autoslay_options: [autoslayOption.key]
 	});
 	return { success: true, message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})` };
-}
-
-export async function isOnSlayerTask({
-	user,
-	monsterID,
-	quantityKilled
-}: {
-	user: MUser;
-	monsterID: number;
-	quantityKilled: number;
-}) {
-	const usersTask = await getUsersCurrentSlayerInfo(user.id);
-	const isOnTask =
-		usersTask.assignedTask !== null &&
-		usersTask.currentTask !== null &&
-		usersTask.assignedTask.monsters.includes(monsterID);
-
-	const hasSuperiorsUnlocked = user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder);
-
-	if (!isOnTask) return { isOnTask, hasSuperiorsUnlocked };
-
-	const quantitySlayed = Math.min(usersTask.currentTask.quantity_remaining, quantityKilled);
-
-	return {
-		isOnTask,
-		hasSuperiorsUnlocked,
-		quantitySlayed,
-		...usersTask
-	};
 }

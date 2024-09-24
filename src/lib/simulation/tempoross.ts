@@ -155,7 +155,7 @@ export function getTemporossLoot(quantity: number, fishingLevel: number, userBan
 
 	for (let index = 0; index < quantity; index++) {
 		const newItem = lootTable.roll();
-		if (replaceItems.includes(newItem.items()[0][0].name) && userBank.has(newItem.bank)) {
+		if (replaceItems.includes(newItem.items()[0][0].name) && userBank.has(newItem)) {
 			loot.add('Soaked page', 25);
 		} else {
 			loot.add(newItem);

@@ -20,7 +20,7 @@ function makePrismaClient(): PrismaClient {
 	}
 
 	return new PrismaClient({
-		log: ['info', 'warn', 'error']
+		log: ['warn', 'error']
 	});
 }
 global.prisma = global.prisma || makePrismaClient();
@@ -32,7 +32,7 @@ function makeRobochimpPrismaClient(): RobochimpPrismaClient {
 	}
 
 	return new RobochimpPrismaClient({
-		log: ['info', 'warn', 'error']
+		log: ['warn', 'error']
 	});
 }
 global.roboChimpClient = global.roboChimpClient || makeRobochimpPrismaClient();

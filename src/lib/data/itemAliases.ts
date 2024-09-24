@@ -1,10 +1,8 @@
-import { deepMerge, modifyItem } from '@oldschoolgg/toolkit';
-import { omit } from 'lodash';
-import { EItem, Items } from 'oldschooljs';
-import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { modifyItem } from '@oldschoolgg/toolkit';
+import { EItem, Items, allTeamCapes, itemNameMap } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
+import { mergeDeep, omit } from 'remeda';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
@@ -31,6 +29,9 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 			name: firstName!,
 			id
 		});
+	}
+	if (Items.get(id)!.name !== firstName) {
+		throw new Error(`Failed to set item alias for item ${id}`);
 	}
 }
 
@@ -415,5 +416,5 @@ export const itemDataSwitches = [
 for (const items of itemDataSwitches) {
 	const from = getItemOrThrow(items.from);
 	const to = getItemOrThrow(items.to);
-	modifyItem(to.id, deepMerge(omit(to, 'id'), omit(from, 'id')));
+	modifyItem(to.id, mergeDeep(omit(to, ['id']), omit(from, ['id'])));
 }

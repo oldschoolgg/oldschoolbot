@@ -76,7 +76,7 @@ export const payCommand: OSBMahojiCommand = {
 				guild_id: guildID ? BigInt(guildID) : undefined,
 				sender: BigInt(user.id),
 				recipient: BigInt(recipient.id),
-				items_sent: bank.bank,
+				items_sent: bank.toJSON(),
 				items_received: undefined,
 				type: 'trade'
 			}

@@ -11,7 +11,7 @@ describe('specialRemoveItems', () => {
 		gear.equip('Rune arrow', 1000);
 		await user.update({
 			gear_range: gear.raw() as any,
-			bank: new Bank().add('Egg', 1000).bank
+			bank: new Bank().add('Egg', 1000).toJSON()
 		});
 		expect(user.gear.range.ammo!.quantity).toBe(1000);
 		await user.specialRemoveItems(new Bank().add('Rune arrow', 1000));
@@ -25,7 +25,7 @@ describe('specialRemoveItems', () => {
 		gear.equip("Ava's assembler");
 		await user.update({
 			gear_range: gear.raw() as any,
-			bank: new Bank().add('Egg', 1000).bank
+			bank: new Bank().add('Egg', 1000).toJSON()
 		});
 		expect(user.gear.range.ammo!.quantity).toBe(1000);
 		await user.specialRemoveItems(new Bank().add('Rune arrow', 1000));
@@ -40,7 +40,7 @@ describe('specialRemoveItems', () => {
 		gear.equip("Ava's assembler");
 		await user.update({
 			gear_range: gear.raw() as any,
-			bank: new Bank().add('Egg', 1000).bank
+			bank: new Bank().add('Egg', 1000).toJSON()
 		});
 		expect(user.gear.range.ammo!.quantity).toBe(1000);
 		await user.specialRemoveItems(new Bank().add('Rune javelin', 1000));

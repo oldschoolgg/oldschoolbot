@@ -134,7 +134,7 @@ export async function duelCommand(
 				guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
 				sender: BigInt(loser.id),
 				recipient: BigInt(winner.id),
-				items_sent: new Bank().add('Coins', Math.floor(amount * taxRate)).bank,
+				items_sent: new Bank().add('Coins', Math.floor(amount * taxRate)).toJSON(),
 				type: 'duel'
 			}
 		});

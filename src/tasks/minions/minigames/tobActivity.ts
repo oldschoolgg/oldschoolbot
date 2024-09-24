@@ -45,8 +45,8 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 	results.push(
 		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'TheatreOfBlood' })
 	);
-	let [, , styles] = resolveAttackStyles(user, {
-		monsterID: -1
+	let styles = resolveAttackStyles({
+		attackStyles: user.getAttackStyles()
 	});
 	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
 		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
@@ -161,7 +161,7 @@ export const tobTask: MinionTask = {
 				const isPurple = items.some(([item]) => TOBUniques.includes(item.id));
 				const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
 				if (shouldAnnounce) {
-					const itemsToAnnounce = userLoot.filter(item => TOBUniques.includes(item.id), false);
+					const itemsToAnnounce = userLoot.filter(item => TOBUniques.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
 						`${Emoji.Purple} ${
