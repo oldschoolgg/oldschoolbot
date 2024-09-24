@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     make \
     fontconfig \
     git \
+    libfontconfig1 \
     curl \
     libjemalloc-dev
 
