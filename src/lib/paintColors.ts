@@ -1,8 +1,8 @@
-import { type Image, createCanvas } from '@napi-rs/canvas';
 import { LootTable } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { setCustomItem } from './customItems/util';
+import { type CanvasImage, createCanvas } from './util/canvasUtil';
 import getOSItem from './util/getOSItem';
 
 interface PaintColor {
@@ -47,7 +47,11 @@ for (const paintColor of paintColors) {
 
 export const paintColorsMap = new Map(paintColors.map(i => [i.itemId, i]));
 
-export const applyPaintToItemIcon = async (img: Image, tintColor: [number, number, number], blackTolerance = 4) => {
+export const applyPaintToItemIcon = async (
+	img: CanvasImage,
+	tintColor: [number, number, number],
+	blackTolerance = 4
+) => {
 	const canvas = createCanvas(img.width, img.height);
 	const ctx = canvas.getContext('2d');
 	const [r, g, b] = tintColor;

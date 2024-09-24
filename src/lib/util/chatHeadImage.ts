@@ -1,7 +1,6 @@
-import { Canvas } from '@napi-rs/canvas';
 import { AttachmentBuilder } from 'discord.js';
 
-import { loadAndCacheLocalImage, printWrappedText } from './canvasUtil';
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage, printWrappedText } from './canvasUtil';
 
 export const textBoxFile = loadAndCacheLocalImage('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = loadAndCacheLocalImage('./src/lib/resources/images/mejJal.png');
@@ -57,7 +56,7 @@ const names: Record<keyof typeof chatHeads, string> = {
 };
 
 export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
-	const canvas = new Canvas(519, 142);
+	const canvas = createCanvas(519, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	const headImage = await chatHeads[head];
@@ -73,7 +72,7 @@ export async function newChatHeadImage({ content, head }: { content: string; hea
 	ctx.fillStyle = '#000';
 	printWrappedText(ctx, content, 307, 58, 361);
 
-	return canvas.encode('png');
+	return canvasToBuffer(canvas);
 }
 
 export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
