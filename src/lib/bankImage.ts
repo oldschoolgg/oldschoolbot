@@ -25,6 +25,7 @@ import {
 	CanvasImage,
 	canvasToBuffer,
 	createCanvas,
+	drawImageWithOutline,
 	fillTextXTimesInCtx,
 	getClippedRegionImage,
 	loadImage,
@@ -467,11 +468,7 @@ export class BankImageTask {
 		drawOptions.destX = Math.floor(x + (itemSize - drawOptions.sourceWidth) / 2) + 2;
 		drawOptions.destY = Math.floor(y + (itemSize - drawOptions.sourceHeight) / 2);
 
-		if (outline) {
-			ctx.filter = `drop-shadow(0px 0px 2px ${outline.outlineColor})`;
-		}
-
-		ctx.drawImage(
+		const args = [
 			drawOptions.image,
 			drawOptions.sourceX,
 			drawOptions.sourceY,
@@ -481,9 +478,13 @@ export class BankImageTask {
 			drawOptions.destY,
 			drawOptions.sourceWidth,
 			drawOptions.sourceHeight
-		);
+		] as const;
 
-		ctx.filter = 'none';
+		if (outline) {
+			drawImageWithOutline(ctx, ...args);
+		} else {
+			ctx.drawImage(...args);
+		}
 	}
 
 	async fetchAndCacheImage(itemID: number) {

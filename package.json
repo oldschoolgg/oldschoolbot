@@ -25,7 +25,6 @@
 		"data": "concurrently \"tsx ./scripts/monster_table.ts\" \"tsx ./scripts/clue_table.ts\" && yarn lint"
 	},
 	"dependencies": {
-		"@napi-rs/canvas": "^0.1.54",
 		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#c0c491661cffff19769a18d074f57a0b70c80603",
 		"@prisma/client": "^5.17.0",
 		"@sapphire/ratelimits": "^2.4.9",
@@ -52,6 +51,7 @@
 		"random-js": "^2.1.0",
 		"remeda": "^2.7.0",
 		"simple-statistics": "^7.8.3",
+		"skia-canvas": "^1.0.2",
 		"sonic-boom": "^4.0.1",
 		"zlib-sync": "^0.1.9",
 		"zod": "^3.23.8"

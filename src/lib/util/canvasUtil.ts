@@ -1,11 +1,16 @@
 import { readFile } from 'node:fs/promises';
-import { SKRSContext2D as CanvasContext, GlobalFonts, Image, Canvas as RawCanvas } from '@napi-rs/canvas';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import {
+	CanvasRenderingContext2D as CanvasContext,
+	Image,
+	Canvas as RawCanvas,
+	FontLibrary,
+} from 'skia-canvas';
 
 import { assert } from '../util';
 
 export function registerFont(fontFamily: string, fontPath: string) {
-	GlobalFonts.registerFromPath(fontPath, fontFamily);
+	FontLibrary.use(fontFamily, fontPath);
 }
 export function createCanvas(width: number, height: number) {
 	return new RawCanvas(width, height);
@@ -59,14 +64,18 @@ export function drawTitleText(ctx: CanvasContext, title: string, x: number, y: n
 export function drawImageWithOutline(
 	ctx: CanvasContext,
 	image: Canvas | Image,
+	sx: number,
+	sy: number,
+	sw: number,
+	sh: number,
 	dx: number,
 	dy: number,
 	dw: number,
-	dh: number,
-	outlineColor: string,
-	outlineWidth = 1,
-	alpha = 0.5
+	dh: number
 ): void {
+	const alpha = 0.5;
+	const outlineColor = '#ac7fff';
+	const outlineWidth = 1;
 	const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1];
 	const purplecanvas = createCanvas(image.width + (outlineWidth + 2), image.height + (outlineWidth + 2));
 	const pctx = purplecanvas.getContext('2d');
@@ -76,8 +85,8 @@ export function drawImageWithOutline(
 	pctx.fillStyle = outlineColor;
 	pctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	pctx.globalCompositeOperation = 'source-over';
-	ctx.drawImage(pctx.canvas, dx, dy, dw + (outlineWidth + 2), dh + (outlineWidth + 2));
-	ctx.drawImage(image, dx, dy, dw, dh);
+	ctx.drawImage(pctx.canvas, sx, sy, sw, sh, dx, dy, dw + (outlineWidth + 2), dh + (outlineWidth + 2));
+	ctx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
 }
 
 function printMultilineText(ctx: CanvasContext, text: string, x: number, y: number) {
@@ -143,13 +152,7 @@ export function getClippedRegion(image: Image | Canvas, x: number, y: number, wi
 }
 
 export async function canvasToBuffer(canvas: Canvas): Promise<Buffer> {
-	// return new Promise<Buffer>((resolve, reject) => {
-	// 	canvas.toBuffer((err, buf) => {
-	// 		if (err) reject(err);
-	// 		resolve(buf);
-	// 	}, 'image/png');
-	// });
-	return canvas.encode('png');
+	return canvas.png;
 }
 
 export async function getClippedRegionImage(
