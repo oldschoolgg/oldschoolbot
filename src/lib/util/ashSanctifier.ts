@@ -33,12 +33,10 @@ export function ashSanctifierEffect({
 		if (amount > 0 && chargesLeft >= amount) {
 			totalXP += ash.xp * ashXpModifider * amount;
 			ashesSanctified.push({ name: ash.name, amount });
-			mutableLootToReceive.remove(ash.inputId, amount);
 			chargesLeft -= amount;
 		} else if (amount > 0 && chargesLeft < amount) {
 			totalXP += ash.xp * ashXpModifider * chargesLeft;
 			ashesSanctified.push({ name: ash.name, amount: chargesLeft });
-			mutableLootToReceive.remove(ash.inputId, chargesLeft);
 			chargesLeft = 0;
 			break;
 		}
@@ -49,13 +47,14 @@ export function ashSanctifierEffect({
 	const ashString = ashesSanctified.map(ash => `${ash.amount}x ${ash.name}`).join(', ');
 
 	const updateBank = new UpdateBank();
-	updateBank.xpBank.add('prayer', totalXP, { duration, minimal: true, multiplier: false, source: 'AshSanctifier' });
+	updateBank.xpBank.add('prayer', totalXP, { duration, minimal: true, multiplier: true, source: 'AshSanctifier' });
 	updateBank.chargeBank.add('ash_sanctifier_charges', startingAshSanctifierCharges - chargesLeft);
 	updateBank.userStats.ash_sanctifier_prayer_xp = {
 		increment: Math.floor(totalXP)
 	};
 	return {
 		message: `${totalXP} Prayer XP from purifying ${ashString} using the Ash Sanctifier (${chargesLeft} charges left).`,
-		updateBank
+		updateBank,
+		ashesSanctified
 	};
 }
