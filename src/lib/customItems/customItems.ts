@@ -3471,7 +3471,8 @@ setCustomItem(
 	'Graceful hood',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -3483,7 +3484,8 @@ setCustomItem(
 	'Graceful top',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -3495,7 +3497,8 @@ setCustomItem(
 	'Graceful legs',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -3507,7 +3510,8 @@ setCustomItem(
 	'Graceful cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -3519,7 +3523,8 @@ setCustomItem(
 	'Graceful boots',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -3531,7 +3536,8 @@ setCustomItem(
 	'Graceful gloves',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000

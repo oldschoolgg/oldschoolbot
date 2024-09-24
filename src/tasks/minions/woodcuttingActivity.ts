@@ -282,8 +282,10 @@ export const woodcuttingTask: MinionTask = {
 
 		// Add crystal shards for chopping teaks/mahogany in priff
 		if (forestry && priffUnlocked && resolveItems(['Teak logs', 'Mahogany logs']).includes(log.id)) {
-			// 15 Shards per hour
-			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+			// 1/40 chance of receiving a crystal shard
+			for (let i = 0; i < quantity; i++) {
+				if (roll(40)) loot.add('Crystal shard', 1);
+			}
 		}
 
 		// WC master cape perk

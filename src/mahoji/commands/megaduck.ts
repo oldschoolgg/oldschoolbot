@@ -1,4 +1,3 @@
-import { Canvas } from '@napi-rs/canvas';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
@@ -7,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../lib/constants';
 import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
 import { getUsernameSync } from '../../lib/util';
-import { loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { mahojiGuildSettingsUpdate } from '../guildSettings';
 import { type OSBMahojiCommand, resetCooldown } from '../lib/util';
@@ -76,7 +75,7 @@ async function makeImage(location: MegaDuckLocation) {
 
 	const centerPosition = Math.floor(canvasSize / 2 / scale);
 
-	const canvas = new Canvas(canvasSize, canvasSize);
+	const canvas = createCanvas(canvasSize, canvasSize);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -89,7 +88,7 @@ async function makeImage(location: MegaDuckLocation) {
 	ctx.fillStyle = '#ffff00';
 	ctx.fillRect(centerPosition, centerPosition, 1, 1);
 
-	const noMoveCanvas = new Canvas(noMoveImage.width, noMoveImage.height);
+	const noMoveCanvas = createCanvas(noMoveImage.width, noMoveImage.height);
 	const noMoveCanvasCtx = noMoveCanvas.getContext('2d');
 	noMoveCanvasCtx.drawImage(noMoveImage, 0, 0);
 
@@ -107,7 +106,7 @@ async function makeImage(location: MegaDuckLocation) {
 		ctx.fillRect(xS, yS, 1, 1);
 	}
 
-	const buffer = await canvas.encode('png');
+	const buffer = await canvasToBuffer(canvas);
 
 	return {
 		image: buffer,

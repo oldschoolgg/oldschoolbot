@@ -6,6 +6,7 @@ import { divinationEnergies } from './bso/divination';
 import { Emoji, OSB_VIRTUS_IDS } from './constants';
 import {
 	allPetIDs,
+	allPetsCL,
 	chambersOfXericCL,
 	cmbClothes,
 	customBossesDropsThatCantBeDroppedInMBs,
@@ -51,65 +52,20 @@ export const magicCreateCrate = new LootTable()
 	.add('Clue scroll (medium)', 1)
 	.add(RuneTable, [1, 10], 3);
 
-export const PMBTable = new LootTable()
-	.oneIn(MR_E_DROPRATE_FROM_PMB, 'Mr. E')
-	.add('Heron')
-	.add('Rock golem')
-	.add('Beaver')
-	.add('Baby chinchompa')
-	.add('Giant squirrel')
-	.add('Tangleroot')
-	.add('Rocky')
-	.add('Rift guardian')
-	.add("Pet k'ril tsutsaroth")
-	.add('Pet general graardor')
-	.add('Pet zilyana')
-	.add("Pet kree'arra")
-	.add('Pet dagannoth rex')
-	.add('Pet dagannoth prime')
-	.add('Pet dagannoth supreme')
-	.add('Pet snakeling')
-	.add('Vorki')
-	.add('Pet dark core')
-	.add('Olmlet')
-	.add("Lil' zik")
-	.add('Kalphite princess')
-	.add('Baby mole')
-	.add('Sraracha')
-	.add("Vet'ion jr.")
-	.add('Callisto cub')
-	.add('Venenatis spiderling')
-	.add("Scorpia's offspring")
-	.add('Prince black dragon')
-	.add('Pet chaos elemental')
-	.add('Skotos')
-	.add('Tzrek-jad')
-	.add('Jal-nib-rek')
-	.add('Noon')
-	.add('Abyssal orphan')
-	.add('Pet kraken')
-	.add('Hellpuppy')
-	.add('Pet smoke devil')
-	.add('Ikkle hydra')
-	.add('Bloodhound')
-	.add('Herbi')
-	.add('Chompy chick')
-	.add('Pet penance queen')
-	.add('Phoenix')
-	.add('Smolcano')
-	.add('Youngllef')
-	.add('Little nightmare')
-	.add("Lil' creator")
-	.add('Tiny tempor')
-	.add('Abyssal protector')
-	.add("Tumeken's guardian")
-	.add('Muphin')
-	.add('Baron')
-	.add('Butch')
-	.add("Lil'viathan")
-	.add('Wisp')
-	.add('Scurry')
-	.add('Smol heredit');
+export const PMBTable = new LootTable().oneIn(MR_E_DROPRATE_FROM_PMB, 'Mr. E');
+
+for (const pet of allPetsCL) {
+	PMBTable.add(pet);
+}
+
+export const IronmanPMBTable = new LootTable()
+	.add(PMBTable, 1, PMBTable.length)
+	.add('Smokey')
+	.add('Craig')
+	.add('Hoppy')
+	.add('Flappy')
+	.add('Cob')
+	.add('Gregoyle');
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
@@ -216,15 +172,6 @@ const testerGiftTable = new LootTable()
 	.add('Rocktail', [30, 60])
 	.add('Tradeable mystery box', [1, 3])
 	.add(baseTGBTable);
-
-export const IronmanPMBTable = new LootTable()
-	.add(PMBTable, 1, PMBTable.length)
-	.add('Smokey')
-	.add('Craig')
-	.add('Hoppy')
-	.add('Flappy')
-	.add('Cob')
-	.add('Gregoyle');
 
 const MonkeyCrateTable = new LootTable()
 	.add('Avocado seed', [2, 5], 2)
@@ -711,17 +658,10 @@ for (const item of Items.values()) {
 	}
 }
 
-export const allMbTables = [...new Set([...tmbTable, ...umbTable, ...embTable])];
-export const itemSearchMbTable = [
-	...new Set([
-		...tmbTable,
-		...umbTable,
-		...embTable,
-		...PMBTable.allItems,
-		...ClothingMysteryBoxTable.allItems,
-		...baseHolidayItems.allItems
-	])
-];
+export const combinedTmbUmbEmbTables = [...new Set([...tmbTable, ...umbTable, ...embTable])];
+const nonPMBMbTable = [...combinedTmbUmbEmbTables, ...ClothingMysteryBoxTable.allItems, ...baseHolidayItems.allItems];
+export const allMbTables = [...new Set([...nonPMBMbTable, ...PMBTable.allItems])];
+export const allIronmanMbTables = [...new Set([...nonPMBMbTable, ...IronmanPMBTable.allItems])];
 
 function makeOutputFromArrayOfItemIDs(fn: () => number, quantity: number) {
 	const loot = new Bank();

@@ -1,4 +1,4 @@
-import { dateFm, toTitleCase } from '@oldschoolgg/toolkit';
+import { Stopwatch, dateFm, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { type Prisma, UserEventType, xp_gains_skill_enum } from '@prisma/client';
@@ -183,6 +183,17 @@ const actions = [
 		run: async () => {
 			writeHeapSnapshot();
 			return 'done';
+		}
+	},
+	{
+		name: 'force_garbage_collection',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			const timer = new Stopwatch();
+			for (let i = 0; i < 3; i++) {
+				gc!();
+			}
+			return `Garbage collection took ${timer.stop()}`;
 		}
 	},
 	{
