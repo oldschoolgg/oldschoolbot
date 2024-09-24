@@ -529,13 +529,15 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers 
 
 export interface ColoTaskOptions extends ActivityTaskOptions {
 	type: 'Colosseum';
+	quantity: number;
 	fakeDuration: number;
-	diedAt?: number;
+	diedAt?: (number | null)[];
 	loot?: ItemBank;
 	maxGlory: number;
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+	voidStaffCharges: number;
 }
 
 type UserID = string;

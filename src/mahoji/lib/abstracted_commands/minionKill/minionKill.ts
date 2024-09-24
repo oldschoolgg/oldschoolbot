@@ -54,7 +54,7 @@ export async function minionKillCommand(
 		});
 		name = 'Ogress Warrior';
 	}
-	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID);
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID, inputQuantity);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, inputQuantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, inputQuantity);

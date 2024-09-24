@@ -22,6 +22,7 @@ import type {
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
+	ColoTaskOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
@@ -840,8 +841,9 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Colosseum]: {
 		commandName: 'k',
-		args: () => ({
-			name: 'colosseum'
+		args: (data: ColoTaskOptions) => ({
+			name: 'colosseum',
+			quantity: data.quantity
 		})
 	}
 } as const;

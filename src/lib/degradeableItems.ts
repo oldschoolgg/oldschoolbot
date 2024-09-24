@@ -484,7 +484,7 @@ export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Pro
 		const newCharges = currentCharges + chargesToRefund;
 
 		// Prepare result message
-		const userMessage = `Refunded ${chargesToRefund} charges for ${degItem.item.name}.`;
+		const userMessage = `Refunded ${chargesToRefund} charges for ${degItem.item.name}`;
 
 		// Create result object
 		const result: RefundResult = {

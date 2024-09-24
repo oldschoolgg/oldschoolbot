@@ -2,11 +2,10 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
+import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, spearWeapon } from '../constants';
 import { NexMonster } from '../nex';
 import { Requirements } from '../structures/Requirements';
 import type {
-	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
@@ -1472,8 +1471,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 11))
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 11))
 		}
 	},
 	{
@@ -1484,7 +1483,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{
@@ -1495,7 +1495,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, user, index) =>
+				user.hasEquippedOrInBank(spearWeapon, 'one') &&
+				data.type === 'Colosseum' &&
+				Array.isArray(data.diedAt) &&
+				!data.diedAt[index]
 		}
 	},
 	{
@@ -1518,8 +1522,10 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 28
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && !data.diedAt[index])) &&
+				data.duration < Time.Minute * 28 * data.quantity
 		}
 	}
 ];
