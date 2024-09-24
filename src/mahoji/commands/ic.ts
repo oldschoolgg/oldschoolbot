@@ -8,7 +8,7 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { itemContractResetTime } from '../../lib/MUser';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { MysteryBoxes, PMBTable, allMbTables } from '../../lib/bsoOpenables';
+import { MysteryBoxes, PMBTable, combinedTmbUmbEmbTables } from '../../lib/bsoOpenables';
 import { BitField, Emoji } from '../../lib/constants';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -46,7 +46,7 @@ const contractTable = new LootTable()
 	);
 
 const itemContractItemsSet = new Set([
-	...allMbTables,
+	...combinedTmbUmbEmbTables,
 	...kalphiteKingLootTable.allItems.filter(i => i !== itemID('Baby kalphite king')),
 	...AbyssalDragonLootTable.allItems,
 	...VasaMagus.allItems,

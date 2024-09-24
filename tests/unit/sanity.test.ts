@@ -3,7 +3,7 @@ import { Bank, Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
 
-import { allMbTables } from '../../src/lib/bsoOpenables';
+import { combinedTmbUmbEmbTables } from '../../src/lib/bsoOpenables';
 import { allPetIDs } from '../../src/lib/data/CollectionsExport';
 import Buyables from '../../src/lib/data/buyables/buyables';
 import { itemsToDelete } from '../../src/lib/deletedItems';
@@ -86,7 +86,7 @@ describe('Sanity', () => {
 			if (Items.get(name)?.id === id || Items.get(id)) {
 				throw new Error(`Item ${id} ${name} shouldve been deleted.`);
 			}
-			if (allMbTables.includes(id)) throw new Error(`${name} is in box tables`);
+			if (combinedTmbUmbEmbTables.includes(id)) throw new Error(`${name} is in box tables`);
 		}
 		expect(itemID('Clue box')).toEqual(12_789);
 		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);

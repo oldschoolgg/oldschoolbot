@@ -3238,7 +3238,7 @@ export const skillingMiscCL = resolveItems([
 
 export const crackerCL = resolveItems([...PartyhatTable.allItems, 'Partyhat & specs', 'Partyhat set']);
 
-export const leaguesCL = resolveItems(['Fuzzy dice', 'Karambinana']);
+export const leaguesCL = resolveItems(['Brain lee', 'Fuzzy dice', 'Karambinana']);
 export const upgradedDragonstoneOutfit = resolveItems([
 	'Dragonstone full helm(u)',
 	'Dragonstone platebody(u)',
