@@ -1,11 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
-import {
-	CanvasRenderingContext2D as CanvasContext,
-	Image,
-	Canvas as RawCanvas,
-	FontLibrary,
-} from 'skia-canvas';
+import { CanvasRenderingContext2D as CanvasContext, FontLibrary, Image, Canvas as RawCanvas } from 'skia-canvas';
 
 import { assert } from '../util';
 
