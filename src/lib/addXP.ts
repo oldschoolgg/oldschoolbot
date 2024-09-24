@@ -1,5 +1,5 @@
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
-import { UserEventType } from '@prisma/client';
+import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
 import type { Item } from 'oldschooljs/dist/meta/types';
@@ -17,6 +17,7 @@ import { skillEmoji } from './data/emojis';
 import { getSimilarItems } from './data/similarItems';
 import type { AddXpParams } from './minions/types';
 
+import { sql } from './postgres';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
@@ -371,7 +372,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		return xpStr;
 	}
 
-	await user.update({ [`skills_${params.skillName}`]: Math.floor(newXP) });
+	await sql.unsafe(`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`);
+	(user.user as User)[`skills_${params.skillName}`] = BigInt(Math.floor(newXP));
+	user.updateProperties();
 
 	if (currentXP < MAX_XP && newXP === MAX_XP && Object.values(user.skillsAsXP).every(xp => xp === MAX_XP)) {
 		globalClient.emit(

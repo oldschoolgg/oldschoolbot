@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
-import { Canvas, type Image, type SKRSContext2D, loadImage } from '@napi-rs/canvas';
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
@@ -56,7 +55,15 @@ import {
 	stringMatches
 } from '../../lib/util';
 import { patronMaxTripBonus } from '../../lib/util/calcMaxTripLength';
-import { fillTextXTimesInCtx, getClippedRegionImage } from '../../lib/util/canvasUtil';
+import {
+	type CanvasContext,
+	type CanvasImage,
+	canvasToBuffer,
+	createCanvas,
+	fillTextXTimesInCtx,
+	getClippedRegionImage,
+	loadImage
+} from '../../lib/util/canvasUtil';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -265,18 +272,18 @@ const tameImageReplacementEasterEggs = [
 
 let sprites: {
 	base: {
-		image: Image;
-		slot: Image;
-		selectedSlot: Image;
-		shinyIcon: Image;
+		image: CanvasImage;
+		slot: CanvasImage;
+		selectedSlot: CanvasImage;
+		shinyIcon: CanvasImage;
 	};
 	tames: {
 		id: number;
 		name: string;
-		image: Image;
-		sprites: { type: number; growthStage: Record<tame_growth, Image> }[];
+		image: CanvasImage;
+		sprites: { type: number; growthStage: Record<tame_growth, CanvasImage> }[];
 	}[];
-	gearIconBg: Image;
+	gearIconBg: CanvasImage;
 };
 async function initSprites() {
 	const tameSpriteBase = await loadImage(await readFile('./src/lib/resources/images/tames/tame_sprite.png'));
@@ -336,7 +343,7 @@ async function initSprites() {
 }
 initSprites();
 
-function drawText(ctx: SKRSContext2D, text: string, x: number, y: number) {
+function drawText(ctx: CanvasContext, text: string, x: number, y: number) {
 	const baseFill = ctx.fillStyle;
 	ctx.fillStyle = '#000000';
 	fillTextXTimesInCtx(ctx, text, x, y + 1);
@@ -388,7 +395,7 @@ export async function tameImage(user: MUser): CommandResponse {
 
 	const tamesPerLine = 3;
 
-	const canvas = new Canvas(
+	const canvas = createCanvas(
 		12 + 10 + (256 + 10) * Math.min(userTames.length, tamesPerLine),
 		12 + 10 + (128 + 10) * Math.ceil(userTames.length / tamesPerLine)
 	);
@@ -553,7 +560,7 @@ export async function tameImage(user: MUser): CommandResponse {
 
 	const rawBadges = user.user.badges;
 	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
-	const buffer = await canvas.encode('png');
+	const buffer = await canvasToBuffer(canvas);
 
 	return {
 		content: `${badgesStr}${user.usernameOrMention}, ${

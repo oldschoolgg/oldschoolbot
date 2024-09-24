@@ -1,6 +1,5 @@
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
-import { Canvas, type Image, loadImage } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
@@ -15,7 +14,17 @@ import {
 } from '..';
 import { monkeyTiers } from '../../monkeyRumble';
 import { Gear } from '../../structures/Gear';
-import { calcAspectRatioFit, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
+import {
+	type Canvas,
+	type CanvasImage,
+	calcAspectRatioFit,
+	canvasToBuffer,
+	createCanvas,
+	drawItemQuantityText,
+	drawTitleText,
+	fillTextXTimesInCtx,
+	loadImage
+} from '../../util/canvasUtil';
 import { applyCustomItemEffects } from '../../util/customItemEffects';
 import getOSItem from '../../util/getOSItem';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from '../../util/slayerMaskLeaderboard';
@@ -98,7 +107,7 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 	}
 }
 
-async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: Image | null) {
+async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: CanvasImage | null) {
 	const ctx = canvas.getContext('2d');
 
 	if (alternateImage) {
@@ -210,7 +219,7 @@ async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: I
 
 interface TransmogItem {
 	item: Item;
-	image: Promise<Image>;
+	image: Promise<CanvasImage>;
 	maxHeight?: number;
 }
 const transmogItems: TransmogItem[] = [
@@ -255,7 +264,7 @@ export async function generateGearImage(
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await loadImage(user.gearTemplate.template);
-	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
+	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -334,7 +343,7 @@ export async function generateGearImage(
 			x += 200;
 		}
 
-		let glow: Image | null = null;
+		let glow: CanvasImage | null = null;
 		if (allSlayerMaskHelmsAndMasks.has(item.item)) {
 			if (slayerMaskLeaderboardCache.get(item.item) === user?.id) {
 				glow = bankImageGenerator.redGlow;
@@ -357,7 +366,7 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.encode('png');
+	return canvasToBuffer(canvas);
 }
 
 export async function generateAllGearImage(user: MUser) {
@@ -369,7 +378,7 @@ export async function generateAllGearImage(user: MUser) {
 
 	const hexColor = user.user.bank_bg_hex;
 	const gearTemplateImage = await loadImage(user.gearTemplate.templateCompact);
-	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
+	const canvas = createCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -445,5 +454,5 @@ export async function generateAllGearImage(user: MUser) {
 
 	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
 
-	return canvas.encode('png');
+	return canvasToBuffer(canvas);
 }

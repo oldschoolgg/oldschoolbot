@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { getPaintedItemImage, paintColors } from '../../lib/paintColors';
+import { canvasToBuffer } from '../../lib/util/canvasUtil';
 import { itemEffectImageCache } from '../../lib/util/customItemEffects';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -44,7 +45,7 @@ export const paintCommand: OSBMahojiCommand = {
 		}
 
 		const user = await mUserFetch(userID);
-		const image = await (await getPaintedItemImage(paint, item.id)).encode('png');
+		const image = await canvasToBuffer(await getPaintedItemImage(paint, item.id));
 
 		if (!user.bank.has(paint.itemId)) {
 			return {

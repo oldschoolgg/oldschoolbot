@@ -74,7 +74,18 @@ const client = new OldSchoolBotClient({
 		VoiceStateManager: { maxSize: 0 },
 		GuildInviteManager: { maxSize: 0 },
 		ThreadManager: { maxSize: 0 },
-		ThreadMemberManager: { maxSize: 0 }
+		ThreadMemberManager: { maxSize: 0 },
+		AutoModerationRuleManager: { maxSize: 0 },
+		GuildMessageManager: { maxSize: 0 },
+		GuildBanManager: { maxSize: 0 },
+		GuildForumThreadManager: { maxSize: 0 },
+		GuildScheduledEventManager: { maxSize: 0 },
+		GuildTextThreadManager: { maxSize: 0 },
+		BaseGuildEmojiManager: { maxSize: 0 },
+		ReactionManager: { maxSize: 0 },
+		DMMessageManager: { maxSize: 0 },
+		ReactionUserManager: { maxSize: 0 },
+		StageInstanceManager: { maxSize: 0 }
 	}),
 	sweepers: {
 		guildMembers: {

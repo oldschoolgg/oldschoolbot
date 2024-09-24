@@ -8,12 +8,14 @@ import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import { pick } from 'remeda';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
+import { partialUserCache } from './cache';
 import { ClueTiers } from './clues/clueTiers';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
 import { BitField, projectiles } from './constants';
@@ -114,7 +116,7 @@ export class MUserClass {
 		this.updateProperties();
 	}
 
-	private updateProperties() {
+	public updateProperties() {
 		this.bank = new Bank(this.user.bank as ItemBank);
 		this.bank.freeze();
 
@@ -1110,16 +1112,24 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-async function srcMUserFetch(userID: string, updates: Prisma.UserUpdateInput = {}) {
-	const user = await prisma.user.upsert({
-		create: {
-			id: userID
-		},
-		update: updates,
-		where: {
-			id: userID
-		}
-	});
+async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+	const user =
+		updates !== undefined
+			? await prisma.user.upsert({
+					create: {
+						id: userID
+					},
+					update: updates,
+					where: {
+						id: userID
+					}
+				})
+			: await prisma.user.findUnique({ where: { id: userID } });
+
+	if (!user) {
+		return srcMUserFetch(userID, {});
+	}
+	partialUserCache.set(userID, pick(user, ['bitfield', 'minion_hasBought', 'badges']));
 	return new MUserClass(user);
 }
 

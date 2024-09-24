@@ -103,6 +103,10 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 99_000,
 		customReq: async user => {
+			const meetsReqs = await musicCapeRequirements.check(await Requirements.fetchRequiredData(user));
+			if (!meetsReqs.hasAll) {
+				return [false, `You don't meet the requirements to buy this: \n${meetsReqs.rendered}`];
+			}
 			if (user.QP < MAX_QP) {
 				return [false, "You can't buy this because you haven't completed all the quests!"];
 			}

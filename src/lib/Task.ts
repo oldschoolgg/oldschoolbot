@@ -3,7 +3,6 @@ import { activity_type_enum } from '@prisma/client';
 import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
-import { production } from '../config';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
@@ -118,6 +117,7 @@ import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneAct
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
 import { minionActivityCache } from './constants';
+import { sql } from './postgres';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
@@ -239,17 +239,8 @@ const tasks: MinionTask[] = [
 ];
 
 export async function processPendingActivities() {
-	const activities: Activity[] = await prisma.activity.findMany({
-		where: {
-			completed: false,
-			finish_date: production
-				? {
-						lt: new Date()
-					}
-				: undefined
-		},
-		take: 5
-	});
+	const activities: Activity[] =
+		await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`;
 
 	if (activities.length > 0) {
 		await prisma.activity.updateMany({

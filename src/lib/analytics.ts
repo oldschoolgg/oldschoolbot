@@ -56,7 +56,7 @@ export async function analyticsTick() {
 				`SELECT COALESCE(SUM((bank->>'${statuette.id}')::bigint) * ${statuette.highalch}, 0) as val FROM users WHERE bank->>'${artifact.id}' IS NOT NULL`
 			].map(q => prisma.$queryRawUnsafe<{ val: bigint }[]>(q))
 		)
-	).map((v: { val: bigint }[]) => BigInt(v[0].val));
+	).map((v: { val: bigint }[]) => BigInt(v[0]?.val ?? 0));
 
 	const taskCounts = await calculateMinionTaskCounts();
 	const currentClientSettings = await prisma.clientStorage.upsert({

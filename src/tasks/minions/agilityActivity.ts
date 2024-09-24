@@ -72,7 +72,6 @@ export function calculateAgilityResult({
 	quantity,
 	course,
 	agilityLevel,
-	duration,
 	usingHarry,
 	hasDiaryBonus,
 	hasAgilityPortent
@@ -106,8 +105,7 @@ export function calculateAgilityResult({
 
 	// Calculate Crystal Shards for Priff
 	if (course.name === 'Prifddinas Rooftop Course') {
-		// 15 Shards per hour
-		loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		loot.add('Crystal shard', quantity);
 	}
 
 	// Agility pyramid
