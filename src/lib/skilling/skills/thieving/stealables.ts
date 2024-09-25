@@ -1,27 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import BeardedBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/BeardedBandit';
-import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/a-f/CaveGoblin';
-import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/DesertBandit';
-import Farmer from 'oldschooljs/dist/simulation/monsters/low/a-f/Farmer';
-import FemaleHamMember from 'oldschooljs/dist/simulation/monsters/low/a-f/FemaleHamMember';
-import FremennikCitizen from 'oldschooljs/dist/simulation/monsters/low/a-f/FremennikCitizen';
-import Gnome from 'oldschooljs/dist/simulation/monsters/low/g-m/Gnome';
-import Guard from 'oldschooljs/dist/simulation/monsters/low/g-m/Guard';
-import Hero from 'oldschooljs/dist/simulation/monsters/low/g-m/Hero';
-import KnightOfArdougne from 'oldschooljs/dist/simulation/monsters/low/g-m/KnightOfArdougne';
-import MaleHamMember from 'oldschooljs/dist/simulation/monsters/low/g-m/MaleHamMember';
-import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/g-m/MasterFarmer';
-import MenaphiteThug from 'oldschooljs/dist/simulation/monsters/low/g-m/MenaphiteThug';
-import Paladin from 'oldschooljs/dist/simulation/monsters/low/n-s/Paladin';
-import PollnivnianBandit from 'oldschooljs/dist/simulation/monsters/low/n-s/PollnivnianBandit';
-import PrifddinasElf from 'oldschooljs/dist/simulation/monsters/low/n-s/PrifddinasElf';
-import Rogue from 'oldschooljs/dist/simulation/monsters/low/n-s/Rogue';
-import TzHaarHur from 'oldschooljs/dist/simulation/monsters/low/t-z/TzHaarHur';
-import Vyre from 'oldschooljs/dist/simulation/monsters/low/t-z/Vyre';
-import WarriorWoman from 'oldschooljs/dist/simulation/monsters/low/t-z/WarriorWoman';
-import YanilleWatchman from 'oldschooljs/dist/simulation/monsters/low/t-z/YanilleWatchman';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable, Monsters } from 'oldschooljs';
 
 export interface Stealable {
 	name: string;
@@ -389,8 +367,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 10,
 		xp: 14.5,
-		table: Farmer.pickpocketTable!,
-		id: Farmer.id,
+		table: Monsters.Farmer.pickpocketTable!,
+		id: Monsters.Farmer.id,
 		stunTime: 5,
 		stunDamage: 1,
 		// No current data on slope/intercept
@@ -404,8 +382,8 @@ const pickpocketables: Stealable[] = [
 		level: 15,
 		xp: 18.5,
 		aliases: ['female ham'],
-		table: FemaleHamMember.pickpocketTable!,
-		id: FemaleHamMember.id,
+		table: Monsters.FemaleHamMember.pickpocketTable!,
+		id: Monsters.FemaleHamMember.id,
 		stunTime: 4,
 		stunDamage: 2,
 		slope: 0.418_47,
@@ -418,8 +396,8 @@ const pickpocketables: Stealable[] = [
 		level: 20,
 		xp: 22.5,
 		aliases: ['ham', 'male ham'],
-		table: MaleHamMember.pickpocketTable!,
-		id: MaleHamMember.id,
+		table: Monsters.MaleHamMember.pickpocketTable!,
+		id: Monsters.MaleHamMember.id,
 		stunTime: 4,
 		stunDamage: 2,
 		slope: 0.490_31,
@@ -431,8 +409,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 25,
 		xp: 26,
-		table: WarriorWoman.pickpocketTable!,
-		id: WarriorWoman.id,
+		table: Monsters.WarriorWoman.pickpocketTable!,
+		id: Monsters.WarriorWoman.id,
 		stunTime: 5,
 		stunDamage: 2,
 		// No current data on slope/intercept
@@ -445,8 +423,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 32,
 		xp: 35.5,
-		table: Rogue.pickpocketTable!,
-		id: Rogue.id,
+		table: Monsters.Rogue.pickpocketTable!,
+		id: Monsters.Rogue.id,
 		stunTime: 5,
 		stunDamage: 2,
 		slope: 0.668_79,
@@ -459,8 +437,8 @@ const pickpocketables: Stealable[] = [
 		level: 36,
 		xp: 40,
 		aliases: ['goblin'],
-		table: CaveGoblin.pickpocketTable!,
-		id: CaveGoblin.id,
+		table: Monsters.CaveGoblin.pickpocketTable!,
+		id: Monsters.CaveGoblin.id,
 		stunTime: 5,
 		stunDamage: 1,
 		// No current data on slope/intercept
@@ -474,8 +452,8 @@ const pickpocketables: Stealable[] = [
 		level: 38,
 		xp: 43,
 		aliases: ['mf', 'master'],
-		table: MasterFarmer.pickpocketTable!,
-		id: MasterFarmer.id,
+		table: Monsters.MasterFarmer.pickpocketTable!,
+		id: Monsters.MasterFarmer.id,
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.597_86,
@@ -487,8 +465,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 40,
 		xp: 46.8,
-		table: Guard.pickpocketTable!,
-		id: Guard.id,
+		table: Monsters.Guard.pickpocketTable!,
+		id: Monsters.Guard.id,
 		stunTime: 5,
 		stunDamage: 2,
 		slope: 0.767_76,
@@ -501,8 +479,8 @@ const pickpocketables: Stealable[] = [
 		level: 45,
 		xp: 65,
 		aliases: ['fremmy', 'fremennik'],
-		table: FremennikCitizen.pickpocketTable!,
-		id: FremennikCitizen.id,
+		table: Monsters.FremennikCitizen.pickpocketTable!,
+		id: Monsters.FremennikCitizen.id,
 		stunTime: 5,
 		stunDamage: 2,
 		// No current data on slope/intercept
@@ -516,8 +494,8 @@ const pickpocketables: Stealable[] = [
 		level: 45,
 		xp: 65,
 		aliases: ['bearded bandit', 'beard', 'beard bandit'],
-		table: BeardedBandit.pickpocketTable!,
-		id: BeardedBandit.id,
+		table: Monsters.BeardedBandit.pickpocketTable!,
+		id: Monsters.BeardedBandit.id,
 		stunTime: 5,
 		stunDamage: 3,
 		// No current data on slope/intercept
@@ -532,7 +510,7 @@ const pickpocketables: Stealable[] = [
 		level: 53,
 		xp: 79.5,
 		aliases: ['desert'],
-		table: DesertBandit.pickpocketTable!,
+		table: Monsters.DesertBandit.pickpocketTable!,
 		id: 33_322,
 		stunTime: 5,
 		stunDamage: 3,
@@ -546,8 +524,8 @@ const pickpocketables: Stealable[] = [
 		level: 55,
 		xp: 84.3,
 		aliases: ['knight', 'ardy knight'],
-		table: KnightOfArdougne.pickpocketTable!,
-		id: KnightOfArdougne.id,
+		table: Monsters.KnightOfArdougne.pickpocketTable!,
+		id: Monsters.KnightOfArdougne.id,
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.772_09,
@@ -559,8 +537,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 55,
 		xp: 84.3,
-		table: PollnivnianBandit.pickpocketTable!,
-		id: PollnivnianBandit.id,
+		table: Monsters.PollnivnianBandit.pickpocketTable!,
+		id: Monsters.PollnivnianBandit.id,
 		stunTime: 5,
 		stunDamage: 5,
 		// No current data on slope/intercept
@@ -575,8 +553,8 @@ const pickpocketables: Stealable[] = [
 		level: 65,
 		xp: 137.5,
 		aliases: ['yanille'],
-		table: YanilleWatchman.pickpocketTable!,
-		id: YanilleWatchman.id,
+		table: Monsters.YanilleWatchman.pickpocketTable!,
+		id: Monsters.YanilleWatchman.id,
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.58,
@@ -589,8 +567,8 @@ const pickpocketables: Stealable[] = [
 		level: 65,
 		xp: 137.5,
 		aliases: ['thug'],
-		table: MenaphiteThug.pickpocketTable!,
-		id: MenaphiteThug.id,
+		table: Monsters.MenaphiteThug.pickpocketTable!,
+		id: Monsters.MenaphiteThug.id,
 		stunTime: 5,
 		stunDamage: 5,
 		slope: 0.654_85,
@@ -603,8 +581,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 70,
 		xp: 151.7,
-		table: Paladin.pickpocketTable!,
-		id: Paladin.id,
+		table: Monsters.Paladin.pickpocketTable!,
+		id: Monsters.Paladin.id,
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.404_29,
@@ -616,8 +594,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 75,
 		xp: 198.5,
-		table: Gnome.pickpocketTable!,
-		id: Gnome.id,
+		table: Monsters.Gnome.pickpocketTable!,
+		id: Monsters.Gnome.id,
 		stunTime: 5,
 		stunDamage: 1,
 		slope: 0.475_65,
@@ -629,8 +607,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 80,
 		xp: 275,
-		table: Hero.pickpocketTable!,
-		id: Hero.id,
+		table: Monsters.Hero.pickpocketTable!,
+		id: Monsters.Hero.id,
 		stunTime: 6,
 		stunDamage: 4,
 		slope: 0.390_56,
@@ -642,8 +620,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 82,
 		xp: 306.9,
-		table: Vyre.pickpocketTable!,
-		id: Vyre.id,
+		table: Monsters.Vyre.pickpocketTable!,
+		id: Monsters.Vyre.id,
 		stunTime: 5,
 		stunDamage: 5,
 		slope: 0.488_13,
@@ -655,8 +633,8 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 85,
 		xp: 353,
-		table: PrifddinasElf.pickpocketTable!,
-		id: PrifddinasElf.id,
+		table: Monsters.PrifddinasElf.pickpocketTable!,
+		id: Monsters.PrifddinasElf.id,
 		stunTime: 6,
 		stunDamage: 5,
 		slope: 0.420_77,
@@ -670,8 +648,8 @@ const pickpocketables: Stealable[] = [
 		level: 90,
 		xp: 103.4,
 		aliases: ['tzhaar'],
-		table: TzHaarHur.pickpocketTable!,
-		id: TzHaarHur.id,
+		table: Monsters.TzHaarHur.pickpocketTable!,
+		id: Monsters.TzHaarHur.id,
 		stunTime: 5,
 		stunDamage: 4,
 		slope: 1.611_25,

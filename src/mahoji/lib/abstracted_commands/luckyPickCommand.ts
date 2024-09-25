@@ -2,7 +2,7 @@ import type { BaseMessageOptions, ButtonInteraction, CacheType, ChatInputCommand
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, chunk, noOp, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
+import { toKMB } from 'oldschooljs';
 
 import { SILENT_ERROR } from '../../../lib/constants';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';

@@ -1,5 +1,5 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import type Monster from 'oldschooljs/dist/structures/Monster';
+import type { Monster } from 'oldschooljs';
 
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { Minigames, getMinigameScore } from '../settings/minigames';

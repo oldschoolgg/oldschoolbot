@@ -6,9 +6,9 @@ import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { APIButtonComponent } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
+import { getItemOrThrow, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';

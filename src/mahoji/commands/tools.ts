@@ -1,14 +1,6 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
-import { ChannelType, EmbedBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-
-import { PerkTier, asyncGzip } from '@oldschoolgg/toolkit';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
+import { Bank, type Item, type ItemBank, ToBUniqueTable } from 'oldschooljs';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { BitField } from '../../lib/constants';
@@ -28,6 +20,10 @@ import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
+	type CommandResponse,
+	type CommandRunOptions,
+	PerkTier,
+	asyncGzip,
 	formatDuration,
 	getUsername,
 	isGroupActivity,
@@ -36,6 +32,7 @@ import {
 	isTOBOrTOAActivity,
 	itemNameFromID,
 	parseStaticTimeInterval,
+	resolveItems,
 	staticTimeIntervals,
 	stringMatches
 } from '../../lib/util';

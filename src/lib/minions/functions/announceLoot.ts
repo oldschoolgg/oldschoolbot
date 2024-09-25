@@ -1,6 +1,5 @@
-import type { Bank } from 'oldschooljs';
+import type { ArrayItemsResolved, Bank } from 'oldschooljs';
 
-import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
 import { Events } from '../../constants';
 import { minionName } from '../../util/minionUtils';
 import { effectiveMonsters } from '../data/killableMonsters';

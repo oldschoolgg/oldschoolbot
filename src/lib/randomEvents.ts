@@ -1,15 +1,7 @@
 import { activity_type_enum } from '@prisma/client';
 import { Time, randArrItem, roll } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Bank } from 'oldschooljs';
-import {
-	beekeeperOutfit,
-	camoOutfit,
-	lederhosenOutfit,
-	mimeOutfit,
-	zombieOutfit
-} from 'oldschooljs/dist/data/itemConstants';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { Bank, LootTable, beekeeperOutfit, camoOutfit, lederhosenOutfit, mimeOutfit, zombieOutfit } from 'oldschooljs';
 
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { BitField } from './constants';

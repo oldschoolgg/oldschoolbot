@@ -1,8 +1,6 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit';
 import { notEmpty } from 'e';
-import { Bank, type Item, Items } from 'oldschooljs';
-
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
 import { ONE_TRILLION } from '../constants';
 import { filterableTypes } from '../data/filterables';

@@ -2,7 +2,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { CommandOption } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot } from 'oldschooljs';
 
 import { production } from '../../config';
 import { ParsedCustomEmojiWithGroups } from '../../lib/constants';

@@ -1,8 +1,6 @@
 import type { StoreBitfield } from '@oldschoolgg/toolkit';
 import type { XpGainSource } from '@prisma/client';
-import type { Bank, Item, MonsterKillOptions } from 'oldschooljs';
-
-import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import type { ArrayItemsResolved, Bank, Item, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 
 import type { ClueTier } from '../clues/clueTiers';
 import type { BitField, PerkTier } from '../constants';
@@ -14,7 +12,7 @@ import type { XPBank } from '../structures/Bank';
 import type { GearBank } from '../structures/GearBank';
 import type { MUserStats } from '../structures/MUserStats';
 import type { ItemBank, Skills } from '../types';
-import type { ArrayItemsResolved, calculateSimpleMonsterDeathChance } from '../util';
+import type { calculateSimpleMonsterDeathChance } from '../util';
 import type { CanvasImage } from '../util/canvasUtil';
 import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';

@@ -1,8 +1,8 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import { SkillsEnum } from 'oldschooljs';
+import { ChambersOfXeric } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events } from '../../../lib/constants';

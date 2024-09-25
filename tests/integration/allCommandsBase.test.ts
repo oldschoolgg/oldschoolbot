@@ -1,9 +1,9 @@
-import { generateCommandInputs, generateRandomBank } from '@oldschoolgg/toolkit';
+import { generateCommandInputs } from '@oldschoolgg/toolkit';
 import { Time, shuffleArr } from 'e';
+import { generateRandomBank } from 'oldschooljs';
 import { expect, test, vi } from 'vitest';
 
 import { BitField, minionActivityCache } from '../../src/lib/constants';
-
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
 import { allCommands } from '../../src/mahoji/commands/allCommands';

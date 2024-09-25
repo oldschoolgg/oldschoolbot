@@ -2,7 +2,7 @@ import { activity_type_enum } from '@prisma/client';
 import { objectEntries, partition } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
 import { championScrolls } from './data/CollectionsExport';
 import { RandomEvents } from './randomEvents';

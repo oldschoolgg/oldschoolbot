@@ -2,9 +2,9 @@ import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { LootTable } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
+import { toKMB } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';

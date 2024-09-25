@@ -1,6 +1,6 @@
 import type { Bank } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { championScrolls, skillingPetsCL } from '../../../lib/data/CollectionsExport';
 import type { GlobalBingoTile } from './bingoUtil';
 

@@ -1,7 +1,7 @@
 import { truncateString } from '@oldschoolgg/toolkit';
 import { reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';

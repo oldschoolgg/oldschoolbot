@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import type { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
+import type { EquipmentSlot, Item } from 'oldschooljs';
 
 import type { GearSetupType } from '../../gear/types';
 import { GearStat } from '../../gear/types';

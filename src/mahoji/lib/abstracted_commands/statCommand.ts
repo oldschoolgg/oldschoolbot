@@ -1,14 +1,9 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { PerkTier } from '@oldschoolgg/toolkit';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { Time, sumArr } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
-import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-import { toKMB } from 'oldschooljs/dist/util';
+import { Bank, type ItemBank, Monsters, SkillsEnum, type SkillsScore, TOBRooms } from 'oldschooljs';
 
-import { PerkTier } from '@oldschoolgg/toolkit';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji } from '../../../lib/constants';
@@ -25,7 +20,14 @@ import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestr
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import type { InfernoOptions } from '../../../lib/types/minions';
-import { SQL_sumOfAllCLItems, formatDuration, getUsername, stringMatches } from '../../../lib/util';
+import {
+	SQL_sumOfAllCLItems,
+	formatDuration,
+	getUsername,
+	resolveItems,
+	stringMatches,
+	toKMB
+} from '../../../lib/util';
 import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';

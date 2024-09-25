@@ -1,8 +1,8 @@
 import { activity_type_enum } from '@prisma/client';
 import { Time, objectEntries, randArrItem, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { convertLVLtoXP } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { ClueTiers } from '../../src/lib/clues/clueTiers';

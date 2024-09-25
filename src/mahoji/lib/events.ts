@@ -1,4 +1,4 @@
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
 import { ActivityType, bold, time } from 'discord.js';

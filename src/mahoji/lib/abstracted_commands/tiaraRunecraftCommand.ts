@@ -1,6 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit';
 import Runecraft from '../../../lib/skilling/skills/runecraft';

@@ -1,7 +1,7 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit';
 import { Events } from '../../../lib/constants';

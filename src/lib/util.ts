@@ -1,5 +1,6 @@
 import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
 import type {
 	BaseMessageOptions,
 	ButtonInteraction,
@@ -15,10 +16,18 @@ import type {
 } from 'discord.js';
 import type { ComponentType } from 'discord.js';
 import { Time, objectEntries } from 'e';
+import { LRUCache } from 'lru-cache';
+import {
+	EliteMimicTable,
+	MasterMimicTable,
+	addItemToBank,
+	convertLVLtoXP,
+	randomVariation,
+	resolveItems,
+	toKMB
+} from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
-import type { Prisma } from '@prisma/client';
-import { LRUCache } from 'lru-cache';
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
@@ -43,7 +52,8 @@ import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
 
 export * from '@oldschoolgg/toolkit';
-export * from 'oldschooljs/dist/util';
+
+export { itemID, resolveItems, randomVariation, toKMB, convertLVLtoXP, addItemToBank };
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
@@ -343,15 +353,13 @@ export function awaitMessageComponentInteraction({
 	});
 }
 
-export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
+export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, _threshholdToLog = 100): Promise<T> {
 	const logger = globalConfig.isProduction ? debugLog : console.log;
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	const result = await fn();
 	stopwatch.stop();
-	if (!globalConfig.isProduction || stopwatch.duration > threshholdToLog) {
-		logger(`Took ${stopwatch} to do ${name}`);
-	}
+	logger(`Took ${stopwatch} to do ${name}`);
 	return result;
 }
 
@@ -412,3 +420,10 @@ export function anyoneDiedInTOARaid(data: TOAOptions) {
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
+
+export function getMimicTable(tier: 'master' | 'elite') {
+	if (tier === 'master') {
+		return MasterMimicTable;
+	}
+	return EliteMimicTable;
+}

@@ -1,5 +1,5 @@
 import { uniqueArr } from 'e';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
 import Potions from '../minions/data/potions';
 import { allOpenables } from '../openables';

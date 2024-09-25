@@ -310,7 +310,7 @@ export const krystiliaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Spider,
 		amount: [65, 100],
 		weight: 6,
-		monsters: [Monsters.Spider.id, Monsters.Venenatis.id, Monsters.Spindel.id],
+		monsters: [Monsters.Spider.id, Monsters.Venenatis.id, Monsters.Spindel.id, Monsters.Araxxor.id],
 		unlocked: true,
 		wilderness: true
 	},

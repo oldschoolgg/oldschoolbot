@@ -1,7 +1,7 @@
 import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 
 const res = resolveItems;
 

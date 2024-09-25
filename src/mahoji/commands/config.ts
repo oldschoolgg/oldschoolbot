@@ -7,7 +7,7 @@ import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, clamp, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { production } from '../../config';
 import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';

@@ -1,6 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { uniqueArr } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import type { AttackStyles } from '.';
 

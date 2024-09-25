@@ -1,9 +1,7 @@
-import { calcWhatPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-import { randomVariation } from 'oldschooljs/dist/util';
-
 import { formatDuration } from '@oldschoolgg/toolkit';
+import { calcWhatPercent } from 'e';
+import { Bank, TOBRooms, randomVariation } from 'oldschooljs';
+
 import { Emoji } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {

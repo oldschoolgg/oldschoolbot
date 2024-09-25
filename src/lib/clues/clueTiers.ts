@@ -1,19 +1,16 @@
 import { Time } from 'e';
-import { Clues } from 'oldschooljs';
-import type { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
-import type { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
-import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
-import type { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
-import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
-import type { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
-import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
-import type { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
-import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import type { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
-import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
+import {
+	BeginnerClueTable,
+	Clues,
+	EasyClueTable,
+	EliteClueTable,
+	HardClueTable,
+	type LootTable,
+	MasterClueTable,
+	MediumClueTable,
+	resolveItems
+} from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import {
 	cluesBeginnerCL,
 	cluesEasyCL,
@@ -28,8 +25,6 @@ import { beginnerReqs } from './clueReqs';
 import type { StashUnitTier } from './stashUnits';
 import { beginnerStashes, easyStashes, eliteStashes, hardStashes, masterStashes, mediumStashes } from './stashUnits';
 
-const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
-
 interface ClueMilestoneReward {
 	itemReward: number;
 	scoreNeeded: number;
@@ -37,7 +32,7 @@ interface ClueMilestoneReward {
 
 export interface ClueTier {
 	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master';
-	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
+	table: LootTable;
 	id: number;
 	scrollID: number;
 	timeToFinish: number;
@@ -53,7 +48,7 @@ export interface ClueTier {
 export const ClueTiers: ClueTier[] = [
 	{
 		name: 'Beginner',
-		table: Beginner,
+		table: Clues.Beginner,
 		id: 23_245,
 		scrollID: 23_182,
 		timeToFinish: Time.Minute * 2.5,
@@ -66,7 +61,7 @@ export const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Easy',
-		table: Easy,
+		table: Clues.Easy,
 		id: 20_546,
 		scrollID: 2677,
 		timeToFinish: Time.Minute * 5.5,
@@ -83,7 +78,7 @@ export const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Medium',
-		table: Medium,
+		table: Clues.Medium,
 		id: 20_545,
 		scrollID: 2801,
 		timeToFinish: Time.Minute * 7,
@@ -100,7 +95,7 @@ export const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Hard',
-		table: Hard,
+		table: Clues.Hard,
 		id: 20_544,
 		scrollID: 2722,
 		timeToFinish: Time.Minute * 12.5,
@@ -113,7 +108,7 @@ export const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Elite',
-		table: Elite,
+		table: Clues.Elite,
 		id: 20_543,
 		scrollID: 12_073,
 		timeToFinish: Time.Minute * 14,
@@ -130,7 +125,7 @@ export const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Master',
-		table: Master,
+		table: Clues.Master,
 		id: 19_836,
 		scrollID: 19_835,
 		timeToFinish: Time.Minute * 19.3,

@@ -1,14 +1,14 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, itemID } from 'oldschooljs';
+import { SkillsEnum } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/minigames';
 import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { itemID, stringMatches } from '../../../lib/util';
+import { stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

@@ -8,9 +8,7 @@ import {
 	reduceNumByPercent,
 	shuffleArr
 } from 'e';
-import { Bank, type Item } from 'oldschooljs';
-
-import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import { Bank, type ChambersOfXericOptions, type Item } from 'oldschooljs';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import type { GearStats } from '../gear/types';

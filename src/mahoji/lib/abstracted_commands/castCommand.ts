@@ -1,5 +1,5 @@
 import { Time, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import type { CastingActivityTaskOptions } from '../../../lib/types/minions';

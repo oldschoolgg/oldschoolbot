@@ -1,5 +1,5 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot } from 'oldschooljs';
 
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import {

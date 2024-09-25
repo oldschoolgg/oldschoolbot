@@ -1,4 +1,4 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs';
 
 import { Emoji } from '../../../constants';
 import { SkillsEnum } from '../../types';

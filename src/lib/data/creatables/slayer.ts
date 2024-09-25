@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util/util';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import type { Createable } from '../createables';

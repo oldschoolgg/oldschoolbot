@@ -2,8 +2,7 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { BaseMessageOptions } from 'discord.js';
 import { escapeMarkdown, time } from 'discord.js';
 import { Time } from 'e';
-import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { convertXPtoLVL, resolveItems } from 'oldschooljs';
 
 import { Emoji } from '../constants';
 import type { SkillsEnum } from '../skilling/types';

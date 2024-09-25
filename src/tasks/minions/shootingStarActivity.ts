@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import type { ShootingStarsOptions } from '../../lib/types/minions';

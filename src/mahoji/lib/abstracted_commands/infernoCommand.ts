@@ -1,8 +1,8 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs';
 
 import type { ProjectileType } from '../../../lib/constants';
 import { BitField, Emoji, projectiles } from '../../../lib/constants';

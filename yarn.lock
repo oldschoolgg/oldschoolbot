@@ -597,9 +597,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#c0c491661cffff19769a18d074f57a0b70c80603":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#420da4c5866d25897c989155472ca8fc49cd480c":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=c0c491661cffff19769a18d074f57a0b70c80603"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=420da4c5866d25897c989155472ca8fc49cd480c"
   dependencies:
     decimal.js: "npm:^10.4.3"
     deep-object-diff: "npm:^1.1.9"
@@ -614,8 +614,7 @@ __metadata:
     zod: "npm:3.23.8"
   peerDependencies:
     discord.js: ^14.16.2
-    oldschooljs: ^2.6.1
-  checksum: 10c0/00fd696f71869a88bf5880f5581a6fa7a8a3372dea4063fb0d4b45176802611e3e45e5c35956aed3aafe37f70ffefe82e9a6cb5778ab2ec6e65c7c0f6ad9a363
+  checksum: 10c0/e7db70607d17032f0aae1dac68a22e44bb75977e128714d6779e1d7004a2f95cee337eccee3d39f33f6731bf852d107e968aba82718867c0396ee1628553ceb7
   languageName: node
   linkType: hard
 
@@ -4321,15 +4320,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "oldschooljs@npm:2.6.1"
+"oldschooljs@portal:/C:/dev/oldschooljs::locator=root-workspace-0b6124%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "oldschooljs@portal:/C:/dev/oldschooljs::locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     e: "npm:^0.2.33"
     node-fetch: "npm:2.6.7"
-  checksum: 10c0/1a95ba311806aaad624fca2a4feeb71757ecd62dea0df9c9f03e63ef81580f1ce40d8cf36e2d0b52ae184305e9876c62ed586c188e330e36f22767bd0c44ab2b
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "omggif@npm:^1.0.5":
   version: 1.0.10
@@ -5136,7 +5134,7 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#c0c491661cffff19769a18d074f57a0b70c80603"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#420da4c5866d25897c989155472ca8fc49cd480c"
     "@prisma/client": "npm:^5.17.0"
     "@sapphire/ratelimits": "npm:^2.4.9"
     "@sapphire/snowflake": "npm:^3.5.3"
@@ -5167,7 +5165,7 @@ __metadata:
     node-cron: "npm:^3.0.3"
     node-fetch: "npm:^2.6.7"
     nodemon: "npm:^3.1.4"
-    oldschooljs: "npm:^2.6.1"
+    oldschooljs: "git+https://github.com/oldschoolgg/oldschooljs.git#142539da4a7b5a16605f0cce8eaa51597102e658"
     p-queue: "npm:^6.6.2"
     piscina: "npm:^4.6.1"
     postgres: "npm:^3.4.4"

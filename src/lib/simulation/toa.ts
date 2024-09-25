@@ -22,7 +22,7 @@ import {
 } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';

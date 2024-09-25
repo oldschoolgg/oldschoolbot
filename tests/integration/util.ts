@@ -3,7 +3,7 @@ import type { Activity, GearSetupType, Prisma } from '@prisma/client';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Monsters } from 'oldschooljs';
 
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { convertLVLtoXP } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';

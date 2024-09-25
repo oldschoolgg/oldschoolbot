@@ -1,4 +1,4 @@
-import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import type { EquipmentSlot } from 'oldschooljs';
 
 import type { Gear } from '../structures/Gear';
 

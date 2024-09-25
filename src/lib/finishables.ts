@@ -1,16 +1,20 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { notEmpty, randArrItem, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import BeginnerClueTable from 'oldschooljs/dist/simulation/clues/Beginner';
-import EasyClueTable from 'oldschooljs/dist/simulation/clues/Easy';
-import EliteClueTable from 'oldschooljs/dist/simulation/clues/Elite';
-import HardClueTable from 'oldschooljs/dist/simulation/clues/Hard';
-import MasterCasket from 'oldschooljs/dist/simulation/clues/Master';
-import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
-import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
-import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
-
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import {
+	Bank,
+	BeginnerClueTable,
+	ChambersOfXeric,
+	EasyClueTable,
+	EliteClueTable,
+	EliteMimicTable,
+	HardClueTable,
+	MasterCasket,
+	MasterMimicTable,
+	MediumClueTable,
+	Monsters,
+	Nightmare,
+	resolveItems
+} from 'oldschooljs';
 import { calculateTripConsumableCost } from '../mahoji/lib/abstracted_commands/minionKill/handleConsumables';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
@@ -179,25 +183,25 @@ export const finishables: Finishable[] = [
 		name: 'Beginner Clue Scolls',
 		cl: cluesBeginnerCL,
 		aliases: ['beginner clues', 'beginner clue', 'beginner clue scroll', 'beginner clue scrolls'],
-		kill: () => BeginnerClueTable.open(1)
+		kill: () => BeginnerClueTable.roll(1)
 	},
 	{
 		name: 'Easy Clue Scolls',
 		cl: cluesEasyCL,
 		aliases: ['easy clues', 'easy clue', 'easy clue scroll', 'easy clue scrolls'],
-		kill: () => EasyClueTable.open(1)
+		kill: () => EasyClueTable.roll(1)
 	},
 	{
 		name: 'Medium Clue Scolls',
 		cl: cluesMediumCL,
 		aliases: ['medium clues', 'medium clue', 'medium clue scroll', 'medium clue scrolls'],
-		kill: () => MediumClueTable.open(1)
+		kill: () => MediumClueTable.roll(1)
 	},
 	{
 		name: 'Hard Clue Scolls',
 		cl: cluesHardCL,
 		aliases: ['hard clues', 'hard clue', 'hard clue scroll', 'hard clue scrolls'],
-		kill: () => HardClueTable.open(1)
+		kill: () => HardClueTable.roll(1)
 	},
 	{
 		name: 'Elite Clue Scolls',
@@ -205,9 +209,9 @@ export const finishables: Finishable[] = [
 		aliases: ['elite clues', 'elite clue', 'elite clue scroll', 'elite clue scrolls'],
 		kill: () => {
 			if (roll(35)) {
-				return EliteMimicTable.roll().add(EliteClueTable.open(1));
+				return EliteMimicTable.roll().add(EliteClueTable.roll(1));
 			}
-			return EliteClueTable.open(1);
+			return EliteClueTable.roll(1);
 		}
 	},
 	{
@@ -216,9 +220,9 @@ export const finishables: Finishable[] = [
 		aliases: ['master clues', 'master clue', 'master clue scroll', 'master clue scrolls'],
 		kill: () => {
 			if (roll(15)) {
-				return MasterMimicTable.roll().add(MasterCasket.open(1));
+				return MasterMimicTable.roll().add(MasterCasket.roll(1));
 			}
-			return MasterCasket.open(1);
+			return MasterCasket.roll(1);
 		}
 	},
 	{

@@ -444,6 +444,15 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
+		item: getOSItem('Extended anti-venom+(4)'),
+		aliases: ['extended anti-venom+(4)'],
+		level: 94,
+		xp: 80,
+		inputItems: new Bank().add('Anti-venom+(4)').add('Araxyte venom sack', 4),
+		tickRate: 3,
+		bankTimePerPotion: 0.3
+	},
+	{
 		item: getOSItem('Extended super antifire (4)'),
 		aliases: ['Extended super antifire (4)', 'Extended super antifire'],
 		level: 98,

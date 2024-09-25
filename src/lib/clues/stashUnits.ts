@@ -1,7 +1,6 @@
-import { Bank } from 'oldschooljs';
+import { Bank, allTeamCapes } from 'oldschooljs';
 
-import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
+import { deepResolveItems, resolveItems } from 'oldschooljs';
 import {
 	barrowsItemArr,
 	boaters,

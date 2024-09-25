@@ -5,8 +5,8 @@ import { EmbedBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';
 import { Hiscores } from 'oldschooljs';
-import { bossNameMap } from 'oldschooljs/dist/constants';
-import type { BossRecords } from 'oldschooljs/dist/meta/types';
+import { bossNameMap } from 'oldschooljs';
+import type { BossRecords } from 'oldschooljs';
 
 import pets from '../../lib/data/pets';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';

@@ -8,7 +8,7 @@ import { bold, userMention } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, chunk, noOp, notEmpty, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';

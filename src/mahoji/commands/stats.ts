@@ -1,9 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Hiscores } from 'oldschooljs';
-import type { hiscoreURLs } from 'oldschooljs/dist/constants';
-import { ACCOUNT_TYPES } from 'oldschooljs/dist/constants';
+import { ACCOUNT_TYPES, Hiscores, type hiscoreURLs } from 'oldschooljs';
 
 import { statsEmbed } from '../../lib/util/statsEmbed';
 import type { OSBMahojiCommand } from '../lib/util';

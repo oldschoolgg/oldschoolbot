@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Bank, EquipmentSlot } from 'oldschooljs';
 
 import type { GearSetup } from '../gear/types';
 import { isValidGearSetup, skillsMeetRequirements } from '../util';

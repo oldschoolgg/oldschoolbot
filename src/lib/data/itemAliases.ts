@@ -1,7 +1,5 @@
-import { modifyItem } from '@oldschoolgg/toolkit';
-import { EItem, Items, allTeamCapes, itemNameMap } from 'oldschooljs';
-import { cleanString } from 'oldschooljs/dist/util/cleanString';
-import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
+import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
+import { EItem, Items, allTeamCapes, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
 import { mergeDeep, omit } from 'remeda';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
@@ -14,12 +12,12 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 	if (typeof name === 'string') {
 		firstName = name;
 		itemNameMap.set(name, id);
-		itemNameMap.set(cleanString(name), id);
+		itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
 	} else {
 		for (const _name of name) {
 			if (!firstName) firstName = _name;
 			itemNameMap.set(_name, id);
-			itemNameMap.set(cleanString(_name), id);
+			itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
 		}
 	}
 	// Update the item name to it's first alias
@@ -363,7 +361,7 @@ export const allTrophyItems = resolveItems([
 ]);
 
 for (const item of allTrophyItems) {
-	modifyItem(item, {
+	Items.modifyItem(item, {
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
@@ -379,18 +377,20 @@ for (const item of allTrophyItems) {
 export interface CustomItemData {
 	cantBeSacrificed?: true;
 }
-declare module 'oldschooljs/dist/meta/types' {
+declare module 'oldschooljs' {
 	interface Item {
 		customItemData?: CustomItemData;
 	}
 }
 
 for (const item of allTeamCapes) {
-	modifyItem(item.id, {
+	Items.modifyItem(item.id, {
 		price: 100
 	});
 	if (getItemOrThrow(item.id).price !== 100) {
-		throw new Error(`Failed to modify price of item ${item.id}`);
+		throw new Error(
+			`Failed to modify price of item ${item.id}, price should be 100 but its ${getItemOrThrow(item.id).price}`
+		);
 	}
 }
 
@@ -416,5 +416,5 @@ export const itemDataSwitches = [
 for (const items of itemDataSwitches) {
 	const from = getItemOrThrow(items.from);
 	const to = getItemOrThrow(items.to);
-	modifyItem(to.id, mergeDeep(omit(to, ['id']), omit(from, ['id'])));
+	Items.modifyItem(to.id, mergeDeep(omit(to, ['id']), omit(from, ['id'])));
 }

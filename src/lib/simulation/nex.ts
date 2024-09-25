@@ -11,11 +11,10 @@ import {
 	roll,
 	sumArr
 } from 'e';
-import { Bank } from 'oldschooljs';
-import { randomVariation } from 'oldschooljs/dist/util/util';
+import { Bank, randomVariation } from 'oldschooljs';
 
 import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';

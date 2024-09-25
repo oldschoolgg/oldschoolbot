@@ -1,7 +1,7 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Time, roll, shuffleArr, uniqueArr } from 'e';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { SupportServer } from '../../../config';
 import { DynamicButtons } from '../../../lib/DynamicButtons';

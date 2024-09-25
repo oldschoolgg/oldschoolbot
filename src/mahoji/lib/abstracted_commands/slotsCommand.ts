@@ -4,7 +4,7 @@ import type { BaseMessageOptions, ChatInputCommandInteraction } from 'discord.js
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
 import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
+import { toKMB } from 'oldschooljs';
 
 import { channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
