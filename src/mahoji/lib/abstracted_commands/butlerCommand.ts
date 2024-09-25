@@ -1,7 +1,7 @@
 import { Time, clamp } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { Planks } from '../../../lib/minions/data/planks';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ButlerActivityTaskOptions } from '../../../lib/types/minions';

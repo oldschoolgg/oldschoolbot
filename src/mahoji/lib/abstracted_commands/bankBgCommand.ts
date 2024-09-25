@@ -1,7 +1,7 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { BitField } from '../../../lib/constants';
 import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';

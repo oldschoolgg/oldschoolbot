@@ -1,6 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

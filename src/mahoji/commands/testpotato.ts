@@ -1,14 +1,9 @@
-import { calcDropRatesFromBankWithoutUniques, mentionCommand } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { xp_gains_skill_enum } from '@prisma/client';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, noOp } from 'e';
-import { Bank, Items } from 'oldschooljs';
-import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
-import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
 import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
@@ -23,6 +18,7 @@ import { MAX_QP } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 
+import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
@@ -32,10 +28,18 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { Gear } from '../../lib/structures/Gear';
-import { stringMatches } from '../../lib/util';
+import {
+	type CommandRunOptions,
+	convertLVLtoXP,
+	itemID,
+	mentionCommand,
+	resolveItems,
+	stringMatches,
+	toKMB
+} from '../../lib/util';
 import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
-import getOSItem from '../../lib/util/getOSItem';
+import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { userEventToStr } from '../../lib/util/userEvents';

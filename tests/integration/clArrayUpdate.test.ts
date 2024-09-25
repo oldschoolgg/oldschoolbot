@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 
 import { Bank } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs';
 import { roboChimpSyncData } from '../../src/lib/roboChimp';
 import { createTestUser } from './util';
 

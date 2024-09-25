@@ -1,5 +1,5 @@
 import { Time, calcPercentOfNum, calcWhatPercent, reduceNumByPercent } from 'e';
-import { randomVariation } from 'oldschooljs/dist/util';
+import { randomVariation } from 'oldschooljs';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { PeakTier } from '../constants';

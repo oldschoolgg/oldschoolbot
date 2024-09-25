@@ -1,4 +1,4 @@
-import { PerkTier, formatDuration } from '@oldschoolgg/toolkit';
+import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
 import { ComponentType, PermissionsBitField } from 'discord.js';
 

@@ -1,5 +1,5 @@
 import * as fs from 'node:fs/promises';
-import { formatItemStackQuantity, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit';
+import { formatItemStackQuantity, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GEListing, GETransaction } from '@prisma/client';
 
 import type { GEListingWithTransactions } from './../mahoji/commands/ge';

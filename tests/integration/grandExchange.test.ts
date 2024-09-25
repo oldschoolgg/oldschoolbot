@@ -1,6 +1,6 @@
 import { Time, calcPercentOfNum, randArrItem, randInt, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { GrandExchange } from '../../src/lib/grandExchange';

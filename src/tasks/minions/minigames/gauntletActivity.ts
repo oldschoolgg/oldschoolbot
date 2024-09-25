@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 

@@ -1,11 +1,11 @@
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll, skillingPetDropRate } from '../../lib/util';
+import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 

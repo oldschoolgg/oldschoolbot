@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { warmGear } from '../data/filterables';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';

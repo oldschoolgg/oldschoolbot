@@ -1,10 +1,10 @@
 import type { GearPreset } from '@prisma/client';
 import { notEmpty, objectKeys, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EquipmentSlot } from 'oldschooljs';
 
-import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import type {
 	DefenceGearStat,

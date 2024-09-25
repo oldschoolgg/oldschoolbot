@@ -1,6 +1,5 @@
-import { Bank } from 'oldschooljs';
+import { Bank, allTeamCapes } from 'oldschooljs';
 
-import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { QuestID } from '../../minions/data/quests';

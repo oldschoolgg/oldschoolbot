@@ -1,14 +1,11 @@
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import type Monster from 'oldschooljs/dist/structures/Monster';
+import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
 import type { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import type { KillableMonster } from '../minions/types';
-
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { roll, stringMatches } from '../util';

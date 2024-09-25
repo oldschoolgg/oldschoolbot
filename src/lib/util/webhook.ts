@@ -1,4 +1,4 @@
-import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit';
+import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit/util';
 import type { AttachmentBuilder, BaseMessageOptions, EmbedBuilder, Message } from 'discord.js';
 import { PartialGroupDMChannel, PermissionsBitField, WebhookClient } from 'discord.js';
 

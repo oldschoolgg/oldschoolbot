@@ -1,4 +1,4 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 export const LowGambleTable = new LootTable()
 	.add('Harralander', [15, 25])

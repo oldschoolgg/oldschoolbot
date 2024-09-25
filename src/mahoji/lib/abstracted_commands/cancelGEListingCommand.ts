@@ -1,4 +1,4 @@
-import { UserError } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
 import { GrandExchange } from '../../../lib/grandExchange';

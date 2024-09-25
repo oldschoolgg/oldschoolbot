@@ -1,13 +1,11 @@
-import { deepMerge, miniID, toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { deepMerge, miniID, toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import type { InteractionReplyOptions } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { clamp, objectEntries } from 'e';
-import { Bank, Items } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
+import { type ArrayItemsResolved, Bank, type ItemBank, Items } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import z from 'zod';

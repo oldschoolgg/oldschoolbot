@@ -1,5 +1,5 @@
 import { randArrItem } from 'e';
-import Bank from 'oldschooljs/dist/structures/Bank';
+import { Bank } from 'oldschooljs';
 
 import { kittens } from '../../../lib/growablePets';
 import { mahojiChatHead } from '../../../lib/util/chatHeadImage';

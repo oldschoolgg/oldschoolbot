@@ -1,14 +1,14 @@
-import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { bold, userMention } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, chunk, noOp, notEmpty, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';

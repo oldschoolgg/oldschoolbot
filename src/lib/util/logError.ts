@@ -1,4 +1,4 @@
-import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit';
+import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit/util';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 

@@ -1,8 +1,8 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User } from '@prisma/client';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { convertLVLtoXP } from 'oldschooljs';
 import { expect } from 'vitest';
 
 import { MUserClass } from '../../src/lib/MUser';

@@ -1,4 +1,4 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import type {

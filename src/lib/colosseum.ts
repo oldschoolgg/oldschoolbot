@@ -1,6 +1,5 @@
-import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
+import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,
@@ -14,10 +13,9 @@ import {
 	reduceNumByPercent,
 	sumArr
 } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
-import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Bank, type EquipmentSlot, LootTable } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { degradeChargeBank } from './degradeableItems';
 import type { GearSetupType } from './gear/types';

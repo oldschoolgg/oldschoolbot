@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { Emoji } from '../../../src/lib/constants';

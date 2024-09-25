@@ -1,4 +1,4 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs';
 
 interface Constructable {
 	id: number;

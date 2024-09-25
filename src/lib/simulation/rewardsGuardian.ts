@@ -1,4 +1,4 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 const TalismanTable = new LootTable()
 	.add('Mind talisman', 1, 4)

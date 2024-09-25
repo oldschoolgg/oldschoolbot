@@ -1,4 +1,4 @@
-import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit';
+import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit/util';
 import { roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 

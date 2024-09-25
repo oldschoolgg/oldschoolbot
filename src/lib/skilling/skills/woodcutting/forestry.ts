@@ -1,5 +1,5 @@
 import { LootTable } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 export const LeafTable = new LootTable()
 	.add('Leaves', 20)

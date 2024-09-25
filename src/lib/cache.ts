@@ -1,4 +1,4 @@
-import type { PerkTier } from '@oldschoolgg/toolkit';
+import type { PerkTier } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 
 export const perkTierCache = new Map<string, 0 | PerkTier>();

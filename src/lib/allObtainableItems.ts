@@ -1,6 +1,6 @@
 import { isFunction, notEmpty } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
+import { Bank, Implings, Monsters, getItem, resolveItems } from 'oldschooljs';
+
 import { flowerTable } from '../mahoji/lib/abstracted_commands/hotColdCommand';
 import { tipTable } from '../tasks/minions/minigames/gnomeRestaurantActivity';
 import { ClueTiers } from './clues/clueTiers';
@@ -37,7 +37,6 @@ import Runecraft from './skilling/skills/runecraft';
 import Smithing from './skilling/skills/smithing';
 import { stealables } from './skilling/skills/thieving/stealables';
 import Woodcutting from './skilling/skills/woodcutting/woodcutting';
-import { getItem, resolveItems } from './util';
 
 export const ALL_OBTAINABLE_ITEMS = new Set<number>();
 const totalBankToAdd = new Bank();

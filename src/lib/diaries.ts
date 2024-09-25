@@ -2,7 +2,7 @@ import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import type { Minigame } from '@prisma/client';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import { MAX_QP } from './minions/data/quests';
 import type { DiaryTier, DiaryTierName } from './minions/types';
 import { DiaryID } from './minions/types';

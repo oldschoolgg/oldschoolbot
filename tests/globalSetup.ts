@@ -4,8 +4,8 @@ import { Collection } from 'discord.js';
 import { vi } from 'vitest';
 import { MUserStats } from '../src/lib/structures/MUserStats';
 
-vi.mock('@oldschoolgg/toolkit', async () => {
-	const actual: any = await vi.importActual('@oldschoolgg/toolkit');
+vi.mock('@oldschoolgg/toolkit/util', async () => {
+	const actual: any = await vi.importActual('@oldschoolgg/toolkit/util');
 	return {
 		...actual,
 		mentionCommand: async (_args: any) => 'hi'

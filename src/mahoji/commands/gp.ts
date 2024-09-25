@@ -1,5 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { toKMB } from 'oldschooljs/dist/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { toKMB } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
 import type { OSBMahojiCommand } from '../lib/util';

@@ -1,8 +1,8 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import type { TwitcherGloves } from '../../lib/constants';
 import { TWITCHERS_GLOVES } from '../../lib/constants';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';

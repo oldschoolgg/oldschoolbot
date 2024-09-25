@@ -1,7 +1,6 @@
 import type { Prisma } from '@prisma/client';
 import { Time, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Bank, EquipmentSlot } from 'oldschooljs';
 
 import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';

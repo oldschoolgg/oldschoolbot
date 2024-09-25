@@ -1,4 +1,4 @@
-import { miniID } from '@oldschoolgg/toolkit';
+import { miniID } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';

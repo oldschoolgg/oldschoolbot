@@ -1,13 +1,12 @@
-import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit/util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import type { ClientStorage } from '@prisma/client';
 import { economy_transaction_type } from '@prisma/client';
 import type { InteractionReplyOptions } from 'discord.js';
 import { AttachmentBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, convertBankToPerHourStats } from 'oldschooljs';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -28,15 +27,7 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
-import {
-	calcPerHour,
-	cleanString,
-	convertBankToPerHourStats,
-	dateFm,
-	formatDuration,
-	stringMatches,
-	toKMB
-} from '../../lib/util';
+import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches, toKMB } from '../../lib/util';
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';

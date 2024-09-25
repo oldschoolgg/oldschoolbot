@@ -1,13 +1,13 @@
 import { Time, increaseNumByPercent, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, addItemToBank } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, skillingPetDropRate } from '../../lib/util';
+import { skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';

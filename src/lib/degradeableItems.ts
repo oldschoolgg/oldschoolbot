@@ -1,7 +1,5 @@
 import { percentChance } from 'e';
-import { Bank, type Item } from 'oldschooljs';
-
-import type Monster from 'oldschooljs/dist/structures/Monster';
+import { Bank, type Item, type Monster } from 'oldschooljs';
 
 import type { GearSetupType, PrimaryGearSetupType } from './gear/types';
 import type { KillableMonster } from './minions/types';

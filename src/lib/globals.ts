@@ -1,5 +1,5 @@
 import { isMainThread } from 'node:worker_threads';
-import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
+import { TSRedis } from '@oldschoolgg/toolkit/structures';
 import { PrismaClient } from '@prisma/client';
 import { PrismaClient as RobochimpPrismaClient } from '@prisma/robochimp';
 

@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 
 import { COINS_ID } from '../constants';
 import { leaguesCreatables } from '../data/creatables/leagueCreatables';

@@ -1,7 +1,7 @@
 import { roll } from 'e';
 import { Bank, type Item, LootTable } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
 import type { UnifiedOpenable } from './openables';
 import getOSItem from './util/getOSItem';
 

@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import Buyables from '../../src/lib/data/buyables/buyables';

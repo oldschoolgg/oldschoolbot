@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs';
 
 interface Castable {
 	id: number;

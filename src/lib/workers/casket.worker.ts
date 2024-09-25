@@ -1,10 +1,11 @@
 import '../data/itemAliases';
 
 import { roll } from 'e';
-import { Bank, Misc } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import type { CasketWorkerArgs } from '.';
 import { ClueTiers } from '../clues/clueTiers';
+import { getMimicTable } from '../util';
 
 if (global.prisma || global.redis) {
 	throw new Error('Prisma/Redis is loaded in the casket worker!');
@@ -12,12 +13,13 @@ if (global.prisma || global.redis) {
 
 export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
-	const loot = clueTier.table.open(quantity);
+	const loot = clueTier.table.roll(quantity);
 	let mimicNumber = 0;
 	if (clueTier.mimicChance) {
+		const mimicTable = getMimicTable(clueTier.name as 'master' | 'elite');
 		for (let i = 0; i < quantity; i++) {
 			if (roll(clueTier.mimicChance)) {
-				loot.add(Misc.Mimic.open(clueTier.name as 'master' | 'elite'));
+				mimicTable.roll(1, { targetBank: loot });
 				mimicNumber++;
 			}
 		}

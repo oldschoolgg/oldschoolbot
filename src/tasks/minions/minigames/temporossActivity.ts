@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, randInt } from 'e';
 
 import { Emoji, Events } from '../../../lib/constants';

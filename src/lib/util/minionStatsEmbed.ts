@@ -1,9 +1,9 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder } from 'discord.js';
 import { shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
-import type { SkillsScore } from 'oldschooljs/dist/meta/types';
-import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
+import { convertXPtoLVL, toKMB } from 'oldschooljs';
+import type { SkillsScore } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
 import { getClueScoresFromOpenables } from '../clues/clueUtils';

@@ -4,7 +4,7 @@ import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/geImage';
 
-import { MahojiClient } from '@oldschoolgg/toolkit';
+import { MahojiClient } from '@oldschoolgg/toolkit/util';
 import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';

@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { mockMUser } from './utils';

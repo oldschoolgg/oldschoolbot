@@ -1,6 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { GearStat } from '../../gear/types';
 import type { Skills } from '../../types';

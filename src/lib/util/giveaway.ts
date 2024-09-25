@@ -2,7 +2,7 @@ import type { MessageEditOptions } from 'discord.js';
 import { time, userMention } from 'discord.js';
 import { Time, debounce, noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { Events } from '../constants';
 

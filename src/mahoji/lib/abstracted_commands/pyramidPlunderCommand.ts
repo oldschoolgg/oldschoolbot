@@ -1,6 +1,6 @@
 import { Time, reduceNumByPercent } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { PlunderActivityTaskOptions } from '../../../lib/types/minions';

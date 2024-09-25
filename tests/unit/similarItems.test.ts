@@ -1,4 +1,4 @@
-import { itemID, resolveItems } from 'oldschooljs/dist/util';
+import { itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { getSimilarItems } from '../../src/lib/data/similarItems';
