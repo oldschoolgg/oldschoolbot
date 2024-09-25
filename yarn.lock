@@ -4320,14 +4320,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@portal:/C:/dev/oldschooljs::locator=root-workspace-0b6124%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "oldschooljs@portal:/C:/dev/oldschooljs::locator=root-workspace-0b6124%40workspace%3A."
+"oldschooljs@git+https://github.com/oldschoolgg/oldschooljs.git#142539da4a7b5a16605f0cce8eaa51597102e658":
+  version: 2.6.0
+  resolution: "oldschooljs@https://github.com/oldschoolgg/oldschooljs.git#commit=142539da4a7b5a16605f0cce8eaa51597102e658"
   dependencies:
     e: "npm:^0.2.33"
     node-fetch: "npm:2.6.7"
+  checksum: 10c0/075e3085b7bdb321c40828b2ac4e5983b5d7a260e2b2d0be79ca7b212cbb14408aa1f49bb21600933323aeec180137c541747d3f216f702d084583c1c2157df3
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "omggif@npm:^1.0.5":
   version: 1.0.10
