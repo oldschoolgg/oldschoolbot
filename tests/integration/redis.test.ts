@@ -1,14 +1,14 @@
-import { expect, test } from 'vitest';
-
 import { TSRedis } from '@oldschoolgg/toolkit/structures';
 import { sleep } from 'e';
-import { BadgesEnum, BitField, globalConfig } from '../../src/lib/constants';
+import { expect, test } from 'vitest';
+
+import { BadgesEnum, BitField } from '../../src/lib/constants';
 import { roboChimpCache } from '../../src/lib/perkTier';
 import { getUsersPerkTier } from '../../src/lib/perkTiers';
 import { createTestUser } from './util';
 
 function makeSender() {
-	return new TSRedis({ mocked: !globalConfig.redisPort, port: globalConfig.redisPort });
+	return new TSRedis({ mocked: false });
 }
 
 test('Should add patron badge', async () => {
