@@ -1,6 +1,6 @@
-import { discrimName, mentionCommand, truncateString } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import { discrimName, mentionCommand, truncateString } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

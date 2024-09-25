@@ -25,7 +25,7 @@
 		"data": "concurrently \"tsx ./scripts/monster_table.ts\" \"tsx ./scripts/clue_table.ts\" && yarn lint"
 	},
 	"dependencies": {
-		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#420da4c5866d25897c989155472ca8fc49cd480c",
+		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#41ddbb03170dd0e3ad708843dbc0feb8f360121e",
 		"@prisma/client": "^5.17.0",
 		"@sapphire/ratelimits": "^2.4.9",
 		"@sapphire/snowflake": "^3.5.3",
@@ -44,7 +44,7 @@
 		"murmurhash": "^2.0.1",
 		"node-cron": "^3.0.3",
 		"node-fetch": "^2.6.7",
-		"oldschooljs": "git+https://github.com/oldschoolgg/oldschooljs.git#142539da4a7b5a16605f0cce8eaa51597102e658",
+		"oldschooljs": "git+https://github.com/oldschoolgg/oldschooljs.git#5e34bd12f453bc4a7a94af9f07d9cec50a63a7c0",
 		"p-queue": "^6.6.2",
 		"piscina": "^4.6.1",
 		"postgres": "^3.4.4",

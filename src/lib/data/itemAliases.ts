@@ -1,4 +1,4 @@
-import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
+import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/util';
 import { EItem, Items, allTeamCapes, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
 import { mergeDeep, omit } from 'remeda';
 

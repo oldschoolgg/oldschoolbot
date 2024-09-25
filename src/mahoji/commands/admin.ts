@@ -1,5 +1,5 @@
-import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit/util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import type { ClientStorage } from '@prisma/client';
 import { economy_transaction_type } from '@prisma/client';
 import type { InteractionReplyOptions } from 'discord.js';

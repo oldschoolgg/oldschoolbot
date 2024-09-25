@@ -1,7 +1,7 @@
-import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { bold, userMention } from 'discord.js';

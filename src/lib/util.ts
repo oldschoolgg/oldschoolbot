@@ -1,5 +1,3 @@
-import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import type {
 	BaseMessageOptions,
@@ -28,6 +26,8 @@ import {
 } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { type CommandResponse, stripEmojis } from '@oldschoolgg/toolkit/util';
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
@@ -51,7 +51,7 @@ import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
 
-export * from '@oldschoolgg/toolkit';
+export * from '@oldschoolgg/toolkit/util';
 
 export { itemID, resolveItems, randomVariation, toKMB, convertLVLtoXP, addItemToBank };
 
@@ -376,7 +376,7 @@ export function isModOrAdmin(user: MUser) {
 
 export { assert } from './util/logError';
 export * from './util/smallUtils';
-export { channelIsSendable } from '@oldschoolgg/toolkit';
+export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();

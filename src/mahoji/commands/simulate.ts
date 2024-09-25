@@ -1,5 +1,5 @@
-import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
-import { PerkTier } from '@oldschoolgg/toolkit';
+import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { PerkTier } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt, roll } from 'e';
 import { Bank, ChambersOfXeric, averageBank } from 'oldschooljs';

@@ -1,6 +1,6 @@
 import type { ItemBank } from 'oldschooljs';
 
-import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
+import { bulkUpdateCommands } from '@oldschoolgg/toolkit/util';
 import { ActivityType, bold, time } from 'discord.js';
 import { startBlacklistSyncing } from '../../lib/blacklists';
 import { Channel, META_CONSTANTS, globalConfig } from '../../lib/constants';

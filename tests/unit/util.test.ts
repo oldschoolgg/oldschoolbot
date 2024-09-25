@@ -1,4 +1,4 @@
-import { truncateString } from '@oldschoolgg/toolkit';
+import { truncateString } from '@oldschoolgg/toolkit/util';
 import { reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs';

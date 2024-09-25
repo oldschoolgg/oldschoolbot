@@ -2,7 +2,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { GearStat } from '../../../lib/gear/types';

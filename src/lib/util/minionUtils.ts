@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { BaseMessageOptions } from 'discord.js';
 import { escapeMarkdown, time } from 'discord.js';
 import { Time } from 'e';

@@ -1,4 +1,4 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { percentChance, roll, sumArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { JSONClone } from 'oldschooljs';

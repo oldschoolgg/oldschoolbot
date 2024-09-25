@@ -1,4 +1,4 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { ComponentType } from 'discord.js';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';

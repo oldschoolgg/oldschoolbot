@@ -1,5 +1,5 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
-import { PerkTier } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { PerkTier } from '@oldschoolgg/toolkit/util';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { Time, sumArr } from 'e';
 import { Bank, type ItemBank, Monsters, SkillsEnum, type SkillsScore, TOBRooms } from 'oldschooljs';

@@ -1,4 +1,4 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs';

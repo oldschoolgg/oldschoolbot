@@ -1,9 +1,9 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, percentChance, randInt, reduceNumByPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';

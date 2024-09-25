@@ -1,4 +1,4 @@
-import { generateCommandInputs } from '@oldschoolgg/toolkit';
+import { generateCommandInputs } from '@oldschoolgg/toolkit/util';
 import { Time, shuffleArr } from 'e';
 import { generateRandomBank } from 'oldschooljs';
 import { expect, test, vi } from 'vitest';

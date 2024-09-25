@@ -1,4 +1,4 @@
-import { perTimeUnitChance } from '@oldschoolgg/toolkit';
+import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
 import { Time, objectEntries, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 

@@ -13,7 +13,7 @@ import {
 } from 'e';
 import { Bank, randomVariation } from 'oldschooljs';
 
-import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit/util';
 import { resolveItems } from 'oldschooljs';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';

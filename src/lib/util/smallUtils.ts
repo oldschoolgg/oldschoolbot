@@ -1,5 +1,5 @@
-import { deepMerge, miniID, toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { deepMerge, miniID, toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import type { InteractionReplyOptions } from 'discord.js';

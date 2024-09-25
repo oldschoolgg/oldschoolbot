@@ -1,5 +1,5 @@
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/structures';
+import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { calcWhatPercent, percentChance, sumArr, uniqueArr } from 'e';

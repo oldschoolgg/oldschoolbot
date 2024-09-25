@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { randArrItem, randInt } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs';

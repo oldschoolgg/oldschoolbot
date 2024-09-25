@@ -1,4 +1,4 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit';
+import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import { notEmpty } from 'e';
 import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 

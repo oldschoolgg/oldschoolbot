@@ -1,5 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandOption } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandOption } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { EquipmentSlot } from 'oldschooljs';

@@ -1,6 +1,6 @@
-import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
 import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
