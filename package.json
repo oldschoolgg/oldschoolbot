@@ -25,7 +25,7 @@
 		"data": "concurrently \"tsx ./scripts/monster_table.ts\" \"tsx ./scripts/clue_table.ts\" && yarn lint"
 	},
 	"dependencies": {
-		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#41ddbb03170dd0e3ad708843dbc0feb8f360121e",
+		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#b216beb138f64a4c150575077e229f8be1e7d281",
 		"@prisma/client": "^5.17.0",
 		"@sapphire/ratelimits": "^2.4.9",
 		"@sapphire/snowflake": "^3.5.3",
