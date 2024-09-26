@@ -8,6 +8,7 @@ import { BitField } from '../../lib/constants';
 
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import { blackjackCommand } from '../lib/abstracted_commands/blackjackCommand';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
@@ -64,6 +65,24 @@ export const gambleCommand: OSBMahojiCommand = {
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: false
+				}
+			]
+		},
+		/**
+		 *
+		 * Blackjack
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'blackjack',
+			description: 'Allows you play lucky pick and risk your GP.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'amount',
+					description: 'Amount you wish to gamble.',
+					required: true
 				}
 			]
 		},
@@ -179,6 +198,7 @@ export const gambleCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		item?: { item?: string; autoconfirm?: boolean };
 		dice?: { amount?: string };
+		blackjack?: { amount: string };
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
 		slots?: { amount?: string };
@@ -213,6 +233,10 @@ export const gambleCommand: OSBMahojiCommand = {
 		// Block GP Gambling from users with the BitField set:
 		if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
 			return 'You have gambling disabled and cannot gamble!';
+		}
+
+		if (options.blackjack) {
+			return blackjackCommand(user, options.blackjack.amount, interaction);
 		}
 
 		if (options.lucky_pick) {
