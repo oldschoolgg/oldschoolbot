@@ -41,6 +41,7 @@ import type {
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
+import { getOSItem } from './util/getOSItem';
 
 export * from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util';
@@ -372,8 +373,15 @@ export { channelIsSendable } from '@oldschoolgg/toolkit';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();
-	if (!weapon) return 'You have no weapon equipped.';
 	const { ammo } = gear;
+	if (!weapon) return 'You have no weapon equipped.';
+	const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(weapon.id);
+	if (usingBowfa){
+		return {
+			weapon,
+			ammo
+		};
+	}
 	if (!ammo) return 'You have no ammo equipped.';
 
 	const projectileCategory = objectEntries(projectiles).find(i =>
@@ -385,6 +393,7 @@ export function checkRangeGearWeapon(gear: Gear) {
 			projectileCategory[0]
 		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
 	}
+	console.log(`weapon ${weapon}, ammo ${ammo}`);
 
 	return {
 		weapon,
