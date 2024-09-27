@@ -4,6 +4,7 @@ import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 import type { BitField, PvMMethod } from '../../../../lib/constants';
+import { getSimilarItems } from '../../../../lib/data/similarItems';
 import { type CombatOptionsEnum, SlayerActivityConstants } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import {
@@ -26,11 +27,10 @@ import {
 	numberEnum,
 	zodEnum
 } from '../../../../lib/util';
+import getOSItem from '../../../../lib/util/getOSItem';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { speedCalculations } from './timeAndSpeed';
-import { getSimilarItems } from '../../../../lib/data/similarItems';
-import getOSItem from '../../../../lib/util/getOSItem';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),
@@ -209,7 +209,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		if (!gearBank.gear.range.ammo?.item && !usingBowfa) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
-		
+
 		const projectilesNeeded = usingBowfa ? 0 : monster.projectileUsage.calculateQuantity({ quantity });
 		if (rangeCheck.ammo) {
 			speedDurationResult.updateBank.itemCostBank.add(rangeCheck.ammo.item, projectilesNeeded);
@@ -222,7 +222,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			return `You need ammo equipped to kill ${monster.name}.`;
 		}
 	}
-	
 
 	for (const effect of [...postBoostEffects, ...ephemeralPostTripEffects]) {
 		const result = effect.run({

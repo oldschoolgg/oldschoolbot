@@ -38,10 +38,10 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { getOSItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
-import { getOSItem } from './util/getOSItem';
 
 export * from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util';
@@ -376,7 +376,7 @@ export function checkRangeGearWeapon(gear: Gear) {
 	const { ammo } = gear;
 	if (!weapon) return 'You have no weapon equipped.';
 	const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(weapon.id);
-	if (usingBowfa){
+	if (usingBowfa) {
 		return {
 			weapon,
 			ammo
