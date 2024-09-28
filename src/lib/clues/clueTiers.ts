@@ -1,17 +1,14 @@
 import { Time } from 'e';
-import { Clues } from 'oldschooljs';
-import type { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
-import type { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
-import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
-import type { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
-import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
-import type { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
-import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
-import type { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
-import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import type { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
-import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
+import {
+	BeginnerCasket,
+	Clues,
+	EasyCasket,
+	EliteCasket,
+	HardCasket,
+	type LootTable,
+	MasterCasket,
+	MediumCasket
+} from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import {
@@ -37,7 +34,7 @@ interface ClueMilestoneReward {
 
 export interface ClueTier {
 	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master';
-	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
+	table: LootTable;
 	id: number;
 	scrollID: number;
 	timeToFinish: number;
@@ -58,7 +55,7 @@ export const ClueTiers: ClueTier[] = [
 		scrollID: 23_182,
 		timeToFinish: Time.Minute * 2.5,
 		mimicChance: false,
-		allItems: BeginnerClueTable.allItems,
+		allItems: BeginnerCasket.allItems,
 		stashUnits: beginnerStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Baby impling jar', 'Young impling jar']),
@@ -75,7 +72,7 @@ export const ClueTiers: ClueTier[] = [
 			scoreNeeded: 500
 		},
 		mimicChance: false,
-		allItems: EasyClueTable.allItems,
+		allItems: EasyCasket.allItems,
 		stashUnits: easyStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar']),
@@ -92,7 +89,7 @@ export const ClueTiers: ClueTier[] = [
 			scoreNeeded: 400
 		},
 		mimicChance: false,
-		allItems: MediumClueTable.allItems,
+		allItems: MediumCasket.allItems,
 		stashUnits: mediumStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar']),
@@ -105,7 +102,7 @@ export const ClueTiers: ClueTier[] = [
 		scrollID: 2722,
 		timeToFinish: Time.Minute * 12.5,
 		mimicChance: false,
-		allItems: HardClueTable.allItems,
+		allItems: HardCasket.allItems,
 		stashUnits: hardStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar']),
@@ -122,7 +119,7 @@ export const ClueTiers: ClueTier[] = [
 			scoreNeeded: 200
 		},
 		mimicChance: 35,
-		allItems: EliteClueTable.allItems,
+		allItems: EliteCasket.allItems,
 		stashUnits: eliteStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar']),
@@ -139,7 +136,7 @@ export const ClueTiers: ClueTier[] = [
 			scoreNeeded: 100
 		},
 		mimicChance: 15,
-		allItems: MasterClueTable.allItems,
+		allItems: MasterCasket.allItems,
 		stashUnits: masterStashes,
 		reqs: beginnerReqs,
 		cl: cluesMasterCL

@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';

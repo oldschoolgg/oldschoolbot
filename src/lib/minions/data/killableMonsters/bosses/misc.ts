@@ -5,6 +5,7 @@ import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
+import { Gear } from '../../../../structures/Gear';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
 
@@ -560,6 +561,100 @@ const killableBosses: KillableMonster[] = [
 		customMonsterHP: 575,
 		combatXpMultiplier: 1.2,
 		healAmountNeeded: 20
+	},
+	{
+		id: Monsters.Araxxor.id,
+		name: Monsters.Araxxor.name,
+		aliases: Monsters.Araxxor.aliases,
+		timeToFinish: Time.Minute * 20,
+		respawnTime: 2000,
+		table: Monsters.Araxxor,
+		notifyDrops: resolveItems(['Nid']),
+		qpRequired: 200,
+		deathProps: {
+			hardness: 0.6,
+			steepness: 0.99
+		},
+		equippedItemBoosts: [
+			{
+				items: [
+					{ boostPercent: 15, itemID: itemID('Scythe of vitur') },
+					{ boostPercent: 12, itemID: itemID('Soulreaper axe') },
+					{ boostPercent: 5, itemID: itemID('Bone mace') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Amulet of torture') },
+					{ boostPercent: 2, itemID: itemID('Amulet of fury') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee'
+			}
+		],
+		levelRequirements: {
+			prayer: 70,
+			slayer: 92,
+			attack: 85,
+			strength: 85,
+			defence: 80,
+			hitpoints: 90,
+			woodcutting: 62,
+			fletching: 60,
+			crafting: 56,
+			agility: 52,
+			magic: 49
+		},
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 575,
+		combatXpMultiplier: 1.2,
+		healAmountNeeded: 20 * 100,
+		slayerOnly: true,
+		minimumGearRequirements: {
+			melee: new Gear({
+				head: 'Slayer helmet (i)',
+				neck: 'Amulet of fury',
+				cape: 'Fire cape',
+				body: 'Bandos chestplate',
+				legs: 'Bandos tassets',
+				hands: 'Ferocious gloves',
+				feet: 'Dragon boots',
+				ring: 'Berserker ring (i)',
+				ammo: "Rada's blessing 3"
+			}).stats
+		},
+		itemsRequired: [],
+		itemCost: {
+			itemCost: new Bank().add('Extended anti-venom+(4)'),
+			qtyPerMinute: 0.05,
+			alternativeConsumables: [
+				{
+					itemCost: new Bank().add('Anti-venom+(4)'),
+					qtyPerMinute: 0.05 * 2
+				}
+			]
+		}
 	}
 ];
 
