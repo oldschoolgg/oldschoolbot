@@ -46,3 +46,4 @@ tests/**/*.tsbuildinfo
 item/
 
 docs
+tmp

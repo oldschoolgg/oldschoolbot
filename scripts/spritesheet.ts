@@ -92,11 +92,12 @@ async function makeSpritesheet(
 ) {
 	try {
 		const pngFiles = await getPngFiles(iconsDir);
+		console.log(`Found ${pngFiles.length} PNG files in the directory`);
 		if (pngFiles.length === 0) {
 			throw new Error('No PNG files found in the directory');
 		}
 
-		const filesToDo = [];
+		const filesToDo: string[] = [];
 		if (!allItems) allItems = pngFiles.map(file => Number.parseInt(path.basename(file, '.png')));
 		for (const id of allItems) {
 			if (!pngFiles.some(file => file.endsWith(`${id}.png`))) {
@@ -120,7 +121,7 @@ async function makeSpritesheet(
 }
 
 makeSpritesheet(
-	'./item/icon',
+	'./tmp/icons',
 	'./src/lib/resources/images/spritesheet.png',
 	'./src/lib/resources/images/spritesheet.json',
 	itemsMustBeInSpritesheet

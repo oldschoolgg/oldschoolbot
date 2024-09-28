@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
+import { TSRedis } from '@oldschoolgg/toolkit/structures';
 import { sleep } from 'e';
 import { BadgesEnum, BitField, globalConfig } from '../../src/lib/constants';
 import { roboChimpCache } from '../../src/lib/perkTier';
