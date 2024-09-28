@@ -10,7 +10,7 @@ const writer = new TSVWriter('data/clue_data.tsv');
 writer.writeRow(['Tier', 'Loot']);
 
 for (const clue of ClueTiers) {
-	const _loot = clue.table.open(qty);
+	const _loot = clue.table.roll(qty);
 	const uniques = new Bank();
 	for (const item of clue.cl) {
 		const amnt = _loot.amount(item);

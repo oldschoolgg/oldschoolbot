@@ -4,7 +4,8 @@
 		"outDir": "../dist",
 		"rootDir": ".",
 		"composite": true,
-		"tsBuildInfoFile": "../dist/.tsbuildinfo"
+		"tsBuildInfoFile": "../dist/.tsbuildinfo",
+		"baseUrl": "./"
 	},
 	"include": [".", "./**/*.json"],
 	"exclude": ["**/node_modules", "**/.*/"]

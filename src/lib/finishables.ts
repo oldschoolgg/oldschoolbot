@@ -1,12 +1,15 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { notEmpty, randArrItem, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import BeginnerClueTable from 'oldschooljs/dist/simulation/clues/Beginner';
-import EasyClueTable from 'oldschooljs/dist/simulation/clues/Easy';
-import EliteClueTable from 'oldschooljs/dist/simulation/clues/Elite';
-import HardClueTable from 'oldschooljs/dist/simulation/clues/Hard';
-import MasterCasket from 'oldschooljs/dist/simulation/clues/Master';
-import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
+import {
+	Bank,
+	BeginnerCasket,
+	EasyCasket,
+	EliteCasket,
+	HardCasket,
+	MasterCasket,
+	MediumCasket,
+	Monsters
+} from 'oldschooljs';
 import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
@@ -179,25 +182,25 @@ export const finishables: Finishable[] = [
 		name: 'Beginner Clue Scolls',
 		cl: cluesBeginnerCL,
 		aliases: ['beginner clues', 'beginner clue', 'beginner clue scroll', 'beginner clue scrolls'],
-		kill: () => BeginnerClueTable.open(1)
+		kill: () => BeginnerCasket.roll()
 	},
 	{
 		name: 'Easy Clue Scolls',
 		cl: cluesEasyCL,
 		aliases: ['easy clues', 'easy clue', 'easy clue scroll', 'easy clue scrolls'],
-		kill: () => EasyClueTable.open(1)
+		kill: () => EasyCasket.roll()
 	},
 	{
 		name: 'Medium Clue Scolls',
 		cl: cluesMediumCL,
 		aliases: ['medium clues', 'medium clue', 'medium clue scroll', 'medium clue scrolls'],
-		kill: () => MediumClueTable.open(1)
+		kill: () => MediumCasket.roll()
 	},
 	{
 		name: 'Hard Clue Scolls',
 		cl: cluesHardCL,
 		aliases: ['hard clues', 'hard clue', 'hard clue scroll', 'hard clue scrolls'],
-		kill: () => HardClueTable.open(1)
+		kill: () => HardCasket.roll()
 	},
 	{
 		name: 'Elite Clue Scolls',
@@ -205,9 +208,9 @@ export const finishables: Finishable[] = [
 		aliases: ['elite clues', 'elite clue', 'elite clue scroll', 'elite clue scrolls'],
 		kill: () => {
 			if (roll(35)) {
-				return EliteMimicTable.roll().add(EliteClueTable.open(1));
+				return EliteMimicTable.roll().add(EliteCasket.roll());
 			}
-			return EliteClueTable.open(1);
+			return EliteCasket.roll();
 		}
 	},
 	{
@@ -216,9 +219,9 @@ export const finishables: Finishable[] = [
 		aliases: ['master clues', 'master clue', 'master clue scroll', 'master clue scrolls'],
 		kill: () => {
 			if (roll(15)) {
-				return MasterMimicTable.roll().add(MasterCasket.open(1));
+				return MasterMimicTable.roll().add(MasterCasket.roll());
 			}
-			return MasterCasket.open(1);
+			return MasterCasket.roll();
 		}
 	},
 	{

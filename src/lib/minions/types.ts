@@ -1,8 +1,6 @@
 import type { StoreBitfield } from '@oldschoolgg/toolkit';
 import type { XpGainSource } from '@prisma/client';
-import type { Bank, Item, MonsterKillOptions } from 'oldschooljs';
-
-import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import type { Bank, Item, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 
 import type { ClueTier } from '../clues/clueTiers';
 import type { BitField, PerkTier } from '../constants';

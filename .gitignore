@@ -44,3 +44,5 @@ tests/**/*.tsbuildinfo
 !.yarn/sdks
 !.yarn/versions
 item/
+
+docs
