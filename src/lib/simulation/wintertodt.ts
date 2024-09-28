@@ -1,7 +1,7 @@
 import { normal } from '@oldschoolgg/toolkit';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcPercentOfNum, randInt, roll } from 'e';
-import { Bank, LootTable, convertXPtoLVL, resolveItems } from 'lib/util';
+import { Bank, LootTable, convertXPtoLVL, resolveItems } from '../util';
 
 import { MAX_XP } from '../constants';
 import type { LevelRequirements } from '../skilling/types';
