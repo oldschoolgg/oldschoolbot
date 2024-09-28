@@ -4321,13 +4321,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "oldschooljs@npm:2.6.1"
+"oldschooljs@git+https://github.com/oldschoolgg/oldschooljs.git#461199f3a4468e7350527b8f5942dfcb54194535":
+  version: 2.6.0
+  resolution: "oldschooljs@https://github.com/oldschoolgg/oldschooljs.git#commit=461199f3a4468e7350527b8f5942dfcb54194535"
   dependencies:
     e: "npm:^0.2.33"
     node-fetch: "npm:2.6.7"
-  checksum: 10c0/1a95ba311806aaad624fca2a4feeb71757ecd62dea0df9c9f03e63ef81580f1ce40d8cf36e2d0b52ae184305e9876c62ed586c188e330e36f22767bd0c44ab2b
+  checksum: 10c0/009ad9202917699c925cc30c38b19d1180fc1ad2efe0720312c588256a00421e5519dfba527521b80dc9c0e6aedc535d923bcba21072368ee3a86b6125c8c5a0
   languageName: node
   linkType: hard
 
@@ -5167,7 +5167,7 @@ __metadata:
     node-cron: "npm:^3.0.3"
     node-fetch: "npm:^2.6.7"
     nodemon: "npm:^3.1.4"
-    oldschooljs: "npm:^2.6.1"
+    oldschooljs: "git+https://github.com/oldschoolgg/oldschooljs.git#461199f3a4468e7350527b8f5942dfcb54194535"
     p-queue: "npm:^6.6.2"
     piscina: "npm:^4.6.1"
     postgres: "npm:^3.4.4"
