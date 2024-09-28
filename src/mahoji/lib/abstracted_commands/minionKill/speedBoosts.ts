@@ -1,9 +1,8 @@
 import { calcWhatPercent } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { Bank, type Item, type Monster } from 'oldschooljs';
 
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import type Monster from 'oldschooljs/dist/structures/Monster';
 import type { PvMMethod } from '../../../../lib/constants';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
 import type { OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
