@@ -10,6 +10,8 @@ import { BOT_TYPE } from '../src/lib/constants';
 import { getSystemInfo } from '../src/lib/systemInfo';
 import { renderCreatablesFile } from './renderCreatablesFile.js';
 import { execAsync, runTimedLoggedFn } from './scriptUtil.js';
+import { customItems } from '../src/lib/customItems/util.js';
+import { itemNameFromID } from '../src/lib/util.js';
 
 const args = process.argv.slice(2);
 
@@ -125,6 +127,10 @@ async function main() {
 	await runTimedLoggedFn('Typescript Compilation', handleTypescriptCompilation);
 	await runTimedLoggedFn('Post Build', () => Promise.all([handleCommandsJSON()]));
 	renderCreatablesFile();
+	writeFileSync('data/bso_items.json', JSON.stringify(customItems.reduce((acc, id) => {
+	acc[id] = itemNameFromID(id)!;
+	return acc;
+}, {} as Record<number, string>), null, 4), 'utf-8');
 }
 
 runTimedLoggedFn('Build', main);
