@@ -1,49 +1,48 @@
+import starlight from '@astrojs/starlight';
 // @ts-check
 import { defineConfig } from 'astro/config';
-import starlight from '@astrojs/starlight';
 import { remarkItems } from './src/plugins/items';
 
 // https://astro.build/config
 export default defineConfig({
 	markdown: {
-    remarkPlugins: [remarkItems],
-  },
+		remarkPlugins: [remarkItems]
+	},
 	integrations: [
 		starlight({
 			title: 'Oldschool.gg Wiki',
-			 favicon: 'favicon.ico',
+			favicon: 'favicon.ico',
 			social: {
 				github: 'https://github.com/oldschoolgg/oldschoolbot',
-				discord: "https://discord.gg/ob",
+				discord: 'https://discord.gg/ob'
 			},
-			customCss: [
-				"./src/styles/main.css",
-				  './src/fonts/font-face.css',
-			],
+			customCss: ['./src/styles/main.css', './src/fonts/font-face.css'],
 			pagination: false,
-			head: [  {
-      tag: 'script',
-	  content: `if (window.location.href.includes('/bso/')) {
+			head: [
+				{
+					tag: 'script',
+					content: `if (window.location.href.includes('/bso/')) {
   window.onload = () => document.body.classList.add('bso-theme');
 }`
-    }],
+				}
+			],
 			sidebar: [
 				{
 					label: 'Getting Started',
 					autogenerate: { directory: 'getting-started' },
-					collapsed: false,
-				},{
+					collapsed: false
+				},
+				{
 					label: 'OSB',
 					autogenerate: { directory: 'osb' },
-					collapsed: true,
+					collapsed: true
 				},
 				{
 					label: 'BSO',
 					autogenerate: { directory: 'bso' },
-					collapsed: true,
-				},
-			],
-			
-		}),
-	],
+					collapsed: true
+				}
+			]
+		})
+	]
 });

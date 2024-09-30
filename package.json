@@ -4,7 +4,7 @@
 		"build": "tsx ./scripts/build.ts",
 		"start": "yarn build && node --enable-source-maps dist/",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"prisma generate --no-hints --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
-		"prettify": "prettier --use-tabs \"./**/*.{md,yml}\" --write",
+		"prettify": "prettier --use-tabs \"./**/*.{md,yml}\" --write --log-level silent",
 		"lint": "concurrently --raw --kill-others-on-fail \"biome check --write --unsafe --diagnostic-level=error\" \"yarn prettify\" \"prisma format --schema ./prisma/robochimp.prisma\" \"prisma format --schema ./prisma/schema.prisma\"",
 		"build:tsc": "tsc -p src",
 		"watch:tsc": "tsc -w -p src",
