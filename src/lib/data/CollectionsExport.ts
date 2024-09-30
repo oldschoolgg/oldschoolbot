@@ -2349,3 +2349,16 @@ export const vardorvisCL = resolveItems([
 	'Blood quartz',
 	'Strangled tablet'
 ]);
+
+export const araxxorCL = resolveItems([
+	'Nid',
+	'Araxyte venom sack',
+	'Spider cave teleport',
+	'Araxyte fang',
+	'Noxious point',
+	'Noxious blade',
+	'Noxious pommel',
+	'Araxyte head',
+	'Jar of venom',
+	'Coagulated venom'
+]);

@@ -223,7 +223,10 @@ const killableBosses: KillableMonster[] = [
 		],
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 10, itemID: itemID("Osmumten's fang") }],
+				items: [
+					{ boostPercent: 10, itemID: itemID("Osmumten's fang") },
+					{ boostPercent: 8, itemID: itemID('Noxious halberd') }
+				],
 				gearSetup: 'melee'
 			},
 			{
@@ -566,13 +569,13 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Araxxor.id,
 		name: Monsters.Araxxor.name,
 		aliases: Monsters.Araxxor.aliases,
-		timeToFinish: Time.Minute * 20,
+		timeToFinish: Time.Minute * 3,
 		respawnTime: 2000,
 		table: Monsters.Araxxor,
 		notifyDrops: resolveItems(['Nid']),
 		qpRequired: 200,
 		deathProps: {
-			hardness: 0.6,
+			hardness: 0.2,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
@@ -718,7 +721,9 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				itemCost: new Bank().add('Ranging potion(4)'),
-				qtyPerMinute: 0.0533
+				qtyPerMinute: 0.0533,
+				optional: true,
+				boostPercent: 2
 			},
 			{
 				itemCost: new Bank().add('Cooked karambwan'),

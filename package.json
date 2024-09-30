@@ -45,7 +45,7 @@
 		"murmurhash": "^2.0.1",
 		"node-cron": "^3.0.3",
 		"node-fetch": "^2.6.7",
-		"oldschooljs": "git+https://github.com/oldschoolgg/oldschooljs.git#ce50af3d1a293f0328cd023317e6c47baf59e421",
+		"oldschooljs": "git+https://github.com/oldschoolgg/oldschooljs.git#e558358a05f641c20a839bf21b570aba53f7646f",
 		"p-queue": "^6.6.2",
 		"piscina": "^4.6.1",
 		"postgres": "^3.4.4",

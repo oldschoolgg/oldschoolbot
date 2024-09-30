@@ -19,11 +19,12 @@
   --sl-nav-pad-x: 1rem;
   --sl-icon-color: #dcc4b1;
   --sl-color-text-accent: #c88440;
-  --sl-color-text: #b8987a;
+  --sl-color-text: #cda988;
   --sl-font: "Inter", sans-serif; 
   --sl-nav-pad-x: 1rem;
   --sl-font: "Inter", sans-serif; 
   --sl-color-bg-inline-code: #3d362f;
+
 
   scrollbar-color: #3d312d #251d17;
   --sl-color-hairline-light: rgba(0,0,0,0);
@@ -32,7 +33,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.sidebar {
   font-weight: bold;
+
 }
 
 .sl-container:where(.astro-7nkwcw3z) {
