@@ -6,7 +6,7 @@
 	"files": {
 		"maxSize": 10000000,
 		"ignore": ["node_modules", "dist", "coverage", "profiling", "logs", "icon_cache"],
-		"include": ["**/*.ts", "**/*.mts", "**/*.json", "**/*.test.ts"]
+		"include": ["**/*.ts", "**/*.mts", "**/*.json", "**/*.test.ts", "**/*.mdx", "**/*.md"]
 	},
 	"linter": {
 		"enabled": true,

@@ -403,7 +403,8 @@ export function doMonsterTrip(data: newOptions) {
 			quantity,
 			monster,
 			loot,
-			gearBank
+			gearBank,
+			updateBank
 		});
 		if (effectResult) {
 			if (effectResult.loot) updateBank.itemLootBank.add(effectResult.loot);
@@ -531,7 +532,7 @@ export const monsterTask: MinionTask = {
 			str,
 			image?.file.attachment,
 			data,
-			itemTransactionResult!.itemsAdded,
+			itemTransactionResult?.itemsAdded ?? null,
 			messages
 		);
 	}

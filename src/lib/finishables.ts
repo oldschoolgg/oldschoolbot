@@ -14,7 +14,6 @@ import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import { calculateTripConsumableCost } from '../mahoji/lib/abstracted_commands/minionKill/handleConsumables';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
 	NexCL,
@@ -293,9 +292,7 @@ for (const mon of monsterPairedCLs) {
 			if (killableMonster?.healAmountNeeded) {
 				cost.add('Swordfish', Math.ceil(killableMonster.healAmountNeeded / 14));
 			}
-			if (killableMonster?.itemCost) {
-				cost.add(calculateTripConsumableCost(killableMonster.itemCost, 1, killableMonster.timeToFinish));
-			}
+
 			const loot = mon.mon.kill(1, {});
 			if (killableMonster?.specialLoot) {
 				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1 });

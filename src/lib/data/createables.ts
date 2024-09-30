@@ -2394,6 +2394,30 @@ const Createables: Createable[] = [
 		inputItems: new Bank().add("Blessed dizana's quiver").add('Max cape').add('Max hood').freeze(),
 		outputItems: new Bank().add("Dizana's max cape").add("Dizana's max hood").freeze()
 	},
+	{
+		name: 'Noxious halberd',
+		inputItems: new Bank().add('Noxious point').add('Noxious blade').add('Noxious pommel').freeze(),
+		outputItems: new Bank().add('Noxious halberd').freeze(),
+		requiredSkills: {
+			smithing: 72,
+			crafting: 72
+		}
+	},
+	{
+		name: 'Araxyte slayer helmet',
+		inputItems: new Bank().add('Slayer helmet').add('Araxyte head').freeze(),
+		outputItems: new Bank().add('Araxyte slayer helmet').freeze()
+	},
+	{
+		name: 'Araxyte slayer helmet (i)',
+		inputItems: new Bank().add('Slayer helmet (i)').add('Araxyte head').freeze(),
+		outputItems: new Bank().add('Araxyte slayer helmet (i)').freeze()
+	},
+	{
+		name: 'Rax',
+		inputItems: new Bank().add('Coagulated venom').add('Nid').freeze(),
+		outputItems: new Bank().add('Rax').freeze()
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

@@ -8,6 +8,15 @@ export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>) {
 		super({ initialBank, allowedKeys: degradeableItems.map(i => i.settingsKey) });
 	}
+
+	toString() {
+		return this.entries()
+			.map(
+				([key, qty]) =>
+					`${qty.toLocaleString()} ${degradeableItems.find(i => i.settingsKey === key)!.item.name} charges`
+			)
+			.join(', ');
+	}
 }
 
 export { XPBank } from './XPBank';

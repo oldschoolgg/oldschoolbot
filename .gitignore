@@ -45,5 +45,4 @@ tests/**/*.tsbuildinfo
 !.yarn/versions
 item/
 
-docs
 tmp
