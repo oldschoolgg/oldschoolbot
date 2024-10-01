@@ -396,7 +396,8 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 					}
 
 					return {
-						charges
+						charges,
+						message: `Using ${charges}`
 					};
 				}
 			});
@@ -418,6 +419,15 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 						percentageReduction: equippedInThisSet.boostPercent,
 						message: `${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`
 					});
+					continue;
+				}
+				const insteadHasDegradeableItem = monster.degradeableItemUsage?.some(
+					deg =>
+						deg.gearSetup === boostSet.gearSetup &&
+						deg.items.some(g => gearBank.gear[boostSet.gearSetup].hasEquipped(g.itemID))
+				);
+				if (!equippedInThisSet && boostSet.required && !insteadHasDegradeableItem) {
+					return `You need to have one of these items equipped in your ${boostSet.gearSetup} setup: ${boostSet.items.map(i => itemNameFromID(i.itemID)).join(', ')}.`;
 				}
 			}
 			return results;

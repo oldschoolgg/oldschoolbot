@@ -100,7 +100,8 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	timeToFinish = Math.ceil(timeToFinish);
 
-	if (monster.itemCost) consumables.push(monster.itemCost);
+	if (monster.itemCost)
+		consumables.push(...(Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost]));
 
 	const maxQuantityBasedOnTime = Math.floor(maxTripLength / timeToFinish);
 	const consumablesQuantity = clamp(inputQuantity ?? maxQuantityBasedOnTime, 1, maxQuantityBasedOnTime);
@@ -112,6 +113,13 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 		timeToFinish,
 		maxTripLength
 	});
+
+	if (consumablesCost?.boosts) {
+		for (const boost of consumablesCost.boosts) {
+			timeToFinish = Math.floor(reduceNumByPercent(timeToFinish, boost.boostPercent));
+			messages.push(boost.message);
+		}
+	}
 
 	const updateBank = new UpdateBank();
 	updateBank.itemCostBank.add(itemCost);

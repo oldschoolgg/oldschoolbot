@@ -13,7 +13,7 @@ test('getItemCostFromConsumables.test', () => {
 	const monster = killableMonsters.find(m => m.name === 'Rabbit')!;
 	for (const quantity of [1, 2, 5, 100]) {
 		const consumablesCost = getItemCostFromConsumables({
-			consumableCosts: [monster.itemCost!],
+			consumableCosts: Array.isArray(monster.itemCost!) ? monster.itemCost : [monster.itemCost!],
 			gearBank,
 			quantity,
 			timeToFinish: monster.timeToFinish,
@@ -28,7 +28,7 @@ test('getItemCostFromConsumables.test', () => {
 	const gearBank2 = makeGearBank();
 	gearBank2.bank.add('Dark totem', 10);
 	const consumablesCost2 = getItemCostFromConsumables({
-		consumableCosts: [skotizo.itemCost!],
+		consumableCosts: Array.isArray(skotizo.itemCost!) ? skotizo.itemCost : [skotizo.itemCost!],
 		gearBank: gearBank2,
 		quantity: 5,
 		timeToFinish: skotizo.timeToFinish,
