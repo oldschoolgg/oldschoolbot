@@ -38,6 +38,7 @@ export function getItemCostFromConsumables({
 
 	const duration = timeToFinish * quantity;
 	const floatCosts = new FloatBank();
+	const boosts: { message: string; boostPercent: number }[] = [];
 
 	for (const cc of consumableCosts) {
 		let consumable = cc;
@@ -52,6 +53,10 @@ export function getItemCostFromConsumables({
 					break;
 				}
 			}
+		}
+
+		if (cc.optional && !gearBank.bank.has(calculateTripConsumableCost(cc, quantity, duration))) {
+			continue;
 		}
 
 		let itemMultiple = consumable.qtyPerKill ?? consumable.qtyPerMinute ?? null;
@@ -73,6 +78,15 @@ export function getItemCostFromConsumables({
 			for (const [item, qty] of consumable.itemCost.items()) {
 				floatCosts.add(item.id, qty);
 			}
+			if (consumable.boostPercent) {
+				boosts.push({
+					message: `${consumable.boostPercent}% for ${consumable.itemCost
+						.items()
+						.map(i => i[0].name)
+						.join(', ')}`,
+					boostPercent: consumable.boostPercent
+				});
+			}
 			if (multiply) floatCosts.multiply(multiply);
 		}
 	}
@@ -91,6 +105,7 @@ export function getItemCostFromConsumables({
 
 	return {
 		itemCost,
-		finalQuantity
+		finalQuantity,
+		boosts
 	};
 }

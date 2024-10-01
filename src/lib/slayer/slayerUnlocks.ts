@@ -69,7 +69,8 @@ export enum SlayerTaskUnlocksEnum {
 	DoubleTrouble = 49,
 	BroaderFletching = 50,
 	IWildyMoreSlayer = 200,
-	Revenenenenenants = 201
+	Revenenenenenants = 201,
+	EyeSeeYou = 202
 }
 
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
@@ -184,6 +185,14 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 1000,
 		canBeRemoved: false,
 		aliases: ['vorkath slayer helmet', 'turquoise slayer helmet', 'blue slayer helmet']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.EyeSeeYou,
+		name: 'Eye see you',
+		desc: 'Unlocks ability to create the Araxyte slayer helmet.',
+		slayerPointCost: 1000,
+		canBeRemoved: false,
+		aliases: ['araxyte slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.UseMoreHead,

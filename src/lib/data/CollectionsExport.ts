@@ -1844,7 +1844,8 @@ export const slayerCL = resolveItems([
 	'Ancient ceremonial top',
 	'Ancient ceremonial legs',
 	'Ancient ceremonial gloves',
-	'Ancient ceremonial boots'
+	'Ancient ceremonial boots',
+	'Aranea boots'
 ]);
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
@@ -2348,4 +2349,17 @@ export const vardorvisCL = resolveItems([
 	"Awakener's orb",
 	'Blood quartz',
 	'Strangled tablet'
+]);
+
+export const araxxorCL = resolveItems([
+	'Nid',
+	'Araxyte venom sack',
+	'Spider cave teleport',
+	'Araxyte fang',
+	'Noxious point',
+	'Noxious blade',
+	'Noxious pommel',
+	'Araxyte head',
+	'Jar of venom',
+	'Coagulated venom'
 ]);

@@ -11,9 +11,7 @@ interface Quest {
 	ironmanSkillReqs?: Skills;
 	qpReq?: number;
 	rewards?: Bank;
-	skillsRewards?: {
-		[skill: string]: number;
-	};
+	skillsRewards?: Partial<Skills>;
 	combatLevelReq?: number;
 	prerequisitesQuests?: QuestID[];
 	calcTime: (user: MUser) => number;
@@ -27,7 +25,11 @@ export enum QuestID {
 	TheRibbitingTaleOfALillyPadLabourDispute = 5,
 	PerilousMoons = 6,
 	AtFirstLight = 7,
-	TwilightsPromise = 8
+	TwilightsPromise = 8,
+	TheHeartofDarkness = 9,
+	DeathOnTheIsle = 10,
+	MeatAndGreet = 11,
+	EthicallyAcquiredAntiquities = 12
 }
 
 export const quests: Quest[] = [
@@ -208,6 +210,77 @@ export const quests: Quest[] = [
 				duration += Time.Minute * 5;
 			}
 			return duration;
+		}
+	},
+	{
+		id: QuestID.TheHeartofDarkness,
+		qp: 2,
+		name: 'The Heart of Darkness',
+		skillsRewards: {
+			mining: 8000,
+			thieving: 8000,
+			slayer: 8000,
+			agility: 8000
+		},
+		combatLevelReq: 40,
+		prerequisitesQuests: [QuestID.TwilightsPromise],
+		calcTime: () => {
+			return Time.Minute * 30;
+		},
+		skillReqs: {
+			mining: 55,
+			thieving: 48,
+			slayer: 48,
+			agility: 46
+		}
+	},
+	{
+		id: QuestID.DeathOnTheIsle,
+		qp: 2,
+		name: 'Death on the Isle',
+		skillsRewards: {
+			thieving: 10_000,
+			agility: 7500,
+			crafting: 5000
+		},
+		combatLevelReq: 40,
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		calcTime: () => {
+			return Time.Minute * 30;
+		},
+		skillReqs: {
+			thieving: 34,
+			agility: 32
+		},
+		rewards: new Bank().add("Butler's tray").add('Costume needle')
+	},
+	{
+		id: QuestID.MeatAndGreet,
+		qp: 1,
+		name: 'Meat And Greet',
+		skillsRewards: {
+			cooking: 8000
+		},
+		combatLevelReq: 40,
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		calcTime: () => {
+			return Time.Minute * 30;
+		}
+	},
+	{
+		id: QuestID.EthicallyAcquiredAntiquities,
+		qp: 1,
+		name: 'Ethically Acquired Antiquities',
+		skillsRewards: {
+			thieving: 6000
+		},
+		skillReqs: {
+			thieving: 25
+		},
+		combatLevelReq: 40,
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		calcTime: () => {
+			return Time.Minute * 30;
 		}
 	}
 ];
