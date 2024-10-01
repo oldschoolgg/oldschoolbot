@@ -5,7 +5,6 @@
 		"subOptions": [
 			"plank_make",
 			"chompy_hunt",
-			"champions_challenge",
 			"my_notes",
 			"warriors_guild",
 			"camdozaal",
@@ -451,7 +450,7 @@
 		"name": "rumours",
 		"desc": "Various commands related to completing Hunter Rumours.",
 		"examples": ["/rumours start tier:novice"],
-		"subOptions": ["start", "count"]
+		"subOptions": ["start", "manage", "count"]
 	},
 	{
 		"name": "runecraft",
