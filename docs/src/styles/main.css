@@ -178,6 +178,16 @@ p {
   padding-inline-start: 0.75rem;
   border-radius: 4px;
 }
+.sidebar-content .top-level li details ul li details {
+  padding-inline-start: 0.75rem;
+  border-radius: 4px;
+}
+
+.sidebar-content .top-level li details ul li details ul li a {
+  padding-block: 0.4rem;
+  padding-inline-start: 1.75rem;
+  border-radius: 4px;
+}
 
 .sidebar-content {
   @apply bg-white dark:bg-black;
