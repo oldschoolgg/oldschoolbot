@@ -14,8 +14,6 @@ export function remarkItems(options: any) {
 			const matches = [...value.matchAll(/\[\[([\s\S]*?)\]\]/g)].map(i => i[1]);
 			if (matches.length === 0) return;
 
-			const parent = parents[parents.length - 1];
-
 			for (const match of matches) {
 				if (match.includes('embed.')) {
 					node.type = 'html';
@@ -33,7 +31,7 @@ export function remarkItems(options: any) {
 					continue;
 				}
 
-				let imageURL = '';
+				let imageURL = null;
 				const bsoItem = bsoItems.find(([id, name]) => name.toLowerCase() === match.toLowerCase());
 				if (bsoItem) {
 					imageURL = `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/bso/src/lib/resources/images/bso_icons/${bsoItem[0]}.png`;
@@ -42,7 +40,7 @@ export function remarkItems(options: any) {
 					imageURL = `https://chisel.weirdgloop.org/static/img/osrs-sprite/${item.id}.png`;
 				}
 
-				if (!imageURL) {
+				if (imageURL === null) {
 					throw new Error(`Could not find item with name: ${match}`);
 				}
 

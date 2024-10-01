@@ -6028,6 +6028,17 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "29801": 1,
+    },
+    "name": "Amulet of rancour (s)",
+    "outputItems": {
+      "29804": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "inputItems": {
       "12922": 1,
     },
