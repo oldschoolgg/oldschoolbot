@@ -55,9 +55,9 @@ Presuming all slayer rewards are set up for efficient mask/slayer helmet hunting
 
 This should have you finish all masks. If not, use the below.
 
-<figure><figcaption><p>Chance of each mask task per "New Task". Efficient unlock/locks assumed. No block list accounted for.</p></figcaption></figure>
+<figure><figcaption>Chance of each mask task per "New Task". Efficient unlock/locks assumed. No block list accounted for.</figcaption></figure>
 
-<figure><figcaption><p>Average task length per "New task". Efficient extensions assumed (Dark beast only).</p></figcaption></figure>
+<figure><figcaption>Average task length per "New task". Efficient extensions assumed (Dark beast only).</figcaption></figure>
 
 To make Chaeldar more efficient, you can use the following blocks.
 

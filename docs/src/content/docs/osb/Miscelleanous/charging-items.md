@@ -25,7 +25,7 @@ The weapons listed on this page will provide global boosts to all PvM, _provided
 
 ## Chargeable Items
 
-<mark style="color:red;">Most items</mark> <mark style="color:red;"></mark><mark style="color:red;">**cannot**</mark> <mark style="color:red;"></mark><mark style="color:red;">be manually reverted, meaning you need to use the item continually until it runs out of charges to receive the base version again.
+Most items**cannot**be manually reverted, meaning you need to use the item continually until it runs out of charges to receive the base version again.
 
 Charges are bound to your minion, not the item. Therefore, when reverting or trading your charged item, you will **NOT** lose charges.
 

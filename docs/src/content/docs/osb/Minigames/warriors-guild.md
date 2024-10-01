@@ -29,7 +29,7 @@ To kill cyclops for defenders:
 - 99 Attack allows players to directly kill Cyclops' without collecting tokens
   - Attack cape must be equipped in MELEE setup
 
-<mark style="color:red;">**Don't equip your defenders until you get dragon!**</mark> <mark style="color:red;"></mark><mark style="color:red;">The command checks your bank for current defender rather than equipped gear.</mark>
+**Don't equip your defenders until you get dragon!**The command checks your bank for current defender rather than equipped gear.
 
 ---
 

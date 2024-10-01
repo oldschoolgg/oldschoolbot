@@ -24,7 +24,7 @@ Since you will be in wildy, there is always the chance to encounter pkers and lo
 
 ## Wildy Slayer Task Unlocks
 
-<mark style="color:orange;">**Currently, extended task unlocks don't apply to Greater Nechryael tasks.**</mark>
+**Currently, extended task unlocks don't apply to Greater Nechryael tasks.**
 
 `/slayer rewards unlock`` `**`unlockable:`**`I Wildy More Slayer`
 

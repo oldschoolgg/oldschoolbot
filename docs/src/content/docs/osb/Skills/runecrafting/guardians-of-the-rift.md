@@ -22,7 +22,7 @@ Mining xp scales with mined fragments.
 
 **Raiments of the eye** outfit will boost the number of runes created during the minigame.
 
-- 10% extra runes for each piece or 60% extra runes for the full outfit _(<mark style="color:red;">MUST</mark> be equipped in skilling)_
+- 10% extra runes for each piece or 60% extra runes for the full outfit _(MUSTbe equipped in skilling)_
 - This extra runes effect also applies to other runes outside of GOTR
 
 **Fragments**
@@ -64,7 +64,7 @@ Each game will reward you with runes, talismans, and some untradeable items, alo
 - You can colour your piece of eye items using the Abyssal Red, Blue and Green dyes with the create command - `/create`` `**`item:`**`Hat of the eye (red)`
 - The Rift guardian pet can be turned into the Greatish guardian with the command `/create item:Greatish guardian`. This requires a Guardians eye which is bought from the reward shop.
 - Abyssal lanterns and dyes can be sold to the shop for 100 and 50 pearls respectively with the `/sell` command.
-- You <mark style="color:red;">CANNOT</mark> trade one dye colour for another.
+- You CANNOTtrade one dye colour for another.
 
 | **Reward Shop Items**   | **Abyssal Pearl Cost** | **Abyssal Pearl Returned** |
 | ----------------------- | ---------------------- | -------------------------- |

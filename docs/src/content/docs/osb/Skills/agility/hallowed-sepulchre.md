@@ -12,7 +12,7 @@ To start the Sepulchre, use the command:
 
 ## Requirements
 
-- Any set of Graceful - <mark style="color:red;">**MUST BE EQUIPPED IN THE SKILLING SETUP**</mark>
+- Any set of Graceful - **MUST BE EQUIPPED IN THE SKILLING SETUP**
 - 66 Thieving
 - 52 Agility - higher levels provide better rewards (including hallowed marks)
   - Floor 1 - 52 Agility
@@ -32,7 +32,7 @@ Most of the boosts will come from items purchased from the shop.
 - 1% boost for Strange old lockpick
 - Up to 10% for minion learning (1 hour of minigame = 1%)
 
-<mark style="color:red;">**Note:**</mark> The Hallowed Ring from the shop does **not** provide a boost or benefit.
+**Note:**The Hallowed Ring from the shop does **not** provide a boost or benefit.
 
 ## Hallowed Sepulchre Shop
 
@@ -51,7 +51,7 @@ The following items can be purchased with hallowed marks by using the `/buy` com
 | Dark dye               |             300             | Used to dye graceful                        |
 | Dark acorn             |            3,000            | Used to transmogrify the Dark squirrel pet. |
 
-- If you have obtained a Giant Squirrel agility pet, you can `/buy`` `**`name:`**` ``Dark squirrel` after purchasing the dark acorn from the shop to transmogrify the pet. Be advised that you <mark style="color:red;">**CANNOT**</mark> revert the dark squirrel.
+- If you have obtained a Giant Squirrel agility pet, you can `/buy`` `**`name:`**` ``Dark squirrel` after purchasing the dark acorn from the shop to transmogrify the pet. Be advised that you **CANNOT**revert the dark squirrel.
 
 ## Mysterious Pages
 
@@ -85,7 +85,7 @@ The strange old lockpick provides boosts to several places in the bot; namely Ba
 
 The Ring of endurance also provides boosts to several activities within the bot. Some activities require a charged version, while others only require the uncharged version.
 
-<mark style="color:orange;">**Once the ring is charged, it CANNOT be reverted or traded!**</mark>
+**Once the ring is charged, it CANNOT be reverted or traded!**
 
 To create the charged Ring of endurance, use the following command:
 
@@ -94,7 +94,7 @@ To create the charged Ring of endurance, use the following command:
 
 The boosts apply to the following activities:
 
-- Runecrafting trips - 1% _(**must be charged**)_ <mark style="color:blue;">**(works from bank)**</mark>
-- Underwater agility - 6% _(uncharged or charged)_ <mark style="color:blue;">**(works from bank)**</mark>
-- Drift net fishing - 6% _(uncharged or charged)_ <mark style="color:blue;">**(works from bank)**</mark>
-- Farming trips - 10% _(**must be charged**)_ <mark style="color:blue;">**(works from bank)**</mark>
+- Runecrafting trips - 1% _(**must be charged**)_ **(works from bank)**
+- Underwater agility - 6% _(uncharged or charged)_ **(works from bank)**
+- Drift net fishing - 6% _(uncharged or charged)_ **(works from bank)**
+- Farming trips - 10% _(**must be charged**)_ **(works from bank)**

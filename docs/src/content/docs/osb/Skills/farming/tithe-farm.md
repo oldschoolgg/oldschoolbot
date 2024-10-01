@@ -18,8 +18,8 @@ The start the minigame, use `/farming tithe_farm`
 
 ## Boosts
 
-- 10% speed boost for full graceful **(**<mark style="color:red;">**equipped in any setup**</mark>**)**
-- 2.5% bonus xp for full farmers outfit **(**<mark style="color:blue;">**works from bank**</mark>**)** (calculated upon trip return)
+- 10% speed boost for full graceful **(\*\***equipped in any setup\*\*\*\*)\*\*
+- 2.5% bonus xp for full farmers outfit **(\*\***works from bank\***\*)** (calculated upon trip return)
 - Up to 25% speed boost for minion learning (1% for every 2 completions)
 
 ---
@@ -28,17 +28,17 @@ The start the minigame, use `/farming tithe_farm`
 
 Items can be purchased with Tithe Farm points with`/farming tithe_farm`` `**`buy_reward:`**
 
-| **Item name**                                         | **Point cost** |
-| ----------------------------------------------------- | :------------: |
-| Farmer's strawhat                                     |       75       |
-| Farmer's jacket/shirt                                 |      150       |
-| Farmer's boro trousers                                |      125       |
-| Farmer's boots                                        |       50       |
-| Seed box<mark style="color:red;">**\***</mark>        |      250       |
-| Gricoller's can<mark style="color:red;">**\***</mark> |      200       |
-| Herb sack<mark style="color:red;">**\***</mark>       |      250       |
-| Grape seed                                            |       2        |
-| Supercompost                                          |       5        |
-| Bologa's Blessing (x10)                               |       1        |
+| **Item name**           | **Point cost** |
+| ----------------------- | :------------: |
+| Farmer's strawhat       |       75       |
+| Farmer's jacket/shirt   |      150       |
+| Farmer's boro trousers  |      125       |
+| Farmer's boots          |       50       |
+| Seed box                |      250       |
+| Gricoller's can         |      200       |
+| Herb sack               |      250       |
+| Grape seed              |       2        |
+| Supercompost            |       5        |
+| Bologa's Blessing (x10) |       1        |
 
-<mark style="color:red;">**\***</mark> - These items do not have a purpose in the bot (yet), and are simply for collection log slots.
+- These items do not have a purpose in the bot (yet), and are simply for collection log slots.

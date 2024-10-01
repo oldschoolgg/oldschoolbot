@@ -41,21 +41,20 @@ You can spend your Commendation Points with the following command:
 
 - `/minigames pest_control buy`` `**`name:`**
 
-|                                                       |                |
-| ----------------------------------------------------- | :------------: |
-| **Reward Item**                                       | **Point Cost** |
-| Void knight mace                                      |      250       |
-| Void knight top                                       |      250       |
-| Void knight robe                                      |      250       |
-| Void knight gloves                                    |      150       |
-| Void melee helm                                       |      200       |
-| Void mage helm                                        |      200       |
-| Void ranger helm                                      |      200       |
-| Void seal(8)                                          |       10       |
-| Elite void robe<mark style="color:red;">**\***</mark> |      200       |
-| Elite void top<mark style="color:red;">**\***</mark>  |      200       |
+| **Reward Item**    | **Point Cost** |
+| ------------------ | :------------: |
+| Void knight mace   |      250       |
+| Void knight top    |      250       |
+| Void knight robe   |      250       |
+| Void knight gloves |      150       |
+| Void melee helm    |      200       |
+| Void mage helm     |      200       |
+| Void ranger helm   |      200       |
+| Void seal(8)       |       10       |
+| Elite void robe    |      200       |
+| Elite void top     |      200       |
 
-<mark style="color:red;">**\***</mark> - Elite void requires completion of the Hard Western Provinces Diary.
+- Elite void requires completion of the Hard Western Provinces Diary.
 
 ---
 

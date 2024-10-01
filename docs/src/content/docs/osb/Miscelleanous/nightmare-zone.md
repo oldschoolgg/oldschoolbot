@@ -18,7 +18,7 @@ Alongside this, you also must have the following requirements:
 - 43 Prayer
 - 100 Quest points
 - Full Dharok set (does not have to be equipped)
-- Prayer potion(4) (<mark style="color:red;">**ONLY**</mark> if choosing the 'experience' strategy)
+- Prayer potion(4) (**ONLY**if choosing the 'experience' strategy)
 - GP to pay for dream costs
   - Cost is halved if you have maximum QP
 
@@ -75,12 +75,12 @@ Use the following command to buy items:
 
 ## Imbueables
 
-<mark style="color:blue;">**All imbue costs are halved if Hard combat achievements are completed!**</mark>
+**All imbue costs are halved if Hard combat achievements are completed!**
 
 Use the following command to imbue items:
 
 - `/minigames nmz imbue`` `**`name:`**
 
-<table><thead><tr><th></th><th></th><th data-hidden></th></tr></thead><tbody><tr><td><strong>Item</strong></td><td><strong>Point Cost</strong></td><td></td></tr><tr><td>Black mask</td><td>1,250,000</td><td></td></tr><tr><td>Slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Turquoise slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Red slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Green slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Twisted slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Black slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Purple slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Hydra slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Salve amulet</td><td>800,000</td><td></td></tr><tr><td>Salve amulet (e)</td><td>800,000</td><td></td></tr><tr><td>Ring of the gods</td><td>650,000</td><td></td></tr><tr><td>Ring of suffering</td><td>725,000</td><td></td></tr><tr><td>Ring of suffering (r)<mark style="color:red;"><strong>*</strong></mark></td><td>725,000</td><td></td></tr><tr><td>Berserker ring</td><td>650,000</td><td></td></tr><tr><td>Warrior ring</td><td>650,000</td><td></td></tr><tr><td>Archers ring</td><td>650,000</td><td></td></tr><tr><td>Seers ring</td><td>650,000</td><td></td></tr><tr><td>Tyrannical ring</td><td>650,000</td><td></td></tr><tr><td>Treasonous ring</td><td>650,000</td><td></td></tr><tr><td>Granite ring</td><td>500,000</td><td></td></tr></tbody></table>
+<table><thead><tr><th></th><th></th><th data-hidden></th></tr></thead><tbody><tr><td><strong>Item</strong></td><td><strong>Point Cost</strong></td><td></td></tr><tr><td>Black mask</td><td>1,250,000</td><td></td></tr><tr><td>Slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Turquoise slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Red slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Green slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Twisted slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Black slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Purple slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Hydra slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Salve amulet</td><td>800,000</td><td></td></tr><tr><td>Salve amulet (e)</td><td>800,000</td><td></td></tr><tr><td>Ring of the gods</td><td>650,000</td><td></td></tr><tr><td>Ring of suffering</td><td>725,000</td><td></td></tr><tr><td>Ring of suffering (r)<strong>*</strong></td><td>725,000</td><td></td></tr><tr><td>Berserker ring</td><td>650,000</td><td></td></tr><tr><td>Warrior ring</td><td>650,000</td><td></td></tr><tr><td>Archers ring</td><td>650,000</td><td></td></tr><tr><td>Seers ring</td><td>650,000</td><td></td></tr><tr><td>Tyrannical ring</td><td>650,000</td><td></td></tr><tr><td>Treasonous ring</td><td>650,000</td><td></td></tr><tr><td>Granite ring</td><td>500,000</td><td></td></tr></tbody></table>
 
-<mark style="color:red;">**\***</mark> - Currently unobtainable
+- Currently unobtainable

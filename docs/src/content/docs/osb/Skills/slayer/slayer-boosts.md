@@ -2,8 +2,6 @@
 title: "Slayer Boosts"
 ---
 
-# Slayer Boosts
-
 You will not receive totem pieces or ancient shards if you are using a cannon as cannons cannot be placed in the catacombs.
 
 You can check the boosts for a specific monster and by how much by using the `/k`` `**`show_info:`**`True` command.\
@@ -19,24 +17,24 @@ Cannon boosts a number of bosses by a variable amount, the same applies for burs
 
 **Please note this is not complete - either submit a PR or post in the wiki channel on discord if you notice something is missing.**
 
-| **ITEM**                          | **MONSTERS**                                                                                                                                                                                              |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Slayer helmet                     | All monsters during a task, imbued works for all styles while unimbued only works for melee. Black mask works the same. **Note:** Must be training the corresponding style for the boost to work.         |
-| Arclight                          | Lesser demon, Greater demon, Black demon, Nechryael, Bloodveld, Hellhound, Abyssal demon, Skotizo, Tortured gorilla, Demonic gorilla                                                                      |
-| Blisterwood flail / Ivandis flail | Vyrewatch, Vyrewatch Sentinel, Feral vampyre, Vampyre juvinate                                                                                                                                            |
-| Dragon hunter crossbow            | Wyrm, Drake, All dragons - must be training ranged.                                                                                                                                                       |
-| Dragon hunter lance               | Wyrm, Drake, All dragons - must be training melee.                                                                                                                                                        |
-| Dragonbone necklace               | Dagannoth                                                                                                                                                                                                 |
-| Kodai wand                        | <p>Dust devil, Smoke devil, Ankou, Greater nechryael<br>Boosts any barrage or burst tasks, but must be equipped in mage setup. If doing wildy slayer, it must be equipped in wildy setup.</p>             |
-| Leaf-bladed battleaxe             | Kurask, Turoth                                                                                                                                                                                            |
-| Neitiznot shield                  | Ice troll                                                                                                                                                                                                 |
-| Saradomin godsword                | Lesser demon, Greater demon, Black demon, Abyssal demon                                                                                                                                                   |
-| Spectral spirit shield            | Shadow Spider                                                                                                                                                                                             |
-| Inquisitor's mace                 | Basilisk Knight                                                                                                                                                                                           |
-| Inquisitor's hauberk              | Basilisk Knight                                                                                                                                                                                           |
-| Inquisitor's plateskirt           | Basilisk Knight                                                                                                                                                                                           |
-| Staff of the dead                 | Dust devil<mark style="color:red;">**\***</mark>, Smoke devil<mark style="color:red;">**\***</mark>, Ankou<mark style="color:red;">**\***</mark>, Greater nechryael<mark style="color:red;">**\***</mark> |
-| Venator bow                       | Suqah, Bloodveld, Dagannoth                                                                                                                                                                               |
-| Wolfbane                          | Werewolf                                                                                                                                                                                                  |
+| **ITEM**                          | **MONSTERS**                                                                                                                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Slayer helmet                     | All monsters during a task, imbued works for all styles while unimbued only works for melee. Black mask works the same. **Note:** Must be training the corresponding style for the boost to work. |
+| Arclight                          | Lesser demon, Greater demon, Black demon, Nechryael, Bloodveld, Hellhound, Abyssal demon, Skotizo, Tortured gorilla, Demonic gorilla                                                              |
+| Blisterwood flail / Ivandis flail | Vyrewatch, Vyrewatch Sentinel, Feral vampyre, Vampyre juvinate                                                                                                                                    |
+| Dragon hunter crossbow            | Wyrm, Drake, All dragons - must be training ranged.                                                                                                                                               |
+| Dragon hunter lance               | Wyrm, Drake, All dragons - must be training melee.                                                                                                                                                |
+| Dragonbone necklace               | Dagannoth                                                                                                                                                                                         |
+| Kodai wand                        | <p>Dust devil, Smoke devil, Ankou, Greater nechryael<br>Boosts any barrage or burst tasks, but must be equipped in mage setup. If doing wildy slayer, it must be equipped in wildy setup.</p>     |
+| Leaf-bladed battleaxe             | Kurask, Turoth                                                                                                                                                                                    |
+| Neitiznot shield                  | Ice troll                                                                                                                                                                                         |
+| Saradomin godsword                | Lesser demon, Greater demon, Black demon, Abyssal demon                                                                                                                                           |
+| Spectral spirit shield            | Shadow Spider                                                                                                                                                                                     |
+| Inquisitor's mace                 | Basilisk Knight                                                                                                                                                                                   |
+| Inquisitor's hauberk              | Basilisk Knight                                                                                                                                                                                   |
+| Inquisitor's plateskirt           | Basilisk Knight                                                                                                                                                                                   |
+| Staff of the dead                 | Dust devil, Smoke devil, Ankou, Greater nechryael                                                                                                                                                 |
+| Venator bow                       | Suqah, Bloodveld, Dagannoth                                                                                                                                                                       |
+| Wolfbane                          | Werewolf                                                                                                                                                                                          |
 
-<mark style="color:red;">**\***</mark> Better boost(s) available.
+Better boost(s) available.

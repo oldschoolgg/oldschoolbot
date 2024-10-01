@@ -83,10 +83,10 @@ If you are tier 1 patron or higher, you will see an **'Auto Slay'** button at th
 
 This table is based off the XP Gains/efficient Blocks/Skips at Post 99 Slayer but can be used at all levels of Slayer to provide you with the best XP Gain per hr.
 
-<figure><figcaption><p>Duradel Block/Skip and Efficient Slayer XP/Hour Table</p></figcaption></figure>
+<figure><figcaption>Duradel Block/Skip and Efficient Slayer XP/Hour Table</figcaption></figure>
 
 This is based on using Konar at post 99 Slayer providing slightly faster overall XP/hour with average points, excluding skips and provided you have Zeah Elite Diary.
 
 (Notes: Reccomended to do Dark Beasts, re-lock Mithril Dragons, skip Adamant Dragons and barrage Smoke Devils as opposed to cannoning)
 
-<figure><figcaption><p>Konar efficiency Slayer Skip/Block list.</p></figcaption></figure>
+<figure><figcaption>Konar efficiency Slayer Skip/Block list.</figcaption></figure>

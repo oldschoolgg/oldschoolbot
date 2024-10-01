@@ -2,8 +2,6 @@
 title: "Farming"
 ---
 
-# Farming
-
 Farming in the bot works like farming ingame, where you will send your minion off on planting and/or harvesting trips, and your crops will grow in the background as you do other activities. The number of patches you have available will increase with the number of quest points you have and your farming level.
 
 When harvesting trees, you will either need the woodcutting level necessary to chop down the tree (which will award logs), or if you lack the necessary woodcutting level, 200gp for a farmer to remove the tree for you (which will not award logs).
@@ -24,11 +22,11 @@ The speed of your farming trips and the xp you gain from farming activities can 
 - Farmers jacket/shirt - 0.8% to XP
 - Farmers boro trousers - 0.6% to XP
 - Farmers boots - 0.2% to XP
-- Full Farmers outfit - 2.5% to XP <mark style="color:blue;">**(works from bank)**</mark>
+- Full Farmers outfit - 2.5% to XP **(works from bank)**
 - [Magic secateurs](../../miscellaneous/buyables.md#quest-items) - 10% to harvest quantity (stacks with Farming cape)
 - Farming cape - 5% to harvest quantity (stacks with Magic secateurs)
-- Full graceful outfit - 10% to trip speed <mark style="color:red;">**(must be equipped in any setup)**</mark>
-- [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) - 10% to trip speed <mark style="color:blue;">**(works from bank but**</mark>\*\* **<mark style="color:red;">**must be charged)\*\*</mark>
+- Full graceful outfit - 10% to trip speed **(must be equipped in any setup)**
+- [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) - 10% to trip speed **(works from bank but**\*\* \*\*\*\*must be charged)\*\*
 
 ---
 

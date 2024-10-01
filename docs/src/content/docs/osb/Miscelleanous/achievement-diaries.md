@@ -80,7 +80,7 @@ You get a 10% boost to clue scrolls for having the achievement diary cape equipp
 
 ### Morytania Diary
 
-<mark style="color:red;">**Note -**</mark> The 50% boost to runes received from Barrows is already applied at all times
+**Note -**The 50% boost to runes received from Barrows is already applied at all times
 
 - **Hard**
   - 2x Mort myre fungi collection

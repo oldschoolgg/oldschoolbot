@@ -68,16 +68,16 @@ Specific items will give a hidden speed boost to your raids, they **DO NOT** nee
 The item with the highest boost that you currently own from each line will be applied.
 
 - Twisted bow (8%) **OR** Bow of faerdhinen (6%) **OR** Dragon hunter crossbow (5%)
-- Dragon hunter lance (3%) **OR** Abyssal tentacle (2%)<mark style="color:red;">**\***</mark>
-- Tumeken's shadow (9%)<mark style="color:red;">**\*\***</mark>** OR** Sanguinesti staff (6%)<mark style="color:red;">**\*\*\***</mark>
+- Dragon hunter lance (3%) **OR** Abyssal tentacle (2%)
+- Tumeken's shadow (9%)**\*\*\*\*** OR** Sanguinesti staff (6%)**\*\*\*\*\*
 - Dragon warhammer (3%) **OR** Bandos godsword (2.5%)
-- Zaryte vambraces (4%) <mark style="color:red;">**(must be equipped in range setup for boost)**</mark>
+- Zaryte vambraces (4%) **(must be equipped in range setup for boost)**
 
-<mark style="color:red;">**\***</mark> - Requires at least 200 charges for boost to apply.
+- Requires at least 200 charges for boost to apply.
 
-<mark style="color:red;">\*\*</mark> - Requires at least 130 charges for boost to apply.
+\*\* - Requires at least 130 charges for boost to apply.
 
-<mark style="color:red;">**\*\*\***</mark> - Requires at least 150 charges for boost to apply.
+**\*\*\*** - Requires at least 150 charges for boost to apply.
 
 ---
 

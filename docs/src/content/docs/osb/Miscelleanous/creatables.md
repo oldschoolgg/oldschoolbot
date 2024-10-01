@@ -7,7 +7,7 @@ description: Information regarding the creatables collection log
 
 The creatables cl is a custom collection log that is a useful way to track many items, and is a competitive collection log for cl enthusiasts.
 
-<figure><figcaption><p>The creatables collection log</p></figcaption></figure>
+<figure><figcaption>The creatables collection log</figcaption></figure>
 
 There are a few categories that items here fall under, primarily including item creation, gear sets, and ornament kits.
 

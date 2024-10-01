@@ -50,7 +50,7 @@ To spend your honour points to increase your honour level, use the following com
 
 ## Venator Bow
 
-You can create the Venator bow using `/create` (needs 5 venator shards). Unlike the melee gear boost, the bow will provide a 10% speed boost to every trip. It must be <mark style="color:red;">equipped in range</mark> and [charged](../miscellaneous/charging-items.md#venator-bow) for the boost to apply, and will degrade at a rate of 50 charges per wave.
+You can create the Venator bow using `/create` (needs 5 venator shards). Unlike the melee gear boost, the bow will provide a 10% speed boost to every trip. It must be equipped in range and [charged](../miscellaneous/charging-items.md#venator-bow) for the boost to apply, and will degrade at a rate of 50 charges per wave.
 
 ---
 
@@ -64,19 +64,19 @@ To spend your honour points on gambles, use the following:
 
 - `/minigames barb_assault gamble`
 
-| **Item**                                           | **Honour point cost** |
-| -------------------------------------------------- | :-------------------: |
-| Fighter hat                                        |         1,100         |
-| Ranger hat                                         |         1,100         |
-| Healer hat                                         |         1,100         |
-| Runner hat                                         |         1,100         |
-| Fighter torso                                      |         1,500         |
-| Penance skirt                                      |         1,500         |
-| Runner boots                                       |          400          |
-| Penance gloves                                     |          600          |
-| Low gamble                                         |          200          |
-| Medium gamble                                      |          400          |
-| High gamble                                        |          500          |
-| Granite body<mark style="color:red;">**\***</mark> |       95,000gp        |
+| **Item**       | **Honour point cost** |
+| -------------- | :-------------------: |
+| Fighter hat    |         1,100         |
+| Ranger hat     |         1,100         |
+| Healer hat     |         1,100         |
+| Runner hat     |         1,100         |
+| Fighter torso  |         1,500         |
+| Penance skirt  |         1,500         |
+| Runner boots   |          400          |
+| Penance gloves |          600          |
+| Low gamble     |          200          |
+| Medium gamble  |          400          |
+| High gamble    |          500          |
+| Granite body   |       95,000gp        |
 
-<mark style="color:red;">**\***</mark> - The Granite body is purchasable after completing 10 waves of BA. To purchase the Granite body, use `/buy`` `**`name:`**` ``Granite Body`
+- The Granite body is purchasable after completing 10 waves of BA. To purchase the Granite body, use `/buy`` `**`name:`**` ``Granite Body`

@@ -2,8 +2,6 @@
 title: "Puro Puro"
 ---
 
-# Puro Puro
-
 Want to catch hundreds and thousands of implings for clues and other resources? This is your place. Catch any and all types of implings in Puro Puro!
 
 You can expect around 6-10k xp/h when catching any specific impling, or 2-3k xp/h when catching All or High-Tier implings. You can also expect to catch between 160-170 implings per hour when catch a specific impling, but much less for higher tier implings.
@@ -24,21 +22,21 @@ You can expect around 6-10k xp/h when catching any specific impling, or 2-3k xp/
 
 There are several options when selecting the types of implings you wish to catch. These are:
 
-|                                                            |                           |                             |
-| ---------------------------------------------------------- | ------------------------- | --------------------------- |
-| **Impling Type**                                           | **Hunter Level Required** | **Can Use Dark Lure Spell** |
-| All Implings<mark style="color:red;">**\***</mark>         | 17                        | Yes                         |
-| High-Tier Implings<mark style="color:red;">**\*\***</mark> | 58                        | Yes                         |
-| Eclectic Implings                                          | 50                        | No                          |
-| Essence Implings                                           | 42                        | No                          |
-| Earth Implings                                             | 36                        | No                          |
-| Gourmet Implings                                           | 28                        | No                          |
-| Young Implings                                             | 22                        | No                          |
-| Baby Implings                                              | 17                        | No                          |
+|                            |                           |                             |
+| -------------------------- | ------------------------- | --------------------------- |
+| **Impling Type**           | **Hunter Level Required** | **Can Use Dark Lure Spell** |
+| All Implings               | 17                        | Yes                         |
+| High-Tier Implings**\*\*** | 58                        | Yes                         |
+| Eclectic Implings          | 50                        | No                          |
+| Essence Implings           | 42                        | No                          |
+| Earth Implings             | 36                        | No                          |
+| Gourmet Implings           | 28                        | No                          |
+| Young Implings             | 22                        | No                          |
+| Baby Implings              | 17                        | No                          |
 
-<mark style="color:red;">**\***</mark> - Allows you to catch any impling from Baby-Lucky.
+- Allows you to catch any impling from Baby-Lucky.
 
-<mark style="color:red;">**\*\***</mark> - Allows you to only catch Nature implings and above.
+**\*\*** - Allows you to only catch Nature implings and above.
 
 ## Dark Lure Spell
 

@@ -2,8 +2,6 @@
 title: "Theatre of Blood (ToB)"
 ---
 
-# Theatre of Blood (ToB)
-
 ## Getting Started
 
 The Theatre of Blood is a high-level raid you can do for some top-tier weapons and armour. You get faster, and better, at ToB after more attempts and KC.
@@ -26,7 +24,7 @@ You can find a team to do ToB in the official server at discord.gg/ob
 - High level equipment equipped in Melee/Mage/Range (see [ToB Gear Setups](tob-hard-mode.md))
 - At least 100k gp for potential deaths
 - Rune pouch **OR** Divine rune pouch
-- An Abyssal tentacle<mark style="color:red;">**\***</mark>, Blade of saeldor(c) or Scythe of vitur<mark style="color:red;">**\***</mark>, and Fire or Infernal cape, in melee gear.
+- An Abyssal tentacle, Blade of saeldor(c) or Scythe of vitur, and Fire or Infernal cape, in melee gear.
 - A charged/loaded Toxic blowpipe in your bank, with good darts
 - A magic shortbow or twisted bow in your range gear, with amethyst/rune/dragon arrows.
 - At least 250 KC and an Infernal cape for Hard mode
@@ -35,7 +33,7 @@ You can find a team to do ToB in the official server at discord.gg/ob
 - 3 Karambwans per kc, if you're less than 20kc
 - 20+ HP healing food (e.g. sharks) (more if less than 20 kc)
 
-<mark style="color:red;">**\***</mark> _- These items need to be charged. An uncharged scythe will still suffice, however, will only provide a 6% boost compared to the 15% the charged version gives. View_ [_charging items here._](../../miscellaneous/charging-items.md)
+_- These items need to be charged. An uncharged scythe will still suffice, however, will only provide a 6% boost compared to the 15% the charged version gives. View_ [_charging items here._](../../miscellaneous/charging-items.md)
 
 ---
 

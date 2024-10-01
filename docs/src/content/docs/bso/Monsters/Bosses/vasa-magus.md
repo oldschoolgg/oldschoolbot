@@ -19,7 +19,7 @@ You can kill Vasa Magus using `/k name:Vasa Magus`.
 
 You should use the best possible mage gear you have, Virtus is the best gear you can have aside from Gorajan Occult.
 
-<figure><figcaption><p>Best in slot gear</p></figcaption></figure>
+<figure><figcaption>Best in slot gear</figcaption></figure>
 
 Necklace: Arcane blast necklace\
 Cape: Vasa cloak\

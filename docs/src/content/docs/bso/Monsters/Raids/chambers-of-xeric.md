@@ -35,9 +35,9 @@ All boosts work from the bank unless otherwise specified. Gorajan armour does no
 
 See [How does 'BiS gear' work?](./#how-does-bis-gear-work) for an explanation on gear setups.
 
-<figure><figcaption><p>Mage</p></figcaption></figure>
+<figure><figcaption>Mage</figcaption></figure>
 
-<figure><figcaption><p>Melee</p></figcaption></figure>
+<figure><figcaption>Melee</figcaption></figure>
 
 ## Supplies
 

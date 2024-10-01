@@ -10,10 +10,10 @@ Starting at 35 Fishing, you can send your minion out with `/k`**`name:`**`Tempor
 
 - Up to 10% for Fishing level (0.10% per level)
 - Up to 10% for Tempoross kc (0.10% per kc, 100kc is max boost)
-- 10% for Dragon harpoon (<mark style="color:red;">**MUST**</mark> be equipped in skilling)
-- 10% for Infernal harpoon (<mark style="color:red;">**MUST**</mark> be equipped in skilling)
-- 30% for Crystal harpoon (<mark style="color:red;">**MUST**</mark> be equipped in skilling)
-- 2.5% xp boost for Angler outfit (<mark style="color:red;">**MUST**</mark> be equipped in skilling)
+- 10% for Dragon harpoon (**MUST**be equipped in skilling)
+- 10% for Infernal harpoon (**MUST**be equipped in skilling)
+- 30% for Crystal harpoon (**MUST**be equipped in skilling)
+- 2.5% xp boost for Angler outfit (**MUST**be equipped in skilling)
 
 ## Harpoons
 

@@ -16,7 +16,7 @@ You can specifically hunt Crystal implings at a much faster rate than passively 
 
 Boosts affect your chance of a successful catch, rather than the speed of your trip. Basically, higher boosts means increased imp catches.
 
-- 5% boost for Graceful outfit <mark style="color:blue;">**(must be equipped anywhere)**</mark>
+- 5% boost for Graceful outfit **(must be equipped anywhere)**
 - 20% boost for using Stamina potion(4) _(1 stam every 10 mins of the trip)_
 - Up to 10% for creature hunting experience _(1% for every hour of hunting)_
 - \+2 Hunter levels if using Hunter potion(4) _(1 hunt pot every 8 mins of the trip)_

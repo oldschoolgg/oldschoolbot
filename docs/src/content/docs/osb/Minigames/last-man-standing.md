@@ -8,7 +8,7 @@ Last Man Standing (LMS) is a solo minigame where you fight other players (i.e. N
 
 Your minion will continuously improve at LMS every game until it has played 120 games in total. After 120 games, the minion's win-rate will be about 7x that of a minion with 0 games played.
 
-Be aware that `/minigames lms simulate` is <mark style="color:red;">**NOT**</mark> the same.
+Be aware that `/minigames lms simulate` is **NOT**the same.
 
 To start the minigame, use the following:
 

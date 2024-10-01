@@ -8,7 +8,7 @@ It takes on average, 42-43 deaths to complete the Colosseum. Your first kc will 
 
 It is advised to start your attempts with Blood fury and switch to Torture after 10-15 completions, as this will save charges and your death chance will already be quite low from that point.
 
-> **Currently, even if you plank at wave 1, you will use a full invent of supplies and charges every attempt. There is a fix coming, but the due date is unknown at this time.**</mark>
+> **Currently, even if you plank at wave 1, you will use a full invent of supplies and charges every attempt. There is a fix coming, but the due date is unknown at this time.**
 
 To start the Colosseum, use [[/k name\:Colosseum]]
 

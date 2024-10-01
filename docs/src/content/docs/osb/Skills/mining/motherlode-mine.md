@@ -16,7 +16,7 @@ You can select to mine here for a chance to receive golden nuggets and a vast ar
 - Falador elite diary provides slightly increased better ores
 - Invisible 4 mining levels boost for Celestial ring/Celestial signet - Works from bank
 - Pickaxe boost (see [Mining page](./#pickaxes))
-- Prospector outfit (see [Mining page](./#prospectors-outfit)) - <mark style="color:red;">**MUST BE EQUIPPED IN SKILLING SETUP**</mark>
+- Prospector outfit (see [Mining page](./#prospectors-outfit)) - **MUST BE EQUIPPED IN SKILLING SETUP**
 
 ## Golden Nuggets
 

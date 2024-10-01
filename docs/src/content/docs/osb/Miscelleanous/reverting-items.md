@@ -16,7 +16,7 @@ To start reverting items you are going to begin by doing `/create`` `**`item:`**
 - Recoloured/Transmoged Pets
 - Reverting an item to Tickets (Castle Wars)
 
-<mark style="color:blue;">**Reverting items with charges on them will NOT delete the charges. Charges are bound to your minion and not the item itself.**</mark>
+**Reverting items with charges on them will NOT delete the charges. Charges are bound to your minion and not the item itself.**
 
 When reverting an item such as those listed below, you will be seeing a return of specific components in exchange for the item that is being reverted:
 

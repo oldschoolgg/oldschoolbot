@@ -20,23 +20,23 @@ The odds of catching a Baby imp every minute are 1/449 (the maths is: 1/85 x 66/
 
 The chance of catching a Lucky impling is 1/29,665 every minute (1/989 every 30 mins).
 
-|                                                       |                           |                                           |
-| ----------------------------------------------------- | ------------------------- | ----------------------------------------- |
-| **Impling**                                           | **Hunter Level Required** | **Weighting**                             |
-| Baby Impling                                          | 17                        | 66                                        |
-| Young Impling                                         | 22                        | 55                                        |
-| Gourmet Impling                                       | 28                        | 48                                        |
-| Earth Impling                                         | 36                        | 38                                        |
-| Essence Impling                                       | 42                        | 29                                        |
-| Eclectic Impling                                      | 50                        | 24                                        |
-| Nature Impling                                        | 58                        | 33                                        |
-| Magpie Impling                                        | 65                        | 24                                        |
-| Ninja Impling                                         | 74                        | 21                                        |
-| Crystal Impling<mark style="color:red;">**\***</mark> | 80                        | 1<mark style="color:red;">**\*\***</mark> |
-| Dragon Impling                                        | 83                        | 10                                        |
-| Lucky Impling                                         | 89                        | 1                                         |
+|                  |                           |               |
+| ---------------- | ------------------------- | ------------- |
+| **Impling**      | **Hunter Level Required** | **Weighting** |
+| Baby Impling     | 17                        | 66            |
+| Young Impling    | 22                        | 55            |
+| Gourmet Impling  | 28                        | 48            |
+| Earth Impling    | 36                        | 38            |
+| Essence Impling  | 42                        | 29            |
+| Eclectic Impling | 50                        | 24            |
+| Nature Impling   | 58                        | 33            |
+| Magpie Impling   | 65                        | 24            |
+| Ninja Impling    | 74                        | 21            |
+| Crystal Impling  | 80                        | 1**\*\***     |
+| Dragon Impling   | 83                        | 10            |
+| Lucky Impling    | 89                        | 1             |
 
-<mark style="color:red;">**\***</mark>** -** Passive Crystal implings are only available when doing activities within Prifddinas. This includes:
+** -** Passive Crystal implings are only available when doing activities within Prifddinas. This includes:
 
 - Gauntlet
 - Zalcano
@@ -44,4 +44,4 @@ The chance of catching a Lucky impling is 1/29,665 every minute (1/989 every 30 
 - Pickpocketing Elves
 - Training at Prifddinas rooftop course
 
-<mark style="color:red;">**\*\***</mark> - Crystal implings have a static 1/155 catch chance every minute. This equates to about a 1/5 chance to catch a Crystal impling every 30 minutes.
+**\*\***- Crystal implings have a static 1/155 catch chance every minute. This equates to about a 1/5 chance to catch a Crystal impling every 30 minutes.

@@ -12,7 +12,7 @@ Killing Callisto, Vet'ion or Venenatis (and their weaker variants) can risk some
 
 Your death chance is based on a number of factors. Firstly, you need to encounter a PKer for a death to be possible. There are 3 time periods when doing wildy bosses that will influence the chances of you running into a PKer. The below percentages represent how likely you will encounter a PKer _**for every minute of your trip**_. These time periods are random and change every \~2 hours.
 
-<table data-full-width="false"><thead><tr><th></th><th align="center"></th><th align="center"></th></tr></thead><tbody><tr><td><strong>PK Peak Times</strong></td><td align="center"><p><strong>Chance of PKer at</strong> </p><p><strong>Callisto, Vet'ion, Venenatis</strong></p></td><td align="center"><p><strong>Chance of PKer at</strong> </p><p><strong>Artio, Calvarion, Spindel</strong></p></td></tr><tr><td>Low period</td><td align="center">1.52%</td><td align="center">2.85%</td></tr><tr><td>Medium period</td><td align="center">7.59%</td><td align="center">14.29%</td></tr><tr><td>High period</td><td align="center">18.98%%</td><td align="center">35.71%</td></tr></tbody></table>
+<table data-full-width="false"><thead><tr><th></th><th align="center"></th><th align="center"></th></tr></thead><tbody><tr><td><strong>PK Peak Times</strong></td><td align="center"><strong>Chance of PKer at</strong> <strong>Callisto, Vet'ion, Venenatis</strong></td><td align="center"><strong>Chance of PKer at</strong> <strong>Artio, Calvarion, Spindel</strong></td></tr><tr><td>Low period</td><td align="center">1.52%</td><td align="center">2.85%</td></tr><tr><td>Medium period</td><td align="center">7.59%</td><td align="center">14.29%</td></tr><tr><td>High period</td><td align="center">18.98%%</td><td align="center">35.71%</td></tr></tbody></table>
 
 You will be asked for confirmation when attempting to send a trip during a high PK period. This can be enabled/disabled using:
 
@@ -90,7 +90,7 @@ The following info is specific to revenants. Other** [**wilderness bosses\*\*](.
 
 ### **Smite Chance**
 
-<mark style="color:red;">**If you get smited, you will lose your entire wildy setup regardless of value/items.**</mark>
+**If you get smited, you will lose your entire wildy setup regardless of value/items.**
 
 You have a 1/300 chance to be smited while on a trip. However, if you do not have 5x prayer potion(4), which _you will warned about before embarking_, you have a 1/20 chance to be smited.
 
@@ -131,7 +131,7 @@ The highest attack boost you can obtain is 25%. The maximum style bonuses are li
 
 ## Boosts
 
-- 35% boost for equipping a charged wildy weapon <mark style="color:red;">(</mark><mark style="color:red;">**must be equipped in wildy setup**</mark><mark style="color:red;">)</mark>
+- 35% boost for equipping a charged wildy weapon (**must be equipped in wildy setup**)
 
 ---
 

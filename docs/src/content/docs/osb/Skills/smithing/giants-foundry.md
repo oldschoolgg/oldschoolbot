@@ -2,8 +2,6 @@
 title: "Giant's Foundry"
 ---
 
-# Giant's Foundry
-
 Look no further for amazing smithing xp and a use for those stacked up bars! You don't need to buy moulds or make specific swords for Kovac, just choose a metal and send your minion on their way.
 
 To start a trip of Giant's Foundry, use:
@@ -16,7 +14,7 @@ To start a trip of Giant's Foundry, use:
 
 ## Boosts
 
-- 15% speed boost for Smiths' outfit (<mark style="color:red;">**MUST**</mark> be equipped in skilling)
+- 15% speed boost for Smiths' outfit (**MUST** be equipped in skilling)
 - Higher average mould score for 80+ Smithing (meaning higher xp + reputation)
 
 ## Choosing An Alloy
@@ -61,17 +59,17 @@ While your minion will receive relatively decent xp, you will also gain coins an
 
 - `/minigames giants_foundry buy`` `**`item:`**` ``[itemName]`
 
-|                                                       |                     |                            |
-| ----------------------------------------------------- | ------------------- | -------------------------- |
-| **Item**                                              | **Reputation Cost** | **Additional Notes**       |
-| Double ammo mould                                     | 2,000               | Cannonballs made 2x faster |
-| Kovac's grog                                          | 300                 | -                          |
-| Smithing catalyst                                     | 15                  | -                          |
-| Ore pack                                              | 200                 | Gives 30 random ores       |
-| Smiths tunic<mark style="color:red;">**\***</mark>    | 4,000               | Gives 3% speed boost       |
-| Smiths trousers<mark style="color:red;">**\***</mark> | 4,000               | Gives 3% speed boost       |
-| Smiths boots<mark style="color:red;">**\***</mark>    | 3,500               | Gives 3% speed boost       |
-| Smiths gloves<mark style="color:red;">**\***</mark>   | 3,500               | Gives 3% speed boost       |
-| Colossal blade                                        | 5,000               | -                          |
+|                   |                     |                            |
+| ----------------- | ------------------- | -------------------------- |
+| **Item**          | **Reputation Cost** | **Additional Notes**       |
+| Double ammo mould | 2,000               | Cannonballs made 2x faster |
+| Kovac's grog      | 300                 | -                          |
+| Smithing catalyst | 15                  | -                          |
+| Ore pack          | 200                 | Gives 30 random ores       |
+| Smiths tunic      | 4,000               | Gives 3% speed boost       |
+| Smiths trousers   | 4,000               | Gives 3% speed boost       |
+| Smiths boots      | 3,500               | Gives 3% speed boost       |
+| Smiths gloves     | 3,500               | Gives 3% speed boost       |
+| Colossal blade    | 5,000               | -                          |
 
-<mark style="color:red;">**\***</mark> - The full outfit, while equipped in skilling, will give a 15% speed boost to the minigame. It will also boost smithing items in general by 0.6 seconds per item.
+- The full outfit, while equipped in skilling, will give a 15% speed boost to the minigame. It will also boost smithing items in general by 0.6 seconds per item.

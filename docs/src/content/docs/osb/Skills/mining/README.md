@@ -33,13 +33,13 @@ The Celestial ring or signet will provide an invisible +4 mining levels. It does
 
 ## Mining cape
 
-<mark style="color:red;">**Currently, the Mining cape is NOT affecting granite and sandstone mining trips. This message will be removed as soon as a fix is implemented.**</mark>
+**Currently, the Mining cape is NOT affecting granite and sandstone mining trips. This message will be removed as soon as a fix is implemented.**
 
 The Mining cape provides a 5% bonus to the amount of ores you will receive. The extra ores received will not give extra xp, however, the bonus effect stacks with Varrock armours. The cape has no effect when powermining. It applies to all ores except for runite and amethyst. It does not need to be equipped for the bonus to apply.
 
 ## Varrock Armour
 
-<mark style="color:red;">**Currently, the Varrock armours (all variants) are NOT affecting granite and sandstone mining trips. This message will be removed as soon as a fix is implemented.**</mark>
+**Currently, the Varrock armours (all variants) are NOT affecting granite and sandstone mining trips. This message will be removed as soon as a fix is implemented.**
 
 The Varrock diary rewards provide a 10% bonus to the amount of ores you will receive. Higher tiers of diary completion means higher tier ores are affected. The extra ores received will not give extra xp, however, the bonus effect stacks with the Mining cape. These armours have no effect when powermining. This effect also applies to sandstone and granite. It does not need to be equipped for the bonus to apply. It also has no effect within Motherlode mine.
 

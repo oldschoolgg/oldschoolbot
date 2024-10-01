@@ -33,11 +33,11 @@ At 250 kc you will have the minimum death chance possible. At 350 kc you will ha
 
 Specific items will give a hidden speed boost to your raids, these are:
 
-- Twisted bow (4%) <mark style="color:red;">**(Equipped in range)**</mark>
-- Tumeken's shadow (25%) <mark style="color:red;">**(Equipped in mage)**</mark>
-- Bandos godsword (2%) <mark style="color:blue;">**(works from bank)**</mark>
-- Lightbearer (5%) <mark style="color:blue;">**(works from bank)**</mark>
-- Zaryte crossbow (9%) **OR** Dragon claws (6%) <mark style="color:blue;">**(works from bank)**</mark>
+- Twisted bow (4%) **(Equipped in range)**
+- Tumeken's shadow (25%) **(Equipped in mage)**
+- Bandos godsword (2%) **(works from bank)**
+- Lightbearer (5%) **(works from bank)**
+- Zaryte crossbow (9%) **OR** Dragon claws (6%) **(works from bank)**
 
 View the best in slot and alternate gear setups for ToA [here](toa-gear-setups.md).
 
@@ -93,7 +93,7 @@ Higher levels will take longer but offer better chances at uniques.
 
 - These can be obtained by completing a level 350, 425, and 500 invocation raid with no deaths.
 - They can be attached to their respective items to create (or) versions.
-- The fang (or) <mark style="color:red;">**cannot**</mark> be reverted, the assembler and ward <mark style="color:blue;">**can**</mark> be reverted
+- The fang (or) **cannot**be reverted, the assembler and ward **can**be reverted
 
 ### Pet Transmogs
 
