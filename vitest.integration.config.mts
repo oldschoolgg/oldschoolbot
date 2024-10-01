@@ -12,6 +12,8 @@ export default defineConfig({
 		},
 		testTimeout: 30_000,
 		bail: 1,
-		maxConcurrency: 10
+		maxConcurrency: 10,
+		maxWorkers: 4,
+		minWorkers: 4
 	}
 });
