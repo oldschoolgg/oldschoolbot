@@ -1,9 +1,9 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import type { Image } from '@napi-rs/canvas';
-import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
+import { PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import type { APIButtonComponent } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
@@ -14,6 +14,7 @@ import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
+import type { CanvasImage } from './util/canvasUtil';
 
 export { PerkTier };
 
@@ -594,7 +595,7 @@ export const ItemIconPacks = [
 		name: 'Halloween',
 		storeBitfield: StoreBitfield.HalloweenItemIconPack,
 		id: 'halloween',
-		icons: new Map<number, Image>()
+		icons: new Map<number, CanvasImage>()
 	}
 ];
 

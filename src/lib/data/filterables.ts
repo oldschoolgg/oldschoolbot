@@ -1,6 +1,8 @@
 import { uniqueArr } from 'e';
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
 import Potions from '../minions/data/potions';
+import { allOpenables } from '../openables';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
@@ -895,6 +897,16 @@ export const baseFilters: Filterable[] = [
 		name: 'Clues Rares',
 		aliases: ['clues rares', 'clues rare', 'rare clues', 'clue rare', 'rare clue'],
 		items: () => [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
+	},
+	{
+		name: 'Lamps',
+		aliases: ['lamps'],
+		items: () => Lampables.flatMap(i => i.items)
+	},
+	{
+		name: 'Openables',
+		aliases: ['opens'],
+		items: () => allOpenables.map(i => i.id)
 	},
 	{
 		name: 'Favourite Alchs',

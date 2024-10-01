@@ -1,5 +1,5 @@
 import { isMainThread } from 'node:worker_threads';
-import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
+import { TSRedis } from '@oldschoolgg/toolkit/structures';
 import { PrismaClient } from '@prisma/client';
 import { PrismaClient as RobochimpPrismaClient } from '@prisma/robochimp';
 
@@ -20,7 +20,7 @@ function makePrismaClient(): PrismaClient {
 	}
 
 	return new PrismaClient({
-		log: ['info', 'warn', 'error']
+		log: ['warn', 'error']
 	});
 }
 global.prisma = global.prisma || makePrismaClient();
@@ -32,7 +32,7 @@ function makeRobochimpPrismaClient(): RobochimpPrismaClient {
 	}
 
 	return new RobochimpPrismaClient({
-		log: ['info', 'warn', 'error']
+		log: ['warn', 'error']
 	});
 }
 global.roboChimpClient = global.roboChimpClient || makeRobochimpPrismaClient();

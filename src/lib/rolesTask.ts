@@ -1,3 +1,4 @@
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { noOp, notEmpty, uniqueArr } from 'e';
 
 import { SupportServer } from '../config';
@@ -9,7 +10,7 @@ import { Prisma } from '@prisma/client';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
-import { type CommandResponse, Stopwatch, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
+import { type CommandResponse, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
 import { ClueTiers } from './clues/clueTiers';
 import { loggedRawPrismaQuery } from './rawSql';
 import { TeamLoot } from './simulation/TeamLoot';

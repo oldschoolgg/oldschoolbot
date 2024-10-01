@@ -1,11 +1,11 @@
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
 import type { BaseMessageOptions, Message, TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold } from 'discord.js';
 import { Time, isFunction, roll } from 'e';
 import { LRUCache } from 'lru-cache';
 import { Items } from 'oldschooljs';
 
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { command_name_enum } from '@prisma/client';
 import { SupportServer, production } from '../config';
 import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
@@ -58,7 +58,7 @@ function rareRoles(msg: Message) {
 	for (const [roleID, chance, name] of rareRolesSrc) {
 		if (roll(chance / 10)) {
 			if (msg.member?.roles.cache.has(roleID)) continue;
-			if (!production) {
+			if (!production && msg.channel.isSendable()) {
 				return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
 			}
 			msg.member?.roles.add(roleID);

@@ -1,5 +1,6 @@
 import { Items } from 'oldschooljs';
 import { globalConfig } from './constants';
+import { sql } from './postgres';
 
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
@@ -172,5 +173,5 @@ if (globalConfig.isProduction) {
 }
 
 export async function runStartupScripts() {
-	await prisma.$transaction(startupScripts.map(query => prisma.$queryRawUnsafe(query.sql)));
+	await sql.begin(sql => startupScripts.map(query => sql.unsafe(query.sql)));
 }
