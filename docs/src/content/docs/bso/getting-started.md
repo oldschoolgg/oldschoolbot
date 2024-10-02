@@ -1,13 +1,8 @@
 ---
 title: "Getting Started with BSO"
-description: >-
-  This page is a guide for getting started on BSO if you're new to the bot. It
-  is not an efficiency guide, or a guide designed for ironmen.
 sidebar:
   order: 1
 ---
-
-# Getting Started
 
 This guide assumes you have bought a minion (`/minion buy`) and have read the [OSB Starter Guide](https://wiki.oldschool.gg/getting-started/beginner-guide). Once you have mid-level equipment (Barrow's or Godwars equipment) and a few mid to high level stats (80s+), then you are done with the early game prep for BSO.\
 \

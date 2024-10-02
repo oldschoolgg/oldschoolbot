@@ -1,10 +1,10 @@
 ---
 title: "Grandmaster Clues"
+sidebar:
+  order: 3
 ---
 
-# Grandmaster Clues
-
-### Prerequisites
+## Prerequisites
 
 - 250 QP
 - Level 90 in all skills
@@ -17,20 +17,20 @@ title: "Grandmaster Clues"
 
 Master clue scrolls can be created by Watson by using the `/create item:Master clue quantity:[#]` command if you have the required lower-tier clue scrolls in your bank.
 
-### Boosts
+## Boosts
 
 - [Clue global boosts, information can be found on the OSB Wiki page](https://wiki.oldschool.gg/miscellaneous/clue-scrolls/boosts#global-boosts)
 - [Clue Hunter Outfit](equippables/#clue-hunter-outfit) - 2x speed
 - [Zippy](https://bso-wiki.oldschool.gg/custom-items/pets#resource-gathering-and-loot-effecting-pets) - 1/15 chance to double, chance of Beginner to Master caskets, UMB and TMB (stacks with global double)
 - Clue score - up to 10% at roughly 60 clues completed
 
-### Obtaining
+## Obtaining
 
 Grandmaster Clues can be received from a wide range of content. The rates are not included here because they change often and vary greatly between sources. A list of common sources is as follows:
 
 [Kalphite King](https://bso-wiki.oldschool.gg/bosses/kalphite-king), [Vasa Magus](../bso-custom-killables/bosses/vasa-magus.md), [Sea Kraken](https://bso-wiki.oldschool.gg/bosses/sea-kraken), [Ignecarus](https://bso-wiki.oldschool.gg/bosses/ignecarus), [Nex](https://bso-wiki.oldschool.gg/bosses/nex), [Malygos](https://bso-wiki.oldschool.gg/bosses/malygos), [QBD](../bso-custom-killables/demi-bosses/queen-black-dragon.md#rewards), [Elder Birdhouses](../skills/hunter.md), Fishing, Woodcutting, Master Clue Caskets, and [Item Contracts](https://bso-wiki.oldschool.gg/custom-items/item-contracts).
 
-### General Loot Table
+## General Loot Table
 
 The general loot table from Grandmaster Caskets consists of:
 
@@ -47,7 +47,7 @@ The general loot table from Grandmaster Caskets consists of:
 - Random Clue Scroll Loot (Hard to Master)
 - Super Restores and Saradomin Brew
 
-### Unique Loot Table
+## Unique Loot Table
 
 The Grandmaster loot system operates on rolls, of which there are 5-11 for each casket opened. Because of this, the drop rate varies based on the rolls you receive, so it will be represented as X.
 
