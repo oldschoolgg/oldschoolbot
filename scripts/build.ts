@@ -142,6 +142,7 @@ async function main() {
 		),
 		'utf-8'
 	);
+	await execAsync('yarn lint');
 }
 
 runTimedLoggedFn('Build', main);
