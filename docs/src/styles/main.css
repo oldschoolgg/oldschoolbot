@@ -390,7 +390,7 @@ ol + ol li blockquote {
   align-items: center;
   justify-content: center;
   align-content: center;
-  padding: 3px 10px;
+  padding: 3px 9px;
   font-size: 13px;
   gap: 5px;
   font-weight: bold;
@@ -435,4 +435,45 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 }
 #starlight__sidebar > div > sl-sidebar-state-persist > ul > li:nth-child(1) > details > ul {
   padding: 0;
+}
+
+.injected {
+  display: inline;
+  gap: 8px; 
+  white-space: normal;
+}
+
+.osrs_item,
+.discord_command {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 4px; 
+  white-space: nowrap;
+  vertical-align: middle; 
+}
+
+.osrs_item_image {
+  max-height: 26px; 
+  vertical-align: middle;
+}
+
+.osrs_item_name,
+.discord_command_name {
+  font-size: 0.9em; 
+  margin-top: 4px; 
+  text-align: center;
+  white-space: nowrap; 
+}
+
+.contributor {
+  width: max-content;
+  border-radius: 8px;
+  color: var(--sl-color-text-accent);
+  font-weight: bold;
+  padding: 1px 9px;
+  font-size: 25px;
+}
+
+.git_hash {
+  font-size: 11px;
 }
