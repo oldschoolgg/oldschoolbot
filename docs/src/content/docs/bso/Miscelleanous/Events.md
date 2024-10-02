@@ -1,7 +1,5 @@
 ---
 title: "Events"
-sidebar:
-  order: 2
 ---
 
 # Halloween 2021

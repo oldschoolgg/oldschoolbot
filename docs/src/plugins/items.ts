@@ -22,7 +22,9 @@ export function remarkItems(options: any) {
 				}
 				if (match.startsWith('/')) {
 					const cmd = commandsJson.find(command => command.name === match.slice(1).split(' ')[0]);
-					if (!cmd) throw new Error(`Could not find command with name: ${match.slice(1)}`);
+					if (!cmd) {
+						console.warn(`Could not find command with name: ${match.slice(1)}`);
+					}
 					const customHtml = `<div class="discord_command">
 											<p class="discord_command_name">${match}</p>
 										</div>`;
@@ -41,7 +43,8 @@ export function remarkItems(options: any) {
 				}
 
 				if (imageURL === null) {
-					throw new Error(`Could not find item with name: ${match}`);
+					console.warn(`Could not find item with name: ${match}`);
+					continue;
 				}
 
 				const customHtml = `<div class="osrs_item">

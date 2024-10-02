@@ -6,7 +6,7 @@ interface Author {
 	gitIDs: string[];
 	displayName: string;
 }
-const authors: Author[] = [{ gitIDs: ['GC'], displayName: 'Magnaboy' }];
+const authors: Author[] = [{ gitIDs: ['gc'], displayName: 'Magnaboy' }];
 const authorsMap = new Map<string, Author>();
 
 for (const author of authors) {
@@ -22,6 +22,7 @@ export async function getAuthors(filePath: string) {
 	const authors = result.stdout
 		.split('\n')
 		.filter((v, i, a) => a.indexOf(v) === i)
+		.map(name => name.toLowerCase())
 		.map(author => authorsMap.get(author)?.displayName ?? author);
 	if (authors.length === 1 && authors[0] === 'Magnaboy') return [];
 	return authors;
