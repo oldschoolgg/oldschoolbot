@@ -37,13 +37,13 @@ export default defineConfig({
 				},
 				{
 					label: 'OSB',
-					autogenerate: { directory: 'osb' },
-					collapsed: true
+					autogenerate: { directory: 'osb', collapsed: true },
+					collapsed: false
 				},
 				{
 					label: 'BSO',
-					autogenerate: { directory: 'bso' },
-					collapsed: true
+					autogenerate: { directory: 'bso', collapsed: true },
+					collapsed: false
 				}
 			]
 		})

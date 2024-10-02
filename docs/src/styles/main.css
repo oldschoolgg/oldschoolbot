@@ -35,9 +35,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+starlight-menu-button > button {
+  background-color: transparent;
+}
+
 .sidebar {
   font-weight: bold;
-
 }
 
 .sl-container:where(.astro-7nkwcw3z) {
@@ -402,4 +405,24 @@ ol + ol li blockquote {
   font-size: 13px;
   color: white;
   border-width: 6px 10px;
+}
+
+sl-sidebar-state-persist > ul > li:nth-child(2) > details > summary,
+sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary {
+  text-align: center;
+  justify-content: center;
+}
+
+sl-sidebar-state-persist > ul > li:nth-child(2) > details > summary > svg,
+sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
+  display: none;
+}
+
+
+/* Make Getting-Started section look like its at top level */
+#starlight__sidebar > div > sl-sidebar-state-persist > ul > li:nth-child(1) > details > summary {
+  display:none;
+}
+#starlight__sidebar > div > sl-sidebar-state-persist > ul > li:nth-child(1) > details > ul {
+  padding: 0;
 }
