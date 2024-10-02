@@ -36,7 +36,7 @@ export default defineConfig({
 					collapsed: false
 				},
 				{
-					label: 'OSB',
+					label: 'Old School Bot (OSB)',
 					autogenerate: { directory: 'osb', collapsed: true },
 					collapsed: false
 				},

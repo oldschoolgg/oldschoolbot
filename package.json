@@ -23,7 +23,8 @@
 		"test:circular": "dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js",
 		"test:ci:unit": "concurrently --raw --kill-others-on-fail \"yarn test:unit\" \"yarn test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\" \"yarn test:circular\"",
 		"spritesheet": "tsx ./scripts/spritesheet.ts",
-		"data": "concurrently \"tsx ./scripts/monster_table.ts\" && yarn lint"
+		"data": "concurrently \"tsx ./scripts/monster_table.ts\" && yarn lint",
+		"wiki": "tsx ./scripts/wiki.ts"
 	},
 	"dependencies": {
 		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#8686dc639154c528ce739c440554bc0c46c8ae79",
