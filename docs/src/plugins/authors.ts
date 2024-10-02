@@ -16,6 +16,7 @@ for (const author of authors) {
 }
 
 export async function getAuthors(filePath: string) {
+	if (filePath.endsWith('404.md')) return [];
 	const command = `git log --pretty=format:"%an" "${filePath}"`;
 	const result = await execAsync(command, { encoding: 'utf-8' });
 	const authors = result.stdout
