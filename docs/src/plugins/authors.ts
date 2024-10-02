@@ -6,10 +6,16 @@ interface Author {
 	gitIDs: string[];
 	displayName: string;
 }
-const authors: Author[] = [{ gitIDs: ['gc'], displayName: 'Magnaboy' }];
-const authorsMap = new Map<string, Author>();
+const authors: Author[] = [
+	{ gitIDs: ['gc'], displayName: 'Magnaboy' },
+	{ gitIDs: ['nwjgit'], displayName: 'Jonesey' },
+	{ gitIDs: ['Arodab'], displayName: 'Arodab' },
+	{ gitIDs: ['DaughtersOfNyx'], displayName: 'Keres' }
+];
+export const authorsMap = new Map<string, Author>();
 
 for (const author of authors) {
+	authorsMap.set(author.displayName.toLowerCase(), author);
 	for (const gitID of author.gitIDs) {
 		authorsMap.set(gitID, author);
 	}
@@ -23,7 +29,8 @@ export async function getAuthors(filePath: string) {
 		.split('\n')
 		.filter((v, i, a) => a.indexOf(v) === i)
 		.map(name => name.toLowerCase())
-		.map(author => authorsMap.get(author)?.displayName ?? author);
+		.map(author => authorsMap.get(author)?.displayName ?? author)
+		.filter(Boolean);
 	if (authors.length === 1 && authors[0] === 'Magnaboy') return [];
 	return authors;
 }
