@@ -1,0 +1,31 @@
+---
+import { getAuthors } from "../plugins/authors";
+const authors = (await getAuthors(`src/content/docs/${Astro.props.id}`));
+---
+
+<footer class="sl-flex">
+
+<div class="credits-list">{authors.map(name => <div class="credit">{name}</div>)}</div>
+
+</footer>
+
+<style>
+	footer {
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+	.credits-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.credit {
+		background-color: rgb(243, 156, 105);
+		width: max-content;
+		border-radius: 8px;
+		color: rgb(61, 40, 16);
+		font-weight: bold;
+		padding: 1px 9px;
+		font-size: 12px;
+	}
+</style>

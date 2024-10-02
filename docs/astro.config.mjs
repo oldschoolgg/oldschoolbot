@@ -10,6 +10,9 @@ export default defineConfig({
 	},
 	integrations: [
 		starlight({
+			components: {
+				Footer: './src/components/Footer.astro'
+			},
 			title: 'Oldschool.gg Wiki',
 			favicon: 'favicon.ico',
 			social: {
