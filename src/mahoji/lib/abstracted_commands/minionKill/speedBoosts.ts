@@ -80,6 +80,7 @@ export type BoostArgs = MinionKillOptions & {
 	relevantGearStat: OffenceGearStat;
 	currentTaskOptions: CombatMethodOptions;
 	addPostBoostEffect: (effect: PostBoostEffect) => void;
+	killsRemaining: number | null;
 };
 
 export type Boost = {
