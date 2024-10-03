@@ -156,13 +156,19 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	}
 
 	if (currentSlayerTask) {
-		args.inputQuantity =
-			killsRemainingOnTask({
-				isOnTask,
-				monster,
-				task: currentSlayerTask,
-				slayerUnlocks
-			}) ?? args.inputQuantity;
+		const killsRemaining = killsRemainingOnTask({
+			isOnTask,
+			monster,
+			task: currentSlayerTask,
+			slayerUnlocks
+		});
+		if (killsRemaining) {
+			if (args.inputQuantity) {
+				args.inputQuantity = clamp(args.inputQuantity, 1, killsRemaining);
+			} else {
+				args.inputQuantity = killsRemaining;
+			}
+		}
 	}
 
 	if (monster.maxQuantity) {
