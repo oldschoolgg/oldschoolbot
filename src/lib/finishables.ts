@@ -295,7 +295,7 @@ for (const mon of monsterPairedCLs) {
 
 			const loot = mon.mon.kill(1, {});
 			if (killableMonster?.specialLoot) {
-				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1 });
+				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1, cl: new Bank() });
 			}
 			return { loot, cost };
 		}
