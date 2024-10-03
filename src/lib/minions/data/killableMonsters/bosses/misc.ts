@@ -698,6 +698,19 @@ const killableBosses: KillableMonster[] = [
 				defence_stab: 0
 			}
 		},
+		specialLoot: ({ loot, ownedItems, cl }) => {
+			if (loot.has('Coagulated venom') && (ownedItems.has('Coagulated venom') || ownedItems.has('Rax'))) {
+				loot.set('Coagulated venom', 0);
+			}
+			const noxPieces = resolveItems(['Noxious point', 'Noxious blade', 'Noxious pommel']);
+			const ownedPieces = noxPieces.filter(p => cl.has(p));
+			if (ownedPieces.length === 3) return;
+			const unownedPieces = noxPieces.filter(p => !cl.has(p));
+			const pieceToReplace = ownedPieces.find(p => loot.has(p));
+			if (!pieceToReplace) return;
+			loot.set(unownedPieces[0], 1);
+			loot.set(pieceToReplace, 0);
+		},
 		itemCost: [
 			{
 				itemCost: new Bank().add('Extended anti-venom+(4)'),
@@ -722,12 +735,6 @@ const killableBosses: KillableMonster[] = [
 			{
 				itemCost: new Bank().add('Super combat potion(4)'),
 				qtyPerKill: 0.125
-			},
-			{
-				itemCost: new Bank().add('Ranging potion(4)'),
-				qtyPerKill: 0.0533,
-				optional: true,
-				boostPercent: 2
 			},
 			{
 				itemCost: new Bank().add('Cooked karambwan'),
