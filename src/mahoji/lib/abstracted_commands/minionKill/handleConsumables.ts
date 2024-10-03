@@ -42,9 +42,8 @@ export function getItemCostFromConsumables({
 
 	for (const cc of consumableCosts) {
 		const flatConsumables = [cc, ...(cc.alternativeConsumables ?? [])];
-		const consumable = flatConsumables.find(c =>
-				gearBank.bank.has(calculateTripConsumableCost(c, quantity, duration))
-			) ?? cc;
+		const consumable =
+			flatConsumables.find(c => gearBank.bank.has(calculateTripConsumableCost(c, quantity, duration))) ?? cc;
 		if (consumable.optional && !gearBank.bank.has(calculateTripConsumableCost(cc, quantity, duration))) {
 			continue;
 		}
@@ -87,7 +86,7 @@ export function getItemCostFromConsumables({
 	const maxBasedOnTime = Math.floor(maxTripLength / timeToFinish);
 	const maxCanKillWithItemCost = Math.floor(floatCostsPerKill.fits(gearBank.bank));
 	const maxAllowed = Math.min(maxBasedOnTime, maxCanKillWithItemCost);
-	const finalQuantity = Math.max(1,inputQuantity ? Math.min(inputQuantity, maxAllowed) : maxAllowed);
+	const finalQuantity = Math.max(1, inputQuantity ? Math.min(inputQuantity, maxAllowed) : maxAllowed);
 	const itemCost = floatCostsPerKill.multiply(finalQuantity).toItemBankRoundedUp();
 
 	return {

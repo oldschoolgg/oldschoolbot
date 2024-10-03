@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest';
 
 import { Time } from 'e';
+import { Monsters } from 'oldschooljs/dist/meta/types';
 import killableMonsters from '../../src/lib/minions/data/killableMonsters';
 import { getItemCostFromConsumables } from '../../src/mahoji/lib/abstracted_commands/minionKill/handleConsumables';
 import { makeGearBank } from './utils';
-import { Monsters } from 'oldschooljs/dist/meta/types';
 
 describe('getItemCostFromConsumables', () => {
 	test('getItemCostFromConsumables', () => {
@@ -46,9 +46,9 @@ describe('getItemCostFromConsumables', () => {
 		gearBank.bank.add('Ruby dragon bolts (e)', 1000);
 
 		const monster = killableMonsters.find(m => m.id === Monsters.AlchemicalHydra.id)!;
-	
+
 		const consumablesCost2 = getItemCostFromConsumables({
-			consumableCosts:[monster.itemCost as any],
+			consumableCosts: [monster.itemCost as any],
 			gearBank: gearBank,
 			inputQuantity: 5,
 			timeToFinish: monster.timeToFinish,
