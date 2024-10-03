@@ -6028,6 +6028,18 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": {
+      "29838": 1,
+    },
+    "name": "Revert Rax",
+    "noCl": true,
+    "outputItems": {
+      "29781": 1,
+      "29836": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": {
       "29801": 1,
@@ -6035,6 +6047,17 @@ exports[`OSB Creatables 1`] = `
     "name": "Amulet of rancour (s)",
     "outputItems": {
       "29804": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29804": 1,
+    },
+    "name": "Revert Amulet of rancour (s)",
+    "noCl": true,
+    "outputItems": {
+      "29801": 1,
     },
   },
   {

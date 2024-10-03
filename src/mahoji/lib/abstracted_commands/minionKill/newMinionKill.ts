@@ -155,15 +155,14 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		}
 	}
 
-	if (currentSlayerTask) {
-		args.inputQuantity =
-			killsRemainingOnTask({
+	const killsRemaining = currentSlayerTask
+		? killsRemainingOnTask({
 				isOnTask,
 				monster,
 				task: currentSlayerTask,
 				slayerUnlocks
-			}) ?? args.inputQuantity;
-	}
+			})
+		: null;
 
 	if (monster.maxQuantity) {
 		args.inputQuantity = clamp(args.inputQuantity ?? 1, 1, monster.maxQuantity);
@@ -179,14 +178,14 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		isInWilderness: isInWilderness,
 		combatMethods,
 		relevantGearStat,
-		addPostBoostEffect: (effect: PostBoostEffect) => ephemeralPostTripEffects.push(effect)
+		addPostBoostEffect: (effect: PostBoostEffect) => ephemeralPostTripEffects.push(effect),
+		killsRemaining
 	});
 	if (typeof speedDurationResult === 'string') {
 		return speedDurationResult;
 	}
 	const quantity = speedDurationResult.finalQuantity;
 	let duration = speedDurationResult.timeToFinish * quantity;
-
 	if (quantity > 1 && duration > maxTripLength) {
 		return `You can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
@@ -228,7 +227,8 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			primaryStyle,
 			combatMethods,
 			relevantGearStat,
-			currentTaskOptions: speedDurationResult.currentTaskOptions
+			currentTaskOptions: speedDurationResult.currentTaskOptions,
+			killsRemaining
 		});
 		if (!result) continue;
 		for (const boostResult of Array.isArray(result) ? result : [result]) {
