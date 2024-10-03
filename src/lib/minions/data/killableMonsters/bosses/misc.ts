@@ -691,13 +691,17 @@ const killableBosses: KillableMonster[] = [
 					ammo: "Rada's blessing 3"
 				}).stats,
 				defence_magic: 0,
-				prayer: 0
+				prayer: 0,
+				defence_crush: 0,
+				defence_ranged: 0,
+				defence_slash: 0,
+				defence_stab: 0
 			}
 		},
 		itemCost: [
 			{
 				itemCost: new Bank().add('Extended anti-venom+(4)'),
-				qtyPerMinute: 0.05,
+				qtyPerKill: 0.05,
 				alternativeConsumables: [
 					{
 						itemCost: new Bank().add('Anti-venom+(4)'),
@@ -707,35 +711,35 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				itemCost: new Bank().add('Super restore(4)'),
-				qtyPerMinute: 0.05,
+				qtyPerKill: 0.2,
 				alternativeConsumables: [
 					{
 						itemCost: new Bank().add('Prayer potion(4)'),
-						qtyPerMinute: 0.05
+						qtyPerKill: 0.2
 					}
 				]
 			},
 			{
 				itemCost: new Bank().add('Super combat potion(4)'),
-				qtyPerMinute: 0.0533
+				qtyPerKill: 0.125
 			},
 			{
 				itemCost: new Bank().add('Ranging potion(4)'),
-				qtyPerMinute: 0.0533,
+				qtyPerKill: 0.0533,
 				optional: true,
 				boostPercent: 2
 			},
 			{
 				itemCost: new Bank().add('Cooked karambwan'),
-				qtyPerMinute: 0.2
+				qtyPerKill: 0.24
 			},
 			{
 				itemCost: new Bank().add('Anglerfish'),
-				qtyPerMinute: 0.0333
+				qtyPerKill: 0.1
 			},
 			{
 				itemCost: new Bank().add('Spider cave teleport'),
-				qtyPerMinute: 0.07,
+				qtyPerKill: 0.05,
 				boostPercent: 10,
 				optional: true
 			}
