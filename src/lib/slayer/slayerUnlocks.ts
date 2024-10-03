@@ -70,7 +70,8 @@ export enum SlayerTaskUnlocksEnum {
 	BroaderFletching = 50,
 	IWildyMoreSlayer = 200,
 	Revenenenenenants = 201,
-	EyeSeeYou = 202
+	EyeSeeYou = 202,
+	MoreEyesThanSense = 203
 }
 
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
@@ -544,5 +545,15 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend revenants', 'extend revs']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.MoreEyesThanSense,
+		name: 'More eyes than sense',
+		desc: 'Number of araxytes assigned is increased to 200-250.',
+		slayerPointCost: 150,
+		extendID: [Monsters.Araxyte.id],
+		extendMult: 3.3,
+		canBeRemoved: true,
+		aliases: ['extend araxytes']
 	}
 ];
