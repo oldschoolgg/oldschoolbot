@@ -306,7 +306,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		const consumablesCost = getItemCostFromConsumables({
 			consumableCosts: Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost],
 			gearBank: user.gearBank,
-			quantity: 1,
+			inputQuantity: 1,
 			timeToFinish,
 			maxTripLength: timeToFinish * 1.5
 		});
