@@ -625,8 +625,6 @@ export async function calcCoxDuration(
 	const size = team.length;
 
 	let totalReduction = 0;
-	// console.log(`maxSpeedReductionFromItems: ${maxSpeedReductionFromItems}`);
-	// console.log(`maxSpeedReductionUser: ${maxSpeedReductionUser}`);
 	const reductions: Record<string, number> = {};
 
 	// Track degradeable items (fakemass works properly with this code, it wont remove 5x charges):
@@ -638,7 +636,6 @@ export async function calcCoxDuration(
 		// Reduce time for gear
 		const { total } = calculateUserGearPercents(u);
 		userPercentChange += calcPerc(total, speedReductionForGear);
-		// console.log(`userPercentChange: ${userPercentChange}`);
 
 		// Reduce time for KC
 		const stats = await u.fetchMinigames();
