@@ -2419,6 +2419,12 @@ const Createables: Createable[] = [
 		outputItems: new Bank().add('Rax').freeze()
 	},
 	{
+		name: 'Revert Rax',
+		inputItems: new Bank().add('Rax').freeze(),
+		outputItems: new Bank().add('Coagulated venom').add('Nid').freeze(),
+		noCl: true
+	},
+	{
 		name: 'Amulet of rancour (s)',
 		inputItems: new Bank().add('Amulet of rancour').freeze(),
 		outputItems: new Bank().add('Amulet of rancour (s)').freeze(),
@@ -2435,6 +2441,12 @@ const Createables: Createable[] = [
 			}
 			return null;
 		}
+	},
+	{
+		name: 'Revert Amulet of rancour (s)',
+		inputItems: new Bank().add('Amulet of rancour (s)').freeze(),
+		outputItems: new Bank().add('Amulet of rancour').freeze(),
+		noCl: true
 	},
 	...Reverteables,
 	...crystalTools,
