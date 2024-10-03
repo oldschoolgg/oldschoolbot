@@ -22,6 +22,7 @@ FROM base AS dependencies
 WORKDIR /usr/src/app
 
 COPY package.json yarn.lock .yarnrc.yml ./
+COPY src/config.example.ts src/config.ts
 
 RUN yarn install --immutable
 
@@ -31,6 +32,7 @@ WORKDIR /usr/src/app
 COPY --from=dependencies /usr/src/app/node_modules /usr/src/app/node_modules
 
 COPY . .
+COPY src/config.example.ts src/config.ts
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
