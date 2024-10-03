@@ -283,6 +283,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	 * Ammo
 	 */
 	for (const user of team) {
+		if (user.ghost) continue;
 		const { rangeGear } = nexGearStats(user);
 		const teamUser = resultTeam.findIndex(a => a.id === user.id);
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
