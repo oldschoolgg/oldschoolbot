@@ -1,33 +1,23 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 import '../src/lib/safeglobals';
-import path from 'node:path';
 import { gearSetupsForWIKI } from '../docs/src/content/gearImages/gearSetups';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import { generateGearImage } from '../src/lib/gear/functions/generateGearImage';
 import type { GearSetupType } from '../src/lib/gear/types';
 import type { Gear } from '../src/lib/structures/Gear';
-import { mockClient } from '../tests/integration/util';
 
 async function generateGearImageForWiki(gear: Gear, setup: GearSetupType, petID: number | null) {
-	const client = await mockClient();
-	const user = await client.mockUser({
-		[`${setup}Gear`]: gear
-	});
 
 	// Generate the image
-	const image = await generateGearImage(user, gear, setup, petID);
+	const image = await generateGearImage(undefined, gear, setup, petID);
 	return image;
 }
 
 async function generateImagesForWiki() {
 	for (const { name, gear, setup, pet } of gearSetupsForWIKI) {
 		const imageBuffer = await generateGearImageForWiki(gear, setup as GearSetupType, pet.id);
-
-		const imagePath = path.join(__dirname, 'images', `${name}.png`);
-
-		writeFileSync(imagePath, imageBuffer);
-		console.log(`Image saved: ${imagePath}`);
+		writeFileSync(`./docs/src/content/gearImages/${name}.txt`, imageBuffer);
 	}
 }
 

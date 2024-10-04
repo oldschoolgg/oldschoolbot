@@ -284,6 +284,7 @@ export class BankImageTask {
 	public ready!: Promise<void>;
 	public spriteSheetImage!: CanvasImage;
 	public spriteSheetData!: Record<string, [number, number, number, number]>;
+	public bankImageGenerator: any;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -562,14 +563,25 @@ export class BankImageTask {
 
 	getBgAndSprite(bankBgId = 1, user?: MUser) {
 		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
-
+	
+		// Check if user is a string
+		if (!user) {
+			return {
+				uniqueSprite: false, // Default when user is a string
+				sprite: this.bgSpriteList.default, // Default sprite
+				background,
+				backgroundImage: background.image! // Default background image
+			};
+		}
+	
+		// Handle MUser case
 		const currentContract = user?.farmingContract();
 		const isFarmingContractReadyToHarvest = Boolean(
 			currentContract?.contract.hasContract &&
-				currentContract.matchingPlantedCrop &&
-				currentContract.matchingPlantedCrop.ready
+			currentContract.matchingPlantedCrop &&
+			currentContract.matchingPlantedCrop.ready
 		);
-
+	
 		let backgroundImage = background.image!;
 		if (bankBgId === 29 && isFarmingContractReadyToHarvest) {
 			backgroundImage = this.alternateImages.find(i => i.bgId === 29)!.image;
@@ -577,10 +589,10 @@ export class BankImageTask {
 		if (bankBgId === 30 && isFarmingContractReadyToHarvest) {
 			backgroundImage = this.alternateImages.find(i => i.bgId === 30)!.image;
 		}
-
+	
 		const hasBgSprite = Boolean(this.bgSpriteList[background.name.toLowerCase()]);
 		const bgSprite = hasBgSprite ? this.bgSpriteList[background.name.toLowerCase()] : this.bgSpriteList.default;
-
+	
 		return {
 			uniqueSprite: hasBgSprite,
 			sprite: bgSprite,
@@ -588,6 +600,7 @@ export class BankImageTask {
 			backgroundImage
 		};
 	}
+	
 
 	async drawItems(
 		ctx: CanvasContext,

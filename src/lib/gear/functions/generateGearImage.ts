@@ -13,6 +13,7 @@ import {
 } from '../../util/canvasUtil';
 import type { GearSetup, GearSetupType } from '../types';
 import { GearSetupTypes } from '../types';
+import type { BankImageTask } from '../../bankImage';
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -76,16 +77,15 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 }
 
 export async function generateGearImage(
-	user: MUser,
-	gearSetup: Gear | GearSetup,
-	gearType: GearSetupType | null,
-	petID: number | null
+    user: MUser | undefined,
+    gearSetup: Gear | GearSetup,
+    gearType: GearSetupType | null,
+    petID: number | null
 ) {
-	const bankBg = user.user.bankBackground ?? 1;
-
-	const { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
-
-	const hexColor = user.user.bank_bg_hex;
+    const bankBg = !user ? 1 : user.user.bankBackground ?? 1;
+	console.log('bankImageGenerator:', bankImageGenerator);
+    const { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
+    const hexColor = !user ? '#FFFFFF' : user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
@@ -211,7 +211,7 @@ export async function generateGearImage(
 
 	// Draw items
 	if (petID) {
-		const image = await bankImageGenerator.getItemImage(petID, user);
+		const image = await bankImageGenerator.getItemImage(petID, typeof user === 'string' ? undefined : user);
 		ctx.drawImage(
 			image,
 			178 + slotSize / 2 - image.width / 2,
@@ -224,7 +224,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await bankImageGenerator.getItemImage(item.item, user);
+		const image = await bankImageGenerator.getItemImage(item.item, typeof user === 'string' ? undefined : user);
 
 		let [x, y] = slotCoordinates[enumName];
 		x = x + slotSize / 2 - image.width / 2;
