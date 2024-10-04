@@ -45,7 +45,7 @@ async function renderCommands() {
 
 export async function commandsFile() {
 	const commands = await renderCommands();
-	const path = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
+	const path = `data/${BOT_TYPE.toLowerCase()}.commands.json`;
 	writeFileSync(path, `${JSON.stringify(commands, null, '	')}\n`);
 	execSync(`npx biome check --write ${path}`);
 }

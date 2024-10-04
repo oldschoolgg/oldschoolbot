@@ -1,7 +1,7 @@
 import '../data/itemAliases';
 
-import { calcDropRatesFromBank, stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, Misc, Monsters } from 'oldschooljs';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { Bank, Misc, Monsters, calcDropRatesFromBank } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
@@ -42,7 +42,7 @@ export default async ({
 
 		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
 		if (killableMonster?.specialLoot) {
-			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity });
+			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity, cl: new Bank() });
 		}
 
 		return { bank: result.bank.toJSON() };

@@ -137,6 +137,7 @@ interface newOptions {
 	userStats: MUserStats;
 	attackStyles: AttackStyles[];
 	bitfield: readonly BitField[];
+	cl: Bank;
 }
 
 export function doMonsterTrip(data: newOptions) {
@@ -331,7 +332,7 @@ export function doMonsterTrip(data: newOptions) {
 	const loot = wiped ? new Bank() : monster.table.kill(finalQuantity, killOptions);
 	if (!wiped) {
 		if (monster.specialLoot) {
-			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity });
+			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
 		}
 		if (newSuperiorCount) {
 			loot.add(superiorTable?.kill(newSuperiorCount));
@@ -403,7 +404,8 @@ export function doMonsterTrip(data: newOptions) {
 			quantity,
 			monster,
 			loot,
-			gearBank
+			gearBank,
+			updateBank
 		});
 		if (effectResult) {
 			if (effectResult.loot) updateBank.itemLootBank.add(effectResult.loot);
@@ -454,7 +456,8 @@ export const monsterTask: MinionTask = {
 			userStats: stats,
 			attackStyles,
 			hasEliteCA: user.hasCompletedCATier('elite'),
-			bitfield: user.bitfield
+			bitfield: user.bitfield,
+			cl: user.cl
 		});
 		if (slayerContext.isOnTask) {
 			await prisma.slayerTask.update({
@@ -531,7 +534,7 @@ export const monsterTask: MinionTask = {
 			str,
 			image?.file.attachment,
 			data,
-			itemTransactionResult!.itemsAdded,
+			itemTransactionResult?.itemsAdded ?? null,
 			messages
 		);
 	}

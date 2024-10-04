@@ -51,7 +51,8 @@ export const postBoostEffects: PostBoostEffect[] = [
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced,
-				isWilderness: isInWilderness
+				isWilderness: isInWilderness,
+				minimumHealAmount: monster.minimumHealAmount
 			});
 
 			if (foodRemoveResult === null || foodRemoveResult.foodToRemove.length === 0) {
