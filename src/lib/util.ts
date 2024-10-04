@@ -393,7 +393,6 @@ export function checkRangeGearWeapon(gear: Gear) {
 			projectileCategory[0]
 		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
 	}
-	console.log(`weapon ${weapon}, ammo ${ammo}`);
 
 	return {
 		weapon,
