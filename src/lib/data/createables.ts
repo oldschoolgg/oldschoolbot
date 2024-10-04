@@ -698,6 +698,136 @@ const metamorphPets: Createable[] = [
 		outputItems: {
 			[itemID('Greatish guardian')]: 1
 		}
+	},
+	{
+		name: 'Bone Squirrel',
+		inputItems: {
+			[itemID('Calcified acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Bone squirrel')]: 1
+		}
+	},
+	{
+		name: 'Dark squirrel',
+		inputItems: {
+			[itemID('Dark acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Dark squirrel')]: 1
+		}
+	}
+];
+
+const revertMetamorphPets: Createable[] = [
+	{
+		name: 'Revert midnight',
+		inputItems: {
+			[itemID('Midnight')]: 1
+		},
+		outputItems: {
+			[itemID('Noon')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert baby mole-rat',
+		inputItems: {
+			[itemID('Baby mole-rat')]: 1,
+			[itemID('Mole skin')]: 1
+		},
+		outputItems: {
+			[itemID('Baby mole')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert tzrek-zuk',
+		inputItems: {
+			[itemID('Tzrek-zuk')]: 1
+		},
+		outputItems: {
+			[itemID('Jal-nib-rek')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert little parasite',
+		inputItems: {
+			[itemID('Little parasite')]: 1
+		},
+		outputItems: {
+			[itemID('Little nightmare')]: 1,
+			[itemID('Parasitic egg')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert ziggy',
+		inputItems: {
+			[itemID('Ziggy')]: 1,
+			[itemID('White berries')]: 1
+		},
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert red',
+		inputItems: {
+			[itemID('Red')]: 1,
+			[itemID('White berries')]: 1
+		},
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert great blue heron',
+		inputItems: {
+			[itemID('Great blue heron')]: 1
+		},
+		outputItems: {
+			[itemID('Heron')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert greatish guardian',
+		inputItems: {
+			[itemID('Greatish guardian')]: 1
+		},
+		outputItems: {
+			[itemID('Rift guardian')]: 1,
+			[itemID("Guardian's eye")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Bone Squirrel',
+		inputItems: {
+			[itemID('Bone squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Calcified acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Dark squirrel',
+		inputItems: {
+			[itemID('Dark squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Dark acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		noCl: true
 	}
 ];
 
@@ -1271,91 +1401,6 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Revert midnight',
-		inputItems: {
-			[itemID('Midnight')]: 1
-		},
-		outputItems: {
-			[itemID('Noon')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert baby mole-rat',
-		inputItems: {
-			[itemID('Baby mole-rat')]: 1,
-			[itemID('Mole skin')]: 1
-		},
-		outputItems: {
-			[itemID('Baby mole')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert tzrek-zuk',
-		inputItems: {
-			[itemID('Tzrek-zuk')]: 1
-		},
-		outputItems: {
-			[itemID('Jal-nib-rek')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert little parasite',
-		inputItems: {
-			[itemID('Little parasite')]: 1
-		},
-		outputItems: {
-			[itemID('Little nightmare')]: 1,
-			[itemID('Parasitic egg')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert ziggy',
-		inputItems: {
-			[itemID('Ziggy')]: 1,
-			[itemID('White berries')]: 1
-		},
-		outputItems: {
-			[itemID('Rocky')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert red',
-		inputItems: {
-			[itemID('Red')]: 1,
-			[itemID('White berries')]: 1
-		},
-		outputItems: {
-			[itemID('Rocky')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert great blue heron',
-		inputItems: {
-			[itemID('Great blue heron')]: 1
-		},
-		outputItems: {
-			[itemID('Heron')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert greatish guardian',
-		inputItems: {
-			[itemID('Greatish guardian')]: 1
-		},
-		outputItems: {
-			[itemID('Rift guardian')]: 1,
-			[itemID("Guardian's eye")]: 1
-		},
-		noCl: true
-	},
-	{
 		name: "Revert xeric's talisman (inert)",
 		inputItems: {
 			[itemID("Xeric's talisman (inert)")]: 1
@@ -1370,7 +1415,8 @@ const Reverteables: Createable[] = [
 		inputItems: new Bank().add("Dizana's quiver (uncharged)"),
 		outputItems: new Bank().add('Sunfire splinters', 4000),
 		noCl: true
-	}
+	},
+	...revertMetamorphPets
 ];
 
 const Createables: Createable[] = [

@@ -1597,6 +1597,16 @@ export const chompyBirdsCL = resolveItems([
 	'Chompy bird hat (expert ogre dragon archer)',
 	'Chompy bird hat (expert dragon archer)'
 ]);
+export const colossalWyrmAgilityCL = resolveItems([
+	'Colossal wyrm teleport scroll',
+	'Calcified acron',
+	'Valarmore Graceful hood',
+	'Valarmore Graceful top',
+	'Valarmore Graceful legs',
+	'Valarmore Graceful gloves',
+	'Valarmore Graceful boots',
+	'Valarmore Graceful cape'
+]);
 export const creatureCreationCL = resolveItems([
 	'Tea flask',
 	'Plain satchel',
