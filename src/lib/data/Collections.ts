@@ -7,7 +7,7 @@ import type Monster from 'oldschooljs/dist/structures/Monster';
 import { divinationEnergies, portents } from '../bso/divination';
 import { type ClueTier, ClueTiers } from '../clues/clueTiers';
 import type { CollectionLogType } from '../collectionLogTask';
-import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
+import { OSB_VIRTUS_IDS, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { discontinuedDyes, dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
 import { implingsCL } from '../implings';
@@ -367,7 +367,7 @@ export const allCollectionLogs: ICollection = {
 					Default: [Monsters.DukeSucellus.name, Monsters.AwakenedDukeSucellus.name],
 					Awakened: Monsters.AwakenedDukeSucellus.name
 				},
-				allItems: Monsters.DukeSucellus.allItems,
+				allItems: Monsters.DukeSucellus.allItems.filter(item => !OSB_VIRTUS_IDS.includes(item)),
 				items: dukeSucellusCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.DukeSucellus.id] ?? 0} KC`,
@@ -380,20 +380,20 @@ export const allCollectionLogs: ICollection = {
 					Default: [Monsters.TheLeviathan.name, Monsters.AwakenedTheLeviathan.name],
 					Awakened: Monsters.AwakenedTheLeviathan.name
 				},
-				allItems: Monsters.TheLeviathan.allItems,
+				allItems: Monsters.TheLeviathan.allItems.filter(item => !OSB_VIRTUS_IDS.includes(item)),
 				items: theLeviathanCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.TheLeviathan.id] ?? 0} KC`,
 					`${stats.kcBank[Monsters.AwakenedTheLeviathan.id] ?? 0} Awakened KC`
 				]
 			},
-			Vardorvis: {
+			'Vardorvis': {
 				alias: ['vardorvis'],
 				kcActivity: {
 					Default: [Monsters.Vardorvis.name, Monsters.AwakenedVardorvis.name],
 					Awakened: Monsters.AwakenedVardorvis.name
 				},
-				allItems: Monsters.Vardorvis.allItems,
+				allItems: Monsters.Vardorvis.allItems.filter(item => !OSB_VIRTUS_IDS.includes(item)),
 				items: vardorvisCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.Vardorvis.id] ?? 0} KC`,
@@ -412,7 +412,7 @@ export const allCollectionLogs: ICollection = {
 					Default: [Monsters.TheWhisperer.name, Monsters.AwakenedTheWhisperer.name],
 					Awakened: Monsters.AwakenedTheWhisperer.name
 				},
-				allItems: Monsters.TheWhisperer.allItems,
+				allItems: Monsters.TheWhisperer.allItems.filter(item => !OSB_VIRTUS_IDS.includes(item)),
 				items: theWhispererCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.TheWhisperer.id] ?? 0} KC`,
@@ -1533,7 +1533,7 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TheWhisperer.allItems,
 					...Monsters.Vardorvis.allItems,
 					...Monsters.DukeSucellus.allItems
-				],
+				].filter(item => !OSB_VIRTUS_IDS.includes(item)),						
 				items: [...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL]
 			},
 			Creatables: {
