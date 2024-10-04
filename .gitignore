@@ -12,6 +12,8 @@ icon_cache/
 queries.txt
 /logs
 
+.yarn
+
 npm-debug.log*
 
 # Runtime data
@@ -44,3 +46,5 @@ tests/**/*.tsbuildinfo
 !.yarn/sdks
 !.yarn/versions
 item/
+
+tmp

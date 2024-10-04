@@ -1,12 +1,17 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { Bank, LootTable, Openables } from 'oldschooljs';
+import {
+	Bank,
+	BrimstoneChest,
+	EliteMimicTable,
+	LarransChest,
+	LootTable,
+	MasterMimicTable,
+	Openables
+} from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
-import { Mimic } from 'oldschooljs/dist/simulation/misc';
-import BrimstoneChest, { BrimstoneChestOpenable } from 'oldschooljs/dist/simulation/openables/BrimstoneChest';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
-import LarransChest, { LarransChestOpenable } from 'oldschooljs/dist/simulation/openables/LarransChest';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from './clues/clueTiers';
@@ -97,12 +102,13 @@ for (const clueTier of ClueTiers) {
 		aliases: [clueTier.name.toLowerCase()],
 		output: async ({ quantity, user, self }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			const loot = new Bank(clueTier.table.open(quantity));
+			const loot = clueTier.table.roll(quantity);
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
+				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
 					if (roll(clueTier.mimicChance)) {
-						loot.add(Mimic.open(clueTier.name as 'master' | 'elite'));
+						loot.add(table.roll());
 						mimicNumber++;
 					}
 				}
@@ -171,12 +177,11 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const chest = new BrimstoneChestOpenable(BrimstoneChest);
 			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
 			const brimstoneOptions: OpenableOpenOptions = {
 				fishLvl
 			};
-			const openLoot: Bank = chest.open(args.quantity, brimstoneOptions);
+			const openLoot: Bank = BrimstoneChest.open(args.quantity, brimstoneOptions);
 
 			return { bank: openLoot };
 		},
@@ -256,13 +261,12 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const chest = new LarransChestOpenable(LarransChest);
 			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
 			const larransOptions: OpenableOpenOptions = {
 				fishLvl,
 				chestSize: 'big'
 			};
-			const openLoot: Bank = chest.open(args.quantity, larransOptions);
+			const openLoot: Bank = LarransChest.open(args.quantity, larransOptions);
 
 			return { bank: openLoot };
 		},
