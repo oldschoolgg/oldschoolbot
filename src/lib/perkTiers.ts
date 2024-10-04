@@ -1,4 +1,5 @@
 import { SupportServer } from '../config';
+import { perkTierCache } from './cache';
 import { BitField, PerkTier, Roles } from './constants';
 import { roboChimpCache } from './perkTier';
 
@@ -13,7 +14,7 @@ export const allPerkBitfields: BitField[] = [
 	BitField.BothBotsMaxedFreeTierOnePerks
 ];
 
-export function getUsersPerkTier(user: MUser): PerkTier | 0 {
+function getUsersPerkTierRaw(user: MUser): PerkTier | 0 {
 	if ([BitField.isModerator].some(bit => user.bitfield.includes(bit))) {
 		return PerkTier.Four;
 	}
@@ -61,4 +62,10 @@ export function getUsersPerkTier(user: MUser): PerkTier | 0 {
 	}
 
 	return Math.max(...elligibleTiers, 0);
+}
+
+export function getUsersPerkTier(user: MUser): PerkTier | 0 {
+	const perkTier = getUsersPerkTierRaw(user);
+	perkTierCache.set(user.id, perkTier);
+	return perkTier;
 }

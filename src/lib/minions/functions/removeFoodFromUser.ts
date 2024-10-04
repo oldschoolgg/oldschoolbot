@@ -1,8 +1,8 @@
-import { UserError } from '@oldschoolgg/toolkit';
 import { objectEntries, reduceNumByPercent } from 'e';
 import type { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
 import type { GearSetupType } from '../../gear/types';
@@ -17,7 +17,8 @@ export function removeFoodFromUserRaw({
 	isWilderness,
 	unavailableBank,
 	gearBank,
-	favoriteFood
+	favoriteFood,
+	minimumHealAmount
 }: {
 	favoriteFood: number[];
 	gearBank: GearBank;
@@ -26,6 +27,7 @@ export function removeFoodFromUserRaw({
 	learningPercentage?: number;
 	isWilderness?: boolean;
 	unavailableBank?: Bank;
+	minimumHealAmount?: number;
 }) {
 	const originalTotalHealing = totalHealingNeeded;
 	const gearSetupsUsed = objectEntries(gearBank.gear).filter(entry => attackStylesUsed.includes(entry[0]));
@@ -55,7 +57,7 @@ export function removeFoodFromUserRaw({
 		gearBank,
 		totalHealingNeeded,
 		favoriteFood,
-		minimumHealAmount: undefined,
+		minimumHealAmount,
 		isWilderness,
 		unavailableBank
 	});

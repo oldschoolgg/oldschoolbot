@@ -1,9 +1,6 @@
-import type { Image } from '@napi-rs/canvas';
 import type { StoreBitfield } from '@oldschoolgg/toolkit';
 import type { XpGainSource } from '@prisma/client';
-import type { Bank, Item, MonsterKillOptions } from 'oldschooljs';
-
-import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import type { Bank, Item, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 
 import type { ClueTier } from '../clues/clueTiers';
 import type { BitField, PerkTier } from '../constants';
@@ -14,8 +11,10 @@ import type { LevelRequirements, SkillsEnum } from '../skilling/types';
 import type { XPBank } from '../structures/Bank';
 import type { GearBank } from '../structures/GearBank';
 import type { MUserStats } from '../structures/MUserStats';
+import type { UpdateBank } from '../structures/UpdateBank';
 import type { ItemBank, Skills } from '../types';
 import type { ArrayItemsResolved, calculateSimpleMonsterDeathChance } from '../util';
+import type { CanvasImage } from '../util/canvasUtil';
 import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';
 
@@ -24,10 +23,11 @@ export type KillableMonsterEffect = (opts: {
 	quantity: number;
 	monster: KillableMonster;
 	loot: Bank;
+	updateBank: UpdateBank;
 }) => void | { xpBank?: XPBank; loot?: Bank; messages: string[] };
 
 export type BankBackground = {
-	image: Image | null;
+	image: CanvasImage | null;
 	id: number;
 	name: string;
 	available: boolean;
@@ -35,7 +35,7 @@ export type BankBackground = {
 	perkTierNeeded?: PerkTier;
 	gpCost?: number;
 	itemCost?: Bank;
-	repeatImage?: Image | null;
+	repeatImage?: CanvasImage | null;
 	bitfield?: BitField;
 	sacValueRequired?: number;
 	skillsNeeded?: Skills;
@@ -45,7 +45,7 @@ export type BankBackground = {
 } & (
 	| {
 			hasPurple: true;
-			purpleImage: Image | null;
+			purpleImage: CanvasImage | null;
 	  }
 	| {
 			hasPurple?: null;
@@ -98,6 +98,7 @@ export interface KillableMonster {
 	 * How much healing (health points restored) is needed per kill.
 	 */
 	healAmountNeeded?: number;
+	minimumHealAmount?: number;
 	attackStyleToUse?: OffenceGearStat;
 	attackStylesUsed?: OffenceGearStat[];
 	/**
@@ -112,14 +113,14 @@ export interface KillableMonster {
 	disallowedAttackStyles?: AttackStyles[];
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
-	itemCost?: Consumable;
+	itemCost?: Consumable | Consumable[];
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;
 	canChinning?: boolean;
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number }) => void;
+	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank }) => void;
 	effect?: KillableMonsterEffect;
 	degradeableItemUsage?: {
 		required: boolean;
@@ -133,6 +134,7 @@ export interface KillableMonster {
 	equippedItemBoosts?: {
 		gearSetup: GearSetupType;
 		items: { boostPercent: number; itemID: number }[];
+		required?: boolean;
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
@@ -152,6 +154,8 @@ export interface Consumable {
 	// For staff of the dead / kodai
 	isRuneCost?: boolean;
 	alternativeConsumables?: Consumable[];
+	boostPercent?: number;
+	optional?: boolean;
 }
 
 export interface AddXpParams {

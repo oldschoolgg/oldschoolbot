@@ -91,7 +91,7 @@ export class UpdateBank {
 
 		// XP
 		if (this.xpBank.length > 0) {
-			await user.addXPBank(this.xpBank);
+			results.push(await user.addXPBank(this.xpBank));
 		}
 
 		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
@@ -108,7 +108,7 @@ export class UpdateBank {
 		if (Object.keys(this.userStats).length > 0) {
 			userStatsUpdates = mergeDeep(userStatsUpdates, this.userStats);
 		}
-		if (Object.keys(userStatsUpdates).length > 0) {
+		if (Object.keys(this.userStatsBankUpdates).length > 0) {
 			const currentStats = await prisma.userStats.upsert({
 				where: {
 					user_id: BigInt(user.id)

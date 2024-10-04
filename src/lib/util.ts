@@ -1,5 +1,4 @@
-import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, stripEmojis } from '@oldschoolgg/toolkit';
 import type {
 	BaseMessageOptions,
 	ButtonInteraction,
@@ -17,6 +16,7 @@ import type { ComponentType } from 'discord.js';
 import { Time, objectEntries } from 'e';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
@@ -43,7 +43,7 @@ import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
 
 export * from '@oldschoolgg/toolkit';
-export * from 'oldschooljs/dist/util';
+export * from 'oldschooljs';
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {

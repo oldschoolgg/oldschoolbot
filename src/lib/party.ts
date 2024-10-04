@@ -1,5 +1,5 @@
 import { makeComponents } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
@@ -46,7 +46,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 				await Promise.all(usersWhoConfirmed.map(u => getUsername(u)))
 			).join(
 				', '
-			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`,
+			)}\n\nThis party will automatically depart in 5 minutes, or if the leader clicks the start (start early) or stop button.`,
 			components: makeComponents(buttons.map(i => i.button)),
 			allowedMentions: {
 				users: []
