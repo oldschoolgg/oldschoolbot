@@ -78,11 +78,11 @@ async function renderMonstersMarkdown() {
 			md.addLine(
 				`- You can view the drops for this monster on the osrs wiki: [${monster.name}](https://oldschool.runescape.wiki/w/${encodeURIComponent(monster.name)})`
 			);
-			md.addLine(`- You can send your minion to kill this monster using [[/k name:${monster.name}]]`);
-			md.addLine(`- You can check your KC using [[/minion kc name:${monster.name}]]`);
-			md.addLine(`- You can check the KC leaderboard using [[/lb kc monster\:${monster.name}]]`);
-			md.addLine(`- You can check your collection log using [[/cl name\\:${monster.name}]]`);
-			md.addLine(`- You can check the collection log leaderboard [[/lb cl cl:${monster.name}]]`);
+			md.addLine(`- You can send your minion to kill this monster using: [[/k name:${monster.name}]]`);
+			md.addLine(`- You can check your KC using: [[/minion kc name:${monster.name}]]`);
+			md.addLine(`- You can check the KC leaderboard using: [[/lb kc monster\:${monster.name}]]`);
+			md.addLine(`- You can check your collection log using: [[/cl name\\:${monster.name}]]`);
+			md.addLine(`- You can check the collection log leaderboard using: [[/lb cl cl:${monster.name}]]`);
 
 			if (monster.canBarrage) {
 				md.addLine(`- You can barrage this monster [[/k name:${monster.name} method:barrage]]`);
@@ -146,7 +146,7 @@ async function renderMonstersMarkdown() {
 			}
 
 			if (monster.itemsRequired && monster.itemsRequired?.length > 0) {
-				requirementsMarkdown.addLine('### Items Required');
+				requirementsMarkdown.addLine('**Items Required**');
 				for (const item of monster.itemsRequired) {
 					if (Array.isArray(item)) {
 						requirementsMarkdown.addLine(`- ${item.map(i => `[[${name(i)}]]`).join(' or ')}`);
@@ -157,7 +157,7 @@ async function renderMonstersMarkdown() {
 			}
 
 			if (monster.requiredQuests) {
-				requirementsMarkdown.addLine('### Required Quests');
+				requirementsMarkdown.addLine('**Required Quests**');
 				for (const quest of monster.requiredQuests) {
 					requirementsMarkdown.addLine(`- ${quests.find(q => q.id === quest)!.name}`);
 				}
