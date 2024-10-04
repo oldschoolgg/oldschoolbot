@@ -4,6 +4,7 @@ import { visitParents } from 'unist-util-visit-parents';
 import bsoItemsJson from '../../../data/bso_items.json';
 import commandsJson from '../../../data/osb.commands.json';
 import { Items } from '../../../node_modules/oldschooljs';
+import { SkillsArray } from '../../../src/lib/skilling/types';
 import { authorsMap } from './authors';
 
 const bsoItems = Object.entries(bsoItemsJson);
@@ -20,7 +21,20 @@ export function remarkItems(options: any) {
 			if (matches.length === 0) return;
 
 			for (const match of matches) {
-				if (match.includes('embed.')) {
+				if ([...SkillsArray, 'qp'].some(s => match.includes(`${s}:`))) {
+					const [skillName, level] = match.split(':');
+					node.type = 'html';
+					const imageURL =
+						skillName === 'qp'
+							? 'https://oldschool.runescape.wiki/images/Quest_point_icon.png'
+							: `https://raw.githubusercontent.com/runelite/runelite.net/refs/heads/master/public/img/skillicons/${skillName}.png`;
+					const html = `<div class="osrs_item">
+<img class="osrs_item_image" src="${imageURL}" alt="${match}" />
+<p class="osrs_item_name">${level}</p>
+</div>`;
+					node.value = node.value.replace(`[[${match}]]`, html);
+					continue;
+				} else if (match.includes('embed.')) {
 					node.type = 'html';
 					node.value = '';
 					continue;

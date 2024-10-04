@@ -19,4 +19,4 @@ We now have a new wiki at https://wiki.oldschool.gg/, and the BSO Wiki is now co
 - Make spooky graceful dc and remove it from the graceful cl
 - Remove [[Partyhat set]] & [[Partyhat & specs]] from the creatables CL to the christmas cracker CL
 - Updated muspah gear for bso, adding a boost for void staff, hellfire bow, gorajan, etc.
-- Fixed the Tidal collector (i), which now requires 5x Blessed dizana's quiver to create.
+- Fixed the [[Tidal collector (i)]], which now requires 5x Blessed dizana's quiver to create.
