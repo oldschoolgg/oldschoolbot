@@ -400,7 +400,7 @@ ol + ol li blockquote {
   margin: 0!important;
 }
 
-.osrs_item_name {
+.osrs_item_name, .osrs_item_image{
   margin: 0!important;
 }
 
