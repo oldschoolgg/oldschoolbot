@@ -1531,5 +1531,50 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			hasChance: (data, _user, index) =>
 				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 4))
 		}
+	},
+	{
+		id: 1132,
+		name: 'Araxxor Veteran',
+		desc: 'Complete Wave 4 without taking avoidable damage from a Manticore.',
+		type: 'kill_count',
+		monster: 'Araxxor',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Araxxor.id]: 25
+			}
+		})
+	},
+	{
+		id: 1133,
+		name: 'Araxxor Speed-Trialist',
+		desc: 'Complete Wave 4 without taking avoidable damage from a Manticore.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 200,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 1134,
+		name: 'Relaxxor',
+		desc: 'Kill Araxxor after destroying six eggs.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 200,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 1135,
+		name: 'Relaxxor',
+		desc: 'Kill Araxxor after destroying six eggs.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 200,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
 	}
 ];

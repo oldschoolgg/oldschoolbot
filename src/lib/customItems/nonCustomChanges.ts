@@ -1,6 +1,6 @@
-import { modifyItem } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
-modifyItem('Seed pack', {
+Items.modifyItem('Seed pack', {
 	customItemData: {
 		isSuperUntradeable: true,
 		cantDropFromMysteryBoxes: true

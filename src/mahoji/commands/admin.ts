@@ -1,4 +1,4 @@
-import { type CommandRunOptions, bulkUpdateCommands, convertBankToPerHourStats, dateFm } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, bulkUpdateCommands, dateFm } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
 import { economy_transaction_type } from '@prisma/client';
@@ -7,7 +7,7 @@ import type { InteractionReplyOptions, Message, TextChannel } from 'discord.js';
 import { AttachmentBuilder, userMention } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcPercentOfNum, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';

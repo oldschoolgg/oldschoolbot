@@ -1,4 +1,4 @@
-import { Stopwatch, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
+import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import {
 	type AttachmentBuilder,
@@ -7,8 +7,10 @@ import {
 	type MessageCreateOptions,
 	bold
 } from 'discord.js';
-import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
+
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { Time, notEmpty, randArrItem, randInt } from 'e';
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -32,7 +34,7 @@ import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { makeComponents, toKMB } from '../util';
+import { roll, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,

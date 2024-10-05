@@ -1,6 +1,5 @@
 import { objectEntries, randArrItem, randInt, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
@@ -18,7 +17,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-const vasaBosses: Monster[] = [
+const vasaBosses = [
 	Monsters.AbyssalSire,
 	Monsters.AlchemicalHydra,
 	Monsters.Barrows,

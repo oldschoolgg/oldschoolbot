@@ -105,7 +105,7 @@ async function handleTypescriptCompilation() {
 }
 
 async function handleCommandsJSON() {
-	const cmdFile = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
+	const cmdFile = `data/${BOT_TYPE.toLowerCase()}.commands.json`;
 	const currentFileHash = getFileHash(cmdFile);
 	if (currentFileHash === null || currentCache.commandsHash !== currentFileHash) {
 		console.log('   Updating commands json file');

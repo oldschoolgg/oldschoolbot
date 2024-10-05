@@ -1,4 +1,4 @@
-import { Stopwatch, dateFm, toTitleCase } from '@oldschoolgg/toolkit';
+import { dateFm, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { type Prisma, UserEventType, xp_gains_skill_enum } from '@prisma/client';
@@ -20,6 +20,7 @@ import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
 import { writeHeapSnapshot } from 'node:v8';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { sql } from '../../lib/postgres';
 import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';

@@ -445,14 +445,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ioredis/as-callback@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@ioredis/as-callback@npm:3.0.0"
-  checksum: 10c0/cbeae0c4a8f8f8ea1987d105056fd595a5a1a781a73dfa3a13ac13027fd1de099af6f3590bd315fd20284efd8597430a7ba3b912570804d158dabbdb2071523b
-  languageName: node
-  linkType: hard
-
-"@ioredis/commands@npm:^1.1.1, @ioredis/commands@npm:^1.2.0":
+"@ioredis/commands@npm:^1.1.1":
   version: 1.2.0
   resolution: "@ioredis/commands@npm:1.2.0"
   checksum: 10c0/a5d3c29dd84d8a28b7c67a441ac1715cbd7337a7b88649c0f17c345d89aa218578d2b360760017c48149ef8a70f44b051af9ac0921a0622c2b479614c4f65b36
@@ -597,9 +590,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#c0c491661cffff19769a18d074f57a0b70c80603":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#8686dc639154c528ce739c440554bc0c46c8ae79":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=c0c491661cffff19769a18d074f57a0b70c80603"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=8686dc639154c528ce739c440554bc0c46c8ae79"
   dependencies:
     decimal.js: "npm:^10.4.3"
     deep-object-diff: "npm:^1.1.9"
@@ -608,14 +601,12 @@ __metadata:
     emoji-regex: "npm:^10.2.1"
     fast-deep-equal: "npm:^3.1.3"
     ioredis: "npm:^5.4.1"
-    ioredis-mock: "npm:^8.9.0"
     math-expression-evaluator: "npm:^1.3.14"
     pure-rand: "npm:^6.1.0"
     zod: "npm:3.23.8"
   peerDependencies:
     discord.js: ^14.16.2
-    oldschooljs: ^2.6.1
-  checksum: 10c0/00fd696f71869a88bf5880f5581a6fa7a8a3372dea4063fb0d4b45176802611e3e45e5c35956aed3aafe37f70ffefe82e9a6cb5778ab2ec6e65c7c0f6ad9a363
+  checksum: 10c0/65cbb2e0ae9f411952c87168bcc2ba6bb798ef3b13b213840eb7835bef0a65ade7325abf784c7b547a629b7cbc4cf42650a05c3d96f6cace81969bf6b4580519
   languageName: node
   linkType: hard
 
@@ -1275,6 +1266,18 @@ __metadata:
   dependencies:
     "@sentry/types": "npm:8.15.0"
   checksum: 10c0/a7de61301d3358afde40cd7684bcb4c15248e8cab0af77b541cb25a759ad32b7f83b681106ae7895eb1669117a70056867c4bcca644097344f0d919a1f2ab3ea
+  languageName: node
+  linkType: hard
+
+"@ts-morph/common@npm:~0.24.0":
+  version: 0.24.0
+  resolution: "@ts-morph/common@npm:0.24.0"
+  dependencies:
+    fast-glob: "npm:^3.3.2"
+    minimatch: "npm:^9.0.4"
+    mkdirp: "npm:^3.0.1"
+    path-browserify: "npm:^1.0.1"
+  checksum: 10c0/37b1fa63aff71f21da9527a460bd33d323f3126de8b80f1f6678733a6150892e7721f4782283e6d6fb6b87769363d6f4fc1f591d5a1c8e66106cedfe3ee667e7
   languageName: node
   linkType: hard
 
@@ -2161,6 +2164,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"code-block-writer@npm:^13.0.1":
+  version: 13.0.2
+  resolution: "code-block-writer@npm:13.0.2"
+  checksum: 10c0/b887dabf44955e8a2f6711543e241316a05a9a14da5d2f7b6c7311a3348474d877b64f42e96afce7ae91827f62fc72578eea9d162f313c1ac8cefd564c626e0f
+  languageName: node
+  linkType: hard
+
 "color-convert@npm:^2.0.1":
   version: 2.0.1
   resolution: "color-convert@npm:2.0.1"
@@ -2732,26 +2742,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fengari-interop@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "fengari-interop@npm:0.1.3"
-  peerDependencies:
-    fengari: ^0.1.0
-  checksum: 10c0/4e32a8731e8e4de9a7e1697e4c2c82bf586242e8067c83bff340c3207a135e8df354d74df924bf04e52d7486f54ed1c184c68fc0387460a9b2af4763503f7eae
-  languageName: node
-  linkType: hard
-
-"fengari@npm:^0.1.4":
-  version: 0.1.4
-  resolution: "fengari@npm:0.1.4"
-  dependencies:
-    readline-sync: "npm:^1.4.9"
-    sprintf-js: "npm:^1.1.1"
-    tmp: "npm:^0.0.33"
-  checksum: 10c0/c5b4ba983ca9a0d0875fc4b3e7f1a0285662540d69ce9ab4a83c16f00450e6cea1e8e7eedd250fa54586b537c91bd0238a1774063f38cdeace946db1a4439ab7
-  languageName: node
-  linkType: hard
-
 "fill-range@npm:^7.1.1":
   version: 7.1.1
   resolution: "fill-range@npm:7.1.1"
@@ -3314,22 +3304,6 @@ __metadata:
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
   checksum: 10c0/4e531f648b29039fb7426fb94075e6545faa1eb9fe83c29f0b6d9e7263aceb4289d2d4557db0d428188eeb449cc7c5e77b0a0b2c4e248ff2a65933a0dee49ef2
-  languageName: node
-  linkType: hard
-
-"ioredis-mock@npm:^8.9.0":
-  version: 8.9.0
-  resolution: "ioredis-mock@npm:8.9.0"
-  dependencies:
-    "@ioredis/as-callback": "npm:^3.0.0"
-    "@ioredis/commands": "npm:^1.2.0"
-    fengari: "npm:^0.1.4"
-    fengari-interop: "npm:^0.1.3"
-    semver: "npm:^7.5.4"
-  peerDependencies:
-    "@types/ioredis-mock": ^8
-    ioredis: ^5
-  checksum: 10c0/d5d3fddf6cdd8880d7ed7693505e48c2fa345c0d04ac6c7dc00101ba3da042ec58d4063e2350dbaf52b821b7f2e974175f1aaa89eda5d154d2a647266aea4157
   languageName: node
   linkType: hard
 
@@ -4042,6 +4016,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mkdirp@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "mkdirp@npm:3.0.1"
+  bin:
+    mkdirp: dist/cjs/src/bin.js
+  checksum: 10c0/9f2b975e9246351f5e3a40dcfac99fcd0baa31fbfab615fe059fb11e51f10e4803c63de1f384c54d656e4db31d000e4767e9ef076a22e12a641357602e31d57d
+  languageName: node
+  linkType: hard
+
 "module-details-from-path@npm:^1.0.3":
   version: 1.0.3
   resolution: "module-details-from-path@npm:1.0.3"
@@ -4321,13 +4304,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "oldschooljs@npm:2.6.1"
+"oldschooljs@git+https://github.com/oldschoolgg/oldschooljs.git#15e444f4da034bf7d0f878f7149d2c86a30457de":
+  version: 0.0.0
+  resolution: "oldschooljs@https://github.com/oldschoolgg/oldschooljs.git#commit=15e444f4da034bf7d0f878f7149d2c86a30457de"
   dependencies:
     e: "npm:^0.2.33"
     node-fetch: "npm:2.6.7"
-  checksum: 10c0/1a95ba311806aaad624fca2a4feeb71757ecd62dea0df9c9f03e63ef81580f1ce40d8cf36e2d0b52ae184305e9876c62ed586c188e330e36f22767bd0c44ab2b
+  checksum: 10c0/132c2a0ea4c1a1226b41a6faee795aa2093a61ed239c9298651375487a7271f6442a970506b4abadc6886748ce8631ec8f18cf2a99058b43d385af405fcd7ab5
   languageName: node
   linkType: hard
 
@@ -4390,13 +4373,6 @@ __metadata:
     strip-ansi: "npm:^6.0.0"
     wcwidth: "npm:^1.0.1"
   checksum: 10c0/10ff14aace236d0e2f044193362b22edce4784add08b779eccc8f8ef97195cae1248db8ec1ec5f5ff076f91acbe573f5f42a98c19b78dba8c54eefff983cae85
-  languageName: node
-  linkType: hard
-
-"os-tmpdir@npm:~1.0.2":
-  version: 1.0.2
-  resolution: "os-tmpdir@npm:1.0.2"
-  checksum: 10c0/f438450224f8e2687605a8dd318f0db694b6293c5d835ae509a69e97c8de38b6994645337e5577f5001115470414638978cc49da1cdcc25106dad8738dc69990
   languageName: node
   linkType: hard
 
@@ -4908,13 +4884,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readline-sync@npm:^1.4.9":
-  version: 1.4.10
-  resolution: "readline-sync@npm:1.4.10"
-  checksum: 10c0/0a4d0fe4ad501f8f005a3c9cbf3cc0ae6ca2ced93e9a1c7c46f226bdfcb6ef5d3f437ae7e9d2e1098ee13524a3739c830e4c8dbc7f543a693eecd293e41093a3
-  languageName: node
-  linkType: hard
-
 "redis-errors@npm:^1.0.0, redis-errors@npm:^1.2.0":
   version: 1.2.0
   resolution: "redis-errors@npm:1.2.0"
@@ -5136,7 +5105,7 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#c0c491661cffff19769a18d074f57a0b70c80603"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#8686dc639154c528ce739c440554bc0c46c8ae79"
     "@prisma/client": "npm:^5.17.0"
     "@sapphire/ratelimits": "npm:^2.4.9"
     "@sapphire/snowflake": "npm:^3.5.3"
@@ -5167,7 +5136,7 @@ __metadata:
     node-cron: "npm:^3.0.3"
     node-fetch: "npm:^2.6.7"
     nodemon: "npm:^3.1.4"
-    oldschooljs: "npm:^2.6.1"
+    oldschooljs: "git+https://github.com/oldschoolgg/oldschooljs.git#15e444f4da034bf7d0f878f7149d2c86a30457de"
     p-queue: "npm:^6.6.2"
     piscina: "npm:^4.6.1"
     postgres: "npm:^3.4.4"
@@ -5179,6 +5148,7 @@ __metadata:
     skia-canvas: "npm:^1.0.2"
     sonic-boom: "npm:^4.0.1"
     spritesmith: "npm:^3.4.1"
+    ts-morph: "npm:^23.0.0"
     tsx: "npm:^4.16.2"
     typescript: "npm:^5.5.3"
     vitest: "npm:^2.0.3"
@@ -5250,7 +5220,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.5, semver@npm:^7.5.2, semver@npm:^7.5.4":
+"semver@npm:^7.3.5, semver@npm:^7.5.2":
   version: 7.6.2
   resolution: "semver@npm:7.6.2"
   bin:
@@ -5443,7 +5413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sprintf-js@npm:^1.1.1, sprintf-js@npm:^1.1.3":
+"sprintf-js@npm:^1.1.3":
   version: 1.1.3
   resolution: "sprintf-js@npm:1.1.3"
   checksum: 10c0/09270dc4f30d479e666aee820eacd9e464215cdff53848b443964202bf4051490538e5dd1b42e1a65cf7296916ca17640aebf63dae9812749c7542ee5f288dec
@@ -5727,15 +5697,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.0.33":
-  version: 0.0.33
-  resolution: "tmp@npm:0.0.33"
-  dependencies:
-    os-tmpdir: "npm:~1.0.2"
-  checksum: 10c0/69863947b8c29cabad43fe0ce65cec5bb4b481d15d4b4b21e036b060b3edbf3bc7a5541de1bacb437bb3f7c4538f669752627fdf9b4aaf034cebd172ba373408
-  languageName: node
-  linkType: hard
-
 "to-fast-properties@npm:^2.0.0":
   version: 2.0.0
   resolution: "to-fast-properties@npm:2.0.0"
@@ -5791,6 +5752,16 @@ __metadata:
   version: 6.0.4
   resolution: "ts-mixer@npm:6.0.4"
   checksum: 10c0/4c442fc99cdffd4a3f0ce55c624fb703f4ded5cab6912f97705489565c4a74d3e4213f10c33499ec5150900a628d38537a9a6a9e35b5045b65129a84b4db21ae
+  languageName: node
+  linkType: hard
+
+"ts-morph@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "ts-morph@npm:23.0.0"
+  dependencies:
+    "@ts-morph/common": "npm:~0.24.0"
+    code-block-writer: "npm:^13.0.1"
+  checksum: 10c0/3ac061a3e85b2c7758f7591a73c44b8666488c1615a79c133868d4f5e03a4e73fc855d58ce78c3d5fb605ce14af377353a379fe5ee60fc7b384629f0d2cefc6f
   languageName: node
   linkType: hard
 

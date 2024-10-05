@@ -1,10 +1,10 @@
 import { bold } from '@discordjs/builders';
-import { type CommandRunOptions, calcPerHour, convertBankToPerHourStats, formatDuration } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, increaseNumByPercent, sumArr } from 'e';
 import { uniq } from 'lodash';
-import { Bank } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats } from 'oldschooljs';
 
 import {
 	BathhouseOres,

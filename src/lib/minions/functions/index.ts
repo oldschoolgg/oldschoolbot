@@ -1,6 +1,5 @@
 import type { User } from '@prisma/client';
-import { Monsters } from 'oldschooljs';
-import type Monster from 'oldschooljs/dist/structures/Monster';
+import { type Monster, Monsters } from 'oldschooljs';
 
 import { NIGHTMARES_HP, type PvMMethod } from '../../constants';
 import { GearStat, type OffenceGearStat, type PrimaryGearSetupType } from '../../gear';

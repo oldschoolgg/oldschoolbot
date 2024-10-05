@@ -1,4 +1,4 @@
-import { Stopwatch } from '@oldschoolgg/toolkit';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';

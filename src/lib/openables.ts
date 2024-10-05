@@ -1,14 +1,19 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { percentChance, randInt, roll } from 'e';
-import { Bank, LootTable, Openables } from 'oldschooljs';
+import {
+	Bank,
+	BrimstoneChest,
+	EliteMimicTable,
+	LarransChest,
+	LootTable,
+	MasterMimicTable,
+	Openables
+} from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { Item, ItemBank, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
-import { Mimic } from 'oldschooljs/dist/simulation/misc';
-import BrimstoneChest, { BrimstoneChestOpenable } from 'oldschooljs/dist/simulation/openables/BrimstoneChest';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
-import LarransChest, { LarransChestOpenable } from 'oldschooljs/dist/simulation/openables/LarransChest';
 
+import { randInt } from 'e';
 import { bsoOpenables } from './bsoOpenables';
 import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
@@ -25,7 +30,7 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import { itemID } from './util';
+import { itemID, percentChance, roll } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
@@ -156,14 +161,18 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 			// Roll loot, and calculate how many bonus rolls were received:
-			clueTier.table.open(includeBuggedRolls ? totalRolls + quantity : totalRolls, loot, user.cl);
+			clueTier.table.roll(includeBuggedRolls ? totalRolls + quantity : totalRolls, {
+				targetBank: loot,
+				cl: user.cl
+			});
 			const extraClueRolls = totalRolls - quantity;
 
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
+				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
 					if (roll(clueTier.mimicChance)) {
-						loot.add(Mimic.open(clueTier.name as 'master' | 'elite'));
+						loot.add(table.roll());
 						mimicNumber++;
 					}
 				}
@@ -239,12 +248,11 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const chest = new BrimstoneChestOpenable(BrimstoneChest);
 			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
 			const brimstoneOptions: OpenableOpenOptions = {
 				fishLvl
 			};
-			const openLoot: Bank = chest.open(args.quantity, brimstoneOptions);
+			const openLoot: Bank = BrimstoneChest.open(args.quantity, brimstoneOptions);
 
 			return { bank: openLoot };
 		},
@@ -324,13 +332,12 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const chest = new LarransChestOpenable(LarransChest);
 			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
 			const larransOptions: OpenableOpenOptions = {
 				fishLvl,
 				chestSize: 'big'
 			};
-			const openLoot: Bank = chest.open(args.quantity, larransOptions);
+			const openLoot: Bank = LarransChest.open(args.quantity, larransOptions);
 
 			return { bank: openLoot };
 		},
@@ -375,6 +382,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['bird nest', 'nest'],
 		output: nestTable,
 		allItems: nestTable.allItems
+	},
+	{
+		name: 'Amylase pack',
+		id: 12641,
+		openedItem: getOSItem(12641),
+		aliases: ['amylase pack', 'amylase'],
+		output: new LootTable().every('Amylase crystal', 100),
+		allItems: resolveItems(['Amylase crystal'])
 	},
 	{
 		name: 'Ogre coffin',

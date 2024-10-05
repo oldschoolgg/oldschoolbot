@@ -1,7 +1,7 @@
-import { formatOrdinal, increaseBankQuantitesByPercent } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { userMention } from 'discord.js';
 import { randInt } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, increaseBankQuantitesByPercent } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Events } from '../../../lib/constants';

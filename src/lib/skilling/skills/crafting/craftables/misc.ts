@@ -254,6 +254,14 @@ const Misc: Craftable[] = [
 		inputItems: new Bank().add('Obsidian shards', 1),
 		tickRate: 2,
 		outputMultiple: 10
+	},
+	{
+		name: 'Amulet of rancour',
+		id: itemID('Amulet of rancour'),
+		level: 86,
+		xp: 500,
+		inputItems: new Bank().add('Amulet of torture').add('Araxyte fang'),
+		tickRate: 0
 	}
 ];
 

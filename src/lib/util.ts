@@ -1,5 +1,4 @@
-import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, stripEmojis } from '@oldschoolgg/toolkit';
 import {
 	type BaseMessageOptions,
 	type ButtonInteraction,
@@ -20,10 +19,10 @@ import { Time, calcWhatPercent, notEmpty, objectEntries, randArrItem, randInt, s
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
-import type { Item } from 'oldschooljs/dist/meta/types';
-import type Monster from 'oldschooljs/dist/structures/Monster';
+import type { Item, Monster } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
@@ -53,7 +52,7 @@ import resolveItems from './util/resolveItems';
 import { itemNameFromID } from './util/smallUtils';
 
 export * from '@oldschoolgg/toolkit';
-export * from 'oldschooljs/dist/util';
+export * from 'oldschooljs';
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {

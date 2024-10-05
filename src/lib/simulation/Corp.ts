@@ -1,6 +1,4 @@
-import { Monsters } from 'oldschooljs';
-import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { GemTable, LootTable, Monsters } from 'oldschooljs';
 
 const SigilTable = new LootTable()
 	.add('Spectral sigil', 1, 3)

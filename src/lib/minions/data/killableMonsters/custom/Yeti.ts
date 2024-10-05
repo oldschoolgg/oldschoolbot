@@ -1,9 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import HerbDropTable from 'oldschooljs/dist/simulation/subtables/HerbDropTable';
-import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import UncommonSeedDropTable from 'oldschooljs/dist/simulation/subtables/UncommonSeedDropTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { GemTable, HerbDropTable, LootTable, Monsters, UncommonSeedDropTable } from 'oldschooljs';
 
 import { BitField, YETI_ID } from '../../../../constants';
 import { GearStat } from '../../../../gear';
@@ -53,6 +49,7 @@ export const YetiLootTable = new LootTable()
 	.tertiary(5013, 'Curved bone');
 
 export const Yeti: CustomMonster = {
+	isCustom: true,
 	id: YETI_ID,
 	name: 'Yeti',
 	aliases: ['yeti'],

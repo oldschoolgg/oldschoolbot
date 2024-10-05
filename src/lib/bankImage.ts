@@ -1,15 +1,14 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { PerkTier, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
+import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
-import { resolveItems, toKMB } from 'oldschooljs/dist/util/util';
+import { Bank, type Item, resolveItems, toKMB } from 'oldschooljs';
 
+import { UserError } from '@oldschoolgg/toolkit/structures';
+import { BOT_TYPE, BitField, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { calcWholeDisXP, findDisassemblyGroup } from '../lib/invention/disassemble';
@@ -34,7 +33,7 @@ import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { divinationEnergies } from './bso/divination';
-import { BOT_TYPE, BitField, ItemIconPacks, doaPurples, toaPurpleItems } from './constants';
+import { doaPurples } from './constants';
 import { customItems } from './customItems/util';
 import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';

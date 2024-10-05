@@ -1,4 +1,4 @@
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/structures';
 import { type DegradeableItem, degradeableItems } from '../degradeableItems';
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {

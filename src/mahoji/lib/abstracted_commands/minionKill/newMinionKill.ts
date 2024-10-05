@@ -162,15 +162,14 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		return `You can't barrage or burst ${monster.name}, because you're not on a slayer task.`;
 	}
 
-	if (currentSlayerTask) {
-		args.inputQuantity =
-			killsRemainingOnTask({
+	const killsRemaining = currentSlayerTask
+		? killsRemainingOnTask({
 				isOnTask,
 				monster,
 				task: currentSlayerTask,
 				slayerUnlocks
-			}) ?? args.inputQuantity;
-	}
+			})
+		: null;
 
 	if (monster.maxQuantity) {
 		args.inputQuantity = clamp(args.inputQuantity ?? 1, 1, monster.maxQuantity);
@@ -192,7 +191,8 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		combatMethods,
 		relevantGearStat,
 		addPostBoostEffect: (effect: PostBoostEffect) => ephemeralPostTripEffects.push(effect),
-		addInvention: (invention: InventionID) => inventionsBeingUsed.push(invention)
+		addInvention: (invention: InventionID) => inventionsBeingUsed.push(invention),
+		killsRemaining
 	});
 	if (typeof speedDurationResult === 'string') {
 		return speedDurationResult;
@@ -200,7 +200,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	const quantity = speedDurationResult.finalQuantity;
 	let duration = speedDurationResult.timeToFinish * quantity;
-
 	if (quantity > 1 && duration > maxTripLength) {
 		return `You can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
@@ -251,7 +250,8 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			combatMethods,
 			relevantGearStat,
 			currentTaskOptions: speedDurationResult.currentTaskOptions,
-			addInvention: (invention: InventionID) => inventionsBeingUsed.push(invention)
+			addInvention: (invention: InventionID) => inventionsBeingUsed.push(invention),
+			killsRemaining
 		});
 		if (typeof result === 'string') return result;
 		if (!result) continue;

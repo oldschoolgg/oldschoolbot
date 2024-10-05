@@ -1,5 +1,5 @@
 import { Time, calcPercentOfNum } from 'e';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { percentChance } from '../../util';
 import type { Creature } from '../types';

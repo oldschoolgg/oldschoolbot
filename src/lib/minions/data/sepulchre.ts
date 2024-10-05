@@ -1,8 +1,6 @@
 import { Time, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import HerbDropTable from 'oldschooljs/dist/simulation/subtables/HerbDropTable';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { Bank, HerbDropTable } from 'oldschooljs';
+import { LootTable } from 'oldschooljs';
 
 import { itemTupleToTable, resolveItems } from 'oldschooljs/dist/util/util';
 
@@ -66,7 +64,6 @@ const GrandmasterTierCoffin = new LootTable()
 	.add('Prayer potion(4)', [4, 8])
 	.add('Rocktail', [10, 20])
 	.add('Raw rocktail', [20, 30])
-	.add(RareDropTable, [2, 6])
 	.add(HerbDropTable, [2, 10])
 	.add('Coins', [250_000, 500_000]);
 

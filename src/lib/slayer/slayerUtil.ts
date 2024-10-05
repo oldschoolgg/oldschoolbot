@@ -1,6 +1,5 @@
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import type Monster from 'oldschooljs/dist/structures/Monster';
+import { Bank, type Monster, Monsters } from 'oldschooljs';
 
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';

@@ -1,5 +1,6 @@
-import { generateCommandInputs, generateRandomBank } from '@oldschoolgg/toolkit';
+import { generateCommandInputs } from '@oldschoolgg/toolkit';
 import { Time, shuffleArr } from 'e';
+import { generateRandomBank } from 'oldschooljs/dist/meta/types';
 import { expect, test, vi } from 'vitest';
 
 import { BitField, minionActivityCache } from '../../src/lib/constants';
