@@ -1,4 +1,3 @@
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
@@ -384,12 +383,7 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
-				const stopwatch = new Stopwatch().start();
 				await ticker.cb();
-				stopwatch.stop();
-				if (stopwatch.duration > 500) {
-					debugLog(`Ticker ${ticker.name} took ${stopwatch}`);
-				}
 			} catch (err) {
 				logError(err);
 				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
