@@ -1,4 +1,5 @@
-import { SimpleTable, calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit';
+import { calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { clamp, percentChance, sumArr } from 'e';
 
 import { Emoji } from '../../../lib/constants';

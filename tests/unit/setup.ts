@@ -1,6 +1,6 @@
 import '../globalSetup';
 
-import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
+import { TSRedis } from '@oldschoolgg/toolkit/structures';
 import { vi } from 'vitest';
 
 import { mockMUser, mockUserMap } from './utils';

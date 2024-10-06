@@ -15,6 +15,8 @@ export class MUserStats {
 	kcBank: ItemBank;
 	highGambles: number;
 	gotrRiftSearches: number;
+	slayerWildyTaskStreak: number;
+	slayerTaskStreak: number;
 
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
@@ -25,18 +27,12 @@ export class MUserStats {
 		this.kcBank = userStats.monster_scores as ItemBank;
 		this.highGambles = userStats.high_gambles;
 		this.gotrRiftSearches = userStats.gotr_rift_searches;
+		this.slayerWildyTaskStreak = userStats.slayer_wildy_task_streak;
+		this.slayerTaskStreak = userStats.slayer_task_streak;
 	}
 
 	static async fromID(id: string) {
-		const userStats = await prisma.userStats.upsert({
-			where: {
-				user_id: BigInt(id)
-			},
-			create: {
-				user_id: BigInt(id)
-			},
-			update: {}
-		});
+		const userStats = await prisma.userStats.findFirstOrThrow({ where: { user_id: BigInt(id) } });
 		return new MUserStats(userStats);
 	}
 

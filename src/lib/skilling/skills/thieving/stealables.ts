@@ -1,27 +1,30 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
-import BeardedBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/BeardedBandit';
-import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/a-f/CaveGoblin';
-import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/DesertBandit';
-import Farmer from 'oldschooljs/dist/simulation/monsters/low/a-f/Farmer';
-import FemaleHamMember from 'oldschooljs/dist/simulation/monsters/low/a-f/FemaleHamMember';
-import FremennikCitizen from 'oldschooljs/dist/simulation/monsters/low/a-f/FremennikCitizen';
-import Gnome from 'oldschooljs/dist/simulation/monsters/low/g-m/Gnome';
-import Guard from 'oldschooljs/dist/simulation/monsters/low/g-m/Guard';
-import Hero from 'oldschooljs/dist/simulation/monsters/low/g-m/Hero';
-import KnightOfArdougne from 'oldschooljs/dist/simulation/monsters/low/g-m/KnightOfArdougne';
-import MaleHamMember from 'oldschooljs/dist/simulation/monsters/low/g-m/MaleHamMember';
-import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/g-m/MasterFarmer';
-import MenaphiteThug from 'oldschooljs/dist/simulation/monsters/low/g-m/MenaphiteThug';
-import Paladin from 'oldschooljs/dist/simulation/monsters/low/n-s/Paladin';
-import PollnivnianBandit from 'oldschooljs/dist/simulation/monsters/low/n-s/PollnivnianBandit';
-import PrifddinasElf from 'oldschooljs/dist/simulation/monsters/low/n-s/PrifddinasElf';
-import Rogue from 'oldschooljs/dist/simulation/monsters/low/n-s/Rogue';
-import TzHaarHur from 'oldschooljs/dist/simulation/monsters/low/t-z/TzHaarHur';
-import Vyre from 'oldschooljs/dist/simulation/monsters/low/t-z/Vyre';
-import WarriorWoman from 'oldschooljs/dist/simulation/monsters/low/t-z/WarriorWoman';
-import YanilleWatchman from 'oldschooljs/dist/simulation/monsters/low/t-z/YanilleWatchman';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
+
+const {
+	BeardedBandit,
+	CaveGoblin,
+	DesertBandit,
+	Farmer,
+	FemaleHamMember,
+	FremennikCitizen,
+	Gnome,
+	Guard,
+	Hero,
+	KnightOfArdougne,
+	MaleHamMember,
+	MasterFarmer,
+	MenaphiteThug,
+	Paladin,
+	PollnivnianBandit,
+	PrifddinasElf,
+	Rogue,
+	TzHaarHur,
+	Vyre,
+	WarriorWoman,
+	YanilleWatchman
+} = Monsters;
 
 export interface Stealable {
 	name: string;

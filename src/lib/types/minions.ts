@@ -2,7 +2,9 @@ import type { CropUpgradeType } from '@prisma/client';
 
 import type { ItemBank } from '.';
 import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
+import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 import type { IPatchData } from '../minions/farming/types';
+import type { AttackStyles } from '../minions/functions';
 import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
 import type { Peak } from '../tickers';
@@ -132,11 +134,12 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
-	bob?: number;
+	bob?: SlayerActivityConstants.IceBarrage | SlayerActivityConstants.IceBurst;
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
 	isInWilderness?: boolean;
+	attackStyles?: AttackStyles[];
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
@@ -436,6 +439,8 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	isFakeMass: boolean;
+	maxSizeInput?: number;
 	quantity?: number;
 }
 

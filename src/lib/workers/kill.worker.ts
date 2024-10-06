@@ -1,7 +1,7 @@
 import '../data/itemAliases';
 
-import { calcDropRatesFromBank, stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, Misc, Monsters } from 'oldschooljs';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { Bank, Misc, Monsters, calcDropRatesFromBank } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
@@ -42,10 +42,10 @@ export default async ({
 
 		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
 		if (killableMonster?.specialLoot) {
-			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity });
+			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity, cl: new Bank() });
 		}
 
-		return result;
+		return { bank: result.bank.toJSON() };
 	}
 
 	const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, bossName));
@@ -56,7 +56,7 @@ export default async ({
 			};
 		}
 
-		return { bank: simulatedKillable.loot(quantity) };
+		return { bank: simulatedKillable.loot(quantity).toJSON() };
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
@@ -67,7 +67,7 @@ export default async ({
 		for (let i = 0; i < quantity; i++) {
 			bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id);
 		}
-		return { bank };
+		return { bank: bank.toJSON() };
 	}
 
 	if (['nex', 'next'].some(alias => stringMatches(alias, bossName))) {
@@ -85,7 +85,7 @@ export default async ({
 			]
 		});
 		return {
-			bank: loot.get('1'),
+			bank: loot.get('1').toJSON(),
 			title: `Personal Loot From ${quantity}x Nex, Team of 4`,
 			content: calcDropRatesFromBank(
 				loot.get('1'),

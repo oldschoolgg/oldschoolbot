@@ -1,5 +1,5 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import type { BaseMessageOptions, ChatInputCommandInteraction } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';

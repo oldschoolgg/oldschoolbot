@@ -1,6 +1,4 @@
-import type { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
-import type LootTable from 'oldschooljs/dist/structures/LootTable';
+import type { Bank, Item, LootTable } from 'oldschooljs';
 
 import type { Emoji } from '../constants';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';

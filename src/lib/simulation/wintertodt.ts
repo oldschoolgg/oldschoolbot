@@ -1,19 +1,16 @@
-import { SimpleTable, normal } from '@oldschoolgg/toolkit';
+import { normal } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcPercentOfNum, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
+import { Bank, LootTable, convertXPtoLVL, resolveItems } from '../util';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { MAX_XP } from '../constants';
 import type { LevelRequirements } from '../skilling/types';
 import { SkillsEnum } from '../skilling/types';
-import type { ItemBank } from '../types';
 import itemID from '../util/itemID';
 
 interface WintertodtCrateOptions {
 	points: number;
-	itemsOwned: ItemBank;
+	itemsOwned: Bank;
 	skills: Partial<LevelRequirements>;
 	firemakingXP: number;
 }
@@ -170,7 +167,7 @@ class WintertodtCrateClass {
 		}
 	}
 
-	public lootRoll(skills: Partial<LevelRequirements>) {
+	public lootRoll(loot: Bank, skills: Partial<LevelRequirements>) {
 		const roll = randInt(1, 9);
 
 		if (roll <= 6) {
@@ -178,15 +175,11 @@ class WintertodtCrateClass {
 			const skill = this.determineSkillOfTableSlot(matTable);
 			const skillLevel = convertXPtoLVL(skills[skill] ?? 1);
 			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable);
-			return [
-				{
-					item: rolledItem[0],
-					quantity: randInt(rolledItem[1][0], rolledItem[1][1])
-				}
-			];
+			const [min, max] = rolledItem[1];
+			return loot.add(rolledItem[0], randInt(min, max));
 		}
 
-		return OtherTable.roll();
+		OtherTable.roll(1, { targetBank: loot });
 	}
 
 	public calcNumberOfRolls(points: number): number {
@@ -264,7 +257,7 @@ class WintertodtCrateClass {
 			}
 
 			loot.add(rolledUnique);
-			loot.add(this.lootRoll(skills));
+			this.lootRoll(loot, skills);
 		}
 
 		return loot;

@@ -105,7 +105,7 @@ export const craftCommand: OSBMahojiCommand = {
 		const itemsNeeded = craftable.inputItems.clone().multiply(quantity);
 
 		// Check the user has all the required items to craft.
-		if (!userBank.has(itemsNeeded.bank)) {
+		if (!userBank.has(itemsNeeded)) {
 			return `You don't have enough items. For ${quantity}x ${craftable.name}, you're missing **${itemsNeeded
 				.clone()
 				.remove(userBank)}**.`;

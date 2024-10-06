@@ -62,7 +62,7 @@ async function trackIndividualsLoot({
 				key,
 				total_kc: data.changeType === 'loot' ? data.kc : 0,
 				total_duration: duration,
-				[data.changeType]: bankToAdd.bank,
+				[data.changeType]: bankToAdd.toJSON(),
 				type: data.type,
 				user_id: userID
 			}
@@ -86,7 +86,7 @@ async function trackIndividualsLoot({
 							increment: data.kc
 						}
 					: undefined,
-			[data.changeType]: new Bank(current?.[data.changeType] as ItemBank | undefined).add(bankToAdd).bank,
+			[data.changeType]: new Bank(current?.[data.changeType] as ItemBank | undefined).add(bankToAdd).toJSON(),
 			user_id: userID
 		}
 	});

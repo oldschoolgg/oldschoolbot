@@ -3,7 +3,6 @@ import { resolve } from 'node:path';
 import type { Bank } from 'oldschooljs';
 import Piscina from 'piscina';
 
-import { production } from '../../config';
 import type { ItemBank } from '../types';
 
 export interface CasketWorkerArgs {
@@ -21,7 +20,7 @@ export interface KillWorkerArgs {
 }
 
 export type KillWorkerReturn = Promise<{
-	bank?: Bank;
+	bank?: ItemBank;
 	error?: string;
 	title?: string;
 	content?: string;
@@ -42,7 +41,7 @@ export type FinishWorkerReturn = Promise<
 	| string
 >;
 
-const maxThreads = production ? 3 : 1;
+const maxThreads = 1;
 
 let dirName = __dirname.replace('src/lib', 'dist/lib');
 if (dirName.endsWith('dist')) {

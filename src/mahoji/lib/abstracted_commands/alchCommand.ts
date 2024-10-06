@@ -1,8 +1,7 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, clamp } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type Item } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';

@@ -7,8 +7,7 @@ import { Duration } from '@sapphire/time-utilities';
 import { SnowflakeUtil, codeBlock } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, objectValues, randArrItem, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { BitField, Channel, globalConfig } from '../../lib/constants';
@@ -20,12 +19,13 @@ import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { sql } from '../../lib/postgres';
 import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ItemBank } from '../../lib/types';
 import { dateFm, isValidDiscordSnowflake } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -175,6 +175,96 @@ const actions = [
 		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
 		run: async () => {
 			return usernameSync();
+		}
+	},
+	{
+		name: 'force_garbage_collection',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			const timer = new Stopwatch();
+			for (let i = 0; i < 3; i++) {
+				gc!();
+			}
+			return `Garbage collection took ${timer.stop()}`;
+		}
+	},
+	{
+		name: 'prismadebug',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			const debugs = [
+				{
+					name: 'pgjs activity select',
+					run: async () => {
+						await sql`
+							SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;
+						`;
+					}
+				},
+				{
+					name: 'Raw Activity Select',
+					run: async () => {
+						await prisma.$queryRawUnsafe(
+							'SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;'
+						);
+					}
+				},
+				{
+					name: 'Prisma Activity Select',
+					run: async () => {
+						await prisma.activity.findMany({
+							where: {
+								completed: false,
+								finish_date: {
+									lt: new Date()
+								}
+							},
+							take: 5
+						});
+					}
+				},
+				{
+					name: 'pgjs user select',
+					run: async () => {
+						await sql`
+							SELECT * FROM users WHERE id = '157797566833098752';
+						`;
+					}
+				},
+				{
+					name: 'muserfetch',
+					run: async () => {
+						await mUserFetch('157797566833098752');
+					}
+				},
+				{
+					name: 'raw user fetch',
+					run: async () => {
+						await prisma.$queryRawUnsafe("SELECT * FROM users WHERE id = '157797566833098752';");
+					}
+				}
+			];
+
+			let res = '';
+			for (const debug of debugs) {
+				const results = [];
+				for (let i = 0; i < 500; i++) {
+					const start = performance.now();
+					await debug.run();
+					const end = performance.now();
+					results.push(end - start);
+				}
+				const avg = results.reduce((a, b) => a + b, 0) / results.length;
+				const max = Math.max(...results);
+				const min = Math.min(...results);
+				const median = results.sort((a, b) => a - b)[Math.floor(results.length / 2)];
+				const obj = { avg, max, min, median };
+				res += `${debug.name} took ${Object.entries(obj)
+					.map(t => `${t[0]}: ${t[1].toFixed(2)}ms`)
+					.join(' | ')}\n`;
+			}
+
+			return res;
 		}
 	}
 ];
@@ -653,7 +743,7 @@ Date: ${dateFm(date)}`;
 			const userToCheck = await mUserFetch(options.player.viewbank.user.user.id);
 			const bank = userToCheck.allItemsOwned;
 			if (options.player?.viewbank.json) {
-				const json = JSON.stringify(bank.bank);
+				const json = JSON.stringify(bank.toJSON());
 				if (json.length > 1900) {
 					return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
 				}
@@ -852,38 +942,26 @@ Date: ${dateFm(date)}`;
 				let recvValueLast100 = 0;
 
 				// We use Object.entries(bank) instead of bank.items() so we can filter out deleted/broken items:
-				for (const [itemId, qty] of Object.entries(sentBank.bank)) {
-					try {
-						const item = getOSItem(Number(itemId));
-						const marketData = marketPricemap.get(item.id);
-						if (marketData) {
-							sentValueGuide += marketData.guidePrice * qty;
-							sentValueLast100 += marketData.averagePriceLast100 * qty;
-						} else {
-							const { price } = sellPriceOfItem(item, 0);
-							sentValueGuide += price * qty;
-							sentValueLast100 += price * qty;
-						}
-					} catch (e) {
-						// This means item doesn't exist at this point in time.
-						delete sentBank.bank[itemId];
+				for (const [item, qty] of sentBank.items()) {
+					const marketData = marketPricemap.get(item.id);
+					if (marketData) {
+						sentValueGuide += marketData.guidePrice * qty;
+						sentValueLast100 += marketData.averagePriceLast100 * qty;
+					} else {
+						const { price } = sellPriceOfItem(item, 0);
+						sentValueGuide += price * qty;
+						sentValueLast100 += price * qty;
 					}
 				}
-				for (const [itemId, qty] of Object.entries(recvBank.bank)) {
-					try {
-						const item = getOSItem(Number(itemId));
-						const marketData = marketPricemap.get(item.id);
-						if (marketData) {
-							recvValueGuide += marketData.guidePrice * qty;
-							recvValueLast100 += marketData.averagePriceLast100 * qty;
-						} else {
-							const { price } = sellPriceOfItem(item, 0);
-							recvValueGuide += price * qty;
-							recvValueLast100 += price * qty;
-						}
-					} catch (e) {
-						// This means item doesn't exist at this point in time.
-						delete recvBank.bank[itemId];
+				for (const [item, qty] of recvBank.items()) {
+					const marketData = marketPricemap.get(item.id);
+					if (marketData) {
+						recvValueGuide += marketData.guidePrice * qty;
+						recvValueLast100 += marketData.averagePriceLast100 * qty;
+					} else {
+						const { price } = sellPriceOfItem(item, 0);
+						recvValueGuide += price * qty;
+						recvValueLast100 += price * qty;
 					}
 				}
 				totalsSent.add(row.sender_id, 'Coins', sentValueLast100);

@@ -7,8 +7,12 @@ import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import type { KillableMonster } from '../lib/minions/types';
 
+import { bold } from 'discord.js';
+import { userhasDiaryTier } from '../lib/diaries';
+import { quests } from '../lib/minions/data/quests';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
+import type { GearBank } from '../lib/structures/GearBank';
 import type { ItemBank } from '../lib/types';
 import {
 	type JsonKeys,
@@ -19,6 +23,7 @@ import {
 	readableStatName,
 	resolveItems
 } from '../lib/util';
+import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
 
 export function mahojiParseNumber({
 	input,
@@ -75,16 +80,25 @@ export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
 	selectKeys: T
 ): Promise<SelectedUserStats<T>> {
 	const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
-	const result = await prisma.userStats.upsert({
+	let result = await prisma.userStats.findFirst({
 		where: {
 			user_id: BigInt(userID)
 		},
-		create: {
-			user_id: BigInt(userID)
-		},
-		update: {},
 		select: keysToSelect
 	});
+
+	if (!result) {
+		result = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(userID)
+			},
+			create: {
+				user_id: BigInt(userID)
+			},
+			update: {},
+			select: keysToSelect
+		});
+	}
 
 	return result as unknown as SelectedUserStats<T>;
 }
@@ -99,16 +113,6 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 	if (!selectKeys || Object.keys(selectKeys).length === 0) {
 		keys = { user_id: true };
 	}
-	await prisma.userStats.upsert({
-		create: {
-			user_id: id
-		},
-		update: {},
-		where: {
-			user_id: id
-		},
-		select: keys
-	});
 
 	return (await prisma.userStats.update({
 		data,
@@ -133,7 +137,7 @@ export async function userStatsBankUpdate(user: MUser | string, key: JsonKeys<Us
 	await userStatsUpdate(
 		userID,
 		{
-			[key]: bank.clone().add(currentItemBank).bank
+			[key]: bank.clone().add(currentItemBank).toJSON()
 		},
 		{ [key]: true }
 	);
@@ -216,12 +220,36 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 	return amountEquipped * 20;
 }
 
-export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
+export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	if (monster.qpRequired && user.QP < monster.qpRequired) {
 		return [
 			false,
 			`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/activities quest\``
 		];
+	}
+
+	if (monster.requiredQuests) {
+		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to kill ${monster.name}.`;
+		}
+	}
+
+	if (monster.degradeableItemUsage) {
+		for (const set of monster.degradeableItemUsage) {
+			const equippedInThisSet = set.items.find(item => user.gear[set.gearSetup].hasEquipped(item.itemID));
+
+			if (set.required && !equippedInThisSet) {
+				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+					monster.name
+				}: ${set.items
+					.map(i => i.itemID)
+					.map(itemNameFromID)
+					.join(', ')}.`;
+			}
+		}
 	}
 
 	if (monster.itemsRequired) {
@@ -266,10 +294,34 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 		}
 	}
 
+	if (monster.diaryRequirement) {
+		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
+		if (!hasDiary) {
+			return `${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`;
+		}
+	}
+
+	if (monster.itemCost) {
+		const timeToFinish = monster.timeToFinish;
+		const consumablesCost = getItemCostFromConsumables({
+			consumableCosts: Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost],
+			gearBank: user.gearBank,
+			inputQuantity: 1,
+			timeToFinish,
+			maxTripLength: timeToFinish * 1.5
+		});
+		if (consumablesCost && !user.bank.has(consumablesCost.itemCost)) {
+			return [
+				false,
+				`You don't have the items needed to kill this monster. You're missing: ${consumablesCost.itemCost.clone().remove(user.bank)}.`
+			];
+		}
+	}
+
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, isInWilderness = false) {
+export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster, isInWilderness = false): Bank {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -279,7 +331,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			// find the highest boost that the player has
 			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 				const parsedId = Number.parseInt(itemID);
-				if (isInWilderness ? !user.hasEquipped(parsedId) : !user.hasEquippedOrInBank(parsedId)) {
+				if (!gearBank.wildyGearCheck(parsedId, isInWilderness)) {
 					continue;
 				}
 				if (boostAmount > highestBoostAmount) {
@@ -293,7 +345,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			}
 		}
 	}
-	return boosts.bank;
+	return boosts;
 }
 
 export function calcMaxRCQuantity(rune: Rune, user: MUser) {
@@ -338,7 +390,7 @@ export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
 	const { openable_scores: newOpenableScores } = await userStatsUpdate(
 		user.id,
 		{
-			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).bank
+			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
 		},
 		{ openable_scores: true }
 	);

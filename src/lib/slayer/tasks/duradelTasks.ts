@@ -466,5 +466,14 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		slayerLevel: 62,
 		unlocked: true
 	},
+	{
+		monster: Monsters.Araxyte,
+		amount: [60, 80],
+		weight: 10,
+		monsters: [Monsters.Araxyte.id, Monsters.Araxxor.id],
+		combatLevel: 96,
+		unlocked: true,
+		slayerLevel: 92
+	},
 	...bossTasks
 ];

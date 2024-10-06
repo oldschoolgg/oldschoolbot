@@ -2,13 +2,11 @@ import type { Bingo, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { Time, chunk, noOp } from 'e';
 import groupBy from 'lodash/groupBy';
-import { Bank } from 'oldschooljs';
+import { Bank, addBanks } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 import * as ss from 'simple-statistics';
 
-import { addBanks } from '@oldschoolgg/toolkit';
 import { Emoji } from '../../../lib/constants';
-
 import type { ItemBank } from '../../../lib/types';
 import getOSItem from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -297,7 +295,7 @@ ${teams
 		if (!bingoParticipant) return;
 		const beforeTeamProgress = await this.determineProgressOfTeam(bingoParticipant.bingo_team_id);
 		const beforeUserProgress = this.determineProgressOfBank(bingoParticipant.cl);
-		const newCL = addBanks([bingoParticipant.cl as ItemBank, itemsAdded.bank]);
+		const newCL = new Bank(bingoParticipant.cl as ItemBank).add(itemsAdded);
 		await prisma.bingoParticipant.update({
 			where: {
 				user_id_bingo_id: {
@@ -306,7 +304,7 @@ ${teams
 				}
 			},
 			data: {
-				cl: newCL.bank
+				cl: newCL.toJSON()
 			}
 		});
 		const afterUserProgress = this.determineProgressOfBank(newCL);

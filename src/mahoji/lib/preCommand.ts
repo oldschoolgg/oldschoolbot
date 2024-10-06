@@ -1,9 +1,8 @@
-import { type CommandOptions, cleanUsername } from '@oldschoolgg/toolkit';
+import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { busyImmuneCommands } from '../../lib/constants';
-
 import { logWrapFn } from '../../lib/util';
 import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
@@ -31,8 +30,7 @@ async function rawPreCommand({
 	userID,
 	guildID,
 	channelID,
-	bypassInhibitors,
-	apiUser
+	bypassInhibitors
 }: PreCommandOptions): PrecommandReturn {
 	if (globalClient.isShuttingDown) {
 		return {
@@ -41,23 +39,17 @@ async function rawPreCommand({
 		};
 	}
 
-	const username = apiUser?.username ? cleanUsername(apiUser?.username) : undefined;
-	const user = await mUserFetch(userID, {
-		username
-	});
-
-	// TODO: user.checkBankBackground();
 	if (userIsBusy(userID) && !bypassInhibitors && !busyImmuneCommands.includes(abstractCommand.name)) {
 		return { reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}
 	if (!busyImmuneCommands.includes(abstractCommand.name)) modifyBusyCounter(userID, 1);
 
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
-	const member = guild?.members.cache.get(userID.toString());
+	const member = guild?.members.cache.get(userID);
 	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
 
-	const inhibitResult = await runInhibitors({
-		user,
+	const inhibitResult = runInhibitors({
+		userID,
 		guild: guild ?? null,
 		member: member ?? null,
 		command: abstractCommand,

@@ -72,7 +72,7 @@ export async function driftNetCommand(
 
 	itemsToRemove.add('Drift net', quantity);
 
-	if (!userBank.has(itemsToRemove.bank)) {
+	if (!userBank.has(itemsToRemove)) {
 		return `You need ${quantity}x Drift net for the whole trip, try a lower trip length or make/buy more Drift net.`;
 	}
 

@@ -1531,6 +1531,51 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	},
 	{
 		id: 1132,
+		name: 'Araxxor Veteran',
+		desc: 'Complete Wave 4 without taking avoidable damage from a Manticore.',
+		type: 'kill_count',
+		monster: 'Araxxor',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Araxxor.id]: 25
+			}
+		})
+	},
+	{
+		id: 1133,
+		name: 'Araxxor Speed-Trialist',
+		desc: 'Complete Wave 4 without taking avoidable damage from a Manticore.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 200,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 1134,
+		name: 'Relaxxor',
+		desc: 'Kill Araxxor after destroying six eggs.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 200,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 1135,
+		name: 'Relaxxor',
+		desc: 'Kill Araxxor after destroying six eggs.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 200,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 1136,
 		name: 'Rapid Reload',
 		desc: 'Hit three Tormented Demons within 3 seconds using a ballista or a crossbow.',
 		type: 'mechanical',
@@ -1544,7 +1589,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
-		id: 1133,
+		id: 1137,
 		name: 'Two Times the Torment',
 		desc: 'Kill two Tormented Demons within 2 seconds.',
 		type: 'restriction',
@@ -1555,7 +1600,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
-		id: 1134,
+		id: 1138,
 		name: 'Through Fire and Flames',
 		desc: 'Kill a Tormented Demon whilst their shield is inactive.',
 		type: 'restriction',
@@ -1566,7 +1611,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
-		id: 1135,
+		id: 1139,
 		name: 'Unending Torment',
 		desc: 'Kill a Tormented Demon.',
 		type: 'kill_count',
