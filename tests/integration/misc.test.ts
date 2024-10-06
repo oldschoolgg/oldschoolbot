@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 
 import { Bank } from 'oldschooljs';
 import { analyticsTick } from '../../src/lib/analytics';
-import { allCLItemsFiltered, allCollectionLogsFlat } from '../../src/lib/data/Collections';
+import { allCollectionLogsFlat } from '../../src/lib/data/Collections';
 import { chambersOfXericCL } from '../../src/lib/data/CollectionsExport';
 import { fetchCLLeaderboard } from '../../src/lib/util/clLeaderboard';
 import { minionStatsEmbed } from '../../src/lib/util/minionStatsEmbed';
@@ -46,7 +46,7 @@ describe('Integration Misc', () => {
 		expected.reverse();
 		const res = await fetchCLLeaderboard({
 			ironmenOnly: false,
-			items: allCLItemsFiltered,
+			items: chambersOfXericCL,
 			resultLimit: 100,
 			clName: 'overall'
 		});

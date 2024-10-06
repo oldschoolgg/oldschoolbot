@@ -223,7 +223,10 @@ const killableBosses: KillableMonster[] = [
 		],
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 10, itemID: itemID("Osmumten's fang") }],
+				items: [
+					{ boostPercent: 10, itemID: itemID("Osmumten's fang") },
+					{ boostPercent: 8, itemID: itemID('Noxious halberd') }
+				],
 				gearSetup: 'melee'
 			},
 			{
@@ -566,51 +569,94 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Araxxor.id,
 		name: Monsters.Araxxor.name,
 		aliases: Monsters.Araxxor.aliases,
-		timeToFinish: Time.Minute * 20,
+		timeToFinish: Time.Minute * 3,
 		respawnTime: 2000,
 		table: Monsters.Araxxor,
 		notifyDrops: resolveItems(['Nid']),
 		qpRequired: 200,
 		deathProps: {
-			hardness: 0.6,
+			hardness: 0.2,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
 			{
 				items: [
-					{ boostPercent: 15, itemID: itemID('Scythe of vitur') },
-					{ boostPercent: 12, itemID: itemID('Soulreaper axe') },
-					{ boostPercent: 5, itemID: itemID('Bone mace') }
+					{ boostPercent: 18, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 15, itemID: itemID('Soulreaper axe') },
+					{ boostPercent: 10, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 7, itemID: itemID('Ursine chainmace') },
+					{ boostPercent: 1, itemID: itemID('Sarachnis cudgel') }
 				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Avernic defender') }],
 				gearSetup: 'melee'
 			},
 			{
 				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic defender') },
-					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+					{ boostPercent: 4, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
 				],
-				gearSetup: 'melee'
-			},
-			{
-				items: [
-					{ boostPercent: 4, itemID: itemID('Amulet of torture') },
-					{ boostPercent: 2, itemID: itemID('Amulet of fury') }
-				],
-				gearSetup: 'melee'
-			},
-			{
-				items: [
-					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
-					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
-				],
-				gearSetup: 'melee'
+				gearSetup: 'melee',
+				required: true
 			},
 			{
 				items: [
 					{ boostPercent: 4, itemID: itemID('Infernal cape') },
 					{ boostPercent: 2, itemID: itemID('Fire cape') }
 				],
-				gearSetup: 'melee'
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(id => ({
+					boostPercent: 2,
+					itemID: id
+				})),
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(id => ({
+					boostPercent: 2,
+					itemID: id
+				})),
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
+				gearSetup: 'melee',
+				required: true
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Elder maul')]: 5,
+				[itemID('Dragon warhammer')]: 4,
+				[itemID('Dragon claws')]: 3
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID('Scythe of vitur'),
+						boostPercent: 25
+					}
+				]
 			}
 		],
 		levelRequirements: {
@@ -629,32 +675,82 @@ const killableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 575,
 		combatXpMultiplier: 1.2,
-		healAmountNeeded: 20 * 100,
+		healAmountNeeded: 20 * 200,
 		slayerOnly: true,
 		minimumGearRequirements: {
-			melee: new Gear({
-				head: 'Slayer helmet (i)',
-				neck: 'Amulet of fury',
-				cape: 'Fire cape',
-				body: 'Bandos chestplate',
-				legs: 'Bandos tassets',
-				hands: 'Ferocious gloves',
-				feet: 'Dragon boots',
-				ring: 'Berserker ring (i)',
-				ammo: "Rada's blessing 3"
-			}).stats
+			melee: {
+				...new Gear({
+					head: 'Slayer helmet (i)',
+					neck: 'Amulet of fury',
+					cape: 'Fire cape',
+					body: 'Bandos chestplate',
+					legs: 'Bandos tassets',
+					hands: 'Ferocious gloves',
+					feet: 'Dragon boots',
+					ring: 'Berserker ring (i)',
+					ammo: "Rada's blessing 3"
+				}).stats,
+				defence_magic: 0,
+				prayer: 0,
+				defence_crush: 0,
+				defence_ranged: 0,
+				defence_slash: 0,
+				defence_stab: 0
+			}
 		},
-		itemsRequired: [],
-		itemCost: {
-			itemCost: new Bank().add('Extended anti-venom+(4)'),
-			qtyPerMinute: 0.05,
-			alternativeConsumables: [
-				{
-					itemCost: new Bank().add('Anti-venom+(4)'),
-					qtyPerMinute: 0.05 * 2
-				}
-			]
-		}
+		specialLoot: ({ loot, ownedItems, cl }) => {
+			if (loot.has('Coagulated venom') && (ownedItems.has('Coagulated venom') || ownedItems.has('Rax'))) {
+				loot.set('Coagulated venom', 0);
+			}
+			const noxPieces = resolveItems(['Noxious point', 'Noxious blade', 'Noxious pommel']);
+			const ownedPieces = noxPieces.filter(p => cl.has(p));
+			if (ownedPieces.length === 3) return;
+			const unownedPieces = noxPieces.filter(p => !cl.has(p));
+			const pieceToReplace = ownedPieces.find(p => loot.has(p));
+			if (!pieceToReplace) return;
+			loot.set(unownedPieces[0], 1);
+			loot.set(pieceToReplace, 0);
+		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Extended anti-venom+(4)'),
+				qtyPerKill: 0.05,
+				alternativeConsumables: [
+					{
+						itemCost: new Bank().add('Anti-venom+(4)'),
+						qtyPerMinute: 0.05 * 2
+					}
+				]
+			},
+			{
+				itemCost: new Bank().add('Super restore(4)'),
+				qtyPerKill: 0.2,
+				alternativeConsumables: [
+					{
+						itemCost: new Bank().add('Prayer potion(4)'),
+						qtyPerKill: 0.2
+					}
+				]
+			},
+			{
+				itemCost: new Bank().add('Super combat potion(4)'),
+				qtyPerKill: 0.125
+			},
+			{
+				itemCost: new Bank().add('Cooked karambwan'),
+				qtyPerKill: 0.24
+			},
+			{
+				itemCost: new Bank().add('Anglerfish'),
+				qtyPerKill: 0.1
+			},
+			{
+				itemCost: new Bank().add('Spider cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 10,
+				optional: true
+			}
+		]
 	}
 ];
 

@@ -2342,7 +2342,7 @@ exports[`OSB Buyables 1`] = `
       "9813": 1,
       "9814": 1,
     },
-    "qpRequired": 308,
+    "qpRequired": 314,
   },
   {
     "aliases": [
@@ -2355,7 +2355,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13068": 1,
     },
-    "qpRequired": 308,
+    "qpRequired": 314,
   },
   {
     "aliases": [
@@ -2381,7 +2381,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13069": 1,
     },
-    "qpRequired": 308,
+    "qpRequired": 314,
   },
   {
     "customReq": [Function],
@@ -5996,6 +5996,89 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "28902": 1,
       "28904": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29790": 1,
+      "29792": 1,
+      "29794": 1,
+    },
+    "name": "Noxious halberd",
+    "outputItems": {
+      "29796": 1,
+    },
+    "requiredSkills": {
+      "crafting": 72,
+      "smithing": 72,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11864": 1,
+      "29788": 1,
+    },
+    "name": "Araxyte slayer helmet",
+    "outputItems": {
+      "29816": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11865": 1,
+      "29788": 1,
+    },
+    "name": "Araxyte slayer helmet (i)",
+    "outputItems": {
+      "29818": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29781": 1,
+      "29836": 1,
+    },
+    "name": "Rax",
+    "outputItems": {
+      "29838": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29838": 1,
+    },
+    "name": "Revert Rax",
+    "noCl": true,
+    "outputItems": {
+      "29781": 1,
+      "29836": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "29801": 1,
+    },
+    "name": "Amulet of rancour (s)",
+    "outputItems": {
+      "29804": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29804": 1,
+    },
+    "name": "Revert Amulet of rancour (s)",
+    "noCl": true,
+    "outputItems": {
+      "29801": 1,
     },
   },
   {

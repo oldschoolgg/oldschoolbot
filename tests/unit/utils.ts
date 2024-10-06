@@ -148,10 +148,10 @@ function makeFullGear() {
 	}
 	return obj as UserFullGearSetup;
 }
-export function makeGearBank() {
+export function makeGearBank({ bank }: { bank?: Bank } = {}) {
 	return new GearBank({
 		gear: makeFullGear(),
-		bank: new Bank(),
+		bank: bank ?? new Bank(),
 		skillsAsLevels: makeSkillsAsLevels(),
 		chargeBank: new ChargeBank()
 	});

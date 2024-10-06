@@ -100,17 +100,16 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	timeToFinish = Math.ceil(timeToFinish);
 
-	if (monster.itemCost) consumables.push(monster.itemCost);
-
-	const maxQuantityBasedOnTime = Math.floor(maxTripLength / timeToFinish);
-	const consumablesQuantity = clamp(inputQuantity ?? maxQuantityBasedOnTime, 1, maxQuantityBasedOnTime);
+	if (monster.itemCost) {
+		consumables.push(...(Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost]));
+	}
 
 	const consumablesCost = getItemCostFromConsumables({
 		consumableCosts: consumables,
 		gearBank,
-		quantity: consumablesQuantity,
 		timeToFinish,
-		maxTripLength
+		maxTripLength,
+		inputQuantity
 	});
 
 	const updateBank = new UpdateBank();
@@ -119,9 +118,17 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	if (consumablesCost) {
 		updateBank.itemCostBank.add(consumablesCost.itemCost);
+		timeToFinish = Math.floor(consumablesCost.timeToFinish);
+		if (consumablesCost?.boosts) {
+			messages.push(...consumablesCost.boosts.map(m => m.message));
+		}
 	}
+	const maxBasedOnTime = Math.floor(maxTripLength / timeToFinish);
 
-	const finalQuantity = consumablesCost?.finalQuantity ?? consumablesQuantity;
+	let finalQuantity = clamp(consumablesCost?.finalQuantity ?? inputQuantity ?? maxBasedOnTime, 1, maxBasedOnTime);
+	if (args.killsRemaining && finalQuantity > args.killsRemaining) {
+		finalQuantity = args.killsRemaining;
+	}
 
 	const result = schema.parse({
 		timeToFinish,
