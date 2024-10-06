@@ -163,7 +163,7 @@ export async function updateClientGPTrackSetting(
 		},
 		data: {
 			[setting]: {
-				increment: amount
+				increment: Math.floor(amount)
 			}
 		},
 		select: {
