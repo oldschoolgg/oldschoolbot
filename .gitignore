@@ -12,6 +12,8 @@ icon_cache/
 queries.txt
 /logs
 
+.yarn
+
 npm-debug.log*
 
 # Runtime data
@@ -46,3 +48,4 @@ tests/**/*.tsbuildinfo
 overallItemsNotCheckedFor.txt
 *.diff
 item/
+tmp

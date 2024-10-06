@@ -1,7 +1,5 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters } from 'oldschooljs';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import { itemID, itemTupleToTable } from 'oldschooljs/dist/util';
+import { Bank, LootTable, Monsters, RareDropTable, itemID, itemTupleToTable } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
@@ -21,6 +19,7 @@ function neemCost(extraCost?: Bank) {
 }
 
 const FrostDragon: CustomMonster = {
+	isCustom: true,
 	id: 345_232,
 	baseMonster: Monsters.LavaDragon,
 	name: 'Frost Dragon',
@@ -80,6 +79,7 @@ const FrostDragon: CustomMonster = {
 };
 
 const RumPumpedCrab: CustomMonster = {
+	isCustom: true,
 	id: 918_501,
 	baseMonster: Monsters.BrineRat,
 	name: 'Rum-pumped crab',
@@ -104,6 +104,7 @@ const RumPumpedCrab: CustomMonster = {
 };
 
 const FungalRodent: CustomMonster = {
+	isCustom: true,
 	id: 669_279,
 	baseMonster: Monsters.BrineRat,
 	name: 'Fungal Rodent',
@@ -131,6 +132,7 @@ const FungalRodent: CustomMonster = {
 };
 
 const InfestedAxe: CustomMonster = {
+	isCustom: true,
 	id: 194_820,
 	baseMonster: Monsters.AbyssalDemon,
 	name: 'Infested axe',
@@ -158,6 +160,7 @@ const InfestedAxe: CustomMonster = {
 };
 
 const FungalMage: CustomMonster = {
+	isCustom: true,
 	id: 341_749,
 	baseMonster: Monsters.AbyssalDemon,
 	name: 'Fungal mage',
@@ -189,6 +192,7 @@ const FungalMage: CustomMonster = {
 };
 
 const Grifolaroo: CustomMonster = {
+	isCustom: true,
 	id: 819_581,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Grifolaroo',
@@ -225,6 +229,7 @@ const Grifolaroo: CustomMonster = {
 };
 
 const Grifolapine: CustomMonster = {
+	isCustom: true,
 	id: 721_932,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Grifolapine',
@@ -255,6 +260,7 @@ const Grifolapine: CustomMonster = {
 };
 
 const GanodermicRunt: CustomMonster = {
+	isCustom: true,
 	id: 129_129,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Ganodermic Runt',
@@ -290,6 +296,7 @@ const GanodermicRunt: CustomMonster = {
 };
 
 const GanodermicBeast: CustomMonster = {
+	isCustom: true,
 	id: 194_825,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Ganodermic Beast',

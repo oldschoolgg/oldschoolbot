@@ -1,6 +1,5 @@
 import { Time, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions';

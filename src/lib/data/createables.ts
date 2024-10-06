@@ -1,5 +1,5 @@
 import { isFunction, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 
 import { BitField, discontinuedItems } from '../constants';
 import { allDyedItems } from '../dyedItems';
@@ -2417,6 +2417,60 @@ const Createables: Createable[] = [
 		name: "Dizana's max cape",
 		inputItems: new Bank().add("Blessed dizana's quiver").add('Max cape').add('Max hood').freeze(),
 		outputItems: new Bank().add("Dizana's max cape").add("Dizana's max hood").freeze()
+	},
+	{
+		name: 'Noxious halberd',
+		inputItems: new Bank().add('Noxious point').add('Noxious blade').add('Noxious pommel').freeze(),
+		outputItems: new Bank().add('Noxious halberd').freeze(),
+		requiredSkills: {
+			smithing: 72,
+			crafting: 72
+		}
+	},
+	{
+		name: 'Araxyte slayer helmet',
+		inputItems: new Bank().add('Slayer helmet').add('Araxyte head').freeze(),
+		outputItems: new Bank().add('Araxyte slayer helmet').freeze()
+	},
+	{
+		name: 'Araxyte slayer helmet (i)',
+		inputItems: new Bank().add('Slayer helmet (i)').add('Araxyte head').freeze(),
+		outputItems: new Bank().add('Araxyte slayer helmet (i)').freeze()
+	},
+	{
+		name: 'Rax',
+		inputItems: new Bank().add('Coagulated venom').add('Nid').freeze(),
+		outputItems: new Bank().add('Rax').freeze()
+	},
+	{
+		name: 'Revert Rax',
+		inputItems: new Bank().add('Rax').freeze(),
+		outputItems: new Bank().add('Coagulated venom').add('Nid').freeze(),
+		noCl: true
+	},
+	{
+		name: 'Amulet of rancour (s)',
+		inputItems: new Bank().add('Amulet of rancour').freeze(),
+		outputItems: new Bank().add('Amulet of rancour (s)').freeze(),
+		customReq: async user => {
+			const requiredItems = resolveItems([
+				'Amulet of rancour',
+				'Aranea boots',
+				'Araxyte slayer helmet',
+				'Noxious halberd',
+				'Rax'
+			]);
+			if (!requiredItems.every(item => user.owns(item))) {
+				return `You need to own all these items to create the Amulet of rancour (s): ${requiredItems.map(item => itemNameFromID(item)).join(', ')}.`;
+			}
+			return null;
+		}
+	},
+	{
+		name: 'Revert Amulet of rancour (s)',
+		inputItems: new Bank().add('Amulet of rancour (s)').freeze(),
+		outputItems: new Bank().add('Amulet of rancour').freeze(),
+		noCl: true
 	},
 	...Reverteables,
 	...crystalTools,

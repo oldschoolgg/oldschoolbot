@@ -1,5 +1,4 @@
-import RareSeedTable from 'oldschooljs/dist/simulation/subtables/RareSeedTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable, RareSeedTable } from 'oldschooljs';
 
 const clueTable = new LootTable()
 	.add('Clue scroll (master)', [1, 3], 1)

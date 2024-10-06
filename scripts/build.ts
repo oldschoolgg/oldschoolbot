@@ -7,11 +7,11 @@ import fg from 'fast-glob';
 
 import { production } from '../src/config';
 import { BOT_TYPE } from '../src/lib/constants';
+import { customItems } from '../src/lib/customItems/util.js';
 import { getSystemInfo } from '../src/lib/systemInfo';
+import { itemNameFromID } from '../src/lib/util.js';
 import { renderCreatablesFile } from './renderCreatablesFile.js';
 import { execAsync, runTimedLoggedFn } from './scriptUtil.js';
-import { customItems } from '../src/lib/customItems/util.js';
-import { itemNameFromID } from '../src/lib/util.js';
 
 const args = process.argv.slice(2);
 
@@ -105,7 +105,7 @@ async function handleTypescriptCompilation() {
 }
 
 async function handleCommandsJSON() {
-	const cmdFile = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
+	const cmdFile = `data/${BOT_TYPE.toLowerCase()}.commands.json`;
 	const currentFileHash = getFileHash(cmdFile);
 	if (currentFileHash === null || currentCache.commandsHash !== currentFileHash) {
 		console.log('   Updating commands json file');
@@ -127,10 +127,22 @@ async function main() {
 	await runTimedLoggedFn('Typescript Compilation', handleTypescriptCompilation);
 	await runTimedLoggedFn('Post Build', () => Promise.all([handleCommandsJSON()]));
 	renderCreatablesFile();
-	writeFileSync('data/bso_items.json', JSON.stringify(customItems.reduce((acc, id) => {
-	acc[id] = itemNameFromID(id)!;
-	return acc;
-}, {} as Record<number, string>), null, 4), 'utf-8');
+	writeFileSync(
+		'data/bso_items.json',
+		JSON.stringify(
+			customItems.reduce(
+				(acc, id) => {
+					acc[id] = itemNameFromID(id)!;
+					return acc;
+				},
+				{} as Record<number, string>
+			),
+			null,
+			4
+		),
+		'utf-8'
+	);
+	await execAsync('yarn lint');
 }
 
 runTimedLoggedFn('Build', main);

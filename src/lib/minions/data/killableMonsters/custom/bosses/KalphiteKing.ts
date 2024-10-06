@@ -1,6 +1,6 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { kalphiteKingCL } from '../../../../../data/CollectionsExport';
 import { GearStat } from '../../../../../gear';

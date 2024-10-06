@@ -1,6 +1,4 @@
-import { Monsters } from 'oldschooljs';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable, Monsters, RareDropTable } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../../../bsoOpenables';
 import setCustomMonster from '../../../../../util/setCustomMonster';

@@ -443,5 +443,15 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	...bossTasks,
-	...polyporeTasks
+	...polyporeTasks,
+	{
+		monster: Monsters.Araxyte,
+		amount: [40, 60],
+		weight: 8,
+		monsters: [Monsters.Araxyte.id, Monsters.Araxxor.id],
+		combatLevel: 96,
+		unlocked: true,
+		slayerLevel: 92
+	},
+	...bossTasks
 ];

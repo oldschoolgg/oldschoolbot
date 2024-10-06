@@ -35,7 +35,7 @@ const manualIDs = [
 	29572, 29573, 29574, 29577, 29580, 29583, 29585, 29587, 29589, 29591, 29594, 29596, 29598, 29599, 29602, 29605,
 	29607, 29609, 29611, 29613, 29615, 29617, 29619, 29622, 29625, 29628, 29631, 29634, 29637, 29640, 29643, 29648,
 	29649, 29651, 29652, 29654, 29655, 29657, 29658, 29660, 29661, 29663, 29664, 29666, 29667, 29669, 29670, 29672,
-	29673, 29675, 29676, 29678, 29679, 29684
+	29673, 29675, 29676, 29678, 29679, 29684, 29920, 29912
 ];
 const trades = Items.filter(i => Boolean(i.tradeable_on_ge)).map(i => i.id);
 const itemsMustBeInSpritesheet: number[] = uniqueArr([
@@ -92,11 +92,12 @@ async function makeSpritesheet(
 ) {
 	try {
 		const pngFiles = await getPngFiles(iconsDir);
+		console.log(`Found ${pngFiles.length} PNG files in the directory`);
 		if (pngFiles.length === 0) {
 			throw new Error('No PNG files found in the directory');
 		}
 
-		const filesToDo = [];
+		const filesToDo: string[] = [];
 		if (!allItems) allItems = pngFiles.map(file => Number.parseInt(path.basename(file, '.png')));
 		for (const id of allItems) {
 			if (!pngFiles.some(file => file.endsWith(`${id}.png`))) {
@@ -113,20 +114,22 @@ async function makeSpritesheet(
 		const jsonData = generateJsonData(result);
 		await fs.writeFile(outputJsonFilePath, JSON.stringify(jsonData, null, 2));
 		console.log('Spritesheet and JSON created successfully!');
-		process.exit(0);
 	} catch (error) {
 		console.error('Error creating spritesheet:', error);
 	}
 }
 
 makeSpritesheet(
-	'./item/icon',
+	'./tmp/icons',
 	'./src/lib/resources/images/spritesheet.png',
 	'./src/lib/resources/images/spritesheet.json',
 	itemsMustBeInSpritesheet
-);
-makeSpritesheet(
-	'./src/lib/resources/images/bso_icons',
-	'./src/lib/resources/images/bso_spritesheet.png',
-	'./src/lib/resources/images/bso_spritesheet.json'
-);
+)
+	.then(() => {
+		makeSpritesheet(
+			'./src/lib/resources/images/bso_icons',
+			'./src/lib/resources/images/bso_spritesheet.png',
+			'./src/lib/resources/images/bso_spritesheet.json'
+		);
+	})
+	.then(() => process.exit());

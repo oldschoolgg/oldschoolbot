@@ -116,7 +116,7 @@ import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOf
 import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
-import { minionActivityCache } from './constants';
+import { globalConfig, minionActivityCache } from './constants';
 import { sql } from './postgres';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
@@ -239,8 +239,9 @@ const tasks: MinionTask[] = [
 ];
 
 export async function processPendingActivities() {
-	const activities: Activity[] =
-		await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`;
+	const activities: Activity[] = globalConfig.isProduction
+		? await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
+		: await sql`SELECT * FROM activity WHERE completed = false;`;
 
 	if (activities.length > 0) {
 		await prisma.activity.updateMany({

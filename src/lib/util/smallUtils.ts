@@ -5,7 +5,7 @@ import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import type { InteractionReplyOptions } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { clamp, objectEntries, roll } from 'e';
-import { Bank, Items, LootTable } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
 import { MersenneTwister19937, shuffle } from 'random-js';
@@ -157,22 +157,6 @@ export function calculateSimpleMonsterDeathChance({
 	const reductionFactor = Math.min(1, currentKC / maxScalingKC);
 	const deathChance = baseDeathChance - reductionFactor * (baseDeathChance - lowestDeathChance);
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
-}
-
-export function removeItemsFromLootTable(lootTable: LootTable, itemsToRemove: number[]): void {
-	const filterFunction = (item: any) => !itemsToRemove.includes(item);
-
-	lootTable.table = lootTable.table.filter(item => filterFunction(item.item));
-	lootTable.oneInItems = lootTable.oneInItems.filter(item => filterFunction(item.item));
-	lootTable.tertiaryItems = lootTable.tertiaryItems.filter(item => filterFunction(item.item));
-	lootTable.everyItems = lootTable.everyItems.filter(item => filterFunction(item.item));
-	lootTable.allItems = lootTable.allItems.filter(filterFunction);
-
-	for (const item of lootTable.table) {
-		if (item.item instanceof LootTable) {
-			removeItemsFromLootTable(item.item, itemsToRemove);
-		}
-	}
 }
 
 export function perHourChance(

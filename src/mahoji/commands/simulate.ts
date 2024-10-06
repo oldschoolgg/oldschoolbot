@@ -2,14 +2,14 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, averageBank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { PerkTier } from '@oldschoolgg/toolkit';
 import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
 import pets from '../../lib/data/pets';
-import { assert, averageBank, formatDuration } from '../../lib/util';
+import { assert, formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import type { OSBMahojiCommand } from '../lib/util';

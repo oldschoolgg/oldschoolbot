@@ -1,11 +1,10 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, Clues, type Item, Monsters } from 'oldschooljs';
-
-import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
-import type Monster from 'oldschooljs/dist/structures/Monster';
-
+import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { divinationEnergies, portents } from '../bso/divination';
-import { type ClueTier, ClueTiers } from '../clues/clueTiers';
+import type { ClueTier } from '../clues/clueTiers';
+import { ClueTiers } from '../clues/clueTiers';
 import type { CollectionLogType } from '../collectionLogTask';
 import { OSB_VIRTUS_IDS, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { discontinuedDyes, dyedItems } from '../dyedItems';
@@ -47,9 +46,7 @@ import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
-import { stringMatches } from '../util';
 import getOSItem from '../util/getOSItem';
-import resolveItems from '../util/resolveItems';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {
@@ -59,6 +56,7 @@ import {
 	akumuCL,
 	alchemicalHydraCL,
 	allPetsCL,
+	araxxorCL,
 	balthazarsBigBonanzaCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
@@ -243,6 +241,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.AlchemicalHydra.allItems,
 				items: alchemicalHydraCL,
 				fmtProg: kcProg(Monsters.AlchemicalHydra)
+			},
+			Araxxor: {
+				alias: [...Monsters.Araxxor.aliases, 'rax'],
+				allItems: uniqueArr([...araxxorCL, ...Monsters.Araxxor.allItems]),
+				items: araxxorCL,
+				fmtProg: kcProg(Monsters.Araxxor)
 			},
 			'Barrows Chests': {
 				alias: Monsters.Barrows.aliases,
@@ -945,7 +949,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Grandmaster Treasure Trails': {
 				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
-				allItems: GrandmasterClueTable.table.allItems,
+				allItems: GrandmasterClueTable.allItems,
 				kcActivity: {
 					Default: async (_, __, { openableScores }) => openableScores.amount(19_838)
 				},

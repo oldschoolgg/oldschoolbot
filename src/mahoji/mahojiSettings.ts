@@ -1,7 +1,7 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { isObject, notEmpty, objectEntries, round } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
@@ -26,7 +26,7 @@ import {
 	readableStatName
 } from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
-import resolveItems from '../lib/util/resolveItems';
+import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
 
 export function mahojiParseNumber({
 	input,
@@ -344,9 +344,19 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	}
 
 	if (monster.itemCost) {
-		const cost = new Bank(monster.itemCost.itemCost);
-		if (!user.bank.has(cost)) {
-			return [false, `You don't have the items needed to kill this monster. You need: ${cost}.`];
+		const timeToFinish = monster.timeToFinish;
+		const consumablesCost = getItemCostFromConsumables({
+			consumableCosts: Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost],
+			gearBank: user.gearBank,
+			inputQuantity: 1,
+			timeToFinish,
+			maxTripLength: timeToFinish * 1.5
+		});
+		if (consumablesCost && !user.bank.has(consumablesCost.itemCost)) {
+			return [
+				false,
+				`You don't have the items needed to kill this monster. You're missing: ${consumablesCost.itemCost.clone().remove(user.bank)}.`
+			];
 		}
 	}
 

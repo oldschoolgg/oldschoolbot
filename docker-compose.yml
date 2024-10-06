@@ -10,18 +10,24 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGPORT: 5435
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    restart: always
+    environment:
+      - REDIS_PORT=6379
+    ports:
+      - "6379:6379"
 
   app:
     build:
       context: .
+      dockerfile: Dockerfile
+      target: build-run
     depends_on:
       - db
+      - redis
     environment:
       ROBOCHIMP_DATABASE_URL: postgresql://postgres:postgres@db:5435/robochimp_integration_test?connection_limit=10&pool_timeout=0&schema=public
       DATABASE_URL: postgresql://postgres:postgres@db:5435/bso_integration_test?connection_limit=10&pool_timeout=0&schema=public
-      WAIT_HOSTS: db:5435
-
-volumes:
-  postgres_data:
+      WAIT_HOSTS: db:5435, redis:6379

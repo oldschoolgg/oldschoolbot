@@ -81,6 +81,7 @@ import {
 } from '../../lib/util/tameUtil';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
+import { getItemCostFromConsumables } from '../lib/abstracted_commands/minionKill/handleConsumables';
 import { collectables } from '../lib/collectables';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -576,7 +577,9 @@ export async function removeRawFood({
 	healPerAction,
 	monster,
 	quantity,
-	tame
+	tame,
+	timeToFinish,
+	maxTripLength
 }: {
 	user: MUser;
 	totalHealingNeeded: number;
@@ -585,6 +588,8 @@ export async function removeRawFood({
 	monster: TameKillableMonster;
 	quantity: number;
 	tame: Tame;
+	timeToFinish: number;
+	maxTripLength: number;
 }): Promise<{ success: false; str: string } | { success: true; str: string; removed: Bank }> {
 	totalHealingNeeded = increaseNumByPercent(totalHealingNeeded, 25);
 	healPerAction = increaseNumByPercent(healPerAction, 25);
@@ -622,12 +627,15 @@ export async function removeRawFood({
 	}
 	const itemCost = foodToRemove;
 	if (monster.itemCost) {
-		if (monster.itemCost.qtyPerKill) {
-			for (const [item, qty] of monster.itemCost.itemCost.items()) {
-				itemCost.add(item.id, Math.ceil(qty * monster.itemCost.qtyPerKill * quantity));
-			}
-		} else {
-			itemCost.add(monster.itemCost.itemCost.clone().multiply(quantity));
+		const costs = getItemCostFromConsumables({
+			consumableCosts: Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost],
+			gearBank: user.gearBank,
+			timeToFinish,
+			maxTripLength,
+			inputQuantity: quantity
+		});
+		if (costs?.itemCost) {
+			itemCost.add(costs?.itemCost);
 		}
 	}
 	if (!user.owns(itemCost)) {
@@ -1035,7 +1043,9 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		user,
 		monster,
 		quantity,
-		tame
+		tame,
+		timeToFinish: speed,
+		maxTripLength
 	});
 	if (!foodRes.success) {
 		return foodRes.str;

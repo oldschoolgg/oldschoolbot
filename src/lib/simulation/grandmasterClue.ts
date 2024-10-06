@@ -1,9 +1,6 @@
-import { Bank } from 'oldschooljs';
-import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
+import { EliteClueTable, LootTable } from 'oldschooljs/dist/simulation/clues/Elite';
 import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import Clue from 'oldschooljs/dist/structures/Clue';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { LampTable } from '../xpLamps';
 import { AllBarrows, BattlestaffTable, CosmeticsTable, StaffOrbTable, runeAlchablesTable } from './sharedTables';
@@ -98,16 +95,4 @@ const table = new LootTable()
 	.add(LogsTable, 2)
 	.add(Supplies, 1, 5);
 
-const RawTable = new LootTable().every(table, [5, 11]);
-
-class GrandmasterClue extends Clue {
-	open(quantity: number, targetBank?: undefined): Bank;
-	open(quantity: number, targetBank: Bank): null;
-	open(quantity: number, targetBank?: Bank | undefined): Bank | null {
-		const loot = targetBank ?? new Bank();
-		RawTable.roll(quantity, { targetBank: loot });
-		return loot;
-	}
-}
-
-export const GrandmasterClueTable = new GrandmasterClue({ table });
+export const GrandmasterClueTable = new LootTable().every(table, [5, 11]);

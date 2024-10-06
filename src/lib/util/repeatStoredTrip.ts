@@ -192,7 +192,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.AgilityArena]: {
 		commandName: 'minigames',
-		args: () => ({ agility_arena: { start: {} } })
+		args: (data: ActivityTaskOptionsWithQuantity) => ({ agility_arena: { start: { quantity: data.quantity } } })
 	},
 	[activity_type_enum.Alching]: {
 		commandName: 'activities',
@@ -523,15 +523,17 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Raids]: {
 		commandName: 'raid',
-		args: (data: RaidsOptions) => ({
-			cox: {
-				start: {
-					challenge_mode: data.challengeMode,
-					type: data.users.length === 1 ? 'solo' : 'mass',
-					quantity: data.quantity
+		args: (data: RaidsOptions) => {
+			return {
+				cox: {
+					start: {
+						challenge_mode: data.challengeMode,
+						max_team_size: data.maxSizeInput,
+						quantity: data.quantity
+					}
 				}
-			}
-		})
+			};
+		}
 	},
 	[activity_type_enum.RoguesDenMaze]: {
 		commandName: 'minigames',
