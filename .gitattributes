@@ -20,6 +20,7 @@
 LICENSE text
 AUTHORS text
 
+*.webp   -text diff
 *.ttf     -text diff
 *.eot     -text diff
 *.woff    -text diff

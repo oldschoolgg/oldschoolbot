@@ -9,7 +9,7 @@ interface Author {
 }
 const authors: Author[] = [
 	{ gitIDs: ['gc'], displayName: 'Magnaboy', avatar: 'gc.gif' },
-	{ gitIDs: ['nwjgit'], displayName: 'Jonesey', avatar: 'nwjgit.webp' },
+	{ gitIDs: ['nwjgit'], displayName: 'Jonesey', avatar: 'nwjgit.jpg' },
 	{ gitIDs: ['Arodab'], displayName: 'Arodab' },
 	{ gitIDs: ['DaughtersOfNyx'], displayName: 'Keres' }
 ];
