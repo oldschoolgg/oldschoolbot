@@ -177,10 +177,11 @@ export const courses: Course[] = [
 	{
 		id: 15,
 		name: 'Colossal Wyrm Agility Course',
-		aliases: ['colossal wyrm', 'colo', 'wyrm'],
+		aliases: ['colossal wyrm agility course', 'colossal wyrm', 'colo', 'wyrm'],
 		level: 50,
-		xp: agilLevel => (agilLevel >= 62 ? 520 : 650),
+		xp: agilLevel => (agilLevel >= 62 ? 650 : 520),
 		lapTime: 60,
+		cantFail: true,
 		petChance: 50_000, //TODO: Update with real rate when it's confirmed
 		requiredQuests: [QuestID.ChildrenOfTheSun]
 	}

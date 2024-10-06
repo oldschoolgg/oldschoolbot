@@ -1599,13 +1599,13 @@ export const chompyBirdsCL = resolveItems([
 ]);
 export const colossalWyrmAgilityCL = resolveItems([
 	'Colossal wyrm teleport scroll',
-	'Calcified acron',
-	'Valarmore Graceful hood',
-	'Valarmore Graceful top',
-	'Valarmore Graceful legs',
-	'Valarmore Graceful gloves',
-	'Valarmore Graceful boots',
-	'Valarmore Graceful cape'
+	'Calcified acorn',
+	'Varlamore graceful hood',
+	'Varlamore graceful top',
+	'Varlamore graceful legs',
+	'Varlamore graceful gloves',
+	'Varlamore graceful boots',
+	'Varlamore graceful cape'
 ]);
 export const creatureCreationCL = resolveItems([
 	'Tea flask',

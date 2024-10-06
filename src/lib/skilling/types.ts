@@ -131,6 +131,7 @@ export interface Course {
 	xp: number | ((agilityLevel: number) => number);
 	marksPer60?: number;
 	lapTime: number;
+	cantFail?: boolean;
 	petChance: number;
 	aliases: string[];
 	qpRequired?: number;

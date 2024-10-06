@@ -1,11 +1,9 @@
-import { Time, increaseNumByPercent, randInt, roll } from 'e';
+import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { bold } from 'discord.js';
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { quests } from '../../lib/minions/data/quests';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
@@ -32,28 +30,20 @@ export const agilityTask: MinionTask = {
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 		const course = Agility.Courses.find(course => course.name === courseID)!;
 
-		// Check for quest requirements
-		if (course.requiredQuests) {
-			const incompleteQuest = course.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
-			if (incompleteQuest) {
-				return `You need to have completed the ${bold(
-					quests.find(i => i.id === incompleteQuest)!.name
-				)} quest to attempt the ${course.name} agility course.`;
-			}
-		}
-
 		// Calculate failed laps
 		let lapsFailed = 0;
-		if (course.name === 'Agility Pyramid') {
-			for (let t = 0; t < quantity; t++) {
-				if (randInt(1, 100) < chanceOfFailingAgilityPyramid(user)) {
-					lapsFailed += 1;
+		if (!course.cantFail) {
+			if (course.name === 'Agility Pyramid') {
+				for (let t = 0; t < quantity; t++) {
+					if (randInt(1, 100) < chanceOfFailingAgilityPyramid(user)) {
+						lapsFailed += 1;
+					}
 				}
-			}
-		} else {
-			for (let t = 0; t < quantity; t++) {
-				if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
-					lapsFailed += 1;
+			} else {
+				for (let t = 0; t < quantity; t++) {
+					if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
+						lapsFailed += 1;
+					}
 				}
 			}
 		}
@@ -99,12 +89,13 @@ export const agilityTask: MinionTask = {
 		if (course.name === 'Prifddinas Rooftop Course') {
 			loot.add('Crystal shard', quantity); // 1 shard per lap
 		}
-		if (course.name === 'Colossal Wyrm') {
+		if (course.name === 'Colossal Wyrm Agility Course') {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(3)) {
-					//TODO: 1/3 is the unconfirmed rate
 					loot.add('termites', randInt(8, 10));
-					loot.add('blessed bone shards', randInt(22, 28));
+					if (percentChance(75)) {
+						loot.add('blessed bone shards', randInt(22, 28));
+					}
 				}
 			}
 		}

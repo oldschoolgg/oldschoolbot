@@ -708,14 +708,6 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "itemCost": {
-      "20659": 1,
-      "24733": 1,
-    },
-    "name": "Dark squirrel",
-    "outputItems": undefined,
-  },
-  {
     "gpCost": 5000,
     "itemCost": {},
     "name": "Bolt of cloth",
@@ -4144,6 +4136,42 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
+    "itemCost": {
+      "30038": 100,
+    },
+    "name": "Amylase pack (Colossal Wyrm Agility)",
+    "outputItems": {
+      "12641": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "30038": 40,
+    },
+    "name": "Colossal wyrm teleport scroll",
+    "outputItems": {
+      "30040": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "30038": 650,
+    },
+    "name": "Graceful crafting kit",
+    "outputItems": {
+      "30044": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "30038": 900,
+    },
+    "name": "Calcified acorn",
+    "outputItems": {
+      "30042": 1,
+    },
+  },
+  {
     "gpCost": 1320,
     "itemCost": {},
     "minigameScoreReq": [
@@ -6687,6 +6715,28 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "13392": 1,
+    },
+    "name": "Revert xeric's talisman (inert)",
+    "noCl": true,
+    "outputItems": {
+      "13391": 100,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "28947": 1,
+    },
+    "name": "Revert Dizana's quiver (uncharged)",
+    "noCl": true,
+    "outputItems": {
+      "28924": 4000,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "21750": 1,
     },
     "name": "Revert midnight",
@@ -6780,23 +6830,25 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
-      "13392": 1,
+      "24701": 1,
     },
-    "name": "Revert xeric's talisman (inert)",
+    "name": "Revert Dark squirrel",
     "noCl": true,
     "outputItems": {
-      "13391": 100,
+      "20659": 1,
+      "24733": 1,
     },
   },
   {
     "cantHaveItems": undefined,
     "inputItems": {
-      "28947": 1,
+      "30151": 1,
     },
-    "name": "Revert Dizana's quiver (uncharged)",
+    "name": "Revert Bone Squirrel",
     "noCl": true,
     "outputItems": {
-      "28924": 4000,
+      "20659": 1,
+      "30042": 1,
     },
   },
   {
@@ -8191,6 +8243,28 @@ exports[`OSB Creatables 1`] = `
     "name": "Greatish guardian",
     "outputItems": {
       "26899": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20659": 1,
+      "24733": 1,
+    },
+    "name": "Dark squirrel",
+    "outputItems": {
+      "24701": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20659": 1,
+      "30042": 1,
+    },
+    "name": "Bone Squirrel",
+    "outputItems": {
+      "30151": 1,
     },
   },
   {
@@ -13369,6 +13443,48 @@ exports[`OSB Creatables 1`] = `
     "noCl": true,
     "outputItems": {
       "11852": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11850": 1,
+      "11852": 1,
+      "11854": 1,
+      "11856": 1,
+      "11858": 1,
+      "11860": 1,
+      "30044": 1,
+    },
+    "name": "Varlamore graceful outfit",
+    "outputItems": {
+      "30045": 1,
+      "30048": 1,
+      "30051": 1,
+      "30054": 1,
+      "30057": 1,
+      "30060": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30045": 1,
+      "30048": 1,
+      "30051": 1,
+      "30054": 1,
+      "30057": 1,
+      "30060": 1,
+    },
+    "name": "Revert Varlamore graceful outfit",
+    "noCl": true,
+    "outputItems": {
+      "11850": 1,
+      "11852": 1,
+      "11854": 1,
+      "11856": 1,
+      "11858": 1,
+      "11860": 1,
     },
   },
   {

@@ -51,7 +51,7 @@ export const gracefulFeet = [
 	'Brimhaven graceful boots',
 	'Dark graceful boots',
 	'Trailblazer graceful boots',
-	'Varlamore graceful feet'
+	'Varlamore graceful boots'
 ];
 
 export const gracefulHands = [

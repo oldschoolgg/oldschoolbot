@@ -700,16 +700,6 @@ const metamorphPets: Createable[] = [
 		}
 	},
 	{
-		name: 'Bone Squirrel',
-		inputItems: {
-			[itemID('Calcified acorn')]: 1,
-			[itemID('Giant squirrel')]: 1
-		},
-		outputItems: {
-			[itemID('Bone squirrel')]: 1
-		}
-	},
-	{
 		name: 'Dark squirrel',
 		inputItems: {
 			[itemID('Dark acorn')]: 1,
@@ -717,6 +707,16 @@ const metamorphPets: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Dark squirrel')]: 1
+		}
+	},
+	{
+		name: 'Bone Squirrel',
+		inputItems: {
+			[itemID('Calcified acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Bone squirrel')]: 1
 		}
 	}
 ];
@@ -808,23 +808,23 @@ const revertMetamorphPets: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Revert Bone Squirrel',
-		inputItems: {
-			[itemID('Bone squirrel')]: 1
-		},
-		outputItems: {
-			[itemID('Calcified acorn')]: 1,
-			[itemID('Giant squirrel')]: 1
-		},
-		noCl: true
-	},
-	{
 		name: 'Revert Dark squirrel',
 		inputItems: {
 			[itemID('Dark squirrel')]: 1
 		},
 		outputItems: {
 			[itemID('Dark acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Bone Squirrel',
+		inputItems: {
+			[itemID('Bone squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Calcified acorn')]: 1,
 			[itemID('Giant squirrel')]: 1
 		},
 		noCl: true

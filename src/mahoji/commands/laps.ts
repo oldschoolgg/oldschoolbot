@@ -1,8 +1,9 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
@@ -128,6 +129,16 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		if (course.qpRequired && user.QP < course.qpRequired) {
 			return `You need at least ${course.qpRequired} Quest Points to do this course.`;
+		}
+
+		// Check for quest requirements
+		if (course.requiredQuests) {
+			const incompleteQuest = course.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to attempt the ${course.name} agility course.`;
+			}
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Agility');
