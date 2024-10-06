@@ -5,10 +5,11 @@ const execAsync = promisify(exec);
 interface Author {
 	gitIDs: string[];
 	displayName: string;
+	avatar?: string;
 }
 const authors: Author[] = [
-	{ gitIDs: ['gc'], displayName: 'Magnaboy' },
-	{ gitIDs: ['nwjgit'], displayName: 'Jonesey' },
+	{ gitIDs: ['gc'], displayName: 'Magnaboy', avatar: 'gc.gif' },
+	{ gitIDs: ['nwjgit'], displayName: 'Jonesey', avatar: 'nwjgit.webp' },
 	{ gitIDs: ['Arodab'], displayName: 'Arodab' },
 	{ gitIDs: ['DaughtersOfNyx'], displayName: 'Keres' }
 ];
