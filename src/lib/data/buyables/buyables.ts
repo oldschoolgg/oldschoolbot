@@ -833,9 +833,9 @@ const Buyables: Buyable[] = [
 		gpCost: 400
 	},
 	{
-		name: 'Amylase pack',
+		name: 'Amylase pack (Mark of grace)',
 		outputItems: new Bank({
-			'Amylase crystal': 100
+			'Amylase pack': 1
 		}),
 		itemCost: new Bank({ 'Mark of grace': 10 })
 	},

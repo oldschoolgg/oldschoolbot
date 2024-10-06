@@ -141,9 +141,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {
       "11849": 10,
     },
-    "name": "Amylase pack",
+    "name": "Amylase pack (Mark of grace)",
     "outputItems": {
-      "12640": 100,
+      "12641": 1,
     },
   },
   {
