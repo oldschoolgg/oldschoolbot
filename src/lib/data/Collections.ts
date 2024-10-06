@@ -391,7 +391,7 @@ export const allCollectionLogs: ICollection = {
 					`${stats.kcBank[Monsters.AwakenedTheLeviathan.id] ?? 0} Awakened KC`
 				]
 			},
-			'Vardorvis': {
+			Vardorvis: {
 				alias: ['vardorvis'],
 				kcActivity: {
 					Default: [Monsters.Vardorvis.name, Monsters.AwakenedVardorvis.name],
@@ -1537,7 +1537,7 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TheWhisperer.allItems,
 					...Monsters.Vardorvis.allItems,
 					...Monsters.DukeSucellus.allItems
-				].filter(item => !OSB_VIRTUS_IDS.includes(item)),						
+				].filter(item => !OSB_VIRTUS_IDS.includes(item)),
 				items: [...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL]
 			},
 			Creatables: {
