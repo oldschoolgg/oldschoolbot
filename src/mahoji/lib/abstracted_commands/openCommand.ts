@@ -135,7 +135,7 @@ async function finalizeOpening({
 	const response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`,
+${messages.join(', ')}`.trim(),
 		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
