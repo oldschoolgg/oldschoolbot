@@ -308,7 +308,8 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			gearBank: user.gearBank,
 			inputQuantity: 1,
 			timeToFinish,
-			maxTripLength: timeToFinish * 1.5
+			maxTripLength: timeToFinish * 1.5,
+			slayerKillsRemaining: null
 		});
 		if (consumablesCost && !user.bank.has(consumablesCost.itemCost)) {
 			return [
