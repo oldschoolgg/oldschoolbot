@@ -163,7 +163,7 @@ export async function updateClientGPTrackSetting(
 		},
 		data: {
 			[setting]: {
-				increment: amount
+				increment: Math.floor(amount)
 			}
 		},
 		select: {
@@ -317,13 +317,29 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			gearBank: user.gearBank,
 			inputQuantity: 1,
 			timeToFinish,
-			maxTripLength: timeToFinish * 1.5
+			maxTripLength: timeToFinish * 1.5,
+			slayerKillsRemaining: null
 		});
-		if (consumablesCost && !user.bank.has(consumablesCost.itemCost)) {
-			return [
-				false,
-				`You don't have the items needed to kill this monster. You're missing: ${consumablesCost.itemCost.clone().remove(user.bank)}.`
-			];
+		if (consumablesCost.itemCost && !user.bank.has(consumablesCost.itemCost)) {
+			const items = Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost];
+			const messages: string[] = [];
+			for (const group of items) {
+				if (group.optional) continue;
+				if (user.owns(group.itemCost)) {
+					continue;
+				}
+				if (group.alternativeConsumables?.some(alt => user.owns(alt.itemCost))) {
+					continue;
+				}
+				messages.push(
+					`This monster requires: ${group.itemCost.items().map(i => i[0].name)}${
+						group.alternativeConsumables
+							? `, OR ${group.alternativeConsumables?.map(alt => alt.itemCost.items().map(i => i[0].name)).join(', ')}`
+							: '.'
+					}`
+				);
+			}
+			return [false, `You don't have the items needed to kill this monster. ${messages.join(' ')}`];
 		}
 	}
 
