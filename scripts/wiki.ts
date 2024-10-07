@@ -10,13 +10,13 @@ import { sorts } from '../src/lib/sorts';
 import { Bank, Monsters, itemNameFromID, toTitleCase } from '../src/lib/util';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
 
+import { BankImageTask } from '../src/lib/bankImage';
 import { generateGearImage } from '../src/lib/gear/functions/generateGearImage';
 import type { GearSetupType } from '../src/lib/gear/types';
-import { BankImageTask } from '../src/lib/bankImage';
 
 async function generateGearImages() {
 	const bankImageTask = new BankImageTask();
-    global.bankImageGenerator = bankImageTask; 
+	global.bankImageGenerator = bankImageTask;
 
 	for (const { name, gear, setup, pet } of gearSetupsForWIKI) {
 		const imageBuffer = await generateGearImage(undefined, gear, setup as GearSetupType, pet.id);
@@ -344,8 +344,7 @@ function rendeCoxMarkdown() {
 	] as const) {
 		markdown.addLine(`### ${toTitleCase(gear[0])}`);
 		markdown.addLine(`For ${gear[0]}, use these items, or the next best '${gear[1]}' gear you have:`);
-		markdown.addLine(
-			`![${gear[2]}](../../../gearImages/${gear[2]}.png)`);
+		markdown.addLine(`![${gear[2]}](../../../gearImages/${gear[2]}.png)`);
 	}
 
 	markdown.addLine('## Boosts');

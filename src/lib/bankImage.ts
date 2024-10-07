@@ -273,7 +273,6 @@ export const bankFlags = [
 export type BankFlag = (typeof bankFlags)[number];
 
 export class BankImageTask {
-
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, CanvasImage>;
 	public backgroundImages: BankBackground[] = [];
@@ -285,7 +284,6 @@ export class BankImageTask {
 	public ready!: Promise<void>;
 	public spriteSheetImage!: CanvasImage;
 	public spriteSheetData!: Record<string, [number, number, number, number]>;
-	public bankImageGenerator: any;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -591,20 +589,6 @@ export class BankImageTask {
 		};
 	}
 
-	getWikiBgAndSprite(bankBgId = 1) {
-		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
-		const backgroundImage = background.image!;
-		const hasBgSprite = Boolean(this.bgSpriteList[background.name.toLowerCase()]);
-		const bgSprite = hasBgSprite ? this.bgSpriteList[background.name.toLowerCase()] : this.bgSpriteList.default;
-
-		return {
-			uniqueSprite: hasBgSprite,
-			sprite: bgSprite,
-			background,
-			backgroundImage
-		};
-	}
-	
 	async drawItems(
 		ctx: CanvasContext,
 		compact: boolean,

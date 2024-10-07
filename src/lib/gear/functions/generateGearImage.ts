@@ -1,8 +1,10 @@
+import * as fs from 'node:fs/promises';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import * as fs from 'node:fs/promises';
 
-
+import type { IBgSprite } from '../../bankImage';
+import backgroundImages from '../../minions/data/bankBackgrounds';
+import type { BankBackground } from '../../minions/types';
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import {
 	type Canvas,
@@ -17,9 +19,6 @@ import {
 } from '../../util/canvasUtil';
 import type { GearSetup, GearSetupType } from '../types';
 import { GearSetupTypes } from '../types';
-import type { IBgSprite } from '../../bankImage';
-import type { BankBackground } from '../../minions/types';
-import backgroundImages from '../../minions/data/bankBackgrounds';
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -83,24 +82,26 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 }
 
 export async function generateGearImage(
-    user: MUser | undefined,
-    gearSetup: Gear | GearSetup,
-    gearType: GearSetupType | null,
-    petID: number | null
+	user: MUser | undefined,
+	gearSetup: Gear | GearSetup,
+	gearType: GearSetupType | null,
+	petID: number | null
 ) {
-    const bankBg: number = user?.user.bankBackground ?? 1;
-    const hexColor = !user ? '#FFFFFF' : user.user.bank_bg_hex;
-    let sprite: IBgSprite;
-    let uniqueSprite = false;
-    let userBgImage: BankBackground;
+	const bankBg: number = user?.user.bankBackground ?? 1;
+	const hexColor = !user ? '#FFFFFF' : user.user.bank_bg_hex;
+	let sprite: IBgSprite;
+	let uniqueSprite = false;
+	let userBgImage: BankBackground;
 
-    if (user) {
-        const bgData = bankImageGenerator.getBgAndSprite(bankBg, user);
-        sprite = bgData.sprite;
-        uniqueSprite = bgData.uniqueSprite;
-        userBgImage = bgData.background;
-    } else {
-		const d = await loadImage(await fs.readFile('./src/lib/resources/images/bank_backgrounds/spritesheet/default.png'));
+	if (user) {
+		const bgData = bankImageGenerator.getBgAndSprite(bankBg, user);
+		sprite = bgData.sprite;
+		uniqueSprite = bgData.uniqueSprite;
+		userBgImage = bgData.background;
+	} else {
+		const d = await loadImage(
+			await fs.readFile('./src/lib/resources/images/bank_backgrounds/spritesheet/default.png')
+		);
 		sprite = {
 			name: 'default',
 			border: await getClippedRegionImage(d, 0, 0, 18, 6),
@@ -112,7 +113,7 @@ export async function generateGearImage(
 			oddListColor: '#655741'
 		};
 		userBgImage = backgroundImages.find(i => i.id === 1)!;
-    }
+	}
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
@@ -238,7 +239,7 @@ export async function generateGearImage(
 
 	// Draw items
 	if (petID) {
-		const image = await bankImageGenerator.getItemImage(petID, typeof user === 'string' ? undefined : user);
+		const image = await bankImageGenerator.getItemImage(petID, user);
 		ctx.drawImage(
 			image,
 			178 + slotSize / 2 - image.width / 2,
@@ -251,7 +252,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await bankImageGenerator.getItemImage(item.item, typeof user === 'string' ? undefined : user);
+		const image = await bankImageGenerator.getItemImage(item.item, user);
 
 		let [x, y] = slotCoordinates[enumName];
 		x = x + slotSize / 2 - image.width / 2;
