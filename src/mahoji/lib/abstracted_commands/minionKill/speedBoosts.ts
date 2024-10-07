@@ -376,6 +376,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				}
 			}
 
+			if (degItemBeingUsed.length === 0) return;
 			addPostBoostEffect({
 				description: 'Degradeable Items',
 				run: ({ quantity, duration }) => {
