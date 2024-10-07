@@ -324,6 +324,27 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
+	},
+	{
+		name: 'guild_hunter',
+		user_id: '123',
+		head: itemID('Guild hunter headwear'),
+		neck: null,
+		body: itemID('Guild hunter top'),
+		legs: itemID('Guild hunter legs'),
+		cape: null,
+		two_handed: null,
+		hands: null,
+		feet: itemID('Guild hunter boots'),
+		shield: null,
+		weapon: null,
+		ring: null,
+		ammo: null,
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	}
 ];
 

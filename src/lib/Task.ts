@@ -76,6 +76,7 @@ import { myNotesTask } from '../tasks/minions/myNotesActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
+import { rumourTask } from '../tasks/minions/rumourActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
@@ -104,6 +105,7 @@ const tasks: MinionTask[] = [
 	birdHouseTask,
 	driftNetTask,
 	hunterTask,
+	rumourTask,
 	animatedArmorTask,
 	cyclopsTask,
 	agilityArenaTask,

@@ -11,11 +11,12 @@ const deadfallTrappingCreatures: Creature[] = [
 		aliases: ['wild kebbit'],
 		level: 23,
 		hunterXP: 128,
-		table: new LootTable().every('Bones').every('Kebbit claws'),
+		table: new LootTable().every('Bones').every('Kebbit claws').every('Raw wild kebbit'),
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 17,
 		slope: 1,
-		intercept: 15
+		intercept: 15,
+		tier: ['novice']
 	},
 	{
 		name: 'Barb-tailed kebbit',
@@ -23,11 +24,12 @@ const deadfallTrappingCreatures: Creature[] = [
 		aliases: ['barb-tailed kebbit', 'barb kebbit', 'barb tail kebbit'],
 		level: 33,
 		hunterXP: 168,
-		table: new LootTable().every('Bones').every('Barb-tail harpoon'),
+		table: new LootTable().every('Bones').every('Barb-tail harpoon').every('Raw barb-tailed kebbit'),
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 20,
 		slope: 1.2,
-		intercept: 17
+		intercept: 17,
+		tier: ['novice']
 	},
 	{
 		name: 'Prickly kebbit',
@@ -39,7 +41,8 @@ const deadfallTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 17,
 		slope: 1.3,
-		intercept: 10
+		intercept: 10,
+		tier: ['novice']
 	},
 	{
 		name: 'Sabre-toothed kebbit',
@@ -51,7 +54,8 @@ const deadfallTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 25,
 		slope: 1.6,
-		intercept: -3
+		intercept: -3,
+		tier: ['novice', 'adept', 'expert']
 	},
 	{
 		name: 'Maniacal monkey',
@@ -66,6 +70,19 @@ const deadfallTrappingCreatures: Creature[] = [
 		qpRequired: 175,
 		slope: 0.8,
 		intercept: 20
+	},
+	{
+		name: 'Pyre fox',
+		id: 44,
+		aliases: ['pyre fox'],
+		level: 57,
+		hunterXP: 222,
+		table: new LootTable().every('Bones').every('Fox fur').every('Raw pyre fox'),
+		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
+		catchTime: 26,
+		slope: 0.2,
+		intercept: 51.8,
+		tier: ['novice', 'adept']
 	}
 ];
 

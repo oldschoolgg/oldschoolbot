@@ -5,7 +5,7 @@
 		"subOptions": [
 			"plank_make",
 			"chompy_hunt",
-			"champions_challenge",
+			"my_notes",
 			"warriors_guild",
 			"camdozaal",
 			"collect",
@@ -445,6 +445,12 @@
 		"name": "rp",
 		"desc": "Admin tools second set",
 		"subOptions": ["action", "player", "user_event"]
+	},
+	{
+		"name": "rumours",
+		"desc": "Various commands related to completing Hunter Rumours.",
+		"examples": ["/rumours start tier:novice"],
+		"subOptions": ["start", "manage", "count"]
 	},
 	{
 		"name": "runecraft",

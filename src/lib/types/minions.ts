@@ -7,6 +7,7 @@ import type { IPatchData } from '../minions/farming/types';
 import type { AttackStyles } from '../minions/functions';
 import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
+import type { Rumour, RumourOption } from '../skilling/skills/hunter/rumours/util';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
@@ -284,6 +285,14 @@ export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	usingHuntPotion: boolean;
 	wildyPeak: Peak | null;
 	usingStaminaPotion: boolean;
+	outfitMod: number;
+}
+
+export interface RumourActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Rumour';
+	tier: RumourOption;
+	quantity: number;
+	rumours: Rumour[];
 }
 
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
@@ -619,4 +628,5 @@ export type ActivityTaskData =
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| RumourActivityTaskOptions;

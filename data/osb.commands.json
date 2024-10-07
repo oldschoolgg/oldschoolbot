@@ -447,6 +447,12 @@
 		"subOptions": ["action", "player", "user_event"]
 	},
 	{
+		"name": "rumours",
+		"desc": "Various commands related to completing Hunter Rumours.",
+		"examples": ["/rumours start tier:novice"],
+		"subOptions": ["start", "manage", "count"]
+	},
+	{
 		"name": "runecraft",
 		"desc": "Sends your minion to craft runes with essence, or craft tiaras.",
 		"examples": ["/runecraft"],

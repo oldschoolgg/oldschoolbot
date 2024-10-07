@@ -29,7 +29,8 @@ const butterflyNettingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 5.8,
 		slope: 1.2,
-		intercept: 40
+		intercept: 40,
+		tier: ['novice']
 	},
 	{
 		name: 'Snowy knight',
@@ -42,7 +43,8 @@ const butterflyNettingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 6,
 		slope: 1.35,
-		intercept: 30
+		intercept: 30,
+		tier: ['novice', 'adept']
 	},
 	{
 		name: 'Black warlock',
@@ -55,7 +57,8 @@ const butterflyNettingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 5,
 		slope: 1.35,
-		intercept: 35
+		intercept: 35,
+		tier: ['novice', 'adept']
 	},
 	{
 		name: 'Crystal impling',
@@ -68,6 +71,34 @@ const butterflyNettingCreatures: Creature[] = [
 		catchTime: 180,
 		slope: 0,
 		intercept: 0
+	},
+	{
+		name: 'Sunlight moth',
+		id: 46,
+		aliases: ['sunlight moth'],
+		level: 65,
+		hunterXP: 74,
+		itemsConsumed: new Bank().add('Butterfly jar', 1),
+		table: new LootTable().every('Sunlight moth'),
+		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
+		catchTime: 5,
+		slope: 0.01052,
+		intercept: 0.1798,
+		tier: ['novice', 'adept', 'expert']
+	},
+	{
+		name: 'Moonlight moth',
+		id: 48,
+		aliases: ['moonlight moth'],
+		level: 75,
+		hunterXP: 84,
+		itemsConsumed: new Bank().add('Butterfly jar', 1),
+		table: new LootTable().every('Moonlight moth'),
+		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
+		catchTime: 5,
+		slope: 1.028,
+		intercept: 9.687,
+		tier: ['novice', 'expert', 'master']
 	}
 ];
 

@@ -15,6 +15,7 @@ export class MUserStats {
 	kcBank: ItemBank;
 	highGambles: number;
 	gotrRiftSearches: number;
+	rumours: number[];
 	slayerWildyTaskStreak: number;
 	slayerTaskStreak: number;
 
@@ -27,6 +28,7 @@ export class MUserStats {
 		this.kcBank = userStats.monster_scores as ItemBank;
 		this.highGambles = userStats.high_gambles;
 		this.gotrRiftSearches = userStats.gotr_rift_searches;
+		this.rumours = userStats.rumours;
 		this.slayerWildyTaskStreak = userStats.slayer_wildy_task_streak;
 		this.slayerTaskStreak = userStats.slayer_task_streak;
 	}

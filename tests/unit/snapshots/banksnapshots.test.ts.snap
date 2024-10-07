@@ -636,6 +636,27 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
+    "gpCost": 20000,
+    "itemCost": {},
+    "name": "Mixed hide base",
+    "outputItems": undefined,
+    "requiredQuests": [
+      3,
+    ],
+    "skillsNeeded": {
+      "hunter": 46,
+    },
+  },
+  {
+    "gpCost": 3000,
+    "itemCost": {},
+    "name": "Jaguar fur",
+    "outputItems": undefined,
+    "requiredQuests": [
+      3,
+    ],
+  },
+  {
     "itemCost": {
       "24711": 1,
     },
@@ -16858,6 +16879,135 @@ exports[`OSB Creatables 1`] = `
     "noCl": false,
     "outputItems": {
       "25644": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29166": 1,
+      "29311": 5,
+      "6333": 1,
+    },
+    "name": "Hunter's spear",
+    "outputItems": {
+      "29305": 5,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29177": 2,
+      "29292": 1,
+    },
+    "name": "Mixed hide top",
+    "outputItems": {
+      "29280": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29163": 3,
+      "29292": 1,
+    },
+    "name": "Mixed hide legs",
+    "outputItems": {
+      "29280": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29177": 1,
+      "29292": 1,
+    },
+    "name": "Mixed hide boots",
+    "outputItems": {
+      "29280": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29218": 1,
+      "29292": 1,
+    },
+    "name": "Mixed hide cape",
+    "outputItems": {
+      "29280": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "10156": 1,
+      "29168": 1,
+    },
+    "name": "Hunters' sunlight crossbow",
+    "outputItems": {
+      "28869": 1,
+    },
+    "requiredSkills": {
+      "fletching": 74,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1519": 1,
+      "29251": 1,
+    },
+    "name": "Basic quetzal whistle",
+    "outputItems": {
+      "29271": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1515": 1,
+      "29253": 1,
+      "29271": 1,
+    },
+    "name": "Enhanced quetzal whistle",
+    "outputItems": {
+      "29273": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1515": 1,
+      "29259": 1,
+      "29271": 1,
+    },
+    "name": "Enhanced quetzal whistle (Torn)",
+    "outputItems": {
+      "29273": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "19669": 1,
+      "29256": 1,
+      "29273": 1,
+    },
+    "name": "Perfected quetzal whistle",
+    "outputItems": {
+      "29275": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "19669": 1,
+      "29261": 1,
+      "29273": 1,
+    },
+    "name": "Perfected quetzal whistle (Torn)",
+    "outputItems": {
+      "29275": 1,
     },
   },
 ]
