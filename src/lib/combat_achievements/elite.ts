@@ -12,6 +12,8 @@ import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import type { ActivityTaskData, GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
 import { anyoneDiedInTOARaid } from '../util';
+import { resolveItems } from '../util';
+import { crossbows } from '../util/minionUtils';
 import { isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
@@ -1571,5 +1573,53 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 200,
 			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
 		}
+	},
+	{
+		id: 1136,
+		name: 'Rapid Reload',
+		desc: 'Hit three Tormented Demons within 3 seconds using a ballista or a crossbow.',
+		type: 'mechanical',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 5,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.TormentedDemon.id)(data) &&
+				(user.hasEquipped(crossbows) ||
+					resolveItems(['Light ballista', 'Heavy ballista']).some(i => user.hasEquipped(i)))
+		}
+	},
+	{
+		id: 1137,
+		name: 'Two Times the Torment',
+		desc: 'Kill two Tormented Demons within 2 seconds.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
+		}
+	},
+	{
+		id: 1138,
+		name: 'Through Fire and Flames',
+		desc: 'Kill a Tormented Demon whilst their shield is inactive.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
+		}
+	},
+	{
+		id: 1139,
+		name: 'Unending Torment',
+		desc: 'Kill a Tormented Demon.',
+		type: 'kill_count',
+		monster: 'Tormented Demon',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TormentedDemon.id]: 1
+			}
+		})
 	}
 ];

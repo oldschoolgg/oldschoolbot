@@ -1847,6 +1847,9 @@ export const slayerCL = resolveItems([
 	'Ancient ceremonial boots',
 	'Aranea boots'
 ]);
+
+export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
+
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
 	'Toktz-ket-xil',

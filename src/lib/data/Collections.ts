@@ -118,6 +118,7 @@ import {
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
 	toaCL,
+	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
 	vardorvisCL,
@@ -1023,6 +1024,13 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TzHaarXil.allItems
 				],
 				items: tzHaarCL
+			},
+			'Tormented Demons': {
+				alias: Monsters.TormentedDemon.aliases,
+				allItems: Monsters.TormentedDemon.allItems,
+				kcActivity: Monsters.TormentedDemon.name,
+				items: tormentedDemonCL,
+				fmtProg: kcProg(Monsters.TormentedDemon)
 			},
 			Miscellaneous: {
 				alias: ['misc'],
