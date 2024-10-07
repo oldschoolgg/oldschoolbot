@@ -1,13 +1,28 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 import '../src/lib/safeglobals';
+import { gearSetupsForWIKI } from '../docs/src/content/gearImages/gearSetups';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
+import { itemBoosts } from '../src/lib/data/cox';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
 import { Bank, Monsters, itemNameFromID, toTitleCase } from '../src/lib/util';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
+
+import { BankImageTask } from '../src/lib/bankImage';
+import { generateGearImage } from '../src/lib/gear/functions/generateGearImage';
+import type { GearSetupType } from '../src/lib/gear/types';
+
+async function generateGearImages() {
+	const bankImageTask = new BankImageTask();
+	global.bankImageGenerator = bankImageTask;
+
+	for (const { name, gear, setup, pet } of gearSetupsForWIKI) {
+		const imageBuffer = await generateGearImage(undefined, gear, setup as GearSetupType, pet.id);
+		writeFileSync(`./docs/src/content/gearImages/${name}.png`, imageBuffer);
+	}
+}
 
 function combatAchievementHowToFinish(ca: CombatAchievement) {
 	if ('rng' in ca) {
@@ -323,18 +338,13 @@ function rendeCoxMarkdown() {
 	markdown.addLine('## Gear');
 	markdown.addLine('This is the best-in-slot gear you should use for CoX, substitute the next best items you have. ');
 	for (const gear of [
-		['mage', 'Magic Damage', COXMaxMageGear],
-		['range', 'Ranged Strength', COXMaxRangeGear],
-		['melee', 'Melee Strength', COXMaxMeleeGear]
+		['mage', 'Magic Damage', 'BIS_COX_Mage_Gear'],
+		['range', 'Ranged Strength', 'BIS_COX_Range_Gear'],
+		['melee', 'Melee Strength', 'BIS_COX_Melee_Gear']
 	] as const) {
 		markdown.addLine(`### ${toTitleCase(gear[0])}`);
 		markdown.addLine(`For ${gear[0]}, use these items, or the next best '${gear[1]}' gear you have:`);
-		markdown.addLine(
-			`- ${gear[2]
-				.allItems(false)
-				.map(id => `[[${id}]]`)
-				.join(' ')}`
-		);
+		markdown.addLine(`![${gear[2]}](../../../gearImages/${gear[2]}.png)`);
 	}
 
 	markdown.addLine('## Boosts');
@@ -370,6 +380,7 @@ function rendeCoxMarkdown() {
 async function wiki() {
 	renderQuestsMarkdown();
 	rendeCoxMarkdown();
+	generateGearImages();
 	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
 }
 

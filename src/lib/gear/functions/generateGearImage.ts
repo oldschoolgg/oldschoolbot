@@ -1,6 +1,10 @@
+import * as fs from 'node:fs/promises';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import type { IBgSprite } from '../../bankImage';
+import backgroundImages from '../../minions/data/bankBackgrounds';
+import type { BankBackground } from '../../minions/types';
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import {
 	type Canvas,
@@ -9,7 +13,9 @@ import {
 	drawItemQuantityText,
 	drawTitleText,
 	fillTextXTimesInCtx,
-	loadAndCacheLocalImage
+	getClippedRegionImage,
+	loadAndCacheLocalImage,
+	loadImage
 } from '../../util/canvasUtil';
 import type { GearSetup, GearSetupType } from '../types';
 import { GearSetupTypes } from '../types';
@@ -76,16 +82,38 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 }
 
 export async function generateGearImage(
-	user: MUser,
+	user: MUser | undefined,
 	gearSetup: Gear | GearSetup,
 	gearType: GearSetupType | null,
 	petID: number | null
 ) {
-	const bankBg = user.user.bankBackground ?? 1;
+	const bankBg: number = user?.user.bankBackground ?? 1;
+	const hexColor = !user ? '#FFFFFF' : user.user.bank_bg_hex;
+	let sprite: IBgSprite;
+	let uniqueSprite = false;
+	let userBgImage: BankBackground;
 
-	const { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
-
-	const hexColor = user.user.bank_bg_hex;
+	if (user) {
+		const bgData = bankImageGenerator.getBgAndSprite(bankBg, user);
+		sprite = bgData.sprite;
+		uniqueSprite = bgData.uniqueSprite;
+		userBgImage = bgData.background;
+	} else {
+		const d = await loadImage(
+			await fs.readFile('./src/lib/resources/images/bank_backgrounds/spritesheet/default.png')
+		);
+		sprite = {
+			name: 'default',
+			border: await getClippedRegionImage(d, 0, 0, 18, 6),
+			borderCorner: await getClippedRegionImage(d, 19, 0, 6, 6),
+			borderTitle: await getClippedRegionImage(d, 26, 0, 18, 6),
+			tabBorderInactive: await getClippedRegionImage(d, 0, 7, 75, 20),
+			tabBorderActive: await getClippedRegionImage(d, 0, 45, 75, 20),
+			repeatableBg: await getClippedRegionImage(d, 93, 0, 96, 65),
+			oddListColor: '#655741'
+		};
+		userBgImage = backgroundImages.find(i => i.id === 1)!;
+	}
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
@@ -100,7 +128,7 @@ export async function generateGearImage(
 		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	if (!uniqueSprite) {
+	if (user && !uniqueSprite) {
 		ctx.drawImage(
 			userBgImage.image!,
 			(canvas.width - userBgImage.image!.width) * 0.5,
