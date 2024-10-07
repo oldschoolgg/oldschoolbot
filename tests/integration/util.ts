@@ -177,7 +177,7 @@ export class TestUser extends MUserClass {
 		this.user = user;
 	}
 
-	async giveSlayerTask(monster: EMonster) {
+	async giveSlayerTask(monster: EMonster, quantity = 1000) {
 		await prisma.slayerTask.deleteMany({
 			where: {
 				user_id: this.id
@@ -186,8 +186,8 @@ export class TestUser extends MUserClass {
 		await prisma.slayerTask.create({
 			data: {
 				user_id: this.id,
-				quantity: 1000,
-				quantity_remaining: 1000,
+				quantity: quantity,
+				quantity_remaining: quantity,
 				slayer_master_id: slayerMasters.find(m => m.tasks.some(t => t.monster.id === monster))!.id,
 				monster_id: monster,
 				skipped: false

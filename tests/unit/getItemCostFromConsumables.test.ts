@@ -19,10 +19,11 @@ describe('getItemCostFromConsumables', () => {
 				gearBank,
 				inputQuantity,
 				timeToFinish: monster.timeToFinish,
-				maxTripLength: Time.Hour
+				maxTripLength: Time.Hour,
+				slayerKillsRemaining: null
 			});
-			expect(consumablesCost?.itemCost.amount('Stamina potion(4)')).toEqual(1 * 5);
-			expect(consumablesCost?.itemCost.amount('Ruby dragon bolts (e)')).toEqual(1 * 100);
+			expect(consumablesCost?.itemCost!.amount('Stamina potion(4)')).toEqual(1 * 5);
+			expect(consumablesCost?.itemCost!.amount('Ruby dragon bolts (e)')).toEqual(1 * 100);
 			expect(consumablesCost?.finalQuantity).toEqual(1);
 		}
 
@@ -34,9 +35,10 @@ describe('getItemCostFromConsumables', () => {
 			gearBank: gearBank2,
 			inputQuantity: 5,
 			timeToFinish: skotizo.timeToFinish,
-			maxTripLength: Time.Hour
+			maxTripLength: Time.Hour,
+			slayerKillsRemaining: null
 		});
-		expect(consumablesCost2?.itemCost.amount('Dark totem')).toEqual(5);
+		expect(consumablesCost2?.itemCost!.amount('Dark totem')).toEqual(5);
 		expect(consumablesCost2?.finalQuantity).toEqual(5);
 	});
 
@@ -52,8 +54,9 @@ describe('getItemCostFromConsumables', () => {
 			gearBank: gearBank,
 			inputQuantity: 5,
 			timeToFinish: monster.timeToFinish,
-			maxTripLength: Time.Hour
+			maxTripLength: Time.Hour,
+			slayerKillsRemaining: null
 		});
-		expect(consumablesCost2?.itemCost.amount('Anti-venom+(4)')).toBeGreaterThan(0);
+		expect(consumablesCost2!.itemCost!.amount('Anti-venom+(4)')).toBeGreaterThan(0);
 	});
 });

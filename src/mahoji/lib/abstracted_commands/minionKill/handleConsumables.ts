@@ -26,15 +26,16 @@ export function getItemCostFromConsumables({
 	gearBank,
 	timeToFinish,
 	maxTripLength,
-	inputQuantity
+	inputQuantity,
+	slayerKillsRemaining
 }: {
 	timeToFinish: number;
 	consumableCosts: Consumable[];
 	gearBank: GearBank;
 	maxTripLength: number;
 	inputQuantity: number | undefined;
+	slayerKillsRemaining: number | null;
 }) {
-	if (consumableCosts.length === 0) return;
 	const quantity = inputQuantity ?? Math.floor(maxTripLength / timeToFinish);
 	const duration = timeToFinish * quantity;
 	const floatCostsPerKill = new FloatBank();
@@ -84,10 +85,21 @@ export function getItemCostFromConsumables({
 	}
 
 	const maxBasedOnTime = Math.floor(maxTripLength / timeToFinish);
-	const maxCanKillWithItemCost = Math.floor(floatCostsPerKill.fits(gearBank.bank));
+	const maxCanKillWithItemCost =
+		consumableCosts.length === 0 ? Number.POSITIVE_INFINITY : Math.floor(floatCostsPerKill.fits(gearBank.bank));
 	const maxAllowed = Math.min(maxBasedOnTime, maxCanKillWithItemCost);
-	const finalQuantity = Math.max(1, inputQuantity ? Math.min(inputQuantity, maxAllowed) : maxAllowed);
+	let finalQuantity = Math.max(1, inputQuantity ? Math.min(inputQuantity, maxAllowed) : maxAllowed) ?? maxAllowed;
+	if (slayerKillsRemaining && finalQuantity > slayerKillsRemaining) {
+		finalQuantity = slayerKillsRemaining;
+	}
 	const itemCost = floatCostsPerKill.multiply(finalQuantity).toItemBankRoundedUp();
+
+	if (consumableCosts.length === 0) {
+		return {
+			finalQuantity,
+			timeToFinish
+		};
+	}
 
 	return {
 		itemCost,

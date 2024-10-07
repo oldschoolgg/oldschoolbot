@@ -315,4 +315,21 @@ describe('PVM', async () => {
 		expect(secondResult.activityResult!.id).not.toEqual(firstResult.activityResult!.id);
 		expect(secondResult.activityResult!.q).toBeGreaterThan(firstResult.activityResult!.q);
 	});
+
+	test('Should only charge as much cannonballs for what kills you actually do', async () => {
+		const user = await makeAraxxorUser();
+		await user.addItemsToBank({
+			items: new Bank()
+				.add('Anglerfish', 100)
+				.add('Cooked karambwan', 100)
+				.add('Super combat potion(4)', 100)
+				.add('Anti-venom+(4)', 100)
+				.add('Prayer potion(4)', 100)
+				.add('Cannonball', 100_000)
+				.add(CombatCannonItemBank)
+		});
+		await user.giveSlayerTask(EMonster.ARAXYTE, 100);
+		await user.kill(EMonster.ARAXYTE, { method: 'cannon' });
+		expect(user.bank.amount('Cannonball')).toBeGreaterThan(100_000 - 200);
+	});
 });

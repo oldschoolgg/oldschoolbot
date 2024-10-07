@@ -632,7 +632,8 @@ export async function removeRawFood({
 			gearBank: user.gearBank,
 			timeToFinish,
 			maxTripLength,
-			inputQuantity: quantity
+			inputQuantity: quantity,
+			slayerKillsRemaining: null
 		});
 		if (costs?.itemCost) {
 			itemCost.add(costs?.itemCost);
