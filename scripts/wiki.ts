@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import '../src/lib/safeglobals';
 import { gearSetupsForWIKI } from '../docs/src/content/gearImages/gearSetups';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
+import { itemBoosts } from '../src/lib/data/cox';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
