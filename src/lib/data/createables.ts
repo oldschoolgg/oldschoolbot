@@ -2,7 +2,7 @@ import { Bank, resolveItems } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
-import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank, Skills } from '../types';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
@@ -2407,12 +2407,14 @@ const Createables: Createable[] = [
 	{
 		name: 'Araxyte slayer helmet',
 		inputItems: new Bank().add('Slayer helmet').add('Araxyte head').freeze(),
-		outputItems: new Bank().add('Araxyte slayer helmet').freeze()
+		outputItems: new Bank().add('Araxyte slayer helmet').freeze(),
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.EyeSeeYou]
 	},
 	{
 		name: 'Araxyte slayer helmet (i)',
 		inputItems: new Bank().add('Slayer helmet (i)').add('Araxyte head').freeze(),
-		outputItems: new Bank().add('Araxyte slayer helmet (i)').freeze()
+		outputItems: new Bank().add('Araxyte slayer helmet (i)').freeze(),
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.EyeSeeYou]
 	},
 	{
 		name: 'Rax',

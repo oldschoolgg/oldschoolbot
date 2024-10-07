@@ -6024,6 +6024,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "29816": 1,
     },
+    "requiredSlayerUnlocks": [
+      202,
+    ],
   },
   {
     "cantHaveItems": undefined,
@@ -6035,6 +6038,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "29818": 1,
     },
+    "requiredSlayerUnlocks": [
+      202,
+    ],
   },
   {
     "cantHaveItems": undefined,
