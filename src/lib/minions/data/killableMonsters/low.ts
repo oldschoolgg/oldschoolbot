@@ -160,7 +160,8 @@ const killableMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackMagic],
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Emberlight')]: 15
 			}
 		]
 	},
@@ -168,7 +169,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Araxyte.id,
 		name: Monsters.Araxyte.name,
 		aliases: Monsters.Araxyte.aliases,
-		timeToFinish: Time.Second * 60,
+		timeToFinish: Time.Second * 6,
 		table: Monsters.Araxyte,
 		qpRequired: 1,
 		healAmountNeeded: 100,
@@ -176,7 +177,11 @@ const killableMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackStab],
 		levelRequirements: {
 			slayer: 92
-		}
+		},
+		cannonMulti: true,
+		canCannon: true,
+		superior: Monsters.DreadbornAraxyte,
+		canBarrage: true
 	}
 ];
 

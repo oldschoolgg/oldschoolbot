@@ -4,9 +4,9 @@ sidebar:
   order: 1
 ---
 
-_Generally, only changes which are specific to only BSO (and not OSB) are written here_
+Generally only changes that are specific to BSO are included here, for a full list of OSB changes see the [OSB Changelog](/changelog).
 
-## 2/10/2024 [[3e17ea5eb2147dfdd7e874482313305407c53e22]]
+# 2/10/2024
 
 We now have a new wiki at https://wiki.oldschool.gg/, and the BSO Wiki is now combined together with the OSB wiki. Many pages are out of date, I'm trying to update pages when I have time. Currently, the only way to contribute to the new wiki is by editing files in [this folder on github](https://github.com/oldschoolgg/oldschoolbot/tree/master/docs/src/content/docs).
 
@@ -19,4 +19,4 @@ We now have a new wiki at https://wiki.oldschool.gg/, and the BSO Wiki is now co
 - Make spooky graceful dc and remove it from the graceful cl
 - Remove [[Partyhat set]] & [[Partyhat & specs]] from the creatables CL to the christmas cracker CL
 - Updated muspah gear for bso, adding a boost for void staff, hellfire bow, gorajan, etc.
-- Fixed the Tidal collector (i), which now requires 5x Blessed dizana's quiver to create.
+- Fixed the [[Tidal collector (i)]], which now requires 5x Blessed dizana's quiver to create.

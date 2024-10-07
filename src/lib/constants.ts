@@ -569,9 +569,16 @@ if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || pro
 }
 
 export const ONE_TRILLION = 1_000_000_000_000;
-export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
+export const demonBaneWeapons = resolveItems([
+	'Silverlight',
+	'Darklight',
+	'Arclight',
+	'Emberlight',
+	'Scorching bow',
+	'Purging staff'
+]);
 
-export const gitHash = execSync('git rev-parse HEAD').toString().trim();
+export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
 const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';

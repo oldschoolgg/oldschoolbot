@@ -10,6 +10,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGPORT: 5435
+
   redis:
     image: redis:latest
     restart: always
@@ -17,9 +18,12 @@ services:
       - REDIS_PORT=6379
     ports:
       - "6379:6379"
+
   app:
     build:
       context: .
+      dockerfile: Dockerfile
+      target: build-run
     depends_on:
       - db
       - redis

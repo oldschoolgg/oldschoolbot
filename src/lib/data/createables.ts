@@ -2,7 +2,7 @@ import { Bank, resolveItems } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
-import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank, Skills } from '../types';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
@@ -2406,17 +2406,25 @@ const Createables: Createable[] = [
 	{
 		name: 'Araxyte slayer helmet',
 		inputItems: new Bank().add('Slayer helmet').add('Araxyte head').freeze(),
-		outputItems: new Bank().add('Araxyte slayer helmet').freeze()
+		outputItems: new Bank().add('Araxyte slayer helmet').freeze(),
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.EyeSeeYou]
 	},
 	{
 		name: 'Araxyte slayer helmet (i)',
 		inputItems: new Bank().add('Slayer helmet (i)').add('Araxyte head').freeze(),
-		outputItems: new Bank().add('Araxyte slayer helmet (i)').freeze()
+		outputItems: new Bank().add('Araxyte slayer helmet (i)').freeze(),
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.EyeSeeYou]
 	},
 	{
 		name: 'Rax',
 		inputItems: new Bank().add('Coagulated venom').add('Nid').freeze(),
 		outputItems: new Bank().add('Rax').freeze()
+	},
+	{
+		name: 'Revert Rax',
+		inputItems: new Bank().add('Rax').freeze(),
+		outputItems: new Bank().add('Coagulated venom').add('Nid').freeze(),
+		noCl: true
 	},
 	{
 		name: 'Amulet of rancour (s)',
@@ -2435,6 +2443,12 @@ const Createables: Createable[] = [
 			}
 			return null;
 		}
+	},
+	{
+		name: 'Revert Amulet of rancour (s)',
+		inputItems: new Bank().add('Amulet of rancour (s)').freeze(),
+		outputItems: new Bank().add('Amulet of rancour').freeze(),
+		noCl: true
 	},
 	...Reverteables,
 	...crystalTools,

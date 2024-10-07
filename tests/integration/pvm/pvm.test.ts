@@ -1,10 +1,11 @@
-import { Bank, EMonster, Monsters } from 'oldschooljs';
+import { Bank, EItem, EMonster, Monsters } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
 import { getPOHObject } from '../../../src/lib/poh';
 import { SkillsEnum } from '../../../src/lib/skilling/types';
-import { convertLVLtoXP, itemID, resolveItems } from '../../../src/lib/util';
+import { Gear } from '../../../src/lib/structures/Gear';
+import { calcPerHour, convertLVLtoXP, itemID, resolveItems } from '../../../src/lib/util';
 import { minionKCommand } from '../../../src/mahoji/commands/k';
 import { createTestUser, mockClient, mockUser } from '../util';
 
@@ -95,7 +96,8 @@ describe('PVM', async () => {
 			"You don't meet the skill requirement"
 		);
 		await user.setLevel('slayer', 95);
-		expect(await user.runCommand(minionKCommand, { name: 'hydra' }, true)).to.contain("You don't have the items");
+		const x = await user.runCommand(minionKCommand, { name: 'hydra' }, true);
+		expect(x).to.contain("You don't have the items");
 		await user.addItemsToBank({ items: new Bank().add('Anti-venom+(4)', 1) });
 		const result = await user.kill(EMonster.HYDRA);
 		expect(result.commandResult).to.contain('is now killing 10x Hydra');
@@ -277,11 +279,11 @@ describe('PVM', async () => {
 				expect(result.activityResult?.mi).toEqual(EMonster.SKOTIZO);
 				expect(result.commandResult).toContain('is now killing 1x Skotizo');
 				await user.sync();
-				expect(user.bank.amount('Dark totem')).toBe(4);
 				expect(
 					result.newKC,
 					`LastKC=${lastKc} NewKC=${result.newKC} RawNEWKC=${await user.getKC(EMonster.SKOTIZO)}`
 				).toEqual(lastKc + 1);
+				expect(user.bank.amount('Dark totem')).toBe(4);
 				lastKc = result.newKC;
 			});
 		}
@@ -329,5 +331,126 @@ describe('PVM', async () => {
 		expect(resultStr.includes('Salve') && resultStr.includes('Black mask')).toBe(false);
 		expect(resultStr).toContain('is now killing');
 		expect(result.newKC).toBeGreaterThan(0);
+	});
+
+	async function makeAraxxorUser() {
+		const user = await client.mockUser({
+			maxed: true,
+			meleeGear: new Gear({
+				head: 'Slayer helmet (i)',
+				neck: 'Amulet of torture',
+				cape: 'Fire cape',
+				body: 'Bandos chestplate',
+				legs: 'Bandos tassets',
+				hands: 'Ferocious gloves',
+				feet: 'Primordial boots',
+				ring: 'Berserker ring (i)',
+				ammo: "Rada's blessing 3",
+				weapon: 'Soulreaper axe'
+			}).allItems(false)
+		});
+		await user.setAttackStyle([SkillsEnum.Attack]);
+		await user.giveSlayerTask(EMonster.ARAXYTE);
+		return user;
+	}
+
+	test('Should be able to use anti-venom(+)/prayer pots with araxxor', async () => {
+		const user = await makeAraxxorUser();
+		await user.addItemsToBank({
+			items: new Bank()
+				.add('Anglerfish', 100)
+				.add('Cooked karambwan', 100)
+				.add('Super combat potion(4)', 100)
+				.add('Anti-venom+(4)', 100)
+				.add('Prayer potion(4)', 100)
+		});
+		const result = await user.kill(EMonster.ARAXXOR);
+		const resultStr = result.commandResult as string;
+		expect(resultStr).toContain('is now killing');
+		expect(resultStr).toContain('Anti-venom+(4)');
+		expect(resultStr).toContain('Prayer potion(4)');
+		expect(user.bank.amount('Anti-venom+(4)')).toBeLessThan(100);
+		expect(user.bank.amount('Prayer potion(4)')).toBeLessThan(100);
+		expect(result.newKC).toBeGreaterThan(0);
+	});
+
+	test('Should use teleports for araxxor', async () => {
+		const user = await makeAraxxorUser();
+		await user.addItemsToBank({
+			items: new Bank()
+				.add('Anglerfish', 100)
+				.add('Cooked karambwan', 100)
+				.add('Super combat potion(4)', 100)
+				.add('Anti-venom+(4)', 100)
+				.add('Prayer potion(4)', 100)
+		});
+		const firstResult = await user.kill(EMonster.ARAXXOR);
+		await user.addItemsToBank({ items: new Bank().add(EItem.SPIDER_CAVE_TELEPORT, 100) });
+		const secondResult = await user.kill(EMonster.ARAXXOR);
+		expect(secondResult.commandResult).toContain('10% for Spider cave teleport');
+		expect(secondResult.activityResult!.id).not.toEqual(firstResult.activityResult!.id);
+		expect(secondResult.activityResult!.q).toBeGreaterThan(firstResult.activityResult!.q);
+	});
+
+	test('Should only charge as much cannonballs for what kills you actually do', async () => {
+		const user = await makeAraxxorUser();
+		await user.addItemsToBank({
+			items: new Bank()
+				.add('Anglerfish', 100)
+				.add('Cooked karambwan', 100)
+				.add('Super combat potion(4)', 100)
+				.add('Anti-venom+(4)', 100)
+				.add('Prayer potion(4)', 100)
+				.add('Cannonball', 100_000)
+				.add(CombatCannonItemBank)
+		});
+		await user.giveSlayerTask(EMonster.ARAXYTE, 100);
+		await user.kill(EMonster.ARAXYTE, { method: 'cannon' });
+		expect(user.bank.amount('Cannonball')).toBeGreaterThan(100_000 - 200);
+	});
+
+	it('should give a scythe boost and deduct charges', async () => {
+		const user = await makeAraxxorUser();
+		await user.equip('melee', [
+			EItem.PRIMORDIAL_BOOTS,
+			EItem.INFERNAL_MAX_CAPE_NORMAL,
+			EItem.FEROCIOUS_GLOVES,
+			EItem.AMULET_OF_TORTURE,
+			EItem.INQUISITORS_MACE,
+			EItem.INQUISITORS_HAUBERK,
+			EItem.INQUISITORS_PLATESKIRT
+		]);
+		await user.addItemsToBank({
+			items: new Bank()
+				.add('Anglerfish', 100)
+				.add('Cooked karambwan', 100)
+				.add('Super combat potion(4)', 100)
+				.add('Anti-venom+(4)', 100)
+				.add('Prayer potion(4)', 100)
+				.add('Cannonball', 100_000)
+				.add(CombatCannonItemBank)
+		});
+		await user.update({
+			scythe_of_vitur_charges: 100_000
+		});
+
+		// Without scythe
+		await user.equip('melee', [EItem.SCYTHE_OF_VITUR_CHARGED]);
+		await user.giveSlayerTask(EMonster.ARAXYTE, 500);
+		const res = await user.kill(EMonster.ARAXXOR);
+		expect(res.commandResult).toContain('is now killing');
+		expect(res.commandResult).toContain('25% for Scythe of vitur');
+		const perHourWithScythe = calcPerHour(res.activityResult!.q, res.activityResult!.duration);
+
+		// With scythe
+		await user.giveSlayerTask(EMonster.ARAXYTE, 500);
+		await user.equip('melee', [EItem.INQUISITORS_MACE]);
+		const res2 = await user.kill(EMonster.ARAXXOR);
+		expect(res2.commandResult).toContain('is now killing');
+		expect(res2.commandResult).not.toContain('Scythe of vitur');
+		const perHourWithoutScythe = calcPerHour(res2.activityResult!.q, res2.activityResult!.duration);
+
+		expect(perHourWithScythe).toBeGreaterThan(perHourWithoutScythe);
+		expect(user.user.scythe_of_vitur_charges).toBeLessThan(100_000);
 	});
 });

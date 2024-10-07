@@ -6,7 +6,8 @@ import { remarkItems } from './src/plugins/items';
 // https://astro.build/config
 export default defineConfig({
 	markdown: {
-		remarkPlugins: [remarkItems]
+		remarkPlugins: [remarkItems],
+		smartypants: false
 	},
 	integrations: [
 		starlight({
@@ -29,6 +30,9 @@ export default defineConfig({
 }`
 				}
 			],
+			editLink: {
+				baseUrl: 'https://github.com/oldschoolgg/oldschoolbot/edit/master/docs/'
+			},
 			sidebar: [
 				{
 					label: 'Getting Started',
