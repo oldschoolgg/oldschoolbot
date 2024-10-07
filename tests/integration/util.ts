@@ -78,7 +78,7 @@ export class TestUser extends MUserClass {
 	}
 
 	async equip(setup: GearSetupType, gear: number[]) {
-		const gearObj = new Gear();
+		const gearObj = this.gear[setup];
 		for (const item of gear) {
 			gearObj.equip(getOSItem(item));
 		}
