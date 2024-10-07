@@ -1,5 +1,5 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
-
+import { randArrItem } from 'e';
 import { cancelTask } from '../../../lib/settings/settings';
 import type { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -12,6 +12,10 @@ export async function cancelTaskCommand(user: MUser, interaction?: ChatInputComm
 
 	if (!currentTask) {
 		return `${mName} isn't doing anything at the moment, so there's nothing to cancel.`;
+	}
+
+	if (currentTask.type === 'MonkeyRumble') {
+		return `${mName} can't leave the Monkey Rumble arena?`;
 	}
 
 	if (currentTask.type === 'Inferno') {
@@ -34,6 +38,18 @@ export async function cancelTaskCommand(user: MUser, interaction?: ChatInputComm
 		if (data.users.length > 1) {
 			return `${mName} is currently doing a raid, they cannot leave their team!`;
 		}
+	}
+
+	if (currentTask.type === 'Mortimer') {
+		return randArrItem([
+			"Run all you want; you're still trapped in my illusion.",
+			"You think you can flee? I'm the maze you can't escape.",
+			"Escape is futile; you're a part of my act now.",
+			'No exits on this stage, only curtains.',
+			"Where do you think you're going? The show's not over.",
+			'Trying to quit the game? I decide when it ends.',
+			"You can't break free; you're woven into my story now."
+		]);
 	}
 
 	if ((currentTask as any).users && (currentTask as any).users.length > 1) {

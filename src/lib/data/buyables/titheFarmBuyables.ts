@@ -102,6 +102,38 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 			[itemID("Bologa's blessing")]: 10
 		},
 		titheFarmPoints: 1
+	},
+	{
+		name: 'Avocado seed',
+		aliases: ['avocado seed'],
+		outputItems: {
+			[itemID('Avocado seed')]: 1
+		},
+		titheFarmPoints: 5
+	},
+	{
+		name: 'Mango seed',
+		aliases: ['mango seed'],
+		outputItems: {
+			[itemID('Mango seed')]: 1
+		},
+		titheFarmPoints: 5
+	},
+	{
+		name: 'Lychee seed',
+		aliases: ['lychee seed'],
+		outputItems: {
+			[itemID('Lychee seed')]: 1
+		},
+		titheFarmPoints: 5
+	},
+	{
+		name: 'Ivy seed',
+		aliases: ['ivy seed'],
+		outputItems: {
+			[itemID('ivy seed')]: 1
+		},
+		titheFarmPoints: 600
 	}
 ];
 

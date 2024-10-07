@@ -9,6 +9,7 @@ interface Enchantable {
 	output: Bank;
 	xp: number;
 	level: number;
+	cantBeDoubled?: true;
 }
 
 const jewelery: Enchantable[] = [
@@ -19,7 +20,8 @@ const jewelery: Enchantable[] = [
 		input: new Bank().add('Zenyte ring').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
 		output: new Bank().add('Ring of suffering'),
 		xp: 110,
-		level: 93
+		level: 93,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Zenyte amulet',
@@ -27,7 +29,8 @@ const jewelery: Enchantable[] = [
 		input: new Bank().add('Zenyte amulet').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
 		output: new Bank().add('Amulet of torture'),
 		xp: 110,
-		level: 93
+		level: 93,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Zenyte necklace',
@@ -35,7 +38,8 @@ const jewelery: Enchantable[] = [
 		input: new Bank().add('Zenyte necklace').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
 		output: new Bank().add('Necklace of anguish'),
 		xp: 110,
-		level: 93
+		level: 93,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Zenyte bracelet',
@@ -43,7 +47,8 @@ const jewelery: Enchantable[] = [
 		input: new Bank().add('Zenyte bracelet').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
 		output: new Bank().add('Tormented bracelet'),
 		xp: 110,
-		level: 93
+		level: 93,
+		cantBeDoubled: true
 	},
 	// Onyx
 	{
@@ -506,6 +511,14 @@ const bolts = [
 		output: new Bank().add('Topaz dragon bolts (e)', 10),
 		xp: 33,
 		level: 49
+	},
+	{
+		name: 'Banana',
+		id: itemID('Magic banana'),
+		input: new Bank().add('Banana', 1).add('Fire rune', 15).add('Chaos rune', 12).add('Cosmic rune', 3),
+		output: new Bank().add('Magic banana', 1),
+		xp: 66,
+		level: 82
 	}
 ];
 

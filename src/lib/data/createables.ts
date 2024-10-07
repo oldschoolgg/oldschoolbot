@@ -1,6 +1,9 @@
+import { isFunction, uniqueArr } from 'e';
 import { Bank, resolveItems } from 'oldschooljs';
 
-import { BitField } from '../constants';
+import { BitField, discontinuedItems } from '../constants';
+import { allDyedItems } from '../dyedItems';
+import type { MaterialBank } from '../invention/MaterialBank';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank, Skills } from '../types';
@@ -10,6 +13,7 @@ import { itemNameFromID } from '../util/smallUtils';
 import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport';
 import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
+import { BsoCreateables } from './creatables/bsoItems';
 import { caCreatables } from './creatables/caCreatables';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
@@ -19,18 +23,21 @@ import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables';
 import { leaguesCreatables } from './creatables/leagueCreatables';
 import { lmsCreatables } from './creatables/lms';
+import { moktangCreatables } from './creatables/moktangCreatables';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
+import { sunMoonCreatables } from './creatables/sunMoonCreatables';
 import { toaCreatables } from './creatables/toa';
 import { tobCreatables } from './creatables/tob';
+import { tameCreatables } from './tameCreatables';
 
 export interface Createable {
 	name: string;
-	outputItems: ItemBank | Bank;
-	inputItems: ItemBank | Bank;
+	outputItems: ItemBank | Bank | ((user: MUser) => Bank);
+	inputItems: ItemBank | Bank | ((user: MUser) => Bank);
 	cantHaveItems?: ItemBank;
 	requiredSkills?: Skills;
 	QPRequired?: number;
@@ -40,6 +47,8 @@ export interface Createable {
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	maxCanOwn?: number;
+	materialCost?: MaterialBank;
+	noCreatablesCl?: boolean;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
 	type?: 'pack' | 'unpack';
 	customReq?: (user: MUser) => Promise<string | null>;
@@ -1427,6 +1436,16 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Ancient godsword',
+		inputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Ancient hilt')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient godsword')]: 1
+		}
+	},
+	{
 		name: 'Infernal pickaxe',
 		inputItems: {
 			[itemID('Dragon pickaxe')]: 1,
@@ -1478,9 +1497,6 @@ const Createables: Createable[] = [
 			[itemID('Clue scroll (elite)')]: 1
 		},
 		outputItems: {
-			[itemID('Clue scroll (master)')]: 1
-		},
-		cantHaveItems: {
 			[itemID('Clue scroll (master)')]: 1
 		}
 	},
@@ -1739,7 +1755,9 @@ const Createables: Createable[] = [
 			'Dragon sq shield': 1
 		}),
 		QPRequired: 111,
-		requiredSkills: { smithing: 60 }
+		requiredSkills: {
+			smithing: 60
+		}
 	},
 	{
 		name: 'Dragon kiteshield',
@@ -2086,16 +2104,6 @@ const Createables: Createable[] = [
 		requiredSkills: { magic: 60, runecraft: 60 }
 	},
 	{
-		name: 'Kodai wand',
-		inputItems: {
-			[itemID('Master wand')]: 1,
-			[itemID('Kodai insignia')]: 1
-		},
-		outputItems: {
-			[itemID('Kodai wand')]: 1
-		}
-	},
-	{
 		name: 'Partyhat & specs',
 		inputItems: {
 			[itemID('Blue partyhat')]: 1,
@@ -2103,7 +2111,8 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Partyhat & specs')]: 1
-		}
+		},
+		noCreatablesCl: true
 	},
 	{
 		name: 'Ivandis Flail',
@@ -2197,6 +2206,16 @@ const Createables: Createable[] = [
 		}),
 		outputItems: {
 			[itemID('Fish sack barrel')]: 1
+		}
+	},
+	{
+		name: 'Kodai wand',
+		inputItems: {
+			[itemID('Master wand')]: 1,
+			[itemID('Kodai insignia')]: 1
+		},
+		outputItems: {
+			[itemID('Kodai wand')]: 1
 		}
 	},
 	{
@@ -2309,6 +2328,11 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			'Trident of the swamp': 1
 		})
+	},
+	{
+		name: 'Golden cape',
+		inputItems: new Bank().add('Golden cape shard', 7),
+		outputItems: new Bank().add('Golden cape')
 	},
 	{
 		name: 'Voidwaker',
@@ -2463,6 +2487,7 @@ const Createables: Createable[] = [
 	...dragonFireShieldCreatables,
 	...revWeapons,
 	...armorAndItemPacks,
+	...BsoCreateables,
 	...gracefulOutfitCreatables,
 	...tobCreatables,
 	...lmsCreatables,
@@ -2472,6 +2497,8 @@ const Createables: Createable[] = [
 	...goldenProspectorCreatables,
 	...leaguesCreatables,
 	...guardiansOfTheRiftCreatables,
+	...tameCreatables,
+	...moktangCreatables,
 	...shadesOfMortonCreatables,
 	...toaCreatables,
 	...bloodBarkCreatables,
@@ -2479,7 +2506,13 @@ const Createables: Createable[] = [
 	...dtCreatables,
 	...caCreatables,
 	...forestryCreatables,
-	...camdozaalItems
+	...camdozaalItems,
+	...sunMoonCreatables
 ];
 
 export default Createables;
+export const creatablesCL = uniqueArr(
+	Createables.filter(i => i.noCl !== true && i.noCreatablesCl !== true)
+		.flatMap(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
+		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
+);

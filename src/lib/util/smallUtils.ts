@@ -1,10 +1,10 @@
-import { deepMerge, miniID, toTitleCase } from '@oldschoolgg/toolkit';
+import { deepMerge, md5sum, miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import type { InteractionReplyOptions } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { clamp, objectEntries } from 'e';
+import { clamp, objectEntries, roll } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
@@ -67,6 +67,13 @@ export function pluraliseItemName(name: string): string {
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
+}
+
+export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
+	let rate = 1 / (((xpBeingReceived / 30) * 30) / 50_000_000);
+	const amountInCl = cl.amount('Baby yaga house');
+	if (amountInCl > 1) rate *= amountInCl;
+	return Math.floor(rate);
 }
 
 const shortItemNames = new Map([
@@ -152,24 +159,44 @@ export function calculateSimpleMonsterDeathChance({
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }
 
+export function perHourChance(
+	durationMilliseconds: number,
+	oneInXPerHourChance: number,
+	successFunction: () => unknown
+) {
+	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
+	const perMinuteChance = oneInXPerHourChance * 60;
+
+	for (let i = 0; i < minutesPassed; i++) {
+		if (roll(perMinuteChance)) {
+			successFunction();
+		}
+	}
+}
+
 const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
 
-export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
+export function returnStringOrFile(
+	string: string | InteractionReplyOptions,
+	forceFile = false
+): Awaited<CommandResponse> {
 	if (typeof string === 'string') {
-		if (string.length > 2000) {
+		const hash = md5sum(string).slice(0, 5);
+		if (string.length > 2000 || forceFile) {
 			return {
 				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
+				files: [{ attachment: Buffer.from(string), name: `result-${hash}.txt` }]
 			};
 		}
 		return string;
 	}
-	if (string.content && string.content.length > 2000) {
+	if (string.content && (string.content.length > 2000 || forceFile)) {
+		const hash = md5sum(string.content).slice(0, 5);
 		return deepMerge(
 			string,
 			{
 				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
+				files: [{ attachment: Buffer.from(string.content), name: `result-${hash}.txt` }]
 			},
 			{ clone: false }
 		);

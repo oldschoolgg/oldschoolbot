@@ -26,3 +26,5 @@ export const Fletchables: Fletchable[] = [
 	...Crossbows,
 	...Slayer
 ];
+
+export const fletchingCL = Fletchables.map(i => i.id);

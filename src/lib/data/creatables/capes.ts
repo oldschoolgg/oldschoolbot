@@ -7,8 +7,7 @@ export const capeCreatables: Createable[] = [
 		name: 'Ardougne max cape',
 		inputItems: new Bank({
 			'Max hood': 1,
-			'Max cape': 1,
-			'Ardougne cloak 4': 1
+			'Max cape': 1
 		}),
 		outputItems: new Bank({
 			'Ardougne max hood': 1,
@@ -19,8 +18,7 @@ export const capeCreatables: Createable[] = [
 		name: 'Infernal max cape',
 		inputItems: new Bank({
 			'Max hood': 1,
-			'Max cape': 1,
-			'Infernal cape': 1
+			'Max cape': 1
 		}),
 		outputItems: new Bank({
 			'Infernal max hood': 1,
@@ -31,8 +29,7 @@ export const capeCreatables: Createable[] = [
 		name: 'Assembler max cape',
 		inputItems: new Bank({
 			'Max hood': 1,
-			'Max cape': 1,
-			"Ava's assembler": 1
+			'Max cape': 1
 		}),
 		outputItems: new Bank({
 			'Assembler max hood': 1,
@@ -43,8 +40,7 @@ export const capeCreatables: Createable[] = [
 		name: 'Imbued guthix max cape',
 		inputItems: new Bank({
 			'Max hood': 1,
-			'Max cape': 1,
-			'Imbued guthix cape': 1
+			'Max cape': 1
 		}),
 		outputItems: new Bank({
 			'Imbued guthix max hood': 1,
@@ -55,8 +51,7 @@ export const capeCreatables: Createable[] = [
 		name: 'Imbued saradomin max cape',
 		inputItems: new Bank({
 			'Max hood': 1,
-			'Max cape': 1,
-			'Imbued saradomin cape': 1
+			'Max cape': 1
 		}),
 		outputItems: new Bank({
 			'Imbued saradomin max hood': 1,
@@ -67,8 +62,7 @@ export const capeCreatables: Createable[] = [
 		name: 'Imbued zamorak max cape',
 		inputItems: new Bank({
 			'Max hood': 1,
-			'Max cape': 1,
-			'Imbued zamorak cape': 1
+			'Max cape': 1
 		}),
 		outputItems: new Bank({
 			'Imbued zamorak max hood': 1,

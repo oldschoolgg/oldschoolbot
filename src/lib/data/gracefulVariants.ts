@@ -8,7 +8,8 @@ export const gracefulHoods = [
 	'Kourend graceful hood',
 	'Brimhaven graceful hood',
 	'Dark graceful hood',
-	'Trailblazer graceful hood'
+	'Trailblazer graceful hood',
+	'Spooky graceful hood'
 ];
 
 export const gracefulTops = [
@@ -21,7 +22,8 @@ export const gracefulTops = [
 	'Kourend graceful top',
 	'Brimhaven graceful top',
 	'Dark graceful top',
-	'Trailblazer graceful top'
+	'Trailblazer graceful top',
+	'Spooky graceful top'
 ];
 
 export const gracefulLegs = [
@@ -34,7 +36,8 @@ export const gracefulLegs = [
 	'Kourend graceful legs',
 	'Brimhaven graceful legs',
 	'Dark graceful legs',
-	'Trailblazer graceful legs'
+	'Trailblazer graceful legs',
+	'Spooky graceful legs'
 ];
 
 export const gracefulFeet = [
@@ -47,7 +50,9 @@ export const gracefulFeet = [
 	'Kourend graceful boots',
 	'Brimhaven graceful boots',
 	'Dark graceful boots',
-	'Trailblazer graceful boots'
+	'Trailblazer graceful boots',
+	'Silverhawk boots',
+	'Spooky graceful boots'
 ];
 
 export const gracefulHands = [
@@ -60,7 +65,8 @@ export const gracefulHands = [
 	'Kourend graceful gloves',
 	'Brimhaven graceful gloves',
 	'Dark graceful gloves',
-	'Trailblazer graceful gloves'
+	'Trailblazer graceful gloves',
+	'Spooky graceful gloves'
 ];
 
 export const gracefulCapes = [
@@ -76,5 +82,6 @@ export const gracefulCapes = [
 	'Trailblazer graceful cape',
 	'Agility cape',
 	'Agility cape (t)',
-	'Max cape'
+	'Max cape',
+	'Spooky graceful cape'
 ];

@@ -24,6 +24,9 @@ export const slayerBuyables: Buyable[] = [
 	},
 	{
 		name: 'Unfinished broad bolts',
+		outputItems: new Bank({
+			'Unfinished broad bolts': 1
+		}),
 		gpCost: 225
 	},
 	{
@@ -35,38 +38,65 @@ export const slayerBuyables: Buyable[] = [
 	},
 	{
 		name: 'Enchanted gem',
+		outputItems: new Bank({
+			'Enchanted gem': 1
+		}),
 		gpCost: 100_000
 	},
 	{
 		name: 'Leaf-bladed spear',
+		outputItems: new Bank({
+			'Leaf-bladed spear': 1
+		}),
 		gpCost: 310_000
 	},
 	{
 		name: 'Facemask',
+		outputItems: new Bank({
+			Facemask: 1
+		}),
 		gpCost: 20_000
 	},
 	{
 		name: 'Earmuffs',
+		outputItems: new Bank({
+			Earmuffs: 1
+		}),
 		gpCost: 20_000
 	},
 	{
 		name: 'Nose peg',
+		outputItems: new Bank({
+			'Nose peg': 1
+		}),
 		gpCost: 20_000
 	},
 	{
 		name: "Slayer's staff",
+		outputItems: new Bank({
+			"Slayer's staff": 1
+		}),
 		gpCost: 210_000
 	},
 	{
 		name: 'Spiny helmet',
+		outputItems: new Bank({
+			'Spiny helmet': 1
+		}),
 		gpCost: 65_000
 	},
 	{
 		name: 'Boots of stone',
+		outputItems: new Bank({
+			'Boots of stone': 1
+		}),
 		gpCost: 100_000
 	},
 	{
 		name: 'Antipoison(4)',
+		outputItems: new Bank({
+			'Antipoison(4)': 1
+		}),
 		gpCost: 10_000
 	}
 ];

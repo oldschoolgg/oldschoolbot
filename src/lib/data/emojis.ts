@@ -26,5 +26,8 @@ export const skillEmoji = {
 	hunter: '<:hunter:630911040166559784>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
 	clock: '<:ehpclock:352323705210142721>',
-	combat: '<:combat:802136963956080650>'
+	combat: '<:combat:802136963956080650>',
+	dungeoneering: '<:dungeoneering:828683755198873623>',
+	invention: '<:Invention:936219232146980874>',
+	divination: '<:Divination:1187656347345494116>'
 };

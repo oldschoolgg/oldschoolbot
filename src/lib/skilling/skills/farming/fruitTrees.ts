@@ -331,6 +331,47 @@ const fruitTrees: Plant[] = [
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
+	},
+	{
+		id: itemID('Blood orange'),
+		level: 92,
+		plantXp: 240,
+		checkXp: 22_335,
+		harvestXp: 100,
+		name: 'Blood orange tree',
+		aliases: ['blood orange tree', 'blood orange'],
+		inputItems: new Bank({ 'Blood orange seed': 1 }).freeze(),
+		outputCrop: itemID('Blood orange'),
+		petChance: 9000,
+		seedType: 'fruit_tree',
+		growthTime: 960,
+		numOfStages: 6,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 17,
+		protectionPayment: new Bank({ Dragonfruit: 15 }).freeze(),
+		treeWoodcuttingLevel: 1,
+		fixedOutputAmount: 6,
+		woodcuttingXp: 0,
+		needsChopForHarvest: true,
+		fixedOutput: true,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[22, 1] // Lletya Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	}
 ];
 

@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { dateFm, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { type Prisma, UserEventType, xp_gains_skill_enum } from '@prisma/client';
@@ -19,13 +19,14 @@ import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
+import { writeHeapSnapshot } from 'node:v8';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { sql } from '../../lib/postgres';
 import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ItemBank } from '../../lib/types';
-import { dateFm, isValidDiscordSnowflake } from '../../lib/util';
+import { isValidDiscordSnowflake } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -178,6 +179,14 @@ const actions = [
 		}
 	},
 	{
+		name: 'heap_dump',
+		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		run: async () => {
+			writeHeapSnapshot();
+			return 'done';
+		}
+	},
+	{
 		name: 'force_garbage_collection',
 		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
 		run: async () => {
@@ -290,6 +299,19 @@ export const rpCommand: OSBMahojiCommand = {
 			name: 'player',
 			description: 'Player manipulation tools',
 			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'givetgb',
+					description: 'Give em a tgb',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user',
+							required: true
+						}
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'set_buy_date',
@@ -617,6 +639,7 @@ export const rpCommand: OSBMahojiCommand = {
 		};
 		action?: any;
 		player?: {
+			givetgb?: { user: MahojiUserOption };
 			viewbank?: { user: MahojiUserOption; json?: boolean };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
 			steal_items?: {

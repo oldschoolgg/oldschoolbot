@@ -85,7 +85,8 @@ const Gems: Craftable[] = [
 		level: 89,
 		xp: 200,
 		inputItems: new Bank({ 'Uncut zenyte': 1 }),
-		tickRate: 2
+		tickRate: 2,
+		cantBeDoubled: true
 	}
 ];
 

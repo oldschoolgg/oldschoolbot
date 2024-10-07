@@ -247,6 +247,15 @@ const Misc: Craftable[] = [
 		tickRate: 2
 	},
 	{
+		name: 'Obsidian javelin heads',
+		id: itemID('Obsidian javelin heads'),
+		level: 99,
+		xp: 160,
+		inputItems: new Bank().add('Obsidian shards', 1),
+		tickRate: 2,
+		outputMultiple: 10
+	},
+	{
 		name: 'Amulet of rancour',
 		id: itemID('Amulet of rancour'),
 		level: 86,

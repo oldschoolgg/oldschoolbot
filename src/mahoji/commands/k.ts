@@ -1,10 +1,15 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { PvMMethod } from '../../lib/constants';
-import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';
+import { PVM_METHODS, type PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-
+import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
+import { MOKTANG_ID } from '../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
+import { Naxxus } from '../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
+import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
+import { NexMonster } from '../../lib/nex';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -21,21 +26,58 @@ export const autocompleteMonsters = [
 		aliases: [s.toLowerCase()]
 	})),
 	{
-		name: 'Nex',
-		aliases: ['nex'],
-		id: NEX_ID
-	},
-	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
 		id: ZALCANO_ID,
 		emoji: '<:Smolcano:604670895113633802>'
+	},
+	VasaMagus,
+	{
+		...Ignecarus,
+		name: 'Ignecarus (Solo)'
+	},
+	{
+		...Ignecarus,
+		name: 'Ignecarus (Mass)'
+	},
+	{
+		...KingGoldemar,
+		name: 'King Goldemar (Solo)'
+	},
+	{
+		...KingGoldemar,
+		name: 'King Goldemar (Mass)'
+	},
+	{
+		...NexMonster,
+		name: 'Nex (Solo)'
+	},
+	{
+		...NexMonster,
+		name: 'Nex (Mass)'
+	},
+	{
+		...KalphiteKingMonster,
+		name: 'Kalphite King (Solo)'
+	},
+	{
+		...KalphiteKingMonster,
+		name: 'Kalphite King (Mass)'
+	},
+	{
+		...Naxxus,
+		name: 'Naxxus'
 	},
 	{
 		name: 'Wintertodt',
 		aliases: ['wt', 'wintertodt', 'todt'],
 		id: -1,
 		emoji: '<:Phoenix:324127378223792129>'
+	},
+	{
+		name: 'Moktang',
+		aliases: ['moktang'],
+		id: MOKTANG_ID
 	},
 	{
 		name: 'Colosseum',

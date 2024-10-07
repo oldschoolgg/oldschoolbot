@@ -7,15 +7,25 @@ import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
-import { ADMIN_IDS, OWNER_IDS, production } from '../config';
-import { BitField, ONE_TRILLION, PerkTier, globalConfig } from './constants';
+import { BLACKLISTED_USERS } from './blacklists';
+import { BitField, ONE_TRILLION, globalConfig } from './constants';
+import { isCustomItem } from './customItems/util';
 import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
 
-import { BLACKLISTED_USERS } from './blacklists';
+import { ADMIN_IDS, OWNER_IDS } from '../config';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeComponents, toKMB } from './util';
+import {
+	assert,
+	PerkTier,
+	generateGrandExchangeID,
+	getInterval,
+	isGEUntradeable,
+	itemNameFromID,
+	makeComponents,
+	toKMB
+} from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -142,14 +152,14 @@ class GrandExchangeSingleton {
 					name: 'Base',
 					amount: 3
 				},
-				...[100, 250, 1000, 2000].map(num => ({
+				...[100, 250, 1000, 2000, 2500].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
 					name: `${num} Total Level`,
 					amount: 1
 				})),
 				...[30, 60, 90, 95].map(num => ({
 					has: (_: MUser, robochimpUser: RobochimpUser) =>
-						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= num,
+						robochimpUser.bso_cl_percent && robochimpUser.bso_cl_percent >= num,
 					name: `${num}% CL Completion`,
 					amount: 1
 				})),
@@ -234,12 +244,13 @@ class GrandExchangeSingleton {
 
 	async lockGE(reason: string) {
 		if (this.locked) return;
+		debugLog(`The Grand Exchange has encountered an error and has been locked. Reason: ${reason}`);
 		const idsToNotify = [...ADMIN_IDS, ...OWNER_IDS];
 		await sendToChannelID(globalConfig.geAdminChannelID, {
 			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
 				.map(i => userMention(i))
 				.join(', ')}`,
-			allowedMentions: production ? { users: idsToNotify } : undefined
+			allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
 		}).catch(noOp);
 		await mahojiClientSettingsUpdate({
 			grand_exchange_is_locked: true
@@ -268,7 +279,11 @@ class GrandExchangeSingleton {
 		});
 
 		const item = getOSItem(geListing.item_id);
-		const buyLimit = this.getItemBuyLimit(item);
+		let buyLimit = item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
+		if (!isCustomItem(item.id)) {
+			buyLimit *= 5;
+		}
+
 		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
 		const remainingItemsCanBuy = Math.max(0, buyLimit - totalSold);
 
@@ -298,7 +313,11 @@ class GrandExchangeSingleton {
 		}
 		if (user.isIronman) return { error: "You're an ironman." };
 		const item = getItem(itemName);
-		if (!item || !item.tradeable_on_ge || ['Coins'].includes(item.name)) {
+		if (!item || ['Coins'].includes(item.name)) {
+			return { error: 'Invalid item.' };
+		}
+
+		if (isGEUntradeable(item.id)) {
 			return { error: 'Invalid item.' };
 		}
 
@@ -543,7 +562,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerListing.asking_price_per_item
 		}] SellerPrice[${
 			sellerListing.asking_price_per_item
-		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.toJSON())}] ExpectedAfterBank[${geBank
+		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${JSON.stringify(buyerLoot)}] SellerLoot[${sellerLoot}] CurrentGEBank[${JSON.stringify(geBank)}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.toJSON())}] ExpectedAfterBank[${geBank
 			.clone()
 			.remove(bankToRemoveFromGeBank)
 			.toJSON()}]`;
@@ -977,7 +996,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	}
 
 	async totalReset() {
-		if (production) throw new Error("You can't reset the GE in production.");
+		if (globalConfig.isProduction) throw new Error("You can't reset the GE in production.");
 		await mahojiClientSettingsUpdate({
 			grand_exchange_is_locked: false,
 			grand_exchange_tax_bank: 0,

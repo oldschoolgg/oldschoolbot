@@ -10,8 +10,11 @@ import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { gearImages } from '../../lib/gear/functions/generateGearImage';
+import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 
 import { DynamicButtons } from '../../lib/DynamicButtons';
@@ -67,6 +70,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: "Disable Grand Exchange DM's",
 		bit: BitField.DisableGrandExchangeDMs
+	},
+	{
+		name: 'Disable Scroll of Longevity',
+		bit: BitField.ScrollOfLongevityDisabled
 	},
 	{
 		name: 'Clean herbs during farm runs',
@@ -135,6 +142,18 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisabledFarmingReminders
 	},
 	{
+		name: 'Disable Gorajan Bonecrusher',
+		bit: BitField.DisabledGorajanBoneCrusher
+	},
+	{
+		name: 'Disable Item Contract Donations',
+		bit: BitField.NoItemContractDonations
+	},
+	{
+		name: 'Disable Eagle Tame Opening Clues',
+		bit: BitField.DisabledTameClueOpening
+	},
+	{
 		name: 'Disable Clue Buttons',
 		bit: BitField.DisableClueButtons
 	},
@@ -145,6 +164,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable Names on Opens',
 		bit: BitField.DisableOpenableNames
+	},
+	{
+		name: 'Use super restores for Dwarven blessing',
+		bit: BitField.UseSuperRestoresForDwarvenBlessing
 	}
 ];
 
@@ -183,8 +206,8 @@ async function favFoodConfig(
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item) return currentItems;
-	if (!Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
+	if (!item || item.customItemData?.isSecret) return currentItems;
+	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
@@ -214,8 +237,7 @@ async function favItemConfig(
 	const currentItems = `Your current favorite items are: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
-
-	if (!item) return currentItems;
+	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (itemToAdd) {
 		const limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
@@ -586,34 +608,6 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.`;
 }
 
-async function handleRSN(user: MUser, newRSN: string) {
-	const { RSN } = user.user;
-	if (!newRSN && RSN) {
-		return `Your current RSN is: \`${RSN}\``;
-	}
-
-	if (!newRSN && !RSN) {
-		return "You don't have an RSN set. You can set one like this: `/config user set_rsn <username>`";
-	}
-
-	newRSN = newRSN.toLowerCase();
-	if (!newRSN.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$')) {
-		return 'That username is not valid.';
-	}
-
-	if (RSN === newRSN) {
-		return `Your RSN is already set to \`${RSN}\``;
-	}
-
-	await user.update({
-		RSN: newRSN
-	});
-	if (RSN !== null) {
-		return `Changed your RSN from \`${RSN}\` to \`${newRSN}\``;
-	}
-	return `Your RSN has been set to: \`${newRSN}\`.`;
-}
-
 function pinnedTripLimit(perkTier: number) {
 	return clamp(perkTier + 1, 1, 4);
 }
@@ -823,19 +817,6 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'set_rsn',
-					description: 'Set your RuneScape username in the bot.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'username',
-							description: 'Your RuneScape username.',
-							required: true
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'bg_color',
 					description: 'Set a custom color for transparent bank backgrounds.',
 					options: [
@@ -966,12 +947,24 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Add an item to your favorite food.',
 							required: false,
 							autocomplete: async (value: string) => {
-								return Eatables.filter(i =>
+								const rawFood = Eatables.filter(i => i.raw).map(i => getItem(i.raw!)!);
+								const autocompleteList = Eatables.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({
 									name: `${i.name}`,
 									value: i.id.toString()
 								}));
+								autocompleteList.push(
+									...rawFood
+										.filter(i =>
+											!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+										)
+										.map(i => ({
+											name: `${i.name}`,
+											value: i.id.toString()
+										}))
+								);
+								return autocompleteList;
 							}
 						},
 						{
@@ -980,14 +973,21 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Remove an item from your favorite food.',
 							required: false,
 							autocomplete: async (value: string, user: User) => {
+								const rawFood = Eatables.filter(i => i.raw).map(i => getItem(i.raw!)!);
+								const allFood = Eatables.map(i => {
+									return { name: i.name, id: i.id };
+								});
+								allFood.push(...rawFood);
 								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_food: true });
-								return Eatables.filter(i => {
-									if (!mUser.favorite_food.includes(i.id)) return false;
-									return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
-								}).map(i => ({
-									name: `${i.name}`,
-									value: i.id.toString()
-								}));
+								return allFood
+									.filter(i => {
+										if (!mUser.favorite_food.includes(i.id)) return false;
+										return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
+									})
+									.map(i => ({
+										name: `${i.name}`,
+										value: i.id.toString()
+									}));
 							}
 						},
 						{
@@ -1041,6 +1041,31 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Set default autoslay mode',
 							required: false,
 							choices: autoslayChoices
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'toggle_invention',
+					description: 'Toggle an invention on/off.',
+					options: [
+						{
+							name: 'invention',
+							type: ApplicationCommandOptionType.String,
+							description: 'The invention you want to toggle on/off.',
+							required: true,
+							autocomplete: async (value, user) => {
+								const settings = await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true });
+
+								return Inventions.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({
+									name: `${i.name} (Currently ${
+										settings.disabled_inventions.includes(i.id) ? 'DISABLED' : 'Enabled'
+									})`,
+									value: i.name
+								}));
+							}
 						}
 					]
 				},
@@ -1102,6 +1127,27 @@ LIMIT 20;
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'gearframe',
+					description: 'Change your gear frame.',
+					options: [
+						{
+							name: 'name',
+							type: ApplicationCommandOptionType.String,
+							description: 'The gear frame you want to use.',
+							required: true,
+							autocomplete: async value => {
+								return gearImages
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i.name,
+										value: i.name
+									}));
+							}
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'icon_pack',
 					description: 'Change your icon pack',
 					options: [
@@ -1148,6 +1194,8 @@ LIMIT 20;
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
 			favorite_bh_seeds?: { add?: string; remove?: string; reset?: boolean };
 			slayer?: { master?: string; autoslay?: string };
+			toggle_invention?: { invention: string };
+			gearframe?: { name: string };
 			pin_trip?: { trip?: string; unpin_trip?: string; emoji?: string; custom_name?: string };
 			icon_pack?: { name?: string };
 		};
@@ -1169,7 +1217,6 @@ LIMIT 20;
 			const {
 				toggle,
 				combat_options,
-				set_rsn,
 				bg_color,
 				bank_sort,
 				favorite_alchs,
@@ -1210,9 +1257,6 @@ LIMIT 20;
 			}
 			if (combat_options) {
 				return handleCombatOptions(user, combat_options.action, combat_options.input);
-			}
-			if (set_rsn) {
-				return handleRSN(user, set_rsn.username);
 			}
 			if (bg_color) {
 				return bgColorConfig(user, bg_color.color);
@@ -1258,6 +1302,35 @@ LIMIT 20;
 					const { message } = await setDefaultSlayerMaster(user, slayer.master);
 					return message;
 				}
+			}
+			if (options.user.toggle_invention) {
+				const invention = Inventions.find(i =>
+					stringMatches(i.name, options.user?.toggle_invention?.invention ?? '')
+				);
+				if (!invention) return 'Invalid invention.';
+				if (user.user.disabled_inventions.includes(invention.id)) {
+					await mahojiUserSettingsUpdate(user.id, {
+						disabled_inventions: removeFromArr(user.user.disabled_inventions, invention.id)
+					});
+					return `${invention.name} is now **Enabled**.`;
+				}
+				await mahojiUserSettingsUpdate(user.id, {
+					disabled_inventions: {
+						push: invention.id
+					}
+				});
+				return `${invention.name} is now **Disabled**.`;
+			}
+			if (options.user.gearframe) {
+				const matchingFrame = gearImages.find(i => stringMatches(i.name, options.user?.gearframe?.name ?? ''));
+				if (!matchingFrame) return 'Invalid name.';
+				if (!user.user.unlocked_gear_templates.includes(matchingFrame.id) && matchingFrame.id !== 0) {
+					return "You don't have this gear frame unlocked.";
+				}
+				await user.update({
+					gear_template: matchingFrame.id
+				});
+				return `Your gear frame is now set to **${matchingFrame.name}**!`;
 			}
 			if (pin_trip) {
 				if (pin_trip.trip) {

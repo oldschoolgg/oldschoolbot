@@ -45,6 +45,7 @@ tests/**/*.tsbuildinfo
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+overallItemsNotCheckedFor.txt
+*.diff
 item/
-
 tmp

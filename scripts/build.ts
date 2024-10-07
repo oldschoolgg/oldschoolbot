@@ -7,7 +7,10 @@ import fg from 'fast-glob';
 
 import { production } from '../src/config';
 import { BOT_TYPE } from '../src/lib/constants';
+import { customItems } from '../src/lib/customItems/util.js';
 import { getSystemInfo } from '../src/lib/systemInfo';
+import { itemNameFromID } from '../src/lib/util.js';
+import { renderCreatablesFile } from './renderCreatablesFile.js';
 import { execAsync, runTimedLoggedFn } from './scriptUtil.js';
 
 const args = process.argv.slice(2);
@@ -101,20 +104,6 @@ async function handleTypescriptCompilation() {
 	await execAsync('yarn build:tsc');
 }
 
-async function handleCreatables() {
-	const allCreatablesFiles = await fg(['./src/lib/data/creatables/*.ts', './src/lib/data/creatables.ts'], {
-		cwd: path.join('src'),
-		onlyFiles: true
-	});
-	const hash = doHash(allCreatablesFiles.join('\n'));
-	if (currentCache.creatablesHash !== hash || forceRebuild) {
-		console.log('   Rebuilding creatables.txt file');
-		const { renderCreatablesFile } = await import('./renderCreatablesFile.js');
-		renderCreatablesFile();
-		setCacheValue('creatablesHash', hash);
-	}
-}
-
 async function handleCommandsJSON() {
 	const cmdFile = `data/${BOT_TYPE.toLowerCase()}.commands.json`;
 	const currentFileHash = getFileHash(cmdFile);
@@ -136,7 +125,24 @@ async function main() {
 	);
 	await runTimedLoggedFn('Yarn Installation', () => execAsync('yarn'));
 	await runTimedLoggedFn('Typescript Compilation', handleTypescriptCompilation);
-	await runTimedLoggedFn('Post Build', () => Promise.all([handleCreatables(), handleCommandsJSON()]));
+	await runTimedLoggedFn('Post Build', () => Promise.all([handleCommandsJSON()]));
+	renderCreatablesFile();
+	writeFileSync(
+		'data/bso_items.json',
+		JSON.stringify(
+			customItems.reduce(
+				(acc, id) => {
+					acc[id] = itemNameFromID(id)!;
+					return acc;
+				},
+				{} as Record<number, string>
+			),
+			null,
+			4
+		),
+		'utf-8'
+	);
+	await execAsync('yarn lint');
 }
 
 runTimedLoggedFn('Build', main);

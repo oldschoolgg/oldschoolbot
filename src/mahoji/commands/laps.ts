@@ -3,6 +3,8 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../../lib/constants';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
@@ -25,7 +27,15 @@ const unlimitedFireRuneProviders = [
 	'Tome of fire'
 ];
 
-function alching(user: MUser, tripLength: number) {
+export function alching({
+	user,
+	tripLength,
+	isUsingVoidling
+}: {
+	user: MUser;
+	tripLength: number;
+	isUsingVoidling: boolean;
+}) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const { bank } = user;
 	const favAlchables = user.favAlchs(tripLength);
@@ -43,6 +53,9 @@ function alching(user: MUser, tripLength: number) {
 	const hasInfiniteFireRunes = user.hasEquipped(unlimitedFireRuneProviders);
 
 	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
+	if (isUsingVoidling) {
+		maxCasts *= 3;
+	}
 	maxCasts = Math.min(alchItemQty, maxCasts);
 	maxCasts = Math.min(nats, maxCasts);
 	if (!hasInfiniteFireRunes) {
@@ -130,10 +143,33 @@ export const lapsCommand: OSBMahojiCommand = {
 			return `You need at least ${course.qpRequired} Quest Points to do this course.`;
 		}
 
+		if (course.name === 'Daemonheim Rooftop Course' && !user.bitfield.includes(BitField.HasDaemonheimAgilityPass)) {
+			return 'The Daemonheim guards deny you access to the course.';
+		}
+
 		const maxTripLength = calcMaxTripLength(user, 'Agility');
 
-		// If no quantity provided, set it to the max.
-		const timePerLap = course.lapTime * Time.Second;
+		let timePerLap = course.lapTime * Time.Second;
+
+		const boosts: string[] = [];
+		if (user.hasEquippedOrInBank('Silverhawk boots')) {
+			const boostedTimePerLap = Math.floor(timePerLap / inventionBoosts.silverHawks.agilityBoostMultiplier);
+			const costRes = await inventionItemBoost({
+				user,
+				inventionID: InventionID.SilverHawkBoots,
+				duration: Math.min(
+					maxTripLength,
+					(options.quantity ?? Math.floor(maxTripLength / boostedTimePerLap)) * boostedTimePerLap
+				)
+			});
+			if (costRes.success) {
+				timePerLap = boostedTimePerLap;
+				boosts.push(
+					`${inventionBoosts.silverHawks.agilityBoostMultiplier}x faster for Silverhawk boots (${costRes.messages})`
+				);
+			}
+		}
+
 		let { quantity } = options;
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timePerLap);
@@ -152,7 +188,16 @@ export const lapsCommand: OSBMahojiCommand = {
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		const alchResult = course.name === 'Ape Atoll Agility Course' || !options.alch ? null : alching(user, duration);
+		const alchResult =
+			course.name === 'Ape Atoll Agility Course'
+				? null
+				: !options.alch
+					? null
+					: alching({
+							user,
+							tripLength: duration,
+							isUsingVoidling: user.usingPet('Voidling')
+						});
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {
 				return `You don't own ${alchResult.bankToRemove}.`;
@@ -161,6 +206,9 @@ export const lapsCommand: OSBMahojiCommand = {
 			await user.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
 			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+		}
+		if (boosts.length > 0) {
+			response += `\n**Boosts:** ${boosts.join(', ')}`;
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({

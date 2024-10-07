@@ -145,6 +145,9 @@ END$$;`
 startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS activity_only_one_task ON activity (user_id, completed) WHERE NOT completed;'
 });
+startupScripts.push({
+	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS tame_only_one_task ON tame_activity (user_id, completed) WHERE NOT completed;'
+});
 
 startupScripts.push({
 	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_buy_filter_sort 

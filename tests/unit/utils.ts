@@ -8,6 +8,7 @@ import { expect } from 'vitest';
 import { MUserClass } from '../../src/lib/MUser';
 import type { BitField } from '../../src/lib/constants';
 import { type GearSetup, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types';
+import { MaterialBank } from '../../src/lib/invention/MaterialBank';
 import { SkillsArray } from '../../src/lib/skilling/types';
 import { ChargeBank } from '../../src/lib/structures/Bank';
 import type { PartialGearSetup } from '../../src/lib/structures/Gear';
@@ -81,6 +82,8 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_strength: overrides?.skills_strength ?? 0,
 		skills_defence: overrides?.skills_defence ?? 0,
 		skills_slayer: 0,
+		skills_dungeoneering: 0,
+		skills_invention: 0,
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
 		GP: overrides?.GP ?? 0,
 		bitfield: overrides?.bitfield ?? [],
@@ -88,6 +91,8 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
+		disabled_inventions: [],
+		skills_divination: 0,
 		monsterScores: {},
 		badges: []
 	} as unknown as User;
@@ -153,6 +158,8 @@ export function makeGearBank({ bank }: { bank?: Bank } = {}) {
 		gear: makeFullGear(),
 		bank: bank ?? new Bank(),
 		skillsAsLevels: makeSkillsAsLevels(),
-		chargeBank: new ChargeBank()
+		chargeBank: new ChargeBank(),
+		materials: new MaterialBank(),
+		pet: null
 	});
 }

@@ -1,10 +1,11 @@
 import type { User } from '@prisma/client';
 import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
+import { dateFm } from '@oldschoolgg/toolkit';
 import { Emoji } from '../constants';
 import type { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
 import Farming from '../skilling/skills/farming';
-import { dateFm, makeAutoFarmButton, makeComponents, stringMatches } from '../util';
+import { makeAutoFarmButton, makeComponents, stringMatches } from '../util';
 
 export const farmingPatchNames = [
 	'herb',

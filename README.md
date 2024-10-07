@@ -53,3 +53,13 @@ You can also ask Magna to invite your Bot with your invite link above if you so 
 ### Self Hosting
 
 Self hosting is not supported.
+
+## Notes
+
+### Profiling tests
+
+- node --cpu-prof --cpu-prof-dir=./profiling ./node_modules/vitest/vitest.mjs run --coverage --config vitest.unit.config.mts parseStringBank
+
+## Module graph
+
+- yarn build && npx madge --image graph2.svg ./dist/index.js

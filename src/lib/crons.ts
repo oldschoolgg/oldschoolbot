@@ -1,8 +1,10 @@
 import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
+import { syncPrescence } from './doubleLoot';
 import { cacheGEPrices } from './marketPrices';
 import { cacheCleanup } from './util/cachedUserIDs';
+import { syncSlayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
 export function initCrons() {
 	/**
@@ -30,7 +32,7 @@ GROUP BY item_id;`);
 	 * prescence
 	 */
 	schedule('0 * * * *', () => {
-		globalClient.user?.setActivity('/help');
+		syncPrescence();
 	});
 
 	/**
@@ -38,6 +40,10 @@ GROUP BY item_id;`);
 	 */
 	schedule('0 0 */1 * *', async () => {
 		cacheCleanup();
+	});
+
+	schedule('0 0 * * *', async () => {
+		syncSlayerMaskLeaderboardCache();
 	});
 
 	schedule('35 */48 * * *', async () => {

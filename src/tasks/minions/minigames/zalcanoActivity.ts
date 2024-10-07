@@ -1,7 +1,7 @@
 import { randInt } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import { Events, ZALCANO_ID } from '../../../lib/constants';
+import { ZALCANO_ID } from '../../../lib/constants';
 import { userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -59,15 +59,6 @@ export const zalcanoTask: MinionTask = {
 			hasKourendElite: (await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
 		});
 		if (result) await result.updateBank.transact(user);
-
-		if (loot.amount('Smolcano') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${randInt(newKC - quantity, newKC)}!`
-			);
-		}
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

@@ -2,8 +2,9 @@ import type { Bank } from 'oldschooljs';
 
 import { getSimilarItems } from '../data/similarItems';
 import type { UserFullGearSetup } from '../gear/types';
+import type { MaterialBank } from '../invention/MaterialBank';
 import type { Skills, SkillsRequired } from '../types';
-import { hasSkillReqsRaw, resolveItems } from '../util';
+import { hasSkillReqsRaw, itemID, resolveItems } from '../util';
 import type { ChargeBank } from './Bank';
 
 export class GearBank {
@@ -11,17 +12,34 @@ export class GearBank {
 	bank: Bank;
 	skillsAsLevels: SkillsRequired;
 	chargeBank: ChargeBank;
+	materials: MaterialBank;
+	pet: number | null;
 
 	constructor({
 		gear,
 		bank,
 		skillsAsLevels,
-		chargeBank
-	}: { gear: UserFullGearSetup; bank: Bank; skillsAsLevels: SkillsRequired; chargeBank: ChargeBank }) {
+		chargeBank,
+		materials,
+		pet
+	}: {
+		gear: UserFullGearSetup;
+		bank: Bank;
+		skillsAsLevels: SkillsRequired;
+		chargeBank: ChargeBank;
+		materials: MaterialBank;
+		pet: number | null;
+	}) {
 		this.gear = gear;
 		this.bank = bank;
 		this.skillsAsLevels = skillsAsLevels;
 		this.chargeBank = chargeBank;
+		this.materials = materials;
+		this.pet = pet;
+	}
+
+	usingPet(pet: string) {
+		return this.pet === itemID(pet);
 	}
 
 	wildyGearCheck(item: string | number, isWildy: boolean) {

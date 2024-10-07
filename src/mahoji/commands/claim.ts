@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -6,7 +6,6 @@ import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
 import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
 
-import { dateFm, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -25,7 +24,7 @@ const claimables = [
 			if (user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)) {
 				return 'You already claimed this!';
 			}
-			sendToChannelID(Channel.General, {
+			sendToChannelID(Channel.BSOGeneral, {
 				content: `${user.mention} just claimed free T1 patron perks for being maxed in both bots!`
 			});
 			await user.update({
@@ -33,7 +32,7 @@ const claimables = [
 					push: BitField.BothBotsMaxedFreeTierOnePerks
 				}
 			});
-			return 'You claimed free T1 patron perks in OSB for being maxed in both bots. You can claim this on BSO too for free patron perks on BSO.';
+			return 'You claimed free T1 patron perks in BSO for being maxed in both bots. You can claim this on OSB too for free patron perks on OSB.';
 		}
 	}
 ];

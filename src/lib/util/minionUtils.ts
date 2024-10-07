@@ -11,7 +11,7 @@ import type { Peak } from './../tickers';
 
 export function skillLevel(user: MUser, skill: SkillsEnum) {
 	const xp = Number(user.user[`skills_${skill}`]);
-	return convertXPtoLVL(xp);
+	return convertXPtoLVL(xp, 120);
 }
 
 export const bows = resolveItems([

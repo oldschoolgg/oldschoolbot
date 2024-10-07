@@ -55,6 +55,7 @@
 		"simple-statistics": "^7.8.3",
 		"skia-canvas": "^1.0.2",
 		"sonic-boom": "^4.0.1",
+		"ts-morph": "^23.0.0",
 		"zlib-sync": "^0.1.9",
 		"zod": "^3.23.8"
 	},

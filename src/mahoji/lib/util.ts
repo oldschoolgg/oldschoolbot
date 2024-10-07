@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client';
 import { isObject } from 'e';
 
 import type { CommandOptions, ICommand, MahojiClient, MahojiUserOption } from '@oldschoolgg/toolkit';
+import { Cooldowns } from './Cooldowns';
 import type { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
 
 export interface OSBMahojiCommand extends ICommand {
@@ -70,4 +71,8 @@ export function getCommandArgs(
 
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return Array.from(mahojiClient.commands.values()).map(convertMahojiCommandToAbstractCommand);
+}
+
+export function resetCooldown(user: MUser, key?: string) {
+	return Cooldowns.delete(user.id, key);
 }

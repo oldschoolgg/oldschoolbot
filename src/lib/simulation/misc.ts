@@ -1,5 +1,5 @@
 import { LootTable } from 'oldschooljs';
-import { itemTupleToTable } from '../util';
+import { itemTupleToTable } from 'oldschooljs/dist/util/util';
 
 export const CrystalChestTable = new LootTable()
 	.add(
@@ -186,14 +186,6 @@ export const BuildersSupplyCrateTable = new LootTable()
 	.add('Soft clay', [45, 48])
 	.add('Bolt of cloth', 15)
 	.add('Limestone brick', 9);
-
-export const NexUniqueTable = new LootTable()
-	.add('Nihil horn', 1, 2)
-	.add('Zaryte vambraces', 1, 3)
-	.add('Ancient hilt', 1, 1)
-	.add('Torva full helm (damaged)', 1, 2)
-	.add('Torva platebody (damaged)', 1, 2)
-	.add('Torva platelegs (damaged)', 1, 2);
 
 const NexNonUniqueBaseTable = new LootTable()
 	.add('Blood rune', [84, 325], 3)

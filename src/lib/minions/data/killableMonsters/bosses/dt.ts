@@ -1,7 +1,7 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, deepResolveItems, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
+import { OSB_VIRTUS_IDS } from '../../../../constants';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
@@ -43,7 +43,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.DukeSucellus.aliases,
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.DukeSucellus,
-		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -111,6 +111,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		deathProps: {
 			hardness: 0.6,
 			steepness: 0.99
+		},
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
 		}
 	},
 	{
@@ -119,7 +124,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.AwakenedDukeSucellus.aliases,
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedDukeSucellus,
-		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -184,7 +189,12 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: awakenedDeathProps
+		deathProps: awakenedDeathProps,
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
+		}
 	},
 	{
 		id: Monsters.TheLeviathan.id,
@@ -192,7 +202,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.TheLeviathan.aliases,
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.TheLeviathan,
-		notifyDrops: resolveItems(['Virtus robe top', "Lil'viathan", 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(["Lil'viathan"]),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -261,6 +271,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		deathProps: {
 			hardness: 0.6,
 			steepness: 0.99
+		},
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
 		}
 	},
 	{
@@ -269,7 +284,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.AwakenedTheLeviathan.aliases,
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedTheLeviathan,
-		notifyDrops: resolveItems(['Virtus robe top', "Lil'viathan", 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(["Lil'viathan"]),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -339,7 +354,12 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: awakenedDeathProps
+		deathProps: awakenedDeathProps,
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
+		}
 	},
 	{
 		id: Monsters.TheWhisperer.id,
@@ -347,7 +367,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.TheWhisperer.aliases,
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.TheWhisperer,
-		notifyDrops: resolveItems(['Virtus robe top', 'Wisp', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Wisp']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -379,7 +399,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Ancestral robe bottom') },
-					{ boostPercent: 3, itemID: itemID('Virtus robe bottom') }
+					{ boostPercent: 3, itemID: itemID('Virtus robe legs') }
 				],
 				gearSetup: 'mage'
 			},
@@ -403,8 +423,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		},
 		uniques: theWhispererCL,
 		itemsRequired: deepResolveItems([
-			['Ancestral robe top', 'Virtus robe top', "Ahrim's robetop"],
-			['Ancestral robe bottom', 'Virtus robe bottom', "Ahrim's robeskirt"]
+			['Ancestral robe top', "Ahrim's robetop"],
+			['Ancestral robe bottom', 'Virtus robe legs', "Ahrim's robeskirt"]
 		]),
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.135,
@@ -442,6 +462,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		deathProps: {
 			hardness: 0.6,
 			steepness: 0.99
+		},
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
 		}
 	},
 	{
@@ -450,7 +475,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.AwakenedTheWhisperer.aliases,
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedTheWhisperer,
-		notifyDrops: resolveItems(['Virtus robe top', 'Wisp', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Wisp']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -482,7 +507,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Ancestral robe bottom') },
-					{ boostPercent: 3, itemID: itemID('Virtus robe bottom') }
+					{ boostPercent: 3, itemID: itemID('Virtus robe legs') }
 				],
 				gearSetup: 'mage'
 			},
@@ -506,8 +531,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		},
 		uniques: theWhispererCL,
 		itemsRequired: deepResolveItems([
-			['Ancestral robe top', 'Virtus robe top', "Ahrim's robetop"],
-			['Ancestral robe bottom', 'Virtus robe bottom', "Ahrim's robeskirt"]
+			['Ancestral robe top', "Ahrim's robetop"],
+			['Ancestral robe bottom', 'Virtus robe legs', "Ahrim's robeskirt"]
 		]),
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.135,
@@ -554,7 +579,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.Vardorvis.aliases,
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.Vardorvis,
-		notifyDrops: resolveItems(['Virtus robe top', 'Butch', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -622,6 +647,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		deathProps: {
 			hardness: 0.6,
 			steepness: 0.99
+		},
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
 		}
 	},
 	{
@@ -630,7 +660,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.AwakenedVardorvis.aliases,
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedVardorvis,
-		notifyDrops: resolveItems(['Virtus robe top', 'Butch', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -695,6 +725,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: awakenedDeathProps
+		deathProps: awakenedDeathProps,
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
+		}
 	}
 ];

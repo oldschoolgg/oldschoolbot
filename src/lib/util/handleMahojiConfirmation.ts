@@ -1,6 +1,15 @@
 import { channelIsSendable } from '@oldschoolgg/toolkit';
-import type { ButtonInteraction, ChatInputCommandInteraction, ComponentType } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionResponseType, Routes } from 'discord.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	type ButtonInteraction,
+	ButtonStyle,
+	type ChatInputCommandInteraction,
+	type ComponentType,
+	InteractionResponseType,
+	type MessageCreateOptions,
+	Routes
+} from 'discord.js';
 import { Time, noOp } from 'e';
 
 import { SILENT_ERROR } from '../constants';
@@ -15,8 +24,8 @@ export async function silentButtonAck(interaction: ButtonInteraction) {
 }
 
 export async function handleMahojiConfirmation(
-	interaction: ChatInputCommandInteraction,
-	str: string,
+	interaction: ChatInputCommandInteraction | ButtonInteraction,
+	str: string | MessageCreateOptions,
 	_users?: string[]
 ) {
 	const channel = globalClient.channels.cache.get(interaction.channelId.toString());
@@ -27,7 +36,7 @@ export async function handleMahojiConfirmation(
 	const confirmed: string[] = [];
 	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
-		content: str,
+		...(typeof str === 'string' ? { content: str } : str),
 		components: [
 			new ActionRowBuilder<ButtonBuilder>().addComponents([
 				new ButtonBuilder({

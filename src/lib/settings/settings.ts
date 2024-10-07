@@ -9,11 +9,12 @@ import type {
 	User
 } from 'discord.js';
 
+import { Time } from 'e';
 import { isEmpty } from 'lodash';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
-import { minionActivityCache } from '../constants';
+import { PerkTier, minionActivityCache } from '../constants';
 import { channelIsSendable, isGroupActivity } from '../util';
 import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
@@ -201,4 +202,15 @@ export function activitySync(activity: Activity) {
 	for (const user of users) {
 		minionActivityCache.set(user.toString(), convertedActivity);
 	}
+}
+
+export async function isElligibleForPresent(user: MUser) {
+	if (user.isIronman) return true;
+	if (user.perkTier() >= PerkTier.Four) return true;
+	if (user.totalLevel >= 2000) return true;
+	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(duration)
+FROM activity
+WHERE user_id = ${BigInt(user.id)};`);
+	if (totalActivityDuration[0].sum >= Time.Hour * 80) return true;
+	return false;
 }

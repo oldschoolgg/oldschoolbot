@@ -3,20 +3,21 @@ import { noOp, notEmpty, uniqueArr } from 'e';
 
 import { SupportServer } from '../config';
 import { BadgesEnum, Roles } from '../lib/constants';
-import { getCollectionItems } from '../lib/data/Collections';
+import { getCollectionItems, overallPlusItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 
 import { Prisma } from '@prisma/client';
+import { Bank, resolveItems } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
 import { type CommandResponse, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
 import { ClueTiers } from './clues/clueTiers';
-import { loggedRawPrismaQuery } from './rawSql';
+import { RawSQL, loggedRawPrismaQuery } from './rawSql';
 import { TeamLoot } from './simulation/TeamLoot';
 import { SkillsArray } from './skilling/types';
 import type { ItemBank } from './types';
-import { fetchMultipleCLLeaderboards } from './util/clLeaderboard';
+import { fetchMultipleCLLeaderboards, fetchTameCLLeaderboard } from './util/clLeaderboard';
 import { logError } from './util/logError';
 
 const RoleResultSchema = z.object({
@@ -29,18 +30,7 @@ type RoleResult = z.infer<typeof RoleResultSchema>;
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const CLS_THAT_GET_ROLE = [
-	'pets',
-	'skilling',
-	'clues',
-	'bosses',
-	'minigames',
-	'raids',
-	'slayer',
-	'other',
-	'custom',
-	'overall'
-];
+const CLS_THAT_GET_ROLE = ['skilling', 'clues', 'minigames', 'other', 'overall'];
 
 for (const cl of CLS_THAT_GET_ROLE) {
 	const items = getCollectionItems(cl);
@@ -322,7 +312,7 @@ async function giveaways() {
 
 	results.push({
 		userID: highestID,
-		roleID: '1052481561603346442',
+		roleID: '1104155653745946746',
 		reason: `Most Value Given Away (${loot.value()})`,
 		badge: BadgesEnum.TopGiveawayer
 	});
@@ -348,6 +338,94 @@ async function globalCL() {
 	return results;
 }
 
+async function topLeagues() {
+	const [topPoints, topTasks] = await prisma.$transaction([
+		roboChimpClient.user.findMany({
+			where: {
+				leagues_points_total: {
+					gt: 0
+				}
+			},
+			orderBy: {
+				leagues_points_total: 'desc'
+			},
+			take: 2
+		}),
+		RawSQL.leaguesTaskLeaderboard()
+	]);
+
+	const results: RoleResult[] = [];
+	for (const userID of [topPoints, topTasks].flat().map(i => i.id.toString())) {
+		results.push({
+			userID: userID,
+			roleID: Roles.TopLeagues,
+			reason: 'Top 2 leagues points/points'
+		});
+	}
+	return results;
+}
+
+async function topTamer(): Promise<RoleResult[]> {
+	const [rankOne] = await fetchTameCLLeaderboard({ items: overallPlusItems, resultLimit: 1 });
+	if (rankOne) {
+		return [
+			{
+				userID: rankOne.user_id,
+				roleID: Roles.TopTamer,
+				reason: 'Rank 1 Tames CL'
+			}
+		];
+	}
+	return [];
+}
+
+async function topMysterious(): Promise<RoleResult[]> {
+	const items = resolveItems([
+		'Pet mystery box',
+		'Holiday mystery box',
+		'Equippable mystery box',
+		'Clothing mystery box',
+		'Tradeable mystery box',
+		'Untradeable mystery box'
+	]);
+	const res = await Promise.all(items.map(id => RawSQL.openablesLeaderboard(id)));
+
+	const userScoreMap: Record<string, number> = {};
+	for (const lb of res) {
+		const [rankOne] = lb;
+		for (const user of lb) {
+			if (!userScoreMap[user.id]) userScoreMap[user.id] = 0;
+			userScoreMap[user.id] += user.score / rankOne.score;
+		}
+	}
+
+	const entries = Object.entries(userScoreMap).sort((a, b) => b[1] - a[1]);
+	const [[rankOneID]] = entries;
+
+	return [
+		{
+			userID: rankOneID,
+			roleID: Roles.TopMysterious,
+			reason: 'Rank 1 Mystery Box Opens'
+		}
+	];
+}
+
+async function monkeyKing(): Promise<RoleResult[]> {
+	const [user] = await RawSQL.monkeysFoughtLeaderboard();
+	return [{ userID: user.id, roleID: '886180040465870918', reason: 'Most Monkeys Fought' }];
+}
+
+async function topInventor(): Promise<RoleResult[]> {
+	const mostUniquesLb = await RawSQL.inventionDisassemblyLeaderboard();
+	const topInventors: string[] = [mostUniquesLb[0].id];
+	const parsed = mostUniquesLb
+		.map(i => ({ ...i, value: new Bank(i.disassembled_items_bank).value() }))
+		.sort((a, b) => b.value - a.value);
+	topInventors.push(parsed[0].id);
+	return topInventors.map(i => ({ userID: i, roleID: Roles.TopInventor, reason: 'Most Uniques/Value Disassembled' }));
+}
+
 export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 	const results: RoleResult[] = [];
 
@@ -362,7 +440,14 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 		['Top Skillers', topSkillers],
 		['Top Farmers', topFarmers],
 		['Top Giveawayers', giveaways],
-		['Global CL', globalCL]
+		['Global CL', globalCL],
+
+		// BSO Only
+		['Top Leagues', topLeagues],
+		['Top Tamer', topTamer],
+		['Top Mysterious', topMysterious],
+		['Monkey King', monkeyKing],
+		['Top Inventor', topInventor]
 	] as const;
 
 	for (const [name, fn] of tup) {

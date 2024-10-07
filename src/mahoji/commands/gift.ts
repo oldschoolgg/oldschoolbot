@@ -1,15 +1,15 @@
-import { mentionCommand, miniID, truncateString } from '@oldschoolgg/toolkit';
+import { containsBlacklistedWord, mentionCommand, miniID, truncateString } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { GiftBoxStatus } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BOT_TYPE } from '../../lib/constants';
 
-import type { ItemBank } from '../../lib/types';
-import { containsBlacklistedWord, isValidNickname } from '../../lib/util';
+import { isSuperUntradeable, isValidNickname } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -206,6 +206,10 @@ ${truncateString(giftsOwnedButNotOpened.map(g => `${g.name ? `${g.name} (${g.id}
 						return `You cannot put ${item.name} in a gift box.`;
 					}
 				}
+
+				if (isSuperUntradeable(item.id)) {
+					return `You cannot put ${item.name} in a gift box.`;
+				}
 			}
 
 			if (!user.bankWithGP.has(items)) {
@@ -272,6 +276,7 @@ ${items}`
 					status: GiftBoxStatus.Sent
 				}
 			});
+
 			await prisma.economyTransaction.create({
 				data: {
 					guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,

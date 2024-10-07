@@ -21,6 +21,14 @@ const Bolts: Fletchable[] = [
 		tickRate: 0.08
 	},
 	{
+		name: 'Silver bolts',
+		id: itemID('Silver bolts'),
+		level: 43,
+		xp: 2.5,
+		inputItems: new Bank({ 'Silver bolts (unf)': 1, feather: 1 }),
+		tickRate: 0.08
+	},
+	{
 		name: 'Steel bolts',
 		id: itemID('Steel bolts'),
 		level: 46,

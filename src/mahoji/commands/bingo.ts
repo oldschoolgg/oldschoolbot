@@ -1,4 +1,4 @@
-import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
+import { dateFm, formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
@@ -17,7 +17,6 @@ import { BOT_TYPE, Emoji } from '../../lib/constants';
 
 import {
 	channelIsSendable,
-	dateFm,
 	getUsername,
 	getUsernameSync,
 	isValidDiscordSnowflake,
@@ -1019,9 +1018,10 @@ ${progressString}
 
 			return {
 				content: str,
-				allowed_mentions: {
+				allowedMentions: {
 					parse: [],
-					users: []
+					users: [],
+					roles: []
 				},
 				files: [
 					{

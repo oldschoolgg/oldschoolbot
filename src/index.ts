@@ -147,7 +147,7 @@ client.on('interactionCreate', async interaction => {
 		if (interaction.isRepliable()) {
 			await interactionReply(interaction, {
 				content:
-					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'BSO is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}

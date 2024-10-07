@@ -605,6 +605,116 @@ const herbPlants: Plant[] = [
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
+	},
+	{
+		id: itemID('Athelas seed'),
+		level: 99,
+		plantXp: 0,
+		checkXp: 9199.5,
+		harvestXp: 22_024.5,
+		name: 'Athelas',
+		aliases: ['athelas', 'athelas seed'],
+		inputItems: new Bank({ 'Athelas seed': 1 }),
+		outputCrop: itemID('Athelas'),
+		petChance: 98_364,
+		seedType: 'herb',
+		growthTime: 80,
+		numOfStages: 4,
+		chance1: 71,
+		chance99: 80,
+		chanceOfDeath: 28,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[900, 1], // Canifs Patches (1)
+			[1500, 2], // Troll Stronghold (1)
+			[3000, 3] // Harmony Island Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
+	},
+	{
+		id: itemID('Spirit weed seed'),
+		level: 99,
+		plantXp: 0,
+		checkXp: 6199.5,
+		harvestXp: 15_024.5,
+		name: 'Spirit weed',
+		aliases: ['spirit weed', 'spirit weed seed'],
+		inputItems: new Bank({ 'Spirit weed seed': 1 }),
+		outputCrop: itemID('Spirit weed'),
+		petChance: 98_364,
+		seedType: 'herb',
+		growthTime: 80,
+		numOfStages: 4,
+		chance1: 71,
+		chance99: 80,
+		chanceOfDeath: 28,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[900, 1],
+			[1500, 2]
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
+	},
+	{
+		id: itemID('Korulsi seed'),
+		level: 110,
+		plantXp: 0,
+		checkXp: 12_443,
+		harvestXp: 5996,
+		name: 'Korulsi',
+		aliases: ['korulsi seed'],
+		inputItems: new Bank({ 'Korulsi seed': 1 }),
+		outputCrop: itemID('Grimy korulsi'),
+		petChance: 97_364,
+		seedType: 'herb',
+		growthTime: 85,
+		numOfStages: 4,
+		chance1: 71,
+		chance99: 80,
+		chanceOfDeath: 28,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[900, 1], // Canifs Patches (1)
+			[1500, 2], // Troll Stronghold (1)
+			[3000, 3] // Harmony Island Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
 	}
 ];
 

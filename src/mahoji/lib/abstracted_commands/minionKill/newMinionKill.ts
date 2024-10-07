@@ -1,9 +1,10 @@
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { clamp, increaseNumByPercent, reduceNumByPercent } from 'e';
+import { Time, clamp, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
-import type { BitField, PvMMethod } from '../../../../lib/constants';
+import { BitField, type PvMMethod, YETI_ID } from '../../../../lib/constants';
+import type { InventionID } from '../../../../lib/invention/inventions';
 import { type CombatOptionsEnum, SlayerActivityConstants } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import {
@@ -19,9 +20,11 @@ import type { GearBank } from '../../../../lib/structures/GearBank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { Peak } from '../../../../lib/tickers';
 import {
+	calculateSimpleMonsterDeathChance,
 	checkRangeGearWeapon,
 	formatDuration,
 	isWeekend,
+	itemID,
 	itemNameFromID,
 	numberEnum,
 	zodEnum
@@ -70,6 +73,7 @@ export interface MinionKillOptions {
 	bitfield: readonly BitField[];
 	pkEvasionExperience: number;
 	currentPeak: Peak;
+	disabledInventions: InventionID[];
 }
 
 export function newMinionKillCommand(args: MinionKillOptions) {
@@ -154,6 +158,9 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			return `${monster.name} cannot be barraged or burst.`;
 		}
 	}
+	if (isBurstingOrBarraging && !isOnTask) {
+		return `You can't barrage or burst ${monster.name}, because you're not on a slayer task.`;
+	}
 
 	const killsRemaining = currentSlayerTask
 		? killsRemainingOnTask({
@@ -168,6 +175,11 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		args.inputQuantity = clamp(args.inputQuantity ?? 1, 1, monster.maxQuantity);
 	}
 
+	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {
+		args.inputQuantity = 1;
+	}
+
+	const inventionsBeingUsed: InventionID[] = [];
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
 	const speedDurationResult = speedCalculations({
 		...args,
@@ -179,11 +191,13 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		combatMethods,
 		relevantGearStat,
 		addPostBoostEffect: (effect: PostBoostEffect) => ephemeralPostTripEffects.push(effect),
+		addInvention: (invention: InventionID) => inventionsBeingUsed.push(invention),
 		killsRemaining
 	});
 	if (typeof speedDurationResult === 'string') {
 		return speedDurationResult;
 	}
+
 	const quantity = speedDurationResult.finalQuantity;
 	let duration = speedDurationResult.timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
@@ -216,6 +230,14 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		}
 	}
 
+	if (gearBank.gear.wildy.hasEquipped('Hellfire bow') && isInWilderness) {
+		const arrowsNeeded = Math.ceil(duration / (Time.Second * 13));
+		if (gearBank.gear.wildy.ammo?.item !== itemID('Hellfire arrow')) {
+			return `You need Hellfire arrows equipped to kill ${monster.name} with a Hellfire bow.`;
+		}
+		speedDurationResult.updateBank.itemCostBank.add(itemID('Hellfire arrow'), arrowsNeeded);
+	}
+
 	for (const effect of [...postBoostEffects, ...ephemeralPostTripEffects]) {
 		const result = effect.run({
 			...args,
@@ -228,8 +250,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			combatMethods,
 			relevantGearStat,
 			currentTaskOptions: speedDurationResult.currentTaskOptions,
+			addInvention: (invention: InventionID) => inventionsBeingUsed.push(invention),
 			killsRemaining
 		});
+		if (typeof result === 'string') return result;
 		if (!result) continue;
 		for (const boostResult of Array.isArray(result) ? result : [result]) {
 			if (boostResult.changes) {
@@ -259,6 +283,11 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	if (speedDurationResult.updateBank.itemCostBank.length > 0) {
 		speedDurationResult.messages.push(`Removing items: ${speedDurationResult.updateBank.itemCostBank}`);
+	}
+
+	if (monster.deathProps) {
+		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC: args.monsterKC });
+		speedDurationResult.messages.push(`${deathChance.toFixed(1)}% chance of death`);
 	}
 
 	const result = newMinionKillReturnSchema.parse({

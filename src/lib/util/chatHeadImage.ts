@@ -2,7 +2,7 @@ import { AttachmentBuilder } from 'discord.js';
 
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage, printWrappedText } from './canvasUtil';
 
-const textBoxFile = loadAndCacheLocalImage('./src/lib/resources/images/textbox.png');
+export const textBoxFile = loadAndCacheLocalImage('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = loadAndCacheLocalImage('./src/lib/resources/images/mejJal.png');
 const janeChatHead = loadAndCacheLocalImage('./src/lib/resources/images/jane.png');
 const santaChatHead = loadAndCacheLocalImage('./src/lib/resources/images/santa.png');
@@ -12,6 +12,11 @@ const ketKehChatHead = loadAndCacheLocalImage('./src/lib/resources/images/ketKeh
 const gertrudeChatHead = loadAndCacheLocalImage('./src/lib/resources/images/gertrude.png');
 const antiSantaChatHead = loadAndCacheLocalImage('./src/lib/resources/images/antisanta.png');
 const bunnyChatHead = loadAndCacheLocalImage('./src/lib/resources/images/bunny.png');
+const monkeyChildChatHead = loadAndCacheLocalImage('./src/lib/resources/images/monkeychild.png');
+const marimboChatHead = loadAndCacheLocalImage('./src/lib/resources/images/marimbo.png');
+const partyPeteHead = loadAndCacheLocalImage('./src/lib/resources/images/partyPete.png');
+const mysteriousFigureHead = loadAndCacheLocalImage('./src/lib/resources/images/mysteriousFigure.png');
+const rudolphChatHead = loadAndCacheLocalImage('./src/lib/resources/images/rudolph.png');
 const minimusHead = loadAndCacheLocalImage('./src/lib/resources/images/minimus.png');
 
 const chatHeads = {
@@ -20,10 +25,15 @@ const chatHeads = {
 	santa: santaChatHead,
 	izzy: izzyChatHead,
 	alry: alryTheAnglerChatHead,
+	wurMuTheMonkey: monkeyChildChatHead,
+	marimbo: marimboChatHead,
 	ketKeh: ketKehChatHead,
 	gertrude: gertrudeChatHead,
 	antiSanta: antiSantaChatHead,
 	bunny: bunnyChatHead,
+	partyPete: partyPeteHead,
+	mysteriousFigure: mysteriousFigureHead,
+	rudolph: rudolphChatHead,
 	minimus: minimusHead
 };
 
@@ -33,10 +43,15 @@ const names: Record<keyof typeof chatHeads, string> = {
 	santa: 'Santa',
 	izzy: "Cap'n Izzy No-Beard",
 	alry: 'Alry the Angler',
+	wurMuTheMonkey: 'Wur Mu the Monkey',
+	marimbo: 'Marimbo',
 	ketKeh: 'TzHaar-Ket-Keh',
 	gertrude: 'Gertrude',
 	antiSanta: 'Anti-Santa',
 	bunny: 'Easter Bunny',
+	partyPete: 'Party Pete',
+	mysteriousFigure: 'Mysterious Figure',
+	rudolph: 'Rudolph the Reindeer',
 	minimus: 'Minimus'
 };
 

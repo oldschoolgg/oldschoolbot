@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
 import { mahojiUserSettingsUpdate } from '../MUser';
-import { deduplicateClueScrolls } from '../clues/clueUtils';
 import { handleNewCLItems } from '../handleNewCLItems';
 import { filterLootReplace } from '../slayer/slayerUtil';
 import type { ItemBank } from '../types';
@@ -58,10 +57,6 @@ async function transactItemsFromBank({
 
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
-			itemsToAdd = deduplicateClueScrolls({
-				loot: itemsToAdd.clone(),
-				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
-			});
 			const { bankLoot, clLoot } = filterLoot
 				? filterLootReplace(settings.allItemsOwned, itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };

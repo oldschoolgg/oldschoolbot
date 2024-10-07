@@ -1,3 +1,4 @@
+import '../../lib/customItems/customItems';
 import '../data/itemAliases';
 
 import { removeFromArr } from 'e';
@@ -6,8 +7,8 @@ import { Bank } from 'oldschooljs';
 import type { FinishWorkerArgs, FinishWorkerReturn } from '.';
 import getOSItem from '../util/getOSItem';
 
-if (global.prisma || global.redis) {
-	throw new Error('Prisma/Redis is loaded in the finish worker!');
+if (global.prisma) {
+	throw new Error('Prisma is loaded in the finish worker!');
 }
 
 export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerReturn => {

@@ -28,4 +28,17 @@ for (const skillcape of Skillcapes) {
 			return [true];
 		}
 	});
+
+	// Master
+	skillCapeBuyables.push({
+		name: skillcape.masterCape.name,
+		outputItems: () => new Bank().add(skillcape.masterCape.id),
+		gpCost: 1_000_000_000,
+		customReq: async (user: MUser) => {
+			if (user.skillsAsXP[skillcape.skill] < 500_000_000) {
+				return [false, 'You need 500m XP to buy a master cape.'];
+			}
+			return [true];
+		}
+	});
 }

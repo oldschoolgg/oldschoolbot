@@ -454,8 +454,8 @@ export async function autoSlayCommand({
 	}
 	if (method === 'ehp') {
 		let ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
-			const masterMatch = !e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask?.slayer_master_id);
-			return masterMatch && e.monsterID === usersTask.assignedTask?.monster.id;
+			const masterMatch = !e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayer_master_id);
+			return masterMatch && e.monsterID === usersTask.assignedTask!.monster.id;
 		});
 
 		if (usersTask.currentTask.slayer_master_id === 8) {

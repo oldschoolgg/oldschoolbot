@@ -75,6 +75,14 @@ const Glassblowing: Craftable[] = [
 		xp: 70,
 		inputItems: new Bank({ 'Molten glass': 1 }),
 		tickRate: 3
+	},
+	{
+		name: 'Heat res. vial',
+		id: itemID('Heat res. vial'),
+		level: 105,
+		xp: 80,
+		inputItems: new Bank({ 'Molten glass': 1, 'Athelas paste': 1 }),
+		tickRate: 3
 	}
 ];
 
