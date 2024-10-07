@@ -163,7 +163,7 @@ export async function updateClientGPTrackSetting(
 		},
 		data: {
 			[setting]: {
-				increment: amount
+				increment: Math.floor(amount)
 			}
 		},
 		select: {
@@ -231,9 +231,12 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	if (monster.requiredQuests) {
 		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
 		if (incompleteQuest) {
-			return `You need to have completed the ${bold(
-				quests.find(i => i.id === incompleteQuest)!.name
-			)} quest to kill ${monster.name}.`;
+			return [
+				false,
+				`You need to have completed the ${bold(
+					quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to kill ${monster.name}.`
+			];
 		}
 	}
 
@@ -242,12 +245,15 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			const equippedInThisSet = set.items.find(item => user.gear[set.gearSetup].hasEquipped(item.itemID));
 
 			if (set.required && !equippedInThisSet) {
-				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
-					monster.name
-				}: ${set.items
-					.map(i => i.itemID)
-					.map(itemNameFromID)
-					.join(', ')}.`;
+				return [
+					false,
+					`You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+						monster.name
+					}: ${set.items
+						.map(i => i.itemID)
+						.map(itemNameFromID)
+						.join(', ')}.`
+				];
 			}
 		}
 	}
@@ -297,7 +303,10 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	if (monster.diaryRequirement) {
 		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
 		if (!hasDiary) {
-			return `${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`;
+			return [
+				false,
+				`${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`
+			];
 		}
 	}
 
@@ -308,13 +317,29 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			gearBank: user.gearBank,
 			inputQuantity: 1,
 			timeToFinish,
-			maxTripLength: timeToFinish * 1.5
+			maxTripLength: timeToFinish * 1.5,
+			slayerKillsRemaining: null
 		});
-		if (consumablesCost && !user.bank.has(consumablesCost.itemCost)) {
-			return [
-				false,
-				`You don't have the items needed to kill this monster. You're missing: ${consumablesCost.itemCost.clone().remove(user.bank)}.`
-			];
+		if (consumablesCost.itemCost && !user.bank.has(consumablesCost.itemCost)) {
+			const items = Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost];
+			const messages: string[] = [];
+			for (const group of items) {
+				if (group.optional) continue;
+				if (user.owns(group.itemCost)) {
+					continue;
+				}
+				if (group.alternativeConsumables?.some(alt => user.owns(alt.itemCost))) {
+					continue;
+				}
+				messages.push(
+					`This monster requires: ${group.itemCost.items().map(i => i[0].name)}${
+						group.alternativeConsumables
+							? `, OR ${group.alternativeConsumables?.map(alt => alt.itemCost.items().map(i => i[0].name)).join(', ')}`
+							: '.'
+					}`
+				);
+			}
+			return [false, `You don't have the items needed to kill this monster. ${messages.join(' ')}`];
 		}
 	}
 
