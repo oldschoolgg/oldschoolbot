@@ -1,4 +1,5 @@
 import { Emoji } from '../../constants';
+import { QuestID } from '../../minions/data/quests';
 import type { Course } from '../types';
 import { SkillsEnum } from '../types';
 
@@ -171,7 +172,18 @@ export const courses: Course[] = [
 		level: 30,
 		xp: agilLevel => 722 + (300 + agilLevel * 8),
 		lapTime: 125.1,
-		petChance: 1_005_146
+		petChance: 9901
+	},
+	{
+		id: 15,
+		name: 'Colossal Wyrm Agility Course',
+		aliases: ['colossal wyrm agility course', 'colossal wyrm', 'colo', 'wyrm'],
+		level: 50,
+		xp: agilLevel => (agilLevel >= 62 ? 650 : 520),
+		lapTime: 60,
+		cantFail: true,
+		petChance: 50_000, //TODO: Update with real rate when it's confirmed
+		requiredQuests: [QuestID.ChildrenOfTheSun]
 	}
 ];
 
