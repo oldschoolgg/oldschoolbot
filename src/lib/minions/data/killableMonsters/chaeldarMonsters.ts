@@ -486,7 +486,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.TormentedDemon.id,
 		name: Monsters.TormentedDemon.name,
 		aliases: Monsters.TormentedDemon.aliases,
-		timeToFinish: Time.Second * 125,
+		timeToFinish: Time.Second * 166,
 		table: Monsters.TormentedDemon,
 
 		wildy: false,
