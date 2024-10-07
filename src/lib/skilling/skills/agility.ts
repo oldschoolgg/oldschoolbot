@@ -172,7 +172,7 @@ export const courses: Course[] = [
 		level: 30,
 		xp: agilLevel => 722 + (300 + agilLevel * 8),
 		lapTime: 125.1,
-		petChance: 1_005_146
+		petChance: 9901
 	},
 	{
 		id: 15,
