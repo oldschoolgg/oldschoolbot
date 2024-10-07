@@ -299,12 +299,12 @@ export const Eatables: readonly Eatable[] = [
 		name: 'Cooked dashing kebbit',
 		id: itemID('Cooked dashing kebbit'),
 		healAmount: 23,
-		pvmBoost: 4
+		pvmBoost: 3
 	},
 	{
 		name: 'Cooked moonlight antelope',
 		id: itemID('Cooked moonlight antelope'),
 		healAmount: 26,
-		pvmBoost: 5
+		pvmBoost: 4
 	}
 ];
