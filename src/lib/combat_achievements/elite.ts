@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { Time } from 'e';
 import {
 	MIMIC_MONSTER_ID,
 	NEX_ID,
@@ -10,7 +11,13 @@ import {
 } from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
-import type { ActivityTaskData, GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
+import type {
+	ActivityTaskData,
+	GauntletOptions,
+	MonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
+	TOAOptions
+} from '../types/minions';
 import { anyoneDiedInTOARaid } from '../util';
 import { resolveItems } from '../util';
 import { crossbows } from '../util/minionUtils';
@@ -1532,7 +1539,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1132,
 		name: 'Araxxor Veteran',
-		desc: 'Complete Wave 4 without taking avoidable damage from a Manticore.',
+		desc: 'Kill Araxxor 25 times.',
 		type: 'kill_count',
 		monster: 'Araxxor',
 		requirements: new Requirements().add({
@@ -1544,12 +1551,16 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1133,
 		name: 'Araxxor Speed-Trialist',
-		desc: 'Complete Wave 4 without taking avoidable damage from a Manticore.',
+		desc: 'Kill Araxxor 4 times in 10:00.',
 		type: 'speed',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 200,
-			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.Araxxor.id) && qty >= 4 && timePerKill <= 2.5;
+			}
 		}
 	},
 	{
@@ -1559,21 +1570,12 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 200,
+			chancePerKill: 10,
 			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
 		}
 	},
-	{
-		id: 1135,
-		name: 'Relaxxor',
-		desc: 'Kill Araxxor after destroying six eggs.',
-		type: 'restriction',
-		monster: 'Araxxor',
-		rng: {
-			chancePerKill: 200,
-			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
-		}
-	},
+	// id: 1135
+	// This was a duplicate CA from Araxxor, don't use this id
 	{
 		id: 1136,
 		name: 'Rapid Reload',

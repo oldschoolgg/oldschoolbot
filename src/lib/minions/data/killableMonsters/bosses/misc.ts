@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
+import { getOSItem } from '../../../../util/getOSItem';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -574,6 +575,7 @@ const killableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 3,
 		respawnTime: 2000,
 		table: Monsters.Araxxor,
+		difficultyRating: 8,
 		notifyDrops: resolveItems(['Nid']),
 		qpRequired: 200,
 		deathProps: {
@@ -704,14 +706,31 @@ const killableBosses: KillableMonster[] = [
 			if (loot.has('Coagulated venom') && (ownedItems.has('Coagulated venom') || ownedItems.has('Rax'))) {
 				loot.set('Coagulated venom', 0);
 			}
+
 			const noxPieces = resolveItems(['Noxious point', 'Noxious blade', 'Noxious pommel']);
-			const ownedPieces = noxPieces.filter(p => cl.has(p));
-			if (ownedPieces.length === 3) return;
-			const unownedPieces = noxPieces.filter(p => !cl.has(p));
-			const pieceToReplace = ownedPieces.find(p => loot.has(p));
-			if (!pieceToReplace) return;
-			loot.set(unownedPieces[0], 1);
-			loot.set(pieceToReplace, 0);
+			const ownedCount = noxPieces.map(o => cl.amount(o));
+			const lootCount = noxPieces.map(l => loot.amount(l));
+			for (let i = 0; i < lootCount.length; i++) {
+				while (lootCount[i] > 0) {
+					const maxCount = Math.max(...ownedCount);
+					const unbalancedPieces = noxPieces.filter((_p, index) => ownedCount[index] < maxCount);
+					if (unbalancedPieces.length === 0) {
+						ownedCount[i]++;
+						lootCount[i]--;
+						continue;
+					}
+					const targetPiece = unbalancedPieces.reduce((lowest, currentPiece) => {
+						const currentIndex = noxPieces.indexOf(currentPiece);
+						const lowestIndex = noxPieces.indexOf(lowest);
+						return ownedCount[currentIndex] < ownedCount[lowestIndex] ? currentPiece : lowest;
+					});
+					loot.set(targetPiece, (loot.amount(targetPiece) || 0) + 1);
+					loot.set(noxPieces[i], loot.amount(noxPieces[i]) - 1);
+					ownedCount[noxPieces.indexOf(targetPiece)]++;
+					lootCount[i]--;
+
+				}
+			}
 		},
 		itemCost: [
 			{
