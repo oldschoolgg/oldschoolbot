@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs/dist/meta/types';
+import { Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import killableMonsters from '../../src/lib/minions/data/killableMonsters';

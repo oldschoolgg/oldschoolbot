@@ -1,5 +1,5 @@
-import { makeComponents } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/structures';
+import { makeComponents } from '@oldschoolgg/toolkit/util';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';

@@ -1,4 +1,4 @@
-import { calcPerHour } from '@oldschoolgg/toolkit';
+import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, Items, convertBankToPerHourStats } from 'oldschooljs';

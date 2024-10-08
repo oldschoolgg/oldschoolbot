@@ -14,7 +14,7 @@ import {
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util/util';
 
-import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';

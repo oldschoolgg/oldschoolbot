@@ -1,6 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, codeBlock } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, EmbedBuilder, codeBlock } from 'discord.js';
 import { chunk } from 'e';
 import type { Bank } from 'oldschooljs';
 

@@ -1,4 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { Bank, Monsters } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
@@ -6,7 +8,7 @@ import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '..
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
-import { Bank, Monsters, itemNameFromID, toTitleCase } from '../src/lib/util';
+import { itemNameFromID } from '../src/lib/util';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
 
 function combatAchievementHowToFinish(ca: CombatAchievement) {
