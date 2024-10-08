@@ -1,5 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandOption } from '@oldschoolgg/toolkit';
+import type { CommandOption } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { APIApplicationCommandOptionChoice } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';

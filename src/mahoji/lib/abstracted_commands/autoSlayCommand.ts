@@ -1,5 +1,5 @@
-import { isGuildChannel } from '@oldschoolgg/toolkit';
-import type { CommandOptions } from '@oldschoolgg/toolkit';
+import { isGuildChannel } from '@oldschoolgg/toolkit/util';
+import type { CommandOptions } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 

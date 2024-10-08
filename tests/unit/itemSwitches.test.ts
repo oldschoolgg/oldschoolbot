@@ -1,6 +1,5 @@
 import { writeFileSync } from 'node:fs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { getItemOrThrow } from 'oldschooljs/dist/util';
+import { EquipmentSlot, getItemOrThrow } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { BOT_TYPE } from '../../src/lib/constants';

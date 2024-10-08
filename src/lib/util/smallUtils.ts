@@ -1,20 +1,15 @@
-import { deepMerge, miniID, toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, deepMerge, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
-import type { InteractionReplyOptions } from 'discord.js';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
 import { clamp, objectEntries } from 'e';
-import { Bank, Items } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
+import { type ArrayItemsResolved, Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
-
 import z from 'zod';
+
 import { skillEmoji } from '../data/emojis';
 import type { UserFullGearSetup } from '../gear/types';
 import type { Skills } from '../types';
-import getOSItem from './getOSItem';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -70,11 +65,11 @@ export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 }
 
 const shortItemNames = new Map([
-	[getOSItem('Saradomin brew(4)'), 'Brew'],
-	[getOSItem('Super restore(4)'), 'Restore'],
-	[getOSItem('Super combat potion(4)'), 'Super combat'],
-	[getOSItem('Sanfew serum(4)'), 'Sanfew'],
-	[getOSItem('Ranging potion(4)'), 'Range pot']
+	[getItemOrThrow('Saradomin brew(4)'), 'Brew'],
+	[getItemOrThrow('Super restore(4)'), 'Restore'],
+	[getItemOrThrow('Super combat potion(4)'), 'Super combat'],
+	[getItemOrThrow('Sanfew serum(4)'), 'Sanfew'],
+	[getItemOrThrow('Ranging potion(4)'), 'Range pot']
 ]);
 
 export function bankToStrShortNames(bank: Bank) {
@@ -248,4 +243,15 @@ export function numberEnum<T extends number>(values: readonly T[]) {
 		}
 		return z.NEVER;
 	};
+}
+
+export function isValidNickname(str?: string) {
+	return Boolean(
+		str &&
+			typeof str === 'string' &&
+			str.length >= 2 &&
+			str.length <= 30 &&
+			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
+			stripEmojis(str).length === str.length
+	);
 }
