@@ -6,6 +6,7 @@ import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
+import { getOSItem } from '../../../../util/getOSItem';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
 
@@ -706,25 +707,23 @@ const killableBosses: KillableMonster[] = [
 				loot.set('Coagulated venom', 0);
 			}
 
+			loot.addItem(getOSItem('Noxious point').id, 4);
+			loot.addItem(getOSItem('Herbi').id, 3);
+
 			const noxPieces = resolveItems(['Noxious point', 'Noxious blade', 'Noxious pommel']);
 			const ownedCount = noxPieces.map(o => cl.amount(o));
 			const lootCount = noxPieces.map(l => loot.amount(l));
+
 			for (let i = 0; i < lootCount.length; i++) {
 				while (lootCount[i] > 0) {
-					const maxCount = Math.max(...ownedCount);
-					const unbalancedPieces = noxPieces.filter((_p, index) => ownedCount[index] < maxCount);
-					if (unbalancedPieces.length === 0) {
-						ownedCount[i]++;
-						lootCount[i]--;
-						continue;
-					}
-					const targetPiece = unbalancedPieces.reduce((lowest, currentPiece) => {
-						const currentIndex = noxPieces.indexOf(currentPiece);
-						const lowestIndex = noxPieces.indexOf(lowest);
-						return ownedCount[currentIndex] < ownedCount[lowestIndex] ? currentPiece : lowest;
-					});
+					const sortedPieces = noxPieces
+						.map((piece, index) => ({ piece, owned: ownedCount[index] }))
+						.sort((a, b) => a.owned - b.owned);
+
+					const targetPiece = sortedPieces[0].piece;
 					loot.set(targetPiece, (loot.amount(targetPiece) || 0) + 1);
 					loot.set(noxPieces[i], loot.amount(noxPieces[i]) - 1);
+
 					ownedCount[noxPieces.indexOf(targetPiece)]++;
 					lootCount[i]--;
 				}
