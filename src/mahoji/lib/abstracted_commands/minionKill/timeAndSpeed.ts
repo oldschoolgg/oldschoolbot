@@ -1,4 +1,4 @@
-import { calcWhatPercent, clamp, increaseNumByPercent, reduceNumByPercent, round, sumArr } from 'e';
+import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
@@ -16,7 +16,7 @@ const schema = z.object({
 	timeToFinish: z.number().int().positive(),
 	messages: z.array(z.string()),
 	currentTaskOptions: z.object({}),
-	finalQuantity: z.number().int().positive(),
+	finalQuantity: z.number().int().positive().min(1).max(3000),
 	confirmations: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)
 });
@@ -109,34 +109,37 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	timeToFinish = Math.ceil(timeToFinish);
 
-	if (monster.itemCost) consumables.push(monster.itemCost);
-
-	const maxQuantityBasedOnTime = Math.floor(maxTripLength / timeToFinish);
-	const consumablesQuantity = clamp(inputQuantity ?? maxQuantityBasedOnTime, 1, maxQuantityBasedOnTime);
+	if (monster.itemCost) {
+		consumables.push(...(Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost]));
+	}
 
 	const consumablesCost = getItemCostFromConsumables({
 		consumableCosts: consumables,
 		gearBank,
-		quantity: consumablesQuantity,
 		timeToFinish,
-		maxTripLength
+		maxTripLength,
+		inputQuantity,
+		slayerKillsRemaining: args.killsRemaining
 	});
+	timeToFinish = Math.floor(consumablesCost.timeToFinish);
 
 	const updateBank = new UpdateBank();
 	updateBank.itemCostBank.add(itemCost);
 	updateBank.chargeBank.add(charges);
 
-	if (consumablesCost) {
+	if (consumablesCost.itemCost) {
 		updateBank.itemCostBank.add(consumablesCost.itemCost);
 	}
 
-	const finalQuantity = consumablesCost?.finalQuantity ?? consumablesQuantity;
+	if (consumablesCost?.boosts) {
+		messages.push(...consumablesCost.boosts.map(m => m.message));
+	}
 
 	const result = schema.parse({
 		timeToFinish,
 		messages,
 		currentTaskOptions,
-		finalQuantity,
+		finalQuantity: consumablesCost.finalQuantity,
 		confirmations,
 		updateBank
 	});

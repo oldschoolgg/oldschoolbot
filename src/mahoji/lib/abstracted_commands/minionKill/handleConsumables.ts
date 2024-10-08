@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time, reduceNumByPercent } from 'e';
 import { EItem } from 'oldschooljs';
 
 import { getSimilarItems } from '../../../../lib/data/similarItems';
@@ -24,34 +24,29 @@ export const calculateTripConsumableCost = (c: Consumable, quantity: number, dur
 export function getItemCostFromConsumables({
 	consumableCosts,
 	gearBank,
-	quantity,
 	timeToFinish,
-	maxTripLength
+	maxTripLength,
+	inputQuantity,
+	slayerKillsRemaining
 }: {
 	timeToFinish: number;
-	quantity: number;
 	consumableCosts: Consumable[];
 	gearBank: GearBank;
 	maxTripLength: number;
+	inputQuantity: number | undefined;
+	slayerKillsRemaining: number | null;
 }) {
-	if (consumableCosts.length === 0) return;
-
+	const quantity = inputQuantity ?? Math.floor(maxTripLength / timeToFinish);
 	const duration = timeToFinish * quantity;
-	const floatCosts = new FloatBank();
+	const floatCostsPerKill = new FloatBank();
+	const boosts: { message: string; boostPercent: number }[] = [];
 
 	for (const cc of consumableCosts) {
-		let consumable = cc;
-
-		if (
-			consumable.alternativeConsumables &&
-			!gearBank.bank.has(calculateTripConsumableCost(consumable, quantity, duration))
-		) {
-			for (const c of consumable.alternativeConsumables) {
-				if (gearBank.bank.has(calculateTripConsumableCost(c, quantity, duration))) {
-					consumable = c;
-					break;
-				}
-			}
+		const flatConsumables = [cc, ...(cc.alternativeConsumables ?? [])];
+		const consumable =
+			flatConsumables.find(c => gearBank.bank.has(calculateTripConsumableCost(c, quantity, duration))) ?? cc;
+		if (consumable.optional && !gearBank.bank.has(calculateTripConsumableCost(cc, quantity, duration))) {
+			continue;
 		}
 
 		let itemMultiple = consumable.qtyPerKill ?? consumable.qtyPerMinute ?? null;
@@ -65,32 +60,51 @@ export function getItemCostFromConsumables({
 				}
 			}
 
-			let multiply = itemMultiple;
-
-			// Calculate the duration for 1 kill and check how much will be used in 1 kill
-			if (consumable.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
+			const multiply = consumable.qtyPerMinute ? (timeToFinish / Time.Minute) * itemMultiple : itemMultiple;
 
 			for (const [item, qty] of consumable.itemCost.items()) {
-				floatCosts.add(item.id, qty);
+				floatCostsPerKill.add(item.id, qty * multiply);
 			}
-			if (multiply) floatCosts.multiply(multiply);
+			if (consumable.boostPercent) {
+				timeToFinish = reduceNumByPercent(timeToFinish, consumable.boostPercent);
+				boosts.push({
+					message: `${consumable.boostPercent}% for ${consumable.itemCost
+						.items()
+						.map(i => i[0].name)
+						.join(', ')}`,
+					boostPercent: consumable.boostPercent
+				});
+			}
 		}
 	}
 
 	const hasInfiniteWaterRunes = gearBank.hasEquipped(getSimilarItems(itemID('Staff of water')), false);
 
 	if (hasInfiniteWaterRunes) {
-		floatCosts.remove(EItem.WATER_RUNE, floatCosts.amount(EItem.WATER_RUNE));
+		floatCostsPerKill.remove(EItem.WATER_RUNE, floatCostsPerKill.amount(EItem.WATER_RUNE));
 	}
 
 	const maxBasedOnTime = Math.floor(maxTripLength / timeToFinish);
-	const maxCanKillWithItemCost = Math.floor(floatCosts.fits(gearBank.bank));
-	const finalQuantity = Math.max(1, Math.min(quantity, maxCanKillWithItemCost, maxBasedOnTime));
+	const maxCanKillWithItemCost =
+		consumableCosts.length === 0 ? Number.POSITIVE_INFINITY : Math.floor(floatCostsPerKill.fits(gearBank.bank));
+	const maxAllowed = Math.min(maxBasedOnTime, maxCanKillWithItemCost);
+	let finalQuantity = Math.max(1, inputQuantity ? Math.min(inputQuantity, maxAllowed) : maxAllowed) ?? maxAllowed;
+	if (slayerKillsRemaining && finalQuantity > slayerKillsRemaining) {
+		finalQuantity = slayerKillsRemaining;
+	}
+	const itemCost = floatCostsPerKill.multiply(finalQuantity).toItemBankRoundedUp();
 
-	const itemCost = floatCosts.multiply(finalQuantity).toItemBankRoundedUp();
+	if (consumableCosts.length === 0) {
+		return {
+			finalQuantity,
+			timeToFinish
+		};
+	}
 
 	return {
 		itemCost,
-		finalQuantity
+		finalQuantity,
+		boosts,
+		timeToFinish
 	};
 }

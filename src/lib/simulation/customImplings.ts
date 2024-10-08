@@ -1,5 +1,4 @@
-import { LootTable, Openables } from 'oldschooljs';
-import SimpleOpenable from 'oldschooljs/dist/structures/SimpleOpenable';
+import { LootTable, Openables, SimpleOpenable } from 'oldschooljs';
 
 import { RuneTable } from './seedTable';
 import { BattlestaffTable, StaffOrbTable } from './sharedTables';

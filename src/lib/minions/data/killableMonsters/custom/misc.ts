@@ -14,6 +14,7 @@ import { Venatrix } from './bosses/Venatrix';
 import type { CustomMonster } from './customMonsters';
 
 export const CockroachSoldier: CustomMonster = {
+	isCustom: true,
 	id: 31_621,
 	name: 'Cockroach soldier',
 	aliases: ['cockroach soldier', 'cs'],
@@ -36,6 +37,7 @@ export const CockroachSoldier: CustomMonster = {
 };
 
 export const EliteBlackKnight: CustomMonster = {
+	isCustom: true,
 	id: 31_651,
 	name: 'Elite Black Knight',
 	aliases: ['ebk', 'elite black knight'],

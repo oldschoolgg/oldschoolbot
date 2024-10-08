@@ -53,6 +53,7 @@ const table = new LootTable()
 	.add('Adamantite stone spirit', 3);
 
 export const VladimirDrakan: CustomMonster = {
+	isCustom: true,
 	id: 291_242,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Vladimir Drakan',

@@ -1,5 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { Activity, GearSetupType, Prisma } from '@prisma/client';
+import { type Activity, type GearSetupType, type Prisma, tame_growth } from '@prisma/client';
 import { Time, objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Monsters } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
@@ -15,14 +15,18 @@ import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/pris
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
+import { MTame } from '../../src/lib/structures/MTame';
+import { TameSpeciesID } from '../../src/lib/tames';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { getOSItem } from '../../src/lib/util/getOSItem';
 import { minionKCommand } from '../../src/mahoji/commands/k';
 import { stealCommand } from '../../src/mahoji/commands/steal';
+import { tamesCommand } from '../../src/mahoji/commands/tames';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+import { runTameTask } from '../../src/tasks/tames/tameTasks';
 import type { ClientStorage, User, UserStats } from '.prisma/client';
 
 const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
@@ -47,6 +51,52 @@ export class TestUser extends MUserClass {
 	constructor(user: MUser | User, client?: TestClient) {
 		super(user instanceof MUserClass ? user.user : user);
 		this.client = client!;
+	}
+
+	async giveIgneTame() {
+		const tame = await prisma.tame.create({
+			data: {
+				user_id: this.id,
+				species_id: TameSpeciesID.Igne,
+				max_artisan_level: 100,
+				max_combat_level: 100,
+				max_gatherer_level: 100,
+				max_support_level: 100,
+				growth_stage: tame_growth.adult
+			}
+		});
+		await this.update({
+			selected_tame: tame.id
+		});
+		return new MTame(tame);
+	}
+
+	async tamePVMTrip(monsterID: number) {
+		const tames = await this.fetchTames();
+		const tame = tames.find(t => t.species.id === TameSpeciesID.Igne)!;
+		const commandResult = await this.runCommand(tamesCommand, {
+			kill: {
+				name: Monsters.get(monsterID)!.name
+			}
+		});
+
+		const activity = await prisma.tameActivity.findFirst({
+			where: {
+				user_id: this.id
+			},
+			include: {
+				tame: true
+			}
+		});
+
+		if (activity) {
+			await runTameTask(activity, tame);
+		}
+		await this.sync();
+		return {
+			commandResult,
+			activity
+		};
 	}
 
 	async runActivity() {
@@ -127,7 +177,7 @@ export class TestUser extends MUserClass {
 		this.user = user;
 	}
 
-	async giveSlayerTask(monster: EMonster) {
+	async giveSlayerTask(monster: EMonster, quantity = 1000) {
 		await prisma.slayerTask.deleteMany({
 			where: {
 				user_id: this.id
@@ -136,8 +186,8 @@ export class TestUser extends MUserClass {
 		await prisma.slayerTask.create({
 			data: {
 				user_id: this.id,
-				quantity: 1000,
-				quantity_remaining: 1000,
+				quantity: quantity,
+				quantity_remaining: quantity,
 				slayer_master_id: slayerMasters.find(m => m.tasks.some(t => t.monster.id === monster))!.id,
 				monster_id: monster,
 				skipped: false

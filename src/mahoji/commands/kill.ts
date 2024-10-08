@@ -79,7 +79,7 @@ export const killCommand: OSBMahojiCommand = {
 		const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, options.name));
 
 		let limit = determineKillLimit(user);
-		if (osjsMonster?.isCustom) {
+		if (osjsMonster && 'isCustom' in osjsMonster) {
 			if (user.perkTier() < PerkTier.Four) {
 				return 'Simulating kills of custom monsters is a T3 perk!';
 			}

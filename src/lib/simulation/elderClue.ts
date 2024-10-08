@@ -1,7 +1,5 @@
 import { randArrItem, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import Clue from 'oldschooljs/dist/structures/Clue';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { Bank, LootTable } from 'oldschooljs';
 
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
@@ -74,11 +72,13 @@ const table = new LootTable()
 	)
 	.add('Coins', [20_500_000, 50_200_000]);
 
-export class ElderClue extends Clue {
-	open(quantity: number, targetBank: undefined, cl: Bank): Bank;
-	open(quantity: number, targetBank: Bank, cl: Bank): null;
-	open(quantity: number, targetBank: Bank | undefined, cl: Bank): Bank | null {
-		const loot = targetBank ?? new Bank();
+type LootTableRollOptions = { targetBank?: Bank; cl: Bank };
+export class ElderClue {
+	public allItems = resolveItems([...table.allItems, 'Clue bag', 'Inventors tools', 'Elder knowledge', 'Octo']);
+	roll(quantity: number, options: { targetBank?: undefined } & LootTableRollOptions): Bank;
+	roll(quantity: number, options: { targetBank: Bank } & LootTableRollOptions): null;
+	public roll(quantity: number, options: LootTableRollOptions): Bank | null {
+		const loot = options.targetBank ?? new Bank();
 
 		for (let i = 0; i < quantity; i++) {
 			const numberOfRolls = randInt(4, 7);
@@ -87,7 +87,7 @@ export class ElderClue extends Clue {
 
 			const untradeableUniques = resolveItems(['Clue bag', 'Inventors tools', 'Elder knowledge']);
 			if (roll(100)) {
-				const unowned = untradeableUniques.filter(id => !cl.has(id) && !loot.has(id));
+				const unowned = untradeableUniques.filter(id => !options.cl.has(id) && !loot.has(id));
 				if (unowned.length > 0) {
 					loot.add(randArrItem(unowned));
 				} else {
@@ -103,4 +103,4 @@ export class ElderClue extends Clue {
 	}
 }
 
-export const ElderClueTable = new ElderClue({ table });
+export const ElderClueTable = new ElderClue();

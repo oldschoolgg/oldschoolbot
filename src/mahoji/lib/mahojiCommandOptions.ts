@@ -1,7 +1,6 @@
 import { type CommandOption, toTitleCase } from '@oldschoolgg/toolkit';
 import { uniqueArr } from 'e';
-import { Bank, Items } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType, type User } from 'discord.js';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';

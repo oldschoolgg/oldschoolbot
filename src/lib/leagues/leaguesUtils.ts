@@ -1,6 +1,5 @@
 import type { Minigame, PlayerOwnedHouse, Tame, User, UserStats, activity_type_enum } from '@prisma/client';
-import { Bank } from 'oldschooljs';
-import type Monster from 'oldschooljs/dist/structures/Monster';
+import { Bank, type Monster } from 'oldschooljs';
 
 import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import type { personalSpellCastStats } from '../../mahoji/lib/abstracted_commands/statCommand';

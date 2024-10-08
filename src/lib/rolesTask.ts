@@ -1,3 +1,4 @@
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { noOp, notEmpty, uniqueArr } from 'e';
 
 import { SupportServer } from '../config';
@@ -6,18 +7,11 @@ import { getCollectionItems, overallPlusItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 
 import { Prisma } from '@prisma/client';
-import { Bank } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
-import {
-	type CommandResponse,
-	Stopwatch,
-	convertXPtoLVL,
-	getUsernameSync,
-	resolveItems,
-	returnStringOrFile
-} from '../lib/util';
+import { type CommandResponse, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
 import { ClueTiers } from './clues/clueTiers';
 import { RawSQL, loggedRawPrismaQuery } from './rawSql';
 import { TeamLoot } from './simulation/TeamLoot';

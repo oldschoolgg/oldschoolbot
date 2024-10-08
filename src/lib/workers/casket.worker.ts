@@ -2,7 +2,7 @@ import '../../lib/customItems/customItems';
 import '../data/itemAliases';
 
 import { randInt, roll } from 'e';
-import { Bank, Misc } from 'oldschooljs';
+import { Bank, EliteMimicTable, MasterMimicTable } from 'oldschooljs';
 
 import type { CasketWorkerArgs } from '.';
 import { ClueTiers } from '../clues/clueTiers';
@@ -15,18 +15,19 @@ if (global.prisma) {
 export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[ItemBank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
 
-	const loot = clueTier.table.open(quantity, undefined, new Bank());
-
+	let bsoBonus = 0;
 	for (let i = 0; i < quantity; i++) {
-		const qty = randInt(1, 3);
-		loot.add(clueTier.table.open(qty, undefined, new Bank()));
+		bsoBonus += randInt(1, 3);
 	}
+
+	const loot = clueTier.table.roll(quantity + bsoBonus, { cl: new Bank() });
 
 	let mimicNumber = 0;
 	if (clueTier.mimicChance) {
+		const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 		for (let i = 0; i < quantity; i++) {
 			if (roll(clueTier.mimicChance)) {
-				loot.add(Misc.Mimic.open(clueTier.name as 'master' | 'elite'));
+				loot.add(table.roll());
 				mimicNumber++;
 			}
 		}

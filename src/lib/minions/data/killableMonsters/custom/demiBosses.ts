@@ -1,8 +1,5 @@
 import { Time } from 'e';
-import { LootTable, Monsters } from 'oldschooljs';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import { itemID, resolveNameBank } from 'oldschooljs/dist/util';
+import { LootTable, MonsterAttribute, Monsters, RareDropTable, itemID, resolveNameBank } from 'oldschooljs';
 
 import { BitField } from '../../../../constants';
 import { HighSeedPackTable } from '../../../../data/seedPackTables';
@@ -16,6 +13,7 @@ import { TreebeardLootTable } from './Treebeard';
 import type { CustomMonster } from './customMonsters';
 
 const SeaKraken: CustomMonster = {
+	isCustom: true,
 	id: 53_466_534,
 	name: 'Sea Kraken',
 	aliases: ['sea kraken'],
@@ -51,6 +49,7 @@ const SeaKraken: CustomMonster = {
 };
 
 const Malygos: CustomMonster = {
+	isCustom: true,
 	id: 707_070,
 	name: 'Malygos',
 	aliases: ['abyssal dragon', 'abyss drag', 'mally', 'maly', 'malygos'],
@@ -108,6 +107,7 @@ const Malygos: CustomMonster = {
 };
 
 const Treebeard: CustomMonster = {
+	isCustom: true,
 	id: 932_122,
 	name: 'Treebeard',
 	aliases: ['treebeard', 'tree'],
@@ -145,6 +145,7 @@ const Treebeard: CustomMonster = {
 };
 
 export const QueenBlackDragon: CustomMonster = {
+	isCustom: true,
 	id: 192_195,
 	name: 'Queen Black Dragon',
 	aliases: ['queen black dragon', 'qbd', 'qdb'],
@@ -217,6 +218,7 @@ export const QueenBlackDragon: CustomMonster = {
 };
 
 const Nihiliz: CustomMonster = {
+	isCustom: true,
 	id: 708_080,
 	name: 'Nihiliz',
 	aliases: ['nihiliz', 'shadow nihil boss', 'mini nex', 'nihilist'],
@@ -280,6 +282,7 @@ const Nihiliz: CustomMonster = {
 };
 
 const QueenGoldemar: CustomMonster = {
+	isCustom: true,
 	id: 22_193,
 	name: 'Queen Goldemar',
 	aliases: ['queen goldemar'],

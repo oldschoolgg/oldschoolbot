@@ -1,6 +1,5 @@
 import { randArrItem, roll } from 'e';
-import { Bank, Items, LootTable } from 'oldschooljs';
-import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
+import { Bank, Items, LootTable, TreeHerbSeedTable } from 'oldschooljs';
 
 import { divinationEnergies } from './bso/divination';
 import { Emoji, OSB_VIRTUS_IDS } from './constants';

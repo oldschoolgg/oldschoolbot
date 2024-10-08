@@ -1,6 +1,5 @@
 import { Time } from 'e';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable, RareDropTable } from 'oldschooljs';
 
 import {
 	brokenPernixOutfit,

@@ -1,10 +1,8 @@
-import { SimpleTable, normal } from '@oldschoolgg/toolkit';
+import { normal } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcPercentOfNum, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
+import { Bank, LootTable, convertXPtoLVL, resolveItems } from '../util';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { MAX_XP } from '../constants';
 import type { LevelRequirements } from '../skilling/types';
 import { SkillsEnum } from '../skilling/types';
