@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4
-      - run: corepack enable &&  corepack install
+      - run: corepack enable && corepack install
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v4
         with:
