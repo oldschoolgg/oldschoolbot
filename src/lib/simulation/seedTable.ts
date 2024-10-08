@@ -1,6 +1,4 @@
-import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/g-m/MasterFarmer';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-
+import { LootTable, Monsters } from 'oldschooljs';
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../data/seedPackTables';
 import { CrystalChestTable } from './misc';
 
@@ -61,7 +59,7 @@ export const WilvusTable = new LootTable()
 			.add('Clue scroll (master)', 1, 20)
 			.add('Clue scroll (grandmaster)', 1, 1)
 	)
-	.add(MasterFarmer.pickpocketTable!, 3)
+	.add(Monsters.MasterFarmer.pickpocketTable!, 3)
 	.add('Runite ore', [3, 6])
 	.add(CrystalChestTable)
 	.tertiary(5000, "Thieves' armband")

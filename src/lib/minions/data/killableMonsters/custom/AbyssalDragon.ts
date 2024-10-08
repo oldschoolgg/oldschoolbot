@@ -1,8 +1,4 @@
-import { RareTable } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
-import WyvernHerbTable from 'oldschooljs/dist/simulation/subtables/WyvernHerbTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { GemTable, LootTable, RareTable, TreeHerbSeedTable, WyvernHerbTable } from 'oldschooljs';
 
 const petTrollTable = new LootTable().add('Ori', 1, 1).add('Abyssal head', 1, 9);
 

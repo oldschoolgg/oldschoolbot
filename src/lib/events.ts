@@ -1,11 +1,11 @@
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
 import type { BaseMessageOptions, Message } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold, time } from 'discord.js';
 import { Time, isFunction } from 'e';
 import { Items } from 'oldschooljs';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { command_name_enum } from '@prisma/client';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';

@@ -1,4 +1,4 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcWhatPercent, noOp, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 

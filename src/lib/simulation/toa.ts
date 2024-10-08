@@ -1,4 +1,4 @@
-import { SimpleTable, exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
 import { XpGainSource } from '@prisma/client';
@@ -22,6 +22,7 @@ import {
 } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';

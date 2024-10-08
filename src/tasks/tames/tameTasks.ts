@@ -12,8 +12,7 @@ import {
 } from 'discord.js';
 import { Time, increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, roll } from 'e';
 import { isEmpty } from 'lodash';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField } from '../../lib/constants';
@@ -321,7 +320,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			if (user.bitfield.includes(BitField.DisabledTameClueOpening)) {
 				loot.add(clueTier.id, activityData.quantity);
 			} else {
-				const openingLoot = clueTier.table.open(actualOpenQuantityWithBonus, undefined, user.cl);
+				const openingLoot = clueTier.table.roll(actualOpenQuantityWithBonus, { cl: user.cl });
 
 				if (tame.hasEquipped('Abyssal jibwings') && clueTier !== ClueTiers[0]) {
 					const lowerTier = ClueTiers[ClueTiers.indexOf(clueTier) - 1];
@@ -330,7 +329,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 					for (let i = 0; i < activityData.quantity; i++) {
 						if (percentChance(5)) {
 							bonusClues++;
-							abysJwLoot.add(lowerTier.table.open(1, undefined, user.cl));
+							abysJwLoot.add(lowerTier.table.roll(1, { cl: user.cl }));
 						}
 					}
 					if (abysJwLoot.length > 0) {

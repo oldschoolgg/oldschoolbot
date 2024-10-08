@@ -1,8 +1,8 @@
-import { UserError } from '@oldschoolgg/toolkit';
 import { objectEntries, reduceNumByPercent } from 'e';
 import type { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
 import type { GearSetupType } from '../../gear/types';

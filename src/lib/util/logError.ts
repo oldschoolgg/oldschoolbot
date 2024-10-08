@@ -16,8 +16,11 @@ export function assert(condition: boolean, desc?: string, context?: Record<strin
 	}
 }
 
-export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
+export function logError(err: any, context?: Record<string, string>, extra?: Record<string, string>) {
 	const metaInfo = deepMerge(context ?? {}, extra ?? {});
+	if (err?.requestBody?.files) {
+		err.requestBody = [];
+	}
 	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, {
 		type: 'ERROR',
 		raw: JSON.stringify(err),

@@ -380,7 +380,7 @@ export function doMonsterTrip(data: newOptions) {
 
 	if (!wiped) {
 		if (monster.specialLoot) {
-			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl });
+			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
 		}
 		if (newSuperiorCount) {
 			loot.add(superiorTable?.kill(newSuperiorCount));
@@ -473,7 +473,8 @@ export function doMonsterTrip(data: newOptions) {
 			quantity,
 			monster,
 			loot,
-			gearBank
+			gearBank,
+			updateBank
 		});
 		if (effectResult) {
 			if (effectResult.loot) updateBank.itemLootBank.add(effectResult.loot);

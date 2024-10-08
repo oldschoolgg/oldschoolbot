@@ -1,5 +1,5 @@
 import { Monsters } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import setCustomMonster from '../../../../../util/setCustomMonster';
 

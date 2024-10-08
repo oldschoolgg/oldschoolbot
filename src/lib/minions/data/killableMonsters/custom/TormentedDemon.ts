@@ -1,13 +1,12 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters } from 'oldschooljs';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
+import { Bank, LootTable, Monsters, RareDropTable, resolveNameBank } from 'oldschooljs';
 
 import { GearStat } from '../../../../gear';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
 import type { CustomMonster } from './customMonsters';
 
 export const TormentedDemon: CustomMonster = {
+	isCustom: true,
 	id: 941_944,
 	name: 'Tormented Demon',
 	aliases: ['tormented demon', 'td'],

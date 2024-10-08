@@ -1,4 +1,4 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 export const FishTable = new LootTable()
 	.add('Raw sea turtle', [1, 10])

@@ -255,6 +255,15 @@ const Potions = [
 		])
 	},
 	{
+		name: 'Extended anti-venom+',
+		items: resolveItems([
+			'Extended anti-venom+(1)',
+			'Extended anti-venom+(2)',
+			'Extended anti-venom+(3)',
+			'Extended anti-venom+(4)'
+		])
+	},
+	{
 		name: 'Anti-venom+',
 		items: resolveItems(['Anti-venom+(1)', 'Anti-venom+(2)', 'Anti-venom+(3)', 'Anti-venom+(4)'])
 	},

@@ -1,6 +1,5 @@
-import type { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import type LootTable from 'oldschooljs/dist/structures/LootTable';
+import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
+
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { Skills } from '../types';
 import type { FarmingPatchName } from '../util/farmingHelpers';

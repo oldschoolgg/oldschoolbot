@@ -1,6 +1,5 @@
-import type { LootTable } from 'oldschooljs';
+import type { LootTable, Monster } from 'oldschooljs';
 import type { MonsterData } from 'oldschooljs/dist/meta/monsterData';
-import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import setCustomMonster, { makeKillTable } from '../../../../util/setCustomMonster';
 import type { KillableMonster } from '../../../types';
@@ -9,18 +8,13 @@ import { customDemiBosses } from './demiBosses';
 import { MiscCustomMonsters } from './misc';
 import { resourceDungeonMonsters } from './resourceDungeons';
 
-declare module 'oldschooljs/dist/structures/Monster' {
-	export default interface Monster {
-		isCustom?: true;
-	}
-}
-
 export interface CustomMonster extends Readonly<Omit<Readonly<KillableMonster>, 'table'>> {
 	readonly table: LootTable;
 	readonly baseMonster: Monster;
 	readonly hp?: number;
 	readonly customMonsterData?: Partial<MonsterData>;
 	readonly allItems?: number[];
+	isCustom: true;
 }
 
 export const customKillableMonsters: KillableMonster[] = [];

@@ -508,6 +508,7 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	maxSizeInput?: number;
 	quantity?: number;
 	// id of user that used chincannon
 	cc?: string;

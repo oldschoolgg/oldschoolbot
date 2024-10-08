@@ -1,9 +1,9 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
+import { PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import type { APIButtonComponent, APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
@@ -12,6 +12,7 @@ import { Items } from 'oldschooljs';
 import { convertLVLtoXP, getItemOrThrow } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
+import type { Prisma } from '@prisma/client';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
@@ -853,7 +854,7 @@ export const OSB_VIRTUS_IDS = [26_241, 26_243, 26_245];
 export const YETI_ID = 129_521;
 export const KING_GOLDEMAR_GUARD_ID = 30_913;
 
-export const gitHash = execSync('git rev-parse HEAD').toString().trim();
+export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
 const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';

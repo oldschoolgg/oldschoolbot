@@ -1,5 +1,4 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-
+import { LootTable } from 'oldschooljs';
 import { GemRockTable } from '../skilling/skills/mining';
 import resolveItems from '../util/resolveItems';
 import { SeedTable } from './seedTable';

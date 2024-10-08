@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';

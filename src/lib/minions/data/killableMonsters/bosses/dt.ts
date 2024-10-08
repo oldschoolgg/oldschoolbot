@@ -1,15 +1,12 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { VirtusTable } from 'oldschooljs/dist/simulation/subtables/VirtusTable';
+import { Bank, Monsters, deepResolveItems, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { OSB_VIRTUS_IDS } from '../../../../constants';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import { getOSItem } from '../../../../util/getOSItem';
 import itemID from '../../../../util/itemID';
-import { removeItemsFromLootTable } from '../../../../util/smallUtils';
 import type { KillableMonster, KillableMonsterEffect } from '../../../types';
 import { QuestID } from '../../quests';
 
@@ -114,6 +111,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		deathProps: {
 			hardness: 0.6,
 			steepness: 0.99
+		},
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
 		}
 	},
 	{
@@ -187,7 +189,12 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: awakenedDeathProps
+		deathProps: awakenedDeathProps,
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
+		}
 	},
 	{
 		id: Monsters.TheLeviathan.id,
@@ -264,6 +271,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		deathProps: {
 			hardness: 0.6,
 			steepness: 0.99
+		},
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
 		}
 	},
 	{
@@ -342,7 +354,12 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: awakenedDeathProps
+		deathProps: awakenedDeathProps,
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
+		}
 	},
 	{
 		id: Monsters.TheWhisperer.id,
@@ -445,6 +462,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		deathProps: {
 			hardness: 0.6,
 			steepness: 0.99
+		},
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
 		}
 	},
 	{
@@ -625,6 +647,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		deathProps: {
 			hardness: 0.6,
 			steepness: 0.99
+		},
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
 		}
 	},
 	{
@@ -698,9 +725,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: awakenedDeathProps
+		deathProps: awakenedDeathProps,
+		specialLoot: ({ loot }) => {
+			for (const virtusItem of OSB_VIRTUS_IDS) {
+				loot.set(virtusItem, 0);
+			}
+		}
 	}
 ];
-
-// Remove virtus from drop tables
-removeItemsFromLootTable(VirtusTable, OSB_VIRTUS_IDS);

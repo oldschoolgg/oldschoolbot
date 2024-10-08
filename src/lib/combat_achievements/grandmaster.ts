@@ -46,8 +46,14 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: 'Raids'
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).users.length >= 5 &&
+					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -69,8 +75,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			chancePerKill: 1,
+			hasChance: data =>
+				data.type === 'Raids' &&
+				(data as RaidsOptions).users.length === 1 &&
+				data.duration < Time.Minute * 17 * (data.quantity ?? 1)
 		}
 	},
 	{
@@ -80,8 +89,14 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: 'Raids'
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).users.length >= 3 &&
+					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -91,11 +106,12 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
+			chancePerKill: 1,
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				data.duration < Time.Minute * 38.5 * (data.quantity ?? 1)
 		}
 	},
 	{
@@ -117,8 +133,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).users.length >= 3 &&
+					data.duration < Time.Minute * 27 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					data.duration < Time.Minute * 27 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -128,8 +152,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).users.length >= 5 &&
+					data.duration < Time.Minute * 25 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					data.duration < Time.Minute * 25 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -1085,5 +1117,38 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 				colosseum: 10
 			}
 		})
+	},
+	{
+		id: 3095,
+		name: 'Araxxor Speed-Runner',
+		desc: 'Kill Araxxor 6 times in 10:00.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 500,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 3096,
+		name: 'Perfect Araxxor 2',
+		desc: 'Kill Araxxor perfectly, without hitting it during the enrage phase.',
+		type: 'perfection',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1000,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 3097,
+		name: 'Swimming in Venom',
+		desc: 'Kill Araxxor without the boss ever moving.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1000,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
 	}
 ];

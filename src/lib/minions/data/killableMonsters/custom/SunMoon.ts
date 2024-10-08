@@ -31,6 +31,7 @@ celesMinGear.equip('Ignis ring(i)');
 celesMinGear.equip('Soulreaper axe');
 
 export const Solis: CustomMonster = {
+	isCustom: true,
 	id: 129_124,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Solis',
@@ -63,7 +64,7 @@ export const Solis: CustomMonster = {
 		lowestDeathChance: 10,
 		highestDeathChance: 80
 	},
-	minimumFoodHealAmount: 22,
+	minimumHealAmount: 22,
 	allItems: resolveItems(['Solite', 'Eagle egg', 'Sun-metal scraps']),
 	minimumGearRequirements: {
 		melee: {
@@ -102,6 +103,7 @@ export const Solis: CustomMonster = {
 };
 
 export const Celestara: CustomMonster = {
+	isCustom: true,
 	id: 129_125,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Celestara',
@@ -138,7 +140,7 @@ export const Celestara: CustomMonster = {
 		lowestDeathChance: 5,
 		highestDeathChance: 65
 	},
-	minimumFoodHealAmount: 22,
+	minimumHealAmount: 22,
 	allItems: resolveItems(['Lunite', 'Moonlight essence', 'Moondash charm', 'Noom']),
 	minimumGearRequirements: {
 		melee: {

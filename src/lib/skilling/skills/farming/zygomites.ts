@@ -1,4 +1,4 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { randArrItem, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';

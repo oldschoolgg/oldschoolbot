@@ -1,5 +1,4 @@
 import { PerkTier, cleanUsername, mentionCommand, seedShuffle } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { Time, calcWhatPercent, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
@@ -7,6 +6,7 @@ import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { pick } from 'remeda';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';

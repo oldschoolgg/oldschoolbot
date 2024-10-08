@@ -1,10 +1,14 @@
-import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit';
-import { Bank, Items } from 'oldschooljs';
+import { mentionCommand } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import { activity_type_enum, tame_growth, xp_gains_skill_enum } from '@prisma/client';
+import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, noOp } from 'e';
+import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
-import { type Prisma, activity_type_enum, tame_growth, xp_gains_skill_enum } from '@prisma/client';
-import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { Time, noOp } from 'e';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
@@ -46,7 +50,6 @@ import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { TameSpeciesID, tameFeedableItems, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
-import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import { elderRequiredClueCLItems, elderSherlockItems } from '../../lib/util/elderClueRequirements';
 import {
 	type FarmingPatchName,
@@ -59,7 +62,6 @@ import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
-import resolveItems from '../../lib/util/resolveItems';
 import { getUsersTame } from '../../lib/util/tameUtil';
 import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
@@ -1104,13 +1106,7 @@ ${droprates.join('\n')}`),
 
 Spawned an adult of each tame, fed them all applicable items, and spawned ALL their equippable items into your bank (but not equipped).`;
 				}
-				if (options.gear) {
-					const gear = gearPresets.find(i => stringMatches(i.name, options.gear!.preset))!;
-					await user.update({
-						[`gear_${options.gear.gear_setup}`]: gear.gear as any
-					});
-					return `Set your gear for ${gear.name}.`;
-				}
+
 				if (options.reset) {
 					const resettable = thingsToReset.find(i => i.name === options.reset?.thing);
 					if (!resettable) return 'Invalid thing to reset.';

@@ -1,4 +1,4 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';

@@ -1,9 +1,7 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcPercentOfNum, randInt, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, Monsters, itemID } from 'oldschooljs';
 
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -83,7 +81,7 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 
 		if (fish.name === 'Infernal eel') {
-			const jadKC = await user.getKC(TzTokJad.id);
+			const jadKC = await user.getKC(Monsters.TzTokJad.id);
 			if (jadKC === 0) {
 				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 			}

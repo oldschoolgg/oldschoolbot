@@ -2980,8 +2980,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		},
-		examine: "Almost sounds like there's screaming coming from inside it..."
+		}
 	},
 	100_000_000
 );
@@ -3964,8 +3963,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		},
-		examine: 'A dangerous power emits from this book... beware.'
+		}
 	},
 	1000
 );

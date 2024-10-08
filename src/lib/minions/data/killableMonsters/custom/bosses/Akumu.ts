@@ -1,6 +1,5 @@
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { Bank, LootTable, Monsters } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../../../bsoOpenables';
 import { GearStat } from '../../../../../gear';
@@ -25,6 +24,7 @@ export const AkumuLootTable = new LootTable()
 	);
 
 export const Akumu: CustomMonster = {
+	isCustom: true,
 	id: 93_135,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Akumu',
@@ -54,7 +54,7 @@ export const Akumu: CustomMonster = {
 		lowestDeathChance: 5,
 		highestDeathChance: 65
 	},
-	minimumFoodHealAmount: 22,
+	minimumHealAmount: 22,
 	allItems: resolveItems([]),
 	minimumGearRequirements: {
 		melee: {}
