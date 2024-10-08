@@ -1571,7 +1571,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 1,
 			hasChance: data => {
 				const qty = (data as MonsterActivityTaskOptions).q;
-				return isCertainMonsterTrip(Monsters.Araxxor.id) && qty >= 10;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 10;
 			}
 		}
 	},
@@ -1586,7 +1586,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: data => {
 				const qty = (data as MonsterActivityTaskOptions).q;
 				const timePerKill = data.duration / Time.Minute / qty;
-				return isCertainMonsterTrip(Monsters.Araxxor.id) && qty >= 5 && timePerKill <= 2;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 5 && timePerKill <= 2;
 			}
 		}
 	},

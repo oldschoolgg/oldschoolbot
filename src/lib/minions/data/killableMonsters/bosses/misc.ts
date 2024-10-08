@@ -8,7 +8,6 @@ import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
-import { getOSItem } from '../../../../util/getOSItem';
 
 const killableBosses: KillableMonster[] = [
 	{

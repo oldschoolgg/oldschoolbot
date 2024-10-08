@@ -1135,7 +1135,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			hasChance: data => {
 				const qty = (data as MonsterActivityTaskOptions).q;
 				const timePerKill = data.duration / Time.Minute / qty;
-				return isCertainMonsterTrip(Monsters.Araxxor.id) && qty >= 6 && timePerKill <= 1.66;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 6 && timePerKill <= 1.66;
 			}
 		}
 	},

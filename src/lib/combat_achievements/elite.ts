@@ -1559,7 +1559,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			hasChance: data => {
 				const qty = (data as MonsterActivityTaskOptions).q;
 				const timePerKill = data.duration / Time.Minute / qty;
-				return isCertainMonsterTrip(Monsters.Araxxor.id) && qty >= 4 && timePerKill <= 2.5;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 4 && timePerKill <= 2.5;
 			}
 		}
 	},
