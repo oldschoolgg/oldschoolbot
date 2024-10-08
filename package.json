@@ -20,7 +20,7 @@
 		"build:main": "esbuild src/index.ts src/lib/workers/index.ts --sourcemap=inline --minify --legal-comments=none --outdir=./dist --log-level=error --bundle --platform=node --loader:.node=file --external:skia-canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
 		"build:workers": "esbuild src/lib/workers/kill.worker.ts src/lib/workers/finish.worker.ts src/lib/workers/casket.worker.ts --sourcemap=inline --log-level=error --bundle --minify --legal-comments=none --outdir=./dist/lib/workers --platform=node --loader:.node=file --external:skia-canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
 		"test:circular": "dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js",
-		"test:ci:unit": "concurrently --raw --kill-others-on-fail \"yarn test:unit\" \"yarn test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\" \"yarn test:circular\"",
+		"test:ci:unit": "concurrently --raw --kill-others-on-fail \"yarn test:unit\" \"yarn test:lint\" \"yarn build:tsc\" \"tsc -p tests/integration\" \"tsc -p tests/unit\" \"yarn test:circular\"",
 		"spritesheet": "tsx ./scripts/spritesheet.ts && yarn lint:biome",
 		"data": "concurrently \"tsx ./scripts/monster_table.ts\" && yarn lint",
 		"wiki": "tsx ./scripts/wiki.ts",

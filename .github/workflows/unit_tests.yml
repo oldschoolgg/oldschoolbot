@@ -44,7 +44,5 @@ jobs:
           popd && cp .env.test .env
       - name: Generate Prisma Clients
         run: yarn gen
-      - name: Build
-        run: yarn build:tsc
       - name: Test
         run: yarn test:ci:unit
