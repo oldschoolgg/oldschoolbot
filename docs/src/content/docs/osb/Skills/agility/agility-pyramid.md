@@ -2,8 +2,6 @@
 title: "Agility Pyramid"
 ---
 
-# Agility Pyramid
-
 If you're wanting to make some gp while running agility, this is your place. Each successfully completed lap gives 10k gp, while also allowing you to alch during your trip.
 
 ## Requirements

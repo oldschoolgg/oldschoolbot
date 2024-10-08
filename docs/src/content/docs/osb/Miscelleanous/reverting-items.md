@@ -1,15 +1,10 @@
 ---
 title: "Reverting Items"
-description: >-
-  This page will provide you with in-depth information on how reverting items
-  works and what it yields.
 ---
-
-# Reverting Items
 
 For starters, in most instances reverting items is something you may not necessarily be looking to do unless you are looking to sell something that has been made untradeable by adding an ornament to it or potentially charging it or even to break something down for components such as Zulrah items or even Bandos items into Bandosian components which is now needed as a result of [Nex](../bosses/nex.md) in order to create Torva items.
 
-To start reverting items you are going to begin by doing `/create`` `**`item:`**` ``revert` and looking for the item that you are looking to revert into either:
+To start reverting items you are going to begin by doing `/createitem: ``revert` and looking for the item that you are looking to revert into either:
 
 - Components
 - Original Item (removing an ornament or separating combined items)
@@ -49,4 +44,4 @@ When reverting one of the items below you will be guaranteed to get your Ornamen
 
 When reverting a castle wars item back into tickets, you will get full return of all tickets that were used. For more information on Castle Wars, how to get started, and the cost of all those items, make sure you make a trip to [Castle Wars](../minigames/castle-wars.md).
 
-The only instance of reverting an item and not getting a component or an item return back is when doing `/create`` `**`item:`**` ``revert Dragon Pickaxe (upgraded)`, this will only return you the Dragon Pickaxe.
+The only instance of reverting an item and not getting a component or an item return back is when doing `/createitem: ``revert Dragon Pickaxe (upgraded)`, this will only return you the Dragon Pickaxe.

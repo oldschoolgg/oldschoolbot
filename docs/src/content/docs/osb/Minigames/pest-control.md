@@ -2,11 +2,9 @@
 title: "Pest Control"
 ---
 
-# Pest Control
-
 Pest control is a minigame in which you can acquire commendation points to spend on XP and the void knight armour.
 
-To start a game, use: `/minigames pest_control start`
+To start a game, use: [[/minigames pest_control start]]
 
 ## Requirements
 
@@ -18,8 +16,6 @@ To start a game, use: `/minigames pest_control start`
   - 5 points per game
 
 **Note:** Your minion will automatically use the highest boat it can. You _cannot_ select a lower tier boat if you have access to a higher tier boat.
-
----
 
 ## Boosts
 
@@ -33,13 +29,11 @@ To start a game, use: `/minigames pest_control start`
 - 2 extra points per game for completion of Medium combat achievments
 - 3 extra points per game for completion of Hard combat achievments
 
----
-
 ## Rewards (Equipment)
 
 You can spend your Commendation Points with the following command:
 
-- `/minigames pest_control buy`` `**`name:`**
+- [[/minigames pest_control buy name\:]]
 
 | **Reward Item**    | **Point Cost** |
 | ------------------ | :------------: |
@@ -56,9 +50,7 @@ You can spend your Commendation Points with the following command:
 
 - Elite void requires completion of the Hard Western Provinces Diary.
 
----
-
 ## Rewards (XP)
 
 - You can also spend your points on XP, exactly the same as in OSRS. However, you do not receive the extra XP when buying bulk amounts.
-- E.g. `/minigames pest_control xp`` `**`skill:`**`attack`` `**`amount:`**`100`
+- E.g. [[/minigames pest_control xp skill\:attack amount\:100]]

@@ -8,8 +8,8 @@ description: /runecraft
 ### Custom Content and Boosts
 
 - Elder Runecrafting - the process of creating Elder Runes, which are unlocked when you have an [Elder Talisman](../minigames/ourania-delivery-service-ods.md#ods-shop). Need level 105 to craft.
-- Abyssal pouch - Holds 64 essence (increases maximum to +89 inv spaces from pouches). Created using a giant pouch and an [abyssal thread](../bso-custom-killables/demi-bosses/malygos.md#loot) with /`create`**`item:`**`abyssal pouch.` Requires 90 RC to use. Ensure you create a new giant pouch after creating this.
-- Elder pouch - Holds 128 essence (increases maximum to +216 inv spaces from pouches). Created using an Abyssal pouch and an [elder thread](../minigames/ourania-delivery-service-ods.md#ods-shop) with `/create`**`item:`**`elder pouch.` Requires level 105 RC to use. Ensure you create a new Abyssal pouch after creating this.
+- Abyssal pouch - Holds 64 essence (increases maximum to +89 inv spaces from pouches). Created using a giant pouch and an [abyssal thread](../bso-custom-killables/demi-bosses/malygos.md#loot) with /`create`\*\*`item:abyssal pouch.` Requires 90 RC to use. Ensure you create a new giant pouch after creating this.
+- Elder pouch - Holds 128 essence (increases maximum to +216 inv spaces from pouches). Created using an Abyssal pouch and an [elder thread](../minigames/ourania-delivery-service-ods.md#ods-shop) with `/create`\*\*`item:elder pouch.` Requires level 105 RC to use. Ensure you create a new Abyssal pouch after creating this.
 - [Obis](../custom-items/pets.md#miscellaneous-pets) - 2x speed boost to Runecraft but uses 3x essence
 - [Master runecrafter outfit](../minigames/ourania-delivery-service-ods.md#ods-shop) - 10% xp boost to Runecraft
 - Lvl 120 Runecraft - 2x Elder runes

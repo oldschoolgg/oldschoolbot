@@ -1,14 +1,11 @@
 ---
 title: "Nex"
-description: >-
-  Nex is one of Zaros' most powerful followers. She is imprisoned in the Ancient
-  Prison, sealed away beneath the God Wars Dungeon.
 ---
 
 ## Requirements
 
 - Frozen Key
-  - Defeat one of each [God Wars Dungeon Boss](broken-reference) and then use `/create` to create a Frozen Key
+- Defeat one of each [God Wars Dungeon Boss](broken-reference) and then use `/create` to create a Frozen Key
 - Level 90 Ranged, Level 90 Defence, Level 74 Prayer
 - Good range gear in range setup. Including a weapon (Armadyl Crossbow, Dragon Crossbow, Zaryte Crossbow, Twisted Bow) and ammo (Dragon/rune arrows, or Ruby Dragon Bolts (e)).
 - Supplies: `8x Saradomin Brew, 5x Super Restore, 2x Ranging Potions, 1x Sanfew Serum, 600x ammo` regardless of trip length/quantity.
@@ -24,7 +21,7 @@ description: >-
 - Ely reduces death chance by 30%.
 - You get faster at killing Nex based on your Offence Boost % (gear) and your KC.
 
-(_**NOTE**_: You can now kill Nex Solo using **/k name:Nex solo:True)**\
+**NOTE**\_: You can now kill Nex Solo using [[/k name:Nex solo:True]]
 
 ## BIS Gear
 

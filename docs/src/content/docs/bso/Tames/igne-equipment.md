@@ -3,8 +3,6 @@ title: "Igne Equipment"
 description: Igne Claws can be created to give your Igne tame a PvM speed boost
 ---
 
-# Igne Equipment
-
 **`Warning: Do NOT feed your claws or armor to your tame. You will not get any boost and lose the item forever.`**
 
 You can create each tier of igne claws and armor by using the `/create` command, starting with **Runite igne claws or Dragon Igne Armor**.

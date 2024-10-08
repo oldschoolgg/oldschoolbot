@@ -1,6 +1,7 @@
 ---
 title: "Advanced Resources"
-description: Additional resources for players doing long term planning
+sidebar:
+  order: 5
 ---
 
 ### Banked Experience and EHP Spreadsheet

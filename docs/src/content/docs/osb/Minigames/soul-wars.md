@@ -2,8 +2,6 @@
 title: "Soul Wars"
 ---
 
-# Soul Wars
-
 Soul wars is primarily played to gain zeal points in order to imbue items such as rings and slayer helmets. It also has some other unique rewards. There are no boosts or requirements for Soul wars.
 
 To start a game of Soul wars, use:
@@ -14,13 +12,11 @@ To check how many points you have, use:
 
 - `/minigames soul_wars tokens`
 
----
-
 ## Buyables
 
 To buy the following items, use the command below. The pet is obtainable from Spoils of war.
 
-- `/minigames soul_wars buy`` `**`name:`**`Red soul cape`
+- `/minigames soul_wars buyname:Red soul cape`
 
 | **Item**       | **Zeal tokens** |
 | -------------- | --------------- |
@@ -29,13 +25,11 @@ To buy the following items, use the command below. The pet is obtainable from Sp
 | Ectoplasmator  | 250             |
 | Spoils of war  | 30              |
 
----
-
 ## Imbueables
 
 To imbue the following items, use the command below.
 
-- E.g. `/minigames soul_wars imbue`` `**`name:`**`Hydra slayer helmet`
+- E.g. `/minigames soul_wars imbue name:Hydra slayer helmet`
 
 | **Item**                | **Zeal Tokens** |
 | ----------------------- | --------------- |

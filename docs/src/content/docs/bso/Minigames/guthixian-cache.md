@@ -2,8 +2,6 @@
 title: "Guthixian Cache"
 ---
 
-# Guthixian Cache
-
 A daily divination minigame with the following features:
 
 - **Frequency:** Once per UTC day.

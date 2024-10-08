@@ -2,19 +2,11 @@
 title: "Wildy Slayer"
 ---
 
-# Wildy Slayer
-
-Dare to adventure into the wildy for your slayer tasks for a chance to get Larran's keys, better clue odds and various wilderness specific loot!
-
-## Krystilia
-
-You can select Krystilia for your slayer task for wildy specific tasks. These tasks can only be completed in the wildy, and they run on a seperate streak to your normal slayer tasks (i.e. you can reset your wildy slayer task streak without resetting your normal one).
-
 To start wildy slayer and set Krystilia as your slayer master, use:
 
-- `/slayer new_task`` `**`master:`**`Krystilia`` `**`save:`**`True`
+[[/slayer new_task master\:Krystilia save\:True]]
 
----
+You can select Krystilia for your slayer task for wildy specific tasks. These tasks can only be completed in the wildy, and they run on a seperate streak to your normal slayer tasks (i.e. you can reset your wildy slayer task streak without resetting your normal one).
 
 ## Wilderness & Death Chance
 
@@ -26,11 +18,11 @@ Since you will be in wildy, there is always the chance to encounter pkers and lo
 
 **Currently, extended task unlocks don't apply to Greater Nechryael tasks.**
 
-`/slayer rewards unlock`` `**`unlockable:`**`I Wildy More Slayer`
+`/slayer rewards unlock unlockable:I Wildy More Slayer`
 
 - Allows Krystilia to to assign Jellies, Dust Devils, Nechryaels and Abyssal Demons
 
-`/slayer rewards unlock`` `**`unlockable:`**`Revenenenenenants`
+`/slayer rewards unlock unlockable:Revenenenenenants`
 
 - Extends Revenants tasks (between 100-150)
 
@@ -52,12 +44,12 @@ To create a Ring of wealth(i), you first need a Ring of wealth without charges. 
 
 Create the dragontone ring
 
-- `/craft`` `**`name:`**`Dragonstone ring`` `**`quantity:`**`1`
+- `/craftname:Dragonstone ringquantity:1`
 
 Create the Ring of wealth
 
-- `/activities enchant`` `**`name:`**`Dragonstone ring`` `**`quantity:`**`1`
+- `/activities enchantname:Dragonstone ringquantity:1`
 
 Imbue the Ring of wealth
 
-- `/create`` `**`item:`**`Ring of wealth (i)`` `**`quantity:`**`1`
+- `/createitem:Ring of wealth (i)quantity:1`

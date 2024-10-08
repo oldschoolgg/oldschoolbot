@@ -2,8 +2,6 @@
 title: "Monkey Backpacks"
 ---
 
-# Monkey Backpacks
-
 When completing laps of the Ape Atoll agility course you can earn a [monkey backpack](https://oldschool.runescape.wiki/w/Ape_Atoll_Agility_Course)! These are obtained automatically whenever you reach the lap count required for each backpack.
 
 **You cannot perform alchs while running the Ape Atoll course, due to your minion theoretically holding a greegree.**

@@ -3,18 +3,16 @@ title: "Misc Info & FAQ"
 description: For all the random stuff people keep asking
 ---
 
-# Misc Info & FAQ
-
 ### FAQ
 
 **Q: How do I use an unsired / Chewed bones?**\
-A: Use [/offering](../../miscellaneous/offering.md). `/offer`` `**`name:`**` ``Unsired` and `/offer`` `**`name:`**` ``Chewed bones`
+A: Use [/offering](../../miscellaneous/offering.md). `/offername: ``Unsired` and `/offername: ``Chewed bones`
 
 **Q: What unlocks should I prioritise?**\
 A: Superiors, blocks, task extensions. Slayer helm offers no advantages over a black mask.
 
 **Q: How do I unlock/create a slayer helm?**\
-A: `/slayer rewards unlock`` `**`unlockable:`**`Malevolent Masquerade` followed by `/create`` `**`item:`**`Slayer helmet` or `/create`` `**`item:`**` ``Slayer helmet (i)`. This isn't needed as a black mask can be used for the same boost.
+A: `/slayer rewards unlockunlockable:Malevolent Masquerade` followed by `/createitem:Slayer helmet` or `/createitem: ``Slayer helmet (i)`. This isn't needed as a black mask can be used for the same boost.
 
 **Q: Does the superior rate increase with the Elite combat achievements?**\
 A: Yes, they will automatically appear 25% more frequently after you claim the diary rewards.
@@ -23,25 +21,25 @@ A: Yes, they will automatically appear 25% more frequently after you claim the d
 A: Depends on your goal; Konar for CL/XP or Duradel for bossing. Konar is better XP due to being able to complete tasks in any of Konar's assignable locations rather than a specific location (the way it works in OSRS).
 
 **Q: How do I imbue my slayer helm/black mask?**\
-A: `/minigames soul_wars imbue`` `**`name:`**` ``Black mask` - you can get points through the [Soul wars minigame](https://wiki.oldschool.gg/minigames/soul-wars) or through [Nightmare zone](../../miscellaneous/nightmare-zone.md).
+A: `/minigames soul_wars imbuename: ``Black mask` - you can get points through the [Soul wars minigame](https://wiki.oldschool.gg/minigames/soul-wars) or through [Nightmare zone](../../miscellaneous/nightmare-zone.md).
 
 **Q: Do I need to equip my black mask/slayer helm to get the boost?**\
 A: No, the boost works from the bank.
 
 **Q: How do I get an arclight?**\
-A: `/buy`` `**`name:`**` ``Darklight` then, `/create`` `**`item:`**`Arclight` - Requires 3 ancient shards.
+A: `/buyname: ``Darklight` then, `/createitem:Arclight` - Requires 3 ancient shards.
 
 **Q: How do I get a cannon?**\
-A: `/buy`` `**`name:`**` ``Dwarf multicannon`
+A: `/buyname: ``Dwarf multicannon`
 
 **Q: Why am I using so many cannonballs?**\
 A: Cannonballs are used at 16 per minute in single combat areas and 50 per minute in multi areas. This is intentional. XP works out to similar as in game.
 
 **Q: How do I get an elemental/mind shield for wyverns?**\
-A: `/buy`` `**`name:`**` ``Mind shield`
+A: `/buyname: ``Mind shield`
 
 **Q: How can I obtain the Ancient ceremonial robes?**\
-A: `/k`` `**`name:`**`Blood Reaver` (requires a Frozen key)
+A: `/kname:Blood Reaver` (requires a Frozen key)
 
 ---
 
@@ -81,9 +79,9 @@ You can also create a gear preset for these setups after equipping them. I.E.\
 `/gearpresets create name:rangeslay copy_setup:range`\
 `/gearpresets create name:mageslay copy_setup:mage`\
 Equip the presets with:\
-`/gear equip`` `**`gear_setup:`**` ``Melee`` `**`preset:`**` ``meleeslay`\
-`/gear equip`` `**`gear_setup:`**` ``Range`` `**`preset:`**` ``rangeslay`\
-`/gear equip`` `**`gear_setup:`**` ``Mage`` `**`preset:`**` ``mageslay`
+`/gear equipgear_setup: ``Meleepreset: ``meleeslay`\
+`/gear equipgear_setup: ``Rangepreset: ``rangeslay`\
+`/gear equipgear_setup: ``Magepreset: ``mageslay`
 
 ---
 

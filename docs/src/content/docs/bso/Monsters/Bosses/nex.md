@@ -27,8 +27,7 @@ To start with Nex, it is recommended to aim for a gear setup with 205+ ranged at
 {% tabs %}
 {% tab title="With Zak" %}
 9 kills per trip.\*\
-Removed brews/restores from users: **45/15**. The trip will take 1 hour 12 minutes and 28 seconds.\
-\*Note that this is with the time boost of a Hitpoints Master Cape and T3 Patron.
+Removed brews/restores from users: **45/15**. The trip will take 1 hour 12 minutes and 28 seconds.\*Note that this is with the time boost of a Hitpoints Master Cape and T3 Patron.
 {% endtab %}
 
 {% tab title="Without Zak" %}
@@ -53,7 +52,7 @@ All boosts are divided by team size
 
 ## **Loot**
 
-Nex drops broken armour pieces that need to be repaired using components made from God Wars sets. The Torva set is made by using `/create`**`item:`**`revert` on Bandos pieces, and then using `/create`**`item:`**`[piece name].` Pernix and Virtus are made the same way, but require Armadyl and Ancestral components respectively.
+Nex drops broken armour pieces that need to be repaired using components made from God Wars sets. The Torva set is made by using `/create`**`item:revert` on Bandos pieces, and then using `/create`**`item:[piece name].` Pernix and Virtus are made the same way, but require Armadyl and Ancestral components respectively.
 
 - **Ancient emblem:** Currently does not have a use.
 - **Bloodsoaked feather:** Used to create the nex pet, [Nexterminator](../../custom-items/pets.md#meme-pets-and-no-perk-pets).

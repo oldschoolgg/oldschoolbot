@@ -28,7 +28,7 @@ Nihiliz, aka "mini-nex" is a Zaryte, minion of Nex, who holds the key to the myt
 ## Loot
 
 - **Nihil shard:** Used to create Zaryte crossbow, can also be crushed into Nihil dust which is a secondary for the Ancient brew (3) potion
-- **Nihil horn:** Combined with an Armadyl crossbow, 250 Nihil shard to make a Zaryte crossbow with `/create`**`item:`**`Zaryte crossbow`
+- **Nihil horn:** Combined with an Armadyl crossbow, 250 Nihil shard to make a Zaryte crossbow with `/create`\*\*`item:Zaryte crossbow`
 - **Zaryte vambraces:** A midgame ranged gloves
 - **Nexling:** Perkless pet
 

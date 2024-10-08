@@ -3,8 +3,6 @@ title: "Monkey Tame"
 description: Monkey tame, hatched from Monkey Egg.
 ---
 
-# Monkey Tame
-
 Congratulations! You have beat enough monkeys to be rewarded with your very own chimp!\
 Your ape can run around and gather supplies for you while you monkey around elsewhere.
 

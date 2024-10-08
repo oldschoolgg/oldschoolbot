@@ -53,6 +53,5 @@ When a tame is merged, all of the following will be kept:
 - All items collected by either tame
 - The stats of both tames will be merged, keeping the highest of both tames
 
-To merge two Igne tames, you must have 110 Runecraft, 110 Magic, and 110 Herblore, and it will cost 100 Ignecarus scales, 6 zenyte, 10 onyx, 1 draconic visage, 2,500 soul runes, 600 astral runes, and 100 elder runes. There is a 10 million coin fee for merging tames.\
-\
+To merge two Igne tames, you must have 110 Runecraft, 110 Magic, and 110 Herblore, and it will cost 100 Ignecarus scales, 6 zenyte, 10 onyx, 1 draconic visage, 2,500 soul runes, 600 astral runes, and 100 elder runes. There is a 10 million coin fee for merging tames.
 To merge two Monkey tames, you must have 110 Runecraft, 110 Magic, and 110 Herblore, and it will cost 3000 bananas, 50 magic bananas, 1 chimpling jar, 2,500 soul runes, 600 astral runes, and 100 elder runes.

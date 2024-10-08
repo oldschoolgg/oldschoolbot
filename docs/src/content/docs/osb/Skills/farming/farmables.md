@@ -2,8 +2,6 @@
 title: "Farmables"
 ---
 
-# Farmables
-
 ## Farmable Levels
 
 | **Herbs**       | **Trees**  | **Allotments**  | **Fruit Trees** | **Bushes**      | **Misc**          |
