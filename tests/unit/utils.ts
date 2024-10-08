@@ -1,21 +1,41 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Prisma, User } from '@prisma/client';
-import murmurhash from 'murmurhash';
-import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
-import { expect } from 'vitest';
+import { Bank, convertLVLtoXP } from 'oldschooljs';
 
 import { MUserClass } from '../../src/lib/MUser';
 import type { BitField } from '../../src/lib/constants';
-import { type GearSetup, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types';
+import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types';
+import type { GearSetup } from '../../src/lib/gear/types';
 import { SkillsArray } from '../../src/lib/skilling/types';
 import { ChargeBank } from '../../src/lib/structures/Bank';
-import type { PartialGearSetup } from '../../src/lib/structures/Gear';
-import { Gear, constructGearSetup } from '../../src/lib/structures/Gear';
+import { Gear } from '../../src/lib/structures/Gear';
+import { type PartialGearSetup, constructGearSetup } from '../../src/lib/structures/Gear';
 import { GearBank } from '../../src/lib/structures/GearBank';
 import type { SkillsRequired } from '../../src/lib/types';
-import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 
+function makeSkillsAsLevels(lvl = 99) {
+	const obj: any = {};
+	for (const skill of SkillsArray) {
+		obj[skill] = lvl;
+	}
+	return obj as SkillsRequired;
+}
+function makeFullGear() {
+	const obj: any = {};
+	for (const type of GearSetupTypes) {
+		obj[type] = new Gear();
+	}
+	return obj as UserFullGearSetup;
+}
+export function makeGearBank({ bank }: { bank?: Bank } = {}) {
+	return new GearBank({
+		gear: makeFullGear(),
+		bank: bank ?? new Bank(),
+		skillsAsLevels: makeSkillsAsLevels(),
+		chargeBank: new ChargeBank()
+	});
+}
+
+export const mockUserMap = new Map<string, MUser>();
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear
 		? undefined
@@ -25,7 +45,7 @@ function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup):
 	return filteredGear;
 }
 
-interface MockUserArgs {
+export interface MockUserArgs {
 	bank?: Bank;
 	cl?: Bank;
 	QP?: number;
@@ -99,60 +119,3 @@ export const mockMUser = (overrides?: MockUserArgs) => {
 	const user = new MUserClass(mockUser(overrides));
 	return user;
 };
-
-export const mockUserMap = new Map<string, MUser>();
-
-const originalMathRandom = Math.random;
-
-export async function testRunCmd({
-	cmd,
-	opts,
-	user,
-	result
-}: {
-	cmd: OSBMahojiCommand;
-	opts: any;
-	user?: Omit<MockUserArgs, 'id'>;
-	result: Awaited<CommandResponse>;
-}) {
-	Math.random = () => 0.5;
-	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
-	const mockedUser = mockMUser({ id: hash, ...user });
-	if (mockedUser.GP === null || Number.isNaN(mockedUser.GP) || mockedUser.GP < 0 || mockedUser.GP === undefined) {
-		throw new Error(`Invalid GP for user ${hash}`);
-	}
-	mockUserMap.set(hash, mockedUser as any as MUser);
-	const options: any = {
-		user: mockedUser.user,
-		channelID: '1234',
-		userID: mockedUser.id,
-		options: opts
-	};
-
-	const commandResponse = await cmd.run(options);
-	Math.random = originalMathRandom;
-	return expect(commandResponse).toEqual(result);
-}
-
-function makeSkillsAsLevels(lvl = 99) {
-	const obj: any = {};
-	for (const skill of SkillsArray) {
-		obj[skill] = lvl;
-	}
-	return obj as SkillsRequired;
-}
-function makeFullGear() {
-	const obj: any = {};
-	for (const type of GearSetupTypes) {
-		obj[type] = new Gear();
-	}
-	return obj as UserFullGearSetup;
-}
-export function makeGearBank({ bank }: { bank?: Bank } = {}) {
-	return new GearBank({
-		gear: makeFullGear(),
-		bank: bank ?? new Bank(),
-		skillsAsLevels: makeSkillsAsLevels(),
-		chargeBank: new ChargeBank()
-	});
-}
