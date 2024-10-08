@@ -727,7 +727,6 @@ const killableBosses: KillableMonster[] = [
 					loot.set(noxPieces[i], loot.amount(noxPieces[i]) - 1);
 					ownedCount[noxPieces.indexOf(targetPiece)]++;
 					lootCount[i]--;
-
 				}
 			}
 		},
