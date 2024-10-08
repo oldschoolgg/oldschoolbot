@@ -8,6 +8,9 @@
 		"ignore": ["node_modules", "dist", "coverage", "profiling", "logs", "icon_cache"],
 		"include": ["**/*.ts", "**/*.mts", "**/*.json", "**/*.test.ts", "**/*.mdx", "**/*.md", "**/*.mjs", "**/*.cjs"]
 	},
+	"vcs": {
+		"defaultBranch": "master"
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {

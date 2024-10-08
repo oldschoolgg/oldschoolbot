@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';

@@ -20,8 +20,15 @@
 LICENSE text
 AUTHORS text
 
-*.webp   -text diff
-*.ttf     -text diff
-*.eot     -text diff
-*.woff    -text diff
-*.woff2   -text diff
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.gz binary
+*.zip binary
+*.ttf binary
+*.eot binary
+*.woff binary
+*.webp binary 
+*.woff2 binary 

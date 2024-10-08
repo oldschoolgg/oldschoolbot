@@ -1,4 +1,11 @@
-import { type CommandResponse, stripEmojis } from '@oldschoolgg/toolkit';
+import {
+	type CommandResponse,
+	calcPerHour,
+	formatDuration,
+	isWeekend,
+	makeComponents,
+	stringMatches
+} from '@oldschoolgg/toolkit/util';
 import type {
 	BaseMessageOptions,
 	ButtonInteraction,
@@ -42,8 +49,9 @@ import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
 
-export * from '@oldschoolgg/toolkit';
 export * from 'oldschooljs';
+
+export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
@@ -199,17 +207,6 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	}
 
 	return slotStr.join(', ');
-}
-
-export function isValidNickname(str?: string) {
-	return Boolean(
-		str &&
-			typeof str === 'string' &&
-			str.length >= 2 &&
-			str.length <= 30 &&
-			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
-			stripEmojis(str).length === str.length
-	);
 }
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
@@ -368,7 +365,7 @@ export function isModOrAdmin(user: MUser) {
 
 export { assert } from './util/logError';
 export * from './util/smallUtils';
-export { channelIsSendable } from '@oldschoolgg/toolkit';
+export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();

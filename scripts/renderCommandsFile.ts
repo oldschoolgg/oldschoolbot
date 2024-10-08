@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { BOT_TYPE } from '../src/lib/constants';
 import { allCommands } from '../src/mahoji/commands/allCommands';

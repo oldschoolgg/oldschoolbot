@@ -1,4 +1,4 @@
-import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit';
+import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';

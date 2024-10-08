@@ -1,9 +1,9 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';

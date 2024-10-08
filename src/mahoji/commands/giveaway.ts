@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import type { BaseMessageOptions } from 'discord.js';

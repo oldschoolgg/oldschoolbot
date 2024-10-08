@@ -1,11 +1,12 @@
-import { PerkTier, formatDuration } from '@oldschoolgg/toolkit';
+import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
 import { ComponentType, PermissionsBitField } from 'discord.js';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { type PartialUser, partialUserCache, perkTierCache } from '../../lib/cache';
-import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton } from '../../lib/constants';
+import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS } from '../../lib/constants';
+import { minionBuyButton } from '../../lib/sharedComponents';
 import type { CategoryFlag } from '../../lib/types';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';

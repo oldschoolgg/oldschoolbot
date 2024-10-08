@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
 import { Time, isObject, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
