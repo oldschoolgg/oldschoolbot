@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
-
 import { mockMUser } from './utils';
 
 describe('hasItemsEquippedOrInBank', () => {

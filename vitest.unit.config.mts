@@ -16,11 +16,11 @@ export default defineConfig({
 			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
 		slowTestThreshold: 0,
 		isolate: false,
+		pool: 'forks',
 		poolOptions: {
-			threads: {
-				minThreads: 10,
-				maxThreads: 20,
-				singleThread: true
+			forks: {
+				maxForks: 5,
+				minForks: 5
 			}
 		}
 	}

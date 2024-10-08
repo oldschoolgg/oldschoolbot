@@ -66,7 +66,7 @@
 		"@types/node": "^20.14.9",
 		"@types/node-cron": "^3.0.7",
 		"@types/node-fetch": "^2.6.1",
-		"@vitest/coverage-v8": "^2.0.3",
+		"@vitest/coverage-v8": "^2.1.2",
 		"concurrently": "^8.2.2",
 		"dpdm": "^3.14.0",
 		"esbuild": "0.21.5",
@@ -79,7 +79,7 @@
 		"spritesmith": "^3.4.1",
 		"tsx": "^4.16.2",
 		"typescript": "^5.5.3",
-		"vitest": "^2.0.3"
+		"vitest": "^2.1.2"
 	},
 	"engines": {
 		"node": "20.15.0"

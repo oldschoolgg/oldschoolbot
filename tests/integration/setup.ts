@@ -7,8 +7,6 @@ import { beforeEach, vi } from 'vitest';
 
 import { PrismaClient } from '@prisma/client';
 import { noOp } from 'e';
-import { BankImageTask, bankImageTask } from '../../src/lib/bankImage';
-import { CanvasImage } from '../../src/lib/util/canvasUtil';
 
 if (!roboChimpClient) {
 	throw new Error('Robochimp client not found.');
@@ -48,32 +46,9 @@ globalClient.fetchUser = async (id: string | bigint) => ({
 	send: async () => {}
 });
 
-const mockBankImageTask = {
-	init: vi.fn(),
-	run: vi.fn(),
-	generateBankImage: vi.fn().mockReturnValue(Promise.resolve({ image: Buffer.from(''), isTransparent: false })),
-	getItemImage: vi.fn().mockReturnValue(Promise.resolve(new CanvasImage())),
-	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new CanvasImage())),
-	backgroundImages: []
-};
-
-bankImageTask.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
-global.bankImageGenerator = mockBankImageTask as any;
-BankImageTask.prototype.init = mockBankImageTask.init;
-BankImageTask.prototype.run = mockBankImageTask.init;
-BankImageTask.prototype.generateBankImage = mockBankImageTask.generateBankImage;
-BankImageTask.prototype.getItemImage = mockBankImageTask.getItemImage;
-BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
-
 const __prismaClient = new PrismaClient();
 __prismaClient.$queryRawUnsafe('CREATE EXTENSION IF NOT EXISTS intarray;').then(noOp).catch(noOp);
 
 beforeEach(async () => {
 	global.prisma = __prismaClient;
-	global.bankImageGenerator = mockBankImageTask as any;
-	BankImageTask.prototype.init = mockBankImageTask.init;
-	BankImageTask.prototype.run = mockBankImageTask.init;
-	BankImageTask.prototype.generateBankImage = mockBankImageTask.generateBankImage;
-	BankImageTask.prototype.getItemImage = mockBankImageTask.getItemImage;
-	BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
 });
