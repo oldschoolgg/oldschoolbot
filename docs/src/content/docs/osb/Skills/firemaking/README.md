@@ -4,7 +4,7 @@ title: "Firemaking"
 
 # Firemaking
 
-You can train Firemaking using `/light`` `**`name:`**`<logs>`` `**`quantity:`**`<quantity>`, for example `/light`` `**`name:`**`Willow logs`` `**`quantity:`**`50`
+You can train Firemaking using `/lightname:<logs>quantity:<quantity>`, for example `/lightname:Willow logsquantity:50`
 
 Equipping the full pyromancer outfit in the skilling gear setup gives a 2.5% boost to Firemaking xp.
 

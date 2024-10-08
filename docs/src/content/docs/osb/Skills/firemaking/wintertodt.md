@@ -2,11 +2,9 @@
 title: "Wintertodt"
 ---
 
-# Wintertodt
-
 You can train Firemaking via the Wintertodt minigame using the command below. You will get Firemaking XP scaled to your level, and slightly better xp for higher Woodcutting and Construction levels. It is recommended to get at least 20 Construction before you start.
 
-- `/k`` `**`name:`**` ``Wintertodt`
+- `/k name: ``Wintertodt`
 
 ## Requirements
 

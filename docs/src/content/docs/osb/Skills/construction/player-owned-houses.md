@@ -1,9 +1,6 @@
 ---
 title: "Player-owned Houses"
-description: Hugely beneficial boosts!
 ---
-
-# Player-owned Houses
 
 ## Commands
 

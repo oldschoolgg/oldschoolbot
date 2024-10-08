@@ -3,8 +3,6 @@ title: "Agility"
 description: /laps
 ---
 
-# Agility
-
 ### Custom Content and Boosts
 
 - [Harry](../custom-items/pets.md#miscellaneous-pets) - Increases mark of grace rate and eliminates level-scaling for marks of grace

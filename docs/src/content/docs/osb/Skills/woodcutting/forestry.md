@@ -2,9 +2,7 @@
 title: "Forestry"
 ---
 
-# Forestry
-
-This minigame is conducted passively while completing _almost any_ woodcutting trip. Provided you have selected **`forestry_events:`**`True` in your woodcutting trip, your minion will automatically participate in all forestry events. For each event you minion does, you will obtain Anima-infused bark and various other items, as well as the usual bird nests.
+This minigame is conducted passively while completing _almost any_ woodcutting trip. Provided you have selected \*\*`forestry_events:True` in your woodcutting trip, your minion will automatically participate in all forestry events. For each event you minion does, you will obtain Anima-infused bark and various other items, as well as the usual bird nests.
 
 **You cannot get Anima-infused bark from Normal logs, Sulliusceps, or Redwoods!**
 
@@ -48,10 +46,10 @@ There are 9 forestry events. Each one has an equal chance to spawn. The chance o
 
 Equipping these gloves in any setup will allow minions to receive a boost for a specific type of nest during woodcutting trips. Using one of the four flags when sending a woodcutting trip will provide a 20% extra chance to receive the nest specified in the flag. This stacks with the [Rabbit foot necklace](../hunter/#rabbit-foot-necklace). The 4 flags are:
 
-- **`twitchers_gloves:`**`egg nest`
-- **`twitchers_gloves:`**`ring nest`
-- **`twitchers_gloves:`**`seed nest`
-- **`twitchers_gloves:`**`clue nest`
+- \*\*`twitchers_gloves:egg nest`
+- \*\*`twitchers_gloves:ring nest`
+- \*\*`twitchers_gloves:seed nest`
+- \*\*`twitchers_gloves:clue nest`
 
 ---
 

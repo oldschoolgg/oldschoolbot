@@ -8,7 +8,7 @@ title: "Herblore"
 
 Herblore works as it does in OSRS: you clean herbs, make unfinished potions, prepare your secondary ingredients, and then make your final potions. In order to start training herblore, you need 10 qp to get the starting xp from the Druidic Ritual quest which will take you to level 3 herblore. If you did not have 10 qp when herblore was released, you will have a 50% chance of getting the starting xp when questing post 10 qp.
 
-You can buy vials of water using `/buy`` `**`name:`**` ``Vial of water`` `**`quantity:`**
+You can buy vials of water using `/buyname: ``Vial of waterquantity:`\*\*
 
 ---
 
@@ -16,39 +16,39 @@ You can buy vials of water using `/buy`` `**`name:`**` ``Vial of water`` `**`qua
 
 Making unfinished potions, cleaning herbs, and preparing secondary ingredients are all done with the `/mix` command. You can optionally use Zahur & Wesley to make these processes instant for a small fee.
 
-- `/mix`**`name:`**`Crushed nest`
-- `/mix`**`name:`**`Toadflax`
-- `/mix`**`name:`**`Toadflax potion (unf)`
-- `/mix`**`name:`**`Saradomin brew (3)`
+- `/mix name:Crushed nest`
+- `/mix name:Toadflax`
+- `/mix name:Toadflax potion (unf)`
+- `/mix name:Saradomin brew (3)`
 
-**Zahur** - You can add the **`zahur:`**`True` flag to make unfinished potions or clean herbs instantly. This costs 200gp per item. Zahur will not clean herbs that you do not have the required herblore level to clean yourself. No xp is given for cleaning herbs with Zahur.
+**Zahur** - You can add the \*\*`zahur:True` flag to make unfinished potions or clean herbs instantly. This costs 200gp per item. Zahur will not clean herbs that you do not have the required herblore level to clean yourself. No xp is given for cleaning herbs with Zahur.
 
-- E.g. `/mix`` `**`name:`**`Toadflax`` `**`zahur:`**`True`
+- E.g. `/mix name:Toadflaxzahur:True`
 
-**Wesley** - You can add the **`wesley:`**`True` flag to crush your items instantly. This costs 50gp per item. There are no other requirements. Crushed items include: Crushed nest, Lava scale shard, Unicorn horn dust, Goat horn dust, Dragon scale dust, and Crushed superior dragon bones.
+**Wesley** - You can add the \*\*`wesley:True` flag to crush your items instantly. This costs 50gp per item. There are no other requirements. Crushed items include: Crushed nest, Lava scale shard, Unicorn horn dust, Goat horn dust, Dragon scale dust, and Crushed superior dragon bones.
 
-- E.g. `/mix`` `**`name:`**`Crushed nest`` `**`wesley:`**`True`
+- E.g. `/mix name:Crushed nestwesley:True`
 
----
+### Fastest route to 99:
 
-## Herb Cleaning Table
+`/mix name:Attack potion (3) quantity:64`
+`/mix name:Strength potion (3) quantity:237`
+`/mix name:Defence potion (3) quantity:228`
+`/mix name:Prayer potion (3)` until 63
+`/mix name:Super restore (3) quantity:900`
+`/mix name:Super defence (3)` until 72
+`/mix name:Ranging potion (3)` until 76
+`/mix name:Magic potion (3)` until 81
+`/mix name:Saradomin brew (3)` until 99
 
-| **Herb Name** | **Cleaning Level** |
-| ------------- | :----------------: |
-| Guam          |         3          |
-| Marrentill    |         5          |
-| Tarromin      |         11         |
-| Harralander   |         20         |
-| Ranarr        |         25         |
-| Toadflax      |         30         |
-| Irit          |         40         |
-| Avantoe       |         48         |
-| Kwuarm        |         54         |
-| Snapdragon    |         59         |
-| Cadantine     |         65         |
-| Lantadyme     |         67         |
-| Dwarf weed    |         70         |
-| Torstol       |         75         |
+**Materials Needed:**\
+64 Guam potion(unf), 64 Eye of newt,\
+237 Tarromin potion(unf), 237 Limpwurt root,\
+4095 Ranarr potion(unf), 2692 Cadantine potion(unf), 2920 White berries, 3867 Snape grass,\
+900 Snapdragon potion(unf), 900 Red spiders' eggs,\
+2694 Dwarf weed potion(unf), 2694 Wine of zamorak,\
+4966 Lantadyme potion(unf), 4966 Potato cactus,\
+60235 Toadflax potion(unf), 60235 Crushed nest,
 
 ## Standard Potions
 

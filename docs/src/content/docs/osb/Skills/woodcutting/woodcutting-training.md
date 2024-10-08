@@ -6,12 +6,12 @@ title: "Woodcutting Training"
 
 ## Fastest Route to 99:
 
-1 - 15: `/chop`` `**`name:`**`Achey Tree Logs`` `**`quantity:`**`97`` `**`powerchop:`**`True`\
-15 - 30: `/chop`` `**`name:`**`Oak Logs`` `**`quantity:`**`92`` `**`powerchop:`**`True`\
-30 - 35: `/chop`` `**`name:`**`Willow Logs`` `**`quantity:`**`134`` `**`powerchop:`**`True`\
-35 - 65: `/chop`` `**`name:`**`Teak Logs`` `**`powerchop:`**`True`\
-65 - 92: `/chop`` `**`name:`**`Sulliusceps`` `**`powerchop:`**`True`\
-92 - 99: `/chop`` `**`name:`**`Teak Logs`` `**`powerchop:`**`True`\
+1 - 15: `/chopname:Achey Tree Logsquantity:97powerchop:True`\
+15 - 30: `/chopname:Oak Logsquantity:92powerchop:True`\
+30 - 35: `/chopname:Willow Logsquantity:134powerchop:True`\
+35 - 65: `/chopname:Teak Logspowerchop:True`\
+65 - 92: `/chopname:Sulliuscepspowerchop:True`\
+92 - 99: `/chopname:Teak Logspowerchop:True`\
 
 **If going for pet, powerchop Teak logs for best odds.**\
 

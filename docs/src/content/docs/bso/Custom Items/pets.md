@@ -4,7 +4,7 @@ title: "Pets"
 
 # Pets
 
-There are pets exclusive to BSO that provide unique and powerful perks and are rare drops from certain activities. These custom pets must equipped using `/gear pet equip:`**`name`**\` and in most cases, only one pet's effect can be active at once. All pets with a per minute drop rate can only be obtained on trips that are at least 20 minute long.
+There are pets exclusive to BSO that provide unique and powerful perks and are rare drops from certain activities. These custom pets must equipped using `/gear pet equip:name`\*\*\` and in most cases, only one pet's effect can be active at once. All pets with a per minute drop rate can only be obtained on trips that are at least 20 minute long.
 
 ## Trip boosting Pets
 
@@ -85,8 +85,7 @@ No Voidling equip and no magic master cape equipped: 1/6 - 1/7 regular speed.
 {% endtab %}
 {% endtabs %}
 
-Notes:\
-\*Smokey does not have to be equipped for this perk.\
+Notes:\*Smokey does not have to be equipped for this perk.\
 ±Invention provides this perk in the form of [RoboFlappy](../skills/invention/#inventions).
 
 <details>

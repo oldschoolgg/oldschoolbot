@@ -2,17 +2,15 @@
 title: "Guardians of the Rift"
 ---
 
-# Guardians of the Rift
-
 Guardians of the Rift is played entirely solo. It is a requirement to have 27 Runecrafting to play the minigame. Each game will take 10 minutes, and Tier 3+ Patreon will allow you to do 4 games per trip.
 
 To start a game, use
 
-- `/minigames gotr start`
+- [[/minigames gotr start]]
 
 To start a run with combination runes, use
 
-- `/minigames gotr start`` `**`combination_runes:`**`True`
+- [[/minigames gotr start combination_runes\:True]]
 
 Runecrafting xp scales from mined fragments, runecrafting level and barriers/guardians.\
 Crafting xp scales with barriers/guardians.\
@@ -59,11 +57,11 @@ Mining xp scales with mined fragments.
 
 ## Rewards
 
-Each game will reward you with runes, talismans, and some untradeable items, alongside a common chance to obtain Abyssal pearls at a rate of 1/6.944. Abyssal pearls are needed to buy rewards from the reward shop. Rewards are bought using the command `/buy`
+Each game will reward you with runes, talismans, and some untradeable items, alongside a common chance to obtain Abyssal pearls at a rate of 1/6.944. Abyssal pearls are needed to buy rewards from the reward shop. Rewards are bought using the command [[/buy]]
 
-- You can colour your piece of eye items using the Abyssal Red, Blue and Green dyes with the create command - `/create`` `**`item:`**`Hat of the eye (red)`
-- The Rift guardian pet can be turned into the Greatish guardian with the command `/create item:Greatish guardian`. This requires a Guardians eye which is bought from the reward shop.
-- Abyssal lanterns and dyes can be sold to the shop for 100 and 50 pearls respectively with the `/sell` command.
+- You can colour your piece of eye items using the Abyssal Red, Blue and Green dyes with the create command - [[/create item\:Hat of the eye (red)]]
+- The Rift guardian pet can be turned into the Greatish guardian with the command [[/create item\:Greatish guardian]]. This requires a Guardians eye which is bought from the reward shop.
+- Abyssal lanterns and dyes can be sold to the shop for 100 and 50 pearls respectively with the [[/sell]] command.
 - You CANNOTtrade one dye colour for another.
 
 | **Reward Shop Items**   | **Abyssal Pearl Cost** | **Abyssal Pearl Returned** |

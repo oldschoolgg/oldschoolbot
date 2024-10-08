@@ -2,11 +2,22 @@
 title: "Cooking"
 ---
 
-# Cooking
+You can train Cooking using [[/cook name\:name quantity\:quantity]], e.g: [[/cook name\:Bass quantity\:50]]
 
-You can train Cooking using `/cook`` `**`name:`**`<food>`` `**`quantity:`**`<quantity>`
+## Training
 
-- `/cook`` `**`name:`**`Bass`` `**`quantity:`**`50`
+**Optimal Cooking to 99:**
+
+`/cookname:Sardinequantity:25` (Until 5)\
+`/cookname:Herringquantity:120` (Until 15)\
+`/cookname:Troutquantity:75` (Until 20)\
+`/cookname:Pikequantity:108` (Until 25) \
+`/cookname:Salmonquantity:155` (Until 30) \
+`/cookname:Karambwanquantity:300` (Until 35) \
+`/cookname:Jug of Wine` (Repeat until 99)
+
+**Materials Needed:**\
+25 Raw sardine, 120 Raw herring, 75 Raw trout, 108 Raw pike, 155 Raw salmon, 300 Raw karambwan, 66000 Grapes, 66000 Jug of water
 
 ## Boosts
 
@@ -16,8 +27,6 @@ The first 3 things listed below will allow for increased cooking rates due to le
 - Hosidius Range
 - Elite Kourend & Kebos diary
 - 92 Cooking allows for Karambwans to be '1-ticked'
-
----
 
 ## Cookable Food
 

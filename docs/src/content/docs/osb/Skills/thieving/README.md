@@ -2,13 +2,11 @@
 title: "Thieving"
 ---
 
-You can train thieving using the `/steal` command. To start training Thieving, you can `/steal`` `**`name:`**` ``man` or `woman`. You will obtain the standard loot from each monster you can pickpocket, all of which can be found on the [OSRS Thieving Wiki Page](https://oldschool.runescape.wiki/w/Thieving). You can also choose to steal from stalls, which are listed at the bottom of this page.
+You can train thieving using the `/steal` command. To start training Thieving, you can `/stealname: ``man` or `woman`. You will obtain the standard loot from each monster you can pickpocket, all of which can be found on the [OSRS Thieving Wiki Page](https://oldschool.runescape.wiki/w/Thieving). You can also choose to steal from stalls, which are listed at the bottom of this page.
 
 ### Alternatives
 
-You can also train thieving via Pyramid Plunder or obtain the Rogues outfit for double loot when pickpocketing any NPC.\
-\- See the [Pyramid Plunder](https://wiki.oldschool.gg/minigames/pyramid-plunder) page for details.\
-\- See the [Rogues Den](https://wiki.oldschool.gg/minigames/rogues-den) page for details.
+You can also train thieving via Pyramid Plunder or obtain the Rogues outfit for double loot when pickpocketing any NPC.- See the [Pyramid Plunder](https://wiki.oldschool.gg/minigames/pyramid-plunder) page for details.- See the [Rogues Den](https://wiki.oldschool.gg/minigames/rogues-den) page for details.
 
 ## Boosts
 

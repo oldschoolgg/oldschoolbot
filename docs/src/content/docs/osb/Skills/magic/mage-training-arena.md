@@ -2,8 +2,6 @@
 title: "Mage Training Arena"
 ---
 
-# Mage Training Arena
-
 Your minion can train magic in the Mage Training Arena and buy all the regular rewards such as infinity gear, wands, and the mages book.
 
 To start a trip, use `/minigames mage_training_arena start`

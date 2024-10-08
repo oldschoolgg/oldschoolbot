@@ -2,8 +2,6 @@
 title: "Crystal Implings"
 ---
 
-# Crystal Implings
-
 You can specifically hunt Crystal implings at a much faster rate than passively collecting them through activities completed in Priff. This method is limited to catching 22 Crystal imps per hour (compared to the 1 Crystal imp every 1-2 hours through passive activities). This does not mean you will catch 22 Crystal imps per hour, it's just the maximum. You are more likely to catch 12-18 per hour.
 
 ## Requirements

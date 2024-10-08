@@ -2,8 +2,6 @@
 title: "Tears of Guthix"
 ---
 
-# Tears of Guthix
-
 You can gain a small amount of xp through the Tears of Guthix minigame. Like the real game, you can only use this command once per week and all xp will go to your lowest skill. It can be helpful to set a reminder using `.rmm 7d tog` (_requires Skyra bot in your server_) to maximise ToG usage.
 
 To start a round of Tears of Guthix, type `/minigames tears_of_guthix start`

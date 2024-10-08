@@ -2,8 +2,6 @@
 title: "Baxtorian Bathhouses"
 ---
 
-# Baxtorian Bathhouses
-
 ### Overview
 
 You can start this minigame through `/bsominigames baxtorian_bathhouses start`

@@ -3,8 +3,6 @@ title: "Construction"
 description: /build
 ---
 
-# Construction
-
 ### Custom Content and Boosts
 
 - Elder Plank - Made with `/activities plank_make` using Elder Logs, base cost = 8.5k (strongly advised to use Demon Butler unless using speed 5)

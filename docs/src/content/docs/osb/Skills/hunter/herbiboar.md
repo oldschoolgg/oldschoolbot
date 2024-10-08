@@ -2,17 +2,15 @@
 title: "Herbiboar"
 ---
 
-# Herbiboar
-
 Herbiboar is a hunter activity where you can gain decent hunter xp and a handful of herbs. With maximum boosts at level 99 hunter, you can expect to see around 155-160k xp/h per hour, with a sprinkle of 1-4k herb xp/h.
 
 To start Herbiboar, use:
 
-- `/hunt`` `**`name:`**`Herbiboar`
+- `/hunt name:Herbiboar`
 
-Stamina potions can be used with the flag **`stamina_potions:`**`true`. For every 9 minutes of your trip, you will consume a full 4-dose stamina.
+Stamina potions can be used with the flag \*\*`stamina_potions:true`. For every 9 minutes of your trip, you will consume a full 4-dose stamina.
 
-- `/hunt`` `**`name:`**`Herbiboar`` `**`stamina_potions:`**` ``true`
+- `/hunt name:Herbiboar stamina_potions: ``true`
 
 **Herbiboar trip times work different to other creatures.** Instead of catching more creatures for using stamina potions, you will instead catch the same amount of creatures in a shorter time period.
 

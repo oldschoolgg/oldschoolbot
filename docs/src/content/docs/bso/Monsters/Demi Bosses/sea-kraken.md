@@ -4,7 +4,7 @@ title: "Sea Kraken"
 
 # Sea Kraken
 
-Use command `/k`**`name:`**`sea kraken`
+Use command `/k`\*\*`name:sea kraken`
 
 Requires 101 Slayer and good mage defense bonus in range setup.
 

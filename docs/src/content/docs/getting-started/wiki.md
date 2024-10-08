@@ -7,6 +7,12 @@ lastUpdated: 2024-10-01T03:41:00.552Z
 
 Currently, the only way to contribute to the new wiki is by editing files in [this folder on github](https://github.com/oldschoolgg/oldschoolbot/tree/master/docs/src/content/docs). You can make most simple edits by simply just editing the file directly on the Github website, and submitting it as a pull request. Bigger changes may require you install and run the wiki locally.
 
+## Style
+
+1. Succint/terse information
+2. Don't repeat information that is better seen just on the OSRS wiki (e.g. a list of all potions)
+3. Never manually write out long lists or data that the bot can automatically generate (e.g. combat achievements)
+
 ## Running the wiki locally
 
 1. Clone the repo

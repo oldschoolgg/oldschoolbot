@@ -2,8 +2,6 @@
 title: "Ourania Delivery Service (ODS)"
 ---
 
-# Ourania Delivery Service (ODS)
-
 The ODS is like the Gnome Restaurant, except instead of delivering food, you craft runes and then deliver them to Wizards in need.
 
 It's a pretty simple activity to do, the only requirement is that you have Pure essence to craft the runes with.
