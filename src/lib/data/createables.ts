@@ -2380,6 +2380,11 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Antique lamp (Historian Aldo)',
+		inputItems: new Bank().add("Scurrius' spine"),
+		outputItems: new Bank().add(28800)
+	},
+	{
 		name: 'Venator bow (uncharged)',
 		inputItems: new Bank().add('Venator shard', 5).freeze(),
 		outputItems: new Bank().add('Venator bow (uncharged)').freeze()
