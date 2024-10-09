@@ -43,7 +43,7 @@ You can use the command : `/k name:King Goldemar (Mass)` to begin a mass, or `/k
 - **Dwarven crate:** When opened, has a chance to drop dwarven ore
 - **Dwarven ore:** Can be smelted into dwarven bars
 - **Athelas seed:** Plant these at 99 farming to recieve athelas
-- **Blacksmith crate:** Drops pieces of the [Blacksmith outfit](https://bso-wiki.oldschool.gg/custom-items/equippables#blacksmith-equipment)
+- **Blacksmith crate:** Drops pieces of the [Blacksmith outfit](/custom-items/equippables#blacksmith-equipment)
 
 <table><thead><tr><th width="263">Unique Drop Table</th><th width="166">Drop Rate</th></tr></thead><tbody><tr><td>Broken dwarven warhammer</td><td>Varies, see below.</td></tr><tr><td>Dwarven armour piece (any)</td><td>1/150</td></tr><tr><td>Dwarven crate</td><td>1/100</td></tr><tr><td>Dwarven ore</td><td>1/1 (approx.)</td></tr><tr><td>Blacksmith crate</td><td>1/25</td></tr><tr><td>Clue scroll (grandmaster)</td><td>1/4</td></tr></tbody></table>
 
@@ -51,7 +51,7 @@ You can use the command : `/k name:King Goldemar (Mass)` to begin a mass, or `/k
 
 The most coveted drop from King Goldemar is the Broken dwarven warhammer, which when repaired via smithing, becomes the Dwarven warhammer (DWWH). When equipped in any gear setup, it provides a 40% speed boost to all /k activities excluding those in the wilderness. (See the Hellfire Bow for the wilderness equivalent) This does not include any bosses, but does work on some Demi Bosses.
 
-Players can equip a Ring of Luck (obtained via [Grandmaster Clue Scrolls](https://bso-wiki.oldschool.gg/custom-items/grandmaster-clues)) in the melee setup to increase the drop rate of receiving the Broken Dwarven Warhammer drop. **Note: If participating in a mass, only 1 member of the party needs to have a Ring of Luck equipped to receive the increased drop rate.**
+Players can equip a Ring of Luck (obtained via [Grandmaster Clue Scrolls](/custom-items/grandmaster-clues)) in the melee setup to increase the drop rate of receiving the Broken Dwarven Warhammer drop. **Note: If participating in a mass, only 1 member of the party needs to have a Ring of Luck equipped to receive the increased drop rate.**
 
 It is recommended to Mass for the 1st[^1] 50kc as it reduces your death chance.
 

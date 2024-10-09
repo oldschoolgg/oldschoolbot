@@ -1,11 +1,8 @@
 ---
 title: "Farming"
-description: /farming plant
 ---
 
-# Farming
-
-Custom Content
+## Custom Content
 
 - Blood Orange seed - Plant at 92 Farming in fruit tree patch, gives Blood orange when harvested (used to make Vial of Blood)
 - Avocado seed - Plant at 99 Farming in bush patch, gives avocados when harvested.
@@ -18,7 +15,7 @@ Custom Content
 - Grand crystal acorn - Plant at 115 Farming in Crystal Tree patch, gives Crystal Shards when harvested.
 - Mysterious Tree seed - Plant at 120 Farming in tree patch, gives various Mystery Boxes when harvested.
 
-### Boosts
+## Boosts
 
 - [Scroll of Farming](dungeoneering-training/dg-rewards.md#buyable-boosts-utility) - Gives +2 patches of all types. You must `/minion use item:Scroll of farming` to receive the bonus patches.
 - [Master Farming Outfit](../custom-items/equippables/#master-farmer-outfit) - Gives +3 patches of all types. Obtained via crafting with 110 Crafting using Ent hides dropped from [Treebeard](../bso-custom-killables/demi-bosses/treebeard.md). Works from bank
@@ -29,8 +26,9 @@ Custom Content
 - [Arcane Harvester](invention/#inventions) - +100% increased yield - does not work on Mysterious Trees
 - [Moondash Charm](broken-reference) - /use to gain 25% speed boost
 
-### Optimal Gear Setup
+## Methods
 
-### Methods
-
-<table><thead><tr><th>Method</th><th width="242">Xp / Seed</th><th>Xp / Harvest</th></tr></thead><tbody><tr><td>Athelas</td><td>1,235,501</td><td>15,270,786</td></tr><tr><td>Korulsi</td><td>386,179</td><td>4,773,172</td></tr></tbody></table>
+| **Method** | **Xp / Seed** | **Xp / Harvest** |
+| ---------- | ------------- | ---------------- |
+| Athelas    | 1,235,501     | 15,270,786       |
+| Korulsi    | 386,179       | 4,773,172        |

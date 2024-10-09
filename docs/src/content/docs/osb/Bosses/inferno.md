@@ -18,15 +18,15 @@ Tokkul can be spent at the [Tokkul shop](https://wiki.oldschool.gg/bosses/fight-
 
 To begin a trip into the inferno, use:
 
-- `/activities inferno`` `**`action:`**` ``Start Inferno Trip`
+- `/activities infernoaction: ``Start Inferno Trip`
 
 To view information on your previous attempts/KCs, use:
 
-- `/activities inferno`` `**`action:`**` ``Check Inferno Stats`
+- `/activities infernoaction: ``Check Inferno Stats`
 
 To gamble a cape for a chance at the Jal-nib-rek pet, use:
 
-- `/gamble cape`` `**`type:`**` ``infernal`
+- `/gamble capetype: ``infernal`
 
 ---
 

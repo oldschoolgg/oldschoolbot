@@ -3,8 +3,6 @@ title: "Divination"
 description: /divination harvest_memories
 ---
 
-# Divination
-
 ## Memory Harvesting in Divination
 
 ### Memory Harvesting Overview

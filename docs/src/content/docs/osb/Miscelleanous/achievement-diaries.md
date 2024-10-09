@@ -2,30 +2,24 @@
 title: "Achievement Diaries"
 ---
 
-# Achievement Diaries
-
 You can complete Achievement Diaries if you have the requirements. Requirements include things like: having skill requirements, owning certain items, having certain items in your collection log, having Quest points, completed minigames, completed agility courses, and killing certain monsters.
 
 If you meet the requirements of a Diary, you can claim the reward item and the XP lamp.
 
 Achievement Diary items can be purchased using the `/buy` command if the respective diary is already completed.
 
----
-
 ## Commands
 
 - **Check your currently completed Diaries:**
   - `/minion achievementdiary`
 - **Check the requirements of a diary:**
-  - `/minion achievementdiary`` `**`diary:`**`Falador`
+  - `/minion achievementdiarydiary:Falador`
 - **Claim the rewards for a Diary:**
-  - `/minion achievementdiary`` `**`claim:`**`True`` `**`diary:`**`Falador`
+  - `/minion achievementdiaryclaim:Truediary:Falador`
 - **Use an XP lamp:**
-  - `/minion lamp`` `**`item:`**` ``antique lamp 1/2/3/4`` `**`skill:`**`[skill]`
+  - `/minion lampitem: ``antique lamp 1/2/3/4skill:[skill]`
 - **Buy the achievement diary cape:**
-  - `/buy`` `**`name:`**` ``Achievement diary cape`
-
----
+  - `/buyname: ``Achievement diary cape`
 
 ## Diary Perks
 

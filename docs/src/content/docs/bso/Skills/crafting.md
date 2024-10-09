@@ -1,13 +1,10 @@
 ---
 title: "Crafting"
-description: /craft
 ---
-
-# Crafting
 
 ### Custom Content and Boosts
 
-- [Dwarven Greathammer](https://bso-wiki.oldschool.gg/custom-items/equippables#dwarven-equipment) - 2x Speed boost to Crafting
+- [Dwarven Greathammer](/custom-items/equippables#dwarven-equipment) - 2x Speed boost to Crafting
 - [Klik](../custom-items/pets.md#miscellaneous-pets) - Provides 3x boost when tanning (Do not use in conjunction with the Dwarven Greathammer, as it will override the pet perk)
 - Royal dragonhide - Highest tier hide obtained from killing [Queen Black Dragon](../bso-custom-killables/demi-bosses/queen-black-dragon.md#rewards)
 - Royal dragon leather - Made by tanning Royal dragonhide

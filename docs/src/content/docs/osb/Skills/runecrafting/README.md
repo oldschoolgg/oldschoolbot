@@ -2,9 +2,7 @@
 title: "Runecrafting"
 ---
 
-# Runecrafting
-
-You can train Runecrafting using `/runecraft`.
+You can train Runecrafting using [[/runecraft]]
 
 ## Boosts
 
@@ -12,7 +10,7 @@ There are several boosts available which apply to all runes except blood and sou
 
 - 5% for 60+ Agility **OR** 10% for 90+ Agility
 - 10% for Graceful (equipped in any setup)
-- 1% for [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) **(works from bank**\*\* \*\*\*\*but must be charged)\*\*
+- 1% for [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) (works from bank but must be charged)
 - 3% for Runecrafting cape
 - 3% for Ring of the elements **(Combination runes only)**
 
@@ -69,7 +67,7 @@ Just like in OSRS, certain levels will grant you multiple of regular runes. Comb
 
 ## Combination Runes
 
-**Note for Lava runes ONLY:**You can use the **`usestams:`**`False` option to send your minion runecrafting without using stamina potions. However, you will runecraft 3x slower than usual.
+**Note for Lava runes ONLY:**You can use the \*\*`usestams:False` option to send your minion runecrafting without using stamina potions. However, you will runecraft 3x slower than usual.
 
 It's recommended to equip a staff in your skilling setup to provide infinite runes, for example a fire staff when crafting lava runes.
 
@@ -88,3 +86,22 @@ It's recommended to equip a staff in your skilling setup to provide infinite run
 Crafting tiaras are a method of runecrafting training, albeit an incredibly slow method. Tiaras don't have any use within the bot, except for being stored in [STASH units](../construction/stash-units.md). They can be created through the `/runecraft` command.
 
 Tiaras don't have any level requirements for creating them. However, some tiaras including Cosmic, Death, Law & Wrath tiaras need 5, 10, 10 & 200qp respectively.
+
+## Dark Altar
+
+Blood runes and Soul runes can be crafted at the Dark Altar using [[/runecraft]]. This also gives some Mining and Crafting XP.
+
+### Requirements
+
+- 38 Mining
+- 38 Crafting
+- 77 Runecrafting for Bloods
+- 90 Runecrafting for Souls
+- 73 Agility highly recommended
+
+### Boosts
+
+- 10% additional runes for Kourend Elite diary.
+- 20% faster essence mining for Kourend Medium diary.
+- -20% penalty if you have no Graceful equipped.
+- -35% penalty if you have less than 73 Agility.

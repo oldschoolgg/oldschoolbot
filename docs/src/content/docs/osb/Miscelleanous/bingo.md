@@ -2,8 +2,6 @@
 title: "Bingo"
 ---
 
-# Bingo
-
 You can run community bingo's using the `/bingo` command, and the bot will automatically handle all of it for you.
 
 ## Notes

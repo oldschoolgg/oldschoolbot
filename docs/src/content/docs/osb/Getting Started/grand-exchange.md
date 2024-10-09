@@ -2,8 +2,6 @@
 title: "Grand Exchange"
 ---
 
-# Grand Exchange
-
 The bot has it's own GE system which functions almost identically to how it does in the real game. Only tradable items can be bought and sold. Ironmen cannot use this function. Others things to be aware of:
 
 - The maximum price per item is 1000b. The maximum total price per listing is the same.
@@ -14,37 +12,35 @@ The bot has it's own GE system which functions almost identically to how it does
 - Market prices are not available on all items. The average price is based on a weekly average.
 - You currently cannot see other players active offers.
 - You will be DM'ed by the bot when your item has bought/sold.
-  - These DMs can be toggle off through `/config user toggle`
+- These DMs can be toggle off through [[/config user toggle]]
 
 ## Commands
 
-**/ge buy**
+### Buying Items
 
-- `/ge buy`` `**`item:`**` ``Rune scimitar`` `**`quantity:`**` ``250`` `**`price:`**` ``30k`
+[[/ge buy]]
 
-**/ge sell**
+[[/ge buy item\:Rune scimitar quantity\:250 price\:30k]]
 
-- `/ge sell`**`item:`**` ``Blue partyhat`` `**`quantity:`**` ``10`` `**`price:`**` ``1k`
+### Selling Items
 
-**/ge cancel**
+[[/ge sell]]
 
-- This will cancel your listing. There is no confirmation for this command.
+[[/ge sell item\:Blue partyhat quantity\:10 price\:1k]]
 
-**/ge my_listings**
+### Price checking
 
-- This will show all active listings you have in an image format.
+[[/ge price]]
 
-**/ge stats**
+### Other commands
 
-- Shows when your buy limit resets, the total number of GE slots available and total tax paid.
+[[/ge cancel]]
 
-**/ge price**
+[[/ge my_listings]]
 
-- You can check the average weekly market prices of an item. Not available for all items.
+[[/ge stats]]
 
-**/ge view**
-
-- You can check the price history of an item. Not available for all items.
+[[/ge view]]
 
 ## Number of GE Slots
 

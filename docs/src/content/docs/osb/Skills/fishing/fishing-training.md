@@ -2,18 +2,16 @@
 title: "Fishing Training"
 ---
 
-# Fishing Training
-
 ## Fastest route to 99:
 
-`/fish`` `**`name:`**`Shrimps` from 1-5\
-`/fish`` `**`name:`**`Sardine` from 5-10 (requires fishing bait)\
-`/fish`` `**`name:`**`Herring` from 10-20 (requires fishing bait)\
+`/fish name:Shrimps` from 1-5\
+`/fish name:Sardine` from 5-10 (requires fishing bait)\
+`/fish name:Herring` from 10-20 (requires fishing bait)\
 **OPTIONAL**: Fishing Trawler for Angler outfit\
-`/fish`` `**`name:`**`Trout` from 20-30 (requires feathers)\
-`/fish`` `**`name:`**`Salmon` from 30-58 (requires feathers)\
+`/fish name:Trout` from 20-30 (requires feathers)\
+`/fish name:Salmon` from 30-58 (requires feathers)\
 **OPTIONAL**: Aerial Fishing (reqs minimum 35 hunter) for Pearl barbarian rod\
-`/fish`` `**`name:`**`Barbarian fishing` from 58-71 (requires feathers)
+`/fish name:Barbarian fishing` from 58-71 (requires feathers)
 
 `/k name: tempoross` from 71-99 using a crystal harpoon
 

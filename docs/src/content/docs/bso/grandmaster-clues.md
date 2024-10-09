@@ -21,14 +21,14 @@ Master clue scrolls can be created by Watson by using the `/create item:Master c
 
 - [Clue global boosts, information can be found on the OSB Wiki page](https://wiki.oldschool.gg/miscellaneous/clue-scrolls/boosts#global-boosts)
 - [Clue Hunter Outfit](equippables/#clue-hunter-outfit) - 2x speed
-- [Zippy](https://bso-wiki.oldschool.gg/custom-items/pets#resource-gathering-and-loot-effecting-pets) - 1/15 chance to double, chance of Beginner to Master caskets, UMB and TMB (stacks with global double)
+- [Zippy](/custom-items/pets#resource-gathering-and-loot-effecting-pets) - 1/15 chance to double, chance of Beginner to Master caskets, UMB and TMB (stacks with global double)
 - Clue score - up to 10% at roughly 60 clues completed
 
 ## Obtaining
 
 Grandmaster Clues can be received from a wide range of content. The rates are not included here because they change often and vary greatly between sources. A list of common sources is as follows:
 
-[Kalphite King](https://bso-wiki.oldschool.gg/bosses/kalphite-king), [Vasa Magus](../bso-custom-killables/bosses/vasa-magus.md), [Sea Kraken](https://bso-wiki.oldschool.gg/bosses/sea-kraken), [Ignecarus](https://bso-wiki.oldschool.gg/bosses/ignecarus), [Nex](https://bso-wiki.oldschool.gg/bosses/nex), [Malygos](https://bso-wiki.oldschool.gg/bosses/malygos), [QBD](../bso-custom-killables/demi-bosses/queen-black-dragon.md#rewards), [Elder Birdhouses](../skills/hunter.md), Fishing, Woodcutting, Master Clue Caskets, and [Item Contracts](https://bso-wiki.oldschool.gg/custom-items/item-contracts).
+[Kalphite King](/bosses/kalphite-king), [Vasa Magus](../bso-custom-killables/bosses/vasa-magus.md), [Sea Kraken](/bosses/sea-kraken), [Ignecarus](/bosses/ignecarus), [Nex](/bosses/nex), [Malygos](/bosses/malygos), [QBD](../bso-custom-killables/demi-bosses/queen-black-dragon.md#rewards), [Elder Birdhouses](../skills/hunter.md), Fishing, Woodcutting, Master Clue Caskets, and [Item Contracts](/custom-items/item-contracts).
 
 ## General Loot Table
 
@@ -53,15 +53,15 @@ The Grandmaster loot system operates on rolls, of which there are 5-11 for each 
 
 - Malygos and Ignecarus Masks (x/50)
 
-- [Deathtouched Dart](https://bso-wiki.oldschool.gg/custom-items/misc) (x/4000)
+- [Deathtouched Dart](/custom-items/misc) (x/4000)
 
-- [Dyes](https://bso-wiki.oldschool.gg/custom-items/dyes?q=dyes) (x/10000)
+- [Dyes](/custom-items/dyes?q=dyes) (x/10000)
 
-- [First Age Equipment](https://bso-wiki.oldschool.gg/custom-items/equippables#first-age) (x/130000)
+- [First Age Equipment](/custom-items/equippables#first-age) (x/130000)
 
-- [Dwarven Blessing](https://bso-wiki.oldschool.gg/custom-items/equippables#dwarven-equipment) (x/10000)
+- [Dwarven Blessing](/custom-items/equippables#dwarven-equipment) (x/10000)
 
-- [Clue Hunter](https://bso-wiki.oldschool.gg/custom-items/equippables#clue-hunter-outfit) (x/2500)
+- [Clue Hunter](/custom-items/equippables#clue-hunter-outfit) (x/2500)
 
 - [Blabberbeak](pets.md#meme-pets-and-no-perk-pets) (x/20000)
 - Ring of luck (x/8000)

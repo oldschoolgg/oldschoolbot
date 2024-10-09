@@ -2,13 +2,11 @@
 title: "Drift Net Fishing"
 ---
 
-# Drift Net Fishing
-
 The drift net activity is an efficient method for training fishing and hunter simultaneously. You can expect to see around 100k hunter and 75k fishing xp/h at lower levels. This can increase up to 135k hunter and 100k fishing xp/h at higher levels. Please be mindful of decent up and down variations in xp/h (around 10-15k).
 
 To start drift net fishing, use the following command:
 
-`/activities driftnet_fishing`` `**`minutes:`**` ``X`
+`/activities driftnet_fishing minutes: ``X`
 
 - Minutes refers to how long you want your trip, less time means less nets required.
 
@@ -27,7 +25,7 @@ To start drift net fishing, use the following command:
 
 - 6% for Ring of endurance - both versions work (works from bank)
 - 30% for Stamina potion(4) - MUST be 4-dose
-  - You can specify to not use stamina potions at the cost of the boost - **`no_stams:`**`true`
+  - You can specify to not use stamina potions at the cost of the boost - \*\*`no_stams:true`
 - \-50% boost for not wearing Flippers (equipped in any setup)
 
 ---

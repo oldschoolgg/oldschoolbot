@@ -2,8 +2,6 @@
 title: "Queen Black Dragon"
 ---
 
-# Queen Black Dragon
-
 The Queen Black Dragon is a Demi-Boss that drops several mid game items and mid tier loot. The boss uses the **Ranged** gear setup
 
 ## Requirements
@@ -28,7 +26,7 @@ The Queen Black Dragon is a Demi-Boss that drops several mid game items and mid 
 - **Queen black dragonling:** Perkless pet
 - **Royal dragon kiteshield:** An offhand shield, with no currently known use
 - **Dragonbone upgrade kit:** Used to upgrade dragon equipment and infinity equipment into special cosmetic dragonbone versions
-- **Royal crossbow pieces:** Royal torsion spring, Royal sight, Royal frame, and Royal bolt stabiliser. Not dropped in order. Combined with a Chaotic crossbow to make a Royal crossbow with `/create`**`item:`**`royal crossbow`
+- **Royal crossbow pieces:** Royal torsion spring, Royal sight, Royal frame, and Royal bolt stabiliser. Not dropped in order. Combined with a Chaotic crossbow to make a Royal crossbow with `/create`\*\*`item:royal crossbow`
 
 | **Unique Drop Table**      | **Drop Rate** |
 | -------------------------- | ------------- |

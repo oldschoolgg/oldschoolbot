@@ -2,9 +2,7 @@
 title: "Tempoross"
 ---
 
-# Tempoross
-
-Starting at 35 Fishing, you can send your minion out with `/k`**`name:`**`Tempoross`.
+Starting at 35 Fishing, you can send your minion out with [[/k name:Tempoross]]
 
 ## Boosts
 

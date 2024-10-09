@@ -2,8 +2,6 @@
 title: "Malygos"
 ---
 
-# Malygos
-
 Malygos is the Abyssal dragon boss. It attacks with slash/stab/ranged and magic. Malygos uses the **Wildy** gear setup, however you cannot lose gear while doing Malygos.
 
 You can kill Malygos with `/k name:Malygos`.

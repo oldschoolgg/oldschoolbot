@@ -4,7 +4,7 @@ title: "Pets"
 
 # Pets
 
-There are pets exclusive to BSO that provide unique and powerful perks and are rare drops from certain activities. These custom pets must equipped using `/gear pet equip:`**`name`**\` and in most cases, only one pet's effect can be active at once. All pets with a per minute drop rate can only be obtained on trips that are at least 20 minute long.
+There are pets exclusive to BSO that provide unique and powerful perks and are rare drops from certain activities. These custom pets must equipped using `/gear pet equip:name`\*\*\` and in most cases, only one pet's effect can be active at once. All pets with a per minute drop rate can only be obtained on trips that are at least 20 minute long.
 
 ## Trip boosting Pets
 
@@ -19,7 +19,7 @@ There are pets exclusive to BSO that provide unique and powerful perks and are r
 | Zak        | Increases maximum trip length by 40%                                                                                                                                                                                    | 1/6,500 minutes of Smelting(not obtainable from blast furnace, requires 10 QP) |
 | Takon      | 4x Smithing boost (not smelting, does not stack with <a href="equippables/#dwarven-tools">Dwarven greathammer</a>)<br>15% speed boost at Giants Foundry                                                                 | 1/600† from CoX                                                                |
 | Obis       | 2x Zalcano Boost2x Runecraft boost (uses 3x essence)Brings back random runes (non-PvM trips only)                                                                                                                       | 1/5,000 minutes of Runecrafting                                                |
-| Wilvus     | Brings back pickpocket loot, including <a href="https://bso-wiki.oldschool.gg/skills/thieving#custom-content-and-boosts">Thieves' Armband</a>2x thieving boost                                                          | 1/2,000 minutes of Thieving                                                    |
+| Wilvus     | Brings back pickpocket loot, including <a href="/skills/thieving#custom-content-and-boosts">Thieves' Armband</a>2x thieving boost                                                                                       | 1/2,000 minutes of Thieving                                                    |
 
 †These pets increase in rarity based on how many you have. For every pet you have in your cl the pet gets rarer
 
@@ -85,8 +85,7 @@ No Voidling equip and no magic master cape equipped: 1/6 - 1/7 regular speed.
 {% endtab %}
 {% endtabs %}
 
-Notes:\
-\*Smokey does not have to be equipped for this perk.\
+Notes:\*Smokey does not have to be equipped for this perk.\
 ±Invention provides this perk in the form of [RoboFlappy](../skills/invention/#inventions).
 
 <details>

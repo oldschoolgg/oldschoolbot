@@ -3,8 +3,6 @@ title: "Monkey staff and spells"
 description: Seamonkey staffs allows your monkey to cast spells
 ---
 
-# Monkey Staff & Spells
-
 You can acquire a t1 staff then upgrade it to higher tiers using the create command `/create item:Seamonkey staff (t1)`
 
 ### Seamonkey staff Creation

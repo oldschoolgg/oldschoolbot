@@ -2,8 +2,6 @@
 title: "Eagle Tame"
 ---
 
-# Eagle Tame
-
 ## Boosts
 
 You can feed the dragon tame certain items with `/tames feed [item]`\

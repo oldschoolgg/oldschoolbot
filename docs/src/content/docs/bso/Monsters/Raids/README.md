@@ -2,8 +2,6 @@
 title: "Raids"
 ---
 
-# Raids
-
 The OSB Wiki has most of the information on each raid, the purpose of this space is to highlight the BSO specific differences.
 
 [OSB Chambers of Xeric (CoX)](https://wiki.oldschool.gg/raids/cox-raids)

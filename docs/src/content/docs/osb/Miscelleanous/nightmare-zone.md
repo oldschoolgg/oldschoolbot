@@ -2,15 +2,13 @@
 title: "Nightmare Zone"
 ---
 
-# Nightmare Zone
-
 One of the best places to grind out your melee 99s. With 3x the normal trip length, this is optimal activity to send before you go to bed! Nmz is intended to work as an afk activity, so it allows for more downtime between each trip.
 
 ## Requirements
 
 Since you can only train **melee** combat stats here, you must change your attack style to suit.
 
-- `/minion train`` `**`style:`**
+- [[/minion train style\:]]
 
 Alongside this, you also must have the following requirements:
 
@@ -20,9 +18,7 @@ Alongside this, you also must have the following requirements:
 - Full Dharok set (does not have to be equipped)
 - Prayer potion(4) (**ONLY**if choosing the 'experience' strategy)
 - GP to pay for dream costs
-  - Cost is halved if you have maximum QP
-
----
+- Cost is halved if you have maximum QP
 
 ## Boosts
 
@@ -69,7 +65,7 @@ There are 2 strategies you can choose from: Experience or Points. They are fairl
 
 Use the following command to buy items:
 
-- `/minigames nmz buy`` `**`item:`**
+- `/minigames nmz buyitem:`\*\*
 
 <table><thead><tr><th></th><th></th><th data-hidden></th></tr></thead><tbody><tr><td><strong>Item</strong></td><td><strong>Point Cost</strong></td><td></td></tr><tr><td>Flax</td><td>75</td><td></td></tr><tr><td>Bucket of sand</td><td>200</td><td></td></tr><tr><td>Seaweed</td><td>200</td><td></td></tr><tr><td>Dragon scale dust</td><td>750</td><td></td></tr><tr><td>Compost potion(4)</td><td>5000</td><td></td></tr><tr><td>Air rune</td><td>25</td><td></td></tr><tr><td>Water rune</td><td>25</td><td></td></tr><tr><td>Earth rune</td><td>25</td><td></td></tr><tr><td>Fire rune</td><td>25</td><td></td></tr><tr><td>Rune essence</td><td>70</td><td></td></tr><tr><td>Vial of water</td><td>145</td><td></td></tr></tbody></table>
 
@@ -79,7 +75,7 @@ Use the following command to buy items:
 
 Use the following command to imbue items:
 
-- `/minigames nmz imbue`` `**`name:`**
+- [[/minigames nmz imbue name:itemname]]
 
 <table><thead><tr><th></th><th></th><th data-hidden></th></tr></thead><tbody><tr><td><strong>Item</strong></td><td><strong>Point Cost</strong></td><td></td></tr><tr><td>Black mask</td><td>1,250,000</td><td></td></tr><tr><td>Slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Turquoise slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Red slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Green slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Twisted slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Black slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Purple slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Hydra slayer helmet</td><td>1,250,000</td><td></td></tr><tr><td>Salve amulet</td><td>800,000</td><td></td></tr><tr><td>Salve amulet (e)</td><td>800,000</td><td></td></tr><tr><td>Ring of the gods</td><td>650,000</td><td></td></tr><tr><td>Ring of suffering</td><td>725,000</td><td></td></tr><tr><td>Ring of suffering (r)<strong>*</strong></td><td>725,000</td><td></td></tr><tr><td>Berserker ring</td><td>650,000</td><td></td></tr><tr><td>Warrior ring</td><td>650,000</td><td></td></tr><tr><td>Archers ring</td><td>650,000</td><td></td></tr><tr><td>Seers ring</td><td>650,000</td><td></td></tr><tr><td>Tyrannical ring</td><td>650,000</td><td></td></tr><tr><td>Treasonous ring</td><td>650,000</td><td></td></tr><tr><td>Granite ring</td><td>500,000</td><td></td></tr></tbody></table>
 

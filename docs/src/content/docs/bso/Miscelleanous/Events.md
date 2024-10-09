@@ -2,7 +2,7 @@
 title: "Events"
 ---
 
-# Halloween 2021
+## Halloween 2021
 
 ### Prerequisites
 
@@ -67,8 +67,7 @@ Note: All the items obtainable from this event will be discontinued, and mysteri
 
 Only two clues were provided for the event, being the following:
 
-The second clue reads as:\
-\
+The second clue reads as:
 "As night comes, Remember a betrayal, A haunting tale"
 
 ### Steps and Rewards
