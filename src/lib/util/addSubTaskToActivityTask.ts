@@ -1,5 +1,4 @@
-import { UserError } from '@oldschoolgg/toolkit';
-
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { activitySync } from '../settings/settings';
 import type { ActivityTaskData, ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';

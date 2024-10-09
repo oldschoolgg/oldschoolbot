@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { BOT_TYPE } from '../src/lib/constants';
 import { allCommands } from '../src/mahoji/commands/allCommands';
@@ -45,7 +45,7 @@ async function renderCommands() {
 
 export async function commandsFile() {
 	const commands = await renderCommands();
-	const path = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
+	const path = `data/${BOT_TYPE.toLowerCase()}.commands.json`;
 	writeFileSync(path, `${JSON.stringify(commands, null, '	')}\n`);
 	execSync(`npx biome check --write ${path}`);
 }

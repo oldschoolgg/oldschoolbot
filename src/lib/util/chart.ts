@@ -1,4 +1,4 @@
-import { deepMerge } from '@oldschoolgg/toolkit';
+import { deepMerge } from '@oldschoolgg/toolkit/util';
 import fetch from 'node-fetch';
 
 const colors = [

@@ -1,10 +1,6 @@
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, Clues, type Item, Monsters } from 'oldschooljs';
-
-import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
-import type Monster from 'oldschooljs/dist/structures/Monster';
-
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
@@ -31,6 +27,7 @@ import {
 	aerialFishingCL,
 	alchemicalHydraCL,
 	allPetsCL,
+	araxxorCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
 	brimhavenAgilityArenaCL,
@@ -121,6 +118,7 @@ import {
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
 	toaCL,
+	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
 	vardorvisCL,
@@ -174,6 +172,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.AlchemicalHydra.allItems,
 				items: alchemicalHydraCL,
 				fmtProg: kcProg(Monsters.AlchemicalHydra)
+			},
+			Araxxor: {
+				alias: [...Monsters.Araxxor.aliases, 'rax'],
+				allItems: uniqueArr([...araxxorCL, ...Monsters.Araxxor.allItems]),
+				items: araxxorCL,
+				fmtProg: kcProg(Monsters.Araxxor)
 			},
 			'Barrows Chests': {
 				alias: Monsters.Barrows.aliases,
@@ -1020,6 +1024,13 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TzHaarXil.allItems
 				],
 				items: tzHaarCL
+			},
+			'Tormented Demons': {
+				alias: Monsters.TormentedDemon.aliases,
+				allItems: Monsters.TormentedDemon.allItems,
+				kcActivity: Monsters.TormentedDemon.name,
+				items: tormentedDemonCL,
+				fmtProg: kcProg(Monsters.TormentedDemon)
 			},
 			Miscellaneous: {
 				alias: ['misc'],

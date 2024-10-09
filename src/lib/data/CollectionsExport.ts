@@ -1227,6 +1227,7 @@ export const barbarianAssaultCL = resolveItems([
 ]);
 export const brimhavenAgilityArenaCL = resolveItems([
 	'Agility arena ticket',
+	'Brimhaven voucher',
 	"Pirate's hook",
 	'Brimhaven graceful hood',
 	'Brimhaven graceful top',
@@ -1843,8 +1844,12 @@ export const slayerCL = resolveItems([
 	'Ancient ceremonial top',
 	'Ancient ceremonial legs',
 	'Ancient ceremonial gloves',
-	'Ancient ceremonial boots'
+	'Ancient ceremonial boots',
+	'Aranea boots'
 ]);
+
+export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
+
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
 	'Toktz-ket-xil',
@@ -2347,4 +2352,17 @@ export const vardorvisCL = resolveItems([
 	"Awakener's orb",
 	'Blood quartz',
 	'Strangled tablet'
+]);
+
+export const araxxorCL = resolveItems([
+	'Nid',
+	'Araxyte venom sack',
+	'Spider cave teleport',
+	'Araxyte fang',
+	'Noxious point',
+	'Noxious blade',
+	'Noxious pommel',
+	'Araxyte head',
+	'Jar of venom',
+	'Coagulated venom'
 ]);

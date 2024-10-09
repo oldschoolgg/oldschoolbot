@@ -1,5 +1,4 @@
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
+import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { calcWhatPercent, percentChance, sumArr, uniqueArr } from 'e';
@@ -7,11 +6,14 @@ import { Bank } from 'oldschooljs';
 
 import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
 
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import { pick } from 'remeda';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
+import { partialUserCache } from './cache';
 import { ClueTiers } from './clues/clueTiers';
 import type { CATier } from './combat_achievements/combatAchievements';
 import { CombatAchievements } from './combat_achievements/combatAchievements';
@@ -105,7 +107,7 @@ export class MUserClass {
 		this.updateProperties();
 	}
 
-	private updateProperties() {
+	public updateProperties() {
 		this.bank = new Bank(this.user.bank as ItemBank);
 		this.bank.freeze();
 
@@ -936,16 +938,24 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-async function srcMUserFetch(userID: string, updates: Prisma.UserUpdateInput = {}) {
-	const user = await prisma.user.upsert({
-		create: {
-			id: userID
-		},
-		update: updates,
-		where: {
-			id: userID
-		}
-	});
+async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+	const user =
+		updates !== undefined
+			? await prisma.user.upsert({
+					create: {
+						id: userID
+					},
+					update: updates,
+					where: {
+						id: userID
+					}
+				})
+			: await prisma.user.findUnique({ where: { id: userID } });
+
+	if (!user) {
+		return srcMUserFetch(userID, {});
+	}
+	partialUserCache.set(userID, pick(user, ['bitfield', 'minion_hasBought', 'badges']));
 	return new MUserClass(user);
 }
 

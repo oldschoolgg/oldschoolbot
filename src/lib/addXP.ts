@@ -1,5 +1,5 @@
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
-import { UserEventType } from '@prisma/client';
+import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, noOp } from 'e';
 import { convertXPtoLVL, toKMB } from './util';
@@ -8,6 +8,7 @@ import { MAXING_MESSAGE, SupportServer } from '../config';
 import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
 import { skillEmoji } from './data/emojis';
 import type { AddXpParams } from './minions/types';
+import { sql } from './postgres';
 import Skills from './skilling/skills';
 import { insertUserEvent } from './util/userEvents';
 import { sendToChannelID } from './util/webhook';
@@ -139,9 +140,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		globalClient.emit(Events.ServerNotification, str);
 	}
 
-	await user.update({
-		[`skills_${params.skillName}`]: Math.floor(newXP)
-	});
+	await sql.unsafe(`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`);
+	(user.user as User)[`skills_${params.skillName}`] = BigInt(Math.floor(newXP));
+	user.updateProperties();
 
 	if (currentXP < MAX_XP && newXP === MAX_XP && Object.values(user.skillsAsXP).every(xp => xp === MAX_XP)) {
 		globalClient.emit(

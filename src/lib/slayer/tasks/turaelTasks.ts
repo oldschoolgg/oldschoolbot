@@ -232,7 +232,8 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.GiantCryptSpider.id,
 			Monsters.Sarachnis.id,
 			Monsters.TempleSpider.id,
-			Monsters.Venenatis.id
+			Monsters.Venenatis.id,
+			Monsters.Araxxor.id
 		],
 		unlocked: true
 	},

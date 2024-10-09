@@ -1,11 +1,17 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
-import type { Image, SKRSContext2D } from '@napi-rs/canvas';
-import { Canvas, loadImage } from '@napi-rs/canvas';
 import { objectEntries, randInt } from 'e';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
-import { loadAndCacheLocalImage } from './util/canvasUtil';
+import {
+	type Canvas,
+	type CanvasContext,
+	type CanvasImage,
+	canvasToBuffer,
+	createCanvas,
+	loadAndCacheLocalImage,
+	loadImage
+} from './util/canvasUtil';
 import { getActivityOfUser } from './util/minionIsBusy';
 import type { PlayerOwnedHouse } from '.prisma/client';
 
@@ -31,8 +37,8 @@ const FOLDERS = [
 ];
 
 class PoHImage {
-	public imageCache: Map<number, Image> = new Map();
-	public bgImages: Image[] = [];
+	public imageCache: Map<number, CanvasImage> = new Map();
+	public bgImages: CanvasImage[] = [];
 	initPromise: Promise<void> | null = this.init();
 	initFinished = false;
 
@@ -53,9 +59,9 @@ class PoHImage {
 		this.initFinished = true;
 	}
 
-	generateCanvas(bgId: number): [Canvas, SKRSContext2D] {
+	generateCanvas(bgId: number): [Canvas, CanvasContext] {
 		const bgImage = this.bgImages[bgId - 1]!;
-		const canvas = new Canvas(bgImage.width, bgImage.height);
+		const canvas = createCanvas(bgImage.width, bgImage.height);
 
 		const ctx = canvas.getContext('2d');
 		ctx.imageSmoothingEnabled = false;
@@ -124,7 +130,7 @@ class PoHImage {
 			const [x, y] = this.randMinionCoords();
 			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
 		}
-		return canvas.encode('png');
+		return canvasToBuffer(canvas);
 	}
 }
 

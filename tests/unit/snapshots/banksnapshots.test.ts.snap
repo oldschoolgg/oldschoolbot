@@ -2321,7 +2321,7 @@ exports[`OSB Buyables 1`] = `
       "9813": 1,
       "9814": 1,
     },
-    "qpRequired": 308,
+    "qpRequired": 319,
   },
   {
     "aliases": [
@@ -2334,7 +2334,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13068": 1,
     },
-    "qpRequired": 308,
+    "qpRequired": 319,
   },
   {
     "aliases": [
@@ -2360,7 +2360,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13069": 1,
     },
-    "qpRequired": 308,
+    "qpRequired": 319,
   },
   {
     "customReq": [Function],
@@ -5980,6 +5980,95 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "29790": 1,
+      "29792": 1,
+      "29794": 1,
+    },
+    "name": "Noxious halberd",
+    "outputItems": {
+      "29796": 1,
+    },
+    "requiredSkills": {
+      "crafting": 72,
+      "smithing": 72,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11864": 1,
+      "29788": 1,
+    },
+    "name": "Araxyte slayer helmet",
+    "outputItems": {
+      "29816": 1,
+    },
+    "requiredSlayerUnlocks": [
+      202,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11865": 1,
+      "29788": 1,
+    },
+    "name": "Araxyte slayer helmet (i)",
+    "outputItems": {
+      "29818": 1,
+    },
+    "requiredSlayerUnlocks": [
+      202,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29781": 1,
+      "29836": 1,
+    },
+    "name": "Rax",
+    "outputItems": {
+      "29838": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29838": 1,
+    },
+    "name": "Revert Rax",
+    "noCl": true,
+    "outputItems": {
+      "29781": 1,
+      "29836": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "29801": 1,
+    },
+    "name": "Amulet of rancour (s)",
+    "outputItems": {
+      "29804": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29804": 1,
+    },
+    "name": "Revert Amulet of rancour (s)",
+    "noCl": true,
+    "outputItems": {
+      "29801": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "12922": 1,
     },
     "name": "Revert tanzanite fang",
@@ -8917,6 +9006,65 @@ exports[`OSB Creatables 1`] = `
       2,
       17,
     ],
+  },
+  {
+    "GPCost": 0,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "19675": 1,
+      "19677": 10,
+      "29580": 1,
+    },
+    "name": "Emberlight",
+    "outputItems": {
+      "29589": 1,
+    },
+    "requiredSkills": {
+      "smithing": 74,
+    },
+  },
+  {
+    "GPCost": 0,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29580": 1,
+      "70": 1,
+    },
+    "name": "Scorching bow",
+    "outputItems": {
+      "29591": 1,
+    },
+    "requiredSkills": {
+      "fletching": 74,
+    },
+  },
+  {
+    "GPCost": 0,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1391": 1,
+      "2351": 1,
+      "29580": 1,
+    },
+    "name": "Purging staff",
+    "outputItems": {
+      "29594": 1,
+    },
+    "requiredSkills": {
+      "crafting": 74,
+      "smithing": 55,
+    },
+  },
+  {
+    "GPCost": 0,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "29574": 2,
+    },
+    "name": "Burning claws",
+    "outputItems": {
+      "29577": 1,
+    },
   },
   {
     "cantHaveItems": undefined,

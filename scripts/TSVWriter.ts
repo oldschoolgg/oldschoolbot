@@ -32,7 +32,10 @@ export class TSVWriter {
 	}
 
 	end() {
-		this.flush();
-		this.stream.end();
+		return new Promise<void>((resolve, reject) => {
+			this.flush();
+			this.stream.end(() => resolve());
+			this.stream.on('error', reject);
+		});
 	}
 }

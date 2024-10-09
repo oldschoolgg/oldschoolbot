@@ -1,7 +1,7 @@
-import { calcPerHour, convertBankToPerHourStats } from '@oldschoolgg/toolkit';
+import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, Items, convertBankToPerHourStats } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
 
@@ -27,7 +27,7 @@ import {
 import { doMonsterTrip } from '../src/tasks/minions/monsterActivity';
 import { TSVWriter } from './TSVWriter';
 
-const MAX_TRIP_LENGTH = Time.Hour * 500;
+const MAX_TRIP_LENGTH = Time.Hour * 600;
 const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints', 'slayer'];
 
 function round(int: number) {
@@ -232,8 +232,7 @@ for (const { tripResult, commandResult } of results) {
 		`${convertBankToPerHourStats(commandResult.updateBank.itemLootBank.clone().add(commandResult.updateBank.itemLootBankNoCL), commandResult.duration)} Loot/hr`,
 		`${convertBankToPerHourStats(commandResult.updateBank.itemCostBank, commandResult.duration)} Cost/hr`,
 		JSON.stringify(omit(commandResult, ['updateBank'])),
-		JSON.stringify(omit(tripResult, ['updateBank']))
+		JSON.stringify(omit(tripResult, ['updateBank', 'slayerContext', 'monster']))
 	]);
 }
-tsvWriter.end();
-process.exit();
+tsvWriter.end().then(() => process.exit());

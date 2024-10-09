@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder } from 'discord.js';
 import { shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';

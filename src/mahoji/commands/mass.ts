@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { TextChannel } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, objectKeys } from 'e';

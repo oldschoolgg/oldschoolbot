@@ -1,5 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma } from '@prisma/client';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { Activity, GearSetupType, Prisma } from '@prisma/client';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Monsters } from 'oldschooljs';
 
@@ -8,13 +8,15 @@ import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 import { MUserClass } from '../../src/lib/MUser';
-import { completeActivity, processPendingActivities } from '../../src/lib/Task';
+import { completeActivity } from '../../src/lib/Task';
 import { type PvMMethod, globalConfig } from '../../src/lib/constants';
+import { sql } from '../../src/lib/postgres';
 import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { getOSItem } from '../../src/lib/util/getOSItem';
 import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
@@ -54,7 +56,6 @@ export class TestUser extends MUserClass {
 			}
 		});
 		if (!activity) {
-			console.warn('No activity found');
 			return;
 		}
 
@@ -77,7 +78,7 @@ export class TestUser extends MUserClass {
 	}
 
 	async equip(setup: GearSetupType, gear: number[]) {
-		const gearObj = new Gear();
+		const gearObj = this.gear[setup];
 		for (const item of gear) {
 			gearObj.equip(getOSItem(item));
 		}
@@ -124,10 +125,11 @@ export class TestUser extends MUserClass {
 		await global.prisma!.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
 		await global.prisma!.user.delete({ where: { id: this.id } });
 		const user = await global.prisma!.user.create({ data: { id: this.id } });
+		await global.prisma!.userStats.create({ data: { user_id: BigInt(this.id) } });
 		this.user = user;
 	}
 
-	async giveSlayerTask(monster: EMonster) {
+	async giveSlayerTask(monster: EMonster, quantity = 1000) {
 		await prisma.slayerTask.deleteMany({
 			where: {
 				user_id: this.id
@@ -136,8 +138,8 @@ export class TestUser extends MUserClass {
 		await prisma.slayerTask.create({
 			data: {
 				user_id: this.id,
-				quantity: 1000,
-				quantity_remaining: 1000,
+				quantity: quantity,
+				quantity_remaining: quantity,
 				slayer_master_id: slayerMasters.find(m => m.tasks.some(t => t.monster.id === monster))!.id,
 				monster_id: monster,
 				skipped: false
@@ -159,7 +161,7 @@ export class TestUser extends MUserClass {
 		if (shouldFail) {
 			expect(commandResult).not.toContain('is now killing');
 		}
-		const activityResult = await this.runActivity();
+		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
 		const newKC = await this.getKC(monster);
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
@@ -316,8 +318,12 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 	});
 
 	try {
-		await global.prisma!.userStats.create({
-			data: {
+		await global.prisma!.userStats.upsert({
+			create: {
+				user_id: BigInt(user.id)
+			},
+			update: {},
+			where: {
 				user_id: BigInt(user.id)
 			}
 		});
@@ -358,7 +364,21 @@ class TestClient {
 	}
 
 	async processActivities() {
-		await processPendingActivities();
+		const activities: Activity[] = await sql`SELECT * FROM activity WHERE completed = false;`;
+
+		if (activities.length > 0) {
+			await prisma.activity.updateMany({
+				where: {
+					id: {
+						in: activities.map(i => i.id)
+					}
+				},
+				data: {
+					completed: true
+				}
+			});
+			await Promise.all(activities.map(completeActivity));
+		}
 	}
 }
 
