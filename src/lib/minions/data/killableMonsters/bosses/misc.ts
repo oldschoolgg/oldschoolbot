@@ -707,9 +707,6 @@ const killableBosses: KillableMonster[] = [
 				loot.set('Coagulated venom', 0);
 			}
 
-			loot.addItem(getOSItem('Noxious point').id, 4);
-			loot.addItem(getOSItem('Herbi').id, 3);
-
 			const noxPieces = resolveItems(['Noxious point', 'Noxious blade', 'Noxious pommel']);
 			const ownedCount = noxPieces.map(o => cl.amount(o));
 			const lootCount = noxPieces.map(l => loot.amount(l));
