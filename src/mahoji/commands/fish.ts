@@ -128,7 +128,7 @@ function determineFishingTime(
 			} else if (Math.random() < p1) {
 				catches1++;
 			}
-			ticksElapsed += ticksPerRoll! * (1 + lostTicks!); // only part of the code that's not exactly how it works in osrs approximate
+			ticksElapsed += ticksPerRoll! * (1 + lostTicks!); // only part of the code that's not exactly how it works in osrs
 
 			if (catches1 + catches2 + catches3 >= quantity) {
 				break;
