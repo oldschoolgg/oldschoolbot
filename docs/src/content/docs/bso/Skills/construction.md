@@ -1,6 +1,5 @@
 ---
 title: "Construction"
-description: /build
 ---
 
 ### Custom Content and Boosts

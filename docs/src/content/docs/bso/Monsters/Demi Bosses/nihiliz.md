@@ -2,8 +2,6 @@
 title: "Nihiliz"
 ---
 
-# Nihiliz
-
 Nihiliz, aka "mini-nex" is a Zaryte, minion of Nex, who holds the key to the mythical and ancient Zaryte crossbow! The boss uses the **Melee (Stab)** gear setup
 
 ## Requirements

@@ -1,9 +1,6 @@
 ---
 title: "Dungeoneering"
-description: /dg start
 ---
-
-# Dungeoneering
 
 ### Starting Out
 

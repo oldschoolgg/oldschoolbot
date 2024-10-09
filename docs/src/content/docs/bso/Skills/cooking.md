@@ -1,11 +1,10 @@
 ---
 title: "Cooking"
-description: /cook, /kibble
 ---
 
 ## Custom Content and Boosts
 
-- [Remy ](https://bso-wiki.oldschool.gg/custom-items/pets)- 2x Cooking Speed (1.5x on wines)
+- [Remy ](/custom-items/pets)- 2x Cooking Speed (1.5x on wines)
 - [Dwarven Gauntlets](../custom-items/equippables/#dwarven-tools) - 3x Cooking Speed (does not work with `/kibble; does not work with wines`; does not stack with Remy)
 - Rocktail - Cooked from Raw Rocktail at lvl 120 cooking
 - Kibble - Used as bait when training Hunter

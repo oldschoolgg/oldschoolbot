@@ -37,7 +37,7 @@ Ring: Spellbound ring (i)
     - `/create`\*\*`item:ignis ring (i)`
   - Can be used to imbue an Infernal slayer helmet, see [Emerged Zuk Inferno](../../minigames/emerged-zuk-inferno.md)
     - `/create`\*\*`item:infernal slayer helmet(i)`
-  - Can be used to imbue a Spellbound ring from [Naxxus](https://bso-wiki.oldschool.gg/bosses/naxxus)\
+  - Can be used to imbue a Spellbound ring from [Naxxus](/bosses/naxxus)\
      • `/createitem`\*\*`: spellbound ring(i)`
 - **Voidling:** A pet that will alch items from your favorite alchs list when you're on a trip. Owning a Magic master cape greatly increases the amount of alchs per trip.
 - **Tattered robes of Vasa:** Used to craft a Vasa cloak, the BiS mage cape.
