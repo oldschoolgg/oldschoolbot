@@ -176,7 +176,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	return teamLoot;
 }
 
-export async function calculateNexDetails({ team }: { team: MUser[] }) {
+export async function calculateNexDetails({ team }: { team: MUser[] }, solo?: boolean, soloUser?: MUser) {
 	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
@@ -281,17 +281,18 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	}
 
 	// Ammo calculation
-	for (const user of team) {
-		const { rangeGear } = nexGearStats(user);
-		const teamUserIndex = resultTeam.findIndex(a => a.id === user.id);
+	const users = solo && soloUser ? [soloUser] : team;
 
-		// Check if the team member is a ghost; skip ammo calculation for ghosts
+	for (const user of users) {
+		const teamUserIndex = resultTeam.findIndex(a => a.id === user.id);
+		const { rangeGear } = nexGearStats(user);
+		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
+
+		// Skip ammo calculation for ghosts
 		if (resultTeam[teamUserIndex]?.ghost) continue;
 
-		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
+		// Calculate total ammo cost for the user
 		const totalAmmoUsed = randInt(50, 60) * quantity;
-
-		// Add the calculated ammo cost to the user's total cost
 		resultTeam[teamUserIndex].cost.add(ammo, totalAmmoUsed);
 	}
 

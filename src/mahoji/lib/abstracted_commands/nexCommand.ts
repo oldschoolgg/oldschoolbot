@@ -28,9 +28,11 @@ export async function nexCommand(
 	await deferInteraction(interaction);
 
 	let mahojiUsers: MUser[] = [];
+	let soloUser: MUser | undefined;
 
 	if (solo) {
 		mahojiUsers = [user];
+		soloUser = user;
 	} else {
 		let usersWhoConfirmed: MUser[] = [];
 		try {
@@ -65,9 +67,13 @@ export async function nexCommand(
 
 	const isSoloing = mahojiUsers.length === 1;
 
-	const details = await calculateNexDetails({
-		team: isSoloing ? [mahojiUsers[0], mahojiUsers[0], mahojiUsers[0], mahojiUsers[0]] : mahojiUsers
-	});
+	const details = await calculateNexDetails(
+		{
+			team: isSoloing ? [mahojiUsers[0], mahojiUsers[0], mahojiUsers[0], mahojiUsers[0]] : mahojiUsers
+		},
+		isSoloing,
+		soloUser
+	);
 
 	const effectiveTeam = isSoloing ? [details.team[0]] : details.team;
 
