@@ -41,6 +41,18 @@ const bones: Bone[] = [
 		inputId: itemID('Jogre bones')
 	},
 	{
+		name: 'Long bone',
+		level: 1,
+		xp: 15.1,
+		inputId: itemID('Long bone')
+	},
+	{
+		name: 'Curved bone',
+		level: 1,
+		xp: 15.1,
+		inputId: itemID('Curved bone')
+	},
+	{
 		name: 'Zogre bones',
 		level: 1,
 		xp: 22.5,
