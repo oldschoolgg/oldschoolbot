@@ -289,12 +289,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		if (resultTeam[teamUserIndex]?.ghost) continue;
 
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
-		let totalAmmoUsed = 0;
-
 		const totalAmmoUsed = randInt(50, 60) * quantity;
-			const ammoPerKill = randInt(50, 60); // Random ammo usage between 50-60 per kill
-			totalAmmoUsed += ammoPerKill;
-		}
 
 		// Add the calculated ammo cost to the user's total cost
 		resultTeam[teamUserIndex].cost.add(ammo, totalAmmoUsed);
