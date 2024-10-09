@@ -4,7 +4,7 @@ sidebar:
   order: 3
 ---
 
-## Update [[68b130088f5e365ec2a341cae48bc5b353ccc2ff]]
+## Update 9/10/2024 [[8de72b2de5a275497c67123904a280981415c553...68b130088f5e365ec2a341cae48bc5b353ccc2ff]]
 
 ### Hacktoberfest
 
@@ -33,7 +33,7 @@ I am running our own Hacktoberfest! Check out the [Hacktoberfest](/getting-start
   - The [[Emberlight]], [[Scorching bow]] and [[Purging staff]] weapons now act as demonbane weapons.
   - [[Emberlight]] boosts at all demon mobs, Scorching Bow, Purging Staff and Burning Claws only affect TDs (with the exception of Scorching Bow also being BIS at K'ril)
 
-## Update
+## Update 6/10/2024
 
 We now have a new wiki at https://wiki.oldschool.gg/, and the BSO Wiki is now combined together with the OSB wiki. Many pages are out of date, I'm trying to update pages when I have time. Currently, the only way to contribute to the new wiki is by editing files in [this folder on github](https://github.com/oldschoolgg/oldschoolbot/tree/master/docs/src/content/docs).
 
