@@ -1,19 +1,16 @@
 ---
 title: "Cooking"
-description: /cook, /kibble
 ---
 
-# Cooking
+## Custom Content and Boosts
 
-### Custom Content and Boosts
-
-- [Remy ](https://bso-wiki.oldschool.gg/custom-items/pets)- 2x Cooking Speed (1.5x on wines)
+- [Remy ](/custom-items/pets)- 2x Cooking Speed (1.5x on wines)
 - [Dwarven Gauntlets](../custom-items/equippables/#dwarven-tools) - 3x Cooking Speed (does not work with `/kibble; does not work with wines`; does not stack with Remy)
 - Rocktail - Cooked from Raw Rocktail at lvl 120 cooking
 - Kibble - Used as bait when training Hunter
 - [Cooking Master Cape](../custom-items/equippables/#master-capes) - 5x cooking speed (does not stack with other boosts; does not work with `/kibble`; does not work with wines)
 
-### Kibble
+## Kibble
 
 Create kibble with `/kibble kibble:[Kibble name] quantity:[x]` using all of the resources listed. This gives cooking and herblore xp
 
@@ -30,11 +27,11 @@ Create kibble with `/kibble kibble:[Kibble name] quantity:[x]` using all of the 
   - Crop: 7.5x Orange or Pineapple or Lychee
   - Fish: 15x Raw Rocktail
 
-### Optimal Gear Setup
+## Optimal Gear Setup
 
 Cooking master cape > Dwarven Gauntlets > Remy
 
-### Methods
+## Methods
 
 | Method        | Xp / Hr    |
 | ------------- | ---------- |

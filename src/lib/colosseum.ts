@@ -1,5 +1,5 @@
-import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
 import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
+import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,

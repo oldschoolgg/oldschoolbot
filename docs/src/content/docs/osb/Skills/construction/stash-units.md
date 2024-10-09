@@ -2,8 +2,6 @@
 title: "Stash Units"
 ---
 
-# Stash Units
-
 You can create clue stash units to store emote clue items in. At this stage, the stash units are not utilised for clues but there are plans for this in the near future.
 
 ## Commands
@@ -15,13 +13,13 @@ To **create** a stash space, use the following command:
 To **fill and unfill** items from stash spaces, use the following commands:
 
 - `/tools stash_units fill_all`
-- `/tools stash_units unfill`` `**`unit:`**` ``[unitName or ID#]`
+- `/tools stash_units unfill unit:[unitName or ID#]`
 
 To **view** which stash units are filled or unfill, use the following commands:
 
 - `/tools stash_units view` - Gives an overview of all your built and filled units
-- `/tools stash_units view`` `**`unit:`**` ``[unitName or ID#]`
-- `/tools stash_units view`` `**`not_filled:`**` ``true/false`
+- `/tools stash_units view unit: ``[unitName or ID#]`
+- `/tools stash_units view not_filled: ``true/false`
 
 ## Requirements & Materials
 
@@ -49,43 +47,43 @@ To **view** which stash units are filled or unfill, use the following commands:
 
 All of the following items need to bought in order to obtain them for stash units.
 
-- Red cape - 100k - `/buy`` `**`name:`**` ``Red cape`
-- Black cape - 100k - `/buy`` `**`name:`**` ``Black cape`
-- Desert shirt - 1m - `/buy`` `**`name:`**` ``Desert Outfit`
-- Green boots - 100k - `/buy`` `**`name:`**` ``Green boots`
-- Green hat - 100k - `/buy`` `**`name:`**` ``Green hat`
-- Green robe top - 100k - `/buy`` `**`name:`**` ``Green robe top`
-- Green robe bottoms - 100k - `/buy`` `**`name:`**` ``Green robe bottoms`
-- Cream robe top - 100k - `/buy`` `**`name:`**` ``Cream robe top`
-- Purple gloves - 100k - `/buy`` `**`name:`**` ``Purple gloves`
-- Pink robe top - 100k - `/buy`` `**`name:`**` ``Pink robe top`
-- Blue robe top - 100k - `/buy`` `**`name:`**` ``Blue robe top`
-- Blue boots - 100k - `/buy`` `**`name:`**` ``Blue boots`
-- Turquoise robe bottoms - 100k - `/buy`` `**`name:`**` ``Turquoise robe bottoms`
-- Team cape - 1k - `/buy`` `**`name:`**` ``Team-1 cape`
-- Bone dagger - 2.5k - `/buy`` `**`name:`**` ``Bone dagger`
-- Bone spear - 1k - `/buy`` `**`name:`**` ``Bone spear`
-- Brown apron - 1k - `/buy`` `**`name:`**` ``Brown apron`
-- White apron - 1k - `/buy`` `**`name:`**` ``White apron`
-- Elemental shield - 2.5m - `/buy`` `**`name:`**` ``Elemental shield`
-- Mind shield - 100k - `/buy`` `**`name:`**` ``Mind shield`
-- Adamant halberd - 100k - `/buy`` `**`name:`**` ``Adamant halberd`
-- Mystic hat - 15k - `/buy`` `**`name:`**` ``Mystic hat`
-- Mystic robe top - 120k - `/buy`` `**`name:`**` ``Mystic robe top`
-- Mystic robe bottom - 80k - `/buy`` `**`name:`**` ``Mystic robe bottom`
-- Mystic gloves - 10k - `/buy`` `**`name:`**` ``Mystic gloves`
-- Rolling pin - 1k - `/buy`` `**`name:`**` ``Rolling pin`
-- Barrows gloves - 1m - `/buy`` `**`name:`**` ``Barrows gloves`
-- Climbing boots - 100k - `/buy`` `**`name:`**` ``Climbing boots`
-- Helm of Neitiznot - 500k - `/buy`` `**`name:`**` ``Helm of neitiznot`
-- Cape of legends - 250k - `/buy`` `**`name:`**` ``Cape of legends`
-- Proselyte hauberk - 500k - `/buy`` `**`name:`**` ``Proselyte outfit`
-- Pirate bandana - 2k - `/buy`` `**`name:`**` ``Pirate bandana (red)`
-- Crystal bow - 900k - `/buy`` `**`name:`**` ``Crystal bow`
-- Shadow sword - 10k - `/buy`` `**`name:`**` ``Shadow sword`
-- Iban's staff - 300k - `/buy`` `**`name:`**` ``Iban's staff`
-- Menaphite purple hat - 5k - `/buy`` `**`name:`**` ``Menaphite purple outfit`
-- Bull roarer - 1k - `/buy`` `**`name:`**` ``Bull roarer`
+- Red cape - 100k - `/buyname: ``Red cape`
+- Black cape - 100k - `/buyname: ``Black cape`
+- Desert shirt - 1m - `/buyname: ``Desert Outfit`
+- Green boots - 100k - `/buyname: ``Green boots`
+- Green hat - 100k - `/buyname: ``Green hat`
+- Green robe top - 100k - `/buyname: ``Green robe top`
+- Green robe bottoms - 100k - `/buyname: ``Green robe bottoms`
+- Cream robe top - 100k - `/buyname: ``Cream robe top`
+- Purple gloves - 100k - `/buyname: ``Purple gloves`
+- Pink robe top - 100k - `/buyname: ``Pink robe top`
+- Blue robe top - 100k - `/buyname: ``Blue robe top`
+- Blue boots - 100k - `/buyname: ``Blue boots`
+- Turquoise robe bottoms - 100k - `/buyname: ``Turquoise robe bottoms`
+- Team cape - 1k - `/buyname: ``Team-1 cape`
+- Bone dagger - 2.5k - `/buyname: ``Bone dagger`
+- Bone spear - 1k - `/buyname: ``Bone spear`
+- Brown apron - 1k - `/buyname: ``Brown apron`
+- White apron - 1k - `/buyname: ``White apron`
+- Elemental shield - 2.5m - `/buyname: ``Elemental shield`
+- Mind shield - 100k - `/buyname: ``Mind shield`
+- Adamant halberd - 100k - `/buyname: ``Adamant halberd`
+- Mystic hat - 15k - `/buyname: ``Mystic hat`
+- Mystic robe top - 120k - `/buyname: ``Mystic robe top`
+- Mystic robe bottom - 80k - `/buyname: ``Mystic robe bottom`
+- Mystic gloves - 10k - `/buyname: ``Mystic gloves`
+- Rolling pin - 1k - `/buyname: ``Rolling pin`
+- Barrows gloves - 1m - `/buyname: ``Barrows gloves`
+- Climbing boots - 100k - `/buyname: ``Climbing boots`
+- Helm of Neitiznot - 500k - `/buyname: ``Helm of neitiznot`
+- Cape of legends - 250k - `/buyname: ``Cape of legends`
+- Proselyte hauberk - 500k - `/buyname: ``Proselyte outfit`
+- Pirate bandana - 2k - `/buyname: ``Pirate bandana (red)`
+- Crystal bow - 900k - `/buyname: ``Crystal bow`
+- Shadow sword - 10k - `/buyname: ``Shadow sword`
+- Iban's staff - 300k - `/buyname: ``Iban's staff`
+- Menaphite purple hat - 5k - `/buyname: ``Menaphite purple outfit`
+- Bull roarer - 1k - `/buyname: ``Bull roarer`
 
 </details>
 

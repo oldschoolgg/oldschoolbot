@@ -1,9 +1,6 @@
 ---
 title: "Agility"
-description: /laps
 ---
-
-# Agility
 
 ### Custom Content and Boosts
 

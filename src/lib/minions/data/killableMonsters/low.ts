@@ -160,7 +160,8 @@ const killableMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackMagic],
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Emberlight')]: 15
 			}
 		]
 	},

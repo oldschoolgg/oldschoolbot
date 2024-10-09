@@ -1,17 +1,16 @@
-import { truncateString } from '@oldschoolgg/toolkit';
+import { stripEmojis, truncateString } from '@oldschoolgg/toolkit/util';
 import { reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { deduplicateClueScrolls } from '../../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import { pluraliseItemName, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
+import { pluraliseItemName, skillingPetDropRate } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
-import { mockMUser } from './utils';
+import { mockMUser } from './userutil';
 
 describe('util', () => {
 	test('stripEmojis', () => {

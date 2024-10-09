@@ -2,8 +2,6 @@
 title: "Brimhaven Agility Arena"
 ---
 
-# Brimhaven Agility Arena
-
 An alternative form of agility training is to use the agility arena. This minigame can be quite rewarding, providing agility arena tickets which can be turned in for additional agility xp, a graceful recolour, herbs, and even a Pirate's hook!
 
 To start brimhaven agility arena, simply type:

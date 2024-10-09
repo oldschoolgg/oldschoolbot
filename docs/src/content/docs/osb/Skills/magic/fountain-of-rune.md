@@ -2,13 +2,11 @@
 title: "Fountain of Rune"
 ---
 
-# Fountain of Rune
-
 You can use the Fountain of Rune to charge Rings of wealth and Amulets of glory. Be aware that there is a small chance of getting pked (approximately 1/100 chance) which will result in a loss of an invent of wealths/glories per death. You will not lose any gear in any setup from this.
 
 To charge at the Fountain of Rune, use the following command:
 
-- `/activities charge`` `**`item:`**`[Amulet of glory/Ring of wealth]`
+- `/activities charge item:[Amulet of glory/Ring of wealth]`
 
 **Note:** quantity refers to 1 inventory (1 invent = 26 items)
 

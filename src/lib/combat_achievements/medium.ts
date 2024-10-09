@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { demonBaneWeapons } from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import { isCertainMonsterTrip } from './caUtils';
@@ -408,8 +409,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Skotizo.id)(data) &&
-				user.hasEquipped(['Silverlight', 'Darklight', 'Arclight'], false)
+				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && user.hasEquipped(demonBaneWeapons)
 		}
 	},
 	{

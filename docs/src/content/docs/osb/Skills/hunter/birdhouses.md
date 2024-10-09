@@ -2,13 +2,11 @@
 title: "Birdhouses"
 ---
 
-# Birdhouses
-
 Birdhouses are a great way to collect birds nests and various seeds and rings. It is also the only method to collect bird's eggs for the chance at the evil chicken outfit pieces. All birdhouses take the same amount of time (50 minutes).
 
 If you are tier 1 patron or higher (and your BH's are ready), you will see a **'Birdhouse Run'** button at the end of your trips. This can be enabled/disabled using:
 
-`/config user toggle`` `**`name:`**`Disable Birdhouse Run Button`
+`/config user togglename:Disable Birdhouse Run Button`
 
 ---
 
@@ -16,11 +14,11 @@ If you are tier 1 patron or higher (and your BH's are ready), you will see a **'
 
 If you have no birdhouses in place, you can set them up using:
 
-- `/activities birdhouses`` `**`action:`**`Collect and Plant Birdhouses`` `**`birdhouse:`**
+- `/activities birdhousesaction:Collect and Plant Birdhousesbirdhouse:`\*\*
 
 To check to see if your birdhouses are ready, use:
 
-- `/activities birdhouses`` `**`action:`**`Check Birdhouses`
+- `/activities birdhousesaction:Check Birdhouses`
 
 To favourite a specific seed to use on your birdhouse runs, use:
 
@@ -42,7 +40,7 @@ These are the minimum requirements to make the lowest level birdhouse. See the t
 - Level 5 Crafting
 - 3 Quest points
 - 4x Clockworks
-  - Made with 4x Steel bars - `/craft`` `**`name:`**` ``Clockwork`` `**`quantity:`**` ``4`
+  - Made with 4x Steel bars - `/craftname: ``Clockworkquantity: ``4`
   - You will always reuse the same clockworks so you should only ever need 4.
 - 4x logs
   - These can be any tier logs provided you have the appropriate levels.
@@ -111,10 +109,10 @@ Clue scrolls are also given as a tertiary drop. Each tier (except beginner) has 
 
 These can be offered to the shrine where you have a chance at receiving pieces of the Evil chicken outfit. Each piece is 1/300 chance, and there is no set order in which you receive the pieces of the oufit.
 
-To offer the eggs, use `/offer`` `**`name:`**` ``[colour] bird egg`
+To offer the eggs, use `/offername: ``[colour] bird egg`
 
 **NOTE:** You will receive 100 prayer xp per egg offered.
 
 As of 23rd Oct 2022, tracking was added to view the amount of eggs offered. Tracking only tracks the eggs offered after this date. To view how many you have offered, use:
 
-- `/data`` `**`name:`**` ``Bird Eggs Offered`
+- `/dataname: ``Bird Eggs Offered`

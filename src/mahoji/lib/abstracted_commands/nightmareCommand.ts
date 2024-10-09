@@ -1,4 +1,4 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 

@@ -30,6 +30,9 @@ export default defineConfig({
 }`
 				}
 			],
+			editLink: {
+				baseUrl: 'https://github.com/oldschoolgg/oldschoolbot/edit/master/docs/'
+			},
 			sidebar: [
 				{
 					label: 'Getting Started',

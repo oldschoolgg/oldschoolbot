@@ -1594,5 +1594,16 @@ export const masterCombatAchievements: CombatAchievement[] = [
 				[Monsters.Araxxor.id]: 75
 			}
 		})
+	},
+	{
+		id: 2140,
+		name: 'Three Times the Thrashing',
+		desc: 'Kill three Tormented Demons within 3 seconds.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
+		}
 	}
 ];

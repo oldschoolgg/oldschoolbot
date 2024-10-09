@@ -237,6 +237,19 @@ export const Lampables: IXPObject[] = [
 			return [skills, undefined];
 		}
 	},
+  {
+		items: resolveItems(["Duradel's Notes"]),
+		function: data => {
+			const skills: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				if (![SkillsEnum.Slayer].includes(skill)) {
+					continue;
+				}
+				skills[skill] = data.user.skillLevel(skill) * 15 * data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
 	{
 		items: resolveItems(['Antique lamp (Historian Aldo)']),
 		function: data => {
@@ -259,8 +272,7 @@ export const Lampables: IXPObject[] = [
 
 				skills[skill] = (skill === SkillsEnum.Prayer ? 3500 : 5000) * data.quantity;
 			}
-
-			return [skills, undefined];
+      return [skills, undefined];
 		}
 	}
 ];

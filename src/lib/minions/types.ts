@@ -1,4 +1,4 @@
-import type { StoreBitfield } from '@oldschoolgg/toolkit';
+import type { StoreBitfield } from '@oldschoolgg/toolkit/util';
 import type { XpGainSource } from '@prisma/client';
 import type { Bank, Item, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 

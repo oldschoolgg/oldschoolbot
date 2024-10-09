@@ -24,6 +24,7 @@
   --sl-nav-pad-x: 1rem;
   --sl-font: "Inter", sans-serif; 
   --sl-color-bg-inline-code: #3d362f;
+  --sl-content-width: 55rem;
 
 
   scrollbar-color: #3d312d #251d17;
@@ -65,6 +66,7 @@ starlight-menu-button > button {
   --sl-color-bg-sidebar: #1a1625;
   --sl-color-bg-inline-code: #362c47;
   --sl-icon-color: #c4b1dc;
+  --sl-color-hairline: #3e2858;
   background-color: #0d0c12;
   scrollbar-color: #241e24 #0d0c12;
 
@@ -122,10 +124,11 @@ h1 {
 }
 
 .sl-markdown-content h2 {
-  font-size: 1.5rem;
+  font-size: 2.4rem;
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.33333;
+  margin-top: 0.7em!important;
 }
 
 .sl-markdown-content h3 {
@@ -397,7 +400,7 @@ ol + ol li blockquote {
 }
 
 .osrs_item {
-  margin: 0!important;
+  margin: 3px 0px!important;
 }
 
 .osrs_item_name, .osrs_item_image{
@@ -437,30 +440,29 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
   padding: 0;
 }
 
-.injected {
+.sl-markdown-content .injected {
   display: inline;
   gap: 8px; 
   white-space: normal;
+  margin-top: 0px;
 }
 
 .osrs_item,
 .discord_command {
   display: inline-flex;
   align-items: center;
-  margin: 0 4px; 
-  white-space: nowrap;
   vertical-align: middle; 
+  margin-top: 0px!important;
 }
 
 .osrs_item_image {
-  max-height: 26px; 
+  max-height: 21px; 
   vertical-align: middle;
 }
 
 .osrs_item_name,
 .discord_command_name {
   font-size: 0.9em; 
-  margin-top: 4px; 
   text-align: center;
   white-space: nowrap; 
 }
@@ -472,8 +474,25 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
   font-weight: bold;
   padding: 1px 9px;
   font-size: 25px;
+  display:flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+.contributor .contributor_name {
+    margin-top: 0
+}
+.contributor_avatar {
+  height: 38px!important;
+  border-radius: 64px;
 }
 
 .git_hash {
-  font-size: 11px;
+  font-size: 20px;
+  margin-top: 0px;
+}
+
+.edit_this_page {
+  color: var(--sl-color-text-accent);
 }

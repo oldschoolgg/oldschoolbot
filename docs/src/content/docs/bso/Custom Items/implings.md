@@ -2,14 +2,12 @@
 title: "Implings"
 ---
 
-# Implings
-
 On top of the regular implings you can get, there are 4 more you can get in BSO:
 
 **Infernal impling:** (requires 94 hunter) Drops TzHaar-related items, 1 in 1 million chance of Uncut onyx
 
 **Chimpling:** (requires 95 hunter and a magic banana) It can drop seeds, TMB's, GMC's, and the very rare monkey egg.\
-A single magic banana is consumed per catch and can be obtained by casting the `/activities enchant name:Banana spell`. This requires a regular banana (which can be farmed or created by casting bones to bananas) and a special enchant banana spell scroll which can be obtained from the [Monkey Rumble minigame](https://bso-wiki.oldschool.gg/minigames/mad-marimbos-monkey-rumble).
+A single magic banana is consumed per catch and can be obtained by casting the `/activities enchant name:Banana spell`. This requires a regular banana (which can be farmed or created by casting bones to bananas) and a special enchant banana spell scroll which can be obtained from the [Monkey Rumble minigame](/minigames/mad-marimbos-monkey-rumble).
 
 | Item                      | Rate   |
 | ------------------------- | ------ |

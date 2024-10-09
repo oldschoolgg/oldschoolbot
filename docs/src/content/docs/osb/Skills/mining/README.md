@@ -2,12 +2,32 @@
 title: "Mining"
 ---
 
-# Mining
+You can train Mining using [[/mine name:ore]]. If no quantity is specified, it will default to a full trip. Using the powermine option will result in no ores being obtained, but provides significantly faster mining xp rates.
 
-You can train Mining using `/mine`**`name:`**`[ore]`. If no quantity is specified, it will default to a full trip. Using the powermine option will result in no ores being obtained, but provides significantly faster mining xp rates.
+- [[/mine name\:Runite ore quantity\:50]]
+- [[/mine name\:Iron ore powermine\:true]]
 
-- `/mine`` `**`name:`**` ``Runite ore`` `**`quantity:`**` ``50`
-- `/mine`` `**`name:`**` ``Iron ore`` `**`powermine:`**` ``true`
+## Fastest Route to 99
+
+This is the fastest method to obtain 99 mining. It yields almost no profit since it's all done via powermining.
+
+1-15: Powermine Copper/Tin
+15-45: Powermine Iron
+45-99: Powermine Granite
+
+While you can obtain the prospector's outfit from Motherlode mine with golden nuggets (fastest method), the time spent to obtain the outfit is negligible against overall time to get to 99.
+
+## Profitable Route to 99
+
+1-15: Powermine Copper/Tin\
+15-37: Powermine Iron\
+37-50: Mine Volcanic ash\
+50-71: Mine Iron (For use of Crystal pickaxe)\
+**PICK N MIX UNTIL 99**\
+Mine Gold ore (fastest and quite profitable)\
+Mine Gem rocks (best pet chance but much less profitable)\
+Mine Amethyst from 92-99 (with expert mining gloves)\
+Zalcano (12-16k xp/hr)
 
 ## Pickaxes
 
@@ -78,7 +98,7 @@ For example, a trip of 30 minutes will award between 0 and 7 unidentified minera
 
 The only other thing unidentified minerals can be used to purchase are:
 
-- `/buy`` `**`name:`**` ``Bag full of gems (minerals)` - 20 Unidentified minerals
+- [[/buy name\:Bag full of gems (minerals)]] - 20 Unidentified minerals
 
 ## Ores
 

@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
@@ -118,6 +118,7 @@ import {
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
 	toaCL,
+	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
 	vardorvisCL,
@@ -1023,6 +1024,13 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TzHaarXil.allItems
 				],
 				items: tzHaarCL
+			},
+			'Tormented Demons': {
+				alias: Monsters.TormentedDemon.aliases,
+				allItems: Monsters.TormentedDemon.allItems,
+				kcActivity: Monsters.TormentedDemon.name,
+				items: tormentedDemonCL,
+				fmtProg: kcProg(Monsters.TormentedDemon)
 			},
 			Miscellaneous: {
 				alias: ['misc'],

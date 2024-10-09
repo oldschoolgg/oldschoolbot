@@ -54,22 +54,22 @@ To automatically [protect your crops](./#farming-payment-creatables) with paymen
 
 Auto farming allows your minion to automatically plant seeds in each of your available patches. The default setting is set to All Farm, where it will plant the highest seed available. There are two filters you can set when doing auto farming. These are:
 
-- All Farm - `/farming auto_farm_filter`` `**`auto_farm_filter_data:`**`AllFarm`
+- All Farm - `/farming auto_farm_filterauto_farm_filter_data:AllFarm`
   - This filter will automatically plant the highest seed available for all your available patches. You cannot choose to skip certain patches, it will always plant for all available.
-- Replant - `/farming auto_farm_filter`` `**`auto_farm_filter_data:`**`Replant`
+- Replant - `/farming auto_farm_filterauto_farm_filter_data:Replant`
   - This filter will automatically plant the same seed in specific patches. You should empty your other patches with `/farming harvest` to make this filter more effective. For example, if you only want to auto farm snapdragon seeds, all your other patches should be empty and auto farm will simply continue to plant snapdragons and nothing else.
 
 ---
 
 ## Compost
 
-Regular compost is buyable from the bot (400gp ea) by using: `/buy`` `**`name:`**` ``Compost`
+Regular compost is buyable from the bot (400gp ea) by using: `/buyname: ``Compost`
 
 Supercompost can be made from a variety of materials by using:`/farming compost_bin`\
 It can also be dropped by [wilderness bosses](../../bosses/boosts-and-requirements.md#callisto-vetion-venenatis-inc.-singles-versions) or bought through [Tithe Farm minigame](tithe-farm.md).
 
 Ultracompost can be made with 2 Volcanic ash + 1 Supercompost and then by using: \
-`/create`` `**`item:`**`Ultracompost`
+`/createitem:Ultracompost`
 
 ---
 

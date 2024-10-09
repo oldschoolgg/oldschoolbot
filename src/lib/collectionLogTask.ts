@@ -1,5 +1,5 @@
-import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 import { Util } from 'oldschooljs';

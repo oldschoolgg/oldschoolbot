@@ -17,7 +17,7 @@ Daily fishing trip that always takes 1 minute and 41 seconds and resets at 00:00
 #### Upgrades
 
 - **Crystal fishing rod:** Catches 1 extra fish per Fishing Contest trip. It is made with a contest rod and a crystal tool seed.
-  - `/create`**`item:`**`crystal fishing rod`
+  - `/create`\*\*`item:crystal fishing rod`
 - **Tackle boxes:** Dropped from Fishing Contest trips when the Fishing level requirement is met. Tackle boxes increase the amount of fish caught per Fishing Contest trip by 1 per tier. They also increase the trip length of all other fishing trips by 1 minute per tier.
   - _Beginner's tackle box:_ Tier 0, no level requirement.
   - _Basic tackle box:_ Tier 1, Level 75 required.

@@ -113,16 +113,16 @@ The quiver is the main item sought after from the Colosseum. It is given after c
 
 You can gamble the quiver for a chance at the pet. The chance is 1/200.
 
-- `/gamble item`` `**`item:`**`quiver`
+- `/gamble item item:quiver`
 
 You can bless the quiver. This provides no boosts to anything and cannot be reverted.
 
-- `/create`` `**`item:`**`Blessed dizana's quiver`
+- `/create item:Blessed dizana's quiver`
 
 You can revert the uncharged quiver into 4,000 Sunfire splinters.
 
-- `/create`` `**`item:`**`Revert Dizana's quiver (uncharged)`
+- `/create item:Revert Dizana's quiver (uncharged)`
 
 You can create Dizana's max cape. This cannot be reverted.
 
-- `/create`` `**`item:`**`Dizana's max cape`
+- `/create item:Dizana's max cape`

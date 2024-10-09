@@ -1,9 +1,10 @@
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, winterTodtPointsTable } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { winterTodtPointsTable } from '../../../lib/simulation/simulatedKillables';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';

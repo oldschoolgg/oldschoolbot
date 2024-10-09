@@ -2,8 +2,6 @@
 title: "Slayer Masks / Helms"
 ---
 
-# Slayer Masks / Helms
-
 **To get a slayer mask as a drop, you need to have the slayer reward 'Maskuerade' unlocked.** Some of the monsters need to be unlocked. **You need to be on task** to receive a mask, and to also gain kills towards upgrading into the slayer helm.
 
 Slayer masks are drops from certain slayer monsters. They can then be upgraded into a Slayer helmet by killing the associated monster while owning the mask.
