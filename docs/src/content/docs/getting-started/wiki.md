@@ -7,6 +7,8 @@ lastUpdated: 2024-10-01T03:41:00.552Z
 
 Currently, the only way to contribute to the new wiki is by editing files in [this folder on github](https://github.com/oldschoolgg/oldschoolbot/tree/master/docs/src/content/docs). You can make most simple edits by simply just editing the file directly on the Github website, and submitting it as a pull request. Bigger changes may require you install and run the wiki locally.
 
+Contributors are allowed to merge PRs/changes to the wiki without approval.
+
 ## Style Guide
 
 1. Be succint/terse, dont use filler or lots of line separations, etc. Just give people the information they need to know.
