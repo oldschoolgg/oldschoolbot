@@ -237,7 +237,7 @@ export const Lampables: IXPObject[] = [
 			return [skills, undefined];
 		}
 	},
-  {
+	{
 		items: resolveItems(["Duradel's Notes"]),
 		function: data => {
 			const skills: Skills = {};
@@ -272,7 +272,7 @@ export const Lampables: IXPObject[] = [
 
 				skills[skill] = (skill === SkillsEnum.Prayer ? 3500 : 5000) * data.quantity;
 			}
-      return [skills, undefined];
+			return [skills, undefined];
 		}
 	}
 ];
