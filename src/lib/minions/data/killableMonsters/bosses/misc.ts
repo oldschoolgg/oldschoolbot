@@ -6,7 +6,6 @@ import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
-import { getOSItem } from '../../../../util/getOSItem';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
 
