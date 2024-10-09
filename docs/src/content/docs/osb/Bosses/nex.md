@@ -21,7 +21,7 @@ title: "Nex"
 - Ely reduces death chance by 30%.
 - You get faster at killing Nex based on your Offence Boost % (gear) and your KC.
 
-**NOTE**\_: You can now kill Nex Solo using [[/k name:Nex solo:True]]
+**NOTE**: You can now kill Nex Solo using [[/k name:Nex solo:True]]
 
 ## BIS Gear
 

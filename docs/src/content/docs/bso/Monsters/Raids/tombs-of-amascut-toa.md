@@ -2,8 +2,6 @@
 title: "Tombs of Amascut (ToA)"
 ---
 
-# Tombs of Amascut (ToA)
-
 See the [OSB wiki ](https://wiki.oldschool.gg/raids/tombs-of-amascut-toa)for general info.
 
 ## Boosts

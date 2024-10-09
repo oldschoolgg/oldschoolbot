@@ -2,7 +2,7 @@
 title: "Events"
 ---
 
-# Halloween 2021
+## Halloween 2021
 
 ### Prerequisites
 

@@ -124,10 +124,11 @@ h1 {
 }
 
 .sl-markdown-content h2 {
-  font-size: 2.9rem;
+  font-size: 2.4rem;
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.33333;
+  margin-top: 0.7em!important;
 }
 
 .sl-markdown-content h3 {

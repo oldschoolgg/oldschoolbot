@@ -14,6 +14,8 @@ function isGitHash(str: string): boolean {
 	return /^[a-f0-9]{40}$/.test(str);
 }
 
+const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
+
 export function remarkItems(options: any) {
 	return (tree: any) => {
 		visitParents(tree, 'text', (node, parents) => {
@@ -22,7 +24,12 @@ export function remarkItems(options: any) {
 			if (matches.length === 0) return;
 
 			for (const match of matches) {
-				if ([...SkillsArray, 'qp'].some(s => match.includes(`${s}:`))) {
+				if (imageExtensions.some(ext => match.endsWith(ext))) {
+					node.type = 'html';
+					const html = `<img src="/images/${match}" alt="${match}" />`;
+					node.value = node.value.replace(`[[${match}]]`, html);
+					continue;
+				} else if ([...SkillsArray, 'qp'].some(s => match.includes(`${s}:`))) {
 					const [skillName, level] = match.split(':');
 					node.type = 'html';
 					const imageURL =

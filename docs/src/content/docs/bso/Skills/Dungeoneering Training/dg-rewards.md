@@ -2,8 +2,6 @@
 title: "Dungeoneering Rewards"
 ---
 
-# Dungeoneering Rewards
-
 ### Buyable Boosts/Utility
 
 | Item                    | Token Cost | Boost                                                                               |

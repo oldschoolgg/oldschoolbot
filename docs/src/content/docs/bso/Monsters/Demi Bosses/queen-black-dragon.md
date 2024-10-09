@@ -2,8 +2,6 @@
 title: "Queen Black Dragon"
 ---
 
-# Queen Black Dragon
-
 The Queen Black Dragon is a Demi-Boss that drops several mid game items and mid tier loot. The boss uses the **Ranged** gear setup
 
 ## Requirements
