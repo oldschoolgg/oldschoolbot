@@ -29,8 +29,6 @@ All contracts use a random amount of steel bars and planks, scaled to the amount
   - Requires mahogany planks
   - 5 points awarded per contract
 
----
-
 ## **Mahogany Homes Buyables**
 
 You can buy the following items with the `/minigames mahogany_homes buy` command.

@@ -1,4 +1,5 @@
 import { pick } from 'lodash';
+import { perkTierCache } from './cache';
 import type { RobochimpUser } from './roboChimp';
 
 const robochimpCachedKeys = [
@@ -33,7 +34,9 @@ export async function populateRoboChimpCache() {
 		}
 	});
 	for (const user of users) {
-		roboChimpCache.set(user.id.toString(), user);
+		const strId = user.id.toString();
+		roboChimpCache.set(strId, user);
+		perkTierCache.set(strId, user.perk_tier);
 	}
 	debugLog(`Populated RoboChimp cache with ${users.length} users.`);
 }

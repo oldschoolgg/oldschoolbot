@@ -8,7 +8,7 @@ export const courses: Course[] = [
 		name: 'Gnome Stronghold Agility Course',
 		aliases: ['gnome', 'gnome stronghold', 'gnome stronghold agility', 'gnome stronghold agility course'],
 		level: 1,
-		xp: 88,
+		xp: 110.5,
 		lapTime: 34,
 		petChance: 35_609
 	},
@@ -16,7 +16,7 @@ export const courses: Course[] = [
 		id: 2,
 		name: 'Draynor Village Rooftop Course',
 		aliases: ['draynor', 'draynor village', 'draynor village rooftop', 'draynor village rooftop course'],
-		level: 10,
+		level: 1,
 		xp: 120,
 		marksPer60: 12,
 		lapTime: 43.2,
@@ -27,9 +27,9 @@ export const courses: Course[] = [
 		name: 'Al Kharid Rooftop Course',
 		aliases: ['al kharid', 'al kharid rooftop', 'al kharid rooftop course'],
 		level: 20,
-		xp: 180,
+		xp: 216,
 		marksPer60: 8,
-		lapTime: 64.8,
+		lapTime: 64.2,
 		petChance: 26_648
 	},
 	{
@@ -37,9 +37,9 @@ export const courses: Course[] = [
 		name: 'Varrock Rooftop Course',
 		aliases: ['varrock', 'varrock rooftop', 'varrock rooftop course'],
 		level: 30,
-		xp: 238,
+		xp: 270,
 		marksPer60: 12,
-		lapTime: 66,
+		lapTime: 70,
 		petChance: 24_410
 	},
 	{
@@ -49,7 +49,7 @@ export const courses: Course[] = [
 		level: 40,
 		xp: 240,
 		marksPer60: 19,
-		lapTime: 45,
+		lapTime: 43.8,
 		petChance: 36_842
 	},
 	{
@@ -58,7 +58,7 @@ export const courses: Course[] = [
 		aliases: ['ape atoll', 'ape atoll agility course', 'ape atoll course', 'monky', 'ape', 'monkey'],
 		level: 48,
 		xp: 580,
-		lapTime: 45,
+		lapTime: 38,
 		petChance: 37_720,
 		qpRequired: 82
 	},
@@ -67,7 +67,7 @@ export const courses: Course[] = [
 		name: 'Falador Rooftop Course',
 		aliases: ['fally', 'falador', 'fally rooftop', 'falador rooftop', 'falador rooftop course', 'faly'],
 		level: 50,
-		xp: 440,
+		xp: 586,
 		marksPer60: 13,
 		lapTime: 58.2,
 		petChance: 26_806
@@ -87,7 +87,7 @@ export const courses: Course[] = [
 		level: 60,
 		xp: 570,
 		marksPer60: 12,
-		lapTime: 44.4,
+		lapTime: 43.8,
 		petChance: 35_205
 	},
 	{
@@ -105,7 +105,7 @@ export const courses: Course[] = [
 		level: 70,
 		xp: 890,
 		marksPer60: 9,
-		lapTime: 61.2,
+		lapTime: 47.4,
 		petChance: 33_422
 	},
 	{
@@ -133,7 +133,7 @@ export const courses: Course[] = [
 		name: 'Ardougne Rooftop Course',
 		aliases: ['ardy', 'ardougne', 'ardougne rooftop', 'ardougne rooftop course'],
 		level: 90,
-		xp: 793,
+		xp: 889,
 		marksPer60: 22,
 		lapTime: 45.6,
 		petChance: 34_440
@@ -144,7 +144,7 @@ export const courses: Course[] = [
 		aliases: ['peng', 'penguin agility course', 'penguin'],
 		level: 30,
 		xp: 540,
-		lapTime: 65.6,
+		lapTime: 65,
 		petChance: 9979
 	},
 	{
