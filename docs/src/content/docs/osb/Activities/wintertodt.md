@@ -4,7 +4,7 @@ title: "Wintertodt"
 
 You can train Firemaking via the Wintertodt minigame using the command below. You will get Firemaking XP scaled to your level, and slightly better xp for higher Woodcutting and Construction levels. It is recommended to get at least 20 Construction before you start.
 
-- `/k name: ``Wintertodt`
+- [[/k name\:Wintertodt]]
 
 ## Requirements
 
@@ -20,7 +20,7 @@ You can train Firemaking via the Wintertodt minigame using the command below. Yo
 
 ## Warm Clothing
 
-While optional, it is highly advised to equip **at least 4 pieces**of warm clothing **in your skilling setup**to reduce your food consumption by up to 37.5%. This will take your food consumption down from 160hp/kill, to 100hp/kill. The easiest warm gear you can obtain on the bot is Clue hunter, to do this see [Crack The Clue](../../miscellaneous/crack-the-clue.md). Warm clothes can be a combination of anything from the following list:
+While optional, it is highly advised to equip **at least 4 pieces** of warm clothing **in your skilling setup**to reduce your food consumption by up to 37.5%. This will take your food consumption down from 160hp/kill, to 100hp/kill. The easiest warm gear you can obtain on the bot is Clue hunter, to do this see [Crack The Clue](../../miscellaneous/crack-the-clue.md). Warm clothes can be a combination of anything from the following list:
 
 <details>
 
