@@ -122,7 +122,6 @@ interface TeamMember {
 	messages: string[];
 	totalOffensivePecent: number;
 	totalDefensivePercent: number;
-	ghost?: boolean;
 }
 
 export interface NexContext {
@@ -284,16 +283,11 @@ export async function calculateNexDetails({ team }: { team: MUser[] }, solo?: bo
 	const users = solo && soloUser ? [soloUser] : team;
 
 	for (const user of users) {
-		const teamUserIndex = resultTeam.findIndex(a => a.id === user.id);
 		const { rangeGear } = nexGearStats(user);
+		const teamUser = resultTeam.findIndex(a => a.id === user.id);
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
-
-		// Skip ammo calculation for ghosts
-		if (resultTeam[teamUserIndex]?.ghost) continue;
-
-		// Calculate total ammo cost for the user
-		const totalAmmoUsed = randInt(50, 60) * quantity;
-		resultTeam[teamUserIndex].cost.add(ammo, totalAmmoUsed);
+		// Between 50-60 ammo per kill (before reductions)
+		resultTeam[teamUser].cost.add(ammo, randInt(50, 60) * quantity);
 	}
 
 	const duration = quantity * lengthPerKill;
