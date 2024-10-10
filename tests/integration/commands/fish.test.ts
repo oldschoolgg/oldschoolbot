@@ -9,7 +9,7 @@ describe('Fish Command', async () => {
 
 	it('should handle insufficient fishing level', async () => {
 		const user = await createTestUser();
-		const res = await user.runCommand(fishCommand, { name: 'trout', quantity: 1 });
+		const res = await user.runCommand(fishCommand, { name: 'trout/salmon', quantity: 1 });
 		expect(res).toEqual('<:minion:778418736180494347> Your minion needs 20 Fishing to fish Trout.');
 	});
 
