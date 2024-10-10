@@ -496,3 +496,7 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 .edit_this_page {
   color: var(--sl-color-text-accent);
 }
+
+#starlight__sidebar .group-label {
+  text-transform: capitalize;
+}
