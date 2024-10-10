@@ -443,6 +443,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.Araxyte,
 		amount: [40, 60],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.MoreEyesThanSense,
 		weight: 8,
 		monsters: [Monsters.Araxyte.id, Monsters.Araxxor.id],
 		combatLevel: 96,

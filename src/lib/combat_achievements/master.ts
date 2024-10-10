@@ -1535,7 +1535,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 250,
+			chancePerKill: 25,
 			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
 		}
 	},
@@ -1546,7 +1546,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 400,
+			chancePerKill: 50,
 			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
 		}
 	},
@@ -1557,7 +1557,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 400,
+			chancePerKill: 40,
 			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
 		}
 	},
@@ -1568,8 +1568,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'stamina',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 400,
-			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 10;
+			}
 		}
 	},
 	{
@@ -1579,8 +1582,12 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 400,
-			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 5 && timePerKill <= 2;
+			}
 		}
 	},
 	{
