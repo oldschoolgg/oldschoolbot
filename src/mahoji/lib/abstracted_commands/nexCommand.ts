@@ -71,7 +71,6 @@ export async function nexCommand(
 		{
 			team: isSoloing ? [mahojiUsers[0], mahojiUsers[0], mahojiUsers[0], mahojiUsers[0]] : mahojiUsers
 		},
-		isSoloing,
 		soloUser
 	);
 
