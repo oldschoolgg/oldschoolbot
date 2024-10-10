@@ -312,8 +312,9 @@ const tripHandlers = {
 		commandName: 'fish',
 		args: (data: FishingActivityTaskOptions) => ({
 			name: data.fishID,
-			quantity: data.iQty,
-			flakes: data.flakesQuantity !== undefined
+			quantity: data.quantity,
+			powerfish: data.powerfish ?? false,
+			spirit_flakes: data.spirit_flakes ?? false
 		})
 	},
 	[activity_type_enum.FishingTrawler]: {

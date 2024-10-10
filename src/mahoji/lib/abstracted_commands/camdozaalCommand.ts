@@ -137,7 +137,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
 	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
-	const timePerFish = camdozaalfish.timePerFish * Time.Second;
+	const timePerFish = camdozaalfish.timePerFish! * Time.Second;
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerFish);
@@ -148,7 +148,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
 		)}, try a lower quantity. The highest amount of Camdozaal fish you can catch is ${Math.floor(
-			maxTripLength / timePerFish
+			maxTripLength / timePerFish!
 		)}.`;
 	}
 
