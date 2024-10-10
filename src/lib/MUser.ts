@@ -1,24 +1,25 @@
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
+import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
-import { calcWhatPercent, objectEntries, percentChance, sumArr, uniqueArr } from 'e';
+import { calcWhatPercent, percentChance, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
+
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import { pick } from 'remeda';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
+import { partialUserCache } from './cache';
 import { ClueTiers } from './clues/clueTiers';
 import type { CATier } from './combat_achievements/combatAchievements';
 import { CombatAchievements } from './combat_achievements/combatAchievements';
 import { BitField, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
-import { getSimilarItems } from './data/similarItems';
 import { degradeableItems } from './degradeableItems';
 import type { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
@@ -38,10 +39,12 @@ import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import type { BankSortMethod } from './sorts';
-import type { ChargeBank } from './structures/Bank';
+import { ChargeBank } from './structures/Bank';
 import { Gear, defaultGear } from './structures/Gear';
+import { GearBank } from './structures/GearBank';
+import type { XPBank } from './structures/XPBank';
 import type { ItemBank, Skills } from './types';
-import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
+import { addItemToBank, convertXPtoLVL, fullGearToBank, hasSkillReqsRaw, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -104,7 +107,7 @@ export class MUserClass {
 		this.updateProperties();
 	}
 
-	private updateProperties() {
+	public updateProperties() {
 		this.bank = new Bank(this.user.bank as ItemBank);
 		this.bank.freeze();
 
@@ -137,7 +140,16 @@ export class MUserClass {
 		this.bitfield = this.user.bitfield as readonly BitField[];
 	}
 
-	countSkillsAtleast99() {
+	public get gearBank() {
+		return new GearBank({
+			gear: this.gear,
+			bank: this.bank,
+			skillsAsLevels: this.skillsAsLevels,
+			chargeBank: this.ownedChargeBank()
+		});
+	}
+
+	countSkillsAtLeast99() {
 		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 
@@ -312,7 +324,7 @@ GROUP BY data->>'ci';`);
 		await userStatsUpdate(
 			this.id,
 			{
-				monster_scores: newKCs.bank
+				monster_scores: newKCs.toJSON()
 			},
 			{}
 		);
@@ -377,6 +389,10 @@ GROUP BY data->>'ci';`);
 		return false;
 	}
 
+	hasEquippedOrInBank(...args: Parameters<InstanceType<typeof GearBank>['hasEquippedOrInBank']>) {
+		return this.gearBank.hasEquippedOrInBank(...args);
+	}
+
 	private calculateAllItemsOwned(): Bank {
 		const bank = new Bank(this.bank);
 
@@ -385,13 +401,7 @@ GROUP BY data->>'ci';`);
 			bank.add(this.user.minion_equippedPet);
 		}
 
-		for (const setup of Object.values(this.gear)) {
-			for (const equipped of Object.values(setup)) {
-				if (equipped?.item) {
-					bank.add(equipped.item, equipped.quantity);
-				}
-			}
-		}
+		bank.add(fullGearToBank(this.gear));
 
 		return bank;
 	}
@@ -408,23 +418,6 @@ GROUP BY data->>'ci';`);
 
 	async fetchMinigames() {
 		return getMinigameEntity(this.id);
-	}
-
-	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
-		const { bank } = this;
-		const items = resolveItems(_items);
-		for (const baseID of items) {
-			const similarItems = getSimilarItems(baseID);
-			const hasOneEquipped = similarItems.some(id => this.hasEquipped(id, true));
-			const hasOneInBank = similarItems.some(id => bank.has(id));
-			// If only one needs to be equipped, return true now if it is equipped.
-			if (type === 'one' && (hasOneEquipped || hasOneInBank)) return true;
-			// If all need to be equipped, return false now if not equipped.
-			else if (type === 'every' && !hasOneEquipped && !hasOneInBank) {
-				return false;
-			}
-		}
-		return type !== 'one';
 	}
 
 	getSkills(levels: boolean) {
@@ -517,7 +510,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
-		const previousCL = new Bank(this.cl.bank);
+		const previousCL = this.cl.clone();
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
@@ -531,13 +524,13 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		};
 	}
 
-	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean }) {
+	async specialRemoveItems(bankToRemove: Bank, options?: { isInWilderness?: boolean }) {
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;
 
-		const gearKey = options?.wildy ? 'wildy' : 'range';
+		const gearKey = options?.isInWilderness ? 'wildy' : 'range';
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearKey];
 		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
@@ -567,7 +560,9 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 				throw new UserError('No ammo equipped.');
 			}
 			if (equippedAmmo !== ammoRemove[0].id) {
-				throw new UserError(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
+				throw new UserError(
+					`You have ${itemNameFromID(equippedAmmo)} equipped as your range ammo, but you need: ${ammoRemove[0].name}.`
+				);
 			}
 			const newRangeGear = { ...this.gear[gearKey] };
 			const ammo = newRangeGear.ammo?.quantity;
@@ -590,7 +585,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
-			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
+			const updateKey = options?.isInWilderness ? 'gear_wildy' : 'gear_range';
 			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
 		}
 
@@ -658,24 +653,17 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		dontAddToTempCL?: boolean;
 	}): Prisma.UserUpdateArgs['data'] {
 		const updates: Prisma.UserUpdateArgs['data'] = {
-			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).bank
+			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).toJSON()
 		};
 
 		if (!dontAddToTempCL) {
-			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).bank;
+			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).toJSON();
 		}
 		return updates;
 	}
 
 	hasSkillReqs(requirements: Skills) {
-		for (const [skillName, level] of objectEntries(requirements)) {
-			if ((skillName as string) === 'combat') {
-				if (this.combatLevel < level!) return false;
-			} else if (this.skillLevel(skillName) < level!) {
-				return false;
-			}
-		}
-		return true;
+		return hasSkillReqsRaw(this.skillsAsLevels, requirements);
 	}
 
 	allEquippedGearBank() {
@@ -748,7 +736,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	buildTertiaryItemChanges(hasRingOfWealthI = false, inWildy = false, onTask = false) {
-		const changes = new Map();
+		const changes = new Map<string, number>();
 
 		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
 		for (const tier of tiers) {
@@ -770,6 +758,25 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		}
 
 		return changes;
+	}
+
+	ownedChargeBank() {
+		const chargeBank = new ChargeBank();
+		for (const degradeableItem of degradeableItems) {
+			const charges = this.user[degradeableItem.settingsKey];
+			if (charges) {
+				chargeBank.add(degradeableItem.settingsKey, charges);
+			}
+		}
+		return chargeBank;
+	}
+
+	async addXPBank(xpBank: XPBank) {
+		const results = [];
+		for (const options of xpBank.xpList) {
+			results.push(await this.addXP(options));
+		}
+		return results.join(' ');
 	}
 
 	async checkBankBackground() {
@@ -931,16 +938,24 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-async function srcMUserFetch(userID: string, updates: Prisma.UserUpdateInput = {}) {
-	const user = await prisma.user.upsert({
-		create: {
-			id: userID
-		},
-		update: updates,
-		where: {
-			id: userID
-		}
-	});
+async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+	const user =
+		updates !== undefined
+			? await prisma.user.upsert({
+					create: {
+						id: userID
+					},
+					update: updates,
+					where: {
+						id: userID
+					}
+				})
+			: await prisma.user.findUnique({ where: { id: userID } });
+
+	if (!user) {
+		return srcMUserFetch(userID, {});
+	}
+	partialUserCache.set(userID, pick(user, ['bitfield', 'minion_hasBought', 'badges']));
 	return new MUserClass(user);
 }
 

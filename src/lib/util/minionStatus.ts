@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -423,6 +423,10 @@ export function minionStatus(user: MUser) {
 
 		case 'ChampionsChallenge': {
 			return `${name} is currently doing the **Champion's Challenge**. ${formattedDuration}`;
+		}
+
+		case 'MyNotes': {
+			return `${name} is currently rummaging skeletons for Ancient pages. ${formattedDuration}`;
 		}
 
 		case 'Hunter': {

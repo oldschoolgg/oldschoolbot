@@ -1,9 +1,7 @@
 import { percentChance } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
-import type Monster from 'oldschooljs/dist/structures/Monster';
+import { Bank, type Item, type Monster } from 'oldschooljs';
 
-import type { GearSetupType } from './gear/types';
+import type { GearSetupType, PrimaryGearSetupType } from './gear/types';
 import type { KillableMonster } from './minions/types';
 import type { ChargeBank } from './structures/Bank';
 import { assert } from './util';
@@ -44,19 +42,17 @@ export interface DegradeableItem {
 interface DegradeableItemPVMBoost {
 	item: Item;
 	degradeable: DegradeableItem;
-	attackStyle: GearSetupType;
+	attackStyle: PrimaryGearSetupType;
 	charges: ({
 		killableMon,
 		osjsMonster,
 		totalHP,
-		duration,
-		user
+		duration
 	}: {
 		killableMon?: KillableMonster;
 		osjsMonster?: Monster;
 		totalHP: number;
 		duration: number;
-		user: MUser;
 	}) => number;
 	boost: number;
 }
@@ -287,6 +283,13 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		attackStyle: 'range',
 		charges: ({ totalHP }) => totalHP / 25,
 		boost: 3
+	},
+	{
+		item: getOSItem('Amulet of blood fury'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Amulet of blood fury'))!,
+		attackStyle: 'melee',
+		charges: ({ totalHP }) => totalHP / 25,
+		boost: 2
 	}
 ];
 
@@ -396,10 +399,8 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		userMessage: `Your ${
-			item.name
-		} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.${
-			pennyReduction > 0 ? ` Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
+		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining${
+			pennyReduction > 0 ? `. Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
 		}`
 	};
 }

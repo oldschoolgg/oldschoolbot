@@ -150,7 +150,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 44,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -161,7 +162,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 25,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -183,7 +185,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 22,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -261,7 +264,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 1,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -283,7 +287,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 33,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -308,7 +313,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -333,7 +339,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -1323,7 +1330,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 10,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -1519,6 +1526,84 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 1,
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 28
+		}
+	},
+	{
+		id: 2134,
+		name: 'Araxyte Betrayal',
+		desc: 'Have an Araxyte kill three other Araxytes.',
+		type: 'mechanical',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 250,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2135,
+		name: 'Perfect Araxxor',
+		desc: "Kill Araxxor perfectly, without taking damage from Araxxor's Mage & Range attacks, melee attack off prayer, araxyte minions damage, or damage from acid pools.",
+		type: 'perfection',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 400,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2136,
+		name: 'Let it seep in',
+		desc: 'Kill Araxxor without ever having venom or poison immunity.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 400,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2137,
+		name: 'Arachnid Lover',
+		desc: 'Kill Araxxor 10 times without leaving.',
+		type: 'stamina',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 400,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2138,
+		name: 'Araxxor Speed-Chaser',
+		desc: 'Kill Araxxor 5 times in 10:00.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 400,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2139,
+		name: 'Araxxor Master',
+		desc: '	Kill Araxxor 75 times.',
+		type: 'kill_count',
+		monster: 'Araxxor',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Araxxor.id]: 75
+			}
+		})
+	},
+	{
+		id: 2140,
+		name: 'Three Times the Thrashing',
+		desc: 'Kill three Tormented Demons within 3 seconds.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
 		}
 	}
 ];

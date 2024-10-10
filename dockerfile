@@ -1,35 +1,45 @@
-FROM node:20.15.0-alpine AS base
+FROM debian:12 AS base
 WORKDIR /usr/src/app
-ENV CI=true
-RUN apk add --no-cache dumb-init python3 g++ make git
-RUN corepack enable
 
-COPY yarn.lock package.json .yarnrc.yml ./
+RUN apt-get update && apt-get install -y \
+    dumb-init \
+    python3 \
+    g++ \
+    make \
+    fontconfig \
+    git \
+    libfontconfig1 \
+    curl
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    corepack enable && \
+    corepack prepare yarn@stable --activate
 
 ENTRYPOINT ["dumb-init", "--"]
 
 FROM base AS dependencies
 WORKDIR /usr/src/app
-RUN yarn remove zlib-sync && yarn install
+
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY src/config.example.ts src/config.ts
+
+RUN yarn install --immutable
 
 FROM base AS build-run
 WORKDIR /usr/src/app
-ENV NODE_ENV="development"
-ENV NODE_OPTIONS="--enable-source-maps --max_old_space_size=4096"
 
 COPY --from=dependencies /usr/src/app/node_modules /usr/src/app/node_modules
-COPY . .
 
-ENV CI=true
-RUN cp .env.test .env
-RUN cp src/config.example.ts src/config.ts
+COPY . .
+COPY src/config.example.ts src/config.ts
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
-
-CMD /wait && \
-    yarn prisma db push --schema='./prisma/robochimp.prisma' && \
-    yarn prisma db push --schema='./prisma/schema.prisma' && \
+CMD (/wait > /dev/null 2>&1) && \
+    (yarn prisma db push --schema='./prisma/robochimp.prisma' > /dev/null 2>&1 & \
+    yarn prisma db push --schema='./prisma/schema.prisma' > /dev/null 2>&1 & \
+    wait) && \
     yarn run build:esbuild && \
-    yarn vitest run --config vitest.integration.config.mts && \
+    NODE_NO_WARNINGS=1 yarn vitest run --config vitest.integration.config.mts && \
     exit 0

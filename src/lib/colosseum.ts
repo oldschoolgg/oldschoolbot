@@ -1,6 +1,5 @@
-import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
+import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,
@@ -600,7 +599,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		cost.add('Dragon arrow', 50);
 	} else {
 		messages.push(
-			'Missed 7% Venator bow boost. If you have one, charge it and keep it in your bank. You also need atleast 50 dragon arrows equipped.'
+			'Missed 7% Venator bow boost. If you have one, charge it and keep it in your bank. You also need at least 50 dragon arrows equipped.'
 		);
 	}
 
@@ -674,7 +673,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		fakeDuration: res.fakeDuration,
 		maxGlory: res.maxGlory,
 		diedAt: res.diedAt ?? undefined,
-		loot: res.loot?.bank,
+		loot: res.loot?.toJSON(),
 		scytheCharges: res.scytheCharges,
 		venatorBowCharges: res.venatorBowCharges,
 		bloodFuryCharges: res.bloodFuryCharges

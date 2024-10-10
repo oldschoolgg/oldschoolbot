@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -127,7 +127,7 @@ export const lapsCommand: OSBMahojiCommand = {
 		}
 
 		if (course.qpRequired && user.QP < course.qpRequired) {
-			return `You need atleast ${course.qpRequired} Quest Points to do this course.`;
+			return `You need at least ${course.qpRequired} Quest Points to do this course.`;
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Agility');

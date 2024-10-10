@@ -1,6 +1,5 @@
 import { clamp, objectValues } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -234,6 +233,19 @@ export const Lampables: IXPObject[] = [
 				skills[skill] =
 					Math.round(Number(Math.pow(data.user.skillLevel(skill), 2)) / 4 + 7 * data.user.skillLevel(skill)) *
 					data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
+	{
+		items: resolveItems(["Duradel's Notes"]),
+		function: data => {
+			const skills: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				if (![SkillsEnum.Slayer].includes(skill)) {
+					continue;
+				}
+				skills[skill] = data.user.skillLevel(skill) * 15 * data.quantity;
 			}
 			return [skills, undefined];
 		}

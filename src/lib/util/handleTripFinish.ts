@@ -1,8 +1,9 @@
-import { Stopwatch, channelIsSendable, makeComponents } from '@oldschoolgg/toolkit';
+import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';

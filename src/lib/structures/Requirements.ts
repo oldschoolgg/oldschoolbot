@@ -11,7 +11,7 @@ import { diaries, userhasDiaryTierSync } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
 import type { RobochimpUser } from '../roboChimp';
-import type { MinigameName } from '../settings/minigames';
+import { type MinigameName, minigameColumnToNameMap } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
 import type { Skills } from '../types';
 import { itemNameFromID } from '../util';
@@ -82,8 +82,8 @@ export class Requirements {
 		if ('kcRequirement' in req) {
 			requirementParts.push(
 				`Kill Count Requirement: ${Object.entries(req.kcRequirement)
-					.map(([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name}`)
-					.join(', ')}.`
+					.map(([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name} KC`)
+					.join(', ')}`
 			);
 		}
 
@@ -106,7 +106,7 @@ export class Requirements {
 		if ('minigames' in req) {
 			requirementParts.push(
 				`Minigame Requirements: ${Object.entries(req.minigames)
-					.map(([k, v]) => `${v} KC in ${k}`)
+					.map(([k, v]) => `${v}x ${minigameColumnToNameMap.get(k)} KC`)
 					.join(', ')}.`
 			);
 		}
@@ -126,6 +126,10 @@ export class Requirements {
 		if ('OR' in req) {
 			const subResults = req.OR.map(i => this.formatRequirement(i));
 			requirementParts.push(`ONE of the following requirements must be met: ${subResults.join(', ')}.`);
+		}
+
+		if ('name' in req && req.name) {
+			requirementParts.push(req.name);
 		}
 
 		return requirementParts;

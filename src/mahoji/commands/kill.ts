@@ -1,5 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -91,7 +91,7 @@ export const killCommand: OSBMahojiCommand = {
 		}
 
 		const image = await makeBankImage({
-			bank: new Bank(result.bank?.bank),
+			bank: new Bank(result.bank),
 			title: result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
 			user
 		});

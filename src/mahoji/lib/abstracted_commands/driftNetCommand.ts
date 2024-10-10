@@ -1,7 +1,7 @@
 import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -21,7 +21,7 @@ export async function driftNetCommand(
 	}
 
 	if (user.skillLevel(SkillsEnum.Fishing) < 47 || user.skillLevel(SkillsEnum.Hunter) < 44) {
-		return 'You need atleast level 44 Hunter and 47 Fishing to do Drift net fishing.';
+		return 'You need at least level 44 Hunter and 47 Fishing to do Drift net fishing.';
 	}
 
 	if (!user.hasEquipped(['Graceful gloves', 'Graceful top', 'Graceful legs'])) {
@@ -72,7 +72,7 @@ export async function driftNetCommand(
 
 	itemsToRemove.add('Drift net', quantity);
 
-	if (!userBank.has(itemsToRemove.bank)) {
+	if (!userBank.has(itemsToRemove)) {
 		return `You need ${quantity}x Drift net for the whole trip, try a lower trip length or make/buy more Drift net.`;
 	}
 

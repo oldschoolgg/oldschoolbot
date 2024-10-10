@@ -1,5 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -225,7 +225,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 				imbueCasts = numberOfInventories;
 			} else {
 				removeTalismanAndOrRunes.add(runeObj.inputTalisman.clone().multiply(numberOfInventories));
-				if (!bank.has(removeTalismanAndOrRunes.bank)) {
+				if (!bank.has(removeTalismanAndOrRunes)) {
 					return `You need enough Magic Imbue runes and 82 Magic, *or* Talismans to craft this rune. You don't have enough talismans for this trip. You need ${runeObj.inputTalisman
 						.clone()
 						.multiply(numberOfInventories)}.`;

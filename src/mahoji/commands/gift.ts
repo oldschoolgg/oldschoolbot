@@ -1,6 +1,11 @@
-import { mentionCommand, miniID, truncateString } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import {
+	type CommandRunOptions,
+	type MahojiUserOption,
+	containsBlacklistedWord,
+	mentionCommand,
+	miniID,
+	truncateString
+} from '@oldschoolgg/toolkit/util';
 import { GiftBoxStatus } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
@@ -9,11 +14,11 @@ import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BOT_TYPE } from '../../lib/constants';
 
 import type { ItemBank } from '../../lib/types';
-import { containsBlacklistedWord, isValidNickname } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { isValidNickname } from '../../lib/util/smallUtils';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const giftCommand: OSBMahojiCommand = {
@@ -208,7 +213,7 @@ ${truncateString(giftsOwnedButNotOpened.map(g => `${g.name ? `${g.name} (${g.id}
 				}
 			}
 
-			if (!user.bankWithGP.has(items.bank)) {
+			if (!user.bankWithGP.has(items)) {
 				return 'You do not have the required items to create this gift box.';
 			}
 
@@ -224,7 +229,7 @@ ${items}`
 				data: {
 					id: miniID(5),
 					creator_id: user.id,
-					items: items.bank,
+					items: items.toJSON(),
 					name: options.create.name,
 					status: GiftBoxStatus.Created
 				}

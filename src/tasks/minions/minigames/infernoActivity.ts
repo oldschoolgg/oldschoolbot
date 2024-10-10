@@ -1,11 +1,12 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
+import { DiaryID } from '../../../lib/minions/types';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -51,33 +52,43 @@ export const infernoTask: MinionTask = {
 		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
+		const xpBonuses = [];
 
-		let xpStr = await user.addXP({
-			skillName: SkillsEnum.Ranged,
-			amount: calcPercentOfNum(percentMadeItThrough, 80_000),
-			duration,
-			minimal: true
-		});
-		xpStr += await user.addXP({
-			skillName: SkillsEnum.Hitpoints,
-			amount: calcPercentOfNum(percentMadeItThrough, 35_000),
-			duration,
-			minimal: true
-		});
-		xpStr += await user.addXP({
-			skillName: SkillsEnum.Magic,
-			amount: calcPercentOfNum(percentMadeItThrough, 25_000),
-			duration,
-			minimal: true
-		});
+		xpBonuses.push(
+			await user.addXP({
+				skillName: SkillsEnum.Ranged,
+				amount: calcPercentOfNum(percentMadeItThrough, 80_000),
+				duration,
+				minimal: true
+			})
+		);
+		xpBonuses.push(
+			await user.addXP({
+				skillName: SkillsEnum.Hitpoints,
+				amount: calcPercentOfNum(percentMadeItThrough, 35_000),
+				duration,
+				minimal: true
+			})
+		);
+		xpBonuses.push(
+			await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: calcPercentOfNum(percentMadeItThrough, 25_000),
+				duration,
+				minimal: true
+			})
+		);
 		if (isOnTask) {
-			xpStr += await user.addXP({
-				skillName: SkillsEnum.Slayer,
-				amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
-				duration
-			});
+			xpBonuses.push(
+				await user.addXP({
+					skillName: SkillsEnum.Slayer,
+					amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
+					duration
+				})
+			);
 		}
 
+		const xpStr = xpBonuses.join(', ');
 		if (!deathTime) {
 			await incrementMinigameScore(userID, 'inferno', 1);
 		}
@@ -123,7 +134,11 @@ export const infernoTask: MinionTask = {
 			);
 
 			const currentStreak = newUserStats.slayer_task_streak;
-			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
+			const points = await calculateSlayerPoints(
+				currentStreak,
+				usersTask.slayerMaster!,
+				(await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+			);
 			const secondNewUser = await user.update({
 				slayer_points: {
 					increment: points
@@ -150,13 +165,13 @@ export const infernoTask: MinionTask = {
 			const current = new Bank(currentData.inferno_cost as ItemBank);
 			const newBank = current.remove(unusedItems);
 			await mahojiClientSettingsUpdate({
-				inferno_cost: newBank.bank
+				inferno_cost: newBank.toJSON()
 			});
 		}
 
 		if (diedPreZuk) {
 			text += `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
-			chatText = `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
+			chatText = `You die before you even reach TzKal-Zuk... At least you tried, I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;
 		} else if (diedZuk) {

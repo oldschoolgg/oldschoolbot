@@ -3,7 +3,6 @@ import { activity_type_enum } from '@prisma/client';
 import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
-import { production } from '../config';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
@@ -73,6 +72,7 @@ import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
 import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
+import { myNotesTask } from '../tasks/minions/myNotesActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
 import ouraniaAltarTask from '../tasks/minions/ouraniaAltarActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
@@ -94,7 +94,8 @@ import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOf
 import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
-import { minionActivityCache } from './constants';
+import { globalConfig, minionActivityCache } from './constants';
+import { sql } from './postgres';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
@@ -189,21 +190,14 @@ const tasks: MinionTask[] = [
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
+	myNotesTask,
 	colosseumTask
 ];
 
 export async function processPendingActivities() {
-	const activities: Activity[] = await prisma.activity.findMany({
-		where: {
-			completed: false,
-			finish_date: production
-				? {
-						lt: new Date()
-					}
-				: undefined
-		},
-		take: 5
-	});
+	const activities: Activity[] = globalConfig.isProduction
+		? await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
+		: await sql`SELECT * FROM activity WHERE completed = false;`;
 
 	if (activities.length > 0) {
 		await prisma.activity.updateMany({
@@ -236,7 +230,7 @@ const ActivityTaskOptionsSchema = z.object({
 	channelID: z.string()
 });
 
-async function completeActivity(_activity: Activity) {
+export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
 
 	if (_activity.completed) {

@@ -1,0 +1,5 @@
+SELECT string_agg(key, ',') AS unique_keys
+FROM (
+    SELECT DISTINCT jsonb_object_keys(bank::jsonb) AS key
+    FROM users
+) AS unique_keys_subquery;

@@ -1,5 +1,11 @@
-import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import {
+	type CommandResponse,
+	calcPerHour,
+	formatDuration,
+	isWeekend,
+	makeComponents,
+	stringMatches
+} from '@oldschoolgg/toolkit/util';
 import type {
 	BaseMessageOptions,
 	ButtonInteraction,
@@ -15,9 +21,9 @@ import type {
 } from 'discord.js';
 import type { ComponentType } from 'discord.js';
 import { Time, objectEntries } from 'e';
-import type { Bank } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
@@ -39,13 +45,13 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
 
-export * from '@oldschoolgg/toolkit';
-export * from 'oldschooljs/dist/util/index';
+export * from 'oldschooljs';
+
+export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
@@ -203,17 +209,6 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-export function isValidNickname(str?: string) {
-	return Boolean(
-		str &&
-			typeof str === 'string' &&
-			str.length >= 2 &&
-			str.length <= 30 &&
-			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
-			stripEmojis(str).length === str.length
-	);
-}
-
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
 
 export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
@@ -247,45 +242,6 @@ export function convertPvmStylesToGearSetup(attackStyles: SkillsEnum[]) {
 	}
 	if (usedSetups.length === 0) usedSetups.push('melee');
 	return usedSetups;
-}
-
-export function sanitizeBank(bank: Bank) {
-	for (const [key, value] of Object.entries(bank.bank)) {
-		if (value < 1) {
-			delete bank.bank[key];
-		}
-		// If this bank contains a fractional/float,
-		// round it down.
-		if (!Number.isInteger(value)) {
-			bank.bank[key] = Math.floor(value);
-		}
-
-		const item = getItem(key);
-		if (!item) {
-			delete bank.bank[key];
-		}
-	}
-}
-
-export function validateBankAndThrow(bank: Bank) {
-	if (!bank || typeof bank !== 'object') {
-		throw new Error('Invalid bank object');
-	}
-	for (const [key, value] of Object.entries(bank.bank)) {
-		const pair = [key, value].join('-');
-		if (value < 1) {
-			throw new Error(`Less than 1 qty: ${pair}`);
-		}
-
-		if (!Number.isInteger(value)) {
-			throw new Error(`Non-integer value: ${pair}`);
-		}
-
-		const item = getItem(key);
-		if (!item) {
-			throw new Error(`Invalid item ID: ${pair}`);
-		}
-	}
 }
 
 export function isValidSkill(skill: string): skill is SkillsEnum {
@@ -409,7 +365,7 @@ export function isModOrAdmin(user: MUser) {
 
 export { assert } from './util/logError';
 export * from './util/smallUtils';
-export { channelIsSendable } from '@oldschoolgg/toolkit';
+export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();

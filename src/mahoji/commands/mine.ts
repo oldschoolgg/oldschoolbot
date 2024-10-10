@@ -1,5 +1,5 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
@@ -91,7 +91,7 @@ export const mineCommand: OSBMahojiCommand = {
 				return `To mine ${ore.name}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 			}
 			if (user.QP < 125) {
-				return `To mine ${ore.name}, you need atleast 125 Quest Points.`;
+				return `To mine ${ore.name}, you need at least 125 Quest Points.`;
 			}
 		}
 

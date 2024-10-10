@@ -116,7 +116,7 @@ export const getPOHObject = (idOrName: number | string) => {
 
 export type POHBoosts = Partial<Record<PoHSlot, Record<string, number>>>;
 
-export function calcPOHBoosts(poh: PlayerOwnedHouse, boosts: POHBoosts): [number, string[]] {
+export function calcPOHBoosts(poh: PlayerOwnedHouse, boosts: POHBoosts) {
 	let boost = 0;
 	const messages = [];
 	for (const [slot, objBoosts] of objectEntries(boosts)) {
@@ -128,5 +128,5 @@ export function calcPOHBoosts(poh: PlayerOwnedHouse, boosts: POHBoosts): [number
 			}
 		}
 	}
-	return [boost, messages];
+	return { boost, messages };
 }

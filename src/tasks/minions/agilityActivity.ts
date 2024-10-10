@@ -90,8 +90,8 @@ export const agilityTask: MinionTask = {
 
 		// Calculate Crystal Shards for Priff
 		if (course.name === 'Prifddinas Rooftop Course') {
-			// 15 Shards per hour
-			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+			// 1 shard per lap
+			loot.add('Crystal shard', quantity);
 		}
 
 		if (course.name === 'Agility Pyramid') {

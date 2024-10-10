@@ -1,9 +1,8 @@
 import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import type { ItemBank } from '../../types';
 
 const LowTierCoffin = new LootTable()
 	.add("Monk's robe top")
@@ -133,7 +132,7 @@ const pages = resolveItems([
 	'Mysterious page 5'
 ]);
 
-export function openCoffin(floor: number, user: MUser): ItemBank {
+export function openCoffin(floor: number, user: MUser): Bank {
 	const loot = new Bank();
 	const floorObj = sepulchreFloors[floor - 1];
 	if (roll(floorObj.lockpickCoffinChance)) {
@@ -150,5 +149,5 @@ export function openCoffin(floor: number, user: MUser): ItemBank {
 			loot.add(page);
 		}
 	}
-	return loot.bank;
+	return loot;
 }

@@ -1,4 +1,4 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Time, calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -137,6 +137,11 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
+}
+
+export async function mahoganyHomesPointsCommand(user: MUser) {
+	const balance = user.user.carpenter_points;
+	return `You have **${balance.toLocaleString()}** Mahogany Homes points.`;
 }
 
 export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {

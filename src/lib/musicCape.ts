@@ -100,7 +100,7 @@ export const musicCapeRequirements = new Requirements()
 		}
 	})
 	.add({
-		name: 'Runecraft all runes atleast once',
+		name: 'Runecraft all runes at least once',
 		has: ({ uniqueRunesCrafted }) => {
 			const runesToCheck = resolveItems([
 				'Mind rune',
@@ -140,7 +140,8 @@ export const musicCapeRequirements = new Requirements()
 				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 				activity_type_enum.ChampionsChallenge,
 				activity_type_enum.Nex,
-				activity_type_enum.Revenants // This is now under monsterActivity
+				activity_type_enum.Revenants, // This is now under monsterActivity
+				activity_type_enum.KourendFavour // Kourend favor activity was removed
 			];
 			const notDoneActivities = Object.values(activity_type_enum).filter(
 				type => !typesNotRequiredForMusicCape.includes(type) && !uniqueActivitiesDone.includes(type)

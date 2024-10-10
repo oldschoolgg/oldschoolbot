@@ -1,20 +1,23 @@
-import { noOp, uniqueArr } from 'e';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { Prisma } from '@prisma/client';
+import { noOp, notEmpty, uniqueArr } from 'e';
+import PQueue from 'p-queue';
+import { partition } from 'remeda';
+import z from 'zod';
 
 import { SupportServer } from '../config';
 import { BadgesEnum, Roles } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
-
-import { Prisma } from '@prisma/client';
-import PQueue from 'p-queue';
-import { partition } from 'remeda';
-import z from 'zod';
-import { type CommandResponse, Stopwatch, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
 import { ClueTiers } from './clues/clueTiers';
+import { loggedRawPrismaQuery } from './rawSql';
 import { TeamLoot } from './simulation/TeamLoot';
 import { SkillsArray } from './skilling/types';
 import type { ItemBank } from './types';
+import { convertXPtoLVL, getUsernameSync, returnStringOrFile } from './util';
 import { fetchMultipleCLLeaderboards } from './util/clLeaderboard';
+import { logError } from './util/logError';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),
@@ -239,9 +242,9 @@ LIMIT 2;`
 	for (const { id, desc } of res.flat()) {
 		results.push({
 			userID: id,
-			roleID: '894194027363205150',
+			roleID: Roles.TopFarmer,
 			reason: desc,
-			badge: BadgesEnum.Slayer
+			badge: BadgesEnum.Farmer
 		});
 	}
 	return results;
@@ -365,12 +368,17 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 	for (const [name, fn] of tup) {
 		promiseQueue.add(async () => {
 			const stopwatch = new Stopwatch();
-			const res = await fn();
-			console.log(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
-			const [validResults, invalidResults] = partition(res, i => RoleResultSchema.safeParse(i).success);
-			results.push(...validResults);
-			if (invalidResults.length > 0) {
-				console.error(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
+			try {
+				const res = await fn();
+				const [validResults, invalidResults] = partition(res, i => RoleResultSchema.safeParse(i).success);
+				results.push(...validResults);
+				if (invalidResults.length > 0) {
+					logError(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
+				}
+			} catch (err) {
+				logError(`[RolesTask] Error in ${name}: ${err}`);
+			} finally {
+				debugLog(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
 			}
 		});
 	}
@@ -379,8 +387,8 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 
 	debugLog(`Finished role functions, ${results.length} results`);
 
-	const allBadgeIDs = uniqueArr(results.map(i => i.badge));
-	const allRoleIDs = uniqueArr(results.map(i => i.roleID));
+	const allBadgeIDs = uniqueArr(results.map(i => i.badge)).filter(notEmpty);
+	const allRoleIDs = uniqueArr(results.map(i => i.roleID)).filter(notEmpty);
 
 	if (!dryRun) {
 		const roleNames = new Map<string, string>();
@@ -390,7 +398,7 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 		// Remove all top badges from all users (and add back later)
 		debugLog('Removing badges...');
 		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
-		await prisma.$queryRawUnsafe(`
+		await loggedRawPrismaQuery(`
 UPDATE users
 SET badges = badges - ${badgeIDs}
 WHERE badges && ${badgeIDs}

@@ -1,4 +1,4 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit';
+import type { CommandOptions } from '@oldschoolgg/toolkit/util';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';

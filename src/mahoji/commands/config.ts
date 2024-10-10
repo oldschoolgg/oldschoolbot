@@ -1,6 +1,6 @@
-import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
 import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
@@ -383,10 +383,10 @@ async function bankSortConfig(
 
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
-	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.bank = {};
+	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.clear();
 
 	await user.update({
-		bank_sort_weightings: newBank.bank
+		bank_sort_weightings: newBank.toJSON()
 	});
 
 	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined, undefined);
@@ -528,8 +528,6 @@ async function handleCommandEnable(
 	return `Successfully disabled the \`${command.name}\` command.`;
 }
 
-const priorityWarningMsg =
-	"\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**";
 async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
 	const settings = await mahojiUsersSettingsFetch(user.id, { combat_options: true });
 	if (!command || (command && command === 'list')) {
@@ -557,18 +555,12 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		return `"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`;
 	}
 
-	let warningMsg = '';
-	const hasCannon = settings.combat_options.includes(CombatOptionsEnum.AlwaysCannon);
-	const hasBurstB =
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst) ||
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage);
 	// If enabling Ice Barrage, make sure burst isn't also enabled:
 	if (
 		nextBool &&
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst)
 	) {
-		if (hasCannon) warningMsg = priorityWarningMsg;
 		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
@@ -577,12 +569,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage)
 	) {
-		if (warningMsg === '' && hasCannon) warningMsg = priorityWarningMsg;
 		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage);
-	}
-	// Warn if enabling cannon with ice burst/barrage:
-	if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB) {
-		warningMsg = priorityWarningMsg;
 	}
 	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
 		await user.update({
@@ -596,7 +583,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		return 'Error processing command. This should never happen, please report bug.';
 	}
 
-	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
+	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.`;
 }
 
 async function handleRSN(user: MUser, newRSN: string) {

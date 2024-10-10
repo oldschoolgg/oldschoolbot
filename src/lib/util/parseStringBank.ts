@@ -1,12 +1,9 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit';
+import { cleanString, evalMathExpression, stringMatches } from '@oldschoolgg/toolkit/util';
 import { notEmpty } from 'e';
-import { Bank, Items } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
 import { ONE_TRILLION } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { cleanString, stringMatches } from '../util';
 import itemIsTradeable from './itemIsTradeable';
 
 const { floor, max, min } = Math;

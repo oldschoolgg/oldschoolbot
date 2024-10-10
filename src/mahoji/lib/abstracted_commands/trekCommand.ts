@@ -2,7 +2,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { GearStat } from '../../../lib/gear/types';
@@ -53,7 +53,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 				if (!meetsRequirements) {
 					return `You don't have the requirements to do ${tier.difficulty} treks! Your ${readableStatName(
 						unmetKey!
-					)} stat in your ${setup} setup is ${has}, but you need atleast ${
+					)} stat in your ${setup} setup is ${has}, but you need at least ${
 						tier.minimumGearRequirements[setup]?.[unmetKey!]
 					}.`;
 				}
@@ -62,7 +62,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 	}
 
 	if (qp < 30) {
-		return 'You need atleast level 30 QP to do Temple Trekking.';
+		return 'You need at least level 30 QP to do Temple Trekking.';
 	}
 
 	if (minLevel !== undefined && user.combatLevel < minLevel) {
@@ -252,7 +252,7 @@ export async function trekShop(
 			outItems.add(specifiedItem.name, outputTotal);
 		}
 	}
-	if (!userBank.has(inItems.bank)) {
+	if (!userBank.has(inItems)) {
 		return "You don't have enough reward tokens for that.";
 	}
 

@@ -1,4 +1,3 @@
-import { Stopwatch } from '@oldschoolgg/toolkit';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
@@ -8,11 +7,11 @@ import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
-import { BitField, Channel, PeakTier, informationalButtons } from './constants';
+import { BitField, Channel, PeakTier } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
-import { queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
+import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
@@ -100,12 +99,9 @@ export const tickers: {
 		timer: null,
 		interval: Time.Minute,
 		cb: async () => {
-			const storedCount = queryCountStore.value;
-			queryCountStore.value = 0;
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
-				...(await collectMetrics()),
-				qps: storedCount / 60
+				...(await collectMetrics())
 			};
 			if (Number.isNaN(data.eventLoopDelayMean)) {
 				data.eventLoopDelayMean = 0;
@@ -388,12 +384,7 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
-				const stopwatch = new Stopwatch().start();
 				await ticker.cb();
-				stopwatch.stop();
-				if (stopwatch.duration > 100) {
-					debugLog(`Ticker ${ticker.name} took ${stopwatch}`);
-				}
 			} catch (err) {
 				logError(err);
 				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });

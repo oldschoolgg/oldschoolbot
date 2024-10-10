@@ -13,6 +13,7 @@ export interface MinigameScore {
 	score: number;
 }
 
+export const minigameColumnToNameMap = new Map<string, string>();
 export const Minigames: readonly BotMinigame[] = [
 	{
 		name: 'Tithe farm',
@@ -195,6 +196,10 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'colosseum'
 	}
 ];
+
+for (const minigame of Minigames) {
+	minigameColumnToNameMap.set(minigame.column, minigame.name);
+}
 
 export async function getMinigameScore(userID: string, minigame: MinigameName) {
 	const MinigameEntity = await getMinigameEntity(userID);
