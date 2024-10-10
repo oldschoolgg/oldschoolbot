@@ -394,6 +394,16 @@ export function doMonsterTrip(data: newOptions) {
 				}
 			}
 		}
+		if (
+			monster.id === Monsters.Unicorn.id && 
+			gearBank.hasEquipped('Iron dagger') &&
+			!gearBank.hasEquippedOrInBank('Clue hunter cloak')
+		) {
+			loot.add('Clue hunter cloak');
+			loot.add('Clue hunter boots');
+			messages.push('\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.');
+		}
+
 		updateBank.itemLootBank.add(loot);
 		updateBank.xpBank.add(
 			addMonsterXPRaw({
