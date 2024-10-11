@@ -9,7 +9,7 @@ import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
@@ -18,8 +18,8 @@ import type { OSBMahojiCommand } from '../lib/util';
 import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
-	// Every 3 hours become 1% better to a cap of 10%
-	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 3) / clueTier.timeToFinish)), 10);
+	// Every 1 hour become 1% better to a cap of 25%
+	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 1) / clueTier.timeToFinish)), 25);
 	const amountReduced = (clueTier.timeToFinish * percentReduced) / 100;
 	const reducedTime = clueTier.timeToFinish - amountReduced;
 
@@ -157,19 +157,14 @@ export const clueCommand: OSBMahojiCommand = {
 		// Global Boosts
 		const globalBoosts = [
 			{
-				condition: isWeekend,
-				boost: '10% for Weekend',
-				durationMultiplier: 0.9
-			},
-			{
 				condition: () => user.hasEquippedOrInBank('Max cape'),
-				boost: '10% for Max cape',
-				durationMultiplier: 0.9
+				boost: '15% for Max cape',
+				durationMultiplier: 0.85
 			},
 			{
 				condition: () => !user.hasEquippedOrInBank('Max cape') && user.hasEquippedOrInBank('Construct. cape'),
-				boost: '6% for Construction cape',
-				durationMultiplier: 0.94
+				boost: '10% for Construction cape',
+				durationMultiplier: 0.9
 			},
 			{
 				condition: () => hasOrnateJewelleryBox,
@@ -192,8 +187,8 @@ export const clueCommand: OSBMahojiCommand = {
 
 		// Xeric's Talisman boost
 		if (clueTier.name === 'Medium' && hasXericTalisman) {
-			boosts.push("2% for Mounted Xeric's Talisman");
-			duration *= 0.98;
+			boosts.push("10% for Mounted Xeric's Talisman");
+			duration *= 0.9;
 		}
 
 		// Specific boosts
@@ -201,118 +196,163 @@ export const clueCommand: OSBMahojiCommand = {
 			Beginner: [
 				{
 					item: getOSItem('Ring of the elements'),
-					boost: '10% for Ring of the elements',
-					durationMultiplier: 0.9
+					boost: '5% for Ring of the elements',
+					durationMultiplier: 0.95
+				},
+				{
+					item: getOSItem('Skull sceptre'),
+					boost: '5% for Skull sceptre',
+					durationMultiplier: 0.95
 				}
 			],
 			Easy: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '10% for Achievement diary cape',
-					durationMultiplier: 0.9
+					boost: '15% for Achievement diary cape',
+					durationMultiplier: 0.85
 				},
 				{
 					item: getOSItem('Ring of the elements'),
-					boost: '6% for Ring of the elements',
-					durationMultiplier: 0.94
+					boost: '10% for Ring of the elements',
+					durationMultiplier: 0.9
+				},
+				{
+					item: getOSItem('Skull sceptre'),
+					boost: '10% for Skull sceptre',
+					durationMultiplier: 0.9
+				},
+				{
+					item: getOSItem('Music cape'),
+					boost: '10% for Music cape',
+					durationMultiplier: 0.9
 				}
 			],
 			Medium: [
 				{
+					item: getOSItem('Achievement diary cape'),
+					boost: '15% for Achievement diary cape',
+					durationMultiplier: 0.85
+				},
+				{
 					item: getOSItem('Ring of the elements'),
-					boost: '8% for Ring of the elements',
-					durationMultiplier: 0.92
+					boost: '15% for Ring of the elements',
+					durationMultiplier: 0.85
+				},
+				{
+					item: getOSItem('Skull sceptre'),
+					boost: '10% for Skull sceptre',
+					durationMultiplier: 0.9
+				},
+				{
+					item: getOSItem('Music cape'),
+					boost: '10% for Music cape',
+					durationMultiplier: 0.9
 				}
 			],
 			Hard: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '10% for Achievement diary cape',
-					durationMultiplier: 0.9
+					boost: '15% for Achievement diary cape',
+					durationMultiplier: 0.85
 				},
 				{
 					item: getOSItem('Wilderness sword 3'),
-					boost: '8% for Wilderness sword 3',
-					durationMultiplier: 0.92
+					boost: '10% for Wilderness sword 3',
+					durationMultiplier: 0.9
 				},
 				{
 					item: getOSItem('Royal seed pod'),
-					boost: '6% for Royal seed pod',
-					durationMultiplier: 0.94
+					boost: '5% for Royal seed pod',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Eternal teleport crystal'),
-					boost: '4% for Eternal teleport crystal',
-					durationMultiplier: 0.96
+					boost: '5% for Eternal teleport crystal',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem("Pharaoh's sceptre"),
-					boost: "4% for Pharaoh's sceptre",
-					durationMultiplier: 0.96
+					boost: "5% for Pharaoh's sceptre",
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Toxic blowpipe'),
-					boost: '4% for Toxic blowpipe',
-					durationMultiplier: 0.96
+					boost: '10% for Toxic blowpipe',
+					durationMultiplier: 0.9
+				},
+				{
+					item: getOSItem('Book of the dead'),
+					boost: '10% for Book of the dead',
+					durationMultiplier: 0.9
 				}
 			],
 			Elite: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '10% for Achievement diary cape',
-					durationMultiplier: 0.9
+					boost: '15% for Achievement diary cape',
+					durationMultiplier: 0.85
 				},
 				{
 					item: getOSItem('Kandarin headgear 4'),
-					boost: '7% for Kandarin headgear 4',
-					durationMultiplier: 0.93
+					boost: '10% for Kandarin headgear 4',
+					durationMultiplier: 0.9
 				},
 				{
 					item: getOSItem('Fremennik sea boots 4'),
-					boost: '3% for Fremennik sea boots 4',
-					durationMultiplier: 0.97
+					boost: '5% for Fremennik sea boots 4',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem("Pharaoh's sceptre"),
-					boost: "4% for Pharaoh's sceptre",
-					durationMultiplier: 0.96
+					boost: "5% for Pharaoh's sceptre",
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Toxic blowpipe'),
-					boost: '4% for Toxic blowpipe',
-					durationMultiplier: 0.96
+					boost: '10% for Toxic blowpipe',
+					durationMultiplier: 0.95
+				},
+				{
+					item: getOSItem('Book of the dead'),
+					boost: '10% for Book of the dead',
+					durationMultiplier: 0.9
 				}
 			],
 			Master: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '10% for Achievement diary cape',
-					durationMultiplier: 0.9
+					boost: '15% for Achievement diary cape',
+					durationMultiplier: 0.85
 				},
 				{
 					item: getOSItem('Kandarin headgear 4'),
-					boost: '6% for Kandarin headgear 4',
-					durationMultiplier: 0.94
+					boost: '10% for Kandarin headgear 4',
+					durationMultiplier: 0.9
 				},
 				{
 					item: getOSItem('Music cape'),
-					boost: '5% for Music cape',
-					durationMultiplier: 0.95
+					boost: '10% for Music cape',
+					durationMultiplier: 0.9
 				},
 				{
 					item: getOSItem('Eternal teleport crystal'),
-					boost: '3% for Eternal teleport crystal',
-					durationMultiplier: 0.97
+					boost: '5% for Eternal teleport crystal',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Toxic blowpipe'),
-					boost: '2% for Toxic blowpipe',
-					durationMultiplier: 0.98
+					boost: '10% for Toxic blowpipe',
+					durationMultiplier: 0.9
 				},
 				{
 					item: getOSItem('Dragon claws'),
-					boost: '1% for Dragon claws',
-					durationMultiplier: 0.99
+					boost: '5% for Dragon claws',
+					durationMultiplier: 0.95
+				},
+				{
+					item: getOSItem('Book of the dead'),
+					boost: '10% for Book of the dead',
+					durationMultiplier: 0.9
 				}
 			]
 		};
