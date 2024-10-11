@@ -2,43 +2,39 @@
 title: "Brimhaven Agility Arena"
 ---
 
-An alternative form of agility training is to use the agility arena. This minigame can be quite rewarding, providing agility arena tickets which can be turned in for additional agility xp, a graceful recolour, herbs, and even a Pirate's hook!
+The **Brimhaven Agility Arena** offers an alternative form of Agility training. In this minigame, players earn **agility arena tickets**, which can be exchanged for additional Agility experience. Rewards also include **Brimhaven vouchers**, which can be used for a graceful recolor, herbs, or even a Pirate's hook!
 
-To start brimhaven agility arena, simply type:
+To start Brimhaven Agility Arena, simply type:
 
-- `/minigames agility_arena start`
+- [[/minigames agility_arena start]]
 
-### Boosts
+## Boosts
 
-While there are no boosts for speed or minion learning, the following do apply:
+While there are no boosts for speed or minion learning, the following bonuses apply:
 
-- Completion of Karamja Medium diary
-  - Provides a 10% boost to xp when spending your tickets on xp
-- Completion of Karamja Elite diary
-  - Provides a 10% increase to tickets received
+- Completion of **Karamja Medium** diary or higher:
+  - Provides 10% extra Agility experience. 
+  - Grants a 10% experience bonus when turning in agility arena tickets.
 
-### Rewards
+## Rewards
 
-You can spend your tickets on the items below using the following command:
+You can exchange agility arena tickets for [[agility:345 XP]] each ([[agility:379.5 XP]] with the Karamja Medium diary or higher).
 
-`/minigames agility_arena buy item: [itemName]`
-
-| **Reward**          | **Arena ticket cost** | **XP per ticket** |
-| ------------------- | :-------------------: | :---------------: |
-| Agility XP          |           1           |        240        |
-| Agility XP          |          10           |        248        |
-| Agility XP          |          25           |        260        |
-| Agility XP          |          100          |        280        |
-| Agility XP          |         1000          |        320        |
-| Toadflax            |           3           |        N/A        |
-| Snapdragon          |          10           |        N/A        |
-| Pirate's hook       |          800          |        N/A        |
-| Recolor (see below) |          250          |        N/A        |
+To claim experience for tickets, use:
+- [[/minigames agility_arena xp quantity\:1/10/25/100/1000]] 
 
 ### Brimhaven Graceful Set
 
-- To create a full set of Brimhaven graceful, use the following command:
-  - `/minigames agility_arena recolor`
-- This requires 250 agility arena tickets and a full set of the original graceful.
-- The set cannot be created piece by piece, rather it is created entirely in 1 command.
-- It also cannot be reverted back to the original graceful so it is advised to keep this set for last if you are wanting to complete all graceful sets.
+- Recolor a full set of Graceful using **250 Brimhaven vouchers**:
+  - [[/minigames agility_arena buy item\:Graceful outfit Recolour]]
+- Requires a complete Graceful set and is applied all at once. The recolor cannot be undone.
+
+### Additional Rewards
+
+- Use **Brimhaven vouchers** to purchase the following items:
+  - [[/minigames agility_arena buy item\:item_name]]
+- Available items include:
+  - [[Toadflax]] for 3 Brimhaven vouchers
+  - [[Snapdragon]] for 10 Brimhaven vouchers
+  - [[Pirate's hook]] for 800 Brimhaven vouchers
+  - [[Amylase pack]] for 60 Brimhaven vouchers
