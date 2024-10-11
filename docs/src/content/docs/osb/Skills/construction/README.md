@@ -8,15 +8,15 @@ You can also [[/offer name\:curved bone]] and `long bone` you get from PvM for c
 
 ## Fastest Route to 99:
 
-`/build name:Crude wooden chairquantity:5`
-`/build name:Wooden bookcasequantity:7`
-`/build name:Wooden larderquantity:7`
-`/build name:Repair benchquantity:3`
-`/build name:Crafting table 1quantity:12`
-`/build name:Oak dining tablequantity:39`
-`/build name:Carved oak tablequantity:10`
-`/build name:Oak larderquantity:220`
-`/build name:Mahogany table`
+1. [[/build name\:Crude wooden chair quantity\:5]]
+1. [[/build name\:Wooden bookcase quantity\:7]]
+1. [[/build name\:Wooden larder quantity\:7]]
+1. [[/build name\:Repair bench quantity\:3]]
+1. [[/build name\:Crafting table 1 quantity\:12]]
+1. [[/build name\:Oak dining table quantity\:39]]
+1. [[/build name\:Carved oak table quantity\:10]]
+1. [[/build name\:Oak larder quantity\:220]]
+1. [[/build name\:Mahogany table]]
 
 **Materials Needed:**
 94 Plank
@@ -32,13 +32,11 @@ There are two commands associated with Mahogany Homes:
 
 `/minigames mahogany_homes buy`
 
-See the Mahogany Homes [minigame page](https://wiki.oldschool.gg/skills/construction/mahogany-homes) for a full breakdown of the activity.
+See the [Mahogany Homes](/osb/activities/mahogany-homes/) for a full breakdown of the activity.
 
 ## Making Planks
 
 There are 3 methods to plank making: The sawmill, using a Demon butler, or using magic.
-
-The cost of making planks via all 3 methods can be found here.
 
 | **Plank Type** | **Sawmill/Butler Cost** | **Plank-Make Spell Cost** |
 | -------------- | ----------------------- | ------------------------- |
