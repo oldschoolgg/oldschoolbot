@@ -15,6 +15,8 @@ While there are no boosts for speed or minion learning, the following bonuses ap
 - Completion of **Karamja Medium** diary or higher:
   - Provides 10% extra Agility experience. 
   - Grants a 10% experience bonus when turning in agility arena tickets.
+- Completion of **Karamja Elite** diary:
+  - Grants a 10% chance of receiving double agility arena tickets.
 
 ## Rewards
 
