@@ -1,4 +1,4 @@
-import { resolve } from 'node:path';
+import path, { resolve } from 'node:path';
 
 import type { Bank } from 'oldschooljs';
 import Piscina from 'piscina';
@@ -43,7 +43,7 @@ export type FinishWorkerReturn = Promise<
 
 const maxThreads = 1;
 
-let dirName = __dirname.replace('src/lib', 'dist/lib');
+let dirName = __dirname.replace(path.join('src', 'lib'), path.join('dist', 'lib'));
 if (dirName.endsWith('dist')) {
 	dirName = resolve(dirName, 'lib', 'workers');
 }
