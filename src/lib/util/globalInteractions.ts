@@ -256,7 +256,7 @@ async function repeatTripHandler(interaction: ButtonInteraction) {
 }
 
 function icDonateValidation(user: MUser, donator: MUser) {
-	if (user.isIronman || donator.isIronman) {
+	if (user.isIronman) {
 		return 'Ironmen stand alone!';
 	}
 	if (user.id === donator.id) {
