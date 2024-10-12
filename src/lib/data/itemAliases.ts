@@ -1,7 +1,5 @@
 import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/util';
-import { EItem, Items, allTeamCapes, itemNameMap } from 'oldschooljs';
-import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
-import { mergeDeep, omit } from 'remeda';
+import { Items, allTeamCapes, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
@@ -391,29 +389,4 @@ for (const item of allTeamCapes) {
 	if (getItemOrThrow(item.id).price !== 100) {
 		throw new Error(`Failed to modify price of item ${item.id}`);
 	}
-}
-
-export const itemDataSwitches = [
-	{
-		from: 25488,
-		to: EItem.BELLATOR_RING
-	},
-	{
-		from: 25486,
-		to: EItem.MAGUS_RING
-	},
-	{
-		from: 25487,
-		to: EItem.VENATOR_RING
-	},
-	{
-		from: 25485,
-		to: EItem.ULTOR_RING
-	}
-];
-
-for (const items of itemDataSwitches) {
-	const from = getItemOrThrow(items.from);
-	const to = getItemOrThrow(items.to);
-	Items.modifyItem(to.id, mergeDeep(omit(to, ['id']), omit(from, ['id'])));
 }

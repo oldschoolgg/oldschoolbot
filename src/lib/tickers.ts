@@ -237,12 +237,12 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 
 					const storeHarvestablePlant = patch.lastPlanted;
 					const planted = storeHarvestablePlant
-						? Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
+						? (Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
 							Farming.Plants.find(
 								plants =>
 									stringMatches(plants.name, storeHarvestablePlant) ||
 									stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-							)
+							))
 						: null;
 					const difference = now - patch.plantTime;
 					if (!planted) continue;

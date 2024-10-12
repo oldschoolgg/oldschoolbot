@@ -1,6 +1,5 @@
-import { resolve } from 'node:path';
+import path, { resolve } from 'node:path';
 
-import type { Bank } from 'oldschooljs';
 import Piscina from 'piscina';
 
 import type { ItemBank } from '../types';
@@ -43,7 +42,7 @@ export type FinishWorkerReturn = Promise<
 
 const maxThreads = 1;
 
-let dirName = __dirname.replace('src/lib', 'dist/lib');
+let dirName = __dirname.replace(path.join('src', 'lib'), path.join('dist', 'lib'));
 if (dirName.endsWith('dist')) {
 	dirName = resolve(dirName, 'lib', 'workers');
 }
@@ -66,7 +65,7 @@ const casketWorker = new Piscina({
 });
 
 export const Workers = {
-	casketOpen: (args: CasketWorkerArgs): Promise<[Bank, string]> => casketWorker.run(args),
+	casketOpen: (args: CasketWorkerArgs): Promise<[ItemBank, string]> => casketWorker.run(args),
 	kill: (args: KillWorkerArgs): KillWorkerReturn => killWorker.run(args),
 	finish: (args: FinishWorkerArgs): FinishWorkerReturn => finishWorker.run(args)
 };
