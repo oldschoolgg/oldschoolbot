@@ -109,18 +109,36 @@ export interface Burnable {
 }
 
 export interface Fish {
+	name: string;
+	alias?: string[];
 	level: number;
 	xp: number;
 	id: number;
-	name: string;
+	intercept1?: number;
+	slope1?: number;
+	level2?: number;
+	xp2?: number;
+	id2?: number;
+	intercept2?: number;
+	slope2?: number;
+	level3?: number;
+	xp3?: number;
+	id3?: number;
+	intercept3?: number;
+	slope3?: number;
+
 	petChance?: number;
-	timePerFish: number;
+	clueScrollChance?: number;
+	lostTicks?: number;
+	bankingTime?: number;
+	ticksPerRoll?: number;
+
 	bait?: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
-	clueScrollChance?: number;
-	alias?: string[];
+
+	timePerFish?: number; // still needed for camdozaal
 }
 
 export interface Course {

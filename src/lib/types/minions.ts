@@ -153,9 +153,17 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
-	quantity: number;
-	flakesQuantity?: number;
-	iQty?: number;
+
+	quantity?: number;
+	Qty1: number;
+	Qty2?: number;
+	Qty3?: number;
+	loot1?: number;
+	loot2?: number;
+	loot3?: number;
+	flakesToRemove?: number;
+	powerfish?: boolean;
+	spirit_flakes?: boolean;
 }
 
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {
