@@ -706,9 +706,6 @@ const killableBosses: KillableMonster[] = [
 			if (loot.has('Coagulated venom') && (ownedItems.has('Coagulated venom') || ownedItems.has('Rax'))) {
 				loot.set('Coagulated venom', 0);
 			}
-			loot.addItem(getOSItem('Herbi').id, 3);
-			loot.addItem(getOSItem('Noxious blade').id, 5);
-			loot.addItem(getOSItem("Hydra's eye").id, 5);
 		},
 		itemCost: [
 			{
