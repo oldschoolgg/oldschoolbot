@@ -147,7 +147,7 @@ export const clueCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		const randomAddedDuration = randInt(1, 20);
+		const randomAddedDuration = 10.5; //randInt(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 		const poh = await getPOH(user.id);
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
@@ -278,19 +278,19 @@ export const clueCommand: OSBMahojiCommand = {
 				{
 					item: getOSItem('Toxic blowpipe'),
 					boost: '10% for Toxic blowpipe',
-					durationMultiplier: 0.9
+					durationMultiplier: 0.90
 				},
 				{
 					item: getOSItem('Book of the dead'),
 					boost: '10% for Book of the dead',
-					durationMultiplier: 0.9
+					durationMultiplier: 0.90
 				}
 			],
 			Elite: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '15% for Achievement diary cape',
-					durationMultiplier: 0.85
+					boost: '12% for Achievement diary cape',
+					durationMultiplier: 0.88
 				},
 				{
 					item: getOSItem('Kandarin headgear 4'),
@@ -309,7 +309,7 @@ export const clueCommand: OSBMahojiCommand = {
 				},
 				{
 					item: getOSItem('Toxic blowpipe'),
-					boost: '10% for Toxic blowpipe',
+					boost: '5% for Toxic blowpipe',
 					durationMultiplier: 0.95
 				},
 				{
@@ -321,8 +321,8 @@ export const clueCommand: OSBMahojiCommand = {
 			Master: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '15% for Achievement diary cape',
-					durationMultiplier: 0.85
+					boost: '12% for Achievement diary cape',
+					durationMultiplier: 0.88
 				},
 				{
 					item: getOSItem('Kandarin headgear 4'),
@@ -341,13 +341,13 @@ export const clueCommand: OSBMahojiCommand = {
 				},
 				{
 					item: getOSItem('Toxic blowpipe'),
-					boost: '10% for Toxic blowpipe',
-					durationMultiplier: 0.9
+					boost: '5% for Toxic blowpipe',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Dragon claws'),
-					boost: '5% for Dragon claws',
-					durationMultiplier: 0.95
+					boost: '3% for Dragon claws',
+					durationMultiplier: 0.97
 				},
 				{
 					item: getOSItem('Book of the dead'),
@@ -399,9 +399,8 @@ export const clueCommand: OSBMahojiCommand = {
 				return `You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s. At least you received the following loot: ${implingLoot}.`;
 			}
 			quantity = bankedClues + implingClues;
-			implingLootString = `\n\nYou will find ${implingClues} clue${
-				implingClues === 0 || implingClues > 1 ? 's' : ''
-			} from ${openedImplings}x ${clueImpling.name}s, and receive the following loot: ${implingLoot}.`;
+			implingLootString = `\n\nYou will find ${implingClues} clue${implingClues === 0 || implingClues > 1 ? 's' : ''
+				} from ${openedImplings}x ${clueImpling.name}s, and receive the following loot: ${implingLoot}.`;
 		}
 
 		duration = timeToFinish * quantity;
@@ -416,10 +415,8 @@ export const clueCommand: OSBMahojiCommand = {
 			duration,
 			type: 'ClueCompletion'
 		});
-		return `${user.minionName} is now completing ${quantity}x ${
-			clueTier.name
-		} clues, it'll take around ${formatDuration(duration)} to finish.${
-			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
-		}${implingLootString}`;
+		return `${user.minionName} is now completing ${quantity}x ${clueTier.name
+			} clues, it'll take around ${formatDuration(duration)} to finish.${boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
+			}${implingLootString}`;
 	}
 };
