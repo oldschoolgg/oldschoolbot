@@ -147,7 +147,7 @@ export const clueCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		const randomAddedDuration = 10.5; //randInt(1, 20);
+		const randomAddedDuration = randInt(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 		const poh = await getPOH(user.id);
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
