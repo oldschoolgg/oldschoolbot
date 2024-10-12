@@ -58,6 +58,12 @@ function gearPresetToGear(preset: GearPreset): GearSetup {
 	newGear.shield = gearItem(preset.shield);
 	newGear.weapon = gearItem(preset.weapon);
 	newGear.ring = gearItem(preset.ring);
+	newGear.ammo = preset.ammo
+		? {
+				item: preset.ammo,
+				quantity: 1
+			}
+		: null;
 	return newGear;
 }
 export async function createOrEditGearSetup(
