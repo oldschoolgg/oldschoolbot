@@ -1,4 +1,4 @@
-import { Bank, resolveItems } from 'oldschooljs';
+import { Bank, EItem, deepResolveItems } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
@@ -2431,15 +2431,15 @@ const Createables: Createable[] = [
 		inputItems: new Bank().add('Amulet of rancour').freeze(),
 		outputItems: new Bank().add('Amulet of rancour (s)').freeze(),
 		customReq: async user => {
-			const requiredItems = resolveItems([
+			const requiredItems = deepResolveItems([
 				'Amulet of rancour',
 				'Aranea boots',
-				'Araxyte slayer helmet',
+				[EItem.ARAXYTE_SLAYER_HELMET, EItem.ARAXYTE_SLAYER_HELMET_I],
 				'Noxious halberd',
-				'Rax'
+				['Rax', 'Nid']
 			]);
-			if (!requiredItems.every(item => user.owns(item))) {
-				return `You need to own all these items to create the Amulet of rancour (s): ${requiredItems.map(item => itemNameFromID(item)).join(', ')}.`;
+			if (!requiredItems.every(item => (Array.isArray(item) ? item.some(i => user.owns(i)) : user.owns(item)))) {
+				return `You need to own all these items to create the Amulet of rancour (s): ${requiredItems.map(item => (Array.isArray(item) ? item.map(itemNameFromID).join(' OR ') : itemNameFromID(item))).join(', ')}.`;
 			}
 			return null;
 		}
