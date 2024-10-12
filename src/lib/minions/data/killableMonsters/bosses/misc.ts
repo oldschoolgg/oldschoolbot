@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
+import { getOSItem } from '../../../../util/getOSItem';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -701,29 +702,13 @@ const killableBosses: KillableMonster[] = [
 				defence_stab: 0
 			}
 		},
-		specialLoot: ({ loot, ownedItems, cl }) => {
+		specialLoot: ({ loot, ownedItems }) => {
 			if (loot.has('Coagulated venom') && (ownedItems.has('Coagulated venom') || ownedItems.has('Rax'))) {
 				loot.set('Coagulated venom', 0);
 			}
-
-			const noxPieces = resolveItems(['Noxious point', 'Noxious blade', 'Noxious pommel']);
-			const ownedCount = noxPieces.map(o => cl.amount(o));
-			const lootCount = noxPieces.map(l => loot.amount(l));
-
-			for (let i = 0; i < lootCount.length; i++) {
-				while (lootCount[i] > 0) {
-					const sortedPieces = noxPieces
-						.map((piece, index) => ({ piece, owned: ownedCount[index] }))
-						.sort((a, b) => a.owned - b.owned);
-
-					const targetPiece = sortedPieces[0].piece;
-					loot.set(targetPiece, (loot.amount(targetPiece) || 0) + 1);
-					loot.set(noxPieces[i], loot.amount(noxPieces[i]) - 1);
-
-					ownedCount[noxPieces.indexOf(targetPiece)]++;
-					lootCount[i]--;
-				}
-			}
+			loot.addItem(getOSItem('Herbi').id, 3);
+			loot.addItem(getOSItem('Noxious blade').id, 5);
+			loot.addItem(getOSItem("Hydra's eye").id, 5);
 		},
 		itemCost: [
 			{
