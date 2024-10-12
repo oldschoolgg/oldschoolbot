@@ -1311,7 +1311,7 @@ export function getCollectionItems(
 			_clName = category;
 			_items = uniqueArr(
 				Object.values(entries.activities)
-					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
+					.map(e => [...new Set([...e.items, ...(allItems ? (e.allItems ?? []) : [])])])
 					.flat(2)
 			);
 
