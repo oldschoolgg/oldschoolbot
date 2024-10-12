@@ -5,11 +5,11 @@ import { describe, expect, test } from 'vitest';
 import Buyables from '../../src/lib/data/buyables/buyables';
 import { marketPriceOfBank } from '../../src/lib/marketPrices';
 import { allOpenables } from '../../src/lib/openables';
+import { itemNameFromID } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemID from '../../src/lib/util/itemID';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
 import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager';
-import { itemNameFromID } from '../../src/lib/util';
 
 describe('Sanity', () => {
 	test('misc', () => {
