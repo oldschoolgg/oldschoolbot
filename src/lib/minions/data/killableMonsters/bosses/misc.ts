@@ -574,6 +574,7 @@ const killableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 3,
 		respawnTime: 2000,
 		table: Monsters.Araxxor,
+		difficultyRating: 8,
 		notifyDrops: resolveItems(['Nid']),
 		qpRequired: 200,
 		deathProps: {
@@ -704,14 +705,25 @@ const killableBosses: KillableMonster[] = [
 			if (loot.has('Coagulated venom') && (ownedItems.has('Coagulated venom') || ownedItems.has('Rax'))) {
 				loot.set('Coagulated venom', 0);
 			}
+
 			const noxPieces = resolveItems(['Noxious point', 'Noxious blade', 'Noxious pommel']);
-			const ownedPieces = noxPieces.filter(p => cl.has(p));
-			if (ownedPieces.length === 3) return;
-			const unownedPieces = noxPieces.filter(p => !cl.has(p));
-			const pieceToReplace = ownedPieces.find(p => loot.has(p));
-			if (!pieceToReplace) return;
-			loot.set(unownedPieces[0], 1);
-			loot.set(pieceToReplace, 0);
+			const ownedCount = noxPieces.map(o => cl.amount(o));
+			const lootCount = noxPieces.map(l => loot.amount(l));
+
+			for (let i = 0; i < lootCount.length; i++) {
+				while (lootCount[i] > 0) {
+					const sortedPieces = noxPieces
+						.map((piece, index) => ({ piece, owned: ownedCount[index] }))
+						.sort((a, b) => a.owned - b.owned);
+
+					const targetPiece = sortedPieces[0].piece;
+					loot.set(targetPiece, (loot.amount(targetPiece) || 0) + 1);
+					loot.set(noxPieces[i], loot.amount(noxPieces[i]) - 1);
+
+					ownedCount[noxPieces.indexOf(targetPiece)]++;
+					lootCount[i]--;
+				}
+			}
 		},
 		itemCost: [
 			{
