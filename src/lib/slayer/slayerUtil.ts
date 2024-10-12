@@ -385,7 +385,7 @@ export function hasSlayerUnlock(
 			success = false;
 			missing.push(getSlayerReward(req as SlayerTaskUnlocksEnum));
 		}
-	}	
+	}
 
 	errors = missing.join(', ');
 	return { success, errors };
@@ -424,8 +424,10 @@ function filterPieces(myLoot: Bank, myClLoot: Bank, combinedBank: Bank, pieces: 
 }
 
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
-	const numHydraPieces = myLoot.amount("Hydra's eye") + myLoot.amount("Hydra's fang") + myLoot.amount("Hydra's heart");
-	const numNoxPieces = myLoot.amount('Noxious point') + myLoot.amount('Noxious blade') + myLoot.amount('Noxious pommel');
+	const numHydraPieces =
+		myLoot.amount("Hydra's eye") + myLoot.amount("Hydra's fang") + myLoot.amount("Hydra's heart");
+	const numNoxPieces =
+		myLoot.amount('Noxious point') + myLoot.amount('Noxious blade') + myLoot.amount('Noxious pommel');
 	const numTotemPieces = myLoot.amount('Dark totem base');
 	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
 
@@ -458,7 +460,6 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 		clLoot: myClLoot
 	};
 }
-
 
 export async function getSlayerTaskStats(userID: string) {
 	const result: { monster_id: number; total_quantity: number; qty: number }[] = await prisma.$queryRaw`SELECT monster_id, SUM(quantity)::int AS total_quantity, COUNT(monster_id)::int AS qty
