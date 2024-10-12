@@ -256,25 +256,25 @@ export async function slayerNewTaskCommand({
 	// Contains (if matched) the slayer master requested, falling back on saved default, if they have requirements
 	const slayerMaster =
 		slayerMasterOverride && has99SlayerCape
-			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null
+			? (slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null)
 			: slayerMasterOverride
-				? slayerMasters
+				? (slayerMasters
 						.filter(m => userCanUseMaster(user, m))
-						.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null
+						.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null)
 				: rememberedSlayerMaster
-					? slayerMasters
+					? (slayerMasters
 							.filter(m => userCanUseMaster(user, m))
 							.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ??
-						proposedDefaultMaster
+						proposedDefaultMaster)
 					: proposedDefaultMaster;
 
 	// Contains (if matched) the requested Slayer Master regardless of requirements.
 	const matchedSlayerMaster = slayerMasterOverride
-		? slayerMasters.find(
+		? (slayerMasters.find(
 				m =>
 					stringMatches(m.name, slayerMasterOverride) ||
 					m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))
-			) ?? null
+			) ?? null)
 		: null;
 
 	// Special handling for Turael skip

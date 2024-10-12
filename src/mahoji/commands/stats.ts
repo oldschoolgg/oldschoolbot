@@ -54,7 +54,7 @@ export const statsCommand: OSBMahojiCommand = {
 				type: options.type,
 				virtualLevels: Boolean(options.virtual)
 			});
-			const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : options.type ?? null;
+			const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : (options.type ?? null);
 			return {
 				embeds: [
 					statsEmbed({
