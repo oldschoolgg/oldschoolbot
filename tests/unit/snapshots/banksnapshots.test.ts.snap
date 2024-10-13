@@ -5974,6 +5974,16 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "28798": 1,
+    },
+    "name": "Antique lamp (Historian Aldo)",
+    "outputItems": {
+      "28800": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "27614": 5,
     },
     "name": "Venator bow (uncharged)",
