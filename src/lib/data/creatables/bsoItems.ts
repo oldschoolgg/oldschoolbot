@@ -1329,6 +1329,7 @@ export const BsoCreateables: Createable[] = [
 	{
 		name: 'Revert completionist cape',
 		outputItems: user => {
+			// check compCapeCreatableBank in skillcapes.ts to ensure all capes are being refunded
 			const refundBank = new Bank();
 			for (const { masterCape } of Skillcapes) {
 				if (user.cl.has(masterCape.id)) {
@@ -1336,7 +1337,7 @@ export const BsoCreateables: Createable[] = [
 				}
 			}
 			refundBank.add('Master quest cape');
-			refundBank.add('Achievement diary cape(t)');
+			refundBank.add('Achievement diary cape (t)');
 			refundBank.add('Music cape (t)');
 			return refundBank;
 		},
