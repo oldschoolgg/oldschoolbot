@@ -50,6 +50,11 @@ This section shows ways you can format things
 
 Any colon needs a backslash before it (I'm not sure yet how to make it so this isnt needed.)
 
+### Discord Channels
+
+`[[# bingo-looking-4-team:1149907771937001522]]`
+[[# bingo-looking-4-team:1149907771937001522]]
+
 ### Skills
 
 `[[agility:55]] [[strength:44,000 XP]] [[qp:5]]`
