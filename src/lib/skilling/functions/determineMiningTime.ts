@@ -62,6 +62,7 @@ export function determineMiningTime({
 			timeElapsed += respawnTimeOrPick;
 			remainingNoDeplete = glovesEffect;
 		} else {
+			timeElapsed += ticksBetweenRolls;
 			remainingNoDeplete--;
 		}
 		newQuantity++;
