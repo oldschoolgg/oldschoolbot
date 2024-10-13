@@ -191,6 +191,7 @@ setItemAlias(11_185, 'Antique lamp 4');
 
 // Defender of varrock quest lamp
 setItemAlias(28_820, 'Antique lamp (defender of varrock)');
+setItemAlias(28_800, 'Antique lamp (Historian Aldo)');
 
 // Dragonfire shields
 setItemAlias(11_284, 'Uncharged dragonfire shield');
