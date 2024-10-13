@@ -21,6 +21,7 @@ import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 
 function handleSlayerTaskCompletion({
@@ -371,6 +372,9 @@ export function doMonsterTrip(data: newOptions) {
 				duration
 			});
 			if (ashSanctifierResult) {
+				for (const ash of ashSanctifierResult.ashesSanctified) {
+					updateBank.itemLootBank.remove(itemID(ash.name), ash.amount);
+				}
 				updateBank.merge(ashSanctifierResult.updateBank);
 				messages.push(ashSanctifierResult.message);
 			}
