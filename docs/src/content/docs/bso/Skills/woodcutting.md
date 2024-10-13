@@ -1,9 +1,6 @@
 ---
 title: "Woodcutting"
-description: /chop
 ---
-
-# Woodcutting
 
 ### **Custom Content and Boosts**
 

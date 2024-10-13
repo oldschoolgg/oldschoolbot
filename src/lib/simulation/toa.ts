@@ -1,5 +1,5 @@
-import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { Minigame } from '@prisma/client';
 import { XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
@@ -1111,7 +1111,7 @@ export async function toaStartCommand(
 		user,
 		await getMinigameScore(user.id, 'tombs_of_amascut'),
 		raidLevel,
-		solo ? 1 : teamSize ?? 5,
+		solo ? 1 : (teamSize ?? 5),
 		Time.Hour,
 		1
 	);

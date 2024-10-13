@@ -2,8 +2,6 @@
 title: "Balthazar's Big Bonanza"
 ---
 
-# Balthazar's Big Bonanza
-
 You can start this minigame with the command `/bsominigames balthazars_big_bonanza start`
 
 This minigame can be done once a week. A trip takes around 15 minutes.

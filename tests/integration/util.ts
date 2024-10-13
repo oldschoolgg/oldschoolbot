@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Activity, GearSetupType, Prisma } from '@prisma/client';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Monsters } from 'oldschooljs';
@@ -78,7 +78,7 @@ export class TestUser extends MUserClass {
 	}
 
 	async equip(setup: GearSetupType, gear: number[]) {
-		const gearObj = new Gear();
+		const gearObj = this.gear[setup];
 		for (const item of gear) {
 			gearObj.equip(getOSItem(item));
 		}
@@ -129,7 +129,7 @@ export class TestUser extends MUserClass {
 		this.user = user;
 	}
 
-	async giveSlayerTask(monster: EMonster) {
+	async giveSlayerTask(monster: EMonster, quantity = 1000) {
 		await prisma.slayerTask.deleteMany({
 			where: {
 				user_id: this.id
@@ -138,8 +138,8 @@ export class TestUser extends MUserClass {
 		await prisma.slayerTask.create({
 			data: {
 				user_id: this.id,
-				quantity: 1000,
-				quantity_remaining: 1000,
+				quantity: quantity,
+				quantity_remaining: quantity,
 				slayer_master_id: slayerMasters.find(m => m.tasks.some(t => t.monster.id === monster))!.id,
 				monster_id: monster,
 				skipped: false

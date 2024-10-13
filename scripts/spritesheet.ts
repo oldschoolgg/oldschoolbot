@@ -1,7 +1,8 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import Spritesmith from 'spritesmith';
-import '../src/lib/data/itemAliases';
+import '../src/lib/safeglobals';
 
 import { isFunction, uniqueArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
@@ -9,6 +10,8 @@ import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
 import { allCLItems } from '../src/lib/data/Collections';
 import Buyables from '../src/lib/data/buyables/buyables';
 import Createables from '../src/lib/data/createables';
+
+const stopwatch = new Stopwatch();
 
 const manualIDs = [
 	11139, 25500, 21724, 26280, 24301, 19687, 22695, 24327, 3469, 13283, 12895, 21845, 22715, 21842, 7775, 25920, 26310,
@@ -29,13 +32,10 @@ const manualIDs = [
 	6861, 25664, 27481, 25282, 7927, 13571, 24378, 1, 24430, 25609, 19695, 11847, 20747, 21752, 24431, 20832, 27610,
 	21214, 25922, 27473, 9923, 28184, 24535, 3456, 25928, 24525, 21843, 12845, 11026, 3457, 25050, 19693, 6857, 12958,
 	29489, 29491, 29493, 29495, 29497, 29499, 29501, 29503, 29505, 29507, 29509, 29510, 29511, 29512, 29513, 29514,
-	29515, 29516, 29517, 29518, 29519, 29521, 29522, 29523, 29524, 29525, 29526, 29527, 29528, 29529, 29530, 29531,
-	29532, 29533, 29534, 29535, 29536, 29537, 29538, 29539, 29540, 29541, 29542, 29543, 29544, 29545, 29546, 29547,
-	29548, 29549, 29550, 29551, 29552, 29553, 29554, 29555, 29556, 29558, 29560, 29562, 29564, 29566, 29568, 29570,
-	29572, 29573, 29574, 29577, 29580, 29583, 29585, 29587, 29589, 29591, 29594, 29596, 29598, 29599, 29602, 29605,
-	29607, 29609, 29611, 29613, 29615, 29617, 29619, 29622, 29625, 29628, 29631, 29634, 29637, 29640, 29643, 29648,
-	29649, 29651, 29652, 29654, 29655, 29657, 29658, 29660, 29661, 29663, 29664, 29666, 29667, 29669, 29670, 29672,
-	29673, 29675, 29676, 29678, 29679, 29684, 29920, 29912
+	29515, 29516, 29560, 29562, 29564, 29566, 29568, 29570, 29572, 29573, 29574, 29577, 29580, 29583, 29585, 29587,
+	29589, 29591, 29594, 29596, 29598, 29599, 29602, 29605, 29607, 29609, 29611, 29613, 29615, 29617, 29619, 29622,
+	29625, 29628, 29631, 29634, 29637, 29640, 29643, 29648, 29649, 29651, 29652, 29654, 29655, 29657, 29658, 29660,
+	29661, 29663, 29664, 29666, 29667, 29669, 29670, 29672, 29673, 29675, 29676, 29678, 29679, 29684, 29920, 29912
 ];
 const trades = Items.filter(i => Boolean(i.tradeable_on_ge)).map(i => i.id);
 const itemsMustBeInSpritesheet: number[] = uniqueArr([
@@ -76,8 +76,9 @@ const createSpriteSheet = (files: string[], outputPath: string): Promise<Sprites
 };
 
 const generateJsonData = (result: Spritesmith.Result): Record<string, any> => {
+	stopwatch.check('Generating spritesheet.json');
 	const jsonData: Record<string, any> = {};
-	for (const [filePath, data] of Object.entries(result.coordinates)) {
+	for (const [filePath, data] of Object.entries(result.coordinates) as any[]) {
 		const fileName = path.basename(filePath, '.png');
 		jsonData[fileName] = [data.x, data.y, data.width, data.height];
 	}
@@ -90,46 +91,50 @@ async function makeSpritesheet(
 	outputJsonFilePath: string,
 	allItems?: number[]
 ) {
-	try {
-		const pngFiles = await getPngFiles(iconsDir);
-		console.log(`Found ${pngFiles.length} PNG files in the directory`);
-		if (pngFiles.length === 0) {
-			throw new Error('No PNG files found in the directory');
-		}
-
-		const filesToDo: string[] = [];
-		if (!allItems) allItems = pngFiles.map(file => Number.parseInt(path.basename(file, '.png')));
-		for (const id of allItems) {
-			if (!pngFiles.some(file => file.endsWith(`${id}.png`))) {
-				console.log(`Item ${id} not found in spritesheet, adding...`);
-			} else {
-				filesToDo.push(`${id}.png`);
-			}
-		}
-
-		const result = await createSpriteSheet(
-			filesToDo.map(p => path.join(iconsDir, p)),
-			outputImageFilePath
-		);
-		const jsonData = generateJsonData(result);
-		await fs.writeFile(outputJsonFilePath, JSON.stringify(jsonData, null, 2));
-		console.log('Spritesheet and JSON created successfully!');
-	} catch (error) {
-		console.error('Error creating spritesheet:', error);
+	const pngFiles = await getPngFiles(iconsDir);
+	stopwatch.check(`Found ${pngFiles.length} PNG files in ${iconsDir}`);
+	if (pngFiles.length === 0) {
+		throw new Error('No PNG files found in the directory');
 	}
+
+	const filesToDo: string[] = [];
+	if (!allItems) allItems = pngFiles.map(file => Number.parseInt(path.basename(file, '.png')));
+	for (const id of allItems) {
+		if (!pngFiles.some(file => file.endsWith(`${id}.png`))) {
+			stopwatch.check(`Item ${id} not found in spritesheet, adding...`);
+		} else {
+			filesToDo.push(`${id}.png`);
+		}
+	}
+
+	stopwatch.check(`Rendering spritesheet image with ${filesToDo.length} items`);
+	const result = await createSpriteSheet(
+		filesToDo.map(p => path.join(iconsDir, p)),
+		outputImageFilePath
+	);
+	const jsonData = generateJsonData(result);
+	await fs.writeFile(outputJsonFilePath, JSON.stringify(jsonData, null, 2));
+	stopwatch.check('Spritesheet and JSON created successfully');
 }
 
-makeSpritesheet(
-	'./tmp/icons',
-	'./src/lib/resources/images/spritesheet.png',
-	'./src/lib/resources/images/spritesheet.json',
-	itemsMustBeInSpritesheet
-)
-	.then(() => {
-		makeSpritesheet(
-			'./src/lib/resources/images/bso_icons',
-			'./src/lib/resources/images/bso_spritesheet.png',
-			'./src/lib/resources/images/bso_spritesheet.json'
-		);
-	})
-	.then(() => process.exit());
+async function main() {
+	stopwatch.check('Making OSB spritesheet');
+	await makeSpritesheet(
+		'./tmp/icons',
+		'./src/lib/resources/images/spritesheet.png',
+		'./src/lib/resources/images/spritesheet.json',
+		itemsMustBeInSpritesheet
+	).catch(err => console.error(`Failed to make OSB spritesheet: ${err.message}`));
+
+	stopwatch.check('Making BSO spritesheet');
+	await makeSpritesheet(
+		'./src/lib/resources/images/bso_icons',
+		'./src/lib/resources/images/bso_spritesheet.png',
+		'./src/lib/resources/images/bso_spritesheet.json'
+	).catch(err => console.error(`Failed to make BSO spritesheet: ${err.message}`));
+
+	stopwatch.check('Finished');
+	process.exit();
+}
+
+main();

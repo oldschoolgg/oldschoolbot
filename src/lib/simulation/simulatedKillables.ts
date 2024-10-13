@@ -1,7 +1,30 @@
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
-import { winterTodtPointsTable } from '../constants';
 import { WintertodtCrate } from './wintertodt';
+
+export const winterTodtPointsTable = new SimpleTable<number>()
+	.add(420)
+	.add(470)
+	.add(500)
+	.add(505)
+	.add(510)
+	.add(520)
+	.add(550)
+	.add(560)
+	.add(590)
+	.add(600)
+	.add(620)
+	.add(650)
+	.add(660)
+	.add(670)
+	.add(680)
+	.add(700)
+	.add(720)
+	.add(740)
+	.add(750)
+	.add(780)
+	.add(850);
 
 interface SimulatedKillable {
 	name: string;

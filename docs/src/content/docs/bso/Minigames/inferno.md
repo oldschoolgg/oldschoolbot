@@ -2,8 +2,6 @@
 title: "Inferno"
 ---
 
-# Inferno
-
 See [OSB Wiki](https://wiki.oldschool.gg/bosses/inferno) for general information.
 
 ### BSO Specific Boosts

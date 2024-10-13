@@ -1,11 +1,16 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { glob } from 'glob';
+import { Bank, Monsters } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
+import { groupBy } from 'remeda';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
-import { Bank, Monsters, itemNameFromID, toTitleCase } from '../src/lib/util';
+import { itemNameFromID } from '../src/lib/util';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
 
 function combatAchievementHowToFinish(ca: CombatAchievement) {
@@ -248,7 +253,188 @@ async function renderMonstersMarkdown() {
 	handleMarkdownEmbed('monsters', 'osb/monsters.mdx', markdown.toString());
 }
 
+function renderQuestsMarkdown() {
+	const markdown = new Markdown();
+
+	for (const quest of quests.sort((a, b) => a.name.localeCompare(b.name))) {
+		const questMarkdown = new Markdown();
+		questMarkdown.addLine(`## ${quest.name}`);
+		questMarkdown.addLine(
+			`You can send your minion to do this quest using [[/activities quest name:${quest.name}]]`
+		);
+
+		if (quest.skillReqs) {
+			questMarkdown.addLine('### Skill Requirements');
+			questMarkdown.addLine(
+				`- Skills: ${Object.entries(quest.skillReqs)
+					.map(([skill, lvl]) => `[[${skill}:${lvl}]]`)
+					.join(' ')}`
+			);
+		}
+		if (quest.ironmanSkillReqs) {
+			questMarkdown.addLine('### Ironman Skill Requirements');
+			questMarkdown.addLine(
+				`${Object.entries(quest.ironmanSkillReqs)
+					.map(([skill, lvl]) => `[[${skill}:${lvl}]]`)
+					.join(' ')}`
+			);
+		}
+
+		if (quest.prerequisitesQuests) {
+			questMarkdown.addLine('### Required Quests');
+			for (const req of quest.prerequisitesQuests) {
+				questMarkdown.addLine(`- Must have finished ${quests.find(q => q.id === req)!.name}`);
+			}
+		}
+
+		if (quest.combatLevelReq || quest.qpReq) {
+			questMarkdown.addLine('### Other requirements');
+			if (quest.combatLevelReq) {
+				questMarkdown.addLine(`- Combat Level requirement: ${quest.combatLevelReq}`);
+			}
+			if (quest.qpReq) {
+				questMarkdown.addLine(`- Quest Points requirement: [[qp:${quest.qpReq}]]`);
+			}
+		}
+
+		if (quest.rewards) {
+			questMarkdown.addLine('### Item Rewards');
+			questMarkdown.addLine(
+				quest.rewards
+					.items()
+					.map(([item]) => `[[${item.id}]]`)
+					.join(' ')
+			);
+		}
+		if (quest.skillsRewards) {
+			questMarkdown.addLine('### XP Rewards');
+			questMarkdown.addLine(
+				Object.entries(quest.skillsRewards)
+					.map(([skill, xp]) => `[[${skill}:${xp.toLocaleString()}]]`)
+					.join(' ')
+			);
+		}
+
+		markdown.add(questMarkdown);
+	}
+
+	handleMarkdownEmbed('quests', 'osb/quests.mdx', markdown.toString());
+}
+
+function rendeCoxMarkdown() {
+	const markdown = new Markdown();
+
+	markdown.addLine('## Gear');
+	markdown.addLine('This is the best-in-slot gear you should use for CoX, substitute the next best items you have. ');
+	for (const gear of [
+		['mage', 'Magic Damage', COXMaxMageGear],
+		['range', 'Ranged Strength', COXMaxRangeGear],
+		['melee', 'Melee Strength', COXMaxMeleeGear]
+	] as const) {
+		markdown.addLine(`### ${toTitleCase(gear[0])}`);
+		markdown.addLine(`For ${gear[0]}, use these items, or the next best '${gear[1]}' gear you have:`);
+		markdown.addLine(
+			`- ${gear[2]
+				.allItems(false)
+				.map(id => `[[${id}]]`)
+				.join(' ')}`
+		);
+	}
+
+	markdown.addLine('## Boosts');
+	markdown.addLine(`Higher Kc makes raids faster. Here is the maximum kc that will give a boost:
+
+| Difficulty | Solo Kc | Mass Kc |
+| ---------- | ------- | ------- |
+| Normal     | 250     | 400     |
+| Challenge  | 75      | 100     |
+
+`);
+	for (const boostSet of itemBoosts) {
+		markdown.addLine(
+			`- ${boostSet
+				.map(boost => {
+					const messages = [];
+					if (!boost.mustBeEquipped) {
+						messages.push('Works from bank');
+					}
+					if (boost.mustBeCharged) {
+						messages.push('Must be charged');
+					}
+					const msgStr = messages.length > 0 ? ` (${messages.join(', ')})` : '';
+					return `${boost.boost}% boost for [[${boost.item.name}]]${msgStr}`;
+				})
+				.join(' or ')}`
+		);
+	}
+
+	handleMarkdownEmbed('cox', 'osb/Raids/cox.mdx', markdown.toString());
+}
+function wikiIssues() {
+	const untemplatedCommandRegex = /(?<!\[\[[^\]]*|[)\]]\s*)\/\w+/g;
+	const unintendedHtmlRegex = /<td>/g;
+
+	interface Issue {
+		description: string;
+		filePath: string;
+		lineNumbers: number[];
+	}
+
+	const files = glob.sync('./docs/**/*.{md,mdx}', {
+		ignore: ['**/node_modules/**']
+	});
+
+	const issues: Issue[] = [];
+
+	for (const file of files) {
+		const content = readFileSync(file, 'utf-8');
+		const lines = content.split('\n');
+
+		const untemplatedCommandLines: number[] = [];
+		const unintendedHtmlLines: number[] = [];
+
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			if (untemplatedCommandRegex.test(line)) {
+				untemplatedCommandLines.push(i + 1);
+			}
+			if (unintendedHtmlRegex.test(line)) {
+				unintendedHtmlLines.push(i + 1);
+			}
+		}
+
+		if (untemplatedCommandLines.length > 0) {
+			issues.push({
+				description: 'Doesnt use the new command formatting',
+				filePath: file,
+				lineNumbers: untemplatedCommandLines
+			});
+		}
+
+		if (unintendedHtmlLines.length > 0) {
+			issues.push({
+				description: 'Contains unintended HTML (e.g. `<td>`)',
+				filePath: file,
+				lineNumbers: unintendedHtmlLines
+			});
+		}
+	}
+
+	const markdown = new Markdown();
+	const grouped = groupBy(issues, i => i.filePath.replaceAll('\\', '/'));
+	for (const [file, issues] of Object.entries(grouped).sort((a, b) => a[0].localeCompare(b[0]))) {
+		markdown.addLine(
+			`[${file.replace('docs/src/content/docs', '')}](https://github.com/oldschoolgg/oldschoolbot/blob/master/${file.replaceAll(' ', '%20')}): ${issues.map(i => i.description).join(', ')}`
+		);
+	}
+
+	handleMarkdownEmbed('wikiissues', 'getting-started/wiki.md', markdown.toString());
+}
+
 async function wiki() {
+	renderQuestsMarkdown();
+	rendeCoxMarkdown();
+	wikiIssues();
 	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
 }
 

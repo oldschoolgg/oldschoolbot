@@ -2,11 +2,9 @@
 title: "Tithe Farm"
 ---
 
-# Tithe Farm
-
 The [Tithe Farm](https://oldschool.runescape.wiki/w/Tithe_Farm) is a farming minigame where you earn points which can be used to purchase the Farmers outfit, supercompost, and other collection log slots. Your minion will start out quite inefficient at the minigame and progressively become more experienced.
 
-The start the minigame, use `/farming tithe_farm`
+The start the minigame, use [[/farming tithe_farm]]
 
 ## Requirements
 
@@ -18,15 +16,15 @@ The start the minigame, use `/farming tithe_farm`
 
 ## Boosts
 
-- 10% speed boost for full graceful **(\*\***equipped in any setup\*\*\*\*)\*\*
-- 2.5% bonus xp for full farmers outfit **(\*\***works from bank\***\*)** (calculated upon trip return)
+- 10% speed boost for full graceful (equipped in any setup)
+- 2.5% bonus xp for full farmers outfit (works from bank, calculated upon trip return)
 - Up to 25% speed boost for minion learning (1% for every 2 completions)
 
 ---
 
 ## Tithe Farm Shop
 
-Items can be purchased with Tithe Farm points with`/farming tithe_farm`` `**`buy_reward:`**
+Items can be purchased with Tithe Farm points with [[/farming tithe_farm buy_reward]]
 
 | **Item name**           | **Point cost** |
 | ----------------------- | :------------: |

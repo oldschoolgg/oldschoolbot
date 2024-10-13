@@ -2,17 +2,41 @@
 title: "Construction"
 ---
 
-# Construction
+Construction in the bot has three distinct parts: [Training](./#training), [Mahogany Homes](mahogany-homes.md), and your [Player-owned House](mahogany-homes.md). Mahogany Homes requires planks and steel bars, and building things in your PoH requires planks as well as various mob drops or buyables.
 
-Construction in the bot has three distinct parts:[ Training](./#training), [Mahogany Homes](mahogany-homes.md), and your [Player-owned House](mahogany-homes.md). Mahogany Homes requires planks and steel bars, and building things in your PoH requires planks as well as various mob drops or buyables.
+You can also [[/offer name\:curved bone]] and `long bone` you get from PvM for construction xp after level 30 construction. Fighting the Wintertodt also provides a small amount of construction xp.
 
-You can also `/offer`` `**`name:`**` ``curved bone` and `long bone` you get from PvM for construction xp after level 30 construction. Fighting the Wintertodt also provides a small amount of construction xp.
+## Fastest Route to 99:
+
+1. [[/build name\:Crude wooden chair quantity\:5]]
+1. [[/build name\:Wooden bookcase quantity\:7]]
+1. [[/build name\:Wooden larder quantity\:7]]
+1. [[/build name\:Repair bench quantity\:3]]
+1. [[/build name\:Crafting table 1 quantity\:12]]
+1. [[/build name\:Oak dining table quantity\:39]]
+1. [[/build name\:Carved oak table quantity\:10]]
+1. [[/build name\:Oak larder quantity\:220]]
+1. [[/build name\:Mahogany table]]
+
+**Materials Needed:**
+94 Plank
+2030 Oak plank
+92,220 Mahogany plank
+
+### Mahogany Homes
+
+A much cheaper alternative, especially for ironmen, is Mahogany Homes. This will automatically choose the highest tier contract you have the level for, and gives much more xp per plank, at the cost of lower xp/hr. Doing expert contracts (70+ Construction) provides roughly 180k xp/hr and gives approximately 390 xp per Mahogany plank used, which means 99 Con would take about 30-35k planks instead of 92k.
+There are two commands associated with Mahogany Homes:
+
+`/minigames mahogany_homes start`
+
+`/minigames mahogany_homes buy`
+
+See the [Mahogany Homes](/osb/activities/mahogany-homes/) for a full breakdown of the activity.
 
 ## Making Planks
 
 There are 3 methods to plank making: The sawmill, using a Demon butler, or using magic.
-
-The cost of making planks via all 3 methods can be found here.
 
 | **Plank Type** | **Sawmill/Butler Cost** | **Plank-Make Spell Cost** |
 | -------------- | ----------------------- | ------------------------- |
@@ -23,20 +47,20 @@ The cost of making planks via all 3 methods can be found here.
 
 #### Sawmill
 
-- `/activities plank_make`` `**`action:`**`Sawmill`` `**`type:`**`[Plank type]`
+- `/activities plank_makeaction:Sawmilltype:[Plank type]`
 - Wearing full Graceful gives a 10% boost to trip time.
 - Unlocking the Woodcutting Guild gives a 10% boost to trip time.
   - Requires 50QP and 60 Woodcutting.
 
 #### Butler
 
-- `/activities plank_make`` `**`action:`**`Demon Butler`` `**`type:`**`[Plank type]`
+- `/activities plank_makeaction:Demon Butlertype:[Plank type]`
 - Approximately 2x faster than the sawmill but also more expensive and requires teleport runes.
 - Equipping a Crafting or Construction cape will lower the cost of runes.
 
 #### Plank-make Spell
 
-- `/activities cast`` `**`spell:`**` ``Plank Make [log type]`
+- `/activities castspell: ``Plank Make [log type]`
 - The slowest method but 30% cheaper for the plank cost.
 - Provides around 158k magic xp per hour.
 

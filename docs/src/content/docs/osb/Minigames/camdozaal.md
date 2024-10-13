@@ -2,15 +2,11 @@
 title: "Camdozaal"
 ---
 
-# Camdozaal
-
 Use your mining, smithing, fishing, and combat skills to collect all barronite and ancient items, as well as the imcando hammer. You can also face the mighty camdozaal creatures for items as well. Throughout all activites in Camdozaal, you will obtain Barronite shards which are used to create the Barronite mace and Imcando hammer.
 
 To start a trip in Camdozaal, use
 
 [[/activities camdozaal action:]]
-
----
 
 ## Requirements
 
@@ -18,8 +14,6 @@ To start a trip in Camdozaal, use
 - 14 Mining (only for the mining activity)
 - 14 Smithing (only for the smithing activity)
 - 7 Fishing (only for the fishing activity)
-
----
 
 ## Mining
 
@@ -66,7 +60,7 @@ Barronite guard - varies
 
 This hammer is received in a broken status when acquired from Barronite deposits while smithing. It requires 1,500 Barronite shards to be fixed. To create the fixed version, simply use:
 
-- `/create`` `**`item:`**`Imcando hammer`
+- `/createitem:Imcando hammer`
 
 The hammer serves no purpose in the bot, it is simply a collection log slot.
 
@@ -74,4 +68,4 @@ The hammer serves no purpose in the bot, it is simply a collection log slot.
 
 The mace is made up of 3 individual pieces, acquired from all sections of Camdozaal. It requires 1,500 Barronite shards to be created. To create the mace, simply use:
 
-- `/create`` `**`item:`**` ``Barronite mace`
+- `/createitem: ``Barronite mace`

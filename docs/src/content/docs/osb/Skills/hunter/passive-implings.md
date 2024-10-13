@@ -6,7 +6,7 @@ title: "Passive Implings"
 
 As your minion is on a trip, it will automatically catch any implings it finds, provided it has the hunter level to catch them with a net (you don't actually need to buy a net).
 
-You can view the collection log for implings with `/cl`` `**`name:`**`implings`.
+You can view the collection log for implings with `/clname:implings`.
 
 ## How It Works
 

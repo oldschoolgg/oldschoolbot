@@ -1,12 +1,12 @@
 ---
 import { getAuthors } from "../plugins/authors";
 const authors = (await getAuthors(`src/content/docs/${Astro.props.id}`));
+const editURL = Astro.props.editUrl?.toString();
 ---
 
 <footer class="sl-flex">
-
-<div class="credits-list">{authors.map(name => <div class="credit">{name}</div>)}</div>
-
+	{authors.length > 0 && <div class="credits-list">Editors: {authors.map(name => <div class="credit">{name}</div>)}</div>}
+	{editURL && <a href={editURL} target="_blank" rel="noopener noreferrer" class="edit_this_page">Edit this page</a>}
 </footer>
 
 <style>

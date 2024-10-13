@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
@@ -53,6 +53,7 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
+	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
 	corporealBeastCL,
 	crazyArchaeologistCL,
@@ -118,6 +119,7 @@ import {
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
 	toaCL,
+	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
 	vardorvisCL,
@@ -908,6 +910,10 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: 'BigChompyBirdHunting',
 				items: chompyBirdsCL
 			},
+			'Colossal Wyrm Agility': {
+				alias: ['colossal wyrm agility', 'colo agility', 'wyrm agility'],
+				items: colossalWyrmAgilityCL
+			},
 			'Creature Creation': {
 				items: creatureCreationCL
 			},
@@ -1023,6 +1029,13 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TzHaarXil.allItems
 				],
 				items: tzHaarCL
+			},
+			'Tormented Demons': {
+				alias: Monsters.TormentedDemon.aliases,
+				allItems: Monsters.TormentedDemon.allItems,
+				kcActivity: Monsters.TormentedDemon.name,
+				items: tormentedDemonCL,
+				fmtProg: kcProg(Monsters.TormentedDemon)
 			},
 			Miscellaneous: {
 				alias: ['misc'],
@@ -1303,7 +1316,7 @@ export function getCollectionItems(
 			_clName = category;
 			_items = uniqueArr(
 				Object.values(entries.activities)
-					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
+					.map(e => [...new Set([...e.items, ...(allItems ? (e.allItems ?? []) : [])])])
 					.flat(2)
 			);
 

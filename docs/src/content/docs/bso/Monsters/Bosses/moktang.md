@@ -10,8 +10,8 @@ Moktang drops the Igne gear frame, which is used in creating the [Igne Claws](..
 
 ## Get Started
 
-- `/create`` `**`item:`**`Moktang totem`
-- `/k`` `**`name:`**`Moktang`
+- `/createitem:Moktang totem`
+- `/kname:Moktang`
 
 ## Requirements
 

@@ -231,7 +231,12 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [120, 185],
 		weight: 7,
-		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		monsters: [
+			Monsters.GreaterDemon.id,
+			Monsters.KrilTsutsaroth.id,
+			Monsters.Skotizo.id,
+			Monsters.TormentedDemon.id
+		],
 		combatLevel: 70,
 		unlocked: true
 	},
@@ -438,6 +443,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.Araxyte,
 		amount: [40, 60],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.MoreEyesThanSense,
 		weight: 8,
 		monsters: [Monsters.Araxyte.id, Monsters.Araxxor.id],
 		combatLevel: 96,

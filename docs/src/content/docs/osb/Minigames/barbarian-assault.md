@@ -2,15 +2,11 @@
 title: "Barbarian Assault"
 ---
 
-# Barbarian Assault
-
 Challenge waves of penance monsters to unlock the rewards from Barbarian Assault. BA in the bot works a bit differently than BA in OSRS, as it is only soloable and the rest of your team members are essentially NPCs. There are no defined roles or role-specific honour levels, there aren't even specific waves. However, you do have a 25% chance to be selected as the fighter role, and when this happens, you will get a speed boost based on your melee gear ([see below](barbarian-assault.md#bis-melee-gear)).
 
 To start a trip of BA, use the following command:
 
-- `/minigames barb_assault start`
-
----
+- [[/minigames barb_assault start]]
 
 ## Boosts
 
@@ -20,17 +16,11 @@ To start a trip of BA, use the following command:
 - 10% for Venator bow ([see below](barbarian-assault.md#venator-bow))
 - 10% more points for completion of Kandarin hard diary (upon return of trip)
 
----
-
 ## BiS Melee Gear
 
 You have a 1/4 chance per trip for your minion to be chosen as the Fighter role. If you are chosen for this role, your melee gear will provide a boost of up to 13.11%. If you are not chosen for this role, you simply don't get the gear score boost. This boost is based on your minions _melee strength bonus_ and below is an image of the best melee strength bonus currently available:
 
 **NOTE:** Using Bandos chestplate and tassets with Neitiznot faceguard will give 12.50% boost.
-
-<figure><figcaption><p>Highest Melee Strength Available</p></figcaption></figure>
-
----
 
 ## **Honour Level**
 
@@ -79,4 +69,4 @@ To spend your honour points on gambles, use the following:
 | High gamble    |          500          |
 | Granite body   |       95,000gp        |
 
-- The Granite body is purchasable after completing 10 waves of BA. To purchase the Granite body, use `/buy`` `**`name:`**` ``Granite Body`
+- The Granite body is purchasable after completing 10 waves of BA. To purchase the Granite body, use [[/buy name\:Granite Body]]

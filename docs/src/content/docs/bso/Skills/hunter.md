@@ -1,13 +1,10 @@
 ---
 title: "Hunter"
-description: /hunt
 ---
-
-# Hunter
 
 ### Custom Content and Boosts
 
-- Elder Birdhouses - can be set at level 99 Hunter, giving random seeds and a chance at [Grandmaster Clues](https://bso-wiki.oldschool.gg/custom-items/grandmaster-clues)
+- Elder Birdhouses - can be set at level 99 Hunter, giving random seeds and a chance at [Grandmaster Clues](/custom-items/grandmaster-clues)
 - [Scroll of the Hunt](dungeoneering-training/dg-rewards.md#buyable-boosts-utility) - +4 Birdhouses
 - Sand Geckos - can be hunted at 120 Hunter, 99 Agility, and 99 Fishing, consuming 1 simple kibble per 8 geckos. They reward various mystery boxes, and have a chance to give the [Sandy](../custom-items/pets.md#resource-gathering-and-loot-affecting-pets) pet
 - Eastern Ferret - can be hunted at 96 Hunter, consuming 1 delicious kibble per 2 ferrets. Chance at [Zippy](../custom-items/pets.md#miscellaneous-pets) pet

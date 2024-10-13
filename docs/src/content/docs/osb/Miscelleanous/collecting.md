@@ -2,9 +2,7 @@
 title: "Collecting"
 ---
 
-# Collecting
-
-Certain items can be collected using the `/activities collect`` `**`item:`**`[itemName]` command. Every item has a specific amount that will be collected in a specific timeframe, which is listed under the requirements in the table below. For example, you will collect 26 blue dragon scales every 120 seconds. However, for the time being, you are only able to run maximum trip lengths for collecting these items, and cannot specify a shorter trip.
+Certain items can be collected using the `/activities collect item:[itemName]` command. Every item has a specific amount that will be collected in a specific timeframe, which is listed under the requirements in the table below. For example, you will collect 26 blue dragon scales every 120 seconds. However, for the time being, you are only able to run maximum trip lengths for collecting these items, and cannot specify a shorter trip.
 
 **NOTE -** If you have built a Jewellery box in your PoH (any type), you no longer require Ring of dueling(8) to collect the following items:
 

@@ -2,8 +2,6 @@
 title: "God Capes"
 ---
 
-# God Capes
-
 You can collect both the regular and imbued god capes for a BiS mage cape slot. Some items are required and you do have the chance to fail (ma2 only). However, you will never lose your equipped items, just the supplies that are needed for each trip.
 
 ## Mage Arena 1

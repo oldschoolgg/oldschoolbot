@@ -16,7 +16,7 @@ import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { calculateSimpleMonsterDeathChance, roll } from '../../lib/util';
+import { calcPerHour, calculateSimpleMonsterDeathChance, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
@@ -286,7 +286,7 @@ export function doMonsterTrip(data: newOptions) {
 	});
 
 	const superiorTable = slayerContext.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
-	const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
+	const isInCatacombs = (!usingCannon ? (monster.existsInCatacombs ?? undefined) : undefined) && !isInWilderness;
 
 	const hasRingOfWealthI = gearBank.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
 	if (hasRingOfWealthI) {
@@ -509,20 +509,20 @@ export const monsterTask: MinionTask = {
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
 		messages.push(...rawResults.filter(r => typeof r === 'string'));
-		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${monster.name} KC is now ${newKC}.`;
+		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name} (${calcPerHour(data.q, data.duration).toFixed(1)}/hr), you now have ${newKC} KC.`;
 
 		announceLoot({
 			user,
 			monsterID: monster.id,
-			loot: updateBank.itemLootBank,
+			loot: itemTransactionResult!.itemsAdded,
 			notifyDrops: monster.notifyDrops
 		});
 
 		const image =
-			updateBank.itemLootBank.length === 0
+			itemTransactionResult!.itemsAdded.length === 0
 				? undefined
 				: await makeBankImage({
-						bank: updateBank.itemLootBank,
+						bank: itemTransactionResult!.itemsAdded,
 						title: `Loot From ${quantity} ${monster.name}:`,
 						user,
 						previousCL: itemTransactionResult?.previousCL

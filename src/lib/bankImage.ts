@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
@@ -701,7 +701,7 @@ export class BankImageTask {
 		const searchQuery = flags.get('search') as string | undefined;
 		const filterInput = flags.get('filter');
 		const filter = flags.get('search')
-			? filterableTypes.find(type => type.aliases.some(alias => filterInput === alias)) ?? null
+			? (filterableTypes.find(type => type.aliases.some(alias => filterInput === alias)) ?? null)
 			: null;
 		if (filter || searchQuery) {
 			for (const [item] of bank.items()) {
@@ -720,9 +720,9 @@ export class BankImageTask {
 		const favorites = user?.user.favoriteItems;
 		const weightings = user?.user.bank_sort_weightings as ItemBank;
 		const perkTier = user ? user.perkTier() : 0;
-		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : user?.bankSortMethod ?? 'value';
+		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : (user?.bankSortMethod ?? 'value');
 		const sortInput = flags.get('sort');
-		const sort = sortInput ? BankSortMethods.find(s => s === sortInput) ?? defaultSort : defaultSort;
+		const sort = sortInput ? (BankSortMethods.find(s => s === sortInput) ?? defaultSort) : defaultSort;
 
 		items.sort(sorts[sort]);
 

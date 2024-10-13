@@ -2,23 +2,21 @@
 title: "Combat Training"
 ---
 
-# Combat Training
-
 While strength can be leveled through barbarian fishing and magic has various non-combat applications, PvM is a more efficient and profitable way to level up your combat stats.
 
 By using the `/minion train` command, you can select which style of combat you would like to level. Here is a list of all possible combat styles:
 
-- `/minion train`` `**`style:`**` ``shared` - provides equally split xp to all 3 melee styles
-- `/minion train`` `**`style:`**` ``attack`
-- `/minion train`` `**`style:`**` ``strength`
-- `/minion train`` `**`style:`**` ``defence`
-- `/minion train`` `**`style:`**` ``strength attack` - trains strength + attack together
-- `/minion train`` `**`style:`**` ``defence attack` - trains defence + attack together
-- `/minion train`` `**`style:`**` ``strength defence` - trains strength + defence together
-- `/minion train`` `**`style:`**` ``ranged`
-- `/minion train`` `**`style:`**` ``ranged defence` - trains ranged + defence together
-- `/minion train`` `**`style:`**` ``magic`
-- `/minion train`` `**`style:`**` ``magic defence` - trains magic + defence together
+- `/minion train style: ``shared` - provides equally split xp to all 3 melee styles
+- `/minion train style: ``attack`
+- `/minion train style: ``strength`
+- `/minion train style: ``defence`
+- `/minion train style: ``strength attack` - trains strength + attack together
+- `/minion train style: ``defence attack` - trains defence + attack together
+- `/minion train style: ``strength defence` - trains strength + defence together
+- `/minion train style: ``ranged`
+- `/minion train style: ``ranged defence` - trains ranged + defence together
+- `/minion train style: ``magic`
+- `/minion train style: ``magic defence` - trains magic + defence together
 
 **Note:** Hitpoints xp is gained alongside any combat style and cannot be selected as a primary training focus.
 

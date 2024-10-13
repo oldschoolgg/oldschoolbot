@@ -3,15 +3,11 @@ title: "Farming Contracts"
 description: Refer to House Paran for additional knowledge
 ---
 
-# Farming Contracts
-
 An easy way to get additional seeds while farming is to take on a [farming contract](https://oldschool.runescape.wiki/w/Guildmaster_Jane#Farming_contracts) from Farming Guildmaster Jane using the `/farming contract` command. Seed packs are tiered from 1-5 and work the exact same as the main game.
 
 If you are tier 1 patron or higher (and your plant is fully grown), you will see an **'Auto Farming Contract'** button at the end of your trips. This can be enabled/disabled using:
 
-`/config user toggle`` `**`name:`**`Disable Auto Farm Contract Button`
-
----
+`/config user togglename:Disable Auto Farm Contract Button`
 
 ## Requirements
 
@@ -19,23 +15,19 @@ If you are tier 1 patron or higher (and your plant is fully grown), you will see
   - 65 Farming (Medium contracts)
   - 85 Farming (Hard contracts)
 
----
-
 ## Commands
 
 To get a contract:
 
-- `/farming contract`` `**`input:`**
+- `/farming contractinput:`\*\*
 
 To make an existing contract easier:
 
-- `/farming contract`` `**`input:`**`easier`
+- `/farming contractinput:easier`
 
 To open your seed pack:
 
-- `/open`` `**`name:`**`seed pack`
-
----
+- `/openname:seed pack`
 
 ## Contract Rewards
 

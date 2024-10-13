@@ -4,7 +4,7 @@ title: "Custom Items"
 
 ### First Age
 
-First Age equipment is obtained at a very rare rate from [Grandmaster Caskets](https://bso-wiki.oldschool.gg/custom-items/grandmaster-clues)
+First Age equipment is obtained at a very rare rate from [Grandmaster Caskets](/custom-items/grandmaster-clues)
 
 |                    |                     |
 | ------------------ | ------------------- |
@@ -95,7 +95,7 @@ Dragonbone Equipment is an ornamental version of normal Dragon and Infinity equi
 
 **Deathtouched Dart**
 
-Deathtouched Darts can be obtained from [Grandmaster Caskets](https://bso-wiki.oldschool.gg/custom-items/grandmaster-clues), and are used to cause any one `/k` trip to return instantly.
+Deathtouched Darts can be obtained from [Grandmaster Caskets](/custom-items/grandmaster-clues), and are used to cause any one `/k` trip to return instantly.
 
 **Lamps**
 

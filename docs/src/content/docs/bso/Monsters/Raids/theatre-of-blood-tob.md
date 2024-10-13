@@ -2,8 +2,6 @@
 title: "Theatre of Blood (ToB)"
 ---
 
-# Theatre of Blood (ToB)
-
 See the [OSB wiki](https://wiki.oldschool.gg/raids/theatre-of-blood) for general info.
 
 ## Boosts

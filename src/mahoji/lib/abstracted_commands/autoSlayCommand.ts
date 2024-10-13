@@ -1,5 +1,5 @@
-import { isGuildChannel } from '@oldschoolgg/toolkit';
-import type { CommandOptions } from '@oldschoolgg/toolkit';
+import { isGuildChannel } from '@oldschoolgg/toolkit/util';
+import type { CommandOptions } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
@@ -22,6 +22,12 @@ interface AutoslayLink {
 }
 
 const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
+	{
+		monsterID: Monsters.Araxyte.id,
+		efficientName: Monsters.Araxyte.name,
+		efficientMonster: Monsters.Araxyte.id,
+		efficientMethod: ['barrage', 'cannon']
+	},
 	{
 		monsterID: Monsters.Jelly.id,
 		efficientName: Monsters.WarpedJelly.name,

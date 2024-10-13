@@ -2,15 +2,15 @@
 title: "Bank Filters"
 ---
 
-There are a multitude of bank filters you can use to easily identify or search items in your bank. You can start by typing the `/bank` command to display your bank. It is also possible to view the different pages of your bank with `/bank`` `**`page:`**`X` (X being any page number).
+There are a multitude of bank filters you can use to easily identify or search items in your bank. You can start by typing the [[/bank]] command to display your bank. It is also possible to view the different pages of your bank with [[/bank page:2]]
 
 ### Searching Your Bank
 
 There are 2 ways to search your bank for items.
 
-- `/bank`` `**`item:`**`[item name]`
+- `/bank item:[item name]`
   - This command only returns results when the full item name is entered.
-- `/bank`` `**`search:`**`[text]`
+- `/bank search:[text]`
   - This command will return anything that contains the text entered.
 
 ### Bank Sorting
@@ -38,7 +38,7 @@ When searching your bank you can use multiple options to find exactly what you'r
 
 The following command is an example of a bank search for the term "rune" with many filters.
 
-- E.g. `/bank`` `**`search:`**`rune`` `**`flag:`**`show_names`` `**`flag_extra:`**`wide`
+- E.g. `/banksearch:runeflag:show_namesflag_extra:wide`
 
 ### Category Filters
 
@@ -64,7 +64,7 @@ The following bank filters can be used with either of the bank search commands t
 
 The collection log filters can be used with either of the bank search commands to display the items from specific collection logs. Not all collection logs are available for bank searching.
 
-- E.g. `/bank`` `**`filter:`**`cerberus`
+- E.g. `/bank filter:cerberus`
 
 - Some other collection logs that can be search include:
   - `god wars` - displays all unique items from the 4 godwars bosses
