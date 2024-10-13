@@ -286,7 +286,7 @@ export function doMonsterTrip(data: newOptions) {
 	});
 
 	const superiorTable = slayerContext.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
-	const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
+	const isInCatacombs = (!usingCannon ? (monster.existsInCatacombs ?? undefined) : undefined) && !isInWilderness;
 
 	const hasRingOfWealthI = gearBank.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
 	if (hasRingOfWealthI) {
@@ -514,15 +514,15 @@ export const monsterTask: MinionTask = {
 		announceLoot({
 			user,
 			monsterID: monster.id,
-			loot: updateBank.itemLootBank,
+			loot: itemTransactionResult!.itemsAdded,
 			notifyDrops: monster.notifyDrops
 		});
 
 		const image =
-			updateBank.itemLootBank.length === 0
+			itemTransactionResult!.itemsAdded.length === 0
 				? undefined
 				: await makeBankImage({
-						bank: updateBank.itemLootBank,
+						bank: itemTransactionResult!.itemsAdded,
 						title: `Loot From ${quantity} ${monster.name}:`,
 						user,
 						previousCL: itemTransactionResult?.previousCL
