@@ -13,7 +13,7 @@ To start Brimhaven Agility Arena, simply type:
 While there are no boosts for speed or minion learning, the following bonuses apply:
 
 - Completion of **Karamja Medium** diary or higher:
-  - Provides 10% extra Agility experience. 
+  - Provides 10% extra Agility experience.
   - Grants a 10% experience bonus when turning in agility arena tickets.
 - Completion of **Karamja Elite** diary:
   - Grants a 10% chance of receiving double agility arena tickets.
@@ -23,7 +23,8 @@ While there are no boosts for speed or minion learning, the following bonuses ap
 You can exchange agility arena tickets for [[agility:345 XP]] each ([[agility:379.5 XP]] with the Karamja Medium diary or higher).
 
 To claim experience for tickets, use:
-- [[/minigames agility_arena xp quantity\:1/10/25/100/1000]] 
+
+- [[/minigames agility_arena xp quantity\:1/10/25/100/1000]]
 
 ### Brimhaven Graceful Set
 
