@@ -53,6 +53,7 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
+	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
 	corporealBeastCL,
 	crazyArchaeologistCL,
@@ -908,6 +909,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
 				kcActivity: 'BigChompyBirdHunting',
 				items: chompyBirdsCL
+			},
+			'Colossal Wyrm Agility': {
+				alias: ['colossal wyrm agility', 'colo agility', 'wyrm agility'],
+				items: colossalWyrmAgilityCL
 			},
 			'Creature Creation': {
 				items: creatureCreationCL
