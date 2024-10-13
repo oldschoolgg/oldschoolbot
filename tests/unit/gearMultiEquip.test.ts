@@ -1,11 +1,9 @@
-import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
+import { Bank, EquipmentSlot, convertLVLtoXP, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { Gear } from '../../src/lib/structures/Gear';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
-import { mockMUser } from './utils';
+import { mockMUser } from './userutil';
 
 describe('Multi-equip Gear Test', () => {
 	const userBank = new Bank();
@@ -74,7 +72,7 @@ describe('Multi-equip Gear Test', () => {
 		const result = gearEquipMultiImpl(testUser2, 'melee', testInput);
 		const resultGear = new Gear(result.equippedGear);
 		expect(result.equipBank!.toString()).toEqual('999x Dragon arrow, 1x Elysian spirit shield');
-		expect(result.unequipBank!.toString()).toEqual('500x Rune arrow, 1x Dragonfire shield');
+		expect(result.unequipBank!.toString()).toEqual('1x Dragonfire shield, 500x Rune arrow');
 		expect(result.skillFailBank!.toString()).toEqual('No items');
 		expect(resultGear.toString()).toEqual(
 			'Dragon arrow, Dragon platebody, Armadyl helmet, Dragon platelegs, Elysian spirit shield, Zaryte crossbow'
@@ -87,7 +85,7 @@ describe('Multi-equip Gear Test', () => {
 		const result = gearEquipMultiImpl(testUser2, 'melee', testInput);
 		const resultGear = new Gear(result.equippedGear);
 		expect(result.equipBank!.toString()).toEqual('999x Dragon arrow, 1x Twisted bow');
-		expect(result.unequipBank!.toString()).toEqual('500x Rune arrow, 1x Dragonfire shield, 1x Zaryte crossbow');
+		expect(result.unequipBank!.toString()).toEqual('1x Dragonfire shield, 500x Rune arrow, 1x Zaryte crossbow');
 		expect(result.skillFailBank!.toString()).toEqual('No items');
 		expect(resultGear.toString()).toEqual(
 			'Dragon arrow, Dragon platebody, Armadyl helmet, Dragon platelegs, Twisted bow'
@@ -143,7 +141,7 @@ describe('Multi-equip Gear Test', () => {
 		const result = gearEquipMultiImpl(testUser3, 'melee', testInput);
 		const resultGear = new Gear(result.equippedGear);
 		expect(result.equipBank!.toString()).toEqual('1x Eternal boots, 1x Twisted bow');
-		expect(result.unequipBank!.toString()).toEqual('1x Rune boots, 1x Elysian spirit shield, 1x Zaryte crossbow');
+		expect(result.unequipBank!.toString()).toEqual('1x Elysian spirit shield, 1x Rune boots, 1x Zaryte crossbow');
 		expect(resultGear.toString()).toEqual('Eternal boots, Twisted bow');
 	});
 
@@ -164,7 +162,7 @@ describe('Multi-equip Gear Test', () => {
 		const testInput = '2222 DragON DART';
 		const result = gearEquipMultiImpl(testUser4, 'melee', testInput);
 		const resultGear = new Gear(result.equippedGear);
-		expect(result.equipBank!.toString()).toEqual('2,222x Dragon dart');
+		expect(result.equipBank!.toString()).toEqual('2.2k Dragon dart');
 		expect(result.unequipBank!.toString()).toEqual('1x Twisted bow');
 		expect(resultGear.toString()).toEqual('Dragon dart');
 
@@ -189,7 +187,7 @@ describe('Multi-equip Gear Test', () => {
 		const testInput = '2222 DragON DART';
 		const result = gearEquipMultiImpl(testUser5, 'melee', testInput);
 		const resultGear = new Gear(result.equippedGear);
-		expect(result.equipBank!.toString()).toEqual('2,222x Dragon dart');
+		expect(result.equipBank!.toString()).toEqual('2.2k Dragon dart');
 		expect(result.unequipBank!.toString()).toEqual('500x Rune dart');
 		expect(resultGear.toString()).toEqual('Dragon dart');
 

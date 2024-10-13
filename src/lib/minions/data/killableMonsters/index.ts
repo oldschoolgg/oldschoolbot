@@ -395,3 +395,5 @@ export const effectiveMonsters = [
 		id: NEX_ID
 	}
 ];
+
+export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));

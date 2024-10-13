@@ -1,5 +1,5 @@
-import { truncateString } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { truncateString } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
@@ -68,7 +68,7 @@ export const openCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
-				user.bank.filter(item => allOpenablesIDs.has(item.id), false).toString(),
+				user.bank.filter(item => allOpenablesIDs.has(item.id)).toString(),
 				1950
 			)}.`;
 		}

@@ -35,7 +35,8 @@ const slayerHelmSimilar = resolveItems([
 	'Twisted slayer helmet',
 	'Tztok slayer helmet',
 	'Vampyric slayer helmet',
-	'Tzkal slayer helmet'
+	'Tzkal slayer helmet',
+	'Araxyte slayer helmet'
 ]);
 const slayerHelmSimilarI = resolveItems([
 	'Black slayer helmet (i)',
@@ -48,7 +49,8 @@ const slayerHelmSimilarI = resolveItems([
 	'Slayer helmet (i)',
 	'Tztok slayer helmet (i)',
 	'Vampyric slayer helmet (i)',
-	'Tzkal slayer helmet (i)'
+	'Tzkal slayer helmet (i)',
+	'Araxyte slayer helmet (i)'
 ]);
 const bowfaCorruptSimilar = resolveItems([
 	25_869, // Red, 'duplicate' according to osrsbox item-search
@@ -114,7 +116,7 @@ const source: [string, (string | number)[]][] = [
 	['Occult necklace', ['Occult necklace (or)']],
 	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
 	['Armadyl crossbow', ['Zaryte crossbow']],
-	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
+	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, 'Crystal pickaxe', '3rd age pickaxe', 'Infernal pickaxe']],
 	['Steam battlestaff', [12_795]],
 	['Lava battlestaff', [21_198]],
 	['Odium ward', [12_807]],
@@ -382,7 +384,8 @@ const source: [string, (string | number)[]][] = [
 	['Forestry kit', ['Forestry basket']],
 	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']],
 
-	['Ring of suffering (i)', ['Ring of suffering (ri)']]
+	['Ring of suffering (i)', ['Ring of suffering (ri)']],
+	['Amulet of rancour', ['Amulet of rancour (s)']]
 ];
 
 const similarItems: Map<number, number[]> = new Map(source.map(entry => [itemID(entry[0]), resolveItems(entry[1])]));

@@ -1,5 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -14,6 +14,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
@@ -36,6 +37,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			autocomplete: async value => {
 				return [
 					...Runecraft.Runes.map(i => i.name),
+					'ourania altar',
 					'blood rune (zeah)',
 					'soul rune (zeah)',
 					...Runecraft.Tiaras.map(i => i.name)
@@ -86,6 +88,10 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (tiaraObj) {
 			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
+		}
+
+		if (rune.includes('ourania')) {
+			return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence });
 		}
 
 		if (rune.includes('(zeah)')) {
@@ -219,7 +225,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 				imbueCasts = numberOfInventories;
 			} else {
 				removeTalismanAndOrRunes.add(runeObj.inputTalisman.clone().multiply(numberOfInventories));
-				if (!bank.has(removeTalismanAndOrRunes.bank)) {
+				if (!bank.has(removeTalismanAndOrRunes)) {
 					return `You need enough Magic Imbue runes and 82 Magic, *or* Talismans to craft this rune. You don't have enough talismans for this trip. You need ${runeObj.inputTalisman
 						.clone()
 						.multiply(numberOfInventories)}.`;

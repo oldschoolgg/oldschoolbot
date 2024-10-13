@@ -1,13 +1,14 @@
-import { execSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { writeFile } from 'node:fs/promises';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
+
+import '../src/lib/safeglobals';
 import { BOT_TYPE } from '../src/lib/constants';
 import { allCommands } from '../src/mahoji/commands/allCommands';
 import type { AbstractCommand } from '../src/mahoji/lib/inhibitors';
 import { convertMahojiCommandToAbstractCommand } from '../src/mahoji/lib/util';
 
-async function renderCommands() {
+function renderCommands() {
 	return allCommands
 		.map(c => convertMahojiCommandToAbstractCommand(c))
 		.filter(c => {
@@ -43,9 +44,11 @@ async function renderCommands() {
 		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export async function commandsFile() {
+async function renderCommandsFile() {
 	const commands = await renderCommands();
-	const path = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
-	writeFileSync(path, `${JSON.stringify(commands, null, '	')}\n`);
-	execSync(`npx biome check --write ${path}`);
+	const path = `data/${BOT_TYPE.toLowerCase()}.commands.json`;
+	await writeFile(path, `${JSON.stringify(commands, null, '	')}\n`);
+	process.exit(0);
 }
+
+renderCommandsFile();

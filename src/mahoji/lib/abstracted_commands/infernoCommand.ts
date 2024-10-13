@@ -1,4 +1,4 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -485,7 +485,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		fakeDuration,
 		diedPreZuk,
 		diedZuk,
-		cost: realCost.bank
+		cost: realCost.toJSON()
 	});
 
 	updateBankSetting('inferno_cost', realCost);

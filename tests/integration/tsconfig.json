@@ -3,6 +3,5 @@
 	"include": [".", "../../src/**/*"],
 	"compilerOptions": {
 		"noEmit": true
-	},
-	"references": [{ "path": "../../src" }]
+	}
 }

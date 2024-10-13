@@ -1,4 +1,4 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import type { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, percentChance, randInt, roll } from 'e';
@@ -241,13 +241,12 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 
 	// Add all stardust
 	loot.add('Stardust', dustReceived);
-	const lootItems = loot.bank;
 
 	await addSubTaskToActivityTask<ShootingStarsOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
-		lootItems,
+		lootItems: loot.toJSON(),
 		usersWith,
 		totalXp,
 		type: 'ShootingStars',
