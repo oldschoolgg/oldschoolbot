@@ -3,8 +3,14 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calculateCompCapeProgress } from '../../bso/calculateCompCapeProgress';
+<<<<<<< HEAD
 import { allMasterCapesBank } from '../../skilling/skillcapes';
 import type { Buyable } from './buyables';
+=======
+import { compCapeCreatableBank } from '../../skilling/skillcapes';
+import { isAtleastThisOld } from '../../util';
+import { Buyable } from './buyables';
+>>>>>>> 9109be018 (Add skill cape perks to comp & master cape)
 import { circusBuyables } from './circusBuyables';
 import { fistOfGuthixBuyables } from './fistOfGuthixBuyables';
 import { keyCrateBuyables } from './keyCrateBuyables';
@@ -103,7 +109,7 @@ export const bsoBuyables: Buyable[] = [
 	{
 		name: 'Completionist cape',
 		outputItems: new Bank().add('Completionist cape').add('Completionist hood'),
-		itemCost: allMasterCapesBank,
+		itemCost: compCapeCreatableBank,
 		customReq: async user => {
 			const { totalPercentUntrimmed } = await calculateCompCapeProgress(user);
 			if (totalPercentUntrimmed < 100) {
