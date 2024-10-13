@@ -50,6 +50,11 @@ This section shows ways you can format things
 
 Any colon needs a backslash before it (I'm not sure yet how to make it so this isnt needed.)
 
+### Discord Channels
+
+`[[# bingo-looking-4-team:1149907771937001522]]`
+[[# bingo-looking-4-team:1149907771937001522]]
+
 ### Skills
 
 `[[agility:55]] [[strength:44,000 XP]] [[qp:5]]`
@@ -222,9 +227,9 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/crafting.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/crafting.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Skills/Divination/efficient-divination-training.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Divination/efficient-divination-training.md): Doesnt use the new command formatting
+[/bso/Skills/divination/efficient-divination-training.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/divination/efficient-divination-training.md): Doesnt use the new command formatting
 
-[/bso/Skills/Divination/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Divination/README.md): Doesnt use the new command formatting
+[/bso/Skills/divination/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/divination/README.md): Doesnt use the new command formatting
 
 [/bso/Skills/Dungeoneering Training/dg-rewards.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Dungeoneering%20Training/dg-rewards.md): Doesnt use the new command formatting
 
@@ -242,9 +247,9 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/hunter.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/hunter.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Skills/Invention/efficient-disassembling-to-99.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Invention/efficient-disassembling-to-99.md): Doesnt use the new command formatting
+[/bso/Skills/invention/efficient-disassembling-to-99.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/invention/efficient-disassembling-to-99.md): Doesnt use the new command formatting
 
-[/bso/Skills/Invention/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Invention/README.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/bso/Skills/invention/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/invention/README.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [/bso/Skills/mining.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/mining.md): Doesnt use the new command formatting
 
@@ -252,9 +257,9 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/runecraft.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/runecraft.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Skills/Slayer/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Slayer/README.md): Doesnt use the new command formatting
+[/bso/Skills/slayer/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/slayer/README.md): Doesnt use the new command formatting
 
-[/bso/Skills/Slayer/slayer-masks-helms.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Slayer/slayer-masks-helms.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/bso/Skills/slayer/slayer-masks-helms.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/slayer/slayer-masks-helms.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [/bso/Skills/smithing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/smithing.md): Doesnt use the new command formatting
 

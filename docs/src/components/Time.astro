@@ -1,0 +1,15 @@
+---
+const time = Astro.props.time;
+---
+
+<time>{new Date(time).toLocaleString()}</time>
+
+<style>
+    time {
+      background-color: var(--sl-color-accent);
+      color: var(--sl-color-white);
+      padding: 2px 5px;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+</style>
