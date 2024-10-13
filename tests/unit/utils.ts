@@ -28,7 +28,8 @@ export function makeGearBank({ bank }: { bank?: Bank } = {}) {
 		gear: makeFullGear(),
 		bank: bank ?? new Bank(),
 		skillsAsLevels: makeSkillsAsLevels(),
-		chargeBank: new ChargeBank()
+		chargeBank: new ChargeBank(),
+		skillsAsXP: makeSkillsAsLevels(13_034_431)
 	});
 }
 

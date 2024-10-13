@@ -37,6 +37,7 @@ import type { Consumable } from './minions/types';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
+import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
@@ -278,7 +279,7 @@ export function roughMergeMahojiResponse(
 }
 
 export function skillingPetDropRate(
-	user: MUserClass,
+	user: MUserClass | GearBank,
 	skill: SkillsEnum,
 	baseDropRate: number
 ): { petDropRate: number } {

@@ -139,6 +139,8 @@ export interface Fish {
 	bigFishRate?: number;
 
 	timePerFish?: number; // still needed for camdozaal
+
+	skillReqs?: Omit<LevelRequirements, 'fishing'>;
 }
 
 export interface Course {
