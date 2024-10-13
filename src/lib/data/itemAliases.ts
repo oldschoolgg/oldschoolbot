@@ -27,7 +27,11 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 			id
 		});
 	}
+	if (Items.get(id)!.name !== firstName) {
+		throw new Error(`Failed to set item alias for item ${id}`);
+	}
 }
+
 
 // Graceful sets -- Arceuus
 setItemAlias(13_579, ['Arceuus graceful hood', 'Purple graceful hood']);
