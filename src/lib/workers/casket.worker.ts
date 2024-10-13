@@ -1,7 +1,7 @@
 import '../data/itemAliases';
 
 import { roll } from 'e';
-import { Bank, Misc } from 'oldschooljs';
+import { EliteMimicTable, type ItemBank, MasterMimicTable } from 'oldschooljs';
 
 import type { CasketWorkerArgs } from '.';
 import { ClueTiers } from '../clues/clueTiers';
@@ -10,14 +10,15 @@ if (global.prisma || global.redis) {
 	throw new Error('Prisma/Redis is loaded in the casket worker!');
 }
 
-export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
+export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[ItemBank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
-	const loot = clueTier.table.open(quantity);
+	const loot = clueTier.table.roll(quantity);
 	let mimicNumber = 0;
 	if (clueTier.mimicChance) {
+		const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 		for (let i = 0; i < quantity; i++) {
 			if (roll(clueTier.mimicChance)) {
-				loot.add(Misc.Mimic.open(clueTier.name as 'master' | 'elite'));
+				loot.add(table.roll());
 				mimicNumber++;
 			}
 		}
@@ -30,5 +31,5 @@ export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank
 			: ''
 	}`;
 
-	return [new Bank(loot), opened];
+	return [loot.toJSON(), opened];
 };

@@ -1,12 +1,11 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Time, roll, shuffleArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { SupportServer } from '../../../config';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
-import { COINS_ID, Emoji } from '../../../lib/constants';
+import { Emoji } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
@@ -39,22 +38,24 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 
 	const bonuses = [];
 
+	let coinsToGive = loot.amount('Coins');
+
 	if (isWeekend()) {
-		loot.bank[COINS_ID] *= 2;
+		coinsToGive *= 2;
 		bonuses.push(Emoji.MoneyBag);
 	}
 
 	if (member) {
-		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.5);
+		coinsToGive = Math.floor(coinsToGive * 1.5);
 		bonuses.push(Emoji.OSBot);
 	}
 
 	if (user.user.minion_hasBought) {
-		loot.bank[COINS_ID] /= 1.5;
+		coinsToGive /= 1.5;
 	}
 
 	if (roll(73)) {
-		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.73);
+		coinsToGive = Math.floor(coinsToGive * 1.73);
 		bonuses.push(Emoji.Joy);
 	}
 
@@ -62,22 +63,20 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		if (roll(2)) {
 			bonuses.push(Emoji.Bpaptu);
 		} else {
-			loot.bank[COINS_ID] += 1_000_000_000;
+			coinsToGive += 1_000_000_000;
 			bonuses.push(Emoji.Diamond);
 		}
 	}
 
 	if (!triviaCorrect) {
-		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 0.4);
+		coinsToGive = Math.floor(coinsToGive * 0.4);
 	}
 
-	// Ensure amount of GP is an integer
-	loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID]);
-
-	// Check to see if user is iron and remove GP if true.
 	if (user.isIronman) {
-		delete loot.bank[COINS_ID];
+		coinsToGive = 0;
 	}
+
+	loot.set('Coins', Math.floor(coinsToGive));
 
 	const correct = triviaCorrect ? 'correct' : 'incorrect';
 	const reward = triviaCorrect
@@ -101,14 +100,14 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 	}
 
-	if (loot.bank[COINS_ID] > 0) {
-		updateClientGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
+	if (coinsToGive) {
+		updateClientGPTrackSetting('gp_daily', coinsToGive);
 	}
 
 	const { itemsAdded, previousCL } = await transactItems({
 		userID: user.id,
 		collectionLog: true,
-		itemsToAdd: new Bank(loot)
+		itemsToAdd: loot
 	});
 	const image = await makeBankImage({
 		bank: itemsAdded,
@@ -116,7 +115,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		previousCL,
 		showNewCL: true
 	});
-	return { content: `${dmStr}\nYou received ${new Bank(loot)}`, files: [image.file] };
+	return { content: `${dmStr}\nYou received ${loot}`, files: [image.file] };
 }
 
 export async function dailyCommand(

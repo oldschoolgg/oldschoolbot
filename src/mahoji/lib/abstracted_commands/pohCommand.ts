@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -109,7 +109,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 	}
 
 	if (obj.itemCost) {
-		if (!user.bankWithGP.has(obj.itemCost.bank)) {
+		if (!user.bankWithGP.has(obj.itemCost)) {
 			return `You don't have enough items to build a ${obj.name}, you need ${obj.itemCost}.`;
 		}
 		let str = `${user}, please confirm that you want to build a ${obj.name} using ${obj.itemCost}.`;
@@ -125,7 +125,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 	if (inPlace !== null) {
 		const inPlaceObj = getPOHObject(inPlace);
 		if (inPlaceObj.refundItems && inPlaceObj.itemCost) {
-			const itemsToRefund = new Bank(inPlaceObj.itemCost.bank).remove(itemsNotRefundable);
+			const itemsToRefund = new Bank(inPlaceObj.itemCost).remove(itemsNotRefundable);
 			if (itemsToRefund.length > 0) {
 				refunded = itemsToRefund;
 				await user.addItemsToBank({ items: itemsToRefund, collectionLog: false });
@@ -228,7 +228,7 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 
 	let str = `You removed a ${obj.name} from your house.`;
 	if (obj.refundItems && obj.itemCost) {
-		const itemsToRefund = new Bank(obj.itemCost.bank).remove(itemsNotRefundable);
+		const itemsToRefund = new Bank(obj.itemCost).remove(itemsNotRefundable);
 		if (itemsToRefund.length > 0) {
 			str += `\n\nYou were refunded: ${itemsToRefund}.`;
 			await user.addItemsToBank({ items: itemsToRefund, collectionLog: false });

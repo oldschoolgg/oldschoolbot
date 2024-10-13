@@ -232,6 +232,14 @@ export const bossTasks: AssignableSlayerTask[] = [
 		questPoints: 75,
 		monsters: [Monsters.Zulrah.id],
 		isBoss: true
+	},
+	{
+		monster: Monsters.Araxxor,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Araxxor.id],
+		isBoss: true,
+		wilderness: true
 	}
 ];
 

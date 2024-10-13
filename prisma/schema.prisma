@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["metrics"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -131,6 +130,7 @@ model ClientStorage {
   nmz_cost                     Json     @default("{}") @db.Json
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
+  ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
 
@@ -229,14 +229,6 @@ model NewUser {
   slayer_tasks SlayerTask[]
 
   @@map("new_users")
-}
-
-model PingableRole {
-  id      Int    @id @default(autoincrement())
-  role_id String @unique @db.VarChar(19)
-  name    String @db.VarChar(32)
-
-  @@map("pingable_roles")
 }
 
 model PlayerOwnedHouse {
@@ -474,6 +466,7 @@ enum XpGainSource {
   OfferingBones
   TempleTrekking
   DarkAltar
+  OuraniaAltar
   MotherlodeMine
   Birdhouses
   GuardiansOfTheRift
@@ -493,6 +486,7 @@ enum XpGainSource {
   CamdozaalSmithing
   CamdozaalFishing
   ForestryEvents
+  MonsterKilling
 }
 
 model XPGain {
@@ -521,13 +515,6 @@ model Metric {
   cpuUser            Float  @db.Real
   cpuSystem          Float  @db.Real
   cpuPercent         Float  @db.Real
-  qps                Float? @db.Real
-
-  prisma_query_total_queries       Int?
-  prisma_pool_active_connections   Int?
-  prisma_pool_idle_connections     Int?
-  prisma_pool_wait_count           Int?
-  prisma_query_active_transactions Int?
 
   @@map("metrics")
 }
@@ -913,6 +900,7 @@ enum activity_type_enum {
   MageArena2
   BigChompyBirdHunting
   DarkAltar
+  OuraniaAltar
   Trekking
   Revenants
   PestControl

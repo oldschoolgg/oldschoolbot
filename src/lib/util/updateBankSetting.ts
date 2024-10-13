@@ -60,6 +60,7 @@ type ClientBankKey =
 	| 'nmz_cost'
 	| 'toa_cost'
 	| 'toa_loot'
+	| 'ourania_loot'
 	| 'colo_cost'
 	| 'colo_loot';
 
@@ -72,7 +73,7 @@ export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	const newBank = new Bank(current).add(bankToAdd);
 
 	const res = await mahojiClientSettingsUpdate({
-		[key]: newBank.bank
+		[key]: newBank.toJSON()
 	});
 	return res;
 }

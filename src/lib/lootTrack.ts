@@ -1,9 +1,9 @@
+import { cleanString, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { LootTrack, loot_track_type } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { ItemBank } from './types';
-import { cleanString, formatDuration } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 type TrackLootOptions =
@@ -62,7 +62,7 @@ async function trackIndividualsLoot({
 				key,
 				total_kc: data.changeType === 'loot' ? data.kc : 0,
 				total_duration: duration,
-				[data.changeType]: bankToAdd.bank,
+				[data.changeType]: bankToAdd.toJSON(),
 				type: data.type,
 				user_id: userID
 			}
@@ -86,7 +86,7 @@ async function trackIndividualsLoot({
 							increment: data.kc
 						}
 					: undefined,
-			[data.changeType]: new Bank(current?.[data.changeType] as ItemBank | undefined).add(bankToAdd).bank,
+			[data.changeType]: new Bank(current?.[data.changeType] as ItemBank | undefined).add(bankToAdd).toJSON(),
 			user_id: userID
 		}
 	});

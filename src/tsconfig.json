@@ -7,5 +7,5 @@
 		"tsBuildInfoFile": "../dist/.tsbuildinfo"
 	},
 	"include": [".", "./**/*.json"],
-	"exclude": ["./scripts", "**/node_modules"]
+	"exclude": ["**/node_modules", "**/.*/"]
 }

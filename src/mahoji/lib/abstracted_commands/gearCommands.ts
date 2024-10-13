@@ -1,5 +1,5 @@
-import { PerkTier, toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { PerkTier, toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
@@ -89,7 +89,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
 	}
 
-	if (!userBankWithEquippedItems.has(toRemove.bank)) {
+	if (!userBankWithEquippedItems.has(toRemove)) {
 		return `You don't have the items in this preset. You're missing: ${toRemove.remove(user.bank)}.`;
 	}
 

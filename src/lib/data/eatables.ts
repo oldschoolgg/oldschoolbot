@@ -1,9 +1,10 @@
+import type { GearBank } from '../structures/GearBank';
 import itemID from '../util/itemID';
 
 interface Eatable {
 	name: string;
 	id: number;
-	healAmount: ((user: MUser) => number) | number;
+	healAmount: ((user: GearBank) => number) | number;
 	pvmBoost?: number;
 	wildyOnly?: boolean;
 }
@@ -226,8 +227,8 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Anglerfish',
 		id: itemID('Anglerfish'),
-		healAmount: (user: MUser) => {
-			const hp = user.skillLevel('hitpoints');
+		healAmount: (user: GearBank) => {
+			const hp = user.skillsAsLevels.hitpoints;
 			let c = 2;
 			if (hp > 10) c = 2;
 			if (hp > 25) c = 4;
@@ -242,8 +243,8 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Blighted anglerfish',
 		id: itemID('Blighted anglerfish'),
-		healAmount: (user: MUser) => {
-			const hp = user.skillLevel('hitpoints');
+		healAmount: (user: GearBank) => {
+			const hp = user.skillsAsLevels.hitpoints;
 			let c = 2;
 			if (hp > 10) c = 2;
 			if (hp > 25) c = 4;
