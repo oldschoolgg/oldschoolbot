@@ -69,7 +69,7 @@ describe('Fish Command', async () => {
 
 	it('should fish barrel boost', async () => {
 		const user = await client.mockUser({ maxed: true });
-		await user.equip('skilling', [EItem.FISH_SACK_BARREL_CLOSED]);
+		await user.equip('skilling', [EItem.FISH_SACK_BARREL]);
 		const res = await user.runCommand(fishCommand, { name: 'shrimps' });
 		expect(res).toContain('is now fishing 643x Shrimps');
 	});

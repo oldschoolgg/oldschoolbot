@@ -550,7 +550,8 @@ const tripHandlers = {
 			tob: {
 				start: {
 					hard_mode: data.hardMode,
-					solo: data.solo
+					solo: data.solo,
+					quantity: data.quantity
 				}
 			}
 		})

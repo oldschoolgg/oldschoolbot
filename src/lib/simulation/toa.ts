@@ -1111,7 +1111,7 @@ export async function toaStartCommand(
 		user,
 		await getMinigameScore(user.id, 'tombs_of_amascut'),
 		raidLevel,
-		solo ? 1 : teamSize ?? 5,
+		solo ? 1 : (teamSize ?? 5),
 		Time.Hour,
 		1
 	);
