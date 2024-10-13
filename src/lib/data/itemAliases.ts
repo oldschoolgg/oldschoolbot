@@ -32,7 +32,6 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 	}
 }
 
-
 // Graceful sets -- Arceuus
 setItemAlias(13_579, ['Arceuus graceful hood', 'Purple graceful hood']);
 setItemAlias(13_581, ['Arceuus graceful cape', 'Purple graceful cape']);
