@@ -175,7 +175,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	return teamLoot;
 }
 
-export async function calculateNexDetails({ team }: { team: MUser[] }) {
+export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?: MUser) {
 	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
@@ -279,10 +279,10 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		resultTeam[resultTeam.indexOf(resultTeam.find(i => i.id === id)!)].deaths = deathArr;
 	}
 
-	/**
-	 * Ammo
-	 */
-	for (const user of team) {
+	// Ammo calculation
+	const users = soloUser ? [soloUser] : team;
+
+	for (const user of users) {
 		const { rangeGear } = nexGearStats(user);
 		const teamUser = resultTeam.findIndex(a => a.id === user.id);
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
