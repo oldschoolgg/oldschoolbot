@@ -484,7 +484,7 @@ const source: [string, (string | number)[]][] = [
 ];
 
 // Build skill cape & master cape similar items. This also handles comp and comp(t) receiving all skillcape and master cape perks.
-skillcapes.forEach(cape => {
+for (const cape of skillcapes) {
 	const untrimmedCape = getOSItem(cape.untrimmed).name;
 	const trimmedCape = getOSItem(cape.trimmed).name;
 	const masterCape = getOSItem(cape.masterCape.id).name;
@@ -513,7 +513,7 @@ skillcapes.forEach(cape => {
 	} else {
 		source.push([masterCape, masterCapeList]);
 	}
-});
+}
 
 for (const { baseItem, dyedVersions } of dyedItems) {
 	// Update matching child rows (simmilarItems) first:
