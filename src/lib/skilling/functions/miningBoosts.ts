@@ -53,37 +53,43 @@ export const pickaxes = [
 	}
 ];
 
-export const miningGloves: { id: number; Percentages: Record<string, number> }[] = [
+export const miningGloves: { id: number; Depletions: Record<string, number> }[] = [
 	{
 		id: itemID('Expert mining gloves'),
-		Percentages: {
-			'Silver ore': 50,
-			Coal: 40,
-			'Gold ore': 33.33,
-			'Mithril ore': 25,
-			'Adamantite ore': 16.66,
-			'Runite ore': 12.5,
-			Amethyst: 25
+		Depletions: {
+			'Iron ore': 3,
+			'Silver ore': 3,
+			Coal: 3,
+			'Sandstone (5kg)': 1,
+			'Gold ore': 3,
+			'Mithril ore': 2,
+			'Adamantite ore': 2,
+			'Runite ore': 1,
+			Amethyst: 1
 		}
 	},
 	{
 		id: itemID('Superior mining gloves'),
-		Percentages: {
-			'Silver ore': 0,
-			Coal: 0,
-			'Gold ore': 0,
-			'Mithril ore': 25,
-			'Adamantite ore': 16.66,
-			'Runite ore': 12.5,
+		Depletions: {
+			'Iron ore': 2,
+			'Silver ore': 2,
+			Coal: 2,
+			'Sandstone (5kg)': 0,
+			'Gold ore': 2,
+			'Mithril ore': 1,
+			'Adamantite ore': 1,
+			'Runite ore': 0,
 			Amethyst: 0
 		}
 	},
 	{
 		id: itemID('Mining gloves'),
-		Percentages: {
-			'Silver ore': 50,
-			Coal: 40,
-			'Gold ore': 33.33,
+		Depletions: {
+			'Iron ore': 1,
+			'Silver ore': 1,
+			Coal: 1,
+			'Sandstone (5kg)': 0,
+			'Gold ore': 1,
 			'Mithril ore': 0,
 			'Adamantite ore': 0,
 			'Runite ore': 0,
@@ -157,7 +163,7 @@ export const varrockArmours: { id: number; Percentages: Record<string, number> }
 			'Silver ore': 10,
 			Coal: 10,
 			'Sandstone (5kg)': 0,
-			'Gold ore': 0,
+			'Gold ore': 10,
 			'Granite (5kg)': 0,
 			'Mithril ore': 0,
 			'Adamantite ore': 0,

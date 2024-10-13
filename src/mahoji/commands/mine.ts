@@ -122,13 +122,15 @@ export const mineCommand: OSBMahojiCommand = {
 			break;
 		}
 
-		let glovesRate = 0;
+		let glovesEffect = 0;
 		if (user.skillsAsLevels.mining >= 60) {
 			for (const glove of miningGloves) {
-				if (!user.hasEquipped(glove.id) || !glove.Percentages[ore.name]) continue;
-				glovesRate = glove.Percentages[ore.name];
-				if (glovesRate) {
-					boosts.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
+				if (!user.hasEquipped(glove.id) || !glove.Depletions[ore.name]) continue;
+				glovesEffect = glove.Depletions[ore.name];
+				if (glovesEffect) {
+					boosts.push(
+						`mining gloves saves ${ore.name} from becoming depleted **${glovesEffect}x** ${glovesEffect > 1 ? 'times' : 'time'} using ${itemNameFromID(glove.id)}`
+					);
 					break;
 				}
 			}
@@ -169,7 +171,7 @@ export const mineCommand: OSBMahojiCommand = {
 			user,
 			ore,
 			ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
-			glovesRate,
+			glovesEffect,
 			armourEffect,
 			miningCapeEffect,
 			powermining: powermine,
