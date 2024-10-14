@@ -2,7 +2,7 @@ import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, clamp, reduceNumByPercent } from 'e';
+import { calcPercentOfNum, Time, clamp, reduceNumByPercent } from 'e';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -12,6 +12,8 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
+import { secondaries } from '../../lib/data/filterables';
+import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 export const mixCommand: OSBMahojiCommand = {
 	name: 'mix',
@@ -144,7 +146,21 @@ export const mixCommand: OSBMahojiCommand = {
 				maxTripLength
 			)}, try a lower quantity. The highest amount of ${itemName} you can mix is ${maxCanMix}.`;
 
-		const finalCost = requiredItems.clone().multiply(quantity);
+			const hasScroll = user.owns('Scroll of cleansing');
+			const finalCost = requiredItems.clone().multiply(quantity);
+
+			if (hasScroll) {
+				const savedBank = new Bank();
+				for (const [item, qty] of finalCost.items()){
+					if (secondaries.includes(item.id)) {
+						const saved = Math.floor(calcPercentOfNum(10, qty));
+						finalCost.remove(item.id, saved);
+						savedBank.add(item.id, saved);
+					}
+				}
+				await userStatsBankUpdate(user.id, 'cleansing_scroll_bank', savedBank);
+				boosts.push("Your scroll of cleansing enables you to save 10% of your secondaries.")
+			}
 		if (!user.owns(finalCost))
 			return `You don't have enough items. For ${quantity}x ${itemName}, you're missing **${finalCost
 				.clone()

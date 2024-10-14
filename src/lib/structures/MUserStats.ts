@@ -157,4 +157,8 @@ export class MUserStats {
 	get chinCannonDestroyedLoot(): Bank {
 		return new Bank(this.userStats.chincannon_destroyed_loot_bank as ItemBank);
 	}
+	
+	get cleansingScrollBank(): Bank {
+		return new Bank(this.userStats.cleansing_scroll_bank as ItemBank);
+	}
 }

@@ -899,6 +899,7 @@ model UserStats {
   clue_upgrader_bank     Json @default("{}") @db.Json
   ic_cost_bank           Json @default("{}") @db.Json
   ic_loot_bank           Json @default("{}") @db.Json
+  cleansing_scroll_bank  Json @default("{}") @db.Json
 
   loot_from_zippy_bank Json @default("{}") @db.Json
   peky_loot_bank       Json @default("{}") @db.Json
