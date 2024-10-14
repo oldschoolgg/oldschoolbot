@@ -64,4 +64,4 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 - Uninstall prettier/eslint vscode plugins.
 - Delete these folders: node_modules, dist.
 - Your IDE may need to be ran with admin privileges.
-- Installing python may be needed if you see errors with decencies.
+- Installing python may be needed if you see errors with dependencies.
