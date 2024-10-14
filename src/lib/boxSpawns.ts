@@ -32,7 +32,6 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);
 
-	// This needs to be msg.channel.send() otherwise it will use a webhook and replies won't be readable.
 	await msg.channel.send({ embeds: [embed] });
 
 	try {
