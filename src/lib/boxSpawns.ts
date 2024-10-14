@@ -32,7 +32,7 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);
 
-	await sendToChannelID(msg.channelId, { embed: embed });
+	await msg.channel.send({ embeds: [embed] });
 
 	try {
 		const collected = await msg.channel.awaitMessages({
@@ -65,7 +65,7 @@ const itemChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);
 
-	await sendToChannelID(msg.channelId, { embed });
+	await msg.channel.send({ embeds: [embed] });
 
 	try {
 		const collected = await msg.channel.awaitMessages({
@@ -185,7 +185,7 @@ const collectionLogChallenge: Challenge = async (msg: Message): Promise<User | n
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);
 
-	await sendToChannelID(msg.channelId, { embed });
+	await msg.channel.send({ embeds: [embed] });
 
 	try {
 		const collected = await msg.channel.awaitMessages({
