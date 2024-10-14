@@ -10,6 +10,7 @@ import {
 	CombatAchievements,
 	allCAMonsterNames,
 	allCombatAchievementTasks,
+	brokenCAtoFilter,
 	caToPlayerString,
 	nextCATier
 } from '../../lib/combat_achievements/combatAchievements';
@@ -72,7 +73,9 @@ export const caCommand: OSBMahojiCommand = {
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
-		const completedTaskIDs = new Set(user.user.completed_ca_task_ids);
+		const completedTaskIDs = new Set(
+			[...user.user.completed_ca_task_ids].filter(id => !brokenCAtoFilter.includes(id))
+		);
 
 		const currentPoints = user.caPoints();
 		const generalProgressString = `You have completed ${completedTaskIDs.size}/${

@@ -24,6 +24,10 @@ const collectMonsterNames = (...achievements: CombatAchievement[][]) => {
 	return Array.from(allMonsterNamesSet);
 };
 
+export const brokenCAtoFilter = [
+	1135 // id used for duplicate ca that was removed from elite.ts
+];
+
 export const allCAMonsterNames = collectMonsterNames(
 	easyCombatAchievements,
 	mediumCombatAchievements,
