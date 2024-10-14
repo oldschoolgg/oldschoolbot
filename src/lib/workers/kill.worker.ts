@@ -1,7 +1,7 @@
 import '../customItems/customItems';
 import '../data/itemAliases';
 
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Monsters } from 'oldschooljs';
 
 import type { KillWorkerArgs, KillWorkerReturn } from '.';

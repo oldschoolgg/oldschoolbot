@@ -23,8 +23,10 @@ export class MUserStats {
 		this.userStats = userStats;
 		this.baHonourLevel = userStats.honour_level;
 		const sacBank = this.userStats.sacrificed_bank as ItemBank;
-		// biome-ignore lint/performance/noDelete: <explanation>
-		delete sacBank['0'];
+		if ('sacrificed_bank' in sacBank && '0' in sacBank) {
+			// biome-ignore lint/performance/noDelete: <explanation>
+			delete sacBank['0'];
+		}
 		this.sacrificedBank = new Bank().add(sacBank);
 		this.titheFarmsCompleted = this.userStats.tithe_farms_completed;
 		this.lapsScores = userStats.laps_scores as ItemBank;

@@ -36,7 +36,7 @@ describe('Dwarven Blessing', () => {
 	test('Blessing and restore pots without bitfield', () => {
 		const gearBank = makeGearBank();
 		gearBank.gear.melee.equip('Dwarven blessing');
-		gearBank.bank.add(EItem.SUPER_RESTORE_4_DOSE, 100);
+		gearBank.bank.add(EItem.SUPER_RESTORE4, 100);
 		const res = dwarvenBlessing({ gearBank, duration: Time.Hour, bitfield: [] });
 		expect(res).toBeNull();
 	});
@@ -44,7 +44,7 @@ describe('Dwarven Blessing', () => {
 	test('Blessing and prayer pots with bitfield', () => {
 		const gearBank = makeGearBank();
 		gearBank.gear.melee.equip('Dwarven blessing');
-		gearBank.bank.add(EItem.PRAYER_POTION_4_DOSE, 100);
+		gearBank.bank.add(EItem.PRAYER_POTION4, 100);
 		const res = dwarvenBlessing({
 			gearBank,
 			duration: Time.Hour,
@@ -56,7 +56,7 @@ describe('Dwarven Blessing', () => {
 	test('Blessing and restore pots with bitfield', () => {
 		const gearBank = makeGearBank();
 		gearBank.gear.melee.equip('Dwarven blessing');
-		gearBank.bank.add(EItem.SUPER_RESTORE_4_DOSE, 100);
+		gearBank.bank.add(EItem.SUPER_RESTORE4, 100);
 		const res = dwarvenBlessing({
 			gearBank,
 			duration: Time.Hour,
@@ -67,47 +67,47 @@ describe('Dwarven Blessing', () => {
 			percentageReduction: 20,
 			message: '20% boost from Dwarven blessing'
 		});
-		expect(res?.itemCost.amount(EItem.SUPER_RESTORE_4_DOSE)).toEqual(EXPECTED_POTS_PER_HOUR);
+		expect(res?.itemCost.amount(EItem.SUPER_RESTORE4)).toEqual(EXPECTED_POTS_PER_HOUR);
 	});
 
 	test('Blessing and prayer pots without bitfield', () => {
 		const gearBank = makeGearBank();
 		gearBank.gear.melee.equip('Dwarven blessing');
-		gearBank.bank.add(EItem.PRAYER_POTION_4_DOSE, 100);
+		gearBank.bank.add(EItem.PRAYER_POTION4, 100);
 		const res = dwarvenBlessing({ gearBank, duration: Time.Hour, bitfield: [] });
 		expect(res).not.toBeNull();
 		expect(res).toMatchObject({
 			percentageReduction: 20,
 			message: '20% boost from Dwarven blessing'
 		});
-		expect(res?.itemCost.amount(EItem.PRAYER_POTION_4_DOSE)).toEqual(EXPECTED_POTS_PER_HOUR);
+		expect(res?.itemCost.amount(EItem.PRAYER_POTION4)).toEqual(EXPECTED_POTS_PER_HOUR);
 	});
 
 	test('Blessing and prayer pots with prayer master cape', () => {
 		const gearBank = makeGearBank();
 		gearBank.gear.melee.equip('Dwarven blessing');
 		gearBank.gear.melee.equip('Prayer master cape');
-		gearBank.bank.add(EItem.PRAYER_POTION_4_DOSE, 100);
+		gearBank.bank.add(EItem.PRAYER_POTION4, 100);
 		const res = dwarvenBlessing({ gearBank, duration: Time.Hour, bitfield: [] });
 		expect(res).not.toBeNull();
 		expect(res).toMatchObject({
 			percentageReduction: 20,
 			message: '20% boost from Dwarven blessing (40% less cost for prayer cape)'
 		});
-		expect(res?.itemCost.amount(EItem.PRAYER_POTION_4_DOSE)).toEqual(Math.floor(EXPECTED_POTS_PER_HOUR * 0.6));
+		expect(res?.itemCost.amount(EItem.PRAYER_POTION4)).toEqual(Math.floor(EXPECTED_POTS_PER_HOUR * 0.6));
 	});
 
 	test('Blessing and prayer pots with amulet of zealots', () => {
 		const gearBank = makeGearBank();
 		gearBank.gear.melee.equip('Dwarven blessing');
 		gearBank.gear.melee.equip('Amulet of zealots');
-		gearBank.bank.add(EItem.PRAYER_POTION_4_DOSE, 100);
+		gearBank.bank.add(EItem.PRAYER_POTION4, 100);
 		const res = dwarvenBlessing({ gearBank, duration: Time.Hour, bitfield: [] });
 		expect(res).not.toBeNull();
 		expect(res).toMatchObject({
 			percentageReduction: 25,
 			message: '25% boost from Dwarven blessing'
 		});
-		expect(res?.itemCost.amount(EItem.PRAYER_POTION_4_DOSE)).toEqual(EXPECTED_POTS_PER_HOUR);
+		expect(res?.itemCost.amount(EItem.PRAYER_POTION4)).toEqual(EXPECTED_POTS_PER_HOUR);
 	});
 });

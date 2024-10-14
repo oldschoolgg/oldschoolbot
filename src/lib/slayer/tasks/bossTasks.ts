@@ -246,6 +246,14 @@ export const bossTasks: AssignableSlayerTask[] = [
 		questPoints: 75,
 		monsters: [BSOMonsters.QueenBlackDragon.id],
 		isBoss: true
+	},
+	{
+		monster: Monsters.Araxxor,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Araxxor.id],
+		isBoss: true,
+		wilderness: true
 	}
 ];
 
@@ -303,14 +311,6 @@ export const wildernessBossTasks: AssignableSlayerTask[] = [
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.Vetion.id, Monsters.Calvarion.id],
-		isBoss: true,
-		wilderness: true
-	},
-	{
-		monster: Monsters.Araxxor,
-		amount: [3, 35],
-		weight: 1,
-		monsters: [Monsters.Araxxor.id],
 		isBoss: true,
 		wilderness: true
 	}

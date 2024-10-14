@@ -22,7 +22,7 @@ const MEMORIES_PER_HARVEST = SECONDS_TO_HARVEST * 2;
 export const totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
 
 function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energy: DivinationEnergy) {
-	const convertToXPXP = hasBoon ? energy.convertBoon ?? energy.convertNormal : energy.convertNormal;
+	const convertToXPXP = hasBoon ? (energy.convertBoon ?? energy.convertNormal) : energy.convertNormal;
 
 	switch (method) {
 		case MemoryHarvestType.ConvertToXP: {
@@ -34,7 +34,7 @@ function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energ
 		}
 		case MemoryHarvestType.ConvertWithEnergyToXP: {
 			let xp: number = hasBoon
-				? energy.convertWithEnergyAndBoon ?? energy.convertWithEnergy
+				? (energy.convertWithEnergyAndBoon ?? energy.convertWithEnergy)
 				: energy.convertWithEnergy;
 			xp = increaseNumByPercent(xp, 15);
 			return { xp };

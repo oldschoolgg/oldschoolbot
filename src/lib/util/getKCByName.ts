@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Monster } from '../util';
 
 import { effectiveMonsters } from '../minions/data/killableMonsters';

@@ -1,7 +1,7 @@
+import { perTimeUnitChance } from '@oldschoolgg/toolkit';
 import { Time, objectEntries, percentChance, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
-import { itemID } from 'oldschooljs/dist/util';
 import { MAX_LEVEL, MIN_LENGTH_FOR_PET, type TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
@@ -12,7 +12,7 @@ import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, perTimeUnitChance, skillingPetDropRate } from '../../lib/util';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';

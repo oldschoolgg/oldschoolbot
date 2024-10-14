@@ -1,4 +1,12 @@
-import { type CommandResponse, stripEmojis } from '@oldschoolgg/toolkit';
+import {
+	type CommandResponse,
+	calcPerHour,
+	formatDuration,
+	isWeekend,
+	makeComponents,
+	stringMatches,
+	stripEmojis
+} from '@oldschoolgg/toolkit/util';
 import {
 	type BaseMessageOptions,
 	type ButtonInteraction,
@@ -45,14 +53,15 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import getOSItem from './util/getOSItem';
+import { getOSItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import resolveItems from './util/resolveItems';
 import { itemNameFromID } from './util/smallUtils';
 
-export * from '@oldschoolgg/toolkit';
 export * from 'oldschooljs';
+
+export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
@@ -66,11 +75,6 @@ export function inlineCodeblock(input: string) {
 export function britishTime() {
 	const currentDate = new Date(Date.now() - Time.Hour * 10);
 	return currentDate;
-}
-
-export function isWeekend() {
-	const currentDate = new Date(Date.now() - Time.Hour * 6);
-	return [6, 0].includes(currentDate.getDay());
 }
 
 export function convertXPtoLVL(xp: number, cap = 120) {
@@ -226,17 +230,6 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	}
 
 	return slotStr.join(', ');
-}
-
-export function isValidNickname(str?: string) {
-	return Boolean(
-		str &&
-			typeof str === 'string' &&
-			str.length >= 2 &&
-			str.length <= 30 &&
-			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
-			stripEmojis(str).length === str.length
-	);
 }
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
@@ -564,12 +557,19 @@ export async function calcClueScores(user: MUser) {
 
 export { assert } from './util/logError';
 export * from './util/smallUtils';
-export { channelIsSendable } from '@oldschoolgg/toolkit';
+export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();
-	if (!weapon) return 'You have no weapon equipped.';
 	const { ammo } = gear;
+	if (!weapon) return 'You have no weapon equipped.';
+	const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(weapon.id);
+	if (usingBowfa) {
+		return {
+			weapon,
+			ammo
+		};
+	}
 	if (!ammo) return 'You have no ammo equipped.';
 
 	const projectileCategory = objectEntries(projectiles).find(i =>

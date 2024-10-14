@@ -270,7 +270,7 @@ export const turaelMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Torva platebody', 'Bandos chestplate'],
 			['Torva platelegs', "Verac's plateskirt", 'Bandos tassets'],
-			['Arclight', 'Abyssal whip', 'Dragon scimitar'],
+			['Arclight', 'Emberlight', 'Abyssal whip', 'Dragon scimitar'],
 			['Rune crossbow', "Karil's crossbow", 'Armadyl crossbow'],
 			['Gorajan archer top', 'Pernix body', 'Armadyl chestplate', "Karil's leathertop"],
 			['Gorajan archer legs', 'Pernix chaps', 'Armadyl chainskirt', "Karil's leatherskirt"]
@@ -278,7 +278,8 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 175,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 20
+				[itemID('Arclight')]: 20,
+				[itemID('Emberlight')]: 25
 			}
 		],
 		levelRequirements: {
@@ -1061,7 +1062,8 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 175,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 20
+				[itemID('Arclight')]: 20,
+				[itemID('Emberlight')]: 25
 			}
 		],
 		levelRequirements: {

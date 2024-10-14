@@ -1,8 +1,6 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandOption } from '@oldschoolgg/toolkit';
+import { type CommandOption, type CommandRunOptions, cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 import { ParsedCustomEmojiWithGroups } from '../../lib/constants';
@@ -11,7 +9,7 @@ import type { GearSetup, GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes } from '../../lib/gear/types';
 
 import { Gear, defaultGear, globalPresets } from '../../lib/structures/Gear';
-import { cleanString, isValidGearSetup, isValidNickname, stringMatches } from '../../lib/util';
+import { EquipmentSlot, isValidGearSetup, isValidNickname } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
@@ -60,6 +58,12 @@ function gearPresetToGear(preset: GearPreset): GearSetup {
 	newGear.shield = gearItem(preset.shield);
 	newGear.weapon = gearItem(preset.weapon);
 	newGear.ring = gearItem(preset.ring);
+	newGear.ammo = preset.ammo
+		? {
+				item: preset.ammo,
+				quantity: 1
+			}
+		: null;
 	return newGear;
 }
 export async function createOrEditGearSetup(

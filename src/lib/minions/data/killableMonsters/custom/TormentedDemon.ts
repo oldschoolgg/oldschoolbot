@@ -5,11 +5,11 @@ import { GearStat } from '../../../../gear';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
 import type { CustomMonster } from './customMonsters';
 
-export const TormentedDemon: CustomMonster = {
+export const SuperiorTormentedDemon: CustomMonster = {
 	isCustom: true,
 	id: 941_944,
-	name: 'Tormented Demon',
-	aliases: ['tormented demon', 'td'],
+	name: 'Superior Tormented Demon',
+	aliases: ['superior tormented demon', 'std'],
 	timeToFinish: Time.Minute * 17,
 	table: new LootTable()
 		.every('Infernal ashes')

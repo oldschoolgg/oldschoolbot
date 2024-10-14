@@ -1,4 +1,5 @@
-import { type CommandResponse, PerkTier, stringMatches } from '@oldschoolgg/toolkit';
+import { PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';

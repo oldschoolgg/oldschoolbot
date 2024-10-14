@@ -90,6 +90,7 @@ export type ClientBankKey =
 	| 'doa_cost'
 	| 'doa_loot'
 	| 'xmas_ironman_food_bank'
+	| 'ourania_loot'
 	| 'colo_cost'
 	| 'colo_loot';
 

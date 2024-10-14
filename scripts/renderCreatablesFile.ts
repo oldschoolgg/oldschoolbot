@@ -1,10 +1,12 @@
-import { writeFileSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import { isFunction } from 'e';
 import { Bank } from 'oldschooljs';
+import '../src/lib/safeglobals';
+
 import Createables from '../src/lib/data/createables';
 import { makeTable } from '../src/lib/util';
 
-export function renderCreatablesFile() {
+async function renderCreatablesFile() {
 	const headers = ['Item name', 'Input Items', 'Output Items', 'GP Cost'];
 	const rows = Createables.map(i => {
 		return [
@@ -15,5 +17,7 @@ export function renderCreatablesFile() {
 		];
 	});
 
-	writeFileSync('./src/lib/data/creatablesTable.txt', makeTable(headers, rows));
+	await writeFile('./src/lib/data/creatablesTable.txt', makeTable(headers, rows));
 }
+
+renderCreatablesFile();

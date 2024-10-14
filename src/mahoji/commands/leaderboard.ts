@@ -1,13 +1,9 @@
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
+import type { ChatInputCommandInteraction, MessageEditOptions } from 'discord.js';
+import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import { calcWhatPercent, chunk, isFunction } from 'e';
 
 import type { UserStats } from '@prisma/client';
-import {
-	ApplicationCommandOptionType,
-	type ChatInputCommandInteraction,
-	EmbedBuilder,
-	type MessageEditOptions
-} from 'discord.js';
-import { calcWhatPercent, chunk, isFunction } from 'e';
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { masteryKey } from '../../lib/constants';

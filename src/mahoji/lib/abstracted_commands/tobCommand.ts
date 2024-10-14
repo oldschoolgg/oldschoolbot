@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { randomVariation } from 'oldschooljs/dist/util';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Emoji } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';

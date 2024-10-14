@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
@@ -88,6 +88,7 @@ import {
 	cluesMediumCL,
 	cluesSharedCL,
 	cmbClothes,
+	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
 	corporealBeastCL,
 	crackerCL,
@@ -170,6 +171,7 @@ import {
 	spectatorClothes,
 	spiritAnglerOutfit,
 	stealingCreationCL,
+	superiorTormentedDemonCL,
 	templeTrekkingCL,
 	temporossCL,
 	theGauntletCL,
@@ -772,10 +774,10 @@ export const allCollectionLogs: ICollection = {
 					return [`${minigames.depths_of_atlantis} KC`, `${minigames.depths_of_atlantis_cm} CM KC`];
 				}
 			},
-			'Tormented Demons': {
-				items: tormentedDemonCL,
+			'Superior Tormented Demons': {
+				items: superiorTormentedDemonCL,
 				alias: ['td', 'tormented demon', 'tormented demons'],
-				fmtProg: kcProg(BSOMonsters.TormentedDemon.id)
+				fmtProg: kcProg(BSOMonsters.SuperiorTormentedDemon.id)
 			},
 			"Champion's Challenge": {
 				alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
@@ -1280,6 +1282,10 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: 'BigChompyBirdHunting',
 				items: chompyBirdsCL
 			},
+			'Colossal Wyrm Agility': {
+				alias: ['colossal wyrm agility', 'colo agility', 'wyrm agility'],
+				items: colossalWyrmAgilityCL
+			},
 			'Creature Creation': {
 				items: creatureCreationCL
 			},
@@ -1452,6 +1458,13 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Shayzien Armour': {
 				items: shayzienArmourCL
+			},
+			'Tormented Demons': {
+				alias: Monsters.TormentedDemon.aliases,
+				allItems: Monsters.TormentedDemon.allItems,
+				kcActivity: Monsters.TormentedDemon.name,
+				items: tormentedDemonCL,
+				fmtProg: kcProg(Monsters.TormentedDemon)
 			},
 			Miscellaneous: {
 				alias: ['misc'],
@@ -2015,7 +2028,7 @@ export function getCollectionItems(
 			_clName = category;
 			_items = uniqueArr(
 				Object.values(entries.activities)
-					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
+					.map(e => [...new Set([...e.items, ...(allItems ? (e.allItems ?? []) : [])])])
 					.flat(2)
 			);
 

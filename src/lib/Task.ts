@@ -97,6 +97,7 @@ import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
 import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
 import { myNotesTask } from '../tasks/minions/myNotesActivity';
+import ouraniaAltarTask from '../tasks/minions/ouraniaAltarActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
@@ -167,6 +168,7 @@ const tasks: MinionTask[] = [
 	cookingTask,
 	craftingTask,
 	darkAltarTask,
+	ouraniaAltarTask,
 	enchantingTask,
 	farmingTask,
 	firemakingTask,

@@ -1809,6 +1809,16 @@ export const chompyBirdsCL = resolveItems([
 	'Chompy bird hat (expert ogre dragon archer)',
 	'Chompy bird hat (expert dragon archer)'
 ]);
+export const colossalWyrmAgilityCL = resolveItems([
+	'Colossal wyrm teleport scroll',
+	'Calcified acorn',
+	'Varlamore graceful hood',
+	'Varlamore graceful top',
+	'Varlamore graceful legs',
+	'Varlamore graceful gloves',
+	'Varlamore graceful boots',
+	'Varlamore graceful cape'
+]);
 export const creatureCreationCL = resolveItems([
 	'Tea flask',
 	'Plain satchel',
@@ -2064,6 +2074,9 @@ export const slayerCL = resolveItems([
 	'Ancient ceremonial boots',
 	'Aranea boots'
 ]);
+
+export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
+
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
 	'Toktz-ket-xil',
@@ -3135,7 +3148,7 @@ export const polyporeDungeonCL = resolveItems([
 	'Ganodermic boots'
 ]);
 
-export const tormentedDemonCL = resolveItems([
+export const superiorTormentedDemonCL = resolveItems([
 	'Dragon claw',
 	'Offhand dragon claw',
 	'Ruined dragon armour slice',

@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, gaussianRandom } from '@oldschoolgg/toolkit';
 import { tame_growth } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -10,7 +10,7 @@ import { Events } from '../../lib/constants';
 
 import { SkillsEnum } from '../../lib/skilling/types';
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '../../lib/tames';
-import { formatDuration, gaussianRandom, roll } from '../../lib/util';
+import { formatDuration, roll } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';

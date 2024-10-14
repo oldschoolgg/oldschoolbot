@@ -2,11 +2,9 @@
 title: "Charging Items"
 ---
 
-# Charging Items
-
 There are a number of degradable items that must be charged in order to be used or provide a boost for certain bosses/minigames. The maximum amount of charges on an item is 1,000,000. When charging an item, you can add anywhere between 1-100,000 at a time.
 
-All items can be charged using `/minion charge`` `**`item:`** **`amount:`**
+All items can be charged using [[/minion charge item\: amount\:]]
 
 ---
 
@@ -25,7 +23,7 @@ The weapons listed on this page will provide global boosts to all PvM, _provided
 
 ## Chargeable Items
 
-Most items**cannot**be manually reverted, meaning you need to use the item continually until it runs out of charges to receive the base version again.
+Most items **cannot** be manually reverted, meaning you need to use the item continually until it runs out of charges to receive the base version again.
 
 Charges are bound to your minion, not the item. Therefore, when reverting or trading your charged item, you will **NOT** lose charges.
 

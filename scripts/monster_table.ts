@@ -1,4 +1,4 @@
-import { calcPerHour } from '@oldschoolgg/toolkit';
+import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, Items, SkillsEnum, convertBankToPerHourStats, itemID, resolveItems, toKMB } from 'oldschooljs';
@@ -42,7 +42,7 @@ bank.add('Black chinchompa', 100000000);
 const chargeBank = new ChargeBank();
 for (const deg of degradeableItems) chargeBank.add(deg.settingsKey, 1000000);
 const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: MinionKillReturn }[] = [];
-const userStats = new MUserStats({} as any);
+const userStats = new MUserStats({ sacrificed_bank: {} } as any);
 
 const attackStyleSets: AttackStyles[][] = [
 	[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence],

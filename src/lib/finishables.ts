@@ -1,19 +1,21 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { notEmpty, randArrItem, roll } from 'e';
 import {
 	Bank,
 	BeginnerCasket,
+	ChambersOfXeric,
 	EasyCasket,
 	EliteCasket,
+	EliteMimicTable,
 	HardCasket,
 	MasterCasket,
+	MasterMimicTable,
 	MediumCasket,
-	Monsters
+	Monsters,
+	Nightmare,
+	resolveItems
 } from 'oldschooljs';
-import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
-import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot';
 import { allCollectionLogsFlat } from './data/Collections';
 import {

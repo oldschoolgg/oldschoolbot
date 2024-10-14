@@ -2,8 +2,6 @@
 title: "Motherlode Mine"
 ---
 
-# Motherlode Mine
-
 You can select to mine here for a chance to receive golden nuggets and a vast array of ores. You cannot receive clue scrolls from mining here, and you cannot powermine here. The Varrock armour effect does not work here. The xp with all boosts before collecting 100 golden nuggets and 99 mining is roughly 44k xp/h, whereas after unlocking the upper level, it is around 54k xp/h.
 
 ## Requirements

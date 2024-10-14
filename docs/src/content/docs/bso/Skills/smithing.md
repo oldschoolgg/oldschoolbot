@@ -1,9 +1,6 @@
 ---
 title: "Smithing"
-description: /smith, /smelt
 ---
-
-# Smithing
 
 ### Custom Content and Boosts
 

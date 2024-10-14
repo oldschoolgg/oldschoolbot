@@ -118,8 +118,7 @@ export function calcWildyPKChance(
 	}${deathChanceFromGear.toFixed(
 		2
 	)}x from wildy gear (weight 60% magic, 40% ranged, 20% melee), ${hasSupplies}x from anti-pk supplies, ${hasOverheads}x from overhead prayers, ${(
-		(100 - evasionReduction) /
-		100
+		(100 - evasionReduction) / 100
 	).toFixed(2)}x from risky Wilderness experience, ${wildyMultiMultiplier}x from being in${
 		wildyMultiMultiplier === 1 ? ' no' : ''
 	} multi)`;

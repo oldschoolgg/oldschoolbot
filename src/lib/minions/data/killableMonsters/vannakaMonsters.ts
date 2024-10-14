@@ -49,7 +49,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		superior: Monsters.GreaterAbyssalDemon,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Emberlight')]: 15
 			},
 			{
 				[itemID('Saradomin godsword')]: 5
@@ -90,7 +91,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10,
-				[itemID("Osmumten's fang")]: 12
+				[itemID("Osmumten's fang")]: 12,
+				[itemID('Emberlight')]: 15
 			},
 			{
 				[itemID('Bandos godsword')]: 5,
@@ -220,7 +222,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		superior: Monsters.InsatiableBloodveld,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 15
+				[itemID('Arclight')]: 15,
+				[itemID('Emberlight')]: 20
 			}
 		],
 		degradeableItemUsage: [
@@ -628,7 +631,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Emberlight')]: 15
 			}
 		],
 		existsInCatacombs: true,
@@ -704,7 +708,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackStab],
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 15
+				[itemID('Arclight')]: 15,
+				[itemID('Emberlight')]: 20
 			}
 		],
 		canCannon: true,
@@ -887,7 +892,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 12
+				[itemID('Arclight')]: 12,
+				[itemID('Emberlight')]: 17
 			},
 			{
 				[itemID('Saradomin godsword')]: 3
@@ -1010,7 +1016,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 15
+				[itemID('Arclight')]: 15,
+				[itemID('Emberlight')]: 20
 			}
 		],
 		degradeableItemUsage: [
@@ -1045,7 +1052,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Emberlight')]: 15
 			}
 		],
 		levelRequirements: {

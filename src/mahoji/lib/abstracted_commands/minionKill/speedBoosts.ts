@@ -1,4 +1,4 @@
-import { Time, calcWhatPercent } from 'e';
+import { Time, calcWhatPercent, sumArr } from 'e';
 import { Bank, type Item, type Monster, Monsters } from 'oldschooljs';
 
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -392,14 +392,17 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 	{
 		description: 'Degradeable Items',
 		run: ({ isInWilderness, gearBank, monster, primaryStyle, osjsMon, addPostBoostEffect }) => {
-			const degItemBeingUsed: Item[] = [];
+			const degItemBeingUsed: { item: Item; boostPercent: number }[] = [];
 			if (monster.degradeableItemUsage) {
 				for (const set of monster.degradeableItemUsage) {
 					const equippedInThisSet = set.items.find(item =>
 						gearBank.gear[set.gearSetup].hasEquipped(item.itemID)
 					);
 					if (equippedInThisSet) {
-						degItemBeingUsed.push(getOSItem(equippedInThisSet.itemID));
+						degItemBeingUsed.push({
+							item: getOSItem(equippedInThisSet.itemID),
+							boostPercent: equippedInThisSet.boostPercent
+						});
 					}
 				}
 			} else {
@@ -409,18 +412,20 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 						degItem.item.id
 					);
 					if (isUsing && gearCheck) {
-						degItemBeingUsed.push(degItem.item);
+						degItemBeingUsed.push({ item: degItem.item, boostPercent: degItem.boost });
 					}
 				}
 			}
 
+			if (degItemBeingUsed.length === 0) return;
 			addPostBoostEffect({
 				description: 'Degradeable Items',
 				run: ({ quantity, duration }) => {
 					const charges = new ChargeBank();
+					const messages: string[] = [];
 					for (const rawItem of degItemBeingUsed) {
-						const degItem = degradeablePvmBoostItems.find(i => i.item.id === rawItem.id);
-						if (!degItem) throw new Error(`Missing degradeable item for ${rawItem.name}`);
+						const degItem = degradeablePvmBoostItems.find(i => i.item.id === rawItem.item.id);
+						if (!degItem) throw new Error(`Missing degradeable item for ${rawItem.item.name}`);
 						const chargesNeeded = Math.ceil(
 							degItem.charges({
 								killableMon: monster,
@@ -431,13 +436,15 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 							})
 						);
 						const actualDegItem = degradeableItems.find(i => i.item.id === degItem.item.id);
-						if (!actualDegItem) throw new Error(`Missing actual degradeable item for ${rawItem.name}`);
+						if (!actualDegItem) throw new Error(`Missing actual degradeable item for ${rawItem.item.name}`);
 						charges.add(actualDegItem.settingsKey, chargesNeeded);
+						messages.push(`${rawItem.boostPercent}% for ${rawItem.item.name} (${chargesNeeded} charges)`);
 					}
 
 					return {
 						charges,
-						message: `Using ${charges}`
+						message: messages.join(', '),
+						percentageReduction: sumArr(degItemBeingUsed.map(i => i.boostPercent))
 					};
 				}
 			});

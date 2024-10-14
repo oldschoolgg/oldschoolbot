@@ -3,10 +3,10 @@ import '../data/itemAliases';
 
 import { randInt, roll } from 'e';
 import { Bank, EliteMimicTable, MasterMimicTable } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs';
 
 import type { CasketWorkerArgs } from '.';
 import { ClueTiers } from '../clues/clueTiers';
-import type { ItemBank } from '../types';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the casket worker!');

@@ -3,8 +3,6 @@ title: "Thieving"
 description: /steal
 ---
 
-# Thieving
-
 ### Custom Content and Boosts
 
 - [Wilvus](../custom-items/pets.md#miscellaneous-pets) - 2x Speed boost to `/steal`

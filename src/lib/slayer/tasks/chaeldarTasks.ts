@@ -241,7 +241,12 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [110, 170],
 		weight: 9,
-		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		monsters: [
+			Monsters.GreaterDemon.id,
+			Monsters.KrilTsutsaroth.id,
+			Monsters.Skotizo.id,
+			Monsters.TormentedDemon.id
+		],
 		combatLevel: 70,
 		unlocked: true
 	},

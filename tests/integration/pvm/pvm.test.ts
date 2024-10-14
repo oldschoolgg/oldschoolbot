@@ -5,7 +5,7 @@ import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConsta
 import { getPOHObject } from '../../../src/lib/poh';
 import { SkillsEnum } from '../../../src/lib/skilling/types';
 import { Gear } from '../../../src/lib/structures/Gear';
-import { convertLVLtoXP, resolveItems } from '../../../src/lib/util';
+import { calcPerHour, convertLVLtoXP, resolveItems } from '../../../src/lib/util';
 import { minionKCommand } from '../../../src/mahoji/commands/k';
 import { createTestUser, mockClient, mockUser } from '../util';
 
@@ -331,5 +331,50 @@ describe('PVM', async () => {
 		await user.giveSlayerTask(EMonster.ARAXYTE, 100);
 		await user.kill(EMonster.ARAXYTE, { method: 'cannon' });
 		expect(user.bank.amount('Cannonball')).toBeGreaterThan(100_000 - 200);
+	});
+
+	it('should give a scythe boost and deduct charges', async () => {
+		const user = await makeAraxxorUser();
+		await user.equip('melee', [
+			EItem.PRIMORDIAL_BOOTS,
+			EItem.INFERNAL_MAX_CAPE,
+			EItem.FEROCIOUS_GLOVES,
+			EItem.AMULET_OF_TORTURE,
+			EItem.INQUISITORS_MACE,
+			EItem.INQUISITORS_HAUBERK,
+			EItem.INQUISITORS_PLATESKIRT
+		]);
+		await user.addItemsToBank({
+			items: new Bank()
+				.add('Anglerfish', 100)
+				.add('Cooked karambwan', 100)
+				.add('Super combat potion(4)', 100)
+				.add('Anti-venom+(4)', 100)
+				.add('Prayer potion(4)', 100)
+				.add('Cannonball', 100_000)
+				.add(CombatCannonItemBank)
+		});
+		await user.update({
+			scythe_of_vitur_charges: 100_000
+		});
+
+		// Without scythe
+		await user.equip('melee', [EItem.SCYTHE_OF_VITUR]);
+		await user.giveSlayerTask(EMonster.ARAXYTE, 500);
+		const res = await user.kill(EMonster.ARAXXOR);
+		expect(res.commandResult).toContain('is now killing');
+		expect(res.commandResult).toContain('25% for Scythe of vitur');
+		const perHourWithScythe = calcPerHour(res.activityResult!.q, res.activityResult!.duration);
+
+		// With scythe
+		await user.giveSlayerTask(EMonster.ARAXYTE, 500);
+		await user.equip('melee', [EItem.INQUISITORS_MACE]);
+		const res2 = await user.kill(EMonster.ARAXXOR);
+		expect(res2.commandResult).toContain('is now killing');
+		expect(res2.commandResult).not.toContain('Scythe of vitur');
+		const perHourWithoutScythe = calcPerHour(res2.activityResult!.q, res2.activityResult!.duration);
+
+		expect(perHourWithScythe).toBeGreaterThan(perHourWithoutScythe);
+		expect(user.user.scythe_of_vitur_charges).toBeLessThan(100_000);
 	});
 });

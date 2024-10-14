@@ -1,6 +1,5 @@
 import { randArrItem, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';

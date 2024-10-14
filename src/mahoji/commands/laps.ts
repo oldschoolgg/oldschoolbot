@@ -1,10 +1,11 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../lib/constants';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
+import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
@@ -145,6 +146,16 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		if (course.name === 'Daemonheim Rooftop Course' && !user.bitfield.includes(BitField.HasDaemonheimAgilityPass)) {
 			return 'The Daemonheim guards deny you access to the course.';
+		}
+
+		// Check for quest requirements
+		if (course.requiredQuests) {
+			const incompleteQuest = course.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to attempt the ${course.name} agility course.`;
+			}
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Agility');

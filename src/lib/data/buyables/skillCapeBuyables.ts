@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import Skillcapes from '../../skilling/skillcapes';

@@ -8,10 +8,11 @@ import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { runTameTask } from '../tasks/tames/tameTasks';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
-import { BitField, Channel, PeakTier, informationalButtons } from './constants';
+import { BitField, Channel, PeakTier } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
 import { runCommand } from './settings/settings';
+import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { MTame } from './structures/MTame';
@@ -218,12 +219,12 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 
 					const storeHarvestablePlant = patch.lastPlanted;
 					const planted = storeHarvestablePlant
-						? Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
+						? (Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
 							Farming.Plants.find(
 								plants =>
 									stringMatches(plants.name, storeHarvestablePlant) ||
 									stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-							)
+							))
 						: null;
 					const difference = now - patch.plantTime;
 					if (!planted) continue;

@@ -1,4 +1,4 @@
-import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { UserEventType } from '@prisma/client';
 import { roll, sumArr } from 'e';

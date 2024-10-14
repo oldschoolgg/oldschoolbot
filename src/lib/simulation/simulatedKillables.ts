@@ -1,6 +1,7 @@
-import { randArrItem, randInt, roll } from 'e';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank, Misc } from 'oldschooljs';
 
+import { randArrItem, randInt, roll } from 'e';
 import { DOANonUniqueTable } from '../bso/doa/doaLootTable';
 import { nexUniqueDrops } from '../data/CollectionsExport';
 import { chanceOfDOAUnique, pickUniqueToGiveUser } from '../depthsOfAtlantis';
@@ -8,6 +9,29 @@ import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses
 import { NEX_UNIQUE_DROPRATE, nexLootTable } from '../nex';
 import { zygomiteFarmingSource } from '../skilling/skills/farming/zygomites';
 import { WintertodtCrate } from './wintertodt';
+
+export const winterTodtPointsTable = new SimpleTable<number>()
+	.add(420)
+	.add(470)
+	.add(500)
+	.add(505)
+	.add(510)
+	.add(520)
+	.add(550)
+	.add(560)
+	.add(590)
+	.add(600)
+	.add(620)
+	.add(650)
+	.add(660)
+	.add(670)
+	.add(680)
+	.add(700)
+	.add(720)
+	.add(740)
+	.add(750)
+	.add(780)
+	.add(850);
 
 interface SimulatedKillable {
 	name: string;

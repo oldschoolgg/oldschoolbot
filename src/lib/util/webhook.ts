@@ -1,10 +1,10 @@
 import { splitMessage } from '@oldschoolgg/toolkit';
+import { channelIsSendable } from '@oldschoolgg/toolkit/util';
 import type { AttachmentBuilder, BaseMessageOptions, EmbedBuilder, Message } from 'discord.js';
 import { PartialGroupDMChannel, PermissionsBitField, WebhookClient } from 'discord.js';
 
 import { production } from '../../config';
 
-import { channelIsSendable } from '../util';
 import { logError } from './logError';
 
 async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {

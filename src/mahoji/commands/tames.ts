@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
 import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
@@ -46,7 +46,6 @@ import {
 } from '../../lib/tames';
 import {
 	assert,
-	exponentialPercentScale,
 	formatDuration,
 	formatSkillRequirements,
 	isWeekend,

@@ -6,16 +6,12 @@ The Shades of Mort'ton minigame works in a condensed manner compared to OSRS. Ba
 
 To start a trip of the minigame, use the following:
 
-- `/minigames shades_of_morton start`` `**`shade:`**`[shadeType]`` `**`logs:`**`[logType]`
-
----
+- `/minigames shades_of_morton start shade:[shadeType]logs:[logType]`
 
 ## Boosts
 
 - 50% more Prayer xp for completion of Morytania hard diary.
 - 50% more Firemaking xp for completion of Morytania elite diary.
-
----
 
 ## Shade Remains
 
@@ -30,8 +26,6 @@ You can kill shades by using the `/k` command. When burned, each shade will give
 | Asyn shade     | Black key - 28.2%<br>Silver key - 50.8%<br>Coins - 21% | 800-900gp      |
 | Fiyr shade     | Silver key - 63.4%<br>Gold key - 15.6%<br>Coins - 21%  | 1,500-5,000gp  |
 | Urium shade    | Gold key - 79%<br>Coins - 21%                          | 2,000-7,000gp  |
-
----
 
 ## Burning Shade Remains
 
@@ -50,8 +44,6 @@ Certain logs can only be used for certain shades. For example, using a redwood l
 | Yew logs         |                  Loar - 34.5<br>Phrin - 47<br>Riyl - 62<br>Asyn - 79.5                  |             255             |
 | Magic logs       |           Loar - 35<br>Phrin - 47.5<br>Riyl - 62.5<br>Asyn - 80<br>Fiyr - 100           |            404.5            |
 | Redwood logs     | Loar - 35.5<br>Phrin: - 48<br>Riyl - 63<br>Asyn - 80.5<br>Fiyr - 100.5<br>Urium - 120.5 |             500             |
-
----
 
 ## Rewards
 
@@ -150,7 +142,7 @@ _There is a 1/2 chance to obtain the Flamtaer bag from any level chest._
 
 In order to create the Bronze coffin, you first need to purchase the Broken coffin.
 
-- `/buy`` `**`name:`**` ``Broken coffin`
+- [[/buy name\:Broken coffin]]
 
 Following this, every time you obtain the next set of locks, you can create the next coffin tier. Each new tier provides an additional minute to your Shades of Mort'ton trip times when equipped in any setup. You cannot skip upgrades, they must be acquired sequentially.
 

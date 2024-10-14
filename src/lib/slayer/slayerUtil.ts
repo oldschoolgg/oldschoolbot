@@ -424,12 +424,12 @@ export function hasSlayerUnlock(
 	let success = true;
 	let errors = '';
 
-	required.forEach(req => {
+	for (const req of required) {
 		if (!myUnlocks.includes(req)) {
 			success = false;
 			missing.push(getSlayerReward(req as SlayerTaskUnlocksEnum));
 		}
-	});
+	}
 
 	errors = missing.join(', ');
 	return { success, errors };
@@ -439,23 +439,43 @@ const filterLootItems = resolveItems([
 	"Hydra's eye",
 	"Hydra's fang",
 	"Hydra's heart",
+	'Noxious point',
+	'Noxious blade',
+	'Noxious pommel',
 	'Dark totem base',
 	'Dark totem middle',
 	'Dark totem top',
 	'Bludgeon claw'
 ]);
-const ringPieces = resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]);
+const hydraPieces = resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]);
+const noxPieces = resolveItems(['Noxious point', 'Noxious blade', 'Noxious pommel']);
 const totemPieces = resolveItems(['Dark totem base', 'Dark totem middle', 'Dark totem top']);
 const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeon axon']);
 
+function filterPieces(myLoot: Bank, myClLoot: Bank, combinedBank: Bank, pieces: number[], numPieces: number) {
+	for (let x = 0; x < numPieces; x++) {
+		const bank: number[] = pieces.map(piece => combinedBank.amount(piece));
+		const minBank = Math.min(...bank);
+		for (let i = 0; i < bank.length; i++) {
+			if (bank[i] === minBank) {
+				myLoot.add(pieces[i]);
+				combinedBank.add(pieces[i]);
+				myClLoot.add(pieces[i]);
+				break;
+			}
+		}
+	}
+}
+
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
-	// Order: Fang, eye, heart.
-	let numHydraEyes = myLoot.amount("Hydra's eye");
-	numHydraEyes += myLoot.amount("Hydra's fang");
-	numHydraEyes += myLoot.amount("Hydra's heart");
-	const numDarkTotemBases = myLoot.amount('Dark totem base');
+	const numHydraPieces =
+		myLoot.amount("Hydra's eye") + myLoot.amount("Hydra's fang") + myLoot.amount("Hydra's heart");
+	const numNoxPieces =
+		myLoot.amount('Noxious point') + myLoot.amount('Noxious blade') + myLoot.amount('Noxious pommel');
+	const numTotemPieces = myLoot.amount('Dark totem base');
 	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
-	if (!numBludgeonPieces && !numDarkTotemBases && !numHydraEyes) {
+
+	if (!numHydraPieces && !numNoxPieces && !numTotemPieces && !numBludgeonPieces) {
 		return { bankLoot: myLoot, clLoot: myLoot };
 	}
 
@@ -464,61 +484,21 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	}
 
 	const myClLoot = myLoot.clone();
-
 	const combinedBank = new Bank(myBank).add(myLoot);
+
+	if (numHydraPieces) {
+		filterPieces(myLoot, myClLoot, combinedBank, hydraPieces, numHydraPieces);
+	}
+	if (numNoxPieces) {
+		filterPieces(myLoot, myClLoot, combinedBank, noxPieces, numNoxPieces);
+	}
+	if (numTotemPieces) {
+		filterPieces(myLoot, myClLoot, combinedBank, totemPieces, numTotemPieces);
+	}
 	if (numBludgeonPieces) {
-		for (let x = 0; x < numBludgeonPieces; x++) {
-			const bank: number[] = [];
+		filterPieces(myLoot, myClLoot, combinedBank, bludgeonPieces, numBludgeonPieces);
+	}
 
-			for (const piece of bludgeonPieces) {
-				bank.push(combinedBank.amount(piece));
-			}
-			const minBank = Math.min(...bank);
-
-			for (let i = 0; i < bank.length; i++) {
-				if (bank[i] === minBank) {
-					myLoot.add(bludgeonPieces[i]);
-					combinedBank.add(bludgeonPieces[i]);
-					myClLoot.add(bludgeonPieces[i]);
-					break;
-				}
-			}
-		}
-	}
-	if (numDarkTotemBases) {
-		for (let x = 0; x < numDarkTotemBases; x++) {
-			const bank: number[] = [];
-			for (const piece of totemPieces) {
-				bank.push(combinedBank.amount(piece));
-			}
-			const minBank = Math.min(...bank);
-			for (let i = 0; i < bank.length; i++) {
-				if (bank[i] === minBank) {
-					myLoot.add(totemPieces[i]);
-					combinedBank.add(totemPieces[i]);
-					myClLoot.add(totemPieces[i]);
-					break;
-				}
-			}
-		}
-	}
-	if (numHydraEyes) {
-		for (let x = 0; x < numHydraEyes; x++) {
-			const bank: number[] = [];
-			for (const piece of ringPieces) {
-				bank.push(combinedBank.amount(piece));
-			}
-			const minBank = Math.min(...bank);
-			for (let i = 0; i < bank.length; i++) {
-				if (bank[i] === minBank) {
-					myLoot.add(ringPieces[i]);
-					combinedBank.add(ringPieces[i]);
-					myClLoot.add(ringPieces[i]);
-					break;
-				}
-			}
-		}
-	}
 	return {
 		bankLoot: myLoot,
 		clLoot: myClLoot

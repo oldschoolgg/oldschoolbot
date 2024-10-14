@@ -1,5 +1,5 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { activity_type_enum, tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import type { User } from 'discord.js';

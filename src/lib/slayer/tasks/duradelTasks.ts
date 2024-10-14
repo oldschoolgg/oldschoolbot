@@ -256,7 +256,12 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [130, 200],
 		weight: 9,
-		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		monsters: [
+			Monsters.GreaterDemon.id,
+			Monsters.KrilTsutsaroth.id,
+			Monsters.Skotizo.id,
+			Monsters.TormentedDemon.id
+		],
 		extendedAmount: [150, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.GreaterChallenge,
 		combatLevel: 70,
@@ -471,6 +476,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.Araxyte,
 		amount: [60, 80],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.MoreEyesThanSense,
 		weight: 10,
 		monsters: [Monsters.Araxyte.id, Monsters.Araxxor.id],
 		combatLevel: 96,

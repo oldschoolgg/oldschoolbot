@@ -2,8 +2,6 @@
 title: "Solis"
 ---
 
-# Solis
-
 Ori works. Kill 1 boss at a time to get double loot every kill. Igne cannot kill.
 
 ### Requirements

@@ -1,6 +1,6 @@
+import { alphabeticalSort } from '@oldschoolgg/toolkit/util';
 import { expect, it } from 'vitest';
 
-import { alphabeticalSort } from '@oldschoolgg/toolkit';
 import { BOT_TYPE } from '../../src/lib/constants';
 import { allCLItemsFiltered, allCollectionLogsFlat } from '../../src/lib/data/Collections';
 import { itemNameFromID } from '../../src/lib/util/smallUtils';

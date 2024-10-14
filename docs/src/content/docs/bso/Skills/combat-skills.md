@@ -1,11 +1,6 @@
 ---
 title: "Combat Skills"
-description: >-
-  This page covers all of the Combat based Skills, those being: Attack,
-  Strength, Defence, Ranged, Mage, and HP.
 ---
-
-# Combat Skills
 
 ### Boosts
 

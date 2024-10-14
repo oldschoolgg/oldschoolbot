@@ -1,4 +1,4 @@
-import { averageArr, seedShuffle, toTitleCase } from '@oldschoolgg/toolkit';
+import { averageArr, gaussianRandom, seedShuffle, toTitleCase } from '@oldschoolgg/toolkit';
 import type { FishingContestCatch } from '@prisma/client';
 import { calcPercentOfNum, randArrItem } from 'e';
 import type { Item } from 'oldschooljs/dist/meta/types';
@@ -14,7 +14,7 @@ import {
 } from './diaries';
 
 import { SkillsEnum } from './skilling/types';
-import { ISODateString, gaussianRandom } from './util';
+import { ISODateString } from './util';
 import getOSItem from './util/getOSItem';
 
 const warmVerbs = ['freshwater', 'waterborn', 'silver'];

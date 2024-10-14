@@ -1,13 +1,10 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit';
+import { cleanString, evalMathExpression, stringMatches } from '@oldschoolgg/toolkit/util';
 import { notEmpty } from 'e';
-import { Bank, type Item, Items } from 'oldschooljs';
-
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
 import { ONE_TRILLION } from '../constants';
 import { isDeletedItemName } from '../customItems/util';
 import { filterableTypes } from '../data/filterables';
-import { cleanString, stringMatches } from '../util';
 
 const { floor, max, min } = Math;
 

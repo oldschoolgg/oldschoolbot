@@ -26,8 +26,6 @@ If you happen to encounter a PKer, you will then "fight" your opponent. When thi
 - Your experience in killing wilderness bosses
 - Whether the boss is located in a multi-combat area
 
----
-
 ### Smite Chance
 
 These supplies are different from [revenants](revenants.md). Please check there for more info.
@@ -39,15 +37,13 @@ Super restore(4) - 1 for every 8 minutes of your trip
 
 Karambwan - 1 for every 4 minutes of your trip
 
----
-
 ### Wildy Gear
 
 While killing wilderness bosses, your wildy gear setup is at risk. However, because you are **NOT** skulled when killing them, you will almost always keep your best 4 items. The only time you lose your +1, is if you get [smited](./#smite-chance).
 
 You can see what items you will keep/lose through the following command:
 
-- `/gear view`` `**`setup:`**` ``Lost On Wildy Death`
+- `/gear viewsetup: ``Lost On Wildy Death`
 
 <figure><figcaption></figcaption></figure>
 
@@ -55,30 +51,28 @@ In the above image, you can ignore the things listed in the red box because you 
 
 However, untradeable items or items that have a 0 value will usually not be kept as one of your 3-4 items kept on death. For example, the DT2 rings in their current state are using the incorrect item ID, and therefore giving the rings a 0 value. This means that something with a low value but still a higher value than the ring, may be kept over the ring upon a death.
 
----
-
 ## Voidwaker
 
 All 3 pieces can be obtained from their respective bosses and combined to create the voidwaker. Each piece is dropped by the stronger variants at 1/360, or 1/912 from the weaker variants. The voidwaker currently gives no boosts to any bosses.
 
-- `/create`` `**`item:`**`voidwaker`
+- `/createitem:voidwaker`
 
 ## Upgraded Rev Weapons
 
 The upgrades to rev weapons can be obtained and attached to create the stronger variant of each. The upgraded rev weapons provide a slightly better boost over their regular counterparts. It costs 7000 ether to charge a wildy weapon, which can also be reverted to receive the base weapon and ether back. Each piece is dropped by the stronger variants at 1/196, or 1/618 from the weaker variants.
 
-- `/create`` `**`item:`**`Webweaver bow`
-- `/create`` `**`item:`**`Accursed sceptre`
-- `/create`` `**`item:`**`Ursine chainmace`
+- `/createitem:Webweaver bow`
+- `/createitem:Accursed sceptre`
+- `/createitem:Ursine chainmace`
 
 # Revenants
 
 Revenants are some high risk, high reward content that allows you to collect some handy wildy weapons and many high tier resources. Revs uses the gear in your wildy setup, which means, you CAN lose pieces of gear from this setup. Please read this entire page before embarking.
 
-To start a trip, use the `/k`` `**`name`**`: (name)`` `**`method:`**` ``none` command.
+To start a trip, use the `/kname`\*\*`: (name)method: ``none` command.
 
-- E.g. `/k`` `**`name`**`: Revenant imp method: none`
-- E.g. `/k`` `**`name`**`: Revenant dragon method: none`
+- E.g. `/kname`\*\*`: Revenant imp method: none`
+- E.g. `/kname`\*\*`: Revenant dragon method: none`
 
 **Note:** If you try to put any other method outside of none it will auto default you to using the range method as you can not barrage/burst or cannon revs.
 
@@ -141,22 +135,22 @@ The highest attack boost you can obtain is 25%. The maximum style bonuses are li
 
 Bracelets of ethereum can be charged (requires 2000 ether) but offers no benefit in the bot at this stage. You can also turn bracelets into ether which yields 250 ether per bracelet.
 
-- `/create`` `**`item:`**`bracelet of ethereum`
-- `/create`` `**`item:`**`revenant ether`
+- `/createitem:bracelet of ethereum`
+- `/createitem:revenant ether`
 
 #### **Wildy Weapons**
 
 These weapons can be charged which will provide boosts at revs themselves and other wildy bosses. It costs 7000 ether to charge a wildy weapon. To create the upgraded version of these weapons, please visit the [Wilderness page](./#upgraded-rev-weapons). To check the boosts which these items give, please visit the [Boosts & Requirements page.](https://wiki.oldschool.gg/bosses/boosts-and-requirements)
 
-- `/create`` `**`item:`**`viggora's chainmace`
-- `/create`` `**`item:`**`craw's bow`
-- `/create`` `**`item:`**`thammaron's sceptre`
+- `/createitem:viggora's chainmace`
+- `/createitem:craw's bow`
+- `/createitem:thammaron's sceptre`
 
 #### **Ancient Items**
 
 You can sell the ancient items for the same value as in OSRS. Use the `/sell` command.
 
-- `/sell`` `**`items:`**` ``1 Ancient totem`
+- `/sellitems: ``1 Ancient totem`
 
 |                   |              |
 | ----------------- | :----------: |

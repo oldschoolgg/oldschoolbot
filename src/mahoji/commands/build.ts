@@ -1,7 +1,7 @@
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, reduceNumByPercent, round } from 'e';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Constructables from '../../lib/skilling/skills/construction/constructables';

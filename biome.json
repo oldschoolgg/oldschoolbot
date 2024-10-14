@@ -5,8 +5,11 @@
 	},
 	"files": {
 		"maxSize": 10000000,
-		"ignore": ["node_modules", "dist", "coverage", "profiling", "logs", "icon_cache"],
+		"ignore": ["node_modules", "dist", "coverage", "profiling", "logs", "icon_cache", ".astro", ".yarn"],
 		"include": ["**/*.ts", "**/*.mts", "**/*.json", "**/*.test.ts", "**/*.mdx", "**/*.md", "**/*.mjs", "**/*.cjs"]
+	},
+	"vcs": {
+		"defaultBranch": "master"
 	},
 	"linter": {
 		"enabled": true,

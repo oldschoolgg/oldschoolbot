@@ -1,10 +1,10 @@
-import { itemID, resolveItems } from 'oldschooljs/dist/util';
+import { itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { gorajanWarriorOutfit } from '../../src/lib/data/CollectionsExport';
 import { getSimilarItems } from '../../src/lib/data/similarItems';
 import { Gear } from '../../src/lib/structures/Gear';
-import { itemNameFromID } from '../../src/lib/util';
+import { itemNameFromID } from '../../src/lib/util/smallUtils';
 
 describe('Gear', () => {
 	const testGear = new Gear({

@@ -1,4 +1,4 @@
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
+import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';

@@ -4,7 +4,36 @@ sidebar:
   order: 3
 ---
 
-# Update
+## Update 9/10/2024 [[8de72b2de5a275497c67123904a280981415c553...68b130088f5e365ec2a341cae48bc5b353ccc2ff]]
+
+### Hacktoberfest
+
+I am running our own Hacktoberfest! Check out the [Hacktoberfest](/getting-started/hackertoberfest) page if you're interested.
+
+### [[gc]]
+
+- Fixed/updated lots of wiki pages, and added more features to the wiki
+- Fixed an issue where 'degradeable item boosts' were not applying, for example using a Scythe at Araxxor.
+- PVM trips now show your kills per hour.
+- Fixed a formatting issue in trips where it says "Using" for no reason.
+- If you try to kill something without owning any of the required consumables, it now shows the alternate ones you can use. (e.g. antivenoms at araxxor)
+- Fixed an issue where extra consumables (like cannonballs) were being used when they shouldn't.
+
+### [[DaughtersOfNyx]]
+
+- Added the [While Guthix Sleeps](/osb/quests/#while-guthix-sleeps) quest, requiring Defender of Varrock and The Path of Glouphrie (alongside various skills).
+
+  #### Tormented Demons
+
+  Added Tormented Demons, as well as their combat achievements and their creatable items. Also added the While Guthix Sleeps quest to allow the killing of these mobs. The creatable demonbane items from TDs also have various boosts to demon mobs throughout the bot (mostly emberlight)
+
+  - They are also an alternative option for Greater Demon tasks outside of the wilderness and Konaar.
+  - They drop: [[Tormented Synapse]] [[Burning Claw]] [[Guthixian Temple Teleport]]
+  - You can now [[/create]] these items: [[Emberlight]] [[Scorching bow]] [[Purging staff]] [[Burning Claws]]
+  - The [[Emberlight]], [[Scorching bow]] and [[Purging staff]] weapons now act as demonbane weapons.
+  - [[Emberlight]] boosts at all demon mobs, Scorching Bow, Purging Staff and Burning Claws only affect TDs (with the exception of Scorching Bow also being BIS at K'ril)
+
+## Update 6/10/2024
 
 We now have a new wiki at https://wiki.oldschool.gg/, and the BSO Wiki is now combined together with the OSB wiki. Many pages are out of date, I'm trying to update pages when I have time. Currently, the only way to contribute to the new wiki is by editing files in [this folder on github](https://github.com/oldschoolgg/oldschoolbot/tree/master/docs/src/content/docs).
 

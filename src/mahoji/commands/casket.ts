@@ -1,7 +1,6 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';

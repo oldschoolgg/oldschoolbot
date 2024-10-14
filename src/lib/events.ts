@@ -1,4 +1,4 @@
-import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { BaseMessageOptions, Message } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold, time } from 'discord.js';
 import { Time, isFunction } from 'e';

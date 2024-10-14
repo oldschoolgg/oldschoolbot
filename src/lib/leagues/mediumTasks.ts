@@ -29,7 +29,7 @@ import {
 	userhasDiaryTier
 } from '../diaries';
 import { implings } from '../implings';
-import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
+import { SuperiorTormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
 import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
 
 import Darts from '../skilling/skills/fletching/fletchables/darts';
@@ -494,7 +494,7 @@ export const mediumTasks: Task[] = [
 		id: 1069,
 		name: 'Kill a Tormented Demon',
 		has: async args => {
-			return leaguesHasKC(args, TormentedDemon, 1);
+			return leaguesHasKC(args, SuperiorTormentedDemon, 1);
 		}
 	},
 	{

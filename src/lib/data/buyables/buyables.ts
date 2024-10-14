@@ -286,10 +286,29 @@ const sepulchreBuyables: Buyable[] = [
 		name: 'Dark acorn',
 		outputItems: new Bank({ 'Dark acorn': 1 }),
 		itemCost: new Bank({ 'Hallowed mark': 3000 })
+	}
+];
+
+const colossalWyrmAgilityBuyables: Buyable[] = [
+	{
+		name: 'Amylase pack (Colossal Wyrm Agility)',
+		outputItems: new Bank({ 'Amylase pack': 1 }),
+		itemCost: new Bank({ Termites: 100 })
 	},
 	{
-		name: 'Dark squirrel',
-		itemCost: new Bank({ 'Dark acorn': 1, 'Giant squirrel': 1 })
+		name: 'Colossal wyrm teleport scroll',
+		outputItems: new Bank({ 'Colossal wyrm teleport scroll': 1 }),
+		itemCost: new Bank({ Termites: 40 })
+	},
+	{
+		name: 'Graceful crafting kit',
+		outputItems: new Bank({ 'Graceful crafting kit': 1 }),
+		itemCost: new Bank({ Termites: 650 })
+	},
+	{
+		name: 'Calcified acorn',
+		outputItems: new Bank({ 'Calcified acorn': 1 }),
+		itemCost: new Bank({ Termites: 900 })
 	}
 ];
 
@@ -872,9 +891,9 @@ const Buyables: Buyable[] = [
 		gpCost: 500
 	},
 	{
-		name: 'Amylase pack',
+		name: 'Amylase pack (Mark of grace)',
 		outputItems: new Bank({
-			'Amylase crystal': 100
+			'Amylase pack': 1
 		}),
 		itemCost: new Bank({ 'Mark of grace': 10 })
 	},
@@ -1182,7 +1201,8 @@ const Buyables: Buyable[] = [
 	...toaCapes,
 	...mairinsMarketBuyables,
 	...oceanicShrouds,
-	...forestryBuyables
+	...forestryBuyables,
+	...colossalWyrmAgilityBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

@@ -2,8 +2,6 @@
 title: "Depths of Atlantis (DoA)"
 ---
 
-# Depths of Atlantis (DoA)
-
 Depths of Alantis is an underwater raid, where you escort travellers from the surface, to the underwater city of Atlantis, battling dangerous monsters on the way. You have a chance to get some rare drops from the monsters you face on the way, and also a generous payment once you arrive at Atlantis
 
 ## Quick Start

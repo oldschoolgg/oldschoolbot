@@ -1,7 +1,7 @@
+import { Time } from 'e';
+import { Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { Time } from 'e';
-import { Monsters } from 'oldschooljs/dist/meta/types';
 import killableMonsters from '../../src/lib/minions/data/killableMonsters';
 import { getItemCostFromConsumables } from '../../src/mahoji/lib/abstracted_commands/minionKill/handleConsumables';
 import { makeGearBank } from './utils';

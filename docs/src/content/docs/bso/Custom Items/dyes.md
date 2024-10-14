@@ -1,9 +1,6 @@
 ---
 title: "Dyes"
-description: Dyes are custom items that cosmetically enhance various items
 ---
-
-# Dyes
 
 Dyes can be used on certain items by using the `/create` command. This process is irreversible, permanently turns items untradeable, and removes the dye.
 
@@ -81,9 +78,8 @@ Ice, blood, shadow, and third age dyes can only be obtained from grandmaster cas
 
 ## Squid dye
 
-|                    |                |     |
-| ------------------ | -------------- | --- |
 | Required item name | Dyed item name |     |
+| ------------------ | -------------- | --- |
 | Seer               | Black swan     |     |
 
 ## Volcanic Dye

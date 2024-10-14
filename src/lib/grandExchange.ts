@@ -1,10 +1,10 @@
+import { PerkTier, getInterval } from '@oldschoolgg/toolkit/util';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 
 import { BLACKLISTED_USERS } from './blacklists';
@@ -16,16 +16,7 @@ import { roboChimpUserFetch } from './roboChimp';
 
 import { ADMIN_IDS, OWNER_IDS } from '../config';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import {
-	assert,
-	PerkTier,
-	generateGrandExchangeID,
-	getInterval,
-	isGEUntradeable,
-	itemNameFromID,
-	makeComponents,
-	toKMB
-} from './util';
+import { assert, generateGrandExchangeID, isGEUntradeable, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';

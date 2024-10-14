@@ -1,4 +1,4 @@
-import deepmerge from 'deepmerge';
+import { deepMerge } from '@oldschoolgg/toolkit/util';
 import fetch from 'node-fetch';
 
 const colors = [
@@ -93,7 +93,7 @@ export function createApexChartConfig({ type, title, values, format }: ChartOpti
 	};
 
 	if (type === 'pie') {
-		config = deepmerge(config, {
+		config = deepMerge(config, {
 			plotOptions: {
 				pie: {
 					dataLabels: {
@@ -105,7 +105,7 @@ export function createApexChartConfig({ type, title, values, format }: ChartOpti
 	}
 
 	if (type === 'bar') {
-		config = deepmerge(config, {
+		config = deepMerge(config, {
 			plotOptions: {
 				bar: {
 					dataLabels: {
@@ -117,7 +117,7 @@ export function createApexChartConfig({ type, title, values, format }: ChartOpti
 	}
 
 	if (format === 'percent') {
-		config = deepmerge(config, {
+		config = deepMerge(config, {
 			yaxis: {
 				min: 0,
 				max: 100

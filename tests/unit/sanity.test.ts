@@ -1,6 +1,5 @@
 import { type Tame, tame_growth } from '@prisma/client';
-import { Bank, Items, Monsters } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Bank, EquipmentSlot, Items, Monsters, getItem, getItemOrThrow } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { combinedTmbUmbEmbTables } from '../../src/lib/bsoOpenables';
@@ -15,6 +14,7 @@ import KingGoldemar from '../../src/lib/minions/data/killableMonsters/custom/bos
 import { VasaMagus } from '../../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { allOpenables } from '../../src/lib/openables';
 import { Gear } from '../../src/lib/structures/Gear';
+import { itemNameFromID } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemID from '../../src/lib/util/itemID';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
@@ -162,5 +162,12 @@ describe('Sanity', () => {
 	test('market price of coins', () => {
 		const b = new Bank().add('Coins', 66);
 		expect(marketPriceOfBank(b)).toEqual(66);
+	});
+	test('rings', () => {
+		expect(getItem('Ultor ring')!.id).toEqual(25485);
+		expect(itemID('Ultor ring')).toEqual(25485);
+		expect(itemNameFromID(25485)).toEqual('Ultor ring');
+		expect(getItemOrThrow('Ultor ring')!.equipment?.slot).toEqual('ring');
+		expect(getItemOrThrow('Ultor ring')!.equipment?.melee_strength).toEqual(12);
 	});
 });

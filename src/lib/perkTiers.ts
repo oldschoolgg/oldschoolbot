@@ -14,7 +14,7 @@ export const allPerkBitfields: BitField[] = [
 	BitField.BothBotsMaxedFreeTierOnePerks
 ];
 
-function getUsersPerkTierRaw(user: MUser): PerkTier | 0 {
+function getUsersPerkTierRaw(user: { bitfield: BitField[]; id: string }): PerkTier | 0 {
 	if ([BitField.isModerator].some(bit => user.bitfield.includes(bit))) {
 		return PerkTier.Four;
 	}
@@ -69,7 +69,7 @@ function getUsersPerkTierRaw(user: MUser): PerkTier | 0 {
 }
 
 export function getUsersPerkTier(user: MUser): PerkTier | 0 {
-	const perkTier = getUsersPerkTierRaw(user);
+	const perkTier = getUsersPerkTierRaw(user.user);
 	perkTierCache.set(user.id, perkTier);
 	return perkTier;
 }

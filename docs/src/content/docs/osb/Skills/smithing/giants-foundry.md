@@ -6,7 +6,7 @@ Look no further for amazing smithing xp and a use for those stacked up bars! You
 
 To start a trip of Giant's Foundry, use:
 
-- `/minigames giants_foundry start`` `**`name:`**` ``[alloyType]`
+- `/minigames giants_foundry startname: ``[alloyType]`
 
 ## Requirements
 
@@ -57,7 +57,7 @@ With the full outfit and 80+ smithing, when using mith+addy alloys, you can expe
 
 While your minion will receive relatively decent xp, you will also gain coins and Foundry reputation. The amount of coins received is equal to `xp gained * 2`. The Foundry reputation given is equal to all your weapon scores combined in your trip. Reputation can be used to buy items from the shop.
 
-- `/minigames giants_foundry buy`` `**`item:`**` ``[itemName]`
+- `/minigames giants_foundry buyitem: ``[itemName]`
 
 |                   |                     |                            |
 | ----------------- | ------------------- | -------------------------- |

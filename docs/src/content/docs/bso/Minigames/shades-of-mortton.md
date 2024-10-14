@@ -3,8 +3,6 @@ title: "Shades of Mort'ton"
 description: "BSO only content: Necromancer Kit, Shade Skull, Gary"
 ---
 
-# Shades of Mort'ton
-
 [The OSB Shades of Mort'ton article](https://app.gitbook.com/s/-Mahgm23KyzkWDlt2oqz/minigames/shades-of-mortton) describes the minigame and standard content around it.
 
 | Item                                                                                                                             | Source                                                                         |

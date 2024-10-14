@@ -2,7 +2,7 @@
 title: "Bank Backgrounds"
 ---
 
-In order to change your bank background one of the first things you will need to do is start by going into the bot and typing `/minion bankbg`` `**`name:`** from there you will be presented with an in depth list of all the available backgrounds to you as either a non patron up to a T5 patron. As you go down the list of bank backgrounds you will notice that some of them are exclusive to T3 through T5 patron or unavailable entirely, that list is as follows:
+In order to change your bank background one of the first things you will need to do is start by going into the bot and typing `/minion bankbg name:` from there you will be presented with an in depth list of all the available backgrounds to you as either a non patron up to a T5 patron. As you go down the list of bank backgrounds you will notice that some of them are exclusive to T3 through T5 patron or unavailable entirely, that list is as follows:
 
 ## Available to Everyone
 
@@ -15,8 +15,6 @@ In order to change your bank background one of the first things you will need to
   - 1x Heavy casket (200 Elite clues completed)
   - 1x Scroll sack (100 Master clues completed)
 - Nightmare (Requires completion of Nightmare CL (including Phosani items) and costs 100m + 1 of each orb)
-
----
 
 ## Available to Patrons
 

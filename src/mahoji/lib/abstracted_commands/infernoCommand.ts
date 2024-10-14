@@ -1,8 +1,6 @@
 import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
 import { Time, calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { itemID, randomVariation } from 'oldschooljs/dist/util';
+import { Bank, type ItemBank, Monsters, itemID, randomVariation } from 'oldschooljs';
 
 import { BitField, Emoji, projectiles } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';

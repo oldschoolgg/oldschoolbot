@@ -1,9 +1,9 @@
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, reduceNumByPercent } from 'e';
+import { Time } from 'e';
+import { Bank, type ItemBank } from 'oldschooljs';
+
+import { reduceNumByPercent } from 'e';
 import { itemID } from 'oldschooljs/dist/util';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import type { UserFullGearSetup } from '../../lib/gear';

@@ -16,7 +16,7 @@ const schema = z.object({
 	timeToFinish: z.number().int().positive(),
 	messages: z.array(z.string()),
 	currentTaskOptions: z.object({}),
-	finalQuantity: z.number().int().positive().min(1).max(3000),
+	finalQuantity: z.number().int().positive().min(1),
 	confirmations: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)
 });

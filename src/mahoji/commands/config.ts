@@ -1,6 +1,6 @@
-import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
 import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
@@ -1201,7 +1201,7 @@ LIMIT 20;
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
-		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) ?? null : null;
+		const guild = guildID ? (globalClient.guilds.cache.get(guildID.toString()) ?? null) : null;
 		if (options.server) {
 			if (options.server.channel) {
 				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);

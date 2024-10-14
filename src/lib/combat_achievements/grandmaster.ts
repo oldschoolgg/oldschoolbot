@@ -5,6 +5,7 @@ import { PHOSANI_NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
 import type {
 	GauntletOptions,
+	MonsterActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
@@ -1125,8 +1126,12 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 500,
-			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 6 && timePerKill <= 1.66;
+			}
 		}
 	},
 	{
@@ -1136,7 +1141,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 1000,
+			chancePerKill: 200,
 			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
 		}
 	},
@@ -1147,7 +1152,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Araxxor',
 		rng: {
-			chancePerKill: 1000,
+			chancePerKill: 50,
 			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
 		}
 	}

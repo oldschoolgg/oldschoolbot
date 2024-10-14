@@ -1,19 +1,14 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
-import type { CommandOptions } from '@oldschoolgg/toolkit';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import type { APIButtonComponent, APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { type CommandOptions, PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit/util';
+import type { Prisma } from '@prisma/client';
+import type { APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
-import { Items } from 'oldschooljs';
-import { convertLVLtoXP, getItemOrThrow } from 'oldschooljs/dist/util/util';
+import { Items, convertLVLtoXP, getItemOrThrow, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import type { Prisma } from '@prisma/client';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { customItems } from './customItems/util';
@@ -590,40 +585,6 @@ export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
-const buttonSource = [
-	{
-		label: 'Wiki',
-		emoji: '802136964027121684',
-		url: 'https://bso-wiki.oldschool.gg/'
-	},
-	{
-		label: 'Patreon',
-		emoji: '679334888792391703',
-		url: 'https://www.patreon.com/oldschoolbot'
-	},
-	{
-		label: 'Support Server',
-		emoji: '778418736180494347',
-		url: 'https://www.discord.gg/ob'
-	},
-	{
-		label: 'Bot Invite',
-		emoji: '778418736180494347',
-		url: 'http://www.oldschool.gg/invite/bso'
-	}
-];
-
-export const informationalButtons = buttonSource.map(i =>
-	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
-);
-export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
-	type: ComponentType.Button,
-	label: i.label,
-	emoji: { id: i.emoji },
-	style: ButtonStyle.Link,
-	url: i.url
-}));
-
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
@@ -731,10 +692,7 @@ export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
 export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
 
 export const busyImmuneCommands = ['admin', 'rp'];
-export const minionBuyButton = new ButtonBuilder()
-	.setCustomId('BUY_MINION')
-	.setLabel('Buy Minion')
-	.setStyle(ButtonStyle.Success);
+
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
 
 export const IVY_MAX_TRIP_LENGTH_BOOST = Time.Minute * 25;
@@ -841,7 +799,6 @@ export const discontinuedItems = resolveItems([
 	'Black swan',
 	...customItems.filter(i => Items.get(i)?.customItemData?.isDiscontinued)
 ]);
-export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
 export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 	let petChance = Math.ceil(10_000_000 / (itemLevel * (itemLevel / 5)));
 	if (herbloreXP >= MAX_XP) {
@@ -853,6 +810,14 @@ export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 export const OSB_VIRTUS_IDS = [26_241, 26_243, 26_245];
 export const YETI_ID = 129_521;
 export const KING_GOLDEMAR_GUARD_ID = 30_913;
+export const demonBaneWeapons = resolveItems([
+	'Silverlight',
+	'Darklight',
+	'Arclight',
+	'Emberlight',
+	'Scorching bow',
+	'Purging staff'
+]);
 
 export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
 const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
@@ -908,29 +873,6 @@ export const christmasCakeIngredients = resolveItems([
 export const gearValidationChecks = new Set();
 
 export const BSO_MAX_TOTAL_LEVEL = 3120;
-
-export const winterTodtPointsTable = new SimpleTable<number>()
-	.add(420)
-	.add(470)
-	.add(500)
-	.add(505)
-	.add(510)
-	.add(520)
-	.add(550)
-	.add(560)
-	.add(590)
-	.add(600)
-	.add(620)
-	.add(650)
-	.add(660)
-	.add(670)
-	.add(680)
-	.add(700)
-	.add(720)
-	.add(740)
-	.add(750)
-	.add(780)
-	.add(850);
 
 if (!process.env.TEST && isMainThread) {
 	console.log(

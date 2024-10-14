@@ -1,5 +1,6 @@
 import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
+
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';

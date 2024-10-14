@@ -1,8 +1,8 @@
-import { ProductID, products } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { notEmpty } from 'e';
 
-import { Time, notEmpty } from 'e';
+import { Time } from 'e';
 import { BOT_TYPE } from '../../lib/constants';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { roboChimpSyncData } from '../../lib/roboChimp';

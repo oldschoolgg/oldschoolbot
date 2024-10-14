@@ -1,11 +1,15 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { glob } from 'glob';
+import { Bank, Monsters } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
+import { groupBy } from 'remeda';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
-import { Bank, Monsters, itemNameFromID, toTitleCase } from '../src/lib/util';
+import { itemNameFromID } from '../src/lib/util';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
 
 function combatAchievementHowToFinish(ca: CombatAchievement) {
@@ -316,9 +320,72 @@ function renderQuestsMarkdown() {
 	handleMarkdownEmbed('quests', 'osb/quests.mdx', markdown.toString());
 }
 
+function wikiIssues() {
+	const untemplatedCommandRegex = /(?<!\[\[[^\]]*|[)\]]\s*)\/\w+/g;
+	const unintendedHtmlRegex = /<td>/g;
+
+	interface Issue {
+		description: string;
+		filePath: string;
+		lineNumbers: number[];
+	}
+
+	const files = glob.sync('./docs/**/*.{md,mdx}', {
+		ignore: ['**/node_modules/**']
+	});
+
+	const issues: Issue[] = [];
+
+	for (const file of files) {
+		const content = readFileSync(file, 'utf-8');
+		const lines = content.split('\n');
+
+		const untemplatedCommandLines: number[] = [];
+		const unintendedHtmlLines: number[] = [];
+
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			if (untemplatedCommandRegex.test(line)) {
+				untemplatedCommandLines.push(i + 1);
+			}
+			if (unintendedHtmlRegex.test(line)) {
+				unintendedHtmlLines.push(i + 1);
+			}
+		}
+
+		if (untemplatedCommandLines.length > 0) {
+			issues.push({
+				description: 'Doesnt use the new command formatting',
+				filePath: file,
+				lineNumbers: untemplatedCommandLines
+			});
+		}
+
+		if (unintendedHtmlLines.length > 0) {
+			issues.push({
+				description: 'Contains unintended HTML (e.g. `<td>`)',
+				filePath: file,
+				lineNumbers: unintendedHtmlLines
+			});
+		}
+	}
+
+	const markdown = new Markdown();
+	const grouped = groupBy(issues, i => i.filePath.replaceAll('\\', '/'));
+	for (const [file, issues] of Object.entries(grouped).sort((a, b) => a[0].localeCompare(b[0]))) {
+		markdown.addLine(
+			`[${file.replace('docs/src/content/docs', '')}](https://github.com/oldschoolgg/oldschoolbot/blob/master/${file.replaceAll(' ', '%20')}): ${issues.map(i => i.description).join(', ')}`
+		);
+	}
+
+	handleMarkdownEmbed('wikiissues', 'getting-started/wiki.md', markdown.toString());
+}
+
 async function wiki() {
 	renderQuestsMarkdown();
+	wikiIssues();
 	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
+	process.exit(0);
 }
 
 wiki();

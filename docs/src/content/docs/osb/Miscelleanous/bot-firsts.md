@@ -1,9 +1,6 @@
 ---
 title: "Hall of Fame"
-description: List of achievements on the bot
 ---
-
-# Hall of Fame
 
 ## First Players to 99 and 200m
 

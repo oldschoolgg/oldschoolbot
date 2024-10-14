@@ -1,8 +1,8 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, ellipsize } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { ellipsize, itemNameFromID, returnStringOrFile } from '../../lib/util';
+import { itemNameFromID, returnStringOrFile } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';

@@ -6,7 +6,7 @@ import { LowSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
 import { BattlestaffTable, StoneSpiritTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
 import resolveItems from '../../../../util/resolveItems';
-import { TormentedDemon } from './TormentedDemon';
+import { SuperiorTormentedDemon } from './TormentedDemon';
 import { VladimirDrakan } from './VladimirDrakan';
 import { Yeti } from './Yeti';
 import { Akumu } from './bosses/Akumu';
@@ -70,7 +70,7 @@ export const EliteBlackKnight: CustomMonster = {
 };
 
 export const MiscCustomMonsters = {
-	TormentedDemon,
+	SuperiorTormentedDemon,
 	CockroachSoldier,
 	EliteBlackKnight,
 	Yeti,
