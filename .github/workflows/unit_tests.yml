@@ -21,7 +21,7 @@ jobs:
         node_version: [20.15.0]
         os: [ubuntu-latest]
     concurrency:
-      group: master-unit-tests
+      group: ${{ github.ref_name }}-unittests
       cancel-in-progress: true
     steps:
       - name: Checkout Project
