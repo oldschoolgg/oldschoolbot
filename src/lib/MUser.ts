@@ -9,7 +9,7 @@ import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { pick } from 'remeda';
-import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
+import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
@@ -79,8 +79,8 @@ export async function mahojiUserSettingsUpdate(user: string | bigint, data: Pris
 	}
 }
 
-function alchPrice(bank: Bank, item: Item, tripLength: number) {
-	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
+function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean) {
+	const maxCasts = Math.min(Math.floor(tripLength / (agility? timePerAlchAgility: timePerAlch)), bank.amount(item.id));
 	return maxCasts * (item.highalch ?? 0);
 }
 
@@ -170,13 +170,13 @@ export class MUserClass {
 		return Math.floor(base + Math.max(melee, range, mage));
 	}
 
-	favAlchs(duration: number) {
+	favAlchs(duration: number, agility?: boolean) {
 		const { bank } = this;
 		return this.user.favorite_alchables
 			.filter(id => bank.has(id))
 			.map(getOSItem)
 			.filter(i => i.highalch !== undefined && i.highalch > 0 && i.tradeable)
-			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
+			.sort((a, b) => alchPrice(bank, b, duration, agility? agility : false) - alchPrice(bank, a, duration, agility? agility : false));
 	}
 
 	async setAttackStyle(newStyles: AttackStyles[]) {

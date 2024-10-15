@@ -29,7 +29,7 @@ const unlimitedFireRuneProviders = [
 function alching(user: MUser, tripLength: number) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const { bank } = user;
-	const favAlchables = user.favAlchs(tripLength);
+	const favAlchables = user.favAlchs(tripLength, true);
 
 	if (favAlchables.length === 0) {
 		return null;
