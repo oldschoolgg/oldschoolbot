@@ -20,7 +20,9 @@ jobs:
       matrix:
         node_version: [20.15.0]
         os: [ubuntu-latest]
-
+    concurrency:
+      group: master-unit-tests
+      cancel-in-progress: true
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4

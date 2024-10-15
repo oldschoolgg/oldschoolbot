@@ -3,7 +3,7 @@ import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { busyImmuneCommands, gearValidationChecks } from '../../lib/constants';
-import { logWrapFn, roll } from '../../lib/util';
+import { roll } from '../../lib/util';
 import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
 
@@ -24,8 +24,8 @@ type PrecommandReturn = Promise<
 			dontRunPostCommand?: boolean;
 	  }
 >;
-export const preCommand: (opts: PreCommandOptions) => PrecommandReturn = logWrapFn('PreCommand', rawPreCommand);
-async function rawPreCommand({
+
+export async function preCommand({
 	abstractCommand,
 	userID,
 	guildID,
