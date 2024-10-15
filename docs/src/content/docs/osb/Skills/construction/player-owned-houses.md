@@ -4,12 +4,12 @@ title: "Player-owned Houses"
 
 ## Commands
 
-`/poh view` - Generate POH image\
-`/poh view build_mode:true` - Generates POH image in build mode\
-`/poh build name:[item]` - Builds a specific item\
-`/poh destroy name:[item]` - Destroys a specific item\
-`/poh mount_item name:[item]` - Mount an item if you've built the item mount\
-`/poh wallkit` - Allows you to switch between hosidius and normal wallkits if unlocked
+- [[/poh view]] - Generate POH image
+- [[/poh view build_mode\:true]] - Generates POH image in build mode
+- [[/poh build name\:]] - Builds a specific item
+- [[/poh destroy name\:]] - Destroys a specific item
+- [[/poh mount_item name\:]] - Mount an item if you've built the item mount
+- [[/poh wallkit]] - Allows you to switch between hosidius and normal wallkits if unlocked
 
 ## Boosts
 

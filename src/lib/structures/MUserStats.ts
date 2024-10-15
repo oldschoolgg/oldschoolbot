@@ -32,7 +32,11 @@ export class MUserStats {
 	}
 
 	static async fromID(id: string) {
-		const userStats = await prisma.userStats.findFirstOrThrow({ where: { user_id: BigInt(id) } });
+		const userStats = await prisma.userStats.upsert({
+			where: { user_id: BigInt(id) },
+			create: { user_id: BigInt(id) },
+			update: {}
+		});
 		return new MUserStats(userStats);
 	}
 

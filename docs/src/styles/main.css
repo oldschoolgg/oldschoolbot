@@ -191,7 +191,6 @@ p {
 
 .sidebar-content .top-level li details ul li details ul li a {
   padding-block: 0.4rem;
-  padding-inline-start: 1.75rem;
   border-radius: 4px;
 }
 
@@ -495,4 +494,28 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 
 .edit_this_page {
   color: var(--sl-color-text-accent);
+}
+
+#starlight__sidebar .group-label {
+  text-transform: capitalize;
+}
+
+.discord_channel {
+  font-size: 16px;
+  font-weight: 500;
+  background: #35373c;
+  width: max-content;
+  padding: 3px 10px;
+  font-size: 13.4px;
+  color: #81868f!important;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  text-decoration: none;
+
+  &:hover {
+    color: rgb(192, 192, 192)!important;
+    cursor: pointer;
+     background: rgb(50, 50, 55);
+  }
 }

@@ -50,6 +50,11 @@ This section shows ways you can format things
 
 Any colon needs a backslash before it (I'm not sure yet how to make it so this isnt needed.)
 
+### Discord Channels
+
+`[[# bingo-looking-4-team:1149907771937001522]]`
+[[# bingo-looking-4-team:1149907771937001522]]
+
 ### Skills
 
 `[[agility:55]] [[strength:44,000 XP]] [[qp:5]]`
@@ -274,6 +279,8 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Tames/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Tames/README.md): Doesnt use the new command formatting
 
+[/getting-started/bingo.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/bingo.mdx): Doesnt use the new command formatting
+
 [/getting-started/BSO.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/BSO.mdx): Doesnt use the new command formatting
 
 [/getting-started/changelog.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/changelog.md): Doesnt use the new command formatting
@@ -291,6 +298,16 @@ This is an automatically generated list of pages with possible issues to be look
 [/getting-started/wiki.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/wiki.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [/index.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/index.mdx): Doesnt use the new command formatting
+
+[/osb/Activities/fountain-of-rune.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Activities/fountain-of-rune.md): Doesnt use the new command formatting
+
+[/osb/Activities/hallowed-sepulchre.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Activities/hallowed-sepulchre.md): Doesnt use the new command formatting
+
+[/osb/Activities/mage-training-arena.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Activities/mage-training-arena.md): Doesnt use the new command formatting
+
+[/osb/Activities/mahogany-homes.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Activities/mahogany-homes.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+
+[/osb/Activities/wintertodt.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Activities/wintertodt.md): Doesnt use the new command formatting
 
 [/osb/Bosses/colosseum.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Bosses/colosseum.md): Doesnt use the new command formatting
 
@@ -380,25 +397,15 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/osb/Raids/tob.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Raids/tob.mdx): Doesnt use the new command formatting
 
-[/osb/Skills/agility/agility-pyramid.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/agility/agility-pyramid.md): Doesnt use the new command formatting
-
-[/osb/Skills/agility/brimhaven-agility-arena.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/agility/brimhaven-agility-arena.md): Doesnt use the new command formatting
-
-[/osb/Skills/agility/hallowed-sepulchre.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/agility/hallowed-sepulchre.md): Doesnt use the new command formatting
-
-[/osb/Skills/agility/monkey-backpacks.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/agility/monkey-backpacks.md): Doesnt use the new command formatting
-
-[/osb/Skills/agility/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/agility/README.md): Doesnt use the new command formatting
-
-[/osb/Skills/construction/mahogany-homes.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/construction/mahogany-homes.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/osb/Skills/agility.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/agility.md): Doesnt use the new command formatting
 
 [/osb/Skills/construction/player-owned-houses.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/construction/player-owned-houses.md): Doesnt use the new command formatting
 
 [/osb/Skills/construction/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/construction/README.md): Doesnt use the new command formatting
 
-[/osb/Skills/construction/stash-units.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/construction/stash-units.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/osb/Skills/construction/stash-units.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/construction/stash-units.md): Doesnt use the new command formatting
 
-[/osb/Skills/cooking.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/cooking.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/osb/Skills/cooking.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/cooking.md): Doesnt use the new command formatting
 
 [/osb/Skills/crafting.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/crafting.md): Doesnt use the new command formatting
 
@@ -412,11 +419,7 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/osb/Skills/farming/tithe-farm.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/farming/tithe-farm.md): Doesnt use the new command formatting
 
-[/osb/Skills/firemaking/firemaking-training.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/firemaking/firemaking-training.md): Doesnt use the new command formatting
-
-[/osb/Skills/firemaking/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/firemaking/README.md): Doesnt use the new command formatting
-
-[/osb/Skills/firemaking/wintertodt.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/firemaking/wintertodt.md): Doesnt use the new command formatting
+[/osb/Skills/firemaking.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/firemaking.md): Doesnt use the new command formatting
 
 [/osb/Skills/fishing/aerial-fishing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/fishing/aerial-fishing.md): Doesnt use the new command formatting
 
@@ -430,7 +433,7 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/osb/Skills/fletching.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/fletching.md): Doesnt use the new command formatting
 
-[/osb/Skills/herblore.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/herblore.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/osb/Skills/herblore.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/herblore.md): Doesnt use the new command formatting
 
 [/osb/Skills/hunter/birdhouses.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/hunter/birdhouses.md): Doesnt use the new command formatting
 
@@ -444,11 +447,7 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/osb/Skills/hunter/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/hunter/README.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/osb/Skills/magic/fountain-of-rune.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/magic/fountain-of-rune.md): Doesnt use the new command formatting
-
-[/osb/Skills/magic/mage-training-arena.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/magic/mage-training-arena.md): Doesnt use the new command formatting
-
-[/osb/Skills/magic/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/magic/README.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/osb/Skills/magic.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/magic.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [/osb/Skills/mining/motherlode-mine.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/mining/motherlode-mine.md): Doesnt use the new command formatting
 
@@ -460,7 +459,7 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/osb/Skills/mining/zalcano.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/mining/zalcano.md): Doesnt use the new command formatting
 
-[/osb/Skills/prayer.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/prayer.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/osb/Skills/prayer.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/prayer.md): Doesnt use the new command formatting
 
 [/osb/Skills/runecrafting/guardians-of-the-rift.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/runecrafting/guardians-of-the-rift.md): Doesnt use the new command formatting
 
