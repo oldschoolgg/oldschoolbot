@@ -53,6 +53,7 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
+	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
 	corporealBeastCL,
 	crazyArchaeologistCL,
@@ -909,6 +910,10 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: 'BigChompyBirdHunting',
 				items: chompyBirdsCL
 			},
+			'Colossal Wyrm Agility': {
+				alias: ['colossal wyrm agility', 'colo agility', 'wyrm agility'],
+				items: colossalWyrmAgilityCL
+			},
 			'Creature Creation': {
 				items: creatureCreationCL
 			},
@@ -1311,7 +1316,7 @@ export function getCollectionItems(
 			_clName = category;
 			_items = uniqueArr(
 				Object.values(entries.activities)
-					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
+					.map(e => [...new Set([...e.items, ...(allItems ? (e.allItems ?? []) : [])])])
 					.flat(2)
 			);
 

@@ -215,7 +215,7 @@ export const Lampables: IXPObject[] = [
 					continue;
 				}
 				skills[skill] =
-					data.user.skillLevel(skill) * ([SkillsEnum.Magic].includes(skill) ? 11 : 4) * data.quantity;
+					data.user.skillLevel(skill) * ([SkillsEnum.Magic].includes(skill) ? 15 : 5) * data.quantity;
 			}
 			return [skills, undefined];
 		}
@@ -246,6 +246,31 @@ export const Lampables: IXPObject[] = [
 					continue;
 				}
 				skills[skill] = data.user.skillLevel(skill) * 15 * data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
+	{
+		items: resolveItems(['Antique lamp (Historian Aldo)']),
+		function: data => {
+			const skills: Skills = {};
+
+			for (const skill of objectValues(SkillsEnum)) {
+				if (
+					![
+						SkillsEnum.Attack,
+						SkillsEnum.Strength,
+						SkillsEnum.Defence,
+						SkillsEnum.Hitpoints,
+						SkillsEnum.Ranged,
+						SkillsEnum.Magic,
+						SkillsEnum.Prayer
+					].includes(skill)
+				) {
+					continue;
+				}
+
+				skills[skill] = (skill === SkillsEnum.Prayer ? 3500 : 5000) * data.quantity;
 			}
 			return [skills, undefined];
 		}

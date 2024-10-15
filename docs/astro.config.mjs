@@ -5,9 +5,13 @@ import { remarkItems } from './src/plugins/items';
 
 // https://astro.build/config
 export default defineConfig({
+	experimental: {
+		clientPrerender: true
+	},
 	markdown: {
 		remarkPlugins: [remarkItems],
-		smartypants: false
+		smartypants: false,
+		syntaxHighlight: false
 	},
 	integrations: [
 		starlight({

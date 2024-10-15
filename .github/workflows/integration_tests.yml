@@ -15,7 +15,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
+    concurrency:
+      group: ${{ github.ref_name }}-integrationtests
+      cancel-in-progress: true
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4
