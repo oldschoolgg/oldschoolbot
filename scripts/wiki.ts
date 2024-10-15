@@ -1,17 +1,18 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { calcPerHour, toTitleCase } from '@oldschoolgg/toolkit';
 import { glob } from 'glob';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, EItem, Monsters } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
-import { groupBy } from 'remeda';
+import { groupBy, uniqueBy } from 'remeda';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
+import Fishing from '../src/lib/skilling/skills/fishing';
 import { sorts } from '../src/lib/sorts';
 import { itemNameFromID } from '../src/lib/util';
-import { Markdown, Tab, Tabs } from './markdown/markdown';
+import { Markdown, Tab, Table, Tabs } from './markdown/markdown';
 
 function combatAchievementHowToFinish(ca: CombatAchievement) {
 	if ('rng' in ca) {
@@ -431,11 +432,94 @@ function wikiIssues() {
 	handleMarkdownEmbed('wikiissues', 'getting-started/wiki.md', markdown.toString());
 }
 
+import process from 'node:process';
+import { Time } from 'e';
+import type { Fish } from '../src/lib/skilling/types';
+import { determineFishingTrip } from '../src/mahoji/commands/fish';
+import { determineFishingResult, temporaryFishingDataConvert } from '../src/tasks/minions/fishingActivity';
+import { makeGearBank } from '../tests/unit/utils';
+
+function fishingXPHr() {
+	let allFishingResults: {
+		spot: Fish;
+		cmd: Exclude<ReturnType<typeof determineFishingTrip>, string>;
+		trip: Exclude<ReturnType<typeof determineFishingResult>, string>;
+		xpHr: number;
+	}[] = [];
+	const gearBank = makeGearBank({
+		bank: new Bank()
+			.add(EItem.DARK_FISHING_BAIT, 100_000_000)
+			.add(EItem.SANDWORMS, 100_000_000)
+			.add(EItem.SPIRIT_FLAKES, 100_000_000)
+			.add(EItem.FISHING_BAIT, 100_000_000)
+			.add(EItem.FEATHER, 100_000_000)
+			.add(EItem.RAW_KARAMBWANJI, 100_000_000)
+	});
+	gearBank.skillsAsXP.fishing = 13_034_431;
+	gearBank.skillsAsLevels.fishing = 99;
+	gearBank.gear.skilling.equip('Fish sack barrel');
+
+	for (const spot of Fishing.Fishes) {
+		for (const isPowerfishing of [true, false]) {
+			for (const spiritFlakes of [true, false]) {
+				const cmd = determineFishingTrip({
+					hasWildyEliteDiary: true,
+					baseMaxTripLength: Time.Hour * 30,
+					spot,
+					gearBank,
+					quantity: undefined,
+					powerfish: isPowerfishing,
+					spirit_flakes: spiritFlakes
+				});
+				if (typeof cmd === 'string') throw new Error(cmd);
+				const trip = determineFishingResult({
+					spot,
+					gearBank,
+					spiritFlakesToRemove: spiritFlakes ? 1 : undefined,
+					fishingSpotResults: temporaryFishingDataConvert(spot, cmd.Qty1, cmd.Qty2, cmd.Qty3)
+				});
+				allFishingResults.push({
+					spot,
+					cmd,
+					trip,
+					xpHr: Math.floor(calcPerHour(trip.updateBank.xpBank.amount('fishing'), cmd.duration) / 500) * 500
+				});
+			}
+		}
+	}
+
+	allFishingResults.sort((a, b) => b.xpHr - a.xpHr);
+	allFishingResults = uniqueBy(allFishingResults, i =>
+		[i.spot.id, i.cmd.isPowerfishing, i.cmd.isUsingSpiritFlakes, i.cmd.boosts].flat(100).join('|')
+	);
+
+	const markdown = new Markdown();
+
+	markdown.addLine('## XP Rates');
+
+	const table = new Table();
+	table.addHeader('Spot', 'XP/Hr', 'Powerfishing', 'Spirit Flakes');
+	for (const { cmd, trip, xpHr, spot } of allFishingResults) {
+		if (typeof cmd === 'string') throw new Error(cmd);
+		table.addRow(
+			spot.name,
+			`${Math.floor(xpHr).toLocaleString()}/hr`,
+			cmd.isPowerfishing ? 'Yes' : 'No',
+			cmd.isUsingSpiritFlakes ? 'Yes' : 'No'
+		);
+	}
+	markdown.add(table);
+
+	handleMarkdownEmbed('fishing', 'osb/Skills/fishing/README.md', markdown.toString());
+}
+
 async function wiki() {
 	renderQuestsMarkdown();
 	rendeCoxMarkdown();
 	wikiIssues();
+	fishingXPHr();
 	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
+	process.exit(0);
 }
 
 wiki();

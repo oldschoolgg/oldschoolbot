@@ -145,7 +145,8 @@ export class MUserClass {
 			gear: this.gear,
 			bank: this.bank,
 			skillsAsLevels: this.skillsAsLevels,
-			chargeBank: this.ownedChargeBank()
+			chargeBank: this.ownedChargeBank(),
+			skillsAsXP: this.skillsAsXP
 		});
 	}
 
