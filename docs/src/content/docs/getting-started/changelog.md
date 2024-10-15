@@ -18,6 +18,7 @@ Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-
 - Fixed an issue with perk tiers not syncing properly
 - Various "engine" changes/improvements
 - Various wiki fixes/improvements
+- Fixed several bugs that were causing errors/issues
 
 ### [[Arodab]]
 

@@ -1,6 +1,46 @@
 ---
-title: "Dungeoneering Rewards"
+title: "Dungeoneering"
 ---
+
+## Starting Out
+
+There are 7 floors. Each floor requires +20 DG lvl to the last and increasingly higher stats in other skills, especially combat.
+
+[[/dg start]] to start training dungeoneering. You can only do a floor for which you have the required stats, it will automatically pick the highest floor you can do.
+
+[[/dg buy item\:]] to buy a reward.
+
+[[/dg stats]] to see your tokens, max floor, and shard boosts
+
+While doing dungeoneering in dungeons of Floor 5+, you have a chance of getting a tradeable Gorajan shard. You can combine 2 of these with a nex armour piece to make a gorajan armour piece, using smithing.
+
+Whilst doing floor 7 there is a 1/20k per minute chance of obtaining a gorajan bonecrusher (u). I.e. if you do a trip that lasts 1 hour 4 minutes, you would have 64 rolls at 1/20k to receive it.
+
+You recieve dungeoneering tokens at a rate of xp/40
+
+## Boosts
+
+- Scroll of Teleportation - 15%
+- Dungeoneering Cape - 5% if you have Scroll of Teleportation
+- Dungeoneering Master Cape - 10% if you have Scroll of Teleportation (does not stack with Dungeoneering cape)
+- Gorajan armour - 6% per completed set
+- Party Size - 5% for every person in a mass starting from a party of 2 to a limit of 25%
+
+You receive less XP if doing a floor lower than your max floor.
+
+Dungeoneering boosts, excluding party size, are divided by the number of players in the mass.
+
+### Gorajan Shard chance boost (individual only)
+
+- Ring of luck - 5%
+- lvl 99 Dungeoneering - 30%
+- Master Dungeoneering Cape - 2x (does not stack with the 30% from having lvl 99)
+
+## Methods
+
+The best way to train dungeoneering is to use xp lamps to lvl 100 and then train on the best floor you can do with as many people as you can.
+
+## Rewards
 
 ### Buyable Boosts/Utility
 
@@ -8,16 +48,16 @@ title: "Dungeoneering Rewards"
 | ----------------------- | ---------- | ----------------------------------------------------------------------------------- |
 | Scroll of life          | 400,000    | 15% less seeds used when farming                                                    |
 | Scroll of efficiency    | 400,000    | 15% of bars saved when doing smithing                                               |
-| Scroll of farming\*     | 400,000    | +2 extra farming patches to all types                                               |
+| Scroll of farming       | 400,000    | +2 extra farming patches to all types                                               |
 | Scroll of cleansing     | 400,000    | Currently does not provide any boost/utility                                        |
 | Scroll of dexterity     | 400,000    | 15% extra output in crafting                                                        |
 | Scroll of teleportation | 400,000    | 15% (divided by team size) boost to dungeoneering                                   |
 | Scroll of mystery       | 500,000    | 1/5 chance at receiving a mystery box when training dungeoneering                   |
 | Scroll of proficiency   | 900,000    | 15% of planks saved in construction                                                 |
-| Scroll of longevity\*   | 800,000    | 2x increase to slayer task quantities                                               |
-| Scroll of the hunt\*    | 800,000    | Gives 2x higher chances of impling spawns, and +4 higher limit on birdhouses (4->8) |
+| Scroll of longevity     | 800,000    | 2x increase to slayer task quantities                                               |
+| Scroll of the hunt      | 800,000    | Gives 2x higher chances of impling spawns, and +4 higher limit on birdhouses (4->8) |
 
-\[\*]Important: Only the scroll of farming, longevity and hunt are currently tradeable/useable. To enable these scrolls you must `/minion use item:[Scroll name]`, you can only do this once. All other scrolls work passively while stored in the bank.
+_Only the scroll of farming, longevity and hunt are tradeable/useable. To enable these scrolls you must [[/minion use item\:]], you can only do this once. All other scrolls work passively while stored in the bank_
 
 ### Buyable Gear
 
