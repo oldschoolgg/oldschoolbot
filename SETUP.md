@@ -6,22 +6,30 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 
 ### Discord Bot Account
 
-1. Create a discord bot account, and have the application ID and bot token saved.
+1. Create a discord bot account in the [Discord Developer Portal](https://discord.com/developers/applications).
+   - Remember the **Application ID** & **Token**. Both are used later in Configuration.
+   - If you don't save your Token you will have to reset it for a new one.
 2. Ensure your bot has `Privileged Gateway Intents > Server Members Intent` enabled.
 
 ### Environment
 
 1. Install [NvM](https://github.com/coreybutler/nvm-windows/), then use it to install NodeJS v20.15.0 OR install the nodejs version directly.
-2. Install [Postgres 16](https://www.postgresql.org/download/) and PGAdmin4 for interacting with postgres (optional, but helpful)
-   - Remember the port number and password you use. These are used later in the configuration steps.
-3. Install Yarn using: `npm i -g yarn`
-4. Clone the repo: `git clone https://github.com/oldschoolgg/oldschoolbot.git`
+2. Install [Python](https://www.python.org/downloads/) used for multiple dependencies.
+3. Install [Visual Studio Installer](https://visualstudio.microsoft.com/downloads/).
+   - Install the **Community** version.
+   - Select and Install **Workloads > Desktop development with C++**.
+3. Install [Postgres 16](https://www.postgresql.org/download/) and PGAdmin4 for interacting with postgres (optional, but helpful)
+   - Remember the port number and password. Both are used later in Configuration.
+4. Install Yarn using: `npm i -g yarn`
+5. Clone the repo: `git clone https://github.com/oldschoolgg/oldschoolbot.git`
 
 ### Configuration
 
 1. Copy the ".env.example" file and rename the copy to ".env", put your bot token and bot id (client id) in it.
    - If not using the official test server: Uncomment and enter your Server ID into `TESTING_SERVER_ID`
 2. Create 2 databases called "osb_test" and "robochimp_test"
+   - Using **pgAdmin 4** select `Servers > PostgreSQL > Databases > Create > Database...`
+   - Enter the database name into `Database` and hit `Save`.
 3. Change `DATABASE_URL` and `ROBOCHIMP_DATABASE_URL` in your .env with the format `postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME`.
 4. Make a config file from the example: `cp src/config.example.ts src/config.ts`
 5. Edit this new `config.ts` file:
@@ -64,6 +72,7 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 - Uninstall prettier/eslint vscode plugins.
 - Delete these folders: node_modules, dist.
 - Your IDE may need to be ran with admin privileges.
-- Installing python may be needed if you see errors with dependencies.
-- "yarn.psl cannot be loaded because running scripts is disabled on this sytem" 
-   - run this command in a terminal: `Set-ExecutionPolicy Unrestricted`
+- "yarn.psl cannot be loaded because running scripts is disabled on this sytem"
+  - run this command in a terminal: `Set-ExecutionPolicy Unrestricted`
+- If either of the `npx prisma` commands fail in **Finalizing Setup** you may need to manually create 2 databases called "osb_test" and "robochimp_test"
+- Restarting your PC after **Environment** steps may be needed
