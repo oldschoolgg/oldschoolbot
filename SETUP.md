@@ -65,3 +65,5 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 - Delete these folders: node_modules, dist.
 - Your IDE may need to be ran with admin privileges.
 - Installing python may be needed if you see errors with dependencies.
+- "yarn.psl cannot be loaded because running scripts is disabled on this sytem" 
+   - run this command in a terminal: `Set-ExecutionPolicy Unrestricted`
