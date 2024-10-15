@@ -1,6 +1,5 @@
 ---
 title: "Divination"
-description: /divination harvest_memories
 ---
 
 ## Memory Harvesting in Divination

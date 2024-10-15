@@ -1,18 +1,15 @@
 ---
 title: "Tames"
+sidebar:
+  order: 7
 ---
 
-# Tames
-
-A tame is a special form of pet that isn't in your bank or equipped. You can send the tame out on trips.
-
-Every tame has a combat level (Dragon) or a gatherer score (Monkey).
-
-Items that your tames get will not be added to your collection log.
+A tame is a special form of pet that isn't in your bank or equipped. You can send the tame out on trips. Every tame has a combat level (Dragon) or a gatherer score (Monkey). Items that your tames get will not be added to your collection log.
 
 **Currently the only tames that are in game are:**\
 The Dragon tame which does combat, see [Igne Tame](igne-tame.md).\
 The Monkey tame which does collect trips, see [Monkey Tame](monkey-tame.md).
+The Eagle tame which completes clues, see [Eagle Tame](eagle-tame.md).
 
 | Commands                                           | Description                       |
 | -------------------------------------------------- | --------------------------------- |
@@ -20,7 +17,7 @@ The Monkey tame which does collect trips, see [Monkey Tame](monkey-tame.md).
 | `/tames list`                                      | Shows a list of all tames         |
 | `/tames view [name/id]`                            | Shows info about a tame           |
 | `/tames select [name/id]`                          | Selects a tame                    |
-| `/tames set_name [name`]                           | Sets the tame's name              |
+| `/tames set_name [name]`                           | Sets the tame's name              |
 | `/tames feed [items]`                              | Feeds your tame items             |
 | `/tames kill [monster]`                            | Send tame on PvM trip             |
 | `/tames collect [item]`                            | Send tame on collection trip      |
@@ -31,10 +28,10 @@ The Monkey tame which does collect trips, see [Monkey Tame](monkey-tame.md).
 
 ## Hatching the Tame
 
-In order to hatch the tame you must build a nursery with `/nursery build`.\
+In order to hatch the tame you must build a nursery with `/nursery build`.
 You will need 105 Construction along with 200 elder planks, 10 marble blocks and 500 feathers to build the nursery.
 
-Once the nursery is built you can then fuel the nursery with `/nursery fuel`\
+Once the nursery is built you can then fuel the nursery with `/nursery fuel`
 Fuelling the nursery will require 2,500 elder logs and 10,000 coal.
 
 Finally, once you have satisfied these requirements you can add your egg to the nursery i.e. `/nursery add_egg item:Dragon egg`
