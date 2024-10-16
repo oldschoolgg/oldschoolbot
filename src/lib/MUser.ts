@@ -80,7 +80,10 @@ export async function mahojiUserSettingsUpdate(user: string | bigint, data: Pris
 }
 
 function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean) {
-	const maxCasts = Math.min(Math.floor(tripLength / (agility? timePerAlchAgility: timePerAlch)), bank.amount(item.id));
+	const maxCasts = Math.min(
+		Math.floor(tripLength / (agility ? timePerAlchAgility : timePerAlch)),
+		bank.amount(item.id)
+	);
 	return maxCasts * (item.highalch ?? 0);
 }
 
