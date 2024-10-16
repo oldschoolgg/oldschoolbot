@@ -172,7 +172,7 @@ const killableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 6,
 		table: Monsters.Araxyte,
 		qpRequired: 1,
-		healAmountNeeded: 100,
+		healAmountNeeded: 40,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackStab],
 		levelRequirements: {
