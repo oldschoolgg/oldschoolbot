@@ -1,4 +1,7 @@
+import { sumArr } from 'e';
 import { Emoji } from '../../constants';
+import type { GearBank } from '../../structures/GearBank';
+import { EItem } from '../../util';
 import itemID from '../../util/itemID';
 import type { Fish } from '../types';
 import { SkillsEnum } from '../types';
@@ -347,6 +350,34 @@ const camdozaalFishes: Fish[] = [
 		clueScrollChance: 257_770
 	}
 ];
+
+export const anglerItemsArr = [
+	{
+		id: EItem.ANGLER_HAT,
+		boost: 0.4
+	},
+
+	{
+		id: EItem.ANGLER_TOP,
+		boost: 0.8
+	},
+
+	{
+		id: EItem.ANGLER_WADERS,
+		boost: 0.6
+	},
+
+	{
+		id: EItem.ANGLER_BOOTS,
+		boost: 0.2
+	}
+] as const;
+
+export function determineAnglerBoost({ gearBank }: { gearBank: GearBank }) {
+	const equippedPieces = anglerItemsArr.filter(item => gearBank.hasEquipped(item.id));
+	if (equippedPieces.length === 4) return 2.5;
+	return sumArr(equippedPieces.map(item => item.boost));
+}
 
 const anglerItems: { [key: number]: number } = {
 	[itemID('Angler hat')]: 0.4,

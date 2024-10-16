@@ -1,22 +1,20 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
+import { Bank, EItem, Monsters } from 'oldschooljs';
 
-import type { MUserClass } from '../../lib/MUser';
-import Fishing from '../../lib/skilling/skills/fishing';
-import { type Fish, SkillsEnum } from '../../lib/skilling/types';
+import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
+import Fishing, { anglerItemsArr } from '../../lib/skilling/skills/fishing';
+import type { Fish } from '../../lib/skilling/types';
+import type { GearBank } from '../../lib/structures/GearBank';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-//import { formatDuration, itemID, itemNameFromID } from '../../lib/util';
-import { formatDuration, itemNameFromID } from '../../lib/util';
+import { formatDuration, formatSkillRequirements, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import type { OSBMahojiCommand } from '../lib/util';
 
-function radasBlessing(user: MUser) {
+function radasBlessing(gearBank: GearBank) {
 	const blessingBoosts = [
 		["Rada's blessing 4", 8],
 		["Rada's blessing 3", 6],
@@ -25,7 +23,7 @@ function radasBlessing(user: MUser) {
 	];
 
 	for (const [itemName, boostPercent] of blessingBoosts) {
-		if (user.hasEquipped(itemName)) {
+		if (gearBank.hasEquipped(itemName)) {
 			return { blessingEquipped: true, blessingChance: boostPercent as number };
 		}
 	}
@@ -54,18 +52,29 @@ function rollExtraLoot(
 	return [lootAmount, flakesUsed, currentInv];
 }
 
-function determineFishingTime(
-	quantity: number,
-	tripTicks: number,
-	powerfish: boolean,
-	spirit_flakes: boolean,
-	fish: Fish,
-	user: MUserClass,
-	invSlots: number,
-	blessingChance: number,
-	flakesQuantity: number,
-	harpoonBoost: number
-) {
+function determineFishingTime({
+	quantity,
+	tripTicks,
+	isPowerfishing,
+	isUsingSpiritFlakes,
+	fish,
+	gearBank,
+	invSlots,
+	blessingChance,
+	flakesQuantity,
+	harpoonBoost
+}: {
+	quantity: number;
+	tripTicks: number;
+	isPowerfishing: boolean;
+	isUsingSpiritFlakes: boolean;
+	fish: Fish;
+	gearBank: GearBank;
+	invSlots: number;
+	blessingChance: number;
+	flakesQuantity: number;
+	harpoonBoost: number;
+}) {
 	let ticksElapsed = 0;
 	let catches1 = 0;
 	let catches2 = 0;
@@ -76,12 +85,12 @@ function determineFishingTime(
 	let flakesUsed = 0;
 	let currentInv = 0;
 
-	const fishLvl = user.skillLevel(SkillsEnum.Fishing);
+	const fishLvl = gearBank.skillsAsLevels.fishing;
 	let effFishLvl = fishLvl;
 	if (fishLvl > 68) {
 		if (fish.name === 'Shark' || fish.name === 'Mackerel/Cod/Bass' || fish.name === 'Lobster') {
 			effFishLvl += 7; // fishing guild boost
-		} else if (fish.name === 'Tuna/Swordfish' && !powerfish) {
+		} else if (fish.name === 'Tuna/Swordfish' && !isPowerfishing) {
 			effFishLvl += 7; // can't 2t in the guild
 		}
 	}
@@ -96,30 +105,26 @@ function determineFishingTime(
 	let bankingTime = fish.bankingTime;
 
 	if (fish.name === 'Barbarian fishing') {
-		if (powerfish) {
+		if (isPowerfishing) {
 			ticksPerRoll = 3;
 			lostTicks = 0.06; // more focused
 		}
-		if (
-			user.allItemsOwned.has('Fishing cape') ||
-			user.allItemsOwned.has('Fishing cape (t)') ||
-			user.allItemsOwned.has('Max cape')
-		) {
+		if (gearBank.hasEquippedOrInBank(['Fishing cape', 'Fishing cape (t)', 'Max cape'])) {
 			bankingTime = 20;
 		}
 	} else if (fish.name === 'Trout/Salmon') {
-		if (powerfish) {
+		if (isPowerfishing) {
 			ticksPerRoll = 3;
 			lostTicks = 0.06;
 		}
 	} else if (fish.name === 'Tuna/Swordfish') {
-		if (powerfish) {
+		if (isPowerfishing) {
 			ticksPerRoll = 2;
 			lostTicks = 0.06;
 		}
 	}
 
-	if (powerfish) {
+	if (isPowerfishing) {
 		while (ticksElapsed < tripTicks) {
 			if (p3 !== 0 && fishLvl >= fish.level3! && Math.random() < p3) {
 				catches3++; // roll for the highest lvl fish first
@@ -144,7 +149,7 @@ function determineFishingTime(
 					flakesUsed,
 					currentInv,
 					blessingChance,
-					spirit_flakes,
+					isUsingSpiritFlakes,
 					flakesQuantity
 				);
 			} else if (p2 !== 0 && fishLvl >= fish.level2! && Math.random() < p2) {
@@ -155,7 +160,7 @@ function determineFishingTime(
 					flakesUsed,
 					currentInv,
 					blessingChance,
-					spirit_flakes,
+					isUsingSpiritFlakes,
 					flakesQuantity
 				);
 			} else if (Math.random() < p1) {
@@ -166,7 +171,7 @@ function determineFishingTime(
 					flakesUsed,
 					currentInv,
 					blessingChance,
-					spirit_flakes,
+					isUsingSpiritFlakes,
 					flakesQuantity
 				);
 			}
@@ -185,6 +190,154 @@ function determineFishingTime(
 	}
 
 	return { catches1, catches2, catches3, lootAmount1, lootAmount2, lootAmount3, ticksElapsed, flakesUsed };
+}
+
+const harpoonBoosts = [
+	{
+		id: EItem.CRYSTAL_HARPOON,
+		boostPercent: 35
+	},
+	{
+		id: EItem.DRAGON_HARPOON,
+		boostPercent: 20
+	},
+	{
+		id: EItem.INFERNAL_HARPOON,
+		boostPercent: 20
+	}
+];
+
+function isHarpoonFishSpot(fish: Fish) {
+	return fish.name === 'Tuna/Swordfish' || fish.name === 'Shark';
+}
+
+export function determineFishingTrip({
+	gearBank,
+	spot,
+	hasWildyEliteDiary,
+	baseMaxTripLength,
+	...options
+}: {
+	baseMaxTripLength: number;
+	hasWildyEliteDiary: boolean;
+	gearBank: GearBank;
+	quantity: number | undefined;
+	powerfish: boolean | undefined;
+	spirit_flakes: boolean | undefined;
+	spot: Fish;
+}) {
+	let quantity = options.quantity ?? 3000;
+	let isUsingSpiritFlakes = options.spirit_flakes ?? false;
+	const isPowerfishing = options.powerfish ?? false;
+	if (isPowerfishing) {
+		isUsingSpiritFlakes = false;
+	}
+
+	const boosts: string[] = [];
+	if (isHarpoonFishSpot(spot)) {
+		for (const { id, boostPercent } of harpoonBoosts) {
+			if (gearBank.hasEquipped(id)) {
+				boosts.push(`+${boostPercent}% boost for ${itemNameFromID(id)}`);
+				break;
+			}
+		}
+	}
+
+	if (isPowerfishing) boosts.push('**Powerfishing**');
+
+	if (spot.name === 'Dark crab' && hasWildyEliteDiary) {
+		// fish.intercept1 = 0.0961;
+		// fish.slope1 = 0.0025;
+		boosts.push('Increased dark crab catch rate from having the Elite Wilderness Diary');
+	}
+
+	if (isUsingSpiritFlakes) {
+		if (!gearBank.bank.has('Spirit flakes')) {
+			return 'You need to have at least one spirit flake!';
+		}
+		boosts.push('50% more fish from using spirit flakes');
+	}
+
+	const { blessingEquipped, blessingChance } = radasBlessing(gearBank);
+	if (blessingEquipped) {
+		boosts.push(`\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish`);
+	}
+
+	let harpoonBoost = 1.0;
+	if (isHarpoonFishSpot(spot)) {
+		for (const { id, boostPercent } of harpoonBoosts) {
+			if (gearBank.hasEquipped(id)) {
+				harpoonBoost = 1 + boostPercent / 100;
+				boosts.push(`+${boostPercent}% boost for ${itemNameFromID(id)}`);
+				break;
+			}
+		}
+	}
+
+	let invSlots = 26;
+	if (gearBank.hasEquippedOrInBank(['Fish sack barrel', 'Fish barrel'])) {
+		invSlots += 28;
+	}
+
+	let maxTripLength = baseMaxTripLength;
+	if (!isPowerfishing && gearBank.hasEquipped(['Fish sack barrel', 'Fish barrel'])) {
+		maxTripLength += Time.Minute * 9;
+		boosts.push('+9 minutes for Fish barrel');
+	}
+	const tripTicks = maxTripLength / (Time.Second * 0.6);
+
+	const flakesQuantity = gearBank.bank.amount('Spirit flakes');
+
+	if (spot.bait) {
+		const baseCost = new Bank().add(spot.bait);
+		const maxCanDo = gearBank.bank.fits(baseCost);
+		if (maxCanDo === 0) {
+			return `You need ${itemNameFromID(spot.bait)} to fish ${spot.name}!`;
+		}
+
+		if (maxCanDo < quantity) {
+			quantity = maxCanDo;
+		}
+	}
+
+	// determining fish time and quantities
+	const {
+		catches1: Qty1,
+		catches2: Qty2,
+		catches3: Qty3,
+		lootAmount1: loot1,
+		lootAmount2: loot2,
+		lootAmount3: loot3,
+		ticksElapsed: tripLength,
+		flakesUsed: flakesToRemove
+	} = determineFishingTime({
+		quantity,
+		tripTicks,
+		isUsingSpiritFlakes,
+		isPowerfishing,
+		fish: spot,
+		invSlots,
+		blessingChance,
+		flakesQuantity,
+		harpoonBoost,
+		gearBank
+	});
+
+	const duration = Time.Second * 0.6 * tripLength;
+
+	return {
+		duration,
+		Qty1,
+		Qty2,
+		Qty3,
+		loot1,
+		loot2,
+		loot3,
+		flakesToRemove,
+		boosts,
+		isPowerfishing,
+		isUsingSpiritFlakes
+	};
 }
 
 export const fishCommand: OSBMahojiCommand = {
@@ -241,186 +394,77 @@ export const fishCommand: OSBMahojiCommand = {
 		spirit_flakes?: boolean;
 	}>) => {
 		const user = await mUserFetch(userID);
-		const fish = Fishing.Fishes.find(
+		const spot = Fishing.Fishes.find(
 			fish =>
 				stringMatches(fish.id, options.name) ||
 				stringMatches(fish.name, options.name) ||
 				fish.alias?.some(alias => stringMatches(alias, options.name))
 		);
-		if (!fish) return 'Thats not a valid fish to catch.';
+		if (!spot) return 'Thats not a valid spot you can fish at.';
 
-		let { quantity, powerfish, spirit_flakes } = options;
-
-		quantity = quantity ?? 3000;
-		powerfish = powerfish ?? false;
-		if (powerfish) {
-			spirit_flakes = false; // don't use flakes if power fishing
-		}
-		spirit_flakes = spirit_flakes ?? false;
-
-		// requirement checks
-		if (user.skillLevel(SkillsEnum.Fishing) < fish.level) {
-			return `${user.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`;
+		if (user.skillsAsLevels.fishing < spot.level) {
+			return `${user.minionName} needs ${spot.level} Fishing to fish ${spot.name}.`;
 		}
 
-		if (fish.qpRequired) {
-			if (user.QP < fish.qpRequired) {
-				return `You need ${fish.qpRequired} qp to catch those!`;
+		if ('skillReqs' in spot && spot.skillReqs && !user.hasSkillReqs(spot.skillReqs)) {
+			return `To fish ${spot.name}, you need ${formatSkillRequirements(spot.skillReqs)}.`;
+		}
+
+		if (spot.qpRequired) {
+			if (user.QP < spot.qpRequired) {
+				return `You need ${spot.qpRequired} qp to catch those!`;
 			}
 		}
 
-		if (
-			fish.name === 'Barbarian fishing' &&
-			(user.skillLevel(SkillsEnum.Agility) < 15 || user.skillLevel(SkillsEnum.Strength) < 15)
-		) {
-			return 'You need at least 15 Agility and Strength to do Barbarian Fishing.';
-		}
-
-		if (fish.name === 'Infernal eel') {
+		if (spot.name === 'Infernal eel') {
 			const jadKC = await user.getKC(Monsters.TzTokJad.id);
 			if (jadKC === 0) {
 				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 			}
 		}
 
-		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(Number.parseInt(i)));
-		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasEquippedOrInBank(test!))) {
+		if (spot.name === 'Minnow' && anglerItemsArr.some(i => !user.hasEquipped(i.id))) {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 
-		// boosts
-		const boosts = [];
-		if (fish.name === 'Tuna/Swordfish' || fish.name === 'Shark') {
-			if (user.hasEquipped('Crystal harpoon')) {
-				boosts.push('35% for Crystal harpoon');
-			} else if (user.hasEquipped('Dragon harpoon')) {
-				boosts.push('20% for Dragon harpoon');
-			} else if (user.hasEquipped('Infernal harpoon')) {
-				boosts.push('20% for Infernal harpoon');
-			}
-		}
+		const { quantity, powerfish, spirit_flakes } = options;
 
-		if (powerfish) {
-			boosts.push('**Powerfishing**');
-		}
-
-		if (!powerfish) {
-			if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
-				if (fish.name === 'Minnow' || fish.name === 'Karambwanji' || fish.name === 'Infernal eel') {
-					boosts.push(
-						`+9 trip minutes for having a ${user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'}`
-					);
-				} else {
-					boosts.push(
-						`+9 trip minutes and +28 inventory slots for having a ${user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'}`
-					);
-				}
-			}
-		}
-
-		if (fish.name === 'Dark crab') {
-			const [hasWildyElite] = await userhasDiaryTier(user, WildernessDiary.elite);
-			if (hasWildyElite) {
-				fish.intercept1 = 0.0961;
-				fish.slope1 = 0.0025;
-				boosts.push('Increased dark crab catch rate from having the Elite Wilderness Diary');
-			}
-		}
-
-		if (spirit_flakes) {
-			if (!user.bank.has('Spirit flakes')) {
-				return 'You need to have at least one spirit flake!';
-			}
-
-			boosts.push('\n50% more fish from using spirit flakes');
-		}
-
-		const { blessingEquipped, blessingChance } = radasBlessing(user);
-		if (blessingEquipped) {
-			boosts.push(`\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish`);
-		}
-
-		let harpoonBoost = 1.0;
-		if (fish.name === 'Tuna/Swordfish' || fish.name === 'Shark') {
-			if (user.hasEquipped('Dragon harpoon') || user.hasEquipped('Infernal harpoon')) {
-				harpoonBoost = 1.2;
-			} else if (user.hasEquipped('Crystal harpoon')) {
-				harpoonBoost = 1.35;
-			}
-		}
-
-		let invSlots = 26;
-		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
-			invSlots += 28;
-		}
-
-		let maxTripLength = calcMaxTripLength(user, 'Fishing');
-		if (!powerfish && (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel'))) {
-			maxTripLength += Time.Minute * 9;
-		}
-		const tripTicks = maxTripLength / (Time.Second * 0.6);
-
-		const flakesQuantity = user.bank.amount('Spirit flakes');
-
-		if (fish.bait) {
-			const baseCost = new Bank().add(fish.bait);
-			const maxCanDo = user.bank.fits(baseCost);
-			if (maxCanDo === 0) {
-				return `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
-			}
-
-			if (maxCanDo < quantity) {
-				quantity = maxCanDo;
-			}
-		}
-
-		// determining fish time and quantities
-		const {
-			catches1: Qty1,
-			catches2: Qty2,
-			catches3: Qty3,
-			lootAmount1: loot1,
-			lootAmount2: loot2,
-			lootAmount3: loot3,
-			ticksElapsed: tripLength,
-			flakesUsed: flakesToRemove
-		} = determineFishingTime(
+		const result = determineFishingTrip({
+			hasWildyEliteDiary: (await userhasDiaryTier(user, WildernessDiary.elite))[0],
+			baseMaxTripLength: calcMaxTripLength(user, 'Fishing'),
+			spot,
+			gearBank: user.gearBank,
 			quantity,
-			tripTicks,
 			powerfish,
-			spirit_flakes,
-			fish,
-			user,
-			invSlots,
-			blessingChance,
-			flakesQuantity,
-			harpoonBoost
-		);
+			spirit_flakes
+		});
 
-		const duration = Time.Second * 0.6 * tripLength;
+		if (typeof result === 'string') {
+			return result;
+		}
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
-			fishID: fish.id,
+			fishID: spot.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			duration: duration,
+			duration: result.duration,
 			quantity: quantity,
-			Qty1: Qty1,
-			Qty2: Qty2,
-			Qty3: Qty3,
-			loot1: loot1,
-			loot2: loot2,
-			loot3: loot3,
-			flakesToRemove: flakesToRemove,
+			Qty1: result.Qty1,
+			Qty2: result.Qty2,
+			Qty3: result.Qty3,
+			loot1: result.loot1,
+			loot2: result.loot2,
+			loot3: result.loot3,
+			flakesToRemove: result.flakesToRemove,
 			powerfish: powerfish,
 			spirit_flakes: spirit_flakes,
 			type: 'Fishing'
 		});
 
-		let response = `${user.minionName} is now fishing ${fish.name}, it'll take ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now fishing ${spot.name}, it'll take ${formatDuration(result.duration)} to finish.`;
 
-		if (boosts.length > 0) {
-			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		if (result.boosts.length > 0) {
+			response += `\n\n**Boosts:** ${result.boosts.join(', ')}.`;
 		}
 
 		return response;

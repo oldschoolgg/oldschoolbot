@@ -11,6 +11,7 @@ export class GearBank {
 	bank: Bank;
 	skillsAsLevels: SkillsRequired;
 	skillsAsXP: SkillsRequired;
+	skillsAsXP: SkillsRequired;
 	chargeBank: ChargeBank;
 
 	constructor({
@@ -29,6 +30,7 @@ export class GearBank {
 		this.gear = gear;
 		this.bank = bank;
 		this.skillsAsLevels = skillsAsLevels;
+		this.skillsAsXP = skillsAsXP;
 		this.chargeBank = chargeBank;
 		this.skillsAsXP = skillsAsXP;
 	}
