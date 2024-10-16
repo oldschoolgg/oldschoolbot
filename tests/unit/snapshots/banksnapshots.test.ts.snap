@@ -2530,6 +2530,15 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
+    "itemCost": {
+      "6183": 1,
+    },
+    "name": "Genie lamp",
+    "outputItems": {
+      "2528": 1,
+    },
+  },
+  {
     "gpCost": 100000,
     "itemCost": {},
     "minigameScoreReq": [

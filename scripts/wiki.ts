@@ -4,6 +4,7 @@ import { glob } from 'glob';
 import { Bank, Monsters } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
+import process from 'node:process';
 import { groupBy } from 'remeda';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
@@ -12,6 +13,7 @@ import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
 import { itemNameFromID } from '../src/lib/util';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
+import { miningXpHr } from './wiki/miningXphr';
 
 function combatAchievementHowToFinish(ca: CombatAchievement) {
 	if ('rng' in ca) {
@@ -27,7 +29,7 @@ function combatAchievementHowToFinish(ca: CombatAchievement) {
 	throw ca;
 }
 
-function handleMarkdownEmbed(identifier: string, filePath: string, contentToInject: string) {
+export function handleMarkdownEmbed(identifier: string, filePath: string, contentToInject: string) {
 	const contentToReplace = readFileSync(`./docs/src/content/docs/${filePath}`, 'utf8');
 	const startMarker = `[[embed.${identifier}.start]]`;
 	const endMarker = `[[embed.${identifier}.end]]`;
@@ -435,7 +437,9 @@ async function wiki() {
 	renderQuestsMarkdown();
 	rendeCoxMarkdown();
 	wikiIssues();
+	miningXpHr();
 	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
+	process.exit(0);
 }
 
 wiki();

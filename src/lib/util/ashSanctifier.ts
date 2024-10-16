@@ -1,5 +1,4 @@
-
-import { BOT_TYPE, BitField } from '../constants';
+import { BitField } from '../constants';
 import { ashes } from '../skilling/skills/prayer';
 import type { GearBank } from '../structures/GearBank';
 import type { UpdateBank } from '../structures/UpdateBank';
@@ -32,12 +31,12 @@ export function ashSanctifierEffect({
 		if (amount > 0 && chargesLeft >= amount) {
 			totalXP += ash.xp * ashXpModifider * amount;
 			ashesSanctified.push({ name: ash.name, amount });
-			updateBank.itemCostBank.add(ash.inputId, amount);
+			updateBank.itemLootBank.remove(ash.inputId, amount);
 			chargesLeft -= amount;
 		} else if (amount > 0 && chargesLeft < amount) {
 			totalXP += ash.xp * ashXpModifider * chargesLeft;
 			ashesSanctified.push({ name: ash.name, amount: chargesLeft });
-			updateBank.itemCostBank.add(ash.inputId, chargesLeft);
+			updateBank.itemLootBank.remove(ash.inputId, amount);
 			chargesLeft = 0;
 			break;
 		}
@@ -47,18 +46,12 @@ export function ashSanctifierEffect({
 
 	const ashString = ashesSanctified.map(ash => `${ash.amount}x ${ash.name}`).join(', ');
 
-	updateBank.xpBank.add('prayer', totalXP, {
-		duration,
-		minimal: true,
-		multiplier: BOT_TYPE === 'BSO',
-		source: 'AshSanctifier'
-	});
+	updateBank.xpBank.add('prayer', totalXP, { duration, minimal: true, multiplier: false, source: 'AshSanctifier' });
 	updateBank.chargeBank.add('ash_sanctifier_charges', startingAshSanctifierCharges - chargesLeft);
 	updateBank.userStats.ash_sanctifier_prayer_xp = {
 		increment: Math.floor(totalXP)
 	};
 	return {
-		message: `${totalXP} Prayer XP from purifying ${ashString} using the Ash Sanctifier (${chargesLeft} charges left).`,
-		updateBank
+		message: `${totalXP} Prayer XP from purifying ${ashString} using the Ash Sanctifier (${chargesLeft} charges left).`
 	};
 }
