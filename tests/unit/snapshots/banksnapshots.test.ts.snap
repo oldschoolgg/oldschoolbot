@@ -13574,6 +13574,27 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "21061": 1,
+      "21064": 1,
+      "21067": 1,
+      "21070": 1,
+      "21073": 1,
+      "21076": 1,
+    },
+    "name": "Revert Brimhaven graceful outfit",
+    "noCl": true,
+    "outputItems": {
+      "11850": 1,
+      "11852": 1,
+      "11854": 1,
+      "11856": 1,
+      "11858": 1,
+      "11860": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "22486": 1,
     },
     "name": "Scythe of vitur",

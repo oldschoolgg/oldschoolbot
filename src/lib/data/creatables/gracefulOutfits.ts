@@ -1263,5 +1263,25 @@ export const gracefulOutfitCreatables: Createable[] = [
 			'Graceful cape': 1
 		}),
 		noCl: true
+	},
+	{
+		name: 'Revert Brimhaven graceful outfit',
+		inputItems: new Bank({
+			'Brimhaven graceful hood': 1,
+			'Brimhaven graceful top': 1,
+			'Brimhaven graceful legs': 1,
+			'Brimhaven graceful gloves': 1,
+			'Brimhaven graceful boots': 1,
+			'Brimhaven graceful cape': 1
+		}),
+		outputItems: new Bank({
+			'Graceful hood': 1,
+			'Graceful top': 1,
+			'Graceful legs': 1,
+			'Graceful gloves': 1,
+			'Graceful boots': 1,
+			'Graceful cape': 1
+		}),
+		noCl: true
 	}
 ];
