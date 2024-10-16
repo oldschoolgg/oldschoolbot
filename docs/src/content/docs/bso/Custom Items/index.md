@@ -4,7 +4,7 @@ title: "Custom Items"
 
 ### First Age
 
-First Age equipment is obtained at a very rare rate from [Grandmaster Caskets](/custom-items/grandmaster-clues)
+First Age equipment is obtained at a very rare rate from [Grandmaster Caskets](/bso/grandmaster-clues/)
 
 |                    |                     |
 | ------------------ | ------------------- |
@@ -44,23 +44,23 @@ _Note: To smith tools, you need 99 Smithing and Blacksmith Equipment_
 
 _Note_: _To smith equipment, you need 120 Smithing and Blacksmith Equipment_
 
-Currently only used at [Ignecarus](../../bso-custom-killables/bosses/ignecarus.md) and [Moktang](../../bso-custom-killables/bosses/moktang.md).
+Currently only used at [Ignecarus.m](/bso/monsters/bosses/ignecarus/) and [Moktang](/bso/monsters/bosses/moktang/).
 
 #### Other Dwarven Gear
 
 These dwarven gear are unlike the previous in that they are not smithable from Dwarven bars and instead are rare drops.
 
-**Dwarven Warhammer**: Rare drop from [King Goldemar](../../bso-custom-killables/bosses/king-goldemar.md) and provides a 40% PvM boost. Drops as a **Broken Dwarven Warhammer** and must be fixed, requiring 120 Smithing, Blacksmith's Outfit, and 3 Dwarven Bars.
+**Dwarven Warhammer**: Rare drop from [King Goldemar](/bso/monsters/bosses/king-goldemar/) and provides a 40% PvM boost. Drops as a **Broken Dwarven Warhammer** and must be fixed, requiring 120 Smithing, Blacksmith's Outfit, and 3 Dwarven Bars.
 
-**Dwarven Blessing**: Rare drop from [Grandmaster Caskets](../grandmaster-clues.md) and provides a 20% boost to PvM (25% with Amulet of Zealots). Consumes 1 Prayer Potion per 5 minutes of PvM (reduced by 40% with Prayer Master Cape).
+**Dwarven Blessing**: Rare drop from [Grandmaster Caskets](/bso/grandmaster-clues/) and provides a 20% boost to PvM (25% with Amulet of Zealots). Consumes 1 Prayer Potion per 5 minutes of PvM (reduced by 40% with Prayer Master Cape).
 
 ### Abyssal Equipment
 
-Abyssal Cape - Provides an aura which reduces food consumption by 50%. Obtained from [Malygos](../../bso-custom-killables/demi-bosses/malygos.md)
+Abyssal Cape - Provides an aura which reduces food consumption by 50%. Obtained from [Malygos](/bso/monsters/demi-bosses/malygos/)
 
 ### Nex Equipment
 
-The following items are obtained from [Nex](../../bso-custom-killables/bosses/nex.md). These items all have very high bonuses in their respective style, Pernix - range, Torva - melee, and Virtus - magic.
+The following items are obtained from [Nex](/bso/monsters/bosses/nex/). These items all have very high bonuses in their respective style, Pernix - range, Torva - melee, and Virtus - magic.
 
 - **Pernix**: Cowl, Body, Chaps, Gloves, Boots, Zaryte Bow
 - **Torva**: Full Helm, Platebody, Platelegs, Gloves, Boots
@@ -72,15 +72,15 @@ Additionally, the **Zaryte** **Bow** is also obtainable as a drop. It gives a 20
 
 ### Drygore Weapons
 
-Drygore weapons are a drop from the [Kalphite King](../../bso-custom-killables/bosses/kalphite-king.md). Each type of weapon has a main hand and offhand pair which are the best-in-slot weapons for each respective melee style.
+Drygore weapons are a drop from the [Kalphite King](/bso/monsters/bosses/kalphite-king/). Each type of weapon has a main hand and offhand pair which are the best-in-slot weapons for each respective melee style.
 
 ### Dungeoneering Gear
 
-There is various gear that can be obtained from [Dungeoneering](../../skills/dungeoneering-training/dg-rewards.md).
+There is various gear that can be obtained from [Dungeoneering](./bso/skills/dungeoneering/#rewards).
 
 ### Clue Hunter Outfit
 
-The Clue Hunter outfit can be obtained as a rare drop from Grandmaster Caskets (see [Misc](../misc.md)). It is also obtainable from the [Crack the Clue](https://wiki.oldschool.gg/miscellaneous/crack-the-clue) event. It gives a 2x speed boost to completing clues and increases Grandmaster Clue drop rate from Master caskets.
+The Clue Hunter outfit can be obtained as a rare drop from Grandmaster Caskets (see [Misc](/bso/miscelleanous/events/#_top)). It is also obtainable from the [Crack the Clue](/osb/miscelleanous/crack-the-clue/) event. It gives a 2x speed boost to completing clues and increases Grandmaster Clue drop rate from Master caskets.
 
 - Helm of Raedwald
 - Clue Hunter Cloak
@@ -95,7 +95,7 @@ Dragonbone Equipment is an ornamental version of normal Dragon and Infinity equi
 
 **Deathtouched Dart**
 
-Deathtouched Darts can be obtained from [Grandmaster Caskets](/custom-items/grandmaster-clues), and are used to cause any one `/k` trip to return instantly.
+Deathtouched Darts can be obtained from [Grandmaster Caskets](/bso/grandmaster-clues/), and are used to cause any one `/k` trip to return instantly.
 
 **Lamps**
 
@@ -103,7 +103,7 @@ Tiny - 20k xp, Small - 50k xp, Average - 100k xp, Large - 1m xp, Huge - 5m xp
 
 #### Divine Water
 
-[[Divine Water]] is used to kill  [Superior Tormented Demons](/bso/monsters/#tormented-demon) 
+[[Divine Water]] is used to kill  [Superior Tormented Demons](/bso/monsters/#superior-tormented-demon) 
 
 Divine Water is created with 1 Vial of Water & # of select bones from below
 
