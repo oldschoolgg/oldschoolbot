@@ -64,19 +64,19 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	}
 
 	const toRemove = new Bank();
-	function gearItem(val: null | number) {
-		if (val === null) return null;
-		if (!userBankWithEquippedItems.has(val) && globalPreset) {
-			for (const new_val of getSimilarItems(val)) {
-				if (userBankWithEquippedItems.has(new_val)) {
-					val = new_val;
+	function gearItem(piece: null | number) {
+		if (piece === null) return null;
+		if (!userBankWithEquippedItems.has(piece) && globalPreset) {
+			for (const similarPiece of getSimilarItems(piece)) {
+				if (userBankWithEquippedItems.has(similarPiece)) {
+					piece = similarPiece;
 					break;
 				}
 			}
 		}
-		toRemove.add(val);
+		toRemove.add(piece);
 		return {
-			item: val,
+			item: piece,
 			quantity: 1
 		};
 	}
