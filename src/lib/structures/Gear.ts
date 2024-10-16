@@ -116,7 +116,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'theiving',
+		name: 'thieving',
 		user_id: '123',
 		head: itemID('Rogue mask'),
 		neck: null,
@@ -263,7 +263,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'runecrafting',
+		name: 'runecraft',
 		user_id: '123',
 		head: itemID('Hat of the eye'),
 		neck: null,
