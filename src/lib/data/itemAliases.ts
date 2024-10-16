@@ -1,7 +1,5 @@
 import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/util';
-import { EItem, Items, allTeamCapes, itemNameMap } from 'oldschooljs';
-import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
-import { mergeDeep, omit } from 'remeda';
+import { Items, allTeamCapes, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
@@ -97,6 +95,13 @@ setItemAlias(25_075, 'Trailblazer graceful top');
 setItemAlias(25_078, 'Trailblazer graceful legs');
 setItemAlias(25_081, 'Trailblazer graceful gloves');
 setItemAlias(25_084, 'Trailblazer graceful boots');
+// Graceful sets -- Varlamore
+setItemAlias(30_045, 'Varlamore graceful hood');
+setItemAlias(30_048, 'Varlamore graceful cape');
+setItemAlias(30_051, 'Varlamore graceful top');
+setItemAlias(30_054, 'Varlamore graceful legs');
+setItemAlias(30_057, 'Varlamore graceful gloves');
+setItemAlias(30_060, 'Varlamore graceful boots');
 
 // Supply crate (Mahogany Homes)
 setItemAlias(24_884, 'Builders supply crate');
@@ -186,6 +191,7 @@ setItemAlias(11_185, 'Antique lamp 4');
 
 // Defender of varrock quest lamp
 setItemAlias(28_820, 'Antique lamp (defender of varrock)');
+setItemAlias(28_800, 'Antique lamp (Historian Aldo)');
 
 // Dragonfire shields
 setItemAlias(11_284, 'Uncharged dragonfire shield');
@@ -391,29 +397,4 @@ for (const item of allTeamCapes) {
 	if (getItemOrThrow(item.id).price !== 100) {
 		throw new Error(`Failed to modify price of item ${item.id}`);
 	}
-}
-
-export const itemDataSwitches = [
-	{
-		from: 25488,
-		to: EItem.BELLATOR_RING
-	},
-	{
-		from: 25486,
-		to: EItem.MAGUS_RING
-	},
-	{
-		from: 25487,
-		to: EItem.VENATOR_RING
-	},
-	{
-		from: 25485,
-		to: EItem.ULTOR_RING
-	}
-];
-
-for (const items of itemDataSwitches) {
-	const from = getItemOrThrow(items.from);
-	const to = getItemOrThrow(items.to);
-	Items.modifyItem(to.id, mergeDeep(omit(to, ['id']), omit(from, ['id'])));
 }

@@ -37,6 +37,7 @@ import type { Consumable } from './minions/types';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
+import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
@@ -45,6 +46,7 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { getOSItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
@@ -278,7 +280,7 @@ export function roughMergeMahojiResponse(
 }
 
 export function skillingPetDropRate(
-	user: MUserClass,
+	user: MUserClass | GearBank,
 	skill: SkillsEnum,
 	baseDropRate: number
 ): { petDropRate: number } {
@@ -369,8 +371,15 @@ export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();
-	if (!weapon) return 'You have no weapon equipped.';
 	const { ammo } = gear;
+	if (!weapon) return 'You have no weapon equipped.';
+	const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(weapon.id);
+	if (usingBowfa) {
+		return {
+			weapon,
+			ammo
+		};
+	}
 	if (!ammo) return 'You have no ammo equipped.';
 
 	const projectileCategory = objectEntries(projectiles).find(i =>

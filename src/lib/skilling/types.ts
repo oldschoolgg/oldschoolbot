@@ -1,6 +1,7 @@
 import type { Bank, Item, LootTable } from 'oldschooljs';
 
 import type { Emoji } from '../constants';
+import type { QuestID } from '../minions/data/quests';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank } from '../types';
 import type { FarmingPatchName } from '../util/farmingHelpers';
@@ -148,9 +149,11 @@ export interface Course {
 	xp: number | ((agilityLevel: number) => number);
 	marksPer60?: number;
 	lapTime: number;
+	cantFail?: boolean;
 	petChance: number;
 	aliases: string[];
 	qpRequired?: number;
+	requiredQuests?: QuestID[];
 }
 
 export interface Cookable {

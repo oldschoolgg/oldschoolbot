@@ -413,7 +413,7 @@ describe('PVM', async () => {
 		const user = await makeAraxxorUser();
 		await user.equip('melee', [
 			EItem.PRIMORDIAL_BOOTS,
-			EItem.INFERNAL_MAX_CAPE_NORMAL,
+			EItem.INFERNAL_MAX_CAPE,
 			EItem.FEROCIOUS_GLOVES,
 			EItem.AMULET_OF_TORTURE,
 			EItem.INQUISITORS_MACE,
@@ -435,7 +435,7 @@ describe('PVM', async () => {
 		});
 
 		// Without scythe
-		await user.equip('melee', [EItem.SCYTHE_OF_VITUR_CHARGED]);
+		await user.equip('melee', [EItem.SCYTHE_OF_VITUR]);
 		await user.giveSlayerTask(EMonster.ARAXYTE, 500);
 		const res = await user.kill(EMonster.ARAXXOR);
 		expect(res.commandResult).toContain('is now killing');
