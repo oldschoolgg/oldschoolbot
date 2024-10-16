@@ -1,4 +1,4 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import type { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, percentChance, randInt, roll } from 'e';
@@ -206,7 +206,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 	for (const star of stars) {
 		const [timeToMine, newQuantity] = determineMiningTime({
 			quantity: Math.round(star.dustAvailable / usersWith),
-			user,
+			gearBank: user.gearBank,
 			ore: star,
 			ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
 			glovesRate: 0,
@@ -215,7 +215,8 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 			powermining: false,
 			goldSilverBoost: false,
 			miningLvl: miningLevel,
-			passedDuration: duration
+			passedDuration: duration,
+			maxTripLength: calcMaxTripLength(user, 'ShootingStars')
 		});
 		duration += timeToMine;
 		dustReceived += newQuantity;
@@ -241,13 +242,12 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 
 	// Add all stardust
 	loot.add('Stardust', dustReceived);
-	const lootItems = loot.bank;
 
 	await addSubTaskToActivityTask<ShootingStarsOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
-		lootItems,
+		lootItems: loot.toJSON(),
 		usersWith,
 		totalXp,
 		type: 'ShootingStars',

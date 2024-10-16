@@ -1,6 +1,6 @@
 import { Time } from 'e';
-import type { Item } from 'oldschooljs/dist/meta/types';
 
+import type { Item } from 'oldschooljs';
 import type { Skills } from '../../../lib/types';
 import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';

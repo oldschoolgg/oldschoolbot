@@ -44,6 +44,7 @@ import type {
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
@@ -157,7 +158,7 @@ const tripHandlers = {
 	},
 	[activity_type_enum.AgilityArena]: {
 		commandName: 'minigames',
-		args: () => ({ agility_arena: { start: {} } })
+		args: (data: ActivityTaskOptionsWithQuantity) => ({ agility_arena: { start: { quantity: data.quantity } } })
 	},
 	[activity_type_enum.Alching]: {
 		commandName: 'activities',
@@ -266,6 +267,15 @@ const tripHandlers = {
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
 		args: (data: DarkAltarOptions) => ({ rune: `${darkAltarRunes[data.rune].item.name} (zeah)` })
+	},
+	[activity_type_enum.OuraniaAltar]: {
+		commandName: 'runecraft',
+		args: (data: OuraniaAltarOptions) => ({
+			rune: 'ourania altar',
+			usestams: data.stamina,
+			daeyalt_essence: data.daeyalt,
+			quantity: data.quantity
+		})
 	},
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',
@@ -496,15 +506,18 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Raids]: {
 		commandName: 'raid',
-		args: (data: RaidsOptions) => ({
-			cox: {
-				start: {
-					challenge_mode: data.challengeMode,
-					type: data.users.length === 1 ? 'solo' : 'mass',
-					quantity: data.quantity
+		args: (data: RaidsOptions) => {
+			return {
+				cox: {
+					start: {
+						challenge_mode: data.challengeMode,
+						type: data.isFakeMass ? 'fakemass' : data.users.length === 1 ? 'solo' : 'mass',
+						max_team_size: data.maxSizeInput,
+						quantity: data.quantity
+					}
 				}
-			}
-		})
+			};
+		}
 	},
 	[activity_type_enum.RoguesDenMaze]: {
 		commandName: 'minigames',
@@ -545,7 +558,8 @@ const tripHandlers = {
 			tob: {
 				start: {
 					hard_mode: data.hardMode,
-					solo: data.solo
+					solo: data.solo,
+					quantity: data.quantity
 				}
 			}
 		})

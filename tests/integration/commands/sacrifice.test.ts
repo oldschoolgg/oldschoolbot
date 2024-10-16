@@ -47,7 +47,7 @@ describe('Sacrifice Command', async () => {
 		await user.addItemsToBank({ items: new Bank().add('Trout').add('Cake') });
 		const res = await user.runCommand(sacrificeCommand, { items: '1 trout, 1 cake' });
 		expect(res).toEqual(
-			'You sacrificed 1x Trout, 1x Cake, with a value of 257gp (257). Your total amount sacrificed is now: 3,437. '
+			'You sacrificed 1x Cake, 1x Trout, with a value of 257gp (257). Your total amount sacrificed is now: 3,437. '
 		);
 		await user.sync();
 		expect(user.bank.toString()).toBe(new Bank().toString());

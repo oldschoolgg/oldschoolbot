@@ -1,12 +1,13 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { BaseMessageOptions } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
-import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
+import { BitField, Emoji } from '../../../lib/constants';
+import { roboChimpUserFetch } from '../../../lib/roboChimp';
 
+import { minionBuyButton } from '../../../lib/sharedComponents';
 import { makeComponents } from '../../../lib/util';
 import {
 	makeAutoContractButton,
@@ -64,7 +65,6 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		isUsersDailyReady(user)
 	]);
 
-	await roboChimpSyncData(user);
 	if (user.user.cached_networth_value === null || roll(100)) {
 		await user.update({
 			cached_networth_value: (await user.calculateNetWorth()).value

@@ -1,10 +1,9 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandOption } from '@oldschoolgg/toolkit';
+import type { CommandOption } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { APIApplicationCommandOptionChoice } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
-import { Bank, Items } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes } from '../../lib/gear/types';

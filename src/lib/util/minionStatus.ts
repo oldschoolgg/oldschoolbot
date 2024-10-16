@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -571,6 +571,10 @@ export function minionStatus(user: MUser) {
 				data.rune
 			)} runes at the Dark Altar. ${formattedDuration}`;
 		}
+		case 'OuraniaAltar': {
+			return `${name} is currently runecrafting at the Ourania Altar. ${formattedDuration}`;
+		}
+
 		case 'Trekking': {
 			return `${name} is currently Temple Trekking. ${formattedDuration}`;
 		}

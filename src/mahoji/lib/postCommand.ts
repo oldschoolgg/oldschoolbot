@@ -1,4 +1,4 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit';
+import type { CommandOptions } from '@oldschoolgg/toolkit/util';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';
@@ -50,11 +50,15 @@ export async function postCommand({
 						id: true
 					}
 				}),
-				prisma.user.update({
+				prisma.user.upsert({
 					where: {
 						id: userID
 					},
-					data: {
+					create: {
+						id: userID,
+						last_command_date: new Date()
+					},
+					update: {
 						last_command_date: new Date()
 					},
 					select: {

@@ -11,7 +11,7 @@ import { pohImageGenerator } from '../../src/lib/pohImage';
 import { type ChartOptions, createApexChartConfig, createChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
-import { mockMUser } from './utils';
+import { mockMUser } from './userutil';
 
 describe('Images', async () => {
 	await bankImageGenerator.ready;

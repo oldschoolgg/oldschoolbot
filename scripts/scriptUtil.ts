@@ -1,6 +1,6 @@
 import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
-import { Stopwatch } from '@oldschoolgg/toolkit';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 
 const rawExecAsync = promisify(execNonPromise);
 
