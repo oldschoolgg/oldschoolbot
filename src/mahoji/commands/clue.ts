@@ -9,17 +9,33 @@ import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
+import { SkillsEnum } from '../../lib/skilling/types';
+
+async function getStashBoost(userID: string, tierName: string): Promise<number> {
+	const parsedUnits = await getParsedStashUnits(userID);
+
+	// Filter parsed units based on the found stash tier
+	const tierSpecificUnits = parsedUnits.filter(unit => unit.tier.tier === tierName);
+	const filledUnits = tierSpecificUnits.filter(unit => unit.builtUnit !== undefined && unit.builtUnit.items_contained.length > 0).length;
+	const totalUnits = tierSpecificUnits.length;
+	const percentageFilled = totalUnits > 0 ? (filledUnits / totalUnits) * 100 : 0;
+
+	const boost = Math.min((percentageFilled / 100) * 15, 15);
+
+	return boost;
+}
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
-	// Every 1 hour become 1% better to a cap of 25%
-	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 1) / clueTier.timeToFinish)), 25);
+	// Every 2 hours become 1% better to a cap of 25%
+	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 2) / clueTier.timeToFinish)), 25);
 	const amountReduced = (clueTier.timeToFinish * percentReduced) / 100;
 	const reducedTime = clueTier.timeToFinish - amountReduced;
 
@@ -154,17 +170,42 @@ export const clueCommand: OSBMahojiCommand = {
 		const hasJewelleryBox = poh.jewellery_box !== null;
 		const hasXericTalisman = poh.amulet === getPOHObject("Mounted xeric's talisman").id;
 
+		// Stash Unit boost
+		const stashBoost = await getStashBoost(userID, clueTier.name);
+		boosts.push(`${stashBoost.toFixed(2)}% for built STASH Units`);
+		duration *= (1 - stashBoost / 100);
+
+		// Combat stats boost
+		if (['Hard', 'Elite', 'Master'].includes(clueTier.name)) {
+			const totalCombatStats = user.skillLevel(SkillsEnum.Attack) + user.skillLevel(SkillsEnum.Strength) + user.skillLevel(SkillsEnum.Ranged);
+			let combatBoost = totalCombatStats / (3 * 99) * 100;
+
+			if (combatBoost < 50) {
+				combatBoost = combatBoost - 50;
+			} else {
+				combatBoost = Math.min(10, combatBoost / 6.5);
+			}
+
+			boosts.push(`${combatBoost.toFixed(2)}% for combat stats`); // Add boost to the boosts array
+			duration *= (1 - combatBoost / 100); // Adjust duration based on the combat boost
+		}
+
 		// Global Boosts
 		const globalBoosts = [
 			{
+				condition: isWeekend,
+				boost: '10% for Weekend',
+				durationMultiplier: 0.9
+			},
+			{
 				condition: () => user.hasEquippedOrInBank('Max cape'),
-				boost: '15% for Max cape',
-				durationMultiplier: 0.85
+				boost: '10% for Max cape',
+				durationMultiplier: 0.90
 			},
 			{
 				condition: () => !user.hasEquippedOrInBank('Max cape') && user.hasEquippedOrInBank('Construct. cape'),
-				boost: '10% for Construction cape',
-				durationMultiplier: 0.9
+				boost: '6% for Construction cape',
+				durationMultiplier: 0.94
 			},
 			{
 				condition: () => hasOrnateJewelleryBox,
@@ -187,8 +228,8 @@ export const clueCommand: OSBMahojiCommand = {
 
 		// Xeric's Talisman boost
 		if (clueTier.name === 'Medium' && hasXericTalisman) {
-			boosts.push("10% for Mounted Xeric's Talisman");
-			duration *= 0.9;
+			boosts.push("5% for Mounted Xeric's Talisman");
+			duration *= 0.95;
 		}
 
 		// Specific boosts
@@ -196,8 +237,8 @@ export const clueCommand: OSBMahojiCommand = {
 			Beginner: [
 				{
 					item: getOSItem('Ring of the elements'),
-					boost: '5% for Ring of the elements',
-					durationMultiplier: 0.95
+					boost: '10% for Ring of the elements',
+					durationMultiplier: 0.90
 				},
 				{
 					item: getOSItem('Skull sceptre'),
@@ -208,57 +249,57 @@ export const clueCommand: OSBMahojiCommand = {
 			Easy: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '15% for Achievement diary cape',
-					durationMultiplier: 0.85
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.90
 				},
 				{
 					item: getOSItem('Ring of the elements'),
 					boost: '10% for Ring of the elements',
-					durationMultiplier: 0.9
+					durationMultiplier: 0.90
 				},
 				{
 					item: getOSItem('Skull sceptre'),
-					boost: '10% for Skull sceptre',
-					durationMultiplier: 0.9
+					boost: '5% for Skull sceptre',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Music cape'),
-					boost: '10% for Music cape',
-					durationMultiplier: 0.9
+					boost: '5% for Music cape',
+					durationMultiplier: 0.95
 				}
 			],
 			Medium: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '15% for Achievement diary cape',
-					durationMultiplier: 0.85
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.90
 				},
 				{
 					item: getOSItem('Ring of the elements'),
-					boost: '15% for Ring of the elements',
-					durationMultiplier: 0.85
+					boost: '10% for Ring of the elements',
+					durationMultiplier: 0.90
 				},
 				{
 					item: getOSItem('Skull sceptre'),
-					boost: '10% for Skull sceptre',
-					durationMultiplier: 0.9
+					boost: '5% for Skull sceptre',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Music cape'),
-					boost: '10% for Music cape',
-					durationMultiplier: 0.9
+					boost: '5% for Music cape',
+					durationMultiplier: 0.95
 				}
 			],
 			Hard: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '15% for Achievement diary cape',
-					durationMultiplier: 0.85
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.90
 				},
 				{
 					item: getOSItem('Wilderness sword 3'),
-					boost: '10% for Wilderness sword 3',
-					durationMultiplier: 0.9
+					boost: '5% for Wilderness sword 3',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Royal seed pod'),
@@ -277,30 +318,30 @@ export const clueCommand: OSBMahojiCommand = {
 				},
 				{
 					item: getOSItem('Toxic blowpipe'),
-					boost: '10% for Toxic blowpipe',
-					durationMultiplier: 0.9
+					boost: '5% for Toxic blowpipe',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Book of the dead'),
-					boost: '10% for Book of the dead',
-					durationMultiplier: 0.9
+					boost: '5% for Book of the dead',
+					durationMultiplier: 0.95
 				}
 			],
 			Elite: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '12% for Achievement diary cape',
-					durationMultiplier: 0.88
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.90
 				},
 				{
 					item: getOSItem('Kandarin headgear 4'),
-					boost: '10% for Kandarin headgear 4',
-					durationMultiplier: 0.9
+					boost: '5% for Kandarin headgear 4',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Fremennik sea boots 4'),
-					boost: '5% for Fremennik sea boots 4',
-					durationMultiplier: 0.95
+					boost: '3% for Fremennik sea boots 4',
+					durationMultiplier: 0.97
 				},
 				{
 					item: getOSItem("Pharaoh's sceptre"),
@@ -309,50 +350,50 @@ export const clueCommand: OSBMahojiCommand = {
 				},
 				{
 					item: getOSItem('Toxic blowpipe'),
-					boost: '5% for Toxic blowpipe',
-					durationMultiplier: 0.95
+					boost: '4% for Toxic blowpipe',
+					durationMultiplier: 0.96
 				},
 				{
 					item: getOSItem('Book of the dead'),
-					boost: '10% for Book of the dead',
-					durationMultiplier: 0.9
+					boost: '5% for Book of the dead',
+					durationMultiplier: 0.95
 				}
 			],
 			Master: [
 				{
 					item: getOSItem('Achievement diary cape'),
-					boost: '12% for Achievement diary cape',
-					durationMultiplier: 0.88
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.90
 				},
 				{
 					item: getOSItem('Kandarin headgear 4'),
-					boost: '10% for Kandarin headgear 4',
-					durationMultiplier: 0.9
+					boost: '6% for Kandarin headgear 4',
+					durationMultiplier: 0.94
 				},
 				{
 					item: getOSItem('Music cape'),
-					boost: '10% for Music cape',
-					durationMultiplier: 0.9
+					boost: '5% for Music cape',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Eternal teleport crystal'),
-					boost: '5% for Eternal teleport crystal',
-					durationMultiplier: 0.95
-				},
-				{
-					item: getOSItem('Toxic blowpipe'),
-					boost: '5% for Toxic blowpipe',
-					durationMultiplier: 0.95
-				},
-				{
-					item: getOSItem('Dragon claws'),
-					boost: '3% for Dragon claws',
+					boost: '3% for Eternal teleport crystal',
 					durationMultiplier: 0.97
 				},
 				{
+					item: getOSItem('Toxic blowpipe'),
+					boost: '2% for Toxic blowpipe',
+					durationMultiplier: 0.98
+				},
+				{
+					item: getOSItem('Dragon claws'),
+					boost: '1% for Dragon claws',
+					durationMultiplier: 0.99
+				},
+				{
 					item: getOSItem('Book of the dead'),
-					boost: '10% for Book of the dead',
-					durationMultiplier: 0.9
+					boost: '5% for Book of the dead',
+					durationMultiplier: 0.95
 				}
 			]
 		};
@@ -399,9 +440,8 @@ export const clueCommand: OSBMahojiCommand = {
 				return `You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s. At least you received the following loot: ${implingLoot}.`;
 			}
 			quantity = bankedClues + implingClues;
-			implingLootString = `\n\nYou will find ${implingClues} clue${
-				implingClues === 0 || implingClues > 1 ? 's' : ''
-			} from ${openedImplings}x ${clueImpling.name}s, and receive the following loot: ${implingLoot}.`;
+			implingLootString = `\n\nYou will find ${implingClues} clue${implingClues === 0 || implingClues > 1 ? 's' : ''
+				} from ${openedImplings}x ${clueImpling.name}s, and receive the following loot: ${implingLoot}.`;
 		}
 
 		duration = timeToFinish * quantity;
@@ -416,10 +456,8 @@ export const clueCommand: OSBMahojiCommand = {
 			duration,
 			type: 'ClueCompletion'
 		});
-		return `${user.minionName} is now completing ${quantity}x ${
-			clueTier.name
-		} clues, it'll take around ${formatDuration(duration)} to finish.${
-			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
-		}${implingLootString}`;
+		return `${user.minionName} is now completing ${quantity}x ${clueTier.name
+			} clues, it'll take around ${formatDuration(duration)} to finish (${(quantity / duration * 3600000).toFixed(1)}/hr).${boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
+			}${implingLootString}`;
 	}
 };

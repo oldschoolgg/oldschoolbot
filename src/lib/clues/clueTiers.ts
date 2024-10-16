@@ -53,7 +53,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Beginner,
 		id: 23_245,
 		scrollID: 23_182,
-		timeToFinish: Time.Minute * 2.1,
+		timeToFinish: Time.Minute * 2.5,
 		mimicChance: false,
 		allItems: BeginnerCasket.allItems,
 		stashUnits: beginnerStashes,
@@ -66,7 +66,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Easy,
 		id: 20_546,
 		scrollID: 2677,
-		timeToFinish: Time.Minute * 3.5,
+		timeToFinish: Time.Minute * 3.2,
 		milestoneReward: {
 			itemReward: itemID('Large spade'),
 			scoreNeeded: 500
@@ -83,7 +83,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Medium,
 		id: 20_545,
 		scrollID: 2801,
-		timeToFinish: Time.Minute * 6.0,
+		timeToFinish: Time.Minute * 5.1,
 		milestoneReward: {
 			itemReward: itemID('Clueless scroll'),
 			scoreNeeded: 400
@@ -100,7 +100,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Hard,
 		id: 20_544,
 		scrollID: 2722,
-		timeToFinish: Time.Minute * 8.0,
+		timeToFinish: Time.Minute * 8.5,
 		mimicChance: false,
 		allItems: HardCasket.allItems,
 		stashUnits: hardStashes,
@@ -113,7 +113,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Elite,
 		id: 20_543,
 		scrollID: 12_073,
-		timeToFinish: Time.Minute * 13.5,
+		timeToFinish: Time.Minute * 15.0,
 		milestoneReward: {
 			itemReward: itemID('Heavy casket'),
 			scoreNeeded: 200
