@@ -103,6 +103,10 @@ Tiny - 20k xp, Small - 50k xp, Average - 100k xp, Large - 1m xp, Huge - 5m xp
 
 #### Divine Water
 
+[[Divine Water]] is used to kill  [Superior Tormented Demons](/bso/monsters/#tormented-demon) 
+
+
+
 888:1 - Regular Bones
 
 888:1 - Wolf Bones
