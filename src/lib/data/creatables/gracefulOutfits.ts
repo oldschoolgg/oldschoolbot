@@ -1226,62 +1226,183 @@ export const gracefulOutfitCreatables: Createable[] = [
 	// Colossal Wyrm Agility (Varlamore graceful)
 	{
 		name: 'Varlamore graceful outfit',
-		inputItems: new Bank({
-			'Graceful crafting kit': 1,
-			'Graceful hood': 1,
-			'Graceful top': 1,
-			'Graceful legs': 1,
-			'Graceful gloves': 1,
-			'Graceful boots': 1,
-			'Graceful cape': 1
-		}),
-		outputItems: new Bank({
-			'Varlamore graceful hood': 1,
-			'Varlamore graceful top': 1,
-			'Varlamore graceful legs': 1,
-			'Varlamore graceful gloves': 1,
-			'Varlamore graceful boots': 1,
-			'Varlamore graceful cape': 1
-		})
+		inputItems: {
+			[itemID('Graceful crafting kit')]: 1,
+			[itemID('Graceful hood')]: 1,
+			[itemID('Graceful top')]: 1,
+			[itemID('Graceful legs')]: 1,
+			[itemID('Graceful gloves')]: 1,
+			[itemID('Graceful boots')]: 1,
+			[itemID('Graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Varlamore graceful hood')]: 1,
+			[itemID('Varlamore graceful top')]: 1,
+			[itemID('Varlamore graceful legs')]: 1,
+			[itemID('Varlamore graceful gloves')]: 1,
+			[itemID('Varlamore graceful boots')]: 1,
+			[itemID('Varlamore graceful cape')]: 1
+		}
 	},
 	{
 		name: 'Revert Varlamore graceful outfit',
-		inputItems: new Bank({
-			'Varlamore graceful hood': 1,
-			'Varlamore graceful top': 1,
-			'Varlamore graceful legs': 1,
-			'Varlamore graceful gloves': 1,
-			'Varlamore graceful boots': 1,
-			'Varlamore graceful cape': 1
-		}),
-		outputItems: new Bank({
-			'Graceful hood': 1,
-			'Graceful top': 1,
-			'Graceful legs': 1,
-			'Graceful gloves': 1,
-			'Graceful boots': 1,
-			'Graceful cape': 1
-		}),
+		inputItems: {
+			[itemID('Varlamore graceful hood')]: 1,
+			[itemID('Varlamore graceful top')]: 1,
+			[itemID('Varlamore graceful legs')]: 1,
+			[itemID('Varlamore graceful gloves')]: 1,
+			[itemID('Varlamore graceful boots')]: 1,
+			[itemID('Varlamore graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1,
+			[itemID('Graceful top')]: 1,
+			[itemID('Graceful legs')]: 1,
+			[itemID('Graceful gloves')]: 1,
+			[itemID('Graceful boots')]: 1,
+			[itemID('Graceful cape')]: 1
+		},
 		noCl: true
 	},
 	{
+		name: 'Revert Varlamore graceful hood',
+		inputItems: {
+			[itemID('Varlamore graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Varlamore graceful top',
+		inputItems: {
+			[itemID('Varlamore graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Varlamore graceful legs',
+		inputItems: {
+			[itemID('Varlamore graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Varlamore graceful gloves',
+		inputItems: {
+			[itemID('Varlamore graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Varlamore graceful boots',
+		inputItems: {
+			[itemID('Varlamore graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Varlamore graceful cape',
+		inputItems: {
+			[itemID('Varlamore graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		},
+		noCl: true
+	},
+	// Agility Arena (Brimhaven graceful)
+	{
 		name: 'Revert Brimhaven graceful outfit',
-		inputItems: new Bank({
-			'Brimhaven graceful hood': 1,
-			'Brimhaven graceful top': 1,
-			'Brimhaven graceful legs': 1,
-			'Brimhaven graceful gloves': 1,
-			'Brimhaven graceful boots': 1,
-			'Brimhaven graceful cape': 1
-		}),
-		outputItems: new Bank({
-			'Graceful hood': 1,
-			'Graceful top': 1,
-			'Graceful legs': 1,
-			'Graceful gloves': 1,
-			'Graceful boots': 1,
-			'Graceful cape': 1
-		}),
+		inputItems: {
+			[itemID('Brimhaven graceful hood')]: 1,
+			[itemID('Brimhaven graceful top')]: 1,
+			[itemID('Brimhaven graceful legs')]: 1,
+			[itemID('Brimhaven graceful gloves')]: 1,
+			[itemID('Brimhaven graceful boots')]: 1,
+			[itemID('Brimhaven graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1,
+			[itemID('Graceful top')]: 1,
+			[itemID('Graceful legs')]: 1,
+			[itemID('Graceful gloves')]: 1,
+			[itemID('Graceful boots')]: 1,
+			[itemID('Graceful cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Brimhaven graceful hood',
+		inputItems: {
+			[itemID('Brimhaven graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Brimhaven graceful top',
+		inputItems: {
+			[itemID('Brimhaven graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Brimhaven graceful legs',
+		inputItems: {
+			[itemID('Brimhaven graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Brimhaven graceful gloves',
+		inputItems: {
+			[itemID('Brimhaven graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Brimhaven graceful boots',
+		inputItems: {
+			[itemID('Brimhaven graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Brimhaven graceful cape',
+		inputItems: {
+			[itemID('Brimhaven graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		},
 		noCl: true
 	}
 ];

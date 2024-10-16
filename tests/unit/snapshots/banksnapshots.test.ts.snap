@@ -13574,6 +13574,72 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "30045": 1,
+    },
+    "name": "Revert Varlamore graceful hood",
+    "noCl": true,
+    "outputItems": {
+      "11850": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30051": 1,
+    },
+    "name": "Revert Varlamore graceful top",
+    "noCl": true,
+    "outputItems": {
+      "11854": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30054": 1,
+    },
+    "name": "Revert Varlamore graceful legs",
+    "noCl": true,
+    "outputItems": {
+      "11856": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30057": 1,
+    },
+    "name": "Revert Varlamore graceful gloves",
+    "noCl": true,
+    "outputItems": {
+      "11858": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30060": 1,
+    },
+    "name": "Revert Varlamore graceful boots",
+    "noCl": true,
+    "outputItems": {
+      "11860": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30048": 1,
+    },
+    "name": "Revert Varlamore graceful cape",
+    "noCl": true,
+    "outputItems": {
+      "11852": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "21061": 1,
       "21064": 1,
       "21067": 1,
@@ -13590,6 +13656,72 @@ exports[`OSB Creatables 1`] = `
       "11856": 1,
       "11858": 1,
       "11860": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21061": 1,
+    },
+    "name": "Revert Brimhaven graceful hood",
+    "noCl": true,
+    "outputItems": {
+      "11850": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21067": 1,
+    },
+    "name": "Revert Brimhaven graceful top",
+    "noCl": true,
+    "outputItems": {
+      "11854": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21070": 1,
+    },
+    "name": "Revert Brimhaven graceful legs",
+    "noCl": true,
+    "outputItems": {
+      "11856": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21073": 1,
+    },
+    "name": "Revert Brimhaven graceful gloves",
+    "noCl": true,
+    "outputItems": {
+      "11858": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21076": 1,
+    },
+    "name": "Revert Brimhaven graceful boots",
+    "noCl": true,
+    "outputItems": {
+      "11860": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21064": 1,
+    },
+    "name": "Revert Brimhaven graceful cape",
+    "noCl": true,
+    "outputItems": {
+      "11852": 1,
     },
   },
   {
