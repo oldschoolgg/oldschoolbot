@@ -95,7 +95,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'carpenter',
+		name: 'construction',
 		user_id: '123',
 		head: itemID("Carpenter's helmet"),
 		neck: null,
@@ -116,7 +116,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'rogue',
+		name: 'theiving',
 		user_id: '123',
 		head: itemID('Rogue mask'),
 		neck: null,
@@ -158,7 +158,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'angler',
+		name: 'fishing',
 		user_id: '123',
 		head: itemID('Angler hat'),
 		neck: null,
@@ -179,28 +179,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'spirit_angler',
-		user_id: '123',
-		head: itemID('Spirit angler headband'),
-		neck: null,
-		body: itemID('Spirit angler top'),
-		legs: itemID('Spirit angler waders'),
-		cape: null,
-		two_handed: null,
-		hands: null,
-		feet: itemID('Spirit angler boots'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'pyromancer',
+		name: 'firemaking',
 		user_id: '123',
 		head: itemID('Pyromancer hood'),
 		neck: null,
@@ -221,7 +200,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'prospector',
+		name: 'mining',
 		user_id: '123',
 		head: itemID('Prospector helmet'),
 		neck: null,
@@ -242,7 +221,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'lumberjack',
+		name: 'woodcutting',
 		user_id: '123',
 		head: itemID('Lumberjack hat'),
 		neck: null,
@@ -263,7 +242,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'farmer',
+		name: 'farming',
 		user_id: '123',
 		head: itemID("Farmer's strawhat"),
 		neck: null,
@@ -284,7 +263,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'runecraft',
+		name: 'runecrafting',
 		user_id: '123',
 		head: itemID('Hat of the eye'),
 		neck: null,
@@ -305,7 +284,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'smith',
+		name: 'smithing',
 		user_id: '123',
 		head: null,
 		neck: null,

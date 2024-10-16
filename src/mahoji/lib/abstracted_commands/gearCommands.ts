@@ -21,6 +21,8 @@ import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirma
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
+import { getSimilarItems } from '../../../lib/data/similarItems';
+
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
@@ -56,9 +58,22 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		}
 	}
 
+	const userBankWithEquippedItems = user.bank.clone();
+	for (const e of objectValues(user.gear[gearSetup].raw())) {
+		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
+	}
+
 	const toRemove = new Bank();
 	function gearItem(val: null | number) {
 		if (val === null) return null;
+		if (!userBankWithEquippedItems.has(val) && globalPreset) {
+			for (const new_val of getSimilarItems(val)) {
+				if (userBankWithEquippedItems.has(new_val)) {
+					val = new_val;
+					break;
+				}
+			}
+		}
 		toRemove.add(val);
 		return {
 			item: val,
@@ -82,11 +97,6 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	if (preset.ammo) {
 		newGear.ammo = { item: preset.ammo, quantity: preset.ammo_qty! };
 		toRemove.add(preset.ammo, preset.ammo_qty!);
-	}
-
-	const userBankWithEquippedItems = user.bank.clone();
-	for (const e of objectValues(user.gear[gearSetup].raw())) {
-		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
 	}
 
 	if (!userBankWithEquippedItems.has(toRemove)) {
