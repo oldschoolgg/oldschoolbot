@@ -154,8 +154,8 @@ export interface Cookable {
 
 export interface ForesterRation {
 	name: string;
-	inputLeaf: ItemBank;
-	inputFood: ItemBank;
+	inputLeaf: Bank;
+	inputFood: Bank;
 	rationsAmount: number;
 }
 

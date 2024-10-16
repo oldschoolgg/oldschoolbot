@@ -1,4 +1,4 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, itemID } from 'oldschooljs/dist/util';
 import type { ForesterRation } from '../../types';
 import { Cookables } from './cooking';
 
@@ -49,10 +49,11 @@ for (const leaf of rationLeafTable) {
 
 		ForestryRations.push({
 			name: `Forester's ration (${leaf.name} + ${food.name})`,
-			inputLeaf: { [itemID(leaf.name)]: 1 },
-			inputFood: { [itemID(food.name)]: 1 },
+			inputLeaf: new Bank({ [leaf.name]: 1 }), 
+			inputFood: new Bank({ [food.name]: 1 }), 
 			rationsAmount: leaf.baseRations * (food.foodType === 'fish' ? fishFoodMultiplier(cookable.level) : 2)
 		});
+		
 	}
 }
 
