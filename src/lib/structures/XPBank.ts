@@ -1,6 +1,8 @@
 import { sumArr } from 'e';
+import { skillEmoji } from '../data/emojis';
 import type { AddXpParams } from '../minions/types';
 import type { SkillNameType, SkillsEnum } from '../skilling/types';
+import type { Skills } from '../types';
 
 export class XPBank {
 	public xpList: AddXpParams[] = [];
@@ -31,5 +33,14 @@ export class XPBank {
 
 	public amount(skill: SkillNameType) {
 		return sumArr(this.xpList.filter(i => i.skillName === skill).map(i => i.amount));
+	}
+
+	toString() {
+		if (this.xpList.length === 0) return 'No XP';
+		const grouped: Skills = {};
+		for (const i of this.xpList) grouped[i.skillName] = (grouped[i.skillName] ?? 0) + i.amount;
+		return Object.entries(grouped)
+			.map(([skill, xp]) => `${xp.toLocaleString()} ${skillEmoji[skill as keyof typeof skillEmoji]} XP`)
+			.join(', ');
 	}
 }
