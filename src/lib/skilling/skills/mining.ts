@@ -296,6 +296,11 @@ const prospectorItems: { [key: number]: number } = {
 	[itemID('Prospector boots')]: 0.2
 };
 
+export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemID, bonus]) => ({
+	id: Number.parseInt(itemID),
+	boostPercent: bonus
+}));
+
 const Mining = {
 	aliases: ['mining'],
 	Ores: ores,

@@ -4,7 +4,7 @@ sidebar:
   order: 3
 ---
 
-## Update 14/10/2024 [[68b130088f5e365ec2a341cae48bc5b353ccc2ff...8d58fb6722e2db20717e5ec3bce1abf8496344b7]]
+## Update 16/10/2024 [[68b130088f5e365ec2a341cae48bc5b353ccc2ff...4fbfe429e9a1bdf817175cf497177e47fefc6be6]]
 
 Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-started/bingo) for information.
 
@@ -19,6 +19,7 @@ Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-
 - Various "engine" changes/improvements
 - Various wiki fixes/improvements
 - Fixed several bugs that were causing errors/issues
+- Made some changes to fix roles (they may not be fully fixed yet)
 
 ### [[Arodab]]
 
@@ -38,6 +39,7 @@ Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-
 
 ### [[nwjgit]]
 
+- Fixed the droprate of tormented demons uniques (instead of a roll that gets you either a synapse/claw, you get a roll at both now)
 - [[Bow of faerdhinen (c)]] no longer requires arrows
 - Improved code relating to item rerolling (e.g. bludgeon pieces)
 - Added the **Colossal Wyrm Agility Course**
@@ -52,6 +54,7 @@ Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-
 ### [[00justas]]
 
 - Updated agility xp/hr rates based on the osrs update (buffed)
+- Added [[Clue scroll (elite)]] drop to Araxxor
 
 ## Update 9/10/2024 [[8de72b2de5a275497c67123904a280981415c553...68b130088f5e365ec2a341cae48bc5b353ccc2ff]]
 
