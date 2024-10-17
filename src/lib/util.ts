@@ -418,3 +418,19 @@ export function anyoneDiedInTOARaid(data: TOAOptions) {
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
+
+export function replaceLast(str: string, pattern: string, replacement: string) {
+	const last = str.lastIndexOf(pattern);
+	return last !== -1 ? `${str.slice(0, last)}${replacement}${str.slice(last + pattern.length)}` : str;
+}
+
+export function joinStrings(stringList: string[], end?: string) {
+	if (stringList.length === 0) return '';
+	if (stringList.length === 1) return stringList[0];
+	if (stringList.reverse()[0].includes(',')) {
+		// commas in last term will put str in weird place
+		return stringList.join(', ');
+	} else {
+		return replaceLast(stringList.join(', '), ',', ` ${end ? end : 'and'}`);
+	}
+}
