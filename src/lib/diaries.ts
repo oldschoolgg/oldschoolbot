@@ -121,7 +121,7 @@ export function userhasDiaryTierSync(
 
 	return {
 		hasDiary: canDo,
-		reasons: reasons.join('\n- '),
+		reasons: `- ${reasons.join('\n- ')}`,
 		tier,
 		diaryGroup: diaries.find(d => [d.easy, d.medium, d.hard, d.elite].includes(tier))!
 	};

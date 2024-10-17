@@ -63,8 +63,9 @@ export class Requirements {
 		const requirementParts: (string | string[])[] = [];
 		if ('skillRequirements' in req) {
 			requirementParts.push(
-				`Required Skills: ${joinStrings(objectEntries(req.skillRequirements)
-					.map(([skill, level]) => `Level ${level} ${skill}`))}`
+				`Required Skills: ${joinStrings(
+					objectEntries(req.skillRequirements).map(([skill, level]) => `Level ${level} ${skill}`)
+				)}`
 			);
 		}
 
@@ -80,8 +81,11 @@ export class Requirements {
 
 		if ('kcRequirement' in req) {
 			requirementParts.push(
-				`Kill Count Requirement: ${joinStrings(Object.entries(req.kcRequirement)
-					.map(([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name} KC`))}`
+				`Kill Count Requirement: ${joinStrings(
+					Object.entries(req.kcRequirement).map(
+						([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name} KC`
+					)
+				)}`
 			);
 		}
 
@@ -91,8 +95,11 @@ export class Requirements {
 
 		if ('lapsRequirement' in req) {
 			requirementParts.push(
-				`Agility Course Laps Requirements: ${joinStrings(Object.entries(req.lapsRequirement)
-					.map(([k, v]) => `${v}x laps of ${Agility.Courses.find(i => i.id === Number(k))?.name}`))}.`
+				`Agility Course Laps Requirements: ${joinStrings(
+					Object.entries(req.lapsRequirement).map(
+						([k, v]) => `${v}x laps of ${Agility.Courses.find(i => i.id === Number(k))?.name}`
+					)
+				)}.`
 			);
 		}
 
@@ -102,8 +109,9 @@ export class Requirements {
 
 		if ('minigames' in req) {
 			requirementParts.push(
-				`Minigame Requirements: ${joinStrings(Object.entries(req.minigames)
-					.map(([k, v]) => `${v}x ${minigameColumnToNameMap.get(k)} KC`))}.`
+				`Minigame Requirements: ${joinStrings(
+					Object.entries(req.minigames).map(([k, v]) => `${v}x ${minigameColumnToNameMap.get(k)} KC`)
+				)}.`
 			);
 		}
 
@@ -113,8 +121,9 @@ export class Requirements {
 
 		if ('diaryRequirement' in req) {
 			requirementParts.push(
-				`Achievement Diary Requirement: ${joinStrings(req.diaryRequirement
-					.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])?.name}`))}`
+				`Achievement Diary Requirement: ${joinStrings(
+					req.diaryRequirement.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])?.name}`)
+				)}`
 			);
 		}
 
@@ -185,9 +194,7 @@ export class Requirements {
 		if ('clRequirement' in requirement) {
 			if (!user.cl.has(requirement.clRequirement)) {
 				const missingItems = Array.isArray(requirement.clRequirement)
-					? joinStrings(requirement.clRequirement
-							.filter(i => !user.cl.has(i))
-							.map(itemNameFromID))
+					? joinStrings(requirement.clRequirement.filter(i => !user.cl.has(i)).map(itemNameFromID))
 					: requirement.clRequirement.clone().remove(user.cl);
 				results.push({
 					reason: `You need ${missingItems} in your CL.`
@@ -280,8 +287,9 @@ export class Requirements {
 				.filter(i => !i.has);
 			if (unmetDiaries.length > 0) {
 				results.push({
-					reason: `You need to finish these achievement diaries: ${joinStrings(unmetDiaries
-						.map(i => i.tierName))}.`
+					reason: `You need to finish these achievement diaries: ${joinStrings(
+						unmetDiaries.map(i => i.tierName)
+					)}.`
 				});
 			}
 		}
