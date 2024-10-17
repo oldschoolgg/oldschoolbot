@@ -30,7 +30,7 @@ Most of the boosts will come from items purchased from the shop.
 - 1% boost for Strange old lockpick
 - Up to 10% for minion learning (1 hour of minigame = 1%)
 
-**Note:**The Hallowed Ring from the shop does **not** provide a boost or benefit.
+**Note:** The Hallowed Ring from the shop does **not** provide a boost or benefit.
 
 ## Hallowed Sepulchre Shop
 

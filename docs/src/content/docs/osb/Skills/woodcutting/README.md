@@ -2,8 +2,6 @@
 title: "Woodcutting"
 ---
 
-# Woodcutting
-
 You can train Woodcutting using `/chopname:[logs]`. If no quantity is specified, it will default to a full trip. Using the powerchop option will result in no logs being obtained, but provides significantly faster woodcutting xp rates.
 
 - `/chopname:Willow logsquantity:50`

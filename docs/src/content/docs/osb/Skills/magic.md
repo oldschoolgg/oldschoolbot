@@ -1,5 +1,6 @@
 ---
 title: "Magic (Non-combat)"
+authors: ["test"]
 ---
 
 You can train your magic level through various non-combat spells in the bot. This includes casting lunar spells, teleport spells, and enchanting jewellery and bolts. All casting and enchanting spells require the same levels and runes as they do in OSRS.
@@ -24,7 +25,7 @@ Much like casting, enchanting jewellery or bolts is another viable method to tra
 
 To enchant any jewellery or bolts, use the `/activities enchant` command.
 
-- E.g. `/activities enchantname: ``Emerald ringquantity: ``100`
+- E.g. `/activities enchant name\:Emerald ring quantity:100`
 
 <table><thead><tr><th width="158"></th><th width="159" align="center"></th><th width="231.16216216216213"></th><th align="center"></th></tr></thead><tbody><tr><td><strong>Jewellery</strong></td><td align="center"><strong>Level Required</strong></td><td><strong>Bolts</strong></td><td align="center"><strong>Levels Required</strong></td></tr><tr><td>Opal</td><td align="center">7</td><td>Opal bolts</td><td align="center">4</td></tr><tr><td>Sapphire</td><td align="center">7</td><td>Sapphire bolts</td><td align="center">7</td></tr><tr><td>Jade</td><td align="center">27</td><td>Pearl bolts</td><td align="center">24</td></tr><tr><td>Emerald</td><td align="center">27</td><td>Emerald bolts</td><td align="center">27</td></tr><tr><td>Topaz</td><td align="center">49</td><td>Topaz bolts</td><td align="center">29</td></tr><tr><td>Ruby </td><td align="center">49</td><td>Ruby bolts</td><td align="center">49</td></tr><tr><td>Diamond</td><td align="center">57</td><td>Diamond bolts</td><td align="center">57</td></tr><tr><td>Dragonstone</td><td align="center">68</td><td>Dragonstone bolts</td><td align="center">68</td></tr><tr><td>Onyx</td><td align="center">87</td><td>Onyx bolts</td><td align="center">87</td></tr><tr><td>Zenyte</td><td align="center">93</td><td><strong>Dragon Bolts</strong></td><td align="center"></td></tr><tr><td></td><td align="center"></td><td>Opal dragon bolts</td><td align="center">4</td></tr><tr><td></td><td align="center"></td><td>Sapphire dragon bolts</td><td align="center">7</td></tr><tr><td></td><td align="center"></td><td>Jade dragon bolts</td><td align="center">14</td></tr><tr><td></td><td align="center"></td><td>Pearl dragon bolts</td><td align="center">24</td></tr><tr><td></td><td align="center"></td><td>Emerald dragon bolts</td><td align="center">27</td></tr><tr><td></td><td align="center"></td><td>Topas dragon bolts</td><td align="center">49</td></tr><tr><td></td><td align="center"></td><td>Ruby dragon bolts</td><td align="center">49</td></tr><tr><td></td><td align="center"></td><td>Diamond dragon bolts</td><td align="center">57</td></tr><tr><td></td><td align="center"></td><td>Dragonstone dragon bolts</td><td align="center">68</td></tr><tr><td></td><td align="center"></td><td>Onyx dragon bolts</td><td align="center">87</td></tr></tbody></table>
 

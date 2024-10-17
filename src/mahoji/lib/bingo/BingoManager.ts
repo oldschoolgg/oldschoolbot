@@ -252,13 +252,13 @@ export class BingoManager {
 			teams: teams.map((team, index) => ({
 				...team,
 				trophy: this.isGlobal
-					? BingoTrophies.filter(
+					? (BingoTrophies.filter(
 							t =>
 								index < 3 ||
 								team.tilesCompletedCount >= t.guaranteedAt ||
 								100 - t.percentile <=
 									ss.quantileRank(tilesCompletedCounts, team.tilesCompletedCount) * 100
-						)[0] ?? null
+						)[0] ?? null)
 					: null,
 				rank: index + 1
 			}))
