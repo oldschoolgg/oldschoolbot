@@ -182,14 +182,14 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 		}
 
 		if (multiple) {
-			str.push(subStr.join(', '));
+			str.push(joinStrings(subStr));
 		} else {
 			str.push(subStr.join(''));
 		}
 	}
 
 	if (consumables.length > 1) {
-		return `(${str.join(' OR ')})`;
+		return `(${joinStrings(str, 'or')})`;
 	}
 
 	return str.join('');
@@ -205,10 +205,10 @@ export function formatPohBoosts(boosts: POHBoosts) {
 			bonusStr.push(`${boostPercent}% for ${name}`);
 		}
 
-		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${bonusStr.join(' or ')})\n`);
+		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${joinStrings(bonusStr, 'or')})\n`);
 	}
 
-	return slotStr.join(', ');
+	return joinStrings(slotStr);
 }
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
@@ -389,7 +389,7 @@ export function checkRangeGearWeapon(gear: Gear) {
 	if (!projectileCategory[1].items.includes(ammo.item)) {
 		return `You have invalid ammo for your equipped weapon. For ${
 			projectileCategory[0]
-		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
+		}-based weapons, you can use: ${joinStrings(projectileCategory[1].items.map(itemNameFromID), 'or')}.`;
 	}
 
 	return {
@@ -424,13 +424,15 @@ export function replaceLast(str: string, pattern: string, replacement: string) {
 	return last !== -1 ? `${str.slice(0, last)}${replacement}${str.slice(last + pattern.length)}` : str;
 }
 
-export function joinStrings(stringList: string[], end?: string) {
-	if (stringList.length === 0) return '';
-	if (stringList.length === 1) return stringList[0];
-	if (stringList.reverse()[0].includes(',')) {
-		// commas in last term will put str in weird place
-		return stringList.join(', ');
+export function joinStrings(itemList: any[], end?: string) {
+	if (itemList.length < 2) return itemList.join(', ');
+	if (
+		itemList.reverse()[0] &&
+		(typeof itemList.reverse()[0] !== 'string' || !itemList.reverse()[0].toString().includes(','))
+	) {
+		return replaceLast(itemList.join(', '), ',', ` ${end ? end : 'and'}`);
 	} else {
-		return replaceLast(stringList.join(', '), ',', ` ${end ? end : 'and'}`);
+		// commas in last term will put str in weird place
+		return itemList.join(', ');
 	}
 }
