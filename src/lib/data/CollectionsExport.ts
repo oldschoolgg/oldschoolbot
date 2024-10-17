@@ -36,9 +36,9 @@ export interface ILeftListStatus {
 
 export interface IKCActivity {
 	[key: string]:
-		| string
-		| string[]
-		| ((user: MUser, minigameScores: MinigameScore[], stats: MUserStats) => Promise<number>);
+	| string
+	| string[]
+	| ((user: MUser, minigameScores: MinigameScore[], stats: MUserStats) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
@@ -1929,7 +1929,8 @@ export const miscellaneousCL = resolveItems([
 	'Uncut onyx',
 	'Merfolk trident',
 	'Orange egg sac',
-	'Blue egg sac'
+	'Blue egg sac',
+	'Broken zombie axe'
 ]);
 
 export const diariesCL = [
