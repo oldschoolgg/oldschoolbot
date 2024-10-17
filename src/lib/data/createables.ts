@@ -2450,6 +2450,55 @@ const Createables: Createable[] = [
 		outputItems: new Bank().add('Amulet of rancour').freeze(),
 		noCl: true
 	},
+	{
+		name: 'Strange skull',
+		inputItems: new Bank({
+			'Left skull half': 1,
+			'Right skull half': 1
+		}),
+		outputItems: new Bank({
+			'Strange skull': 1
+		})
+	},
+	{
+		name: 'Runed sceptre',
+		inputItems: new Bank({
+			'Top of sceptre': 1,
+			'Bottom of sceptre': 1
+		}),
+		outputItems: new Bank({
+			'Runed sceptre': 1
+		})
+	},
+	{
+		name: 'Skull sceptre',
+		inputItems: new Bank({
+			'Strange skull': 1,
+			'Runed sceptre': 1
+		}),
+		outputItems: new Bank({
+			'Skull sceptre': 1
+		})
+	},
+	{
+		name: 'Skull sceptre(i)',
+		inputItems: new Bank({
+			'Skull sceptre': 1
+		}),
+		outputItems: new Bank({
+			'Skull sceptre(i)': 1
+		}),
+		customReq: async user => {
+			const count = await prisma.activity.count({
+				where: {
+					user_id: BigInt(user.id),
+					type: 'StrongholdOfSecurity'
+				}
+			});
+			if (count === 0) return 'You must complete the Stronghold of Security to imbue your Skull sceptre';
+			return null;
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
