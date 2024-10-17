@@ -1254,9 +1254,8 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		qpRequired: 20,
-		canCannon: false,
-		cannonMulti: true,
 		canBarrage: true,
+		canChinning: true,
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
