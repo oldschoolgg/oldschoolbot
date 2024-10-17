@@ -538,7 +538,7 @@ export const tripHandlers = {
 				cox: {
 					start: {
 						challenge_mode: data.challengeMode,
-						max_team_size: data.maxSizeInput,
+						type: data.users.length === 1 ? 'solo' : 'mass',
 						quantity: data.quantity
 					}
 				}
