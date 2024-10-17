@@ -1243,5 +1243,22 @@ export const turaelMonsters: KillableMonster[] = [
 		healAmountNeeded: 6,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
+	},
+	{
+		id: Monsters.ArmouredZombie.id,
+		name: Monsters.ArmouredZombie.name,
+		aliases: Monsters.ArmouredZombie.aliases,
+		timeToFinish: Time.Second * 23,
+		table: Monsters.ArmouredZombie,
+		wildy: false,
+
+		difficultyRating: 2,
+		qpRequired: 20,
+		canCannon: false,
+		cannonMulti: true,
+		canBarrage: true,
+		healAmountNeeded: 20,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackCrush]
 	}
 ];
