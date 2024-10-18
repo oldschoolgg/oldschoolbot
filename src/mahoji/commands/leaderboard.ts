@@ -56,7 +56,9 @@ export async function doMenu(
 	title: string
 ) {
 	if (pages.length === 0) {
-		return sendToChannelID(interaction.channelId, { content: 'There are no users on this leaderboard.' });
+		return sendToChannelID(interaction.channelId, {
+			content: 'There are no users on this leaderboard.'
+		});
 	}
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
@@ -65,10 +67,14 @@ export async function doMenu(
 		channel,
 		pages.map(p => {
 			if (isFunction(p)) {
-				return async () => ({ embeds: [new EmbedBuilder().setTitle(title).setDescription(await p())] });
+				return async () => ({
+					embeds: [new EmbedBuilder().setTitle(title).setDescription(await p())]
+				});
 			}
 
-			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
+			return {
+				embeds: [new EmbedBuilder().setTitle(title).setDescription(p)]
+			};
 		}),
 		user.id
 	);
@@ -100,7 +106,9 @@ function doMenuWrapper({
 					`${getPos(c, i)}**${await getUsername(user.id)}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`
 			);
 			const pageText = (await Promise.all(unwaited)).join('\n');
-			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(pageText)] };
+			return {
+				embeds: [new EmbedBuilder().setTitle(title).setDescription(pageText)]
+			};
 		};
 		pages.push(makePage);
 	}
@@ -117,7 +125,9 @@ function doMenuWrapper({
 				return p;
 			}
 
-			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
+			return {
+				embeds: [new EmbedBuilder().setTitle(title).setDescription(p)]
+			};
 		}),
 		user.id
 	);
@@ -220,7 +230,10 @@ async function sacrificeLb(
 					   ORDER BY "sacrificedValue"
 					   DESC LIMIT 2000;`
 			)
-		).map((res: any) => ({ ...res, amount: Number.parseInt(res.sacrificedValue) }));
+		).map((res: any) => ({
+			...res,
+			amount: Number.parseInt(res.sacrificedValue)
+		}));
 
 		doMenu(
 			interaction,
@@ -266,20 +279,32 @@ async function sacrificeLb(
 	return lbMsg('Unique Sacrifice');
 }
 
-async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, name: string) {
+async function minigamesLb(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	channelID: string,
+	name: string,
+	ironmanOnly: boolean
+) {
 	const minigame = Minigames.find(m => stringMatches(m.name, name) || m.aliases.some(a => stringMatches(a, name)));
 	if (!minigame) {
 		return `That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`;
 	}
 
+	const column = minigame.column;
+	if (!column) {
+		return `No column found for minigame ${name}.`;
+	}
+
 	if (minigame.name === 'Tithe farm') {
 		const titheCompletions = await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
 			`SELECT user_id::text as id, tithe_farms_completed::int as amount
-					   FROM user_stats
-					   WHERE "tithe_farms_completed" > 10
-					   ORDER BY "tithe_farms_completed"
-					   DESC LIMIT 10;`
+		   FROM user_stats
+		   WHERE "tithe_farms_completed" > 10
+		   ORDER BY "tithe_farms_completed" DESC
+		   LIMIT 100;`
 		);
+
 		doMenu(
 			interaction,
 			user,
@@ -291,27 +316,56 @@ async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser
 			),
 			'Tithe farm Leaderboard'
 		);
+
 		return lbMsg(`${minigame.name} Leaderboard`);
 	}
-	const res = await prisma.minigame.findMany({
-		where: {
-			[minigame.column]: {
-				gt: minigame.column === 'champions_challenge' ? 1 : 10
-			}
-		},
-		orderBy: {
-			[minigame.column]: 'desc'
-		},
-		take: 10
-	});
+
+	if (minigame.name === 'Champions Challenge') {
+		const championsCompletions = await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
+			`SELECT user_id::text as id, champions_challenge::int as amount
+					   FROM minigames
+					   INNER JOIN users ON users.id = minigames.user_id
+					   WHERE champions_challenge > 1
+					   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+					   ORDER BY champions_challenge DESC
+					   LIMIT 100;`
+		);
+		return doMenuWrapper({
+			interaction,
+			user,
+			channelID,
+			users: championsCompletions.map(c => ({
+				id: c.id,
+				score: c.amount
+			})),
+			title: 'Champions Challenge Leaderboard',
+			ironmanOnly
+		});
+	}
+
+	// General Minigame handling with raw SQL
+	const minValue = column === 'champions_challenge' ? 1 : 10;
+
+	const minigameResults = await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
+		`SELECT user_id::text as id, ${column} AS score
+			   FROM minigames
+			   INNER JOIN users ON users.id = minigames.user_id
+			   WHERE ${column} > ${minValue}
+			   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+			   ORDER BY ${column} DESC
+			   LIMIT 100;`
+	);
 
 	return doMenuWrapper({
-		ironmanOnly: false,
-		user,
 		interaction,
+		user,
 		channelID,
-		users: res.map(u => ({ id: u.user_id, score: u[minigame.column] })),
-		title: `${minigame.name} Leaderboard`
+		users: minigameResults.map(result => ({
+			id: result.id,
+			score: result.score
+		})),
+		title: `${minigame.name} Leaderboard`,
+		ironmanOnly
 	});
 }
 
@@ -327,7 +381,12 @@ async function clLb(
 		return "That's not a valid collection log category. Check /cl for all possible logs.";
 	}
 
-	const { users } = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, clName: resolvedCl });
+	const { users } = await fetchCLLeaderboard({
+		ironmenOnly,
+		items,
+		resultLimit: 200,
+		clName: resolvedCl
+	});
 	inputType = toTitleCase(inputType.toLowerCase());
 
 	return doMenuWrapper({
@@ -978,7 +1037,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 								: [i.name, ...i.aliases].some(str => str.toLowerCase().includes(value.toLowerCase()))
 						).map(i => ({ name: i.name, value: i.name }));
 					}
-				}
+				},
+				ironmanOnlyOption
 			]
 		},
 		{
@@ -1039,7 +1099,10 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					required: true,
 					choices: [
 						{ name: 'Overall', value: 'overall' },
-						...Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
+						...Object.values(SkillsEnum).map(i => ({
+							name: toTitleCase(i),
+							value: i
+						}))
 					]
 				},
 				{
@@ -1088,7 +1151,10 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					required: true,
 					autocomplete: async value => {
 						return [
-							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
+							{
+								name: 'Overall (Main Leaderboard)',
+								value: 'overall'
+							},
 							...['overall+', ...allClNames.map(i => i)].map(i => ({
 								name: toTitleCase(i),
 								value: i
@@ -1109,7 +1175,10 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'clue',
 					description: 'The clue you want to select.',
 					required: true,
-					choices: ClueTiers.map(i => ({ name: i.name, value: i.name }))
+					choices: ClueTiers.map(i => ({
+						name: i.name,
+						value: i.name
+					}))
 				},
 				ironmanOnlyOption
 			]
@@ -1209,7 +1278,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			return sacrificeLb(interaction, user, channelID, sacrifice.type, Boolean(sacrifice.ironmen_only));
 		}
 		if (minigames) {
-			return minigamesLb(interaction, user, channelID, minigames.minigame);
+			return minigamesLb(interaction, user, channelID, minigames.minigame, Boolean(minigames.ironmen_only));
 		}
 		if (hunter_catches) {
 			return creaturesLb(interaction, user, channelID, hunter_catches.creature);
