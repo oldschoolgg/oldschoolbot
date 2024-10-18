@@ -62,7 +62,8 @@ function determineFishingTime({
 	invSlots,
 	blessingChance,
 	flakesQuantity,
-	harpoonBoost
+	harpoonBoost,
+	hasWildyEliteDiary
 }: {
 	quantity: number;
 	tripTicks: number;
@@ -74,6 +75,7 @@ function determineFishingTime({
 	blessingChance: number;
 	flakesQuantity: number;
 	harpoonBoost: number;
+	hasWildyEliteDiary: boolean;
 }) {
 	let ticksElapsed = 0;
 	let catches1 = 0;
@@ -95,8 +97,16 @@ function determineFishingTime({
 		}
 	}
 
+	let intercept1 = fish.intercept1!;
+	let slope1 = fish.slope1!;
+
+	if (fish.name === 'Dark crab' && hasWildyEliteDiary) {
+		intercept1 = 0.0961;
+		slope1 = 0.0025;
+	}
+
 	// probabilities of catching a fish at the user's fishing lvl
-	const p1 = harpoonBoost * (fish.intercept1! + (effFishLvl - 1) * fish.slope1!);
+	const p1 = harpoonBoost * (intercept1 + (effFishLvl - 1) * slope1);
 	const p2 = fish.id2 === undefined ? 0 : harpoonBoost * (fish.intercept2! + (effFishLvl - 1) * fish.slope2!);
 	const p3 = fish.id3 === undefined ? 0 : harpoonBoost * (fish.intercept3! + (effFishLvl - 1) * fish.slope3!);
 
@@ -234,20 +244,21 @@ export function determineFishingTrip({
 	}
 
 	const boosts: string[] = [];
+
+	if (isPowerfishing) boosts.push('**Powerfishing**');
+
+	let harpoonBoost = 1.0;
 	if (isHarpoonFishSpot(spot)) {
 		for (const { id, boostPercent } of harpoonBoosts) {
 			if (gearBank.hasEquipped(id)) {
-				boosts.push(`+${boostPercent}% boost for ${itemNameFromID(id)}`);
+				harpoonBoost = 1 + boostPercent / 100;
+				boosts.push(`+${boostPercent}% for ${itemNameFromID(id)}`);
 				break;
 			}
 		}
 	}
 
-	if (isPowerfishing) boosts.push('**Powerfishing**');
-
 	if (spot.name === 'Dark crab' && hasWildyEliteDiary) {
-		// fish.intercept1 = 0.0961;
-		// fish.slope1 = 0.0025;
 		boosts.push('Increased dark crab catch rate from having the Elite Wilderness Diary');
 	}
 
@@ -259,19 +270,8 @@ export function determineFishingTrip({
 	}
 
 	const { blessingEquipped, blessingChance } = radasBlessing(gearBank);
-	if (blessingEquipped) {
+	if (blessingEquipped && !isPowerfishing) {
 		boosts.push(`\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish`);
-	}
-
-	let harpoonBoost = 1.0;
-	if (isHarpoonFishSpot(spot)) {
-		for (const { id, boostPercent } of harpoonBoosts) {
-			if (gearBank.hasEquipped(id)) {
-				harpoonBoost = 1 + boostPercent / 100;
-				boosts.push(`+${boostPercent}% boost for ${itemNameFromID(id)}`);
-				break;
-			}
-		}
 	}
 
 	let invSlots = 26;
@@ -280,7 +280,7 @@ export function determineFishingTrip({
 	}
 
 	let maxTripLength = baseMaxTripLength;
-	if (!isPowerfishing && gearBank.hasEquipped(['Fish sack barrel', 'Fish barrel'])) {
+	if (!isPowerfishing && gearBank.hasEquippedOrInBank(['Fish sack barrel', 'Fish barrel']) && spot.name != 'Minnow') {
 		maxTripLength += Time.Minute * 9;
 		boosts.push('+9 minutes for Fish barrel');
 	}
@@ -320,7 +320,8 @@ export function determineFishingTrip({
 		blessingChance,
 		flakesQuantity,
 		harpoonBoost,
-		gearBank
+		gearBank,
+		hasWildyEliteDiary
 	});
 
 	const duration = Time.Second * 0.6 * tripLength;
@@ -365,8 +366,8 @@ export const fishCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Integer,
-			name: 'minutes',
-			description: 'Trip length in minutes (optional).',
+			name: 'quantity',
+			description: 'The quantity you want to fish (optional).',
 			required: false,
 			min_value: 1
 		},
@@ -394,7 +395,7 @@ export const fishCommand: OSBMahojiCommand = {
 		spirit_flakes?: boolean;
 	}>) => {
 		const user = await mUserFetch(userID);
-		const spot = Fishing.Fishes.find(
+		let spot = Fishing.Fishes.find(
 			fish =>
 				stringMatches(fish.id, options.name) ||
 				stringMatches(fish.name, options.name) ||

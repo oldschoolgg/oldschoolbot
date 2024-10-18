@@ -20,52 +20,52 @@ export interface ActivityTaskOptions {
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 	type:
-		| 'Questing'
-		| 'Wintertodt'
-		| 'Cyclops'
-		| 'GloryCharging'
-		| 'WealthCharging'
-		| 'BarbarianAssault'
-		| 'AgilityArena'
-		| 'ChampionsChallenge'
-		| 'MyNotes'
-		| 'AerialFishing'
-		| 'DriftNet'
-		| 'SoulWars'
-		| 'RoguesDenMaze'
-		| 'CastleWars'
-		| 'MageArena'
-		| 'MageTrainingArena'
-		| 'BlastFurnace'
-		| 'MageArena2'
-		| 'BigChompyBirdHunting'
-		| 'PestControl'
-		| 'VolcanicMine'
-		| 'TearsOfGuthix'
-		| 'LastManStanding'
-		| 'BirthdayEvent'
-		| 'TroubleBrewing'
-		| 'Easter'
-		| 'ShootingStars'
-		| 'HalloweenEvent'
-		| 'StrongholdOfSecurity'
-		| 'CombatRing';
+	| 'Questing'
+	| 'Wintertodt'
+	| 'Cyclops'
+	| 'GloryCharging'
+	| 'WealthCharging'
+	| 'BarbarianAssault'
+	| 'AgilityArena'
+	| 'ChampionsChallenge'
+	| 'MyNotes'
+	| 'AerialFishing'
+	| 'DriftNet'
+	| 'SoulWars'
+	| 'RoguesDenMaze'
+	| 'CastleWars'
+	| 'MageArena'
+	| 'MageTrainingArena'
+	| 'BlastFurnace'
+	| 'MageArena2'
+	| 'BigChompyBirdHunting'
+	| 'PestControl'
+	| 'VolcanicMine'
+	| 'TearsOfGuthix'
+	| 'LastManStanding'
+	| 'BirthdayEvent'
+	| 'TroubleBrewing'
+	| 'Easter'
+	| 'ShootingStars'
+	| 'HalloweenEvent'
+	| 'StrongholdOfSecurity'
+	| 'CombatRing';
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	type:
-		| 'VolcanicMine'
-		| 'Cyclops'
-		| 'ShootingStars'
-		| 'DriftNet'
-		| 'WealthCharging'
-		| 'GloryCharging'
-		| 'AerialFishing'
-		| 'FishingTrawler'
-		| 'CamdozaalFishing'
-		| 'CamdozaalMining'
-		| 'CamdozaalSmithing'
-		| 'MyNotes';
+	| 'VolcanicMine'
+	| 'Cyclops'
+	| 'ShootingStars'
+	| 'DriftNet'
+	| 'WealthCharging'
+	| 'GloryCharging'
+	| 'AerialFishing'
+	| 'FishingTrawler'
+	| 'CamdozaalFishing'
+	| 'CamdozaalMining'
+	| 'CamdozaalSmithing'
+	| 'MyNotes';
 	quantity: number;
 	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
 	iQty?: number;
@@ -160,7 +160,7 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
-
+	duration: number;
 	quantity?: number;
 	Qty1: number;
 	Qty2?: number;
@@ -356,21 +356,21 @@ interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 
 export interface MinigameActivityTaskOptionsWithNoChanges extends MinigameActivityTaskOptions {
 	type:
-		| 'Wintertodt'
-		| 'TroubleBrewing'
-		| 'TearsOfGuthix'
-		| 'SoulWars'
-		| 'RoguesDenMaze'
-		| 'MageTrainingArena'
-		| 'LastManStanding'
-		| 'BigChompyBirdHunting'
-		| 'FishingTrawler'
-		| 'PestControl'
-		| 'BarbarianAssault'
-		| 'ChampionsChallenge'
-		| 'CastleWars'
-		| 'AgilityArena'
-		| 'GiantsFoundry';
+	| 'Wintertodt'
+	| 'TroubleBrewing'
+	| 'TearsOfGuthix'
+	| 'SoulWars'
+	| 'RoguesDenMaze'
+	| 'MageTrainingArena'
+	| 'LastManStanding'
+	| 'BigChompyBirdHunting'
+	| 'FishingTrawler'
+	| 'PestControl'
+	| 'BarbarianAssault'
+	| 'ChampionsChallenge'
+	| 'CastleWars'
+	| 'AgilityArena'
+	| 'GiantsFoundry';
 }
 
 export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {

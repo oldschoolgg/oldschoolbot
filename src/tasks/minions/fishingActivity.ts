@@ -46,27 +46,33 @@ interface FishInSpot {
 	tertiary?: { chance: number; id: number };
 }
 
-type FishingSpotResult = { fish: FishInSpot; quantity: number };
+type FishingSpotResult = { fish: FishInSpot; quantity: number, loot: number };
 type FishingSpotResults = FishingSpotResult[];
 
 export function determineFishingResult({
 	spot,
 	gearBank,
 	spiritFlakesToRemove,
-	fishingSpotResults
+	fishingSpotResults,
+	duration
 }: {
 	gearBank: GearBank;
 	fishingSpotResults: FishingSpotResults;
 	spot: Fish;
 	spiritFlakesToRemove: number | undefined;
+	duration: number;
 }) {
 	const updateBank = new UpdateBank();
 	const fishingLevel = gearBank.skillsAsLevels.fishing;
 	const minnowRange = determineMinnowRange(fishingLevel);
+	let totalXP = 0;
 
-	for (const { fish, quantity } of fishingSpotResults) {
-		updateBank.xpBank.add('fishing', quantity * fish.xp);
-		updateBank.itemLootBank.add(fish.id, quantity);
+	for (const { fish, quantity, loot } of fishingSpotResults) {
+
+		totalXP += quantity * fish.xp;
+		console.log(totalXP)
+		updateBank.itemLootBank.add(fish.id, loot);
+
 		if ('otherXP' in fish && fish.otherXP) {
 			for (const [skillName, xp] of objectEntries(fish.otherXP)) {
 				updateBank.xpBank.add(skillName, quantity * xp!);
@@ -80,10 +86,12 @@ export function determineFishingResult({
 			}
 		}
 	}
+	updateBank.xpBank.add('fishing', totalXP, { duration });
+
 
 	const anglerBoost = determineAnglerBoost({ gearBank });
 	if (anglerBoost > 0) {
-		updateBank.xpBank.add('fishing', updateBank.xpBank.amount('fishing') * anglerBoost);
+		updateBank.xpBank.add('fishing', updateBank.xpBank.amount('fishing') * anglerBoost / 100);
 	}
 
 	if (spot.name === 'Minnow') {
@@ -135,24 +143,28 @@ export function determineFishingResult({
 	};
 }
 
-export function temporaryFishingDataConvert(fish: Fish, Qty1: number, Qty2: number, Qty3: number): FishingSpotResults {
+export function temporaryFishingDataConvert(fish: Fish, Qty1: number, Qty2: number, Qty3: number,
+	loot1: number, loot2: number, loot3: number): FishingSpotResults {
 	const fishingSpotResults: FishingSpotResults = [];
 	if (Qty1 > 0) {
 		fishingSpotResults.push({
 			fish: { id: fish.id, intercept: fish.intercept1!, slope: fish.slope1!, xp: fish.xp },
-			quantity: Qty1
+			quantity: Qty1,
+			loot: loot1
 		});
 	}
 	if (Qty2 > 0) {
 		fishingSpotResults.push({
 			fish: { id: fish.id2!, intercept: fish.intercept2!, slope: fish.slope2!, xp: fish.xp2! },
-			quantity: Qty2
+			quantity: Qty2,
+			loot: loot2
 		});
 	}
 	if (Qty3 > 0) {
 		fishingSpotResults.push({
 			fish: { id: fish.id3!, intercept: fish.intercept3!, slope: fish.slope3!, xp: fish.xp3! },
-			quantity: Qty3
+			quantity: Qty3,
+			loot: loot3
 		});
 	}
 	return fishingSpotResults;
@@ -172,14 +184,14 @@ export const fishingTask: MinionTask = {
 			fishID,
 			userID,
 			channelID,
-			// duration,
+			duration,
 			spirit_flakes,
 			Qty1,
 			Qty2 = 0,
 			Qty3 = 0,
-			// loot1 = 0,
-			// loot2 = 0,
-			// loot3 = 0,
+			loot1 = 0,
+			loot2 = 0,
+			loot3 = 0,
 			flakesToRemove
 		} = data;
 
@@ -193,7 +205,8 @@ export const fishingTask: MinionTask = {
 			gearBank: user.gearBank,
 			spot: fish,
 			spiritFlakesToRemove: flakesToRemove,
-			fishingSpotResults: temporaryFishingDataConvert(fish, Qty1, Qty2, Qty3)
+			fishingSpotResults: temporaryFishingDataConvert(fish, Qty1, Qty2, Qty3, loot1, loot2, loot3),
+			duration: duration
 		});
 
 		const updateResult = await updateBank.transact(user);
@@ -202,7 +215,12 @@ export const fishingTask: MinionTask = {
 			throw new Error(updateResult);
 		}
 
-		let str = `${user}, ${user.minionName} finished fishing ${totalCatches} ${fish.name}. ${updateResult.message}`;
+		//let str = `${user}, ${user.minionName} finished fishing ${totalCatches} ${fish.name}. ${updateResult.message}`;
+		let str = `${user}, ${user.minionName} finished fishing ${totalCatches} ${fish.name}. You received ${updateBank.xpBank}.`;
+
+		if (loot1) {
+			str += `\nYou received ${updateResult.itemTransactionResult?.itemsAdded}.`;
+		}
 
 		if (updateBank.itemLootBank.has(EItem.HERON)) {
 			str += "\nYou have a funny feeling you're being followed...";
