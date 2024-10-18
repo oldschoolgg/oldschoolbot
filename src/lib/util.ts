@@ -426,10 +426,8 @@ export function replaceLast(str: string, pattern: string, replacement: string) {
 
 export function joinStrings(itemList: any[], end?: string) {
 	if (itemList.length < 2) return itemList.join(', ');
-	if (
-		itemList.reverse()[0] &&
-		(typeof itemList.reverse()[0] !== 'string' || !itemList.reverse()[0].toString().includes(','))
-	) {
+	const lastItem = itemList[itemList.length - 1];
+	if (lastItem && (typeof lastItem !== 'string' || !lastItem.toString().includes(','))) {
 		return replaceLast(itemList.join(', '), ',', ` ${end ? end : 'and'}`);
 	} else {
 		// commas in last term will put str in weird place
