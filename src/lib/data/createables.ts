@@ -2501,6 +2501,14 @@ const Createables: Createable[] = [
 		outputItems: new Bank().add('Amulet of rancour').freeze(),
 		noCl: true
 	},
+	{
+		name: 'Zombie axe',
+		inputItems: new Bank().add('broken zombie axe').freeze(),
+		outputItems: new Bank().add('Zombie axe').freeze(),
+		requiredSkills: {
+			smithing: 70
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

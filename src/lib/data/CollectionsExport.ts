@@ -1929,7 +1929,8 @@ export const miscellaneousCL = resolveItems([
 	'Uncut onyx',
 	'Merfolk trident',
 	'Orange egg sac',
-	'Blue egg sac'
+	'Blue egg sac',
+	'Broken zombie axe'
 ]);
 
 export const diariesCL = [

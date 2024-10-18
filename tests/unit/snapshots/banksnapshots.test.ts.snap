@@ -6116,6 +6116,19 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "28813": 1,
+    },
+    "name": "Zombie axe",
+    "outputItems": {
+      "28810": 1,
+    },
+    "requiredSkills": {
+      "smithing": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "12922": 1,
     },
     "name": "Revert tanzanite fang",
