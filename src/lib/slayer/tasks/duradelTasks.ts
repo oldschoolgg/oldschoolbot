@@ -473,7 +473,6 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		extendedUnlockId: SlayerTaskUnlocksEnum.MoreEyesThanSense,
 		weight: 10,
 		monsters: [Monsters.Araxyte.id, Monsters.Araxxor.id],
-		combatLevel: 96,
 		unlocked: true,
 		slayerLevel: 92
 	},
