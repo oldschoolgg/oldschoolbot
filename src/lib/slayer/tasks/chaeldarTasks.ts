@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
+import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
-import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 
 export const chaeldarTasks: AssignableSlayerTask[] = [
 	{

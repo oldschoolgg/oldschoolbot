@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
-import type { AssignableSlayerTask } from '../types';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
+import type { AssignableSlayerTask } from '../types';
 
 export const vannakaTasks: AssignableSlayerTask[] = [
 	{

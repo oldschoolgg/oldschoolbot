@@ -1,8 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
-import killableMonsters from '../../minions/data/killableMonsters';
-import type { AssignableSlayerTask } from '../types';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
+import type { AssignableSlayerTask } from '../types';
 
 export const mazchnaTasks: AssignableSlayerTask[] = [
 	{
