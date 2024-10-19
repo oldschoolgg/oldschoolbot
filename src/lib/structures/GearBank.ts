@@ -31,7 +31,6 @@ export class GearBank {
 		this.skillsAsLevels = skillsAsLevels;
 		this.skillsAsXP = skillsAsXP;
 		this.chargeBank = chargeBank;
-		this.skillsAsXP = skillsAsXP;
 	}
 
 	wildyGearCheck(item: string | number, isWildy: boolean) {

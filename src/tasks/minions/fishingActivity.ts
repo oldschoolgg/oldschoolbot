@@ -158,9 +158,7 @@ export const fishingTask: MinionTask = {
 		quantity: z.number().min(1)
 	}),
 	async run(data: FishingActivityTaskOptions) {
-		let { fishID, userID, channelID, spirit_flakes, Qty, loot = [], flakesToRemove } = data;
-
-		spirit_flakes = spirit_flakes ?? false;
+		const { fishID, userID, channelID, Qty, loot = [], flakesToRemove } = data;
 
 		const user = await mUserFetch(userID);
 		const fishLvl = user.skillLevel(SkillsEnum.Fishing);
@@ -179,7 +177,6 @@ export const fishingTask: MinionTask = {
 			throw new Error(updateResult);
 		}
 
-		//let str = `${user}, ${user.minionName} finished fishing ${totalCatches} ${fish.name}. ${updateResult.message}`;
 		let str = `${user}, ${user.minionName} finished fishing ${totalCatches} ${fish.name}. You received ${updateBank.xpBank}.`;
 		console.log(Qty);
 		if (loot[0]) {
