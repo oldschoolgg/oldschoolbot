@@ -1,5 +1,6 @@
 import type { Bank, Item, LootTable } from 'oldschooljs';
 
+import type { Skills } from '../../lib/types';
 import type { Emoji } from '../constants';
 import type { QuestID } from '../minions/data/quests';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
@@ -109,37 +110,41 @@ export interface Burnable {
 	inputLogs: number;
 }
 
+export interface FishInSpot {
+	id: number;
+	level: number;
+	xp: number;
+	intercept: number;
+	slope: number;
+	otherXP?: Omit<Skills, 'fishing'>;
+	/**
+	 * Items that have a tertiary chance to drop from catching one of these fish, i.e "Big swordfish" from swordfish.
+	 *
+	 * 1 in X chance, to receive item with the id
+	 */
+	tertiary?: { chance: number; id: number };
+}
+
 export interface Fish {
 	name: string;
 	alias?: string[];
-	level: number;
-	xp: number;
-	id: number;
-	intercept1?: number;
-	slope1?: number;
-	level2?: number;
-	xp2?: number;
-	id2?: number;
-	intercept2?: number;
-	slope2?: number;
-	level3?: number;
-	xp3?: number;
-	id3?: number;
-	intercept3?: number;
-	slope3?: number;
+	subfishes?: FishInSpot[]; // Array of subfishes with level, xp, and id
 
 	petChance?: number;
 	clueScrollChance?: number;
 	lostTicks?: number;
 	bankingTime?: number;
 	ticksPerRoll?: number;
-
 	bait?: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
 
-	timePerFish?: number; // still needed for camdozaal
+	// still needed for camdozaal
+	timePerFish?: number;
+	level?: number;
+	xp?: number;
+	id?: number;
 
 	skillReqs?: Omit<LevelRequirements, 'fishing'>;
 }

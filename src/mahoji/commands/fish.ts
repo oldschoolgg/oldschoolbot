@@ -78,17 +78,17 @@ function determineFishingTime({
 	hasWildyEliteDiary: boolean;
 }) {
 	let ticksElapsed = 0;
-	let catches1 = 0;
-	let catches2 = 0;
-	let catches3 = 0;
-	let lootAmount1 = 0;
-	let lootAmount2 = 0;
-	let lootAmount3 = 0;
 	let flakesUsed = 0;
 	let currentInv = 0;
 
+	const fishCount = fish.subfishes!.length; // how many fish in the spot
+	const catches: number[] = new Array(fishCount).fill(0);
+	const lootAmount: number[] = new Array(fishCount).fill(0);
+
 	const fishLvl = gearBank.skillsAsLevels.fishing;
 	let effFishLvl = fishLvl;
+
+	// Apply fishing guild boost
 	if (fishLvl > 68) {
 		if (fish.name === 'Shark' || fish.name === 'Mackerel/Cod/Bass' || fish.name === 'Lobster') {
 			effFishLvl += 7; // fishing guild boost
@@ -97,23 +97,25 @@ function determineFishingTime({
 		}
 	}
 
-	let intercept1 = fish.intercept1!;
-	let slope1 = fish.slope1!;
+	// Calculate the base probabilities
+	const probabilities = fish.subfishes!.map(subfish => {
+		return harpoonBoost * (subfish.intercept + (effFishLvl - 1) * subfish.slope);
+	});
 
+	// Dark Crab with Wildy Elite Diary
 	if (fish.name === 'Dark crab' && hasWildyEliteDiary) {
-		intercept1 = 0.0961;
-		slope1 = 0.0025;
+		const adjustedIntercept = 0.0961;
+		const adjustedSlope = 0.0025;
+
+		probabilities[0] = harpoonBoost * (adjustedIntercept + (effFishLvl - 1) * adjustedSlope);
 	}
 
-	// probabilities of catching a fish at the user's fishing lvl
-	const p1 = harpoonBoost * (intercept1 + (effFishLvl - 1) * slope1);
-	const p2 = fish.id2 === undefined ? 0 : harpoonBoost * (fish.intercept2! + (effFishLvl - 1) * fish.slope2!);
-	const p3 = fish.id3 === undefined ? 0 : harpoonBoost * (fish.intercept3! + (effFishLvl - 1) * fish.slope3!);
-
+	console.log(probabilities);
 	let ticksPerRoll = fish.ticksPerRoll!;
 	let lostTicks = fish.lostTicks!;
 	let bankingTime = fish.bankingTime;
 
+	// tick manipulation
 	if (fish.name === 'Barbarian fishing') {
 		if (isPowerfishing) {
 			ticksPerRoll = 3;
@@ -134,72 +136,63 @@ function determineFishingTime({
 		}
 	}
 
+	// Main fishing logic
 	if (isPowerfishing) {
 		while (ticksElapsed < tripTicks) {
-			if (p3 !== 0 && fishLvl >= fish.level3! && Math.random() < p3) {
-				catches3++; // roll for the highest lvl fish first
-			} else if (p2 !== 0 && fishLvl >= fish.level2! && Math.random() < p2) {
-				catches2++; // then the second only if first one wasn't caught
-			} else if (Math.random() < p1) {
-				catches1++;
+			// Loop over subfishes in reverse order (highest level first)
+			for (let i = fishCount - 1; i >= 0; i--) {
+				if (fishLvl >= fish.subfishes![i].level && Math.random() < probabilities[i]) {
+					catches[i]++;
+					break; // Only catch one fish per roll, exit loop
+				}
 			}
-			ticksElapsed += ticksPerRoll! * (1 + lostTicks!); // only part of the code that's not exactly how it works in osrs
 
-			if (catches1 + catches2 + catches3 >= quantity) {
+			ticksElapsed += ticksPerRoll * (1 + lostTicks);
+
+			// Check if we've caught the required quantity
+			if (catches.reduce((acc, curr) => acc + curr, 0) >= quantity) {
 				break;
 			}
 		}
 	} else {
 		while (ticksElapsed < tripTicks) {
-			if (p3 !== 0 && fishLvl >= fish.level3! && Math.random() < p3) {
-				catches3++;
-				lootAmount3++;
-				[lootAmount3, flakesUsed, currentInv] = rollExtraLoot(
-					lootAmount3,
-					flakesUsed,
-					currentInv,
-					blessingChance,
-					isUsingSpiritFlakes,
-					flakesQuantity
-				);
-			} else if (p2 !== 0 && fishLvl >= fish.level2! && Math.random() < p2) {
-				catches2++;
-				lootAmount2++;
-				[lootAmount2, flakesUsed, currentInv] = rollExtraLoot(
-					lootAmount2,
-					flakesUsed,
-					currentInv,
-					blessingChance,
-					isUsingSpiritFlakes,
-					flakesQuantity
-				);
-			} else if (Math.random() < p1) {
-				catches1++;
-				lootAmount1++;
-				[lootAmount1, flakesUsed, currentInv] = rollExtraLoot(
-					lootAmount1,
-					flakesUsed,
-					currentInv,
-					blessingChance,
-					isUsingSpiritFlakes,
-					flakesQuantity
-				);
+			for (let i = fishCount - 1; i >= 0; i--) {
+				if (fishLvl >= fish.subfishes![i].level && Math.random() < probabilities[i]) {
+					catches[i]++;
+					lootAmount[i]++;
+					[lootAmount[i], flakesUsed, currentInv] = rollExtraLoot(
+						lootAmount[i],
+						flakesUsed,
+						currentInv,
+						blessingChance,
+						isUsingSpiritFlakes,
+						flakesQuantity
+					);
+					break;
+				}
 			}
 
-			ticksElapsed += ticksPerRoll! * (1 + lostTicks!);
+			ticksElapsed += ticksPerRoll * (1 + lostTicks);
 
-			if (catches1 + catches2 + catches3 >= quantity) {
+			// Check if we've caught the required quantity
+			if (catches.reduce((acc, curr) => acc + curr, 0) >= quantity) {
 				break;
 			}
 
+			// Check if the inventory is full and add banking time if necessary
 			if (currentInv >= invSlots) {
 				ticksElapsed += bankingTime!;
-				currentInv = 0;
+				currentInv = 0; // Reset inventory count after banking
 			}
 		}
 	}
 
-	return { catches1, catches2, catches3, lootAmount1, lootAmount2, lootAmount3, ticksElapsed, flakesUsed };
+	return {
+		catches: catches,
+		lootAmount: lootAmount,
+		ticksElapsed,
+		flakesUsed
+	};
 }
 
 const harpoonBoosts = [
@@ -280,7 +273,11 @@ export function determineFishingTrip({
 	}
 
 	let maxTripLength = baseMaxTripLength;
-	if (!isPowerfishing && gearBank.hasEquippedOrInBank(['Fish sack barrel', 'Fish barrel']) && spot.name != 'Minnow') {
+	if (
+		!isPowerfishing &&
+		gearBank.hasEquippedOrInBank(['Fish sack barrel', 'Fish barrel']) &&
+		spot.name !== 'Minnow'
+	) {
 		maxTripLength += Time.Minute * 9;
 		boosts.push('+9 minutes for Fish barrel');
 	}
@@ -302,12 +299,8 @@ export function determineFishingTrip({
 
 	// determining fish time and quantities
 	const {
-		catches1: Qty1,
-		catches2: Qty2,
-		catches3: Qty3,
-		lootAmount1: loot1,
-		lootAmount2: loot2,
-		lootAmount3: loot3,
+		catches: Qty,
+		lootAmount: loot,
 		ticksElapsed: tripLength,
 		flakesUsed: flakesToRemove
 	} = determineFishingTime({
@@ -328,12 +321,8 @@ export function determineFishingTrip({
 
 	return {
 		duration,
-		Qty1,
-		Qty2,
-		Qty3,
-		loot1,
-		loot2,
-		loot3,
+		Qty,
+		loot,
 		flakesToRemove,
 		boosts,
 		isPowerfishing,
@@ -395,7 +384,7 @@ export const fishCommand: OSBMahojiCommand = {
 		spirit_flakes?: boolean;
 	}>) => {
 		const user = await mUserFetch(userID);
-		let spot = Fishing.Fishes.find(
+		const spot = Fishing.Fishes.find(
 			fish =>
 				stringMatches(fish.id, options.name) ||
 				stringMatches(fish.name, options.name) ||
@@ -403,8 +392,8 @@ export const fishCommand: OSBMahojiCommand = {
 		);
 		if (!spot) return 'Thats not a valid spot you can fish at.';
 
-		if (user.skillsAsLevels.fishing < spot.level) {
-			return `${user.minionName} needs ${spot.level} Fishing to fish ${spot.name}.`;
+		if (user.skillsAsLevels.fishing < spot.subfishes![0].level) {
+			return `${user.minionName} needs ${spot.subfishes![0].level} Fishing to fish ${spot.name}.`;
 		}
 
 		if ('skillReqs' in spot && spot.skillReqs && !user.hasSkillReqs(spot.skillReqs)) {
@@ -445,17 +434,13 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
-			fishID: spot.id,
+			fishID: spot.name,
 			userID: user.id,
 			channelID: channelID.toString(),
 			duration: result.duration,
 			quantity: quantity,
-			Qty1: result.Qty1,
-			Qty2: result.Qty2,
-			Qty3: result.Qty3,
-			loot1: result.loot1,
-			loot2: result.loot2,
-			loot3: result.loot3,
+			Qty: result.Qty,
+			loot: result.loot,
 			flakesToRemove: result.flakesToRemove,
 			powerfish: powerfish,
 			spirit_flakes: spirit_flakes,

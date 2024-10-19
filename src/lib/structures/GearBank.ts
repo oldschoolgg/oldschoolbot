@@ -11,7 +11,6 @@ export class GearBank {
 	bank: Bank;
 	skillsAsLevels: SkillsRequired;
 	skillsAsXP: SkillsRequired;
-	skillsAsXP: SkillsRequired;
 	chargeBank: ChargeBank;
 
 	constructor({

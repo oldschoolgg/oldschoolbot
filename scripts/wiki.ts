@@ -5,7 +5,7 @@ import { Bank, EItem, Monsters } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
 import process from 'node:process';
-import { groupBy } from 'remeda';
+import { groupBy, uniqueBy } from 'remeda';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
@@ -13,7 +13,7 @@ import { quests } from '../src/lib/minions/data/quests';
 import Fishing from '../src/lib/skilling/skills/fishing';
 import { sorts } from '../src/lib/sorts';
 import { itemNameFromID } from '../src/lib/util';
-import { Markdown, Tab, Tabs } from './markdown/markdown';
+import { Markdown, Tab, Table, Tabs } from './markdown/markdown';
 
 function combatAchievementHowToFinish(ca: CombatAchievement) {
 	if ('rng' in ca) {
@@ -356,7 +356,7 @@ function rendeCoxMarkdown() {
 		markdown.addLine(
 			`- ${boostSet
 				.map(boost => {
-					const messages = [];
+					const messages: string[] = [];
 					if (!boost.mustBeEquipped) {
 						messages.push('Works from bank');
 					}
@@ -433,7 +433,6 @@ function wikiIssues() {
 	handleMarkdownEmbed('wikiissues', 'getting-started/wiki.md', markdown.toString());
 }
 
-import process from 'node:process';
 import { Time } from 'e';
 import type { Fish } from '../src/lib/skilling/types';
 import { determineFishingTrip } from '../src/mahoji/commands/fish';
@@ -459,6 +458,7 @@ function fishingXPHr() {
 	gearBank.skillsAsXP.fishing = 13_034_431;
 	gearBank.skillsAsLevels.fishing = 99;
 	gearBank.gear.skilling.equip('Fish sack barrel');
+	gearBank.gear.skilling.equip('Crystal harpoon');
 
 	for (const spot of Fishing.Fishes) {
 		for (const isPowerfishing of [true, false]) {
@@ -477,7 +477,7 @@ function fishingXPHr() {
 					spot,
 					gearBank,
 					spiritFlakesToRemove: spiritFlakes ? 1 : undefined,
-					fishingSpotResults: temporaryFishingDataConvert(spot, cmd.Qty1, cmd.Qty2, cmd.Qty3)
+					fishingSpotResults: temporaryFishingDataConvert(spot, cmd.Qty, cmd.loot)
 				});
 				allFishingResults.push({
 					spot,

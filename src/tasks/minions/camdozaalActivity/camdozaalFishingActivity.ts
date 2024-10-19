@@ -26,15 +26,15 @@ export const camdozaalFishingTask: MinionTask = {
 		const camdozaalFishTable = new LootTable()
 			.oneIn(256, 'Barronite handle')
 			.oneIn(5, 'Barronite shards', 3)
-			.add(guppy.id, 1, 4);
-		if (currentFishLevel >= cavefish.level) {
-			camdozaalFishTable.add(cavefish.id, 1, 3);
+			.add(guppy.id!, 1, 4);
+		if (currentFishLevel >= cavefish.level!) {
+			camdozaalFishTable.add(cavefish.id!, 1, 3);
 		}
-		if (currentFishLevel >= tetra.level) {
-			camdozaalFishTable.add(tetra.id, 1, 2);
+		if (currentFishLevel >= tetra.level!) {
+			camdozaalFishTable.add(tetra.id!, 1, 2);
 		}
-		if (currentFishLevel >= catfish.level) {
-			camdozaalFishTable.add(catfish.id, 1, 1);
+		if (currentFishLevel >= catfish.level!) {
+			camdozaalFishTable.add(catfish.id!, 1, 1);
 		}
 
 		let guppyCaught = 0;
@@ -47,18 +47,18 @@ export const camdozaalFishingTask: MinionTask = {
 
 		for (let i = 0; i < quantity; i++) {
 			const fishCaught = camdozaalFishTable.roll();
-			if (fishCaught.has(guppy.id)) {
+			if (fishCaught.has(guppy.id!)) {
 				guppyCaught++;
-				loot.add(guppy.id);
-			} else if (fishCaught.has(cavefish.id)) {
+				loot.add(guppy.id!);
+			} else if (fishCaught.has(cavefish.id!)) {
 				cavefishCaught++;
-				loot.add(cavefish.id);
-			} else if (fishCaught.has(tetra.id)) {
+				loot.add(cavefish.id!);
+			} else if (fishCaught.has(tetra.id!)) {
 				tetraCaught++;
-				loot.add(tetra.id);
-			} else if (fishCaught.has(catfish.id)) {
+				loot.add(tetra.id!);
+			} else if (fishCaught.has(catfish.id!)) {
 				catfishCaught++;
-				loot.add(catfish.id);
+				loot.add(catfish.id!);
 			} else {
 				loot.add(fishCaught);
 			}
