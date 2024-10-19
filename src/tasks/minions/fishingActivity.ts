@@ -50,6 +50,7 @@ export function determineFishingResult({
 	const updateBank = new UpdateBank();
 	const fishingLevel = gearBank.skillsAsLevels.fishing;
 	const minnowRange = determineMinnowRange(fishingLevel);
+	const messages: string[] = [];
 	let totalXP = 0;
 	let totalOtherXP = 0;
 
@@ -76,7 +77,9 @@ export function determineFishingResult({
 
 	const anglerBoost = determineAnglerBoost({ gearBank });
 	if (anglerBoost > 0) {
-		updateBank.xpBank.add('fishing', (updateBank.xpBank.amount('fishing') * anglerBoost) / 100);
+		const bonusXP = (updateBank.xpBank.amount('fishing') * anglerBoost) / 100;
+		updateBank.xpBank.add('fishing', bonusXP);
+		messages.push(`**Bonus XP:** ${bonusXP.toFixed(1)} (+${anglerBoost.toFixed(1)}%) XP for angler`);
 	}
 
 	if (spot.name === 'Minnow') {
@@ -124,7 +127,8 @@ export function determineFishingResult({
 
 	return {
 		updateBank,
-		totalCatches
+		totalCatches,
+		messages
 	};
 }
 
@@ -168,7 +172,7 @@ export const fishingTask: MinionTask = {
 		const fishLvl = user.skillLevel(SkillsEnum.Fishing);
 		const fish = Fishing.Fishes.find(fish => fish.name === fishID)!;
 
-		const { updateBank, totalCatches } = determineFishingResult({
+		const { updateBank, totalCatches, messages } = determineFishingResult({
 			gearBank: user.gearBank,
 			spot: fish,
 			spiritFlakesToRemove: flakesToRemove,
@@ -185,6 +189,10 @@ export const fishingTask: MinionTask = {
 
 		if (loot[0]) {
 			str += `\nYou received ${updateResult.itemTransactionResult?.itemsAdded}.`;
+		}
+
+		if (messages.length > 0) {
+			str += `\n${messages.join(', ')}.`;
 		}
 
 		if (updateBank.itemLootBank.has(EItem.HERON)) {
