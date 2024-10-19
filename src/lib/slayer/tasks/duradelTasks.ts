@@ -45,7 +45,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [50, 80],
 		weight: 5,
 		monsters: [Monsters.Ankou.id],
-		extendedAmount: [90, 150],
+		extendedAmount: [91, 150],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AnkouVeryMuch,
 		combatLevel: 40,
 		unlocked: true
@@ -55,7 +55,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [120, 200],
 		weight: 8,
 		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
-		extendedAmount: [130, 250],
+		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.BirdsOfAFeather,
 		unlocked: false
 	},
@@ -66,8 +66,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.Basilonger,
-		combatLevel: 40,
 		slayerLevel: 40,
+		combatLevel: 40,
 		unlocked: false
 	},
 	{
@@ -92,7 +92,6 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		],
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.FireAndDarkness,
-		slayerLevel: 77,
 		combatLevel: 80,
 		questPoints: 34,
 		unlocked: true
@@ -167,7 +166,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [10, 20],
 		weight: 11,
 		monsters: [Monsters.DarkBeast.id],
-		extendedAmount: [100, 150],
+		extendedAmount: [110, 135],
 		extendedUnlockId: SlayerTaskUnlocksEnum.NeedMoreDarkness,
 		combatLevel: 90,
 		slayerLevel: 90,
@@ -219,8 +218,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.FossilIslandWyvernSpitting,
-		amount: [20, 60],
-		weight: 5,
+		amount: [20, 50],
+		weight: 7,
 		monsters: [
 			Monsters.FossilIslandWyvernAncient.id,
 			Monsters.FossilIslandWyvernLongTailed.id,
@@ -237,7 +236,6 @@ export const duradelTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.Gargoyle,
 		amount: [130, 200],
-
 		weight: 8,
 		monsters: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		extendedAmount: [200, 250],
@@ -257,9 +255,9 @@ export const duradelTasks: AssignableSlayerTask[] = [
 			Monsters.Skotizo.id,
 			Monsters.TormentedDemon.id
 		],
-		extendedAmount: [150, 250],
+		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.GreaterChallenge,
-		combatLevel: 70,
+		combatLevel: 75,
 		unlocked: true
 	},
 	{
@@ -315,7 +313,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [5, 10],
 		weight: 9,
 		monsters: [Monsters.MithrilDragon.id],
-		extendedAmount: [20, 40],
+		extendedAmount: [25, 35],
 		extendedUnlockId: SlayerTaskUnlocksEnum.IReallyMithYou,
 		unlocked: false
 	},
@@ -331,7 +329,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Nechryael,
-		amount: [110, 200],
+		amount: [130, 200],
 		weight: 9,
 		monsters: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		extendedAmount: [200, 250],
@@ -376,20 +374,19 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 9,
 		monsters: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
-		combatLevel: 75,
+		combatLevel: 85,
 		slayerLevel: 93,
 		unlocked: true
 	},
 	{
 		monster: Monsters.SpiritualRanger,
-		amount: [110, 170],
-
+		amount: [130, 200],
 		weight: 7,
 		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
-		extendedAmount: [180, 250],
+		extendedAmount: [181, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.SpiritualFervour,
 		levelRequirements: {
-			slayer: 60
+			slayer: 63
 		},
 		combatLevel: 60,
 		slayerLevel: 63,
@@ -413,7 +410,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [60, 90],
 		weight: 8,
 		monsters: [Monsters.Suqah.id],
-		extendedAmount: [180, 250],
+		extendedAmount: [186, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.SuqANotherOne,
 		combatLevel: 85,
 		questPoints: 12,
@@ -446,7 +443,6 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		],
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.MoreAtStake,
-		combatLevel: 35,
 		questPoints: 1,
 		unlocked: false
 	},
