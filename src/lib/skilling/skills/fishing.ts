@@ -369,10 +369,7 @@ const fishes: Fish[] = [
 				xp: 50,
 				intercept: 32 / 255,
 				slope: (192 - 32) / 255 / 98,
-				otherXP: {
-					[SkillsEnum.Strength]: 5, // Experience points for Strength
-					[SkillsEnum.Agility]: 5 // Experience points for Agility
-				}
+				otherXP: 5
 			},
 			{
 				id: itemID('Leaping salmon'),
@@ -380,10 +377,7 @@ const fishes: Fish[] = [
 				xp: 70,
 				intercept: 16 / 255,
 				slope: (96 - 16) / 255 / 98,
-				otherXP: {
-					[SkillsEnum.Strength]: 6, // Experience points for Strength
-					[SkillsEnum.Agility]: 6 // Experience points for Agility
-				}
+				otherXP: 6
 			},
 			{
 				id: itemID('Leaping sturgeon'),
@@ -391,10 +385,7 @@ const fishes: Fish[] = [
 				xp: 80,
 				intercept: 8 / 255,
 				slope: (64 - 8) / 255 / 98,
-				otherXP: {
-					[SkillsEnum.Strength]: 7, // Experience points for Strength
-					[SkillsEnum.Agility]: 7 // Experience points for Agility
-				}
+				otherXP: 7
 			}
 		],
 

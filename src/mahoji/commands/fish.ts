@@ -110,7 +110,6 @@ function determineFishingTime({
 		probabilities[0] = harpoonBoost * (adjustedIntercept + (effFishLvl - 1) * adjustedSlope);
 	}
 
-	console.log(probabilities);
 	let ticksPerRoll = fish.ticksPerRoll!;
 	let lostTicks = fish.lostTicks!;
 	let bankingTime = fish.bankingTime;

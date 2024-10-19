@@ -1,6 +1,6 @@
 import type { Bank, Item, LootTable } from 'oldschooljs';
 
-import type { Skills } from '../../lib/types';
+//import type { Skills } from '../../lib/types';
 import type { Emoji } from '../constants';
 import type { QuestID } from '../minions/data/quests';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
@@ -116,7 +116,7 @@ export interface FishInSpot {
 	xp: number;
 	intercept: number;
 	slope: number;
-	otherXP?: Omit<Skills, 'fishing'>;
+	otherXP?: number; // Omit<Skills, 'fishing'>;
 	/**
 	 * Items that have a tertiary chance to drop from catching one of these fish, i.e "Big swordfish" from swordfish.
 	 *

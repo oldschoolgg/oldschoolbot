@@ -1,4 +1,5 @@
-import { objectEntries, randInt, sumArr } from 'e';
+import { randInt, sumArr } from 'e';
+//import { objectEntries, randInt, sumArr } from 'e';
 import { EItem } from 'oldschooljs';
 import { z } from 'zod';
 
@@ -50,16 +51,14 @@ export function determineFishingResult({
 	const fishingLevel = gearBank.skillsAsLevels.fishing;
 	const minnowRange = determineMinnowRange(fishingLevel);
 	let totalXP = 0;
+	let totalOtherXP = 0;
 
 	for (const { fish, quantity, loot } of fishingSpotResults) {
 		totalXP += quantity * fish.xp;
-		console.log(totalXP);
 		updateBank.itemLootBank.add(fish.id, loot);
 
-		if ('otherXP' in fish && fish.otherXP) {
-			for (const [skillName, xp] of objectEntries(fish.otherXP)) {
-				updateBank.xpBank.add(skillName, quantity * xp!);
-			}
+		if ('otherXP' in fish) {
+			totalOtherXP += quantity * fish.otherXP!;
 		}
 
 		if (fish.tertiary) {
@@ -70,6 +69,10 @@ export function determineFishingResult({
 		}
 	}
 	updateBank.xpBank.add('fishing', totalXP);
+	if (totalOtherXP > 0) {
+		updateBank.xpBank.add('strength', totalOtherXP);
+		updateBank.xpBank.add('agility', totalOtherXP);
+	}
 
 	const anglerBoost = determineAnglerBoost({ gearBank });
 	if (anglerBoost > 0) {
@@ -137,7 +140,8 @@ export function temporaryFishingDataConvert(fish: Fish, Qty: number[], loot: num
 					level: subfish.level,
 					intercept: subfish.intercept!,
 					slope: subfish.slope!,
-					xp: subfish.xp
+					xp: subfish.xp,
+					otherXP: subfish.otherXP ?? 0
 				},
 				quantity: Qty[i],
 				loot: loot[i]
@@ -163,7 +167,7 @@ export const fishingTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const fishLvl = user.skillLevel(SkillsEnum.Fishing);
 		const fish = Fishing.Fishes.find(fish => fish.name === fishID)!;
-		console.log('test');
+
 		const { updateBank, totalCatches } = determineFishingResult({
 			gearBank: user.gearBank,
 			spot: fish,
@@ -178,7 +182,7 @@ export const fishingTask: MinionTask = {
 		}
 
 		let str = `${user}, ${user.minionName} finished fishing ${totalCatches} ${fish.name}. You received ${updateBank.xpBank}.`;
-		console.log(Qty);
+
 		if (loot[0]) {
 			str += `\nYou received ${updateResult.itemTransactionResult?.itemsAdded}.`;
 		}
