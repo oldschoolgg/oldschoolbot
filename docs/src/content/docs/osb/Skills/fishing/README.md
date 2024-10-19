@@ -59,53 +59,53 @@ Your minion can partake in the fishing trawler mini game using `/minigames fishi
 
 | Spot              | XP/Hr      | Powerfishing | Spirit Flakes |
 | ----------------- | ---------- | ------------ | ------------- |
-| Tuna/Swordfish    | 133,500/hr | Yes          | No            |
-| Barbarian fishing | 109,000/hr | Yes          | No            |
-| Trout/Salmon      | 95,000/hr  | Yes          | No            |
+| Tuna/Swordfish    | 133,000/hr | Yes          | No            |
+| Barbarian fishing | 108,500/hr | Yes          | No            |
+| Trout/Salmon      | 94,000/hr  | Yes          | No            |
 | Barbarian fishing | 56,000/hr  | No           | No            |
 | Minnow            | 54,500/hr  | No           | Yes           |
 | Minnow            | 54,500/hr  | No           | No            |
-| Barbarian fishing | 53,500/hr  | No           | Yes           |
-| Trout/Salmon      | 49,500/hr  | No           | No            |
+| Barbarian fishing | 53,000/hr  | No           | Yes           |
+| Trout/Salmon      | 50,500/hr  | No           | No            |
 | Trout/Salmon      | 47,500/hr  | No           | Yes           |
-| Karambwan         | 46,500/hr  | Yes          | No            |
-| Tuna/Swordfish    | 44,000/hr  | No           | No            |
-| Tuna/Swordfish    | 43,000/hr  | No           | Yes           |
-| Karambwan         | 43,000/hr  | No           | No            |
-| Karambwan         | 41,500/hr  | No           | Yes           |
-| Dark crab         | 40,500/hr  | No           | Yes           |
-| Dark crab         | 40,000/hr  | Yes          | No            |
-| Dark crab         | 39,500/hr  | No           | No            |
-| Monkfish          | 38,500/hr  | Yes          | No            |
-| Infernal eel      | 38,000/hr  | Yes          | No            |
-| Infernal eel      | 37,500/hr  | No           | Yes           |
-| Infernal eel      | 37,500/hr  | No           | No            |
-| Monkfish          | 37,000/hr  | No           | No            |
+| Karambwan         | 47,500/hr  | Yes          | No            |
+| Karambwan         | 43,500/hr  | No           | No            |
+| Tuna/Swordfish    | 43,000/hr  | No           | No            |
+| Tuna/Swordfish    | 42,500/hr  | No           | Yes           |
+| Karambwan         | 42,500/hr  | No           | Yes           |
+| Dark crab         | 41,000/hr  | No           | Yes           |
+| Dark crab         | 40,500/hr  | Yes          | No            |
+| Dark crab         | 40,000/hr  | No           | No            |
+| Monkfish          | 37,500/hr  | Yes          | No            |
+| Infernal eel      | 37,500/hr  | Yes          | No            |
+| Monkfish          | 36,500/hr  | No           | No            |
+| Infernal eel      | 36,500/hr  | No           | Yes           |
 | Monkfish          | 36,000/hr  | No           | Yes           |
-| Lobster           | 32,000/hr  | Yes          | No            |
-| Lobster           | 32,000/hr  | No           | Yes           |
+| Infernal eel      | 36,000/hr  | No           | No            |
+| Lobster           | 33,000/hr  | Yes          | No            |
 | Lobster           | 32,000/hr  | No           | No            |
+| Lobster           | 31,500/hr  | No           | Yes           |
 | Cave eel          | 28,000/hr  | Yes          | No            |
 | Mackerel/Cod/Bass | 27,000/hr  | Yes          | No            |
 | Cave eel          | 26,500/hr  | No           | No            |
-| Mackerel/Cod/Bass | 26,000/hr  | No           | No            |
-| Cave eel          | 26,000/hr  | No           | Yes           |
+| Mackerel/Cod/Bass | 25,500/hr  | No           | No            |
+| Cave eel          | 25,500/hr  | No           | Yes           |
 | Mackerel/Cod/Bass | 25,000/hr  | No           | Yes           |
-| Pike              | 25,000/hr  | Yes          | No            |
 | Sardine/Herring   | 24,500/hr  | Yes          | No            |
+| Pike              | 24,500/hr  | Yes          | No            |
 | Pike              | 24,000/hr  | No           | No            |
 | Pike              | 23,500/hr  | No           | Yes           |
-| Shrimps/Anchovies | 23,000/hr  | Yes          | No            |
-| Shark             | 23,000/hr  | Yes          | No            |
+| Shark             | 23,000/hr  | No           | No            |
+| Shrimps/Anchovies | 22,500/hr  | Yes          | No            |
 | Sardine/Herring   | 22,500/hr  | No           | No            |
+| Shark             | 22,500/hr  | Yes          | No            |
 | Shark             | 22,000/hr  | No           | Yes           |
-| Shark             | 22,000/hr  | No           | No            |
 | Sardine/Herring   | 21,500/hr  | No           | Yes           |
-| Shrimps/Anchovies | 20,500/hr  | No           | No            |
 | Shrimps/Anchovies | 20,000/hr  | No           | Yes           |
-| Anglerfish        | 19,500/hr  | Yes          | No            |
+| Shrimps/Anchovies | 20,000/hr  | No           | No            |
+| Anglerfish        | 19,000/hr  | Yes          | No            |
 | Anglerfish        | 19,000/hr  | No           | No            |
-| Anglerfish        | 18,000/hr  | No           | Yes           |
+| Anglerfish        | 18,500/hr  | No           | Yes           |
 | Karambwanji       | 4,500/hr   | No           | Yes           |
 | Karambwanji       | 4,500/hr   | No           | No            |
 

@@ -515,11 +515,11 @@ function fishingXPHr() {
 }
 
 async function wiki() {
-	//renderQuestsMarkdown();
-	//rendeCoxMarkdown();
-	//wikiIssues();
+	renderQuestsMarkdown();
+	rendeCoxMarkdown();
+	wikiIssues();
 	fishingXPHr();
-	//await Promise.all([renderCAMarkdown(), renderMonstdersMarkdown()]);
+	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
 	process.exit(0);
 }
 
