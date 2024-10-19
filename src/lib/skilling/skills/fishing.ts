@@ -392,7 +392,7 @@ const fishes: Fish[] = [
 		petChance: 426_954,
 		bait: itemID('Feather'),
 		clueScrollChance: 426_954,
-		lostTicks: 0.1,
+		lostTicks: 0.09,
 		bankingTime: 40,
 		ticksPerRoll: 5
 	}

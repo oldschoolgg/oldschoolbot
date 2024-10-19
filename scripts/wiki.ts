@@ -465,7 +465,7 @@ function fishingXPHr() {
 			for (const spiritFlakes of [true, false]) {
 				const cmd = determineFishingTrip({
 					hasWildyEliteDiary: true,
-					baseMaxTripLength: Time.Hour * 30,
+					baseMaxTripLength: Time.Hour * 50,
 					spot,
 					gearBank,
 					quantity: undefined,
@@ -491,7 +491,7 @@ function fishingXPHr() {
 
 	allFishingResults.sort((a, b) => b.xpHr - a.xpHr);
 	allFishingResults = uniqueBy(allFishingResults, i =>
-		[i.spot.id, i.cmd.isPowerfishing, i.cmd.isUsingSpiritFlakes, i.cmd.boosts].flat(100).join('|')
+		[i.spot.name, i.cmd.isPowerfishing, i.cmd.isUsingSpiritFlakes, i.cmd.boosts].flat(100).join('|')
 	);
 
 	const markdown = new Markdown();
@@ -500,7 +500,7 @@ function fishingXPHr() {
 
 	const table = new Table();
 	table.addHeader('Spot', 'XP/Hr', 'Powerfishing', 'Spirit Flakes');
-	for (const { cmd, trip, xpHr, spot } of allFishingResults) {
+	for (const { cmd, xpHr, spot } of allFishingResults) {
 		if (typeof cmd === 'string') throw new Error(cmd);
 		table.addRow(
 			spot.name,
@@ -515,10 +515,11 @@ function fishingXPHr() {
 }
 
 async function wiki() {
-	renderQuestsMarkdown();
-	rendeCoxMarkdown();
-	wikiIssues();
-	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
+	//renderQuestsMarkdown();
+	//rendeCoxMarkdown();
+	//wikiIssues();
+	fishingXPHr();
+	//await Promise.all([renderCAMarkdown(), renderMonstdersMarkdown()]);
 	process.exit(0);
 }
 

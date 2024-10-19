@@ -131,7 +131,7 @@ function determineFishingTime({
 	} else if (fish.name === 'Tuna/Swordfish') {
 		if (isPowerfishing) {
 			ticksPerRoll = 2;
-			lostTicks = 0.06;
+			lostTicks = 0.05;
 		}
 	}
 
@@ -148,7 +148,6 @@ function determineFishingTime({
 
 			ticksElapsed += ticksPerRoll * (1 + lostTicks);
 
-			// Check if we've caught the required quantity
 			if (catches.reduce((acc, curr) => acc + curr, 0) >= quantity) {
 				break;
 			}
@@ -173,7 +172,6 @@ function determineFishingTime({
 
 			ticksElapsed += ticksPerRoll * (1 + lostTicks);
 
-			// Check if we've caught the required quantity
 			if (catches.reduce((acc, curr) => acc + curr, 0) >= quantity) {
 				break;
 			}
@@ -230,7 +228,11 @@ export function determineFishingTrip({
 }) {
 	let quantity = options.quantity ?? 3000;
 	let isUsingSpiritFlakes = options.spirit_flakes ?? false;
-	const isPowerfishing = options.powerfish ?? false;
+	let isPowerfishing = options.powerfish ?? false;
+
+	if (spot.name === 'Minnow' || spot.name === 'Karambwanji') {
+		isPowerfishing = false; // stackable fish
+	}
 	if (isPowerfishing) {
 		isUsingSpiritFlakes = false;
 	}
