@@ -77,21 +77,21 @@ describe('Fish Command', async () => {
 	it('should handle using flakes without flakes in bank', async () => {
 		const user = await createTestUser();
 		await user.update({ bank: new Bank({ 'Spirit flakes': 0 }) });
-		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', flakes: true });
+		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', spirit_flakes: true });
 		expect(res).toEqual('You need to have at least one spirit flake!');
 	});
 
 	it('should fish with flakes', async () => {
 		const user = await createTestUser();
 		await user.update({ bank: new Bank({ 'Spirit flakes': 1000 }) });
-		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', flakes: true });
+		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', spirit_flakes: true });
 		expect(res).toContain('50% more fish from using spirit flakes');
 	});
 
 	it('should still use flakes if bank contains fewer flakes than fish quantity', async () => {
 		const user = await createTestUser();
 		await user.update({ bank: new Bank({ 'Spirit flakes': 100 }) });
-		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', flakes: true });
+		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', spirit_flakes: true });
 		expect(res).toContain('50% more fish from using spirit flakes');
 	});
 });
