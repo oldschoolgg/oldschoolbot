@@ -726,10 +726,9 @@ const metamorphPets: Createable[] = [
 		customReq: async user => {
 			const [kcName, kcAmount] = await user.getKCByName('Corrupted gauntlet');
 			if (kcAmount < 1) {
-				return `You need to have at least 1 ${kcName} KC`;
-			} else {
-				return null;
+				return `You need to have at least 1 ${kcName} KC.`;
 			}
+			return null;
 		}
 	}
 ];
