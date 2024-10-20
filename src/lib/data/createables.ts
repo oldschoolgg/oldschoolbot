@@ -718,6 +718,19 @@ const metamorphPets: Createable[] = [
 		outputItems: {
 			[itemID('Bone squirrel')]: 1
 		}
+	},
+	{
+		name: 'Corrupted youngllef',
+		inputItems: new Bank().add('Youngllef').freeze(),
+		outputItems: new Bank().add('Corrupted youngllef').freeze(),
+		customReq: async user => {
+			const [kcName, kcAmount] = await user.getKCByName('Corrupted gauntlet');
+			if (kcAmount < 1) {
+				return `You need to have at least 1 ${kcName} KC`;
+			} else {
+				return null;
+			}
+		}
 	}
 ];
 
@@ -827,6 +840,12 @@ const revertMetamorphPets: Createable[] = [
 			[itemID('Calcified acorn')]: 1,
 			[itemID('Giant squirrel')]: 1
 		},
+		noCl: true
+	},
+	{
+		name: 'Revert Corrupted youngllef',
+		inputItems: new Bank().add('Corrupted youngllef').freeze(),
+		outputItems: new Bank().add('Youngllef').freeze(),
 		noCl: true
 	}
 ];
@@ -2499,25 +2518,6 @@ const Createables: Createable[] = [
 		name: 'Revert Amulet of rancour (s)',
 		inputItems: new Bank().add('Amulet of rancour (s)').freeze(),
 		outputItems: new Bank().add('Amulet of rancour').freeze(),
-		noCl: true
-	},
-	{
-		name: 'Corrupted youngllef',
-		inputItems: new Bank().add('Youngllef').freeze(),
-		outputItems: new Bank().add('Corrupted youngllef').freeze(),
-		customReq: async user => {
-			const [kcName, kcAmount] = await user.getKCByName('Corrupted gauntlet');
-			if (kcAmount < 1) {
-				return `You need to have at least 1 ${kcName} KC`;
-			} else {
-				return null;
-			}
-		}
-	},
-	{
-		name: 'Revert Corrupted youngllef',
-		inputItems: new Bank().add('Corrupted youngllef').freeze(),
-		outputItems: new Bank().add('Youngllef').freeze(),
 		noCl: true
 	},
 	...Reverteables,
