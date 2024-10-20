@@ -1,4 +1,4 @@
-import { BitField } from '../constants';
+import { BitField, BOT_TYPE } from '../constants';
 import { ashes } from '../skilling/skills/prayer';
 import type { GearBank } from '../structures/GearBank';
 import type { UpdateBank } from '../structures/UpdateBank';
@@ -46,8 +46,12 @@ export function ashSanctifierEffect({
 
 	const ashString = ashesSanctified.map(ash => `${ash.amount}x ${ash.name}`).join(', ');
 
-	updateBank.xpBank.add('prayer', totalXP, { duration, minimal: true, multiplier: false, source: 'AshSanctifier' });
-	updateBank.chargeBank.add('ash_sanctifier_charges', startingAshSanctifierCharges - chargesLeft);
+	updateBank.xpBank.add('prayer', totalXP, {
+		duration,
+		minimal: true,
+		multiplier: BOT_TYPE === 'BSO',
+		source: 'AshSanctifier'
+	});	updateBank.chargeBank.add('ash_sanctifier_charges', startingAshSanctifierCharges - chargesLeft);
 	updateBank.userStats.ash_sanctifier_prayer_xp = {
 		increment: Math.floor(totalXP)
 	};
