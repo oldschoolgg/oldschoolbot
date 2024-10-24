@@ -4,6 +4,7 @@ import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 import type { BitField, PvMMethod } from '../../../../lib/constants';
+import { getSimilarItems } from '../../../../lib/data/similarItems';
 import { type CombatOptionsEnum, SlayerActivityConstants } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import {
@@ -26,6 +27,7 @@ import {
 	numberEnum,
 	zodEnum
 } from '../../../../lib/util';
+import getOSItem from '../../../../lib/util/getOSItem';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { speedCalculations } from './timeAndSpeed';
@@ -198,21 +200,25 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	}
 
 	if (monster.projectileUsage?.required) {
-		if (!gearBank.gear.range.ammo?.item) {
-			return `You need range ammo equipped to kill ${monster.name}.`;
-		}
 		const rangeCheck = checkRangeGearWeapon(gearBank.gear.range);
 		if (typeof rangeCheck === 'string') {
 			return `Your range gear isn't right: ${rangeCheck}`;
 		}
-		const projectilesNeeded = monster.projectileUsage.calculateQuantity({ quantity });
-		speedDurationResult.updateBank.itemCostBank.add(rangeCheck.ammo.item, projectilesNeeded);
-		if (projectilesNeeded > rangeCheck.ammo.quantity) {
-			return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
-				rangeCheck.ammo.item
-			)} to kill ${quantity}x ${
-				monster.name
-			}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
+		const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(rangeCheck.weapon.id);
+		if (!gearBank.gear.range.ammo?.item && !usingBowfa) {
+			return `You need range ammo equipped to kill ${monster.name}.`;
+		}
+
+		const projectilesNeeded = usingBowfa ? 0 : monster.projectileUsage.calculateQuantity({ quantity });
+		if (rangeCheck.ammo) {
+			speedDurationResult.updateBank.itemCostBank.add(rangeCheck.ammo.item, projectilesNeeded);
+			if (projectilesNeeded > rangeCheck.ammo.quantity) {
+				return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
+					rangeCheck.ammo.item
+				)} to kill ${quantity}x ${monster.name}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
+			}
+		} else if (!usingBowfa) {
+			return `You need ammo equipped to kill ${monster.name}.`;
 		}
 	}
 

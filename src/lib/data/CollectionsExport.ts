@@ -1547,7 +1547,8 @@ export const allPetsCL = resolveItems([
 	'Butch',
 	'Baron',
 	'Scurry',
-	'Smol heredit'
+	'Smol heredit',
+	'Nid'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1596,6 +1597,16 @@ export const chompyBirdsCL = resolveItems([
 	'Chompy bird hat (dragon archer)',
 	'Chompy bird hat (expert ogre dragon archer)',
 	'Chompy bird hat (expert dragon archer)'
+]);
+export const colossalWyrmAgilityCL = resolveItems([
+	'Colossal wyrm teleport scroll',
+	'Calcified acorn',
+	'Varlamore graceful hood',
+	'Varlamore graceful top',
+	'Varlamore graceful legs',
+	'Varlamore graceful gloves',
+	'Varlamore graceful boots',
+	'Varlamore graceful cape'
 ]);
 export const creatureCreationCL = resolveItems([
 	'Tea flask',

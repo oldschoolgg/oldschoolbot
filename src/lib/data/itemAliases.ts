@@ -95,6 +95,13 @@ setItemAlias(25_075, 'Trailblazer graceful top');
 setItemAlias(25_078, 'Trailblazer graceful legs');
 setItemAlias(25_081, 'Trailblazer graceful gloves');
 setItemAlias(25_084, 'Trailblazer graceful boots');
+// Graceful sets -- Varlamore
+setItemAlias(30_045, 'Varlamore graceful hood');
+setItemAlias(30_048, 'Varlamore graceful cape');
+setItemAlias(30_051, 'Varlamore graceful top');
+setItemAlias(30_054, 'Varlamore graceful legs');
+setItemAlias(30_057, 'Varlamore graceful gloves');
+setItemAlias(30_060, 'Varlamore graceful boots');
 
 // Supply crate (Mahogany Homes)
 setItemAlias(24_884, 'Builders supply crate');
@@ -184,6 +191,7 @@ setItemAlias(11_185, 'Antique lamp 4');
 
 // Defender of varrock quest lamp
 setItemAlias(28_820, 'Antique lamp (defender of varrock)');
+setItemAlias(28_800, 'Antique lamp (Historian Aldo)');
 
 // Dragonfire shields
 setItemAlias(11_284, 'Uncharged dragonfire shield');
