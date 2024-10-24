@@ -162,7 +162,7 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		// Global Boosts
-		const clueBoosts = [
+		const globalBoosts = [
 			{
 				condition: isWeekend,
 				boost: '10% for Weekend',
@@ -195,7 +195,7 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		];
 
-		for (const { condition, boost, durationMultiplier } of clueBoosts) {
+		for (const { condition, boost, durationMultiplier } of globalBoosts) {
 			if (condition()) {
 				boosts.push(boost);
 				duration *= durationMultiplier;
