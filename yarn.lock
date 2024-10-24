@@ -4362,9 +4362,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@git+https://github.com/oldschoolgg/oldschooljs.git#50025d60df15b59dda616306b8aebd576514ab6e":
+"oldschooljs@git+https://github.com/themrrobert/oldschooljs.git#28e862850c926fde99a06b3ab7f44827dc6aaf72":
   version: 0.0.0
-  resolution: "oldschooljs@https://github.com/oldschoolgg/oldschooljs.git#commit=50025d60df15b59dda616306b8aebd576514ab6e"
+  resolution: "oldschooljs@https://github.com/themrrobert/oldschooljs.git#commit=28e862850c926fde99a06b3ab7f44827dc6aaf72"
   dependencies:
     e: "npm:^0.2.33"
     node-fetch: "npm:2.6.7"
