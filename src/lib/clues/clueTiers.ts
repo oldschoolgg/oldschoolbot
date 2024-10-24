@@ -53,7 +53,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Beginner,
 		id: 23_245,
 		scrollID: 23_182,
-		timeToFinish: Time.Minute * 2.5,
+		timeToFinish: Time.Minute * 2.8,
 		mimicChance: false,
 		allItems: BeginnerCasket.allItems,
 		stashUnits: beginnerStashes,
