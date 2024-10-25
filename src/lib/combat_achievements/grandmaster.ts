@@ -1160,5 +1160,73 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 50,
 			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
 		}
+	},
+	{
+		id: 3098,
+		name: 'Leviathan Speed-Runner',
+		desc: 'Kill the Leviathan in less than 1:10 without a slayer task.',
+		type: 'speed',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 75,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 3099,
+		name: 'Leviathan Sleeper',
+		desc: 'Kill the Awakened Leviathan.',
+		type: 'kill_count',
+		monster: 'The Leviathan',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AwakenedTheLeviathan.id]: 1
+			}
+		})
+	},
+	{
+		id: 3100,
+		name: 'Unconventional',
+		desc: 'Kill the Leviathan using only Mithril ammunition whilst having no more than 25 Hitpoints throughout the entire fight.',
+		type: 'restriction',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 3101,
+		name: 'Whispered',
+		desc: 'Kill the Awakened Whisperer.',
+		type: 'kill_count',
+		monster: 'The Whisperer',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AwakenedTheWhisperer.id]: 1
+			}
+		})
+	},
+	{
+		id: 3102,
+		name: 'Whisperer Speed-Runner',
+		desc: 'Kill the Whisperer in less than 2:05 without a slayer task.',
+		type: 'speed',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 3103,
+		name: 'Dark Memories',
+		desc: 'Kill the Whisperer whilst spending less than 6 seconds in the pre-enrage shadow realm.',
+		type: 'restriction',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
 	}
 ];

@@ -1612,5 +1612,84 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 25,
 			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
 		}
+	},
+	{
+		id: 2141,
+		name: 'Serpentine Solo',
+		desc: 'Kill the Leviathan without stunning the boss more than once.',
+		type: 'mechanical',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 40,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 2142,
+		name: 'Leviathan Master',
+		desc: 'Kill the Leviathan 50 times.',
+		type: 'kill_count',
+		monster: 'The Leviathan',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheLeviathan.id]: 50
+			}
+		})
+	},
+	{
+		id: 2143,
+		name: 'Leviathan Speed-Chaser',
+		desc: 'Kill the Leviathan in less than 1:25 without a slayer task.',
+		type: 'speed',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 70,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 2144,
+		name: 'Perfect Leviathan',
+		desc: 'Kill the Leviathan perfectly 5 times without leaving.',
+		type: 'perfection',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 75,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 2145,
+		name: 'Whisperer Master',
+		desc: 'Kill the Whisperer 50 times.',
+		type: 'kill_count',
+		monster: 'The Whisperer',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheWhisperer.id]: 50
+			}
+		})
+	},
+	{
+		id: 2146,
+		name: 'Whisperer Speed-Chaser',
+		desc: 'Kill the Whisperer in less than 2:25 without a slayer task.',
+		type: 'speed',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 2147,
+		name: 'Perfect Whisperer',
+		desc: 'Kill the Whisperer without taking avoidable damage 5 times without leaving.',
+		type: 'perfection',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
 	}
 ];

@@ -1623,5 +1623,62 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				[Monsters.TormentedDemon.id]: 1
 			}
 		})
+	},
+	{
+		id: 1140,
+		name: 'Leviathan Adept',
+		desc: 'Kill the Leviathan once.',
+		type: 'kill_count',
+		monster: 'The Leviathan',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheLeviathan.id]: 1
+			}
+		})
+	},
+	{
+		id: 1141,
+		name: 'Leviathan Speed-Trialist',
+		desc: 'Kill the Leviathan in less than 1:50 without a slayer task.',
+		type: 'speed',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 1142,
+		name: 'Whisperer Speed-Trialist',
+		desc: 'Kill the Whisperer in less than 3:00 without a slayer task.',
+		type: 'speed',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 1143,
+		name: 'Tentacular',
+		desc: 'Kill the Whisperer whilst only being on the Arceuus spellbook.',
+		type: 'restriction',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 1144,
+		name: 'Whisperer Adept',
+		desc: 'Kill the Whisperer once.',
+		type: 'kill_count',
+		monster: 'The Whisperer',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheWhisperer.id]: 1
+			}
+		})
 	}
 ];
