@@ -344,7 +344,7 @@ ${teams
 		sendToChannelID(this.notificationsChannelID, {
 			content: str
 		}).catch(noOp);
-		
+
 		sendToChannelID('1094693702536007750', {
 			content: str
 		}).catch(noOp);
