@@ -57,13 +57,6 @@ export async function preCommand({
 	});
 
 	if (inhibitResult !== undefined) {
-		debugLog('Command inhibited', {
-			type: 'COMMAND_INHIBITED',
-			command_name: abstractCommand.name,
-			user_id: userID,
-			guild_id: guildID,
-			channel_id: channelID
-		});
 		return inhibitResult;
 	}
 }
