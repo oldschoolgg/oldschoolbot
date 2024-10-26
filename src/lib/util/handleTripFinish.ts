@@ -585,15 +585,18 @@ export async function handleTripFinish(
 		message.content += bold(
 			'\n\nPumpkinhead appears! All of Gielenor turns into a pumpkin patch before your very eyes!'
 		);
-		if (roll(10))
-			message.content += '\n\n' + italic('Collect enough Spookling tokens, and who knows? You might just find... 10% more Mini PH! (Or maybe a few more than that...)');
+		if (roll(10)) {
+			message.content += `\n\n${italic('Collect enough Spookling tokens, and who knows? You might just find... 10% more Mini PH! (Or maybe a few more than that...)')}`;
+		}
 		await user.addItemsToBank({ items: new Bank().add('Spookling token'), collectionLog: true });
-		message.files = img.files;
+		if (!message.files) message.files = img.files;
+		else message.files = [...message.files, ...img.files];
 	} else if (user.cl.has('Spookling token')) {
 		const spookResult = handleHalloweenEvent(user, data.duration);
 		if (spookResult.message !== '') {
 			const img = await mahojiChatHead({ head: 'spookling', content: spookResult.message });
-			message.files = img.files;
+			if (!message.files) message.files = img.files;
+			else message.files = [...message.files, ...img.files];
 		}
 		if (spookResult.loot) {
 			await user.addItemsToBank({ items: spookResult.loot, collectionLog: true });
