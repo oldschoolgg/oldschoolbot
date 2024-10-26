@@ -582,9 +582,7 @@ export async function handleTripFinish(
 			content:
 				'Halt! Do you care for a treat? Or maybe a trick? Avoid my Spooklings unless you want to feel my wrath...'
 		});
-		message.content += bold(
-			'\n\nPumpkinhead appears! All of Gielenor turns into a pumpkin patch before your very eyes!'
-		);
+		message.content += `\n\n${bold('Pumpkinhead appears! All of Gielenor turns into a pumpkin patch before your very eyes!')}`;
 		if (roll(10)) {
 			message.content += `\n\n${italic('Collect enough Spookling tokens, and who knows? You might just find... 10% more Mini PH! (Or maybe a few more than that...)')}`;
 		}
