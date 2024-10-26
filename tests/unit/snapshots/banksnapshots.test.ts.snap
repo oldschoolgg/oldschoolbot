@@ -2892,6 +2892,13 @@ exports[`BSO Buyables 1`] = `
     "outputItems": undefined,
   },
   {
+    "gpCost": 20666666,
+    "ironmanPrice": 2066666,
+    "itemCost": {},
+    "name": "Sinister crate key (s7)",
+    "outputItems": undefined,
+  },
+  {
     "customReq": [Function],
     "gpCost": 1000000,
     "itemCost": {},

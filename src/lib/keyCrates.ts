@@ -198,5 +198,41 @@ export const keyCrates: Crate[] = [
 				1,
 				88
 			)
+	},
+	{
+		item: getOSItem('Sinister crate (s7)'),
+		key: getOSItem('Sinister crate key (s7)'),
+		keyCostGP: 20_666_666,
+		table: new LootTable()
+			.tertiary(2500, 'White hween mask')
+			.tertiary(110, 'Paint box')
+			.add(
+				new LootTable()
+					.add('Puzzle box (kuro)', 1, 2)
+					.add('Pumpkinhead boxhat', 1, 2)
+					.add('Deathless victims', 1, 2)
+					.add('Pumpkin sweater', 1, 2)
+					.add('Spooky dye', 1, 2)
+					.add('Pumpkin cloak')
+					.add('Venomous cloak')
+					.add('Bloody cloak')
+					.add('Purple cloak', 1, 3)
+					.add('Dark cloak')
+					.add('White cloak')
+					.add('Sinister sweater'),
+				1,
+				1
+			)
+			.add(
+				new LootTable()
+					.add('Bones')
+					.add('Vial of blood')
+					.add('Blood rune', [100, 200])
+					.add('Ghostweave', [100, 200])
+					.add('Pumpkin', [1, 4])
+					.add('Purple sweets', [1, 3]),
+				1,
+				100
+			)
 	}
 ];

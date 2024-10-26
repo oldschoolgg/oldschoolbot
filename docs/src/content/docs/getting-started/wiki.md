@@ -151,9 +151,9 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/leagues.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/leagues.md): Doesnt use the new command formatting
 
-[/bso/Minigames/balthazars-big-bonanza.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Minigames/balthazars-big-bonanza.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/bso/Minigames/balthazars-big-bonanza.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Minigames/balthazars-big-bonanza.md): Doesnt use the new command formatting
 
-[/bso/Minigames/baxtorian-bathhouses.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Minigames/baxtorian-bathhouses.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/bso/Minigames/baxtorian-bathhouses.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Minigames/baxtorian-bathhouses.md): Doesnt use the new command formatting
 
 [/bso/Minigames/emerged-zuk-inferno.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Minigames/emerged-zuk-inferno.md): Doesnt use the new command formatting
 
@@ -227,13 +227,9 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/crafting.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/crafting.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Skills/Divination/efficient-divination-training.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Divination/efficient-divination-training.md): Doesnt use the new command formatting
+[/bso/Skills/divination.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/divination.md): Doesnt use the new command formatting
 
-[/bso/Skills/Divination/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Divination/README.md): Doesnt use the new command formatting
-
-[/bso/Skills/Dungeoneering Training/dg-rewards.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Dungeoneering%20Training/dg-rewards.md): Doesnt use the new command formatting
-
-[/bso/Skills/Dungeoneering Training/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Dungeoneering%20Training/README.md): Doesnt use the new command formatting
+[/bso/Skills/Dungeoneering.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Dungeoneering.md): Doesnt use the new command formatting
 
 [/bso/Skills/farming.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/farming.md): Doesnt use the new command formatting
 
@@ -247,9 +243,7 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/hunter.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/hunter.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Skills/Invention/efficient-disassembling-to-99.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Invention/efficient-disassembling-to-99.md): Doesnt use the new command formatting
-
-[/bso/Skills/Invention/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Invention/README.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/bso/Skills/invention.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/invention.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [/bso/Skills/mining.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/mining.md): Doesnt use the new command formatting
 
@@ -257,9 +251,9 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/runecraft.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/runecraft.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Skills/Slayer/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Slayer/README.md): Doesnt use the new command formatting
+[/bso/Skills/slayer/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/slayer/README.md): Doesnt use the new command formatting
 
-[/bso/Skills/Slayer/slayer-masks-helms.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Slayer/slayer-masks-helms.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/bso/Skills/slayer/slayer-masks-helms.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/slayer/slayer-masks-helms.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [/bso/Skills/smithing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/smithing.md): Doesnt use the new command formatting
 
@@ -269,15 +263,11 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Tames/eagle-tame.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Tames/eagle-tame.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Tames/igne-equipment.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Tames/igne-equipment.md): Doesnt use the new command formatting
-
 [/bso/Tames/igne-tame.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Tames/igne-tame.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Tames/monkey-staff-and-spells.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Tames/monkey-staff-and-spells.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/bso/Tames/introduction.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Tames/introduction.md): Doesnt use the new command formatting
 
 [/bso/Tames/monkey-tame.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Tames/monkey-tame.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
-
-[/bso/Tames/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Tames/README.md): Doesnt use the new command formatting
 
 [/getting-started/bingo.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/bingo.mdx): Doesnt use the new command formatting
 

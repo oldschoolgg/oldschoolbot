@@ -12870,3 +12870,196 @@ setCustomItem(
 	},
 	1_000_000
 );
+
+setCustomItem(
+	73_250,
+	'Sinister crate (s7)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_251,
+	'Sinister crate key (s7)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_256,
+	'Puzzle box (kuro)',
+	'Coal',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_257,
+	'Pumpkinhead boxhat',
+	'Coal',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_258,
+	'White hween mask',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSecret: true,
+			superTradeableButTradeableOnGE: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_259,
+	'Deathless victims',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_260,
+	'Pumpkin cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_261,
+	'Venomous cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_262,
+	'Bloody cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_263,
+	'Purple cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_264,
+	'Dark cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_265,
+	'White cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_266,
+	'Pumpkin sweater',
+	'Bronze platebody',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_267,
+	'Sinister sweater',
+	'Bronze platebody',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			isSecret: true
+		}
+	},
+	100_000
+);

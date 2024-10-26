@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import getOSItem from './getOSItem';
 
-const crateItem = getOSItem('Birthday crate (s6)');
+const crateItem = getOSItem('Sinister crate (s7)');
 
 export function handleCrateSpawns(user: MUser, duration: number) {
 	const accountAge = user.accountAgeInDays();
