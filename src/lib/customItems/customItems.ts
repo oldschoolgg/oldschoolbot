@@ -12833,3 +12833,40 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	73_301,
+	'Spookling token',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_302,
+	'Miniature pumpkin head',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	88_889,
+	'Polterpup',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeDropped: true
+		}
+	},
+	1_000_000
+);

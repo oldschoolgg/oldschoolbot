@@ -5,7 +5,8 @@ import {
 	type ButtonBuilder,
 	type MessageCollector,
 	type MessageCreateOptions,
-	bold
+	bold,
+	italic
 } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -18,6 +19,7 @@ import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { PortentID, chargePortentIfHasCharges, getAllPortentCharges } from '../bso/divination';
 import { gods } from '../bso/divineDominion';
+import { handleHalloweenEvent } from '../bso/halloween2024';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
@@ -574,6 +576,32 @@ export async function handleTripFinish(
 	if (components.length > 0) {
 		message.components = makeComponents(components);
 	}
+	if (roll(3) && !user.cl.has('Spookling token')) {
+		const img = await mahojiChatHead({
+			head: 'pumpkin',
+			content:
+				'Halt! Do you care for a treat? Or maybe a trick? Avoid my Spooklings unless you want to feel my wrath...'
+		});
+		message.content += bold(
+			'\n\nPumpkinhead appears! All of Gielenor turns into a pumpkin patch before your very eyes!'
+		);
+		if (roll(10))
+			message.content += '\n\n' + italic('Collect enough Spookling tokens, and who knows? You might just find... 10% more Mini PH! (Or maybe a few more than that...)');
+		await user.addItemsToBank({ items: new Bank().add('Spookling token'), collectionLog: true });
+		message.files = img.files;
+	} else if (user.cl.has('Spookling token')) {
+		const spookResult = handleHalloweenEvent(user, data.duration);
+		if (spookResult.message !== '') {
+			const img = await mahojiChatHead({ head: 'spookling', content: spookResult.message });
+			message.files = img.files;
+		}
+		if (spookResult.loot) {
+			await user.addItemsToBank({ items: spookResult.loot, collectionLog: true });
+			if (spookResult.loot.has('Polterpup'))
+				message.content += `\n\n${bold('A chill settles beside you, an eerie presence that clings to you no matter where you go. You have a feeling it’s here to stay, watching... and waiting.')}`;
+			else message.content += `\n\nReceived: ${spookResult.loot}`;
+		}
+	}
 
 	if (!user.owns('Mysterious clue (1)') && roll(10) && !user.bitfield.includes(BitField.HasUnlockedYeti)) {
 		const img = await mahojiChatHead({
@@ -585,16 +613,17 @@ export async function handleTripFinish(
 			]),
 			head: 'mysteriousFigure'
 		});
-		message.files = img.files;
-		const loot = new Bank().add('Mysterious clue (1)');
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		if (!message.files) message.files = img.files;
+		else message.files = [...message.files, ...img.files];
+		const mysteriousLoot = new Bank().add('Mysterious clue (1)');
+		await user.addItemsToBank({ items: mysteriousLoot, collectionLog: true });
 		if (user.user.bso_mystery_trail_current_step_id === null) {
 			await user.update({
 				bso_mystery_trail_current_step_id: 1
 			});
 		}
 		if (message.content) {
-			message.content += `\nYou received ${loot}.`;
+			message.content += `\nYou received ${mysteriousLoot}.`;
 		}
 	}
 

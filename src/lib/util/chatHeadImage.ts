@@ -19,6 +19,9 @@ const mysteriousFigureHead = loadAndCacheLocalImage('./src/lib/resources/images/
 const rudolphChatHead = loadAndCacheLocalImage('./src/lib/resources/images/rudolph.png');
 const minimusHead = loadAndCacheLocalImage('./src/lib/resources/images/minimus.png');
 
+const pumpkinHead = loadAndCacheLocalImage('./src/lib/resources/images/pumpkin.png');
+const spookling = loadAndCacheLocalImage('./src/lib/resources/images/spookling.png');
+
 const chatHeads = {
 	mejJal: mejJalChatHead,
 	jane: janeChatHead,
@@ -34,7 +37,9 @@ const chatHeads = {
 	partyPete: partyPeteHead,
 	mysteriousFigure: mysteriousFigureHead,
 	rudolph: rudolphChatHead,
-	minimus: minimusHead
+	minimus: minimusHead,
+	pumpkin: pumpkinHead,
+	spookling: spookling
 };
 
 const names: Record<keyof typeof chatHeads, string> = {
@@ -52,7 +57,9 @@ const names: Record<keyof typeof chatHeads, string> = {
 	partyPete: 'Party Pete',
 	mysteriousFigure: 'Mysterious Figure',
 	rudolph: 'Rudolph the Reindeer',
-	minimus: 'Minimus'
+	minimus: 'Minimus',
+	pumpkin: 'Pumpkinhead',
+	spookling: 'Spookling'
 };
 
 export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
