@@ -4012,7 +4012,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1000
+	50
 );
 
 setCustomItem(

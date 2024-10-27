@@ -146,5 +146,12 @@ export const bsoBuyables: Buyable[] = [
 		name: 'Wooden spoon',
 		gpCost: 2000,
 		outputItems: new Bank().add('Wooden spoon')
+	},
+	{
+		name: 'Pumpkin seed',
+		gpCost: 500,
+		outputItems: new Bank().add('Pumpkin seed'),
+		ironmanPrice: 500,
+		maxQuantity: 500
 	}
 ];

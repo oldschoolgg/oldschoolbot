@@ -31,13 +31,15 @@ export const halloweenCommand: OSBMahojiCommand = {
 		hand_in?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
+		const farming = getFarmingInfoFromUser(user.user);
+		const plantedCrop = farming.patchesDetailed.find(p => p.patchName === 'allotment');
 
 		if (options.hand_in) {
 			if (user.bank.amount('Jack-o-lantern') < 1) {
 				return `You don't have any Jack-o-lanterns to hand in.`;
 			}
 			const cost = new Bank().add('Jack-o-lantern', user.bank.amount('Jack-o-lantern'));
-			const loot = new Bank().add('Pumpkin seed', 30);
+			const loot = new Bank().add('Pumpkin seed', 100);
 			for (let i = 0; i < cost.amount('Jack-o-lantern'); i++) {
 				if (roll(10)) {
 					loot.add('Halloween cracker');
@@ -57,8 +59,7 @@ export const halloweenCommand: OSBMahojiCommand = {
                 
 Use this command again to check your progress, or for information.`;
 			}
-			const farming = getFarmingInfoFromUser(user.user);
-			const plantedCrop = farming.patchesDetailed.find(p => p.patchName === 'allotment');
+			
 
 			let allotmentStr = '';
 			if (!plantedCrop || plantedCrop.plant?.name !== 'Pumpkin') {

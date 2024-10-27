@@ -3009,6 +3009,16 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
+    "gpCost": 500,
+    "ironmanPrice": 500,
+    "itemCost": {},
+    "maxQuantity": 500,
+    "name": "Pumpkin seed",
+    "outputItems": {
+      "70187": 1,
+    },
+  },
+  {
     "itemCost": {
       "6183": 1,
     },
