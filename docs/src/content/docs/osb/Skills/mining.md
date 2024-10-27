@@ -122,7 +122,7 @@ The only other thing unidentified minerals can be used to purchase are:
 | [[438]] | 38,000 | Yes |
 | [[444]] | 37,000 | No |
 | [[1625]] | 36,000 | No |
-| [[447]] | 27,000 | Yes |
+| [[447]] | 28,000 | Yes |
 | [[447]] | 26,000 | No |
 | [[21347]] | 23,000 | Yes |
 | [[21347]] | 22,000 | No |
