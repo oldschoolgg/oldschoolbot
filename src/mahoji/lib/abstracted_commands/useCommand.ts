@@ -475,6 +475,34 @@ const genericUsables: {
 				]
 			};
 		}
+	},
+	{
+		items: [getOSItem('Pumpkin carving knife'), getOSItem('Heirloom pumpkin')],
+		cost: new Bank().add('Heirloom pumpkin'),
+		loot: new Bank().add('Jack-o-lantern'),
+		response: () => 'You carve your Heirloom pumpkin into a Jack-o-lantern.',
+		addToCL: true
+	},
+	{
+		items: [getOSItem('Ensouled demon head'), getOSItem('Mumpkin')],
+		cost: new Bank().add('Ensouled demon head'),
+		loot: new Bank().add('Mumpkin (demonic)'),
+		response: () => 'Your mumpkin is now demonic.',
+		addToCL: false
+	},
+	{
+		items: [getOSItem('Pumpkin'), getOSItem('Mumpkin')],
+		cost: new Bank().add('Pumpkin').add('Mumpkin'),
+		loot: new Bank().add('Mumpkin (pumpkin)'),
+		response: () => 'Your mumpkin is now wearing a Pumpkin on his head.',
+		addToCL: false
+	},
+	{
+		items: [getOSItem('Bones'), getOSItem('Mumpkin')],
+		cost: new Bank().add('Bones').add('Mumpkin'),
+		loot: new Bank().add('Mumpkin (dead)'),
+		response: () => 'You have turned your mumpkin into a dead mumpkin.',
+		addToCL: false
 	}
 ];
 usables.push({
@@ -522,6 +550,19 @@ usables.push({
 	items: [getOSItem('Echo'), getOSItem('Banana')],
 	run: async () => {
 		return 'https://media.tenor.com/LqrZCROBYzQAAAAd/eat-banana-bat.gif';
+	}
+});
+
+usables.push({
+	items: [getOSItem('Mumpkin'), getOSItem('Grapes')],
+	run: async () => {
+		return 'https://media1.tenor.com/m/kH25W3XYcPAAAAAd/red-panda-panda.gif';
+	}
+});
+usables.push({
+	items: [getOSItem('Mumpkin'), getOSItem('Bread')],
+	run: async () => {
+		return 'https://media1.tenor.com/m/w7_fsFxm2yUAAAAd/red-panda.gif';
 	}
 });
 

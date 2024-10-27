@@ -499,6 +499,21 @@ export const farmingTask: MinionTask = {
 				if (hesporiSeeds > 0) loot.add('Hespori seed', hesporiSeeds);
 			}
 
+			if (plantToHarvest.name === 'Pumpkin') {
+				for (let i = 0; i < alivePlants; i++) {
+					if (roll(24)) {
+						const heirLoomPumpkinLoot = new Bank().add('Heirloom pumpkin');
+						await user.addItemsToBank({ items: heirLoomPumpkinLoot, collectionLog: true });
+						infoStr.push('🟣 **You found an Heirloom pumpkin**');
+					}
+					if (roll(600)) {
+						await user.addItemsToBank({ items: new Bank().add('Mumpkin'), collectionLog: true });
+						infoStr.push(
+							`🟣 **You've found a little red panda eating your pumpkins. You've adopted it and named it Mumpkin.**`
+						);
+					}
+				}
+			}
 			if (loot.has('Tangleroot')) {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
