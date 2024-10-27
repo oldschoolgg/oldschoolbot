@@ -1,10 +1,10 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { GearStat } from '../../gear/types';
-import { Skills } from '../../types';
-import { GearRequirements } from '../types';
+import type { Skills } from '../../types';
+import type { GearRequirements } from '../types';
 
 interface TrekDifficulty {
 	difficulty: string;

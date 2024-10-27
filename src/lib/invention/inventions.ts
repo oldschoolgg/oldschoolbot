@@ -1,19 +1,20 @@
 import { userMention } from '@discordjs/builders';
-import { Prisma } from '@prisma/client';
-import { clamp, reduceNumByPercent, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import { Time, clamp, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { ClueTier, ClueTiers } from '../clues/clueTiers';
-import { ItemBank } from '../types';
+import type { IMaterialBank, MaterialType } from '.';
+import { type ClueTier, ClueTiers } from '../clues/clueTiers';
+import type { GearBank } from '../structures/GearBank';
+import type { ItemBank } from '../types';
 import { formatDuration, stringMatches, toKMB } from '../util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { minionIsBusy } from '../util/minionIsBusy';
 import resolveItems from '../util/resolveItems';
-import { IMaterialBank, MaterialType } from '.';
 import { MaterialBank } from './MaterialBank';
 
 const InventionFlags = ['equipped', 'bank'] as const;
@@ -39,7 +40,8 @@ export enum InventionID {
 	WispBuster = 17,
 	DivineHand = 18,
 	DrygoreAxe = 19,
-	MoonlightMutator = 20
+	MoonlightMutator = 20,
+	Webshooter = 21
 }
 
 export type Invention = Readonly<{
@@ -117,15 +119,15 @@ export const inventionBoosts = {
 	},
 	clueUpgrader: {
 		chance: (clue: ClueTier) => {
-			let index = ClueTiers.indexOf(clue);
-			let chanceOfUpgradePercent = 45 - (index + 1) * 5;
+			const index = ClueTiers.indexOf(clue);
+			const chanceOfUpgradePercent = 45 - (index + 1) * 5;
 			return chanceOfUpgradePercent;
 		},
 		pickPocketChance: (clue: ClueTier) => {
 			return Math.ceil(inventionBoosts.clueUpgrader.chance(clue) / 5);
 		},
 		durationCalc: (clue: ClueTier) => {
-			let index = ClueTiers.indexOf(clue);
+			const index = ClueTiers.indexOf(clue);
 			return (index + 1) * (Time.Minute * 3);
 		}
 	},
@@ -142,6 +144,10 @@ export const inventionBoosts = {
 	},
 	drygoreAxe: {
 		woodcuttingSpeedBoostPercent: 30
+	},
+	webshooter: {
+		passiveImplingBoostPercent: 30,
+		hunterBoostPercent: 20
 	}
 } as const;
 
@@ -305,8 +311,8 @@ export const Inventions: readonly Invention[] = [
 		extraDescription: () => {
 			let str = '';
 			for (const clue of ClueTiers.slice(0, 5)) {
-				let index = ClueTiers.indexOf(clue);
-				let next = ClueTiers[index + 1];
+				const index = ClueTiers.indexOf(clue);
+				const next = ClueTiers[index + 1];
 				str += `**${clue.name}:** ${inventionBoosts.clueUpgrader.chance(clue)}% chance to upgrade into ${
 					next.name
 				}, costs ${formatDuration(inventionBoosts.clueUpgrader.durationCalc(clue))}\n`;
@@ -436,7 +442,7 @@ export const Inventions: readonly Invention[] = [
 			strong: 1
 		}),
 		itemCost: null,
-		flags: ['equipped'],
+		flags: ['bank'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 1
 	},
@@ -450,7 +456,7 @@ export const Inventions: readonly Invention[] = [
 			sharp: 3
 		}),
 		itemCost: new Bank().add('Dwarven greataxe'),
-		flags: ['equipped'],
+		flags: ['equipped', 'bank'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 0.65
 	},
@@ -467,6 +473,21 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 0.1
+	},
+	{
+		id: InventionID.Webshooter,
+		name: 'Webshooter',
+		description: `A handheld webshooter that helps catch implings by ${inventionBoosts.webshooter.passiveImplingBoostPercent}% and hunter creatures by ${inventionBoosts.webshooter.hunterBoostPercent}%.`,
+		item: getOSItem('Webshooter'),
+		materialTypeBank: new MaterialBank({
+			strong: 4,
+			flexible: 4,
+			organic: 2
+		}),
+		itemCost: new Bank().add('Venatrix webbing'),
+		flags: ['bank'],
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 0.4
 	}
 ] as const;
 
@@ -506,8 +527,8 @@ export const materialBoosts: Map<MaterialType, { outputMulitplier?: number; redu
 ]);
 
 export function inventingCost(invention: Invention) {
-	let baseMultiplierPerType = 7;
-	let cost = new MaterialBank();
+	const baseMultiplierPerType = 7;
+	const cost = new MaterialBank();
 	for (const { type, quantity } of invention.materialTypeBank.values()) {
 		cost.add(type, quantity * 10 * baseMultiplierPerType);
 	}
@@ -539,7 +560,8 @@ export async function transactMaterialsFromUser({
 	if (addToDisassembledItemsBank) {
 		updateObject.disassembled_items_bank = addToDisassembledItemsBank
 			.clone()
-			.add(user.user.disassembled_items_bank as ItemBank).bank;
+			.add(user.user.disassembled_items_bank as ItemBank)
+			.toJSON();
 	}
 	if (addToResearchedMaterialsBank && remove) {
 		updateObject.researched_materials_bank = remove
@@ -586,11 +608,12 @@ export async function inventCommand(user: MUser, inventionName: string): Command
 		addToGlobalInventionCostBank: true
 	});
 
+	const itemsToRemove = new Bank();
 	if (invention.itemCost) {
-		await user.removeItemsFromBank(invention.itemCost);
+		itemsToRemove.add(invention.itemCost);
 	}
 	const loot = new Bank().add(invention.item.id);
-	await user.addItemsToBank({ items: loot, collectionLog: true });
+	await user.transactItems({ itemsToRemove, itemsToAdd: loot, collectionLog: true });
 	return `${userMention(user.id)}, your minion created a ${invention.name}! (${
 		invention.description
 	}) Items removed: ${invention.itemCost ?? 'None'}. Materials used: ${cost}.`;
@@ -606,12 +629,11 @@ type InventionItemBoostResult =
 			success: false;
 	  };
 
-export function canAffordInventionBoost(user: MUser, inventionID: InventionID, duration: number) {
+export function canAffordInventionBoostRaw(materialsOwned: MaterialBank, inventionID: InventionID, duration: number) {
 	const invention = Inventions.find(i => i.id === inventionID)!;
 	if (invention.usageCostMultiplier === null) {
 		throw new Error('Tried to calculate cost of invention that has no cost.');
 	}
-	const materialsOwned = user.materialsOwned();
 	const materialCost = new MaterialBank();
 	let multiplier = Math.ceil(duration / (Time.Minute * 3));
 	multiplier = clamp(Math.floor(multiplier * invention.usageCostMultiplier), 1, 1000);
@@ -634,22 +656,32 @@ export function canAffordInventionBoost(user: MUser, inventionID: InventionID, d
 	};
 }
 
-export async function inventionItemBoost({
-	user,
+export function canAffordInventionBoost(user: MUser, inventionID: InventionID, duration: number) {
+	return canAffordInventionBoostRaw(user.materialsOwned(), inventionID, duration);
+}
+
+export function inventionItemBoostRaw({
+	gearBank,
 	inventionID,
-	duration
+	duration,
+	disabledInventions
 }: {
-	user: MUser;
+	gearBank: GearBank;
 	inventionID: InventionID;
 	duration: number;
-}): Promise<InventionItemBoostResult> {
-	const { materialCost, canAfford, invention } = await canAffordInventionBoost(user, inventionID, duration);
+	disabledInventions: number[];
+}) {
+	const { materialCost, canAfford, invention } = canAffordInventionBoostRaw(
+		gearBank.materials,
+		inventionID,
+		duration
+	);
 
 	// If it has to be equipped, and isn't, or has to be in bank, and isn't, fail.
 	if (
-		user.user.disabled_inventions.includes(invention.id) ||
-		(invention.flags.includes('equipped') && !user.hasEquipped(invention.item.id)) ||
-		(invention.flags.includes('bank') && !user.hasEquippedOrInBank([invention.item.id]))
+		disabledInventions.includes(invention.id) ||
+		(invention.flags.includes('equipped') && !gearBank.hasEquipped(invention.item.id)) ||
+		(invention.flags.includes('bank') && !gearBank.hasEquippedOrInBank([invention.item.id]))
 	) {
 		return { success: false };
 	}
@@ -660,8 +692,8 @@ export async function inventionItemBoost({
 		};
 	}
 
-	let messages: string[] = [`Removed ${materialCost}`];
-	if (user.hasEquippedOrInBank('Invention master cape')) {
+	const messages: string[] = [`Removed ${materialCost}`];
+	if (gearBank.hasEquippedOrInBank('Invention master cape')) {
 		materialCost.mutReduceAllValuesByPercent(inventionBoosts.inventionMasterCape.materialCostReductionPercent);
 		messages.shift();
 		messages.unshift(`Removed ${materialCost}`);
@@ -670,6 +702,27 @@ export async function inventionItemBoost({
 		);
 	}
 
+	return { success: true, materialCost, messages, invention };
+}
+
+export async function inventionItemBoost({
+	user,
+	inventionID,
+	duration
+}: {
+	user: MUser;
+	inventionID: InventionID;
+	duration: number;
+}): Promise<InventionItemBoostResult> {
+	const result = inventionItemBoostRaw({
+		gearBank: user.gearBank,
+		inventionID,
+		duration,
+		disabledInventions: user.user.disabled_inventions
+	});
+	if (!result.success || !result.messages) return { success: false };
+
+	const { materialCost, messages } = result;
 	try {
 		await transactMaterialsFromUser({
 			user,

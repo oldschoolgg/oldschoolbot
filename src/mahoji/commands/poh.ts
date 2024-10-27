@@ -1,5 +1,6 @@
-import { User } from 'discord.js';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { PoHObjects } from '../../lib/poh';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -14,7 +15,7 @@ import {
 	pohWallkits
 } from '../lib/abstracted_commands/pohCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const pohCommand: OSBMahojiCommand = {
 	name: 'poh',

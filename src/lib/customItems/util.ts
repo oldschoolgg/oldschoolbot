@@ -1,10 +1,7 @@
-import { cleanString as deepCleanString } from '@oldschoolgg/toolkit';
-import { DeepPartial } from '@sapphire/utilities';
+import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
+import type { DeepPartial } from '@sapphire/utilities';
 import deepMerge from 'deepmerge';
-import { Items } from 'oldschooljs';
-import { Item, ItemRequirements } from 'oldschooljs/dist/meta/types';
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-import { cleanString } from 'oldschooljs/dist/util/cleanString';
+import { type Item, type ItemRequirements, Items, itemNameMap } from 'oldschooljs';
 
 import getOSItem from '../util/getOSItem';
 
@@ -21,7 +18,7 @@ export const hasSet: Item[] = [];
 
 // Prevent old item names from matching customItems
 export function isDeletedItemName(nameToTest: string) {
-	const cleanNameToTest = deepCleanString(nameToTest);
+	const cleanNameToTest = replaceWhitespaceAndUppercase(nameToTest);
 	if (overwrittenItemNames.get(cleanNameToTest)) {
 		return true;
 	}
@@ -35,24 +32,21 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	if (hasSet.some(i => i.name === name) && name !== 'Smokey') {
 		throw new Error(`Tried to add 2 custom items with same name, called ${name}`);
 	}
-	if (
-		newItemData &&
-		newItemData.customItemData &&
-		newItemData.customItemData.superTradeableButTradeableOnGE &&
-		!newItemData.customItemData.isSuperUntradeable
-	) {
+	if (newItemData?.customItemData?.superTradeableButTradeableOnGE && !newItemData.customItemData.isSuperUntradeable) {
 		throw new Error('Tried to add a custom item with superTradeableButTradeableOnGE, but not isSuperUntradeable');
 	}
+
 	const data: Item = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id }) as Item;
 	data.price = price || 1;
 
 	// Track names of re-mapped items to break the link:
 	const oldItem = Items.get(id);
-	if (oldItem) {
-		overwrittenItemNames.set(deepCleanString(oldItem.name), oldItem);
+	if (oldItem && replaceWhitespaceAndUppercase(oldItem.name) !== replaceWhitespaceAndUppercase(name)) {
+		// If the custom item has the same name as the original item don't break the link
+		overwrittenItemNames.set(replaceWhitespaceAndUppercase(oldItem.name), oldItem);
 	}
 	Items.set(id, data);
-	const cleanName = cleanString(name);
+	const cleanName = replaceWhitespaceAndUppercase(name);
 	itemNameMap.set(cleanName, id);
 	itemNameMap.set(name, id);
 

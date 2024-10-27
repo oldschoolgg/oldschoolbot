@@ -1,19 +1,21 @@
-import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
+import { Time, increaseNumByPercent, randInt, roll } from 'e';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { itemID, toKMB } from 'oldschooljs/dist/util';
+import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
-import { UserFullGearSetup } from '../../lib/gear';
+import type { UserFullGearSetup } from '../../lib/gear';
 import { InventionID } from '../../lib/invention/inventions';
-import { StoneSpirit, stoneSpirits } from '../../lib/minions/data/stoneSpirits';
+import { type StoneSpirit, stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
-import { Ore, SkillsEnum } from '../../lib/skilling/types';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, itemID, skillingPetDropRate, toKMB } from '../../lib/util';
+import type { Ore } from '../../lib/skilling/types';
+import type { MiningActivityTaskOptions } from '../../lib/types/minions';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
@@ -65,7 +67,7 @@ export function calculateMiningResult({
 	// Prospector outfit
 	if (
 		allGear.skilling.hasEquipped(
-			Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
+			Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
 			true
 		)
 	) {
@@ -178,7 +180,7 @@ export function calculateMiningResult({
 		const hasKlik = equippedPet === itemID('Klik');
 
 		if (hasKlik && !hasAdze) {
-			const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
+			const smeltedOre = Smithing.Bars.find(o => o.inputOres.has(ore.id) && o.inputOres.length === 1);
 			if (smeltedOre) {
 				barsFromKlikBank.add(smeltedOre.id, quantity);
 				loot.remove(ore.id, loot.amount(ore.id));
@@ -218,7 +220,7 @@ export function calculateMiningResult({
 	let smithingXPFromAdze = 0;
 	if (hasAdze && !adzeIsDisabled) {
 		const smeltedOre = Smithing.Bars.find(
-			o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
+			o => o.inputOres.has(ore.id) && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
 		);
 		if (smeltedOre) {
 			if (!isPowermining) {
@@ -248,7 +250,8 @@ export const miningTask: MinionTask = {
 	type: 'Mining',
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, userID, channelID, duration, powermine } = data;
-		let { quantity } = data;
+		const { quantity } = data;
+		const minutes = Math.round(duration / Time.Minute);
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
@@ -262,8 +265,8 @@ export const miningTask: MinionTask = {
 				? await chargePortentIfHasCharges({
 						user,
 						portentID: PortentID.MiningPortent,
-						charges: amountOfSpiritsToUse
-				  })
+						charges: minutes
+					})
 				: null;
 		const {
 			totalMiningXPToAdd,

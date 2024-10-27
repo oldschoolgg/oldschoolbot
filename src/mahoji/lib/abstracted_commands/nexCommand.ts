@@ -1,17 +1,17 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { channelIsSendable, formatDuration, isWeekend } from '@oldschoolgg/toolkit';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { calcBossFood } from '../../../lib/bso/calcBossFood';
 import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
-import { KillableMonster } from '../../../lib/minions/types';
+import type { KillableMonster } from '../../../lib/minions/types';
 import { NexMonster } from '../../../lib/nex';
 import { setupParty } from '../../../lib/party';
-import { MakePartyOptions } from '../../../lib/types';
-import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
+import type { MakePartyOptions } from '../../../lib/types';
+import type { BossActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
@@ -30,7 +30,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -80,7 +80,7 @@ export async function nexCommand(
 			if (user.minionIsBusy) {
 				return [true, 'your minion is busy.'];
 			}
-			const [hasReqs, reason] = hasMonsterRequirements(user, NexMonster);
+			const [hasReqs, reason] = await hasMonsterRequirements(user, NexMonster);
 			if (!hasReqs) {
 				return [true, `you don't have the requirements for this monster; ${reason}`];
 			}
@@ -140,7 +140,7 @@ export async function nexCommand(
 			users.map(u => u.id)
 		);
 		debugStr += `**${user.usernameOrMention}**: `;
-		let msgs = [];
+		const msgs = [];
 
 		const rangeGear = user.gear.range;
 		if (rangeGear.hasEquipped(pernixOutfit, true, true)) {
@@ -241,7 +241,7 @@ export async function nexCommand(
 	if (users.length === 5) minDuration = 1.2;
 	if (users.length >= 6) minDuration = 1;
 
-	let durQtyRes = await calcDurQty(
+	const durQtyRes = await calcDurQty(
 		users,
 		{ ...NexMonster, timeToFinish: effectiveTime },
 		inputQuantity,
@@ -249,12 +249,12 @@ export async function nexCommand(
 		Time.Minute * 30
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
-	let [quantity, duration, perKillTime] = durQtyRes;
+	const [quantity, duration, perKillTime] = durQtyRes;
 	const secondCheck = await checkReqs(users, NexMonster, quantity);
 	if (secondCheck) return secondCheck;
 
 	let foodString = 'Removed brews/restores from users: ';
-	let foodRemoved: string[] = [];
+	const foodRemoved: string[] = [];
 	for (const user of users) {
 		const food = await calcBossFood(user, NexMonster, users.length, quantity);
 		if (!user.bank.has(food)) {
@@ -303,16 +303,14 @@ export async function nexCommand(
 
 	let str =
 		type === 'solo'
-			? `Your minion is now attempting to kill ${quantity}x Nex. ${foodString} The trip will take ${formatDuration(
-					duration
-			  )}.`
+			? `Your minion is now attempting to kill ${quantity}x Nex. ${foodString} The trip will take ${formatDuration(duration)}.`
 			: `${partyOptions.leader.usernameOrMention}'s party (${users
 					.map(u => u.usernameOrMention)
 					.join(', ')}) is now off to kill ${quantity}x ${NexMonster.name}. Each kill takes ${formatDuration(
 					perKillTime
-			  )} instead of ${formatDuration(NexMonster.timeToFinish)} - the total trip will take ${formatDuration(
+				)} instead of ${formatDuration(NexMonster.timeToFinish)} - the total trip will take ${formatDuration(
 					duration
-			  )}. ${foodString}`;
+				)}. ${foodString}`;
 
 	str += ` \n\n${debugStr}`;
 

@@ -1,16 +1,15 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters } from 'oldschooljs';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
+import { Bank, LootTable, Monsters, RareDropTable, resolveNameBank } from 'oldschooljs';
 
 import { GearStat } from '../../../../gear';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
-import { CustomMonster } from './customMonsters';
+import type { CustomMonster } from './customMonsters';
 
-export const TormentedDemon: CustomMonster = {
+export const SuperiorTormentedDemon: CustomMonster = {
+	isCustom: true,
 	id: 941_944,
-	name: 'Tormented Demon',
-	aliases: ['tormented demon', 'td'],
+	name: 'Superior Tormented Demon',
+	aliases: ['superior tormented demon', 'std'],
 	timeToFinish: Time.Minute * 17,
 	table: new LootTable()
 		.every('Infernal ashes')
@@ -23,7 +22,7 @@ export const TormentedDemon: CustomMonster = {
 				.add('Ruined dragon armour lump')
 				.add('Ruined dragon armour shard')
 		)
-		.tertiary(60, 'Clue scroll (grandmaster)')
+		.tertiary(40, 'Clue scroll (grandmaster)')
 		.tertiary(32, RareDropTable)
 		.add(GrimyHerbTable)
 		.add(runeAlchablesTable)
@@ -70,6 +69,9 @@ export const TormentedDemon: CustomMonster = {
 	itemInBankBoosts: [
 		resolveNameBank({
 			'TzKal cape': 5
+		}),
+		resolveNameBank({
+			'Axe of the high sungod': 10
 		})
 	]
 };

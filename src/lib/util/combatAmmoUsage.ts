@@ -1,8 +1,8 @@
-import { reduceNumByPercent, Time } from 'e';
+import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { GearSetupType } from '../gear';
+import type { GearSetupType } from '../gear';
 import getOSItem from './getOSItem';
 
 interface CombatItemConsumption {
@@ -45,7 +45,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 		// Ignore this gear, if this boost cant be applied to this gear type
 		if (requiredGearType && !requiredGearType.includes(options.gearType)) continue;
 		if (gear.hasEquipped(item.name)) {
-			let requiredBank = required.clone();
+			const requiredBank = required.clone();
 			let toRemove = Math.ceil(duration / every) * consume;
 			if (reductions) {
 				for (const [reductionItem, reductionPercentage] of reductions.items()) {
@@ -60,7 +60,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 					}
 				}
 			}
-			if (!user.bank.has(requiredBank.multiply(toRemove).bank)) {
+			if (!user.bank.has(requiredBank.multiply(toRemove))) {
 				errors.push(`You need at least ${requiredBank} to go on a trip using ${item.name}`);
 			}
 			toConsume.add(requiredBank);

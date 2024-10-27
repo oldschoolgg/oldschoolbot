@@ -1,10 +1,9 @@
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
 
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank, Skills } from '../types';
-import { FarmingPatchName } from '../util/farmingHelpers';
+import type { QuestID } from '../minions/data/quests';
+import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import type { Skills } from '../types';
+import type { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
 	Agility = 'agility',
@@ -35,6 +34,44 @@ export enum SkillsEnum {
 	Divination = 'divination'
 }
 
+export const SkillsArray = [
+	'agility',
+	'cooking',
+	'fishing',
+	'mining',
+	'smithing',
+	'woodcutting',
+	'firemaking',
+	'runecraft',
+	'crafting',
+	'prayer',
+	'fletching',
+	'farming',
+	'herblore',
+	'thieving',
+	'hunter',
+	'construction',
+	'magic',
+	'attack',
+	'strength',
+	'defence',
+	'ranged',
+	'hitpoints',
+	'dungeoneering',
+	'slayer',
+	'invention',
+	'divination'
+] as const;
+
+export type SkillNameType = (typeof SkillsArray)[number];
+for (const skill of SkillsArray) {
+	const matching = Object.keys(SkillsEnum).find(key => key.toLowerCase() === skill);
+	if (!matching) throw new Error(`Missing skill enum for ${skill}`);
+}
+if (SkillsArray.length !== Object.keys(SkillsEnum).length) {
+	throw new Error('Not all skills have been added to the SkillsArray.');
+}
+
 export interface Ore {
 	level: number;
 	xp: number;
@@ -57,6 +94,7 @@ export interface Log {
 	id: number;
 	lootTable?: LootTable;
 	name: string;
+	leaf?: number;
 	aliases?: string[];
 	findNewTreeTime: number;
 	bankingTime: number;
@@ -101,9 +139,11 @@ export interface Course {
 	xp: number | ((agilityLevel: number) => number);
 	marksPer60?: number;
 	lapTime: number;
-	petChance: number;
+	cantFail?: boolean;
+	petChance: number | ((agilityLevel: number) => number);
 	aliases: string[];
 	qpRequired?: number;
+	requiredQuests?: QuestID[];
 }
 
 export interface Cookable {
@@ -196,6 +236,7 @@ export interface Mixable {
 	zahur?: boolean;
 	wesley?: boolean;
 	qpRequired?: number;
+	defaultQuantity?: number;
 }
 
 export interface CutLeapingFish {
@@ -277,7 +318,8 @@ export interface Plant {
 	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
-	onHarvest?: (options: { user: MUser; loot: Bank; quantity: number }) => unknown;
+	onHarvest?: (options: { user: MUser; loot: Bank; quantity: number; messages: string[] }) => Promise<unknown>;
+	noArcaneHarvester?: boolean;
 }
 
 export enum HunterTechniqueEnum {
@@ -287,7 +329,7 @@ export enum HunterTechniqueEnum {
 	BoxTrapping = 'box trapping',
 	ButterflyNetting = 'butterfly netting',
 	DeadfallTrapping = 'deadfall trapping',
-	Falconry = 'falconry',
+	Falconry = 'hawking',
 	MagicBoxTrapping = 'magic box trapping',
 	NetTrapping = 'net trapping',
 	PitfallTrapping = 'pitfall trapping',

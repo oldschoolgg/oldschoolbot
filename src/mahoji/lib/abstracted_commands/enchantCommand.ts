@@ -1,10 +1,12 @@
 import { Time } from 'e';
 
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { itemID } from 'oldschooljs/dist/util';
 import { BitField } from '../../../lib/constants';
 import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, stringMatches } from '../../../lib/util';
+import type { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
+import { itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -34,7 +36,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	const maxTripLength = calcMaxTripLength(user, 'Enchanting');
 
-	let timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
+	const timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timeToEnchantTen);
@@ -55,7 +57,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	const cost = determineRunes(user, enchantable.input.clone().multiply(quantity));
 
-	if (!userBank.has(cost.bank)) {
+	if (!userBank.has(cost)) {
 		return `You don't have the materials needed to enchant ${quantity}x ${enchantable.name}, you need ${
 			enchantable.input
 		}, you're missing **${cost.clone().remove(userBank)}**.`;

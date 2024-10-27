@@ -1,17 +1,16 @@
-import { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User, UserStats } from '@prisma/client';
-import { Bank } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type { Minigame, PlayerOwnedHouse, Tame, User, UserStats, activity_type_enum } from '@prisma/client';
+import { Bank, type Monster } from 'oldschooljs';
 
-import { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { personalSpellCastStats } from '../../mahoji/lib/abstracted_commands/statCommand';
-import { UserFullGearSetup } from '../gear';
-import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
+import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
+import type { personalSpellCastStats } from '../../mahoji/lib/abstracted_commands/statCommand';
+import type { UserFullGearSetup } from '../gear';
+import type { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import Grimy from '../skilling/skills/herblore/mixables/grimy';
 import Potions from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
 import creatures from '../skilling/skills/hunter/creatures';
-import { getSlayerTaskStats } from '../slayer/slayerUtil';
-import { ItemBank, Skills } from '../types';
+import type { getSlayerTaskStats } from '../slayer/slayerUtil';
+import type { ItemBank, Skills } from '../types';
 import { stringMatches } from '../util';
 
 export interface HasFunctionArgs {
@@ -72,7 +71,7 @@ export function leaguesHasCatches(args: HasFunctionArgs, name: string, amount = 
 }
 
 export function leaguesSlayerTaskForMonster(args: HasFunctionArgs, mon: Monster | CustomMonster, amount: number) {
-	let data = args.slayerStats.find(i => i.monsterID === mon.id);
+	const data = args.slayerStats.find(i => i.monsterID === mon.id);
 	return data !== undefined && data.total_tasks >= amount;
 }
 

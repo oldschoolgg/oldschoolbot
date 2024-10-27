@@ -1,13 +1,12 @@
 import { activity_type_enum } from '@prisma/client';
-import { objectEntries, randArrItem, randInt, Time } from 'e';
+import { Time, objectEntries, randArrItem, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
 import { ClueTiers } from '../../src/lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
-import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { assert } from '../../src/lib/util/logError';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
@@ -96,7 +95,7 @@ describe('MUser', () => {
 		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
 		const xpMultiplied = 1000 * GLOBAL_BSO_XP_MULTIPLIER;
 		expect(user.skillsAsLevels.agility).toEqual(20);
-		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP
+		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP.
 **Congratulations! Your Agility level is now 20** 🎉`);
 		const xpAdded = await global.prisma!.xPGain.findMany({
 			where: {
@@ -112,11 +111,11 @@ describe('MUser', () => {
 	test('skillsAsLevels/skillsAsXP', async () => {
 		const user = await createTestUser();
 		for (const [key, val] of objectEntries(user.skillsAsLevels)) {
-			let expectedVal = key === 'hitpoints' ? 10 : 1;
+			const expectedVal = key === 'hitpoints' ? 10 : 1;
 			expect(val).toEqual(expectedVal);
 		}
 		for (const [key, val] of objectEntries(user.skillsAsXP)) {
-			let expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
+			const expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
 			expect(val).toEqual(expectedVal);
 		}
 		expect(user.skillsAsLevels.dungeoneering).toEqual(1);
@@ -166,8 +165,8 @@ describe('MUser', () => {
 				group_activity: false,
 				data: {
 					userID: user.id,
-					clueID: tier.id,
-					quantity: randInt(1, 10)
+					ci: tier.id,
+					q: randInt(1, 10)
 				}
 			});
 		}

@@ -1,8 +1,8 @@
-import { randFloat, reduceNumByPercent, Time } from 'e';
+import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -21,7 +21,7 @@ export async function driftNetCommand(
 	}
 
 	if (user.skillLevel(SkillsEnum.Fishing) < 47 || user.skillLevel(SkillsEnum.Hunter) < 44) {
-		return 'You need atleast level 44 Hunter and 47 Fishing to do Drift net fishing.';
+		return 'You need at least level 44 Hunter and 47 Fishing to do Drift net fishing.';
 	}
 
 	if (
@@ -35,9 +35,10 @@ export async function driftNetCommand(
 		return 'You need a trident equipped to do Drift net fishing. Example of tridents are Merfolk trident and Uncharged trident.';
 	}
 
-	if (minutes < 1 || !Number.isInteger(minutes) || isNaN(minutes)) return 'Please specify a valid number of minutes.';
+	if (minutes < 1 || !Number.isInteger(minutes) || Number.isNaN(minutes))
+		return 'Please specify a valid number of minutes.';
 
-	let tripLength = Time.Minute * minutes;
+	const tripLength = Time.Minute * minutes;
 
 	if (tripLength > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -74,7 +75,7 @@ export async function driftNetCommand(
 
 	itemsToRemove.add('Drift net', quantity);
 
-	if (!userBank.has(itemsToRemove.bank)) {
+	if (!userBank.has(itemsToRemove)) {
 		return `You need ${quantity}x Drift net for the whole trip, try a lower trip length or make/buy more Drift net.`;
 	}
 

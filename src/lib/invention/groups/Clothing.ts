@@ -1,5 +1,5 @@
+import type { DisassemblySourceGroup } from '..';
 import getOSItem from '../../util/getOSItem';
-import { DisassemblySourceGroup } from '..';
 
 const i = getOSItem;
 
@@ -112,7 +112,7 @@ export const Clothing: DisassemblySourceGroup = {
 				'Rogue mask',
 				'Rogue top',
 				'Rogue trousers',
-				'Rose tinted lens',
+				'Rose tinted glasses',
 				'Royal crown',
 				'Green elegant blouse',
 				'Green elegant legs',

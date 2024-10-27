@@ -1,7 +1,6 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, Message, User } from 'discord.js';
-import { isFunction, randArrItem, shuffleArr, Time } from 'e';
-import he from 'he';
+import { EmbedBuilder, type Message, type User } from 'discord.js';
+import { Time, isFunction, randArrItem, shuffleArr } from 'e';
 import fetch from 'node-fetch';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
@@ -13,9 +12,11 @@ import { allCollectionLogsFlat } from './data/Collections';
 import Createables from './data/createables';
 import killableMonsters from './minions/data/killableMonsters';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
+import { sendToChannelID } from './util/webhook';
 import { LampTable } from './xpLamps';
 
 const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> => {
+	if (!msg.channel.isSendable()) return null;
 	const { question, correct_answer, incorrect_answers } = await fetch(
 		'https://opentdb.com/api.php?amount=1&category=9&difficulty=medium&type=multiple'
 	)
@@ -26,7 +27,7 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 
 	const embed = new EmbedBuilder()
 		.setTitle('Reply with the answer for a reward!')
-		.setDescription(`${he.decode(question)}\n\nPossible answers: ${allAnswers.join(', ')}`)
+		.setDescription(`${question}\n\nPossible answers: ${allAnswers.join(', ')}`)
 		.setThumbnail(
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);
@@ -44,12 +45,13 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 		const winner = collected.first()?.author;
 		return winner ?? null;
 	} catch (err) {
-		await msg.channel.send('Nobody answered in time, sorry!');
+		await sendToChannelID(msg.channelId, 'Nobody answered in time, sorry!');
 		return null;
 	}
 };
 
 const itemChallenge: Challenge = async (msg: Message): Promise<User | null> => {
+	if (!msg.channel.isSendable()) return null;
 	const randomItem = Items.random();
 	const scrambed = randomItem.name
 		.split(' ')
@@ -76,12 +78,13 @@ const itemChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 		const winner = collected.first()?.author;
 		return winner ?? null;
 	} catch (err) {
-		await msg.channel.send('Nobody answered in time, sorry!');
+		await sendToChannelID(msg.channelId, 'Nobody answered in time, sorry!');
 		return null;
 	}
 };
 
 const createdChallenge: Challenge = async (msg: Message): Promise<User | null> => {
+	if (!msg.channel.isSendable()) return null;
 	const all = Createables.filter(
 		i =>
 			['revert', 'fix', '(', 'unlock', 'unpack', 'pouch', ' set', 'graceful'].every(
@@ -99,8 +102,8 @@ const createdChallenge: Challenge = async (msg: Message): Promise<User | null> =
 				isFunction(randomCreatable.inputItems)
 					? "This shouldn't be possible..."
 					: randomCreatable.inputItems instanceof Bank
-					? randomCreatable.inputItems
-					: new Bank(randomCreatable.inputItems)
+						? randomCreatable.inputItems
+						: new Bank(randomCreatable.inputItems)
 			}`
 		)
 		.setThumbnail(
@@ -141,7 +144,8 @@ const monsters = [...Object.values(BSOMonsters), ...killableMonsters]
 	.filter(m => m.allItems.length >= 3);
 
 const monsterDropChallenge: Challenge = async (msg: Message): Promise<User | null> => {
-	let monster = randArrItem(monsters);
+	const monster = randArrItem(monsters);
+	if (!msg.channel.isSendable()) return null;
 
 	const items = shuffleArr(monster.allItems).slice(0, 3);
 	const validMonsters = monsters.filter(mon => items.every(t => mon.allItems.includes(t)));
@@ -166,14 +170,14 @@ const monsterDropChallenge: Challenge = async (msg: Message): Promise<User | nul
 		const winner = collected.first()?.author;
 		return winner ?? null;
 	} catch (err) {
-		await msg.channel.send(`Nobody answered in time, sorry! The correct answer was: ${monster.name}`);
+		await sendToChannelID(msg.channelId, `Nobody answered in time, sorry! The correct answer was: ${monster.name}`);
 		return null;
 	}
 };
 
 const collectionLogChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 	const cl = randArrItem(allCollectionLogsFlat);
-
+	if (!msg.channel.isSendable()) return null;
 	const embed = new EmbedBuilder()
 		.setTitle('Reply with the answer for a reward!')
 		.setDescription(`Name any item from this collection log: ${cl.name}`)
@@ -194,7 +198,7 @@ const collectionLogChallenge: Challenge = async (msg: Message): Promise<User | n
 		const winner = collected.first()?.author;
 		return winner ?? null;
 	} catch (err) {
-		await msg.channel.send('Nobody answered in time, sorry!');
+		await sendToChannelID(msg.channelId, 'Nobody answered in time, sorry!');
 		return null;
 	}
 };
@@ -260,11 +264,11 @@ export async function boxSpawnHandler(msg: Message) {
 		},
 		{ main_server_challenges_won: true }
 	);
-	let wonStr = `This is your ${formatOrdinal(newStats.main_server_challenges_won)} challenge win!`;
+	const wonStr = `This is your ${formatOrdinal(newStats.main_server_challenges_won)} challenge win!`;
 	const loot = roll(20) ? LampTable.roll() : MysteryBoxes.roll();
-	if (!winnerUser.isIronman) {
-		await winnerUser.addItemsToBank({ items: loot, collectionLog: true });
-		return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**. ${wonStr}`);
-	}
-	return msg.channel.send(`Congratulations, ${winner}! You won! But you stand alone, no ${loot} for you. ${wonStr}`);
+
+	await winnerUser.addItemsToBank({ items: loot, collectionLog: true });
+	return sendToChannelID(msg.channelId, {
+		content: `Congratulations, ${winner}! You received: **${loot}**. ${wonStr}`
+	});
 }

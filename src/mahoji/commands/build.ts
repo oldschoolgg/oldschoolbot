@@ -1,18 +1,17 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import { User } from 'discord.js';
-import { reduceNumByPercent, round, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { Time, reduceNumByPercent, round } from 'e';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
-import { Skills } from '../../lib/types';
-import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
+import type { Skills } from '../../lib/types';
+import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -107,7 +106,7 @@ export const buildCommand: OSBMahojiCommand = {
 		const maxTripLength = calcMaxTripLength(user, 'Construction');
 		const maxForMaterials = planksHas / planksQtyCost;
 
-		let boosts: string[] = [];
+		const boosts: string[] = [];
 
 		const boostedActionTime = reduceNumByPercent(
 			timeToBuildSingleObject,
@@ -132,7 +131,7 @@ export const buildCommand: OSBMahojiCommand = {
 		}
 		const maxForTime = Math.floor(maxTripLength / timeToBuildSingleObject);
 
-		let defaultQuantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
+		const defaultQuantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
 
 		let { quantity } = options;
 		if (!quantity) quantity = defaultQuantity;
@@ -140,7 +139,7 @@ export const buildCommand: OSBMahojiCommand = {
 		const cost = new Bank().add(plank, planksQtyCost * quantity);
 		const hasScroll = user.owns('Scroll of proficiency');
 		if (hasScroll) {
-			cost.bank[plank] = Math.floor(reduceNumByPercent(cost.bank[plank], 15));
+			cost.set(plank, Math.floor(reduceNumByPercent(cost.amount(plank), 15)));
 			boosts.push('15% less planks used from Scroll of proficiency');
 		}
 

@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 const replaceItems = ['Fish barrel', 'Tackle box', 'Big harpoonfish'];
 
@@ -129,7 +129,7 @@ const fishTables = [
 
 export function getTemporossLoot(quantity: number, fishingLevel: number, userBank: Bank) {
 	const loot = new Bank();
-	let lootTable = new LootTable()
+	const lootTable = new LootTable()
 		.add('Spirit flakes', [32, 64], 2000)
 		.add(PoolCasketTable, 1, 400)
 		.add('Plank', [20, 30], 350)
@@ -155,7 +155,7 @@ export function getTemporossLoot(quantity: number, fishingLevel: number, userBan
 
 	for (let index = 0; index < quantity; index++) {
 		const newItem = lootTable.roll();
-		if (replaceItems.includes(newItem.items()[0][0].name) && userBank.has(newItem.bank)) {
+		if (replaceItems.includes(newItem.items()[0][0].name) && userBank.has(newItem)) {
 			loot.add('Soaked page', 25);
 		} else {
 			loot.add(newItem);

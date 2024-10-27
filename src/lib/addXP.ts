@@ -1,7 +1,8 @@
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
-import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
-import { Item } from 'oldschooljs/dist/meta/types';
-import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
+import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { type User, UserEventType } from '@prisma/client';
+import { bold } from 'discord.js';
+import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAXING_MESSAGE } from '../config';
 import { Channel, Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
@@ -14,14 +15,16 @@ import {
 } from './data/CollectionsExport';
 import { skillEmoji } from './data/emojis';
 import { getSimilarItems } from './data/similarItems';
-import { AddXpParams } from './minions/types';
-import { prisma } from './settings/prisma';
+import type { AddXpParams } from './minions/types';
+
+import { sql } from './postgres';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
-import { itemNameFromID } from './util';
+import { convertLVLtoXP, convertXPtoLVL, itemNameFromID, toKMB } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
+import { insertUserEvent } from './util/userEvents';
 import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);
@@ -36,7 +39,7 @@ async function howManyMaxed() {
 		(await Promise.all([prisma.$queryRawUnsafe(makeQuery(false)), prisma.$queryRawUnsafe(makeQuery(true))])) as any
 	)
 		.map((i: any) => i[0].count)
-		.map((i: any) => parseInt(i));
+		.map((i: any) => Number.parseInt(i));
 
 	return {
 		normies,
@@ -107,7 +110,7 @@ const skillingOutfitBoosts = [
 // Build list of all Master capes including combined capes.
 const allMasterCapes = Skillcapes.map(i => i.masterCape)
 	.map(msc => getSimilarItems(msc.id))
-	.flat(Infinity) as number[];
+	.flat(Number.POSITIVE_INFINITY) as number[];
 
 function getEquippedCapes(user: MUser) {
 	return objectValues(user.gear)
@@ -168,7 +171,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		params.amount *= 2;
 		gorajanBoost = true;
 	}
-	let firstAgeEquipped = 0;
+
+	let totalFirstAgeBonus = 0;
+	let originalFirstAgeEquipped = 0;
 	for (const item of resolveItems([
 		'First age tiara',
 		'First age amulet',
@@ -177,16 +182,26 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		'First age ring'
 	])) {
 		if (user.hasEquipped(item)) {
-			firstAgeEquipped += 1;
+			originalFirstAgeEquipped += 1;
+			totalFirstAgeBonus += 1;
 		}
 	}
-	if (firstAgeEquipped > 0) {
-		if (firstAgeEquipped === 5) {
-			params.amount = increaseNumByPercent(params.amount, 6);
-		} else {
-			params.amount = increaseNumByPercent(params.amount, firstAgeEquipped);
+	if (originalFirstAgeEquipped === 5) {
+		totalFirstAgeBonus += 1;
+	}
+	let newFirstAgeEquipped = 0;
+	for (const item of resolveItems(['First age robe bottom', 'First age robe top'])) {
+		if (user.hasEquipped(item)) {
+			newFirstAgeEquipped += 1.5;
+			totalFirstAgeBonus += 1.5;
 		}
 	}
+	if (newFirstAgeEquipped === 3) {
+		totalFirstAgeBonus += 1;
+	}
+
+	if (totalFirstAgeBonus > 0) params.amount = increaseNumByPercent(params.amount, totalFirstAgeBonus);
+
 	const boosts = staticXPBoosts.get(params.skillName);
 	if (boosts && !params.artificial) {
 		for (const booster of boosts) {
@@ -287,6 +302,10 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	// 	globalClient.emit(Events.ServerNotification, str);
 	// }
 
+	if (currentXP < MAX_XP && newXP >= MAX_XP) {
+		await insertUserEvent({ userID: user.id, type: UserEventType.MaxXP, skill: skill.id });
+	}
+
 	// Announcements with nthUser
 	for (const { type, value } of [
 		{ type: 'lvl', value: 120 },
@@ -302,11 +321,12 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		let queryValue = 0;
 		// Prepare the message to be sent
 		if (type === 'lvl') {
+			await insertUserEvent({ userID: user.id, type: UserEventType.MaxLevel, skill: skill.id });
 			queryValue = convertLVLtoXP(value);
 			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
 				user.minionName
 			}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} to get level ${value} in ${skillNameCased}`
+				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get level ${value} in ${skillNameCased}`
 			}`;
 		} else {
 			queryValue = value;
@@ -315,7 +335,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
 				value
 			)} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} to get ${toKMB(value)} XP in ${skillNameCased}`
+				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get ${toKMB(value)} XP in ${skillNameCased}`
 			}`;
 		}
 		// Query nthUser and nthIronman
@@ -341,36 +361,44 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (currentXP >= MAX_XP) {
 		let xpStr = '';
 		if (params.duration && !params.minimal) {
-			xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name} XP already.`;
-			xpStr += ` Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+			xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name}XP already`;
+			xpStr += ` Tracked ${params.amount.toLocaleString()}${skill.emoji}XP.`;
 			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			xpStr += ` (${toKMB(rawXPHr)}/Hr)`;
 		} else {
-			xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+			xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()}${skill.emoji}XP.`;
 		}
 		return xpStr;
 	}
 
-	await user.update({
-		[`skills_${params.skillName}`]: Math.floor(newXP)
-	});
+	await sql.unsafe(`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`);
+	(user.user as User)[`skills_${params.skillName}`] = BigInt(Math.floor(newXP));
+	user.updateProperties();
+
+	if (currentXP < MAX_XP && newXP === MAX_XP && Object.values(user.skillsAsXP).every(xp => xp === MAX_XP)) {
+		globalClient.emit(
+			Events.ServerNotification,
+			bold(
+				`🎉 ${skill.emoji}**${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
+			)
+		);
+		await insertUserEvent({ userID: user.id, type: UserEventType.MaxTotalXP });
+	}
 
 	let str = '';
 	if (preMax !== -1) {
 		str = params.minimal
 			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
-			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
+			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP.`;
 		if (masterCape && !params.minimal) {
 			str += ` You received ${matchingCapeID ? '8' : '3'}% bonus XP for having a ${itemNameFromID(masterCape)}.`;
 		}
 		if (gorajanBoost && !params.minimal) {
 			str += ' (2x boost from Gorajan armor)';
 		}
-		if (firstAgeEquipped && !params.minimal) {
-			str += ` You received ${
-				firstAgeEquipped === 5 ? 6 : firstAgeEquipped
-			}% bonus XP for First age outfit items.`;
+		if (totalFirstAgeBonus > 0 && !params.minimal) {
+			str += ` You received ${totalFirstAgeBonus}% bonus XP for First age outfit items.`;
 		}
 
 		if (params.duration) {

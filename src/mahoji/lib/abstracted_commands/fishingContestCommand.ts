@@ -10,7 +10,7 @@ import {
 } from '../../../lib/fishingContest';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { FishingContestOptions } from '../../../lib/types/minions';
+import type { FishingContestOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -18,7 +18,32 @@ import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 export async function fishingContestStartCommand(user: MUser, channelID: string, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();
 	const validLocs = getValidLocationsForFishType(currentFishType);
-	if (!loc) loc = validLocs[0].name;
+	let quantity = 1;
+	const duration = Math.floor(quantity * Time.Minute * 1.69);
+	const quantityBoosts = [];
+
+	const tackleBoxes = ["Champion's tackle box", 'Professional tackle box', 'Standard tackle box', 'Basic tackle box'];
+	for (let i = 0; i < tackleBoxes.length; i++) {
+		if (user.hasEquippedOrInBank(tackleBoxes[i])) {
+			const num = tackleBoxes.length - i;
+			quantityBoosts.push(`${num} for ${tackleBoxes[i]}`);
+			quantity += num;
+			break;
+		}
+	}
+
+	if (user.hasEquippedOrInBank('Crystal fishing rod')) {
+		quantity++;
+		quantityBoosts.push('1 for Crystal fishing rod');
+	}
+	if (!loc) {
+		for (const location of validLocs) {
+			if (user.bank.amount(location.bait.id) >= quantity) {
+				loc = location.name;
+			}
+		}
+		if (!loc) loc = validLocs[0].name;
+	}
 	const fishingLocation = fishingLocations.find(i => stringMatches(i.name, loc!));
 	if (!fishingLocation) {
 		return `That's not a valid location to fish at, you can fish at these locations: ${fishingLocations
@@ -33,28 +58,10 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 	}
 
 	if (!['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))) {
-		return 'You need to buy a Contest rod and a tackle box to compete in the Fishing contest.';
+		return "You need to </buy:982663098949304331> a Contest rod and a Beginner's tackle box to compete in the Fishing contest.";
 	}
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
-	}
-	let quantity = 1;
-	let duration = Math.floor(quantity * Time.Minute * 1.69);
-	let quantityBoosts = [];
-
-	const tackleBoxes = ["Champion's tackle box", 'Professional tackle box', 'Standard tackle box', 'Basic tackle box'];
-	for (let i = 0; i < tackleBoxes.length; i++) {
-		if (user.hasEquippedOrInBank(tackleBoxes[i])) {
-			let num = tackleBoxes.length - i;
-			quantityBoosts.push(`${num} for ${tackleBoxes[i]}`);
-			quantity += num;
-			break;
-		}
-	}
-
-	if (user.hasEquippedOrInBank('Crystal fishing rod')) {
-		quantity++;
-		quantityBoosts.push('1 for Crystal fishing rod');
 	}
 
 	const result = await getUsersFishingContestDetails(user);

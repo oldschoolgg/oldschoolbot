@@ -1,4 +1,4 @@
-import { KillableMonster } from '../types';
+import type { KillableMonster } from '../types';
 
 export default function isImportantItemForMonster(itemID: number, monster: KillableMonster) {
 	if (!monster.uniques) return false;

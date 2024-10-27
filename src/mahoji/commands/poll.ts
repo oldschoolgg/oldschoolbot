@@ -1,8 +1,9 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { channelIsSendable } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const pollCommand: OSBMahojiCommand = {
 	name: 'poll',

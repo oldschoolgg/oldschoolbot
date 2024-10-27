@@ -1,22 +1,12 @@
+import { execSync } from 'node:child_process';
 import path from 'node:path';
-
-import { Image } from '@napi-rs/canvas';
-import { StoreBitfield } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
-import { execSync } from 'child_process';
-import {
-	APIButtonComponent,
-	APIInteractionDataResolvedChannel,
-	APIRole,
-	ButtonBuilder,
-	ButtonStyle,
-	ComponentType
-} from 'discord.js';
+import { isMainThread } from 'node:worker_threads';
+import { type CommandOptions, PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit/util';
+import type { Prisma } from '@prisma/client';
+import type { APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
-import { CommandOptions } from 'mahoji/dist/lib/types';
-import { Items } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
+import { Items, convertLVLtoXP, getItemOrThrow, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -24,15 +14,14 @@ import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { customItems } from './customItems/util';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
-import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
-import { dateFm } from './util/smallUtils';
+import type { CanvasImage } from './util/canvasUtil';
 
-export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
+export { PerkTier };
 
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '944924763405574174';
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO' as 'BSO' | 'OSB';
+export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
@@ -54,8 +43,8 @@ export const Channel = {
 				? '346304390858145792'
 				: '1154056119019393035'
 			: production
-			? '792691343284764693'
-			: '1154056119019393035',
+				? '792691343284764693'
+				: '1154056119019393035',
 	// BSO Channels
 	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
 	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
@@ -81,10 +70,14 @@ export const Roles = {
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
 	TopInventor: '992799099801833582',
 	TopLeagues: '1005417171112972349',
-	EventOrganizer: '1149907536749801542'
+	EventOrganizer: '1149907536749801542',
+	TopTamer: '1054356709222666240',
+	TopMysterious: '1074592096968785960',
+	TopGlobalCL: '848966773885763586',
+	TopFarmer: '894194259731828786'
 };
 
-export const enum DefaultPingableRoles {
+export enum DefaultPingableRoles {
 	// Tester roles:
 	Tester = '682052620809928718',
 	BSOTester = '829368646182371419',
@@ -92,7 +85,7 @@ export const enum DefaultPingableRoles {
 	BSOMass = '759573020464906242'
 }
 
-export const enum Emoji {
+export enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
 	OSBot = '<:OSBot:601768469905801226>',
 	Joy = '😂',
@@ -212,7 +205,7 @@ export enum ActivityGroup {
 	Minigame = 'Minigame'
 }
 
-export const enum Events {
+export enum Events {
 	Error = 'error',
 	Log = 'log',
 	Verbose = 'verbose',
@@ -225,37 +218,6 @@ export const enum Events {
 
 export const COINS_ID = 995;
 
-export const enum PerkTier {
-	/**
-	 * Boosters
-	 */
-	One = 1,
-	/**
-	 * Tier 1 Patron
-	 */
-	Two = 2,
-	/**
-	 * Tier 2 Patron, Contributors, Mods
-	 */
-	Three = 3,
-	/**
-	 * Tier 3 Patron
-	 */
-	Four = 4,
-	/**
-	 * Tier 4 Patron
-	 */
-	Five = 5,
-	/**
-	 * Tier 5 Patron
-	 */
-	Six = 6,
-	/**
-	 * Tier 6 Patron
-	 */
-	Seven = 7
-}
-
 export enum BitField {
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
@@ -263,7 +225,6 @@ export enum BitField {
 	IsPatronTier4 = 5,
 	IsPatronTier5 = 6,
 	isModerator = 7,
-	isContributor = 8,
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
@@ -274,7 +235,6 @@ export enum BitField {
 	HasDexScroll = 16,
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
-	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
 	IsPatronTier6 = 21,
 	DisableBirdhouseRunButton = 22,
@@ -296,6 +256,7 @@ export enum BitField {
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
+	DisableOpenableNames = 41,
 
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
@@ -326,7 +287,11 @@ export enum BitField {
 	HasVibrantBoon = 225,
 	HasAncientBoon = 226,
 	DisabledTameClueOpening = 227,
-	HasMoondashCharm = 228
+	HasMoondashCharm = 228,
+	HasUnlockedVenatrix = 229,
+	GrewFiveSpiritTrees = 230,
+	UseSuperRestoresForDwarvenBlessing = 231,
+	DisableSizeMatters = 232
 }
 
 interface BitFieldData {
@@ -339,9 +304,7 @@ interface BitFieldData {
 }
 
 export const BitFieldData: Record<BitField, BitFieldData> = {
-	[BitField.IsWikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
 	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
-	[BitField.isContributor]: { name: 'Contributor', protected: true, userConfigurable: false },
 
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
 	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp', protected: false, userConfigurable: false },
@@ -530,21 +493,37 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisableOpenableNames]: {
+		name: 'Disable Names On Open',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.HasMoondashCharm]: {
 		name: 'Used Moondash Charm',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasUnlockedVenatrix]: {
+		name: 'Has Unlocked Venatrix',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.GrewFiveSpiritTrees]: {
+		name: 'Has grown five spirit trees',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.UseSuperRestoresForDwarvenBlessing]: {
+		name: 'Use Super Restores For Dwarven Blessing',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableSizeMatters]: {
+		name: 'Disable Size Matters unlock',
 		protected: false,
 		userConfigurable: true
 	}
 } as const;
-
-export const enum PatronTierID {
-	One = '4608201',
-	Two = '4608226',
-	Three = '4720356',
-	Four = '5262065',
-	Five = '5262216',
-	Six = '8091554'
-}
 
 export const BadgesEnum = {
 	Developer: 0,
@@ -559,7 +538,10 @@ export const BadgesEnum = {
 	TopSkiller: 9,
 	TopCollector: 10,
 	TopMinigame: 11,
-	SotWTrophy: 12
+	SotWTrophy: 12,
+	Slayer: 13,
+	TopGiveawayer: 14,
+	Farmer: 15
 } as const;
 
 export const badges: { [key: number]: string } = {
@@ -575,7 +557,10 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.TopSkiller]: Emoji.Skiller,
 	[BadgesEnum.TopCollector]: Emoji.CollectionLog,
 	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
-	[BadgesEnum.SotWTrophy]: Emoji.SOTW
+	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy,
+	[BadgesEnum.Slayer]: Emoji.Slayer,
+	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat,
+	[BadgesEnum.Farmer]: Emoji.Farming
 };
 
 export const MAX_XP = 5_000_000_000;
@@ -600,81 +585,8 @@ export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
-const buttonSource = [
-	{
-		label: 'Wiki',
-		emoji: '802136964027121684',
-		url: 'https://bso-wiki.oldschool.gg/'
-	},
-	{
-		label: 'Patreon',
-		emoji: '679334888792391703',
-		url: 'https://www.patreon.com/oldschoolbot'
-	},
-	{
-		label: 'Support Server',
-		emoji: '778418736180494347',
-		url: 'https://www.discord.gg/ob'
-	},
-	{
-		label: 'Bot Invite',
-		emoji: '778418736180494347',
-		url: 'http://www.oldschool.gg/invite/bso'
-	}
-];
-
-export const informationalButtons = buttonSource.map(i =>
-	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
-);
-export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
-	type: ComponentType.Button,
-	label: i.label,
-	emoji: { id: i.emoji },
-	style: ButtonStyle.Link,
-	url: i.url
-}));
-
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
-
-export const scaryEatables = [
-	{
-		item: getOSItem('Candy teeth'),
-		healAmount: 3
-	},
-	{
-		item: getOSItem('Toffeet'),
-		healAmount: 5
-	},
-	{
-		item: getOSItem('Chocolified skull'),
-		healAmount: 8
-	},
-	{
-		item: getOSItem('Rotten sweets'),
-		healAmount: 9
-	},
-	{
-		item: getOSItem('Hairyfloss'),
-		healAmount: 12
-	},
-	{
-		item: getOSItem('Eyescream'),
-		healAmount: 13
-	},
-	{
-		item: getOSItem('Goblinfinger soup'),
-		healAmount: 20
-	},
-	{
-		item: getOSItem("Benny's brain brew"),
-		healAmount: 50
-	},
-	{
-		item: getOSItem('Roasted newt'),
-		healAmount: 120
-	}
-];
 
 export const projectiles = {
 	arrow: {
@@ -708,9 +620,11 @@ export const projectiles = {
 } as const;
 export type ProjectileType = keyof typeof projectiles;
 
-export const PHOSANI_NIGHTMARE_ID = 9416;
+export const spearWeapon = resolveItems(['Crystal halberd', 'Zamorakian hasta', 'Zamorakian spear']);
+export const clawWeapon = resolveItems(['Dragon claws']); // TODO: Add Burning claws once OSJS updated
 
-export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
+export const PHOSANI_NIGHTMARE_ID = 9416;
+const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
@@ -722,7 +636,7 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandOption
 }
 
 function compressMahojiArgs(options: CommandOptions) {
-	let newOptions: Record<string, string | number | boolean | null | undefined> = {};
+	const newOptions: Record<string, string | number | boolean | null | undefined> = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
 		CommandOptions[keyof CommandOptions]
@@ -765,7 +679,7 @@ export function getCommandArgs(
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
 
 export const DISABLED_COMMANDS = new Set<string>();
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
@@ -774,38 +688,34 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
 export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
 
+export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
+export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
+
 export const busyImmuneCommands = ['admin', 'rp'];
-export const usernameCache = new Map<string, string>();
-export const badgesCache = new Map<string, string>();
-export const minionBuyButton = new ButtonBuilder()
-	.setCustomId('BUY_MINION')
-	.setLabel('Buy Minion')
-	.setStyle(ButtonStyle.Success);
+
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
 
 export const IVY_MAX_TRIP_LENGTH_BOOST = Time.Minute * 25;
 export const chompyHats = [
-	[getOSItem('Chompy bird hat (ogre bowman)'), 30],
-	[getOSItem('Chompy bird hat (bowman)'), 40],
-	[getOSItem('Chompy bird hat (ogre yeoman)'), 50],
-	[getOSItem('Chompy bird hat (yeoman)'), 70],
-	[getOSItem('Chompy bird hat (ogre marksman)'), 95],
-	[getOSItem('Chompy bird hat (marksman)'), 125],
-	[getOSItem('Chompy bird hat (ogre woodsman)'), 170],
-	[getOSItem('Chompy bird hat (woodsman)'), 225],
-	[getOSItem('Chompy bird hat (ogre forester)'), 300],
-	[getOSItem('Chompy bird hat (forester)'), 400],
-	[getOSItem('Chompy bird hat (ogre bowmaster)'), 550],
-	[getOSItem('Chompy bird hat (bowmaster)'), 700],
-	[getOSItem('Chompy bird hat (ogre expert)'), 1000],
-	[getOSItem('Chompy bird hat (expert)'), 1300],
-	[getOSItem('Chompy bird hat (ogre dragon archer)'), 1700],
-	[getOSItem('Chompy bird hat (dragon archer)'), 2250],
-	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
-	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
+	[getItemOrThrow('Chompy bird hat (ogre bowman)'), 30],
+	[getItemOrThrow('Chompy bird hat (bowman)'), 40],
+	[getItemOrThrow('Chompy bird hat (ogre yeoman)'), 50],
+	[getItemOrThrow('Chompy bird hat (yeoman)'), 70],
+	[getItemOrThrow('Chompy bird hat (ogre marksman)'), 95],
+	[getItemOrThrow('Chompy bird hat (marksman)'), 125],
+	[getItemOrThrow('Chompy bird hat (ogre woodsman)'), 170],
+	[getItemOrThrow('Chompy bird hat (woodsman)'), 225],
+	[getItemOrThrow('Chompy bird hat (ogre forester)'), 300],
+	[getItemOrThrow('Chompy bird hat (forester)'), 400],
+	[getItemOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
+	[getItemOrThrow('Chompy bird hat (bowmaster)'), 700],
+	[getItemOrThrow('Chompy bird hat (ogre expert)'), 1000],
+	[getItemOrThrow('Chompy bird hat (expert)'), 1300],
+	[getItemOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
+	[getItemOrThrow('Chompy bird hat (dragon archer)'), 2250],
+	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
-
-export const secretItems: number[] = resolveItems([]);
 
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",
@@ -840,23 +750,40 @@ export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
 const globalConfigSchema = z.object({
-	patreonToken: z.coerce.string().default(''),
-	patreonCampaignID: z.coerce.number().int().default(1),
-	patreonWebhookSecret: z.coerce.string().default(''),
-	httpPort: z.coerce.number().int().default(8080),
-	clientID: z.string().min(15).max(25),
-	geAdminChannelID: z.string().default('')
+	clientID: z.string().min(10).max(25),
+	geAdminChannelID: z.string().default(''),
+	redisPort: z.coerce.number().int().optional(),
+	botToken: z.string().min(1),
+	isCI: z.coerce.boolean().default(false),
+	isProduction: z.coerce.boolean().default(production),
+	testingServerID: z.string(),
+	timeZone: z.literal('UTC')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
+if (!process.env.BOT_TOKEN && !process.env.CI) {
+	throw new Error(
+		`You need to specify the BOT_TOKEN environment variable, copy your bot token from your config.ts and put it in the ".env" file like so:\n\nBOT_TOKEN=your_token_here`
+	);
+}
+
+const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const globalConfig = globalConfigSchema.parse({
-	patreonToken: process.env.PATREON_TOKEN,
-	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
-	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
-	httpPort: process.env.HTTP_PORT,
 	clientID: process.env.CLIENT_ID,
-	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
+	geAdminChannelID: isProduction ? '830145040495411210' : '1042760447830536212',
+	redisPort: process.env.REDIS_PORT,
+	botToken: process.env.BOT_TOKEN,
+	isCI: process.env.CI,
+	isProduction,
+	testingServerID: process.env.TESTING_SERVER_ID ?? OLDSCHOOLGG_TESTING_SERVER_ID,
+	timeZone: process.env.TZ
 });
+
+if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
+	throw new Error('The NODE_ENV and isProduction variables must match');
+}
 
 export const ONE_TRILLION = 1_000_000_000_000;
 export const gloriesInventorySize = 26;
@@ -872,7 +799,6 @@ export const discontinuedItems = resolveItems([
 	'Black swan',
 	...customItems.filter(i => Items.get(i)?.customItemData?.isDiscontinued)
 ]);
-export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
 export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 	let petChance = Math.ceil(10_000_000 / (itemLevel * (itemLevel / 5)));
 	if (herbloreXP >= MAX_XP) {
@@ -884,8 +810,16 @@ export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 export const OSB_VIRTUS_IDS = [26_241, 26_243, 26_245];
 export const YETI_ID = 129_521;
 export const KING_GOLDEMAR_GUARD_ID = 30_913;
+export const demonBaneWeapons = resolveItems([
+	'Silverlight',
+	'Darklight',
+	'Arclight',
+	'Emberlight',
+	'Scorching bow',
+	'Purging staff'
+]);
 
-const gitHash = execSync('git rev-parse HEAD').toString().trim();
+export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
 const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
@@ -916,7 +850,7 @@ export const ItemIconPacks = [
 		name: 'Halloween',
 		storeBitfield: StoreBitfield.HalloweenItemIconPack,
 		id: 'halloween',
-		icons: new Map<number, Image>()
+		icons: new Map<number, CanvasImage>()
 	}
 ];
 
@@ -939,3 +873,9 @@ export const christmasCakeIngredients = resolveItems([
 export const gearValidationChecks = new Set();
 
 export const BSO_MAX_TOTAL_LEVEL = 3120;
+
+if (!process.env.TEST && isMainThread) {
+	console.log(
+		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
+	);
+}

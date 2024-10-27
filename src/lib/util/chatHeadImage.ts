@@ -1,7 +1,6 @@
-import { Canvas } from '@napi-rs/canvas';
 import { AttachmentBuilder } from 'discord.js';
 
-import { loadAndCacheLocalImage, printWrappedText } from './canvasUtil';
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage, printWrappedText } from './canvasUtil';
 
 export const textBoxFile = loadAndCacheLocalImage('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = loadAndCacheLocalImage('./src/lib/resources/images/mejJal.png');
@@ -18,8 +17,9 @@ const marimboChatHead = loadAndCacheLocalImage('./src/lib/resources/images/marim
 const partyPeteHead = loadAndCacheLocalImage('./src/lib/resources/images/partyPete.png');
 const mysteriousFigureHead = loadAndCacheLocalImage('./src/lib/resources/images/mysteriousFigure.png');
 const rudolphChatHead = loadAndCacheLocalImage('./src/lib/resources/images/rudolph.png');
+const minimusHead = loadAndCacheLocalImage('./src/lib/resources/images/minimus.png');
 
-export const chatHeads = {
+const chatHeads = {
 	mejJal: mejJalChatHead,
 	jane: janeChatHead,
 	santa: santaChatHead,
@@ -33,7 +33,8 @@ export const chatHeads = {
 	bunny: bunnyChatHead,
 	partyPete: partyPeteHead,
 	mysteriousFigure: mysteriousFigureHead,
-	rudolph: rudolphChatHead
+	rudolph: rudolphChatHead,
+	minimus: minimusHead
 };
 
 const names: Record<keyof typeof chatHeads, string> = {
@@ -44,17 +45,18 @@ const names: Record<keyof typeof chatHeads, string> = {
 	alry: 'Alry the Angler',
 	wurMuTheMonkey: 'Wur Mu the Monkey',
 	marimbo: 'Marimbo',
-	ketKeh: 'Tzhaar-Ket-Keh',
+	ketKeh: 'TzHaar-Ket-Keh',
 	gertrude: 'Gertrude',
 	antiSanta: 'Anti-Santa',
 	bunny: 'Easter Bunny',
 	partyPete: 'Party Pete',
 	mysteriousFigure: 'Mysterious Figure',
-	rudolph: 'Rudolph the Reindeer'
+	rudolph: 'Rudolph the Reindeer',
+	minimus: 'Minimus'
 };
 
 export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
-	const canvas = new Canvas(519, 142);
+	const canvas = createCanvas(519, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	const headImage = await chatHeads[head];
@@ -70,7 +72,7 @@ export async function newChatHeadImage({ content, head }: { content: string; hea
 	ctx.fillStyle = '#000';
 	printWrappedText(ctx, content, 307, 58, 361);
 
-	return canvas.encode('png');
+	return canvasToBuffer(canvas);
 }
 
 export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {

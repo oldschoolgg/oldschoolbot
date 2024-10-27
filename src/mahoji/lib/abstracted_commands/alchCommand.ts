@@ -1,16 +1,15 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { clamp, Time } from 'e';
-import { Bank } from 'oldschooljs';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, clamp } from 'e';
+import { Bank, type Item } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { Item } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const unlimitedFireRuneProviders = resolveItems([
@@ -78,7 +77,7 @@ export async function alchCommand(
 		...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
 		'Nature rune': quantity
 	});
-	let speed = speedInput ? clamp(speedInput, 1, 5) : null;
+	const speed = speedInput ? clamp(speedInput, 1, 5) : null;
 	if (speed && speed > 1 && speed < 6) {
 		consumedItems.multiply(speed);
 		consumedItems.add('Nature rune', Math.floor(consumedItems.amount('Nature rune') * 0.5));

@@ -1,37 +1,147 @@
-import { Prisma } from '@prisma/client';
-import { randInt, shuffleArr, Time, uniqueArr } from 'e';
-import { CommandRunOptions } from 'mahoji';
-import { Bank } from 'oldschooljs';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type Activity, type GearSetupType, type Prisma, tame_growth } from '@prisma/client';
+import { Time, objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
+import { Bank, type EMonster, Monsters } from 'oldschooljs';
+import { integer, nodeCrypto } from 'random-js';
+import { expect, vi } from 'vitest';
 
-import { globalConfig } from '../../src/lib/constants';
+import { clone } from 'lodash';
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { MUserClass } from '../../src/lib/MUser';
-import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
-import { processPendingActivities } from '../../src/lib/Task';
-import { ItemBank } from '../../src/lib/types';
-import { ActivityTaskOptions } from '../../src/lib/types/minions';
-import { cryptoRand } from '../../src/lib/util';
+import { completeActivity } from '../../src/lib/Task';
+import { type PvMMethod, globalConfig } from '../../src/lib/constants';
+import { sql } from '../../src/lib/postgres';
+import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
+import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
+import { Gear } from '../../src/lib/structures/Gear';
+import { MTame } from '../../src/lib/structures/MTame';
+import { TameSpeciesID } from '../../src/lib/tames';
+import type { ItemBank, SkillsRequired } from '../../src/lib/types';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
+import { getOSItem } from '../../src/lib/util/getOSItem';
+import { minionKCommand } from '../../src/mahoji/commands/k';
+import { stealCommand } from '../../src/mahoji/commands/steal';
+import { tamesCommand } from '../../src/mahoji/commands/tames';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
-import { ClientStorage, User, UserStats } from '.prisma/client';
+import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+import { runTameTask } from '../../src/tasks/tames/tameTasks';
+import type { ClientStorage, User, UserStats } from '.prisma/client';
 
-export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
+const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
 	userID,
 	guildID: '342983479501389826',
 	member: {} as any,
 	user: { id: userID, createdAt: new Date().getTime() - Time.Year } as any,
 	channelID: '111111111',
 	interaction: {
+		channelId: '1',
 		deferReply: () => Promise.resolve(),
 		editReply: () => Promise.resolve(),
 		followUp: () => Promise.resolve()
 	} as any,
-	client: {} as any
+	client: {} as any,
+	djsClient: {} as any
 });
 
 export class TestUser extends MUserClass {
-	constructor(user: MUser | User) {
+	public client!: TestClient;
+
+	constructor(user: MUser | User, client?: TestClient) {
 		super(user instanceof MUserClass ? user.user : user);
+		this.client = client!;
+	}
+
+	async giveIgneTame() {
+		const tame = await prisma.tame.create({
+			data: {
+				user_id: this.id,
+				species_id: TameSpeciesID.Igne,
+				max_artisan_level: 100,
+				max_combat_level: 100,
+				max_gatherer_level: 100,
+				max_support_level: 100,
+				growth_stage: tame_growth.adult
+			}
+		});
+		await this.update({
+			selected_tame: tame.id
+		});
+		return new MTame(tame);
+	}
+
+	async tamePVMTrip(monsterID: number) {
+		const tames = await this.fetchTames();
+		const tame = tames.find(t => t.species.id === TameSpeciesID.Igne)!;
+		const commandResult = await this.runCommand(tamesCommand, {
+			kill: {
+				name: Monsters.get(monsterID)!.name
+			}
+		});
+
+		const activity = await prisma.tameActivity.findFirst({
+			where: {
+				user_id: this.id
+			},
+			include: {
+				tame: true
+			}
+		});
+
+		if (activity) {
+			await runTameTask(activity, tame);
+		}
+		await this.sync();
+		return {
+			commandResult,
+			activity
+		};
+	}
+
+	async runActivity() {
+		const activity = await prisma.activity.findFirst({
+			where: {
+				user_id: BigInt(this.id),
+				completed: false
+			}
+		});
+		if (!activity) {
+			return;
+		}
+
+		await prisma.activity.update({
+			where: {
+				id: activity.id
+			},
+			data: {
+				completed: true
+			}
+		});
+
+		await completeActivity(activity);
+		await this.sync();
+		return convertStoredActivityToFlatActivity(activity);
+	}
+	async setLevel(skill: SkillNameType, level: number) {
+		await this.update({ [`skills_${skill}`]: convertLVLtoXP(level) });
+		return this;
+	}
+
+	async equip(setup: GearSetupType, gear: number[]) {
+		const gearObj = this.gear[setup];
+		for (const item of gear) {
+			gearObj.equip(getOSItem(item));
+		}
+		await this.update({
+			[`gear_${setup}`]: gearObj.raw()
+		});
+		return this;
+	}
+
+	async processActivities(client: TestClient) {
+		await client.processActivities();
+		await this.sync();
 	}
 
 	async openedBankMatch(bankToMatch: Bank) {
@@ -63,12 +173,89 @@ export class TestUser extends MUserClass {
 		await prisma.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
 		await prisma.user.delete({ where: { id: this.id } });
 		const user = await prisma.user.create({ data: { id: this.id } });
+		await global.prisma!.userStats.create({ data: { user_id: BigInt(this.id) } });
 		this.user = user;
 	}
 
-	async runCommand(command: OSBMahojiCommand, options: object = {}) {
+	async giveSlayerTask(monster: EMonster, quantity = 1000) {
+		await prisma.slayerTask.deleteMany({
+			where: {
+				user_id: this.id
+			}
+		});
+		await prisma.slayerTask.create({
+			data: {
+				user_id: this.id,
+				quantity: quantity,
+				quantity_remaining: quantity,
+				slayer_master_id: slayerMasters.find(m => m.tasks.some(t => t.monster.id === monster))!.id,
+				monster_id: monster,
+				skipped: false
+			}
+		});
+	}
+
+	async kill(
+		monster: EMonster,
+		{
+			quantity,
+			method,
+			shouldFail = false,
+			wilderness = false
+		}: { method?: PvMMethod; shouldFail?: boolean; quantity?: number; wilderness?: boolean } = {}
+	) {
+		const previousBank = this.bank.clone();
+		const currentXP = clone(this.skillsAsXP);
+		const commandResult = await this.runCommand(
+			minionKCommand,
+			{ name: Monsters.get(monster)!.name, method, quantity, wilderness },
+			true
+		);
+		if (shouldFail) {
+			expect(commandResult).not.toContain('is now killing');
+		}
+		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
+		const newKC = await this.getKC(monster);
+		const newXP = clone(this.skillsAsXP);
+		const xpGained: SkillsRequired = {} as SkillsRequired;
+		for (const skill of SkillsArray) xpGained[skill] = 0;
+		for (const skill of objectKeys(newXP)) {
+			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
+		}
+
+		return { commandResult, newKC, xpGained, previousBank, activityResult };
+	}
+
+	async pickpocket(
+		monster: EMonster,
+		{ quantity, shouldFail = false }: { shouldFail?: boolean; quantity?: number } = {}
+	) {
+		const previousBank = this.bank.clone();
+		const currentXP = clone(this.skillsAsXP);
+		const commandResult = await this.runCommand(
+			stealCommand,
+			{ name: Monsters.get(monster)!.name, quantity },
+			true
+		);
+		if (shouldFail) {
+			expect(commandResult).not.toContain('is now going to');
+		}
+		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
+		const newXP = clone(this.skillsAsXP);
+		const xpGained: SkillsRequired = {} as SkillsRequired;
+		for (const skill of SkillsArray) xpGained[skill] = 0;
+		for (const skill of objectKeys(newXP)) {
+			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
+		}
+
+		return { commandResult, xpGained, previousBank, activityResult };
+	}
+
+	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
 		const result = await command.run({ ...commandRunOptions(this.id), options });
-		await this.sync();
+		if (syncAfter) {
+			await this.sync();
+		}
 		return result;
 	}
 
@@ -103,18 +290,6 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
-	async runActivity<T extends ActivityTaskOptions>(): Promise<T> {
-		const [finishedActivity] = await processPendingActivities();
-		if (!finishedActivity) {
-			throw new Error('runActivity: No activity was ran');
-		}
-		if (finishedActivity.user_id.toString() !== this.id) {
-			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
-		}
-		const data = convertStoredActivityToFlatActivity(finishedActivity);
-		return data as any;
-	}
-
 	randomBankSubset() {
 		const bank = new Bank();
 		const items = shuffleArr(this.bankWithGP.items()).slice(0, randInt(0, this.bankWithGP.length));
@@ -127,25 +302,108 @@ export class TestUser extends MUserClass {
 
 const idsUsed = new Set<string>();
 
-export function mockedId() {
-	return cryptoRand(1_000_000_000, 5_000_000_000_000).toString();
+export function unMockedCyptoRand(min: number, max: number) {
+	return integer(min, max)(nodeCrypto);
 }
 
-export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
+export function mockedId() {
+	return unMockedCyptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
+}
+
+export async function mockUser(
+	options: Partial<{
+		rangeGear: number[];
+		rangeLevel: number;
+		mageGear: number[];
+		wildyGear: number[];
+		mageLevel: number;
+		meleeGear: number[];
+		slayerLevel: number;
+		venatorBowCharges: number;
+		bank: Bank;
+		QP: number;
+		maxed: boolean;
+	}>
+) {
+	const rangeGear = new Gear();
+	if (options.rangeGear) {
+		for (const item of options.rangeGear) {
+			rangeGear.equip(getOSItem(item));
+		}
+	}
+	const mageGear = new Gear();
+	if (options.mageGear) {
+		for (const item of options.mageGear) {
+			mageGear.equip(getOSItem(item));
+		}
+	}
+
+	const meleeGear = new Gear();
+	if (options.meleeGear) {
+		for (const item of options.meleeGear) {
+			meleeGear.equip(getOSItem(item));
+		}
+	}
+
+	const wildyGear = new Gear();
+	if (options.wildyGear) {
+		for (const item of options.wildyGear) {
+			wildyGear.equip(getOSItem(item));
+		}
+	}
+
+	const user = await createTestUser(options.bank, {
+		skills_ranged: options.rangeLevel ? convertLVLtoXP(options.rangeLevel) : undefined,
+		skills_slayer: options.slayerLevel ? convertLVLtoXP(options.slayerLevel) : undefined,
+		skills_magic: options.mageLevel ? convertLVLtoXP(options.mageLevel) : undefined,
+		gear_mage: options.mageGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_wildy: options.wildyGear ? (wildyGear.raw() as Prisma.InputJsonValue) : undefined,
+		venator_bow_charges: options.venatorBowCharges,
+		QP: options.QP
+	});
+	if (options.maxed) {
+		await user.max();
+	}
+	await prisma.newUser.create({
+		data: {
+			id: user.id
+		}
+	});
+	return user;
+}
+export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
 	if (idsUsed.has(id)) {
 		throw new Error(`ID ${id} has already been used`);
 	}
 	idsUsed.add(id);
+
+	const bank = _bank ? _bank.clone() : null;
+	let GP = userData.GP ? Number(userData.GP) : undefined;
+	if (bank) {
+		if (GP) {
+			GP += bank.amount('Coins');
+		} else {
+			GP = bank.amount('Coins');
+		}
+		bank.remove('Coins', GP);
+	}
+
 	const user = await global.prisma!.user.upsert({
 		create: {
 			id,
 			...userData,
-			bank: bank?.bank
+			bank: bank?.toJSON(),
+			GP: GP ?? undefined,
+			minion_hasBought: true
 		},
 		update: {
 			...userData,
-			bank: bank?.bank
+			bank: bank?.toJSON(),
+			GP,
+			minion_hasBought: true
 		},
 		where: {
 			id
@@ -153,8 +411,12 @@ export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserC
 	});
 
 	try {
-		await global.prisma!.userStats.create({
-			data: {
+		await global.prisma!.userStats.upsert({
+			create: {
+				user_id: BigInt(user.id)
+			},
+			update: {},
+			where: {
 				user_id: BigInt(user.id)
 			}
 		});
@@ -172,6 +434,12 @@ class TestClient {
 		this.data = data;
 	}
 
+	async mockUser(...args: Parameters<typeof mockUser>) {
+		const user = await mockUser(...args);
+		user.client = this;
+		return user;
+	}
+
 	async reset() {
 		await global.prisma!.clientStorage.delete({ where: { id: this.data.id } });
 		this.data = (await global.prisma!.clientStorage.create({ data: { id: this.data.id } }))!;
@@ -185,6 +453,24 @@ class TestClient {
 		await this.sync();
 		if (this.data[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${this.data[key]}`);
+		}
+	}
+
+	async processActivities() {
+		const activities: Activity[] = await sql`SELECT * FROM activity WHERE completed = false;`;
+
+		if (activities.length > 0) {
+			await prisma.activity.updateMany({
+				where: {
+					id: {
+						in: activities.map(i => i.id)
+					}
+				},
+				data: {
+					completed: true
+				}
+			});
+			await Promise.all(activities.map(completeActivity));
 		}
 	}
 }
@@ -203,4 +489,10 @@ export async function mockClient() {
 
 if (uniqueArr([mockedId(), mockedId(), mockedId()]).length !== 3) {
 	throw new Error('mockedId is broken');
+}
+
+const originalMathRandom = Math.random;
+export function mockMathRandom(value: number) {
+	vi.spyOn(Math, 'random').mockImplementation(() => value);
+	return () => (Math.random = originalMathRandom);
 }

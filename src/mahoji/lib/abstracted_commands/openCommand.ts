@@ -1,18 +1,19 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { noOp, notEmpty, randArrItem, roll, shuffleArr, uniqueArr } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { Emoji, PerkTier } from '../../../lib/constants';
-import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
+import { BitField, Emoji } from '../../../lib/constants';
+import { type UnifiedOpenable, allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { prisma } from '../../../lib/settings/prisma';
 import { assert, itemNameFromID, makeComponents } from '../../../lib/util';
+import { checkElderClueRequirements } from '../../../lib/util/elderClueRequirements';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import itemID from '../../../lib/util/itemID';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
 import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
@@ -57,7 +58,7 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	let max = Math.min(100, amountOfThisOpenableOwned);
+	const max = Math.min(100, amountOfThisOpenableOwned);
 	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
@@ -104,7 +105,7 @@ const itemsThatDontAddToTempCL = resolveItems([
 	'Monkey crate',
 	'Magic crate',
 	'Chimpling jar',
-	...ClueTiers.map(t => [t.id, t.scrollID]).flat()
+	...ClueTiers.flatMap(t => [t.id, t.scrollID])
 ]);
 
 async function finalizeOpening({
@@ -126,20 +127,27 @@ async function finalizeOpening({
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 
 	const hasSmokey = user.allItemsOwned.has('Smokey');
+	const hasOcto = user.allItemsOwned.has('Octo');
 	let smokeyMsg: string | null = null;
 
-	if (hasSmokey) {
-		let bonuses = [];
+	if (hasSmokey || hasOcto) {
+		const bonuses = [];
 		const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 		for (const openable of openables) {
 			if (!openable.smokeyApplies) continue;
+			const bonusChancePercent = hasSmokey ? 10 : 8;
+
 			let smokeyBonus = 0;
 			const amountOfThisOpenable = cost.amount(openable.openedItem.id);
 			assert(amountOfThisOpenable > 0, `>0 ${openable.name}`);
 			for (let i = 0; i < amountOfThisOpenable; i++) {
-				if (roll(10)) smokeyBonus++;
+				if (percentChance(bonusChancePercent)) smokeyBonus++;
 			}
-			userStatsBankUpdate(user.id, 'smokey_loot_bank', new Bank().add(openable.openedItem.id, smokeyBonus));
+			await userStatsBankUpdate(
+				user.id,
+				hasSmokey ? 'smokey_loot_bank' : 'octo_loot_bank',
+				new Bank().add(openable.openedItem.id, smokeyBonus)
+			);
 			loot.add(
 				(
 					await getOpenableLoot({
@@ -152,7 +160,10 @@ async function finalizeOpening({
 			);
 			bonuses.push(`${smokeyBonus}x ${openable.name}`);
 		}
-		smokeyMsg = bonuses.length > 0 ? `${Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}` : null;
+		smokeyMsg =
+			bonuses.length > 0
+				? `${hasOcto ? '<:Octo:1227526833776492554>' : Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}`
+				: null;
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
 
@@ -210,7 +221,7 @@ async function finalizeOpening({
 				: 'Loot From Opening',
 		user,
 		previousCL,
-		mahojiFlags: ['show_names']
+		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
 	});
 
 	if (loot.has('Coins')) {
@@ -224,14 +235,15 @@ async function finalizeOpening({
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	let response: Awaited<CommandResponse> = {
+	const response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`,
+${messages.join(', ')}`.trim(),
 		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
-		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
+		response.files = [{ name: 'response.txt', attachment: Buffer.from(response.content!) }];
+
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
@@ -252,7 +264,7 @@ export async function abstractedOpenCommand(
 		? allOpenables.filter(
 				({ openedItem, excludeFromOpenAll }) =>
 					user.bank.has(openedItem.id) && !favorites.includes(openedItem.id) && excludeFromOpenAll !== true
-		  )
+			)
 		: names
 				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
 				.filter(notEmpty);
@@ -271,6 +283,14 @@ export async function abstractedOpenCommand(
 			if (!user.owns(tmpCost)) return `You don't own ${tmpCost}`;
 		}
 	}
+
+	if (openables.some(o => o.openedItem.id === itemID('Reward casket (elder)'))) {
+		const result = await checkElderClueRequirements(user);
+		if (result.unmetRequirements.length > 0) {
+			return `You don't have the requirements to open Elder caskets: ${result.unmetRequirements.join(', ')}`;
+		}
+	}
+
 	const cost = new Bank();
 	const kcBank = new Bank();
 	const loot = new Bank();

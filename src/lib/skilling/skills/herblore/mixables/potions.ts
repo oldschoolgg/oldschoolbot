@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../../../../util/getOSItem';
-import { Mixable } from '../../../types';
+import type { Mixable } from '../../../types';
 
 const Potions: Mixable[] = [
 	{
@@ -396,7 +396,7 @@ const Potions: Mixable[] = [
 		xp: 200,
 		inputItems: new Bank({ 'Dwarf weed potion (unf)': 1, 'Lily of the sands': 1 }),
 		tickRate: 2,
-		bankTimePerPotion: 0.17
+		bankTimePerPotion: 0.3
 	},
 	{
 		item: getOSItem('Super combat potion (4)'),
@@ -450,6 +450,15 @@ const Potions: Mixable[] = [
 		xp: 125,
 		inputItems: new Bank().add('Dwarf weed potion (unf)', 1).add('Blood orange', 1),
 		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Extended anti-venom+(4)'),
+		aliases: ['Extended anti-venom+(4)', 'Extended anti-venom'],
+		level: 94,
+		xp: 80,
+		inputItems: new Bank().add('Anti-venom+(4)').add('Araxyte venom sack', 4),
+		tickRate: 3,
 		bankTimePerPotion: 0.3
 	},
 	{

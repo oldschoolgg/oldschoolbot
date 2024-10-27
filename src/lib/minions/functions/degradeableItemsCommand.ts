@@ -1,5 +1,5 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';
@@ -36,7 +36,7 @@ ${degradeableItems
 
 	const needConvert = item.convertOnCharge && item.unchargedItem;
 	if (needConvert && !user.hasEquippedOrInBank(item.item.id) && !user.owns(item.unchargedItem!.id)) {
-		return `You don't own a ${item.item.name} or ${item.unchargedItem!.name}.`;
+		return `You don't own a ${item.item.name} or ${item.unchargedItem?.name}.`;
 	}
 
 	await handleMahojiConfirmation(
@@ -48,13 +48,13 @@ ${degradeableItems
 
 	if (needConvert && !user.hasEquippedOrInBank(item.item.id)) {
 		if (!user.owns(item.unchargedItem!.id)) {
-			return `Your ${item.unchargedItem!.name} disappeared and cannot be charged`;
+			return `Your ${item.unchargedItem?.name} disappeared and cannot be charged`;
 		}
 		await user.transactItems({
 			filterLoot: false,
 			collectionLog: true,
 			itemsToAdd: new Bank().add(item.item.id),
-			itemsToRemove: new Bank().add(item.unchargedItem!.id).add(cost)
+			itemsToRemove: new Bank().add(item.unchargedItem?.id).add(cost)
 		});
 	} else {
 		await transactItems({ userID: user.id, itemsToRemove: cost });

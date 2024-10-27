@@ -1,17 +1,11 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import {
-	ActionRowBuilder,
-	BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	ComponentType,
-	MessageEditOptions,
-	TextChannel
-} from 'discord.js';
-import { Time } from 'e';
+import { UserError } from '@oldschoolgg/toolkit/structures';
+import type { BaseMessageOptions, ComponentType, MessageEditOptions, TextChannel } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, isFunction } from 'e';
 
-import { PaginatedMessagePage } from './util';
-import { logError } from './util/logError';
+import { InteractionID } from './InteractionID';
+import type { PaginatedMessagePage } from './util';
+import { logError, logErrorForInteraction } from './util/logError';
 
 const controlButtons: {
 	customId: string;
@@ -19,12 +13,12 @@ const controlButtons: {
 	run: (opts: { paginatedMessage: PaginatedMessage }) => unknown;
 }[] = [
 	{
-		customId: 'pm-first-page',
+		customId: InteractionID.PaginatedMessage.FirstPage,
 		emoji: '⏪',
 		run: ({ paginatedMessage }) => (paginatedMessage.index = 0)
 	},
 	{
-		customId: 'pm-previous-page',
+		customId: InteractionID.PaginatedMessage.PreviousPage,
 		emoji: '◀️',
 		run: ({ paginatedMessage }) => {
 			if (paginatedMessage.index === 0) {
@@ -35,7 +29,7 @@ const controlButtons: {
 		}
 	},
 	{
-		customId: 'pm-next-page',
+		customId: InteractionID.PaginatedMessage.NextPage,
 		emoji: '▶️',
 		run: ({ paginatedMessage }) => {
 			if (paginatedMessage.index === paginatedMessage.totalPages - 1) {
@@ -46,7 +40,7 @@ const controlButtons: {
 		}
 	},
 	{
-		customId: 'pm-last-page',
+		customId: InteractionID.PaginatedMessage.LastPage,
 		emoji: '⏩',
 		run: ({ paginatedMessage }) => (paginatedMessage.index = paginatedMessage.totalPages - 1)
 	}
@@ -83,8 +77,9 @@ export class PaginatedMessage {
 			const rawPage = !Array.isArray(this.pages)
 				? await this.pages.generate({ currentPage: this.index })
 				: this.pages[this.index];
+
 			return {
-				...rawPage,
+				...(isFunction(rawPage) ? await rawPage() : rawPage),
 				components:
 					numberOfPages === 1
 						? []
@@ -97,7 +92,7 @@ export class PaginatedMessage {
 											.setEmoji(i.emoji)
 									)
 								)
-						  ]
+							]
 			};
 		} catch (err) {
 			if (typeof err === 'string') return err;
@@ -128,7 +123,11 @@ export class PaginatedMessage {
 					});
 
 					if (previousIndex !== this.index) {
-						await interaction.update(await this.render());
+						try {
+							await interaction.update(await this.render());
+						} catch (err) {
+							logErrorForInteraction(err, interaction);
+						}
 						return;
 					}
 				}

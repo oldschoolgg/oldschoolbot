@@ -1,6 +1,5 @@
 import { Time } from 'e';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable, RareDropTable } from 'oldschooljs';
 
 import {
 	brokenPernixOutfit,
@@ -12,7 +11,7 @@ import {
 	virtusOutfit
 } from './data/CollectionsExport';
 import { GearStat } from './gear';
-import { KillableMonster } from './minions/types';
+import type { KillableMonster } from './minions/types';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeKillTable } from './util/setCustomMonster';

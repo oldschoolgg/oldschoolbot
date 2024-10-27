@@ -1,54 +1,51 @@
+import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
-import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { Tame, tame_growth } from '@prisma/client';
+import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
+import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
-import { ChatInputCommandInteraction, User } from 'discord.js';
+import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
 import {
+	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
 	notEmpty,
 	percentChance,
 	randInt,
-	reduceNumByPercent,
-	Time
+	reduceNumByPercent
 } from 'e';
-import { readFileSync } from 'fs';
-import { readFile } from 'fs/promises';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
-import { badges, PerkTier } from '../../lib/constants';
+import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
+import { PerkTier, badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { trackLoot } from '../../lib/lootTrack';
 import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { getUsersPerkTier } from '../../lib/perkTiers';
-import { prisma } from '../../lib/settings/prisma';
+
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
+	type SeaMonkeySpell,
+	type TameKillableMonster,
+	TameSpeciesID,
+	TameType,
 	createTameTask,
 	getIgneTameKC,
 	igneArmors,
-	SeaMonkeySpell,
 	seaMonkeySpells,
 	seaMonkeyStaves,
 	tameFeedableItems,
-	TameKillableMonster,
 	tameKillableMonsters,
-	tameSpecies,
-	TameSpeciesID,
-	TameType
+	tameSpecies
 } from '../../lib/tames';
 import {
 	assert,
-	exponentialPercentScale,
 	formatDuration,
 	formatSkillRequirements,
 	isWeekend,
@@ -57,7 +54,15 @@ import {
 	stringMatches
 } from '../../lib/util';
 import { patronMaxTripBonus } from '../../lib/util/calcMaxTripLength';
-import { fillTextXTimesInCtx, getClippedRegionImage } from '../../lib/util/canvasUtil';
+import {
+	type CanvasContext,
+	type CanvasImage,
+	canvasToBuffer,
+	createCanvas,
+	fillTextXTimesInCtx,
+	getClippedRegionImage,
+	loadImage
+} from '../../lib/util/canvasUtil';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -75,8 +80,9 @@ import {
 } from '../../lib/util/tameUtil';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
-import { collectables } from '../lib/abstracted_commands/collectCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import { getItemCostFromConsumables } from '../lib/abstracted_commands/minionKill/handleConsumables';
+import { collectables } from '../lib/collectables';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const tameImageSize = 96;
 
@@ -264,21 +270,20 @@ const tameImageReplacementEasterEggs = [
 	}))
 ];
 
-// eslint-disable-next-line @typescript-eslint/init-declarations
 let sprites: {
 	base: {
-		image: Image;
-		slot: Image;
-		selectedSlot: Image;
-		shinyIcon: Image;
+		image: CanvasImage;
+		slot: CanvasImage;
+		selectedSlot: CanvasImage;
+		shinyIcon: CanvasImage;
 	};
 	tames: {
 		id: number;
 		name: string;
-		image: Image;
-		sprites: { type: number; growthStage: Record<tame_growth, Image> }[];
+		image: CanvasImage;
+		sprites: { type: number; growthStage: Record<tame_growth, CanvasImage> }[];
 	}[];
-	gearIconBg: Image;
+	gearIconBg: CanvasImage;
 };
 async function initSprites() {
 	const tameSpriteBase = await loadImage(await readFile('./src/lib/resources/images/tames/tame_sprite.png'));
@@ -338,7 +343,7 @@ async function initSprites() {
 }
 initSprites();
 
-function drawText(ctx: SKRSContext2D, text: string, x: number, y: number) {
+function drawText(ctx: CanvasContext, text: string, x: number, y: number) {
 	const baseFill = ctx.fillStyle;
 	ctx.fillStyle = '#000000';
 	fillTextXTimesInCtx(ctx, text, x, y + 1);
@@ -377,11 +382,11 @@ export async function tameImage(user: MUser): CommandResponse {
 		return "You don't have any tames.";
 	}
 
-	let { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await getUsersTame(user);
 
 	// Init the background images if they are not already
 
-	let {
+	const {
 		sprite,
 		uniqueSprite,
 		background: userBgImage
@@ -390,7 +395,7 @@ export async function tameImage(user: MUser): CommandResponse {
 
 	const tamesPerLine = 3;
 
-	const canvas = new Canvas(
+	const canvas = createCanvas(
 		12 + 10 + (256 + 10) * Math.min(userTames.length, tamesPerLine),
 		12 + 10 + (128 + 10) * Math.ceil(userTames.length / tamesPerLine)
 	);
@@ -430,8 +435,8 @@ export async function tameImage(user: MUser): CommandResponse {
 	let i = 0;
 	for (const t of userTames) {
 		const species = tameSpecies.find(i => i.id === t.species_id)!;
-		let isTameActive: boolean = false;
-		let selectedTame = tame && t.id === tame.id;
+		let isTameActive = false;
+		const selectedTame = tame && t.id === tame.id;
 		if (selectedTame) isTameActive = activity !== null;
 
 		const x = i % tamesPerLine;
@@ -512,7 +517,7 @@ export async function tameImage(user: MUser): CommandResponse {
 			if (tameHasBeenFed(t, item.id)) {
 				const itemImage = await bankImageGenerator.getItemImage(item.id);
 				if (itemImage) {
-					let ratio = 19 / itemImage.height;
+					const ratio = 19 / itemImage.height;
 					const yLine = Math.floor(feedQty / 3);
 					if (feedQty % 3 === 0) prevWidth = 0;
 					ctx.drawImage(
@@ -555,7 +560,7 @@ export async function tameImage(user: MUser): CommandResponse {
 
 	const rawBadges = user.user.badges;
 	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
-	const buffer = await canvas.encode('png');
+	const buffer = await canvasToBuffer(canvas);
 
 	return {
 		content: `${badgesStr}${user.usernameOrMention}, ${
@@ -571,7 +576,9 @@ export async function removeRawFood({
 	healPerAction,
 	monster,
 	quantity,
-	tame
+	tame,
+	timeToFinish,
+	maxTripLength
 }: {
 	user: MUser;
 	totalHealingNeeded: number;
@@ -580,6 +587,8 @@ export async function removeRawFood({
 	monster: TameKillableMonster;
 	quantity: number;
 	tame: Tame;
+	timeToFinish: number;
+	maxTripLength: number;
 }): Promise<{ success: false; str: string } | { success: true; str: string; removed: Bank }> {
 	totalHealingNeeded = increaseNumByPercent(totalHealingNeeded, 25);
 	healPerAction = increaseNumByPercent(healPerAction, 25);
@@ -600,7 +609,7 @@ export async function removeRawFood({
 	}
 
 	const foodToRemove = getUserFoodFromBank({
-		user,
+		gearBank: user.gearBank,
 		totalHealingNeeded,
 		favoriteFood: user.user.favorite_food,
 		raw: true
@@ -617,12 +626,16 @@ export async function removeRawFood({
 	}
 	const itemCost = foodToRemove;
 	if (monster.itemCost) {
-		if (monster.itemCost.qtyPerKill) {
-			for (const [item, qty] of monster.itemCost.itemCost.items()) {
-				itemCost.add(item.id, Math.ceil(qty * monster.itemCost.qtyPerKill * quantity));
-			}
-		} else {
-			itemCost.add(monster.itemCost.itemCost.clone().multiply(quantity));
+		const costs = getItemCostFromConsumables({
+			consumableCosts: Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost],
+			gearBank: user.gearBank,
+			timeToFinish,
+			maxTripLength,
+			inputQuantity: quantity,
+			slayerKillsRemaining: null
+		});
+		if (costs?.itemCost) {
+			itemCost.add(costs?.itemCost);
 		}
 	}
 	if (!user.owns(itemCost)) {
@@ -634,7 +647,7 @@ export async function removeRawFood({
 			id: tame.id
 		},
 		data: {
-			total_cost: new Bank(tame.total_cost as ItemBank).add(itemCost).bank
+			total_cost: new Bank(tame.total_cost as ItemBank).add(itemCost).toJSON()
 		}
 	});
 
@@ -642,7 +655,7 @@ export async function removeRawFood({
 
 	return {
 		success: true,
-		str: `${itemCost} from ${user.usernameOrMention}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
+		str: `${itemCost} from ${user.rawUsername}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
 		removed: itemCost
 	};
 }
@@ -700,13 +713,13 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 		)}`;
 	}
 
-	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
+	const tames = await user.fetchTames();
 	const toSelect = tames.find(t => t.id === tameID);
 	if (!toSelect || !tameID) {
 		return "Couldn't find a tame to participate in the ritual. Make sure you selected the correct Tame, by its number or nickname.";
 	}
 
-	if (toSelect.equipped_armor || toSelect.equipped_primary) {
+	if (toSelect.equippedArmor || toSelect.equippedPrimary) {
 		return "The tame you're merging has gear equipped, unequip that gear first.";
 	}
 
@@ -714,7 +727,7 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 	if (activity) return 'Your tame is busy. Wait for it to be free to do this.';
 	if (!tame || !species) return "You don't have a selected tame. Select your tame first.";
 	if (tame.id === toSelect.id) return `You can't merge ${tameName(tame)} with itself!`;
-	if (species.id !== getTameSpecies(toSelect).id) {
+	if (species.id !== toSelect.species.id) {
 		return "You can't merge two tames from two different species!";
 	}
 
@@ -727,27 +740,25 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 	}
 
 	const mergeStuff = {
-		totalLoot: new Bank(tame!.max_total_loot as ItemBank).add(toSelect.max_total_loot as ItemBank).bank,
-		fedItems: new Bank(tame!.fed_items as ItemBank).add(toSelect.fed_items as ItemBank).bank,
-		maxCombatLevel: Math.max(tame!.max_combat_level, toSelect.max_combat_level),
-		maxArtisanLevel: Math.max(tame!.max_artisan_level, toSelect.max_artisan_level),
-		maxGathererLevel: Math.max(tame!.max_gatherer_level, toSelect.max_gatherer_level),
-		maxSupportLevel: Math.max(tame!.max_support_level, toSelect.max_support_level),
+		totalLoot: new Bank(tame!.max_total_loot as ItemBank).add(toSelect.totalLoot).toJSON(),
+		fedItems: new Bank(tame!.fed_items as ItemBank).add(toSelect.fedItems).toJSON(),
+		maxCombatLevel: Math.max(tame!.max_combat_level, toSelect.maxCombatLevel),
+		maxArtisanLevel: Math.max(tame!.max_artisan_level, toSelect.maxArtisanLevel),
+		maxGathererLevel: Math.max(tame!.max_gatherer_level, toSelect.maxGathererLevel),
+		maxSupportLevel: Math.max(tame!.max_support_level, toSelect.maxSupportLevel),
 		speciesVariant:
-			tame!.species_variant === shinyVariant || toSelect.species_variant === shinyVariant
+			tame!.species_variant === shinyVariant || toSelect.speciesVariant === shinyVariant
 				? shinyVariant
 				: tame!.species_variant
 	};
 
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to merge **${tameName(toSelect)}** (Tame ${toSelect.id}) into **${tameName(
+		`Are you sure you want to merge **${toSelect}** (Tame ${toSelect.id}) into **${tameName(
 			tame!
 		)}** (Tame ${tame!.id})?\n\n${tameName(
 			tame!
-		)} will receive all the items fed and all loot obtained from ${tameName(
-			toSelect
-		)}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
+		)} will receive all the items fed and all loot obtained from ${toSelect}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
 	);
 
 	await user.removeItemsFromBank(mergingCost);
@@ -784,7 +795,7 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 		}
 	});
 
-	return `${tameName(tame)} consumed ${tameName(toSelect)} and all its attributes.`;
+	return `${tameName(tame)} consumed ${toSelect} and all its attributes.`;
 }
 
 async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser, str: string) {
@@ -793,13 +804,13 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 		return 'You have no selected tame.';
 	}
 
-	let rawBank = parseStringBank(str);
-	let bankToAdd = new Bank();
-	let userBank = user.bank;
+	const rawBank = parseStringBank(str);
+	const bankToAdd = new Bank();
+	const userBank = user.bank;
 	for (const [item, qty] of rawBank) {
-		let qtyOwned = userBank.amount(item.id);
+		const qtyOwned = userBank.amount(item.id);
 		if (qtyOwned === 0) continue;
-		let qtyToUse = !qty ? 1 : qty > qtyOwned ? qtyOwned : qty;
+		const qtyToUse = !qty ? 1 : qty > qtyOwned ? qtyOwned : qty;
 		bankToAdd.add(item.id, qtyToUse);
 	}
 
@@ -869,14 +880,17 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 				id: tame.id
 			},
 			data: {
-				fed_items: new Bank().add(tame.fed_items as ItemBank).add(bankToAdd).bank
+				fed_items: new Bank()
+					.add(tame.fed_items as ItemBank)
+					.add(bankToAdd)
+					.toJSON()
 			}
 		});
 
 		return `You fed ${bankToAdd} to ${tameName(tame)}. It gained ${bold(gained.toString())} levels from the egg!`;
 	}
 
-	let specialStrArr = [];
+	const specialStrArr = [];
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
 		const similarItems = getSimilarItems(item.id);
 		if (similarItems.some(si => bankToAdd.has(si))) {
@@ -889,7 +903,7 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 			specialStrArr.push(`**${item.name}**: ${description}`);
 		}
 	}
-	let specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
+	const specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
 	await handleMahojiConfirmation(
 		interaction,
 		`Are you sure you want to feed \`${bankToAdd}\` to ${tameName(
@@ -906,7 +920,7 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 		}
 	}
 
-	let newBoosts: string[] = [];
+	const newBoosts: string[] = [];
 	for (const { item, announcementString } of thisTameSpecialFeedableItems) {
 		if (bankToAdd.has(item.id) && !tameHasBeenFed(tame, item.id)) {
 			newBoosts.push(`**${announcementString}**`);
@@ -921,7 +935,10 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 			id: tame.id
 		},
 		data: {
-			fed_items: new Bank().add(tame.fed_items as ItemBank).add(bankToAdd).bank
+			fed_items: new Bank()
+				.add(tame.fed_items as ItemBank)
+				.add(bankToAdd)
+				.toJSON()
 		}
 	});
 
@@ -953,7 +970,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		return 'Only fully grown tames can kill this monster.';
 	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
-		return "You haven't unlocked this monster..";
+		return "You haven't unlocked this monster.";
 	}
 	// Get the amount stronger than minimum, and set boost accordingly:
 	const [speciesMinCombat, speciesMaxCombat] = species.combatLevelRange;
@@ -963,7 +980,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	// Increase trip length based on minion growth:
 	let speed = monster.timeToFinish * tameGrowthLevel(tame);
 
-	let boosts = [];
+	const boosts = [];
 
 	// Apply calculated boost:
 	const combatLevelChange = reduceNumByPercent(speed, combatLevelBoost);
@@ -1026,7 +1043,9 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		user,
 		monster,
 		quantity,
-		tame
+		tame,
+		timeToFinish: speed,
+		maxTripLength
 	});
 	if (!foodRes.success) {
 		return foodRes.str;
@@ -1085,9 +1104,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	reply += `\n\n${monster.name} has a base kill time of **${formatDuration(
 		monster.timeToFinish,
 		true
-	)}**, your kill time is **${formatDuration(speed, true)}**, meaning you can kill **${(
-		maxTripLength / speed
-	).toFixed(2)}** in your max trip length of **${formatDuration(maxTripLength, true)}**`;
+	)}**, your kill time is **${formatDuration(speed, true)}**, meaning you can kill **${(maxTripLength / speed).toFixed(2)}** in your max trip length of **${formatDuration(maxTripLength, true)}**`;
 
 	return reply;
 }
@@ -1124,7 +1141,7 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 		speed /= 2.5;
 	}
 
-	let boosts = [];
+	const boosts = [];
 
 	const equippedStaff = seaMonkeyStaves.find(s => s.item.id === tame.equipped_primary);
 	if (equippedStaff) {
@@ -1159,7 +1176,7 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 		return "Your tame can't kill this monster fast enough.";
 	}
 
-	let duration = Math.floor(quantity * speed);
+	const duration = Math.floor(quantity * speed);
 
 	await createTameTask({
 		user,
@@ -1233,7 +1250,7 @@ async function monkeyMagicHandler(
 	}
 
 	let speed = spellOptions.timePerSpell;
-	let boosts = [];
+	const boosts = [];
 	const [min] = getTameSpecies(tame).gathererLevelRange;
 	const minBoost = exponentialPercentScale(min, 0.01);
 	const gathererLevelBoost = exponentialPercentScale(tame.max_gatherer_level, 0.01) - minBoost;
@@ -1290,12 +1307,12 @@ async function monkeyMagicHandler(
 			id: tame.id
 		},
 		data: {
-			total_cost: new Bank(tame.total_cost as ItemBank).add(finalCost).bank
+			total_cost: new Bank(tame.total_cost as ItemBank).add(finalCost).toJSON()
 		}
 	});
 	await updateBankSetting('economyStats_PVMCost', finalCost);
 
-	let duration = Math.floor(quantity * speed);
+	const duration = Math.floor(quantity * speed);
 
 	await createTameTask({
 		user,
@@ -1306,7 +1323,7 @@ async function monkeyMagicHandler(
 			itemID: spellOptions.itemID,
 			quantity,
 			spellID: spellOptions.spell.id,
-			loot: spellOptions.lootPerItem.clone().multiply(quantity).bank
+			loot: spellOptions.lootPerItem.clone().multiply(quantity).toJSON()
 		},
 		type: TameType.Gatherer,
 		duration,
@@ -1395,7 +1412,7 @@ async function spinFlaxCommand(user: MUser, channelID: string) {
 	});
 }
 async function selectCommand(user: MUser, tameID: number) {
-	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
+	const tames = await user.fetchTames();
 	const toSelect = tames.find(t => t.id === tameID);
 	if (!toSelect) {
 		return "Couldn't find a tame to select.";
@@ -1407,7 +1424,7 @@ async function selectCommand(user: MUser, tameID: number) {
 	await user.update({
 		selected_tame: toSelect.id
 	});
-	return `You selected your ${tameName(toSelect)}.`;
+	return `You selected your ${toSelect}.`;
 }
 
 async function viewCommand(user: MUser, tameID: number): CommandResponse {
@@ -1444,6 +1461,16 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 				await makeBankImage({
 					bank: new Bank(tame.total_cost as ItemBank),
 					title: 'Items This Tame Used',
+					user
+				})
+			).file.attachment
+		);
+
+		files.push(
+			(
+				await makeBankImage({
+					bank: new Bank(tame.elder_knowledge_loot_bank as ItemBank),
+					title: 'Total Loot From Elder Knowledge',
 					user
 				})
 			).file.attachment
@@ -1584,7 +1611,7 @@ export function determineTameClueResult({
 
 	maxTripLength += extraTripLength;
 
-	let timePerClue = clueTier.timeToFinish * 1.3;
+	let timePerClue = clueTier.timeToFinish * 1.15;
 
 	const s = exponentialPercentScale(supportLevel, 0.03);
 	const base = exponentialPercentScale(50, 0.03);
@@ -1642,7 +1669,11 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		return 'Invalid clue tier.';
 	}
 
-	let { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({
+	if (clueTier.name === 'Elder' && !tame.hasBeenFed('Elder knowledge')) {
+		return 'Your tame lacks the *knowledge* required to complete elder clues.';
+	}
+
+	const { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({
 		tameGrowthLevel: tame.growthLevel,
 		clueTier,
 		extraTripLength: patronMaxTripBonus(user) * 2,
@@ -1662,8 +1693,8 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 	if (units.filter(u => u.tier.tier === clueTier.name).some(u => !u.isFull)) {
 		return `You need to have all your ${clueTier.name} STASH units built and full.`;
 	}
-	if (clueTier.name === 'Grandmaster' && units.some(u => !u.isFull)) {
-		return 'You need to have all your STASH units built and full for your tame to do Grandmaster clues.';
+	if (['Grandmaster', 'Elder'].includes(clueTier.name) && units.some(u => !u.isFull)) {
+		return 'You need to have all your STASH units built and full for your tame to do Grandmaster/Elder clues.';
 	}
 
 	if (!user.owns(cost) || (costSavedByDemonicJibwings !== null && !user.owns(costSavedByDemonicJibwings))) {
@@ -1810,7 +1841,7 @@ export const tamesCommand: OSBMahojiCommand = {
 								!value
 									? true
 									: i.name.toLowerCase().includes(value.toLowerCase()) ||
-									  i.aliases.some(alias => stringMatches(alias, value))
+										i.aliases.some(alias => stringMatches(alias, value))
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}

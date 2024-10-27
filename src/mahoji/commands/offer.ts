@@ -1,8 +1,9 @@
-import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
-import { User } from 'discord.js';
-import { randArrItem, randInt, roll, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
+
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
 import { Events } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
@@ -10,15 +11,13 @@ import { Offerables } from '../../lib/data/offerData';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import type { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import resolveItems from '../../lib/util/resolveItems';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
 
 const specialBones = [
@@ -41,7 +40,7 @@ const offerables = new Set(
 );
 
 function notifyUniques(user: MUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
-	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);
+	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id));
 	if (itemsToAnnounce.length > 0) {
 		globalClient.emit(
 			Events.ServerNotification,
@@ -54,7 +53,7 @@ function notifyUniques(user: MUser, activity: string, uniques: number[], loot: B
 	}
 }
 
-export const mineCommand: OSBMahojiCommand = {
+export const offerCommand: OSBMahojiCommand = {
 	name: 'offer',
 	description: 'Offer bones or bird eggs.',
 	attributes: {
@@ -103,7 +102,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const whichOfferable = Offerables.find(
 			item =>
 				stringMatches(options.name, item.name) ||
-				(item.aliases && item.aliases.some(alias => stringMatches(alias, options.name)))
+				item.aliases?.some(alias => stringMatches(alias, options.name))
 		);
 		if (whichOfferable) {
 			const offerableOwned = userBank.amount(whichOfferable.itemID);
@@ -114,7 +113,7 @@ export const mineCommand: OSBMahojiCommand = {
 			if (quantity > offerableOwned) {
 				return `You don't have ${quantity} ${whichOfferable.name} to offer the ${whichOfferable.offerWhere}. You have ${offerableOwned}.`;
 			}
-			let loot = new Bank().add(whichOfferable.table.roll(quantity));
+			const loot = new Bank().add(whichOfferable.table.roll(quantity));
 
 			const { previousCL, itemsAdded } = await user.transactItems({
 				collectionLog: true,
@@ -132,7 +131,7 @@ export const mineCommand: OSBMahojiCommand = {
 					{ slayer_chewed_offered: true, slayer_unsired_offered: true }
 				); // Notify uniques
 				if (whichOfferable.uniques) {
-					let current = newStats[whichOfferable.economyCounter];
+					const current = newStats[whichOfferable.economyCounter];
 					notifyUniques(
 						user,
 						whichOfferable.name,
@@ -166,7 +165,7 @@ export const mineCommand: OSBMahojiCommand = {
 			const cost = new Bank().add(egg.id, quantity);
 			if (!user.owns(cost)) return "You don't own enough of these eggs.";
 
-			let loot = new Bank();
+			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(300)) {
 					loot.add(randArrItem(evilChickenOutfit));
@@ -186,7 +185,7 @@ export const mineCommand: OSBMahojiCommand = {
 				itemsToAdd: loot,
 				itemsToRemove: cost
 			});
-			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
+			await userStatsBankUpdate(user, 'bird_eggs_offered_bank', cost);
 
 			notifyUniques(user, egg.name, evilChickenOutfit, loot, quantity);
 
@@ -207,10 +206,10 @@ export const mineCommand: OSBMahojiCommand = {
 		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, options.name));
 		if (specialBone) {
 			if (user.QP < 8) {
-				return 'You need atleast 8 QP to offer long/curved bones for XP.';
+				return 'You need at least 8 QP to offer long/curved bones for XP.';
 			}
 			if (user.skillLevel(SkillsEnum.Construction) < 30) {
-				return 'You need atleast level 30 Construction to offer long/curved bones for XP.';
+				return 'You need at least level 30 Construction to offer long/curved bones for XP.';
 			}
 			const amountHas = userBank.amount(specialBone.item.id);
 			if (!quantity) quantity = Math.max(amountHas, 1);

@@ -1,9 +1,10 @@
-import { notEmpty, objectEntries, Time } from 'e';
+import { Time, notEmpty, objectEntries } from 'e';
 
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Emoji } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, hasSkillReqs } from '../../../lib/util';
+import { formatSkillRequirements, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 

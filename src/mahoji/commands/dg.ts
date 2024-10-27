@@ -1,6 +1,7 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { reduceNumByPercent, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, reduceNumByPercent } from 'e';
 
 import { setupParty } from '../../lib/party';
 import {
@@ -16,13 +17,13 @@ import {
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MakePartyOptions } from '../../lib/types';
-import { DungeoneeringOptions } from '../../lib/types/minions';
+import type { MakePartyOptions } from '../../lib/types';
+import type { DungeoneeringOptions } from '../../lib/types/minions';
 import { channelIsSendable, formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 // Max people in a party:
 const maxTeamSize = 20;
@@ -33,7 +34,7 @@ const boostPerPlayer = 5;
 async function startCommand(channelID: string, user: MUser, floor: string | undefined, solo: boolean | undefined) {
 	const isSolo = Boolean(solo);
 
-	let floorToDo = Boolean(floor) ? Number(floor) : calcMaxFloorUserCanDo(user);
+	const floorToDo = floor ? Number(floor) : calcMaxFloorUserCanDo(user);
 
 	if (!isValidFloor(floorToDo)) {
 		return "That's an invalid floor.";
@@ -47,7 +48,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 	let quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / dungeonLength);
 	let duration = quantity * dungeonLength;
 
-	let message = `${user.usernameOrMention} has created a Dungeoneering party! Use the buttons below to join/leave.
+	const message = `${user.usernameOrMention} has created a Dungeoneering party! Use the buttons below to join/leave.
 **Floor:** ${floorToDo}
 **Duration:** ${formatDuration(duration)}
 **Min. Quantity:** ${quantity}
@@ -122,14 +123,14 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 				y += 5;
 			}
 
-			let x = y / users.length;
+			const x = y / users.length;
 
 			duration = reduceNumByPercent(duration, x);
 			boosts.push(`${x.toFixed(2)}% from ${user.usernameOrMention}`);
 		}
 		const numGora = numberOfGorajanOutfitsEquipped(user);
 		if (numGora > 0) {
-			let x = (numGora * 6) / users.length;
+			const x = (numGora * 6) / users.length;
 			duration = reduceNumByPercent(duration, x);
 			boosts.push(`${x.toFixed(2)}% from ${user.usernameOrMention}'s Gorajan`);
 		}
@@ -176,12 +177,12 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 	return str;
 }
 
-async function buyCommand(user: MUser, name: string, quantity?: number) {
+async function buyCommand(user: MUser, name?: string, quantity?: number) {
 	const buyable = dungBuyables.find(i => stringMatches(name, i.item.name));
 	if (!buyable) {
-		return `That isn't a buyable item. Here are the items you can buy: \n\n${dungBuyables
-			.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`)
-			.join('\n')}.`;
+		let msg = `${dungBuyables.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`).join('\n')}.`;
+		if (name !== undefined) msg = `**That isn't a buyable item**. Here are the items you can buy:\n\n${msg}`;
+		return msg;
 	}
 
 	if (!quantity) {
@@ -258,7 +259,7 @@ export const dgCommand: OSBMahojiCommand = {
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
 					},
-					required: true
+					required: false
 				},
 				{
 					type: ApplicationCommandOptionType.Integer,
@@ -277,7 +278,7 @@ export const dgCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{
 		start?: { floor?: string; solo?: boolean };
-		buy?: { item: string; quantity?: number };
+		buy?: { item?: string; quantity?: number };
 		stats?: {};
 	}>) => {
 		if (interaction) await deferInteraction(interaction);

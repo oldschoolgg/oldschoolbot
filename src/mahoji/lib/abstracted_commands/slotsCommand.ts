@@ -1,13 +1,8 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
-import {
-	ActionRowBuilder,
-	BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	ChatInputCommandInteraction
-} from 'discord.js';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { BaseMessageOptions, ChatInputCommandInteraction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -81,7 +76,7 @@ function determineWinnings(bet: number, buttons: ButtonInstance[]) {
 	const winningRow = chunk(buttons, 3)
 		.filter(row => row.every(b => b.name === row[0].name))
 		.sort((a, b) => b[0].mod(bet) - a[0].mod(bet))[0];
-	let amountReceived = winningRow ? winningRow[0].mod(bet) : 0;
+	const amountReceived = winningRow ? winningRow[0].mod(bet) : 0;
 	return {
 		amountReceived,
 		winningRow
@@ -125,7 +120,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
-	let chunkedButtons = chunk(buttonsToShow, 3);
+	const chunkedButtons = chunk(buttonsToShow, 3);
 
 	const { winningRow, amountReceived } = determineWinnings(amount, buttonsToShow);
 
@@ -141,8 +136,8 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 							!shouldShowThisButton
 								? ButtonStyle.Secondary
 								: isWinning
-								? ButtonStyle.Success
-								: ButtonStyle.Secondary
+									? ButtonStyle.Success
+									: ButtonStyle.Secondary
 						)
 						.setEmoji(shouldShowThisButton ? b.emoji : '❓');
 				})
@@ -162,13 +157,11 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		amountReceived === 0
 			? "Unlucky, you didn't win anything, and lost your bet!"
 			: `You won ${toKMB(amountReceived)}!`;
-	sentMessage?.edit({ content: finishContent, components: getCurrentButtons({ columnsToHide: [] }) }).catch(noOp);
+	sentMessage?.delete().catch(noOp);
 
 	await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived), collectionLog: false });
 	await updateClientGPTrackSetting('gp_slots', amountReceived - amount);
 	await updateGPTrackSetting('gp_slots', amountReceived - amount, user);
 
-	return {
-		content: finishContent
-	};
+	return { content: finishContent, components: getCurrentButtons({ columnsToHide: [] }) };
 }

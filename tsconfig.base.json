@@ -1,10 +1,29 @@
 {
-	"extends": "@oldschoolgg/ts-config",
+	"compileOnSave": true,
 	"compilerOptions": {
-		"allowJs": true,
-		"checkJs": false,
+		"allowSyntheticDefaultImports": true,
+		"alwaysStrict": true,
+		"declaration": true,
+		"declarationMap": true,
+		"incremental": true,
+		"lib": ["ES2023"],
+		"module": "node16",
+		"moduleResolution": "node16",
+		"newLine": "lf",
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"pretty": true,
+		"removeComments": false,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"strict": true,
+		"target": "ES2022",
+		"useDefineForClassFields": true,
 		"skipLibCheck": true,
 		"types": ["node", "node-fetch", "discord.js"],
-		"esModuleInterop": true
-	}
+		"esModuleInterop": true,
+		"skipDefaultLibCheck": true
+	},
+	"exclude": ["**/node_modules", "**/.*/"]
 }

@@ -1,38 +1,50 @@
-import { UserStats } from '@prisma/client';
+import type { UserStats } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { ClueBank } from '../minions/types';
-import { prisma } from '../settings/prisma';
-import { ItemBank } from '../types';
+import type { ClueBank } from '../minions/types';
+import type { ItemBank } from '../types';
 import { getToaKCs } from '../util/smallUtils';
 
 export class MUserStats {
 	userStats: UserStats;
 	baHonourLevel: number;
 	sacrificedBank: Bank;
+	titheFarmsCompleted: number;
+	lapsScores: ItemBank;
+	openableScores: Bank;
+	kcBank: ItemBank;
+	highGambles: number;
+	gotrRiftSearches: number;
+	slayerWildyTaskStreak: number;
+	slayerTaskStreak: number;
 
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
 		this.baHonourLevel = userStats.honour_level;
-		this.sacrificedBank = new Bank().add(this.userStats.sacrificed_bank as ItemBank);
+		const sacBank = this.userStats.sacrificed_bank as ItemBank;
+		if ('sacrificed_bank' in sacBank && '0' in sacBank) {
+			// biome-ignore lint/performance/noDelete: <explanation>
+			delete sacBank['0'];
+		}
+		this.sacrificedBank = new Bank().add(sacBank);
+		this.titheFarmsCompleted = this.userStats.tithe_farms_completed;
+		this.lapsScores = userStats.laps_scores as ItemBank;
+		this.openableScores = new Bank().add(userStats.openable_scores as ItemBank);
+		this.kcBank = userStats.monster_scores as ItemBank;
+		this.highGambles = userStats.high_gambles;
+		this.gotrRiftSearches = userStats.gotr_rift_searches;
+		this.slayerWildyTaskStreak = userStats.slayer_wildy_task_streak;
+		this.slayerTaskStreak = userStats.slayer_task_streak;
 	}
 
 	static async fromID(id: string) {
 		const userStats = await prisma.userStats.upsert({
-			where: {
-				user_id: BigInt(id)
-			},
-			create: {
-				user_id: BigInt(id)
-			},
+			where: { user_id: BigInt(id) },
+			create: { user_id: BigInt(id) },
 			update: {}
 		});
 		return new MUserStats(userStats);
-	}
-
-	get lapsScores() {
-		return this.userStats.laps_scores as ItemBank;
 	}
 
 	getToaKCs() {
@@ -44,7 +56,7 @@ export class MUserStats {
 		for (const tier of ClueTiers) clueCounts[tier.name] = 0;
 
 		for (const [key, val] of Object.entries(this.userStats.openable_scores as ItemBank)) {
-			const clueTier = ClueTiers.find(i => i.id === parseInt(key));
+			const clueTier = ClueTiers.find(i => i.id === Number.parseInt(key));
 			if (!clueTier) continue;
 			clueCounts[clueTier.name] += val;
 		}

@@ -1,12 +1,19 @@
-import { Canvas, Image, SKRSContext2D } from '@napi-rs/canvas';
-import { PlayerOwnedHouse } from '@prisma/client';
+import * as fs from 'node:fs';
+import path from 'node:path';
 import { objectEntries, randInt } from 'e';
-import * as fs from 'fs';
-import path from 'path';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
-import { canvasImageFromBuffer, loadAndCacheLocalImage } from './util/canvasUtil';
+import {
+	type Canvas,
+	type CanvasContext,
+	type CanvasImage,
+	canvasToBuffer,
+	createCanvas,
+	loadAndCacheLocalImage,
+	loadImage
+} from './util/canvasUtil';
 import { getActivityOfUser } from './util/minionIsBusy';
+import type { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
@@ -30,10 +37,10 @@ const FOLDERS = [
 ];
 
 class PoHImage {
-	public imageCache: Map<number, Image> = new Map();
-	public bgImages: Image[] = [];
+	public imageCache: Map<number, CanvasImage> = new Map();
+	public bgImages: CanvasImage[] = [];
 	initPromise: Promise<void> | null = this.init();
-	initFinished: boolean = false;
+	initFinished = false;
 
 	async init() {
 		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_1.jpg'));
@@ -42,9 +49,9 @@ class PoHImage {
 			const currentPath = path.join(CONSTRUCTION_IMG_DIR, folder);
 			const filesInDir = await fs.promises.readdir(currentPath);
 			for (const fileName of filesInDir) {
-				const id = parseInt(path.parse(fileName).name);
+				const id = Number.parseInt(path.parse(fileName).name);
 				const imageBuffer = await fs.promises.readFile(path.join(currentPath, `${id}.png`));
-				const image = await canvasImageFromBuffer(imageBuffer);
+				const image = await loadImage(imageBuffer);
 
 				this.imageCache.set(id, image);
 			}
@@ -52,16 +59,15 @@ class PoHImage {
 		this.initFinished = true;
 	}
 
-	generateCanvas(bgId: number): [Canvas, SKRSContext2D] {
+	generateCanvas(bgId: number): [Canvas, CanvasContext] {
 		const bgImage = this.bgImages[bgId - 1]!;
-		const canvas = new Canvas(bgImage.width, bgImage.height);
+		const canvas = createCanvas(bgImage.width, bgImage.height);
 
 		const ctx = canvas.getContext('2d');
 		ctx.imageSmoothingEnabled = false;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(bgImage, 0, 0, bgImage.width, bgImage.height);
-		debugLog('Generating a POH image');
 		return [canvas, ctx];
 	}
 
@@ -93,7 +99,7 @@ class PoHImage {
 			const [placeholder, coordArr] = objects;
 			for (const obj of coordArr) {
 				const [x, y] = obj;
-				let id = poh[key] ?? placeholder;
+				const id = poh[key] ?? placeholder;
 				const isMountedItem = key === 'mounted_item' && id !== 1111;
 				if (isMountedItem) {
 					const hasCustomItem = id !== 1112;
@@ -124,7 +130,7 @@ class PoHImage {
 			const [x, y] = this.randMinionCoords();
 			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
 		}
-		return canvas.encode('png');
+		return canvasToBuffer(canvas);
 	}
 }
 

@@ -3,10 +3,9 @@
 	"compilerOptions": {
 		"outDir": "../dist",
 		"rootDir": ".",
-		"tsBuildInfoFile": "../dist/.tsbuildinfo",
 		"composite": true,
-		"declaration": true,
-		"incremental": true
+		"tsBuildInfoFile": "../dist/.tsbuildinfo"
 	},
-	"include": [".", "./**/*.json"]
+	"include": [".", "./**/*.json"],
+	"exclude": ["**/node_modules", "**/.*/"]
 }

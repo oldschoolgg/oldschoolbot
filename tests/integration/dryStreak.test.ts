@@ -13,7 +13,7 @@ describe('Drystreak', async () => {
 			} catch (err) {
 				throw new Error(`Error running ${a.name}: ${err}`);
 			}
-			await Promise.all(promises);
 		}
+		await Promise.all(promises);
 	});
 });

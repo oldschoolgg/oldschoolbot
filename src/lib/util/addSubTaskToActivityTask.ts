@@ -1,8 +1,6 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-
-import { prisma } from '../settings/prisma';
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { activitySync } from '../settings/settings';
-import { ActivityTaskData, ActivityTaskOptions } from '../types/minions';
+import type { ActivityTaskData, ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { logError } from './logError';
 import { getActivityOfUser } from './minionIsBusy';
@@ -17,7 +15,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 		);
 	}
 
-	let duration = Math.floor(taskToAdd.duration);
+	const duration = Math.floor(taskToAdd.duration);
 	if (duration < 0) {
 		const error = new Error('Task has a negative duration');
 		logError(error, {
@@ -29,35 +27,39 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 
 	const finishDate = new Date(Date.now() + duration);
 
-	let __newData: Partial<ActivityTaskData> = { ...taskToAdd } as Partial<ActivityTaskData>;
-	delete __newData.type;
-	delete __newData.userID;
-	delete __newData.id;
-	delete __newData.channelID;
-	delete __newData.duration;
+	const __newData: Partial<ActivityTaskData> = { ...taskToAdd } as Partial<ActivityTaskData>;
+	__newData.type = undefined;
+	__newData.userID = undefined;
+	__newData.id = undefined;
+	__newData.channelID = undefined;
+	__newData.duration = undefined;
 
-	let newData: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'> = {
+	const newData: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'> = {
 		...__newData
 	};
 
+	const data = {
+		user_id: BigInt(taskToAdd.userID),
+		start_date: new Date(),
+		finish_date: finishDate,
+		completed: false,
+		type: taskToAdd.type,
+		data: newData,
+		group_activity: isGroupActivity(taskToAdd),
+		channel_id: BigInt(taskToAdd.channelID),
+		duration
+	} as const;
 	try {
 		const createdActivity = await prisma.activity.create({
-			data: {
-				user_id: BigInt(taskToAdd.userID),
-				start_date: new Date(),
-				finish_date: finishDate,
-				completed: false,
-				type: taskToAdd.type,
-				data: newData,
-				group_activity: isGroupActivity(taskToAdd),
-				channel_id: BigInt(taskToAdd.channelID),
-				duration
-			}
+			data
 		});
 		activitySync(createdActivity);
 		return createdActivity;
 	} catch (err: any) {
-		logError(err);
+		logError(err, {
+			user_id: taskToAdd.userID,
+			data: JSON.stringify(data)
+		});
 		throw new UserError('There was an error starting your activity.');
 	}
 }

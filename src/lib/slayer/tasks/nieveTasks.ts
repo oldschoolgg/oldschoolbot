@@ -5,7 +5,7 @@ import { Ignecarus } from '../../minions/data/killableMonsters/custom/bosses/Ign
 import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 import { polyporeTasks } from './polyporeTasks';
 
@@ -237,7 +237,12 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [120, 185],
 		weight: 7,
-		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		monsters: [
+			Monsters.GreaterDemon.id,
+			Monsters.KrilTsutsaroth.id,
+			Monsters.Skotizo.id,
+			Monsters.TormentedDemon.id
+		],
 		combatLevel: 70,
 		unlocked: true
 	},
@@ -362,9 +367,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualMage,
-		amount: [110, 170],
-
+		monster: Monsters.SpiritualRanger,
+		amount: [120, 185],
 		weight: 6,
 		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
 		levelRequirements: {
@@ -373,15 +377,14 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 3,
-		unlocked: true,
-		dontAssign: true
+		unlocked: true
 	},
 	{
 		monster: Monsters.SteelDragon,
 		amount: [30, 60],
 		weight: 5,
 		monsters: [Monsters.SteelDragon.id],
-		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
 		combatLevel: 85,
 		questPoints: 34,
 		unlocked: true
@@ -445,5 +448,17 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	...bossTasks,
-	...polyporeTasks
+	...polyporeTasks,
+	{
+		monster: Monsters.Araxyte,
+		amount: [40, 60],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.MoreEyesThanSense,
+		weight: 8,
+		monsters: [Monsters.Araxyte.id, Monsters.Araxxor.id],
+		combatLevel: 96,
+		unlocked: true,
+		slayerLevel: 92
+	},
+	...bossTasks
 ];

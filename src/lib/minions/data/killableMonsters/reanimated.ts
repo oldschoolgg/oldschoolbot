@@ -2,8 +2,8 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { GearStat } from '../../../gear/types';
-import { SkillsEnum } from '../../../skilling/types';
-import { KillableMonster } from '../../types';
+import { XPBank } from '../../../structures/Bank';
+import type { KillableMonster } from '../../types';
 
 const renanimatedMonstersRaw = [
 	{
@@ -193,19 +193,16 @@ for (const { mon, magicLvl, cost, prayerXP, magicXP } of renanimatedMonstersRaw)
 		levelRequirements: {
 			magic: magicLvl
 		},
-		effect: async ({ quantity, user, messages, data }) => {
-			let xpStr = await user.addXP({
-				skillName: SkillsEnum.Prayer,
-				amount: prayerXP * quantity,
-				duration: data.duration
-			});
-			xpStr += ' ';
-			xpStr += await user.addXP({
-				skillName: SkillsEnum.Magic,
-				amount: magicXP * quantity,
-				duration: data.duration
-			});
-			messages.push(xpStr);
+		effect: ({ quantity }) => {
+			const xpBank = new XPBank();
+			xpBank.add('prayer', prayerXP * quantity);
+			xpBank.add('magic', magicXP * quantity);
+			return {
+				xpBank,
+				messages: [
+					`You reanimated ${quantity}x ${mon.name} and received ${prayerXP * quantity} Prayer XP and ${magicXP * quantity} Magic XP.`
+				]
+			};
 		}
 	});
 }

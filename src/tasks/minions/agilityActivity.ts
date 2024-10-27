@@ -1,17 +1,18 @@
-import { increaseNumByPercent, randInt, roll, Time } from 'e';
+import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
-import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { addItemToBank, randomVariation, toKMB } from 'oldschooljs/dist/util';
+import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import Agility from '../../lib/skilling/skills/agility';
 import { calcUserGorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
-import { Course, SkillsEnum } from '../../lib/skilling/types';
-import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, clAdjustedDroprate, randomVariation, skillingPetDropRate, toKMB } from '../../lib/util';
+import { type Course, SkillsEnum } from '../../lib/skilling/types';
+import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
@@ -56,7 +57,7 @@ function calculateMarks({
 	}
 
 	if (usingHarry) {
-		let harryBonus = Math.ceil(randomVariation(totalMarks * 2, 10));
+		const harryBonus = Math.ceil(randomVariation(totalMarks * 2, 10));
 		boosts.push(`Harry found you ${harryBonus - totalMarks}x extra Marks of grace.`);
 		totalMarks = harryBonus;
 	} else if (course.id !== 5 && agilityLevel >= course.level + 20) {
@@ -71,7 +72,6 @@ export function calculateAgilityResult({
 	quantity,
 	course,
 	agilityLevel,
-	duration,
 	usingHarry,
 	hasDiaryBonus,
 	hasAgilityPortent
@@ -94,9 +94,11 @@ export function calculateAgilityResult({
 
 	// Calculate failed laps
 	let lapsFailed = 0;
-	for (let t = 0; t < quantity; t++) {
-		if (randInt(1, 100) < chanceOfFailingAgilityPyramid(agilityLevel)) {
-			lapsFailed += 1;
+	if (!course.cantFail) {
+		for (let t = 0; t < quantity; t++) {
+			if (randInt(1, 100) < chanceOfFailingAgilityPyramid(agilityLevel)) {
+				lapsFailed += 1;
+			}
 		}
 	}
 
@@ -105,8 +107,19 @@ export function calculateAgilityResult({
 
 	// Calculate Crystal Shards for Priff
 	if (course.name === 'Prifddinas Rooftop Course') {
-		// 15 Shards per hour
-		loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		loot.add('Crystal shard', quantity);
+	}
+
+	// Wyrm Course
+	if (course.name === 'Colossal Wyrm Agility Course') {
+		for (let i = 0; i < quantity; i++) {
+			if (roll(3)) {
+				loot.add('termites', randInt(8, 10));
+				if (percentChance(75)) {
+					loot.add('blessed bone shards', randInt(22, 28));
+				}
+			}
+		}
 	}
 
 	// Agility pyramid
@@ -141,7 +154,7 @@ export function calculateAgilityResult({
 export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
-		let { courseID, quantity, userID, channelID, duration, alch } = data;
+		const { courseID, quantity, userID, channelID, duration, alch } = data;
 		const minutes = Math.round(duration / Time.Minute);
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
@@ -151,13 +164,16 @@ export const agilityTask: MinionTask = {
 		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		const hasDiaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
 
+		const messages: string[] = [];
+		const petMessages: string[] = [];
+
 		const portentResult = await chargePortentIfHasCharges({
 			user,
 			portentID: PortentID.GracefulPortent,
 			charges: minutes
 		});
 
-		const { successfulLaps, loot, xpReceived, lapsFailed, portentXP } = calculateAgilityResult({
+		const { successfulLaps, loot, xpReceived, lapsFailed, portentXP, boosts } = calculateAgilityResult({
 			quantity,
 			course,
 			agilityLevel: currentLevel,
@@ -167,14 +183,15 @@ export const agilityTask: MinionTask = {
 			hasAgilityPortent: portentResult.didCharge
 		});
 
+		const stats = await user.fetchStats({ laps_scores: true });
 		const { laps_scores: newLapScores } = await userStatsUpdate(
 			user.id,
-			({ laps_scores }) => ({
-				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, successfulLaps),
+			{
+				laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, successfulLaps),
 				xp_from_graceful_portent: {
 					increment: portentXP
 				}
-			}),
+			},
 			{ laps_scores: true }
 		);
 
@@ -197,6 +214,18 @@ export const agilityTask: MinionTask = {
 			);
 		}
 
+		// Roll for monkey backpacks
+		if (course.name === 'Ape Atoll Agility Course') {
+			const currentLapCount = (newLapScores as ItemBank)[course.id];
+			for (const monkey of Agility.MonkeyBackpacks) {
+				if (currentLapCount < monkey.lapsRequired) break;
+				if (!user.hasEquippedOrInBank(monkey.id)) {
+					loot.add(monkey.id);
+					messages.push(`You received the ${monkey.name} monkey backpack!`);
+				}
+			}
+		}
+
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
 			const alchGP = alchedItem.highalch! * alch.quantity;
@@ -211,19 +240,7 @@ export const agilityTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
 
-		// Roll for monkey backpacks
-		if (course.id === 6) {
-			const currentLapCount = (newLapScores as ItemBank)[course.id];
-			for (const monkey of Agility.MonkeyBackpacks) {
-				if (currentLapCount < monkey.lapsRequired) break;
-				if (!user.hasEquippedOrInBank(monkey.id)) {
-					loot.add(monkey.id);
-					str += `\nYou received the ${monkey.name} monkey backpack!`;
-				}
-			}
-		}
-
-		// Roll for pets
+		// Roll for custom pets & loot
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			if (course.id === 4) {
 				const scruffyDroprate = clAdjustedDroprate(
@@ -235,8 +252,9 @@ export const agilityTask: MinionTask = {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(scruffyDroprate)) {
 						loot.add('Scruffy');
-						str +=
-							"\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.";
+						petMessages.push(
+							"<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'."
+						);
 						break;
 					}
 				}
@@ -246,8 +264,9 @@ export const agilityTask: MinionTask = {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(1600)) {
 						loot.add('Harry');
-						str +=
-							'\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.';
+						petMessages.push(
+							'<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.'
+						);
 						break;
 					}
 				}
@@ -258,8 +277,9 @@ export const agilityTask: MinionTask = {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(dropRate)) {
 						loot.add('Skipper');
-						str +=
-							"\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.";
+						petMessages.push(
+							"<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept."
+						);
 						break;
 					}
 				}
@@ -276,19 +296,20 @@ export const agilityTask: MinionTask = {
 						shardQty *= 2;
 					}
 					loot.add(item.id, shardQty);
-					str += `\nYou received **${shardQty}x ${item.name}**`;
+					messages.push(`You received **${shardQty}x ${item.name}**`);
 				}
 			}
 		}
+
 		// Roll for pet
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, course.petChance);
+		const { petDropRate } = skillingPetDropRate(
+			user,
+			SkillsEnum.Agility,
+			typeof course.petChance === 'number' ? course.petChance : course.petChance(currentLevel)
+		);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
-			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
-			);
+			petMessages.push("You have a funny feeling you're being followed...");
 		}
 
 		await transactItems({
@@ -296,6 +317,10 @@ export const agilityTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
+
+		for (const msgs of [boosts, messages, petMessages]) {
+			if (msgs.length > 0) str += `\n\n${msgs.join('\n')}`;
+		}
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

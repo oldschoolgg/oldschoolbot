@@ -1,16 +1,17 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
-import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import type { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const cookCommand: OSBMahojiCommand = {
 	name: 'cook',
@@ -89,15 +90,25 @@ export const cookCommand: OSBMahojiCommand = {
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.6;
 			if (hasRemy) timeToCookSingleCookable /= 1.5;
-		} else if (user.hasEquippedOrInBank('Cooking master cape')) {
-			boosts.push('5x for Cooking master cape');
-			timeToCookSingleCookable /= 5;
-		} else if (user.hasEquippedOrInBank('Dwarven gauntlets')) {
-			boosts.push('3x for Dwarven gauntlets');
-			timeToCookSingleCookable /= 3;
-		} else if (hasRemy) {
-			boosts.push('2x for Remy');
-			timeToCookSingleCookable /= 2;
+		} else {
+			let cookingBoost = 1;
+			const cookingBoostItems: string[] = [];
+			if (user.hasEquippedOrInBank('Cooking master cape')) {
+				cookingBoostItems.push('Cooking master cape');
+				cookingBoost += 2.5;
+			}
+			if (user.hasEquippedOrInBank('Dwarven gauntlets')) {
+				cookingBoostItems.push('Dwarven gauntlets');
+				cookingBoost += 1.5;
+			}
+			if (hasRemy) {
+				cookingBoostItems.push('Remy');
+				cookingBoost += 1;
+			}
+			timeToCookSingleCookable /= cookingBoost;
+			if (cookingBoost !== 1) {
+				boosts.push(`+${(cookingBoost - 1) * 100}% for ${cookingBoostItems.join(', ')}.`);
+			}
 		}
 
 		const userBank = user.bank;

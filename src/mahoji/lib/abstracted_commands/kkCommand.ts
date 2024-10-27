@@ -1,6 +1,5 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calcBossFood } from '../../../lib/bso/calcBossFood';
@@ -8,11 +7,11 @@ import { gorajanWarriorOutfit, torvaOutfit } from '../../../lib/data/Collections
 import { trackLoot } from '../../../lib/lootTrack';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
-import { KillableMonster } from '../../../lib/minions/types';
+import type { KillableMonster } from '../../../lib/minions/types';
 import { setupParty } from '../../../lib/party';
 import { Gear } from '../../../lib/structures/Gear';
-import { MakePartyOptions } from '../../../lib/types';
-import { BossActivityTaskOptions } from '../../../lib/types/minions';
+import type { MakePartyOptions } from '../../../lib/types';
+import type { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
@@ -32,7 +31,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -61,7 +60,7 @@ export async function kkCommand(
 	channelID: string,
 	inputName: string,
 	inputQuantity: number | undefined
-): CommandResponse {
+) {
 	if (interaction) await deferInteraction(interaction);
 	const failureRes = await checkReqs([user], KalphiteKingMonster, 2);
 	if (failureRes) return failureRes;
@@ -81,7 +80,7 @@ export async function kkCommand(
 			if (user.minionIsBusy) {
 				return [true, 'your minion is busy.'];
 			}
-			const [hasReqs, reason] = hasMonsterRequirements(user, KalphiteKingMonster);
+			const [hasReqs, reason] = await hasMonsterRequirements(user, KalphiteKingMonster);
 			if (!hasReqs) {
 				return [true, `you don't have the requirements for this monster; ${reason}`];
 			}
@@ -134,7 +133,7 @@ export async function kkCommand(
 			users.map(u => u.id)
 		);
 		debugStr += `**${user.usernameOrMention}**: `;
-		let msgs = [];
+		const msgs = [];
 
 		// Special inquisitor outfit damage boost
 		const meleeGear = user.gear.melee;
@@ -191,6 +190,12 @@ export async function kkCommand(
 			const percent = 4;
 			effectiveTime = reduceNumByPercent(effectiveTime, percent);
 			msgs.push(`${percent}% boost for TzKal cape`);
+		}
+
+		if (user.owns('Axe of the high sungod')) {
+			const percent = 10;
+			effectiveTime = reduceNumByPercent(effectiveTime, percent);
+			msgs.push(`${percent}% boost for Axe of the high sungod`);
 		}
 
 		// Increase duration for lower melee-strength gear.
@@ -256,7 +261,7 @@ export async function kkCommand(
 	if (users.length === 5) minDuration = 1.2;
 	if (users.length >= 6) minDuration = 1;
 
-	let durQtyRes = await calcDurQty(
+	const durQtyRes = await calcDurQty(
 		users,
 		{ ...KalphiteKingMonster, timeToFinish: effectiveTime },
 		inputQuantity,
@@ -264,15 +269,15 @@ export async function kkCommand(
 		Time.Minute * 30
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
-	let [quantity, duration, perKillTime] = durQtyRes;
+	const [quantity, duration, perKillTime] = durQtyRes;
 	const secondCheck = await checkReqs(users, KalphiteKingMonster, quantity);
 	if (secondCheck) return secondCheck;
 
 	let foodString = 'Removed brews/restores from users: ';
-	let foodRemoved: string[] = [];
+	const foodRemoved: string[] = [];
 	for (const user of users) {
 		const food = await calcBossFood(user, KalphiteKingMonster, users.length, quantity);
-		if (!user.bank.has(food.bank)) {
+		if (!user.bank.has(food)) {
 			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
 	}

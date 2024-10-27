@@ -1,18 +1,19 @@
-import { Monsters } from 'oldschooljs';
+import { Time } from 'e';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { PHOSANI_NIGHTMARE_ID } from '../constants';
-import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
-import {
+import type {
 	GauntletOptions,
+	MonsterActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TheatreOfBloodTaskOptions,
-	TOAOptions
+	TOAOptions,
+	TheatreOfBloodTaskOptions
 } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
@@ -46,8 +47,14 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: 'Raids'
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).users.length >= 5 &&
+					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -69,8 +76,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			chancePerKill: 1,
+			hasChance: data =>
+				data.type === 'Raids' &&
+				(data as RaidsOptions).users.length === 1 &&
+				data.duration < Time.Minute * 17 * (data.quantity ?? 1)
 		}
 	},
 	{
@@ -80,8 +90,14 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: 'Raids'
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).users.length >= 3 &&
+					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -91,11 +107,12 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
+			chancePerKill: 1,
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				data.duration < Time.Minute * 38.5 * (data.quantity ?? 1)
 		}
 	},
 	{
@@ -117,8 +134,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).users.length >= 3 &&
+					data.duration < Time.Minute * 27 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					data.duration < Time.Minute * 27 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -128,8 +153,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).users.length >= 5 &&
+					data.duration < Time.Minute * 25 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					data.duration < Time.Minute * 25 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -694,13 +727,9 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Tombs of Amascut at raid level 500 or above without anyone dying.',
 		type: 'mechanical',
 		monster: 'Tombs of Amascut: Expert Mode',
-		rng: {
-			chancePerKill: 1,
-			hasChance: data =>
-				data.type === 'TombsOfAmascut' &&
-				(data as TOAOptions).raidLevel >= 500 &&
-				!anyoneDiedInTOARaid(data as TOAOptions)
-		}
+		requirements: new Requirements().add({
+			clRequirement: new Bank().add('Cursed phalanx', 1)
+		})
 	},
 	{
 		id: 3060,
@@ -846,7 +875,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 10,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -857,7 +886,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 12,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -879,7 +908,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 6,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -890,7 +919,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 3,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -913,7 +942,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 6,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -1025,6 +1054,106 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 110,
 			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
+		}
+	},
+	{
+		id: 3090,
+		name: 'Colosseum Speed-Runner',
+		desc: 'Complete the Colosseum with a total time of 24:00 or less.',
+		type: 'speed',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				Array.isArray(data.diedAt) &&
+				!data.diedAt[index] &&
+				data.duration < Time.Minute * 24 * data.quantity
+		}
+	},
+	{
+		id: 3091,
+		name: 'Slow Dancing in the Sand',
+		desc: 'Defeat Sol Heredit without running during the fight with him.',
+		type: 'restriction',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
+		}
+	},
+	{
+		id: 3092,
+		name: 'Reinforcements',
+		desc: 'Defeat Sol Heredit with "Bees II", "Quartet" and "Solarflare II" modifiers active.',
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 30,
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
+		}
+	},
+	{
+		id: 3093,
+		name: 'Perfect Footwork',
+		desc: 'Defeat Sol Heredit without taking any damage from his Spear, Shield, Grapple or Triple Attack.',
+		type: 'perfection',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 20,
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
+		}
+	},
+	{
+		id: 3094,
+		name: 'Colosseum Grand Champion',
+		desc: 'Defeat Sol Heredit 10 times.',
+		type: 'kill_count',
+		monster: 'Colosseum',
+		requirements: new Requirements().add({
+			minigames: {
+				colosseum: 10
+			}
+		})
+	},
+	{
+		id: 3095,
+		name: 'Araxxor Speed-Runner',
+		desc: 'Kill Araxxor 6 times in 10:00.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 6 && timePerKill <= 1.66;
+			}
+		}
+	},
+	{
+		id: 3096,
+		name: 'Perfect Araxxor 2',
+		desc: 'Kill Araxxor perfectly, without hitting it during the enrage phase.',
+		type: 'perfection',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 200,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 3097,
+		name: 'Swimming in Venom',
+		desc: 'Kill Araxxor without the boss ever moving.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
 		}
 	}
 ];

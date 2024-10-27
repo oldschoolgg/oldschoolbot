@@ -1,23 +1,34 @@
-import { Image } from '@napi-rs/canvas';
-import { StoreBitfield } from '@oldschoolgg/toolkit';
-import { XpGainSource } from '@prisma/client';
-import { Bank, MonsterKillOptions } from 'oldschooljs';
-import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import type { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
+import type { GearSetupType, XpGainSource } from '@prisma/client';
+import type { Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 
-import { QuestID } from '../../mahoji/lib/abstracted_commands/questCommand';
-import { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
-import { Diary, DiaryTier } from '../diaries';
-import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
-import { POHBoosts } from '../poh';
-import { LevelRequirements, SkillsEnum } from '../skilling/types';
-import { ArrayItemsResolved, ItemBank, Skills } from '../types';
-import { MonsterActivityTaskOptions } from '../types/minions';
-import { calculateSimpleMonsterDeathChance } from '../util';
-import { AttackStyles } from './functions';
+import type { ClueTier } from '../clues/clueTiers';
+import type { BitField } from '../constants';
+import type { GearStat, OffenceGearStat } from '../gear';
+import type { POHBoosts } from '../poh';
+import type { MinigameName } from '../settings/minigames';
+import type { LevelRequirements, SkillsEnum } from '../skilling/types';
+import type { XPBank } from '../structures/Bank';
+import type { GearBank } from '../structures/GearBank';
+import type { MUserStats } from '../structures/MUserStats';
+import type { UpdateBank } from '../structures/UpdateBank';
+import type { ArrayItemsResolved, Skills } from '../types';
+import type { calculateSimpleMonsterDeathChance } from '../util';
+import type { CanvasImage } from '../util/canvasUtil';
+import type { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
+import type { QuestID } from './data/quests';
+import type { AttackStyles } from './functions';
+
+export type KillableMonsterEffect = (opts: {
+	gearBank: GearBank;
+	quantity: number;
+	monster: KillableMonster;
+	loot: Bank;
+	updateBank: UpdateBank;
+}) => void | { xpBank?: XPBank; loot?: Bank; messages: string[] };
 
 export type BankBackground = {
-	image: Image | null;
+	image: CanvasImage | null;
 	id: number;
 	name: string;
 	available: boolean;
@@ -25,7 +36,7 @@ export type BankBackground = {
 	perkTierNeeded?: PerkTier;
 	gpCost?: number;
 	itemCost?: Bank;
-	repeatImage?: Image | null;
+	repeatImage?: CanvasImage | null;
 	bitfield?: BitField;
 	sacValueRequired?: number;
 	skillsNeeded?: Skills;
@@ -36,7 +47,7 @@ export type BankBackground = {
 } & (
 	| {
 			hasPurple: true;
-			purpleImage: Image | null;
+			purpleImage: CanvasImage | null;
 	  }
 	| {
 			hasPurple?: null;
@@ -70,6 +81,7 @@ export interface KillableMonster {
 	existsInCatacombs?: boolean;
 	qpRequired?: number;
 	difficultyRating?: number;
+	revsWeaponBoost?: boolean;
 
 	/**
 	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
@@ -88,6 +100,7 @@ export interface KillableMonster {
 	 * How much healing (health points restored) is needed per kill.
 	 */
 	healAmountNeeded?: number;
+	minimumHealAmount?: number;
 	attackStyleToUse?: OffenceGearStat;
 	attackStylesUsed?: OffenceGearStat[];
 	/**
@@ -102,7 +115,7 @@ export interface KillableMonster {
 	disallowedAttackStyles?: AttackStyles[];
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
-	itemCost?: Consumable;
+	itemCost?: Consumable | Consumable[];
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;
 	canChinning?: boolean;
@@ -110,14 +123,7 @@ export interface KillableMonster {
 	canCannon?: boolean;
 	cannonMulti?: boolean;
 	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank }) => void;
-	effect?: (opts: {
-		messages: string[];
-		user: MUser;
-		quantity: number;
-		monster: KillableMonster;
-		loot: Bank;
-		data: MonsterActivityTaskOptions;
-	}) => Promise<unknown>;
+	effect?: KillableMonsterEffect;
 	degradeableItemUsage?: {
 		required: boolean;
 		gearSetup: GearSetupType;
@@ -131,17 +137,20 @@ export interface KillableMonster {
 	equippedItemBoosts?: {
 		gearSetup: GearSetupType;
 		items: { boostPercent: number; itemID: number }[];
+		required?: boolean;
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
-	diaryRequirement?: [Diary, DiaryTier];
+	diaryRequirement?: [DiaryID, DiaryTierName];
+	wildySlayerCave?: boolean;
 	requiredBitfield?: BitField;
 
-	minimumFoodHealAmount?: number;
 	minimumWeaponShieldStats?: Partial<Record<GearSetupType, Required<GearRequirement>>>;
 	tameCantKill?: true;
 	customRequirement?: (user: MUser) => Promise<string | null>;
 	setupsUsed?: GearSetupType[];
+	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
+	maxQuantity?: number;
 }
 /*
  * Monsters will have an array of Consumables
@@ -155,6 +164,8 @@ export interface Consumable {
 	// For staff of the dead / kodai
 	isRuneCost?: boolean;
 	alternativeConsumables?: Consumable[];
+	boostPercent?: number;
+	optional?: boolean;
 }
 
 export interface AddXpParams {
@@ -181,11 +192,6 @@ export interface AddMonsterXpParams {
 	superiorCount?: number;
 }
 
-export interface ResolveAttackStylesParams {
-	monsterID: number | undefined;
-	boostMethod?: string;
-}
-
 export interface BlowpipeData {
 	scales: number;
 	dartQuantity: number;
@@ -210,3 +216,33 @@ export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
+
+export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
+export type DiaryTierName = (typeof diaryTiers)[number];
+
+export interface DiaryTier {
+	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';
+	items: Item[];
+	skillReqs: Skills;
+	ownedItems?: number[];
+	collectionLogReqs?: number[];
+	minigameReqs?: Partial<Record<MinigameName, number>>;
+	lapsReqs?: Record<string, number>;
+	qp?: number;
+	monsterScores?: Record<string, number>;
+	customReq?: (user: MUser, summary: boolean, stats: MUserStats) => [true] | [false, string];
+}
+export enum DiaryID {
+	WesternProvinces = 0,
+	Ardougne = 1,
+	Desert = 2,
+	Falador = 3,
+	Fremennik = 4,
+	Kandarin = 5,
+	Karamja = 6,
+	KourendKebos = 7,
+	LumbridgeDraynor = 8,
+	Morytania = 9,
+	Varrock = 10,
+	Wilderness = 11
+}

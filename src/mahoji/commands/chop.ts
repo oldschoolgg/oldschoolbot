@@ -1,18 +1,20 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../lib/constants';
+import { IVY_MAX_TRIP_LENGTH_BOOST, TWITCHERS_GLOVES, type TwitcherGloves } from '../../lib/constants';
 import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
-import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
+import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
+import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
-import { OSBMahojiCommand } from '../lib/util';
+import resolveItems from '../../lib/util/resolveItems';
+import type { OSBMahojiCommand } from '../lib/util';
 
-export const axes = [
+const axes = [
 	{
 		id: itemID('Dwarven greataxe'),
 		multiplier: 8,
@@ -105,13 +107,32 @@ export const chopCommand: OSBMahojiCommand = {
 			name: 'powerchop',
 			description: 'Set this to true to powerchop. Higher xp/hour, No loot (default false, optional).',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'forestry_events',
+			description: 'Set this to true to participate in forestry events. (default false, optional).',
+			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'twitchers_gloves',
+			description: "Change the settings of your Twitcher's gloves. (default egg, optional)",
+			required: false,
+			choices: TWITCHERS_GLOVES.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; powerchop?: boolean }>) => {
+	}: CommandRunOptions<{
+		name: string;
+		quantity?: number;
+		powerchop?: boolean;
+		forestry_events?: boolean;
+		twitchers_gloves?: TwitcherGloves;
+	}>) => {
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
@@ -122,7 +143,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to chop.";
 
-		let { quantity, powerchop = false } = options;
+		let { quantity, powerchop, forestry_events, twitchers_gloves } = options;
 
 		const skills = user.skillsAsLevels;
 
@@ -143,28 +164,51 @@ export const chopCommand: OSBMahojiCommand = {
 		const boosts = [];
 
 		let wcLvl = skills.woodcutting;
+		const farmingLvl = user.skillsAsLevels.farming;
+		const pekyBoost = user.usingPet('Peky');
 
-		// Invisible wc boost for woodcutting guild
-		if (skills.woodcutting >= 60 && log.wcGuild) {
-			boosts.push('+7 invisible WC lvls at the Woodcutting guild');
-			wcLvl += 7;
-		}
-
-		// Enable 1.5 tick teaks half way to 99
-		if (skills.woodcutting >= 92 && (log.name === 'Teak Logs' || log.name === 'Mahogany Logs')) {
-			boosts.push('1.5t teak/mahogany chopping with 92+ wc');
+		// Ivy, Redwood logs, Logs, Sulliuscep, Farming patches, Woodcutting guild don't spawn forestry events
+		if (
+			!forestry_events ||
+			resolveItems(['Redwood logs', 'Logs']).includes(log.id) ||
+			log.lootTable ||
+			log.name === 'Ivy'
+		) {
+			forestry_events = false;
+			// Invisible wc boost for woodcutting guild
+			if (skills.woodcutting >= 60 && log.wcGuild) {
+				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
+				wcLvl += 7;
+			}
+			// 1.5 tick hardwood at 92 wc, 1.5t is only possible at farming patches
+			if (skills.woodcutting >= 92) {
+				if (resolveItems('Teak logs').includes(log.id) && farmingLvl >= 35) {
+					boosts.push('1.5t woodcutting teak trees with 92+ wc & 35+ farming');
+				}
+				if (resolveItems('Mahogany logs').includes(log.id) && farmingLvl >= 55) {
+					boosts.push('1.5t woodcutting mahogany trees with 92+ wc & 55+ farming');
+				}
+			}
+		} else {
+			boosts.push(
+				`Participating in Forestry events${
+					pekyBoost ? " (uniques are 5x as common thanks to Peky's help)" : ''
+				}`
+			);
 		}
 
 		// Default bronze axe, last in the array
 		let axeMultiplier = 1;
+		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
 		if (user.hasEquippedOrInBank(['Drygore axe'])) {
-			let [predeterminedTotalTime] = determineWoodcuttingTime({
+			const [predeterminedTotalTime] = determineWoodcuttingTime({
 				quantity,
 				user,
 				log,
 				axeMultiplier: 10,
-				powerchopping: powerchop,
+				powerchopping: Boolean(powerchop),
+				forestry: forestry_events,
 				woodcuttingLvl: wcLvl
 			});
 			const boostRes = await inventionItemBoost({
@@ -174,9 +218,11 @@ export const chopCommand: OSBMahojiCommand = {
 			});
 			if (boostRes.success) {
 				axeMultiplier = 10;
+				boosts.pop();
 				boosts.push(`**10x** success multiplier for Drygore axe (${boostRes.messages})`);
 			} else {
 				axeMultiplier = 8;
+				boosts.pop();
 				boosts.push('**8x** success multiplier for Dwarven greataxe');
 			}
 		} else {
@@ -189,24 +235,45 @@ export const chopCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (log.name === 'Ivy') {
+		// Ivy choping
+		if (!forestry_events && log.name === 'Ivy') {
 			boosts.push(`+${formatDuration(IVY_MAX_TRIP_LENGTH_BOOST, true)} max trip length for Ivy`);
 			powerchop = false;
+			if (user.owns('Herbicide')) {
+				axeMultiplier = Math.ceil(axeMultiplier * 2.7);
+				boosts.push('3x faster Ivy chopping for using Herbicide');
+			}
 		}
 
 		if (!powerchop) {
 			powerchop = false;
+			if (user.hasEquippedOrInBank('Forestry basket') || user.hasEquippedOrInBank('Log basket')) {
+				if (log.name === 'Redwood Logs') {
+					boosts.push(
+						`+10 trip minutes for having a ${
+							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						}`
+					);
+				} else {
+					boosts.push(
+						`+5 trip minutes for having a ${
+							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						}`
+					);
+				}
+			}
 		} else {
 			boosts.push('**Powerchopping**');
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible
-		let [timeToChop, newQuantity] = determineWoodcuttingTime({
+		const [timeToChop, newQuantity] = determineWoodcuttingTime({
 			quantity,
 			user,
 			log,
 			axeMultiplier,
 			powerchopping: powerchop,
+			forestry: forestry_events,
 			woodcuttingLvl: wcLvl
 		});
 
@@ -222,6 +289,8 @@ export const chopCommand: OSBMahojiCommand = {
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop,
+			forestry: forestry_events,
+			twitchers: twitchers_gloves,
 			duration,
 			fakeDurationMin,
 			fakeDurationMax,
@@ -229,7 +298,7 @@ export const chopCommand: OSBMahojiCommand = {
 		});
 
 		let response = `${minionName(user)} is now chopping ${log.name} until your minion ${
-			quantity ? `chopped ${quantity}x or gets tired` : 'is satisfied'
+			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
 				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`

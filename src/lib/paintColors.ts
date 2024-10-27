@@ -1,8 +1,8 @@
-import { createCanvas, Image } from '@napi-rs/canvas';
 import { LootTable } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { setCustomItem } from './customItems/util';
+import { type CanvasImage, createCanvas } from './util/canvasUtil';
 import getOSItem from './util/getOSItem';
 
 interface PaintColor {
@@ -47,7 +47,11 @@ for (const paintColor of paintColors) {
 
 export const paintColorsMap = new Map(paintColors.map(i => [i.itemId, i]));
 
-export const applyPaintToItemIcon = async (img: Image, tintColor: [number, number, number], blackTolerance = 4) => {
+export const applyPaintToItemIcon = async (
+	img: CanvasImage,
+	tintColor: [number, number, number],
+	blackTolerance = 4
+) => {
 	const canvas = createCanvas(img.width, img.height);
 	const ctx = canvas.getContext('2d');
 	const [r, g, b] = tintColor;
@@ -55,9 +59,9 @@ export const applyPaintToItemIcon = async (img: Image, tintColor: [number, numbe
 	const imageData = ctx.getImageData(0, 0, img.width, img.height);
 
 	for (let i = 0; i < imageData.data.length; i += 4) {
-		const originalRed = imageData.data[i + 0];
-		const originalGreen = imageData.data[i + 1];
-		const originalBlue = imageData.data[i + 2];
+		const originalRed = imageData.data[i + 0] as number;
+		const originalGreen = imageData.data[i + 1] as number;
+		const originalBlue = imageData.data[i + 2] as number;
 
 		if (
 			(originalRed === 48 && originalGreen === 32 && originalBlue === 32) ||

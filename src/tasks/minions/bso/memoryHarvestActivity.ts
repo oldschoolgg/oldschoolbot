@@ -2,16 +2,16 @@ import { calcPercentOfNum, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {
+	type DivinationEnergy,
+	MemoryHarvestType,
 	calcEnergyPerMemory,
-	divinationEnergies,
-	DivinationEnergy,
-	MemoryHarvestType
+	divinationEnergies
 } from '../../../lib/bso/divination';
 import { Emoji } from '../../../lib/constants';
 import { inventionBoosts } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MemoryHarvestOptions } from '../../../lib/types/minions';
-import { calculateAverageTimeForSuccess, formatDuration, roll } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -22,19 +22,19 @@ const MEMORIES_PER_HARVEST = SECONDS_TO_HARVEST * 2;
 export const totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
 
 function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energy: DivinationEnergy) {
-	let convertToXPXP = hasBoon ? energy.convertBoon ?? energy.convertNormal : energy.convertNormal;
+	const convertToXPXP = hasBoon ? (energy.convertBoon ?? energy.convertNormal) : energy.convertNormal;
 
 	switch (method) {
 		case MemoryHarvestType.ConvertToXP: {
 			return { xp: convertToXPXP };
 		}
 		case MemoryHarvestType.ConvertToEnergy: {
-			let xp = 1 + Math.ceil(convertToXPXP / 3.5);
+			const xp = 1 + Math.ceil(convertToXPXP / 3.5);
 			return { xp };
 		}
 		case MemoryHarvestType.ConvertWithEnergyToXP: {
 			let xp: number = hasBoon
-				? energy.convertWithEnergyAndBoon ?? energy.convertWithEnergy
+				? (energy.convertWithEnergyAndBoon ?? energy.convertWithEnergy)
 				: energy.convertWithEnergy;
 			xp = increaseNumByPercent(xp, 15);
 			return { xp };
@@ -80,7 +80,7 @@ export function memoryHarvestResult({
 
 	for (let i = 0; i < rounds; i++) {
 		// Step 1: Harvest memories
-		let memoriesHarvested = MEMORIES_PER_HARVEST;
+		const memoriesHarvested = MEMORIES_PER_HARVEST;
 
 		totalMemoriesHarvested += memoriesHarvested;
 
@@ -129,7 +129,7 @@ export function memoryHarvestResult({
 			}
 		}
 
-		let clueChance = 1200;
+		const clueChance = 1200;
 		// Step 3: Roll for pet
 		for (let t = 0; t < memoriesHarvested; t++) {
 			if (roll(petChance)) {
@@ -174,7 +174,7 @@ export function memoryHarvestResult({
 		totalDivinationXP,
 		totalMemoriesHarvested,
 		petChancePerMemory: petChance,
-		avgPetTime: calculateAverageTimeForSuccess((totalMemoriesHarvested / petChance) * 100, duration),
+		avgPetTime: totalMemoriesHarvested / petChance / duration,
 		boosts,
 		energyPerMemory
 	};
@@ -183,7 +183,7 @@ export function memoryHarvestResult({
 export const memoryHarvestTask: MinionTask = {
 	type: 'MemoryHarvest',
 	async run(data: MemoryHarvestOptions) {
-		let {
+		const {
 			userID,
 			channelID,
 			duration,
@@ -207,19 +207,18 @@ export const memoryHarvestTask: MinionTask = {
 			didGetGuthixianBoost = true;
 		}
 
-		const { boosts, totalDivinationXP, totalMemoriesHarvested, petChancePerMemory, loot, avgPetTime, cost } =
-			memoryHarvestResult({
-				duration,
-				hasBoon,
-				energy,
-				harvestMethod: harvestMethodIndex,
-				hasWispBuster,
-				hasGuthixianBoost: didGetGuthixianBoost,
-				hasDivineHand,
-				isUsingDivinationPotion,
-				hasMasterCape: user.hasEquippedOrInBank('Divination master cape'),
-				rounds
-			});
+		const { boosts, totalDivinationXP, totalMemoriesHarvested, loot, cost } = memoryHarvestResult({
+			duration,
+			hasBoon,
+			energy,
+			harvestMethod: harvestMethodIndex,
+			hasWispBuster,
+			hasGuthixianBoost: didGetGuthixianBoost,
+			hasDivineHand,
+			isUsingDivinationPotion,
+			hasMasterCape: user.hasEquippedOrInBank('Divination master cape'),
+			rounds
+		});
 
 		if (cost.length > 0) {
 			if (!user.owns(cost)) {
@@ -246,9 +245,7 @@ export const memoryHarvestTask: MinionTask = {
 			energy.type
 		} memories, and turning them into ${
 			harvestMethodIndex === MemoryHarvestType.ConvertToEnergy ? 'energies' : 'XP'
-		}. ${xpRes}.
-
-Pet chance 1 in ${petChancePerMemory.toLocaleString()}, ${formatDuration(avgPetTime)} on average to get pet`;
+		}. ${xpRes}.`;
 
 		if (loot.length > 0) {
 			await userStatsBankUpdate(user.id, 'divination_loot', loot);

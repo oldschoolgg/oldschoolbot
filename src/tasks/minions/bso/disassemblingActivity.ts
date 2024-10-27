@@ -1,13 +1,13 @@
 import { userMention } from 'discord.js';
-import { roll, Time } from 'e';
+import { Time, roll } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji } from '../../../lib/constants';
-import { inventionBoosts, transactMaterialsFromUser } from '../../../lib/invention/inventions';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
+import { inventionBoosts, transactMaterialsFromUser } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { DisassembleTaskOptions } from '../../../lib/types/minions';
+import type { DisassembleTaskOptions } from '../../../lib/types/minions';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -35,7 +35,7 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 		items_disassembled_cost: true
 	});
 	await mahojiClientSettingsUpdate({
-		items_disassembled_cost: new Bank(items_disassembled_cost as ItemBank).add(cost).bank
+		items_disassembled_cost: new Bank(items_disassembled_cost as ItemBank).add(cost).toJSON()
 	});
 
 	const xpStr = await user.addXP({

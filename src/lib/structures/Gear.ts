@@ -1,24 +1,25 @@
-import { GearPreset } from '@prisma/client';
+import type { GearPreset } from '@prisma/client';
 import { notEmpty, objectKeys, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
+import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
+
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
-import {
+import type {
 	DefenceGearStat,
 	GearSetup,
 	GearSetupType,
 	GearSlotItem,
-	GearStat,
 	GearStats,
 	OffenceGearStat,
 	OtherGearStat
 } from '../gear/types';
-import { GearRequirement } from '../minions/types';
+import { GearStat } from '../gear/types';
+import type { GearRequirement } from '../minions/types';
 import { assert } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
 
 export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;
@@ -26,10 +27,10 @@ export type PartialGearSetup = Partial<{
 
 export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.values(GearStat)) {
 	const osItems = items.map(i => getOSItem(i));
-	let base: Required<GearRequirement> = {} as Required<GearRequirement>;
+	const base: Required<GearRequirement> = {} as Required<GearRequirement>;
 	for (const item of osItems) {
 		for (const stat of Object.values(GearStat)) {
-			let thisStat = item.equipment?.[stat] ?? 0;
+			const thisStat = item.equipment?.[stat] ?? 0;
 			if (!base[stat]) base[stat] = 0;
 			if (statWhitelist.includes(stat)) {
 				base[stat] += thisStat;
@@ -88,14 +89,7 @@ export const defaultGear: GearSetup = {
 	[EquipmentSlot.Weapon]: null
 };
 Object.freeze(defaultGear);
-export function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
-	const filteredGear = !gear
-		? undefined
-		: typeof gear.ammo === 'undefined' || typeof gear.ammo === 'string'
-		? constructGearSetup(gear as PartialGearSetup)
-		: (gear as GearSetup);
-	return filteredGear;
-}
+
 export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 	{
 		name: 'graceful',
@@ -558,7 +552,7 @@ export class Gear {
 		if (allItems.length === 0) {
 			return 'No items';
 		}
-		let items = [];
+		const items = [];
 		for (const item of allItems) {
 			items.push(getOSItem(item).name);
 		}

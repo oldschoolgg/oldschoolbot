@@ -1,8 +1,8 @@
-import { CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../lib/constants';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gpCommand: OSBMahojiCommand = {

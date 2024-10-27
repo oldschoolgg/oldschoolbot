@@ -1,12 +1,11 @@
 import { Time } from 'e';
 
-import { production } from '../config';
+import { TimerManager } from '@sapphire/timer-manager';
 
 export const BLACKLISTED_USERS = new Set<string>();
 export const BLACKLISTED_GUILDS = new Set<string>();
 
 export async function syncBlacklists() {
-	debugLog('Syncing blacklists');
 	const blacklistedEntities = await roboChimpClient.blacklistedEntity.findMany();
 	BLACKLISTED_USERS.clear();
 	BLACKLISTED_GUILDS.clear();
@@ -16,6 +15,4 @@ export async function syncBlacklists() {
 	}
 }
 
-if (production) {
-	setInterval(syncBlacklists, Time.Minute * 10);
-}
+export const startBlacklistSyncing = () => TimerManager.setInterval(syncBlacklists, Time.Minute * 10);

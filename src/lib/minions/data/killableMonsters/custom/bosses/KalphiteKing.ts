@@ -1,12 +1,12 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { kalphiteKingCL } from '../../../../../data/CollectionsExport';
 import { GearStat } from '../../../../../gear';
 import { SeedTable } from '../../../../../simulation/seedTable';
 import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';
-import { KillableMonster } from '../../../../types';
+import type { KillableMonster } from '../../../../types';
 import { GrimyHerbTable } from '../Treebeard';
 
 export const kalphiteKingLootTable = new LootTable()

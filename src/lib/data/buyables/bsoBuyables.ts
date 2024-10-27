@@ -1,11 +1,10 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { isAtleastThisOld, mentionCommand } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calculateCompCapeProgress } from '../../bso/calculateCompCapeProgress';
-import { allMasterCapesBank } from '../../skilling/skillcapes';
-import { isAtleastThisOld } from '../../util';
-import { Buyable } from './buyables';
+import { compCapeCreatableBank } from '../../skilling/skillcapes';
+import type { Buyable } from './buyables';
 import { circusBuyables } from './circusBuyables';
 import { fistOfGuthixBuyables } from './fistOfGuthixBuyables';
 import { keyCrateBuyables } from './keyCrateBuyables';
@@ -104,9 +103,9 @@ export const bsoBuyables: Buyable[] = [
 	{
 		name: 'Completionist cape',
 		outputItems: new Bank().add('Completionist cape').add('Completionist hood'),
-		itemCost: allMasterCapesBank,
+		itemCost: compCapeCreatableBank,
 		customReq: async user => {
-			let { totalPercentUntrimmed } = await calculateCompCapeProgress(user);
+			const { totalPercentUntrimmed } = await calculateCompCapeProgress(user);
 			if (totalPercentUntrimmed < 100) {
 				return [
 					false,
@@ -127,7 +126,7 @@ export const bsoBuyables: Buyable[] = [
 		outputItems: new Bank().add('Completionist cape (t)').add('Completionist hood (t)'),
 		itemCost: new Bank().add('Completionist cape').add('Completionist hood'),
 		customReq: async user => {
-			let { totalPercentTrimmed } = await calculateCompCapeProgress(user);
+			const { totalPercentTrimmed } = await calculateCompCapeProgress(user);
 			if (totalPercentTrimmed < 100) {
 				return [
 					false,

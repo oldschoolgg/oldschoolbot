@@ -1,18 +1,19 @@
 import { LootTable } from 'oldschooljs';
+import { itemTupleToTable } from 'oldschooljs/dist/util/util';
 
 export const CrystalChestTable = new LootTable()
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Spinach roll', 1],
 			['Coins', 2000]
-		],
+		]),
 		1,
 		1
 	)
 	.add('Uncut dragonstone', 1)
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Air rune', 50],
 			['Water rune', 50],
@@ -25,79 +26,86 @@ export const CrystalChestTable = new LootTable()
 			['Cosmic rune', 10],
 			['Nature rune', 10],
 			['Law rune', 10]
-		],
+		]),
 		1,
 		1
 	)
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Ruby', 2],
 			['Diamond', 2]
-		],
+		]),
 		1,
 		1
 	)
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Runite bar', 3]
-		],
+		]),
 		1,
 		1
 	)
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Iron ore', 150]
-		],
+		]),
 		1,
 		1
 	)
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Coal', 100]
-		],
+		]),
 		1,
 		1
 	)
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Raw swordfish', 5],
 			['Coins', 1000]
-		],
+		]),
 		1,
 		1
 	)
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Tooth half of key', 1],
 			['Coins', 750]
-		],
+		]),
 		1,
 		1
 	)
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Loop half of key', 1],
 			['Coins', 750]
-		],
+		]),
 		1,
 		1
 	)
 	.add(
-		[
+		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Adamant sq shield', 1]
-		],
+		]),
 		1,
 		1
 	)
-	.add([['Uncut dragonstone'], ['Rune platelegs']], 1, 1);
+	.add(
+		itemTupleToTable([
+			['Uncut dragonstone', 1],
+			['Rune platelegs', 1]
+		]),
+		1,
+		1
+	);
 
 export const CasketTable = new LootTable()
 	.add('Coins', 160, 24)
@@ -160,7 +168,7 @@ export const NestBoxesTable = new LootTable()
 	.add('Nest box (ring)', 1, 5)
 	.add('Nest box (empty)', 1, 3);
 
-export const BaseGemBagTable = new LootTable()
+const BaseGemBagTable = new LootTable()
 	.add('Uncut sapphire', 1, 4993)
 	.add('Uncut emerald', 1, 3468)
 	.add('Uncut ruby', 1, 1180)
@@ -178,3 +186,29 @@ export const BuildersSupplyCrateTable = new LootTable()
 	.add('Soft clay', [45, 48])
 	.add('Bolt of cloth', 15)
 	.add('Limestone brick', 9);
+
+const NexNonUniqueBaseTable = new LootTable()
+	.add('Blood rune', [84, 325], 3)
+	.add('Death rune', [85, 170], 3)
+	.add('Soul rune', [86, 227], 3)
+	.add('Dragon bolts (unf)', [12, 90], 3)
+	.add('Cannonball', [42, 298], 3)
+	.add('Air rune', [123, 1365])
+	.add('Fire rune', [210, 1655])
+	.add('Water rune', [193, 1599])
+	.add('Onyx bolts (e)', [11, 29])
+	.add('Air orb', [6, 20], 3)
+	.add('Uncut ruby', [3, 26], 3)
+	.add('Wine of zamorak', [4, 14], 3)
+	.add('Coal', [23, 95])
+	.add('Runite ore', [2, 28])
+	.add(new LootTable().every('Shark', 3).every('Prayer potion(4)', 1), 1, 1)
+	.add(new LootTable().every('Saradomin brew(4)', 2).every('Super restore(4)', 1), 1, 1)
+	.add('Ecumenical key shard', [6, 39])
+	.add('Blood essence', [1, 2])
+	.add('Coins', [8539, 26_748]);
+
+export const NexNonUniqueTable = new LootTable()
+	.every(NexNonUniqueBaseTable, 2)
+	.oneIn(25, 'Nihil shard', [1, 20])
+	.oneIn(100, 'Rune sword');

@@ -1,6 +1,6 @@
-import { activity_type_enum, User } from '@prisma/client';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type User, activity_type_enum } from '@prisma/client';
 import { calcWhatPercent, sumArr } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
@@ -19,16 +19,16 @@ import {
 import { BitField } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { getMinigameEntity } from '../settings/minigames';
-import { prisma } from '../settings/prisma';
+
 import smithables from '../skilling/skills/smithing/smithables';
 import { getSlayerTaskStats } from '../slayer/slayerUtil';
 import { getAllUserTames } from '../tames';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';
 import { easyTasks } from './easyTasks';
 import { eliteTasks } from './eliteTasks';
 import { hardTasks } from './hardTasks';
-import { betterHerbloreStats, HasFunctionArgs, Task } from './leaguesUtils';
+import { type HasFunctionArgs, type Task, betterHerbloreStats } from './leaguesUtils';
 import { masterTasks } from './masterTasks';
 import { mediumTasks } from './mediumTasks';
 import {
@@ -55,8 +55,8 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 	let totalPoints = 0;
 	let str = '';
 	for (const { name, tasks, points } of leagueTasks) {
-		let realTasks = excludeFinished ? tasks.filter(i => !finishedTasksIDs.includes(i.id)) : tasks;
-		let ptsThisGroup = realTasks.length * points;
+		const realTasks = excludeFinished ? tasks.filter(i => !finishedTasksIDs.includes(i.id)) : tasks;
+		const ptsThisGroup = realTasks.length * points;
 		str += `--------- ${name} (${realTasks.length} tasks - ${ptsThisGroup.toLocaleString()} points) -----------\n`;
 		str += realTasks
 			.map(i => i.name)
@@ -71,14 +71,13 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 }
 
 async function getActivityCounts(user: User) {
-	const result: { type: activity_type_enum; count: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT type, COUNT(type)::int
+	const result: { type: activity_type_enum; count: number }[] = await prisma.$queryRawUnsafe(`SELECT type, COUNT(type)::int
 FROM activity
 WHERE user_id = ${user.id}
 GROUP BY type;`);
 	const parsed = result.map(i => ({ type: i.type, count: Number(i.count) }));
 	// @ts-ignore trust me
-	let rec: Record<activity_type_enum, number> = {};
+	const rec: Record<activity_type_enum, number> = {};
 	for (const a of Object.values(activity_type_enum)) {
 		rec[a] = 0;
 	}
@@ -89,8 +88,7 @@ GROUP BY type;`);
 }
 
 export async function personalHerbloreStatsWithoutZahur(user: User) {
-	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Herblore'
 AND user_id = '${user.id}'::bigint
@@ -108,7 +106,7 @@ GROUP BY data->>'mixableID';`);
 }
 
 function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
-	let input = new Bank();
+	const input = new Bank();
 	for (const [item, qty] of itemsSmithed.items()) {
 		const smithable = smithables.find(i => i.id === item.id);
 		if (!smithable) continue;
@@ -333,7 +331,7 @@ export async function leaguesClaimCommand(userID: string, finishedTaskIDs: numbe
 
 	const newTotal = newUser.leagues_points_total;
 
-	let response: Awaited<CommandResponse> = {
+	const response: Awaited<CommandResponse> = {
 		content: `You claimed ${newlyFinishedTasks.length} tasks, and received ${pointsToAward} points. You now have a balance of ${newUser.leagues_points_balance_osb} OSB points and ${newUser.leagues_points_balance_bso} BSO points, and ${newTotal} total points. You have completed a total of ${newUser.leagues_completed_tasks_ids.length} tasks.`
 	};
 

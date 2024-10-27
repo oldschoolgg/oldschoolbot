@@ -1,21 +1,42 @@
-import { calcPercentOfNum } from 'e';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { Time, calcPercentOfNum } from 'e';
+import { LootTable } from 'oldschooljs';
 
 import { percentChance } from '../../util';
-import { Creature } from '../types';
+import type { Creature } from '../types';
 
 export function calcLootXPHunting(
 	currentLevel: number,
 	creature: Creature,
 	quantity: number,
+	usingStaminaPotion: boolean,
+	graceful: boolean,
+	experienceScore: number,
 	noRandomness = false
 ): [number, number, number] {
 	let xpReceived = 0;
 	let successful = 0;
 
-	const chanceOfSuccess = creature.slope * currentLevel + creature.intercept;
+	let chanceOfSuccess = creature.slope * currentLevel + creature.intercept;
 
-	let xpToAdd = creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
+	if (creature.name === 'Crystal impling') {
+		chanceOfSuccess = 20;
+		if (graceful) {
+			chanceOfSuccess *= 1.05;
+		}
+		if (usingStaminaPotion) {
+			chanceOfSuccess *= 1.2;
+		}
+
+		const timeInSeconds = creature.catchTime * Time.Second;
+		const experienceFactor = experienceScore / (Time.Hour / timeInSeconds);
+
+		const maxPercentIncrease = 10;
+		const percentIncrease = Math.min(Math.floor(experienceFactor), maxPercentIncrease);
+
+		chanceOfSuccess += chanceOfSuccess * (percentIncrease / 100);
+	}
+
+	const xpToAdd = creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
 
 	if (noRandomness) {
 		const successes = Math.floor(calcPercentOfNum(chanceOfSuccess, quantity));
@@ -35,10 +56,10 @@ export function calcLootXPHunting(
 }
 
 export function generateHerbiTable(currentHerbLvl: number, gotMagicSec: boolean): LootTable {
-	let herbiTable = new LootTable();
+	const herbiTable = new LootTable();
 	if (currentHerbLvl < 31) return herbiTable;
 	herbiTable.tertiary(6500, 'Herbi');
-	let baseYield = gotMagicSec ? 2 : 1;
+	const baseYield = gotMagicSec ? 2 : 1;
 	herbiTable
 		.add('Grimy guam leaf', [baseYield, 4])
 		.add('Grimy irit leaf', [baseYield, 4])

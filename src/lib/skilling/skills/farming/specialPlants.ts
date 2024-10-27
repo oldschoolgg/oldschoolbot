@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import itemID from '../../../util/itemID';
-import { Plant } from '../../types';
+import type { Plant } from '../../types';
 
 const specialPlants: Plant[] = [
 	{
@@ -840,7 +840,7 @@ const specialPlants: Plant[] = [
 			[null, 8, 10],
 			['compost', 10, 12],
 			['supercompost', 12, 14],
-			['ultracompost', 14, 16]
+			['ultracompost', 28, 32]
 		],
 		treeWoodcuttingLevel: 1,
 		name: 'Crystal tree',

@@ -1,98 +1,102 @@
-import { describe, test, vi } from 'vitest';
+import { generateCommandInputs } from '@oldschoolgg/toolkit/util';
+import { Time, shuffleArr } from 'e';
+import { generateRandomBank } from 'oldschooljs/dist/meta/types';
+import { expect, test, vi } from 'vitest';
 
-import { activitiesCommand } from '../../src/mahoji/commands/activities';
-import { askCommand } from '../../src/mahoji/commands/ask';
-import { bankCommand } from '../../src/mahoji/commands/bank';
-import { bsCommand } from '../../src/mahoji/commands/bs';
-import { buildCommand } from '../../src/mahoji/commands/build';
-import { buyCommand } from '../../src/mahoji/commands/buy';
-import { chooseCommand } from '../../src/mahoji/commands/choose';
-import { chopCommand } from '../../src/mahoji/commands/chop';
-import { claimCommand } from '../../src/mahoji/commands/claim';
-import { clueCommand } from '../../src/mahoji/commands/clue';
-import { createCommand } from '../../src/mahoji/commands/create';
-import { farmingCommand } from '../../src/mahoji/commands/farming';
-import { fishCommand } from '../../src/mahoji/commands/fish';
-import { fletchCommand } from '../../src/mahoji/commands/fletch';
-import { gpCommand } from '../../src/mahoji/commands/gp';
-import { huntCommand } from '../../src/mahoji/commands/hunt';
-import { lapsCommand } from '../../src/mahoji/commands/laps';
-import { leaderboardCommand } from '../../src/mahoji/commands/leaderboard';
-import { lightCommand } from '../../src/mahoji/commands/light';
-import { lootCommand } from '../../src/mahoji/commands/loot';
-import { minigamesCommand } from '../../src/mahoji/commands/minigames';
-import { minionCommand } from '../../src/mahoji/commands/minion';
-import { openCommand } from '../../src/mahoji/commands/open';
-import { patreonCommand } from '../../src/mahoji/commands/patreon';
-import { payCommand } from '../../src/mahoji/commands/pay';
-import { pohCommand } from '../../src/mahoji/commands/poh';
-import { priceCommand } from '../../src/mahoji/commands/price';
-import { raidCommand } from '../../src/mahoji/commands/raid';
-import { rollCommand } from '../../src/mahoji/commands/roll';
-import { runecraftCommand } from '../../src/mahoji/commands/runecraft';
-import { slayerCommand } from '../../src/mahoji/commands/slayer';
-import { smeltingCommand } from '../../src/mahoji/commands/smelt';
-import { stealCommand } from '../../src/mahoji/commands/steal';
-import { toolsCommand } from '../../src/mahoji/commands/tools';
-import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+import { BitField, minionActivityCache } from '../../src/lib/constants';
+import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
+import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
+import { allCommands } from '../../src/mahoji/commands/allCommands';
 import { randomMock } from './setup';
-import { createTestUser } from './util';
+import { createTestUser, mockClient } from './util';
 
-const commands: [OSBMahojiCommand, null | object][] = [
-	[activitiesCommand, null],
-	[askCommand, null],
-	[bankCommand, null],
-	[bsCommand, null],
-	[clueCommand, null],
-	[claimCommand, null],
-	[farmingCommand, null],
-	[gpCommand, null],
-	[lapsCommand, null],
-	[leaderboardCommand, null],
-	[fletchCommand, null],
-	[fishCommand, null],
-	[createCommand, { item: 'asdf' }],
-	[chopCommand, null],
-	[chooseCommand, { list: 'a,a,a' }],
-	[buildCommand, null],
-	[buyCommand, null],
-	[huntCommand, null],
-	[lightCommand, null],
-	[lootCommand, null],
-	[minionCommand, null],
-	[minigamesCommand, null],
-	[runecraftCommand, { rune: 'blood rune' }],
-	[stealCommand, null],
-	[rollCommand, null],
-	[raidCommand, null],
-	[priceCommand, null],
-	[openCommand, null],
-	[patreonCommand, null],
-	[payCommand, { user: { user: { id: '2' } } }],
-	[pohCommand, null],
-	[slayerCommand, null],
-	[toolsCommand, null],
-	[stealCommand, null],
-	[smeltingCommand, null]
-];
-
-// Don't let any of these commands create an activity
-vi.mock('../../src/lib/util/addSubTaskToActivityTask', async () => {
-	const actual: any = await vi.importActual('../../src/lib/util/addSubTaskToActivityTask');
-	return {
-		...actual,
-		default: async (args: any) => {
-			console.log(`Sending ${args}`);
-		}
-	};
-});
-
-describe('All Commands Base Test', async () => {
-	randomMock();
-	const user = await createTestUser();
-	for (const [command, options] of commands) {
-		test(`Run ${command.name} command`, async () => {
-			await user.runCommand(command, options ?? {});
+test(
+	'All Commands Base Test',
+	async () => {
+		const bank = generateRandomBank(500, 100_000);
+		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
+		const client = await mockClient();
+		process.env.CLIENT_ID = client.data.id;
+		randomMock();
+		const maxUser = await createTestUser(bank, { GP: 100_000_000_000 });
+		await maxUser.max();
+		await maxUser.update({ bitfield: [BitField.isModerator] });
+		await mahojiClientSettingsFetch({ construction_cost_bank: true });
+		await prisma.activity.deleteMany({
+			where: {
+				user_id: BigInt(maxUser.id)
+			}
 		});
+
+		const ignoredCommands = [
+			'leagues',
+			'bank',
+			'bingo',
+			'bossrecords',
+			'stats',
+			'clues',
+			'kc',
+			'simulate',
+			'lvl',
+			'testpotato',
+			'xp',
+			'wiki',
+			'casket',
+			'finish',
+			'kill',
+			'trivia',
+			'ge',
+			'rp',
+			'cl',
+			'gearpresets'
+		];
+		const cmds = allCommands;
+
+		for (const command of cmds) {
+			if (ignoredCommands.includes(command.name)) continue;
+			if (cmds.some(c => c.name === command.name)) continue;
+			throw new Error(
+				`If you added a new command (${command.name}), you need to put it in the allCommandsBase.test.ts file.`
+			);
+		}
+
+		const ignoredSubCommands = [
+			['tools', 'patron', 'cl_bank'],
+			['loot', 'view'],
+			['minion', 'bankbg']
+		];
+
+		const promises = [];
+
+		for (const command of cmds) {
+			if (ignoredCommands.includes(command.name)) continue;
+			const options = shuffleArr(await generateCommandInputs(command.options!)).slice(0, 5);
+			outer: for (const option of options) {
+				for (const [parent, sub, subCommand] of ignoredSubCommands) {
+					if (command.name === parent && option[sub] && (subCommand ? option[sub][subCommand] : true)) {
+						continue outer;
+					}
+				}
+
+				promises.push(async () => {
+					try {
+						await maxUser.runCommand(command, option);
+						minionActivityCache.clear();
+					} catch (err) {
+						console.error(
+							`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
+						);
+						throw err;
+					}
+				});
+			}
+		}
+
+		await Promise.all(promises);
+
+		await client.processActivities();
+	},
+	{
+		timeout: Time.Minute * 10
 	}
-});
+);

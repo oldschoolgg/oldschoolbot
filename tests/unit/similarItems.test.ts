@@ -1,11 +1,10 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { gorajanWarriorOutfit } from '../../src/lib/data/CollectionsExport';
 import { getSimilarItems } from '../../src/lib/data/similarItems';
 import { Gear } from '../../src/lib/structures/Gear';
-import { itemNameFromID } from '../../src/lib/util';
-import resolveItems from '../../src/lib/util/resolveItems';
+import { itemNameFromID } from '../../src/lib/util/smallUtils';
 
 describe('Gear', () => {
 	const testGear = new Gear({
@@ -125,7 +124,7 @@ describe('Gear', () => {
 
 	test('bso tests', () => {
 		expect(bsoTestGear.allItemsBank().toString()).toEqual(
-			"1x Torva platelegs, 1x Gorajan warrior top, 1x Artisan's cape, 1x Drygore mace (ice), 1x Offhand drygore mace (shadow)"
+			"1x Artisan's cape, 1x Drygore mace (ice), 1x Gorajan warrior top, 1x Offhand drygore mace (shadow), 1x Torva platelegs"
 		);
 		expect(bsoTestGear.hasEquipped('Drygore mace (ice)')).toBeTruthy();
 		expect(bsoTestGear.hasEquipped('Drygore mace')).toBeTruthy();
@@ -242,13 +241,13 @@ describe('Gear', () => {
 	expect(getSimilarItems(itemID('Infernal max cape'))).toEqual([itemID('Infernal max cape')]);
 
 	test('toa', () => {
-		let testGear = new Gear({ cape: 'Masori assembler max cape' });
+		const testGear = new Gear({ cape: 'Masori assembler max cape' });
 		expect(testGear.hasEquipped("Ava's assembler")).toEqual(true);
-		let testGear2 = new Gear({ weapon: "Osmumten's fang (or)" });
+		const testGear2 = new Gear({ weapon: "Osmumten's fang (or)" });
 		expect(testGear2.hasEquipped("Osmumten's fang")).toEqual(true);
-		let testGear3 = new Gear({ cape: 'Masori assembler' });
+		const testGear3 = new Gear({ cape: 'Masori assembler' });
 		expect(testGear3.hasEquipped("Ava's assembler")).toEqual(true);
-		let testGear4 = new Gear({ cape: "Elidinis' ward (or)" });
+		const testGear4 = new Gear({ cape: "Elidinis' ward (or)" });
 		expect(testGear4.hasEquipped("Elidinis' ward (f)")).toEqual(true);
 	});
 
@@ -275,7 +274,8 @@ describe('Gear', () => {
 		gear.equip('Completionist cape');
 		expect(gear.hasEquipped('Invention master cape')).toEqual(true);
 		expect(gear.hasEquipped('Master quest cape')).toEqual(true);
-		expect(gear.hasEquipped('Achievement diary cape (t)')).toEqual(true);
+		expect(gear.hasEquipped('Achievement diary cape')).toEqual(true);
+		expect(gear.hasEquipped('Music cape')).toEqual(true);
 		expect(gear.hasEquipped('Slayer master cape')).toEqual(true);
 		expect(gear.hasEquipped('Attack master cape')).toEqual(true);
 		expect(gear.hasEquipped('Strength master cape')).toEqual(true);

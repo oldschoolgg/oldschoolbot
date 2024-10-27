@@ -1,11 +1,10 @@
-import { randFloat, randInt, roll, Time } from 'e';
+import { Time, randFloat, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
 import { userHasFlappy } from '../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
@@ -100,12 +99,6 @@ export const vmTask: MinionTask = {
 
 		if (loot.has('Rock golem')) {
 			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received ${
-					loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
-				} Rock golem while mining on the Volcanic Mine at level ${userMiningLevel} Mining!`
-			);
 		}
 		if (flappyRes.userMsg) {
 			str += `\n${flappyRes.userMsg}`;

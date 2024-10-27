@@ -1,8 +1,8 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import getOSItem, { getItem } from '../../util/getOSItem';
-import { BlowpipeData } from '../types';
+import type { BlowpipeData } from '../types';
 
 const defaultBlowpipe: BlowpipeData = {
 	scales: 0,
@@ -66,7 +66,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 
 	const item = rawBlowpipeData.dartID ? getOSItem(rawBlowpipeData.dartID) : null;
 	if (item) {
-		str += `${item.name}'s: ${rawBlowpipeData.dartQuantity!.toLocaleString()}x`;
+		str += `${item.name}'s: ${rawBlowpipeData.dartQuantity?.toLocaleString()}x`;
 	}
 
 	return str;
@@ -94,7 +94,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 
 	const userBank = user.bank;
 
-	let itemsToRemove = new Bank();
+	const itemsToRemove = new Bank();
 	if (!blowpipeDarts.includes(item) && item !== getOSItem("Zulrah's scales")) {
 		return "You can only charge your blowpipe with darts and Zulrah's scales.";
 	}
@@ -114,7 +114,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 		}'s in your Blowpipe, do \`/minion blowpipe remove_darts:true\` to remove them first.`;
 	}
 
-	let currentData: BlowpipeData = { ...rawBlowpipeData };
+	const currentData: BlowpipeData = { ...rawBlowpipeData };
 	validateBlowpipeData(currentData);
 	currentData.scales += itemsToRemove.amount("Zulrah's scales");
 
@@ -126,7 +126,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 		currentData.dartQuantity += itemsToRemove.amount(dart[0].id);
 	}
 	validateBlowpipeData(currentData);
-	if (!userBank.has(itemsToRemove.bank)) {
+	if (!userBank.has(itemsToRemove)) {
 		return `You don't own ${itemsToRemove}.`;
 	}
 	await user.removeItemsFromBank(itemsToRemove);
@@ -172,7 +172,7 @@ async function unchargeCommand(user: MUser) {
 	}
 
 	const rawBlowpipeData = { ...user.blowpipe };
-	let returnedBank = new Bank();
+	const returnedBank = new Bank();
 	if (rawBlowpipeData.scales) {
 		returnedBank.add("Zulrah's scales", rawBlowpipeData.scales);
 	}

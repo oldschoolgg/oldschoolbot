@@ -1,8 +1,8 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import Skillcapes from '../../skilling/skillcapes';
-import { Buyable } from './buyables';
+import type { Buyable } from './buyables';
 
 export const skillCapeBuyables: Buyable[] = [];
 
@@ -12,7 +12,7 @@ for (const skillcape of Skillcapes) {
 		outputItems: (user: MUser) => {
 			const output = new Bank().add(skillcape.hood);
 
-			if (user.countSkillsAtleast99() > 1) {
+			if (user.countSkillsAtLeast99() > 1) {
 				output.add(skillcape.trimmed);
 			} else {
 				output.add(skillcape.untrimmed);

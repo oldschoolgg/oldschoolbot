@@ -1,18 +1,21 @@
 import type { CropUpgradeType } from '@prisma/client';
 
-import { BathhouseTierName } from '../baxtorianBathhouses';
-import { NMZStrategy, UnderwaterAgilityThievingTrainingSkill } from '../constants';
-import { Kibble } from '../data/kibble';
-import { IMaterialBank, MaterialType } from '../invention';
+import type { TeamMember } from 'discord.js';
+import type { ItemBank } from '.';
+import type { BathhouseTierName } from '../baxtorianBathhouses';
+import type { TuraelsTrialsMethod } from '../bso/turaelsTrials';
+import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
+import type { Kibble } from '../data/kibble';
+import type { IMaterialBank, MaterialType } from '../invention';
+import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 import type { IPatchData } from '../minions/farming/types';
-import { Monkey } from '../monkeyRumble';
+import type { AttackStyles } from '../minions/functions';
+import type { Monkey } from '../monkeyRumble';
 import type { MinigameName } from '../settings/minigames';
-import { RaidLevel } from '../simulation/toa';
-import { TeamMember } from '../simulation/tob';
-import { BossUser } from '../structures/Boss';
+import type { RaidLevel } from '../simulation/toa';
+import type { BossUser } from '../structures/Boss';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import type { ItemBank } from '.';
 
 export interface ActivityTaskOptions {
 	userID: string;
@@ -29,6 +32,13 @@ export interface KibbleOptions extends ActivityTaskOptions {
 	kibbleType: Kibble['type'];
 }
 
+export interface TuraelsTrialsOptions extends ActivityTaskOptions {
+	type: 'TuraelsTrials';
+	minigameID: MinigameName;
+	q: number;
+	m: TuraelsTrialsMethod;
+}
+
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 	type:
 		| 'Questing'
@@ -39,6 +49,7 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'BarbarianAssault'
 		| 'AgilityArena'
 		| 'ChampionsChallenge'
+		| 'MyNotes'
 		| 'AerialFishing'
 		| 'DriftNet'
 		| 'SoulWars'
@@ -61,7 +72,8 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'StrongholdOfSecurity'
 		| 'TrickOrTreat'
 		| 'HalloweenMiniMinigame'
-		| 'BirthdayCollectIngredients';
+		| 'BirthdayCollectIngredients'
+		| 'CombatRing';
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
@@ -77,7 +89,8 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'CamdozaalFishing'
 		| 'CamdozaalMining'
 		| 'CamdozaalSmithing'
-		| 'Naxxus';
+		| 'Naxxus'
+		| 'MyNotes';
 	quantity: number;
 	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
 	iQty?: number;
@@ -90,7 +103,7 @@ export interface ShootingStarsOptions extends ActivityTaskOptions {
 	totalXp: number;
 	lootItems: ItemBank;
 }
-export interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
+interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
 	users: string[];
 }
 
@@ -117,6 +130,13 @@ export interface DarkAltarOptions extends ActivityTaskOptions {
 	rune: 'blood' | 'soul';
 }
 
+export interface OuraniaAltarOptions extends ActivityTaskOptions {
+	type: 'OuraniaAltar';
+	quantity: number;
+	stamina: boolean;
+	daeyalt: boolean;
+}
+
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Agility';
 	courseID: string;
@@ -141,23 +161,29 @@ export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
 
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'MonsterKilling';
-	monsterID: number;
-	quantity: number;
+	mi: number;
+	q: number;
 	iQty?: number;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
-	burstOrBarrage?: number;
+	bob?: SlayerActivityConstants.IceBarrage | SlayerActivityConstants.IceBurst;
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
+	isInWilderness?: boolean;
+	attackStyles?: AttackStyles[];
 }
+
+export type UndoneChangesMonsterOptions = Omit<MonsterActivityTaskOptions, 'q' | 'mi'> & {
+	quantity: number;
+	monsterID: number;
+};
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	type: 'ClueCompletion';
-
-	clueID: number;
-	quantity: number;
+	ci: number;
+	q: number;
 	implingID?: number;
 	implingClues?: number;
 }
@@ -166,6 +192,7 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
 	quantity: number;
+	flakesQuantity?: number;
 	iQty?: number;
 }
 
@@ -211,6 +238,8 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMax: number;
 	fakeDurationMin: number;
 	powerchopping: boolean;
+	forestry?: boolean;
+	twitchers?: TwitcherGloves;
 	logID: number;
 	quantity: number;
 	iQty?: number;
@@ -372,7 +401,8 @@ export interface MinigameActivityTaskOptionsWithNoChanges extends MinigameActivi
 		| 'OuraniaDeliveryService'
 		| 'FistOfGuthix'
 		| 'BalthazarsBigBonanza'
-		| 'GuthixianCache';
+		| 'GuthixianCache'
+		| 'TuraelsTrials';
 }
 
 export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -485,6 +515,7 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	maxSizeInput?: number;
 	quantity?: number;
 	// id of user that used chincannon
 	cc?: string;
@@ -504,11 +535,24 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers 
 	cc?: string;
 }
 
+export interface ColoTaskOptions extends ActivityTaskOptions {
+	type: 'Colosseum';
+	quantity: number;
+	fakeDuration: number;
+	diedAt?: (number | null)[];
+	loot?: ItemBank;
+	maxGlory: number;
+	scytheCharges: number;
+	venatorBowCharges: number;
+	bloodFuryCharges: number;
+	voidStaffCharges: number;
+}
+
 type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
 
-export type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
+type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
 export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TombsOfAmascut';
 	leader: string;
@@ -736,6 +780,7 @@ export type ActivityTaskData =
 	| ClueActivityTaskOptions
 	| AlchingActivityTaskOptions
 	| DarkAltarOptions
+	| OuraniaAltarOptions
 	| GroupMonsterActivityTaskOptions
 	| MahoganyHomesActivityTaskOptions
 	| NightmareActivityTaskOptions
@@ -763,4 +808,7 @@ export type ActivityTaskData =
 	| ResearchTaskOptions
 	| CutLeapingFishActivityTaskOptions
 	| MortimerOptions
-	| MemoryHarvestOptions;
+	| MemoryHarvestOptions
+	| TuraelsTrialsOptions
+	| CutLeapingFishActivityTaskOptions
+	| ColoTaskOptions;

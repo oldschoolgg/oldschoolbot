@@ -1,23 +1,24 @@
-import { Activity, NewUser, Prisma } from '@prisma/client';
-import {
+import type { CommandOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { Activity, NewUser, Prisma } from '@prisma/client';
+import type {
 	APIInteractionGuildMember,
 	ButtonInteraction,
 	ChatInputCommandInteraction,
 	GuildMember,
 	User
 } from 'discord.js';
-import { Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { CommandOptions } from 'mahoji/dist/lib/types';
 
+import { Time } from 'e';
+import { isEmpty } from 'lodash';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
-import { minionActivityCache, PerkTier } from '../constants';
+import { PerkTier, minionActivityCache } from '../constants';
 import { channelIsSendable, isGroupActivity } from '../util';
-import { handleInteractionError, interactionReply } from '../util/interactionReply';
+import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
-import { convertStoredActivityToFlatActivity, prisma } from './prisma';
+import { convertStoredActivityToFlatActivity } from './prisma';
 
 export * from './minigames';
 
@@ -49,7 +50,7 @@ export async function cancelTask(userID: string) {
 	minionActivityCache.delete(userID);
 }
 
-export async function runMahojiCommand({
+async function runMahojiCommand({
 	channelID,
 	userID,
 	guildID,
@@ -67,7 +68,7 @@ export async function runMahojiCommand({
 	user: User | MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
 }) {
-	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
+	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
 	if (!mahojiCommand) {
 		throw new Error(`No mahoji command found for ${commandName}`);
 	}
@@ -80,11 +81,12 @@ export async function runMahojiCommand({
 		user: globalClient.users.cache.get(user.id)!,
 		member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
 		client: globalClient.mahojiClient,
-		interaction: interaction as ChatInputCommandInteraction
+		interaction: interaction as ChatInputCommandInteraction,
+		djsClient: globalClient
 	});
 }
 
-export interface RunCommandArgs {
+interface RunCommandArgs {
 	commandName: string;
 	args: CommandOptions;
 	user: User | MUser;
@@ -95,6 +97,7 @@ export interface RunCommandArgs {
 	guildID: string | undefined | null;
 	interaction: ButtonInteraction | ChatInputCommandInteraction;
 	continueDeltaMillis: number | null;
+	ephemeral?: boolean;
 }
 export async function runCommand({
 	commandName,
@@ -106,15 +109,22 @@ export async function runCommand({
 	user,
 	member,
 	interaction,
-	continueDeltaMillis
+	continueDeltaMillis,
+	ephemeral
 }: RunCommandArgs): Promise<null | CommandResponse> {
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channel || !channelIsSendable(channel)) return null;
-	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
-	if (!mahojiCommand) throw new Error('No command found');
+	await deferInteraction(interaction);
+	const channel = globalClient.channels.cache.get(channelID);
+	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
+	if (!mahojiCommand || !channelIsSendable(channel)) {
+		await interactionReply(interaction, {
+			content: 'There was an error repeating your trip, I cannot find the channel you used the command in.',
+			ephemeral: true
+		});
+		return null;
+	}
 	const abstractCommand = convertMahojiCommandToAbstractCommand(mahojiCommand);
 
-	let error: Error | null = null;
+	const error: Error | null = null;
 	let inhibited = false;
 	try {
 		const inhibitedReason = await preCommand({
@@ -129,19 +139,19 @@ export async function runCommand({
 
 		if (inhibitedReason) {
 			inhibited = true;
-			if (inhibitedReason.silent) return null;
+			let response =
+				typeof inhibitedReason.reason! === 'string' ? inhibitedReason.reason : inhibitedReason.reason?.content!;
+			if (isEmpty(response)) {
+				response = 'You cannot use this command right now.';
+			}
 
 			await interactionReply(interaction, {
-				content:
-					typeof inhibitedReason.reason! === 'string'
-						? inhibitedReason.reason
-						: inhibitedReason.reason!.content!,
+				content: response,
 				ephemeral: true
 			});
 			return null;
 		}
 
-		if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
 		const result = await runMahojiCommand({
 			options: args,
 			commandName,
@@ -152,7 +162,14 @@ export async function runCommand({
 			user,
 			interaction
 		});
-		if (result && !interaction.replied) await interactionReply(interaction, result);
+		if (result && !interaction.replied) {
+			await interactionReply(
+				interaction,
+				typeof result === 'string'
+					? { content: result, ephemeral: ephemeral }
+					: { ...result, ephemeral: ephemeral }
+			);
+		}
 		return result;
 	} catch (err: any) {
 		await handleInteractionError(err, interaction);

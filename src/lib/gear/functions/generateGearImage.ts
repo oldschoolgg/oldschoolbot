@@ -1,26 +1,35 @@
-/* eslint-disable @typescript-eslint/restrict-plus-operands */
-import { Canvas, Image } from '@napi-rs/canvas';
+import * as fs from 'node:fs';
+import * as fsPromises from 'node:fs/promises';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
-import * as fs from 'fs';
-import * as fsPromises from 'fs/promises';
-import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
 
+import {
+	type GearSetup,
+	type GearSetupType,
+	GearSetupTypes,
+	type GearStats,
+	maxDefenceStats,
+	maxOffenceStats
+} from '..';
 import { monkeyTiers } from '../../monkeyRumble';
 import { Gear } from '../../structures/Gear';
 import {
+	type Canvas,
+	type CanvasImage,
 	calcAspectRatioFit,
-	canvasImageFromBuffer,
+	canvasToBuffer,
+	createCanvas,
 	drawItemQuantityText,
 	drawTitleText,
-	fillTextXTimesInCtx
+	fillTextXTimesInCtx,
+	loadImage
 } from '../../util/canvasUtil';
 import { applyCustomItemEffects } from '../../util/customItemEffects';
 import getOSItem from '../../util/getOSItem';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from '../../util/slayerMaskLeaderboard';
-import { GearSetup, GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
 
-const banana = canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/banana.png'));
+const banana = loadImage(fs.readFileSync('./src/lib/resources/images/banana.png'));
 
 export const gearImages = [
 	{
@@ -87,8 +96,8 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 				i === 0
 					? x - (ctx.textAlign === 'end' ? ctx.measureText(texts[i + 1]).width - 3 : 0)
 					: ctx.textAlign === 'end'
-					? x
-					: ctx.measureText(texts[i - 1]).width + x + 3,
+						? x
+						: ctx.measureText(texts[i - 1]).width + x + 3,
 				y
 			);
 		}
@@ -98,13 +107,13 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 	}
 }
 
-async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: Image | null) {
+async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: CanvasImage | null) {
 	const ctx = canvas.getContext('2d');
 
 	if (alternateImage) {
 		const numBananas = randInt(1, 30);
 		for (let i = 0; i < numBananas; i++) {
-			let b = await banana;
+			const b = await banana;
 			ctx.drawImage(
 				b,
 				randInt(1, canvas.width * 0.8),
@@ -113,8 +122,6 @@ async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: I
 				b.height
 			);
 		}
-		let { sprite } = bankImageGenerator.getBgAndSprite(1);
-		if (1 > 2) bankImageGenerator.drawBorder(ctx, sprite, false);
 		return;
 	}
 
@@ -212,29 +219,29 @@ async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: I
 
 interface TransmogItem {
 	item: Item;
-	image: Promise<Image>;
+	image: Promise<CanvasImage>;
 	maxHeight?: number;
 }
 const transmogItems: TransmogItem[] = [
 	{
 		item: getOSItem('Gorilla rumble greegree'),
-		image: fsPromises.readFile('./src/lib/resources/images/mmmr/gorilla.png').then(canvasImageFromBuffer),
+		image: fsPromises.readFile('./src/lib/resources/images/mmmr/gorilla.png').then(loadImage),
 		maxHeight: 170
 	},
 	...monkeyTiers.map(m => m.greegrees.map(g => ({ item: g, image: m.image }))).flat(2),
 	{
 		item: getOSItem('Gastly ghost cape'),
-		image: fsPromises.readFile('./src/lib/resources/images/ghost.png').then(canvasImageFromBuffer),
+		image: fsPromises.readFile('./src/lib/resources/images/ghost.png').then(loadImage),
 		maxHeight: 170
 	},
 	{
 		item: getOSItem('Spooky cat ears'),
-		image: fsPromises.readFile('./src/lib/resources/images/cat.png').then(canvasImageFromBuffer),
+		image: fsPromises.readFile('./src/lib/resources/images/cat.png').then(loadImage),
 		maxHeight: 74
 	},
 	{
 		item: getOSItem('Pumpkinpole'),
-		image: fsPromises.readFile('./src/lib/resources/images/pumpkin.png').then(canvasImageFromBuffer),
+		image: fsPromises.readFile('./src/lib/resources/images/pumpkin.png').then(loadImage),
 		maxHeight: 180
 	}
 ];
@@ -246,19 +253,18 @@ export async function generateGearImage(
 	petID: number | null,
 	titleOverride?: string
 ) {
-	debugLog('Generating gear image', { user_id: user.id });
 	const transmogItem = (gearType && transmogItems.find(t => user.gear[gearType].hasEquipped(t.item.name))) ?? null;
 	const transMogImage = transmogItem === null ? null : await transmogItem.image;
 
 	const bankBg = user.user.bankBackground ?? 1;
 
-	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg);
+	const { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg);
 
 	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await canvasImageFromBuffer(user.gearTemplate.template);
-	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
+	const gearTemplateImage = await loadImage(user.gearTemplate.template);
+	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -314,7 +320,7 @@ export async function generateGearImage(
 	// Draw items
 	if (petID) {
 		const image = await bankImageGenerator.getItemImage(petID, user);
-		const imageAfterEffects = await applyCustomItemEffects(user, image, petID);
+		const imageAfterEffects = (await applyCustomItemEffects(user, petID)) ?? image;
 		ctx.drawImage(
 			imageAfterEffects,
 			(transMogImage ? 200 : 0) + 178 + slotSize / 2 - image.width / 2,
@@ -337,7 +343,7 @@ export async function generateGearImage(
 			x += 200;
 		}
 
-		let glow: Image | null = null;
+		let glow: CanvasImage | null = null;
 		if (allSlayerMaskHelmsAndMasks.has(item.item)) {
 			if (slayerMaskLeaderboardCache.get(item.item) === user?.id) {
 				glow = bankImageGenerator.redGlow;
@@ -352,7 +358,7 @@ export async function generateGearImage(
 			ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
 		}
 
-		const imageAfterEffects = await applyCustomItemEffects(user, image, item.item);
+		const imageAfterEffects = (await applyCustomItemEffects(user, item.item)) ?? image;
 		ctx.drawImage(imageAfterEffects, x, y, image.width, image.height);
 
 		if (item.quantity > 1) {
@@ -360,20 +366,19 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.encode('png');
+	return canvasToBuffer(canvas);
 }
 
 export async function generateAllGearImage(user: MUser) {
-	let {
+	const {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
 	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
-	debugLog('Generating all-gear image', { user_id: user.id });
-	const gearTemplateImage = await canvasImageFromBuffer(user.gearTemplate.templateCompact);
-	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
+	const gearTemplateImage = await loadImage(user.gearTemplate.templateCompact);
+	const canvas = createCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -422,7 +427,7 @@ export async function generateAllGearImage(user: MUser) {
 			const item = gear[enumName];
 			if (!item) continue;
 			const preImage = await bankImageGenerator.getItemImage(item.item, user);
-			const image = await applyCustomItemEffects(user, preImage, item.item);
+			const image = (await applyCustomItemEffects(user, item.item)) ?? preImage;
 			let [x, y] = slotCoordinatesCompact[enumName];
 			x = x + slotSize / 2 - image.width / 2;
 			y = y + slotSize / 2 - image.height / 2;
@@ -449,5 +454,5 @@ export async function generateAllGearImage(user: MUser) {
 
 	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
 
-	return canvas.encode('png');
+	return canvasToBuffer(canvas);
 }

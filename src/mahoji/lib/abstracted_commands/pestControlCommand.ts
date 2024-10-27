@@ -1,11 +1,11 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { reduceNumByPercent, Time } from 'e';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
+import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/settings';
-import { SkillsEnum } from '../../../lib/skilling/types';
+import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -15,7 +15,7 @@ import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirma
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userStatsUpdate } from '../../mahojiSettings';
 
-let itemBoosts = [
+const itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
 	[['Barrows gloves', 'Ferocious gloves'].map(getOSItem), 4],
 	[['Amulet of fury', 'Amulet of torture', 'Amulet of fury (or)', 'Amulet of torture (or)'].map(getOSItem), 5],
@@ -25,7 +25,7 @@ let itemBoosts = [
 
 export function getBoatType(user: MUser, cbLevel: number) {
 	let type: 'veteran' | 'intermediate' | 'novice' = 'intermediate';
-	let pointsPerGame: number = 1;
+	let pointsPerGame = 1;
 
 	if (cbLevel >= 100) {
 		type = 'veteran';
@@ -58,7 +58,7 @@ export function getBoatType(user: MUser, cbLevel: number) {
 	};
 }
 
-let baseStats = {
+const baseStats = {
 	attack: 42,
 	strength: 42,
 	defence: 42,
@@ -123,7 +123,7 @@ export const pestControlBuyables = [
 	}
 ];
 
-let xpMultiplier = {
+const xpMultiplier = {
 	prayer: 18,
 	magic: 32,
 	ranged: 32,
@@ -148,7 +148,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 		return `You don't have enough Void knight commendation points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
 	}
 
-	let [hasReqs, str] = hasSkillReqs(user, buyable.requiredStats);
+	const [hasReqs, str] = hasSkillReqs(user, buyable.requiredStats);
 	if (!hasReqs) {
 		return `You need ${str} to buy this item.`;
 	}
@@ -189,7 +189,7 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 	const maxLength = calcMaxTripLength(user, 'PestControl');
 	const gear = user.gear.melee;
 
-	let boosts = [];
+	const boosts = [];
 	for (const [items, percent] of itemBoosts) {
 		for (const item of items) {
 			if (gear.hasEquipped(item.name)) {
@@ -202,7 +202,7 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 
 	const quantity = Math.floor(maxLength / gameLength);
 
-	let duration = quantity * gameLength;
+	const duration = quantity * gameLength;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
@@ -213,7 +213,7 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 		minigameID: 'pest_control'
 	});
 
-	let { boatType } = getBoatType(user, user.combatLevel);
+	const { boatType } = getBoatType(user, user.combatLevel);
 
 	let str = `${
 		user.minionName

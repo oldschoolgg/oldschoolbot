@@ -1,10 +1,11 @@
 import { activity_type_enum } from '@prisma/client';
-import { Time } from 'e';
+import { Time, objectEntries, reduceNumByPercent } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
 import { BitField } from './constants';
+import { InventionID, inventionBoosts, inventionItemBoost } from './invention/inventions';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
-import { ActivityTaskData } from './types/minions';
+import type { ActivityTaskData } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 
 const {
@@ -65,6 +66,7 @@ export const puroImplings: Record<number, { catchXP: number }> = {
 	[DragonImpling.id]: { catchXP: 65 },
 	[LuckyImpling.id]: { catchXP: 80 }
 };
+export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
 
 export const puroImpSpellTable = new LootTable()
 	.add('Baby impling jar', 1, 3100)
@@ -99,7 +101,7 @@ export const puroImpHighTierTable = new LootTable()
 	.add('Dragon impling jar', 1, 9)
 	.add('Lucky impling jar', 1, 1);
 
-export const defaultImpTable = new LootTable()
+const defaultImpTable = new LootTable()
 	.add('Baby impling jar', 1, 28_280)
 	.add('Young impling jar', 1, 28_280)
 	.add('Gourmet impling jar', 1, 35_350)
@@ -143,7 +145,12 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 		new LootTable().oneIn(caughtChance, hasMrE ? mrETable : defaultImpTable)
 };
 
-export async function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
+export async function handlePassiveImplings(
+	user: MUser,
+	data: ActivityTaskData,
+	messages: string[],
+	forceDisableWebshooter = false
+) {
 	if (
 		[
 			'FightCaves',
@@ -160,7 +167,8 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData)
 			activity_type_enum.TombsOfAmascut,
 			activity_type_enum.BalthazarsBigBonanza,
 			activity_type_enum.DriftNet,
-			activity_type_enum.UnderwaterAgilityThieving
+			activity_type_enum.UnderwaterAgilityThieving,
+			activity_type_enum.Colosseum
 		].includes(data.type)
 	)
 		return null;
@@ -170,7 +178,7 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData)
 	const skills = user.skillsAsLevels;
 	const level = skills.hunter;
 
-	let bank = new Bank();
+	const bank = new Bank();
 	const missed = new Bank();
 
 	let baseChance = IMPLING_CHANCE_PER_MINUTE;
@@ -178,7 +186,20 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData)
 	if (hasScrollOfTheHunt) baseChance = Math.floor(baseChance / 2);
 	if (user.hasEquippedOrInBank('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
 
-	const area = activityInArea(data);
+	// Webshooter
+	if (user.hasEquippedOrInBank('Webshooter') && data.duration > Time.Minute && !forceDisableWebshooter) {
+		const costRes = await inventionItemBoost({
+			user,
+			inventionID: InventionID.Webshooter,
+			duration: data.duration / 5
+		});
+		if (costRes.success) {
+			baseChance = reduceNumByPercent(baseChance, inventionBoosts.webshooter.passiveImplingBoostPercent);
+			messages.push(costRes.messages);
+		}
+	}
+
+	const area = activityInArea(user, data);
 	const impTable = implingTableByWorldLocation[area](baseChance, user.usingPet('Mr. E'));
 
 	for (let i = 0; i < minutes; i++) {

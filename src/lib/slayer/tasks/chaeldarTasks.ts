@@ -2,7 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 import { polyporeTasks } from './polyporeTasks';
 
@@ -241,7 +241,12 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [110, 170],
 		weight: 9,
-		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		monsters: [
+			Monsters.GreaterDemon.id,
+			Monsters.KrilTsutsaroth.id,
+			Monsters.Skotizo.id,
+			Monsters.TormentedDemon.id
+		],
 		combatLevel: 70,
 		unlocked: true
 	},
@@ -428,7 +433,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualMage,
+		monster: Monsters.SpiritualRanger,
 		amount: [110, 170],
 
 		weight: 12,
@@ -439,8 +444,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 3,
-		unlocked: true,
-		dontAssign: true
+		unlocked: true
 	},
 	{
 		monster: Monsters.MountainTroll,

@@ -1,10 +1,9 @@
-import { loot_track_type, LootTrack } from '@prisma/client';
+import { cleanString, formatDuration } from '@oldschoolgg/toolkit/util';
+import type { LootTrack, loot_track_type } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { prisma } from './settings/prisma';
-import { ItemBank } from './types';
-import { cleanString, formatDuration } from './util';
+import type { ItemBank } from './types';
 import { makeBankImage } from './util/makeBankImage';
 
 type TrackLootOptions =
@@ -50,7 +49,7 @@ async function trackIndividualsLoot({
 	type: loot_track_type;
 }) {
 	// Find the existing loot track
-	let current = await prisma.lootTrack.findFirst({
+	const current = await prisma.lootTrack.findFirst({
 		where: {
 			key,
 			user_id: userID,
@@ -65,7 +64,7 @@ async function trackIndividualsLoot({
 				key,
 				total_kc: data.changeType === 'loot' ? data.kc : 0,
 				total_duration: duration,
-				[data.changeType]: bankToAdd.bank,
+				[data.changeType]: bankToAdd.toJSON(),
 				type: data.type,
 				user_id: userID
 			}
@@ -81,15 +80,15 @@ async function trackIndividualsLoot({
 				data.changeType === 'loot'
 					? {
 							increment: duration
-					  }
+						}
 					: undefined,
 			total_kc:
 				data.changeType === 'loot'
 					? {
 							increment: data.kc
-					  }
+						}
 					: undefined,
-			[data.changeType]: new Bank(current?.[data.changeType] as ItemBank | undefined).add(bankToAdd).bank,
+			[data.changeType]: new Bank(current?.[data.changeType] as ItemBank | undefined).add(bankToAdd).toJSON(),
 			user_id: userID
 		}
 	});

@@ -1,4 +1,4 @@
-import { Mixable } from '../../../types';
+import type { Mixable } from '../../../types';
 import { barbMixes } from './barbMixes';
 import { bsoMixables } from './bsoMixables';
 import Crush from './crush';

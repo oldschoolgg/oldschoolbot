@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const slayerCreatables: Createable[] = [
 	{
@@ -484,5 +484,45 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.TwistedVision],
 		noCl: true
+	},
+	{
+		name: 'Emberlight',
+		inputItems: new Bank({
+			Arclight: 1,
+			'Ancient shard': 10,
+			'Tormented synapse': 1
+		}),
+		requiredSkills: { smithing: 74 },
+		outputItems: new Bank({ Emberlight: 1 }),
+		GPCost: 0
+	},
+	{
+		name: 'Scorching bow',
+		inputItems: new Bank({
+			'Magic longbow (u)': 1,
+			'Tormented synapse': 1
+		}),
+		requiredSkills: { fletching: 74 },
+		outputItems: new Bank({ 'Scorching bow': 1 }),
+		GPCost: 0
+	},
+	{
+		name: 'Purging staff',
+		inputItems: new Bank({
+			Battlestaff: 1,
+			'Iron bar': 1,
+			'Tormented synapse': 1
+		}),
+		requiredSkills: { smithing: 55, crafting: 74 },
+		outputItems: new Bank({ 'Purging staff': 1 }),
+		GPCost: 0
+	},
+	{
+		name: 'Burning claws',
+		inputItems: new Bank({
+			'Burning claw': 2
+		}),
+		outputItems: new Bank({ 'Burning claws': 1 }),
+		GPCost: 0
 	}
 ];

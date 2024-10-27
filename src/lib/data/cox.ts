@@ -1,29 +1,28 @@
 import {
+	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
 	percentChance,
 	randInt,
 	reduceNumByPercent,
-	shuffleArr,
-	Time
+	shuffleArr
 } from 'e';
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import { Bank, type Item } from 'oldschooljs';
+
+import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { GearStats } from '../gear/types';
+import type { GearStats } from '../gear';
 import { inventionBoosts } from '../invention/inventions';
-import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
-import { constructGearSetup, Gear } from '../structures/Gear';
-import { Skills } from '../types';
+import { Gear, constructGearSetup } from '../structures/Gear';
+import type { Skills } from '../types';
 import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 
-export const bareMinStats: Skills = {
+const bareMinStats: Skills = {
 	attack: 80,
 	strength: 80,
 	defence: 80,
@@ -57,7 +56,7 @@ export async function createTeam(
 	users: MUser[],
 	cm: boolean
 ): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
-	let res = [];
+	const res = [];
 	const isSolo = users.length === 1;
 
 	for (const u of users) {
@@ -75,7 +74,7 @@ export async function createTeam(
 			deathChance -= calcPercentOfNum(total, 10);
 		}
 
-		const kc = await getMinigameScore(u.id, cm ? 'raids_challenge_mode' : 'raids');
+		const kc = (await u.fetchMinigames())[cm ? 'raids_challenge_mode' : 'raids'];
 		const kcChange = kcPointsEffect(kc);
 		if (kcChange < 0) points = reduceNumByPercent(points, Math.abs(kcChange));
 		else points = increaseNumByPercent(points, kcChange);
@@ -148,14 +147,8 @@ export function calcSetupPercent(
 	}
 	// For melee compare the highest melee attack stat of max setup with the highest melee attack stat of the user
 	if (melee) {
-		let maxMeleeStat = Math.max(
-			maxStats['attack_stab'],
-			Math.max(maxStats['attack_slash'], maxStats['attack_crush'])
-		);
-		let userMeleeStat = Math.max(
-			userStats['attack_stab'],
-			Math.max(userStats['attack_slash'], userStats['attack_crush'])
-		);
+		const maxMeleeStat = Math.max(maxStats.attack_stab, Math.max(maxStats.attack_slash, maxStats.attack_crush));
+		const userMeleeStat = Math.max(userStats.attack_stab, Math.max(userStats.attack_slash, userStats.attack_crush));
 		totalPercent += Math.min(100, calcWhatPercent(userMeleeStat, maxMeleeStat));
 		numKeys++;
 	}
@@ -245,14 +238,14 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
-export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number = 1): Promise<string | null> {
+export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): Promise<string | null> {
 	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
 	if (!hasHerbalist) {
-		return 'nobody with atleast level 78 Herblore';
+		return 'nobody with at least level 78 Herblore';
 	}
 	const hasFarmer = users.some(u => u.skillLevel(SkillsEnum.Farming) >= 55);
 	if (!hasFarmer) {
-		return 'nobody with atleast level 55 Farming';
+		return 'nobody with at least level 55 Farming';
 	}
 	const suppliesNeeded = minimumCoxSuppliesNeeded.clone().multiply(quantity);
 	const userWithoutSupplies = users.find(u => !u.bank.has(suppliesNeeded));
@@ -281,7 +274,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number
 			) {
 				return `${user.usernameOrMention} doesn't own a Twisted bow, Zaryte bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
-			const kc = await getMinigameScore(user.id, 'raids');
+			const kc = (await user.fetchMinigames()).raids;
 			if (kc < 200) {
 				return `${user.usernameOrMention} doesn't have the 200 KC required for Challenge Mode.`;
 			}
@@ -464,6 +457,12 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
+			item: getOSItem('Offhand spidergore rapier'),
+			boost: 6.5,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
 			item: getOSItem('Offhand drygore rapier'),
 			boost: 4,
 			mustBeEquipped: true,
@@ -499,7 +498,7 @@ export async function calcCoxDuration(
 
 	let totalReduction = 0;
 
-	let reductions: Record<string, number> = {};
+	const reductions: Record<string, number> = {};
 
 	// Track degradeable items:
 	const degradeableItems: { item: Item; user: MUser; chargesToDegrade: number }[] = [];
@@ -548,7 +547,7 @@ export async function calcCoxDuration(
 			}
 		});
 
-		let perc = Math.min(100, userPercentChange / size);
+		const perc = Math.min(100, userPercentChange / size);
 
 		totalReduction += perc;
 		reductions[u.id] = perc;
@@ -585,7 +584,7 @@ export async function calcCoxDuration(
 
 export async function calcCoxInput(u: MUser, solo: boolean) {
 	const items = new Bank();
-	const kc = await getMinigameScore(u.id, 'raids');
+	const kc = await u.fetchMinigames().then(stats => stats.raids);
 	items.add('Stamina potion(4)', solo ? 2 : 1);
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));

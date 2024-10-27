@@ -1,18 +1,17 @@
-import { type Bingo, Prisma } from '@prisma/client';
+import type { Bingo, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
-import { chunk, noOp, Time } from 'e';
-import { groupBy } from 'lodash';
-import { Bank } from 'oldschooljs';
+import { Time, chunk, noOp } from 'e';
+import groupBy from 'lodash/groupBy';
+import { Bank, addBanks } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 import * as ss from 'simple-statistics';
 
 import { Emoji } from '../../../lib/constants';
-import { prisma } from '../../../lib/settings/prisma';
-import { ItemBank } from '../../../lib/types';
+import type { ItemBank } from '../../../lib/types';
 import getOSItem from '../../../lib/util/getOSItem';
-import { addBanks } from '../../../lib/util/smallUtils';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { generateTileName, isGlobalTile, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
+import type { StoredBingoTile, UniversalBingoTile } from './bingoUtil';
+import { generateTileName, isGlobalTile, rowsForSquare } from './bingoUtil';
 import { globalBingoTiles } from './globalTiles';
 
 export const BingoTrophies = [
@@ -253,13 +252,13 @@ export class BingoManager {
 			teams: teams.map((team, index) => ({
 				...team,
 				trophy: this.isGlobal
-					? BingoTrophies.filter(
+					? (BingoTrophies.filter(
 							t =>
 								index < 3 ||
 								team.tilesCompletedCount >= t.guaranteedAt ||
 								100 - t.percentile <=
 									ss.quantileRank(tilesCompletedCounts, team.tilesCompletedCount) * 100
-					  )[0] ?? null
+						)[0] ?? null)
 					: null,
 				rank: index + 1
 			}))
@@ -296,7 +295,7 @@ ${teams
 		if (!bingoParticipant) return;
 		const beforeTeamProgress = await this.determineProgressOfTeam(bingoParticipant.bingo_team_id);
 		const beforeUserProgress = this.determineProgressOfBank(bingoParticipant.cl);
-		const newCL = addBanks([bingoParticipant.cl as ItemBank, itemsAdded.bank]);
+		const newCL = new Bank(bingoParticipant.cl as ItemBank).add(itemsAdded);
 		await prisma.bingoParticipant.update({
 			where: {
 				user_id_bingo_id: {
@@ -305,7 +304,7 @@ ${teams
 				}
 			},
 			data: {
-				cl: newCL.bank
+				cl: newCL.toJSON()
 			}
 		});
 		const afterUserProgress = this.determineProgressOfBank(newCL);

@@ -5,7 +5,7 @@ import { Ignecarus } from '../../minions/data/killableMonsters/custom/bosses/Ign
 import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 
 export const duradelTasks: AssignableSlayerTask[] = [
@@ -256,7 +256,12 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [130, 200],
 		weight: 9,
-		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		monsters: [
+			Monsters.GreaterDemon.id,
+			Monsters.KrilTsutsaroth.id,
+			Monsters.Skotizo.id,
+			Monsters.TormentedDemon.id
+		],
 		extendedAmount: [150, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.GreaterChallenge,
 		combatLevel: 70,
@@ -382,7 +387,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualMage,
+		monster: Monsters.SpiritualRanger,
 		amount: [110, 170],
 
 		weight: 7,
@@ -395,15 +400,14 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 3,
-		unlocked: true,
-		dontAssign: true
+		unlocked: true
 	},
 	{
 		monster: Monsters.SteelDragon,
 		amount: [10, 20],
 		weight: 7,
 		monsters: [Monsters.SteelDragon.id],
-		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
 		combatLevel: 85,
@@ -468,6 +472,17 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Wyrm.id],
 		slayerLevel: 62,
 		unlocked: true
+	},
+	{
+		monster: Monsters.Araxyte,
+		amount: [60, 80],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.MoreEyesThanSense,
+		weight: 10,
+		monsters: [Monsters.Araxyte.id, Monsters.Araxxor.id],
+		combatLevel: 96,
+		unlocked: true,
+		slayerLevel: 92
 	},
 	...bossTasks
 ];

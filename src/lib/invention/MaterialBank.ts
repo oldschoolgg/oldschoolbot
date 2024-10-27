@@ -1,8 +1,8 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum } from 'e';
 
+import { type IMaterialBank, type MaterialType, materialTypes } from '.';
 import { assert } from '../util';
-import { IMaterialBank, MaterialType, materialTypes } from '.';
 
 export class MaterialBank {
 	public bank: IMaterialBank;
@@ -20,11 +20,12 @@ export class MaterialBank {
 		for (const [key, value] of Object.entries(this.bank)) {
 			if (!materialTypes.includes(key as any)) {
 				delete this.bank[key as keyof IMaterialBank];
-				return this.validate();
+				this.validate();
+				return;
 			}
 			assert(materialTypes.includes(key as any), `${key} ${value}`);
-			assert(typeof value === 'number' && value > 0 && !isNaN(value));
-			assert(parseInt(value.toString()) === value, `${key} ${value} ${parseInt(value.toString())}`);
+			assert(typeof value === 'number' && value > 0 && !Number.isNaN(value));
+			assert(Number.parseInt(value.toString()) === value, `${key} ${value} ${Number.parseInt(value.toString())}`);
 		}
 	}
 
@@ -87,15 +88,15 @@ export class MaterialBank {
 			return 'No materials';
 		}
 		const res = [];
-		for (const [type, qty] of entries.sort((a, b) => b[1] - a[1])) {
-			res.push(`${qty.toLocaleString()}x ${toTitleCase(type)}`);
+		for (const [type, qty] of entries.sort((a, b) => a[0].localeCompare(b[0]))) {
+			res.push(`${toTitleCase(type)}: ${qty.toLocaleString()}`);
 		}
 
 		return res.join(', ');
 	}
 
 	public values() {
-		let values: { type: MaterialType; quantity: number }[] = [];
+		const values: { type: MaterialType; quantity: number }[] = [];
 		for (const [key, value] of Object.entries(this.bank)) {
 			values.push({ type: key as MaterialType, quantity: value });
 		}
@@ -120,7 +121,7 @@ export class MaterialBank {
 
 	mutReduceAllValuesByPercent(percent: number) {
 		for (const [key, value] of Object.entries(this.bank) as [MaterialType, number][]) {
-			let percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
+			const percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
 			this.remove(key, percentOfThisItem);
 		}
 		return this;
@@ -128,7 +129,7 @@ export class MaterialBank {
 
 	mutIncreaseAllValuesByPercent(percent: number) {
 		for (const [key, value] of Object.entries(this.bank) as [MaterialType, number][]) {
-			let percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
+			const percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
 			this.add(key, percentOfThisItem);
 		}
 		return this;

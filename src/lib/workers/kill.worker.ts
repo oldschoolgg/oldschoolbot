@@ -1,15 +1,18 @@
 import '../customItems/customItems';
 import '../data/itemAliases';
 
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Monsters } from 'oldschooljs';
 
+import type { KillWorkerArgs, KillWorkerReturn } from '.';
 import { production } from '../../config';
 import { YETI_ID } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters/index';
 import { simulatedKillables } from '../simulation/simulatedKillables';
-import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
+if (global.prisma) {
+	throw new Error('Prisma is loaded in the kill worker!');
+}
 export default async ({
 	quantity,
 	bossName,
@@ -26,9 +29,7 @@ export default async ({
 		}
 		if (quantity > limit) {
 			return {
-				error:
-					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
-					'*You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>'
+				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>`
 			};
 		}
 
@@ -43,24 +44,22 @@ export default async ({
 		};
 
 		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
-		if (killableMonster && killableMonster.specialLoot) {
+		if (killableMonster?.specialLoot) {
 			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity, cl: new Bank() });
 		}
 
-		return result;
+		return { bank: result.bank.toJSON() };
 	}
 
 	const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, bossName));
 	if (simulatedKillable) {
 		if (quantity > limit) {
 			return {
-				error:
-					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
-					'*You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>'
+				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>`
 			};
 		}
 
-		return { bank: simulatedKillable.loot(quantity) };
+		return { bank: simulatedKillable.loot(quantity).toJSON() };
 	}
 
 	return { error: "I don't have that monster!" };

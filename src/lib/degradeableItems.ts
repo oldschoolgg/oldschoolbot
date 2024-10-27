@@ -1,16 +1,16 @@
-import { percentChance, Time } from 'e';
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import { Time, percentChance } from 'e';
+import { Bank, type Item, type Monster } from 'oldschooljs';
 
-import { GearSetupType } from './gear/types';
-import { KillableMonster } from './minions/types';
+import type { GearSetupType, PrimaryGearSetupType } from './gear/types';
+import type { KillableMonster } from './minions/types';
+import type { ChargeBank } from './structures/Banks';
+import type { GearBank } from './structures/GearBank';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { updateBankSetting } from './util/updateBankSetting';
 
-interface DegradeableItem {
+export interface DegradeableItem {
 	item: Item;
 	settingsKey:
 		| 'tentacle_charges'
@@ -23,7 +23,8 @@ interface DegradeableItem {
 		| 'tum_shadow_charges'
 		| 'blood_essence_charges'
 		| 'trident_charges'
-		| 'scythe_of_vitur_charges';
+		| 'scythe_of_vitur_charges'
+		| 'venator_bow_charges';
 	itemsToRefundOnBreak: Bank;
 	refundVariants: {
 		variant: Item;
@@ -43,21 +44,28 @@ interface DegradeableItem {
 interface DegradeableItemPVMBoost {
 	item: Item;
 	degradeable: DegradeableItem;
-	attackStyle: GearSetupType;
+	attackStyle: PrimaryGearSetupType;
 	charges: ({
 		killableMon,
 		osjsMonster,
 		totalHP,
 		duration,
-		user
+		gearBank
 	}: {
 		killableMon?: KillableMonster;
 		osjsMonster?: Monster;
 		totalHP: number;
 		duration: number;
-		user: MUser;
+		gearBank: GearBank;
 	}) => number;
 	boost: number;
+}
+
+interface RefundResult {
+	item: Item;
+	refundedCharges: number;
+	totalCharges: number;
+	userMessage: string;
 }
 
 export const degradeableItems: DegradeableItem[] = [
@@ -233,6 +241,21 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
 		convertOnCharge: true,
 		emoji: ''
+	},
+	{
+		item: getOSItem('Venator bow'),
+		settingsKey: 'venator_bow_charges',
+		itemsToRefundOnBreak: new Bank().add('Venator bow (uncharged)').freeze(),
+		refundVariants: [],
+		setup: 'range',
+		aliases: ['venator bow', 'ven bow'],
+		chargeInput: {
+			cost: new Bank().add('Ancient essence', 1).freeze(),
+			charges: 1
+		},
+		unchargedItem: getOSItem('Venator bow (uncharged)'),
+		convertOnCharge: true,
+		emoji: ''
 	}
 ];
 
@@ -273,20 +296,34 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		boost: 3
 	},
 	{
+		item: getOSItem('Venator bow'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Venator bow'))!,
+		attackStyle: 'range',
+		charges: ({ totalHP }) => totalHP / 25,
+		boost: 3
+	},
+	{
 		item: getOSItem('Void staff'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Void staff'))!,
 		attackStyle: 'mage',
 		boost: 8,
-		charges: ({ duration, user }) => {
-			const mageGear = user.gear.mage;
+		charges: ({ duration, gearBank }) => {
+			const mageGear = gearBank.gear.mage;
 			const minutesDuration = Math.ceil(duration / Time.Minute);
-			if (user.hasEquipped('Magic master cape')) {
+			if (gearBank.hasEquipped('Magic master cape')) {
 				return Math.ceil(minutesDuration / 3);
 			} else if (mageGear.hasEquipped('Vasa cloak')) {
 				return Math.ceil(minutesDuration / 2);
 			}
 			return minutesDuration;
 		}
+	},
+	{
+		item: getOSItem('Amulet of blood fury'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Amulet of blood fury'))!,
+		attackStyle: 'melee',
+		charges: ({ totalHP }) => totalHP / 25,
+		boost: 2
 	}
 ];
 
@@ -396,10 +433,8 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		userMessage: `Your ${
-			item.name
-		} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.${
-			pennyReduction > 0 ? ` Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
+		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining${
+			pennyReduction > 0 ? `. Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
 		}`
 	};
 }
@@ -411,4 +446,60 @@ export async function checkDegradeableItemCharges({ item, user }: { item: Item; 
 	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
 	return currentCharges;
+}
+
+export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
+	const hasChargesResult = user.hasCharges(chargeBank);
+	if (!hasChargesResult.hasCharges) {
+		throw new Error(
+			`Tried to degrade a charge bank (${chargeBank}) for ${
+				user.logName
+			}, but they don't have the required charges: ${JSON.stringify(hasChargesResult)}`
+		);
+	}
+
+	const results = [];
+
+	for (const [key, chargesToDegrade] of chargeBank.entries()) {
+		const { item } = degradeableItems.find(i => i.settingsKey === key)!;
+		const result = await degradeItem({ item, chargesToDegrade, user });
+		results.push(result);
+	}
+
+	return results;
+}
+
+export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Promise<RefundResult[]> {
+	const results: RefundResult[] = [];
+
+	for (const [key, chargesToRefund] of chargeBank.entries()) {
+		const degItem = degradeableItems.find(i => i.settingsKey === key);
+		if (!degItem) {
+			throw new Error(`Invalid degradeable item settings key: ${key}`);
+		}
+
+		const currentCharges = user.user[degItem.settingsKey];
+		const newCharges = currentCharges + chargesToRefund;
+
+		// Prepare result message
+		const userMessage = `Refunded ${chargesToRefund} charges for ${degItem.item.name}`;
+
+		// Create result object
+		const result: RefundResult = {
+			item: degItem.item,
+			refundedCharges: chargesToRefund,
+			totalCharges: newCharges,
+			userMessage
+		};
+
+		// Push result to results array
+		results.push(result);
+
+		// Update user
+		await user.update({
+			[degItem.settingsKey]: newCharges
+		});
+	}
+
+	return results;
 }

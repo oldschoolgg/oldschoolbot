@@ -1,11 +1,10 @@
 import { increaseNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { DarkAltarOptions } from '../../lib/types/minions';
+import type { DarkAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -54,7 +53,7 @@ export const darkAltarTask: MinionTask = {
 			runeQuantity += bonusBlood;
 		}
 
-		let loot = new Bank().add(runeData.item.id, runeQuantity);
+		const loot = new Bank().add(runeData.item.id, runeQuantity);
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
 			if (roll(petDropRate)) {
@@ -74,14 +73,6 @@ export const darkAltarTask: MinionTask = {
 
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Rift guardian while crafting ${runeData.item.name}s at level ${user.skillLevel(
-					SkillsEnum.Runecraft
-				)} Runecrafting!`
-			);
 		}
 
 		await transactItems({

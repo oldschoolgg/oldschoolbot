@@ -1,21 +1,27 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { randInt } from 'e';
-import { Bank, LootTable, Openables } from 'oldschooljs';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import {
+	Bank,
+	BrimstoneChest,
+	EliteMimicTable,
+	LarransChest,
+	LootTable,
+	MasterMimicTable,
+	Openables
+} from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
-import { Mimic } from 'oldschooljs/dist/simulation/misc';
-import BrimstoneChest, { BrimstoneChestOpenable } from 'oldschooljs/dist/simulation/openables/BrimstoneChest';
+import type { Item, ItemBank, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
-import LarransChest, { LarransChestOpenable } from 'oldschooljs/dist/simulation/openables/LarransChest';
 
+import { randInt } from 'e';
 import { bsoOpenables } from './bsoOpenables';
 import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { clueHunterOutfit } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
-import { FarmingContract } from './minions/farming/types';
+import type { FarmingContract } from './minions/farming/types';
 import { shadeChestOpenables } from './shadesKeys';
+import { nestTable } from './simulation/birdsNest';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
@@ -24,7 +30,6 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import { ItemBank } from './types';
 import { itemID, percentChance, roll } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -124,7 +129,9 @@ const clueItemsToNotifyOf = resolveItems([
 			'First age amulet',
 			'First age cape',
 			'First age bracelet',
-			'First age ring'
+			'First age ring',
+			'First age robe bottom',
+			'First age robe top'
 		])
 	);
 
@@ -138,24 +145,34 @@ for (const clueTier of ClueTiers) {
 		aliases: [clueTier.name.toLowerCase()],
 		output: async ({ quantity, user, self }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			let loot = new Bank(clueTier.table.open(quantity));
 
+			// BSO Clue roll code:
+			const includeBuggedRolls = true;
+
+			const loot = new Bank();
 			const hasCHEquipped = user.hasEquippedOrInBank(clueHunterOutfit, 'every');
-			let extraClueRolls = 0;
+			let totalRolls = 0;
 			for (let i = 0; i < quantity; i++) {
-				const roll = randInt(1, 3);
-				extraClueRolls += roll - 1;
-				loot.add(clueTier.table.open(roll));
+				// Calculate rolls, including bonus rolls (average 2 rolls total per casket):
+				const rolls = randInt(1, 3);
+				totalRolls += rolls;
 				if (clueTier.name === 'Master' && percentChance(hasCHEquipped ? 3.5 : 1.5)) {
 					loot.add('Clue scroll (grandmaster)');
 				}
 			}
+			// Roll loot, and calculate how many bonus rolls were received:
+			clueTier.table.roll(includeBuggedRolls ? totalRolls + quantity : totalRolls, {
+				targetBank: loot,
+				cl: user.cl
+			});
+			const extraClueRolls = totalRolls - quantity;
 
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
+				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
 					if (roll(clueTier.mimicChance)) {
-						loot.add(Mimic.open(clueTier.name as 'master' | 'elite'));
+						loot.add(table.roll());
 						mimicNumber++;
 					}
 				}
@@ -188,9 +205,9 @@ for (const clueTier of ClueTiers) {
 
 			// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 			// and send a notification if they got one.
-			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id), false);
+			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id));
 			if (gotMilestoneReward) {
-				announcedLoot.add(clueTier.milestoneReward!.itemReward);
+				announcedLoot.add(clueTier.milestoneReward?.itemReward);
 			}
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
@@ -231,12 +248,11 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const chest = new BrimstoneChestOpenable(BrimstoneChest);
 			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
 			const brimstoneOptions: OpenableOpenOptions = {
 				fishLvl
 			};
-			const openLoot: Bank = chest.open(args.quantity, brimstoneOptions);
+			const openLoot: Bank = BrimstoneChest.open(args.quantity, brimstoneOptions);
 
 			return { bank: openLoot };
 		},
@@ -316,13 +332,12 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const chest = new LarransChestOpenable(LarransChest);
 			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
 			const larransOptions: OpenableOpenOptions = {
 				fishLvl,
 				chestSize: 'big'
 			};
-			const openLoot: Bank = chest.open(args.quantity, larransOptions);
+			const openLoot: Bank = LarransChest.open(args.quantity, larransOptions);
 
 			return { bank: openLoot };
 		},
@@ -359,6 +374,22 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['nest box (seeds)', 'seeds nest box', 'nest box seeds', 'seed nest box'],
 		output: Openables.NestBoxSeeds.table,
 		allItems: Openables.NestBoxSeeds.table.allItems
+	},
+	{
+		name: 'Bird nest',
+		id: 5070,
+		openedItem: getOSItem(5070),
+		aliases: ['bird nest', 'nest'],
+		output: nestTable,
+		allItems: nestTable.allItems
+	},
+	{
+		name: 'Amylase pack',
+		id: 12641,
+		openedItem: getOSItem(12641),
+		aliases: ['amylase pack', 'amylase'],
+		output: new LootTable().every('Amylase crystal', 100),
+		allItems: resolveItems(['Amylase crystal'])
 	},
 	{
 		name: 'Ogre coffin',

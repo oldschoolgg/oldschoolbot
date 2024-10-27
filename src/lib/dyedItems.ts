@@ -1,4 +1,4 @@
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -632,7 +632,4 @@ export const dyedItems: DyedItem[] = [
 	}
 ];
 
-export const allDyedItems = dyedItems
-	.map(i => i.dyedVersions)
-	.flat()
-	.map(i => i.item.id);
+export const allDyedItems = dyedItems.flatMap(i => i.dyedVersions).map(i => i.item.id);

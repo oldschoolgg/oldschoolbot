@@ -1,6 +1,6 @@
 import { Time } from 'e';
 
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -12,7 +12,7 @@ export async function stealingCreationCommand(user: MUser, channelID: string) {
 	const quantity = Math.floor(calcMaxTripLength(user, 'StealingCreation') / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
-	let str = `${
+	const str = `${
 		user.minionName
 	} is now off to do ${quantity} Stealing Creation games. The total trip will take ${formatDuration(duration)}.`;
 

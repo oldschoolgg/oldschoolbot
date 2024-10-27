@@ -2,13 +2,13 @@ import { Bank } from 'oldschooljs';
 
 import { kibbles } from '../../../lib/data/kibble';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { KibbleOptions } from '../../../lib/types/minions';
+import type { KibbleOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const kibbleTask: MinionTask = {
 	type: 'KibbleMaking',
 	async run(data: KibbleOptions) {
-		let { quantity, channelID, userID, kibbleType, duration } = data;
+		const { quantity, channelID, userID, kibbleType, duration } = data;
 		const user = await mUserFetch(userID);
 
 		const kibble = kibbles.find(k => k.type === kibbleType)!;

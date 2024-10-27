@@ -1,6 +1,6 @@
 import { Time } from 'e';
 
-import { KillableMonster } from '../types';
+import type { KillableMonster } from '../types';
 
 const FIVE_HOURS = Time.Hour * 5;
 

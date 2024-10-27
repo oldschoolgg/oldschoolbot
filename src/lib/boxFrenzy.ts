@@ -1,10 +1,11 @@
-import { Message, TextChannel } from 'discord.js';
+import { type Message, TextChannel } from 'discord.js';
 import { noOp } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import { MysteryBoxes } from './bsoOpenables';
 import { stringMatches } from './util';
 import { makeBankImage } from './util/makeBankImage';
+import { sendToChannelID } from './util/webhook';
 
 export async function boxFrenzy(channelID: string, content: string, quantity: number) {
 	const channel = globalClient.channels.cache.get(channelID);
@@ -12,7 +13,7 @@ export async function boxFrenzy(channelID: string, content: string, quantity: nu
 		throw new Error(`Tried to start box frenzy in invalid channel ${channelID}`);
 	}
 
-	let bank = new Bank();
+	const bank = new Bank();
 	for (let i = 0; i < quantity; i++) {
 		bank.add(Items.random().id, 1);
 	}
@@ -42,7 +43,8 @@ export async function boxFrenzy(channelID: string, content: string, quantity: nu
 						const user = await mUserFetch(_msg.author.id);
 						await user.addItemsToBank({ items: loot, collectionLog: true });
 						guessed.add(item.id);
-						_msg.channel.send(
+						sendToChannelID(
+							_msg.channelId,
 							`${_msg.author}, you guessed one of the items correctly and received ${loot}.`
 						);
 					}

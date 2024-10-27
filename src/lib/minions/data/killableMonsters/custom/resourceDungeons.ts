@@ -1,15 +1,13 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters } from 'oldschooljs';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, LootTable, Monsters, RareDropTable, itemID, itemTupleToTable } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
 import { lowRuneHighAdamantTable, runeWeaponTable } from '../../../../simulation/sharedTables';
 import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems from '../../../../util/resolveItems';
-import { CustomMonster } from './customMonsters';
 import { GrimyHerbTable } from './Treebeard';
+import type { CustomMonster } from './customMonsters';
 
 function neemCost(extraCost?: Bank) {
 	const cost = new Bank().add('Neem oil', 1);
@@ -21,6 +19,7 @@ function neemCost(extraCost?: Bank) {
 }
 
 const FrostDragon: CustomMonster = {
+	isCustom: true,
 	id: 345_232,
 	baseMonster: Monsters.LavaDragon,
 	name: 'Frost Dragon',
@@ -80,6 +79,7 @@ const FrostDragon: CustomMonster = {
 };
 
 const RumPumpedCrab: CustomMonster = {
+	isCustom: true,
 	id: 918_501,
 	baseMonster: Monsters.BrineRat,
 	name: 'Rum-pumped crab',
@@ -104,6 +104,7 @@ const RumPumpedCrab: CustomMonster = {
 };
 
 const FungalRodent: CustomMonster = {
+	isCustom: true,
 	id: 669_279,
 	baseMonster: Monsters.BrineRat,
 	name: 'Fungal Rodent',
@@ -131,6 +132,7 @@ const FungalRodent: CustomMonster = {
 };
 
 const InfestedAxe: CustomMonster = {
+	isCustom: true,
 	id: 194_820,
 	baseMonster: Monsters.AbyssalDemon,
 	name: 'Infested axe',
@@ -158,6 +160,7 @@ const InfestedAxe: CustomMonster = {
 };
 
 const FungalMage: CustomMonster = {
+	isCustom: true,
 	id: 341_749,
 	baseMonster: Monsters.AbyssalDemon,
 	name: 'Fungal mage',
@@ -189,6 +192,7 @@ const FungalMage: CustomMonster = {
 };
 
 const Grifolaroo: CustomMonster = {
+	isCustom: true,
 	id: 819_581,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Grifolaroo',
@@ -201,10 +205,12 @@ const Grifolaroo: CustomMonster = {
 		.tertiary(200, 'Clue scroll (master)')
 		.tertiary(230, new LootTable().add('Grifolic gloves').add('Grifolic orb'))
 		.oneIn(64, 'Morchella mushroom spore')
-		.add([
-			['Chaos rune', [5, 60]],
-			['Death rune', [5, 60]]
-		])
+		.add(
+			itemTupleToTable([
+				['Chaos rune', [5, 60]],
+				['Death rune', [5, 60]]
+			])
+		)
 		.add(LowSeedPackTable)
 		.add(MediumSeedPackTable)
 		.add('Polypore spore', [1, 500])
@@ -223,6 +229,7 @@ const Grifolaroo: CustomMonster = {
 };
 
 const Grifolapine: CustomMonster = {
+	isCustom: true,
 	id: 721_932,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Grifolapine',
@@ -253,6 +260,7 @@ const Grifolapine: CustomMonster = {
 };
 
 const GanodermicRunt: CustomMonster = {
+	isCustom: true,
 	id: 129_129,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Ganodermic Runt',
@@ -264,10 +272,12 @@ const GanodermicRunt: CustomMonster = {
 		.every('Bones')
 		.tertiary(360, 'Clue scroll (grandmaster)')
 		.tertiary(230, new LootTable().add('Ganodermic gloves').add('Ganodermic boots'))
-		.add([
-			['Blood rune', [5, 60]],
-			['Death rune', [5, 60]]
-		])
+		.add(
+			itemTupleToTable([
+				['Blood rune', [5, 60]],
+				['Death rune', [5, 60]]
+			])
+		)
 		.oneIn(64, 'Morchella mushroom spore')
 		.add(HighSeedPackTable)
 		.add('Gorajian mushroom', 5)
@@ -286,6 +296,7 @@ const GanodermicRunt: CustomMonster = {
 };
 
 const GanodermicBeast: CustomMonster = {
+	isCustom: true,
 	id: 194_825,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Ganodermic Beast',
@@ -299,10 +310,12 @@ const GanodermicBeast: CustomMonster = {
 		.tertiary(400, 'Long bone')
 		.tertiary(380, 'Clue scroll (grandmaster)')
 		.tertiary(230, new LootTable().add('Ganodermic gloves').add('Ganodermic boots').add('Polypore stick'))
-		.add([
-			['Blood rune', [5, 60]],
-			['Death rune', [5, 60]]
-		])
+		.add(
+			itemTupleToTable([
+				['Blood rune', [5, 60]],
+				['Death rune', [5, 60]]
+			])
+		)
 		.add(HighSeedPackTable)
 		.oneIn(64, 'Tombshroom spore')
 		.add('Gorajian mushroom', 12)

@@ -3,7 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const mazchnaMonsters: KillableMonster[] = [
 	{
@@ -86,7 +86,11 @@ export const mazchnaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 4,
+		pkBaseDeathChance: 2,
+		revsWeaponBoost: true,
+		canBePked: true
 	},
 	{
 		id: Monsters.FeralVampyre.id,
@@ -151,7 +155,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.HillGiant.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.HillGiant,
-		wildy: false,
+		wildy: true,
 
 		existsInCatacombs: true,
 		difficultyRating: 1,
@@ -161,7 +165,10 @@ export const mazchnaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 5,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.Obor.id,
@@ -211,7 +218,10 @@ export const mazchnaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 4,
+		pkBaseDeathChance: 3,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.Killerwatt.id,

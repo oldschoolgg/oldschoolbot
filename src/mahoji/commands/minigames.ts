@@ -1,22 +1,22 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
 
-import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
+import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import {
-	agilityArenaBuyables,
 	agilityArenaBuyCommand,
+	agilityArenaBuyables,
 	agilityArenaCommand,
-	agilityArenaRecolorCommand,
 	agilityArenaXPCommand
 } from '../lib/abstracted_commands/agilityArenaCommand';
 import {
+	BarbBuyables,
+	GambleTiers,
 	barbAssaultBuyCommand,
 	barbAssaultGambleCommand,
 	barbAssaultLevelCommand,
 	barbAssaultStartCommand,
-	barbAssaultStatsCommand,
-	BarbBuyables,
-	GambleTiers
+	barbAssaultStatsCommand
 } from '../lib/abstracted_commands/barbAssault';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
@@ -32,16 +32,17 @@ import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
 import {
-	mageTrainingArenaBuyables,
 	mageTrainingArenaBuyCommand,
+	mageTrainingArenaBuyables,
 	mageTrainingArenaPointsCommand,
 	mageTrainingArenaStartCommand
 } from '../lib/abstracted_commands/mageTrainingArenaCommand';
 import {
 	contractTiers,
 	mahoganyHomesBuildCommand,
+	mahoganyHomesBuyCommand,
 	mahoganyHomesBuyables,
-	mahoganyHomesBuyCommand
+	mahoganyHomesPointsCommand
 } from '../lib/abstracted_commands/mahoganyHomesCommand';
 import {
 	nightmareZoneShopCommand,
@@ -49,8 +50,8 @@ import {
 	nightmareZoneStatsCommand
 } from '../lib/abstracted_commands/nightmareZoneCommand';
 import {
-	pestControlBuyables,
 	pestControlBuyCommand,
+	pestControlBuyables,
 	pestControlStartCommand,
 	pestControlStatsCommand,
 	pestControlXPCommand
@@ -60,10 +61,10 @@ import { roguesDenCommand } from '../lib/abstracted_commands/roguesDenCommand';
 import { sepulchreCommand } from '../lib/abstracted_commands/sepulchreCommand';
 import { shades, shadesLogs, shadesOfMortonStartCommand } from '../lib/abstracted_commands/shadesOfMortonCommand';
 import {
-	soulWarsBuyables,
 	soulWarsBuyCommand,
-	soulWarsImbueables,
+	soulWarsBuyables,
 	soulWarsImbueCommand,
+	soulWarsImbueables,
 	soulWarsStartCommand,
 	soulWarsTokensCommand
 } from '../lib/abstracted_commands/soulWarsCommand';
@@ -71,18 +72,19 @@ import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCo
 import { trekCommand, trekShop } from '../lib/abstracted_commands/trekCommand';
 import { troubleBrewingStartCommand } from '../lib/abstracted_commands/troubleBrewingCommand';
 import {
-	volcanicMineCommand,
 	VolcanicMineShop,
+	volcanicMineCommand,
 	volcanicMineShopCommand,
 	volcanicMineStatsCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
-import { OSBMahojiCommand } from '../lib/util';
-import { NMZ_STRATEGY, NMZStrategy } from './../../lib/constants';
+import type { OSBMahojiCommand } from '../lib/util';
+import type { NMZStrategy } from './../../lib/constants';
+import { NMZ_STRATEGY } from './../../lib/constants';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
 import {
 	nightmareZoneBuyables,
-	nightmareZoneImbueables,
-	nightmareZoneImbueCommand
+	nightmareZoneImbueCommand,
+	nightmareZoneImbueables
 } from './../lib/abstracted_commands/nightmareZoneCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
@@ -228,19 +230,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 							required: false,
 							min_value: 1,
 							max_value: 1000
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'simulate',
-					description: 'Simulate a Last Man Standing game with Discord friends.',
-					options: [
-						{
-							name: 'names',
-							description: 'Names. e.g. Magnaboy, Kyra, Alex',
-							required: false,
-							type: ApplicationCommandOptionType.String
 						}
 					]
 				}
@@ -610,6 +599,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 							max_value: 1000
 						}
 					]
+				},
+				{
+					name: 'points',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Mahogany Homes point balance.'
 				}
 			]
 		},
@@ -792,7 +786,16 @@ export const minigamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'Amount of brimhaven agility course laps you want to do.',
+							required: false,
+							min_value: 1
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -804,7 +807,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'item',
 							description: 'The item to buy.',
 							required: true,
-							choices: agilityArenaBuyables.map(i => ({ name: `${i.item.name}`, value: i.item.name }))
+							choices: agilityArenaBuyables.map(i => ({ name: `${i.name}`, value: i.name }))
 						},
 						{
 							type: ApplicationCommandOptionType.Integer,
@@ -814,11 +817,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 							min_value: 1
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'recolor',
-					description: 'Recolor graceful.'
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -1048,7 +1046,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 			stats?: {};
 			start?: {};
 			buy?: { name?: string; quantity?: number };
-			simulate?: { names?: string };
 		};
 		pest_control?: {
 			stats?: {};
@@ -1071,7 +1068,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { name: string };
 			points?: {};
 		};
-		mahogany_homes?: { start?: { tier?: number }; buy?: { name: string; quantity?: number } };
+		mahogany_homes?: {
+			start?: { tier?: number };
+			buy?: { name: string; quantity?: number };
+			points?: {};
+		};
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
@@ -1082,7 +1083,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			stats?: {};
 		};
 		agility_arena?: {
-			start?: {};
+			start?: { quantity?: number };
 			buy?: { item: string; quantity?: number };
 			recolor?: {};
 			xp: { quantity: number };
@@ -1219,11 +1220,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.temple_trek) {
 			if (options.temple_trek.buy) {
-				let { reward, difficulty, quantity } = options.temple_trek.buy!;
+				const { reward, difficulty, quantity } = options.temple_trek.buy!;
 				return trekShop(user, reward, difficulty, quantity, interaction);
 			}
 			if (options.temple_trek.start) {
-				let { difficulty, quantity } = options.temple_trek.start!;
+				const { difficulty, quantity } = options.temple_trek.start!;
 				return trekCommand(user, channelID, difficulty, quantity);
 			}
 		}
@@ -1276,6 +1277,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 			}
 			if (options.mahogany_homes.start) {
 				return mahoganyHomesBuildCommand(user, channelID, options.mahogany_homes.start.tier);
+			}
+			if (options.mahogany_homes.points) {
+				return mahoganyHomesPointsCommand(user);
 			}
 		}
 
@@ -1352,13 +1356,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.agility_arena?.start) {
-			return agilityArenaCommand(user, channelID);
+			return agilityArenaCommand(user, channelID, options.agility_arena.start.quantity);
 		}
 		if (options.agility_arena?.buy) {
 			return agilityArenaBuyCommand(user, options.agility_arena.buy.item, options.agility_arena.buy.quantity);
-		}
-		if (options.agility_arena?.recolor) {
-			return agilityArenaRecolorCommand(user);
 		}
 		if (options.agility_arena?.xp) {
 			return agilityArenaXPCommand(user, options.agility_arena.xp.quantity);

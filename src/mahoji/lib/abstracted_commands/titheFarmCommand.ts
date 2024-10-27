@@ -1,10 +1,10 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
-import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
+import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -68,9 +68,7 @@ export async function titheFarmShopCommand(
 	_quantity?: number
 ) {
 	const buyable = TitheFarmBuyables.find(
-		item =>
-			stringMatches(buyableName, item.name) ||
-			(item.aliases && item.aliases.some(alias => stringMatches(alias, buyableName)))
+		item => stringMatches(buyableName, item.name) || item.aliases?.some(alias => stringMatches(alias, buyableName))
 	);
 
 	if (!buyable) {
@@ -90,7 +88,7 @@ export async function titheFarmShopCommand(
 		return `You need ${cost} Tithe Farm points to make this purchase.`;
 	}
 
-	let purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
+	const purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
 	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
 	await userStatsUpdate(

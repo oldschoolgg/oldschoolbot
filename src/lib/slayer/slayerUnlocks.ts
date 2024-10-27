@@ -2,7 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import itemID from '../util/itemID';
 
-export interface SlayerTaskUnlocks {
+interface SlayerTaskUnlocks {
 	id: SlayerTaskUnlocksEnum;
 	name: string;
 	desc?: string;
@@ -18,62 +18,67 @@ export interface SlayerTaskUnlocks {
 export enum SlayerTaskUnlocksEnum {
 	// Unlockables
 	MalevolentMasquerade = 2,
-	RingBling,
-	SeeingRed,
-	IHopeYouMithMe,
-	WatchTheBirdie,
-	HotStuff,
-	ReptileGotRipped,
-	LikeABoss,
-	BiggerAndBadder,
-	KingBlackBonnet,
-	KalphiteKhat,
-	UnholyHelmet,
-	DarkMantle,
-	UndeadHead,
-	UseMoreHead,
-	TwistedVision,
-	StopTheWyvern,
-	Basilocked,
-	ActualVampyreSlayer,
+	RingBling = 3,
+	SeeingRed = 4,
+	IHopeYouMithMe = 5,
+	WatchTheBirdie = 6,
+	HotStuff = 7,
+	ReptileGotRipped = 8,
+	LikeABoss = 9,
+	BiggerAndBadder = 10,
+	KingBlackBonnet = 11,
+	KalphiteKhat = 12,
+	UnholyHelmet = 13,
+	DarkMantle = 14,
+	UndeadHead = 15,
+	UseMoreHead = 16,
+	TwistedVision = 17,
+	StopTheWyvern = 18,
+	Basilocked = 19,
+	ActualVampyreSlayer = 20,
 	// Extension Unlocks
-	NeedMoreDarkness,
-	AnkouVeryMuch,
-	SuqANotherOne,
-	FireAndDarkness,
-	PedalToTheMetals,
-	IReallyMithYou,
-	AdamindSomeMore,
-	RUUUUUNE,
-	SpiritualFervour,
-	BirdsOfAFeather,
-	GreaterChallenge,
-	ItsDarkInHere,
-	BleedMeDry,
-	SmellYaLater,
-	Horrorific,
-	ToDustYouShallReturn,
-	WyverNotherOne,
-	GetSmashed,
-	NechsPlease,
-	AugmentMyAbbies,
-	KrackOn,
-	GetScabarightOnIt,
-	WyverNotherTwo,
-	Basilonger,
-	MoreAtStake,
+	NeedMoreDarkness = 22,
+	AnkouVeryMuch = 23,
+	SuqANotherOne = 24,
+	FireAndDarkness = 25,
+	PedalToTheMetals = 26,
+	IReallyMithYou = 27,
+	AdamindSomeMore = 28,
+	RUUUUUNE = 29,
+	SpiritualFervour = 30,
+	BirdsOfAFeather = 31,
+	GreaterChallenge = 32,
+	ItsDarkInHere = 33,
+	BleedMeDry = 34,
+	SmellYaLater = 35,
+	Horrorific = 36,
+	ToDustYouShallReturn = 37,
+	WyverNotherOne = 38,
+	GetSmashed = 39,
+	NechsPlease = 40,
+	AugmentMyAbbies = 41,
+	KrackOn = 42,
+	GetScabarightOnIt = 43,
+	WyverNotherTwo = 44,
+	Basilonger = 45,
+	MoreAtStake = 46,
 	// Item Purchases:
-	SlayerRing,
-	HerbSack,
-	RunePouch,
-	DoubleTrouble,
-	BroaderFletching,
+	SlayerRing = 48,
+	HerbSack = 49,
+	RunePouch = 50,
+	DoubleTrouble = 51,
+	BroaderFletching = 52,
 	// Custom
-	SizeMatters,
-	BlockAndRoll,
-	PoreDecisions,
-	Maskuerade
+	SizeMatters = 53,
+	BlockAndRoll = 54,
+	PoreDecisions = 55,
+	Maskuerade = 56,
+	IWildyMoreSlayer = 200,
+	Revenenenenenants = 201,
+	EyeSeeYou = 202,
+	MoreEyesThanSense = 203
 }
+
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
 		id: SlayerTaskUnlocksEnum.MalevolentMasquerade,
@@ -188,6 +193,14 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		aliases: ['vorkath slayer helmet', 'turquoise slayer helmet', 'blue slayer helmet']
 	},
 	{
+		id: SlayerTaskUnlocksEnum.EyeSeeYou,
+		name: 'Eye see you',
+		desc: 'Unlocks ability to create the Araxyte slayer helmet.',
+		slayerPointCost: 1000,
+		canBeRemoved: false,
+		aliases: ['araxyte slayer helmet']
+	},
+	{
 		id: SlayerTaskUnlocksEnum.UseMoreHead,
 		name: 'Use More Head',
 		desc: 'Unlocks ability to create the Hydra slayer helmet.',
@@ -226,6 +239,14 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 80,
 		canBeRemoved: true,
 		aliases: ['vampyre slayer', 'vampire slayer', 'actual vampire slayer', 'vampyres', 'vampires']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.IWildyMoreSlayer,
+		name: 'I Wildy More Slayer',
+		desc: 'Krystilia will be able to assign Jellies, Dust Devils, Nechryaels and Abyssal Demons as your task.',
+		slayerPointCost: 0,
+		canBeRemoved: true,
+		aliases: ['wildy slayer']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SlayerRing,
@@ -439,7 +460,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'Nechs please',
 		desc: 'Extends Nechryael tasks',
 		slayerPointCost: 100,
-		extendID: [Monsters.Nechryael.id],
+		extendID: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend nechs', 'extend nechryaels']
@@ -521,6 +542,16 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		aliases: ['broad bolts', 'broads', 'broad arrows', 'fletching', 'broad fletching']
 	},
 	{
+		id: SlayerTaskUnlocksEnum.Revenenenenenants,
+		name: 'Revenenenenenants',
+		desc: 'Extends Revenants tasks',
+		slayerPointCost: 100,
+		extendID: [Monsters.RevenantImp.id],
+		extendMult: 1.5,
+		canBeRemoved: true,
+		aliases: ['extend revenants', 'extend revs']
+	},
+	{
 		id: SlayerTaskUnlocksEnum.SizeMatters,
 		name: 'Size Matters',
 		desc: 'Makes all tasks have double quantity',
@@ -551,6 +582,16 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 750,
 		canBeRemoved: true,
 		aliases: ['maskuerade', 'masquerade']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.MoreEyesThanSense,
+		name: 'More eyes than sense',
+		desc: 'Number of araxytes assigned is increased to 200-250.',
+		slayerPointCost: 150,
+		extendID: [Monsters.Araxyte.id],
+		extendMult: 3.3,
+		canBeRemoved: true,
+		aliases: ['extend araxytes']
 	}
 ];
 

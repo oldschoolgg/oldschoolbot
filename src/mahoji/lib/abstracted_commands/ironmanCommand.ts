@@ -1,12 +1,11 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import type { Prisma } from '@prisma/client';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
-import { GrandExchange } from '../../../lib/grandExchange';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { assert } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -38,8 +37,25 @@ export async function ironmanCommand(user: MUser, interaction: ChatInputCommandI
 		return "You can't become an ironman because you have active bingos.";
 	}
 
-	const activeGEListings = await GrandExchange.fetchActiveListings();
-	if ([...activeGEListings.buyListings, ...activeGEListings.sellListings].some(i => i.user_id === user.id)) {
+	const activeListings = await prisma.gEListing.findMany({
+		where: {
+			user_id: user.id,
+			quantity_remaining: {
+				gt: 0
+			},
+			fulfilled_at: null,
+			cancelled_at: null
+		},
+		include: {
+			buyTransactions: true,
+			sellTransactions: true
+		},
+		orderBy: {
+			created_at: 'desc'
+		}
+	});
+	// Return early if no active listings.
+	if (activeListings.length !== 0) {
 		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${mentionCommand(
 			globalClient,
 			'ge',
@@ -65,13 +81,9 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 	const mUser = (await mUserFetch(user.id)).user;
 
 	type KeysThatArentReset =
-		| 'ironman_alts'
-		| 'main_account'
 		| 'bank_bg_hex'
 		| 'bank_sort_weightings'
 		| 'bank_sort_method'
-		| 'premium_balance_expiry_date'
-		| 'premium_balance_tier'
 		| 'minion_bought_date'
 		| 'id'
 		| 'pets'
@@ -85,27 +97,21 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		BitField.IsPatronTier4,
 		BitField.IsPatronTier5,
 		BitField.isModerator,
-		BitField.isContributor,
 		BitField.BypassAgeRestriction,
 		BitField.HasPermanentEventBackgrounds,
 		BitField.HasPermanentTierOne,
 		BitField.DisabledRandomEvents,
 		BitField.AlwaysSmallBank,
-		BitField.IsWikiContributor,
 		BitField.IsPatronTier6
 	];
 
 	const createOptions: Required<Pick<Prisma.UserCreateInput, KeysThatArentReset>> = {
 		id: user.id,
-		main_account: mUser.main_account,
-		ironman_alts: mUser.ironman_alts,
 		bank_bg_hex: mUser.bank_bg_hex,
 		bank_sort_method: mUser.bank_sort_method,
 		bank_sort_weightings: mUser.bank_sort_weightings as ItemBank,
 		minion_bought_date: mUser.minion_bought_date,
 		RSN: mUser.RSN,
-		premium_balance_expiry_date: mUser.premium_balance_expiry_date,
-		premium_balance_tier: mUser.premium_balance_tier,
 		pets: mUser.pets as ItemBank,
 		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
 	};
@@ -115,6 +121,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 	await prisma.botItemSell.deleteMany({ where: { user_id: user.id } });
 	await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } });
 	await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } });
+	await prisma.portent.deleteMany({ where: { user_id: user.id } });
 	// Now we can delete the user
 	await prisma.user.deleteMany({
 		where: { id: user.id }
@@ -129,6 +136,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 	await prisma.newUser.deleteMany({ where: { id: user.id } });
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } });
+	await prisma.userEvent.deleteMany({ where: { user_id: user.id } });
 	await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.tameActivity.deleteMany({ where: { user_id: user.id } });
 	await prisma.tame.deleteMany({ where: { user_id: user.id } });

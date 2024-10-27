@@ -1,37 +1,26 @@
-import { channelIsSendable, formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
+import { formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import {
+	Time,
 	calcPercentOfNum,
 	clamp,
 	increaseNumByPercent,
 	percentChance,
 	randArrItem,
 	randInt,
-	reduceNumByPercent,
-	Time
+	reduceNumByPercent
 } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { production } from '../config';
-import { mahojiParseNumber, userStatsBankUpdate } from '../mahoji/mahojiSettings';
-import { Emoji } from './constants';
 import { calcSetupPercent } from './data/cox';
 import { getSimilarItems } from './data/similarItems';
-import { degradeItem } from './degradeableItems';
-import { UserFullGearSetup } from './gear';
-import { trackLoot } from './lootTrack';
-import { setupParty } from './party';
+import type { UserFullGearSetup } from './gear';
 import { getMinigameScore } from './settings/minigames';
 import { Gear } from './structures/Gear';
-import { ItemBank, MakePartyOptions, Skills } from './types';
-import { DOAOptions, DOAStoredRaid } from './types/minions';
-import { bankToStrShortNames, formatDuration, formatSkillRequirements, itemID, itemNameFromID } from './util';
-import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from './util/calcMaxTripLength';
-import getOSItem from './util/getOSItem';
+import type { ItemBank, Skills } from './types';
+import type { DOAStoredRaid } from './types/minions';
+import { formatDuration, formatSkillRequirements, itemID, itemNameFromID } from './util';
 import resolveItems from './util/resolveItems';
-import { updateBankSetting } from './util/updateBankSetting';
 
 const { floor } = Math;
 
@@ -76,7 +65,7 @@ export const maxRange = new Gear({
 	head: 'Gorajan archer helmet',
 	neck: 'Farsight snapshot necklace',
 	body: 'Gorajan archer top',
-	cape: 'Tidal collector',
+	cape: 'Tidal collector (i)',
 	hands: 'Gorajan archer gloves',
 	legs: 'Gorajan archer legs',
 	feet: 'Gorajan archer boots',
@@ -277,7 +266,7 @@ export const DOARooms: AtlantisRoom[] = [
 		id: 1,
 		name: 'Shadowcaster the Octopus',
 		addedDeathChance: (_user: MUser) => {
-			let addition = 0;
+			const addition = 0;
 			return addition;
 		},
 		baseTime: Time.Minute * 16,
@@ -337,9 +326,14 @@ export const DOARooms: AtlantisRoom[] = [
 				has: user => user.gear.range.hasEquipped('Ring of piercing')
 			},
 			{
+				name: 'Tidal collector (i)',
+				percent: 12,
+				has: user => user.gear.range.hasEquipped('Tidal collector (i)', true, false)
+			},
+			{
 				name: 'Tidal collector',
 				percent: 7,
-				has: user => user.gear.range.hasEquipped('Tidal collector')
+				has: user => user.gear.range.hasEquipped('Tidal collector', true, false)
 			},
 			{
 				name: '120 Fishing',
@@ -403,7 +397,7 @@ export const DOARooms: AtlantisRoom[] = [
 		id: 4,
 		name: "Thalassar the Ocean's Warden",
 		addedDeathChance: (_user: MUser) => {
-			let addition = 0;
+			const addition = 0;
 			return addition;
 		},
 		baseTime: Time.Minute * 13,
@@ -462,7 +456,7 @@ export async function calcDOAInput({
 
 	let brewsNeeded = Math.max(4, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
 	brewsNeeded += 10;
-	let restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
+	const restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
 
 	cost.add('Saradomin brew(4)', brewsNeeded * quantity);
 	cost.add('Super restore(4)', restoresNeeded * quantity);
@@ -645,8 +639,8 @@ export function createDOATeam({
 			for (const { user, roomKCs } of team) {
 				messages.push(`  Checking boosts for ${user.usernameOrMention}`);
 				for (const boost of room.speedBoosts) {
-					let percent = boost.percent / team.length;
-					let actualDecrease = calcPercentOfNum(percent, roomTime);
+					const percent = boost.percent / team.length;
+					const actualDecrease = calcPercentOfNum(percent, roomTime);
 					if (boost.has(user)) {
 						roomTime -= actualDecrease;
 						messages.push(
@@ -680,7 +674,7 @@ export function createDOATeam({
 				if (addedDeathChance !== 0) {
 					messages.push(`    Had an extra ${addedDeathChance}% added because of one of the rooms mechanics`);
 				}
-				let deathChanceForThisUserRoom = clamp(baseDeathChance + addedDeathChance, 2, 99);
+				const deathChanceForThisUserRoom = clamp(baseDeathChance + addedDeathChance, 2, 99);
 				messages.push(
 					`    Final death chance for ${user.usernameOrMention} in ${room.name} room: ${deathChanceForThisUserRoom}%`
 				);
@@ -745,190 +739,6 @@ export async function checkDOATeam(users: MUser[], challengeMode: boolean, quant
 	return checkedUsers;
 }
 
-export async function doaStartCommand(
-	user: MUser,
-	challengeMode: boolean,
-	solo: boolean,
-	channelID: string,
-	teamSize: number | undefined,
-	quantityInput: number | undefined
-): CommandResponse {
-	if (user.minionIsBusy) {
-		return `${user.usernameOrMention} minion is busy`;
-	}
-
-	const initialCheck = await checkDOAUser({
-		user,
-		challengeMode,
-		duration: Time.Hour,
-		quantity: 1
-	});
-	if (typeof initialCheck === 'string') {
-		return initialCheck;
-	}
-
-	if (user.minionIsBusy) {
-		return "Your minion is busy, so you can't start a raid.";
-	}
-
-	let maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
-
-	const partyOptions: MakePartyOptions = {
-		leader: user,
-		minSize: 1,
-		maxSize,
-		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is hosting a Depths of Atlantis mass! Use the buttons below to join/leave.`,
-		customDenier: async checkUser => {
-			const checkResult = await checkDOAUser({
-				user: checkUser,
-				challengeMode,
-				duration: Time.Hour,
-				quantity: 1
-			});
-			if (typeof checkResult === 'string') {
-				return [true, checkResult];
-			}
-
-			return [false];
-		}
-	};
-
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return 'No channel found.';
-
-	let usersWhoConfirmed = [];
-	try {
-		usersWhoConfirmed = solo ? [user] : await setupParty(channel, user, partyOptions);
-	} catch (err: any) {
-		return {
-			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			ephemeral: true
-		};
-	}
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
-
-	const teamCheck = await checkDOATeam(users, challengeMode, 1);
-	if (typeof teamCheck === 'string') {
-		return {
-			content: `Your mass failed to start because of this reason: ${teamCheck} ${users}`,
-			allowedMentions: {
-				users: users.map(i => i.id)
-			}
-		};
-	}
-
-	const baseDuration = createDOATeam({
-		team: teamCheck,
-		quantity: 1,
-		challengeMode
-	}).fakeDuration;
-	const maxTripLength = Math.max(...users.map(i => calcMaxTripLength(i, 'DepthsOfAtlantis')));
-	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), 1, 5);
-	const quantity = clamp(quantityInput ?? maxQuantity, 1, maxQuantity);
-
-	const createdDOATeam = createDOATeam({
-		team: teamCheck,
-		quantity,
-		challengeMode
-	});
-
-	let debugStr = '';
-
-	const totalCost = new Bank();
-
-	const costResult = await Promise.all(
-		users.map(async u => {
-			const { cost, sangCharges, voidStaffCharges, tumShadowCharges } = await calcDOAInput({
-				user: u,
-				duration: createdDOATeam.fakeDuration,
-				quantity,
-				challengeMode
-			});
-			const { realCost } = await u.specialRemoveItems(cost.clone());
-
-			await degradeItem({
-				item: getOSItem('Sanguinesti staff'),
-				chargesToDegrade: sangCharges,
-				user: u
-			});
-
-			if (voidStaffCharges) {
-				await degradeItem({
-					item: getOSItem('Void staff'),
-					chargesToDegrade: voidStaffCharges,
-					user: u
-				});
-			} else if (tumShadowCharges) {
-				await degradeItem({
-					item: getOSItem("Tumeken's shadow"),
-					chargesToDegrade: tumShadowCharges,
-					user: u
-				});
-			} else {
-				throw new Error('No staff equipped');
-			}
-			await userStatsBankUpdate(u.id, 'doa_cost', realCost);
-			const effectiveCost = realCost.clone();
-			totalCost.add(effectiveCost);
-
-			const { total } = calculateUserGearPercents(u.gear);
-
-			const gearMarker = users.length > 5 ? 'Gear: ' : Emoji.Gear;
-			const boostsMarker = users.length > 5 ? 'Boosts: ' : Emoji.CombatSword;
-			debugStr += `**- ${u.usernameOrMention}** ${gearMarker}${total.toFixed(
-				1
-			)}% ${boostsMarker} used ${bankToStrShortNames(realCost)}\n\n`;
-			return {
-				userID: u.id,
-				effectiveCost
-			};
-		})
-	);
-
-	await updateBankSetting('doa_cost', totalCost);
-	await trackLoot({
-		totalCost,
-		id: 'depths_of_atlantis',
-		type: 'Minigame',
-		changeType: 'cost',
-		users: costResult.map(i => ({
-			id: i.userID,
-			cost: i.effectiveCost,
-			duration: createdDOATeam.realDuration
-		}))
-	});
-	await addSubTaskToActivityTask<DOAOptions>({
-		userID: user.id,
-		channelID: channelID.toString(),
-		duration: createdDOATeam.realDuration,
-		type: 'DepthsOfAtlantis',
-		leader: user.id,
-		users: users.map(i => i.id),
-		fakeDuration: createdDOATeam.fakeDuration,
-		quantity,
-		cm: challengeMode,
-		raids: createdDOATeam.raids
-	});
-
-	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
-		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to do ${quantity === 1 ? 'a' : `${quantity}x`} ${
-		challengeMode ? 'Challenge Mode' : ''
-	} Depths of Atlantis raid - the total trip will take ${formatDuration(createdDOATeam.fakeDuration)}.`;
-
-	str += ` \n\n${debugStr}`;
-
-	if (createdDOATeam.results[0].messages.length > 0 && !production) {
-		return {
-			content: str,
-			files: [{ attachment: Buffer.from(createdDOATeam.results[0].messages.join('\n')), name: 'doa.txt' }]
-		};
-	}
-
-	return str;
-}
-
 export async function doaCheckCommand(user: MUser) {
 	const result = await checkDOAUser({ user, challengeMode: false, duration: Time.Hour, quantity: 1 });
 	if (typeof result === 'string') {
@@ -961,7 +771,7 @@ export async function doaHelpCommand(user: MUser) {
 
 	const minigameStats = await user.fetchMinigames();
 
-	let str = `**Depths of Atlantis**
+	const str = `**Depths of Atlantis**
 
 **Attempts:**
 ${DOARooms.map(i => `- ${i.name}: ${(stats.doa_room_attempts_bank as ItemBank)[i.id] ?? 0} Attempts`).join('\n')}
@@ -972,16 +782,16 @@ ${DOARooms.map(i => `- ${i.name}: ${(stats.doa_room_attempts_bank as ItemBank)[i
 		totalUniques > 0
 			? `(one unique every ${Math.floor(
 					(minigameStats.depths_of_atlantis + minigameStats.depths_of_atlantis_cm) / totalUniques
-			  )} raids, one unique every ${formatDuration(
+				)} raids, one unique every ${formatDuration(
 					(stats.doa_total_minutes_raided * Time.Minute) / totalUniques
-			  )})`
+				)})`
 			: ''
 	}
 
 **Requirements**
 ${requirements
 	.map(i => {
-		let res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned });
+		const res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned });
 		if (typeof res === 'string') {
 			return `- ❌ ${bold(i.name)} ${res}`;
 		}

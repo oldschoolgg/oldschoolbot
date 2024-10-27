@@ -1,20 +1,20 @@
-import { GearPreset } from '@prisma/client';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandOption } from 'mahoji/dist/lib/types';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { type CommandOption, type CommandRunOptions, cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { GearPreset } from '@prisma/client';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { production } from '../../config';
 import { ParsedCustomEmojiWithGroups } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { GearSetup, GearSetupType, GearSetupTypes } from '../../lib/gear/types';
-import { prisma } from '../../lib/settings/prisma';
-import { defaultGear, Gear, globalPresets } from '../../lib/structures/Gear';
-import { cleanString, isValidGearSetup, isValidNickname, stringMatches } from '../../lib/util';
+import type { GearSetup, GearSetupType } from '../../lib/gear/types';
+import { GearSetupTypes } from '../../lib/gear/types';
+
+import { Gear, defaultGear, globalPresets } from '../../lib/structures/Gear';
+import { EquipmentSlot, isValidGearSetup, isValidNickname } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
 import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 function maxPresets(user: MUser) {
 	return user.perkTier() * 2 + 4;
@@ -23,8 +23,8 @@ function maxPresets(user: MUser) {
 type InputGear = Partial<Record<EquipmentSlot, string | undefined>>;
 type ParsedInputGear = Partial<Record<EquipmentSlot, number>>;
 function parseInputGear(inputGear: InputGear) {
-	let gear: ParsedInputGear = {};
-	let remove: EquipmentSlot[] = [];
+	const gear: ParsedInputGear = {};
+	const remove: EquipmentSlot[] = [];
 	for (const [key, val] of Object.entries(inputGear)) {
 		if (val?.toLowerCase() === 'none') {
 			remove.push(key as EquipmentSlot);
@@ -38,7 +38,7 @@ function parseInputGear(inputGear: InputGear) {
 	return { gear, remove };
 }
 
-export function gearPresetToGear(preset: GearPreset): GearSetup {
+function gearPresetToGear(preset: GearPreset): GearSetup {
 	function gearItem(val: null | number) {
 		if (val === null) return null;
 		return {
@@ -58,18 +58,26 @@ export function gearPresetToGear(preset: GearPreset): GearSetup {
 	newGear.shield = gearItem(preset.shield);
 	newGear.weapon = gearItem(preset.weapon);
 	newGear.ring = gearItem(preset.ring);
+	newGear.ammo = preset.ammo
+		? {
+				item: preset.ammo,
+				quantity: 1
+			}
+		: null;
 	return newGear;
 }
 export async function createOrEditGearSetup(
 	user: MUser,
 	setupToCopy: GearSetupType | undefined,
-	name = '',
+	name: string,
 	isUpdating: boolean,
 	gearInput: InputGear,
 	emoji: string | undefined,
 	pinned_setup: GearSetupType | 'reset' | undefined
 ) {
-	name = cleanString(name).toLowerCase();
+	if (name) {
+		name = cleanString(name).toLowerCase();
+	}
 	if (name.length > 24) return 'Gear preset names must be less than 25 characters long.';
 	if (!name) return "You didn't supply a name.";
 	if (!isUpdating && !isValidNickname(name)) {
@@ -109,7 +117,6 @@ export async function createOrEditGearSetup(
 	if (emoji) {
 		const res = ParsedCustomEmojiWithGroups.exec(emoji);
 		if (!res || !res[3]) return "That's not a valid emoji.";
-		// eslint-disable-next-line prefer-destructuring
 		emoji = res[3];
 
 		const cachedEmoji = globalClient.emojis.cache.get(emoji);

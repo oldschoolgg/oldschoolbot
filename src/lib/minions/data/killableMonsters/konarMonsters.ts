@@ -2,9 +2,9 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
-import resolveItems from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const konarMonsters: KillableMonster[] = [
 	{
@@ -249,12 +249,6 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		slayerOnly: true,
 		superior: Monsters.NuclearSmokeDevil,
-		itemInBankBoosts: [
-			{
-				[itemID('Kodai wand')]: 12,
-				[itemID('Staff of the dead')]: 8
-			}
-		],
 		healAmountNeeded: 16,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],

@@ -1,8 +1,8 @@
-import { reduceNumByPercent, Time } from 'e';
+import { Time, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
-import { CastingActivityTaskOptions } from '../../../lib/types/minions';
+import type { CastingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -90,7 +90,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		)}.`;
 	}
 	const cost = determineRunes(user, spell.input.clone().multiply(quantity));
-	if (!userBank.has(cost.bank)) {
+	if (!userBank.has(cost)) {
 		return `You don't have the materials needed to cast ${quantity}x ${spell.name}, you need ${
 			spell.input
 		}, you're missing **${cost.clone().remove(userBank)}** (Cost: ${cost}).`;

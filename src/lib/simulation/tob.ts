@@ -1,13 +1,13 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { percentChance, roll, sumArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
-import { LootBank } from 'oldschooljs/dist/meta/types';
-import { convertLootBanksToItemBanks, JSONClone } from 'oldschooljs/dist/util';
+import type { LootBank } from 'oldschooljs/dist/meta/types';
+import { JSONClone } from 'oldschooljs/dist/util';
 
 import { TOBRooms } from '../data/tob';
 import { assert } from '../util/logError';
 
-export interface TeamMember {
+interface TeamMember {
 	id: string;
 	/**
 	 * The rooms they died in.
@@ -15,7 +15,7 @@ export interface TeamMember {
 	deaths: number[];
 }
 
-export interface TheatreOfBloodOptions {
+interface TheatreOfBloodOptions {
 	/**
 	 * Whether or not this raid is in Challenge Mode or not.
 	 */
@@ -87,7 +87,7 @@ const HardModeExtraTable = new LootTable()
 	.tertiary(150, 'Sanguine ornament kit')
 	.tertiary(100, 'Holy ornament kit');
 
-export class TheatreOfBloodClass {
+class TheatreOfBloodClass {
 	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[]) {
 		if (deaths.length === TOBRooms.length) {
 			return new Bank().add('Cabbage');
@@ -98,16 +98,19 @@ export class TheatreOfBloodClass {
 			loot.add(NonUniqueTable.roll());
 		}
 
+		let clueRate = 3 / 25;
 		if (isHardMode) {
 			// Add 15% extra regular loot for hard mode:
-			for (const [itemID] of Object.entries(loot.bank)) {
-				loot.bank[parseInt(itemID)] = Math.ceil(loot.bank[parseInt(itemID)] * 1.15);
+			for (const [item] of loot.items()) {
+				loot.set(item.id, Math.ceil(loot.amount(item.id) * 1.15));
 			}
 			// Add HM Tertiary drops: dust / kits
 			loot.add(HardModeExtraTable.roll());
+
+			clueRate = 3.5 / 25;
 		}
 
-		if (roll(25)) {
+		if (Math.random() < clueRate) {
 			loot.add('Clue scroll (elite)');
 		}
 
@@ -151,7 +154,7 @@ export class TheatreOfBloodClass {
 
 		const totalDeaths = sumArr(parsedTeam.map(i => i.numDeaths));
 
-		let percentBaseChanceOfUnique = (options.hardMode ? 13 : 11) * (teamPoints / maxPointsTeamCanGet);
+		const percentBaseChanceOfUnique = (options.hardMode ? 13 : 11) * (teamPoints / maxPointsTeamCanGet);
 
 		const purpleReceived = percentChance(percentBaseChanceOfUnique);
 		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;
@@ -169,7 +172,7 @@ export class TheatreOfBloodClass {
 		}
 
 		return {
-			loot: convertLootBanksToItemBanks(lootResult),
+			loot: lootResult,
 			percentChanceOfUnique: percentBaseChanceOfUnique,
 			totalDeaths,
 			teamPoints

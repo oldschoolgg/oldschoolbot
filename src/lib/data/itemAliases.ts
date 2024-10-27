@@ -1,15 +1,7 @@
-import '../customItems/customItems';
-
-import { Items } from 'oldschooljs';
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-import { cleanString } from 'oldschooljs/dist/util/cleanString';
-
-import { customItems } from '../customItems/util';
+import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/util';
+import { Items, allTeamCapes, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
-	if (customItems.length === 0) {
-		throw new Error('Custom items have not been loaded yet.');
-	}
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
@@ -19,12 +11,12 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 	if (typeof name === 'string') {
 		firstName = name;
 		itemNameMap.set(name, id);
-		itemNameMap.set(cleanString(name), id);
+		itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
 	} else {
 		for (const _name of name) {
 			if (!firstName) firstName = _name;
 			itemNameMap.set(_name, id);
-			itemNameMap.set(cleanString(_name), id);
+			itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
 		}
 	}
 	// Update the item name to it's first alias
@@ -34,6 +26,9 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 			name: firstName!,
 			id
 		});
+		if (Items.get(id)!.name !== firstName) {
+			throw new Error(`Failed to set item alias for item ${id}`);
+		}
 	}
 }
 
@@ -100,6 +95,13 @@ setItemAlias(25_075, 'Trailblazer graceful top');
 setItemAlias(25_078, 'Trailblazer graceful legs');
 setItemAlias(25_081, 'Trailblazer graceful gloves');
 setItemAlias(25_084, 'Trailblazer graceful boots');
+// Graceful sets -- Varlamore
+setItemAlias(30_045, 'Varlamore graceful hood');
+setItemAlias(30_048, 'Varlamore graceful cape');
+setItemAlias(30_051, 'Varlamore graceful top');
+setItemAlias(30_054, 'Varlamore graceful legs');
+setItemAlias(30_057, 'Varlamore graceful gloves');
+setItemAlias(30_060, 'Varlamore graceful boots');
 
 // Supply crate (Mahogany Homes)
 setItemAlias(24_884, 'Builders supply crate');
@@ -193,11 +195,15 @@ setItemAlias(2993, 'Chompy bird hat (dragon archer)');
 setItemAlias(2994, 'Chompy bird hat (expert ogre dragon archer)');
 setItemAlias(2995, 'Chompy bird hat (expert dragon archer)');
 
-// Item aliases
+// Achievement diary lamps
 setItemAlias(11_137, 'Antique lamp 1');
 setItemAlias(11_139, 'Antique lamp 2');
 setItemAlias(11_141, 'Antique lamp 3');
 setItemAlias(11_185, 'Antique lamp 4');
+
+// Defender of varrock quest lamp
+setItemAlias(28_820, 'Antique lamp (defender of varrock)');
+setItemAlias(28_800, 'Antique lamp (Historian Aldo)');
 
 // Dragonfire shields
 setItemAlias(11_284, 'Uncharged dragonfire shield');
@@ -361,3 +367,99 @@ setItemAlias(25_922, 'Antique lamp (hard ca)');
 setItemAlias(25_923, 'Antique lamp (elite ca)');
 setItemAlias(25_924, 'Antique lamp (master ca)');
 setItemAlias(25_925, 'Antique lamp (grandmaster ca)');
+
+/**
+ * Trophies
+ */
+
+// BSO (Twisted) trophies
+setItemAlias(24_372, 'BSO dragon trophy');
+setItemAlias(24_374, 'BSO rune trophy');
+setItemAlias(24_376, 'BSO adamant trophy');
+setItemAlias(24_378, 'BSO mithril trophy');
+setItemAlias(24_380, 'BSO steel trophy');
+setItemAlias(24_382, 'BSO iron trophy');
+setItemAlias(24_384, 'BSO bronze trophy');
+
+// Comp. trophies
+setItemAlias(25_042, 'Comp. dragon trophy');
+setItemAlias(25_044, 'Comp. rune trophy');
+setItemAlias(25_046, 'Comp. adamant trophy');
+setItemAlias(25_048, 'Comp. mithril trophy');
+setItemAlias(25_050, 'Comp. steel trophy');
+setItemAlias(25_052, 'Comp. iron trophy');
+setItemAlias(25_054, 'Comp. bronze trophy');
+
+// Placeholder trophies
+setItemAlias(26_515, 'Placeholder dragon trophy');
+setItemAlias(26_513, 'Placeholder rune trophy');
+setItemAlias(26_511, 'Placeholder adamant trophy');
+setItemAlias(26_509, 'Placeholder mithril trophy');
+setItemAlias(26_507, 'Placeholder steel trophy');
+setItemAlias(26_505, 'Placeholder iron trophy');
+setItemAlias(26_503, 'Placeholder bronze trophy');
+
+export const allTrophyItems = resolveItems([
+	'BSO dragon trophy',
+	'BSO rune trophy',
+	'BSO adamant trophy',
+	'BSO mithril trophy',
+	'BSO steel trophy',
+	'BSO iron trophy',
+	'BSO bronze trophy',
+	'Comp. dragon trophy',
+	'Comp. rune trophy',
+	'Comp. adamant trophy',
+	'Comp. mithril trophy',
+	'Comp. steel trophy',
+	'Comp. iron trophy',
+	'Comp. bronze trophy',
+	'Placeholder dragon trophy',
+	'Placeholder rune trophy',
+	'Placeholder adamant trophy',
+	'Placeholder mithril trophy',
+	'Placeholder steel trophy',
+	'Placeholder iron trophy',
+	'Placeholder bronze trophy'
+]);
+
+for (const item of allTrophyItems) {
+	Items.modifyItem(item, {
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantBeSacrificed: true,
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	});
+}
+
+/**
+ * Item modifications
+ */
+
+export interface CustomItemData {
+	cantBeSacrificed?: true;
+	isSuperUntradeable?: boolean;
+	cantDropFromMysteryBoxes?: boolean;
+	cantBeDropped?: true;
+	isDiscontinued?: true;
+	superTradeableButTradeableOnGE?: true;
+	isSecret?: true;
+}
+
+declare module 'oldschooljs/dist/meta/types' {
+	interface Item {
+		customItemData?: CustomItemData;
+	}
+}
+
+for (const item of allTeamCapes) {
+	Items.modifyItem(item.id, {
+		price: 100
+	});
+	if (getItemOrThrow(item.id).price !== 100) {
+		throw new Error(`Failed to modify price of item ${item.id}`);
+	}
+}

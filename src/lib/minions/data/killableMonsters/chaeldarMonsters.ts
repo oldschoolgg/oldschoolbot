@@ -2,10 +2,11 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
+import { QuestID } from '../quests';
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{
@@ -32,12 +33,15 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 60,
 		table: Monsters.Aviansie,
 
-		wildy: false,
+		wildy: true,
 		difficultyRating: 4,
 		qpRequired: 0,
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
-		healAmountNeeded: 24
+		healAmountNeeded: 24,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 10,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.BlackDemon.id,
@@ -45,14 +49,15 @@ export const chaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.BlackDemon.aliases,
 		timeToFinish: Time.Second * 36,
 		table: Monsters.BlackDemon,
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 3,
 		existsInCatacombs: true,
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Emberlight')]: 15
 			},
 			{
 				[itemID('Saradomin godsword')]: 5
@@ -64,7 +69,11 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canCannon: true,
 		// Even if no multi, can safespot for same effect
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 9,
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -209,14 +218,15 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.GreaterDemon,
 
-		wildy: false,
+		wildy: true,
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 12
+				[itemID('Arclight')]: 12,
+				[itemID('Emberlight')]: 17
 			},
 			{
 				[itemID('Saradomin godsword')]: 3
@@ -227,7 +237,11 @@ export const chaeldarMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 9,
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.IronDragon.id,
@@ -411,13 +425,15 @@ export const chaeldarMonsters: KillableMonster[] = [
 		// Skotizo requires 1 totem per kill, and arclight makes kill 2x faster irl.
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 50
+				[itemID('Arclight')]: 50,
+				[itemID('Emberlight')]: 55
 			}
 		],
 		itemCost: { itemCost: new Bank().add('Dark totem', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		maxQuantity: 1
 	},
 	{
 		id: Monsters.TzHaarKet.id,
@@ -468,5 +484,43 @@ export const chaeldarMonsters: KillableMonster[] = [
 		healAmountNeeded: 14,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic]
+	},
+	{
+		id: Monsters.TormentedDemon.id,
+		name: Monsters.TormentedDemon.name,
+		aliases: Monsters.TormentedDemon.aliases,
+		timeToFinish: Time.Second * 166,
+		table: Monsters.TormentedDemon,
+
+		wildy: false,
+
+		difficultyRating: 6,
+		qpRequired: 0,
+
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 20,
+				[itemID('Emberlight')]: 25
+			},
+			{
+				[itemID('Ferocious Gloves')]: 6
+			},
+			{
+				[itemID('Burning claws')]: 5
+			},
+			{
+				[itemID('Scorching bow')]: 10,
+				[itemID('Purging staff')]: 10
+			},
+			{
+				[itemID('Light ballista')]: 2,
+				[itemID('Heavy ballista')]: 4
+			}
+		],
+
+		healAmountNeeded: 250,
+		attackStyleToUse: GearStat.AttackStab,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged, GearStat.AttackMagic],
+		requiredQuests: [QuestID.WhileGuthixSleeps]
 	}
 ];

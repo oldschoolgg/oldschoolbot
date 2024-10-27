@@ -1,22 +1,24 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'discord.js';
-import { removeFromArr, Time, uniqueArr } from 'e';
+import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import type { ButtonInteraction, Interaction } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { getItemContractDetails, handInContract } from '../../mahoji/commands/ic';
 import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { repeatTameTrip } from '../../tasks/tames/tameTasks';
 import { modifyBusyCounter } from '../busyCounterCache';
-import { ClueTier } from '../clues/clueTiers';
+import type { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
-import { prisma } from '../settings/prisma';
+
+import { RateLimitManager } from '@sapphire/ratelimits';
+import { InteractionID } from '../InteractionID';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
 import { CACHED_ACTIVE_USER_IDS } from './cachedUserIDs';
 import { updateGiveawayMessage } from './giveaway';
@@ -25,6 +27,7 @@ import { interactionReply } from './interactionReply';
 import { logErrorForInteraction } from './logError';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
+import { tradePlayerItems } from './tradePlayerItems';
 
 const globalInteractionActions = [
 	'DO_BEGINNER_CLUE',
@@ -34,6 +37,7 @@ const globalInteractionActions = [
 	'DO_ELITE_CLUE',
 	'DO_MASTER_CLUE',
 	'DO_GRANDMASTER_CLUE',
+	'DO_ELDER_CLUE',
 	'OPEN_BEGINNER_CASKET',
 	'OPEN_EASY_CASKET',
 	'OPEN_MEDIUM_CASKET',
@@ -41,6 +45,7 @@ const globalInteractionActions = [
 	'OPEN_ELITE_CASKET',
 	'OPEN_MASTER_CASKET',
 	'OPEN_GRANDMASTER_CASKET',
+	'OPEN_ELDER_CASKET',
 	'DO_BIRDHOUSE_RUN',
 	'CLAIM_DAILY',
 	'CHECK_PATCHES',
@@ -61,10 +66,12 @@ const globalInteractionActions = [
 	'CHECK_TOA'
 ] as const;
 
-export type GlobalInteractionAction = (typeof globalInteractionActions)[number];
+type GlobalInteractionAction = (typeof globalInteractionActions)[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
+
+const buttonRatelimiter = new RateLimitManager(Time.Second * 2, 1);
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
@@ -232,20 +239,24 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
 }
 
-async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
-	if (user.minionIsBusy) return interactionReply(interaction, { content: 'Your minion is busy.' });
+async function repeatTripHandler(interaction: ButtonInteraction) {
+	if (minionIsBusy(interaction.user.id))
+		return interactionReply(interaction, { content: 'Your minion is busy.', ephemeral: true });
 	const trips = await fetchRepeatTrips(interaction.user.id);
-	if (trips.length === 0)
+	if (trips.length === 0) {
 		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
+	}
 	const id = interaction.customId;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
-	if (!matchingActivity) return repeatTrip(interaction, trips[0]);
+	if (!matchingActivity) {
+		return repeatTrip(interaction, trips[0]);
+	}
 	return repeatTrip(interaction, matchingActivity);
 }
 
 function icDonateValidation(user: MUser, donator: MUser) {
-	if (user.isIronman || donator.isIronman) {
+	if (user.isIronman) {
 		return 'Ironmen stand alone!';
 	}
 	if (user.id === donator.id) {
@@ -303,8 +314,7 @@ async function donateICHandler(interaction: ButtonInteraction) {
 
 	try {
 		modifyBusyCounter(donator.id, 1);
-		await donator.removeItemsFromBank(cost);
-		await user.addItemsToBank({ items: cost, collectionLog: false, filterLoot: false });
+		await tradePlayerItems(donator, user, cost);
 		await userStatsBankUpdate(donator.id, 'ic_donations_given_bank', cost);
 		await userStatsBankUpdate(user.id, 'ic_donations_received_bank', cost);
 
@@ -401,6 +411,15 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
+	const ignoredInteractionIDs = [
+		'CONFIRM',
+		'CANCEL',
+		'PARTY_JOIN',
+		...Object.values(InteractionID.PaginatedMessage),
+		...Object.values(InteractionID.Slayer)
+	];
+	if (ignoredInteractionIDs.includes(interaction.customId)) return;
+	if (['DYN_', 'LP_'].some(s => interaction.customId.startsWith(s))) return;
 
 	if (globalClient.isShuttingDown) {
 		return interactionReply(interaction, {
@@ -409,17 +428,22 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
-	debugLog(`Interaction hook for button [${interaction.customId}]`, {
-		user_id: interaction.user.id,
-		channel_id: interaction.channelId,
-		guild_id: interaction.guildId
-	});
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
+	const ratelimit = buttonRatelimiter.acquire(userID);
+	if (ratelimit.limited) {
+		return interactionReply(interaction, {
+			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(ratelimit.remainingTime, true)}.`,
+			ephemeral: true
+		});
+	}
+
+	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(interaction);
+
 	const user = await mUserFetch(userID);
+
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
-	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
@@ -446,18 +470,10 @@ export async function interactionHook(interaction: Interaction) {
 		continueDeltaMillis: null
 	};
 
-	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
-	if (cd !== null) {
-		return interactionReply(interaction, {
-			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
-			ephemeral: true
-		});
-	}
-
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
-		console.log(
+		debugLog(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
 				interaction.message.id
 			}]`
@@ -473,7 +489,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	async function doClue(tier: ClueTier['name']) {
-		runCommand({
+		return runCommand({
 			commandName: 'clue',
 			args: { tier },
 			bypassInhibitors: true,
@@ -482,7 +498,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	async function openCasket(tier: ClueTier['name']) {
-		runCommand({
+		return runCommand({
 			commandName: 'open',
 			args: {
 				name: tier,
@@ -637,7 +653,9 @@ export async function interactionHook(interaction: Interaction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
-			if (response) interactionReply(interaction, response);
+			if (response) {
+				return interactionReply(interaction, response);
+			}
 			return;
 		}
 		case 'FARMING_CONTRACT_EASIER': {
@@ -657,7 +675,7 @@ export async function interactionHook(interaction: Interaction) {
 				commandName: 'open',
 				args: {
 					name: 'Seed pack',
-					quantity: 1
+					quantity: user.bank.amount('Seed pack')
 				},
 				...options
 			});

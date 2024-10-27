@@ -1,7 +1,7 @@
 import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
 
-import resolveItems from './resolveItems';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
 const res = resolveItems;
 
@@ -28,12 +28,14 @@ export function determineRunes(user: MUser, runeBank: Bank): Bank {
 		.filter(notEmpty)
 		.map(i => i.item);
 
-	const bank = new Bank(runeBank.bank);
+	const bank = new Bank(runeBank);
 
 	for (const [itemSet, runes] of runeItems) {
 		if (itemSet.some(i => allWeaponsAndShields.includes(i))) {
 			for (const rune of runes) {
-				if (bank.has(rune)) bank.remove(rune, bank.amount(rune));
+				if (bank.has(rune)) {
+					bank.clear(rune);
+				}
 			}
 		}
 	}

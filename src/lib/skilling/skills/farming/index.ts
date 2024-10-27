@@ -4,7 +4,7 @@ import { Emoji } from '../../../constants';
 import getOSItem from '../../../util/getOSItem';
 import itemID from '../../../util/itemID';
 import resolveItems from '../../../util/resolveItems';
-import { Plant, SkillsEnum } from '../../types';
+import { type Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
 import { bushes } from './bushes';
 import fruitTrees from './fruitTrees';
@@ -59,8 +59,8 @@ export const CompostTiers = [
 for (const plant of plants) {
 	if (resolveItems(['Pumpkin']).includes(plant.id)) continue;
 	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);
-	for (const key of Object.keys(plant.inputItems.bank)) {
-		allFarmingItems.push(Number(key));
+	for (const [item] of plant.inputItems.items()) {
+		allFarmingItems.push(item.id);
 	}
 	if (plant.outputLogs) allFarmingItems.push(plant.outputLogs);
 	if (plant.outputRoots) allFarmingItems.push(plant.outputRoots);

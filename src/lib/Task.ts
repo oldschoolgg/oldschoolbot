@@ -1,7 +1,15 @@
-import { Activity, activity_type_enum } from '@prisma/client';
-import { z, ZodSchema } from 'zod';
+import type { Activity } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
+import type { ZodSchema } from 'zod';
+import { z } from 'zod';
 
-import { production } from '../config';
+import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
+import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
+import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
+import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
+import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
+import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
+import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { bossEventTask } from '../tasks/minions/bossEventActivity';
@@ -26,6 +34,7 @@ import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
 import { researchActivityTask } from '../tasks/minions/bso/researchActivity';
 import { scTask } from '../tasks/minions/bso/stealingCreationActivity';
 import { twTask } from '../tasks/minions/bso/tinkeringWorkshopActivity';
+import { turaelsTrialsTask } from '../tasks/minions/bso/turaelsTrialsActivity';
 import { vasaTask } from '../tasks/minions/bso/vasaMagusActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
 import { camdozaalFishingTask } from '../tasks/minions/camdozaalActivity/camdozaalFishingActivity';
@@ -34,6 +43,8 @@ import { camdozaalSmithingTask } from '../tasks/minions/camdozaalActivity/camdoz
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
+import { colosseumTask } from '../tasks/minions/colosseumActivity';
+import { combatRingTask } from '../tasks/minions/combatRingActivity';
 import { constructionTask } from '../tasks/minions/constructionActivity';
 import { cookingTask } from '../tasks/minions/cookingActivity';
 import { craftingTask } from '../tasks/minions/craftingActivity';
@@ -47,10 +58,6 @@ import { fletchingTask } from '../tasks/minions/fletchingActivity';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
-import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
-import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
-import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
-import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
 import { mageArenaTwoTask } from '../tasks/minions/mageArena2Activity';
 import { mageArenaTask } from '../tasks/minions/mageArenaActivity';
 import { agilityArenaTask } from '../tasks/minions/minigames/agilityArenaActivity';
@@ -89,10 +96,9 @@ import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
 import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
+import { myNotesTask } from '../tasks/minions/myNotesActivity';
+import ouraniaAltarTask from '../tasks/minions/ouraniaAltarActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
-import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
-import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
-import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
@@ -111,12 +117,13 @@ import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOf
 import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
-import { minionActivityCache } from './constants';
-import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
+import { globalConfig, minionActivityCache } from './constants';
+import { sql } from './postgres';
+import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
 
-export const tasks: MinionTask[] = [
+const tasks: MinionTask[] = [
 	aerialFishingTask,
 	birdHouseTask,
 	driftNetTask,
@@ -161,6 +168,7 @@ export const tasks: MinionTask[] = [
 	cookingTask,
 	craftingTask,
 	darkAltarTask,
+	ouraniaAltarTask,
 	enchantingTask,
 	farmingTask,
 	firemakingTask,
@@ -220,25 +228,22 @@ export const tasks: MinionTask[] = [
 	underwaterAgilityThievingTask,
 	doaTask,
 	strongholdTask,
+	combatRingTask,
 	specificQuestTask,
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
 	memoryHarvestTask,
-	guthixianCacheTask
+	guthixianCacheTask,
+	turaelsTrialsTask,
+	myNotesTask,
+	colosseumTask
 ];
 
 export async function processPendingActivities() {
-	const activities: Activity[] = await prisma.activity.findMany({
-		where: {
-			completed: false,
-			finish_date: production
-				? {
-						lt: new Date()
-				  }
-				: undefined
-		}
-	});
+	const activities: Activity[] = globalConfig.isProduction
+		? await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
+		: await sql`SELECT * FROM activity WHERE completed = false;`;
 
 	if (activities.length > 0) {
 		await prisma.activity.updateMany({
@@ -251,20 +256,17 @@ export async function processPendingActivities() {
 				completed: true
 			}
 		});
+		await Promise.all(activities.map(completeActivity));
 	}
-
-	await Promise.all(activities.map(completeActivity));
-	return activities;
 }
 
-export async function syncActivityCache() {
+export const syncActivityCache = async () => {
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
-
 	minionActivityCache.clear();
 	for (const task of tasks) {
 		activitySync(task);
 	}
-}
+};
 
 const ActivityTaskOptionsSchema = z.object({
 	userID: z.string(),
@@ -276,15 +278,16 @@ const ActivityTaskOptionsSchema = z.object({
 
 export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
-	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 
 	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
+		logError(new Error('Tried to complete an already completed task.'));
+		return;
 	}
 
 	const task = tasks.find(i => i.type === activity.type)!;
 	if (!task) {
-		throw new Error('Missing task');
+		logError(new Error('Missing task'));
+		return;
 	}
 
 	modifyBusyCounter(activity.userID, 1);
@@ -293,7 +296,7 @@ export async function completeActivity(_activity: Activity) {
 			const schema = ActivityTaskOptionsSchema.and(task.dataSchema);
 			const { success } = schema.safeParse(activity);
 			if (!success) {
-				console.error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`);
+				logError(new Error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`));
 			}
 		}
 		await task.run(activity);
@@ -302,7 +305,6 @@ export async function completeActivity(_activity: Activity) {
 	} finally {
 		modifyBusyCounter(activity.userID, -1);
 		minionActivityCacheDelete(activity.userID);
-		debugLog(`Finished completing activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 	}
 }
 

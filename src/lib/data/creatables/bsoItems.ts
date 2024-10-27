@@ -7,14 +7,14 @@ import { MaterialBank } from '../../invention/MaterialBank';
 import { nexBrokenArmorDetails } from '../../nex';
 import Skillcapes from '../../skilling/skillcapes';
 import { bones } from '../../skilling/skills/prayer';
-import { Bone } from '../../skilling/types';
+import type { Bone } from '../../skilling/types';
 import { seaMonkeyStaves } from '../../tames';
 import { assert, resolveNameBank, stringMatches } from '../../util';
 import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '../CollectionsExport';
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 import { divinationCreatables } from './divinationCreatables';
 import { ghostCreatables } from './ghostweaveCreatables';
 import { slayerMaskCreatables } from './slayerMasks';
@@ -24,8 +24,8 @@ for (const { baseItem, dyedVersions } of dyedItems) {
 	for (const dyedVersion of dyedVersions) {
 		dyeCreatables.push({
 			name: dyedVersion.item.name,
-			inputItems: new Bank().add(baseItem.id).add(dyedVersion.dye.id).bank,
-			outputItems: new Bank().add(dyedVersion.item.id).bank
+			inputItems: new Bank().add(baseItem.id).add(dyedVersion.dye.id).toJSON(),
+			outputItems: new Bank().add(dyedVersion.item.id).toJSON()
 		});
 	}
 }
@@ -75,7 +75,7 @@ const nexCreatables: Createable[] = [
 		name: `Revert ${getOSItem(piece).name}`,
 		inputItems: new Bank().add(piece),
 		outputItems: {
-			[itemID('Armadylean components')]: 1
+			[itemID('Pernix components')]: 1
 		},
 		forceAddToCl: true
 	})),
@@ -260,7 +260,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix fire cape',
 		inputItems: {
-			20_445: 1
+			20445: 1
 		},
 		outputItems: {
 			[itemID('Fire cape')]: 1
@@ -270,7 +270,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix fire max cape',
 		inputItems: {
-			20_447: 1
+			20447: 1
 		},
 		outputItems: {
 			[itemID('Fire max cape')]: 1
@@ -281,7 +281,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix infernal cape',
 		inputItems: {
-			21_287: 1
+			21287: 1
 		},
 		outputItems: {
 			[itemID('Infernal cape')]: 1
@@ -292,7 +292,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix infernal max cape',
 		inputItems: {
-			21_289: 1
+			21289: 1
 		},
 		outputItems: {
 			[itemID('Infernal max cape')]: 1
@@ -303,7 +303,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix assembler max cape',
 		inputItems: {
-			21_916: 1
+			21916: 1
 		},
 		outputItems: {
 			[itemID('Assembler max cape')]: 1
@@ -314,7 +314,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued saradomin cape',
 		inputItems: {
-			24_236: 1
+			24236: 1
 		},
 		outputItems: {
 			[itemID('Imbued saradomin cape')]: 1
@@ -325,7 +325,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued saradomin max cape',
 		inputItems: {
-			24_238: 1
+			24238: 1
 		},
 		outputItems: {
 			[itemID('Imbued saradomin max cape')]: 1
@@ -336,7 +336,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued guthix cape',
 		inputItems: {
-			24_240: 1
+			24240: 1
 		},
 		outputItems: {
 			[itemID('Imbued guthix cape')]: 1
@@ -347,7 +347,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued guthix max cape',
 		inputItems: {
-			24_242: 1
+			24242: 1
 		},
 		outputItems: {
 			[itemID('Imbued guthix max cape')]: 1
@@ -358,7 +358,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued zamorak cape',
 		inputItems: {
-			24_244: 1
+			24244: 1
 		},
 		outputItems: {
 			[itemID('Imbued zamorak cape')]: 1
@@ -369,7 +369,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued zamorak max cape',
 		inputItems: {
-			24_246: 1
+			24246: 1
 		},
 		outputItems: {
 			[itemID('Imbued zamorak max cape')]: 1
@@ -380,7 +380,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix dragon defender',
 		inputItems: {
-			20_463: 1
+			20463: 1
 		},
 		outputItems: {
 			[itemID('Dragon defender')]: 1
@@ -391,7 +391,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix avernic defender',
 		inputItems: {
-			22_441: 1
+			22441: 1
 		},
 		outputItems: {
 			[itemID('Avernic defender')]: 1
@@ -402,7 +402,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void knight top',
 		inputItems: {
-			20_465: 1
+			20465: 1
 		},
 		outputItems: {
 			[itemID('Void knight top')]: 1
@@ -413,7 +413,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void knight robe',
 		inputItems: {
-			20_469: 1
+			20469: 1
 		},
 		outputItems: {
 			[itemID('Void knight robe')]: 1
@@ -424,7 +424,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix elite void top',
 		inputItems: {
-			20_467: 1
+			20467: 1
 		},
 		outputItems: {
 			[itemID('Elite void top')]: 1
@@ -435,7 +435,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix elite void robe',
 		inputItems: {
-			20_471: 1
+			20471: 1
 		},
 		outputItems: {
 			[itemID('Elite void robe')]: 1
@@ -446,7 +446,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void knight gloves',
 		inputItems: {
-			20_475: 1
+			20475: 1
 		},
 		outputItems: {
 			[itemID('Void knight gloves')]: 1
@@ -457,7 +457,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void mage helm',
 		inputItems: {
-			20_477: 1
+			20477: 1
 		},
 		outputItems: {
 			[itemID('Void mage helm')]: 1
@@ -468,7 +468,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void ranger helm',
 		inputItems: {
-			20_479: 1
+			20479: 1
 		},
 		outputItems: {
 			[itemID('Void ranger helm')]: 1
@@ -479,7 +479,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void melee helm',
 		inputItems: {
-			20_481: 1
+			20481: 1
 		},
 		outputItems: {
 			[itemID('Void melee helm')]: 1
@@ -1192,22 +1192,7 @@ const dragonBoneCreatables: Createable[] = [
 	}
 ];
 
-const divineWaterBones = [
-	'Bones',
-	'Big bones',
-	'Babydragon bones',
-	'Dragon bones',
-	'Wyrm bones',
-	'Wyvern bones',
-	'Drake bones',
-	'Lava dragon bones',
-	'Hydra bones',
-	'Dagannoth bones',
-	'Superior dragon bones',
-	'Abyssal dragon bones',
-	'Frost dragon bones',
-	'Royal dragon bones'
-];
+const divineWaterBones = bones.map(bone => bone.name);
 
 function divineWaterInputItems(user: MUser, preferredBone?: Bone) {
 	const userBank = user.bank;
@@ -1344,6 +1329,7 @@ export const BsoCreateables: Createable[] = [
 	{
 		name: 'Revert completionist cape',
 		outputItems: user => {
+			// check compCapeCreatableBank in skillcapes.ts to ensure all capes are being refunded
 			const refundBank = new Bank();
 			for (const { masterCape } of Skillcapes) {
 				if (user.cl.has(masterCape.id)) {
@@ -1351,7 +1337,7 @@ export const BsoCreateables: Createable[] = [
 				}
 			}
 			refundBank.add('Master quest cape');
-			refundBank.add('Achievement diary cape(t)');
+			refundBank.add('Achievement diary cape (t)');
 			refundBank.add('Music cape (t)');
 			return refundBank;
 		},
@@ -1365,8 +1351,68 @@ export const BsoCreateables: Createable[] = [
 		noCl: true
 	},
 	...ghostCreatables,
-	...divinationCreatables
+	...divinationCreatables,
+	{
+		name: 'Sundial scimitar',
+		inputItems: new Bank().add('Solite', 7500).add('Atomic energy', 30_000).add('Dragon scimitar'),
+		outputItems: new Bank().add('Sundial scimitar')
+	},
+	{
+		name: 'Offhand spidergore rapier',
+		inputItems: new Bank().add('Offhand drygore rapier').add('Spiders leg bottom'),
+		outputItems: new Bank().add('Offhand spidergore rapier')
+	},
+	{
+		name: 'Lumina (Materials)',
+		inputItems: new Bank().add('Elder rune', 30),
+		outputItems: new Bank().add('Lumina'),
+		materialCost: new MaterialBank({
+			wooden: 15
+		})
+	},
+	{
+		name: 'Clue scroll (elder)',
+		inputItems: new Bank().add('Elder scroll piece', 3),
+		outputItems: new Bank().add('Clue scroll (elder)')
+	},
+	{
+		name: 'Tidal collector (i)',
+		inputItems: new Bank()
+			.add('Masori components', 4)
+			.add("Blessed dizana's quiver", 5)
+			.add('Tidal collector')
+			.add('Armadylean components', 10)
+			.add('Pernix components', 3),
+		outputItems: new Bank().add('Tidal collector (i)')
+	}
 ];
+
+const potionOfLightLogs = [
+	{
+		item: getOSItem('Elder logs'),
+		qty: 5
+	},
+	{
+		item: getOSItem('Redwood logs'),
+		qty: 10
+	},
+	{
+		item: getOSItem('Magic logs'),
+		qty: 30
+	},
+	{
+		item: getOSItem('Yew logs'),
+		qty: 50
+	}
+];
+
+for (const { item, qty } of potionOfLightLogs) {
+	BsoCreateables.push({
+		name: `Lumina (${item.name})`,
+		inputItems: new Bank().add('Elder rune', 30).add(item, qty),
+		outputItems: new Bank().add('Lumina')
+	});
+}
 
 for (const { cape, skills } of expertCapesSource) {
 	const capeBank = new Bank().add(cape.id).freeze();

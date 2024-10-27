@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import itemID from '../../../util/itemID';
-import { Plant } from '../../types';
+import type { Plant } from '../../types';
 
 const trees: Plant[] = [
 	{
@@ -233,7 +233,8 @@ const trees: Plant[] = [
 		additionalPatchesByFarmLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10,
-		additionalPatchesByFarmGuildAndLvl: []
+		additionalPatchesByFarmGuildAndLvl: [],
+		noArcaneHarvester: true
 	}
 ];
 

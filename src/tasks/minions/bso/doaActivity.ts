@@ -1,63 +1,24 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
+import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
+import { DOANonUniqueTable } from '../../../lib/bso/doa/doaLootTable';
 import { Emoji, Events } from '../../../lib/constants';
 import { doaCL, doaMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
-import { chanceOfDOAUnique, DOARooms, pickUniqueToGiveUser } from '../../../lib/depthsOfAtlantis';
+import { DOARooms, chanceOfDOAUnique, pickUniqueToGiveUser } from '../../../lib/depthsOfAtlantis';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { DragonTable } from '../../../lib/simulation/grandmasterClue';
-import { runeAlchablesTable, StoneSpiritTable } from '../../../lib/simulation/sharedTables';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { DOAOptions } from '../../../lib/types/minions';
+import type { DOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
-
-const DragonFletchingTable = new LootTable()
-	.add('Dragon arrowtips', [10, 20])
-	.add('Dragon dart tip', [10, 20])
-	.add('Dragon javelin heads', [10, 20]);
-
-const RareGemRockTable = new LootTable()
-	.add('Uncut sapphire', 1, 9)
-	.add('Uncut emerald', 1, 5)
-	.add('Uncut ruby', 1, 5)
-	.add('Uncut diamond', 1, 4);
-
-const RareOreTable = new LootTable()
-	.add('Mithril ore', [10, 70], 55)
-	.add('Adamantite ore', [15, 50], 55)
-	.add('Runite ore', [1, 20], 45)
-	.add('Amethyst', [1, 15], 45);
-
-const BaseNonUniqueTable = new LootTable()
-	.add(RareGemRockTable, [80, 120], undefined, { multiply: true })
-	.add(DragonFletchingTable, [15, 20], undefined, { multiply: true })
-	.add(runeAlchablesTable, [25, 30], undefined, { multiply: true })
-	.add(RareOreTable, [11, 15], undefined, { multiply: true })
-	.add(DragonTable, [11, 18], undefined, { multiply: true })
-	.add(StoneSpiritTable, [30, 60], undefined, { multiply: true });
-
-const DOAClueTable = new LootTable()
-	.add('Clue scroll (medium)', 1, 5)
-	.add('Clue scroll (hard)', 1, 4)
-	.add('Clue scroll (elite)', 1, 3)
-	.add('Clue scroll (master)', 1, 2)
-	.add('Clue scroll (grandmaster)', 1, 2);
-
-export const DOANonUniqueTable = new LootTable()
-	.tertiary(100, 'Oceanic dye')
-	.oneIn(40, 'Shark tooth')
-	.every(DOAClueTable, 2, { multiply: true })
-	.every(BaseNonUniqueTable, 3, { multiply: true });
 
 async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	let rangeXP = 10_000 * qty;
@@ -77,8 +38,8 @@ async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	results.push(
 		user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'DepthsOfAtlantis' })
 	);
-	let [, , styles] = resolveAttackStyles(user, {
-		monsterID: -1
+	let styles = resolveAttackStyles({
+		attackStyles: user.getAttackStyles()
 	});
 	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
 		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
@@ -121,21 +82,20 @@ export const doaTask: MinionTask = {
 		}
 		// Increment all users attempts
 		await Promise.all(
-			allUsers.map(i =>
+			allUsers.map(async u => {
+				const stats = await u.fetchStats({ doa_room_attempts_bank: true });
+				const currentKCBank = new Bank(stats.doa_room_attempts_bank as ItemBank);
 				userStatsUpdate(
-					i.id,
-					u => {
-						const currentKCBank = new Bank(u.doa_room_attempts_bank as ItemBank);
-						return {
-							doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).bank,
-							doa_attempts: {
-								increment: quantity
-							}
-						};
+					u.id,
+					{
+						doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).toJSON(),
+						doa_attempts: {
+							increment: quantity
+						}
 					},
 					{}
-				)
-			)
+				);
+			})
 		);
 
 		if (raids.every(i => i.wipedRoom !== null)) {
@@ -212,12 +172,12 @@ export const doaTask: MinionTask = {
 		let resultMessage = isSolo
 			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`}${
 					cm ? ' Challenge Mode' : ''
-			  } Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${
+				} Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${
 					minigameIncrementResult[0].newScore
-			  }.\n`
+				}.\n`
 			: `<@${leader}> Your${cm ? ' Challenge Mode' : ''} Depths of Atlantis Raid${
 					quantity > 1 ? 's have' : ' has'
-			  } finished.\n`;
+				} finished.\n`;
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
@@ -231,15 +191,14 @@ export const doaTask: MinionTask = {
 					collectionLog: true
 				});
 
+				const stats = await user.fetchStats({ doa_loot: true });
 				await userStatsUpdate(
 					user.id,
-					u => {
-						return {
-							doa_total_minutes_raided: {
-								increment: Math.floor(duration / Time.Minute)
-							},
-							doa_loot: new Bank(u.doa_loot as ItemBank).add(totalLoot.get(userID)).bank
-						};
+					{
+						doa_total_minutes_raided: {
+							increment: Math.floor(duration / Time.Minute)
+						},
+						doa_loot: new Bank(stats.doa_loot as ItemBank).add(totalLoot.get(userID)).toJSON()
 					},
 					{}
 				);
@@ -249,7 +208,7 @@ export const doaTask: MinionTask = {
 				const isPurple = items.some(([item]) => doaCL.includes(item.id));
 				const announcedItems = resolveItems(['Shark jaw', 'Oceanic relic', 'Aquifer aegis', 'Crush']);
 				if (items.some(([item]) => announcedItems.includes(item.id))) {
-					const itemsToAnnounce = itemsAdded.filter(item => doaCL.includes(item.id), false);
+					const itemsToAnnounce = itemsAdded.filter(item => doaCL.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
 						`${Emoji.Purple} ${
@@ -310,7 +269,7 @@ export const doaTask: MinionTask = {
 								}
 							],
 							type: 'Depths of Atlantis'
-					  })
+						})
 					: undefined,
 				data,
 				null
@@ -330,7 +289,7 @@ export const doaTask: MinionTask = {
 							customTexts: []
 						})),
 						type: 'Depths of Atlantis'
-				  })
+					})
 				: undefined,
 			data,
 			null

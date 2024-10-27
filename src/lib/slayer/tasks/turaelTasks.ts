@@ -1,7 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
 import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { AssignableSlayerTask } from '../types';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
+import type { AssignableSlayerTask } from '../types';
 
 export const turaelTasks: AssignableSlayerTask[] = [
 	{
@@ -234,7 +235,9 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.GiantCryptSpider.id,
 			Monsters.Sarachnis.id,
 			Monsters.TempleSpider.id,
-			Monsters.Venenatis.id
+			Monsters.Venenatis.id,
+			BSOMonsters.Venatrix.id,
+			Monsters.Araxxor.id
 		],
 		unlocked: true
 	},

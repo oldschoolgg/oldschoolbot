@@ -1,12 +1,15 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank } from 'oldschooljs';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';
+import { marketPriceOfBank } from '../../lib/marketPrices';
+import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 function determineLimit(user: MUser) {
 	const perkTier = user.perkTier();
@@ -56,17 +59,23 @@ export const casketCommand: OSBMahojiCommand = {
 
 		await deferInteraction(interaction);
 
-		const [loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
+		const [_loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
+		const loot = new Bank(_loot);
 
-		if (Object.keys(loot.bank).length === 0) return `${title} and got nothing :(`;
+		if (loot.length === 0) return `${title} and got nothing :(`;
 
 		const image = await makeBankImage({
-			bank: new Bank(loot.bank),
+			bank: loot,
 			title,
 			user
 		});
 
 		return {
+			content: `You opened ${options.quantity} ${clueTier.name} caskets.
+**Bot Value:** ${toKMB(loot.value())} (Average of ${toKMB(loot.value() / options.quantity)} per casket)
+**Market Value:** ${toKMB(marketPriceOfBank(loot))} (Average of ${toKMB(marketPriceOfBank(loot) / options.quantity)} per casket)
+**Droprates:** ${calcDropRatesFromBankWithoutUniques(loot, options.quantity).slice(0, 20).join(', ')}`,
+
 			files: [image.file]
 		};
 	}

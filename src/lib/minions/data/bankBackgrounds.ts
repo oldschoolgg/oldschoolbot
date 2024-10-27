@@ -1,8 +1,8 @@
-import { StoreBitfield } from '@oldschoolgg/toolkit';
+import { StoreBitfield } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PerkTier } from '../../constants';
-import { BankBackground } from '../types';
+import type { BankBackground } from '../types';
 
 const backgroundImages: BankBackground[] = [
 	{
@@ -491,6 +491,13 @@ const backgroundImages: BankBackground[] = [
 			'Ignecarus dragonclaw': 1
 		}),
 		gpCost: 500_000_000,
+		perkTierNeeded: PerkTier.Four
+	},
+	{
+		id: 508,
+		name: 'Maledict Mortimer',
+		image: null,
+		available: true,
 		perkTierNeeded: PerkTier.Four
 	},
 	{

@@ -1,9 +1,9 @@
 import { clamp, objectValues } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { Skills } from '../../../lib/types';
+import type { ItemBank, Skills } from '../../../lib/types';
 import { assert, isValidSkill, itemID } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -89,6 +89,40 @@ export const XPLamps: IXPLamp[] = [
 		minimumLevel: 1
 	},
 	{
+		itemID: 28_587,
+		amount: 30_000,
+		name: 'Magic lamp (strength)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Strength]
+	},
+	{
+		itemID: 28_588,
+		amount: 20_000,
+		name: 'Magic lamp (slayer)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Slayer]
+	},
+	{
+		itemID: 28_589,
+		amount: 5000,
+		name: 'Magic lamp (thieving)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Thieving]
+	},
+	{
+		itemID: 28_590,
+		amount: 500,
+		name: 'Magic lamp (magic)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Magic]
+	},
+	{
+		itemID: 28_820,
+		amount: 5000,
+		name: 'Antique lamp (defender of varrock)',
+		minimumLevel: 1
+	},
+	{
 		itemID: itemID('Antique lamp (easy ca)'),
 		amount: 5000,
 		name: 'Antique lamp (easy ca)',
@@ -146,6 +180,13 @@ export const Lampables: IXPObject[] = [
 				skills[skill] =
 					data.user.skillLevel(skill) *
 					([
+						SkillsEnum.Attack,
+						SkillsEnum.Strength,
+						SkillsEnum.Defence,
+						SkillsEnum.Magic,
+						SkillsEnum.Ranged,
+						SkillsEnum.Hitpoints,
+						SkillsEnum.Prayer,
 						SkillsEnum.Mining,
 						SkillsEnum.Woodcutting,
 						SkillsEnum.Herblore,
@@ -208,7 +249,7 @@ export const Lampables: IXPObject[] = [
 					continue;
 				}
 				skills[skill] =
-					data.user.skillLevel(skill) * ([SkillsEnum.Magic].includes(skill) ? 11 : 4) * data.quantity;
+					data.user.skillLevel(skill) * ([SkillsEnum.Magic].includes(skill) ? 15 : 5) * data.quantity;
 			}
 			return [skills, undefined];
 		}
@@ -226,6 +267,44 @@ export const Lampables: IXPObject[] = [
 				skills[skill] =
 					Math.round(Number(Math.pow(data.user.skillLevel(skill), 2)) / 4 + 7 * data.user.skillLevel(skill)) *
 					data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
+	{
+		items: resolveItems(["Duradel's Notes"]),
+		function: data => {
+			const skills: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				if (![SkillsEnum.Slayer].includes(skill)) {
+					continue;
+				}
+				skills[skill] = data.user.skillLevel(skill) * 15 * data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
+	{
+		items: resolveItems(['Antique lamp (Historian Aldo)']),
+		function: data => {
+			const skills: Skills = {};
+
+			for (const skill of objectValues(SkillsEnum)) {
+				if (
+					![
+						SkillsEnum.Attack,
+						SkillsEnum.Strength,
+						SkillsEnum.Defence,
+						SkillsEnum.Hitpoints,
+						SkillsEnum.Ranged,
+						SkillsEnum.Magic,
+						SkillsEnum.Prayer
+					].includes(skill)
+				) {
+					continue;
+				}
+
+				skills[skill] = (skill === SkillsEnum.Prayer ? 3500 : 5000) * data.quantity;
 			}
 			return [skills, undefined];
 		}
@@ -269,18 +348,16 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 		]!}** in ${skill} to receive it.`;
 	}
 
-	let amount = skillsToReceive[skill]!;
+	const amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
-	userStatsUpdate(user.id, u => {
-		let newLampedXp = {
-			...(u.lamped_xp as ItemBank)
-		};
-		if (!newLampedXp[skill]) newLampedXp[skill] = amount;
-		else newLampedXp[skill] += amount;
-
-		return {
-			lamped_xp: newLampedXp
-		};
+	const stats = await user.fetchStats({ lamped_xp: true });
+	const newLampedXp = {
+		...(stats.lamped_xp as ItemBank)
+	};
+	if (!newLampedXp[skill]) newLampedXp[skill] = amount;
+	else newLampedXp[skill] += amount;
+	userStatsUpdate(user.id, {
+		lamped_xp: newLampedXp
 	});
 
 	await user.removeItemsFromBank(toRemoveFromBank);

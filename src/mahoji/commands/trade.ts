@@ -1,18 +1,19 @@
-import { discrimName, mentionCommand, truncateString } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import { discrimName, mentionCommand, truncateString } from '@oldschoolgg/toolkit/util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
 export const tradeCommand: OSBMahojiCommand = {
@@ -92,7 +93,7 @@ export const tradeCommand: OSBMahojiCommand = {
 						filters: [options.filter],
 						search: options.search,
 						noDuplicateItems: true
-				  }).filter(i => itemIsTradeable(i.id, true));
+					}).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
@@ -138,8 +139,8 @@ Both parties must click confirm to make the trade.`,
 				guild_id: BigInt(guildID),
 				sender: BigInt(senderUser.id),
 				recipient: BigInt(recipientUser.id),
-				items_sent: itemsSent.bank,
-				items_received: itemsReceived.bank,
+				items_sent: itemsSent.toJSON(),
+				items_received: itemsReceived.toJSON(),
 				type: 'trade'
 			}
 		});

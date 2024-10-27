@@ -1,9 +1,9 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
-import { Ore, SkillsEnum } from '../types';
+import { type Ore, SkillsEnum } from '../types';
 
 export const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)

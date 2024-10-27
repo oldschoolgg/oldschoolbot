@@ -1,9 +1,9 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
 
-export interface Offerable {
+interface Offerable {
 	name: string;
 	itemID: number;
 	offerWhere: string;
@@ -13,7 +13,7 @@ export interface Offerable {
 	uniques?: number[];
 }
 
-export const UnsiredLootTable = new LootTable()
+const UnsiredLootTable = new LootTable()
 	.add('Abyssal head', 1, 10)
 	.add('Abyssal orphan', 1, 5)
 	.add('Abyssal dagger', 1, 26)

@@ -1,11 +1,11 @@
-import { Giveaway } from '@prisma/client';
-import { MessageEditOptions, time, userMention } from 'discord.js';
-import { debounce, noOp, randArrItem, Time } from 'e';
+import type { Giveaway } from '@prisma/client';
+import { type MessageEditOptions, time, userMention } from 'discord.js';
+import { Time, debounce, noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../constants';
-import { prisma } from '../settings/prisma';
+
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
 import { sendToChannelID } from './webhook';
@@ -16,7 +16,7 @@ async function refundGiveaway(creator: MUser, loot: Bank) {
 		itemsToAdd: loot
 	});
 	const user = await globalClient.fetchUser(creator.id);
-	debugLog('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.bank });
+	debugLog('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
 	user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
 }
 
@@ -90,7 +90,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 				guild_id: undefined,
 				sender: BigInt(creator.id),
 				recipient: BigInt(winner.id),
-				items_sent: loot.bank,
+				items_sent: loot.toJSON(),
 				items_received: undefined,
 				type: 'giveaway'
 			}

@@ -1,11 +1,10 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder } from 'discord.js';
-import { CommandRunOptions } from 'mahoji';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { secretItems } from '../../lib/constants';
 import { getItem } from '../../lib/util/getOSItem';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { sellPriceOfItem } from './sell';
 
 export const priceCommand: OSBMahojiCommand = {
@@ -20,7 +19,7 @@ export const priceCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options }: CommandRunOptions<{ item: string }>) => {
 		const item = getItem(options.item);
-		if (!item || secretItems.includes(item.id)) return "Couldn't find that item.";
+		if (!item || item.customItemData?.isSecret) return "Couldn't find that item.";
 
 		const { basePrice: priceOfItem } = sellPriceOfItem(item);
 

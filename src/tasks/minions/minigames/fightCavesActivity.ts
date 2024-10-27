@@ -4,10 +4,12 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { prisma } from '../../../lib/settings/prisma';
+
+import { userhasDiaryTier } from '../../../lib/diaries';
+import { DiaryID } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
+import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -36,15 +38,15 @@ export const fightCavesTask: MinionTask = {
 			{ fight_caves_attempts: true }
 		);
 
-		const attemptsStr = `You have tried Fight caves ${newFightCavesAttempts}x times.`;
+		const attemptsStr = `You have tried Fight caves ${newFightCavesAttempts}x times`;
 
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
-			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 		if (preJadDeathTime) {
 			let slayerMsg = '';
@@ -53,7 +55,7 @@ export const fightCavesTask: MinionTask = {
 
 				await prisma.slayerTask.update({
 					where: {
-						id: usersTask.currentTask!.id
+						id: usersTask.currentTask?.id
 					},
 					data: {
 						quantity_remaining: 0,
@@ -82,7 +84,7 @@ export const fightCavesTask: MinionTask = {
 					preJadDeathTime
 				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
 				await chatHeadImage({
-					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
+					content: `You die before you even reach TzTok-Jad... At least you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
 				}),
 				data,
@@ -104,7 +106,7 @@ export const fightCavesTask: MinionTask = {
 
 				await prisma.slayerTask.update({
 					where: {
-						id: usersTask.currentTask!.id
+						id: usersTask.currentTask?.id
 					},
 					data: {
 						quantity_remaining: 0,
@@ -118,7 +120,7 @@ export const fightCavesTask: MinionTask = {
 				channelID,
 				`${user} ${msg}`,
 				await chatHeadImage({
-					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
+					content: `TzTok-Jad stomp you to death... Nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
 				}),
 				data,
@@ -158,8 +160,8 @@ export const fightCavesTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration });
-		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration });
+		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration, minimal: true });
+		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration, minimal: true });
 
 		let msg = `${rangeXP}. ${hpXP}.`;
 		if (isOnTask) {
@@ -175,7 +177,11 @@ export const fightCavesTask: MinionTask = {
 
 			// 25,250 for Jad + 11,760 for waves.
 			const slayerXP = 37_010;
-			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
+			const points = await calculateSlayerPoints(
+				currentStreak,
+				usersTask.slayerMaster!,
+				(await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+			);
 
 			const secondNewUser = await user.update({
 				slayer_points: {
@@ -185,14 +191,20 @@ export const fightCavesTask: MinionTask = {
 
 			await prisma.slayerTask.update({
 				where: {
-					id: usersTask.currentTask!.id
+					id: usersTask.currentTask?.id
 				},
 				data: {
 					quantity_remaining: 0
 				}
 			});
 
-			const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
+			const slayXP = await user.addXP({
+				skillName: SkillsEnum.Slayer,
+				amount: slayerXP,
+				duration,
+				minimal: true
+			});
+
 			const xpMessage = `${msg} ${slayXP}`;
 
 			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;

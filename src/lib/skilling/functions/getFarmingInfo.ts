@@ -1,12 +1,13 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { User } from '@prisma/client';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { User } from '@prisma/client';
 import { Time } from 'e';
 
 import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { defaultPatches } from '../../minions/farming';
-import { IPatchData, IPatchDataDetailed } from '../../minions/farming/types';
+import type { IPatchData, IPatchDataDetailed } from '../../minions/farming/types';
 import { assert, formatDuration } from '../../util';
-import { farmingKeys, FarmingPatchName, farmingPatchNames, findPlant } from '../../util/farmingHelpers';
+import type { FarmingPatchName } from '../../util/farmingHelpers';
+import { farmingKeys, farmingPatchNames, findPlant } from '../../util/farmingHelpers';
 
 export function getFarmingInfoFromUser(user: User) {
 	const patches: Record<FarmingPatchName, IPatchData> = {} as Record<FarmingPatchName, IPatchData>;
@@ -62,7 +63,7 @@ export function getFarmingInfoFromUser(user: User) {
 }
 
 export async function getFarmingInfo(userID: string) {
-	let keys: Partial<Record<keyof User, true>> = {};
+	const keys: Partial<Record<keyof User, true>> = {};
 	for (const key of farmingKeys) keys[key] = true;
 	const userData = await mahojiUsersSettingsFetch(userID, keys);
 	return getFarmingInfoFromUser(userData as User);

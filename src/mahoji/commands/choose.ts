@@ -1,8 +1,9 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { inlineCode } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const chooseCommand: OSBMahojiCommand = {
 	name: 'choose',

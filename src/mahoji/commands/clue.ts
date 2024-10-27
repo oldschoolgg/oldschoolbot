@@ -1,18 +1,20 @@
-import { clamp, randInt, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, clamp, increaseNumByPercent, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
+import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
 import { getPOHObject } from '../../lib/poh';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { calcClueScores, formatDuration, isWeekend, stringMatches } from '../../lib/util';
+import type { ClueActivityTaskOptions } from '../../lib/types/minions';
+import { calcClueScores } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { checkElderClueRequirements } from '../../lib/util/elderClueRequirements';
 import getOSItem from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
@@ -64,7 +66,6 @@ export const clueCommand: OSBMahojiCommand = {
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
 		requiresMinion: true,
-		requiresMinionNotBusy: true,
 		examples: ['/clue tier:easy']
 	},
 	options: [
@@ -75,7 +76,10 @@ export const clueCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (_, user) => {
 				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
-				return ClueTiers.map(i => ({ name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`, value: i.name }));
+				return ClueTiers.map(i => ({
+					name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`,
+					value: i.name as string
+				})).concat([{ name: 'Elder (Info)', value: 'Elder (Info)' }]);
 			}
 		},
 		{
@@ -88,6 +92,19 @@ export const clueCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
+		if (options.tier === 'Elder (Info)') {
+			const reqs = await checkElderClueRequirements(user);
+			if (reqs.unmetRequirements.length > 0) {
+				return `You do not have the requirements to do Elder clues.
+
+${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
+			}
+			return 'You meet all the requirements to do Elder clues.';
+		}
+
+		if (user.minionIsBusy) {
+			return 'Your minion is busy.';
+		}
 
 		const clueTier = ClueTiers.find(
 			tier => stringMatches(tier.id.toString(), options.tier) || stringMatches(tier.name, options.tier)
@@ -110,10 +127,23 @@ export const clueCommand: OSBMahojiCommand = {
 				}
 			}
 		}
+		if (clueTier.name === 'Elder') {
+			const result = await checkElderClueRequirements(user);
+			if (result.unmetRequirements.length > 0) {
+				return `You don't have the requirements to do Elder clues: ${result.unmetRequirements.join(', ')}`;
+			}
+		}
 
-		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
+		let maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
 		const boosts = [];
+
+		if (user.hasEquippedOrInBank('Clue bag')) {
+			const boostPercent = 20;
+			maxTripLength = increaseNumByPercent(maxTripLength, boostPercent);
+			boosts.push(`${boostPercent}% longer trip length for Clue bag`);
+		}
+
 		const stats = await user.fetchStats({ openable_scores: true });
 
 		let [timeToFinish, percentReduced] = reducedClueTime(
@@ -304,7 +334,8 @@ export const clueCommand: OSBMahojiCommand = {
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				}
-			]
+			],
+			Elder: []
 		};
 
 		const clueTierName = clueTier.name;
@@ -347,10 +378,10 @@ export const clueCommand: OSBMahojiCommand = {
 		duration += (randomAddedDuration * duration) / 100;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
-			clueID: clueTier.id,
+			ci: clueTier.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			quantity,
+			q: quantity,
 			duration,
 			type: 'ClueCompletion'
 		});

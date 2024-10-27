@@ -1,6 +1,7 @@
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
-import { Ash, Bone, SkillsEnum } from '../types';
+import type { Ash, Bone } from '../types';
+import { SkillsEnum } from '../types';
 
 export const bones: Bone[] = [
 	{
@@ -173,6 +174,12 @@ export const ashes: Ash[] = [
 		level: 1,
 		xp: 110,
 		inputId: itemID('Infernal ashes')
+	},
+	{
+		name: 'Nightmarish ashes',
+		level: 1,
+		xp: 965,
+		inputId: itemID('Nightmarish ashes')
 	}
 ];
 

@@ -1,26 +1,21 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
-import { isObject, Time, uniqueArr } from 'e';
+import { Time, isObject, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events, toaPurpleItems } from '../../../lib/constants';
 import { toaCL } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import {
-	calcTOALoot,
-	calculateXPFromRaid,
-	normalizeTOAUsers,
-	toaOrnamentKits,
-	toaPetTransmogItems
-} from '../../../lib/simulation/toa';
-import { TOAOptions } from '../../../lib/types/minions';
+import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '../../../lib/simulation/toa';
+import type { TOAOptions } from '../../../lib/types/minions';
+import { normalizeTOAUsers } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -130,12 +125,12 @@ export const toaTask: MinionTask = {
 		let resultMessage = isSolo
 			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`} Tombs of Amascut raid${
 					quantity > 1 ? 's' : ''
-			  }! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
+				}! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
 			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
-		for (let [userID, userData] of raidResults.entries()) {
+		for (const [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;
 			if (!chincannonUser) {
 				await userStatsUpdate(
@@ -158,7 +153,7 @@ export const toaTask: MinionTask = {
 				}
 			}
 
-			let str: string = 'Nothing';
+			let str = 'Nothing';
 			if (!chincannonUser) {
 				const { itemsAdded } = await transactItems({
 					userID,
@@ -172,7 +167,7 @@ export const toaTask: MinionTask = {
 				if (
 					items.some(([item]) => toaPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))
 				) {
-					const itemsToAnnounce = itemsAdded.filter(item => toaPurpleItems.includes(item.id), false);
+					const itemsToAnnounce = itemsAdded.filter(item => toaPurpleItems.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
 						`${Emoji.Purple} ${
@@ -185,23 +180,19 @@ export const toaTask: MinionTask = {
 				str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
 			}
 
-			userStatsUpdate(
-				user.id,
-				u => {
-					return {
-						toa_raid_levels_bank: new Bank()
-							.add(u.toa_raid_levels_bank as ItemBank)
-							.add(raidLevel, quantity).bank,
-						total_toa_duration_minutes: {
-							increment: Math.floor(duration / Time.Minute)
-						},
-						toa_loot: !chincannonUser
-							? new Bank(u.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
-							: undefined
-					};
+			const currentStats = await user.fetchStats({ toa_raid_levels_bank: true, toa_loot: true });
+			userStatsUpdate(user.id, {
+				toa_raid_levels_bank: new Bank()
+					.add(currentStats.toa_raid_levels_bank as ItemBank)
+					.add(raidLevel, quantity)
+					.toJSON(),
+				total_toa_duration_minutes: {
+					increment: Math.floor(duration / Time.Minute)
 				},
-				{}
-			);
+				toa_loot: !chincannonUser
+					? new Bank(currentStats.toa_loot as ItemBank).add(totalLoot.get(userID)).toJSON()
+					: undefined
+			});
 
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 			if (!chincannonUser) {
@@ -279,7 +270,7 @@ export const toaTask: MinionTask = {
 								}
 							],
 							type: 'Tombs of Amascut'
-					  })
+						})
 					: undefined,
 				data,
 				itemsAddedTeamLoot.totalLoot()
@@ -299,7 +290,7 @@ export const toaTask: MinionTask = {
 							customTexts: makeCustomTexts(u.id)
 						})),
 						type: 'Tombs of Amascut'
-				  })
+					})
 				: undefined,
 			data,
 			null

@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../../lib/constants';
-import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
+import type { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
 
@@ -12,7 +12,7 @@ export const animatedArmorTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const armour = Armours.find(armour => armour.name === armourID)!;
 
-		let baseQuantity = quantity * armour.tokens;
+		const baseQuantity = quantity * armour.tokens;
 		const loot = new Bank().add('Warrior guild token', baseQuantity);
 
 		const messages: string[] = [];

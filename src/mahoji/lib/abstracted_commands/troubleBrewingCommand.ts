@@ -1,13 +1,13 @@
 import { Time } from 'e';
 
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function troubleBrewingStartCommand(user: MUser, channelID: string) {
-	let timePerGame = Time.Minute * 20;
-	let maxTripLength = calcMaxTripLength(user, 'TroubleBrewing');
+	const timePerGame = Time.Minute * 20;
+	const maxTripLength = calcMaxTripLength(user, 'TroubleBrewing');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 

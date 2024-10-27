@@ -1,9 +1,8 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '../../../lib/data/CollectionsExport';
-import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -16,7 +15,6 @@ export async function lmsCommand(
 		stats?: {};
 		start?: {};
 		buy?: { name?: string; quantity?: number };
-		simulate?: { names?: string };
 	},
 	user: MUser,
 	channelID: string,
@@ -35,13 +33,6 @@ export async function lmsCommand(
 **Total Matches:** ${stats.totalGames}`;
 	}
 
-	if (options.simulate) {
-		lmsSimCommand(globalClient.channels.cache.get(channelID.toString()), options.simulate.names);
-		return {
-			content: 'Starting simulation...'
-		};
-	}
-
 	if (options.buy) {
 		const itemToBuy = LMSBuyables.find(i => stringMatches(i.item.name, options.buy?.name ?? ''));
 		if (!itemToBuy) {
@@ -53,7 +44,7 @@ export async function lmsCommand(
 			return `You don't have enough points. ${quantity}x ${itemToBuy.item.name} costs ${cost}, but you have ${stats.points}.`;
 		}
 		if (itemToBuy.wins && stats.gamesWon < itemToBuy.wins) {
-			return `You are not worthy! You need to have won atleast ${itemToBuy.wins} games to buy the ${itemToBuy.item.name}.`;
+			return `You are not worthy! You need to have won at least ${itemToBuy.wins} games to buy the ${itemToBuy.item.name}.`;
 		}
 		const loot = new Bank().add(itemToBuy.item.id, quantity * (itemToBuy.quantity ?? 1));
 		await handleMahojiConfirmation(interaction, `Are you sure you want to spend ${cost} points on buying ${loot}?`);

@@ -3,7 +3,8 @@ import { Bank } from 'oldschooljs';
 import { removeDiscontinuedItems } from '../../../bso/bsoUtil';
 import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
-import { Cookable, SkillsEnum } from '../../types';
+import type { Cookable } from '../../types';
+import { SkillsEnum } from '../../types';
 
 export const Cookables: Cookable[] = [
 	{
@@ -229,7 +230,7 @@ export const Cookables: Cookable[] = [
 		name: 'Wine of zamorak',
 		alias: ['zammy wine'],
 		inputCookables: { [itemID("Zamorak's grapes")]: 1, [itemID('Jug of water')]: 1 },
-		stopBurnAt: 125,
+		stopBurnAt: 98,
 		burntCookable: itemID('Jug of bad wine')
 	},
 	{
@@ -318,7 +319,8 @@ export const Cookables: Cookable[] = [
 			.add('Banana-butter')
 			.add('Fresh rat milk')
 			.add('Pristine chocolate bar')
-			.add('Smokey egg').bank,
+			.add('Smokey egg')
+			.toJSON(),
 		stopBurnAt: 150,
 		stopBurnAtCG: 150,
 		burntCookable: itemID('Burnt christmas cake')

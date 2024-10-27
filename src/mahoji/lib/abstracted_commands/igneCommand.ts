@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -69,7 +69,7 @@ export async function igneCommand(
 				.add('Saradomin brew(4)', brewsNeeded)
 				.add('Super restore(4)', restoresNeeded)
 				.multiply(data.kills);
-			return userBank.has(heatResBank.bank) ? heatResBank : normalBank;
+			return userBank.has(heatResBank) ? heatResBank : normalBank;
 		},
 		mostImportantStat: 'attack_crush',
 		ignoreStats: ['attack_ranged', 'attack_magic'],
@@ -102,12 +102,6 @@ export async function igneCommand(
 		allowMoreThan1Solo: true,
 		allowMoreThan1Group: true
 	});
-	const hasNormalFood = [];
-	for (const user of instance.bossUsers) {
-		if (user.itemsToRemove.has('Saradomin brew(4)')) {
-			hasNormalFood.push(user.user.id);
-		}
-	}
 
 	try {
 		const { bossUsers } = await instance.start();
@@ -127,7 +121,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 
 		return {
 			embeds: [embed.data],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
+			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
 		};
 	} catch (err: any) {
 		return `The mass failed to start for this reason: ${err}.`;

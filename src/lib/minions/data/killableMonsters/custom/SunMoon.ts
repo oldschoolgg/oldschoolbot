@@ -2,10 +2,10 @@ import { Time } from 'e';
 import { Bank, LootTable, Monsters } from 'oldschooljs';
 
 import { GearStat } from '../../../../gear';
-import { addStatsOfItemsTogether, Gear } from '../../../../structures/Gear';
+import { Gear, addStatsOfItemsTogether } from '../../../../structures/Gear';
 import itemID from '../../../../util/itemID';
 import resolveItems from '../../../../util/resolveItems';
-import { CustomMonster } from './customMonsters';
+import type { CustomMonster } from './customMonsters';
 
 const solisMinGear = new Gear();
 solisMinGear.equip('Gorajan warrior helmet');
@@ -31,6 +31,7 @@ celesMinGear.equip('Ignis ring(i)');
 celesMinGear.equip('Soulreaper axe');
 
 export const Solis: CustomMonster = {
+	isCustom: true,
 	id: 129_124,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Solis',
@@ -63,7 +64,7 @@ export const Solis: CustomMonster = {
 		lowestDeathChance: 10,
 		highestDeathChance: 80
 	},
-	minimumFoodHealAmount: 22,
+	minimumHealAmount: 22,
 	allItems: resolveItems(['Solite', 'Eagle egg', 'Sun-metal scraps']),
 	minimumGearRequirements: {
 		melee: {
@@ -87,10 +88,22 @@ export const Solis: CustomMonster = {
 		if (hasMaxedIgne) return null;
 		return 'You need to have a maxed Igne Tame (best gear, all fed items) to fight Solis.';
 	},
-	setupsUsed: ['melee']
+	setupsUsed: ['melee'],
+	equippedItemBoosts: [
+		{
+			gearSetup: 'melee',
+			items: [
+				{
+					boostPercent: 7,
+					itemID: itemID('Offhand spidergore rapier')
+				}
+			]
+		}
+	]
 };
 
 export const Celestara: CustomMonster = {
+	isCustom: true,
 	id: 129_125,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Celestara',
@@ -127,7 +140,7 @@ export const Celestara: CustomMonster = {
 		lowestDeathChance: 5,
 		highestDeathChance: 65
 	},
-	minimumFoodHealAmount: 22,
+	minimumHealAmount: 22,
 	allItems: resolveItems(['Lunite', 'Moonlight essence', 'Moondash charm', 'Noom']),
 	minimumGearRequirements: {
 		melee: {

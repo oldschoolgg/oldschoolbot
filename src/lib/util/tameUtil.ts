@@ -1,14 +1,22 @@
-import { Tame, tame_growth, TameActivity, User } from '@prisma/client';
+import { type Tame, type TameActivity, type User, tame_growth } from '@prisma/client';
 import { round } from 'e';
 import { Items } from 'oldschooljs';
 
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { getSimilarItems } from '../data/similarItems';
-import { prisma } from '../settings/prisma';
-import { seaMonkeySpells, Species, tameKillableMonsters, tameSpecies, TameTaskOptions, TameType } from '../tames';
-import { ItemBank } from '../types';
-import { formatDuration, itemNameFromID } from './smallUtils';
+
+import { formatDuration } from '@oldschoolgg/toolkit';
+import {
+	type Species,
+	type TameTaskOptions,
+	TameType,
+	seaMonkeySpells,
+	tameKillableMonsters,
+	tameSpecies
+} from '../tames';
+import type { ItemBank } from '../types';
+import { itemNameFromID } from './smallUtils';
 
 export async function tameLastFinishedActivity(user: MUser) {
 	const tameID = user.user.selected_tame;

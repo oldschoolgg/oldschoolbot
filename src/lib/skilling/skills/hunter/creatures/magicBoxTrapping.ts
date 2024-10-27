@@ -1,7 +1,8 @@
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
-import { Creature, HunterTechniqueEnum } from '../../../types';
+import type { Creature } from '../../../types';
+import { HunterTechniqueEnum } from '../../../types';
 
 const magicBoxTrappingCreatures: Creature[] = [
 	{

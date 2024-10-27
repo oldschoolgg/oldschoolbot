@@ -4,14 +4,17 @@ import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 
 import { LowSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
-import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '../../../../simulation/sharedTables';
+import { BattlestaffTable, StoneSpiritTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
 import resolveItems from '../../../../util/resolveItems';
-import { CustomMonster } from './customMonsters';
-import { TormentedDemon } from './TormentedDemon';
+import { SuperiorTormentedDemon } from './TormentedDemon';
 import { VladimirDrakan } from './VladimirDrakan';
 import { Yeti } from './Yeti';
+import { Akumu } from './bosses/Akumu';
+import { Venatrix } from './bosses/Venatrix';
+import type { CustomMonster } from './customMonsters';
 
 export const CockroachSoldier: CustomMonster = {
+	isCustom: true,
 	id: 31_621,
 	name: 'Cockroach soldier',
 	aliases: ['cockroach soldier', 'cs'],
@@ -34,6 +37,7 @@ export const CockroachSoldier: CustomMonster = {
 };
 
 export const EliteBlackKnight: CustomMonster = {
+	isCustom: true,
 	id: 31_651,
 	name: 'Elite Black Knight',
 	aliases: ['ebk', 'elite black knight'],
@@ -66,9 +70,11 @@ export const EliteBlackKnight: CustomMonster = {
 };
 
 export const MiscCustomMonsters = {
-	TormentedDemon,
+	SuperiorTormentedDemon,
 	CockroachSoldier,
 	EliteBlackKnight,
 	Yeti,
-	VladimirDrakan
+	VladimirDrakan,
+	Akumu,
+	Venatrix
 };

@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../../../../util/getOSItem';
-import { Mixable } from '../../../types';
+import type { Mixable } from '../../../types';
 
 export const bsoMixables: Mixable[] = [
 	{
@@ -15,5 +15,19 @@ export const bsoMixables: Mixable[] = [
 		}),
 		tickRate: 2,
 		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Deathly toxic potion'),
+		aliases: ['deathly toxic potion'],
+		level: 95,
+		xp: 12_000.5,
+		inputItems: new Bank()
+			.add('Fangs of venenatis')
+			.add('Magic fang')
+			.add('Cave nightshade', 100)
+			.add('Poison ivy berries', 100),
+		tickRate: 2,
+		bankTimePerPotion: 0.3,
+		defaultQuantity: 1
 	}
 ];

@@ -1,21 +1,23 @@
-import { EmbedBuilder, inlineCode } from '@discordjs/builders';
-import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
-import { bold, ChatInputCommandInteraction, Guild, HexColorString, resolveColor, User } from 'discord.js';
-import { clamp, removeFromArr, Time, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { activity_type_enum } from '@prisma/client';
+import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
+import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, clamp, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, secretItems } from '../../lib/constants';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
+import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { prisma } from '../../lib/settings/prisma';
+
+import { DynamicButtons } from '../../lib/DynamicButtons';
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
@@ -23,12 +25,13 @@ import { BankSortMethods } from '../../lib/sorts';
 import { formatDuration, isValidNickname, itemNameFromID, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
-import { interactionReplyGetDuration } from '../../lib/util/interactionHelpers';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
+import { allAbstractCommands } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 interface UserConfigToggle {
@@ -93,32 +96,39 @@ const toggles: UserConfigToggle[] = [
 				return { result: true, message: 'Your Gambling lockout time has expired.' };
 			} else if (interaction) {
 				const durations = [
-					{ display: '24 hours', duration: Time.Day },
+					{ display: '1 day', duration: Time.Day },
 					{ display: '7 days', duration: Time.Day * 7 },
-					{ display: '2 weeks', duration: Time.Day * 14 },
 					{ display: '1 month', duration: Time.Month },
-					{ display: '3 months', duration: Time.Month * 3 },
 					{ display: '6 months', duration: Time.Month * 6 },
-					{ display: '1 year', duration: Time.Year },
-					{ display: '3 years', duration: Time.Year * 3 },
-					{ display: '5 years', duration: Time.Year * 5 }
+					{ display: '1 year', duration: Time.Year }
 				];
-				if (!production) {
-					durations.push({ display: '30 seconds', duration: Time.Second * 30 });
-					durations.push({ display: '1 minute', duration: Time.Minute });
-					durations.push({ display: '5 minutes', duration: Time.Minute * 5 });
+				const channel = globalClient.channels.cache.get(interaction.channelId);
+				if (!channelIsSendable(channel)) return { result: false, message: 'Could not find channel.' };
+				await deferInteraction(interaction);
+				const buttons = new DynamicButtons({
+					channel: channel,
+					usersWhoCanInteract: [user.id],
+					deleteAfterConfirm: true
+				});
+				for (const dur of durations) {
+					buttons.add({
+						name: dur.display
+					});
 				}
-				const lockoutDuration = await interactionReplyGetDuration(
-					interaction,
-					`${user}, This will lockout your ability to gamble for the specified time. Choose carefully!`,
-					...durations
-				);
+				const pickedButton = await buttons.render({
+					messageOptions: {
+						content: `${user}, This will lockout your ability to gamble for the specified time. Choose carefully!`
+					},
+					isBusy: false
+				});
 
-				if (lockoutDuration !== false) {
-					await user.update({ gambling_lockout_expiry: new Date(Date.now() + lockoutDuration.duration) });
+				const pickedDuration = durations.find(d => stringMatches(d.display, pickedButton?.name ?? ''));
+
+				if (pickedDuration) {
+					await user.update({ gambling_lockout_expiry: new Date(Date.now() + pickedDuration.duration) });
 					return {
 						result: true,
-						message: `Locking out gambling for ${formatDuration(lockoutDuration.duration)}`
+						message: `Locking out gambling for ${formatDuration(pickedDuration.duration)}`
 					};
 				}
 				return { result: false, message: 'Cancelled.' };
@@ -150,6 +160,14 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable wilderness high peak time warning',
 		bit: BitField.DisableHighPeakTimeWarning
+	},
+	{
+		name: 'Disable Names on Opens',
+		bit: BitField.DisableOpenableNames
+	},
+	{
+		name: 'Use super restores for Dwarven blessing',
+		bit: BitField.UseSuperRestoresForDwarvenBlessing
 	}
 ];
 
@@ -188,7 +206,7 @@ async function favFoodConfig(
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item || secretItems.includes(item.id)) return currentItems;
+	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
@@ -217,11 +235,11 @@ async function favItemConfig(
 	const currentFavorites = user.user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
-	if (!item || secretItems.includes(item.id)) return currentItems;
+	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (itemToAdd) {
-		let limit = (user.perkTier() + 1) * 100;
+		const limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
@@ -277,7 +295,7 @@ async function favAlchConfig(
 
 	if (!item.highalch) return "That item isn't alchable.";
 
-	const action = Boolean(removeItem) ? 'remove' : 'add';
+	const action = removeItem ? 'remove' : 'add';
 	const isAlreadyFav = currentFavorites.includes(item.id);
 
 	if (action === 'remove') {
@@ -387,10 +405,10 @@ async function bankSortConfig(
 
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
-	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.bank = {};
+	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.clear();
 
 	await user.update({
-		bank_sort_weightings: newBank.bank
+		bank_sort_weightings: newBank.toJSON()
 	});
 
 	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined, undefined);
@@ -532,29 +550,22 @@ async function handleCommandEnable(
 	return `Successfully disabled the \`${command.name}\` command.`;
 }
 
-const priorityWarningMsg =
-	"\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**";
 async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
 	const settings = await mahojiUsersSettingsFetch(user.id, { combat_options: true });
 	if (!command || (command && command === 'list')) {
 		// List enabled combat options:
-		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa!.id === o)!.name);
+		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa?.id === o)?.name);
 		return `Your current combat options are:\n${cbOpts.join('\n')}\n\nTry: \`/config user combat_options help\``;
 	}
 
 	if (command === 'help' || !option || !['add', 'remove'].includes(command)) {
-		return (
-			'Changes your Combat Options. Usage: `/config user combat_options [add/remove/list] always cannon`' +
-			`\n\nList of possible options:\n${CombatOptionsArray.map(coa => `**${coa!.name}**: ${coa!.desc}`).join(
-				'\n'
-			)}`
-		);
+		return `Changes your Combat Options. Usage: \`/config user combat_options [add/remove/list] always cannon\`\n\nList of possible options:\n${CombatOptionsArray.map(
+			coa => `**${coa?.name}**: ${coa?.desc}`
+		).join('\n')}`;
 	}
 
 	const newcbopt = CombatOptionsArray.find(
-		item =>
-			stringMatches(option, item.name) ||
-			(item.aliases && item.aliases.some(alias => stringMatches(alias, option)))
+		item => stringMatches(option, item.name) || item.aliases?.some(alias => stringMatches(alias, option))
 	);
 	if (!newcbopt) return 'Cannot find matching option. Try: `/config user combat_options help`';
 
@@ -566,18 +577,12 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		return `"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`;
 	}
 
-	let warningMsg = '';
-	const hasCannon = settings.combat_options.includes(CombatOptionsEnum.AlwaysCannon);
-	const hasBurstB =
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst) ||
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage);
 	// If enabling Ice Barrage, make sure burst isn't also enabled:
 	if (
 		nextBool &&
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst)
 	) {
-		if (hasCannon) warningMsg = priorityWarningMsg;
 		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
@@ -586,12 +591,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage)
 	) {
-		if (warningMsg === '' && hasCannon) warningMsg = priorityWarningMsg;
 		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage);
-	}
-	// Warn if enabling cannon with ice burst/barrage:
-	if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB) {
-		warningMsg = priorityWarningMsg;
 	}
 	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
 		await user.update({
@@ -605,7 +605,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		return 'Error processing command. This should never happen, please report bug.';
 	}
 
-	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
+	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.`;
 }
 
 function pinnedTripLimit(perkTier: number) {
@@ -619,13 +619,13 @@ export async function pinTripCommand(
 ) {
 	if (!tripId) return 'Invalid trip.';
 	const id = Number(tripId);
+	if (!id || Number.isNaN(id)) return 'Invalid trip.';
 	const trip = await prisma.activity.findFirst({ where: { id, user_id: BigInt(user.id) } });
 	if (!trip) return 'Invalid trip.';
 
 	if (emoji) {
 		const res = ParsedCustomEmojiWithGroups.exec(emoji);
 		if (!res || !res[3]) return "That's not a valid emoji.";
-		// eslint-disable-next-line prefer-destructuring
 		emoji = res[3];
 
 		const cachedEmoji = globalClient.emojis.cache.get(emoji);
@@ -736,7 +736,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'choice',
-							description: 'Enable or disable JMod Reddit comments for this server.',
+							description: 'Whether you want to enable or disable this command.',
 							required: true,
 							choices: [
 								{ name: 'Enable', value: 'enable' },
@@ -1080,12 +1080,12 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The trip you want to pin.',
 							required: false,
 							autocomplete: async (_, user) => {
-								let res = await prisma.$queryRawUnsafe<
+								const res = await prisma.$queryRawUnsafe<
 									{ type: activity_type_enum; data: object; id: number; finish_date: string }[]
 								>(`
 SELECT DISTINCT ON (activity.type) activity.type, activity.data, activity.id, activity.finish_date
 FROM activity
-WHERE finish_date::date > now() - INTERVAL '31 days'
+WHERE finish_date > now() - INTERVAL '14 days'
 AND user_id = '${user.id}'::bigint
 ORDER BY activity.type, finish_date DESC
 LIMIT 20;
@@ -1156,7 +1156,10 @@ LIMIT 20;
 							name: 'name',
 							description: 'The icon pack you want to use.',
 							required: true,
-							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({ name: i, value: i }))
+							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({
+								name: i,
+								value: i
+							}))
 						}
 					]
 				}
@@ -1173,7 +1176,6 @@ LIMIT 20;
 		server?: {
 			channel?: { choice: 'enable' | 'disable' };
 			pet_messages?: { choice: 'enable' | 'disable' };
-			jmod_comments?: { choice: 'enable' | 'disable' };
 			command?: { command: string; choice: 'enable' | 'disable' };
 		};
 		user?: {
@@ -1199,7 +1201,7 @@ LIMIT 20;
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
-		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) ?? null : null;
+		const guild = guildID ? (globalClient.guilds.cache.get(guildID.toString()) ?? null) : null;
 		if (options.server) {
 			if (options.server.channel) {
 				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);

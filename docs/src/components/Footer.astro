@@ -1,0 +1,31 @@
+---
+import { getAuthors } from "../plugins/authors";
+const authors = (await getAuthors(`src/content/docs/${Astro.props.id}`));
+const editURL = Astro.props.editUrl?.toString();
+---
+
+<footer class="sl-flex">
+	{authors.length > 0 && <div class="credits-list">Editors: {authors.map(name => <div class="credit">{name}</div>)}</div>}
+	{editURL && <a href={editURL} target="_blank" rel="noopener noreferrer" class="edit_this_page">Edit this page</a>}
+</footer>
+
+<style>
+	footer {
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+	.credits-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.credit {
+		background-color: rgb(243, 156, 105);
+		width: max-content;
+		border-radius: 8px;
+		color: rgb(61, 40, 16);
+		font-weight: bold;
+		padding: 1px 9px;
+		font-size: 12px;
+	}
+</style>

@@ -1,13 +1,11 @@
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
 
-import { ShadesOfMortonOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
+import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
+import { formatDuration, itemNameFromID, resolveItems } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import resolveItems from '../../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahojiSettings';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
@@ -255,12 +253,12 @@ export const shadesLogs: ShadesLog[] = [
 const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin'];
 
 export async function shadesOfMortonStartCommand(user: MUser, channelID: string, logStr: string, shadeStr: string) {
-	let messages: string[] = [];
+	const messages: string[] = [];
 	let totalTime = calcMaxTripLength(user, 'ShadesOfMorton');
 	for (let i = coffins.length - 1; i >= 0; i--) {
 		const coffin = coffins[i];
 		if (user.hasEquipped(coffin)) {
-			let bonusTime = i * Time.Minute;
+			const bonusTime = i * Time.Minute;
 			if (bonusTime) {
 				totalTime += bonusTime;
 				messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
@@ -287,7 +285,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / timePerLog));
 	const duration = quantity * timePerLog;
 
-	let prayerXP = log.prayerXP[shade.shadeName];
+	const prayerXP = log.prayerXP[shade.shadeName];
 	if (!prayerXP) {
 		return `You can't use ${log.normalLog.name} with ${shade.item.name}.`;
 	}
@@ -298,7 +296,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
 	await user.removeItemsFromBank(cost);
-	await userStatsBankUpdate(user.id, 'shades_of_morton_cost_bank', cost);
+	await userStatsBankUpdate(user, 'shades_of_morton_cost_bank', cost);
 
 	await addSubTaskToActivityTask<ShadesOfMortonOptions>({
 		userID: user.id,

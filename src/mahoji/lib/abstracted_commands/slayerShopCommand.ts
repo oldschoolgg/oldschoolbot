@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -36,7 +36,7 @@ export async function slayerShopBuyCommand({
 		if (buyableObj.haveOne && user.allItemsOwned.has(buyableObj.item)) {
 			return `You already own a ${buyableObj.name}`;
 		}
-		const qty = buyableObj.haveOne ? 1 : quantity ?? 1;
+		const qty = buyableObj.haveOne ? 1 : (quantity ?? 1);
 		const cost = qty * buyableObj.slayerPointCost;
 		if (user.user.slayer_points >= cost) {
 			try {
@@ -109,11 +109,7 @@ export function slayerShopListMyUnlocks(mahojiUser: MUser) {
 	const myUnlocks = SlayerRewardsShop.filter(srs => mahojiUser.user.slayer_unlocks.includes(srs.id));
 	const unlocksStr = myUnlocks.map(unlock => unlock.name).join('\n');
 
-	const content =
-		`Current points: ${mahojiUser.user.slayer_points}\n**You currently have the following ` +
-		`rewards unlocked:**\n${unlocksStr}\n\n` +
-		'Usage:\n`/slayer rewards [unlock|buy|disable] Reward`\nExample:' +
-		'\n`/slayer rewards unlock unlockable:Malevolent Masquerade`';
+	const content = `Current points: ${mahojiUser.user.slayer_points}\n**You currently have the following rewards unlocked:**\n${unlocksStr}\n\nUsage:\n\`/slayer rewards [unlock|buy|disable] Reward\`\nExample:\n\`/slayer rewards unlock unlockable:Malevolent Masquerade\``;
 	if (content.length > 2000) {
 		return {
 			content: 'Your currently unlocked Slayer rewards',

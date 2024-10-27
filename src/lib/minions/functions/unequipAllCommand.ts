@@ -1,7 +1,8 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { GearSetupType, GearSetupTypes } from '../../gear/types';
+import type { GearSetupType } from '../../gear/types';
+import { GearSetupTypes } from '../../gear/types';
 import { defaultGear } from '../../structures/Gear';
 
 export async function unEquipAllCommand(
@@ -18,7 +19,7 @@ export async function unEquipAllCommand(
 	}
 	const currentEquippedGear = user.gear[gearType];
 
-	let refund = new Bank();
+	const refund = new Bank();
 	for (const val of Object.values(currentEquippedGear.raw())) {
 		if (!val) continue;
 		refund.add(val.item, val.quantity);

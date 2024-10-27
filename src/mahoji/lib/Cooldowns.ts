@@ -1,4 +1,4 @@
-import LRUCache from 'lru-cache';
+import { LRUCache } from 'lru-cache';
 
 import { assert } from '../../lib/util';
 
@@ -22,8 +22,14 @@ class CooldownsSingleton {
 		return value - now;
 	}
 
-	delete(userID: string) {
-		this.cooldownMap.delete(userID);
+	delete(userID: string, key?: string) {
+		if (!key) {
+			this.cooldownMap.delete(userID);
+			return;
+		}
+		const map = this.cooldownMap.get(userID);
+		if (!map) return;
+		map.delete(key);
 	}
 }
 

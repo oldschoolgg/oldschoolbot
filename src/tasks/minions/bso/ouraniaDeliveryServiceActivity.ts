@@ -1,15 +1,40 @@
 import { randFloat } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
-import { PrayerPageTable } from 'oldschooljs/dist/simulation/clues/General';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ExoticSeedsTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+
+const PrayerPageTable = new LootTable()
+	.add('Saradomin page 1')
+	.add('Saradomin page 2')
+	.add('Saradomin page 3')
+	.add('Saradomin page 4')
+	.add('Zamorak page 1')
+	.add('Zamorak page 2')
+	.add('Zamorak page 3')
+	.add('Zamorak page 4')
+	.add('Guthix page 1')
+	.add('Guthix page 2')
+	.add('Guthix page 3')
+	.add('Guthix page 4')
+	.add('Bandos page 1')
+	.add('Bandos page 2')
+	.add('Bandos page 3')
+	.add('Bandos page 4')
+	.add('Armadyl page 1')
+	.add('Armadyl page 2')
+	.add('Armadyl page 3')
+	.add('Armadyl page 4')
+	.add('Ancient page 1')
+	.add('Ancient page 2')
+	.add('Ancient page 3')
+	.add('Ancient page 4');
 
 const boxTable = new LootTable()
 	.add('Tradeable mystery box', [1, 2], 100)
@@ -44,7 +69,7 @@ export const odsTask: MinionTask = {
 			}
 		});
 
-		let totalXP = level * (quantity * randFloat(39, 41));
+		const totalXP = level * (quantity * randFloat(39, 41));
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Runecraft,
 			amount: totalXP,
@@ -53,7 +78,7 @@ export const odsTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Ourania deliveries, you received ${tokens} tokens. ${xpRes}`;
 
-		let loot = new Bank();
+		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add(OuraniaTipTable.roll());
 		}

@@ -1,16 +1,22 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { notEmpty, randArrItem, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import BeginnerClueTable from 'oldschooljs/dist/simulation/clues/Beginner';
-import EasyClueTable from 'oldschooljs/dist/simulation/clues/Easy';
-import EliteClueTable from 'oldschooljs/dist/simulation/clues/Elite';
-import HardClueTable from 'oldschooljs/dist/simulation/clues/Hard';
-import MasterCasket from 'oldschooljs/dist/simulation/clues/Master';
-import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
-import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
-import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
+import {
+	Bank,
+	BeginnerCasket,
+	ChambersOfXeric,
+	EasyCasket,
+	EliteCasket,
+	EliteMimicTable,
+	HardCasket,
+	MasterCasket,
+	MasterMimicTable,
+	MediumCasket,
+	Monsters,
+	Nightmare,
+	resolveItems
+} from 'oldschooljs';
 
-import { rollNaxxusLoot } from '../tasks/minions/bso/naxxusActivity';
+import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
 	chambersOfXericCL,
@@ -27,12 +33,12 @@ import {
 	nexCL,
 	nexUniqueDrops,
 	temporossCL,
-	theatreOfBloodCapes,
-	theatreOfBloodHardUniques,
-	theatreOfBloodNormalUniques,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
+	theatreOfBloodCapes,
+	theatreOfBloodHardUniques,
+	theatreOfBloodNormalUniques,
 	wintertodtCL
 } from './data/CollectionsExport';
 import pets from './data/pets';
@@ -47,17 +53,15 @@ import { gauntlet } from './simulation/gauntlet';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { calculateTripConsumableCost } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
-import resolveItems from './util/resolveItems';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
 	totalRuns: number;
 }
 
-export interface Finishable {
+interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];
@@ -151,7 +155,7 @@ export const finishables: Finishable[] = [
 			const loot = new Bank(
 				WintertodtCrate.open({
 					points: 500,
-					itemsOwned: accumulatedLoot.bank,
+					itemsOwned: accumulatedLoot,
 					skills: {
 						herblore: 99,
 						firemaking: 99,
@@ -207,25 +211,25 @@ export const finishables: Finishable[] = [
 		name: 'Beginner Clue Scolls',
 		cl: cluesBeginnerCL,
 		aliases: ['beginner clues', 'beginner clue', 'beginner clue scroll', 'beginner clue scrolls'],
-		kill: () => BeginnerClueTable.open()
+		kill: () => BeginnerCasket.roll()
 	},
 	{
 		name: 'Easy Clue Scolls',
 		cl: cluesEasyCL,
 		aliases: ['easy clues', 'easy clue', 'easy clue scroll', 'easy clue scrolls'],
-		kill: () => EasyClueTable.open()
+		kill: () => EasyCasket.roll()
 	},
 	{
 		name: 'Medium Clue Scolls',
 		cl: cluesMediumCL,
 		aliases: ['medium clues', 'medium clue', 'medium clue scroll', 'medium clue scrolls'],
-		kill: () => MediumClueTable.open()
+		kill: () => MediumCasket.roll()
 	},
 	{
 		name: 'Hard Clue Scolls',
 		cl: cluesHardCL,
 		aliases: ['hard clues', 'hard clue', 'hard clue scroll', 'hard clue scrolls'],
-		kill: () => HardClueTable.open()
+		kill: () => HardCasket.roll()
 	},
 	{
 		name: 'Elite Clue Scolls',
@@ -233,9 +237,9 @@ export const finishables: Finishable[] = [
 		aliases: ['elite clues', 'elite clue', 'elite clue scroll', 'elite clue scrolls'],
 		kill: () => {
 			if (roll(35)) {
-				return EliteMimicTable.roll().add(EliteClueTable.open());
+				return EliteMimicTable.roll().add(EliteCasket.roll());
 			}
-			return EliteClueTable.open();
+			return EliteCasket.roll();
 		}
 	},
 	{
@@ -244,9 +248,9 @@ export const finishables: Finishable[] = [
 		aliases: ['master clues', 'master clue', 'master clue scroll', 'master clue scrolls'],
 		kill: () => {
 			if (roll(15)) {
-				return MasterMimicTable.roll().add(MasterCasket.open());
+				return MasterMimicTable.roll().add(MasterCasket.roll());
 			}
-			return MasterCasket.open();
+			return MasterCasket.roll();
 		}
 	},
 	{
@@ -319,16 +323,13 @@ for (const mon of monsterPairedCLs) {
 		cl: mon.cl,
 		kill: ({ accumulatedLoot }) => {
 			const cost = new Bank();
-			if (killableMonster && killableMonster.healAmountNeeded) {
+			if (killableMonster?.healAmountNeeded) {
 				cost.add('Swordfish', Math.ceil(killableMonster.healAmountNeeded / 14));
 			}
-			if (killableMonster?.itemCost) {
-				cost.add(calculateTripConsumableCost(killableMonster.itemCost, 1, killableMonster.timeToFinish));
-			}
 
-			let loot = 'kill' in mon.mon ? mon.mon.kill(1, {}) : mon.mon.table.roll();
-			if (killableMonster && killableMonster.specialLoot) {
-				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1, cl: accumulatedLoot });
+			const loot = 'kill' in mon.mon ? mon.mon.kill(1, {}) : mon.mon.table.roll(1);
+			if (killableMonster?.specialLoot) {
+				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1, cl: new Bank() });
 			}
 			return { loot, cost };
 		}

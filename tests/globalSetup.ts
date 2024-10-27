@@ -1,14 +1,21 @@
-import '../src/index';
-import '../src/lib/roboChimp';
+import '../src/lib/safeglobals';
 
 import { Collection } from 'discord.js';
 import { vi } from 'vitest';
 
 vi.mock('@oldschoolgg/toolkit', async () => {
-	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit'); // Import all actual exports
+	const actual: any = await vi.importActual('@oldschoolgg/toolkit');
 	return {
-		...actualToolkit, // Include all actual exports in the mock
-		mentionCommand: vi.fn().mockReturnValue('') // Mock mentionCommand to return a blank string
+		...actual,
+		mentionCommand: async (_args: any) => 'hi'
+	};
+});
+
+vi.mock('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts', async () => {
+	const actualToolkit = await vi.importActual('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts');
+	return {
+		...actualToolkit,
+		mentionCommand: vi.fn().mockReturnValue('')
 	};
 });
 
@@ -18,21 +25,24 @@ global.globalClient = {
 	guilds: { cache: new Collection() },
 	mahojiClient: {
 		commands: {
-			values: [
-				{
-					name: 'test',
+			values: () =>
+				['test'].map(n => ({
+					name: n,
 					description: 'test description',
 					attributes: { description: 'test description' },
-					options: []
-				}
-			]
+					options: [{ name: 'claim' }]
+				}))
 		}
 	},
 	users: {
 		cache: new Collection()
 	},
 	channels: {
-		cache: new Collection()
+		cache: new Collection().set('1', { id: '1' })
 	},
 	busyCounterCache: new Map<string, number>()
 } as any;
+
+if (!process.env.TEST) {
+	throw new Error('This file should only be imported in tests.');
+}

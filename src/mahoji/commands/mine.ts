@@ -1,19 +1,26 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { UserFullGearSetup } from '../../lib/gear';
+import type { UserFullGearSetup } from '../../lib/gear';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Mining from '../../lib/skilling/skills/mining';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
+import type { MiningActivityTaskOptions } from '../../lib/types/minions';
+import {
+	formatDuration,
+	formatSkillRequirements,
+	itemID,
+	itemNameFromID,
+	randomVariation,
+	stringMatches
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { minionName } from '../../lib/util/minionUtils';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export function calculateMiningInput({
 	nameInput,
@@ -25,7 +32,8 @@ export function calculateMiningInput({
 	miningLevel,
 	craftingLevel,
 	strengthLevel,
-	maxTripLength
+	maxTripLength,
+	user
 }: {
 	nameInput: string;
 	quantityInput: number | undefined;
@@ -37,6 +45,7 @@ export function calculateMiningInput({
 	craftingLevel: number;
 	strengthLevel: number;
 	maxTripLength: number;
+	user: MUser;
 }) {
 	const ore = Mining.Ores.find(
 		ore =>
@@ -105,9 +114,9 @@ export function calculateMiningInput({
 	let glovesRate = 0;
 	if (miningLevel >= 60) {
 		for (const glove of miningGloves) {
-			if (!gearValues.some(g => g.hasEquipped(glove.id)) || !glove.Percentages.has(ore.id)) continue;
-			glovesRate = glove.Percentages.amount(ore.id);
-			if (glovesRate !== 0) {
+			if (!user.hasEquipped(glove.id) || !glove.Percentages[ore.name]) continue;
+			glovesRate = glove.Percentages[ore.name];
+			if (glovesRate) {
 				messages.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
 				break;
 			}
@@ -116,9 +125,9 @@ export function calculateMiningInput({
 
 	let armourEffect = 0;
 	for (const armour of varrockArmours) {
-		if (!gearValues.some(g => g.hasEquipped(armour.id)) || !armour.Percentages.has(ore.id)) continue;
-		armourEffect = armour.Percentages.amount(ore.id);
-		if (armourEffect !== 0) {
+		if (!user.hasEquippedOrInBank(armour.id) || !armour.Percentages[ore.name]) continue;
+		armourEffect = armour.Percentages[ore.name];
+		if (armourEffect) {
 			messages.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
 			break;
 		}
@@ -131,9 +140,9 @@ export function calculateMiningInput({
 	}
 
 	let miningCapeEffect = 0;
-	if (gearValues.some(g => g.hasEquipped('Mining cape')) && miningCapeOreEffect.has(ore.id)) {
-		miningCapeEffect = miningCapeOreEffect.amount(ore.id);
-		if (miningCapeEffect !== 0) {
+	if (user.hasEquippedOrInBank([itemID('Mining cape')]) && miningCapeOreEffect[ore.name]) {
+		miningCapeEffect = miningCapeOreEffect[ore.name];
+		if (miningCapeEffect) {
 			messages.push(`**${miningCapeEffect}%** chance to mine an extra ore using Mining cape`);
 		}
 	}
@@ -230,11 +239,11 @@ export const mineCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
 		const user = await mUserFetch(userID);
-		let { quantity, powermine } = options;
+		const { quantity, powermine } = options;
 
 		const motherlodeMine =
 			stringMatches(Mining.MotherlodeMine.name, options.name) ||
-			Mining.MotherlodeMine.aliases!.some(a => stringMatches(a, options.name));
+			Mining.MotherlodeMine.aliases?.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, quantity });
@@ -250,7 +259,8 @@ export const mineCommand: OSBMahojiCommand = {
 			miningLevel: user.skillLevel('mining'),
 			craftingLevel: user.skillLevel('crafting'),
 			strengthLevel: user.skillLevel('strength'),
-			maxTripLength: calcMaxTripLength(user, 'Mining')
+			maxTripLength: calcMaxTripLength(user, 'Mining'),
+			user
 		});
 
 		if (typeof result === 'string') {

@@ -1,12 +1,11 @@
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP, QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
-import { diaries, userhasDiaryTier } from '../../diaries';
-import { MinigameName } from '../../settings/settings';
+import { QuestID } from '../../minions/data/quests';
+import type { MinigameName } from '../../settings/minigames';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
-import { MUserStats } from '../../structures/MUserStats';
-import { Skills } from '../../types';
+import type { MUserStats } from '../../structures/MUserStats';
+import type { Skills } from '../../types';
 import { allTeamCapes } from '../misc';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { bsoBuyables } from './bsoBuyables';
@@ -52,8 +51,8 @@ const randomEventBuyables: Buyable[] = [
 			'Frog token': 1
 		}),
 		outputItems: new Bank({
-			'Prince tunic': 1,
-			'Prince leggings': 1
+			'Royal frog tunic': 1,
+			'Royal frog leggings': 1
 		})
 	},
 	{
@@ -62,8 +61,8 @@ const randomEventBuyables: Buyable[] = [
 			'Frog token': 1
 		}),
 		outputItems: new Bank({
-			'Princess blouse': 1,
-			'Princess skirt': 1
+			'Royal frog blouse': 1,
+			'Royal frog skirt': 1
 		})
 	},
 	{
@@ -287,10 +286,29 @@ const sepulchreBuyables: Buyable[] = [
 		name: 'Dark acorn',
 		outputItems: new Bank({ 'Dark acorn': 1 }),
 		itemCost: new Bank({ 'Hallowed mark': 3000 })
+	}
+];
+
+const colossalWyrmAgilityBuyables: Buyable[] = [
+	{
+		name: 'Amylase pack (Colossal Wyrm Agility)',
+		outputItems: new Bank({ 'Amylase pack': 1 }),
+		itemCost: new Bank({ Termites: 100 })
 	},
 	{
-		name: 'Dark squirrel',
-		itemCost: new Bank({ 'Dark acorn': 1, 'Giant squirrel': 1 })
+		name: 'Colossal wyrm teleport scroll',
+		outputItems: new Bank({ 'Colossal wyrm teleport scroll': 1 }),
+		itemCost: new Bank({ Termites: 40 })
+	},
+	{
+		name: 'Graceful crafting kit',
+		outputItems: new Bank({ 'Graceful crafting kit': 1 }),
+		itemCost: new Bank({ Termites: 650 })
+	},
+	{
+		name: 'Calcified acorn',
+		outputItems: new Bank({ 'Calcified acorn': 1 }),
+		itemCost: new Bank({ Termites: 900 })
 	}
 ];
 
@@ -495,7 +513,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Monkey',
 		outputItems: new Bank({
-			19_556: 1
+			19556: 1
 		}),
 		gpCost: 1_000_000,
 		qpRequired: 182
@@ -780,16 +798,6 @@ const noveltyFood: Buyable[] = [
 
 const Buyables: Buyable[] = [
 	{
-		name: 'Quest point cape',
-		outputItems: new Bank({
-			'Quest point cape': 1,
-			'Quest point hood': 1
-		}),
-		aliases: ['quest cape'],
-		qpRequired: MAX_QP,
-		gpCost: 99_000
-	},
-	{
 		name: 'Rope',
 		aliases: ['rope'],
 		gpCost: 100,
@@ -816,7 +824,7 @@ const Buyables: Buyable[] = [
 		name: 'Feather',
 		aliases: ['feather'],
 		gpCost: 50,
-		ironmanPrice: 2
+		ironmanPrice: 4
 	},
 	{
 		name: 'Shield right half',
@@ -883,9 +891,9 @@ const Buyables: Buyable[] = [
 		gpCost: 500
 	},
 	{
-		name: 'Amylase pack',
+		name: 'Amylase pack (Mark of grace)',
 		outputItems: new Bank({
-			'Amylase crystal': 100
+			'Amylase pack': 1
 		}),
 		itemCost: new Bank({ 'Mark of grace': 10 })
 	},
@@ -926,24 +934,6 @@ const Buyables: Buyable[] = [
 	{
 		name: "M'speak amulet",
 		gpCost: 100_000
-	},
-	{
-		name: 'Achievement diary cape',
-		outputItems: new Bank({
-			'Achievement diary cape': 1,
-			'Achievement diary cape(t)': 1,
-			'Achievement diary hood': 1
-		}),
-		gpCost: 1_000_000,
-		customReq: async user => {
-			for (const diary of diaries.map(d => d.elite)) {
-				const [has] = await userhasDiaryTier(user, diary);
-				if (!has) {
-					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
-				}
-			}
-			return [true];
-		}
 	},
 	{
 		name: 'Salve amulet',
@@ -1171,6 +1161,15 @@ const Buyables: Buyable[] = [
 			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
 		}
 	},
+	{
+		name: 'Lockpick',
+		gpCost: 5000,
+		ironmanPrice: 500,
+		skillsNeeded: {
+			agility: 50,
+			thieving: 50
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -1202,7 +1201,8 @@ const Buyables: Buyable[] = [
 	...toaCapes,
 	...mairinsMarketBuyables,
 	...oceanicShrouds,
-	...forestryBuyables
+	...forestryBuyables,
+	...colossalWyrmAgilityBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
@@ -1218,9 +1218,8 @@ for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,
 		outputItems: new Bank().add(cape.id),
-		gpCost: 15_000
+		gpCost: 20_000
 	});
 }
 
 export default Buyables;
-export { Buyables };

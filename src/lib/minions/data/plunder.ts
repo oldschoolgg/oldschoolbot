@@ -1,11 +1,10 @@
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { SkillsEnum } from '../../skilling/types';
-import { ItemBank } from '../../types';
 import { roll, skillingPetDropRate } from '../../util';
-import { MUserClass } from './../../MUser';
+import type { MUserClass } from './../../MUser';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 
@@ -127,7 +126,7 @@ export const plunderBoosts = new Bank({
 	"Pharaoh's sceptre": 5
 });
 
-export function lootRoom(user: MUserClass, room: number): [ItemBank, number] {
+export function lootRoom(user: MUserClass, room: number): [Bank, number] {
 	const loot = new Bank();
 	const roomObj = plunderRooms[room - 1];
 	const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, roomObj.rockyChance);
@@ -146,5 +145,5 @@ export function lootRoom(user: MUserClass, room: number): [ItemBank, number] {
 	for (let i = 0; i < amountUrns; i++) {
 		loot.add(roomObj.roomTable.roll());
 	}
-	return [loot.bank, amountUrns];
+	return [loot, amountUrns];
 }

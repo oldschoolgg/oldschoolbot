@@ -1,8 +1,9 @@
 import { bold } from 'discord.js';
 
+import { quests } from '../../lib/minions/data/quests';
+import { SkillsEnum } from '../../lib/skilling/types';
 import type { SpecificQuestOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 
 export const specificQuestTask: MinionTask = {
 	type: 'SpecificQuest',
@@ -11,7 +12,24 @@ export const specificQuestTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const quest = quests.find(quest => quest.id === questID)!;
 
-		await user.addItemsToBank({ items: quest.rewards, collectionLog: true });
+		let completionMessage = `${user}, ${user.minionName} finished ${bold(quest.name)}.`;
+
+		if (quest.rewards) {
+			await user.addItemsToBank({ items: quest.rewards, collectionLog: true });
+			completionMessage += ` You received ${quest.rewards}.`;
+		}
+
+		if (quest.skillsRewards) {
+			for (const [skillName, amount] of Object.entries(quest.skillsRewards)) {
+				if (Object.values(SkillsEnum).includes(skillName as SkillsEnum)) {
+					await user.addXP({ skillName: skillName as SkillsEnum, amount });
+				}
+			}
+			completionMessage += ` You gained the following skills rewards: ${Object.entries(quest.skillsRewards)
+				.map(([skill, xp]) => `${xp} XP in ${skill}`)
+				.join(', ')}.`;
+		}
+
 		await user.update({
 			finished_quest_ids: {
 				push: quest.id
@@ -21,13 +39,6 @@ export const specificQuestTask: MinionTask = {
 			}
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${user.minionName} finished ${bold(quest.name)}. You received ${quest.rewards}.`,
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, completionMessage, undefined, data, null);
 	}
 };

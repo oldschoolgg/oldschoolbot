@@ -1,14 +1,16 @@
 import { calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
-import { GearSetupType, GearStat } from '../../gear/types';
+import type { GearSetupType } from '../../gear/types';
+import { GearStat } from '../../gear/types';
 import { maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
+import type { GearBank } from '../../structures/GearBank';
 import { readableStatName } from '../../util/smallUtils';
-import { KillableMonster } from '../types';
+import type { KillableMonster } from '../types';
 
 const { floor, max } = Math;
 
-export default function calculateMonsterFood(monster: Readonly<KillableMonster>, user: MUser): [number, string] {
+export function calculateMonsterFoodRaw(gearBank: GearBank, monster: Readonly<KillableMonster>): [number, string] {
 	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
 
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
@@ -33,7 +35,7 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 	}
 
 	if (monster.wildy) gearToCheck = 'wildy';
-	const gearStats = user.gear[gearToCheck].stats;
+	const gearStats = gearBank.gear[gearToCheck].stats;
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;
@@ -57,7 +59,7 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
 
-	const hasAbyssalCape = user.hasEquipped('Abyssal cape');
+	const hasAbyssalCape = gearBank.hasEquipped('Abyssal cape');
 	if (hasAbyssalCape) {
 		healAmountNeeded = Math.floor(healAmountNeeded * 0.5);
 	}
@@ -72,4 +74,8 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 			hasAbyssalCape ? ', -50% for Abyssal cape' : ''
 		}`
 	];
+}
+
+export default function calculateMonsterFood(monster: Readonly<KillableMonster>, user: MUser): [number, string] {
+	return calculateMonsterFoodRaw(user.gearBank, monster);
 }

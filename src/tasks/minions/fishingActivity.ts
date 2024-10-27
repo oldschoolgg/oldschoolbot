@@ -1,15 +1,15 @@
-import { calcPercentOfNum, percentChance, randInt } from 'e';
+import { calcPercentOfNum, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { z } from 'zod';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, roll, skillingPetDropRate } from '../../lib/util';
+import type { FishingActivityTaskOptions } from '../../lib/types/minions';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
@@ -42,9 +42,9 @@ export const fishingTask: MinionTask = {
 		quantity: z.number().min(1)
 	}),
 	async run(data: FishingActivityTaskOptions) {
-		let { fishID, quantity, userID, channelID, duration } = data;
+		const { fishID, quantity, userID, channelID, duration } = data;
+		let { flakesQuantity } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const { blessingEquipped, blessingChance } = radasBlessing(user);
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
@@ -105,7 +105,7 @@ export const fishingTask: MinionTask = {
 						skillName: SkillsEnum.Agility,
 						amount: agilityXpReceived,
 						duration
-				  })
+					})
 				: '';
 		xpRes +=
 			strengthXpReceived > 0
@@ -113,7 +113,7 @@ export const fishingTask: MinionTask = {
 						skillName: SkillsEnum.Strength,
 						amount: strengthXpReceived,
 						duration
-				  })
+					})
 				: '';
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
@@ -122,7 +122,7 @@ export const fishingTask: MinionTask = {
 		const baseKarambwanji = 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		let baseMinnow = [10, 10];
 		for (const [level, quantities] of Object.entries(minnowQuantity).reverse()) {
-			if (user.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
+			if (user.skillLevel(SkillsEnum.Fishing) >= Number.parseInt(level)) {
 				baseMinnow = quantities;
 				break;
 			}
@@ -140,9 +140,14 @@ export const fishingTask: MinionTask = {
 			} else {
 				lootQuantity += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 			}
+
+			if (flakesQuantity && flakesQuantity > 0) {
+				lootQuantity += percentChance(50) ? 1 : 0;
+				flakesQuantity--;
+			}
 		}
 
-		let loot = new Bank({
+		const loot = new Bank({
 			[fish.id]: lootQuantity
 		});
 
@@ -185,10 +190,6 @@ export const fishingTask: MinionTask = {
 				if (roll(petDropRate)) {
 					loot.add('Heron');
 					str += "\nYou have a funny feeling you're being followed...";
-					globalClient.emit(
-						Events.ServerNotification,
-						`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
-					);
 				}
 			}
 		}

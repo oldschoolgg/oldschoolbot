@@ -1,20 +1,13 @@
-import { EmbedBuilder } from '@discordjs/builders';
 import { splitMessage } from '@oldschoolgg/toolkit';
-import {
-	AttachmentBuilder,
-	BaseMessageOptions,
-	Message,
-	PartialGroupDMChannel,
-	PermissionsBitField,
-	WebhookClient
-} from 'discord.js';
-import PQueue from 'p-queue';
+import { channelIsSendable } from '@oldschoolgg/toolkit/util';
+import type { AttachmentBuilder, BaseMessageOptions, EmbedBuilder, Message } from 'discord.js';
+import { PartialGroupDMChannel, PermissionsBitField, WebhookClient } from 'discord.js';
 
-import { prisma } from '../settings/prisma';
-import { channelIsSendable } from '../util';
+import { production } from '../../config';
+
 import { logError } from './logError';
 
-export async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
+async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channel || channel instanceof PartialGroupDMChannel) return undefined;
 	if (channel.isDMBased()) return channel;
@@ -24,14 +17,14 @@ export async function resolveChannel(channelID: string): Promise<WebhookClient |
 		return new WebhookClient({ id: db.webhook_id, token: db.webhook_token });
 	}
 
-	if (!channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.ManageWebhooks)) {
+	if (!production || !channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.ManageWebhooks)) {
 		return channel;
 	}
 
 	try {
 		const createdWebhook = await channel.createWebhook({
-			name: globalClient.user!.username,
-			avatar: globalClient.user!.displayAvatarURL({})
+			name: globalClient.user?.username,
+			avatar: globalClient.user?.displayAvatarURL({})
 		});
 		await prisma.webhook.create({
 			data: {
@@ -51,53 +44,31 @@ async function deleteWebhook(channelID: string) {
 	await prisma.webhook.delete({ where: { channel_id: channelID } });
 }
 
-const queue = new PQueue({ concurrency: 10 });
-
 export async function sendToChannelID(
 	channelID: string,
-	data: {
-		content?: string;
-		image?: Buffer | AttachmentBuilder;
-		embed?: EmbedBuilder;
-		files?: BaseMessageOptions['files'];
-		components?: BaseMessageOptions['components'];
-		allowedMentions?: BaseMessageOptions['allowedMentions'];
-	}
+	_data:
+		| string
+		| {
+				content?: string;
+				image?: Buffer | AttachmentBuilder;
+				embed?: EmbedBuilder;
+				files?: BaseMessageOptions['files'];
+				components?: BaseMessageOptions['components'];
+				allowedMentions?: BaseMessageOptions['allowedMentions'];
+		  }
 ) {
+	const data = typeof _data === 'string' ? { content: _data } : _data;
 	const allowedMentions = data.allowedMentions ?? {
 		parse: ['users']
 	};
-	async function queuedFn() {
-		const channel = await resolveChannel(channelID);
-		if (!channel) return;
+	const channel = await resolveChannel(channelID);
+	if (!channel) return;
 
-		let files = data.image ? [data.image] : data.files;
-		let embeds = [];
-		if (data.embed) embeds.push(data.embed);
-		if (channel instanceof WebhookClient) {
-			try {
-				await sendToChannelOrWebhook(channel, {
-					content: data.content,
-					files,
-					embeds,
-					components: data.components,
-					allowedMentions
-				});
-			} catch (err: any) {
-				const error = err as Error;
-				if (error.message === 'Unknown Webhook') {
-					await deleteWebhook(channelID);
-					await sendToChannelID(channelID, data);
-				} else {
-					logError(error, {
-						content: data.content ?? 'None',
-						channelID
-					});
-				}
-			} finally {
-				channel.destroy();
-			}
-		} else {
+	const files = data.image ? [data.image] : data.files;
+	const embeds = [];
+	if (data.embed) embeds.push(data.embed);
+	if (channel instanceof WebhookClient) {
+		try {
 			await sendToChannelOrWebhook(channel, {
 				content: data.content,
 				files,
@@ -105,9 +76,29 @@ export async function sendToChannelID(
 				components: data.components,
 				allowedMentions
 			});
+		} catch (err: any) {
+			const error = err as Error;
+			if (error.message === 'Unknown Webhook') {
+				await deleteWebhook(channelID);
+				await sendToChannelID(channelID, data);
+			} else {
+				logError(error, {
+					content: data.content ?? 'None',
+					channelID
+				});
+			}
+		} finally {
+			channel.destroy();
 		}
+	} else {
+		await sendToChannelOrWebhook(channel, {
+			content: data.content,
+			files,
+			embeds,
+			components: data.components,
+			allowedMentions
+		});
 	}
-	queue.add(queuedFn);
 }
 
 async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'], input: BaseMessageOptions) {
@@ -125,9 +116,9 @@ async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'
 		const newPayload = { ...input };
 		// Separate files and components from payload for interactions
 		const { files, embeds, components, allowedMentions } = newPayload;
-		delete newPayload.files;
-		delete newPayload.embeds;
-		delete newPayload.components;
+		newPayload.files = undefined;
+		newPayload.embeds = undefined;
+		newPayload.components = undefined;
 		await sendToChannelOrWebhook(channel, { ...newPayload, content: split[0] });
 
 		for (let i = 1; i < split.length; i++) {
@@ -147,7 +138,9 @@ async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'
 		return;
 	}
 
-	const res = await channel.send(input);
+	if (!(channel instanceof WebhookClient) && !channel.isSendable()) {
+		throw new Error('Channel is not sendable');
+	}
 
-	return res;
+	return channel.send(input);
 }

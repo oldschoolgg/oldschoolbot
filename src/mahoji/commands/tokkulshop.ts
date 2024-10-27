@@ -1,17 +1,18 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { activity_type_enum } from '@prisma/client';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
 import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
-import { TokkulShopOptions } from '../../lib/types/minions';
+import type { TokkulShopOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const { TzTokJad } = Monsters;
 
@@ -100,8 +101,8 @@ export const tksCommand: OSBMahojiCommand = {
 		// Get user Karamja Diary completion status, item being bought, jad kc, and ironman status
 		const [hasKaramjaDiary] = await userhasDiaryTier(user, KaramjaDiary.easy);
 		const item = TokkulShopItems.find(i => stringMatches(i.name, options.buy?.name ?? options.sell?.name ?? ''));
-		const hasKilledJad: boolean = (await user.getKC(TzTokJad.id)) >= 1 ? true : false;
-		const isIronman = user.user.minion_ironman ? true : false;
+		const hasKilledJad: boolean = (await user.getKC(TzTokJad.id)) >= 1;
+		const isIronman = !!user.user.minion_ironman;
 
 		// If the user is buying an invalid item
 		if (!item) return "That's not a valid item.";
@@ -114,7 +115,7 @@ export const tksCommand: OSBMahojiCommand = {
 		// User bank, maxTripLength, quantity given
 		const { bank } = user;
 		const maxTripLength = calcMaxTripLength(user, activity_type_enum.TokkulShop);
-		let quantity = options.buy?.quantity ?? options.sell?.quantity ?? 1;
+		const quantity = options.buy?.quantity ?? options.sell?.quantity ?? 1;
 		const cost = new Bank();
 		const loot = new Bank();
 
@@ -133,7 +134,7 @@ export const tksCommand: OSBMahojiCommand = {
 		}
 
 		// Calculate the amount of trips needed to buy the quantity given
-		let amountOfRestocksNeededToBuy = shopStock ? Math.ceil(quantity / shopStock) : null;
+		const amountOfRestocksNeededToBuy = shopStock ? Math.ceil(quantity / shopStock) : null;
 
 		// Calculate trip duration
 		const duration = amountOfRestocksNeededToBuy
@@ -156,10 +157,10 @@ export const tksCommand: OSBMahojiCommand = {
 
 		// If the user doesn't have the items or tokkul
 		if (!bank.has(cost)) return `You don't own ${cost}.`;
-		const action = Boolean(options.buy) ? 'buy' : 'sell';
+		const action = options.buy ? 'buy' : 'sell';
 
 		// Calculate the max amount of items the user can buy or sell
-		let maxCanTransact = shopStock ? (maxTripLength / Time.Minute) * shopStock : (maxTripLength / 1000) * 50;
+		const maxCanTransact = shopStock ? (maxTripLength / Time.Minute) * shopStock : (maxTripLength / 1000) * 50;
 
 		// If the duration of the trip is longer than the users max allowed trip, give the reason why and the max they can buy or sell
 		if (duration > maxTripLength) {
@@ -169,7 +170,7 @@ export const tksCommand: OSBMahojiCommand = {
 				maxCanTransact
 					? `The max ${item.name.toLowerCase()}s you can ${
 							action === 'buy' ? 'buy' : 'sell'
-					  } is ${maxCanTransact}`
+						} is ${maxCanTransact}`
 					: ''
 			}`;
 		}

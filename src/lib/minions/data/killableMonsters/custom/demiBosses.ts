@@ -1,20 +1,19 @@
 import { Time } from 'e';
-import { LootTable, Monsters } from 'oldschooljs';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import { itemID } from 'oldschooljs/dist/util';
+import { LootTable, MonsterAttribute, Monsters, RareDropTable, itemID, resolveNameBank } from 'oldschooljs';
 
+import { BitField } from '../../../../constants';
 import { HighSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
-import { CustomMonster } from './customMonsters';
 import { NihilizLootTable } from './Nihiliz';
 import { KrakenTable } from './SeaKraken';
 import { TreebeardLootTable } from './Treebeard';
+import type { CustomMonster } from './customMonsters';
 
 const SeaKraken: CustomMonster = {
+	isCustom: true,
 	id: 53_466_534,
 	name: 'Sea Kraken',
 	aliases: ['sea kraken'],
@@ -50,6 +49,7 @@ const SeaKraken: CustomMonster = {
 };
 
 const Malygos: CustomMonster = {
+	isCustom: true,
 	id: 707_070,
 	name: 'Malygos',
 	aliases: ['abyssal dragon', 'abyss drag', 'mally', 'maly', 'malygos'],
@@ -80,6 +80,9 @@ const Malygos: CustomMonster = {
 		},
 		{
 			[itemID('Bandos godsword')]: 5
+		},
+		{
+			[itemID('Axe of the high sungod')]: 10
 		}
 	],
 	itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
@@ -99,10 +102,12 @@ const Malygos: CustomMonster = {
 	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 	notifyDrops: resolveItems(['Abyssal cape', 'Ori']),
 	baseMonster: Monsters.Vorkath,
-	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] }
+	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] },
+	canBePked: true
 };
 
 const Treebeard: CustomMonster = {
+	isCustom: true,
 	id: 932_122,
 	name: 'Treebeard',
 	aliases: ['treebeard', 'tree'],
@@ -130,10 +135,17 @@ const Treebeard: CustomMonster = {
 			'Ancient rejuvenation pool': 10
 		}
 	},
-	baseMonster: Monsters.Hespori
+	baseMonster: Monsters.Hespori,
+	itemInBankBoosts: [
+		resolveNameBank({
+			'Axe of the high sungod': 10
+		})
+	],
+	canBePked: true
 };
 
 export const QueenBlackDragon: CustomMonster = {
+	isCustom: true,
 	id: 192_195,
 	name: 'Queen Black Dragon',
 	aliases: ['queen black dragon', 'qbd', 'qdb'],
@@ -206,6 +218,7 @@ export const QueenBlackDragon: CustomMonster = {
 };
 
 const Nihiliz: CustomMonster = {
+	isCustom: true,
 	id: 708_080,
 	name: 'Nihiliz',
 	aliases: ['nihiliz', 'shadow nihil boss', 'mini nex', 'nihilist'],
@@ -236,6 +249,7 @@ const Nihiliz: CustomMonster = {
 			[itemID('Drygore rapier')]: 15
 		},
 		{
+			[itemID('Offhand spidergore rapier')]: 14,
 			[itemID('Offhand drygore rapier')]: 10
 		},
 		{
@@ -267,10 +281,68 @@ const Nihiliz: CustomMonster = {
 	baseMonster: Monsters.Hespori
 };
 
+const QueenGoldemar: CustomMonster = {
+	isCustom: true,
+	id: 22_193,
+	name: 'Queen Goldemar',
+	aliases: ['queen goldemar'],
+	timeToFinish: Time.Minute * 32,
+	table: new LootTable()
+		.every('Bones')
+		.tertiary(
+			100,
+			new LootTable()
+				.add('Offhand dwarven spatula')
+				.add('Queen goldemar skirt')
+				.add('Dwarven frying pan')
+				.add('Queen goldemar beard')
+				.add('Queen goldemar blouse')
+		)
+		.tertiary(3000, 'Dwarfqueen tiara')
+		.add('Beer', [1, 4])
+		.add('Kebab', [1, 4])
+		.add('Jewellery')
+		.add('Skull piece')
+		.add('Dwarven rock cake')
+		.add('Dwarven stout')
+		.tertiary(5000, 'Clue scroll (grandmaster)'),
+	healAmountNeeded: 20 * 32,
+	attackStyleToUse: GearStat.AttackStab,
+	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+	minimumGearRequirements: {
+		melee: {
+			[GearStat.AttackStab]: 100,
+			[GearStat.DefenceStab]: 150,
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.DefenceMagic]: -20,
+			[GearStat.DefenceRanged]: 150
+		}
+	},
+	groupKillable: false,
+	hp: 800,
+	respawnTime: Time.Second * 10,
+	levelRequirements: {
+		prayer: 121,
+		attack: 99,
+		strength: 105,
+		magic: 105,
+		defence: 99
+	},
+	pohBoosts: {
+		pool: {
+			'Ancient rejuvenation pool': 15
+		}
+	},
+	baseMonster: Monsters.Hespori,
+	tameCantKill: true,
+	requiredBitfield: BitField.isModerator
+};
+
 export const customDemiBosses = {
 	Treebeard,
 	SeaKraken,
 	Malygos,
 	QueenBlackDragon,
-	Nihiliz
+	Nihiliz,
+	QueenGoldemar
 };

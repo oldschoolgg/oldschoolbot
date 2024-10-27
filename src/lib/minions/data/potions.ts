@@ -1,4 +1,4 @@
-import resolveItems from '../../util/resolveItems';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
 const Potions = [
 	{
@@ -252,6 +252,15 @@ const Potions = [
 			'Super antifire potion(2)',
 			'Super antifire potion(3)',
 			'Super antifire potion(4)'
+		])
+	},
+	{
+		name: 'Extended anti-venom+',
+		items: resolveItems([
+			'Extended anti-venom+(1)',
+			'Extended anti-venom+(2)',
+			'Extended anti-venom+(3)',
+			'Extended anti-venom+(4)'
 		])
 	},
 	{

@@ -1,9 +1,11 @@
-import { reduceNumByPercent, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { allItemsThatCanBeDisassembledIDs, IMaterialBank, MaterialType } from '../../lib/invention';
+import { type IMaterialBank, type MaterialType, allItemsThatCanBeDisassembledIDs } from '../../lib/invention';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
 import {
 	calcJunkChance,
 	calculateDisXP,
@@ -11,15 +13,14 @@ import {
 	findDisassemblyGroup
 } from '../../lib/invention/disassemble';
 import { DisassemblySourceGroups } from '../../lib/invention/groups';
-import { inventCommand, inventingCost, inventionBoosts, Inventions } from '../../lib/invention/inventions';
-import { MaterialBank } from '../../lib/invention/MaterialBank';
+import { Inventions, inventCommand, inventingCost, inventionBoosts } from '../../lib/invention/inventions';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { calcPerHour, makeTable, stringMatches, toKMB } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const inventionCommand: OSBMahojiCommand = {
@@ -215,14 +216,15 @@ export const inventionCommand: OSBMahojiCommand = {
 			return str;
 		}
 		if (options.materials) {
-			return `You own: ${user.materialsOwned()}`;
+			const materialsOwned = user.materialsOwned().toString().split(', ').join('\n');
+			return { content: `You own:\n${materialsOwned}`, ephemeral: true };
 		}
 
 		if (options.group) {
 			const group = DisassemblySourceGroups.find(i => i.name === options.group?.group);
 			if (!group) return "That's not a valid group.";
 			let str = `${['Name', 'Weighting/Level'].join('\t')}\n`;
-			let results: [string, number][] = [];
+			const results: [string, number][] = [];
 			for (const baseItem of group.items) {
 				for (const item of Array.isArray(baseItem.item) ? baseItem.item : [baseItem.item]) {
 					results.push([item.name, baseItem.lvl]);
@@ -243,8 +245,9 @@ export const inventionCommand: OSBMahojiCommand = {
 			};
 		}
 
+		// Defer Interaction for all DB-related functions:
+		await deferInteraction(interaction);
 		if (options.tools) {
-			await deferInteraction(interaction);
 			switch (options.tools.command) {
 				case 'items_disassembled': {
 					const a = await mahojiUsersSettingsFetch(user.id, {
@@ -288,7 +291,7 @@ These Inventions are still not unlocked: ${locked
 						.join(', ')}`;
 				}
 				case 'xp': {
-					let xpTable = [];
+					const xpTable = [];
 
 					const lvls = [1, 10, 30, 60, 80, 90, 99, 110, 120];
 					const weightings = [1, 10, 30, 60, 80, 90, 99];
@@ -296,12 +299,12 @@ These Inventions are still not unlocked: ${locked
 						for (const weighting of weightings) {
 							if (weighting > lvl) continue;
 							const { xp } = calculateDisXP({} as any, lvl, 1, weighting);
-							let dur = Time.Second * 0.33;
-							let toolkitDur = reduceNumByPercent(
+							const dur = Time.Second * 0.33;
+							const toolkitDur = reduceNumByPercent(
 								dur,
 								inventionBoosts.dwarvenToolkit.disassembleBoostPercent
 							);
-							let capeAndToolkitDur = reduceNumByPercent(
+							const capeAndToolkitDur = reduceNumByPercent(
 								toolkitDur,
 								inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent
 							);

@@ -1,8 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { prisma } from './settings/prisma';
-import { ItemBank } from './types';
-import { validateBankAndThrow } from './util';
+import type { ItemBank } from './types';
 
 export function makeTransactFromTableBankQueries({
 	bankToAdd,
@@ -36,16 +34,11 @@ DO UPDATE SET quantity = "ge_bank"."quantity" + ${quantity};`)
 	return queries;
 }
 
-export async function transactFromTableBank({ bankToAdd, bankToRemove }: { bankToAdd?: Bank; bankToRemove?: Bank }) {
-	const queries = makeTransactFromTableBankQueries({ bankToAdd, bankToRemove });
-	await prisma.$transaction(queries);
-}
-
 export async function fetchTableBank() {
 	const result = await prisma.$queryRawUnsafe<{ bank: ItemBank }[]>(
 		'SELECT json_object_agg(item_id, quantity) as bank FROM ge_bank WHERE quantity != 0;'
 	);
 	const bank = new Bank(result[0].bank);
-	validateBankAndThrow(bank);
+	bank.validateOrThrow();
 	return bank;
 }

@@ -1,17 +1,17 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import { clamp, reduceNumByPercent, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { Time, clamp, reduceNumByPercent } from 'e';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const mixCommand: OSBMahojiCommand = {
 	name: 'mix',
@@ -72,7 +72,7 @@ export const mixCommand: OSBMahojiCommand = {
 		}
 
 		if (mixableItem.qpRequired && user.QP < mixableItem.qpRequired) {
-			return `You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.item.name}.`;
+			return `You need at least **${mixableItem.qpRequired}** QP to make ${mixableItem.item.name}.`;
 		}
 
 		const requiredItems = new Bank(mixableItem.inputItems);
@@ -101,7 +101,7 @@ export const mixCommand: OSBMahojiCommand = {
 
 		const boosts: string[] = [];
 		const maxTripLength = calcMaxTripLength(user, 'Herblore');
-		let quantity = optionQuantity;
+		let quantity = optionQuantity ?? mixableItem.defaultQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
 
@@ -114,7 +114,7 @@ export const mixCommand: OSBMahojiCommand = {
 			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
 
-		if (!options.wesley && !options.zahur) {
+		if (!(wesley && mixableWesley) && !(zahur && mixableZahur)) {
 			const boostedTimeToMixSingleItem = reduceNumByPercent(
 				timeToMixSingleItem,
 				inventionBoosts.mechaMortar.herbloreSpeedBoostPercent

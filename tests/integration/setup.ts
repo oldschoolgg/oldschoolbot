@@ -1,15 +1,16 @@
 import '../globalSetup';
+import '../../src/lib/globals';
+import '../../src/lib/util/transactItemsFromBank';
+import './mocks';
 
-import { afterEach, beforeEach, vi } from 'vitest';
+import { beforeEach, vi } from 'vitest';
 
-import { prisma } from '../../src/lib/settings/prisma';
+import { PrismaClient } from '@prisma/client';
+import { noOp } from 'e';
 
-vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
-	handleMahojiConfirmation: vi.fn()
-}));
-vi.mock('../../src/lib/util/interactionReply', () => ({
-	deferInteraction: vi.fn()
-}));
+if (!roboChimpClient) {
+	throw new Error('Robochimp client not found.');
+}
 
 export function randomMock(random = 0.1) {
 	Math.random = () => random;
@@ -19,18 +20,23 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util/webhook');
 	return {
 		...actual,
-		sendToChannelID: async (_args: any) => {}
+		sendToChannelID: vi.fn()
 	};
 });
 
-vi.mock('../../src/lib/leagues/stats', async () => {
-	const actual: any = await vi.importActual('../../src/lib/leagues/stats');
+vi.mock('../../src/lib/gear/functions/generateGearImage', async () => {
+	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
 	return {
 		...actual,
-		calcLeaguesRanking: async () => ({
-			pointsRanking: 1,
-			tasksRanking: 1
-		})
+		generateGearImage: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
+	};
+});
+
+vi.mock('../../src/lib/util/chart', async () => {
+	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
+	return {
+		...actual,
+		createChart: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
 	};
 });
 
@@ -40,10 +46,9 @@ globalClient.fetchUser = async (id: string | bigint) => ({
 	send: async () => {}
 });
 
-beforeEach(async () => {
-	await prisma.$connect();
-});
+const __prismaClient = new PrismaClient();
+__prismaClient.$queryRawUnsafe('CREATE EXTENSION IF NOT EXISTS intarray;').then(noOp).catch(noOp);
 
-afterEach(async () => {
-	await prisma.$disconnect();
+beforeEach(async () => {
+	global.prisma = __prismaClient;
 });

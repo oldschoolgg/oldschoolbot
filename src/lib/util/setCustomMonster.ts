@@ -1,6 +1,4 @@
-import { Bank, Monsters } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import { Bank, type LootTable, type Monster, Monsters } from 'oldschooljs';
 
 export function makeKillTable(table: LootTable) {
 	return {
@@ -23,16 +21,16 @@ export default function setCustomMonster(
 	baseItem: Omit<Monster, 'kill'>,
 	newItemData?: Partial<Monster>
 ) {
-	if (Monsters.get(id) && process.env.TEST === undefined) {
+	if (Monsters.get(id)) {
 		console.error(`Tried to set custom monster, but one already existed with the same ID: ${id}`);
 	}
+
 	Monsters.set(id, {
 		...baseItem,
 		...newItemData,
 		name,
 		id,
 		kill: makeKillTable(table).kill,
-		allItems: table.allItems,
-		isCustom: true
+		allItems: table.allItems
 	});
 }

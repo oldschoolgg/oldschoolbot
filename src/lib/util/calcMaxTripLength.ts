@@ -1,5 +1,5 @@
-import { activity_type_enum } from '@prisma/client';
-import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
+import type { activity_type_enum } from '@prisma/client';
+import { Time, calcPercentOfNum, calcWhatPercent } from 'e';
 
 import { BitField, PerkTier } from '../constants';
 import { SkillsEnum } from '../skilling/types';
@@ -53,6 +53,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		case 'Moktang':
 		case 'DepthsOfAtlantis':
 		case 'Naxxus':
+		case 'TuraelsTrials':
 		case 'Dungeoneering': {
 			masterHPCapeBoost = 10;
 			regularHPBoost = true;

@@ -1,22 +1,24 @@
-import { EmbedBuilder } from '@discordjs/builders';
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, time } from 'discord.js';
-import { isFunction, Time } from 'e';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/util';
+import type { BaseMessageOptions, Message } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold, time } from 'discord.js';
+import { Time, isFunction } from 'e';
 import { Items } from 'oldschooljs';
-
-import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
-import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
+
+import { UserError } from '@oldschoolgg/toolkit/structures';
+import { command_name_enum } from '@prisma/client';
+import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
+import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { boxSpawnHandler } from './boxSpawns';
-import { allMbTables } from './bsoOpenables';
-import { BitField, Emoji, globalConfig, secretItems } from './constants';
+import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
+import { allIronmanMbTables, allMbTables } from './bsoOpenables';
+import { BitField, Emoji, globalConfig } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
-import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
-import { prisma } from './settings/prisma';
-import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
+
+import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
+import type { ItemBank } from './types';
+import { formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
@@ -87,7 +89,7 @@ interface MentionCommandOptions {
 	content: string;
 }
 interface MentionCommand {
-	name: string;
+	name: command_name_enum;
 	aliases: string[];
 	description: string;
 	run: (options: MentionCommandOptions) => Promise<unknown>;
@@ -95,7 +97,7 @@ interface MentionCommand {
 
 const mentionCommands: MentionCommand[] = [
 	{
-		name: 'bs',
+		name: command_name_enum.bs,
 		aliases: ['bs'],
 		description: 'Searches your bank.',
 		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
@@ -114,7 +116,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'bal',
+		name: command_name_enum.bal,
 		aliases: ['bal', 'gp'],
 		description: 'Shows how much GP you have.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -125,14 +127,14 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'is',
+		name: command_name_enum.is,
 		aliases: ['is'],
 		description: 'Searches for items.',
 		run: async ({ msg, components, user, content }: MentionCommandOptions) => {
 			const items = Items.filter(
 				i =>
 					[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase()) &&
-					!secretItems.includes(i.id)
+					!i.customItemData?.isSecret
 			).array();
 			if (items.length === 0) return msg.reply('No results for that item.');
 
@@ -151,10 +153,10 @@ const mentionCommands: MentionCommand[] = [
 					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
 					const price = toKMB(Math.floor(item.price));
-
 					const wikiURL = isCustom ? '' : `[Wiki Page](${item.wiki_url}) `;
+					const searchMbTable = user.isIronman ? allIronmanMbTables : allMbTables;
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
-						allMbTables.includes(item.id) ? Emoji.MysteryBox : ''
+						searchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
 					} ${wikiURL}${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
@@ -172,7 +174,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'bank',
+		name: command_name_enum.bank,
 		aliases: ['b', 'bank'],
 		description: 'Shows your bank.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -194,7 +196,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'cd',
+		name: command_name_enum.cd,
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -214,8 +216,18 @@ const mentionCommands: MentionCommand[] = [
 				})
 				.join('\n');
 
+			const currentGuthixCacheInterval = getGuthixianCacheInterval();
+			content += '\n';
+			if (await userHasDoneCurrentGuthixianCache(user)) {
+				content += `Guthixian Cache: ${currentGuthixCacheInterval.nextResetStr}`;
+			} else {
+				content += bold(
+					`Guthixian Cache: Ready ${mentionCommand(globalClient, 'bsominigames', 'guthixian_cache', 'join')}`
+				);
+			}
+
 			if (isDoubleLootActive()) {
-				let date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
+				const date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
 				content += `\n\n2️⃣🇽 **Double Loot is Active until ${time(date)} (${time(date, 'R')})**`;
 			}
 			msg.reply({
@@ -225,7 +237,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'sendtoabutton',
+		name: command_name_enum.sendtoabutton,
 		aliases: ['sendtoabutton'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user }: MentionCommandOptions) => {
@@ -250,7 +262,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 's',
+		name: command_name_enum.stats,
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -283,7 +295,6 @@ export async function onMessage(msg: Message) {
 				guild_id: msg.guildId ? BigInt(msg.guildId) : undefined,
 				command_name: command.name,
 				args: msgContentWithoutCommand,
-				flags: undefined,
 				inhibited: false,
 				is_mention_command: true
 			}

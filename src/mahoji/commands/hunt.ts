@@ -1,25 +1,28 @@
-import { reduceNumByPercent, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time } from 'e';
+import { Bank, type ItemBank } from 'oldschooljs';
 
+import { reduceNumByPercent } from 'e';
+import { itemID } from 'oldschooljs/dist/util';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
-import { UserFullGearSetup } from '../../lib/gear';
+import type { UserFullGearSetup } from '../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import { trackLoot } from '../../lib/lootTrack';
 import { monkeyTiers } from '../../lib/monkeyRumble';
+import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { Creature, HunterTechniqueEnum } from '../../lib/skilling/types';
-import { Peak } from '../../lib/tickers';
-import { Skills } from '../../lib/types';
-import { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches } from '../../lib/util';
+import { type Creature, HunterTechniqueEnum } from '../../lib/skilling/types';
+import type { Peak } from '../../lib/tickers';
+import type { Skills } from '../../lib/types';
+import type { HunterActivityTaskOptions } from '../../lib/types/minions';
+import { hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
 
 export function calculateHunterInput({
@@ -36,7 +39,10 @@ export function calculateHunterInput({
 	creature,
 	bank,
 	isUsingQuickTrap,
-	quickTrapMessages
+	quickTrapMessages,
+	isUsingWebshooter,
+	webshooterMessages,
+	user
 }: {
 	creature: Creature;
 	bank: Bank;
@@ -52,6 +58,9 @@ export function calculateHunterInput({
 	allGear: UserFullGearSetup;
 	isUsingQuickTrap: boolean;
 	quickTrapMessages: string | undefined;
+	isUsingWebshooter: boolean;
+	webshooterMessages: string | undefined;
+	user: MUser;
 }) {
 	const messages: string[] = [];
 	let traps = 1;
@@ -71,6 +80,18 @@ export function calculateHunterInput({
 		)
 	) {
 		return "You can't hunt Chimpchompa's! You need to be wearing a greegree.";
+	}
+
+	const crystalImpling = creature.name === 'Crystal impling';
+
+	if (crystalImpling) {
+		const [hasReqs, reason] = hasSkillReqs(user, soteSkillRequirements);
+		if (!hasReqs) {
+			return `To hunt ${creature.name}, you need: ${reason}.`;
+		}
+		if (user.QP < 150) {
+			return `To hunt ${creature.name}, you need 150 QP.`;
+		}
 	}
 
 	if (skillsAsLevels.hunter + (isUsingHunterPotion ? 2 : 0) < creature.level) {
@@ -151,11 +172,29 @@ export function calculateHunterInput({
 		timePerCatch = boostedActionTime;
 	}
 
-	let maxQuantity = Math.floor(maxTripLength / timePerCatch);
+	if (isUsingWebshooter) {
+		const boostedActionTime = reduceNumByPercent(timePerCatch, inventionBoosts.webshooter.hunterBoostPercent);
+		messages.push(
+			`${inventionBoosts.webshooter.hunterBoostPercent}% boost for Webshooter invention (${webshooterMessages})`
+		);
+		timePerCatch = boostedActionTime;
+	}
+
+	const maxQuantity = Math.floor(maxTripLength / timePerCatch);
 	let quantity = quantityInput;
-	if (!quantity) quantity = maxQuantity;
+	if (!quantity) {
+		if (crystalImpling) {
+			quantity = Math.floor(maxTripLength / Time.Minute);
+		} else {
+			quantity = maxQuantity;
+		}
+	}
 
 	let duration = Math.floor(quantity * timePerCatch);
+
+	if (crystalImpling) {
+		duration = Math.floor(quantity * Time.Minute);
+	}
 
 	if (duration > maxTripLength) {
 		return `You can't go on trips longer than ${formatDuration(
@@ -163,7 +202,7 @@ export function calculateHunterInput({
 		)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${maxQuantity}.`;
 	}
 
-	let totalCost = new Bank();
+	const totalCost = new Bank();
 
 	if (creature.itemsConsumed) {
 		for (const [item, qty] of creature.itemsConsumed.items()) {
@@ -179,11 +218,11 @@ export function calculateHunterInput({
 		}
 	}
 
-	// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
+	// If creatures Herbiboar or Razor-backed kebbit or Crystal Impling use Stamina potion(4)
 	if (shouldUseStaminaPotions) {
-		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID) {
-			let staminaPotionQuantity =
-				creature.id === HERBIBOAR_ID
+		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
+			const staminaPotionQuantity =
+				creature.id === HERBIBOAR_ID || crystalImpling
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 
@@ -205,7 +244,7 @@ export function calculateHunterInput({
 	}
 
 	if (creature.bait) {
-		let reqBank = creature.bait(quantity);
+		const reqBank = creature.bait(quantity);
 		if (!bank.has(reqBank)) {
 			return `You don't have enough bait to catch ${quantity}x ${creature.name}, you need: ${reqBank}.`;
 		}
@@ -300,9 +339,12 @@ export const huntCommand: OSBMahojiCommand = {
 
 		if (!creature) return "That's not a valid creature to hunt.";
 
+		const crystalImpling = creature.name === 'Crystal impling';
+
 		const maxTripLength = calcMaxTripLength(user, 'Hunter');
 		const elligibleForQuickTrap =
 			creature.huntTechnique === HunterTechniqueEnum.BoxTrapping && user.owns('Quick trap');
+		const elligibleForWebshooter = user.owns('Webshooter') && !crystalImpling;
 
 		const hunterInputArgs: Parameters<typeof calculateHunterInput>['0'] = {
 			creature,
@@ -318,7 +360,10 @@ export const huntCommand: OSBMahojiCommand = {
 			QP: user.QP,
 			bank: user.bank,
 			isUsingQuickTrap: elligibleForQuickTrap,
-			quickTrapMessages: undefined
+			quickTrapMessages: undefined,
+			isUsingWebshooter: elligibleForWebshooter,
+			webshooterMessages: undefined,
+			user
 		};
 
 		const preResult = calculateHunterInput({
@@ -334,13 +379,23 @@ export const huntCommand: OSBMahojiCommand = {
 					user,
 					inventionID: InventionID.QuickTrap,
 					duration: preResult.duration
-			  })
+				})
+			: null;
+
+		const webshooterResult = elligibleForWebshooter
+			? await inventionItemBoost({
+					user,
+					inventionID: InventionID.Webshooter,
+					duration: preResult.duration
+				})
 			: null;
 
 		const result = calculateHunterInput({
 			...hunterInputArgs,
 			isUsingQuickTrap: quickTrapResult?.success ?? false,
-			quickTrapMessages: quickTrapResult?.success ? quickTrapResult.messages : undefined
+			quickTrapMessages: quickTrapResult?.success ? quickTrapResult.messages : undefined,
+			webshooterMessages: webshooterResult?.success ? webshooterResult.messages : undefined,
+			isUsingWebshooter: webshooterResult?.success ?? false
 		});
 
 		if (typeof result === 'string') {
@@ -376,9 +431,9 @@ export const huntCommand: OSBMahojiCommand = {
 			type: 'Hunter'
 		});
 
-		let response = `${user.minionName} is now ${creature.huntTechnique} ${quantity}x ${
-			creature.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
+			crystalImpling ? ' ' : ` ${quantity}x `
+		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (messages.length > 0) {
 			response += `\n\n${messages.join(', ')}.`;

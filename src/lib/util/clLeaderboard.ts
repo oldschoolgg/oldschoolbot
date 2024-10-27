@@ -1,51 +1,98 @@
-import { prisma } from '../settings/prisma';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { userEventsToMap } from './userEvents';
+
+export async function fetchMultipleCLLeaderboards(
+	leaderboards: {
+		ironmenOnly: boolean;
+		items: number[];
+		resultLimit: number;
+		clName: string;
+	}[]
+) {
+	const userEvents = await prisma.userEvent.findMany({
+		where: {
+			type: 'CLCompletion'
+		},
+		orderBy: {
+			date: 'asc'
+		}
+	});
+	const parsedLeaderboards = leaderboards.map(l => {
+		const userEventMap = userEventsToMap(
+			userEvents.filter(e => e.collection_log_name && stringMatches(e.collection_log_name, l.clName))
+		);
+		return {
+			...l,
+			userEventMap
+		};
+	});
+
+	const results = await prisma.$transaction([
+		...parsedLeaderboards.map(({ items, userEventMap, ironmenOnly, resultLimit }) => {
+			const SQL_ITEMS = `ARRAY[${items.map(i => `${i}`).join(', ')}]`;
+			const userIds = Array.from(userEventMap.keys());
+			const userIdsList = userIds.length > 0 ? userIds.map(i => `'${i}'`).join(', ') : 'NULL';
+
+			const query = `
+SELECT id, qty
+FROM (
+    	SELECT id, CARDINALITY(cl_array & ${SQL_ITEMS}) AS qty
+    	FROM users
+    	WHERE (cl_array && ${SQL_ITEMS}
+		${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''}) ${userIds.length > 0 ? `OR id IN (${userIdsList})` : ''}
+	) AS subquery
+ORDER BY qty DESC
+LIMIT ${resultLimit};
+`;
+			return prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(query);
+		})
+	]);
+
+	return results.map((res, index) => {
+		const src = parsedLeaderboards[index];
+
+		const users = res
+			.sort((a, b) => {
+				const valueDifference = b.qty - a.qty;
+				if (valueDifference !== 0) {
+					return valueDifference;
+				}
+				const dateA = src.userEventMap.get(a.id);
+				const dateB = src.userEventMap.get(b.id);
+				if (dateA && dateB) {
+					return dateA - dateB;
+				}
+				if (dateA) {
+					return -1;
+				}
+				if (dateB) {
+					return 1;
+				}
+				return 0;
+			})
+			.filter(i => i.qty > 0);
+
+		return {
+			...src,
+			users
+		};
+	});
+}
 
 export async function fetchCLLeaderboard({
 	ironmenOnly,
 	items,
 	resultLimit,
-	method = 'cl_array'
+	clName
 }: {
 	ironmenOnly: boolean;
 	items: number[];
 	resultLimit: number;
-	method?: 'cl_array' | 'raw_cl';
+	method?: 'cl_array';
+	clName: string;
 }) {
-	if (method === 'cl_array') {
-		const users = (
-			await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
-	SELECT user_id::text AS id, CARDINALITY(cl_array) - CARDINALITY(cl_array - array[${items
-		.map(i => `${i}`)
-		.join(', ')}]) AS qty
-	FROM user_stats
-	${ironmenOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
-	WHERE cl_array && array[${items.map(i => `${i}`).join(', ')}]
-	${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''}
-	ORDER BY qty DESC
-	LIMIT ${resultLimit};
-	`)
-		).filter(i => i.qty > 0);
-		return users;
-	}
-	const users = (
-		await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
-SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
-				  FROM (
-  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
-  				id, "collectionLogBank",
-			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
-					.map(i => `'${i}'`)
-					.join(', ')}]))) "inverse_length"
-  FROM users
-  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
-  ${ironmenOnly ? 'AND "minion.ironman" = true' : ''}
-) u
-ORDER BY qty DESC
-LIMIT ${resultLimit};
-`)
-	).filter(i => i.qty > 0);
-
-	return users;
+	const result = await fetchMultipleCLLeaderboards([{ ironmenOnly, items, resultLimit, clName }]);
+	return result[0];
 }
 
 export async function fetchTameCLLeaderboard({ items, resultLimit }: { items: number[]; resultLimit: number }) {

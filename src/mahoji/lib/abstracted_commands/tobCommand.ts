@@ -3,23 +3,24 @@ import { Bank } from 'oldschooljs';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { randomVariation } from 'oldschooljs/dist/util';
 
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Emoji } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
+	TENTACLE_CHARGES_PER_RAID,
 	baseTOBUniques,
 	calcTOBBaseDuration,
 	calculateTOBDeaths,
 	calculateTOBUserGearPercents,
 	createTOBRaid,
-	minimumTOBSuppliesNeeded,
-	TENTACLE_CHARGES_PER_RAID
+	minimumTOBSuppliesNeeded
 } from '../../../lib/data/tob';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
 import {
+	InventionID,
 	canAffordInventionBoost,
 	inventionBoosts,
-	InventionID,
 	inventionItemBoost
 } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -27,9 +28,9 @@ import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank';
 import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { MakePartyOptions } from '../../../lib/types';
-import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
+import type { MakePartyOptions } from '../../../lib/types';
+import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
+import { channelIsSendable, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -49,13 +50,13 @@ const minStats = {
 
 const SCYTHE_CHARGES_PER_RAID = 200;
 
-export async function calcTOBInput(u: MUser) {
+async function calcTOBInput(u: MUser) {
 	const items = new Bank();
 	const kc = await getMinigameScore(u.id, 'tob');
 	items.add('Super combat potion(4)', 1);
 	items.add('Ranging potion(4)', 1);
 
-	let brewsNeeded = Math.max(1, 6 - Math.max(1, Math.ceil((kc + 1) / 10)));
+	const brewsNeeded = Math.max(1, 6 - Math.max(1, Math.ceil((kc + 1) / 10)));
 	const restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
 
 	let healingNeeded = 60;
@@ -66,7 +67,7 @@ export async function calcTOBInput(u: MUser) {
 
 	items.add(
 		getUserFoodFromBank({
-			user: u,
+			gearBank: u.gearBank,
 			totalHealingNeeded: healingNeeded,
 			favoriteFood: u.user.favorite_food,
 			minimumHealAmount: 20
@@ -82,11 +83,11 @@ export async function calcTOBInput(u: MUser) {
 	return items;
 }
 
-export async function checkTOBUser(
+async function checkTOBUser(
 	user: MUser,
 	isHardMode: boolean,
 	teamSize?: number,
-	quantity: number = 1
+	quantity = 1
 ): Promise<[false] | [true, string]> {
 	if (!user.user.minion_hasBought) {
 		return [true, `${user.usernameOrMention} doesn't have a minion`];
@@ -146,7 +147,7 @@ export async function checkTOBUser(
 		'Scythe of vitur',
 		'Drygore longsword'
 	];
-	const requiredMeleeCapes = ['Fire cape', 'Infernal cape', 'TzKal cape'];
+	const requiredMeleeCapes = ['Fire cape', 'Infernal cape', 'TzKal cape', 'Abyssal cape'];
 	if (!meleeGear.hasEquipped(requiredMeleeWeapons) || !meleeGear.hasEquipped(requiredMeleeCapes)) {
 		return [
 			true,
@@ -188,11 +189,11 @@ export async function checkTOBUser(
 	}
 	const dartsNeeded = 150 * quantity;
 	if (blowpipeData.dartQuantity < dartsNeeded) {
-		return [true, `${user.usernameOrMention}, you need atleast ${dartsNeeded} darts in your blowpipe.`];
+		return [true, `${user.usernameOrMention}, you need at least ${dartsNeeded} darts in your blowpipe.`];
 	}
 	const scalesNeeded = 1000 * quantity;
 	if (blowpipeData.scales < scalesNeeded) {
-		return [true, `${user.usernameOrMention}, you need atleast ${scalesNeeded} scales in your blowpipe.`];
+		return [true, `${user.usernameOrMention}, you need at least ${scalesNeeded} scales in your blowpipe.`];
 	}
 	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
 	if (dartIndex < 5) {
@@ -224,7 +225,7 @@ export async function checkTOBUser(
 	if (!user.hasEquipped('Chincannon') && rangeGear.ammo!.quantity < arrowsRequired) {
 		return [
 			true,
-			`${user.usernameOrMention}, you need atleast ${arrowsRequired} arrows equipped in your range setup.`
+			`${user.usernameOrMention}, you need at least ${arrowsRequired} arrows equipped in your range setup.`
 		];
 	}
 
@@ -232,10 +233,10 @@ export async function checkTOBUser(
 		const kc = await getMinigameScore(user.id, 'tob');
 
 		if (kc < 250) {
-			return [true, `${user.usernameOrMention} needs atleast 250 Theatre of Blood KC before doing Hard mode.`];
+			return [true, `${user.usernameOrMention} needs at least 250 Theatre of Blood KC before doing Hard mode.`];
 		}
-		if (!meleeGear.hasEquipped('Infernal cape')) {
-			return [true, `${user.usernameOrMention} needs at least an Infernal cape to do Hard mode.`];
+		if (!meleeGear.hasEquipped(['Infernal cape', 'Abyssal cape'], false, true)) {
+			return [true, `${user.usernameOrMention} needs at least an Infernal or Abyssal cape to do Hard mode.`];
 		}
 	}
 	if (teamSize === 1) {
@@ -266,7 +267,7 @@ export async function checkTOBTeam(
 	users: MUser[],
 	isHardMode: boolean,
 	solo: 'solo' | 'trio' | undefined,
-	quantity: number = 1
+	quantity = 1
 ): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
@@ -280,7 +281,6 @@ export async function checkTOBTeam(
 		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOBUser(user, isHardMode, solo === 'trio' ? 3 : users.length, quantity);
 		if (!checkResult[0]) {
-			continue;
 		} else {
 			return checkResult[1];
 		}
@@ -341,14 +341,14 @@ export async function tobStartCommand(
 	if (isHardMode) {
 		const normalKC = await getMinigameScore(user.id, 'tob');
 		if (normalKC < 250) {
-			return 'You need atleast 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
+			return 'You need at least 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
 		}
 	}
 	if (user.minionIsBusy) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
-	let maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 5 }) ?? 5;
+	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 5 }) ?? 5;
 
 	const partyOptions: MakePartyOptions = {
 		leader: user,
@@ -422,7 +422,7 @@ export async function tobStartCommand(
 
 	let totalDuration = 0;
 	let totalFakeDuration = 0;
-	let deaths: number[][][] = [];
+	const deaths: number[][][] = [];
 
 	let chinCannonUser: MUser | null = null;
 	const wipedRooms: (number | null)[] = [];
@@ -479,7 +479,7 @@ export async function tobStartCommand(
 				preChincannonCost.add(u.gear.range.ammo!.item, 100);
 			}
 			const { realCost } = await u.specialRemoveItems(preChincannonCost.multiply(qty));
-			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
+			await userStatsBankUpdate(u, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
 			if (isChincannonUser) {

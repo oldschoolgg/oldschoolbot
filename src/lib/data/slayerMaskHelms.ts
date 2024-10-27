@@ -1,6 +1,5 @@
 import { Monsters } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type { Item, Monster } from 'oldschooljs/dist/meta/types';
 
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { slayerMasters } from '../slayer/slayerMasters';
@@ -56,7 +55,7 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 	{
 		mask: getOSItem('Black demonical mask'),
 		helm: getOSItem('Black demonical slayer helm'),
-		monsters: [Monsters.BlackDemon.id],
+		monsters: [Monsters.BlackDemon.id, Monsters.Skotizo.id],
 		slayerLevel: 1,
 		...calculateDroprates(Monsters.BlackDemon)
 	},
@@ -144,7 +143,7 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 	{
 		mask: getOSItem('Aberrant mask'),
 		helm: getOSItem('Aberrant slayer helm'),
-		monsters: [Monsters.AberrantSpectre.id],
+		monsters: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		slayerLevel: 60,
 		...calculateDroprates(Monsters.AberrantSpectre)
 	},
@@ -165,4 +164,4 @@ for (const a of slayerMaskHelms) {
 	}
 }
 
-export const slayerMasksHelmsCL = slayerMaskHelms.map(i => [i.helm.id, i.mask.id]).flat();
+export const slayerMasksHelmsCL = slayerMaskHelms.flatMap(i => [i.helm.id, i.mask.id]);

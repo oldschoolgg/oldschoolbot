@@ -1,15 +1,16 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
 export const payCommand: OSBMahojiCommand = {
@@ -75,7 +76,7 @@ export const payCommand: OSBMahojiCommand = {
 				guild_id: guildID ? BigInt(guildID) : undefined,
 				sender: BigInt(user.id),
 				recipient: BigInt(recipient.id),
-				items_sent: bank.bank,
+				items_sent: bank.toJSON(),
 				items_received: undefined,
 				type: 'trade'
 			}

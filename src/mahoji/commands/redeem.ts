@@ -1,12 +1,12 @@
-import { bold } from '@discordjs/builders';
-import { ProductID, products } from '@oldschoolgg/toolkit';
-import { notEmpty, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { notEmpty } from 'e';
 
+import { Time } from 'e';
 import { BOT_TYPE } from '../../lib/constants';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { roboChimpSyncData } from '../../lib/roboChimp';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const redeemCommand: OSBMahojiCommand = {
 	name: 'redeem',
@@ -79,7 +79,7 @@ export const redeemCommand: OSBMahojiCommand = {
 									push: product.bit
 								}
 							}
-					  })
+						})
 					: undefined
 			].filter(notEmpty)
 		);

@@ -1,4 +1,4 @@
-import { PlayerOwnedHouse } from '@prisma/client';
+import type { PlayerOwnedHouse } from '@prisma/client';
 import { describe, expect, test } from 'vitest';
 
 import { calcPOHBoosts, getPOHObject } from '../../src/lib/poh';
@@ -35,7 +35,7 @@ describe('calcPOHBoosts', () => {
 				'Ornate rejuvenation pool': 10
 			}
 		});
-		expect(res).toEqual([0, []]);
+		expect(res).toEqual({ boost: 0, messages: [] });
 	});
 	test('1 boost', () => {
 		const poh: PlayerOwnedHouse = { ...basePOH, pool: getPOHObject('Fancy rejuvenation pool').id };
@@ -47,7 +47,7 @@ describe('calcPOHBoosts', () => {
 				'Ornate rejuvenation pool': 12
 			}
 		});
-		expect(res).toEqual([11, ['11% for Fancy rejuvenation pool']]);
+		expect(res).toEqual({ boost: 11, messages: ['11% for Fancy rejuvenation pool'] });
 	});
 	test('2 boost', () => {
 		const poh: PlayerOwnedHouse = { ...basePOH, pool: getPOHObject('Fancy rejuvenation pool').id };
@@ -64,6 +64,6 @@ describe('calcPOHBoosts', () => {
 				'Demonic throne': 5
 			}
 		});
-		expect(res).toEqual([16, ['11% for Fancy rejuvenation pool', '5% for Demonic throne']]);
+		expect(res).toEqual({ boost: 16, messages: ['11% for Fancy rejuvenation pool', '5% for Demonic throne'] });
 	});
 });

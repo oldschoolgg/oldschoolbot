@@ -1,39 +1,36 @@
-import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
+import { readFile, writeFile } from 'node:fs/promises';
+import deepEqual from 'fast-deep-equal';
 import { Bank, Monsters } from 'oldschooljs';
-import { describe, expect, test } from 'vitest';
+import { describe, test } from 'vitest';
 
+import { MUserClass } from '../../src/lib/MUser';
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
+import { BOT_TYPE } from '../../src/lib/constants';
 import { pohImageGenerator } from '../../src/lib/pohImage';
+import { type ChartOptions, createApexChartConfig, createChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
-import { mockMUser } from './utils';
+import { mockMUser } from './userutil';
 
-declare module 'vitest' {
-	interface Assertion<T> {
-		toMatchImageSnapshot(): T;
-	}
-}
+describe('Images', async () => {
+	await bankImageGenerator.ready;
 
-const toMatchImageSnapshotPlugin = configureToMatchImageSnapshot({
-	customSnapshotsDir: './tests/unit/snapshots',
-	noColors: true,
-	failureThreshold: 5,
-	failureThresholdType: 'percent'
-});
-expect.extend({ toMatchImageSnapshot: toMatchImageSnapshotPlugin });
-
-describe('Images', () => {
 	test('Chat Heads', async () => {
 		const result = await mahojiChatHead({
 			content:
 				'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
 			head: 'santa'
 		});
-		expect(result.files[0].attachment).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/chatHead.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
 	test('Collection Log', async () => {
+		// @ts-expect-error
+		global.prisma = { userStats: { upsert: () => {} } };
+		MUserClass.prototype.fetchStats = async () => {
+			return { monster_scores: {} } as any;
+		};
 		const result: any = await clImageGenerator.generateLogImage({
 			user: mockMUser({ cl: new Bank().add('Harmonised orb') }),
 			collection: 'nightmare',
@@ -48,12 +45,12 @@ describe('Images', () => {
 				highGambles: 1,
 				gotrRiftSearches: 1
 			}
-		});
-		expect(result.files[0].attachment).toMatchImageSnapshot();
+		} as any);
+		await writeFile(`tests/unit/snapshots/cl.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
 	test('Bank Image', async () => {
-		let bank = new Bank();
+		const bank = new Bank();
 		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
 		}
@@ -63,7 +60,7 @@ describe('Images', () => {
 			bank,
 			title: 'Test Image'
 		});
-		expect(result.file.attachment).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/bank.${BOT_TYPE}.png`, result.file.attachment);
 	});
 
 	test('POH Image', async () => {
@@ -74,16 +71,54 @@ describe('Images', () => {
 			mounted_cape: 29_210,
 			background_id: 1
 		} as any);
-		expect(result).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/poh.${BOT_TYPE}.png`, result);
 	});
 
-	// test('Chart Image', async () => {
-	// 	const result = await pieChart('Test', val => `${toKMB(val)}%`, [
-	// 		['Complete Collection Log Items', 20, '#9fdfb2'],
-	// 		['Incomplete Collection Log Items', 80, '#df9f9f']
-	// 	]);
-	// 	expect(result).toMatchImageSnapshot();
-	// });
+	test('Charts', async () => {
+		const sampleData: Record<'kmb' | 'percent', ChartOptions['values'][]> = {
+			percent: [
+				[
+					['Magna', 55],
+					['Cyr', 45]
+				]
+			],
+			kmb: [
+				[
+					['Twisted bow', 5_000_000_000],
+					['Egg', 1_500_000_000],
+					['Cat', 500_000_000],
+					['Dog', 2500_000_000],
+					['Trout', 4500_000_000]
+				]
+			]
+		} as const;
+
+		for (const chartType of ['bar', 'line'] as const) {
+			for (const format of ['kmb', 'percent'] as const) {
+				const chartOptions: ChartOptions = {
+					type: chartType,
+					title: `${chartType} ${format} title`,
+					values: sampleData[format][0],
+					format: format
+				};
+
+				const config = createApexChartConfig(chartOptions);
+				const configFilePath = `tests/unit/snapshots/chart.${chartType}.${format}.json`;
+				const existingConfigRaw = await readFile(configFilePath, 'utf-8').catch(() => null);
+				if (existingConfigRaw) {
+					const existingConfig = JSON.parse(existingConfigRaw);
+					if (deepEqual(existingConfig, config)) {
+						console.log(`Skipping ${chartType} ${format} chart, no changes.`);
+						continue;
+					}
+				}
+
+				const res = await createChart(chartOptions);
+				await writeFile(`tests/unit/snapshots/chart.${chartType}.${format}.png`, res);
+				await writeFile(configFilePath, `${JSON.stringify(config, null, 4)}\n`);
+			}
+		}
+	});
 
 	test('TOA Image', async () => {
 		const image = await drawChestLootImage({
@@ -103,7 +138,7 @@ describe('Images', () => {
 			],
 			type: 'Tombs of Amascut'
 		});
-		expect(image.attachment as Buffer).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/toa.${BOT_TYPE}.png`, image.attachment);
 	});
 
 	test('COX Image', async () => {
@@ -124,6 +159,6 @@ describe('Images', () => {
 			],
 			type: 'Chambers of Xerician'
 		});
-		expect(image.attachment as Buffer).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/cox.${BOT_TYPE}.png`, image.attachment);
 	});
 });

@@ -1,18 +1,18 @@
-import { formatOrdinal, miniID } from '@oldschoolgg/toolkit';
+import { miniID } from '@oldschoolgg/toolkit';
 import { randArrItem, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
-import { BOT_TYPE, CHINCANNON_MESSAGES, Emoji, Events } from '../../../lib/constants';
+import { BOT_TYPE, CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
+import { TOBRooms, TOBUniques } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
+import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -46,8 +46,8 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 	results.push(
 		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'TheatreOfBlood' })
 	);
-	let [, , styles] = resolveAttackStyles(user, {
-		monsterID: -1
+	let styles = resolveAttackStyles({
+		attackStyles: user.getAttackStyles()
 	});
 	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
 		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
@@ -132,7 +132,7 @@ export const tobTask: MinionTask = {
 				);
 			}
 
-			for (let [userID, _userLoot] of Object.entries(result.loot)) {
+			for (const [userID, _userLoot] of Object.entries(result.loot)) {
 				if (data.solo && userID !== leader) continue;
 				const user = allUsers.find(i => i.id === userID);
 				if (!user) continue;
@@ -175,18 +175,6 @@ export const tobTask: MinionTask = {
 				const items = userLoot.items();
 
 				const isPurple = items.some(([item]) => TOBUniques.includes(item.id));
-				const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
-				if (shouldAnnounce) {
-					const itemsToAnnounce = userLoot.filter(item => TOBUniques.includes(item.id), false);
-					globalClient.emit(
-						Events.ServerNotification,
-						`${Emoji.Purple} ${
-							user.badgedUsername
-						} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-							(await getMinigameScore(user.id, minigameID)) + (raidId - wipeCount)
-						)} raid.`
-					);
-				}
 				const deathStr =
 					userDeaths.length === 0 ? '' : `${Emoji.Skull}(${userDeaths.map(i => TOBRooms[i].name)})`;
 
@@ -251,7 +239,7 @@ export const tobTask: MinionTask = {
 		});
 
 		if (chincannonUser) {
-			let msg = randArrItem(CHINCANNON_MESSAGES);
+			const msg = randArrItem(CHINCANNON_MESSAGES);
 			resultMessage += `\n\n**${msg}**`;
 		}
 		const shouldShowImage =
@@ -273,7 +261,7 @@ export const tobTask: MinionTask = {
 								}
 							],
 							type: 'Theatre of Blood'
-					  })
+						})
 					: undefined,
 				data,
 				totalLoot
@@ -293,7 +281,7 @@ export const tobTask: MinionTask = {
 							customTexts: []
 						})),
 						type: 'Theatre of Blood'
-				  })
+					})
 				: undefined,
 			data,
 			null

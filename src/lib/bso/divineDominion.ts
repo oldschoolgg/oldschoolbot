@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { Time, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -35,7 +35,6 @@ export const gods = [
 			"Zamorak d'hide boots",
 			"Zamorak d'hide shield",
 			'Zamorak godsword',
-			'Zamorak bracers',
 			'Zamorakian spear',
 			'Zamorakian hasta',
 			'Unholy blessing',
@@ -82,7 +81,8 @@ export const gods = [
 			'Guthix robe legs',
 			'Guthix stole',
 			"Guthix d'hide boots",
-			"Guthix d'hide shield"
+			"Guthix d'hide shield",
+			'Peaceful blessing'
 		]),
 		friendlyMonsters: [
 			Monsters.Ent.id,
@@ -124,7 +124,6 @@ export const gods = [
 			'Saradomin godsword',
 			'Saradomin sword',
 			'Staff of light',
-			'Saradomin bracers',
 			'Holy blessing'
 		]),
 		friendlyMonsters: [Monsters.Barrows.id, Monsters.Paladin.id, Monsters.CommanderZilyana.id, Monsters.Unicorn.id]
@@ -155,7 +154,6 @@ export const gods = [
 			"Bandos d'hide boots",
 			"Bandos d'hide shield",
 			'Bandos godsword',
-			'Bandos bracers',
 			'Bandos boots',
 			'Bandos tassets',
 			'Bandos chestplate',
@@ -175,7 +173,7 @@ export const gods = [
 		name: 'Armadyl',
 		warpriestSet: getOSItem('Warpriest of Armadyl set'),
 		godItems: resolveItems([
-			'Zamorak platebody',
+			'Armadyl platebody',
 			'Armadyl platelegs',
 			'Armadyl full helm',
 			'Armadyl kiteshield',
@@ -184,7 +182,6 @@ export const gods = [
 			'Armadyl page 2',
 			'Armadyl page 3',
 			'Armadyl page 4',
-			'Armadyl bracers',
 			"Armadyl d'hide body",
 			'Armadyl chaps',
 			'Armadyl coif',
@@ -197,7 +194,8 @@ export const gods = [
 			"Armadyl d'hide boots",
 			"Armadyl d'hide shield",
 			'Armadyl godsword',
-			'Armadyl bracers'
+			'Armadyl bracers',
+			'Honourable blessing'
 		]),
 		friendlyMonsters: [Monsters.Kreearra.id, Monsters.Aviansie.id]
 	}
@@ -279,4 +277,4 @@ ${await divineDominionCheck(user)}`;
 	return response;
 }
 
-export const allGodlyItems = gods.map(g => g.godItems).flat();
+export const allGodlyItems = gods.flatMap(g => g.godItems);

@@ -1,7 +1,7 @@
-import { increaseNumByPercent, Time } from 'e';
+import { Time, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -89,14 +89,6 @@ export const runecraftTask: MinionTask = {
 		if (roll(petDropRate / essenceQuantity)) {
 			loot.add('Rift guardian');
 			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Runecraft} **${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
-					SkillsEnum.Runecraft
-				)} Runecrafting!`
-			);
 		}
 
 		if (daeyaltEssence) {

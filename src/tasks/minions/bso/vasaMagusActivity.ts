@@ -1,6 +1,5 @@
 import { objectEntries, randArrItem, randInt, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
@@ -10,7 +9,7 @@ import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses
 import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { NewBossOptions } from '../../../lib/types/minions';
+import type { NewBossOptions } from '../../../lib/types/minions';
 import { clAdjustedDroprate, getMonster, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -18,7 +17,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-const vasaBosses: Monster[] = [
+const vasaBosses = [
 	Monsters.AbyssalSire,
 	Monsters.AlchemicalHydra,
 	Monsters.Barrows,
@@ -56,8 +55,8 @@ export const vasaTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
 			if (roll(petDroprate)) loot.add('Voidling');
-			let mon = randArrItem(vasaBosses);
-			let qty = randInt(1, 3);
+			const mon = randArrItem(vasaBosses);
+			const qty = randInt(1, 3);
 			lootOf[mon.name] = (lootOf[mon.name] ?? 0) + qty;
 			loot.add(mon.kill(qty, {}));
 		}
@@ -72,7 +71,7 @@ export const vasaTask: MinionTask = {
 			loot.multiply(2);
 		}
 
-		let pet = user.user.minion_equippedPet;
+		const pet = user.user.minion_equippedPet;
 		if (pet && kittens.includes(pet) && roll(1)) {
 			await user.update({
 				minion_equippedPet: getOSItem('Magic kitten').id

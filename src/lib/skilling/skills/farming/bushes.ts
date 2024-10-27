@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { Plant } from '../../types';
+import type { Plant } from '../../types';
 
 export const bushes: Plant[] = [
 	{

@@ -1,20 +1,21 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
+import { resolveItems } from 'oldschooljs/dist/util/util';
+import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, spearWeapon } from '../constants';
 import { NexMonster } from '../nex';
-import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
-import {
+import type {
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TheatreOfBloodTaskOptions,
-	TOAOptions
+	TOAOptions,
+	TheatreOfBloodTaskOptions
 } from '../types/minions';
-import resolveItems from '../util/resolveItems';
+import { anyoneDiedInTOARaid } from '../util';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const masterCombatAchievements: CombatAchievement[] = [
 	{
@@ -1322,7 +1323,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 10,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -1402,7 +1403,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 33,
 			hasChance: data =>
-				isCertainMonsterTrip(Monsters.Vorkath.id)(data) && (data as MonsterActivityTaskOptions).quantity >= 5
+				isCertainMonsterTrip(Monsters.Vorkath.id)(data) && (data as MonsterActivityTaskOptions).q >= 5
 		}
 	},
 	{
@@ -1460,6 +1461,156 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 75,
 			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
+		}
+	},
+	{
+		id: 2129,
+		name: 'One-off',
+		desc: "Complete Wave 11 with either 'Red Flag', 'Dynamic Duo', or 'Doom II' active.",
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 11))
+		}
+	},
+	{
+		id: 2130,
+		name: 'Showboating',
+		desc: 'Defeat Sol Heredit after using Fortis Salute to the north, east, south and west of the arena while he is below 10% hitpoints.',
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
+		}
+	},
+	{
+		id: 2131,
+		name: 'I Brought Mine Too',
+		desc: 'Defeat Sol Heredit using only a Spear, Hasta or Halberd.',
+		type: 'restriction',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data, user, index) =>
+				user.hasEquippedOrInBank(spearWeapon, 'one') &&
+				data.type === 'Colosseum' &&
+				Array.isArray(data.diedAt) &&
+				!data.diedAt[index]
+		}
+	},
+	{
+		id: 2132,
+		name: 'Sportsmanship',
+		desc: 'Defeat Sol Heredit once.',
+		type: 'kill_count',
+		monster: 'Colosseum',
+		requirements: new Requirements().add({
+			minigames: {
+				colosseum: 1
+			}
+		})
+	},
+	{
+		id: 2133,
+		name: 'Colosseum Speed-Chaser',
+		desc: 'Complete the Colosseum with a total time of 28:00 or less.',
+		type: 'speed',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && !data.diedAt[index])) &&
+				data.duration < Time.Minute * 28 * data.quantity
+		}
+	},
+	{
+		id: 2134,
+		name: 'Araxyte Betrayal',
+		desc: 'Have an Araxyte kill three other Araxytes.',
+		type: 'mechanical',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2135,
+		name: 'Perfect Araxxor',
+		desc: "Kill Araxxor perfectly, without taking damage from Araxxor's Mage & Range attacks, melee attack off prayer, araxyte minions damage, or damage from acid pools.",
+		type: 'perfection',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2136,
+		name: 'Let it seep in',
+		desc: 'Kill Araxxor without ever having venom or poison immunity.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 40,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2137,
+		name: 'Arachnid Lover',
+		desc: 'Kill Araxxor 10 times without leaving.',
+		type: 'stamina',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 10;
+			}
+		}
+	},
+	{
+		id: 2138,
+		name: 'Araxxor Speed-Chaser',
+		desc: 'Kill Araxxor 5 times in 10:00.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 5 && timePerKill <= 2;
+			}
+		}
+	},
+	{
+		id: 2139,
+		name: 'Araxxor Master',
+		desc: '	Kill Araxxor 75 times.',
+		type: 'kill_count',
+		monster: 'Araxxor',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Araxxor.id]: 75
+			}
+		})
+	},
+	{
+		id: 2140,
+		name: 'Three Times the Thrashing',
+		desc: 'Kill three Tormented Demons within 3 seconds.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
 		}
 	}
 ];

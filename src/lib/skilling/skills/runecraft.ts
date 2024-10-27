@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
@@ -15,9 +15,10 @@ export interface Rune {
 	inputRune?: Bank;
 	inputTalisman?: Bank;
 	stams?: boolean;
+	ardyDiaryChance?: number;
 }
 
-export interface Tiara {
+interface Tiara {
 	xp: number;
 	id: number;
 	name: string;
@@ -43,7 +44,8 @@ const Runes: Rune[] = [
 			[88, 9],
 			[99, 10]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 5.5,
@@ -59,7 +61,8 @@ const Runes: Rune[] = [
 			[84, 7],
 			[98, 8]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 6,
@@ -73,7 +76,8 @@ const Runes: Rune[] = [
 			[76, 5],
 			[95, 6]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 8.5,
@@ -95,7 +99,8 @@ const Runes: Rune[] = [
 			[52, 3],
 			[78, 4]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 9,
@@ -126,7 +131,8 @@ const Runes: Rune[] = [
 			[35, 2],
 			[70, 3]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 9.5,
@@ -157,7 +163,8 @@ const Runes: Rune[] = [
 			[46, 2],
 			[92, 3]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 10.5,
@@ -178,7 +185,8 @@ const Runes: Rune[] = [
 			[59, 2]
 		],
 		tripLength: Time.Minute * 1.192,
-		qpRequired: 5
+		qpRequired: 5,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 8.5,
@@ -188,7 +196,8 @@ const Runes: Rune[] = [
 			[35, 1],
 			[74, 2]
 		],
-		tripLength: Time.Minute * 1.834
+		tripLength: Time.Minute * 1.834,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 8.7,
@@ -199,7 +208,8 @@ const Runes: Rune[] = [
 			[82, 2]
 		],
 		qpRequired: 15,
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 9,
@@ -209,7 +219,8 @@ const Runes: Rune[] = [
 			[44, 1],
 			[91, 2]
 		],
-		tripLength: Time.Minute * 1.38
+		tripLength: Time.Minute * 1.38,
+		ardyDiaryChance: 22.5
 	},
 	{
 		xp: 9.5,
@@ -220,7 +231,8 @@ const Runes: Rune[] = [
 			[95, 2]
 		],
 		qpRequired: 10,
-		tripLength: Time.Minute * 1.56
+		tripLength: Time.Minute * 1.56,
+		ardyDiaryChance: 20
 	},
 	{
 		xp: 10,
@@ -231,7 +243,8 @@ const Runes: Rune[] = [
 			[99, 2]
 		],
 		qpRequired: 10,
-		tripLength: Time.Minute * 1.192
+		tripLength: Time.Minute * 1.192,
+		ardyDiaryChance: 17.5
 	},
 	{
 		xp: 10.5,
@@ -240,7 +253,8 @@ const Runes: Rune[] = [
 		levels: [[77, 1]],
 		qpRequired: 125,
 		tripLength: Time.Minute * 1.028,
-		stams: true
+		stams: true,
+		ardyDiaryChance: 15
 	},
 	{
 		xp: 8,
@@ -403,6 +417,174 @@ const Tiaras: Tiara[] = [
 		inputTalisman: new Bank({ 'Wrath talisman': 1 }),
 		qpRequired: 200
 	}
+];
+
+export const ouraniaAltarTables: LootTable[] = [
+	new LootTable()
+		.add('Air rune', 1, 5000)
+		.add('Mind rune', 1, 2500)
+		.add('Water rune', 1, 1200)
+		.add('Earth rune', 1, 600)
+		.add('Fire rune', 1, 300)
+		.add('Body rune', 1, 150)
+		.add('Cosmic rune', 1, 85)
+		.add('Chaos rune', 1, 60)
+		.add('Astral rune', 1, 45)
+		.add('Nature rune', 1, 30)
+		.add('Law rune', 1, 15)
+		.add('Death rune', 1, 8)
+		.add('Blood rune', 1, 5)
+		.add('Soul rune', 1, 2),
+	new LootTable()
+		.add('Air rune', 1, 1500)
+		.add('Mind rune', 1, 1800)
+		.add('Water rune', 1, 2100)
+		.add('Earth rune', 1, 2400)
+		.add('Fire rune', 1, 1200)
+		.add('Body rune', 1, 600)
+		.add('Cosmic rune', 1, 175)
+		.add('Chaos rune', 1, 80)
+		.add('Astral rune', 1, 60)
+		.add('Nature rune', 1, 40)
+		.add('Law rune', 1, 24)
+		.add('Death rune', 1, 12)
+		.add('Blood rune', 1, 6)
+		.add('Soul rune', 1, 3),
+	new LootTable()
+		.add('Air rune', 1, 1200)
+		.add('Mind rune', 1, 1300)
+		.add('Water rune', 1, 1350)
+		.add('Earth rune', 1, 1400)
+		.add('Fire rune', 1, 1500)
+		.add('Body rune', 1, 1600)
+		.add('Cosmic rune', 1, 800)
+		.add('Chaos rune', 1, 420)
+		.add('Astral rune', 1, 210)
+		.add('Nature rune', 1, 110)
+		.add('Law rune', 1, 55)
+		.add('Death rune', 1, 32)
+		.add('Blood rune', 1, 15)
+		.add('Soul rune', 1, 8),
+	new LootTable()
+		.add('Air rune', 1, 700)
+		.add('Mind rune', 1, 800)
+		.add('Water rune', 1, 900)
+		.add('Earth rune', 1, 1100)
+		.add('Fire rune', 1, 1200)
+		.add('Body rune', 1, 1300)
+		.add('Cosmic rune', 1, 2000)
+		.add('Chaos rune', 1, 1000)
+		.add('Astral rune', 1, 500)
+		.add('Nature rune', 1, 250)
+		.add('Law rune', 1, 130)
+		.add('Death rune', 1, 60)
+		.add('Blood rune', 1, 40)
+		.add('Soul rune', 1, 20),
+	new LootTable()
+		.add('Air rune', 1, 600)
+		.add('Mind rune', 1, 650)
+		.add('Water rune', 1, 700)
+		.add('Earth rune', 1, 750)
+		.add('Fire rune', 1, 800)
+		.add('Body rune', 1, 1000)
+		.add('Cosmic rune', 1, 1500)
+		.add('Chaos rune', 1, 2000)
+		.add('Astral rune', 1, 1000)
+		.add('Nature rune', 1, 500)
+		.add('Law rune', 1, 260)
+		.add('Death rune', 1, 120)
+		.add('Blood rune', 1, 80)
+		.add('Soul rune', 1, 40),
+	new LootTable()
+		.add('Air rune', 1, 500)
+		.add('Mind rune', 1, 550)
+		.add('Water rune', 1, 600)
+		.add('Earth rune', 1, 650)
+		.add('Fire rune', 1, 700)
+		.add('Body rune', 1, 750)
+		.add('Cosmic rune', 1, 1000)
+		.add('Chaos rune', 1, 1100)
+		.add('Astral rune', 1, 1500)
+		.add('Nature rune', 1, 1350)
+		.add('Law rune', 1, 700)
+		.add('Death rune', 1, 350)
+		.add('Blood rune', 1, 170)
+		.add('Soul rune', 1, 80),
+	new LootTable()
+		.add('Air rune', 1, 450)
+		.add('Mind rune', 1, 500)
+		.add('Water rune', 1, 550)
+		.add('Earth rune', 1, 600)
+		.add('Fire rune', 1, 700)
+		.add('Body rune', 1, 750)
+		.add('Cosmic rune', 1, 950)
+		.add('Chaos rune', 1, 1050)
+		.add('Astral rune', 1, 1400)
+		.add('Nature rune', 1, 1550)
+		.add('Law rune', 1, 800)
+		.add('Death rune', 1, 400)
+		.add('Blood rune', 1, 200)
+		.add('Soul rune', 1, 100),
+	new LootTable()
+		.add('Air rune', 1, 300)
+		.add('Mind rune', 1, 300)
+		.add('Water rune', 1, 300)
+		.add('Earth rune', 1, 400)
+		.add('Fire rune', 1, 400)
+		.add('Body rune', 1, 500)
+		.add('Cosmic rune', 1, 700)
+		.add('Chaos rune', 1, 900)
+		.add('Astral rune', 1, 1200)
+		.add('Nature rune', 1, 1500)
+		.add('Law rune', 1, 1800)
+		.add('Death rune', 1, 1000)
+		.add('Blood rune', 1, 500)
+		.add('Soul rune', 1, 200),
+	new LootTable()
+		.add('Air rune', 1, 200)
+		.add('Mind rune', 1, 200)
+		.add('Water rune', 1, 300)
+		.add('Earth rune', 1, 400)
+		.add('Fire rune', 1, 500)
+		.add('Body rune', 1, 600)
+		.add('Cosmic rune', 1, 700)
+		.add('Chaos rune', 1, 800)
+		.add('Astral rune', 1, 1050)
+		.add('Nature rune', 1, 1350)
+		.add('Law rune', 1, 1450)
+		.add('Death rune', 1, 1450)
+		.add('Blood rune', 1, 600)
+		.add('Soul rune', 1, 400),
+	new LootTable()
+		.add('Air rune', 1, 100)
+		.add('Mind rune', 1, 100)
+		.add('Water rune', 1, 200)
+		.add('Earth rune', 1, 300)
+		.add('Fire rune', 1, 400)
+		.add('Body rune', 1, 500)
+		.add('Cosmic rune', 1, 600)
+		.add('Chaos rune', 1, 700)
+		.add('Astral rune', 1, 1000)
+		.add('Nature rune', 1, 1350)
+		.add('Law rune', 1, 1450)
+		.add('Death rune', 1, 1650)
+		.add('Blood rune', 1, 1000)
+		.add('Soul rune', 1, 650),
+	new LootTable()
+		.add('Air rune', 1, 100)
+		.add('Mind rune', 1, 100)
+		.add('Water rune', 1, 200)
+		.add('Earth rune', 1, 300)
+		.add('Fire rune', 1, 300)
+		.add('Body rune', 1, 400)
+		.add('Cosmic rune', 1, 500)
+		.add('Chaos rune', 1, 600)
+		.add('Astral rune', 1, 950)
+		.add('Nature rune', 1, 1350)
+		.add('Law rune', 1, 1450)
+		.add('Death rune', 1, 1550)
+		.add('Blood rune', 1, 1300)
+		.add('Soul rune', 1, 900)
 ];
 
 const Runecraft = {

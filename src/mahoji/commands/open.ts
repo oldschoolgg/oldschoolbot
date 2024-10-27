@@ -1,14 +1,15 @@
-import { truncateString } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
+import { clamp } from 'e';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import {
+	OpenUntilItems,
 	abstractedOpenCommand,
-	abstractedOpenUntilCommand,
-	OpenUntilItems
+	abstractedOpenUntilCommand
 } from '../lib/abstracted_commands/openCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',
@@ -67,10 +68,11 @@ export const openCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
-				user.bank.filter(item => allOpenablesIDs.has(item.id), false).toString(),
+				user.bank.filter(item => allOpenablesIDs.has(item.id)).toString(),
 				1950
 			)}.`;
 		}
+		options.quantity = clamp(options.quantity ?? 1, 1, 100_000_000);
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(user.id, options.name, options.open_until);
 		}

@@ -1,21 +1,21 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from 'e';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, calcWhatPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { NMZStrategy } from '../../../lib/constants';
+import type { NMZStrategy } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
+import { MAX_QP } from '../../../lib/minions/data/quests';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { Skills } from '../../../lib/types';
+import type { Skills } from '../../../lib/types';
 import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
-import { MAX_QP } from './questCommand';
+import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
 
 const itemBoosts = [
 	// Special weapons
@@ -330,7 +330,9 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 
 	let timePerMonster = Time.Minute * 2;
 	// combat stat boosts
-	const [, , attackStyles] = resolveAttackStyles(user, { monsterID: undefined });
+	const attackStyles = resolveAttackStyles({
+		attackStyles: user.getAttackStyles()
+	});
 	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillLevel(SkillsEnum.Hitpoints);
 	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style using `/minion train style:`';
@@ -426,7 +428,7 @@ export async function nightmareZoneShopCommand(
 			.join(', ')}`;
 	}
 
-	let costPerItem = shopItem.cost;
+	const costPerItem = shopItem.cost;
 	const cost = quantity * costPerItem;
 	if (cost > currentUserPoints) {
 		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${
@@ -456,9 +458,7 @@ export async function nightmareZoneShopCommand(
 		}
 	});
 
-	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
-		costPerItem * quantity
-	).toLocaleString()} Nightmare Zone points.\nYou now have ${currentUserPoints - cost} Nightmare Zone points left.`;
+	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(costPerItem * quantity).toLocaleString()} Nightmare Zone points.\nYou now have ${currentUserPoints - cost} Nightmare Zone points left.`;
 }
 
 export async function nightmareZoneImbueCommand(user: MUser, input = '') {

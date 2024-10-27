@@ -1,8 +1,8 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
-import { notEmpty, objectEntries, randArrItem, randInt, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Time, notEmpty, objectEntries, randArrItem, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
@@ -13,6 +13,7 @@ import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import resolveItems from '../../../lib/util/resolveItems';
 import { flowerTable } from './hotColdCommand';
 
 const messageInABottleMessages = [
@@ -38,7 +39,7 @@ interface Usable {
 	items: Item[];
 	run: (user: MUser) => CommandResponse | Awaited<CommandResponse>;
 }
-export const usables: Usable[] = [];
+const usables: Usable[] = [];
 
 interface UsableUnlock {
 	item: Item;
@@ -608,6 +609,23 @@ usables.push({
 		return 'You used your Double Loot Token!';
 	}
 });
+
+for (const zygomite of resolveItems(['Herbal zygomite spores', 'Barky zygomite spores', 'Fruity zygomite spores'])) {
+	usables.push({
+		items: [getOSItem(zygomite), getOSItem('Deathly toxic potion')],
+		run: async (user: MUser) => {
+			const cost = new Bank().add('Deathly toxic potion').add(zygomite);
+			const loot = new Bank().add('Toxic zygomite spores');
+			await user.transactItems({
+				collectionLog: true,
+				filterLoot: false,
+				itemsToAdd: loot,
+				itemsToRemove: cost
+			});
+			return 'You poured the Deathly toxic potion on the zygomite spores, turning them into Toxic zygomite spores!';
+		}
+	});
+}
 
 for (const [_, val] of objectEntries(mysteriousStepData)) {
 	if (!val.clueItem) continue;

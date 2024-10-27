@@ -1,17 +1,22 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
-import { User } from 'discord.js';
-import { noOp, Time, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank, Items } from 'oldschooljs';
+import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { Prisma } from '@prisma/client';
+import { activity_type_enum, tame_growth, xp_gains_skill_enum } from '@prisma/client';
+import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, noOp } from 'e';
+import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { production } from '../../config';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
-import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
+import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { BitField, BitFieldData, MAX_INT_JAVA } from '../../lib/constants';
+import { BitField, MAX_INT_JAVA, MAX_XP } from '../../lib/constants';
 import {
+	expertCapesCL,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
@@ -23,30 +28,31 @@ import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { dyedItems } from '../../lib/dyedItems';
-import { GearSetupType, GearStat } from '../../lib/gear';
+import { type GearSetupType, GearStat } from '../../lib/gear';
 import { materialTypes } from '../../lib/invention';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
-import { MaterialBank } from '../../lib/invention/MaterialBank';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { Celestara, Solis } from '../../lib/minions/data/killableMonsters/custom/SunMoon';
 import potions from '../../lib/minions/data/potions';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
+import { MAX_QP } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
-import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
-import { prisma } from '../../lib/settings/prisma';
+
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
-import { tameFeedableItems, tameSpecies } from '../../lib/tames';
+import { TameSpeciesID, tameFeedableItems, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
-import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
+import { elderRequiredClueCLItems, elderSherlockItems } from '../../lib/util/elderClueRequirements';
 import {
-	FarmingPatchName,
+	type FarmingPatchName,
 	farmingPatchNames,
 	getFarmingKeyFromName,
 	userGrowingProgressStr
@@ -56,44 +62,36 @@ import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
-import resolveItems from '../../lib/util/resolveItems';
 import { getUsersTame } from '../../lib/util/tameUtil';
+import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 import { generateNewTame } from './nursery';
 import { tameEquippables, tameImage } from './tames';
 
 export async function giveMaxStats(user: MUser) {
-	let updates: Prisma.UserUpdateArgs['data'] = {};
+	const updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(120);
 	}
+	const materials = new MaterialBank();
+	for (const t of materialTypes) materials.add(t, 100000000);
 	await user.update({
 		QP: MAX_QP,
+		slayer_points: 50_000,
+		nmz_points: 50_000,
+		volcanic_mine_points: 500_000,
+		carpenter_points: 5_000_000,
+		zeal_tokens: 500_000,
+		lms_points: 500_000,
+		materials_owned: materials.bank,
 		...updates
 	});
-}
-
-async function givePatronLevel(user: MUser, tier: number) {
-	const tierToGive = tiers[tiers.length - tier];
-	const currentBitfield = user.bitfield;
-	if (!tier || !tierToGive) {
-		await user.update({
-			bitfield: currentBitfield.filter(i => !tiers.map(t => t[1]).includes(i))
-		});
-		return 'Removed patron perks.';
-	}
-	const newBitField: BitField[] = [...currentBitfield, tierToGive[1]];
-	await user.update({
-		bitfield: uniqueArr(newBitField)
-	});
-	return `Gave you ${BitFieldData[tierToGive[1]].name}.`;
 }
 
 const gearPresets = [
@@ -190,7 +188,7 @@ for (const o of BathhouseOres) {
 	baxBathBank.add(o.logs.id, 100_000);
 }
 for (const m of BathwaterMixtures) {
-	for (const i of m.items) baxBathBank.add(i.id, 100_000);
+	for (const i of m.items) baxBathBank.add(i, 100_000);
 }
 baxBathBank.add('Coal', 100_000);
 
@@ -424,7 +422,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							description: 'The xp you want.',
 							required: true,
 							min_value: 1,
-							max_value: 500_000_000
+							max_value: 5_000_000_000
 						}
 					]
 				},
@@ -715,6 +713,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							max_value: 1000
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'events',
+					description: 'See events',
+					options: []
 				}
 			],
 			run: async ({
@@ -749,6 +753,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				check?: { monster_droprates?: string };
 				bingo_tools?: { start_bingo: string };
 				setslayertask?: { master: string; monster: string; quantity: number };
+				events?: {};
 			}>) => {
 				await deferInteraction(interaction);
 				if (production) {
@@ -778,6 +783,17 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return 'reset your last contract date';
 				}
 
+				if (options.events) {
+					const events = await prisma.userEvent.findMany({
+						where: {
+							user_id: user.id
+						},
+						orderBy: {
+							date: 'desc'
+						}
+					});
+					return events.map(userEventToStr).join('\n');
+				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
 						const bingo = await prisma.bingo.findFirst({
@@ -802,7 +818,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				if (options.check) {
 					if (options.check.monster_droprates) {
 						const monster = killableMonsters.find(m =>
-							stringMatches(m.name, options.check!.monster_droprates)
+							stringMatches(m.name, options.check?.monster_droprates)
 						);
 						if (!monster) return 'Invalid monster';
 						const qty = 1_000_000;
@@ -834,9 +850,9 @@ ${droprates.join('\n')}`),
 					}
 					if (options.set.all_ca_tasks) {
 						await user.update({
-							completed_ca_task_ids: Object.values(CombatAchievements)
-								.map(i => i.tasks.map(t => t.id))
-								.flat()
+							completed_ca_task_ids: Object.values(CombatAchievements).flatMap(i =>
+								i.tasks.map(t => t.id)
+							)
 						});
 						return 'Finished all CA tasks.';
 					}
@@ -849,7 +865,7 @@ ${droprates.join('\n')}`),
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
 				if (options.wipe) {
-					let { thing } = options.wipe;
+					const { thing } = options.wipe;
 					if (thing === 'trips') {
 						await prisma.activity.deleteMany({
 							where: {
@@ -857,12 +873,6 @@ ${droprates.join('\n')}`),
 							}
 						});
 						return 'Deleted all your trips.';
-					}
-					if (thing === 'mortimer_cooldown') {
-						await user.update({
-							last_mortimer_kill_date: null
-						});
-						return 'Reset your mortimer cooldown.';
 					}
 					if (thing === 'mt') {
 						await user.update({
@@ -943,16 +953,28 @@ ${droprates.join('\n')}`),
 						)) {
 							fedItems.add(food.item.id);
 						}
-						await generateNewTame(user, specie);
-
+						const tame = await generateNewTame(user, specie);
+						if (!tame) continue;
 						await prisma.tame.updateMany({
 							where: {
-								user_id: user.id
+								id: tame.id
 							},
 							data: {
-								growth_stage: tame_growth.adult
+								growth_stage: tame_growth.adult,
+								fed_items: fedItems.toJSON()
 							}
 						});
+						if (tame.species_id === TameSpeciesID.Igne) {
+							await prisma.tame.update({
+								where: {
+									id: tame.id
+								},
+								data: {
+									equipped_primary: itemID('Gorajan igne claws'),
+									equipped_armor: itemID('Gorajan igne armor')
+								}
+							});
+						}
 					}
 					await getPOH(user.id);
 					await prisma.playerOwnedHouse.update({
@@ -992,6 +1014,8 @@ ${droprates.join('\n')}`),
 						.add('Coins', 100_000_000)
 						.add('Shark', 100_000_000)
 						.add('Vial of blood', 100_000_000)
+						.add('Clue scroll (grandmaster)', 100)
+						.add('Reward casket (grandmaster)', 100)
 						.add('Rune pouch')
 						.add('Zamorakian spear')
 						.add('Dragon warhammer')
@@ -1007,10 +1031,34 @@ ${droprates.join('\n')}`),
 						loot.add(gear.item.id, 100);
 					}
 
-					await user.addItemsToBank({
-						items: loot
+					for (const cape of expertCapesCL) {
+						loot.add(cape);
+					}
+
+					for (const item of [...elderSherlockItems, ...elderRequiredClueCLItems]) {
+						loot.add(Array.isArray(item) ? item[0] : item);
+					}
+					await user.incrementKC(Celestara.id, 1);
+					await user.incrementKC(Solis.id, 1);
+
+					await prisma.activity.create({
+						data: {
+							user_id: BigInt(user.id),
+							completed: true,
+							start_date: new Date(),
+							finish_date: new Date(),
+							channel_id: BigInt(interaction.channelId),
+							group_activity: false,
+							type: activity_type_enum.ClueCompletion,
+							duration: 1,
+							data: {
+								clueID: itemID('Reward casket (grandmaster)'),
+								quantity: 100
+							}
+						}
 					});
-					await user.update({
+
+					const options = {
 						GP: 5_000_000_000,
 						slayer_points: 100_000,
 						tentacle_charges: 10_000,
@@ -1023,6 +1071,7 @@ ${droprates.join('\n')}`),
 						ash_sanctifier_charges: 10_000,
 						celestial_ring_charges: 10_000,
 						scythe_of_vitur_charges: 10_000,
+						venator_bow_charges: 10_000,
 						gear_mage: TOBMaxMageGear.raw() as any,
 						gear_melee: TOBMaxMeleeGear.raw() as any,
 						gear_range: TOBMaxRangeGear.raw() as any,
@@ -1031,25 +1080,33 @@ ${droprates.join('\n')}`),
 							dartQuantity: 100_000,
 							dartID: itemID('Dragon dart')
 						},
-						bitfield: {
-							push: BitField.HasUnlockedYeti
-						}
+						bitfield: [
+							...user.bitfield,
+							BitField.HasScrollOfFarming,
+							BitField.HasScrollOfLongevity,
+							BitField.HasScrollOfTheHunt,
+							BitField.HasMoondashCharm,
+							BitField.HasUnlockedVenatrix,
+							BitField.HasDaemonheimAgilityPass,
+							BitField.HasGuthixEngram,
+							BitField.HasPlantedIvy,
+							BitField.HasArcaneScroll
+						]
+					};
+					for (const skill of Object.values(SkillsEnum)) {
+						// @ts-expect-error
+						options[`skills_${skill}`] = 500_000_000;
+					}
+					await user.update({ ...options, skills_prayer: MAX_XP });
+					await user.addItemsToBank({
+						items: loot,
+						collectionLog: true
 					});
-					await giveMaxStats(user);
 					return `Fully maxed your account, stocked your bank, charged all chargeable items.
-					
+
 Spawned an adult of each tame, fed them all applicable items, and spawned ALL their equippable items into your bank (but not equipped).`;
 				}
-				if (options.patron) {
-					return givePatronLevel(user, Number(options.patron.tier));
-				}
-				if (options.gear) {
-					const gear = gearPresets.find(i => stringMatches(i.name, options.gear!.preset))!;
-					await user.update({
-						[`gear_${options.gear.gear_setup}`]: gear.gear as any
-					});
-					return `Set your gear for ${gear.name}.`;
-				}
+
 				if (options.reset) {
 					const resettable = thingsToReset.find(i => i.name === options.reset?.thing);
 					if (!resettable) return 'Invalid thing to reset.';
@@ -1117,14 +1174,15 @@ Spawned an adult of each tame, fed them all applicable items, and spawned ALL th
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
+					const stats = await user.fetchStats({ monster_scores: true });
 					await userStatsUpdate(
 						user.id,
-						({ monster_scores }) => ({
+						{
 							monster_scores: {
-								...(monster_scores as Record<string, unknown>),
+								...(stats.monster_scores as Record<string, unknown>),
 								[monster.id]: options.setmonsterkc?.kc ?? 1
 							}
-						}),
+						},
 						{}
 					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
@@ -1160,7 +1218,7 @@ Spawned an adult of each tame, fed them all applicable items, and spawned ALL th
 					// Set quantity to 50 if user doesn't assign a quantity
 					const quantity = options.setslayertask?.quantity ?? 50;
 
-					const assignedTask = selectedMaster!.tasks.find(m => m.monster.id === selectedMonster?.id)!;
+					const assignedTask = selectedMaster?.tasks.find(m => m.monster.id === selectedMonster?.id)!;
 
 					if (!selectedMaster) return 'Invalid slayer master.';
 					if (!selectedMonster) return 'Invalid monster.';
@@ -1203,4 +1261,4 @@ Spawned an adult of each tame, fed them all applicable items, and spawned ALL th
 
 				return 'Nothin!';
 			}
-	  };
+		};

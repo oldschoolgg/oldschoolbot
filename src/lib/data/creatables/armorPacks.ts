@@ -1,9 +1,8 @@
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
 
 import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const armorAndItemPacks: Createable[] = [
 	// Melee armour sets
@@ -2366,7 +2365,8 @@ export const armorAndItemPacks: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Partyhat set')]: 1
-		}
+		},
+		noCreatablesCl: true
 	},
 	{
 		name: 'Unpack halloween mask set',
@@ -2581,6 +2581,10 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 			.add('Virtus boots')
 			.add('Virtus gloves'),
 		packed: getOSItem('Virtus armour set')
+	},
+	{
+		unpacked: new Bank().add('Sunfire fanatic helm').add('Sunfire fanatic cuirass').add('Sunfire fanatic chausses'),
+		packed: getOSItem('Sunfire fanatic armour set')
 	}
 ];
 
@@ -2589,14 +2593,13 @@ for (const set of armorSetsSrc) {
 		name: set.packed.name,
 		inputItems: set.unpacked,
 		outputItems: new Bank().add(set.packed.id, 1),
-		type: 'pack',
-		noCl: true
+		type: 'pack'
 	});
 	armorAndItemPacks.push({
 		name: `Unpack ${set.packed.name}`,
 		inputItems: new Bank().add(set.packed.id, 1),
 		outputItems: set.unpacked,
-		noCl: true,
-		type: 'unpack'
+		type: 'unpack',
+		noCl: true
 	});
 }

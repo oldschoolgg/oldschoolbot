@@ -1,11 +1,11 @@
-import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { Time, calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
+import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -16,7 +16,7 @@ interface IContract {
 	name: string;
 	tier: number;
 	level: number;
-	plank: Plank;
+	plank: number;
 	xp: number;
 	points: number;
 	plankXP: number[];
@@ -75,7 +75,7 @@ function calcTrip(
 	const lenPerQty = maxLen / qtyPerMaxLen;
 
 	const qty = Math.floor(maxLen / lenPerQty);
-	let itemsNeeded = new Bank();
+	const itemsNeeded = new Bank();
 	let xp = 0;
 
 	for (let i = 0; i < qty; i++) {
@@ -137,6 +137,11 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
+}
+
+export async function mahoganyHomesPointsCommand(user: MUser) {
+	const balance = user.user.carpenter_points;
+	return `You have **${balance.toLocaleString()}** Mahogany Homes points.`;
 }
 
 export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {

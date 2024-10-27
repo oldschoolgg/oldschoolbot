@@ -23,11 +23,11 @@ import { dungBuyables } from '../skilling/skills/dung/dungData';
 import { ashes } from '../skilling/skills/prayer';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
 import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { getTameSpecies } from '../util/tameUtil';
-import { Task } from './leaguesUtils';
+import type { Task } from './leaguesUtils';
 
 export const masterTasks: Task[] = [
 	{
@@ -308,7 +308,9 @@ export const masterTasks: Task[] = [
 				'First age amulet',
 				'First age cape',
 				'First age bracelet',
-				'First age ring'
+				'First age ring',
+				'First age robe bottom',
+				'First age robe top'
 			].some(i => cl.has(i));
 		}
 	},
@@ -358,7 +360,7 @@ export const masterTasks: Task[] = [
 		id: 4045,
 		name: 'Create every Dwarven item from scratch',
 		has: async ({ cl, skillsLevels }) => {
-			let totalInput = new Bank();
+			const totalInput = new Bank();
 			for (const item of Dwarven) {
 				if (skillsLevels.smithing < item.level) return false;
 				if (!cl.has(item.id)) return false;
@@ -1087,7 +1089,7 @@ export const masterTasks: Task[] = [
 		id: 4150,
 		name: 'Scatter 5000 of every ashes',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
+			const vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
 			return vals.length === ashes.length && vals.every(i => i >= 5000);
 		}
 	},
@@ -1095,7 +1097,7 @@ export const masterTasks: Task[] = [
 		id: 4151,
 		name: 'Catch 50 mystery implings, and 100 of every other imping passively (excluding Lucky implings)',
 		has: async ({ userStats }) => {
-			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
+			const loot = new Bank(userStats.passive_implings_bank as ItemBank);
 			const excludedImplings = [LuckyImpling.id, MysteryImpling.id];
 			for (const implingId of Object.keys(implings)) {
 				if (
@@ -1150,6 +1152,13 @@ export const masterTasks: Task[] = [
 		name: 'Receive 1b Divination',
 		has: async ({ skillsXP }) => {
 			return skillsXP.divination >= 1_000_000_000;
+		}
+	},
+	{
+		id: 4158,
+		name: 'Acquire, complete and open 200 Elder clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (elder)') >= 200;
 		}
 	}
 ];

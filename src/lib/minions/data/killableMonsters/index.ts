@@ -7,7 +7,7 @@ import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
 import { camdozaalMonsters } from './camdozaalMonsters';
@@ -255,10 +255,16 @@ const killableMonsters: KillableMonster[] = [
 				[itemID('Scythe of vitur')]: 15
 			},
 			{
+				[itemID('Masori body (f)')]: 4,
 				[itemID("Karil's leathertop")]: 3
 			},
 			{
+				[itemID('Masori chaps (f)')]: 3,
 				[itemID("Karil's leatherskirt")]: 2
+			},
+			// Transformation ring
+			{
+				[itemID('Ring of stone')]: 10
 			}
 		],
 		levelRequirements: {
@@ -432,3 +438,5 @@ export const effectiveMonsters = [
 		id: MOKTANG_ID
 	}
 ];
+
+export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));

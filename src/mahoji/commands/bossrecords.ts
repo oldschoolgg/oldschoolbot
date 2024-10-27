@@ -1,16 +1,17 @@
-import { EmbedBuilder } from '@discordjs/builders';
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { MessageEditOptions } from 'discord.js';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { MessageEditOptions } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 import { bossNameMap } from 'oldschooljs/dist/constants';
-import { BossRecords } from 'oldschooljs/dist/meta/types';
+import type { BossRecords } from 'oldschooljs/dist/meta/types';
 
 import pets from '../../lib/data/pets';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 // Emojis for bosses with no pets
 const miscEmojis = {
@@ -30,7 +31,7 @@ function getEmojiForBoss(key: MiscEmojisKeys | string) {
 		return miscEmojis[key as MiscEmojisKeys];
 	}
 
-	const pet = pets.find(_pet => _pet.bossKeys && _pet.bossKeys.includes(key));
+	const pet = pets.find(_pet => _pet.bossKeys?.includes(key));
 	if (pet) return pet.emoji;
 }
 

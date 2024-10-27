@@ -1,13 +1,11 @@
-import { userMention } from '@discordjs/builders';
-import { TextChannel } from 'discord.js';
+import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
 import { shuffleArr, uniqueArr } from 'e';
-import { ApplicationCommandOptionType } from 'mahoji';
-import { CommandRunOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
+import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../lib/roboChimp';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const triviaCommand: OSBMahojiCommand = {
 	name: 'trivia',
@@ -47,7 +45,7 @@ export const triviaCommand: OSBMahojiCommand = {
 			buttons.add({
 				name: q,
 				fn: ({ interaction }) => {
-					if (question.answers.includes(q) ? true : false) {
+					if (question.answers.includes(q)) {
 						correctUser = interaction.user.id;
 					}
 				},

@@ -1,13 +1,9 @@
-import { randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
+import { EliteClueTable, LootTable } from 'oldschooljs/dist/simulation/clues/Elite';
 import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import Clue from 'oldschooljs/dist/structures/Clue';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { LampTable } from '../xpLamps';
-import { AllBarrows, BattlestaffTable, CosmeticsTable, runeAlchablesTable, StaffOrbTable } from './sharedTables';
+import { AllBarrows, BattlestaffTable, CosmeticsTable, StaffOrbTable, runeAlchablesTable } from './sharedTables';
 
 const ClueHunterTable = new LootTable()
 	.add('Helm of raedwald')
@@ -99,20 +95,4 @@ const table = new LootTable()
 	.add(LogsTable, 2)
 	.add(Supplies, 1, 5);
 
-class GrandmasterClue extends Clue {
-	open(quantity: number) {
-		const loot = new Bank();
-
-		for (let i = 0; i < quantity; i++) {
-			const numberOfRolls = randInt(5, 11);
-
-			for (let i = 0; i < numberOfRolls; i++) {
-				loot.add(table.roll());
-			}
-		}
-
-		return loot;
-	}
-}
-
-export const GrandmasterClueTable = new GrandmasterClue({ table });
+export const GrandmasterClueTable = new LootTable().every(table, [5, 11]);

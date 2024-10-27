@@ -1,24 +1,24 @@
-import { isFunction } from 'e';
-import { readFileSync } from 'fs';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { readFileSync } from 'node:fs';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { isFunction, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-
+import type { SkillsEnum } from 'oldschooljs/dist/constants';
 import Createables from '../../lib/data/createables';
-import { IMaterialBank } from '../../lib/invention';
-import { transactMaterialsFromUser } from '../../lib/invention/inventions';
+import type { IMaterialBank } from '../../lib/invention';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { transactMaterialsFromUser } from '../../lib/invention/inventions';
+import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
 
 const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
 
-let content = 'Theses are the items that you can create:';
+const content = 'Theses are the items that you can create:';
 const allCreatablesTable = {
 	content,
 	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
@@ -64,7 +64,7 @@ export const createCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
 		const user = await mUserFetch(userID.toString());
 
-		const itemName = options.item.toLowerCase();
+		const itemName = options.item?.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
 			return allCreatablesTable;
@@ -96,7 +96,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			let mySlayerUnlocks = user.user.slayer_unlocks;
+			const mySlayerUnlocks = user.user.slayer_unlocks;
 
 			const { success, errors } = hasSlayerUnlock(
 				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
@@ -144,6 +144,15 @@ export const createCommand: OSBMahojiCommand = {
 		const materialCost = createableItem.materialCost
 			? createableItem.materialCost.clone().multiply(quantity)
 			: null;
+
+		if (
+			materialCost?.has('wooden') &&
+			createableItem.name === 'Potion of light' &&
+			user.skillsAsXP.firemaking >= 500_000_000
+		) {
+			materialCost.bank.wooden = Math.ceil(reduceNumByPercent(materialCost.bank.wooden!, 20));
+		}
+
 		if (materialCost && !materialsOwned.has(materialCost)) {
 			return `You don't own the materials needed to create this, you need: ${materialCost}.`;
 		}
@@ -235,8 +244,8 @@ export const createCommand: OSBMahojiCommand = {
 
 		await updateBankSetting('create_cost', inItems);
 		await updateBankSetting('create_loot', outItems);
-		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
-		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
+		await userStatsBankUpdate(user, 'create_cost_bank', inItems);
+		await userStatsBankUpdate(user, 'create_loot_bank', outItems);
 
 		if (action === 'revert') {
 			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;

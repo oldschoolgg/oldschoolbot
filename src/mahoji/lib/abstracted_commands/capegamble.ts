@@ -1,5 +1,5 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -18,15 +18,62 @@ export async function capeGambleStatsCommand(user: MUser) {
 **Infernal Cape's Gambled:** ${stats.infernal_cape_sacrifices}`;
 }
 
+const itemGambles = [
+	{
+		type: 'fire',
+		item: getOSItem('Fire cape'),
+		trackerKey: 'firecapes_sacrificed',
+		chatHead: 'mejJal',
+		chance: 200,
+		success: {
+			loot: getOSItem('Tzrek-Jad'),
+			message: 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
+		},
+		failMessage: (newSacrificedCount: number) =>
+			`You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
+				newSacrificedCount
+			)} time you gamble cape.`
+	},
+	{
+		type: 'infernal',
+		item: getOSItem('Infernal cape'),
+		trackerKey: 'infernal_cape_sacrifices',
+		chatHead: 'ketKeh',
+		chance: 100,
+		success: {
+			loot: getOSItem('Jal-nib-rek'),
+			message: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours.'
+		},
+		failMessage: (newSacrificedCount: number) =>
+			`No Jal-Nib-Rek for you. This is the ${formatOrdinal(newSacrificedCount)} time you gamble cape.`
+	},
+	{
+		type: 'quiver',
+		item: getOSItem("Dizana's quiver (uncharged)"),
+		trackerKey: 'quivers_sacrificed',
+		chatHead: 'minimus',
+		chance: 200,
+		success: {
+			loot: getOSItem('Smol heredit'),
+			message: 'He seems to like you. Smol heredit is yours.'
+		},
+		failMessage: (newSacrificedCount: number) =>
+			`He doesn't want to go with you. Sorry. This is the ${formatOrdinal(
+				newSacrificedCount
+			)} time you gambled a quiver.`
+	}
+] as const;
+
 export async function capeGambleCommand(
 	user: MUser,
 	type: string,
 	interaction: ChatInputCommandInteraction,
-	autoconfirm: boolean = false
+	autoconfirm = false
 ) {
-	const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape');
-	const key: 'infernal_cape_sacrifices' | 'firecapes_sacrificed' =
-		type === 'fire' ? 'firecapes_sacrificed' : 'infernal_cape_sacrifices';
+	const src = itemGambles.find(i => i.type === type);
+	if (!src) return 'Invalid type. You can only gamble fire capes, infernal capes, or quivers.';
+	const { item } = src;
+	const key = src.trackerKey;
 	const capesOwned = user.bank.amount(item.id);
 
 	if (capesOwned < 1) return `You have no ${item.name}'s to gamble!`;
@@ -48,13 +95,14 @@ export async function capeGambleCommand(
 		},
 		{
 			infernal_cape_sacrifices: true,
-			firecapes_sacrificed: true
+			firecapes_sacrificed: true,
+			quivers_sacrificed: true
 		}
 	);
 	const newSacrificedCount = newStats[key];
 
-	const chance = type === 'fire' ? 200 : 100;
-	const pet = getOSItem(type === 'fire' ? 'Tzrek-Jad' : 'Jal-nib-rek');
+	const { chance } = src;
+	const pet = src.success.loot;
 	const gotPet = roll(chance);
 	const loot = gotPet ? new Bank().add(pet.id) : undefined;
 
@@ -72,11 +120,8 @@ export async function capeGambleCommand(
 				{
 					name: 'image.jpg',
 					attachment: await newChatHeadImage({
-						content:
-							type === 'fire'
-								? 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
-								: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours.',
-						head: type === 'fire' ? 'mejJal' : 'ketKeh'
+						content: src.success.message,
+						head: src.chatHead
 					})
 				}
 			]
@@ -88,15 +133,8 @@ export async function capeGambleCommand(
 			{
 				name: 'image.jpg',
 				attachment: await newChatHeadImage({
-					content:
-						type === 'fire'
-							? `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
-									newSacrificedCount
-							  )} time you gamble cape.`
-							: `No Jal-Nib-Rek for you. This is the ${formatOrdinal(
-									newSacrificedCount
-							  )} time you gamble cape.`,
-					head: type === 'fire' ? 'mejJal' : 'ketKeh'
+					content: src.failMessage(newSacrificedCount),
+					head: src.chatHead
 				})
 			}
 		]

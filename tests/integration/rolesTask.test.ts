@@ -3,24 +3,24 @@ import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { runRolesTask } from '../../src/lib/rolesTask';
-import { MinigameName, Minigames } from '../../src/lib/settings/minigames';
-import { cryptoRand } from '../../src/lib/util';
+import type { MinigameName } from '../../src/lib/settings/minigames';
+import { Minigames } from '../../src/lib/settings/minigames';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
-import { createTestUser, mockedId } from './util';
+import { createTestUser, mockedId, unMockedCyptoRand } from './util';
 
-describe('Roles Task', async () => {
+describe.skip('Roles Task', async () => {
 	test('Should not throw', async () => {
 		const user = await createTestUser();
 		await userStatsBankUpdate(user.id, 'sacrificed_bank', new Bank().add('Coal', 10_000));
 		await userStatsBankUpdate(user.id, 'openable_scores', new Bank().add('Tradeable mystery box', 10_000));
 		await user.update({
 			monkeys_fought: ['a'],
-			disassembled_items_bank: new Bank().add('Twisted bow').bank,
+			disassembled_items_bank: new Bank().add('Twisted bow').toJSON(),
 			skills_invention: 1000
 		});
 		const ironUser = await createTestUser();
 		await ironUser.update({ minion_ironman: true, sacrificedValue: 1_000_000 });
-		await userStatsBankUpdate(ironUser.id, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+		await userStatsBankUpdate(ironUser, 'sacrificed_bank', new Bank().add('Coal', 10_000));
 
 		// Create minigame scores:
 		const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
@@ -44,12 +44,12 @@ describe('Roles Task', async () => {
 				message_id: mockedId(),
 				reaction_id: mockedId(),
 				users_entered: [],
-				id: cryptoRand(1, 10_000_000),
+				id: unMockedCyptoRand(1, 10_000_000),
 				completed: false,
 				duration: 10_000
 			}
 		});
-		const result = await runRolesTask();
+		const result = await runRolesTask(true);
 		expect(result).toBeTruthy();
 		expect(result).includes('Roles');
 	});

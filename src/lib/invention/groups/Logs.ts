@@ -1,5 +1,5 @@
+import type { DisassemblySourceGroup } from '..';
 import getOSItem from '../../util/getOSItem';
-import { DisassemblySourceGroup } from '..';
 
 const i = getOSItem;
 
@@ -28,5 +28,5 @@ export const Logs: DisassemblySourceGroup = {
 		{ item: i('Redwood logs'), lvl: 90 },
 		{ item: i('Elder logs'), lvl: 90 }
 	],
-	parts: { organic: 5, simple: 95 }
+	parts: { organic: 5, wooden: 95 }
 };

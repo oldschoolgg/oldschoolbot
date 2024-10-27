@@ -1,5 +1,5 @@
 import { LootTable } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from './util/getOSItem';
 
@@ -132,6 +132,71 @@ export const keyCrates: Crate[] = [
 					.add('Pumpkinhead pie'),
 				1,
 				89
+			)
+	},
+	{
+		item: getOSItem('Easter crate (s5)'),
+		key: getOSItem('Easter crate key (s5)'),
+		keyCostGP: 10_000_000,
+		table: new LootTable()
+			.tertiary(5000, 'Golden bunny ears')
+			.tertiary(750, new LootTable().add('Cute bunny cape').add('Bunny plushie'))
+			.add(
+				new LootTable()
+					.add('Easter jumper')
+					.add('Easter-egg delight')
+					.add('Easter-egg salad')
+					.add('Easter tunic')
+					.add('Easter breeches')
+					.add('Easter shoes'),
+				1,
+				1
+			)
+			.add(new LootTable().add('Carrot').add('Egg').add('Easter egg'), [2, 3], 99)
+	},
+	{
+		item: getOSItem('Birthday crate (s6)'),
+		key: getOSItem('Birthday crate key (s6)'),
+		keyCostGP: 12_000_000,
+		table: new LootTable()
+			.tertiary(5000, 'Ethereal partyhat')
+			.add(
+				new LootTable()
+					.add('Swan hat')
+					.add('Swan scarf')
+					.add('BSO banner')
+					.add('Gambling skillcape')
+					.add('Monkey cape')
+					.add('BSO flowers')
+					.add('Dice plushie')
+					.add('Offhand dice plushie'),
+				1,
+				1
+			)
+			.add('Hoppy plushie')
+			.add('Plopper nose')
+			.add('Rose tinted glasses')
+			.add('Blabberbeak jumper', 1, 1)
+			.add('Paint box', 1, 2)
+			.add(
+				new LootTable()
+					.add('Ceremonial hat')
+					.add('Ceremonial cape')
+					.add('Ceremonial boots')
+					.add('Ceremonial legs')
+					.add('Ceremonial top'),
+				1,
+				5
+			)
+			.add(
+				new LootTable()
+					.add('Raw plopper bacon')
+					.add('Beer')
+					.add('Birthday balloons')
+					.add('Blueberry birthday cake')
+					.add('Cake'),
+				1,
+				88
 			)
 	}
 ];

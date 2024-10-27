@@ -1,19 +1,21 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, objectEntries } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { buildCombatAchievementsResult } from '../../lib/combat_achievements/caUtils';
+import type { CombatAchievement } from '../../lib/combat_achievements/combatAchievements';
 import {
+	CombatAchievements,
 	allCAMonsterNames,
 	allCombatAchievementTasks,
 	caToPlayerString,
-	CombatAchievement,
-	CombatAchievements,
 	nextCATier
 } from '../../lib/combat_achievements/combatAchievements';
+import { Requirements } from '../../lib/structures/Requirements';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 
@@ -93,11 +95,10 @@ export const caCommand: OSBMahojiCommand = {
 				.filter(i => !('rng' in i));
 
 			const completedTasks: CombatAchievement[] = [];
+			const reqData = await Requirements.fetchRequiredData(user);
 			for (const task of tasksToCheck) {
-				if ('rng' in task) {
-					continue;
-				} else if ('requirements' in task) {
-					const { hasAll } = await task.requirements.check(user);
+				if ('requirements' in task) {
+					const { hasAll } = task.requirements.check(reqData);
 					if (hasAll) {
 						completedTasks.push(task);
 					}
@@ -135,12 +136,12 @@ export const caCommand: OSBMahojiCommand = {
 		}
 
 		if (options.view) {
-			let selectedMonster = options.view.name;
-			let tasksView: CAViewType = options.view.type !== undefined ? options.view.type : 'all';
+			const selectedMonster = options.view.name;
+			const tasksView: CAViewType = options.view.type !== undefined ? options.view.type : 'all';
 
 			if (selectedMonster) {
 				const tasksForSelectedMonster = allCombatAchievementTasks.filter(
-					task => task.monster.toLowerCase() === selectedMonster!.toLowerCase()
+					task => task.monster.toLowerCase() === selectedMonster?.toLowerCase()
 				);
 
 				if (tasksForSelectedMonster.length === 0)

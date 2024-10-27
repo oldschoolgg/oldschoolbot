@@ -1,5 +1,6 @@
-import { User } from 'discord.js';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
@@ -18,7 +19,7 @@ import {
 	slayerStatusCommand,
 	slayerUnblockCommand
 } from '../lib/abstracted_commands/slayerTaskCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const slayerCommand: OSBMahojiCommand = {
@@ -115,9 +116,9 @@ export const slayerCommand: OSBMahojiCommand = {
 										!value
 											? true
 											: r.name.toLowerCase().includes(value) ||
-											  r.aliases?.some(alias =>
+												r.aliases?.some(alias =>
 													alias.toLowerCase().includes(value.toLowerCase())
-											  )
+												)
 									)
 									.map(m => {
 										return { name: m.name, value: m.name };
@@ -142,13 +143,13 @@ export const slayerCommand: OSBMahojiCommand = {
 								if (blockList.slayer_blocked_ids.length === 0) {
 									return [{ name: "You don't have any monsters blocked", value: '' }];
 								}
-								const blockedMonsters = blockList.slayer_blocked_ids.map(mId =>
-									Monsters.find(m => m.id === mId)
+								const blockedMonsters = blockList.slayer_blocked_ids.map(
+									mId => Monsters.find(m => m.id === mId)!
 								);
 								return blockedMonsters
-									.filter(m => (!value ? true : m!.name.toLowerCase().includes(value.toLowerCase())))
+									.filter(m => (!value ? true : m?.name.toLowerCase().includes(value.toLowerCase())))
 									.map(m => {
-										return { name: m!.name, value: m!.name };
+										return { name: m?.name, value: m?.name };
 									});
 							}
 						}
@@ -172,9 +173,9 @@ export const slayerCommand: OSBMahojiCommand = {
 										(!value
 											? true
 											: r.name.toLowerCase().includes(value) ||
-											  r.aliases?.some(alias =>
+												r.aliases?.some(alias =>
 													alias.toLowerCase().includes(value.toLowerCase())
-											  ))
+												))
 								).map(m => {
 									return { name: m.name, value: m.name };
 								});
@@ -232,9 +233,9 @@ export const slayerCommand: OSBMahojiCommand = {
 										(!value
 											? true
 											: r.name.toLowerCase().includes(value) ||
-											  r.aliases?.some(alias =>
+												r.aliases?.some(alias =>
 													alias.toLowerCase().includes(value.toLowerCase())
-											  ))
+												))
 								).map(m => {
 									return { name: m.name, value: m.name };
 								});

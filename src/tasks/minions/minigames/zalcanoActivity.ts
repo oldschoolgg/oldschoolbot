@@ -1,9 +1,11 @@
 import { randInt } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import { Events, ZALCANO_ID } from '../../../lib/constants';
+import { ZALCANO_ID } from '../../../lib/constants';
+import { userhasDiaryTier } from '../../../lib/diaries';
+import { DiaryID } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
+import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -49,16 +51,14 @@ export const zalcanoTask: MinionTask = {
 			await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, duration, source: 'Zalcano' })
 		);
 
-		await ashSanctifierEffect(user, loot, duration, xpRes);
-
-		if (loot.amount('Smolcano') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${randInt(newKC - quantity, newKC)}!`
-			);
-		}
+		const result = ashSanctifierEffect({
+			mutableLootToReceive: loot,
+			gearBank: user.gearBank,
+			bitfield: user.bitfield,
+			duration,
+			hasKourendElite: (await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+		});
+		if (result) await result.updateBank.transact(user);
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

@@ -1,13 +1,24 @@
 import { Monsters } from 'oldschooljs';
 
-import { demonBaneWeapons, MIMIC_MONSTER_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
+import { Time } from 'e';
+import {
+	MIMIC_MONSTER_ID,
+	NIGHTMARE_ID,
+	PHOSANI_NIGHTMARE_ID,
+	ZALCANO_ID,
+	clawWeapon,
+	demonBaneWeapons
+} from '../constants';
 import { NexMonster } from '../nex';
-import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
-import { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
+import type { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
+import type { MonsterActivityTaskOptions } from '../types/minions';
+import { anyoneDiedInTOARaid } from '../util';
+import { resolveItems } from '../util';
+import { crossbows } from '../util/minionUtils';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -1483,6 +1494,133 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Zulrah.id]: 75
+			}
+		})
+	},
+	{
+		id: 1129,
+		name: 'I was here first!',
+		desc: 'Kill a Jaguar Warrior using a Claw-type weapon special attack.',
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 5,
+			hasChance: (data, user, index) =>
+				user.hasEquippedOrInBank(clawWeapon, 'one') &&
+				data.type === 'Colosseum' &&
+				Array.isArray(data.diedAt) &&
+				data.diedAt[index]! > 1
+		}
+	},
+	{
+		id: 1130,
+		name: 'Denied',
+		desc: 'Complete Wave 7 without the Minotaur ever healing other enemies.',
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 12,
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 7))
+		}
+	},
+	{
+		id: 1131,
+		name: 'Furball',
+		desc: 'Complete Wave 4 without taking avoidable damage from a Manticore.',
+		type: 'perfection',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 12,
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 4))
+		}
+	},
+	{
+		id: 1132,
+		name: 'Araxxor Veteran',
+		desc: 'Kill Araxxor 25 times.',
+		type: 'kill_count',
+		monster: 'Araxxor',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Araxxor.id]: 25
+			}
+		})
+	},
+	{
+		id: 1133,
+		name: 'Araxxor Speed-Trialist',
+		desc: 'Kill Araxxor 4 times in 10:00.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 4 && timePerKill <= 2.5;
+			}
+		}
+	},
+	{
+		id: 1134,
+		name: 'Relaxxor',
+		desc: 'Kill Araxxor after destroying six eggs.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	// id: 1135
+	// This was a duplicate CA from Araxxor, don't use this id
+	{
+		id: 1136,
+		name: 'Rapid Reload',
+		desc: 'Hit three Tormented Demons within 3 seconds using a ballista or a crossbow.',
+		type: 'mechanical',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 5,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.TormentedDemon.id)(data) &&
+				(user.hasEquipped(crossbows) ||
+					resolveItems(['Light ballista', 'Heavy ballista']).some(i => user.hasEquipped(i)))
+		}
+	},
+	{
+		id: 1137,
+		name: 'Two Times the Torment',
+		desc: 'Kill two Tormented Demons within 2 seconds.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
+		}
+	},
+	{
+		id: 1138,
+		name: 'Through Fire and Flames',
+		desc: 'Kill a Tormented Demon whilst their shield is inactive.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
+		}
+	},
+	{
+		id: 1139,
+		name: 'Unending Torment',
+		desc: 'Kill a Tormented Demon.',
+		type: 'kill_count',
+		monster: 'Tormented Demon',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TormentedDemon.id]: 1
 			}
 		})
 	}

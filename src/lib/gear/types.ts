@@ -1,6 +1,6 @@
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { Gear } from '../structures/Gear';
+import type { Gear } from '../structures/Gear';
 
 export type UserFullGearSetup = {
 	[key in GearSetupType]: Gear;
@@ -9,6 +9,9 @@ export type UserFullGearSetup = {
 export const GearSetupTypes = ['melee', 'range', 'mage', 'misc', 'skilling', 'wildy', 'fashion', 'other'] as const;
 
 export type GearSetupType = (typeof GearSetupTypes)[number];
+
+export const PrimaryGearSetupTypes = ['melee', 'range', 'mage'] as const;
+export type PrimaryGearSetupType = (typeof PrimaryGearSetupTypes)[number];
 
 export enum GearStat {
 	AttackStab = 'attack_stab',

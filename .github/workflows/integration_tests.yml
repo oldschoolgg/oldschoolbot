@@ -5,42 +5,25 @@ on:
     branches:
       - master
       - bso
+    paths-ignore:
+      - "docs/**"
   pull_request:
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   test:
-    name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     timeout-minutes: 10
-    strategy:
-      matrix:
-        node_version: [18.12.0, 20]
-        os: [ubuntu-latest]
-
+    concurrency:
+      group: master-int-tests
+      cancel-in-progress: true
     steps:
-      - name: Install System Packages
-        run: sudo apt-get install -y build-essential libpq-dev
-
       - name: Checkout Project
-        uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node_version }}
-          cache: yarn
-      - name: Restore CI Cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles(matrix.os == 'windows-latest' && '**\yarn.lock' || '**/yarn.lock') }}
-      - name: Install Dependencies
-        run: yarn --frozen-lockfile
-      - name: Copy Configuration
-        run: |
-          pushd src &&
-          cp config.example.ts config.ts &&
-          popd
-      - name: Copy env
-        run: cp .env.test .env
-      - name: Test
-        run: yarn test:integration
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run Integration Tests
+        run: docker compose up --build --abort-on-container-exit --remove-orphans && docker compose down --volumes --remove-orphans

@@ -1,11 +1,11 @@
-import { randFloat, reduceNumByPercent, Time } from 'e';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
-import { formatDuration } from '../../../lib/util';
+import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
+import type { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
 
 export async function underwaterAgilityThievingCommand(
 	channelID: string,
@@ -25,9 +25,10 @@ export async function underwaterAgilityThievingCommand(
 		return 'You need Graceful top, legs and gloves to do Underwater Agility and Thieving.';
 	}
 
-	if (minutes < 1 || !Number.isInteger(minutes) || isNaN(minutes)) return 'Please specify a valid number of minutes.';
+	if (minutes < 1 || !Number.isInteger(minutes) || Number.isNaN(minutes))
+		return 'Please specify a valid number of minutes.';
 
-	let tripLength = Time.Minute * minutes;
+	const tripLength = Time.Minute * minutes;
 
 	if (tripLength > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -71,7 +72,7 @@ export async function underwaterAgilityThievingCommand(
 	const quantity = Math.round(tripLength / oneLootActionTime);
 	const duration = quantity * oneLootActionTime;
 
-	if (!userBank.has(itemsToRemove.bank)) {
+	if (!userBank.has(itemsToRemove)) {
 		return `You need ${quantity}x Stamina potion(4) for the whole trip, try a lower trip length, turn of stamina usage or make/buy more Stamina potion(4).`;
 	}
 

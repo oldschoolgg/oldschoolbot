@@ -1,32 +1,26 @@
-import { Prisma } from '@prisma/client';
-import { randInt, Time } from 'e';
-import { Bank } from 'oldschooljs';
-import { EquipmentSlot, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Prisma } from '@prisma/client';
+import { Time, randInt } from 'e';
+import { Bank, increaseBankQuantitesByPercent } from 'oldschooljs';
+import { EquipmentSlot, type ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
-import { Events, GLOBAL_BSO_XP_MULTIPLIER, MAX_LEVEL, PeakTier } from '../../../lib/constants';
+import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
+import { GLOBAL_BSO_XP_MULTIPLIER, MAX_LEVEL, PeakTier } from '../../../lib/constants';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
-import { UserFullGearSetup } from '../../../lib/gear';
+import type { UserFullGearSetup } from '../../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
-import { Creature, SkillsEnum } from '../../../lib/skilling/types';
-import { Gear } from '../../../lib/structures/Gear';
-import { Skills } from '../../../lib/types';
-import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	clAdjustedDroprate,
-	increaseBankQuantitesByPercent,
-	roll,
-	skillingPetDropRate,
-	stringMatches,
-	toKMB
-} from '../../../lib/util';
+import { type Creature, SkillsEnum } from '../../../lib/skilling/types';
+import type { Gear } from '../../../lib/structures/Gear';
+import type { Skills } from '../../../lib/types';
+import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
+import { clAdjustedDroprate, roll, skillingPetDropRate, stringMatches, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 
 const riskDeathNumbers = [
@@ -49,6 +43,7 @@ export function calculateHunterResult({
 	allItemsOwned,
 	skillsAsLevels,
 	usingHuntPotion,
+	usingStaminaPotion,
 	bank,
 	quantity,
 	duration,
@@ -63,7 +58,9 @@ export function calculateHunterResult({
 	arcaneHarvesterMessages,
 	portentResult,
 	invincible = false,
-	noRandomness = false
+	noRandomness = false,
+	graceful,
+	experienceScore
 }: {
 	creature: Creature;
 	bank: Bank;
@@ -71,6 +68,7 @@ export function calculateHunterResult({
 	skillsAsLevels: Required<Skills>;
 	skillsAsXP: Required<Skills>;
 	usingHuntPotion: boolean;
+	usingStaminaPotion: boolean;
 	quantity: number;
 	duration: number;
 	creatureScores: ItemBank;
@@ -84,6 +82,8 @@ export function calculateHunterResult({
 	portentResult: Awaited<ReturnType<typeof chargePortentIfHasCharges>>;
 	invincible?: boolean;
 	noRandomness?: boolean;
+	graceful: boolean;
+	experienceScore: number;
 }) {
 	const messages: string[] = [];
 	let gotPked = false;
@@ -96,8 +96,13 @@ export function calculateHunterResult({
 		Math.min(Math.floor(skillsAsLevels.hunter + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 		creature,
 		quantity,
+		usingStaminaPotion,
+		graceful,
+		experienceScore,
 		noRandomness
 	);
+
+	const crystalImpling = creature.name === 'Crystal impling';
 
 	if (creature.wildy) {
 		let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;
@@ -136,8 +141,8 @@ export function calculateHunterResult({
 		}
 		if (gotPked && !died && !invincible) {
 			if (bank.amount('Saradomin brew(4)') >= 10 && bank.amount('Super restore(4)') >= 5) {
-				let lostBrew = randInt(1, 10);
-				let lostRestore = randInt(1, 5);
+				const lostBrew = randInt(1, 10);
+				const lostRestore = randInt(1, 5);
 				const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
 				totalCost.add(cost);
 
@@ -184,8 +189,14 @@ export function calculateHunterResult({
 	}
 	const canGetPet = creature.name.toLowerCase().includes('chinchompa');
 
+	if (crystalImpling) {
+		// Limit it to a max of 22 crystal implings per hour
+		successfulQuantity = Math.min(successfulQuantity, Math.round((21 / 60) * duration) + 1);
+	}
+
 	const loot = new Bank();
 	const realQuantity = successfulQuantity - pkedQuantity;
+
 	if (!portentResult.didCharge) {
 		for (let i = 0; i < realQuantity; i++) {
 			loot.add(creatureTable.roll());
@@ -265,7 +276,8 @@ export function calculateHunterResult({
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration } = data;
+		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
+			data;
 		const user = await mUserFetch(userID);
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
@@ -275,13 +287,22 @@ export const hunterTask: MinionTask = {
 
 		if (!creature) return;
 
+		const crystalImpling = creature.name === 'Crystal impling';
+
+		let graceful = false;
+		if (userHasGracefulEquipped(user)) {
+			graceful = true;
+		}
+
+		const experienceScore = await user.getCreatureScore(creature.id);
+
 		const boostRes =
 			creature.id === HERBIBOAR_ID && user.allItemsOwned.has('Arcane harvester')
 				? await inventionItemBoost({
 						user,
 						inventionID: InventionID.ArcaneHarvester,
 						duration: quantity * Time.Minute * 4
-				  })
+					})
 				: null;
 
 		const minutes = Math.ceil(duration / Time.Minute);
@@ -298,6 +319,7 @@ export const hunterTask: MinionTask = {
 				skillsAsLevels: user.skillsAsLevels,
 				skillsAsXP: user.skillsAsXP,
 				usingHuntPotion,
+				usingStaminaPotion,
 				bank: user.bank,
 				quantity,
 				duration,
@@ -309,7 +331,9 @@ export const hunterTask: MinionTask = {
 				wildyPeakTier: wildyPeak?.peakTier,
 				isUsingArcaneHarvester: boostRes?.success ?? false,
 				arcaneHarvesterMessages: boostRes?.success ? boostRes.messages : undefined,
-				portentResult
+				portentResult,
+				graceful,
+				experienceScore
 			});
 
 		await transactItems({
@@ -353,24 +377,18 @@ export const hunterTask: MinionTask = {
 			});
 		}
 
-		let str = `${user}, ${user.minionName} finished hunting ${
-			creature.name
-		} ${quantity}x times, due to clever creatures you missed out on ${
-			quantity - successfulQuantity
-		}x catches. ${xpStr}`;
+		let str = `${user}, ${user.minionName} finished hunting ${creature.name}${
+			crystalImpling
+				? '.'
+				: ` ${quantity}x times, due to clever creatures you missed out on ${
+						quantity - successfulQuantity
+					}x catches. `
+		}${xpStr}`;
 
 		str += `\n\nYou received: ${loot}.`;
 
 		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
 			str += "\n\n**You have a funny feeling like you're being followed....**";
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a ${
-					loot.amount('Baby chinchompa') > 0
-						? '**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>'
-						: '**Herbi** <:Herbi:357773175318249472>'
-				} while hunting a ${creature.name}, their Hunter level is ${user.skillsAsLevels.hunter}!`
-			);
 		}
 
 		if (messages.length > 0) {

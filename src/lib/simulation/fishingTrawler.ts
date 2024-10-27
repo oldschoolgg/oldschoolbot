@@ -1,11 +1,11 @@
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { randomVariation, roll } from '../util';
-import resolveItems from '../util/resolveItems';
 
-const trawlerFish = [
+export const trawlerFish = [
 	{
 		id: itemID('Raw shrimps'),
 		level: 1,
@@ -58,7 +58,7 @@ const trawlerFish = [
 	}
 ];
 
-const RawJunkTable = new LootTable()
+export const RawJunkTable = new LootTable()
 	.add('Broken arrow')
 	.add('Broken glass')
 	.add('Broken staff')

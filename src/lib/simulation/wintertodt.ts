@@ -1,20 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { normal } from '@oldschoolgg/toolkit/util';
 import { calcPercentOfNum, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
+import { Bank, LootTable, convertXPtoLVL, resolveItems } from '../util';
 
 import { MAX_XP } from '../constants';
-import { LevelRequirements, SkillsEnum } from '../skilling/types';
-import { ItemBank } from '../types';
+import type { LevelRequirements } from '../skilling/types';
+import { SkillsEnum } from '../skilling/types';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
-import { normal } from '../util/smallUtils';
 
 interface WintertodtCrateOptions {
 	points: number;
-	itemsOwned: ItemBank;
+	itemsOwned: Bank;
 	skills: Partial<LevelRequirements>;
 	firemakingXP: number;
 }
@@ -138,7 +134,7 @@ const pyroPieces = resolveItems([
 	'Pyromancer boots'
 ]) as number[];
 
-export class WintertodtCrateClass {
+class WintertodtCrateClass {
 	public pickWeightedLootItem<T>(lvl: number, array: T[]): T {
 		const maxIndex = Math.max(Math.floor(calcPercentOfNum(Math.min(lvl + 15, 99), array.length)), 1);
 		const minIndex = Math.floor(calcPercentOfNum(Math.max(lvl - 70, 1), array.length));
@@ -171,7 +167,7 @@ export class WintertodtCrateClass {
 		}
 	}
 
-	public lootRoll(skills: Partial<LevelRequirements>) {
+	public lootRoll(loot: Bank, skills: Partial<LevelRequirements>) {
 		const roll = randInt(1, 9);
 
 		if (roll <= 6) {
@@ -179,15 +175,11 @@ export class WintertodtCrateClass {
 			const skill = this.determineSkillOfTableSlot(matTable);
 			const skillLevel = convertXPtoLVL(skills[skill] ?? 1);
 			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable);
-			return [
-				{
-					item: rolledItem[0],
-					quantity: randInt(rolledItem[1][0], rolledItem[1][1])
-				}
-			];
+			const [min, max] = rolledItem[1];
+			return loot.add(rolledItem[0], randInt(min, max));
 		}
 
-		return OtherTable.roll();
+		OtherTable.roll(1, { targetBank: loot });
 	}
 
 	public calcNumberOfRolls(points: number): number {
@@ -258,14 +250,14 @@ export class WintertodtCrateClass {
 		for (let i = 0; i < rolls; i++) {
 			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot), firemakingXP);
 
-			if (rolledUnique instanceof Array) {
+			if (Array.isArray(rolledUnique)) {
 				const [itemID, qty] = rolledUnique;
 				loot.add(itemID, qty);
 				continue;
 			}
 
 			loot.add(rolledUnique);
-			loot.add(this.lootRoll(skills));
+			this.lootRoll(loot, skills);
 		}
 
 		return loot;

@@ -11,11 +11,11 @@ import {
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { BossUser } from '../../../lib/structures/Boss';
-import { NewBossOptions } from '../../../lib/types/minions';
+import type { BossUser } from '../../../lib/structures/Boss';
+import type { NewBossOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -108,7 +108,7 @@ export const ignecarusTask: MinionTask = {
 				taskQuantity: quantity
 			});
 			await user.addItemsToBank({ items: loot, collectionLog: true });
-			const purple = Object.keys(loot.bank).some(itemID => IgnecarusNotifyDrops.includes(parseInt(itemID)));
+			const purple = loot.itemIDs.some(itemID => IgnecarusNotifyDrops.includes(itemID));
 			resultStr += `\n${purple ? Emoji.Purple : ''}${user} received ${loot}.`;
 
 			announceLoot({

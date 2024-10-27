@@ -1,5 +1,5 @@
 import { roll } from 'e';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
 import { globalDroprates } from '../data/globalDroprates';
 import { clAdjustedDroprate } from '../util';

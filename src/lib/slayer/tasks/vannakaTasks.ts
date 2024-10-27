@@ -3,7 +3,7 @@ import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../minions/data/killableMonsters';
 import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 
 export const vannakaTasks: AssignableSlayerTask[] = [
 	{
@@ -178,7 +178,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		amount: [40, 80],
 		weight: 6,
 		monsters: [Monsters.EarthWarrior.id],
-		levelRequirements: killableMonsters.find(k => k.id === Monsters.EarthWarrior.id)!.levelRequirements,
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.EarthWarrior.id)?.levelRequirements,
 		combatLevel: 35,
 		unlocked: true
 	},
@@ -481,7 +481,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualMage,
+		monster: Monsters.SpiritualRanger,
 		amount: [110, 170],
 
 		weight: 8,
@@ -492,8 +492,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 3,
-		unlocked: true,
-		dontAssign: true
+		unlocked: true
 	},
 	{
 		monster: Monsters.TerrorDog,

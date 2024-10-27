@@ -1,4 +1,4 @@
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { DisassemblySourceGroups } from './groups';
 
@@ -23,6 +23,7 @@ export const materialTypes = [
 	'pious',
 	'crystal',
 	'rocky',
+	'wooden',
 	// Special
 	'corporeal',
 	'third-age',

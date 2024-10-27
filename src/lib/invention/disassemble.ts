@@ -1,27 +1,27 @@
-import { calcWhatPercent, clamp, percentChance, reduceNumByPercent, Time, uniqueArr } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { Time, calcWhatPercent, clamp, percentChance, reduceNumByPercent, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
+import {
+	type DisassembleFlag,
+	type DisassemblyItem,
+	type DisassemblySourceGroup,
+	type MaterialType,
+	allItemsThatCanBeDisassembledIDs
+} from '.';
 import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
-import { DisassembleTaskOptions } from '../types/minions';
+import type { DisassembleTaskOptions } from '../types/minions';
 import { calcPerHour, formatDuration, makeTable, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { getItem } from '../util/getOSItem';
 import { minionIsBusy } from '../util/minionIsBusy';
-import {
-	allItemsThatCanBeDisassembledIDs,
-	DisassembleFlag,
-	DisassemblyItem,
-	DisassemblySourceGroup,
-	MaterialType
-} from '.';
-import { DisassemblyGroupMap, DisassemblySourceGroups } from './groups';
-import { inventionBoosts, InventionID, inventionItemBoost, materialBoosts } from './inventions';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
+import { DisassemblyGroupMap, DisassemblySourceGroups } from './groups';
+import { InventionID, inventionBoosts, inventionItemBoost, materialBoosts } from './inventions';
 
 const MASTER_CAPE_JUNK_REDUCTION = 5;
 
@@ -73,7 +73,7 @@ function doesHaveMasterCapeBoost(
 			? {
 					has: true,
 					cape: skillCape.masterCape.name
-			  }
+				}
 			: { has: false };
 	}
 	return { has: false };
@@ -92,7 +92,7 @@ export function calcJunkChance(lvl: number, hasMasterCape: boolean) {
 	return clamp(base, 2, 100);
 }
 export function calculateDisXP(group: DisassemblySourceGroup, inventionLevel: number, quantity: number, lvl: number) {
-	let baseXPPerItem = 2 + floor(lvl / 11) + floor(inventionLevel / 5) + (lvl - lvl / 1.2) * (lvl / 7.5);
+	const baseXPPerItem = 2 + floor(lvl / 11) + floor(inventionLevel / 5) + (lvl - lvl / 1.2) * (lvl / 7.5);
 	let xp = Math.ceil(quantity * baseXPPerItem);
 	if (group.xpReductionDivisor) xp /= group.xpReductionDivisor;
 	return {
@@ -144,7 +144,7 @@ const flagToMaterialMap: [DisassembleFlag, MaterialType][] = [
 
 function flagEffectsInDisassembly(item: DisassemblyItem, loot: MaterialBank) {
 	const tertiaryChance = item.lvl;
-	let success = percentChance(tertiaryChance);
+	const success = percentChance(tertiaryChance);
 	if (!success) return;
 	for (const [flag, mat] of flagToMaterialMap) {
 		if (item.flags?.has(flag)) {
@@ -182,7 +182,7 @@ export async function handleDisassembly({
 	let timePer = Time.Second * 0.33;
 	const maxTripLength = calcMaxTripLength(user, 'Disassembling');
 
-	let messages: string[] = [];
+	const messages: string[] = [];
 	if (bank.has('Dwarven toolkit')) {
 		const boostedActionTime = reduceNumByPercent(timePer, inventionBoosts.dwarvenToolkit.disassembleBoostPercent);
 		const boostRes = await inventionItemBoost({
@@ -208,6 +208,12 @@ export async function handleDisassembly({
 		);
 	}
 
+	if (user.owns('Inventors tools')) {
+		const reduction = 30;
+		timePer = reduceNumByPercent(timePer, reduction);
+		messages.push(`${reduction}% faster disassembly for inventors tools`);
+	}
+
 	// The max amount of items they can disassemble this trip
 	const maxCanDo = floor(maxTripLength / timePer);
 
@@ -216,7 +222,7 @@ export async function handleDisassembly({
 	const duration = realQuantity * timePer;
 
 	const masterCapeBoost = doesHaveMasterCapeBoost(user, _group.group);
-	if (masterCapeBoost && masterCapeBoost.has) {
+	if (masterCapeBoost?.has) {
 		messages.push(`${MASTER_CAPE_JUNK_REDUCTION}% junk chance reduction for ${masterCapeBoost.cape}`);
 	}
 	const junkChance = calcJunkChance(data.lvl, masterCapeBoost ? masterCapeBoost.has : false);
@@ -259,19 +265,19 @@ async function materialAnalysis(user: MUser, bank: Bank) {
 	let materialAnalysis = '';
 	let totalXP = 0;
 	let totalDur = 0;
-	let totalCost = new Bank();
-	let totalMats = new MaterialBank();
+	const totalCost = new Bank();
+	const totalMats = new MaterialBank();
 
-	let start = Date.now();
+	const start = Date.now();
 	for (const [item, qty] of bank.items()) {
 		if (!allItemsThatCanBeDisassembledIDs.has(item.id)) continue;
 		let thisXP = 0;
 		let thisDur = 0;
-		let thisCost = new Bank();
-		let thisMats = new MaterialBank();
+		const thisCost = new Bank();
+		const thisMats = new MaterialBank();
 
 		while (bank.amount(item.id) > 0) {
-			let res = await handleDisassembly({ user, inputQuantity: qty, item });
+			const res = await handleDisassembly({ user, inputQuantity: qty, item });
 			if (res.error === null) {
 				thisXP += res.xp;
 				thisDur += res.duration;
@@ -300,7 +306,7 @@ Total\t${toKMB(totalXP)}\t${formatDuration(totalDur)}\t${totalMats}\t${totalCost
 
 export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user: MUser }): CommandResponse {
 	let totalXP = 0;
-	let totalMaterials = new MaterialBank();
+	const totalMaterials = new MaterialBank();
 	const results: ({ item: Item } & DisassemblyResult)[] = [];
 	const cantBeDisassembled = [];
 	for (const [item, qty] of bank.items()) {
@@ -398,8 +404,8 @@ export function calcWholeDisXP(user: MUser, item: Item, quantity: number) {
 
 const duplicateItems = [];
 const foundItems: number[] = [];
-for (let group of DisassemblySourceGroups) {
-	for (let itm of group.items) {
+for (const group of DisassemblySourceGroups) {
+	for (const itm of group.items) {
 		const items: Item[] = Array.isArray(itm.item) ? itm.item : [itm.item];
 		if (items.some(i => foundItems.includes(i.id))) {
 			duplicateItems.push(items.map(i => ({ name: i.name, group: i.name })));

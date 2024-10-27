@@ -1,5 +1,5 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { reduceNumByPercent, Time } from 'e';
+import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../../lib/constants';
@@ -8,9 +8,9 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { KillableMonster } from '../../../lib/minions/types';
+import type { KillableMonster } from '../../../lib/minions/types';
 import { Gear } from '../../../lib/structures/Gear';
-import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
+import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
@@ -44,7 +44,7 @@ const inquisitorItems = resolveItems([
 	"Inquisitor's mace"
 ]);
 
-export const phosaniBISGear = new Gear({
+const phosaniBISGear = new Gear({
 	head: "Inquisitor's great helm",
 	neck: 'Amulet of torture',
 	body: "Inquisitor's hauberk",
@@ -71,7 +71,7 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 		return `${user.usernameOrMention} is busy right now and can't fight the nightmare!`;
 	}
 
-	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+	const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 	if (!hasReqs) {
 		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 	}
@@ -89,7 +89,7 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 			return `${user.usernameOrMention} doesn't meet the requirements: ${requirements[1]}.`;
 		}
 		if ((await user.getKC(NightmareMonster.id)) < 50) {
-			return "You need to have killed The Nightmare atleast 50 times before you can face the Phosani's Nightmare.";
+			return "You need to have killed The Nightmare at least 50 times before you can face the Phosani's Nightmare.";
 		}
 	}
 }
@@ -100,13 +100,13 @@ function perUserCost(user: MUser, quantity: number, isPhosani: boolean, hasShado
 	const sangCharges = sangChargesPerKc * quantity;
 	if (isPhosani) {
 		if (hasShadow && user.user.tum_shadow_charges < tumCharges) {
-			return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+			return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
 				globalClient,
 				'minion',
 				'charge'
 			)}`;
 		} else if (hasSang && user.user.sang_charges < sangCharges) {
-			return `You need atleast ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+			return `You need at least ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
 				globalClient,
 				'minion',
 				'charge'
@@ -129,8 +129,8 @@ function perUserCost(user: MUser, quantity: number, isPhosani: boolean, hasShado
 }
 
 export async function nightmareCommand(user: MUser, channelID: string, name: string, qty: number | undefined) {
-	const hasShadow = user.gear.mage.hasEquipped("Tumeken's shadow") ? true : false;
-	const hasSang = user.gear.mage.hasEquipped('Sanguinesti staff') ? true : false;
+	const hasShadow = !!user.gear.mage.hasEquipped("Tumeken's shadow");
+	const hasSang = !!user.gear.mage.hasEquipped('Sanguinesti staff');
 	name = name.toLowerCase();
 	let isPhosani = false;
 	let type: 'solo' | 'mass' = 'solo';
@@ -232,7 +232,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	if (hasCob && type === 'solo') {
 		effectiveTime /= 2;
 	}
-	let durQtyRes = await calcDurQty(
+	const durQtyRes = await calcDurQty(
 		users,
 		{ ...NightmareMonster, timeToFinish: effectiveTime },
 		qty,
@@ -240,7 +240,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		Time.Minute * 30
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
-	let [quantity, duration, perKillTime] = durQtyRes;
+	const [quantity, duration, perKillTime] = durQtyRes;
 
 	const totalCost = new Bank();
 	let soloFoodUsage: Bank | null = null;
@@ -248,7 +248,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	const cost = perUserCost(user, quantity, isPhosani, hasShadow, hasSang);
 	if (typeof cost === 'string') return cost;
 
-	let healingMod = isPhosani ? 1.5 : 1;
+	const healingMod = isPhosani ? 1.5 : 1;
 	try {
 		const { foodRemoved } = await removeFoodFromUser({
 			user,
@@ -317,11 +317,11 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 			: `${user.usernameOrMention}'s party of ${
 					users.length
-			  } is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
+				} is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
 					perKillTime
-			  )} instead of ${formatDuration(
+				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
-			  )} - the total trip will take ${formatDuration(duration)}.`;
+				)} - the total trip will take ${formatDuration(duration)}.`;
 	if (hasCob && type === 'solo') {
 		str += '\n2x Boost from Cob\n';
 	}
@@ -330,8 +330,8 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 			? hasShadow
 				? ` Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. `
 				: hasSang
-				? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
-				: ''
+					? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
+					: ''
 			: ''
 	}`;
 

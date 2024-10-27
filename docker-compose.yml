@@ -1,30 +1,33 @@
-# Set the version of docker compose to use
-version: "3.9"
-
-# The containers that compose the project
 services:
-  osb:
-    image: postgres:13-alpine
-    command: -c 'max_connections=1000'
+  db:
+    image: postgres:16-alpine
+    command: -c 'max_connections=5000'
     restart: always
-    container_name: osb_database
+    container_name: bso_database
     ports:
-      - "5435:1234"
+      - "5435:5435"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: osb_integration_test
-      PGPORT: 1234
+      PGPORT: 5435
 
-  robochimp:
-    image: postgres:13-alpine
-    command: -c 'max_connections=1000'
+  redis:
+    image: redis:latest
     restart: always
-    container_name: robochimp_database
-    ports:
-      - "5436:1235"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: robochimp_integration_test
-      PGPORT: 1235
+      - REDIS_PORT=6379
+    ports:
+      - "6379:6379"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build-run
+    depends_on:
+      - db
+      - redis
+    environment:
+      ROBOCHIMP_DATABASE_URL: postgresql://postgres:postgres@db:5435/robochimp_integration_test?connection_limit=10&pool_timeout=0&schema=public
+      DATABASE_URL: postgresql://postgres:postgres@db:5435/bso_integration_test?connection_limit=10&pool_timeout=0&schema=public
+      WAIT_HOSTS: db:5435, redis:6379

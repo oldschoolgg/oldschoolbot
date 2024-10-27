@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
@@ -29,7 +29,10 @@ export async function kgCommand(
 			strength: 105,
 			defence: 105
 		},
+		speedMaxReduction: 45,
+		boostMax: 40,
 		itemBoosts: [
+			['Axe of the high sungod', 20],
 			['Drygore longsword', 10],
 			['Offhand drygore longsword', 5],
 			['Gorajan warrior helmet', 2],
@@ -51,8 +54,7 @@ export async function kgCommand(
 			feet: 'Gorajan warrior boots',
 			cape: 'TzKal cape',
 			ring: 'Warrior ring(i)',
-			weapon: 'Drygore longsword',
-			shield: 'Offhand drygore longsword',
+			'2h': 'Axe of the high sungod',
 			neck: "Brawler's hook necklace"
 		}),
 		gearSetup: 'melee',
@@ -89,7 +91,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 
 		return {
 			embeds: [embed.data],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
+			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
 		};
 	} catch (err: any) {
 		return `The mass failed to start for this reason: ${err}.`;
