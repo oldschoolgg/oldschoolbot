@@ -3,7 +3,6 @@ import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { busyImmuneCommands } from '../../lib/constants';
-import { logWrapFn } from '../../lib/util';
 import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
 
@@ -24,8 +23,8 @@ type PrecommandReturn = Promise<
 			dontRunPostCommand?: boolean;
 	  }
 >;
-export const preCommand: (opts: PreCommandOptions) => PrecommandReturn = logWrapFn('PreCommand', rawPreCommand);
-async function rawPreCommand({
+
+export async function preCommand({
 	abstractCommand,
 	userID,
 	guildID,
@@ -58,13 +57,6 @@ async function rawPreCommand({
 	});
 
 	if (inhibitResult !== undefined) {
-		debugLog('Command inhibited', {
-			type: 'COMMAND_INHIBITED',
-			command_name: abstractCommand.name,
-			user_id: userID,
-			guild_id: guildID,
-			channel_id: channelID
-		});
 		return inhibitResult;
 	}
 }

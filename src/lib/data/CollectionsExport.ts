@@ -1546,7 +1546,8 @@ export const allPetsCL = resolveItems([
 	'Butch',
 	'Baron',
 	'Scurry',
-	'Smol heredit'
+	'Smol heredit',
+	'Nid'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1927,7 +1928,8 @@ export const miscellaneousCL = resolveItems([
 	'Uncut onyx',
 	'Merfolk trident',
 	'Orange egg sac',
-	'Blue egg sac'
+	'Blue egg sac',
+	'Broken zombie axe'
 ]);
 
 export const diariesCL = [
