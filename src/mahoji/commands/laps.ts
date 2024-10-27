@@ -11,6 +11,7 @@ import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { timePerAlchAgility } from '../lib/abstracted_commands/alchCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const unlimitedFireRuneProviders = [
@@ -29,7 +30,7 @@ const unlimitedFireRuneProviders = [
 function alching(user: MUser, tripLength: number) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const { bank } = user;
-	const favAlchables = user.favAlchs(tripLength);
+	const favAlchables = user.favAlchs(tripLength, true);
 
 	if (favAlchables.length === 0) {
 		return null;
@@ -43,7 +44,7 @@ function alching(user: MUser, tripLength: number) {
 
 	const hasInfiniteFireRunes = user.hasEquipped(unlimitedFireRuneProviders);
 
-	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
+	let maxCasts = Math.floor(tripLength / timePerAlchAgility);
 	maxCasts = Math.min(alchItemQty, maxCasts);
 	maxCasts = Math.min(nats, maxCasts);
 	if (!hasInfiniteFireRunes) {
