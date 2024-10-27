@@ -86,7 +86,11 @@ export function getItemCostFromConsumables({
 
 	const maxBasedOnTime = Math.floor(maxTripLength / timeToFinish);
 	const maxCanKillWithItemCost =
-		consumableCosts.length === 0 ? Number.POSITIVE_INFINITY : Math.floor(floatCostsPerKill.fits(gearBank.bank));
+		consumableCosts.length === 0
+			? Number.POSITIVE_INFINITY
+			: floatCostsPerKill.length() === 0
+				? Number.POSITIVE_INFINITY
+				: Math.floor(floatCostsPerKill.fits(gearBank.bank));
 	const maxAllowed = Math.min(maxBasedOnTime, maxCanKillWithItemCost);
 	let finalQuantity = Math.max(1, inputQuantity ? Math.min(inputQuantity, maxAllowed) : maxAllowed) ?? maxAllowed;
 	if (slayerKillsRemaining && finalQuantity > slayerKillsRemaining) {
