@@ -282,6 +282,9 @@ class CollectionLogTask {
 				y += 1;
 			}
 
+			if (!userCollectionBank.has(item)) {
+				ctx.globalAlpha = 0.3;
+			}
 			const { drawOptions } = await bankImageGenerator.drawItemIDSprite({
 				itemID: item,
 				ctx,
