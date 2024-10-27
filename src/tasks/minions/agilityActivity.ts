@@ -1,4 +1,4 @@
-import { Time, increaseNumByPercent, randInt, roll } from 'e';
+import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -94,9 +94,11 @@ export function calculateAgilityResult({
 
 	// Calculate failed laps
 	let lapsFailed = 0;
-	for (let t = 0; t < quantity; t++) {
-		if (randInt(1, 100) < chanceOfFailingAgilityPyramid(agilityLevel)) {
-			lapsFailed += 1;
+	if (!course.cantFail) {
+		for (let t = 0; t < quantity; t++) {
+			if (randInt(1, 100) < chanceOfFailingAgilityPyramid(agilityLevel)) {
+				lapsFailed += 1;
+			}
 		}
 	}
 
@@ -106,6 +108,18 @@ export function calculateAgilityResult({
 	// Calculate Crystal Shards for Priff
 	if (course.name === 'Prifddinas Rooftop Course') {
 		loot.add('Crystal shard', quantity);
+	}
+
+	// Wyrm Course
+	if (course.name === 'Colossal Wyrm Agility Course') {
+		for (let i = 0; i < quantity; i++) {
+			if (roll(3)) {
+				loot.add('termites', randInt(8, 10));
+				if (percentChance(75)) {
+					loot.add('blessed bone shards', randInt(22, 28));
+				}
+			}
+		}
 	}
 
 	// Agility pyramid
@@ -200,6 +214,18 @@ export const agilityTask: MinionTask = {
 			);
 		}
 
+		// Roll for monkey backpacks
+		if (course.name === 'Ape Atoll Agility Course') {
+			const currentLapCount = (newLapScores as ItemBank)[course.id];
+			for (const monkey of Agility.MonkeyBackpacks) {
+				if (currentLapCount < monkey.lapsRequired) break;
+				if (!user.hasEquippedOrInBank(monkey.id)) {
+					loot.add(monkey.id);
+					messages.push(`You received the ${monkey.name} monkey backpack!`);
+				}
+			}
+		}
+
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
 			const alchGP = alchedItem.highalch! * alch.quantity;
@@ -214,19 +240,7 @@ export const agilityTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
 
-		// Roll for monkey backpacks
-		if (course.id === 6) {
-			const currentLapCount = (newLapScores as ItemBank)[course.id];
-			for (const monkey of Agility.MonkeyBackpacks) {
-				if (currentLapCount < monkey.lapsRequired) break;
-				if (!user.hasEquippedOrInBank(monkey.id)) {
-					loot.add(monkey.id);
-					messages.push(`You received the ${monkey.name} monkey backpack!`);
-				}
-			}
-		}
-
-		// Roll for pets
+		// Roll for custom pets & loot
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			if (course.id === 4) {
 				const scruffyDroprate = clAdjustedDroprate(
@@ -286,8 +300,13 @@ export const agilityTask: MinionTask = {
 				}
 			}
 		}
+
 		// Roll for pet
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, course.petChance);
+		const { petDropRate } = skillingPetDropRate(
+			user,
+			SkillsEnum.Agility,
+			typeof course.petChance === 'number' ? course.petChance : course.petChance(currentLevel)
+		);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
 			petMessages.push("You have a funny feeling you're being followed...");
