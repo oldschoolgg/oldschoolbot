@@ -18,10 +18,10 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 3. Install [Visual Studio Installer](https://visualstudio.microsoft.com/downloads/).
    - Install the `Community` version.
    - Once downloaded select and install `Workloads > Desktop development with C++`.
-3. Install [Postgres 16](https://www.postgresql.org/download/) and **pgAdmin 4** for interacting with postgres (optional, but helpful).
+4. Install [Postgres 16](https://www.postgresql.org/download/) and **pgAdmin 4** for interacting with postgres (optional, but helpful).
    - Remember the **Port Number** and **Password**. Both are used later in **Configuration**.
-4. Install Yarn using: `npm i -g yarn`
-5. Clone the repo: `git clone https://github.com/oldschoolgg/oldschoolbot.git`
+5. Install Yarn using: `npm i -g yarn`
+6. Clone the repo: `git clone https://github.com/oldschoolgg/oldschoolbot.git`
 
 ### Configuration
 
