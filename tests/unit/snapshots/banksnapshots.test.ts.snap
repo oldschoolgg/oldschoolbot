@@ -6877,6 +6877,17 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "23759": 1,
+    },
+    "name": "Revert Corrupted youngllef",
+    "noCl": true,
+    "outputItems": {
+      "23757": 1,
+    },
+  },
+  {
     "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
@@ -8290,6 +8301,17 @@ exports[`OSB Creatables 1`] = `
     "name": "Bone Squirrel",
     "outputItems": {
       "30151": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "23757": 1,
+    },
+    "name": "Corrupted youngllef",
+    "outputItems": {
+      "23759": 1,
     },
   },
   {
