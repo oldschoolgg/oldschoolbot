@@ -182,7 +182,7 @@ export const courses: Course[] = [
 		xp: agilLevel => (agilLevel >= 62 ? 650 : 520),
 		lapTime: 60,
 		cantFail: true,
-		petChance: 50_000, //TODO: Update with real rate when it's confirmed
+		petChance: agilLevel => (agilLevel >= 62 ? 25_406 : 28_503),
 		requiredQuests: [QuestID.ChildrenOfTheSun]
 	}
 ];
