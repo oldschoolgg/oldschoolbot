@@ -217,7 +217,7 @@ export const mineCommand: OSBMahojiCommand = {
 				return `To mine ${ore.name}, you need at least 125 Quest Points.`;
 			}
 		}
-		
+
 		const res = determineMiningTrip({
 			gearBank: user.gearBank,
 			ore,
