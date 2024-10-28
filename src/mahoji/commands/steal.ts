@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { mentionCommand, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -75,6 +75,16 @@ export const stealCommand: OSBMahojiCommand = {
 			} a ${stealable.name}.`;
 		}
 
+		if (stealable.questID && !user.user.finished_quest_ids.includes(stealable.questID)) {
+			return `You need to complete the "${stealable.questRequired}" quest to ${
+				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
+			} a ${stealable.name}. Send your minion to do the quest using: ${mentionCommand(
+				globalClient,
+				'activities',
+				'quest'
+			)}.`;
+		}
+		
 		if (stealable.fireCapeRequired) {
 			if (user.cl.amount('Fire cape') === 0) {
 				return `In order to ${
@@ -100,7 +110,7 @@ export const stealCommand: OSBMahojiCommand = {
 			return 'This NPC/Stall is missing variable respawnTime.';
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Pickpocket');
+		const maxTripLength = (stealable.name === 'Wealthy Citizen'? 2 : 1 ) * calcMaxTripLength(user, 'Pickpocket');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToTheft);

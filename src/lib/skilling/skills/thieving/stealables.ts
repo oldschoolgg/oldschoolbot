@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
+import { QuestID } from '../../../minions/data/quests';
 
 const {
 	BeardedBandit,
@@ -23,6 +24,7 @@ const {
 	TzHaarHur,
 	Vyre,
 	WarriorWoman,
+	WealthyCitizen,
 	YanilleWatchman
 } = Monsters;
 
@@ -34,6 +36,8 @@ export interface Stealable {
 	xp: number;
 	qpRequired?: number;
 	fireCapeRequired?: boolean;
+	questID?: QuestID;
+	questRequired?: String,
 	table: LootTable;
 	id: number;
 	petChance: number;
@@ -528,6 +532,23 @@ const pickpocketables: Stealable[] = [
 		intercept: 18.131_76,
 		customTickRate: 2.5,
 		petChance: 257_211
+	},
+	{
+		name: 'Wealthy Citizen',
+		type: 'pickpockable',
+		level: 50,
+		xp: 96,
+		aliases: ['wealthy', 'varlamore'],
+		table: WealthyCitizen.pickpocketTable!,
+		id: WealthyCitizen.id,
+		stunTime: 5,
+		stunDamage: 3,
+		slope: 100.0, //guaranteed
+		intercept: 0,
+		customTickRate: 10, // 2 tick thieving for 20s, downtime for ~80s 
+		petChance: 257_211,
+		questRequired: 'Children of the Sun',
+		questID: QuestID.ChildrenOfTheSun
 	},
 	{
 		name: 'Desert Bandit',
