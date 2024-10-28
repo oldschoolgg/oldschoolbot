@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, notEmpty, randInt } from 'e';
 import { Bank } from 'oldschooljs';
@@ -6,6 +6,7 @@ import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
+import { BitField } from '../../lib/constants';
 import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions';
@@ -13,6 +14,7 @@ import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -323,6 +325,8 @@ export const clueCommand: OSBMahojiCommand = {
 
 		timeToFinish = result.duration;
 
+		const response: Awaited<CommandResponse> = {};
+
 		let implingLootString = '';
 		let implingClues = 0;
 		if (!clueImpling) {
@@ -350,18 +354,30 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 
 			await addToOpenablesScores(user, new Bank().add(implingJarOpenable.id, openedImplings));
-			await user.transactItems({
+
+			const { previousCL } = await user.transactItems({
 				itemsToAdd: implingLoot,
 				itemsToRemove: new Bank().add(clueImpling, openedImplings).add(clueTier.scrollID, bankedClues),
 				collectionLog: true
 			});
+
+			const image = await makeBankImage({
+				bank: implingLoot,
+				title: `Loot from ${openedImplings}x ${implingJarOpenable.name}`,
+				user,
+				previousCL,
+				mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
+			});
+
+			response.files = [image.file];
+
 			if (bankedClues + implingClues === 0) {
 				return `You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s. At least you received the following loot: ${implingLoot}.`;
 			}
 			quantity = bankedClues + implingClues;
 			implingLootString = `\n\nYou will find ${implingClues} clue${
 				implingClues === 0 || implingClues > 1 ? 's' : ''
-			} from ${openedImplings}x ${clueImpling.name}s, and receive the following loot: ${implingLoot}.`;
+			} from ${openedImplings}x ${clueImpling.name}s.`; //, and receive the following loot: ${implingLoot}.`;
 		}
 
 		duration = timeToFinish * quantity;
@@ -376,10 +392,12 @@ export const clueCommand: OSBMahojiCommand = {
 			duration,
 			type: 'ClueCompletion'
 		});
-		return `${user.minionName} is now completing ${quantity}x ${
+
+		response.content = `${user.minionName} is now completing ${quantity}x ${
 			clueTier.name
 		} clues, it'll take around ${formatDuration(duration)} to finish.${
 			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
 		}${implingLootString}`;
+		return response;
 	}
 };
