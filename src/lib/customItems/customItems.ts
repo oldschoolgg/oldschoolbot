@@ -13119,7 +13119,7 @@ setCustomItem(
 			superTradeableButTradeableOnGE: true
 		}
 	},
-	500_000
+	1
 );
 
 setCustomItem(
