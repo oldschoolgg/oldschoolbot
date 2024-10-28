@@ -6,7 +6,7 @@ Look no further for amazing smithing xp and a use for those stacked up bars! You
 
 To start a trip of Giant's Foundry, use:
 
-- `/minigames giants_foundry startname: ``[alloyType]`
+- `/minigames giants_foundry start name:[alloyType]`
 
 ## Requirements
 
@@ -42,8 +42,6 @@ The metal score of each alloy will determine the amount of xp, gp and reputation
 If you run the following command, you will see your overall foundry stats.
 
 - `/minigames giants_foundry stats`
-
-<figure><figcaption></figcaption></figure>
 
 Here you will see your total unique weapons made. There are 1,331 possible weapons to create, with each weapon having an equal chance to be created. The type of alloy does not affect the chances of which weapon will be made. This means that using lower tier bars is considerably more cost effective if you're wanting to collect all unique weapons. There is no CL for these weapons, it's purely just a statistic.
 
