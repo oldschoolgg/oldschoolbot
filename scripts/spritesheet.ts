@@ -1,4 +1,4 @@
-import { promises as fs } from 'node:fs';
+import { promises as fs, writeFileSync } from 'node:fs';
 import * as path from 'node:path';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import Spritesmith from 'spritesmith';
@@ -7,9 +7,11 @@ import '../src/lib/safeglobals';
 import { isFunction, uniqueArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
+import { customItems } from '../src/lib/customItems/util';
 import { allCLItems } from '../src/lib/data/Collections';
 import Buyables from '../src/lib/data/buyables/buyables';
 import Createables from '../src/lib/data/createables';
+import { itemNameFromID } from '../src/lib/util';
 
 const stopwatch = new Stopwatch();
 
@@ -134,6 +136,23 @@ async function main() {
 	).catch(err => console.error(`Failed to make BSO spritesheet: ${err.message}`));
 
 	stopwatch.check('Finished');
+
+	writeFileSync(
+		'data/bso_items.json',
+		JSON.stringify(
+			customItems.reduce(
+				(acc, id) => {
+					acc[id] = itemNameFromID(id)!;
+					return acc;
+				},
+				{} as Record<number, string>
+			),
+			null,
+			4
+		),
+		'utf-8'
+	);
+
 	process.exit();
 }
 
