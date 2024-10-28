@@ -372,12 +372,13 @@ export const clueCommand: OSBMahojiCommand = {
 			response.files = [image.file];
 
 			if (bankedClues + implingClues === 0) {
-				return `You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s. At least you received the following loot: ${implingLoot}.`;
+				response.content = `You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s.`;
+				return response;
 			}
 			quantity = bankedClues + implingClues;
 			implingLootString = `\n\nYou will find ${implingClues} clue${
 				implingClues === 0 || implingClues > 1 ? 's' : ''
-			} from ${openedImplings}x ${clueImpling.name}s.`; //, and receive the following loot: ${implingLoot}.`;
+			} from ${openedImplings}x ${clueImpling.name}s.`;
 		}
 
 		duration = timeToFinish * quantity;
