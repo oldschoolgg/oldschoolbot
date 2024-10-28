@@ -485,7 +485,7 @@ const genericUsables: {
 	},
 	{
 		items: [getOSItem('Ensouled demon head'), getOSItem('Mumpkin')],
-		cost: new Bank().add('Ensouled demon head'),
+		cost: new Bank().add('Ensouled demon head').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (demonic)'),
 		response: () => 'Your mumpkin is now demonic.',
 		addToCL: false
