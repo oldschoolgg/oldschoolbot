@@ -701,7 +701,8 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return allItems.has(checkBank);
 	}
 
-	usingPet(name: string) {
+	usingPet(name: string | number) {
+		if (typeof name === 'number') return this.user.minion_equippedPet === name;
 		return this.user.minion_equippedPet === itemID(name);
 	}
 
