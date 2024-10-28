@@ -151,6 +151,10 @@ export const chopCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
 		}
 
+		if (twitchers_gloves && !user.hasEquipped("Twitcher's gloves")) {
+			return "You need to have Twitcher's gloves equipped to use them.";
+		}
+
 		const boosts = [];
 
 		let wcLvl = skills.woodcutting;
