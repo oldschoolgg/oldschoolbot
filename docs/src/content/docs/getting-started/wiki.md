@@ -275,6 +275,8 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/getting-started/changelog.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/changelog.md): Doesnt use the new command formatting
 
+[/getting-started/developing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/developing.md): Doesnt use the new command formatting
+
 [/getting-started/FAQ.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/FAQ.md): Doesnt use the new command formatting
 
 [/getting-started/hackertoberfest.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/hackertoberfest.mdx): Doesnt use the new command formatting

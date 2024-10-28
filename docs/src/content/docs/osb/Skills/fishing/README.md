@@ -2,11 +2,9 @@
 title: "Fishing"
 ---
 
-# Fishing
+You can train Fishing using `/fish name:<fish> quantity:<quantity>`, for example `/fish name:Lobster quantity:100`
 
-You can train Fishing using `/fishname:<fish>quantity:<quantity>`, for example `/fishname:Lobsterquantity:100`
-
-Fishing bait is buyable with `/buyname: ``Fishing bait`.
+Fishing bait is buyable with `/buy name:Fishing bait`.
 
 Dark fishing bait and Raw Karambwanji aren't sold by the bot and can only be obtained by buying from other players or obtaining them yourself.
 
