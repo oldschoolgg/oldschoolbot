@@ -6,6 +6,22 @@ sidebar:
 
 Generally only changes that are specific to BSO are included here, for a full list of OSB changes see the [OSB Changelog](/changelog).
 
+## 28/10/2024
+
+### [[gc]]
+
+- You now have 10x higher crate droprates if you have any halloween pet equipped, they are: Kuro, Gregoyle, Mumpkin, Mumpkin (demonic), Mumpkin (pumpkin), Mumpkin (dead), Polterpup, Mini pumpkinhead, Mini mortimer, Casper, Cob.
+- Ironmen previously had a 3x bonus crate droprate, this has been increased to 6x.
+- The 2 new halloween pets have been added to the DC pets CL.
+- The new items have been desecretted, so they no longer are hidden from places, and the collection logs show.
+- You can now buy pumpkin seeds.
+
+[Added wiki page for the halloween event, click here to see](/bso/miscelleanous/events/#halloween-2024)
+
+### Turbo
+
+- Korulsi herbs can now be cleaned on harvest, like other herbs
+
 ## 26/10/2024
 
 ### [[gc]]
