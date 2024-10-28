@@ -37,7 +37,7 @@ export interface Stealable {
 	qpRequired?: number;
 	fireCapeRequired?: boolean;
 	questID?: QuestID;
-	questRequired?: String,
+	questRequired?: string,
 	table: LootTable;
 	id: number;
 	petChance: number;
