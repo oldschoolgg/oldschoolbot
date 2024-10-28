@@ -40,6 +40,7 @@ import { gearPresetsCommand } from './gearpresets';
 import { giftCommand } from './gift';
 import { giveawayCommand } from './giveaway';
 import { gpCommand } from './gp';
+import { halloweenCommand } from './halloween';
 import { helpCommand } from './help';
 import { huntCommand } from './hunt';
 import { icCommand } from './ic';
@@ -184,7 +185,8 @@ export const allCommands: OSBMahojiCommand[] = [
 	ratesCommand,
 	tamesCommand,
 	testerShopCommand,
-	bsoLeaguesCommand
+	bsoLeaguesCommand,
+	halloweenCommand
 ];
 
 if (!production && testPotatoCommand) {

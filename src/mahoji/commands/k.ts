@@ -83,6 +83,11 @@ export const autocompleteMonsters = [
 		name: 'Colosseum',
 		aliases: ['colo', 'colosseum'],
 		id: -1
+	},
+	{
+		name: 'Pumpkinhead',
+		aliases: ['ph'],
+		id: -1
 	}
 ];
 

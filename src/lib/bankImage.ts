@@ -473,7 +473,7 @@ export class BankImageTask {
 			this.itemIconImagesCache.set(itemID, image);
 			return image;
 		} catch (err) {
-			logError(`Failed to load item icon with id: ${itemID}`);
+			logError(`Failed to load item icon with id: ${itemID} ${err}`);
 			return this.getItemImage(1);
 		}
 	}
@@ -564,6 +564,9 @@ export class BankImageTask {
 		} else {
 			ctx.drawImage(...args);
 		}
+		return {
+			drawOptions
+		};
 	}
 
 	async fetchAndCacheImage(itemID: number) {

@@ -252,6 +252,11 @@
 		"subOptions": []
 	},
 	{
+		"name": "halloween",
+		"desc": "The 2024 Halloween Event",
+		"subOptions": ["check", "hand_in"]
+	},
+	{
 		"name": "help",
 		"desc": "Get information and help with the bot.",
 		"subOptions": []

@@ -4012,7 +4012,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1000
+	50
 );
 
 setCustomItem(
@@ -12832,4 +12832,432 @@ setCustomItem(
 		}
 	},
 	100_000
+);
+
+setCustomItem(
+	73_301,
+	'Spookling token',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_302,
+	'Miniature pumpkin head',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	88_889,
+	'Polterpup',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeDropped: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_250,
+	'Sinister crate (s7)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_251,
+	'Sinister crate key (s7)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_256,
+	'Puzzle box (kuro)',
+	'Coal',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_257,
+	'Pumpkinhead boxhat',
+	'Coal',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_258,
+	'White hween mask',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			superTradeableButTradeableOnGE: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_259,
+	'Deathless victims',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_260,
+	'Pumpkin cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_261,
+	'Venomous cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_262,
+	'Bloody cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_263,
+	'Purple cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_264,
+	'Dark cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_265,
+	'White cloak',
+	'Red cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_266,
+	'Pumpkin sweater',
+	'Bronze platebody',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_267,
+	'Sinister sweater',
+	'Bronze platebody',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_252,
+	'Mumpkin',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_253,
+	'Mumpkin (demonic)',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_254,
+	'Mumpkin (pumpkin)',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_255,
+	'Mumpkin (dead)',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_268,
+	'Pumpkin carving knife',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_270,
+	'Deathtouched tart',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_271,
+	'Jack-o-lantern',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_272,
+	'Zombie cow plushie',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			superTradeableButTradeableOnGE: true,
+			isSuperUntradeable: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_273,
+	'Pumpkin parasol',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			superTradeableButTradeableOnGE: true,
+			isSuperUntradeable: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_274,
+	'Halloween cracker',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_275,
+	'Monster in a backpack',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_276,
+	'Vampyric hween mask',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_277,
+	'Demonic hween mask',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_278,
+	'Zombie hween mask',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_279,
+	'Heirloom pumpkin',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
+		}
+	},
+	500_000
 );

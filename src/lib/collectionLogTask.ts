@@ -281,8 +281,17 @@ class CollectionLogTask {
 				i = 0;
 				y += 1;
 			}
-			const itemImage = await bankImageGenerator.getItemImage(item, user);
 
+			if (!userCollectionBank.has(item)) {
+				ctx.globalAlpha = 0.3;
+			}
+			const { drawOptions } = await bankImageGenerator.drawItemIDSprite({
+				itemID: item,
+				ctx,
+				x: i * (itemSize + itemSpacer),
+				y: y * (itemSize + itemSpacer),
+				user
+			});
 			let qtyText = 0;
 			if (!userCollectionBank.has(item)) {
 				ctx.globalAlpha = 0.3;
@@ -292,29 +301,20 @@ class CollectionLogTask {
 
 			totalPrice += getOSItem(item).price * qtyText;
 
-			if (flags.debug) {
-				ctx.fillStyle = '#FF0000';
-				ctx.fillRect(
-					Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 2,
-					Math.floor(y * (itemSize + itemSpacer) + (itemSize - itemImage.height) / 2),
-					itemImage.width,
-					itemImage.height
-				);
-			}
-			ctx.drawImage(
-				itemImage,
-				Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 4,
-				Math.floor(y * (itemSize + itemSpacer) + (itemSize - itemImage.height) / 2),
-				itemImage.width,
-				itemImage.height
-			);
+			// ctx.drawImage(
+			// 	itemImage,
+			// 	Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 4,
+			// 	Math.floor(y * (itemSize + itemSpacer) + (itemSize - itemImage.height) / 2),
+			// 	itemImage.width,
+			// 	itemImage.height
+			// );
 
 			if (qtyText > 0) {
 				ctx.fillStyle = generateHexColorForCashStack(qtyText);
 				this.drawText(
 					ctx,
 					formatItemStackQuantity(qtyText),
-					Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 1,
+					Math.floor(i * (itemSize + itemSpacer) + (itemSize - drawOptions.sourceWidth) / 2) + 1,
 					Math.floor(y * (itemSize + itemSpacer)) + 11
 				);
 			}

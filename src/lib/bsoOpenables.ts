@@ -977,6 +977,22 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		output: new LootTable().tertiary(1620, 'Cluckers'),
 		allItems: [],
 		smokeyApplies: false
+	},
+	{
+		name: 'Halloween cracker',
+		id: itemID('Halloween cracker'),
+		openedItem: getOSItem('Halloween cracker'),
+		aliases: ['halloween cracker'],
+		output: new LootTable()
+			.add('Zombie hween mask')
+			.add('Demonic hween mask')
+			.add('Monster in a backpack')
+			.add('Pumpkin parasol')
+			.add('Vampyric hween mask')
+			.add('Zombie cow plushie')
+			.add('Deathtouched tart'),
+		allItems: [],
+		smokeyApplies: false
 	}
 ];
 
