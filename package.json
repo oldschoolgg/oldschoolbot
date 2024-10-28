@@ -9,7 +9,7 @@
 		"dev": "yarn dev:stage1 && yarn dev:stage2 && yarn dev:stage3 && yarn dev:stage4",
 		"watch:tsc": "tsc -w -p src",
 		"buildandrun": "yarn build:esbuild && node --enable-source-maps dist",
-		"start": "echo 'yarn start is now the same as yarn watch' && yarn watch",
+		"start": "yarn watch",
 		"============SCRIPTS": "============",
 		"spritesheet": "tsx ./scripts/spritesheet.ts && yarn lint:biome",
 		"data": "concurrently \"tsx ./scripts/monster_table.ts\" && yarn lint",
