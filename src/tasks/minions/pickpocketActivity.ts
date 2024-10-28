@@ -143,6 +143,6 @@ export const pickpocketTask: MinionTask = {
 						previousCL
 					});
 
-		handleTripFinish(user, channelID, str, image?.file.attachment, data, loot);
+		handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded);
 	}
 };
