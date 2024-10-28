@@ -59,7 +59,6 @@ export const halloweenCommand: OSBMahojiCommand = {
                 
 Use this command again to check your progress, or for information.`;
 			}
-			
 
 			let allotmentStr = '';
 			if (!plantedCrop || plantedCrop.plant?.name !== 'Pumpkin') {

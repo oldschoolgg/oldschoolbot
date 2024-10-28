@@ -12902,8 +12902,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -12916,8 +12915,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -12930,7 +12928,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSecret: true,
 			superTradeableButTradeableOnGE: true,
 			isSuperUntradeable: true
 		}
@@ -12945,8 +12942,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -12959,8 +12955,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -12973,8 +12968,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -12987,8 +12981,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -13001,8 +12994,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -13015,8 +13007,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -13029,8 +13020,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -13043,8 +13033,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -13057,8 +13046,7 @@ setCustomItem(
 	{
 		customItemData: {
 			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -13072,8 +13060,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13087,8 +13074,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13102,8 +13088,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13117,8 +13102,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13146,8 +13130,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13161,8 +13144,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13176,8 +13158,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			superTradeableButTradeableOnGE: true,
-			isSuperUntradeable: true,
-			isSecret: true
+			isSuperUntradeable: true
 		}
 	},
 	500_000
@@ -13191,8 +13172,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			superTradeableButTradeableOnGE: true,
-			isSuperUntradeable: true,
-			isSecret: true
+			isSuperUntradeable: true
 		}
 	},
 	500_000
@@ -13220,8 +13200,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13235,8 +13214,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13250,8 +13228,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13265,8 +13242,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true,
-			isSecret: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
