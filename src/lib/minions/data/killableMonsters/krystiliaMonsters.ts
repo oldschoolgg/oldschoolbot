@@ -214,7 +214,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.ZombiePirate.id,
 		name: Monsters.ZombiePirate.name,
 		aliases: Monsters.ZombiePirate.aliases,
-		timeToFinish: Time.Second * 9,
+		timeToFinish: Time.Second * 20,
 		table: Monsters.ZombiePirate,
 
 		wildy: true,
@@ -224,8 +224,8 @@ export const krystiliaMonsters: KillableMonster[] = [
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: true,
-		pkActivityRating: 1,
-		pkBaseDeathChance: 1,
+		pkActivityRating: 3,
+		pkBaseDeathChance: 2,
 		revsWeaponBoost: true,
 		canBePked: true,
 		wildyMulti: true
