@@ -12,7 +12,7 @@ import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Bone, SkillsEnum } from '../../lib/skilling/types';
 import type { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
@@ -36,7 +36,7 @@ const specialBones = [
 const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
 
 const offerables = new Set(
-	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]
+	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones, ...Prayer.PreparedFish]
 		.map(i => resolveItems(i.name))
 		.map(i => i[0])
 );
@@ -233,22 +233,24 @@ export const offerCommand: OSBMahojiCommand = {
 
 		const speedMod = 1.5;
 
-		const bone = Prayer.Bones.find(
-			bone => stringMatches(bone.name, options.name) || stringMatches(bone.name.split(' ')[0], options.name)
+		const boneOrFish = [...Prayer.Bones, ...Prayer.PreparedFish].find(
+			item => stringMatches(item.name, options.name) || stringMatches(item.name.split(' ')[0], options.name)
 		);
+		
+		console.log(boneOrFish)
 
-		if (!bone) {
-			return "That's not a valid bone to offer.";
+		if (!boneOrFish) {
+			return "That's not a valid bone or fishto offer.";
 		}
 
-		if (user.skillLevel(SkillsEnum.Prayer) < bone.level) {
-			return `${user.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`;
+		if (user.skillLevel(SkillsEnum.Prayer) < boneOrFish.level) {
+			return `${user.minionName} needs ${boneOrFish.level} Prayer to offer ${boneOrFish.name}.`;
 		}
 
 		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
-		const amountOfThisBone = userBank.amount(bone.inputId);
-		if (!amountOfThisBone) return `You have no ${bone.name}.`;
+		const amountOfThisBone = userBank.amount(boneOrFish.inputId);
+		if (!amountOfThisBone) return `You have no ${boneOrFish.name}.`;
 
 		const maxTripLength = calcMaxTripLength(user, 'Offering');
 
@@ -259,7 +261,7 @@ export const offerCommand: OSBMahojiCommand = {
 
 		// Check the user has the required bones to bury.
 		if (amountOfThisBone < quantity) {
-			return `You dont have ${quantity}x ${bone.name}.`;
+			return `You dont have ${quantity}x ${boneOrFish.name}.`;
 		}
 
 		const duration = quantity * timeToBuryABone;
@@ -267,23 +269,26 @@ export const offerCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
+			)}, try a lower quantity. The highest amount of ${boneOrFish.name}s you can bury is ${Math.floor(
 				maxTripLength / timeToBuryABone
 			)}.`;
 		}
 
-		await user.removeItemsFromBank(new Bank().add(bone.inputId, quantity));
+		await user.removeItemsFromBank(new Bank().add(boneOrFish.inputId, quantity));
 
 		await addSubTaskToActivityTask<OfferingActivityTaskOptions>({
-			boneID: bone.inputId,
+			boneID: boneOrFish.inputId,
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
 			duration,
 			type: 'Offering'
 		});
-		return `${user.minionName} is now offering ${quantity}x ${
-			bone.name
-		} at the Chaos altar, it'll take around ${formatDuration(duration)} to finish.`;
+		const location = Prayer.Bones.includes(boneOrFish as Bone)
+		? 'the Chaos altar'
+		: 'the Ruins of Camdozaal';
+	
+		return `${user.minionName} is now offering ${quantity}x ${boneOrFish.name} at ${location}, it'll take around ${formatDuration(duration)} to finish.`;
+	
 	}
 };
