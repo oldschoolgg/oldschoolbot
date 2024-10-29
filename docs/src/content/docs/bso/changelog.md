@@ -6,6 +6,18 @@ sidebar:
 
 Generally only changes that are specific to BSO are included here, for a full list of OSB changes see the [OSB Changelog](/changelog).
 
+## 29/10/2024
+
+### [[gc]]
+
+- The halloween pet crate boost was incorrectly coded as 5x instead of 10x, this is now fixed so its 10x. You can roughly expect a crate every hour if using one (or more if you're an iron).
+- If you get the 10x hween pet boost, you now get a message saying that.
+
+### [[nwjgit]]
+
+- Made changes to skillcapes, so that higher-level capes always receive the perks of lower-level ones. E.g. Comp cape gives all master/skill-cape perks, expert capes gives all the master/skill-cape perks, etc.
+- OSB Changes: Finished Wyrm agility and cox trip repeating.
+
 ## 28/10/2024
 
 ### [[gc]]
