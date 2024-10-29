@@ -30,10 +30,7 @@ export const offeringTask: MinionTask = {
 		// Determine if the offered item is a bone or a prepared fish
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
 		const fish = Prayer.PreparedFish.find(fish => fish.inputId === boneID); // Assuming you can identify fish with boneID
-
 		const XPMod = 3.5;
-		let bonesLost = 0;
-		let newQuantity = quantity; // Initialize newQuantity
 
 		if (bone) {
 			// Logic for bones
@@ -41,6 +38,7 @@ export const offeringTask: MinionTask = {
 			const maxPK = quantity >= 27 ? 27 : quantity;
 			const trips = Math.ceil(quantity / 27);
 			let deathCounter = 0;
+			let bonesLost = 0;
 
 			// Roll a 10% chance to get pked per trip
 			for (let i = 0; i < trips; i++) {
@@ -64,7 +62,7 @@ export const offeringTask: MinionTask = {
 				}
 			}
 
-			newQuantity = quantity - bonesLost + bonesSaved + zealBonesSaved;
+			const newQuantity = quantity - bonesLost + bonesSaved + zealBonesSaved;
 
 			const xpReceived = newQuantity * bone.xp * XPMod;
 
