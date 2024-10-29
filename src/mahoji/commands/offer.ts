@@ -12,7 +12,7 @@ import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
-import { Bone, SkillsEnum } from '../../lib/skilling/types';
+import { type Bone, SkillsEnum } from '../../lib/skilling/types';
 import type { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
@@ -236,11 +236,9 @@ export const offerCommand: OSBMahojiCommand = {
 		const boneOrFish = [...Prayer.Bones, ...Prayer.PreparedFish].find(
 			item => stringMatches(item.name, options.name) || stringMatches(item.name.split(' ')[0], options.name)
 		);
-		
-		console.log(boneOrFish)
 
 		if (!boneOrFish) {
-			return "That's not a valid bone or fishto offer.";
+			return "That's not a valid bone or fish to offer.";
 		}
 
 		if (user.skillLevel(SkillsEnum.Prayer) < boneOrFish.level) {
@@ -284,11 +282,8 @@ export const offerCommand: OSBMahojiCommand = {
 			duration,
 			type: 'Offering'
 		});
-		const location = Prayer.Bones.includes(boneOrFish as Bone)
-		? 'the Chaos altar'
-		: 'the Ruins of Camdozaal';
-	
+		const location = Prayer.Bones.includes(boneOrFish as Bone) ? 'the Chaos altar' : 'the Ruins of Camdozaal';
+
 		return `${user.minionName} is now offering ${quantity}x ${boneOrFish.name} at ${location}, it'll take around ${formatDuration(duration)} to finish.`;
-	
 	}
 };

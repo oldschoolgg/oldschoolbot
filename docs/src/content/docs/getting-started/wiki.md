@@ -229,7 +229,7 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/divination.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/divination.md): Doesnt use the new command formatting
 
-[/bso/Skills/dungeoneering.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/dungeoneering.md): Doesnt use the new command formatting
+[/bso/Skills/Dungeoneering.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Dungeoneering.md): Doesnt use the new command formatting
 
 [/bso/Skills/farming.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/farming.md): Doesnt use the new command formatting
 
@@ -251,9 +251,9 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/runecraft.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/runecraft.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Skills/Slayer/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Slayer/README.md): Doesnt use the new command formatting
+[/bso/Skills/slayer/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/slayer/README.md): Doesnt use the new command formatting
 
-[/bso/Skills/Slayer/slayer-masks-helms.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Slayer/slayer-masks-helms.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/bso/Skills/slayer/slayer-masks-helms.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/slayer/slayer-masks-helms.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [/bso/Skills/smithing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/smithing.md): Doesnt use the new command formatting
 
@@ -291,7 +291,11 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/index.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/index.mdx): Doesnt use the new command formatting
 
+[/osb/Activities/aerial-fishing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Activities/aerial-fishing.md): Doesnt use the new command formatting
+
 [/osb/Activities/fountain-of-rune.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Activities/fountain-of-rune.md): Doesnt use the new command formatting
+
+[/osb/Activities/guardians-of-the-rift.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Activities/guardians-of-the-rift.md): Doesnt use the new command formatting
 
 [/osb/Activities/hallowed-sepulchre.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Activities/hallowed-sepulchre.md): Doesnt use the new command formatting
 
@@ -421,8 +425,6 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/osb/Skills/firemaking.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/firemaking.md): Doesnt use the new command formatting
 
-[/osb/Skills/fishing/aerial-fishing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/fishing/aerial-fishing.md): Doesnt use the new command formatting
-
 [/osb/Skills/fishing/drift-net-fishing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/fishing/drift-net-fishing.md): Doesnt use the new command formatting
 
 [/osb/Skills/fishing/fishing-training.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/fishing/fishing-training.md): Doesnt use the new command formatting
@@ -453,11 +455,7 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/osb/Skills/prayer.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/prayer.md): Doesnt use the new command formatting
 
-[/osb/Skills/runecrafting/guardians-of-the-rift.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/runecrafting/guardians-of-the-rift.md): Doesnt use the new command formatting
-
-[/osb/Skills/runecrafting/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/runecrafting/README.md): Doesnt use the new command formatting
-
-[/osb/Skills/runecrafting/runecrafting-training.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/runecrafting/runecrafting-training.md): Doesnt use the new command formatting
+[/osb/Skills/runecrafting.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/runecrafting.md): Doesnt use the new command formatting
 
 [/osb/Skills/slayer/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Skills/slayer/README.md): Doesnt use the new command formatting
 
