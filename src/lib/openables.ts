@@ -6,7 +6,7 @@ import {
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
-	Openables,
+	Openables
 } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
@@ -26,7 +26,7 @@ import {
 	BuildersSupplyCrateTable,
 	CasketTable,
 	CrystalChestTable,
-	SpoilsOfWarTable,
+	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import type { ItemBank } from './types';
