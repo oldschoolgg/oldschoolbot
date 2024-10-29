@@ -6,7 +6,7 @@ import {
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
-	Openables
+	Openables,
 } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
@@ -26,7 +26,7 @@ import {
 	BuildersSupplyCrateTable,
 	CasketTable,
 	CrystalChestTable,
-	SpoilsOfWarTable
+	SpoilsOfWarTable,
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import type { ItemBank } from './types';
@@ -497,6 +497,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['frozen cache'],
 		output: FrozenCacheTable,
 		allItems: FrozenCacheTable.allItems
+	},
+	{
+		name: "Zombie Pirate's Locker",
+		id: 29_449,
+		openedItem: getOSItem(29_449),
+		aliases: ['zombie pirate locker', 'pirate locker'],
+		output: ZombiePirateLocker,
+		allItems: ZombiePirateLocker.allItems
 	},
 	...clueOpenables,
 	...osjsOpenables,

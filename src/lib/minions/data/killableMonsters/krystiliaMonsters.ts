@@ -209,5 +209,25 @@ export const krystiliaMonsters: KillableMonster[] = [
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
 		revsWeaponBoost: true
-	}
+	},
+	{
+		id: Monsters.ZombiePirate.id,
+		name: Monsters.ZombiePirate.name,
+		aliases: Monsters.ZombiePirate.aliases,
+		timeToFinish: Time.Second * 9,
+		table: Monsters.ZombiePirate,
+
+		wildy: true,
+
+		difficultyRating: 3,
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: true,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true,
+		canBePked: true,
+		wildyMulti: true
+	},
 ];

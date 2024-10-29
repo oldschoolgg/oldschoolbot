@@ -1856,7 +1856,8 @@ export const slayerCL = resolveItems([
 	'Ancient ceremonial legs',
 	'Ancient ceremonial gloves',
 	'Ancient ceremonial boots',
-	'Aranea boots'
+	'Aranea boots',
+	'Teleport anchoring scroll'
 ]);
 
 export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
