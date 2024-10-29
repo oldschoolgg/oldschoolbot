@@ -2,8 +2,6 @@
 title: "Inferno"
 ---
 
-## Summary
-
 The Inferno is a very high level PVM activity. It has high gear requirements, consumes large amounts of expensive supplies, and attempts can take upwards of 2 hours.
 
 Similar to the Fight Caves, you are not guaranteed to complete The Inferno. Your success chance scales on your gear, number of attempts, and number of Zuk fights.
@@ -18,17 +16,15 @@ Tokkul can be spent at the [Tokkul shop](https://wiki.oldschool.gg/bosses/fight-
 
 To begin a trip into the inferno, use:
 
-- `/activities infernoaction: ``Start Inferno Trip`
+- `/activities inferno action:Start Inferno Trip`
 
 To view information on your previous attempts/KCs, use:
 
-- `/activities infernoaction: ``Check Inferno Stats`
+- `/activities inferno action:Check Inferno Stats`
 
 To gamble a cape for a chance at the Jal-nib-rek pet, use:
 
-- `/gamble capetype: ``infernal`
-
----
+- `/gamble cape type:infernal`
 
 ## Requirements
 
@@ -51,8 +47,6 @@ Toxic blowpipe with Adamant darts or better (uses 300 darts/hour)
 Twisted bow or Armadyl crossbow with ammo based on the weapon you're using (arrows for Twisted bow, bolts for ACB) (uses 150 ammo/hour)
 
 Runes for Ice barrage + Blood barrage (200 casts of blood barrage/hour and 100 casts of ice barrage/hour. Rune costs are reduced by having a Kodai wand equipped in your mage setup.)
-
----
 
 ## Boosts
 
@@ -82,15 +76,8 @@ Equipping an Elysian spirit shield in either range or mage (-5%)
 
 Equipping a Ring of suffering (i) in either range or mage (-4%)
 
-Equipping a Justiciar faceguard in range (-5%) \
- Equipping a Twisted bow in your range setup (instead of an ACB) (1.5% from Tbow VS 7.5% with ACB)
+Equipping a Justiciar faceguard in range (-5%)
+
+Equipping a Twisted bow in your range setup (instead of an ACB) (1.5% from Tbow VS 7.5% with ACB)
 
 The number of attempts you've done, and the number of times you've fought Zuk greatly affect speed and death chance.
-
----
-
-## Gear
-
-<figure><figcaption></figcaption></figure>
-
-Using this gear, along with dragon darts in your blowpipe, will give the maximum bonus for Inferno.
