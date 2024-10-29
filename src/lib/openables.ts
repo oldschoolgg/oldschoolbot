@@ -498,15 +498,15 @@ export const allOpenables: UnifiedOpenable[] = [
 		output: FrozenCacheTable,
 		allItems: FrozenCacheTable.allItems
 	},
-// Uncomment this when loot table is exported properly in osjs
-//	{
-//		name: "Zombie Pirate's Locker",
-//		id: 29_449,
-//		openedItem: getOSItem(29_449),
-//		aliases: ['zombie pirate locker', 'pirate locker'],
-//		output: ZombiePirateLocker,
-//		allItems: ZombiePirateLocker.allItems
-//	},
+	// Uncomment this when loot table is exported properly in osjs
+	//	{
+	//		name: "Zombie Pirate's Locker",
+	//		id: 29_449,
+	//		openedItem: getOSItem(29_449),
+	//		aliases: ['zombie pirate locker', 'pirate locker'],
+	//		output: ZombiePirateLocker,
+	//		allItems: ZombiePirateLocker.allItems
+	//	},
 	...clueOpenables,
 	...osjsOpenables,
 	...shadeChestOpenables

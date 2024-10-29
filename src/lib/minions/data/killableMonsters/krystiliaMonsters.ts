@@ -229,5 +229,5 @@ export const krystiliaMonsters: KillableMonster[] = [
 		revsWeaponBoost: true,
 		canBePked: true,
 		wildyMulti: true
-	},
+	}
 ];
