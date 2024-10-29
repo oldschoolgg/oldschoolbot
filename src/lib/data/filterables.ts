@@ -612,6 +612,10 @@ const prayer = resolveItems([
 	'Malicious ashes',
 	'Abyssal ashes',
 	'Infernal ashes',
+	'Guppy',
+	'Cavefish',
+	'Tetra',
+	'Catfish',
 	...bones
 ]);
 

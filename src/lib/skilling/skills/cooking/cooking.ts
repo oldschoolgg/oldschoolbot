@@ -74,6 +74,15 @@ export const Cookables: Cookable[] = [
 		burntCookable: 357
 	},
 	{
+		level: 7,
+		xp: 12,
+		id: itemID('Guppy'),
+		name: 'Guppy',
+		inputCookables: { [itemID('Raw guppy')]: 1 },
+		stopBurnAt: 40,
+		burntCookable: 25656
+	},
+	{
 		level: 10,
 		xp: 60,
 		id: itemID('Mackerel'),
@@ -114,6 +123,15 @@ export const Cookables: Cookable[] = [
 		burntCookable: 343
 	},
 	{
+		level: 20,
+		xp: 23,
+		id: itemID('Cavefish'),
+		name: 'Cavefish',
+		inputCookables: { [itemID('Raw cavefish')]: 1 },
+		stopBurnAt: 40,
+		burntCookable: 25662
+	},
+	{
 		level: 25,
 		xp: 90,
 		id: itemID('Salmon'),
@@ -143,6 +161,15 @@ export const Cookables: Cookable[] = [
 		stopBurnAt: 99,
 		burnKourendBonus: [93, 87, 93, 87],
 		burntCookable: itemID('Burnt karambwan')
+	},
+	{
+		level: 33,
+		xp: 31,
+		id: itemID('Tetra'),
+		name: 'Tetra',
+		inputCookables: { [itemID('Raw tetra')]: 1 },
+		stopBurnAt: 43,
+		burntCookable: 25668
 	},
 	{
 		level: 35,
@@ -207,6 +234,15 @@ export const Cookables: Cookable[] = [
 		stopBurnAtCG: 81,
 		burnKourendBonus: [76, 76, 76, 76],
 		burntCookable: itemID('Burnt swordfish')
+	},
+	{
+		level: 46,
+		xp: 43,
+		id: itemID('Catfish'),
+		name: 'Catfish',
+		inputCookables: { [itemID('Raw catfish')]: 1 },
+		stopBurnAt: 56,
+		burntCookable: 25674
 	},
 	{
 		level: 62,

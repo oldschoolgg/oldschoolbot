@@ -1,6 +1,6 @@
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
-import type { Ash, Bone } from '../types';
+import type { Ash, Bone, PreparedFish } from '../types';
 import { SkillsEnum } from '../types';
 
 const bones: Bone[] = [
@@ -159,10 +159,38 @@ export const ashes: Ash[] = [
 	}
 ];
 
+export const preparedfish: PreparedFish[] = [
+	{
+		name: 'Guppy',
+		level: 1,
+		xp: 4,
+		inputId: itemID('Guppy')
+	},
+	{
+		name: 'Cavefish',
+		level: 1,
+		xp: 7,
+		inputId: itemID('Cavefish')
+	},
+	{
+		name: 'Tetra',
+		level: 1,
+		xp: 10,
+		inputId: itemID('Tetra')
+	},
+	{
+		name: 'Catfish',
+		level: 1,
+		xp: 16,
+		inputId: itemID('Catfish')
+	}
+];
+
 const Prayer = {
 	aliases: ['prayer', 'pray'],
 	Bones: bones,
 	Ashes: ashes,
+	PreparedFish: preparedfish,
 	id: SkillsEnum.Prayer,
 	emoji: Emoji.Prayer,
 	name: 'Prayer'
