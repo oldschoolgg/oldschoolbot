@@ -12901,7 +12901,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -12914,7 +12913,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -12941,7 +12939,6 @@ setCustomItem(
 	'Bronze kiteshield',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -12954,7 +12951,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -12967,7 +12963,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -12980,7 +12975,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -12993,7 +12987,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -13006,7 +12999,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -13019,7 +13011,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -13032,7 +13023,6 @@ setCustomItem(
 	'Bronze platebody',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -13045,7 +13035,6 @@ setCustomItem(
 	'Bronze platebody',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -13114,9 +13103,7 @@ setCustomItem(
 	'Bronze dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1
@@ -13128,9 +13115,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000
@@ -13142,9 +13127,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000
@@ -13156,9 +13139,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			superTradeableButTradeableOnGE: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000
@@ -13170,9 +13151,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			superTradeableButTradeableOnGE: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000
@@ -13184,9 +13163,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000
@@ -13198,9 +13175,7 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000
@@ -13212,9 +13187,7 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000
@@ -13226,9 +13199,7 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000
@@ -13240,9 +13211,7 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000
@@ -13254,9 +13223,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000

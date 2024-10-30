@@ -598,9 +598,10 @@ export async function handleTripFinish(
 		}
 		if (spookResult.loot) {
 			await user.addItemsToBank({ items: spookResult.loot, collectionLog: true });
-			if (spookResult.loot.has('Polterpup'))
+			if (spookResult.loot.has('Polterpup')) {
 				message.content += `\n\n${bold('A chill settles beside you, an eerie presence that clings to you no matter where you go. You have a feeling it’s here to stay, watching... and waiting.')}`;
-			else message.content += `\n\nReceived: ${spookResult.loot}`;
+			}
+			message.content += `\nReceived: ${spookResult.loot}`;
 		}
 	}
 
