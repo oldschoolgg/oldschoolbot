@@ -1168,7 +1168,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'The Leviathan',
 		rng: {
-			chancePerKill: 75,
+			chancePerKill: 150,
 			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
 		}
 	},
@@ -1214,7 +1214,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'The Whisperer',
 		rng: {
-			chancePerKill: 25,
+			chancePerKill: 150,
 			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
 		}
 	},
@@ -1225,8 +1225,76 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'The Whisperer',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 3104,
+		name: 'Vardorvis Speed-Runner',
+		desc: 'Kill Vardorvis in less than 0:55 without a slayer task.',
+		type: 'speed',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 150,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 3105,
+		name: 'Vardorvis Sleeper',
+		desc: 'Kill Awakened Vardorvis.',
+		type: 'kill_count',
+		monster: 'Vardorvis',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AwakenedVardorvis.id]: 1
+			}
+		})
+	},
+	{
+		id: 3106,
+		name: 'Axe Enthusiast',
+		desc: "Kill Vardorvis after surviving for 3 minutes of Vardorvis' max speed, and never leaving the centre 25 tiles.",
+		type: 'mechanical',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 3107,
+		name: 'Duke Sucellus Sleeper',
+		desc: 'Kill Awakened Duke Sucellus.',
+		type: 'kill_count',
+		monster: 'Duke Sucellus',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AwakenedDukeSucellus.id]: 1
+			}
+		})
+	},
+	{
+		id: 3108,
+		name: 'Duke Sucellus Speed-Runner',
+		desc: 'Kill Duke Sucellus in less than 1:25 minutes without a slayer task.',
+		type: 'speed',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 150,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 3109,
+		name: 'Mirror Image',
+		desc: 'Kill Duke Sucellus whilst only attacking the boss on the same tick Duke attacks you.',
+		type: 'restriction',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
 		}
 	}
 ];

@@ -1620,7 +1620,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'The Leviathan',
 		rng: {
-			chancePerKill: 40,
+			chancePerKill: 20,
 			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
 		}
 	},
@@ -1643,7 +1643,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'The Leviathan',
 		rng: {
-			chancePerKill: 70,
+			chancePerKill: 40,
 			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
 		}
 	},
@@ -1654,7 +1654,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'The Leviathan',
 		rng: {
-			chancePerKill: 75,
+			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
 		}
 	},
@@ -1677,7 +1677,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'The Whisperer',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 40,
 			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
 		}
 	},
@@ -1688,8 +1688,98 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'The Whisperer',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
 		}
+	},
+	{
+		id: 2148,
+		name: 'Vardorvis Speed-Chaser',
+		desc: 'Kill Vardorvis in less than 1:05 without a slayer task.',
+		type: 'speed',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 40,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 2149,
+		name: 'Vardorvis Master',
+		desc: 'Kill Vardorvis 50 times.',
+		type: 'kill_count',
+		monster: 'Vardorvis',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Vardorvis.id]: 50
+			}
+		})
+	},
+	{
+		id: 2150,
+		name: 'Budget Cutter',
+		desc: 'Kill Vardorvis with gear worth 2m or less in total.',
+		type: 'restriction',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 2151,
+		name: 'Perfect Vardorvis',
+		desc: 'Kill Vardorvis perfectly 5 times without leaving.',
+		type: 'perfection',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 2152,
+		name: 'Cold Feet',
+		desc: 'Kill Duke Sucellus without taking any avoidable damage, whilst also never running.',
+		type: 'restriction',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 2153,
+		name: 'Duke Sucellus Speed-Chaser',
+		desc: 'Kill Duke Sucellus in less than 1:35 minutes without a slayer task.',
+		type: 'speed',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 40,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 2154,
+		name: 'Perfect Duke Sucellus',
+		desc: 'Kill Duke Sucellus without taking any avoidable damage 5 times without leaving.',
+		type: 'perfection',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 2155,
+		name: 'Duke Sucellus Master',
+		desc: 'Kill Duke Sucellus 50 times.',
+		type: 'kill_count',
+		monster: 'Duke Sucellus',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.DukeSucellus.id]: 50
+			}
+		})
 	}
 ];

@@ -1643,7 +1643,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'The Leviathan',
 		rng: {
-			chancePerKill: 50,
+			chancePerKill: 5,
 			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
 		}
 	},
@@ -1654,7 +1654,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'The Whisperer',
 		rng: {
-			chancePerKill: 10,
+			chancePerKill: 5,
 			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
 		}
 	},
@@ -1678,6 +1678,52 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.TheWhisperer.id]: 1
+			}
+		})
+	},
+	{
+		id: 1145,
+		name: 'Vardorvis Speed-Trialist',
+		desc: 'Kill Vardorvis in less than 1:15 minutes without a slayer task.',
+		type: 'speed',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 1146,
+		name: 'Vardorvis Adept',
+		desc: 'Kill Vardorvis once.',
+		type: 'kill_count',
+		monster: 'Vardorvis',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Vardorvis.id]: 1
+			}
+		})
+	},
+	{
+		id: 1147,
+		name: 'Duke Sucellus Speed-Trialist',
+		desc: 'Kill Duke Sucellus in less than 1:45 minutes without a slayer task.',
+		type: 'speed',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 1148,
+		name: 'Duke Sucellus Adept',
+		desc: 'Kill Duke Sucellus once.',
+		type: 'kill_count',
+		monster: 'Duke Sucellus',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.DukeSucellus.id]: 1
 			}
 		})
 	}
