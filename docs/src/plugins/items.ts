@@ -83,7 +83,7 @@ export function remarkItems(options: any) {
 				);
 				const osbItem = Items.get(match) ?? Items.get(Number(match));
 				if (bsoItem) {
-					imageURL = `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/bso/src/lib/resources/images/bso_icons/${bsoItem[0]}.png`;
+					imageURL = `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/images/bso_icons/${bsoItem[0]}.png`;
 				} else if (osbItem) {
 					imageURL = `https://chisel.weirdgloop.org/static/img/osrs-sprite/${osbItem.id}.png`;
 					itemName = osbItem.name;
