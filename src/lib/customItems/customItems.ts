@@ -13127,7 +13127,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	500_000
@@ -13223,7 +13224,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	500_000
