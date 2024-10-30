@@ -2,10 +2,6 @@
 title: "Polypore Dungeon"
 ---
 
-# Polypore Dungeon
-
-### Polypore Dungeon
-
 The Polypore Dungeon is a new location within BSO that contains several monsters which all have a requirement of 82 Dungeoneering to kill. All monsters listed under this heading **must** be killed with magic, and require the use of Neem Oil to be killed.
 
 - Fungal Rodent: Drops the Mycelium Visor Web, along with varying amounts of Swamp Tar, Swamp Toads, Chaos Runes, Polypore Spores, Limpwurt Roots, Grifolic Flake, Neem Drupe, and an assortment of random grimy herbs.

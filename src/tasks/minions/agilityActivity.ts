@@ -142,7 +142,11 @@ export const agilityTask: MinionTask = {
 		}.\n${xpRes}${monkeyStr}`;
 
 		// Roll for pet
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, course.petChance);
+		const { petDropRate } = skillingPetDropRate(
+			user,
+			SkillsEnum.Agility,
+			typeof course.petChance === 'number' ? course.petChance : course.petChance(currentLevel)
+		);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
 			str += "\nYou have a funny feeling you're being followed...";

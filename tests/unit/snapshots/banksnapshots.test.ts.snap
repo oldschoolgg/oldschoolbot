@@ -2530,6 +2530,15 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
+    "itemCost": {
+      "6183": 1,
+    },
+    "name": "Genie lamp",
+    "outputItems": {
+      "2528": 1,
+    },
+  },
+  {
     "gpCost": 100000,
     "itemCost": {},
     "minigameScoreReq": [
@@ -6107,6 +6116,63 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "28813": 1,
+    },
+    "name": "Zombie axe",
+    "outputItems": {
+      "28810": 1,
+    },
+    "requiredSkills": {
+      "smithing": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "9007": 1,
+      "9008": 1,
+    },
+    "name": "Strange skull",
+    "outputItems": {
+      "9009": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "9010": 1,
+      "9011": 1,
+    },
+    "name": "Runed sceptre",
+    "outputItems": {
+      "9012": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "9009": 1,
+      "9012": 1,
+    },
+    "name": "Skull sceptre",
+    "outputItems": {
+      "9013": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "9013": 1,
+    },
+    "name": "Skull sceptre(i)",
+    "outputItems": {
+      "21276": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "12922": 1,
     },
     "name": "Revert tanzanite fang",
@@ -6865,6 +6931,17 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "20659": 1,
       "30042": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "23759": 1,
+    },
+    "name": "Revert Corrupted youngllef",
+    "noCl": true,
+    "outputItems": {
+      "23757": 1,
     },
   },
   {
@@ -8281,6 +8358,17 @@ exports[`OSB Creatables 1`] = `
     "name": "Bone Squirrel",
     "outputItems": {
       "30151": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "23757": 1,
+    },
+    "name": "Corrupted youngllef",
+    "outputItems": {
+      "23759": 1,
     },
   },
   {

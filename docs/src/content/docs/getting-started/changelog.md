@@ -4,6 +4,58 @@ sidebar:
   order: 3
 ---
 
+## Update 16/10/2024 [[68b130088f5e365ec2a341cae48bc5b353ccc2ff...4fbfe429e9a1bdf817175cf497177e47fefc6be6]]
+
+Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-started/bingo) for information.
+
+### [[gc]]
+
+- Fixed gearpresets wiping the ammo slot when editing
+- Added EHP autoslay for araxytes, so they are barraged/cannoned
+- Fixed the [[/casket]] command
+- Allow more items to create [[Amulet of rancour (s)]] (can now also use the imbued araxyte slayer helm and Nid)
+- Fixed a bug where the bot sometimes failed to send confirmation messages.
+- Fixed an issue with perk tiers not syncing properly
+- Various "engine" changes/improvements
+- Various wiki fixes/improvements
+- Fixed several bugs that were causing errors/issues
+- Made some changes to fix roles (they may not be fully fixed yet)
+
+### [[Arodab]]
+
+- [[Scurrius' spine]] can now be traded for Antique lamp (Historian Aldo) using the [[/create]] command, which can be used for combat xp
+- [[Book of arcane knowledge]] was updated to give more xp
+
+### [[TastyPumPum]]
+
+- Fixed Nex 'fake' masses using extra ammo
+- Fixed ToB repeat trips not remembering quantity
+- Added the **Ourania Altar (ZMI)**
+  - You can start a ZMI trip using: [[/runecraft rune\:Ourania Altar]]
+  - You get a boost for Graceful OR for having 95 Magic for spellbook swap
+  - You get a 2% boost for having a [[Ring of endurance]] equipped OR in your bank.
+  - You are slower if your mage is less than 71 and your QP is less than 120, for the Ourania Teleport spell.
+  - [[Daeyalt essence]] works
+
+### [[nwjgit]]
+
+- Fixed the droprate of tormented demons uniques (instead of a roll that gets you either a synapse/claw, you get a roll at both now)
+- [[Bow of faerdhinen (c)]] no longer requires arrows
+- Improved code relating to item rerolling (e.g. bludgeon pieces)
+- Added the **Colossal Wyrm Agility Course**
+  - Requires the [Children of the Sun](/osb/quests/#children-of-the-sun) quest to be completed and [[agility:50]]
+  - Added the collection log
+  - Added the following items to [[/buy]]: Amylase pack (Colossal Wyrm Agility) (Bought with 100x Termites), Colossal wyrm teleport scroll (Bought with 40x Termites), Graceful crafting kit (Bought with 650x Termites), Calcified acorn (900x Termites)
+- Araxxor Changes
+  - Adjusted the difficulty of combat achievements
+  - Fixed the extended araxyte slayer unlock
+  - Adjusted the noxious halberd dropping so it prioritizes dropping items, when you have all 3 already, that would soonest let you create a full halberd.
+
+### [[00justas]]
+
+- Updated agility xp/hr rates based on the osrs update (buffed)
+- Added [[Clue scroll (elite)]] drop to Araxxor
+
 ## Update 9/10/2024 [[8de72b2de5a275497c67123904a280981415c553...68b130088f5e365ec2a341cae48bc5b353ccc2ff]]
 
 ### Hacktoberfest

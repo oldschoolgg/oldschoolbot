@@ -365,13 +365,12 @@ export function doMonsterTrip(data: newOptions) {
 		if (hasKourendHard) {
 			const ashSanctifierResult = ashSanctifierEffect({
 				hasKourendElite,
-				mutableLootToReceive: loot,
+				updateBank,
 				gearBank,
 				bitfield,
 				duration
 			});
 			if (ashSanctifierResult) {
-				updateBank.merge(ashSanctifierResult.updateBank);
 				messages.push(ashSanctifierResult.message);
 			}
 		}
@@ -511,22 +510,22 @@ export const monsterTask: MinionTask = {
 		messages.push(...rawResults.filter(r => typeof r === 'string'));
 		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name} (${calcPerHour(data.q, data.duration).toFixed(1)}/hr), you now have ${newKC} KC.`;
 
-		announceLoot({
-			user,
-			monsterID: monster.id,
-			loot: itemTransactionResult!.itemsAdded,
-			notifyDrops: monster.notifyDrops
-		});
+		let image = undefined;
 
-		const image =
-			itemTransactionResult!.itemsAdded.length === 0
-				? undefined
-				: await makeBankImage({
-						bank: itemTransactionResult!.itemsAdded,
-						title: `Loot From ${quantity} ${monster.name}:`,
-						user,
-						previousCL: itemTransactionResult?.previousCL
-					});
+		if (itemTransactionResult && itemTransactionResult.itemsAdded.length > 0) {
+			announceLoot({
+				user,
+				monsterID: monster.id,
+				loot: itemTransactionResult.itemsAdded,
+				notifyDrops: monster.notifyDrops
+			});
+			image = await makeBankImage({
+				bank: itemTransactionResult.itemsAdded,
+				title: `Loot From ${quantity} ${monster.name}:`,
+				user,
+				previousCL: itemTransactionResult?.previousCL
+			});
+		}
 
 		return handleTripFinish(
 			user,

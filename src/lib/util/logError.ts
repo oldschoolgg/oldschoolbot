@@ -21,7 +21,10 @@ export function logError(err: any, context?: Record<string, string>, extra?: Rec
 	if (err?.requestBody?.files) {
 		err.requestBody = [];
 	}
-	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, {
+	if (err?.requestBody?.json) {
+		err.requestBody.json = String(err.requestBody.json).slice(0, 100);
+	}
+	console.error(`${(err as any)?.message ?? JSON.stringify(err)}`, {
 		type: 'ERROR',
 		raw: JSON.stringify(err),
 		metaInfo: JSON.stringify(metaInfo)
@@ -31,9 +34,6 @@ export function logError(err: any, context?: Record<string, string>, extra?: Rec
 			tags: context,
 			extra: metaInfo
 		});
-	} else {
-		console.error(err);
-		console.log(metaInfo);
 	}
 }
 
