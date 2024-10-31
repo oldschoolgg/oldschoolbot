@@ -55,7 +55,7 @@ export async function motherlodeMineCommand({
 		);
 	}
 
-	const glovesRate = 0;
+	const glovesEffect = 0;
 	const armourEffect = 0;
 	const miningCapeEffect = 0;
 	const goldSilverBoost = false;
@@ -67,7 +67,7 @@ export async function motherlodeMineCommand({
 		gearBank: user.gearBank,
 		ore: motherlode,
 		ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
-		glovesRate,
+		glovesEffect,
 		armourEffect,
 		miningCapeEffect,
 		powermining: powermine,
