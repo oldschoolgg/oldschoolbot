@@ -113,7 +113,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Elite,
 		id: 20_543,
 		scrollID: 12_073,
-		timeToFinish: Time.Minute * 15.0,
+		timeToFinish: Time.Minute * 8.5,
 		milestoneReward: {
 			itemReward: itemID('Heavy casket'),
 			scoreNeeded: 200
@@ -130,7 +130,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Master,
 		id: 19_836,
 		scrollID: 19_835,
-		timeToFinish: Time.Minute * 25.5,
+		timeToFinish: Time.Minute * 19.5,
 		milestoneReward: {
 			itemReward: itemID('Scroll sack'),
 			scoreNeeded: 100
