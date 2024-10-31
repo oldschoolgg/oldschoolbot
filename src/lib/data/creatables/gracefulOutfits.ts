@@ -142,7 +142,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 	},
 	// Hallowed Sepulchre
 	{
-		name: 'Dark Graceful',
+		name: 'Dark graceful',
 		inputItems: new Bank({
 			'Graceful hood': 1,
 			'Graceful top': 1,
@@ -162,7 +162,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		})
 	},
 	{
-		name: 'Dark Graceful hood',
+		name: 'Dark graceful hood',
 		inputItems: new Bank({
 			'Graceful hood': 1,
 			'Dark dye': 1

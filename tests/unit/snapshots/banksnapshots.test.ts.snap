@@ -12409,7 +12409,7 @@ exports[`OSB Creatables 1`] = `
       "11860": 1,
       "24729": 6,
     },
-    "name": "Dark Graceful",
+    "name": "Dark graceful",
     "outputItems": {
       "24743": 1,
       "24746": 1,
@@ -12425,7 +12425,7 @@ exports[`OSB Creatables 1`] = `
       "11850": 1,
       "24729": 1,
     },
-    "name": "Dark Graceful hood",
+    "name": "Dark graceful hood",
     "outputItems": {
       "24743": 1,
     },
