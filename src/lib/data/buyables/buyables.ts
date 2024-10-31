@@ -1108,12 +1108,12 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Diving apparatus',
-		gpCost: 0,
+		gpCost: 1000,
 		qpRequired: 30
 	},
 	{
 		name: 'Fishbowl helmet',
-		gpCost: 0,
+		gpCost: 1000,
 		qpRequired: 30
 	},
 	...sepulchreBuyables,
