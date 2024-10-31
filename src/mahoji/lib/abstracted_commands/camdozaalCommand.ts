@@ -37,7 +37,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		break;
 	}
 
-	const glovesRate = 0;
+	const glovesEffect = 0;
 	const armourEffect = 0;
 	const miningCapeEffect = 0;
 	const goldSilverBoost = false;
@@ -50,7 +50,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		gearBank: user.gearBank,
 		ore: barroniteRocks,
 		ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
-		glovesRate,
+		glovesEffect,
 		armourEffect,
 		miningCapeEffect,
 		powermining: powermine,
