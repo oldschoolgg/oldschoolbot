@@ -12488,6 +12488,93 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "24743": 1,
+      "24746": 1,
+      "24749": 1,
+      "24752": 1,
+      "24755": 1,
+      "24758": 1,
+    },
+    "name": "Revert dark graceful",
+    "noCl": true,
+    "outputItems": {
+      "11850": 1,
+      "11852": 1,
+      "11854": 1,
+      "11856": 1,
+      "11858": 1,
+      "11860": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24743": 1,
+    },
+    "name": "Revert dark graceful hood",
+    "noCl": true,
+    "outputItems": {
+      "11850": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24749": 1,
+    },
+    "name": "Revert dark graceful top",
+    "noCl": true,
+    "outputItems": {
+      "11854": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24752": 1,
+    },
+    "name": "Revert dark graceful legs",
+    "noCl": true,
+    "outputItems": {
+      "11856": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24755": 1,
+    },
+    "name": "Revert dark graceful gloves",
+    "noCl": true,
+    "outputItems": {
+      "11858": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24758": 1,
+    },
+    "name": "Revert dark graceful boots",
+    "noCl": true,
+    "outputItems": {
+      "11860": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24746": 1,
+    },
+    "name": "Revert dark graceful cape",
+    "noCl": true,
+    "outputItems": {
+      "11852": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "11849": 90,
       "11850": 1,
       "11852": 1,
@@ -13540,7 +13627,7 @@ exports[`OSB Creatables 1`] = `
       "11860": 1,
       "30044": 1,
     },
-    "name": "Varlamore graceful outfit",
+    "name": "Varlamore graceful",
     "outputItems": {
       "30045": 1,
       "30048": 1,
@@ -13560,7 +13647,7 @@ exports[`OSB Creatables 1`] = `
       "30057": 1,
       "30060": 1,
     },
-    "name": "Revert Varlamore graceful outfit",
+    "name": "Revert Varlamore graceful",
     "noCl": true,
     "outputItems": {
       "11850": 1,
@@ -13647,7 +13734,7 @@ exports[`OSB Creatables 1`] = `
       "21073": 1,
       "21076": 1,
     },
-    "name": "Revert Brimhaven graceful outfit",
+    "name": "Revert Brimhaven graceful",
     "noCl": true,
     "outputItems": {
       "11850": 1,
