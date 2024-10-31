@@ -18,11 +18,11 @@ export default async ({
 	bossName,
 	catacombs,
 	onTask,
+	slayerMaster,
 	limit,
 	lootTableTertiaryChanges
 }: KillWorkerArgs): KillWorkerReturn => {
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
-
 	if (osjsMonster) {
 		if (quantity > limit) {
 			return {
@@ -34,6 +34,7 @@ export default async ({
 			bank: osjsMonster.kill(quantity, {
 				inCatacombs: catacombs,
 				onSlayerTask: onTask,
+				slayerMaster: slayerMaster,
 				lootTableOptions: {
 					tertiaryItemPercentageChanges: new Map(lootTableTertiaryChanges)
 				}
