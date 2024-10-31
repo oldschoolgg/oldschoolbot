@@ -23,6 +23,7 @@ import type {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
@@ -43,6 +44,7 @@ import type {
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
@@ -266,6 +268,15 @@ const tripHandlers = {
 		commandName: 'runecraft',
 		args: (data: DarkAltarOptions) => ({ rune: `${darkAltarRunes[data.rune].item.name} (zeah)` })
 	},
+	[activity_type_enum.OuraniaAltar]: {
+		commandName: 'runecraft',
+		args: (data: OuraniaAltarOptions) => ({
+			rune: 'ourania altar',
+			usestams: data.stamina,
+			daeyalt_essence: data.daeyalt,
+			quantity: data.quantity
+		})
+	},
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',
 		args: (data: RunecraftActivityTaskOptions) => ({
@@ -354,6 +365,13 @@ const tripHandlers = {
 		commandName: 'cook',
 		args: (data: CutLeapingFishActivityTaskOptions) => ({
 			name: itemNameFromID(data.fishID),
+			quantity: data.quantity
+		})
+	},
+	[activity_type_enum.CreateForestersRations]: {
+		commandName: 'cook',
+		args: (data: CreateForestersRationsActivityTaskOptions) => ({
+			name: data.rationName,
 			quantity: data.quantity
 		})
 	},
@@ -540,7 +558,8 @@ const tripHandlers = {
 			tob: {
 				start: {
 					hard_mode: data.hardMode,
-					solo: data.solo
+					solo: data.solo,
+					quantity: data.quantity
 				}
 			}
 		})

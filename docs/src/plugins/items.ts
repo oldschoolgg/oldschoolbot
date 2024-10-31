@@ -19,7 +19,13 @@ export function remarkItems(options: any) {
 			if (matches.length === 0) return;
 
 			for (const match of matches) {
-				if (imageExtensions.some(ext => match.endsWith(ext))) {
+				if (match.startsWith('#')) {
+					const [channelName, messageID] = match.split(':');
+					const html = `<a class="discord_channel" href="discord://discord.com/channels/342983479501389826/${messageID}" target="_blank">${channelName}</a>`;
+					node.value = node.value.replace(`[[${match}]]`, html);
+					node.type = 'html';
+					continue;
+				} else if (imageExtensions.some(ext => match.endsWith(ext))) {
 					node.type = 'html';
 					const html = `<img src="/images/${match}" alt="${match}" />`;
 					node.value = node.value.replace(`[[${match}]]`, html);
@@ -77,7 +83,7 @@ export function remarkItems(options: any) {
 				);
 				const osbItem = Items.get(match) ?? Items.get(Number(match));
 				if (bsoItem) {
-					imageURL = `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/bso/src/lib/resources/images/bso_icons/${bsoItem[0]}.png`;
+					imageURL = `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/images/bso_icons/${bsoItem[0]}.png`;
 				} else if (osbItem) {
 					imageURL = `https://chisel.weirdgloop.org/static/img/osrs-sprite/${osbItem.id}.png`;
 					itemName = osbItem.name;

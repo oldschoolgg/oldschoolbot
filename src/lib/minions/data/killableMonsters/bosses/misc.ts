@@ -140,7 +140,15 @@ const killableBosses: KillableMonster[] = [
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		itemCost: [
+			{
+				itemCost: new Bank().add('Zul-andra teleport'),
+				qtyPerKill: 0.25,
+				boostPercent: 10,
+				optional: true
+			}
+		]
 	},
 	{
 		id: Monsters.KalphiteQueen.id,
@@ -347,7 +355,15 @@ const killableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.15,
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackCrush,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		itemCost: [
+			{
+				itemCost: new Bank().add('Key master teleport'),
+				qtyPerKill: 0.1,
+				boostPercent: 10,
+				optional: true
+			}
+		]
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -701,28 +717,9 @@ const killableBosses: KillableMonster[] = [
 				defence_stab: 0
 			}
 		},
-		specialLoot: ({ loot, ownedItems, cl }) => {
+		specialLoot: ({ loot, ownedItems }) => {
 			if (loot.has('Coagulated venom') && (ownedItems.has('Coagulated venom') || ownedItems.has('Rax'))) {
 				loot.set('Coagulated venom', 0);
-			}
-
-			const noxPieces = resolveItems(['Noxious point', 'Noxious blade', 'Noxious pommel']);
-			const ownedCount = noxPieces.map(o => cl.amount(o));
-			const lootCount = noxPieces.map(l => loot.amount(l));
-
-			for (let i = 0; i < lootCount.length; i++) {
-				while (lootCount[i] > 0) {
-					const sortedPieces = noxPieces
-						.map((piece, index) => ({ piece, owned: ownedCount[index] }))
-						.sort((a, b) => a.owned - b.owned);
-
-					const targetPiece = sortedPieces[0].piece;
-					loot.set(targetPiece, (loot.amount(targetPiece) || 0) + 1);
-					loot.set(noxPieces[i], loot.amount(noxPieces[i]) - 1);
-
-					ownedCount[noxPieces.indexOf(targetPiece)]++;
-					lootCount[i]--;
-				}
 			}
 		},
 		itemCost: [

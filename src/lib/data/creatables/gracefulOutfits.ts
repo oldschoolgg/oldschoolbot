@@ -1222,5 +1222,46 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Graceful cape')]: 1
 		},
 		noCl: true
+	},
+	// Colossal Wyrm Agility (Varlamore graceful)
+	{
+		name: 'Varlamore graceful outfit',
+		inputItems: new Bank({
+			'Graceful crafting kit': 1,
+			'Graceful hood': 1,
+			'Graceful top': 1,
+			'Graceful legs': 1,
+			'Graceful gloves': 1,
+			'Graceful boots': 1,
+			'Graceful cape': 1
+		}),
+		outputItems: new Bank({
+			'Varlamore graceful hood': 1,
+			'Varlamore graceful top': 1,
+			'Varlamore graceful legs': 1,
+			'Varlamore graceful gloves': 1,
+			'Varlamore graceful boots': 1,
+			'Varlamore graceful cape': 1
+		})
+	},
+	{
+		name: 'Revert Varlamore graceful outfit',
+		inputItems: new Bank({
+			'Varlamore graceful hood': 1,
+			'Varlamore graceful top': 1,
+			'Varlamore graceful legs': 1,
+			'Varlamore graceful gloves': 1,
+			'Varlamore graceful boots': 1,
+			'Varlamore graceful cape': 1
+		}),
+		outputItems: new Bank({
+			'Graceful hood': 1,
+			'Graceful top': 1,
+			'Graceful legs': 1,
+			'Graceful gloves': 1,
+			'Graceful boots': 1,
+			'Graceful cape': 1
+		}),
+		noCl: true
 	}
 ];

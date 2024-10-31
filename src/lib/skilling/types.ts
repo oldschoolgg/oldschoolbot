@@ -1,6 +1,7 @@
 import type { Bank, Item, LootTable } from 'oldschooljs';
 
 import type { Emoji } from '../constants';
+import type { QuestID } from '../minions/data/quests';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank } from '../types';
 import type { FarmingPatchName } from '../util/farmingHelpers';
@@ -130,9 +131,11 @@ export interface Course {
 	xp: number | ((agilityLevel: number) => number);
 	marksPer60?: number;
 	lapTime: number;
-	petChance: number;
+	cantFail?: boolean;
+	petChance: number | ((agilityLevel: number) => number);
 	aliases: string[];
 	qpRequired?: number;
+	requiredQuests?: QuestID[];
 }
 
 export interface Cookable {
@@ -147,6 +150,13 @@ export interface Cookable {
 	burnKourendBonus?: number[];
 	burntCookable: number;
 	alias?: string[];
+}
+
+export interface ForesterRation {
+	name: string;
+	inputLeaf: Bank;
+	inputFood: Bank;
+	rationsAmount: number;
 }
 
 export interface Bar {

@@ -27,6 +27,7 @@ const unlimitedFireRuneProviders = resolveItems([
 
 // 5 tick action
 export const timePerAlch = Time.Second * 3;
+export const timePerAlchAgility = Time.Second * (3 + 10);
 
 export async function alchCommand(
 	interaction: ChatInputCommandInteraction | null,

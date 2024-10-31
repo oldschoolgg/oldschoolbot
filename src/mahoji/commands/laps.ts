@@ -1,8 +1,9 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
@@ -10,6 +11,7 @@ import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { timePerAlchAgility } from '../lib/abstracted_commands/alchCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const unlimitedFireRuneProviders = [
@@ -28,7 +30,7 @@ const unlimitedFireRuneProviders = [
 function alching(user: MUser, tripLength: number) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const { bank } = user;
-	const favAlchables = user.favAlchs(tripLength);
+	const favAlchables = user.favAlchs(tripLength, true);
 
 	if (favAlchables.length === 0) {
 		return null;
@@ -42,7 +44,7 @@ function alching(user: MUser, tripLength: number) {
 
 	const hasInfiniteFireRunes = user.hasEquipped(unlimitedFireRuneProviders);
 
-	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
+	let maxCasts = Math.floor(tripLength / timePerAlchAgility);
 	maxCasts = Math.min(alchItemQty, maxCasts);
 	maxCasts = Math.min(nats, maxCasts);
 	if (!hasInfiniteFireRunes) {
@@ -128,6 +130,16 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		if (course.qpRequired && user.QP < course.qpRequired) {
 			return `You need at least ${course.qpRequired} Quest Points to do this course.`;
+		}
+
+		// Check for quest requirements
+		if (course.requiredQuests) {
+			const incompleteQuest = course.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to attempt the ${course.name} agility course.`;
+			}
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Agility');

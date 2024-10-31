@@ -104,6 +104,13 @@ export interface DarkAltarOptions extends ActivityTaskOptions {
 	rune: 'blood' | 'soul';
 }
 
+export interface OuraniaAltarOptions extends ActivityTaskOptions {
+	type: 'OuraniaAltar';
+	quantity: number;
+	stamina: boolean;
+	daeyalt: boolean;
+}
+
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Agility';
 	courseID: string;
@@ -269,6 +276,12 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	zahur: boolean;
 	wesley: boolean;
+}
+
+export interface CreateForestersRationsActivityTaskOptions extends ActivityTaskOptions {
+	type: 'CreateForestersRations';
+	rationName: string;
+	quantity: number;
 }
 
 export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
@@ -605,6 +618,7 @@ export type ActivityTaskData =
 	| ClueActivityTaskOptions
 	| AlchingActivityTaskOptions
 	| DarkAltarOptions
+	| OuraniaAltarOptions
 	| GroupMonsterActivityTaskOptions
 	| MahoganyHomesActivityTaskOptions
 	| NightmareActivityTaskOptions
@@ -619,4 +633,5 @@ export type ActivityTaskData =
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
+	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions;

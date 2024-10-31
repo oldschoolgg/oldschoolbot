@@ -12,6 +12,7 @@ import { quests } from '../minions/data/quests';
 import Agility from '../skilling/skills/agility';
 import Constructables from '../skilling/skills/construction/constructables';
 import Cooking from '../skilling/skills/cooking/cooking';
+import ForestryRations from '../skilling/skills/cooking/forestersRations';
 import LeapingFish from '../skilling/skills/cooking/leapingFish';
 import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
@@ -40,6 +41,7 @@ import type {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
@@ -321,6 +323,14 @@ export function minionStatus(user: MUser) {
 				barbarianFish?.item.name
 			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
 		}
+		case 'CreateForestersRations': {
+			const data = currentTask as CreateForestersRationsActivityTaskOptions;
+			const ration = ForestryRations.find(ration => ration.name === data.rationName)!;
+
+			return `${name} is currently creating ${data.quantity}x ${
+				ration.name
+			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
+		}
 		case 'Wintertodt': {
 			const data = currentTask as ActivityTaskOptionsWithQuantity;
 			return `${name} is currently fighting Wintertodt ${data.quantity}x times. ${formattedDuration}`;
@@ -561,6 +571,10 @@ export function minionStatus(user: MUser) {
 				data.rune
 			)} runes at the Dark Altar. ${formattedDuration}`;
 		}
+		case 'OuraniaAltar': {
+			return `${name} is currently runecrafting at the Ourania Altar. ${formattedDuration}`;
+		}
+
 		case 'Trekking': {
 			return `${name} is currently Temple Trekking. ${formattedDuration}`;
 		}

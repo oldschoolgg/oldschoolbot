@@ -5,7 +5,7 @@ exports[`OSB Collection Log Groups/Categories 1`] = `
 Achievement Diary (48)
 Aerial Fishing (9)
 Alchemical Hydra (11)
-All Pets (58)
+All Pets (59)
 Araxxor (10)
 Barbarian Assault (11)
 Barrows Chests (25)
@@ -23,10 +23,11 @@ Chaos Druids (3)
 Chaos Elemental (3)
 Chaos Fanatic (3)
 Chompy Birds (19)
+Colossal Wyrm Agility (8)
 Commander Zilyana (8)
 Corporeal Beast (7)
 Crazy archaeologist (3)
-Creatables (677)
+Creatables (692)
 Creature Creation (7)
 Cyclopes (8)
 Dagannoth Kings (10)
@@ -46,7 +47,7 @@ Giants' Foundry (9)
 Glough's Experiments (6)
 Gnome Restaurant (4)
 God Wars Dungeon (35)
-Graceful (60)
+Graceful (66)
 Grotesque Guardians (7)
 Guardians of the Rift (17)
 Hallowed Sepulchre (16)
@@ -66,7 +67,7 @@ Mahogany Homes (8)
 Master Treasure Trail Rewards (Rare) (45)
 Master Treasure Trails (49)
 Medium Treasure Trails (115)
-Miscellaneous (50)
+Miscellaneous (51)
 Monkey Backpacks (6)
 Motherlode Mine (6)
 My Notes (26)
@@ -496,6 +497,7 @@ Brimhaven graceful top
 Brimhaven voucher
 Brine sabre
 Broken dragon hasta
+Broken zombie axe
 Bronze boots
 Bronze defender
 Bronze dragon mask
@@ -525,6 +527,7 @@ Burnt page
 Butch
 Cabbage round shield
 Cache of runes
+Calcified acorn
 Callisto cub
 Camo bottoms
 Camo helmet
@@ -569,6 +572,7 @@ Coagulated venom
 Coal bag
 Cockatrice head
 Colossal blade
+Colossal wyrm teleport scroll
 Craw's bow (u)
 Crawling hand
 Crier bell
@@ -1511,6 +1515,12 @@ Uncut onyx
 Unholy blessing
 Unsired
 Uri's hat
+Varlamore graceful boots
+Varlamore graceful cape
+Varlamore graceful gloves
+Varlamore graceful hood
+Varlamore graceful legs
+Varlamore graceful top
 Venator shard
 Venator vestige
 Venenatis spiderling

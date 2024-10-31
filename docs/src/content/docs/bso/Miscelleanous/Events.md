@@ -1,6 +1,34 @@
 ---
-title: "Events"
+title: "Holiday Events"
 ---
+
+## Halloween 2024
+
+### Main Event
+
+To do the main event, use [[/halloween check]] to start, and receive a [[Pumpkin carving knife]] and pumpkin seeds, then plant/harvest the seeds to grow pumpkins. You have a chance at getting special Heirloom pumpkins, then use your knife on them to create jack-o-lanterns. Use [[/halloween hand_in]] to hand in your jack-o-lanterns, and have a chance at receiving a [[Halloween cracker]].
+
+If you run out of seeds, you can buy more.
+
+#### Rewards
+
+[[Halloween cracker]]: Received at a 1/10 chance when handing in a jack-o-lantern.
+
+The [[Mumpkin]] pet is received at a rare chance when harvesting pumpkins, it can be metamorphed into: [[Mumpkin (demonic)]] [[Mumpkin (dead)]] [[Mumpkin (pumpkin)]]
+
+### Side Event
+
+To start, any trip, regardless of duration, has a 1/3 chance to trigger the event. Once you get the event start messeage (Pumpkinhead chatbox), you are given a Spookling token.
+
+When completing trips, for every minute, there is a 1 in 12 chance to get a 'trick or treat' point. If you get at least one point, there is a 55% chance of getting a trick, otherwise it's a 'treat.' Trick vs treat doesn't affect pet chance, but only treats can also give you Halloween candy. Themed > messsages differ between tricks and treats, and there are a few different messages for being lucky enough to get the pet also.
+
+Pet drop rate is 1 per 80 trick or treat points (~20 hours) Each pet on CL makes the next one 5x rarer. You also get 1 Spookling token for each trick or treat point. (1 in 12 per minute, or ~5 per hour on average).
+
+You can "cash in" the Spookling tokens by going to /k Pumpkinhead to claim his head, in the form of a Miniature pumpkin head. The cost is 100 Spookling tokens, with a max of 3 heads purchasable. ~25 > hours per head
+
+### Halloween cracker
+
+Received from handing in jack-o-lanterns, and opened with [[/open]] - it gives a random unique item when opened.
 
 ## Halloween 2021
 

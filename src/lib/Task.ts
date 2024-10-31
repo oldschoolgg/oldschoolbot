@@ -31,6 +31,7 @@ import { farmingTask } from '../tasks/minions/farmingActivity';
 import { firemakingTask } from '../tasks/minions/firemakingActivity';
 import { fishingTask } from '../tasks/minions/fishingActivity';
 import { fletchingTask } from '../tasks/minions/fletchingActivity';
+import { CreateForestersRationsTask } from '../tasks/minions/forestersRationActivity';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
@@ -74,6 +75,7 @@ import { monsterTask } from '../tasks/minions/monsterActivity';
 import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
 import { myNotesTask } from '../tasks/minions/myNotesActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
+import ouraniaAltarTask from '../tasks/minions/ouraniaAltarActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
@@ -144,6 +146,7 @@ const tasks: MinionTask[] = [
 	cookingTask,
 	craftingTask,
 	darkAltarTask,
+	ouraniaAltarTask,
 	enchantingTask,
 	farmingTask,
 	firemakingTask,
@@ -189,7 +192,8 @@ const tasks: MinionTask[] = [
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
 	myNotesTask,
-	colosseumTask
+	colosseumTask,
+	CreateForestersRationsTask
 ];
 
 export async function processPendingActivities() {

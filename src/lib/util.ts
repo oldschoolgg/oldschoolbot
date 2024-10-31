@@ -37,6 +37,7 @@ import type { Consumable } from './minions/types';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
+import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
@@ -45,6 +46,7 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { getOSItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
@@ -180,14 +182,14 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 		}
 
 		if (multiple) {
-			str.push(subStr.join(', '));
+			str.push(joinStrings(subStr));
 		} else {
 			str.push(subStr.join(''));
 		}
 	}
 
 	if (consumables.length > 1) {
-		return `(${str.join(' OR ')})`;
+		return `(${joinStrings(str, 'or')})`;
 	}
 
 	return str.join('');
@@ -203,10 +205,10 @@ export function formatPohBoosts(boosts: POHBoosts) {
 			bonusStr.push(`${boostPercent}% for ${name}`);
 		}
 
-		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${bonusStr.join(' or ')})\n`);
+		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${joinStrings(bonusStr, 'or')})\n`);
 	}
 
-	return slotStr.join(', ');
+	return joinStrings(slotStr);
 }
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
@@ -278,7 +280,7 @@ export function roughMergeMahojiResponse(
 }
 
 export function skillingPetDropRate(
-	user: MUserClass,
+	user: MUserClass | GearBank,
 	skill: SkillsEnum,
 	baseDropRate: number
 ): { petDropRate: number } {
@@ -369,8 +371,15 @@ export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();
-	if (!weapon) return 'You have no weapon equipped.';
 	const { ammo } = gear;
+	if (!weapon) return 'You have no weapon equipped.';
+	const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(weapon.id);
+	if (usingBowfa) {
+		return {
+			weapon,
+			ammo
+		};
+	}
 	if (!ammo) return 'You have no ammo equipped.';
 
 	const projectileCategory = objectEntries(projectiles).find(i =>
@@ -380,7 +389,7 @@ export function checkRangeGearWeapon(gear: Gear) {
 	if (!projectileCategory[1].items.includes(ammo.item)) {
 		return `You have invalid ammo for your equipped weapon. For ${
 			projectileCategory[0]
-		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
+		}-based weapons, you can use: ${joinStrings(projectileCategory[1].items.map(itemNameFromID), 'or')}.`;
 	}
 
 	return {
@@ -409,3 +418,19 @@ export function anyoneDiedInTOARaid(data: TOAOptions) {
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
+
+export function replaceLast(str: string, pattern: string, replacement: string) {
+	const last = str.lastIndexOf(pattern);
+	return last !== -1 ? `${str.slice(0, last)}${replacement}${str.slice(last + pattern.length)}` : str;
+}
+
+export function joinStrings(itemList: any[], end?: string) {
+	if (itemList.length < 2) return itemList.join(', ');
+	const lastItem = itemList[itemList.length - 1];
+	if (lastItem && (typeof lastItem !== 'string' || !lastItem.toString().includes(','))) {
+		return replaceLast(itemList.join(', '), ',', ` ${end ? end : 'and'}`);
+	} else {
+		// commas in last term will put str in weird place
+		return itemList.join(', ');
+	}
+}

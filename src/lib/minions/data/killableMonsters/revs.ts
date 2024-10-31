@@ -15,14 +15,22 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [
-				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
-				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
-			]
-		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		],
 		canBePked: true
 	},
 	{
@@ -36,14 +44,22 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [
-				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
-				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
-			]
-		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		],
 		canBePked: true
 	},
 	{
@@ -57,14 +73,22 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [
-				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
-				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
-			]
-		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		],
 		canBePked: true
 	},
 	{
@@ -78,14 +102,22 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [
-				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
-				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
-			]
-		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		],
 		canBePked: true
 	},
 	{
@@ -99,7 +131,15 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 8,
 		pkBaseDeathChance: 8,
-		canBePked: true
+		canBePked: true,
+		itemCost: [
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		]
 	},
 	{
 		id: Monsters.RevenantHellhound.id,
@@ -112,14 +152,22 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [
-				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
-				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
-			]
-		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		],
 		canBePked: true
 	},
 	{
@@ -133,14 +181,22 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [
-				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
-				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
-			]
-		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		],
 		canBePked: true
 	},
 	{
@@ -154,7 +210,15 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 8,
 		pkBaseDeathChance: 8,
-		canBePked: true
+		canBePked: true,
+		itemCost: [
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		]
 	},
 	{
 		id: Monsters.RevenantKnight.id,
@@ -167,14 +231,22 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [
-				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
-				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
-			]
-		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		],
 		canBePked: true
 	},
 	{
@@ -188,14 +260,22 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [
-				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
-				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
-			]
-		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		],
 		canBePked: true
 	},
 	{
@@ -209,14 +289,22 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [
-				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
-				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
-			]
-		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Revenant cave teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 5,
+				optional: true
+			}
+		],
 		canBePked: true
 	}
 ];
