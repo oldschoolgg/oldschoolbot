@@ -97,7 +97,7 @@ export const buildCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const timeToBuildSingleObject = object.ticks * 300;
+		const timeToBuildSingleObject = object.ticks * Time.Second * 0.6;
 
 		const [plank, planksQtyCost] = object.input;
 
