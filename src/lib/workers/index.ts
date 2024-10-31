@@ -15,8 +15,8 @@ export interface KillWorkerArgs {
 	quantity: number;
 	limit: number;
 	onTask: boolean;
-	catacombs: boolean;
-	slayerMaster?: MonsterSlayerMaster | undefined;
+	catacombs?: boolean;
+	slayerMaster?: MonsterSlayerMaster;
 	lootTableTertiaryChanges: [string, number][];
 }
 
