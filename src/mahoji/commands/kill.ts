@@ -71,9 +71,19 @@ export const killCommand: OSBMahojiCommand = {
 			description: 'The quantity you want to simulate.',
 			required: true,
 			min_value: 1
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'task',
+			description: 'Consider on-task loot table (if applicable).',
+			required: false
 		}
 	],
-	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
+	run: async ({
+		options,
+		userID,
+		interaction
+	}: CommandRunOptions<{ name: string; quantity: number; task: boolean }>) => {
 		const user = await mUserFetch(userID);
 		await deferInteraction(interaction);
 
@@ -82,7 +92,7 @@ export const killCommand: OSBMahojiCommand = {
 			bossName: options.name,
 			limit: determineKillLimit(user),
 			catacombs: false,
-			onTask: false,
+			onTask: options.task,
 			lootTableTertiaryChanges: Array.from(user.buildTertiaryItemChanges().entries())
 		});
 
