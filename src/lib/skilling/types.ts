@@ -132,7 +132,7 @@ export interface Course {
 	marksPer60?: number;
 	lapTime: number;
 	cantFail?: boolean;
-	petChance: number;
+	petChance: number | ((agilityLevel: number) => number);
 	aliases: string[];
 	qpRequired?: number;
 	requiredQuests?: QuestID[];
@@ -150,6 +150,13 @@ export interface Cookable {
 	burnKourendBonus?: number[];
 	burntCookable: number;
 	alias?: string[];
+}
+
+export interface ForesterRation {
+	name: string;
+	inputLeaf: Bank;
+	inputFood: Bank;
+	rationsAmount: number;
 }
 
 export interface Bar {

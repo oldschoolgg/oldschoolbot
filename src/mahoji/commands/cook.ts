@@ -5,12 +5,14 @@ import { Bank } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
+import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import type { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
+import { forestersRationCommand } from '../lib/abstracted_commands/forestersRationCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const cookCommand: OSBMahojiCommand = {
@@ -28,7 +30,11 @@ export const cookCommand: OSBMahojiCommand = {
 			description: 'The thing you want to cook.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return [...Cookables.map(i => i.name), ...LeapingFish.map(i => i.item.name)]
+				return [
+					...Cookables.map(i => i.name),
+					...LeapingFish.map(i => i.item.name),
+					...ForestryRations.map(i => i.name)
+				]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
 						name: i,
@@ -57,6 +63,15 @@ export const cookCommand: OSBMahojiCommand = {
 
 		if (barbarianFish) {
 			return cutLeapingFishCommand({ user, channelID, name, quantity });
+		}
+
+		const forestryFood = ForestryRations.find(
+			foresterRation =>
+				stringMatches(foresterRation.name, name) || stringMatches(foresterRation.name.split(' ')[0], name)
+		);
+
+		if (forestryFood) {
+			return forestersRationCommand({ user, channelID, name, quantity });
 		}
 
 		const cookable = Cooking.Cookables.find(

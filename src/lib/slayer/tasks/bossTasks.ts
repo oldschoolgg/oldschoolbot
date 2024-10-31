@@ -239,7 +239,7 @@ export const bossTasks: AssignableSlayerTask[] = [
 		weight: 1,
 		monsters: [Monsters.Araxxor.id],
 		isBoss: true,
-		wilderness: true
+		slayerLevel: 92
 	}
 ];
 
