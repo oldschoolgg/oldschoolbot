@@ -1458,6 +1458,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
+		buy_limit: 100_000,
 		equipment: {
 			attack_stab: 0,
 			attack_slash: 0,
