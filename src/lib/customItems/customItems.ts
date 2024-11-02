@@ -12370,9 +12370,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			superTradeableButTradeableOnGE: true,
-			isDiscontinued: true,
-			isSuperUntradeable: true
+			isDiscontinued: true
 		}
 	},
 	1
