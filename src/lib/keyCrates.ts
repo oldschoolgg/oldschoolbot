@@ -208,6 +208,7 @@ export const keyCrates: Crate[] = [
 			.tertiary(110, 'Paint box')
 			.add(
 				new LootTable()
+					.add('Mortimer cape', 1, 2)
 					.add('Puzzle box (kuro)', 1, 2)
 					.add('Pumpkinhead boxhat', 1, 2)
 					.add('Deathless victims', 1, 2)

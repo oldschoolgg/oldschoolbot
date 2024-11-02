@@ -13230,3 +13230,15 @@ setCustomItem(
 	},
 	500_000
 );
+
+setCustomItem(
+	73_280,
+	'Mortimer cape',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
