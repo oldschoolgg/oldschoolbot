@@ -186,7 +186,8 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	if (typeof tempResult === 'string') {
 		return tempResult;
 	}
-	let { speedDurationResult, currentTaskOptions } = tempResult;
+	let currentTaskOptions = tempResult.currentTaskOptions;
+	const speedDurationResult = tempResult.speedDurationResult;
 	const quantity = speedDurationResult.finalQuantity;
 	let duration = speedDurationResult.timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
