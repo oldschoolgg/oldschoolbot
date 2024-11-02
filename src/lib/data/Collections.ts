@@ -1773,6 +1773,38 @@ export const allCollectionLogs: ICollection = {
 					'Covenant of grimace'
 				])
 			},
+			'Halloween Mini-Event 2024': {
+				items: resolveItems(['Spookling token', 'Miniature pumpkin head', 'Polterpup']),
+				counts: false,
+				allItems: resolveItems(['Spookling token', 'Miniature pumpkin head', 'Polterpup'])
+			},
+			'Halloween 2024': {
+				alias: ['hween2024', 'halloween 2024'],
+				items: resolveItems(['Heirloom pumpkin', 'Mumpkin', 'Jack-o-lantern', 'Halloween cracker']),
+				counts: false,
+				allItems: resolveItems(['Heirloom pumpkin', 'Mumpkin', 'Jack-o-lantern', 'Halloween cracker'])
+			},
+			'Halloween Cracker': {
+				items: resolveItems([
+					'Zombie hween mask',
+					'Demonic hween mask',
+					'Monster in a backpack',
+					'Pumpkin parasol',
+					'Vampyric hween mask',
+					'Zombie cow plushie',
+					'Deathtouched tart'
+				]),
+				counts: false,
+				allItems: resolveItems([
+					'Zombie hween mask',
+					'Demonic hween mask',
+					'Monster in a backpack',
+					'Pumpkin parasol',
+					'Vampyric hween mask',
+					'Zombie cow plushie',
+					'Deathtouched tart'
+				])
+			},
 			'Christmas 2021': {
 				alias: ['xmas 2021', 'christmas 2021'],
 				items: resolveItems([
