@@ -144,7 +144,15 @@ const killableBosses: KillableMonster[] = [
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		itemCost: [
+			{
+				itemCost: new Bank().add('Zul-andra teleport'),
+				qtyPerKill: 0.25,
+				boostPercent: 10,
+				optional: true
+			}
+		]
 	},
 	{
 		id: Monsters.KalphiteQueen.id,
@@ -357,7 +365,15 @@ const killableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.15,
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackCrush,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		itemCost: [
+			{
+				itemCost: new Bank().add('Key master teleport'),
+				qtyPerKill: 0.1,
+				boostPercent: 10,
+				optional: true
+			}
+		]
 	},
 	{
 		id: Monsters.KingBlackDragon.id,

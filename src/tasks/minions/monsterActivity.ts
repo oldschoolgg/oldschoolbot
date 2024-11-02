@@ -425,13 +425,12 @@ export function doMonsterTrip(data: newOptions) {
 		if (hasKourendHard) {
 			const ashSanctifierResult = ashSanctifierEffect({
 				hasKourendElite,
-				mutableLootToReceive: loot,
+				updateBank,
 				gearBank,
 				bitfield,
 				duration
 			});
 			if (ashSanctifierResult) {
-				updateBank.merge(ashSanctifierResult.updateBank);
 				messages.push(ashSanctifierResult.message);
 			}
 		}

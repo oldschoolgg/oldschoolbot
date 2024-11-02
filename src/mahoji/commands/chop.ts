@@ -161,6 +161,10 @@ export const chopCommand: OSBMahojiCommand = {
 			if (typeof res === 'string') return res;
 		}
 
+		if (twitchers_gloves && !user.hasEquipped("Twitcher's gloves")) {
+			return "You need to have Twitcher's gloves equipped to use them.";
+		}
+
 		const boosts = [];
 
 		let wcLvl = skills.woodcutting;

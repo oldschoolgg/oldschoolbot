@@ -521,6 +521,14 @@ export const chaeldarMonsters: KillableMonster[] = [
 		healAmountNeeded: 250,
 		attackStyleToUse: GearStat.AttackStab,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged, GearStat.AttackMagic],
-		requiredQuests: [QuestID.WhileGuthixSleeps]
+		requiredQuests: [QuestID.WhileGuthixSleeps],
+		itemCost: [
+			{
+				itemCost: new Bank().add('Guthixian temple teleport'),
+				qtyPerKill: 0.05,
+				boostPercent: 10,
+				optional: true
+			}
+		]
 	}
 ];

@@ -4,6 +4,7 @@ import { glob } from 'glob';
 import { Bank, Monsters } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
+import process from 'node:process';
 import { groupBy } from 'remeda';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
@@ -26,7 +27,7 @@ function combatAchievementHowToFinish(ca: CombatAchievement) {
 	throw ca;
 }
 
-function handleMarkdownEmbed(identifier: string, filePath: string, contentToInject: string) {
+export function handleMarkdownEmbed(identifier: string, filePath: string, contentToInject: string) {
 	const contentToReplace = readFileSync(`./docs/src/content/docs/${filePath}`, 'utf8');
 	const startMarker = `[[embed.${identifier}.start]]`;
 	const endMarker = `[[embed.${identifier}.end]]`;
@@ -371,7 +372,10 @@ function wikiIssues() {
 	}
 
 	const markdown = new Markdown();
-	const grouped = groupBy(issues, i => i.filePath.replaceAll('\\', '/'));
+	const grouped = groupBy(
+		issues.sort((a, b) => a.filePath.localeCompare(b.filePath)),
+		i => i.filePath.replaceAll('\\', '/')
+	);
 	for (const [file, issues] of Object.entries(grouped).sort((a, b) => a[0].localeCompare(b[0]))) {
 		markdown.addLine(
 			`[${file.replace('docs/src/content/docs', '')}](https://github.com/oldschoolgg/oldschoolbot/blob/master/${file.replaceAll(' ', '%20')}): ${issues.map(i => i.description).join(', ')}`

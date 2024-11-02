@@ -408,6 +408,7 @@ const source: [string, (string | number)[]][] = [
 	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']],
 	['Ring of suffering (i)', ['Ring of suffering (ri)']],
 	['Amulet of rancour', ['Amulet of rancour (s)']],
+	['Skull sceptre', ['Skull sceptre (i)']],
 
 	// Tame gear
 	['Abyssal jibwings', ['Abyssal jibwings (e)']],

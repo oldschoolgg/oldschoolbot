@@ -24,7 +24,6 @@ GROUP BY item_id;`);
 	 * Analytics
 	 */
 	schedule('*/5 * * * *', () => {
-		debugLog('Analytics cronjob starting');
 		return analyticsTick();
 	});
 
@@ -47,7 +46,6 @@ GROUP BY item_id;`);
 	});
 
 	schedule('35 */48 * * *', async () => {
-		debugLog('cacheGEPrices cronjob starting');
 		await cacheGEPrices();
 	});
 }

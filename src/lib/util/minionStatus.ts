@@ -15,6 +15,7 @@ import { quests } from '../minions/data/quests';
 import Agility from '../skilling/skills/agility';
 import Constructables from '../skilling/skills/construction/constructables';
 import Cooking from '../skilling/skills/cooking/cooking';
+import ForestryRations from '../skilling/skills/cooking/forestersRations';
 import LeapingFish from '../skilling/skills/cooking/leapingFish';
 import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
@@ -44,6 +45,7 @@ import type {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DOAOptions,
 	DarkAltarOptions,
@@ -332,6 +334,14 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently cutting ${data.quantity}x ${
 				barbarianFish?.item.name
+			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
+		}
+		case 'CreateForestersRations': {
+			const data = currentTask as CreateForestersRationsActivityTaskOptions;
+			const ration = ForestryRations.find(ration => ration.name === data.rationName)!;
+
+			return `${name} is currently creating ${data.quantity}x ${
+				ration.name
 			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
 		}
 		case 'Wintertodt': {

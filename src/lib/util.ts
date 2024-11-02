@@ -36,7 +36,7 @@ import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { ClueTiers } from './clues/clueTiers';
-import { BitField, ONE_TRILLION, type ProjectileType, globalConfig, projectiles } from './constants';
+import { BitField, MAX_XP, ONE_TRILLION, type ProjectileType, globalConfig, projectiles } from './constants';
 import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
@@ -45,6 +45,7 @@ import type { Consumable } from './minions/types';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
+import type { GearBank } from './structures/GearBank';
 import type { ItemBank, Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
@@ -203,14 +204,14 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 		}
 
 		if (multiple) {
-			str.push(subStr.join(', '));
+			str.push(joinStrings(subStr));
 		} else {
 			str.push(subStr.join(''));
 		}
 	}
 
 	if (consumables.length > 1) {
-		return `(${str.join(' OR ')})`;
+		return `(${joinStrings(str, 'or')})`;
 	}
 
 	return str.join('');
@@ -226,10 +227,10 @@ export function formatPohBoosts(boosts: POHBoosts) {
 			bonusStr.push(`${boostPercent}% for ${name}`);
 		}
 
-		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${bonusStr.join(' or ')})\n`);
+		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${joinStrings(bonusStr, 'or')})\n`);
 	}
 
-	return slotStr.join(', ');
+	return joinStrings(slotStr);
 }
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
@@ -433,12 +434,12 @@ export function generateXPLevelQuestion() {
 }
 
 export function skillingPetDropRate(
-	userOrSkillXP: MUserClass | number,
+	user: MUserClass | GearBank | number,
 	skill: SkillsEnum,
 	baseDropRate: number
 ): { petDropRate: number } {
-	const xp = typeof userOrSkillXP === 'number' ? userOrSkillXP : userOrSkillXP.skillsAsXP[skill];
-	const twoHundredMillXP = xp >= 5_000_000_000;
+	const xp = typeof user === 'number' ? user : user.skillsAsXP[skill];
+	const twoHundredMillXP = xp >= MAX_XP;
 	const skillLevel = convertXPtoLVL(xp);
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
@@ -579,7 +580,7 @@ export function checkRangeGearWeapon(gear: Gear) {
 	if (!projectileCategory[1].items.includes(ammo.item)) {
 		return `You have invalid ammo for your equipped weapon. For ${
 			projectileCategory[0]
-		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
+		}-based weapons, you can use: ${joinStrings(projectileCategory[1].items.map(itemNameFromID), 'or')}.`;
 	}
 
 	return {
@@ -617,4 +618,20 @@ export type JsonKeys<T> = {
 export function isInSupportServer(channelID: string) {
 	const ch = globalClient.channels.cache.get(channelID);
 	return ch && 'guildId' in ch && ch.guildId === SupportServer;
+}
+
+export function replaceLast(str: string, pattern: string, replacement: string) {
+	const last = str.lastIndexOf(pattern);
+	return last !== -1 ? `${str.slice(0, last)}${replacement}${str.slice(last + pattern.length)}` : str;
+}
+
+export function joinStrings(itemList: any[], end?: string) {
+	if (itemList.length < 2) return itemList.join(', ');
+	const lastItem = itemList[itemList.length - 1];
+	if (lastItem && (typeof lastItem !== 'string' || !lastItem.toString().includes(','))) {
+		return replaceLast(itemList.join(', '), ',', ` ${end ? end : 'and'}`);
+	} else {
+		// commas in last term will put str in weird place
+		return itemList.join(', ');
+	}
 }

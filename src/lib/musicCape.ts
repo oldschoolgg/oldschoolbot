@@ -11,6 +11,7 @@ import type { MinigameName } from './settings/minigames';
 import { Minigames } from './settings/minigames';
 import type { RequirementFailure } from './structures/Requirements';
 import { Requirements } from './structures/Requirements';
+import { joinStrings } from './util';
 
 export const musicCapeRequirements = new Requirements()
 	.add({
@@ -123,7 +124,7 @@ export const musicCapeRequirements = new Requirements()
 			if (notDoneRunes.length > 0) {
 				return [
 					{
-						reason: `You need to Runecraft these runes at least once: ${notDoneRunes.join(', ')}.`
+						reason: `You need to Runecraft these runes at least once: ${joinStrings(notDoneRunes)}.`
 					}
 				];
 			}
@@ -187,7 +188,7 @@ export const musicCapeRequirements = new Requirements()
 
 			if (minigamesNotDone.length > 0) {
 				results.push({
-					reason: `You need to do these minigames at least once: ${minigamesNotDone.slice(0, 5).join(', ')}.`
+					reason: `You need to do these minigames at least once: ${joinStrings(minigamesNotDone.slice(0, 5))}.`
 				});
 			}
 
@@ -204,7 +205,7 @@ export const musicCapeRequirements = new Requirements()
 			if (!uniqueTracks.some(i => eventBank[i.id])) {
 				const tracksNeeded = RandomEvents.filter(i => i.uniqueMusic).map(i => i.name);
 				results.push({
-					reason: `You need to do one of these random events: ${tracksNeeded.join(', ')}.`
+					reason: `You need to do one of these random events: ${joinStrings(tracksNeeded, 'or')}.`
 				});
 			}
 			return results;

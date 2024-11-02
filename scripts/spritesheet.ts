@@ -7,6 +7,7 @@ import '../src/lib/safeglobals';
 import { isFunction, uniqueArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
+import { BOT_TYPE } from '../src/lib/constants';
 import { customItems } from '../src/lib/customItems/util';
 import { allCLItems } from '../src/lib/data/Collections';
 import Buyables from '../src/lib/data/buyables/buyables';
@@ -120,6 +121,7 @@ async function makeSpritesheet(
 }
 
 async function main() {
+	if (BOT_TYPE !== 'OSB') throw new Error('This script is only for OSB.');
 	stopwatch.check('Making OSB spritesheet');
 	await makeSpritesheet(
 		'./tmp/icons',

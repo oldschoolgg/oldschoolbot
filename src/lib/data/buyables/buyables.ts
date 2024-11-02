@@ -73,6 +73,15 @@ const randomEventBuyables: Buyable[] = [
 		outputItems: new Bank({
 			'Frog mask': 1
 		})
+	},
+	{
+		name: 'Genie lamp',
+		itemCost: new Bank({
+			'Frog token': 1
+		}),
+		outputItems: new Bank({
+			'Genie lamp': 1
+		})
 	}
 ];
 

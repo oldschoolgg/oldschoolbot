@@ -10,6 +10,7 @@ import {
 	treeSeedsNest
 } from '../../simulation/birdsNest';
 import { SkillsEnum } from '../../skilling/types';
+import { GearBank } from '../../structures/GearBank';
 import { randFloat, roll } from '../../util';
 import itemID from '../../util/itemID';
 
@@ -22,7 +23,7 @@ const clues = [
 ];
 
 export default function addSkillingClueToLoot(
-	userOrLevel: MUser | number,
+	user: MUser | GearBank | number,
 	skill: SkillsEnum,
 	quantity: number,
 	clueChance: number,
@@ -32,7 +33,12 @@ export default function addSkillingClueToLoot(
 	twitcherSetting?: string,
 	wcCapeNestBoost?: boolean
 ) {
-	const userLevel = typeof userOrLevel === 'number' ? userOrLevel : userOrLevel.skillLevel(skill);
+	const userLevel =
+		typeof user === 'number'
+			? user
+			: user instanceof GearBank
+				? user.skillsAsLevels[skill]
+				: user.skillLevel(skill);
 	const nestChance = wcCapeNestBoost ? Math.floor(256 * 0.9) : 256;
 	const cluesTotalWeight = sumArr(clues.map(c => c[1]));
 	let chance = Math.floor(clueChance / (100 + userLevel));

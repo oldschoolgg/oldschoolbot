@@ -4,7 +4,7 @@ import { deepClone, notEmpty, roll, sumArr } from 'e';
 import type { Item } from 'oldschooljs';
 import type { Requirements } from '../structures/Requirements';
 import type { ActivityTaskData, TOAOptions } from '../types/minions';
-import { assert } from '../util';
+import { assert, joinStrings } from '../util';
 import getOSItem from '../util/getOSItem';
 import type { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
@@ -209,9 +209,9 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 
 		if (completedTasks.length > 0) {
 			messages.push(
-				`${users.length === 1 ? 'You' : `${user}`} completed the ${completedTasks
-					.map(i => i.name)
-					.join(', ')} Combat Achievement Task${completedTasks.length > 1 ? 's' : ''}!`
+				`${users.length === 1 ? 'You' : `${user}`} completed the ${joinStrings(
+					completedTasks.map(i => i.name)
+				)} Combat Achievement Task${completedTasks.length > 1 ? 's' : ''}!`
 			);
 			await user.update({
 				completed_ca_task_ids: {

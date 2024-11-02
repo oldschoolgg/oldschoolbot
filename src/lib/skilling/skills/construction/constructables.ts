@@ -25,7 +25,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.Plank, 2],
 		xp: 58,
 		level: 1,
-		ticks: 5,
+		ticks: 6.5,
 		nails: 2
 	},
 	{
@@ -34,7 +34,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.Plank, 4],
 		xp: 115,
 		level: 4,
-		ticks: 5,
+		ticks: 6.5,
 		nails: 4
 	},
 	{
@@ -43,7 +43,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.Plank, 3],
 		xp: 87,
 		level: 8,
-		ticks: 5,
+		ticks: 6.5,
 		nails: 3
 	},
 	{
@@ -52,7 +52,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.Plank, 8],
 		xp: 228,
 		level: 9,
-		ticks: 5,
+		ticks: 6.5,
 		nails: 8
 	},
 	{
@@ -61,7 +61,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.Plank, 4],
 		xp: 115,
 		level: 10,
-		ticks: 5,
+		ticks: 6.5,
 		nails: 4
 	},
 	{
@@ -70,7 +70,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.Plank, 3],
 		xp: 87,
 		level: 14,
-		ticks: 5,
+		ticks: 6.5,
 		nails: 3
 	},
 	{
@@ -79,7 +79,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.OakPlank, 2],
 		xp: 120,
 		level: 15,
-		ticks: 5
+		ticks: 6.5
 	},
 	{
 		id: itemID('Crafting table 1'),
@@ -87,7 +87,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.OakPlank, 4],
 		xp: 240,
 		level: 16,
-		ticks: 5
+		ticks: 6.5
 	},
 	{
 		id: itemID('Oak chair'),
@@ -95,7 +95,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.OakPlank, 2],
 		xp: 120,
 		level: 19,
-		ticks: 5
+		ticks: 6.5
 	},
 	{
 		id: itemID('Oak dining table'),
@@ -103,7 +103,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.OakPlank, 4],
 		xp: 240,
 		level: 22,
-		ticks: 5
+		ticks: 6.5
 	},
 	{
 		id: itemID('Oak armchair'),
@@ -111,7 +111,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.OakPlank, 3],
 		xp: 180,
 		level: 26,
-		ticks: 5
+		ticks: 6.5
 	},
 	{
 		id: itemID('Carved oak table'),
@@ -119,7 +119,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.OakPlank, 6],
 		xp: 360,
 		level: 31,
-		ticks: 5
+		ticks: 6.5
 	},
 	{
 		id: itemID('Oak larder'),
@@ -127,7 +127,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.OakPlank, 8],
 		xp: 480,
 		level: 33,
-		ticks: 5
+		ticks: 6
 	},
 	{
 		id: itemID('Teak armchair'),
@@ -135,7 +135,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.TeakPlank, 2],
 		xp: 180,
 		level: 35,
-		ticks: 5
+		ticks: 6.5
 	},
 	{
 		id: itemID('Teak table'),
@@ -143,7 +143,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.TeakPlank, 4],
 		xp: 360,
 		level: 38,
-		ticks: 5
+		ticks: 5.6
 	},
 	{
 		id: 21_913,
@@ -151,7 +151,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.TeakPlank, 3],
 		xp: 370,
 		level: 47,
-		ticks: 5
+		ticks: 5.2
 	},
 	{
 		id: itemID('Mahogany armchair'),
@@ -159,7 +159,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.MahoganyPlank, 2],
 		xp: 280,
 		level: 50,
-		ticks: 5
+		ticks: 6.5
 	},
 	{
 		id: itemID('Mahogany table'),
@@ -167,7 +167,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.MahoganyPlank, 6],
 		xp: 840,
 		level: 52,
-		ticks: 5
+		ticks: 5.6
 	},
 	{
 		id: itemID('Teak garden bench'),
@@ -175,7 +175,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.TeakPlank, 6],
 		xp: 540,
 		level: 66,
-		ticks: 5
+		ticks: 4.6
 	},
 	{
 		id: itemID('Oak door'),
@@ -183,7 +183,7 @@ const Constructables: Constructable[] = [
 		input: [Plank.OakPlank, 10],
 		xp: 600,
 		level: 74,
-		ticks: 5
+		ticks: 6.5
 	},
 	{
 		id: itemID('Gnome bench'),
@@ -202,9 +202,5 @@ const Constructables: Constructable[] = [
 		ticks: 4
 	}
 ];
-
-for (const obj of Constructables) {
-	obj.ticks *= 2.6;
-}
 
 export default Constructables;

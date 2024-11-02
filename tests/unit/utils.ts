@@ -31,7 +31,8 @@ export function makeGearBank({ bank }: { bank?: Bank } = {}) {
 		skillsAsLevels: makeSkillsAsLevels(),
 		chargeBank: new ChargeBank(),
 		materials: new MaterialBank(),
-		pet: null
+		pet: null,
+		skillsAsXP: makeSkillsAsLevels(13034431)
 	});
 }
 

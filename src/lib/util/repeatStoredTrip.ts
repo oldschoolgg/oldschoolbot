@@ -26,6 +26,7 @@ import type {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DOAOptions,
 	DarkAltarOptions,
@@ -400,6 +401,13 @@ export const tripHandlers = {
 		commandName: 'cook',
 		args: (data: CutLeapingFishActivityTaskOptions) => ({
 			name: itemNameFromID(data.fishID),
+			quantity: data.quantity
+		})
+	},
+	[activity_type_enum.CreateForestersRations]: {
+		commandName: 'cook',
+		args: (data: CreateForestersRationsActivityTaskOptions) => ({
+			name: data.rationName,
 			quantity: data.quantity
 		})
 	},

@@ -46,7 +46,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [50, 50],
 		weight: 5,
 		monsters: [Monsters.Ankou.id],
-		extendedAmount: [90, 150],
+		extendedAmount: [91, 150],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AnkouVeryMuch,
 		combatLevel: 40,
 		unlocked: true
@@ -56,7 +56,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [120, 170],
 		weight: 6,
 		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
-		extendedAmount: [130, 250],
+		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.BirdsOfAFeather,
 		unlocked: false
 	},
@@ -95,7 +95,6 @@ export const konarTasks: AssignableSlayerTask[] = [
 		],
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.FireAndDarkness,
-		slayerLevel: 77,
 		combatLevel: 80,
 		questPoints: 34,
 		unlocked: true
@@ -174,7 +173,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [10, 15],
 		weight: 5,
 		monsters: [Monsters.DarkBeast.id],
-		extendedAmount: [100, 150],
+		extendedAmount: [110, 135],
 		extendedUnlockId: SlayerTaskUnlocksEnum.NeedMoreDarkness,
 		combatLevel: 90,
 		slayerLevel: 90,
@@ -183,7 +182,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Drake,
-		amount: [75, 138],
+		amount: [75, 140],
 		weight: 10,
 		monsters: [Monsters.Drake.id],
 		slayerLevel: 84,
@@ -192,7 +191,6 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.DustDevil,
 		amount: [120, 170],
-
 		weight: 6,
 		monsters: [Monsters.DustDevil.id],
 		extendedAmount: [200, 250],
@@ -213,7 +211,6 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.FossilIslandWyvernSpitting,
 		amount: [15, 30],
-
 		weight: 5,
 		monsters: [
 			Monsters.FossilIslandWyvernAncient.id,
@@ -231,7 +228,6 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.Gargoyle,
 		amount: [120, 170],
-
 		weight: 6,
 		monsters: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		extendedAmount: [200, 250],
@@ -246,7 +242,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [120, 170],
 		weight: 7,
 		monsters: [Monsters.GreaterDemon.id, Monsters.Skotizo.id],
-		extendedAmount: [150, 223],
+		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.GreaterChallenge,
 		combatLevel: 75,
 		unlocked: true
@@ -270,10 +266,9 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.IronDragon,
 		amount: [30, 50],
-
 		weight: 5,
 		monsters: [Monsters.IronDragon.id],
-		extendedAmount: [60, 100],
+		extendedAmount: [61, 100],
 		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
 		combatLevel: 80,
 		questPoints: 34,
@@ -323,7 +318,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [3, 6],
 		weight: 5,
 		monsters: [Monsters.MithrilDragon.id],
-		extendedAmount: [20, 40],
+		extendedAmount: [25, 35],
 		extendedUnlockId: SlayerTaskUnlocksEnum.IReallyMithYou,
 		unlocked: false
 	},
@@ -340,7 +335,6 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.Nechryael,
 		amount: [110, 110],
-
 		weight: 7,
 		monsters: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		extendedAmount: [200, 250],
@@ -385,7 +379,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [120, 170],
 		weight: 7,
 		monsters: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
-		combatLevel: 75,
+		combatLevel: 85,
 		slayerLevel: 93,
 		unlocked: true
 	},
@@ -421,7 +415,6 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.FeralVampyre,
 		amount: [100, 160],
-
 		weight: 4,
 		monsters: [
 			Monsters.FeralVampyre.id,

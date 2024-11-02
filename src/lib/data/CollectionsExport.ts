@@ -1759,7 +1759,8 @@ export const allPetsCL = resolveItems([
 	'Butch',
 	'Baron',
 	'Scurry',
-	'Smol heredit'
+	'Smol heredit',
+	'Nid'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2152,7 +2153,9 @@ export const miscellaneousCL = resolveItems([
 	'Elite black knight kiteshield',
 	'Elite black knight helm',
 	'Elite black knight platebody',
-	'Elite black knight platelegs'
+	'Elite black knight platelegs',
+	'Blue egg sac',
+	'Broken zombie axe'
 ]);
 export const diariesCL = resolveItems([
 	'Karamja gloves 1',

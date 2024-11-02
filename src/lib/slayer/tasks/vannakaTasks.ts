@@ -1,14 +1,16 @@
 import { Monsters } from 'oldschooljs';
 
-import killableMonsters from '../../minions/data/killableMonsters';
 import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
+import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 
 export const vannakaTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.AberrantSpectre,
-		amount: [60, 120],
+		amount: [40, 90],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.SmellYaLater,
 		weight: 8,
 		monsters: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLevel: 65,
@@ -18,7 +20,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.AbyssalDemon,
-		amount: [60, 120],
+		amount: [40, 90],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		weight: 5,
 		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
 		combatLevel: 85,
@@ -28,24 +32,18 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.Ankou,
 		amount: [25, 35],
+		extendedAmount: [91, 150],
+		extendedUnlockId: SlayerTaskUnlocksEnum.AnkouVeryMuch,
 		weight: 7,
 		monsters: [Monsters.Ankou.id],
 		combatLevel: 40,
 		unlocked: true
 	},
 	{
-		monster: Monsters.Banshee,
-		amount: [60, 120],
-		weight: 6,
-		monsters: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
-		combatLevel: 20,
-		slayerLevel: 15,
-		questPoints: 1,
-		unlocked: true
-	},
-	{
 		monster: Monsters.Basilisk,
-		amount: [60, 120],
+		amount: [40, 90],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.Basilonger,
 		weight: 8,
 		monsters: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLevel: 40,
@@ -54,7 +52,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Bloodveld,
-		amount: [60, 120],
+		amount: [40, 90],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.BleedMeDry,
 		weight: 8,
 		monsters: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLevel: 50,
@@ -64,7 +64,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.BlueDragon,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [
 			Monsters.BlueDragon.id,
@@ -78,7 +78,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.BrineRat,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.BrineRat.id],
 		combatLevel: 45,
@@ -87,43 +87,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.BronzeDragon,
-		amount: [10, 20],
-		weight: 7,
-		monsters: [Monsters.BronzeDragon.id],
-		combatLevel: 75,
-		questPoints: 34,
-		unlocked: true
-	},
-	{
-		monster: Monsters.CaveBug,
-		amount: [10, 20],
-		weight: 7,
-		monsters: [Monsters.CaveBug.id],
-		slayerLevel: 7,
-		unlocked: true
-	},
-	{
-		monster: Monsters.CaveCrawler,
-		amount: [60, 120],
-		weight: 7,
-		monsters: [Monsters.CaveCrawler.id],
-		combatLevel: 10,
-		slayerLevel: 10,
-		unlocked: true
-	},
-	{
-		monster: Monsters.CaveSlime,
-		amount: [10, 20],
-		weight: 7,
-		monsters: [Monsters.CaveSlime.id],
-		combatLevel: 15,
-		slayerLevel: 17,
-		unlocked: true
-	},
-	{
 		monster: Monsters.Cockatrice,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 8,
 		monsters: [Monsters.Cockatrice.id],
 		combatLevel: 25,
@@ -131,17 +96,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.CrawlingHand,
-		amount: [60, 120],
-		weight: 6,
-		monsters: [Monsters.CrawlingHand.id],
-		slayerLevel: 5,
-		questPoints: 1,
-		unlocked: true
-	},
-	{
 		monster: Monsters.Crocodile,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 6,
 		monsters: [Monsters.Crocodile.id],
 		combatLevel: 50,
@@ -149,7 +105,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Dagannoth,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [
 			Monsters.Dagannoth.id,
@@ -165,7 +121,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.DustDevil,
-		amount: [60, 120],
+		amount: [40, 90],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.ToDustYouShallReturn,
 		weight: 8,
 		monsters: [Monsters.DustDevil.id],
 		combatLevel: 70,
@@ -174,17 +132,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.EarthWarrior,
-		amount: [40, 80],
-		weight: 6,
-		monsters: [Monsters.EarthWarrior.id],
-		levelRequirements: killableMonsters.find(k => k.id === Monsters.EarthWarrior.id)?.levelRequirements,
-		combatLevel: 35,
-		unlocked: true
-	},
-	{
 		monster: Monsters.ElfWarrior,
-		amount: [40, 100],
+		amount: [30, 70],
 		weight: 7,
 		monsters: [
 			Monsters.ElfWarrior.id,
@@ -199,7 +148,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.FeverSpider,
-		amount: [60, 120],
+		amount: [30, 90],
 		weight: 7,
 		monsters: [Monsters.FeverSpider.id],
 		combatLevel: 40,
@@ -209,7 +158,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.FireGiant,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.FireGiant.id],
 		combatLevel: 65,
@@ -217,7 +166,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Gargoyle,
-		amount: [60, 120],
+		amount: [40, 90],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.GetSmashed,
 		weight: 5,
 		monsters: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLevel: 80,
@@ -235,17 +186,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.GreenDragon,
-		amount: [40, 80],
-		weight: 6,
-		monsters: [Monsters.GreenDragon.id, Monsters.BabyGreenDragon.id, Monsters.BrutalGreenDragon.id],
-		combatLevel: 52,
-		questPoints: 34,
-		unlocked: true
-	},
-	{
 		monster: Monsters.HarpieBugSwarm,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 8,
 		monsters: [Monsters.HarpieBugSwarm.id],
 		combatLevel: 45,
@@ -258,7 +200,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Hellhound,
-		amount: [40, 80],
+		amount: [30, 60],
 		weight: 7,
 		monsters: [Monsters.Hellhound.id, Monsters.Cerberus.id],
 		combatLevel: 75,
@@ -266,7 +208,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.HillGiant,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.HillGiant.id, Monsters.Obor.id, Monsters.Cyclops.id],
 		combatLevel: 25,
@@ -274,7 +216,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Hobgoblin,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.Hobgoblin.id],
 		combatLevel: 20,
@@ -282,7 +224,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.IceGiant,
-		amount: [40, 80],
+		amount: [30, 80],
 		weight: 7,
 		monsters: [Monsters.IceGiant.id],
 		combatLevel: 50,
@@ -290,7 +232,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.IceWarrior,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.IceWarrior.id],
 		combatLevel: 45,
@@ -298,7 +240,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.InfernalMage,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 8,
 		monsters: [Monsters.InfernalMage.id],
 		combatLevel: 40,
@@ -308,7 +250,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Jelly,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 8,
 		monsters: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		combatLevel: 57,
@@ -317,7 +259,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.JungleHorror,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 8,
 		monsters: [Monsters.JungleHorror.id],
 		combatLevel: 65,
@@ -326,7 +268,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.KalphiteWorker,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [
 			Monsters.KalphiteWorker.id,
@@ -339,18 +281,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.Killerwatt,
-		amount: [30, 80],
-		weight: 6,
-		monsters: [Monsters.Killerwatt.id],
-		combatLevel: 50,
-		slayerLevel: 37,
-		questPoints: 4,
-		unlocked: true
-	},
-	{
 		monster: Monsters.Kurask,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.Kurask.id],
 		combatLevel: 65,
@@ -358,16 +290,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.Lizard,
-		amount: [60, 120],
-		weight: 7,
-		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
-		slayerLevel: 22,
-		unlocked: true
-	},
-	{
 		monster: Monsters.LesserDemon,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.LesserDemon.id],
 		combatLevel: 60,
@@ -375,7 +299,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Mogre,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.Mogre.id],
 		combatLevel: 30,
@@ -384,7 +308,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Molanisk,
-		amount: [39, 50],
+		amount: [40, 50],
 		weight: 7,
 		monsters: [Monsters.Molanisk.id],
 		combatLevel: 50,
@@ -394,7 +318,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.MossGiant,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.MossGiant.id, Monsters.Bryophyta.id],
 		combatLevel: 40,
@@ -402,7 +326,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Nechryael,
-		amount: [60, 120],
+		amount: [40, 90],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.NechsPlease,
 		weight: 5,
 		monsters: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLevel: 85,
@@ -412,7 +338,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Ogre,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.Ogre.id, Monsters.OgressShaman.id, Monsters.OgressWarrior.id],
 		combatLevel: 40,
@@ -420,7 +346,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Otherworldlybeing,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 8,
 		monsters: [Monsters.Otherworldlybeing.id],
 		combatLevel: 40,
@@ -429,7 +355,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Pyrefiend,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 8,
 		monsters: [Monsters.Pyrefiend.id, Monsters.Pyrelord.id],
 		combatLevel: 25,
@@ -437,17 +363,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.Rockslug,
-		amount: [60, 120],
-		weight: 7,
-		monsters: [Monsters.Rockslug.id],
-		combatLevel: 20,
-		slayerLevel: 20,
-		unlocked: true
-	},
-	{
 		monster: Monsters.Shade,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 8,
 		monsters: [
 			Monsters.Shade.id,
@@ -463,7 +380,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.SeaSnakeHatchling,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 6,
 		monsters: [Monsters.SeaSnakeHatchling.id, Monsters.SeaSnakeYoung.id],
 		combatLevel: 50,
@@ -473,22 +390,20 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.ShadowWarrior,
-		amount: [40, 80],
+		amount: [30, 80],
 		weight: 8,
 		monsters: [Monsters.ShadowWarrior.id],
-		combatLevel: 57,
+		combatLevel: 60,
 		questPoints: 111,
 		unlocked: true
 	},
 	{
 		monster: Monsters.SpiritualRanger,
-		amount: [110, 170],
-
+		amount: [40, 90],
+		extendedAmount: [181, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.SpiritualFervour,
 		weight: 8,
 		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
-		levelRequirements: {
-			slayer: 60
-		},
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 3,
@@ -506,7 +421,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.MountainTroll,
-		amount: [60, 120],
+		amount: [40, 90],
 		weight: 7,
 		monsters: [Monsters.MountainTroll.id, Monsters.IceTroll.id, Monsters.TrollGeneral.id],
 		combatLevel: 60,
@@ -514,7 +429,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Turoth,
-		amount: [60, 120],
+		amount: [30, 90],
 		weight: 8,
 		monsters: [Monsters.Turoth.id],
 		combatLevel: 60,
@@ -524,6 +439,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.FeralVampyre,
 		amount: [10, 20],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.MoreAtStake,
 		weight: 7,
 		monsters: [
 			Monsters.FeralVampyre.id,
@@ -537,17 +454,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.WallBeast,
-		amount: [10, 20],
-		weight: 6,
-		monsters: [Monsters.WallBeast.id],
-		combatLevel: 30,
-		slayerLevel: 35,
-		unlocked: true
-	},
-	{
 		monster: Monsters.Werewolf,
-		amount: [40, 80],
+		amount: [30, 60],
 		weight: 7,
 		monsters: [Monsters.Werewolf.id],
 		combatLevel: 60,

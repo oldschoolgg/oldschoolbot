@@ -1,6 +1,6 @@
+import { Time, increaseNumByPercent, randInt, roll, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Time, increaseNumByPercent, randInt, roll } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { itemID, toKMB } from 'oldschooljs/dist/util';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
@@ -11,9 +11,11 @@ import type { UserFullGearSetup } from '../../lib/gear';
 import { InventionID } from '../../lib/invention/inventions';
 import { type StoneSpirit, stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import Mining from '../../lib/skilling/skills/mining';
+import Mining, { prospectorItemsArr } from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import type { Ore } from '../../lib/skilling/types';
+import type { GearBank } from '../../lib/structures/GearBank';
+import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -242,6 +244,108 @@ export function calculateMiningResult({
 		loot,
 		barsFromAdzeBank,
 		oresFromSpiritsBank,
+		messages
+	};
+}
+
+export function determineMiningResult({
+	ore,
+	quantity,
+	gearBank,
+	duration,
+	isPowermining
+}: { ore: Ore; quantity: number; gearBank: GearBank; duration: number; isPowermining: boolean }) {
+	const miningLvl = gearBank.skillsAsLevels.mining;
+	const messages: string[] = [];
+	let xpToReceive = quantity * ore.xp;
+
+	const equippedProsItems = prospectorItemsArr.filter(item => gearBank.hasEquipped(item.id));
+	const bonusPercent =
+		equippedProsItems.length === 4 ? 2.5 : sumArr(equippedProsItems.map(item => item.boostPercent));
+	if (bonusPercent > 0) {
+		const newXP = Math.floor(increaseNumByPercent(xpToReceive, bonusPercent));
+		messages.push(`${bonusPercent}% (${newXP - xpToReceive}) XP for prospector`);
+		xpToReceive = newXP;
+	}
+
+	const updateBank = new UpdateBank();
+	if (ore.xp) {
+		updateBank.xpBank.add('mining', xpToReceive, { duration });
+	}
+
+	// Add clue scrolls
+	if (ore.clueScrollChance) {
+		addSkillingClueToLoot(gearBank, SkillsEnum.Mining, quantity, ore.clueScrollChance, updateBank.itemLootBank);
+	}
+
+	// Roll for pet
+	if (ore.petChance) {
+		const { petDropRate } = skillingPetDropRate(gearBank, SkillsEnum.Mining, ore.petChance);
+		if (roll(petDropRate / quantity)) {
+			updateBank.itemLootBank.add('Rock golem');
+			messages.push("You have a funny feeling you're being followed...");
+		}
+	}
+
+	const numberOfMinutes = duration / Time.Minute;
+
+	if (numberOfMinutes > 10 && ore.minerals && miningLvl >= 60) {
+		let numberOfMinerals = 0;
+		for (let i = 0; i < quantity; i++) {
+			if (roll(ore.minerals)) numberOfMinerals++;
+		}
+
+		if (numberOfMinerals > 0) {
+			updateBank.itemLootBank.add('Unidentified minerals', numberOfMinerals);
+		}
+	}
+
+	let daeyaltQty = 0;
+
+	if (!isPowermining) {
+		// Gem rocks roll off the GemRockTable
+		if (ore.name === 'Gem rock') {
+			for (let i = 0; i < quantity; i++) {
+				updateBank.itemLootBank.add(Mining.GemRockTable.roll());
+			}
+		} else if (ore.name === 'Volcanic ash') {
+			// Volcanic ash
+			const tiers = [
+				[22, 1],
+				[37, 2],
+				[52, 3],
+				[67, 4],
+				[82, 5],
+				[97, 6]
+			];
+			for (const [lvl, multiplier] of tiers.reverse()) {
+				if (miningLvl >= lvl) {
+					updateBank.itemLootBank.add(ore.id, quantity * multiplier);
+					break;
+				}
+			}
+		} else if (ore.name === 'Sandstone') {
+			// Sandstone roll off the SandstoneRockTable
+			for (let i = 0; i < quantity; i++) {
+				updateBank.itemLootBank.add(Mining.SandstoneRockTable.roll());
+			}
+		} else if (ore.name === 'Granite') {
+			// Granite roll off the GraniteRockTable
+			for (let i = 0; i < quantity; i++) {
+				updateBank.itemLootBank.add(Mining.GraniteRockTable.roll());
+			}
+		} else if (ore.name === 'Daeyalt essence rock') {
+			for (let i = 0; i < quantity; i++) {
+				daeyaltQty += randInt(2, 3);
+			}
+			updateBank.itemLootBank.add(ore.id, daeyaltQty);
+		} else {
+			updateBank.itemLootBank.add(ore.id, quantity);
+		}
+	}
+
+	return {
+		updateBank,
 		messages
 	};
 }

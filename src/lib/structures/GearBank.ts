@@ -11,6 +11,7 @@ export class GearBank {
 	gear: UserFullGearSetup;
 	bank: Bank;
 	skillsAsLevels: SkillsRequired;
+	skillsAsXP: SkillsRequired;
 	chargeBank: ChargeBank;
 	materials: MaterialBank;
 	pet: number | null;
@@ -21,7 +22,8 @@ export class GearBank {
 		skillsAsLevels,
 		chargeBank,
 		materials,
-		pet
+		pet,
+		skillsAsXP
 	}: {
 		gear: UserFullGearSetup;
 		bank: Bank;
@@ -29,6 +31,7 @@ export class GearBank {
 		chargeBank: ChargeBank;
 		materials: MaterialBank;
 		pet: number | null;
+		skillsAsXP: SkillsRequired;
 	}) {
 		this.gear = gear;
 		this.bank = bank;
@@ -36,6 +39,7 @@ export class GearBank {
 		this.chargeBank = chargeBank;
 		this.materials = materials;
 		this.pet = pet;
+		this.skillsAsXP = skillsAsXP;
 	}
 
 	usingPet(pet: string) {
