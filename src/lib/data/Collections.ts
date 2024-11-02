@@ -1917,7 +1917,14 @@ for (const crate of keyCrates) {
 		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]).filter(
 			i => !getOSItem(i).customItemData?.isSecret
 		),
-		counts: false
+		counts: false,
+		kcActivity: {
+			Default: async (_, __, { openableScores }) => openableScores.amount(crate.item)
+		},
+		isActivity: true,
+		fmtProg: async ({ stats }) => {
+			return `${stats.openableScores.amount(crate.item.id)} Opened`;
+		}
 	};
 }
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
