@@ -398,6 +398,24 @@ export async function getIgneTameKC(tame: Tame) {
 	return { namedBank, idBank, sortedTuple: Object.entries(namedBank).sort((a, b) => b[1] - a[1]) };
 }
 
+export async function getAllIgneTameKCs(userID: string) {
+	const result = await prisma.$queryRaw<{ mid: number; kc: number }[]>`SELECT (data->>'monsterID')::int AS mid, SUM((data->>'quantity')::int)::int AS kc
+										  FROM tame_activity
+										  WHERE user_id = ${userID}
+										  AND completed = true
+										  GROUP BY data->>'monsterID';`;
+	const namedBank: Record<string, number> = {};
+	const idBank: Record<number, number> = {};
+	for (const { mid, kc } of result) {
+		const mon = tameKillableMonsters.find(i => i.id === mid);
+		if (!mon) continue;
+		namedBank[mon.name] = kc;
+		idBank[mon.id] = kc;
+	}
+
+	return { namedBank, idBank, sortedTuple: Object.entries(namedBank).sort((a, b) => b[1] - a[1]) };
+}
+
 export type Nursery = {
 	egg: {
 		species: number;

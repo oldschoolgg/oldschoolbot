@@ -46,6 +46,7 @@ import { herbloreCL } from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
+import { getAllIgneTameKCs, tameKillableMonsters } from '../tames';
 import type { ItemBank } from '../types';
 import getOSItem from '../util/getOSItem';
 import { shuffleRandom } from '../util/smallUtils';
@@ -2168,6 +2169,7 @@ export async function getCollection(options: {
 		};
 	}
 
+	const igneTameKCs = logType === 'tame' ? await getAllIgneTameKCs(user.id) : null;
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (stringMatches(category, search) || entries.alias?.some(a => stringMatches(a, search))) {
 			return {
@@ -2208,6 +2210,15 @@ export async function getCollection(options: {
 					if (defaultKc[0] !== null) userKC.Default += defaultKc[1];
 					else userKC = undefined;
 				}
+
+				const tameKillable = tameKillableMonsters.find(
+					m => m.name.toLowerCase() === activityName.toLowerCase()
+				);
+				if (tameKillable && igneTameKCs !== null) {
+					if (!userKC) userKC = {};
+					userKC['Tame KC'] = igneTameKCs.idBank[tameKillable.id] ?? 0;
+				}
+
 				return {
 					category,
 					name: activityName,
@@ -2233,11 +2244,12 @@ export async function getCollection(options: {
 		_type => stringMatches(_type.name, search) || _type.aliases.some(name => stringMatches(name, search))
 	);
 	if (monster) {
+		const igneTameKCs = await getAllIgneTameKCs(user.id);
 		return {
 			category: 'Other',
 			name: monster.name,
 			collection: clItems,
-			completions: { Default: await user.getKC(monster.id) },
+			completions: { Default: await user.getKC(monster.id), TameKC: igneTameKCs.idBank[monster.id] ?? 0 },
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,

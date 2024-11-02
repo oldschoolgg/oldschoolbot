@@ -365,7 +365,7 @@ class CollectionLogTask {
 			13
 		);
 
-		if (collectionLog.completions && ['collection', 'bank'].includes(type)) {
+		if (collectionLog.completions && ['collection', 'bank', 'tame'].includes(type)) {
 			let drawnSoFar = '';
 			// Times done/killed
 			ctx.font = '16px OSRSFontCompact';
