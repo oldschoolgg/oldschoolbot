@@ -33,6 +33,7 @@ import {
 	rewardTokens
 } from '../minions/data/templeTrekking';
 import { NexMonster, nexLootTable } from '../nex';
+import { PaintBoxTable } from '../paintColors';
 import type { MinigameName } from '../settings/minigames';
 import { ElderClueTable } from '../simulation/elderClue';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
@@ -1465,6 +1466,11 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.TormentedDemon.name,
 				items: tormentedDemonCL,
 				fmtProg: kcProg(Monsters.TormentedDemon)
+			},
+			'Paint Box': {
+				alias: ['misc'],
+				counts: false,
+				items: PaintBoxTable.allItems
 			},
 			Miscellaneous: {
 				alias: ['misc'],
