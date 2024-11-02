@@ -132,7 +132,7 @@ export async function minionKillCommand(
 	});
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration
-	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
+	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}, ${!usingCannon ? undefined : usingCannon}, ${!cannonMulti ? undefined : cannonMulti}.`;
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;

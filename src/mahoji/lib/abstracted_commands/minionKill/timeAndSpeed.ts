@@ -135,5 +135,5 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 		updateBank
 	});
 
-	return result;
+	return { speedDurationResult: result, currentTaskOptions: currentTaskOptions };
 }

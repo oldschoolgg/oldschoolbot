@@ -427,7 +427,7 @@ const tripHandlers = {
 		commandName: 'k',
 		args: (data: MonsterActivityTaskOptions) => {
 			let method: PvMMethod = 'none';
-			if (data.usingCannon) method = 'cannon';
+			if (data.usingCannon || data.cannonMulti) method = 'cannon';
 			if (data.chinning) method = 'chinning';
 			else if (data.bob === SlayerActivityConstants.IceBarrage) method = 'barrage';
 			else if (data.bob === SlayerActivityConstants.IceBurst) method = 'burst';
