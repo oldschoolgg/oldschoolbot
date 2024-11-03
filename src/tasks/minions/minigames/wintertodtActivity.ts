@@ -1,7 +1,7 @@
 import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
+import { calcPerHour } from '@oldschoolgg/toolkit';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
@@ -12,6 +12,7 @@ import { clAdjustedDroprate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
@@ -20,6 +21,7 @@ export const wintertodtTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const hasMasterCape = user.hasEquippedOrInBank('Firemaking master cape');
 
+		const { newScore } = await incrementMinigameScore(user.id, 'wintertodt', quantity);
 		const loot = new Bank();
 
 		let totalPoints = 0;
@@ -115,7 +117,6 @@ export const wintertodtTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		await incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({
 			title: `Loot From ${quantity}x Wintertodt`,
@@ -124,14 +125,14 @@ export const wintertodtTask: MinionTask = {
 			previousCL
 		});
 
-		let output = `${user}, ${
-			user.minionName
-		} finished subduing Wintertodt ${quantity}x times. ${xpStr}, you cut ${numberOfRoots}x Bruma roots${
-			hasMasterCape ? ', 2x loot for Firemaking master cape.' : '.'
-		}`;
+		let output = `${user}, ${user.minionName} finished subduing Wintertodt ${quantity}x times (${calcPerHour(quantity, data.duration).toFixed(1)}/hr), you now have ${newScore} KC. ${xpStr}, you cut ${numberOfRoots}x Bruma roots.`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
+		}
+
+		if (hasMasterCape) {
+			output += '\n\n2x loot for Firemaking master cape.';
 		}
 
 		if (gotToad) {

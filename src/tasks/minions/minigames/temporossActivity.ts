@@ -1,3 +1,4 @@
+import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent } from 'e';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -14,7 +15,7 @@ export const temporossTask: MinionTask = {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		await incrementMinigameScore(userID, 'tempoross', quantity);
+		const { newScore } = await incrementMinigameScore(userID, 'tempoross', quantity);
 
 		let rewardTokens = quantity * 6;
 		if (rewardBoost > 0) {
@@ -68,7 +69,7 @@ export const temporossTask: MinionTask = {
 
 		let output = `${user}, ${
 			user.minionName
-		} finished fighting Tempoross ${quantity}x times. ${xpStr.toLocaleString()}`;
+		} finished fighting Tempoross ${quantity}x times (${calcPerHour(quantity, data.duration).toFixed(1)}/hr), you now have ${newScore} KC. ${xpStr.toLocaleString()}`;
 
 		if (fBonusXP > 0) {
 			output += `\n\n**Fishing Bonus XP:** ${fBonusXP.toLocaleString()}`;
