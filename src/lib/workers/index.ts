@@ -3,6 +3,7 @@ import path, { resolve } from 'node:path';
 import Piscina from 'piscina';
 
 import type { ItemBank } from '../types';
+import type { MonsterSlayerMaster } from '../util';
 
 export interface CasketWorkerArgs {
 	clueTierID: number;
@@ -14,7 +15,8 @@ export interface KillWorkerArgs {
 	quantity: number;
 	limit: number;
 	onTask: boolean;
-	catacombs: boolean;
+	catacombs?: boolean;
+	slayerMaster?: MonsterSlayerMaster;
 	lootTableTertiaryChanges: [string, number][];
 }
 
