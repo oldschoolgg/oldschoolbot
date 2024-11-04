@@ -18114,6 +18114,21 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "28955": 5,
+      "51016": 10,
+      "70447": 4,
+      "71623": 1,
+      "73224": 3,
+    },
+    "name": "Deathly collector (i)",
+    "noCreatablesCl": true,
+    "outputItems": {
+      "73225": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "50017": 5,
       "50021": 30,
     },

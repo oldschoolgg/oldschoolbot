@@ -1384,6 +1384,17 @@ export const BsoCreateables: Createable[] = [
 			.add('Armadylean components', 10)
 			.add('Pernix components', 3),
 		outputItems: new Bank().add('Tidal collector (i)')
+	},
+	{
+		name: 'Deathly collector (i)',
+		inputItems: new Bank()
+			.add('Masori components', 4)
+			.add("Blessed dizana's quiver", 5)
+			.add('Deathly collector')
+			.add('Armadylean components', 10)
+			.add('Pernix components', 3),
+		outputItems: new Bank().add('Deathly collector (i)'),
+		noCreatablesCl: true
 	}
 ];
 
