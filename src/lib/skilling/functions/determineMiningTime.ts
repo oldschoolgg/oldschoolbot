@@ -7,7 +7,7 @@ interface MiningTimeOptions {
 	quantity: number | undefined;
 	ore: Ore;
 	ticksBetweenRolls: number;
-	glovesRate: number;
+	glovesEffect: number;
 	armourEffect: number;
 	miningCapeEffect: number;
 	powermining: boolean;
@@ -22,7 +22,7 @@ export function determineMiningTime({
 	quantity,
 	ore,
 	ticksBetweenRolls,
-	glovesRate,
+	glovesEffect,
 	armourEffect,
 	miningCapeEffect,
 	powermining,
@@ -54,12 +54,18 @@ export function determineMiningTime({
 		userMaxTripTicks *= 1.5;
 	}
 
+	let remainingNoDeplete = glovesEffect;
+
 	while (timeElapsed < userMaxTripTicks) {
 		while (!percentChance(chanceOfSuccess)) {
 			timeElapsed += ticksBetweenRolls;
 		}
-		if (!percentChance(glovesRate)) {
+		if (remainingNoDeplete <= 0) {
 			timeElapsed += respawnTimeOrPick;
+			remainingNoDeplete = glovesEffect;
+		} else {
+			timeElapsed += ticksBetweenRolls;
+			remainingNoDeplete--;
 		}
 		newQuantity++;
 		if (percentChance(miningCapeEffect)) {
