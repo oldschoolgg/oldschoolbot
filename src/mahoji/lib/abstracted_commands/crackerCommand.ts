@@ -59,6 +59,5 @@ export async function crackerCommand({
 	await loser.addItemsToBank({ items: loserLoot, collectionLog: true });
 	await addToOpenablesScores(owner, new Bank().add('Christmas cracker', 1).freeze());
 
-
 	return `${Emoji.ChristmasCracker} ${owner} pulled a Christmas cracker with ${otherPerson} and....\n\n ${winner} received ${winnerLoot}, ${loser} received ${loserLoot}.`;
 }
