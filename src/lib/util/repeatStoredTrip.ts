@@ -48,6 +48,7 @@ import type {
 	MahoganyHomesActivityTaskOptions,
 	MemoryHarvestOptions,
 	MiningActivityTaskOptions,
+	MoktangTaskOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
 	NewBossOptions,
@@ -663,14 +664,16 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Naxxus]: {
 		commandName: 'k',
-		args: () => ({
-			name: 'Naxxus'
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			name: 'Naxxus',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Moktang]: {
 		commandName: 'k',
-		args: () => ({
-			name: 'Moktang'
+		args: (data: MoktangTaskOptions) => ({
+			name: 'Moktang',
+			quantity: data.qty
 		})
 	},
 	[activity_type_enum.KingGoldemar]: {
