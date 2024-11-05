@@ -1,4 +1,4 @@
-import { Time, increaseNumByPercent, randInt, roll } from 'e';
+import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -25,74 +25,80 @@ export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
 		const { courseID, quantity, userID, channelID, duration, alch } = data;
+		const loot = new Bank();
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
-
 		const course = Agility.Courses.find(course => course.name === courseID)!;
 
 		// Calculate failed laps
 		let lapsFailed = 0;
-		if (course.name === 'Agility Pyramid') {
-			for (let t = 0; t < quantity; t++) {
-				if (randInt(1, 100) < chanceOfFailingAgilityPyramid(user)) {
-					lapsFailed += 1;
+		if (!course.cantFail) {
+			if (course.name === 'Agility Pyramid') {
+				for (let t = 0; t < quantity; t++) {
+					if (randInt(1, 100) < chanceOfFailingAgilityPyramid(user)) {
+						lapsFailed += 1;
+					}
 				}
-			}
-		} else {
-			for (let t = 0; t < quantity; t++) {
-				if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
-					lapsFailed += 1;
-				}
-			}
-		}
-
-		// Calculate marks of grace
-		let totalMarks = 0;
-		const timePerLap = course.lapTime * Time.Second;
-		const maxQuantity = Math.floor((Time.Minute * 30) / timePerLap);
-		if (course.marksPer60) {
-			for (let i = 0; i < Math.floor(course.marksPer60 * (quantity / maxQuantity)); i++) {
-				if (roll(2)) {
-					totalMarks += 1;
+			} else {
+				for (let t = 0; t < quantity; t++) {
+					if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
+						lapsFailed += 1;
+					}
 				}
 			}
 		}
-		if (course.id !== 5 && user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
-			totalMarks = Math.ceil(totalMarks / 5);
-		}
 
-		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
-		const diaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
-		if (diaryBonus) {
-			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
-		}
-
-		const xpReceived =
-			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
-
+		const stats = await user.fetchStats({ laps_scores: true });
 		const { laps_scores: newLapScores } = await userStatsUpdate(
 			user.id,
-			({ laps_scores }) => ({
-				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, quantity - lapsFailed)
-			}),
+			{
+				laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, quantity - lapsFailed)
+			},
 			{ laps_scores: true }
 		);
-
+		const xpReceived =
+			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Agility,
 			amount: xpReceived,
 			duration
 		});
 
-		const loot = new Bank();
-		if (course.marksPer60) loot.add('Mark of grace', totalMarks);
-
-		// Calculate Crystal Shards for Priff
-		if (course.name === 'Prifddinas Rooftop Course') {
-			// 15 Shards per hour
-			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		// Calculate marks of grace
+		let totalMarks = 0;
+		const timePerLap = course.lapTime * Time.Second;
+		const maxQuantity = Math.floor((Time.Minute * 30) / timePerLap);
+		let diaryBonus = false;
+		if (course.marksPer60) {
+			const markChance = Math.floor(course.marksPer60 * (quantity / maxQuantity));
+			for (let i = 0; i < markChance; i++) {
+				if (roll(2)) totalMarks++;
+			}
+			if (course.id !== 5 && user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
+				totalMarks = Math.ceil(totalMarks / 5);
+			}
+			const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
+			if (hasArdyElite && course.name === 'Ardougne Rooftop Course') {
+				totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
+				diaryBonus = true;
+			}
+			loot.add('Mark of grace', totalMarks);
 		}
 
+		// Custom loot from various courses
+		if (course.name === 'Prifddinas Rooftop Course') {
+			loot.add('Crystal shard', quantity); // 1 shard per lap
+		}
+		if (course.name === 'Colossal Wyrm Agility Course') {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(3)) {
+					loot.add('termites', randInt(8, 10));
+					if (percentChance(75)) {
+						loot.add('blessed bone shards', randInt(22, 28));
+					}
+				}
+			}
+		}
 		if (course.name === 'Agility Pyramid') {
 			loot.add('Coins', 10_000 * (quantity - lapsFailed));
 			await userStatsUpdate(
@@ -104,6 +110,17 @@ export const agilityTask: MinionTask = {
 				},
 				{}
 			);
+		}
+		let monkeyStr = '';
+		if (course.name === 'Ape Atoll Agility Course') {
+			const currentLapCount = (newLapScores as ItemBank)[course.id];
+			for (const monkey of Agility.MonkeyBackpacks) {
+				if (currentLapCount < monkey.lapsRequired) break;
+				if (!user.hasEquippedOrInBank(monkey.id)) {
+					loot.add(monkey.id);
+					monkeyStr = `\nYou received the ${monkey.name} monkey backpack!`;
+				}
+			}
 		}
 
 		if (alch) {
@@ -122,21 +139,14 @@ export const agilityTask: MinionTask = {
 			course.name
 		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
 			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
-		}.\n${xpRes}`;
-
-		if (course.id === 6) {
-			const currentLapCount = (newLapScores as ItemBank)[course.id];
-			for (const monkey of Agility.MonkeyBackpacks) {
-				if (currentLapCount < monkey.lapsRequired) break;
-				if (!user.hasEquippedOrInBank(monkey.id)) {
-					loot.add(monkey.id);
-					str += `\nYou received the ${monkey.name} monkey backpack!`;
-				}
-			}
-		}
+		}.\n${xpRes}${monkeyStr}`;
 
 		// Roll for pet
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, course.petChance);
+		const { petDropRate } = skillingPetDropRate(
+			user,
+			SkillsEnum.Agility,
+			typeof course.petChance === 'number' ? course.petChance : course.petChance(currentLevel)
+		);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
 			str += "\nYou have a funny feeling you're being followed...";

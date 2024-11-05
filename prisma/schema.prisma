@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["metrics"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -60,9 +59,6 @@ model Analytic {
 
 model ClientStorage {
   id                           String   @id @db.VarChar(19)
-  userBlacklist                String[] @db.VarChar(19)
-  guildBlacklist               String[] @db.VarChar(19)
-  commandStats                 Json     @default("{}") @db.Json
   totalCommandsUsed            Int      @default(0)
   prices                       Json     @default("{}") @db.Json
   sold_items_bank              Json     @default("{}") @db.Json
@@ -125,7 +121,7 @@ model ClientStorage {
   degraded_items_cost          Json     @default("{}") @db.Json
   tks_cost                     Json     @default("{}") @db.Json
   tks_loot                     Json     @default("{}") @db.Json
-  disabled_commands            String[] @db.VarChar(32)
+  disabled_commands            String[] @default([]) @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
   gotr_cost                    Json     @default("{}") @db.Json
   gotr_loot                    Json     @default("{}") @db.Json
@@ -134,6 +130,7 @@ model ClientStorage {
   nmz_cost                     Json     @default("{}") @db.Json
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
+  ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
 
@@ -206,7 +203,7 @@ model Giveaway {
   message_id  String   @db.VarChar(19)
   reaction_id String?  @db.VarChar(19)
 
-  users_entered String[]
+  users_entered String[] @default([])
 
   @@index([completed, finish_date])
   @@map("giveaway")
@@ -214,11 +211,9 @@ model Giveaway {
 
 model Guild {
   id                String   @id @db.VarChar(19)
-  disabledCommands  String[]
-  jmodComments      String?  @db.VarChar(19)
+  disabledCommands  String[] @default([])
   petchannel        String?  @db.VarChar(19)
-  tweetchannel      String?  @db.VarChar(19)
-  staffOnlyChannels String[] @db.VarChar(19)
+  staffOnlyChannels String[] @default([]) @db.VarChar(19)
 
   @@map("guilds")
 }
@@ -234,14 +229,6 @@ model NewUser {
   slayer_tasks SlayerTask[]
 
   @@map("new_users")
-}
-
-model PingableRole {
-  id      Int    @id @default(autoincrement())
-  role_id String @unique @db.VarChar(19)
-  name    String @db.VarChar(32)
-
-  @@map("pingable_roles")
 }
 
 model PlayerOwnedHouse {
@@ -309,19 +296,17 @@ model User {
   bank                   Json      @default("{}") @db.Json
   collectionLogBank      Json      @default("{}") @db.JsonB
   blowpipe               Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
-  ironman_alts           String[]
-  main_account           String?
-  slayer_unlocks         Int[]     @map("slayer.unlocks")
-  slayer_blocked_ids     Int[]     @map("slayer.blocked_ids")
+  slayer_unlocks         Int[]     @default([]) @map("slayer.unlocks")
+  slayer_blocked_ids     Int[]     @default([]) @map("slayer.blocked_ids")
   slayer_last_task       Int       @default(0) @map("slayer.last_task")
-  badges                 Int[]
-  bitfield               Int[]
+  badges                 Int[]     @default([])
+  bitfield               Int[]     @default([])
   temp_cl                Json      @default("{}") @db.Json
   last_temp_cl_reset     DateTime? @db.Timestamp(6)
   minion_equippedPet     Int?      @map("minion.equippedPet")
   minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
-  finished_quest_ids     Int[]
+  finished_quest_ids     Int[]     @default([])
 
   // Relations
   farmedCrops    FarmedCrop[]
@@ -332,19 +317,19 @@ model User {
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
   auto_farm_filter           AutoFarmFilterEnum @default(AllFarm)
-  favoriteItems              Int[]
-  favorite_alchables         Int[]
-  favorite_food              Int[]
-  favorite_bh_seeds          Int[]
+  favoriteItems              Int[]              @default([])
+  favorite_alchables         Int[]              @default([])
+  favorite_food              Int[]              @default([])
+  favorite_bh_seeds          Int[]              @default([])
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
   minion_name                String?            @map("minion.name")
   bank_bg_hex                String?
   bankBackground             Int                @default(1)
-  attack_style               String[]
-  combat_options             Int[]
+  attack_style               String[]           @default([])
+  combat_options             Int[]              @default([])
   slayer_remember_master     String?            @map("slayer.remember_master")
-  slayer_autoslay_options    Int[]              @map("slayer.autoslay_options")
+  slayer_autoslay_options    Int[]              @default([]) @map("slayer.autoslay_options")
   bank_sort_method           String?            @db.VarChar(16)
   bank_sort_weightings       Json               @default("{}") @db.Json
   gambling_lockout_expiry    DateTime?
@@ -407,11 +392,10 @@ model User {
   zeal_tokens          Int @default(0)
   slayer_points        Int @default(0) @map("slayer.points")
 
-  completed_ca_task_ids Int[]
+  completed_ca_task_ids Int[] @default([])
 
-  store_bitfield Int[]
+  store_bitfield Int[] @default([])
 
-  // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
   farmingPatches_tree       Json? @map("farmingPatches.tree") @db.Json
@@ -442,6 +426,8 @@ model User {
 
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
+
+  cl_array Int[] @default([])
 
   @@index([id, last_command_date])
   @@map("users")
@@ -480,6 +466,7 @@ enum XpGainSource {
   OfferingBones
   TempleTrekking
   DarkAltar
+  OuraniaAltar
   MotherlodeMine
   Birdhouses
   GuardiansOfTheRift
@@ -499,6 +486,7 @@ enum XpGainSource {
   CamdozaalSmithing
   CamdozaalFishing
   ForestryEvents
+  MonsterKilling
 }
 
 model XPGain {
@@ -527,13 +515,6 @@ model Metric {
   cpuUser            Float  @db.Real
   cpuSystem          Float  @db.Real
   cpuPercent         Float  @db.Real
-  qps                Float? @db.Real
-
-  prisma_query_total_queries       Int?
-  prisma_pool_active_connections   Int?
-  prisma_pool_idle_connections     Int?
-  prisma_pool_wait_count           Int?
-  prisma_query_active_transactions Int?
 
   @@map("metrics")
 }
@@ -585,13 +566,12 @@ model Minigame {
 }
 
 model CommandUsage {
-  id           Int      @id @default(autoincrement())
-  date         DateTime @default(now()) @db.Timestamp(6)
+  id           Int               @id @default(autoincrement())
+  date         DateTime          @default(now()) @db.Timestamp(6)
   user_id      BigInt
-  command_name String   @db.VarChar(32)
-  is_continue  Boolean  @default(false)
-  flags        Json?
-  inhibited    Boolean? @default(false)
+  command_name command_name_enum
+  is_continue  Boolean           @default(false)
+  inhibited    Boolean?          @default(false)
 
   is_mention_command Boolean @default(false)
 
@@ -671,7 +651,7 @@ model EconomyTransaction {
 model StashUnit {
   stash_id        Int
   user_id         BigInt
-  items_contained Int[]
+  items_contained Int[]   @default([])
   has_built       Boolean
 
   @@unique([stash_id, user_id])
@@ -699,7 +679,7 @@ model UserStats {
   farming_plant_cost_bank   Json @default("{}") @db.Json
   farming_harvest_loot_bank Json @default("{}") @db.Json
 
-  cl_array        Int[]
+  cl_array        Int[] @default([])
   cl_array_length Int   @default(0)
 
   buy_cost_bank Json @default("{}") @db.Json
@@ -752,7 +732,7 @@ model UserStats {
   creature_scores Json @default("{}")
   monster_scores  Json @default("{}")
   laps_scores     Json @default("{}")
-  sacrificed_bank Json @default("{}")
+  sacrificed_bank Json @default("{}") @db.JsonB
   openable_scores Json @default("{}")
 
   gp_luckypick BigInt @default(0)
@@ -920,6 +900,7 @@ enum activity_type_enum {
   MageArena2
   BigChompyBirdHunting
   DarkAltar
+  OuraniaAltar
   Trekking
   Revenants
   PestControl
@@ -949,7 +930,9 @@ enum activity_type_enum {
   CamdozaalFishing
   CamdozaalMining
   CamdozaalSmithing
+  MyNotes
   Colosseum
+  CreateForestersRations
 }
 
 enum xp_gains_skill_enum {
@@ -1050,14 +1033,14 @@ model Bingo {
 
   is_global Boolean @default(false)
 
-  organizers               String[]
+  organizers               String[] @default([])
   start_date               DateTime @default(now()) @db.Timestamp(6)
   duration_days            Int
   team_size                Int
   title                    String
   notifications_channel_id String   @db.VarChar(19)
   ticket_price             BigInt
-  bingo_tiles              Json[]
+  bingo_tiles              Json[]   @default([])
   was_finalized            Boolean  @default(false)
 
   guild_id String @db.VarChar(19)
@@ -1150,4 +1133,274 @@ model UserEvent {
   collection_log_name String?
 
   @@map("user_event")
+}
+
+enum command_name_enum {
+  testpotato
+  achievementdiary
+  activities
+  admin
+  aerialfish
+  agilityarena
+  alch
+  amrod
+  ash
+  ask
+  autoequip
+  autoslay
+  bal
+  bank
+  bankbg
+  barbassault
+  bgcolor
+  bingo
+  birdhouse
+  blastfurnace
+  blowpipe
+  bossrecords
+  botleagues
+  botstats
+  bs
+  bso
+  build
+  bury
+  buy
+  ca
+  cancel
+  capegamble
+  cash
+  casket
+  cast
+  castlewars
+  cd
+  championchallenge
+  channel
+  chargeglories
+  chargewealth
+  checkmasses
+  checkpatch
+  chompyhunt
+  choose
+  chop
+  christmas
+  cl
+  claim
+  clbank
+  clue
+  clues
+  cmd
+  collect
+  collectionlog
+  combat
+  combatoptions
+  compostbin
+  config
+  cook
+  cox
+  cracker
+  craft
+  create
+  daily
+  darkaltar
+  data
+  decant
+  defaultfarming
+  defender
+  diary
+  dice
+  dicebank
+  disable
+  dmm
+  driftnet
+  drop
+  drycalc
+  drystreak
+  duel
+  easter
+  economybank
+  emotes
+  enable
+  enchant
+  equip
+  eval
+  fake
+  fakearma
+  fakebandos
+  fakeely
+  fakepm
+  fakesara
+  fakescythe
+  fakezammy
+  faq
+  farm
+  farming
+  farmingcontract
+  favalch
+  favfood
+  favorite
+  favour
+  fightcaves
+  finish
+  fish
+  fishingtrawler
+  fletch
+  gamble
+  gauntlet
+  ge
+  gear
+  gearpresets
+  gearstats
+  gift
+  github
+  giveaway
+  gnomerestaurant
+  gp
+  groupkill
+  halloween
+  hans
+  harvest
+  hcim
+  hcimdeaths
+  help
+  hiscores
+  hunt
+  inbank
+  inferno
+  info
+  invite
+  ironman
+  is
+  itemtrivia
+  jmodcomments
+  jmodtweets
+  k
+  kc
+  kcgains
+  kill
+  lamp
+  lapcount
+  laps
+  lastmanstanding
+  lb
+  leaderboard
+  leagues
+  light
+  lms
+  loot
+  love
+  luckyimp
+  luckypick
+  lvl
+  m
+  magearena
+  magearena2
+  mahoganyhomes
+  mass
+  mclue
+  mine
+  minigames
+  minion
+  minionstats
+  mix
+  monster
+  mostdrops
+  mta
+  mygiveaways
+  mypets
+  news
+  nightmare
+  offer
+  open
+  osrskc
+  patreon
+  pay
+  pestcontrol
+  pet
+  petmessages
+  petrate
+  petroll
+  pickpocket
+  ping
+  players
+  plunder
+  poh
+  poll
+  polls
+  prefix
+  price
+  pvp
+  quest
+  raid
+  randomevents
+  randquote
+  ranks
+  rc
+  redeem
+  reload
+  resetrng
+  revs
+  roguesden
+  roles
+  roll
+  rp
+  runecraft
+  runelite
+  s
+  sacrifice
+  sacrificedbank
+  sacrificegp
+  sacrificelog
+  sawmill
+  seedpack
+  sell
+  sellto
+  sendtoabutton
+  sepulchre
+  server
+  setrsn
+  shutdownlock
+  simulate
+  skillcape
+  slayer
+  slayershop
+  slayertask
+  smelt
+  smith
+  soulwars
+  stats
+  steal
+  streamertweets
+  support
+  tag
+  tearsofguthix
+  tempoross
+  tithefarm
+  tithefarmshop
+  tob
+  tokkulshop
+  tools
+  trade
+  train
+  trek
+  trekshop
+  trickortreat
+  trivia
+  tweets
+  uim
+  unequip
+  unequipall
+  use
+  user
+  virtualstats
+  volcanicmine
+  warriorsguild
+  wiki
+  wintertodt
+  world
+  wt
+  wyson
+  xp
+  xpgains
+  xpto99
+  zalcano
 }

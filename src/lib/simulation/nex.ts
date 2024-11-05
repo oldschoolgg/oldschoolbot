@@ -14,7 +14,7 @@ import {
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util/util';
 
-import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';
@@ -59,7 +59,7 @@ export function checkNexUser(user: MUser): [false] | [true, string] {
 	if (!user.hasSkillReqs(minStats)) {
 		return [true, `${tag} doesn't have the skill requirements: ${formatSkillRequirements(minStats)}.`];
 	}
-	if (user.GP < 1_000_000) return [true, `${tag} needs atleast 1m GP to cover potential deaths.`];
+	if (user.GP < 1_000_000) return [true, `${tag} needs at least 1m GP to cover potential deaths.`];
 	const { offence, defence, rangeGear } = nexGearStats(user);
 	if (offence < 50) {
 		return [
@@ -175,7 +175,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	return teamLoot;
 }
 
-export async function calculateNexDetails({ team }: { team: MUser[] }) {
+export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?: MUser) {
 	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
@@ -279,10 +279,10 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		resultTeam[resultTeam.indexOf(resultTeam.find(i => i.id === id)!)].deaths = deathArr;
 	}
 
-	/**
-	 * Ammo
-	 */
-	for (const user of team) {
+	// Ammo calculation
+	const users = soloUser ? [soloUser] : team;
+
+	for (const user of users) {
 		const { rangeGear } = nexGearStats(user);
 		const teamUser = resultTeam.findIndex(a => a.id === user.id);
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');

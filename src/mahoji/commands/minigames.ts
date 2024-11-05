@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
@@ -8,7 +8,6 @@ import {
 	agilityArenaBuyCommand,
 	agilityArenaBuyables,
 	agilityArenaCommand,
-	agilityArenaRecolorCommand,
 	agilityArenaXPCommand
 } from '../lib/abstracted_commands/agilityArenaCommand';
 import {
@@ -43,7 +42,8 @@ import {
 	contractTiers,
 	mahoganyHomesBuildCommand,
 	mahoganyHomesBuyCommand,
-	mahoganyHomesBuyables
+	mahoganyHomesBuyables,
+	mahoganyHomesPointsCommand
 } from '../lib/abstracted_commands/mahoganyHomesCommand';
 import {
 	nightmareZoneShopCommand,
@@ -629,6 +629,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 							max_value: 1000
 						}
 					]
+				},
+				{
+					name: 'points',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Mahogany Homes point balance.'
 				}
 			]
 		},
@@ -811,7 +816,16 @@ export const minigamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'Amount of brimhaven agility course laps you want to do.',
+							required: false,
+							min_value: 1
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -823,7 +837,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'item',
 							description: 'The item to buy.',
 							required: true,
-							choices: agilityArenaBuyables.map(i => ({ name: `${i.item.name}`, value: i.item.name }))
+							choices: agilityArenaBuyables.map(i => ({ name: `${i.name}`, value: i.name }))
 						},
 						{
 							type: ApplicationCommandOptionType.Integer,
@@ -833,11 +847,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 							min_value: 1
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'recolor',
-					description: 'Recolor graceful.'
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -1090,7 +1099,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { name: string };
 			points?: {};
 		};
-		mahogany_homes?: { start?: { tier?: number }; buy?: { name: string; quantity?: number } };
+		mahogany_homes?: {
+			start?: { tier?: number };
+			buy?: { name: string; quantity?: number };
+			points?: {};
+		};
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
@@ -1101,7 +1114,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			stats?: {};
 		};
 		agility_arena?: {
-			start?: {};
+			start?: { quantity?: number };
 			buy?: { item: string; quantity?: number };
 			recolor?: {};
 			xp: { quantity: number };
@@ -1298,6 +1311,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 			if (options.mahogany_homes.start) {
 				return mahoganyHomesBuildCommand(user, channelID, options.mahogany_homes.start.tier);
 			}
+			if (options.mahogany_homes.points) {
+				return mahoganyHomesPointsCommand(user);
+			}
 		}
 
 		/**
@@ -1373,13 +1389,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.agility_arena?.start) {
-			return agilityArenaCommand(user, channelID);
+			return agilityArenaCommand(user, channelID, options.agility_arena.start.quantity);
 		}
 		if (options.agility_arena?.buy) {
 			return agilityArenaBuyCommand(user, options.agility_arena.buy.item, options.agility_arena.buy.quantity);
-		}
-		if (options.agility_arena?.recolor) {
-			return agilityArenaRecolorCommand(user);
 		}
 		if (options.agility_arena?.xp) {
 			return agilityArenaXPCommand(user, options.agility_arena.xp.quantity);

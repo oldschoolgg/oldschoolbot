@@ -1,9 +1,8 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { clamp, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 
@@ -14,7 +13,7 @@ import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
+import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -265,14 +264,14 @@ export const sellCommand: OSBMahojiCommand = {
 		await Promise.all([
 			updateClientGPTrackSetting('gp_sell', totalPrice),
 			updateBankSetting('sold_items_bank', bankToSell),
+			userStatsBankUpdate(user, 'items_sold_bank', bankToSell),
 			userStatsUpdate(
 				user.id,
-				userStats => ({
-					items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+				{
 					sell_gp: {
 						increment: totalPrice
 					}
-				}),
+				},
 				{}
 			),
 			prisma.botItemSell.createMany({ data: botItemSellData })

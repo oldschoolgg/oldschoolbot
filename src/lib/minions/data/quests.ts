@@ -11,9 +11,7 @@ interface Quest {
 	ironmanSkillReqs?: Skills;
 	qpReq?: number;
 	rewards?: Bank;
-	skillsRewards?: {
-		[skill: string]: number;
-	};
+	skillsRewards?: Partial<Skills>;
 	combatLevelReq?: number;
 	prerequisitesQuests?: QuestID[];
 	calcTime: (user: MUser) => number;
@@ -27,7 +25,12 @@ export enum QuestID {
 	TheRibbitingTaleOfALillyPadLabourDispute = 5,
 	PerilousMoons = 6,
 	AtFirstLight = 7,
-	TwilightsPromise = 8
+	TwilightsPromise = 8,
+	TheHeartofDarkness = 9,
+	DeathOnTheIsle = 10,
+	MeatAndGreet = 11,
+	EthicallyAcquiredAntiquities = 12,
+	WhileGuthixSleeps = 13
 }
 
 export const quests: Quest[] = [
@@ -84,7 +87,7 @@ export const quests: Quest[] = [
 		},
 		combatLevelReq: 50,
 		qpReq: 10,
-		rewards: new Bank().add(28_587).add(28_587).add(28_588).add(28_589).add(28_590).freeze(),
+		rewards: new Bank().add(28_587).add(28_588).add(28_589).add(28_590).freeze(),
 		calcTime: (user: MUser) => {
 			let duration = Time.Minute * 10;
 			if (user.combatLevel < 90) {
@@ -112,8 +115,7 @@ export const quests: Quest[] = [
 		},
 		combatLevelReq: 65,
 		qpReq: 20,
-		// Awaiting item update for the lamp to be added
-		// rewards: new Bank().add(28_820).freeze(),
+		rewards: new Bank().add(28_820).freeze(),
 		skillsRewards: {
 			smithing: 15_000,
 			hunter: 15_000
@@ -207,6 +209,119 @@ export const quests: Quest[] = [
 			let duration = Time.Minute * 9;
 			if (user.combatLevel < 75) {
 				duration += Time.Minute * 5;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID.TheHeartofDarkness,
+		qp: 2,
+		name: 'The Heart of Darkness',
+		skillsRewards: {
+			mining: 8000,
+			thieving: 8000,
+			slayer: 8000,
+			agility: 8000
+		},
+		combatLevelReq: 40,
+		prerequisitesQuests: [QuestID.TwilightsPromise],
+		calcTime: () => {
+			return Time.Minute * 30;
+		},
+		skillReqs: {
+			mining: 55,
+			thieving: 48,
+			slayer: 48,
+			agility: 46
+		}
+	},
+	{
+		id: QuestID.DeathOnTheIsle,
+		qp: 2,
+		name: 'Death on the Isle',
+		skillsRewards: {
+			thieving: 10_000,
+			agility: 7500,
+			crafting: 5000
+		},
+		combatLevelReq: 40,
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		calcTime: () => {
+			return Time.Minute * 30;
+		},
+		skillReqs: {
+			thieving: 34,
+			agility: 32
+		},
+		rewards: new Bank().add("Butler's tray").add('Costume needle')
+	},
+	{
+		id: QuestID.MeatAndGreet,
+		qp: 1,
+		name: 'Meat And Greet',
+		skillsRewards: {
+			cooking: 8000
+		},
+		combatLevelReq: 40,
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		calcTime: () => {
+			return Time.Minute * 30;
+		}
+	},
+	{
+		id: QuestID.EthicallyAcquiredAntiquities,
+		qp: 1,
+		name: 'Ethically Acquired Antiquities',
+		skillsRewards: {
+			thieving: 6000
+		},
+		skillReqs: {
+			thieving: 25
+		},
+		combatLevelReq: 40,
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		calcTime: () => {
+			return Time.Minute * 30;
+		}
+	},
+	{
+		id: QuestID.WhileGuthixSleeps,
+		qp: 5,
+		name: 'While Guthix Sleeps',
+		combatLevelReq: 95,
+		prerequisitesQuests: [QuestID.DefenderOfVarrock, QuestID.ThePathOfGlouphrie],
+		qpReq: 180,
+		skillReqs: {
+			thieving: 72,
+			magic: 67,
+			agility: 66,
+			farming: 65,
+			herblore: 65,
+			hunter: 62
+		},
+		rewards: new Bank()
+			.add(560, 100)
+			.add(554, 100)
+			.add(453, 100)
+			.add(1_513, 100)
+			.add(29_596)
+			.add(29_566)
+			.add(29_568)
+			.add(29_570)
+			.add(29_560)
+			.add(29_562)
+			.add(29_564)
+			.freeze(),
+		skillsRewards: {
+			thieving: 80_000,
+			farming: 75_000,
+			herblore: 75_000,
+			hunter: 50_000
+		},
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 90;
+			if (user.combatLevel < 105) {
+				duration += Time.Minute * 20;
 			}
 			return duration;
 		}

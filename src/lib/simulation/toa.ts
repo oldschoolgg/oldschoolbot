@@ -1,5 +1,5 @@
-import { SimpleTable, exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { Minigame } from '@prisma/client';
 import { XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
@@ -22,6 +22,7 @@ import {
 } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
@@ -247,7 +248,7 @@ const toaRequirements: {
 			return true;
 		},
 		desc: () =>
-			`atleast ${BP_DARTS_NEEDED}x darts per raid, and using one of: ${ALLOWED_DARTS.map(i => i.name).join(
+			`at least ${BP_DARTS_NEEDED}x darts per raid, and using one of: ${ALLOWED_DARTS.map(i => i.name).join(
 				', '
 			)}, loaded in Blowpipe`
 	},
@@ -278,7 +279,7 @@ const toaRequirements: {
 			return true;
 		},
 		desc: () =>
-			`decent range gear (BiS is ${maxRangeGear.toString()}), atleast ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${REQUIRED_RANGE_WEAPONS.map(
+			`decent range gear (BiS is ${maxRangeGear.toString()}), at least ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${REQUIRED_RANGE_WEAPONS.map(
 				itemNameFromID
 			).join(', ')}`
 	},
@@ -335,11 +336,11 @@ const toaRequirements: {
 				minimumSuppliesNeeded = minSuppliesWithAtkStr;
 			}
 			if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
-				return `You need atleast this much supplies: ${minimumSuppliesNeeded}.`;
+				return `You need at least this much supplies: ${minimumSuppliesNeeded}.`;
 			}
 			const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
 			if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
-				return `You need atleast ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+				return `You need at least ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
 					globalClient,
 					'minion',
 					'charge'
@@ -348,7 +349,7 @@ const toaRequirements: {
 
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
-				return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+				return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
 					globalClient,
 					'minion',
 					'charge'
@@ -357,7 +358,7 @@ const toaRequirements: {
 
 			return true;
 		},
-		desc: () => `Need atleast ${minimumSuppliesNeeded}`
+		desc: () => `Need at least ${minimumSuppliesNeeded}`
 	},
 	{
 		name: 'Rune Pouch',
@@ -368,7 +369,7 @@ const toaRequirements: {
 			}
 			return true;
 		},
-		desc: () => `Need atleast ${minimumSuppliesNeeded}`
+		desc: () => `Need at least ${minimumSuppliesNeeded}`
 	},
 	{
 		name: 'Poison Protection',
@@ -540,7 +541,7 @@ function uniqueLootRoll(kc: number, cl: Bank, raidLevel: RaidLevel) {
 	return new Bank().add(item.id);
 }
 
-const nonUniqueTable = [
+export const nonUniqueTable = [
 	['Coins', 1],
 	['Death rune', 20],
 	['Soul rune', 40],
@@ -1044,7 +1045,7 @@ async function checkTOAUser(
 			true,
 			`${
 				user.usernameOrMention
-			} doesn't have enough Serpentine helm charges. You need atleast ${serpHelmCharges} charges to do a ${formatDuration(
+			} doesn't have enough Serpentine helm charges. You need at least ${serpHelmCharges} charges to do a ${formatDuration(
 				duration
 			)} TOA raid.`
 		];
@@ -1057,7 +1058,7 @@ async function checkTOAUser(
 		if (kc < dividedRaidLevel) {
 			return [
 				true,
-				`${user.usernameOrMention}, you need atleast ${dividedRaidLevel} TOA KC to ${
+				`${user.usernameOrMention}, you need at least ${dividedRaidLevel} TOA KC to ${
 					teamSize === 2 ? 'duo' : 'solo'
 				} a level ${raidLevel} TOA raid.`
 			];
@@ -1110,7 +1111,7 @@ export async function toaStartCommand(
 		user,
 		await getMinigameScore(user.id, 'tombs_of_amascut'),
 		raidLevel,
-		solo ? 1 : teamSize ?? 5,
+		solo ? 1 : (teamSize ?? 5),
 		Time.Hour,
 		1
 	);
@@ -1230,7 +1231,7 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
-			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
+			await userStatsBankUpdate(u, 'toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 
@@ -1636,22 +1637,4 @@ ${calculateBoostString(user)}
 `;
 
 	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
-}
-
-export function normalizeTOAUsers(data: TOAOptions) {
-	const _detailedUsers = data.detailedUsers;
-	const detailedUsers = (
-		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
-	).map(userArr =>
-		userArr.map(user => ({
-			id: user[0],
-			points: user[1],
-			deaths: user[2]
-		}))
-	);
-	return detailedUsers;
-}
-
-export function anyoneDiedInTOARaid(data: TOAOptions) {
-	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }

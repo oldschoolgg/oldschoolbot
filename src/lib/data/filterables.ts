@@ -1,5 +1,8 @@
+import { uniqueArr } from 'e';
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
 import Potions from '../minions/data/potions';
+import { allOpenables } from '../openables';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
@@ -216,7 +219,7 @@ const gems = resolveItems([
 	'Zenyte shard'
 ]);
 
-const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems.bank).map(key => Number.parseInt(key)));
+const craftingItems = Craftables.flatMap(item => item.inputItems.itemIDs);
 
 const craftingItemsSet = [...new Set(craftingItems)];
 
@@ -333,16 +336,16 @@ const seeds = resolveItems([
 const allPotions = Potions.flatMap(potion => potion.items);
 const potions = [...new Set(allPotions)];
 
-const grimyHerbs = Grimy.flatMap(grimy => Object.keys(grimy.inputItems.bank).map(key => Number.parseInt(key)));
+const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
 const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
 const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
 
 const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
 const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
 
-const allSecondaries = PotionsMixable.flatMap(item =>
-	Object.keys(item.inputItems.bank).map(key => Number.parseInt(key))
-).filter(item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item));
+const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).filter(
+	item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item)
+);
 const secondaries = [...new Set(allSecondaries)];
 
 const herblore = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
@@ -375,9 +378,7 @@ const bones = resolveItems([
 	'Zogre bones'
 ]);
 
-const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => Number.parseInt(key)));
-
-const fletchingItemsSet = [...new Set(fletchingItems)];
+const fletchingItemsSet = uniqueArr(Fletchables.flatMap(item => item.inputItems.itemIDs));
 
 const skilling = resolveItems([
 	'Rune essence',
@@ -896,6 +897,16 @@ export const baseFilters: Filterable[] = [
 		name: 'Clues Rares',
 		aliases: ['clues rares', 'clues rare', 'rare clues', 'clue rare', 'rare clue'],
 		items: () => [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
+	},
+	{
+		name: 'Lamps',
+		aliases: ['lamps'],
+		items: () => Lampables.flatMap(i => i.items)
+	},
+	{
+		name: 'Openables',
+		aliases: ['opens'],
+		items: () => allOpenables.map(i => i.id)
 	},
 	{
 		name: 'Favourite Alchs',

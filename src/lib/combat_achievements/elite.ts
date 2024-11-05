@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { Time } from 'e';
 import {
 	MIMIC_MONSTER_ID,
 	NEX_ID,
@@ -8,10 +9,18 @@ import {
 	ZALCANO_ID,
 	demonBaneWeapons
 } from '../constants';
-import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
-import type { ActivityTaskData, GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
+import type {
+	ActivityTaskData,
+	GauntletOptions,
+	MonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
+	TOAOptions
+} from '../types/minions';
+import { anyoneDiedInTOARaid } from '../util';
+import { resolveItems } from '../util';
+import { crossbows } from '../util/minionUtils';
 import { isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
@@ -1526,5 +1535,196 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 4))
 		}
+	},
+	{
+		id: 1132,
+		name: 'Araxxor Veteran',
+		desc: 'Kill Araxxor 25 times.',
+		type: 'kill_count',
+		monster: 'Araxxor',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Araxxor.id]: 25
+			}
+		})
+	},
+	{
+		id: 1133,
+		name: 'Araxxor Speed-Trialist',
+		desc: 'Kill Araxxor 4 times in 10:00.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 4 && timePerKill <= 2.5;
+			}
+		}
+	},
+	{
+		id: 1134,
+		name: 'Relaxxor',
+		desc: 'Kill Araxxor after destroying six eggs.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	// id: 1135
+	// This was a duplicate CA from Araxxor, don't use this id
+	{
+		id: 1136,
+		name: 'Rapid Reload',
+		desc: 'Hit three Tormented Demons within 3 seconds using a ballista or a crossbow.',
+		type: 'mechanical',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 5,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.TormentedDemon.id)(data) &&
+				(user.hasEquipped(crossbows) ||
+					resolveItems(['Light ballista', 'Heavy ballista']).some(i => user.hasEquipped(i)))
+		}
+	},
+	{
+		id: 1137,
+		name: 'Two Times the Torment',
+		desc: 'Kill two Tormented Demons within 2 seconds.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
+		}
+	},
+	{
+		id: 1138,
+		name: 'Through Fire and Flames',
+		desc: 'Kill a Tormented Demon whilst their shield is inactive.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
+		}
+	},
+	{
+		id: 1139,
+		name: 'Unending Torment',
+		desc: 'Kill a Tormented Demon.',
+		type: 'kill_count',
+		monster: 'Tormented Demon',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TormentedDemon.id]: 1
+			}
+		})
+	},
+	{
+		id: 1140,
+		name: 'Leviathan Adept',
+		desc: 'Kill the Leviathan once.',
+		type: 'kill_count',
+		monster: 'The Leviathan',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheLeviathan.id]: 1
+			}
+		})
+	},
+	{
+		id: 1141,
+		name: 'Leviathan Speed-Trialist',
+		desc: 'Kill the Leviathan in less than 1:50 without a slayer task.',
+		type: 'speed',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 1142,
+		name: 'Whisperer Speed-Trialist',
+		desc: 'Kill the Whisperer in less than 3:00 without a slayer task.',
+		type: 'speed',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 1143,
+		name: 'Tentacular',
+		desc: 'Kill the Whisperer whilst only being on the Arceuus spellbook.',
+		type: 'restriction',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 1144,
+		name: 'Whisperer Adept',
+		desc: 'Kill the Whisperer once.',
+		type: 'kill_count',
+		monster: 'The Whisperer',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheWhisperer.id]: 1
+			}
+		})
+	},
+	{
+		id: 1145,
+		name: 'Vardorvis Speed-Trialist',
+		desc: 'Kill Vardorvis in less than 1:15 minutes without a slayer task.',
+		type: 'speed',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 1146,
+		name: 'Vardorvis Adept',
+		desc: 'Kill Vardorvis once.',
+		type: 'kill_count',
+		monster: 'Vardorvis',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Vardorvis.id]: 1
+			}
+		})
+	},
+	{
+		id: 1147,
+		name: 'Duke Sucellus Speed-Trialist',
+		desc: 'Kill Duke Sucellus in less than 1:45 minutes without a slayer task.',
+		type: 'speed',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 1148,
+		name: 'Duke Sucellus Adept',
+		desc: 'Kill Duke Sucellus once.',
+		type: 'kill_count',
+		monster: 'Duke Sucellus',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.DukeSucellus.id]: 1
+			}
+		})
 	}
 ];

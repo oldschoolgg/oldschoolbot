@@ -1,6 +1,7 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { Time, reduceNumByPercent, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
+
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';

@@ -1,17 +1,22 @@
-import type { SKRSContext2D } from '@napi-rs/canvas';
-import { Canvas } from '@napi-rs/canvas';
-import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 import { Util } from 'oldschooljs';
 
-import type { UserStatsDataNeededForCL } from '../lib/data/Collections';
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import type { IToReturnCollection } from '../lib/data/CollectionsExport';
-import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from '../lib/util/canvasUtil';
+import {
+	type CanvasContext,
+	canvasToBuffer,
+	createCanvas,
+	fillTextXTimesInCtx,
+	getClippedRegion,
+	measureTextWidth
+} from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
 import type { IBgSprite } from './bankImage';
+import type { MUserStats } from './structures/MUserStats';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
@@ -28,11 +33,11 @@ export const CollectionLogFlags = [
 class CollectionLogTask {
 	run() {}
 
-	drawBorder(ctx: SKRSContext2D, sprite: IBgSprite) {
+	drawBorder(ctx: CanvasContext, sprite: IBgSprite) {
 		return bankImageGenerator.drawBorder(ctx, sprite);
 	}
 
-	drawSquare(ctx: SKRSContext2D, x: number, y: number, w: number, h: number, pixelSize = 1, hollow = true) {
+	drawSquare(ctx: CanvasContext, x: number, y: number, w: number, h: number, pixelSize = 1, hollow = true) {
 		ctx.save();
 		if (hollow) {
 			ctx.translate(0.5, 0.5);
@@ -50,7 +55,7 @@ class CollectionLogTask {
 		ctx.restore();
 	}
 
-	drawText(ctx: SKRSContext2D, text: string, x: number, y: number) {
+	drawText(ctx: CanvasContext, text: string, x: number, y: number) {
 		const baseFill = ctx.fillStyle;
 		ctx.fillStyle = '#000000';
 		fillTextXTimesInCtx(ctx, text, x + 1, y + 1);
@@ -70,7 +75,7 @@ class CollectionLogTask {
 		};
 
 		// Create base canvas
-		const canvasList = new Canvas(200, leftHeight);
+		const canvasList = createCanvas(200, leftHeight);
 		// Get the canvas context
 		const ctxl = canvasList.getContext('2d');
 		ctxl.font = '16px OSRSFontCompact';
@@ -100,7 +105,7 @@ class CollectionLogTask {
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number | undefined };
-		stats: UserStatsDataNeededForCL | null;
+		stats: MUserStats | null;
 		collectionLog?: IToReturnCollection;
 	}): Promise<CommandResponse> {
 		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
@@ -195,7 +200,7 @@ class CollectionLogTask {
 		);
 
 		// Create base canvas
-		const canvas = new Canvas(canvasWidth, canvasHeight);
+		const canvas = createCanvas(canvasWidth, canvasHeight);
 		// Get the canvas context
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -456,7 +461,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			files: [{ attachment: await canvas.encode('png'), name: `${type}_log_${new Date().valueOf()}.png` }]
+			files: [{ attachment: await canvasToBuffer(canvas), name: `${type}_log_${new Date().valueOf()}.png` }]
 		};
 	}
 

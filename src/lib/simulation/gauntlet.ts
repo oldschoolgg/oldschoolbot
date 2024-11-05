@@ -1,4 +1,4 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 const DiedTable = new LootTable()
 	.add('Adamant dagger')
@@ -59,7 +59,7 @@ const StandardInnerTable = new LootTable()
 	.add('Coins', [20_000, 80_000]);
 
 const StandardTable = new LootTable()
-	.every('Crystal shard', [3, 7])
+	.every('Crystal shard', [5, 9])
 	.every(StandardInnerTable, 2)
 	.tertiary(25, 'Clue scroll (elite)')
 	.tertiary(120, 'Crystal weapon seed')
@@ -104,7 +104,7 @@ const CorruptedInnerTable = new LootTable()
 
 const CorruptedTable = new LootTable()
 	// Gauntlet cape is given manually in code
-	.every('Crystal shard', [5, 9])
+	.every('Crystal shard', [7, 12])
 	.every(CorruptedInnerTable, 3)
 	.tertiary(20, 'Clue scroll (elite)')
 	.tertiary(50, 'Crystal weapon seed')

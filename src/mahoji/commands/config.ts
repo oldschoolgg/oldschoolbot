@@ -1,6 +1,6 @@
-import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
 import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
@@ -212,8 +212,9 @@ async function favItemConfig(
 	const currentFavorites = user.user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
+
 	if (!item) return currentItems;
 	if (itemToAdd) {
 		const limit = (user.perkTier() + 1) * 100;
@@ -382,10 +383,10 @@ async function bankSortConfig(
 
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
-	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.bank = {};
+	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.clear();
 
 	await user.update({
-		bank_sort_weightings: newBank.bank
+		bank_sort_weightings: newBank.toJSON()
 	});
 
 	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined, undefined);
@@ -527,8 +528,6 @@ async function handleCommandEnable(
 	return `Successfully disabled the \`${command.name}\` command.`;
 }
 
-const priorityWarningMsg =
-	"\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**";
 async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
 	const settings = await mahojiUsersSettingsFetch(user.id, { combat_options: true });
 	if (!command || (command && command === 'list')) {
@@ -556,18 +555,12 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		return `"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`;
 	}
 
-	let warningMsg = '';
-	const hasCannon = settings.combat_options.includes(CombatOptionsEnum.AlwaysCannon);
-	const hasBurstB =
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst) ||
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage);
 	// If enabling Ice Barrage, make sure burst isn't also enabled:
 	if (
 		nextBool &&
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst)
 	) {
-		if (hasCannon) warningMsg = priorityWarningMsg;
 		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
@@ -576,12 +569,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage)
 	) {
-		if (warningMsg === '' && hasCannon) warningMsg = priorityWarningMsg;
 		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage);
-	}
-	// Warn if enabling cannon with ice burst/barrage:
-	if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB) {
-		warningMsg = priorityWarningMsg;
 	}
 	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
 		await user.update({
@@ -595,7 +583,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		return 'Error processing command. This should never happen, please report bug.';
 	}
 
-	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
+	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.`;
 }
 
 async function handleRSN(user: MUser, newRSN: string) {
@@ -637,6 +625,7 @@ export async function pinTripCommand(
 ) {
 	if (!tripId) return 'Invalid trip.';
 	const id = Number(tripId);
+	if (!id || Number.isNaN(id)) return 'Invalid trip.';
 	const trip = await prisma.activity.findFirst({ where: { id, user_id: BigInt(user.id) } });
 	if (!trip) return 'Invalid trip.';
 
@@ -1071,7 +1060,7 @@ export const configCommand: OSBMahojiCommand = {
 								>(`
 SELECT DISTINCT ON (activity.type) activity.type, activity.data, activity.id, activity.finish_date
 FROM activity
-WHERE finish_date::date > now() - INTERVAL '31 days'
+WHERE finish_date > now() - INTERVAL '14 days'
 AND user_id = '${user.id}'::bigint
 ORDER BY activity.type, finish_date DESC
 LIMIT 20;
@@ -1164,7 +1153,7 @@ LIMIT 20;
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
-		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) ?? null : null;
+		const guild = guildID ? (globalClient.guilds.cache.get(guildID.toString()) ?? null) : null;
 		if (options.server) {
 			if (options.server.channel) {
 				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);

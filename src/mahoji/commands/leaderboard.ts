@@ -1,5 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, MessageEditOptions } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -140,7 +140,7 @@ async function kcLb(
 		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
 		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
 		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
-		 ORDER BY kc DESC
+		 ORDER BY score DESC
 		 LIMIT 2000;`
 	);
 
@@ -324,20 +324,10 @@ async function clLb(
 ) {
 	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
 	if (!items || items.length === 0) {
-		return "That's not a valid collection log category. Check +cl for all possible logs.";
+		return "That's not a valid collection log category. Check /cl for all possible logs.";
 	}
 
-	const userEventOrders = await prisma.userEvent.findMany({
-		where: {
-			type: 'CLCompletion',
-			collection_log_name: resolvedCl.toLowerCase()
-		},
-		orderBy: {
-			date: 'asc'
-		}
-	});
-
-	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, userEvents: userEventOrders });
+	const { users } = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, clName: resolvedCl });
 	inputType = toTitleCase(inputType.toLowerCase());
 
 	return doMenuWrapper({

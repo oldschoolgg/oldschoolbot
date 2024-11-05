@@ -1,21 +1,20 @@
-import { execSync } from 'node:child_process';
-
-import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import {
+	type CommandRunOptions,
+	type MahojiUserOption,
+	bulkUpdateCommands,
+	cleanString,
+	dateFm
+} from '@oldschoolgg/toolkit/util';
 import type { ClientStorage } from '@prisma/client';
 import { economy_transaction_type } from '@prisma/client';
-import type { InteractionReplyOptions } from 'discord.js';
-import { AttachmentBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import {
-	BOT_TYPE,
 	BadgesEnum,
 	BitField,
 	BitFieldData,
@@ -31,16 +30,7 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
-import {
-	calcPerHour,
-	cleanString,
-	convertBankToPerHourStats,
-	dateFm,
-	formatDuration,
-	sanitizeBank,
-	stringMatches,
-	toKMB
-} from '../../lib/util';
+import { calcPerHour, convertBankToPerHourStats, formatDuration, stringMatches, toKMB } from '../../lib/util';
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
@@ -220,11 +210,10 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 				economyBank.add("Zulrah's scales", scales);
 				economyBank.add(dart, qty);
 			}
-			sanitizeBank(economyBank);
 			return {
 				files: [
 					(await makeBankImage({ bank: economyBank })).file,
-					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.bank, null, 4)), {
+					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4)), {
 						name: 'bank.json'
 					})
 				]
@@ -487,11 +476,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_roles',
-			description: 'Sync roles'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'badges',
 			description: 'Manage badges of a user',
 			options: [
@@ -668,7 +652,6 @@ export const adminCommand: OSBMahojiCommand = {
 		sync_blacklist?: {};
 		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
-		sync_roles?: {};
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
@@ -699,20 +682,6 @@ export const adminCommand: OSBMahojiCommand = {
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
-		}
-		if (options.sync_roles) {
-			// try {
-			// 	const result = await runRolesTask();
-			// 	if (result.length < 2000) return result;
-			// 	return {
-			// 		content: 'The result was too big! Check the file.',
-			// 		files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
-			// 	};
-			// } catch (err: any) {
-			// 	logError(err);
-			// 	return `Failed to run roles task. ${err.message}`;
-			// }
-			return 'The roles task is disabled for now.';
 		}
 
 		if (options.badges) {
@@ -886,22 +855,25 @@ export const adminCommand: OSBMahojiCommand = {
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			process.exit();
+			import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
+			return 'Turning off...';
 		}
 		if (options.shut_down) {
+			debugLog('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
 			const timer = production ? Time.Second * 30 : Time.Second * 5;
 			await interactionReply(interaction, {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await economyLog('Flushing economy log due to shutdown', true);
-			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			await Promise.all([sleep(timer), GrandExchange.queue.onIdle()]);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
+			import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
+			return 'Turning off...';
 		}
 
 		if (options.sync_blacklist) {
@@ -1006,7 +978,7 @@ ${guildCommands.length} Guild commands`;
 FROM users
 WHERE bank->>'${item.id}' IS NOT NULL;`);
 			return `There are ${ownedResult[0].qty.toLocaleString()} ${item.name} owned by everyone.
-There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with atleast 1 ${
+There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with at least 1 ${
 				item.name
 			} in their collection log.`;
 		}
@@ -1063,10 +1035,8 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			for (const res of results) {
 				if (!res.total_duration || !res.total_kc) continue;
 				if (Object.keys({ ...(res.cost as ItemBank), ...(res.loot as ItemBank) }).length === 0) continue;
-				const cost = new Bank(res.cost as ItemBank);
-				const loot = new Bank(res.loot as ItemBank);
-				sanitizeBank(cost);
-				sanitizeBank(loot);
+				const cost = Bank.withSanitizedValues(res.cost as ItemBank);
+				const loot = Bank.withSanitizedValues(res.loot as ItemBank);
 				const marketValueCost = Math.round(cost.value());
 				const marketValueLoot = Math.round(loot.value());
 				const ratio = marketValueLoot / marketValueCost;

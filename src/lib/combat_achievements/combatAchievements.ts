@@ -1,10 +1,10 @@
 import type { activity_type_enum } from '@prisma/client';
 import { deepClone, notEmpty, roll, sumArr } from 'e';
-import type { Item } from 'oldschooljs/dist/meta/types';
 
+import type { Item } from 'oldschooljs';
 import type { Requirements } from '../structures/Requirements';
 import type { ActivityTaskData, TOAOptions } from '../types/minions';
-import { assert } from '../util';
+import { assert, joinStrings } from '../util';
 import getOSItem from '../util/getOSItem';
 import type { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
@@ -159,16 +159,15 @@ assert(allCATaskIDs.length === new Set(allCATaskIDs).size);
 assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATaskIDs.length);
 const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
-export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data, messages }) => {
+export const combatAchievementTripEffect = async ({ data, messages, user }: Parameters<TripFinishEffect['fn']>[0]) => {
 	const dataCopy = deepClone(data);
-	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
-		(dataCopy as any).quantity = 1;
+
+	let quantity = 1;
+	if ('q' in dataCopy) {
+		quantity = (dataCopy as any).q;
+	} else if ('quantity' in dataCopy) {
+		quantity = (dataCopy as any).quantity;
 	}
-	if (dataCopy.type === 'Colosseum') {
-		(dataCopy as any).quantity = 1;
-	}
-	if (!('quantity' in dataCopy)) return;
-	let quantity = Number(dataCopy.quantity);
 	if (Number.isNaN(quantity)) return;
 
 	if (data.type === 'TombsOfAmascut') {
@@ -183,8 +182,8 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 		}
 	}
 
-	const users = await Promise.all(
-		('users' in data ? (data.users as string[]) : [data.userID]).map(id => mUserFetch(id))
+	const users: MUser[] = await Promise.all(
+		'users' in data ? (data.users as string[]).map(id => mUserFetch(id)) : [user]
 	);
 
 	for (const user of users) {
@@ -210,9 +209,9 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 
 		if (completedTasks.length > 0) {
 			messages.push(
-				`${users.length === 1 ? 'You' : `${user}`} completed the ${completedTasks
-					.map(i => i.name)
-					.join(', ')} Combat Achievement Task${completedTasks.length > 1 ? 's' : ''}!`
+				`${users.length === 1 ? 'You' : `${user}`} completed the ${joinStrings(
+					completedTasks.map(i => i.name)
+				)} Combat Achievement Task${completedTasks.length > 1 ? 's' : ''}!`
 			);
 			await user.update({
 				completed_ca_task_ids: {

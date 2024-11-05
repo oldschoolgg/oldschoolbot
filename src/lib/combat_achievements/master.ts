@@ -3,7 +3,6 @@ import { Monsters } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
-import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
 import type {
 	ActivityTaskData,
@@ -14,6 +13,7 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from '../types/minions';
+import { anyoneDiedInTOARaid } from '../util';
 import { isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
@@ -150,7 +150,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 44,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -161,7 +162,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 25,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -183,7 +185,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 22,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -261,7 +264,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 1,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -283,7 +287,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 33,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -308,7 +313,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -333,7 +339,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -1323,7 +1330,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 10,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -1520,5 +1527,259 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 28
 		}
+	},
+	{
+		id: 2134,
+		name: 'Araxyte Betrayal',
+		desc: 'Have an Araxyte kill three other Araxytes.',
+		type: 'mechanical',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2135,
+		name: 'Perfect Araxxor',
+		desc: "Kill Araxxor perfectly, without taking damage from Araxxor's Mage & Range attacks, melee attack off prayer, araxyte minions damage, or damage from acid pools.",
+		type: 'perfection',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2136,
+		name: 'Let it seep in',
+		desc: 'Kill Araxxor without ever having venom or poison immunity.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 40,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 2137,
+		name: 'Arachnid Lover',
+		desc: 'Kill Araxxor 10 times without leaving.',
+		type: 'stamina',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 10;
+			}
+		}
+	},
+	{
+		id: 2138,
+		name: 'Araxxor Speed-Chaser',
+		desc: 'Kill Araxxor 5 times in 10:00.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 5 && timePerKill <= 2;
+			}
+		}
+	},
+	{
+		id: 2139,
+		name: 'Araxxor Master',
+		desc: '	Kill Araxxor 75 times.',
+		type: 'kill_count',
+		monster: 'Araxxor',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Araxxor.id]: 75
+			}
+		})
+	},
+	{
+		id: 2140,
+		name: 'Three Times the Thrashing',
+		desc: 'Kill three Tormented Demons within 3 seconds.',
+		type: 'restriction',
+		monster: 'Tormented Demon',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.TormentedDemon.id)
+		}
+	},
+	{
+		id: 2141,
+		name: 'Serpentine Solo',
+		desc: 'Kill the Leviathan without stunning the boss more than once.',
+		type: 'mechanical',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 2142,
+		name: 'Leviathan Master',
+		desc: 'Kill the Leviathan 50 times.',
+		type: 'kill_count',
+		monster: 'The Leviathan',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheLeviathan.id]: 50
+			}
+		})
+	},
+	{
+		id: 2143,
+		name: 'Leviathan Speed-Chaser',
+		desc: 'Kill the Leviathan in less than 1:25 without a slayer task.',
+		type: 'speed',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 40,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 2144,
+		name: 'Perfect Leviathan',
+		desc: 'Kill the Leviathan perfectly 5 times without leaving.',
+		type: 'perfection',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 2145,
+		name: 'Whisperer Master',
+		desc: 'Kill the Whisperer 50 times.',
+		type: 'kill_count',
+		monster: 'The Whisperer',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheWhisperer.id]: 50
+			}
+		})
+	},
+	{
+		id: 2146,
+		name: 'Whisperer Speed-Chaser',
+		desc: 'Kill the Whisperer in less than 2:25 without a slayer task.',
+		type: 'speed',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 40,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 2147,
+		name: 'Perfect Whisperer',
+		desc: 'Kill the Whisperer without taking avoidable damage 5 times without leaving.',
+		type: 'perfection',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 2148,
+		name: 'Vardorvis Speed-Chaser',
+		desc: 'Kill Vardorvis in less than 1:05 without a slayer task.',
+		type: 'speed',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 40,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 2149,
+		name: 'Vardorvis Master',
+		desc: 'Kill Vardorvis 50 times.',
+		type: 'kill_count',
+		monster: 'Vardorvis',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Vardorvis.id]: 50
+			}
+		})
+	},
+	{
+		id: 2150,
+		name: 'Budget Cutter',
+		desc: 'Kill Vardorvis with gear worth 2m or less in total.',
+		type: 'restriction',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 2151,
+		name: 'Perfect Vardorvis',
+		desc: 'Kill Vardorvis perfectly 5 times without leaving.',
+		type: 'perfection',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 2152,
+		name: 'Cold Feet',
+		desc: 'Kill Duke Sucellus without taking any avoidable damage, whilst also never running.',
+		type: 'restriction',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 2153,
+		name: 'Duke Sucellus Speed-Chaser',
+		desc: 'Kill Duke Sucellus in less than 1:35 minutes without a slayer task.',
+		type: 'speed',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 40,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 2154,
+		name: 'Perfect Duke Sucellus',
+		desc: 'Kill Duke Sucellus without taking any avoidable damage 5 times without leaving.',
+		type: 'perfection',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 2155,
+		name: 'Duke Sucellus Master',
+		desc: 'Kill Duke Sucellus 50 times.',
+		type: 'kill_count',
+		monster: 'Duke Sucellus',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.DukeSucellus.id]: 50
+			}
+		})
 	}
 ];

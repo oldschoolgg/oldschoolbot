@@ -1,16 +1,21 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit';
+import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User, UserStats } from '@prisma/client';
-import { isFunction, objectEntries, round } from 'e';
+import { isObject, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import type { KillableMonster } from '../lib/minions/types';
 
+import { bold } from 'discord.js';
+import { userhasDiaryTier } from '../lib/diaries';
+import { quests } from '../lib/minions/data/quests';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
+import type { GearBank } from '../lib/structures/GearBank';
 import type { ItemBank } from '../lib/types';
 import {
+	type JsonKeys,
 	anglerBoosts,
 	formatItemReqs,
 	hasSkillReqs,
@@ -18,6 +23,7 @@ import {
 	readableStatName,
 	resolveItems
 } from '../lib/util';
+import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
 
 export function mahojiParseNumber({
 	input,
@@ -69,48 +75,44 @@ export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
 }
 
+export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
+	userID: string,
+	selectKeys: T
+): Promise<SelectedUserStats<T>> {
+	const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
+	let result = await prisma.userStats.findFirst({
+		where: {
+			user_id: BigInt(userID)
+		},
+		select: keysToSelect
+	});
+
+	if (!result) {
+		result = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(userID)
+			},
+			create: {
+				user_id: BigInt(userID)
+			},
+			update: {},
+			select: keysToSelect
+		});
+	}
+
+	return result as unknown as SelectedUserStats<T>;
+}
+
 export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
 	userID: string,
-	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'> | ((u: UserStats) => Prisma.UserStatsUpdateInput),
+	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>,
 	selectKeys?: T
 ): Promise<SelectedUserStats<T>> {
 	const id = BigInt(userID);
-
 	let keys: object | undefined = selectKeys;
 	if (!selectKeys || Object.keys(selectKeys).length === 0) {
 		keys = { user_id: true };
 	}
-
-	if (isFunction(data)) {
-		const userStats = await prisma.userStats.upsert({
-			create: {
-				user_id: id
-			},
-			update: {},
-			where: {
-				user_id: id
-			}
-		});
-
-		return (await prisma.userStats.update({
-			data: data(userStats),
-			where: {
-				user_id: id
-			},
-			select: keys
-		})) as SelectedUserStats<T>;
-	}
-
-	await prisma.userStats.upsert({
-		create: {
-			user_id: id
-		},
-		update: {},
-		where: {
-			user_id: id
-		},
-		select: undefined
-	});
 
 	return (await prisma.userStats.update({
 		data,
@@ -121,27 +123,23 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 	})) as SelectedUserStats<T>;
 }
 
-export async function userStatsBankUpdate(userID: string, key: keyof UserStats, bank: Bank) {
+export async function userStatsBankUpdate(user: MUser | string, key: JsonKeys<UserStats>, bank: Bank) {
+	if (!key) throw new Error('No key provided to userStatsBankUpdate');
+	const userID = typeof user === 'string' ? user : user.id;
+	const stats =
+		typeof user === 'string'
+			? await fetchUserStats(userID, { [key]: true })
+			: await user.fetchStats({ [key]: true });
+	const currentItemBank = stats[key] as ItemBank;
+	if (!isObject(currentItemBank)) {
+		throw new Error(`Key ${key} is not an object.`);
+	}
 	await userStatsUpdate(
 		userID,
-		u => ({
-			[key]: bank.clone().add(u[key] as ItemBank).bank
-		}),
-		{}
-	);
-}
-
-export async function multipleUserStatsBankUpdate(userID: string, updates: Partial<Record<keyof UserStats, Bank>>) {
-	await userStatsUpdate(
-		userID,
-		u => {
-			const updateObj: Prisma.UserStatsUpdateInput = {};
-			for (const [key, bank] of objectEntries(updates)) {
-				updateObj[key] = bank?.clone().add(u[key] as ItemBank).bank;
-			}
-			return updateObj;
+		{
+			[key]: bank.clone().add(currentItemBank).toJSON()
 		},
-		{}
+		{ [key]: true }
 	);
 }
 
@@ -165,7 +163,7 @@ export async function updateClientGPTrackSetting(
 		},
 		data: {
 			[setting]: {
-				increment: amount
+				increment: Math.floor(amount)
 			}
 		},
 		select: {
@@ -222,12 +220,42 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 	return amountEquipped * 20;
 }
 
-export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
+export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	if (monster.qpRequired && user.QP < monster.qpRequired) {
 		return [
 			false,
 			`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/activities quest\``
 		];
+	}
+
+	if (monster.requiredQuests) {
+		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+		if (incompleteQuest) {
+			return [
+				false,
+				`You need to have completed the ${bold(
+					quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to kill ${monster.name}.`
+			];
+		}
+	}
+
+	if (monster.degradeableItemUsage) {
+		for (const set of monster.degradeableItemUsage) {
+			const equippedInThisSet = set.items.find(item => user.gear[set.gearSetup].hasEquipped(item.itemID));
+
+			if (set.required && !equippedInThisSet) {
+				return [
+					false,
+					`You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+						monster.name
+					}: ${set.items
+						.map(i => i.itemID)
+						.map(itemNameFromID)
+						.join(', ')}.`
+				];
+			}
+		}
 	}
 
 	if (monster.itemsRequired) {
@@ -263,7 +291,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 						false,
 						`You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
 							unmetKey!
-						)} stat in your ${setup} setup is ${has}, but you need atleast ${
+						)} stat in your ${setup} setup is ${has}, but you need at least ${
 							monster.minimumGearRequirements[setup]?.[unmetKey!]
 						}.`
 					];
@@ -272,10 +300,53 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 		}
 	}
 
+	if (monster.diaryRequirement) {
+		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
+		if (!hasDiary) {
+			return [
+				false,
+				`${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`
+			];
+		}
+	}
+
+	if (monster.itemCost) {
+		const timeToFinish = monster.timeToFinish;
+		const consumablesCost = getItemCostFromConsumables({
+			consumableCosts: Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost],
+			gearBank: user.gearBank,
+			inputQuantity: 1,
+			timeToFinish,
+			maxTripLength: timeToFinish * 1.5,
+			slayerKillsRemaining: null
+		});
+		if (consumablesCost.itemCost && !user.bank.has(consumablesCost.itemCost)) {
+			const items = Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost];
+			const messages: string[] = [];
+			for (const group of items) {
+				if (group.optional) continue;
+				if (user.owns(group.itemCost)) {
+					continue;
+				}
+				if (group.alternativeConsumables?.some(alt => user.owns(alt.itemCost))) {
+					continue;
+				}
+				messages.push(
+					`This monster requires: ${group.itemCost.items().map(i => i[0].name)}${
+						group.alternativeConsumables
+							? `, OR ${group.alternativeConsumables?.map(alt => alt.itemCost.items().map(i => i[0].name)).join(', ')}`
+							: '.'
+					}`
+				);
+			}
+			return [false, `You don't have the items needed to kill this monster. ${messages.join(' ')}`];
+		}
+	}
+
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, isInWilderness = false) {
+export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster, isInWilderness = false): Bank {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -285,7 +356,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			// find the highest boost that the player has
 			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 				const parsedId = Number.parseInt(itemID);
-				if (isInWilderness ? !user.hasEquipped(parsedId) : !user.hasEquippedOrInBank(parsedId)) {
+				if (!gearBank.wildyGearCheck(parsedId, isInWilderness)) {
 					continue;
 				}
 				if (boostAmount > highestBoostAmount) {
@@ -299,7 +370,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			}
 		}
 	}
-	return boosts.bank;
+	return boosts;
 }
 
 export function calcMaxRCQuantity(rune: Rune, user: MUser) {
@@ -339,12 +410,13 @@ export async function addToGPTaxBalance(userID: string | string, amount: number)
 	]);
 }
 
-export async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
+export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
+	const stats = await user.fetchStats({ openable_scores: true });
 	const { openable_scores: newOpenableScores } = await userStatsUpdate(
-		mahojiUser.id,
-		({ openable_scores }) => ({
-			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
-		}),
+		user.id,
+		{
+			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
+		},
 		{ openable_scores: true }
 	);
 	return new Bank(newOpenableScores as ItemBank);

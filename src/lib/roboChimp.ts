@@ -1,11 +1,13 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { TriviaQuestion, User } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
+import type { Bank } from 'oldschooljs';
 
 import { BOT_TYPE, globalConfig, masteryKey } from './constants';
 import { getTotalCl } from './data/Collections';
 import { calculateMastery } from './mastery';
+import { cacheRoboChimpUser } from './perkTier';
 import { MUserStats } from './structures/MUserStats';
 
 export type RobochimpUser = User;
@@ -36,8 +38,29 @@ const clKey: keyof User = 'osb_cl_percent';
 const levelKey: keyof User = 'osb_total_level';
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
 
-export async function roboChimpSyncData(user: MUser) {
-	const stats = await MUserStats.fromID(user.id);
+export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
+	const id = BigInt(user.id);
+	const newCLArray: number[] = (newCL ?? user.cl).itemIDs;
+	const clArrayUpdateObject = {
+		cl_array: newCLArray,
+		cl_array_length: newCLArray.length
+	} as const;
+
+	const stats = new MUserStats(
+		await prisma.userStats.upsert({
+			where: {
+				user_id: id
+			},
+			create: {
+				user_id: id,
+				...clArrayUpdateObject
+			},
+			update: {
+				...clArrayUpdateObject
+			}
+		})
+	);
+
 	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);
 	const clCompletionPercentage = round(calcWhatPercent(clItems, totalClItems), 2);
 	const totalXP = sumArr(Object.values(user.skillsAsXP));
@@ -51,7 +74,7 @@ export async function roboChimpSyncData(user: MUser) {
 		[masteryKey]: totalMastery
 	} as const;
 
-	const newUser = await roboChimpClient.user.upsert({
+	const newUser: RobochimpUser = await roboChimpClient.user.upsert({
 		where: {
 			id: BigInt(user.id)
 		},
@@ -61,6 +84,7 @@ export async function roboChimpSyncData(user: MUser) {
 			...updateObj
 		}
 	});
+	cacheRoboChimpUser(newUser);
 
 	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
@@ -68,8 +92,8 @@ export async function roboChimpSyncData(user: MUser) {
 	return newUser;
 }
 
-export async function roboChimpUserFetch(userID: string) {
-	const result = await roboChimpClient.user.upsert({
+export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {
+	const result: RobochimpUser = await roboChimpClient.user.upsert({
 		where: {
 			id: BigInt(userID)
 		},
@@ -78,6 +102,8 @@ export async function roboChimpUserFetch(userID: string) {
 		},
 		update: {}
 	});
+
+	cacheRoboChimpUser(result);
 
 	return result;
 }

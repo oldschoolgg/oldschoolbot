@@ -1,25 +1,26 @@
-import type {
-	Activity,
-	Bingo,
-	BingoParticipant,
-	BuyCommandTransaction,
-	CommandUsage,
-	EconomyTransaction,
-	FarmedCrop,
-	GearPreset,
-	Giveaway,
-	HistoricalData,
-	LastManStandingGame,
-	LootTrack,
-	Minigame,
-	PinnedTrip,
-	PlayerOwnedHouse,
-	Prisma,
-	ReclaimableItem,
-	SlayerTask,
-	UserStats,
-	XPGain,
-	activity_type_enum
+import {
+	type Activity,
+	type Bingo,
+	type BingoParticipant,
+	type BuyCommandTransaction,
+	type CommandUsage,
+	type EconomyTransaction,
+	type FarmedCrop,
+	type GearPreset,
+	type Giveaway,
+	type HistoricalData,
+	type LastManStandingGame,
+	type LootTrack,
+	type Minigame,
+	type PinnedTrip,
+	type PlayerOwnedHouse,
+	type Prisma,
+	type ReclaimableItem,
+	type SlayerTask,
+	type UserStats,
+	type XPGain,
+	type activity_type_enum,
+	command_name_enum
 } from '@prisma/client';
 import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -704,8 +705,8 @@ const allTableCommands: TestCommand[] = [
 				data: {
 					user_id: BigInt(user.id),
 					cost_gp: randInt(10_000, 10_000_000),
-					cost_bank_excluding_gp: new Bank().bank,
-					loot_bank: lootBank.bank
+					cost_bank_excluding_gp: {},
+					loot_bank: lootBank.toJSON()
 				}
 			});
 		}
@@ -935,17 +936,18 @@ const allTableCommands: TestCommand[] = [
 				user_id: user.id
 			});
 
+			const stats = await user.fetchStats({ items_sold_bank: true });
 			await Promise.all([
 				updateClientGPTrackSetting('gp_sell', totalPrice),
 				updateBankSetting('sold_items_bank', bankToSell),
 				userStatsUpdate(
 					user.id,
-					userStats => ({
-						items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+					{
+						items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).toJSON(),
 						sell_gp: {
 							increment: totalPrice
 						}
-					}),
+					},
 					{}
 				),
 				global.prisma!.botItemSell.createMany({ data: botItemSellData })
@@ -1049,7 +1051,13 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Command usage',
 		cmd: async user => {
-			const randCommands = ['minion', 'runecraft', 'chop', 'mine', 'buy'];
+			const randCommands = [
+				command_name_enum.minion,
+				command_name_enum.runecraft,
+				command_name_enum.chop,
+				command_name_enum.mine,
+				command_name_enum.buy
+			];
 			await global.prisma!.commandUsage.create({
 				data: {
 					user_id: BigInt(user.id),
@@ -1304,7 +1312,7 @@ test.concurrent('test migrating full user on top of full profile', async () => {
 	expect(compareResult.result).toBe(true);
 
 	if (newData.poh) newData.poh.spellbook_altar = 33;
-	if (newData.userStats) newData.userStats.sacrificed_bank = new Bank().add('Cannonball').bank;
+	if (newData.userStats) newData.userStats.sacrificed_bank = new Bank().add('Cannonball').toJSON();
 	newData.skillsAsLevels!.cooking = 1_000_000;
 	newData.bingos = [];
 	newData.botItemSell = [];

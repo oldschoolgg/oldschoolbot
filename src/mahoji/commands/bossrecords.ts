@@ -1,5 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { MessageEditOptions } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';

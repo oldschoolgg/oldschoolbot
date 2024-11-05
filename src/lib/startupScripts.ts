@@ -1,37 +1,62 @@
 import { Items } from 'oldschooljs';
+import { globalConfig } from './constants';
+import { sql } from './postgres';
 
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
-const arrayColumns = [
-	['clientStorage', 'userBlacklist'],
-	['clientStorage', 'guildBlacklist'],
-	['guilds', 'disabledCommands'],
-	['guilds', 'staffOnlyChannels'],
-	['users', 'badges'],
-	['users', 'bitfield'],
-	['users', 'favoriteItems'],
-	['users', 'favorite_alchables'],
-	['users', 'favorite_food'],
-	['users', 'favorite_bh_seeds'],
-	['users', 'attack_style'],
-	['users', 'combat_options'],
-	['users', 'ironman_alts'],
-	['users', 'slayer.unlocks'],
-	['users', 'slayer.blocked_ids'],
-	['users', 'slayer.autoslay_options']
-];
+startupScripts.push({
+	sql: `CREATE OR REPLACE FUNCTION add_item_to_bank(
+    bank JSONB,
+    key TEXT,
+    quantity INT
+) RETURNS JSONB LANGUAGE plpgsql AS $$
+BEGIN
+    RETURN (
+        CASE
+            WHEN bank ? key THEN
+                jsonb_set(
+                    bank,
+                    ARRAY[key],
+                    to_jsonb((bank->>key)::INT + quantity)
+                )
+            ELSE
+                jsonb_set(
+                    bank,
+                    ARRAY[key],
+                    to_jsonb(quantity)
+                )
+        END
+    );
+END;
+$$;`
+});
 
-for (const [table, column] of arrayColumns) {
-	startupScripts.push({
-		sql: `UPDATE "${table}" SET "${column}" = '{}' WHERE "${column}" IS NULL;`
-	});
-	startupScripts.push({
-		sql: `
-ALTER TABLE "${table}"
-	ALTER COLUMN "${column}" SET DEFAULT '{}',
-	ALTER COLUMN "${column}" SET NOT NULL;`
-	});
-}
+startupScripts.push({
+	sql: `CREATE OR REPLACE FUNCTION remove_item_from_bank(
+    bank JSONB,
+    key TEXT,
+    quantity INT
+) RETURNS JSONB LANGUAGE plpgsql AS $$
+DECLARE
+    current_value INT;
+BEGIN
+    IF bank ? key THEN
+        current_value := (bank->>key)::INT - quantity;
+        IF current_value > 0 THEN
+            RETURN jsonb_set(
+                bank,
+                ARRAY[key],
+                to_jsonb(current_value)
+            );
+        ELSE
+            RETURN bank - key;
+        END IF;
+    ELSE
+        RETURN bank;
+    END IF;
+END;
+$$;`
+});
 
 interface CheckConstraint {
 	table: string;
@@ -42,21 +67,9 @@ interface CheckConstraint {
 const checkConstraints: CheckConstraint[] = [
 	{
 		table: 'users',
-		column: 'lms_points',
-		name: 'users_lms_points_min',
-		body: 'lms_points >= 0'
-	},
-	{
-		table: 'users',
 		column: '"GP"',
 		name: 'users_gp',
 		body: '"GP" >= 0'
-	},
-	{
-		table: 'users',
-		column: '"QP"',
-		name: 'users_qp',
-		body: '"QP" >= 0'
 	},
 	{
 		table: 'ge_listing',
@@ -133,6 +146,19 @@ startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS activity_only_one_task ON activity (user_id, completed) WHERE NOT completed;'
 });
 
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_buy_filter_sort 
+ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item DESC, created_at ASC);`
+});
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_sell_filter_sort 
+ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item ASC, created_at ASC);`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS ge_transaction_sell_listing_id_created_at_idx 
+ON ge_transaction (sell_listing_id, created_at DESC);`
+});
 const itemMetaDataNames = Items.map(item => `(${item.id}, '${item.name.replace(/'/g, "''")}')`).join(', ');
 const itemMetaDataQuery = `
 INSERT INTO item_metadata (id, name)
@@ -142,9 +168,10 @@ DO
   UPDATE SET name = EXCLUDED.name
 WHERE item_metadata.name IS DISTINCT FROM EXCLUDED.name;
 `;
-
-startupScripts.push({ sql: itemMetaDataQuery });
+if (globalConfig.isProduction) {
+	startupScripts.push({ sql: itemMetaDataQuery });
+}
 
 export async function runStartupScripts() {
-	await prisma.$transaction(startupScripts.map(query => prisma.$queryRawUnsafe(query.sql)));
+	await sql.begin(sql => startupScripts.map(query => sql.unsafe(query.sql)));
 }

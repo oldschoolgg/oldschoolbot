@@ -1,6 +1,7 @@
 import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
+import { cacheGEPrices } from './marketPrices';
 import { cacheCleanup } from './util/cachedUserIDs';
 
 export function initCrons() {
@@ -21,7 +22,6 @@ GROUP BY item_id;`);
 	 * Analytics
 	 */
 	schedule('*/5 * * * *', () => {
-		debugLog('Analytics cronjob starting');
 		return analyticsTick();
 	});
 
@@ -36,7 +36,10 @@ GROUP BY item_id;`);
 	 * Delete all voice channels
 	 */
 	schedule('0 0 */1 * *', async () => {
-		debugLog('Cache cleanup cronjob starting');
 		cacheCleanup();
+	});
+
+	schedule('35 */48 * * *', async () => {
+		await cacheGEPrices();
 	});
 }

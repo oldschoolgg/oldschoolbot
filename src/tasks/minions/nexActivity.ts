@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { userMention } from 'discord.js';
 
 import { NEX_ID } from '../../lib/constants';

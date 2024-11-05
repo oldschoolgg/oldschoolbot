@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
@@ -151,6 +151,10 @@ export const chopCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
 		}
 
+		if (twitchers_gloves && !user.hasEquipped("Twitcher's gloves")) {
+			return "You need to have Twitcher's gloves equipped to use them.";
+		}
+
 		const boosts = [];
 
 		let wcLvl = skills.woodcutting;
@@ -242,7 +246,7 @@ export const chopCommand: OSBMahojiCommand = {
 		});
 
 		let response = `${minionName(user)} is now chopping ${log.name} until your minion ${
-			quantity ? `chopped ${quantity}x or gets tired` : 'is satisfied'
+			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
 				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`

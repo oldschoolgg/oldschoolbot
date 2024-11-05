@@ -1,14 +1,13 @@
 import type { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
-import type { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Bank, Item } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import type { MinigameScore } from '../settings/minigames';
+import type { MUserStats } from '../structures/MUserStats';
 import getOSItem from '../util/getOSItem';
-import type { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -39,7 +38,7 @@ export interface IKCActivity {
 	[key: string]:
 		| string
 		| string[]
-		| ((user: MUser, minigameScores: MinigameScore[], stats: UserStatsDataNeededForCL) => Promise<number>);
+		| ((user: MUser, minigameScores: MinigameScore[], stats: MUserStats) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
@@ -51,7 +50,7 @@ export type FormatProgressFunction = ({
 	user: MUser;
 	getKC: (id: number) => Promise<number>;
 	minigames: Minigame;
-	stats: UserStatsDataNeededForCL;
+	stats: MUserStats;
 }) => string | string[] | Promise<string | string[]>;
 
 interface ICollectionActivity {
@@ -1228,6 +1227,7 @@ export const barbarianAssaultCL = resolveItems([
 ]);
 export const brimhavenAgilityArenaCL = resolveItems([
 	'Agility arena ticket',
+	'Brimhaven voucher',
 	"Pirate's hook",
 	'Brimhaven graceful hood',
 	'Brimhaven graceful top',
@@ -1547,7 +1547,8 @@ export const allPetsCL = resolveItems([
 	'Butch',
 	'Baron',
 	'Scurry',
-	'Smol heredit'
+	'Smol heredit',
+	'Nid'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1596,6 +1597,16 @@ export const chompyBirdsCL = resolveItems([
 	'Chompy bird hat (dragon archer)',
 	'Chompy bird hat (expert ogre dragon archer)',
 	'Chompy bird hat (expert dragon archer)'
+]);
+export const colossalWyrmAgilityCL = resolveItems([
+	'Colossal wyrm teleport scroll',
+	'Calcified acorn',
+	'Varlamore graceful hood',
+	'Varlamore graceful top',
+	'Varlamore graceful legs',
+	'Varlamore graceful gloves',
+	'Varlamore graceful boots',
+	'Varlamore graceful cape'
 ]);
 export const creatureCreationCL = resolveItems([
 	'Tea flask',
@@ -1677,6 +1688,10 @@ export const motherlodeMineCL = resolveItems([
 	'Prospector jacket',
 	'Prospector legs',
 	'Prospector boots'
+]);
+export const myNotesCL = resolveItems([
+	11_341, 11_342, 11_343, 11_344, 11_345, 11_346, 11_347, 11_348, 11_349, 11_350, 11_351, 11_352, 11_353, 11_354,
+	11_355, 11_356, 11_357, 11_358, 11_359, 11_360, 11_361, 11_362, 11_363, 11_364, 11_365, 11_366
 ]);
 export const randomEventsCL = resolveItems([
 	'Camo top',
@@ -1840,8 +1855,12 @@ export const slayerCL = resolveItems([
 	'Ancient ceremonial top',
 	'Ancient ceremonial legs',
 	'Ancient ceremonial gloves',
-	'Ancient ceremonial boots'
+	'Ancient ceremonial boots',
+	'Aranea boots'
 ]);
+
+export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
+
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
 	'Toktz-ket-xil',
@@ -1910,7 +1929,8 @@ export const miscellaneousCL = resolveItems([
 	'Uncut onyx',
 	'Merfolk trident',
 	'Orange egg sac',
-	'Blue egg sac'
+	'Blue egg sac',
+	'Broken zombie axe'
 ]);
 
 export const diariesCL = [
@@ -2344,4 +2364,17 @@ export const vardorvisCL = resolveItems([
 	"Awakener's orb",
 	'Blood quartz',
 	'Strangled tablet'
+]);
+
+export const araxxorCL = resolveItems([
+	'Nid',
+	'Araxyte venom sack',
+	'Spider cave teleport',
+	'Araxyte fang',
+	'Noxious point',
+	'Noxious blade',
+	'Noxious pommel',
+	'Araxyte head',
+	'Jar of venom',
+	'Coagulated venom'
 ]);

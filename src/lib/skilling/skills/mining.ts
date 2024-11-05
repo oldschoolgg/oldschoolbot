@@ -1,4 +1,4 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
@@ -295,6 +295,11 @@ const prospectorItems: { [key: number]: number } = {
 	[itemID('Prospector legs')]: 0.6,
 	[itemID('Prospector boots')]: 0.2
 };
+
+export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemID, bonus]) => ({
+	id: Number.parseInt(itemID),
+	boostPercent: bonus
+}));
 
 const Mining = {
 	aliases: ['mining'],

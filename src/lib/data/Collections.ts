@@ -1,10 +1,6 @@
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, Clues, Monsters } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
-import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
-import type Monster from 'oldschooljs/dist/structures/Monster';
-
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
@@ -21,9 +17,8 @@ import type { MinigameName } from '../settings/minigames';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { SkillsEnum } from '../skilling/types';
-import type { MUserStats } from '../structures/MUserStats';
+import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
-import { fetchStatsForCL } from '../util/fetchStatsForCL';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {
@@ -32,6 +27,7 @@ import {
 	aerialFishingCL,
 	alchemicalHydraCL,
 	allPetsCL,
+	araxxorCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
 	brimhavenAgilityArenaCL,
@@ -57,6 +53,7 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
+	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
 	corporealBeastCL,
 	crazyArchaeologistCL,
@@ -94,6 +91,7 @@ import {
 	monkeyBackpacksCL,
 	motherlodeMineCL,
 	muspahCL,
+	myNotesCL,
 	oborCL,
 	pestControlCL,
 	questCL,
@@ -121,6 +119,7 @@ import {
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
 	toaCL,
+	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
 	vardorvisCL,
@@ -174,6 +173,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.AlchemicalHydra.allItems,
 				items: alchemicalHydraCL,
 				fmtProg: kcProg(Monsters.AlchemicalHydra)
+			},
+			Araxxor: {
+				alias: [...Monsters.Araxxor.aliases, 'rax'],
+				allItems: uniqueArr([...araxxorCL, ...Monsters.Araxxor.allItems]),
+				items: araxxorCL,
+				fmtProg: kcProg(Monsters.Araxxor)
 			},
 			'Barrows Chests': {
 				alias: Monsters.Barrows.aliases,
@@ -329,7 +334,8 @@ export const allCollectionLogs: ICollection = {
 					'Sunfire fanatic helm',
 					'Echo crystal',
 					'Tonalztics of ralos (uncharged)',
-					'Sunfire splinters'
+					'Sunfire splinters',
+					'Uncut onyx'
 				]),
 				fmtProg: ({ minigames }) => `${minigames.colosseum} KC`
 			},
@@ -558,9 +564,9 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: {
 					Default: async (_, minigameScores) =>
 						minigameScores.find(i => i.minigame.column === 'tombs_of_amascut')!.score,
-					Entry: async (_, __, { stats }) => stats.getToaKCs().entryKC,
-					Normal: async (_, __, { stats }) => stats.getToaKCs().normalKC,
-					Expert: async (_, __, { stats }) => stats.getToaKCs().expertKC
+					Entry: async (_, __, stats) => stats.getToaKCs().entryKC,
+					Normal: async (_, __, stats) => stats.getToaKCs().normalKC,
+					Expert: async (_, __, stats) => stats.getToaKCs().expertKC
 				},
 				items: toaCL,
 				isActivity: true,
@@ -904,6 +910,10 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: 'BigChompyBirdHunting',
 				items: chompyBirdsCL
 			},
+			'Colossal Wyrm Agility': {
+				alias: ['colossal wyrm agility', 'colo agility', 'wyrm agility'],
+				items: colossalWyrmAgilityCL
+			},
 			'Creature Creation': {
 				items: creatureCreationCL
 			},
@@ -941,6 +951,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['mlm'],
 				items: motherlodeMineCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
+			},
+			'My Notes': {
+				alias: ['my notes'],
+				items: myNotesCL
 			},
 			'Random Events': {
 				alias: ['random'],
@@ -1015,6 +1029,13 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TzHaarXil.allItems
 				],
 				items: tzHaarCL
+			},
+			'Tormented Demons': {
+				alias: Monsters.TormentedDemon.aliases,
+				allItems: Monsters.TormentedDemon.allItems,
+				kcActivity: Monsters.TormentedDemon.name,
+				items: tormentedDemonCL,
+				fmtProg: kcProg(Monsters.TormentedDemon)
 			},
 			Miscellaneous: {
 				alias: ['misc'],
@@ -1233,7 +1254,7 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 					items = [...new Set(attributes.items)];
 				}
 				if (removeCoins && items.includes(995)) items.splice(items.indexOf(995), 1);
-				const [totalCl, userAmount] = getUserClData(userBank.bank, items);
+				const [totalCl, userAmount] = getUserClData(userBank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
 			}
@@ -1242,22 +1263,7 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 	return leftList;
 }
 
-export interface UserStatsDataNeededForCL {
-	sacrificedBank: Bank;
-	titheFarmsCompleted: number;
-	lapsScores: ItemBank;
-	openableScores: Bank;
-	kcBank: ItemBank;
-	highGambles: number;
-	gotrRiftSearches: number;
-	stats: MUserStats;
-}
-
-function getBank(
-	user: MUser,
-	type: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | MUserStats | null
-) {
+function getBank(user: MUser, type: 'sacrifice' | 'bank' | 'collection' | 'temp', userStats: MUserStats | null) {
 	switch (type) {
 		case 'collection':
 			return new Bank(user.cl);
@@ -1275,9 +1281,9 @@ function getBank(
 export function getTotalCl(
 	user: MUser,
 	logType: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | MUserStats | null
+	userStats: MUserStats | null
 ) {
-	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
+	return getUserClData(getBank(user, logType, userStats), allCLItemsFiltered);
 }
 
 export function getCollectionItems(
@@ -1310,7 +1316,7 @@ export function getCollectionItems(
 			_clName = category;
 			_items = uniqueArr(
 				Object.values(entries.activities)
-					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
+					.map(e => [...new Set([...e.items, ...(allItems ? (e.allItems ?? []) : [])])])
 					.flat(2)
 			);
 
@@ -1340,8 +1346,8 @@ export function getCollectionItems(
 	return returnValue(_clName, _items);
 }
 
-function getUserClData(usarBank: ItemBank, clItems: number[]): [number, number] {
-	const owned = Object.keys(usarBank).filter(i => clItems.includes(Number(i)));
+function getUserClData(userBank: Bank, clItems: number[]): [number, number] {
+	const owned = userBank.itemIDs.filter(i => clItems.includes(i));
 	return [clItems.length, owned.length];
 }
 
@@ -1365,7 +1371,7 @@ export async function getCollection(options: {
 	if (logType === undefined) logType = 'collection';
 
 	const minigameScores = await user.fetchMinigameScores();
-	const userStats = await fetchStatsForCL(user);
+	const userStats = await MUserStats.fromID(user.id);
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
@@ -1377,7 +1383,7 @@ export async function getCollection(options: {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
 	}
 
-	const [totalCl, userAmount] = getUserClData(userCheckBank.bank, clItems);
+	const [totalCl, userAmount] = getUserClData(userCheckBank, clItems);
 
 	if (stringMatches(search, 'overall+')) {
 		return {

@@ -1,12 +1,12 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { PHOSANI_NIGHTMARE_ID } from '../constants';
-import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
 import type {
 	ActivityTaskData,
 	GauntletOptions,
+	MonsterActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
@@ -48,8 +48,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: 'Raids'
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).users.length >= 5 &&
+					!(data as RaidsOptions).isFakeMass &&
+					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).isFakeMass &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -71,8 +79,12 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			chancePerKill: 1,
+			hasChance: data =>
+				data.type === 'Raids' &&
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass &&
+				data.duration < Time.Minute * 17 * (data.quantity ?? 1)
 		}
 	},
 	{
@@ -82,8 +94,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
-			chancePerKill: 55,
-			hasChance: 'Raids'
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).users.length >= 3 &&
+					!(data as RaidsOptions).isFakeMass &&
+					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).isFakeMass &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -93,11 +113,13 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
+			chancePerKill: 1,
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass &&
+				data.duration < Time.Minute * 38.5 * (data.quantity ?? 1)
 		}
 	},
 	{
@@ -119,8 +141,18 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).users.length >= 3 &&
+					!(data as RaidsOptions).isFakeMass &&
+					data.duration < Time.Minute * 27 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).isFakeMass &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					data.duration < Time.Minute * 27 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -130,8 +162,18 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
-			chancePerKill: 30,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			chancePerKill: 1,
+			hasChance: data =>
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).users.length >= 5 &&
+					!(data as RaidsOptions).isFakeMass &&
+					data.duration < Time.Minute * 25 * (data.quantity ?? 1)) ||
+				(data.type === 'Raids' &&
+					(data as RaidsOptions).challengeMode &&
+					(data as RaidsOptions).isFakeMass &&
+					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					data.duration < Time.Minute * 25 * (data.quantity ?? 1))
 		}
 	},
 	{
@@ -696,13 +738,9 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Tombs of Amascut at raid level 500 or above without anyone dying.',
 		type: 'mechanical',
 		monster: 'Tombs of Amascut: Expert Mode',
-		rng: {
-			chancePerKill: 1,
-			hasChance: data =>
-				data.type === 'TombsOfAmascut' &&
-				(data as TOAOptions).raidLevel >= 500 &&
-				!anyoneDiedInTOARaid(data as TOAOptions)
-		}
+		requirements: new Requirements().add({
+			clRequirement: new Bank().add('Cursed phalanx', 1)
+		})
 	},
 	{
 		id: 3060,
@@ -848,7 +886,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 10,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -859,7 +897,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 12,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -881,7 +919,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 6,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -892,7 +930,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 3,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -915,7 +953,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 6,
-			hasChance: 'Inferno'
+			hasChance: data => data.type === 'Inferno' && !data.diedPreZuk && !data.diedZuk
 		}
 	},
 	{
@@ -1085,5 +1123,178 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 				colosseum: 10
 			}
 		})
+	},
+	{
+		id: 3095,
+		name: 'Araxxor Speed-Runner',
+		desc: 'Kill Araxxor 6 times in 10:00.',
+		type: 'speed',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.Araxxor.id)(data) && qty >= 6 && timePerKill <= 1.66;
+			}
+		}
+	},
+	{
+		id: 3096,
+		name: 'Perfect Araxxor 2',
+		desc: 'Kill Araxxor perfectly, without hitting it during the enrage phase.',
+		type: 'perfection',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 200,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 3097,
+		name: 'Swimming in Venom',
+		desc: 'Kill Araxxor without the boss ever moving.',
+		type: 'restriction',
+		monster: 'Araxxor',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Araxxor.id)
+		}
+	},
+	{
+		id: 3098,
+		name: 'Leviathan Speed-Runner',
+		desc: 'Kill the Leviathan in less than 1:10 without a slayer task.',
+		type: 'speed',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 150,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 3099,
+		name: 'Leviathan Sleeper',
+		desc: 'Kill the Awakened Leviathan.',
+		type: 'kill_count',
+		monster: 'The Leviathan',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AwakenedTheLeviathan.id]: 1
+			}
+		})
+	},
+	{
+		id: 3100,
+		name: 'Unconventional',
+		desc: 'Kill the Leviathan using only Mithril ammunition whilst having no more than 25 Hitpoints throughout the entire fight.',
+		type: 'restriction',
+		monster: 'The Leviathan',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.TheLeviathan.id)
+		}
+	},
+	{
+		id: 3101,
+		name: 'Whispered',
+		desc: 'Kill the Awakened Whisperer.',
+		type: 'kill_count',
+		monster: 'The Whisperer',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AwakenedTheWhisperer.id]: 1
+			}
+		})
+	},
+	{
+		id: 3102,
+		name: 'Whisperer Speed-Runner',
+		desc: 'Kill the Whisperer in less than 2:05 without a slayer task.',
+		type: 'speed',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 150,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 3103,
+		name: 'Dark Memories',
+		desc: 'Kill the Whisperer whilst spending less than 6 seconds in the pre-enrage shadow realm.',
+		type: 'restriction',
+		monster: 'The Whisperer',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.TheWhisperer.id)
+		}
+	},
+	{
+		id: 3104,
+		name: 'Vardorvis Speed-Runner',
+		desc: 'Kill Vardorvis in less than 0:55 without a slayer task.',
+		type: 'speed',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 150,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 3105,
+		name: 'Vardorvis Sleeper',
+		desc: 'Kill Awakened Vardorvis.',
+		type: 'kill_count',
+		monster: 'Vardorvis',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AwakenedVardorvis.id]: 1
+			}
+		})
+	},
+	{
+		id: 3106,
+		name: 'Axe Enthusiast',
+		desc: "Kill Vardorvis after surviving for 3 minutes of Vardorvis' max speed, and never leaving the centre 25 tiles.",
+		type: 'mechanical',
+		monster: 'Vardorvis',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.Vardorvis.id)
+		}
+	},
+	{
+		id: 3107,
+		name: 'Duke Sucellus Sleeper',
+		desc: 'Kill Awakened Duke Sucellus.',
+		type: 'kill_count',
+		monster: 'Duke Sucellus',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AwakenedDukeSucellus.id]: 1
+			}
+		})
+	},
+	{
+		id: 3108,
+		name: 'Duke Sucellus Speed-Runner',
+		desc: 'Kill Duke Sucellus in less than 1:25 minutes without a slayer task.',
+		type: 'speed',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 150,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
+	},
+	{
+		id: 3109,
+		name: 'Mirror Image',
+		desc: 'Kill Duke Sucellus whilst only attacking the boss on the same tick Duke attacks you.',
+		type: 'restriction',
+		monster: 'Duke Sucellus',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
+		}
 	}
 ];

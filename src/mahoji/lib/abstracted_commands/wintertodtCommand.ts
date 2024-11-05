@@ -2,7 +2,7 @@ import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -59,7 +59,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 	}
 
 	for (const food of Eatables) {
-		const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(user);
+		const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(user.gearBank);
 		const amountNeeded = Math.ceil(healAmountNeeded / healAmount) * quantity;
 		if (user.bank.amount(food.id) < amountNeeded) {
 			if (Eatables.indexOf(food) === Eatables.length - 1) {

@@ -172,7 +172,7 @@ export async function giantsFoundryStartCommand(
 	}
 
 	if (userSmithingLevel < alloy.level) {
-		return `${user.minionName} needs atleast level ${alloy.level} Smithing to user ${alloy.name} alloy in the Giants' Foundry.`;
+		return `${user.minionName} needs at least level ${alloy.level} Smithing to user ${alloy.name} alloy in the Giants' Foundry.`;
 	}
 
 	// If they have the entire Smiths' Uniform, give an extra 15% speed bonus
@@ -228,7 +228,7 @@ export async function giantsFoundryStartCommand(
 			}
 		]
 	});
-	await userStatsBankUpdate(user.id, 'gf_cost', totalCost);
+	await userStatsBankUpdate(user, 'gf_cost', totalCost);
 
 	await addSubTaskToActivityTask<GiantsFoundryActivityTaskOptions>({
 		quantity,

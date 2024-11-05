@@ -2,7 +2,9 @@ import type { CropUpgradeType } from '@prisma/client';
 
 import type { ItemBank } from '.';
 import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
+import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 import type { IPatchData } from '../minions/farming/types';
+import type { AttackStyles } from '../minions/functions';
 import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
 import type { Fletchable } from '../skilling/types';
@@ -27,6 +29,7 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'BarbarianAssault'
 		| 'AgilityArena'
 		| 'ChampionsChallenge'
+		| 'MyNotes'
 		| 'AerialFishing'
 		| 'DriftNet'
 		| 'SoulWars'
@@ -62,7 +65,8 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'FishingTrawler'
 		| 'CamdozaalFishing'
 		| 'CamdozaalMining'
-		| 'CamdozaalSmithing';
+		| 'CamdozaalSmithing'
+		| 'MyNotes';
 	quantity: number;
 	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
 	iQty?: number;
@@ -101,6 +105,13 @@ export interface DarkAltarOptions extends ActivityTaskOptions {
 	rune: 'blood' | 'soul';
 }
 
+export interface OuraniaAltarOptions extends ActivityTaskOptions {
+	type: 'OuraniaAltar';
+	quantity: number;
+	stamina: boolean;
+	daeyalt: boolean;
+}
+
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Agility';
 	courseID: string;
@@ -131,11 +142,12 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
-	bob?: number;
+	bob?: SlayerActivityConstants.IceBarrage | SlayerActivityConstants.IceBurst;
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
 	isInWilderness?: boolean;
+	attackStyles?: AttackStyles[];
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
@@ -150,6 +162,7 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
 	quantity: number;
+	flakesQuantity?: number;
 	iQty?: number;
 }
 
@@ -264,6 +277,12 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	zahur: boolean;
 	wesley: boolean;
+}
+
+export interface CreateForestersRationsActivityTaskOptions extends ActivityTaskOptions {
+	type: 'CreateForestersRations';
+	rationName: string;
+	quantity: number;
 }
 
 export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
@@ -438,6 +457,8 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	isFakeMass: boolean;
+	maxSizeInput?: number;
 	quantity?: number;
 }
 
@@ -459,6 +480,9 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	diedAt?: number;
 	loot?: ItemBank;
 	maxGlory: number;
+	scytheCharges: number;
+	venatorBowCharges: number;
+	bloodFuryCharges: number;
 }
 
 type UserID = string;
@@ -599,6 +623,7 @@ export type ActivityTaskData =
 	| ClueActivityTaskOptions
 	| AlchingActivityTaskOptions
 	| DarkAltarOptions
+	| OuraniaAltarOptions
 	| GroupMonsterActivityTaskOptions
 	| MahoganyHomesActivityTaskOptions
 	| NightmareActivityTaskOptions
@@ -613,4 +638,5 @@ export type ActivityTaskData =
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
+	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions;

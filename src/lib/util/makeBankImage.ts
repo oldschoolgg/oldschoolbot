@@ -27,6 +27,7 @@ export async function makeBankImage({
 }: MakeBankImageOptions) {
 	const realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
+
 	const { image, isTransparent } = await bankImageGenerator.generateBankImage({
 		bank,
 		title,

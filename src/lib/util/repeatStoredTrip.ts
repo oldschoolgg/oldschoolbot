@@ -23,6 +23,7 @@ import type {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
@@ -43,6 +44,7 @@ import type {
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
@@ -64,7 +66,7 @@ import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 import getOSItem from './getOSItem';
-import { deferInteraction, interactionReply } from './interactionReply';
+import { interactionReply } from './interactionReply';
 
 const taskCanBeRepeated = (activity: Activity) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
@@ -157,7 +159,7 @@ const tripHandlers = {
 	},
 	[activity_type_enum.AgilityArena]: {
 		commandName: 'minigames',
-		args: () => ({ agility_arena: { start: {} } })
+		args: (data: ActivityTaskOptionsWithQuantity) => ({ agility_arena: { start: { quantity: data.quantity } } })
 	},
 	[activity_type_enum.Alching]: {
 		commandName: 'activities',
@@ -229,6 +231,10 @@ const tripHandlers = {
 		commandName: 'activities',
 		args: () => ({ champions_challenge: {} })
 	},
+	[activity_type_enum.MyNotes]: {
+		commandName: 'activities',
+		args: () => ({ my_notes: {} })
+	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
 		args: (data: CollectingOptions) => ({
@@ -262,6 +268,15 @@ const tripHandlers = {
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
 		args: (data: DarkAltarOptions) => ({ rune: `${darkAltarRunes[data.rune].item.name} (zeah)` })
+	},
+	[activity_type_enum.OuraniaAltar]: {
+		commandName: 'runecraft',
+		args: (data: OuraniaAltarOptions) => ({
+			rune: 'ourania altar',
+			usestams: data.stamina,
+			daeyalt_essence: data.daeyalt,
+			quantity: data.quantity
+		})
 	},
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',
@@ -307,7 +322,11 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
-		args: (data: FishingActivityTaskOptions) => ({ name: data.fishID, quantity: data.iQty })
+		args: (data: FishingActivityTaskOptions) => ({
+			name: data.fishID,
+			quantity: data.iQty,
+			flakes: data.flakesQuantity !== undefined
+		})
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
@@ -347,6 +366,13 @@ const tripHandlers = {
 		commandName: 'cook',
 		args: (data: CutLeapingFishActivityTaskOptions) => ({
 			name: itemNameFromID(data.fishID),
+			quantity: data.quantity
+		})
+	},
+	[activity_type_enum.CreateForestersRations]: {
+		commandName: 'cook',
+		args: (data: CreateForestersRationsActivityTaskOptions) => ({
+			name: data.rationName,
 			quantity: data.quantity
 		})
 	},
@@ -481,15 +507,18 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Raids]: {
 		commandName: 'raid',
-		args: (data: RaidsOptions) => ({
-			cox: {
-				start: {
-					challenge_mode: data.challengeMode,
-					type: data.users.length === 1 ? 'solo' : 'mass',
-					quantity: data.quantity
+		args: (data: RaidsOptions) => {
+			return {
+				cox: {
+					start: {
+						challenge_mode: data.challengeMode,
+						type: data.isFakeMass ? 'fakemass' : data.users.length === 1 ? 'solo' : 'mass',
+						max_team_size: data.maxSizeInput,
+						quantity: data.quantity
+					}
 				}
-			}
-		})
+			};
+		}
 	},
 	[activity_type_enum.RoguesDenMaze]: {
 		commandName: 'minigames',
@@ -534,7 +563,8 @@ const tripHandlers = {
 			tob: {
 				start: {
 					hard_mode: data.hardMode,
-					solo: data.solo
+					solo: data.solo,
+					quantity: data.quantity
 				}
 			}
 		})
@@ -701,7 +731,6 @@ export async function repeatTrip(
 	if (!data || !data.data || !data.type) {
 		return interactionReply(interaction, { content: "Couldn't find any trip to repeat.", ephemeral: true });
 	}
-	await deferInteraction(interaction);
 	const handler = tripHandlers[data.type];
 	return runCommand({
 		commandName: handler.commandName,

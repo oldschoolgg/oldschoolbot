@@ -1,11 +1,11 @@
-import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { Events } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
@@ -42,7 +42,7 @@ const offerables = new Set(
 );
 
 function notifyUniques(user: MUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
-	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);
+	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id));
 	if (itemsToAnnounce.length > 0) {
 		globalClient.emit(
 			Events.ServerNotification,
@@ -187,7 +187,7 @@ export const offerCommand: OSBMahojiCommand = {
 				itemsToAdd: loot,
 				itemsToRemove: cost
 			});
-			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
+			await userStatsBankUpdate(user, 'bird_eggs_offered_bank', cost);
 
 			notifyUniques(user, egg.name, evilChickenOutfit, loot, quantity);
 
@@ -208,10 +208,10 @@ export const offerCommand: OSBMahojiCommand = {
 		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, options.name));
 		if (specialBone) {
 			if (user.QP < 8) {
-				return 'You need atleast 8 QP to offer long/curved bones for XP.';
+				return 'You need at least 8 QP to offer long/curved bones for XP.';
 			}
 			if (user.skillLevel(SkillsEnum.Construction) < 30) {
-				return 'You need atleast level 30 Construction to offer long/curved bones for XP.';
+				return 'You need at least level 30 Construction to offer long/curved bones for XP.';
 			}
 			const amountHas = userBank.amount(specialBone.item.id);
 			if (!quantity) quantity = Math.max(amountHas, 1);

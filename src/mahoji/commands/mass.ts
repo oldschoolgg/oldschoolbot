@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { TextChannel } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, objectKeys } from 'e';
@@ -18,7 +18,7 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import type { OSBMahojiCommand } from '../lib/util';
 import { hasMonsterRequirements } from '../mahojiSettings';
 
-function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
+async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.user.minion_hasBought) {
@@ -33,7 +33,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 			return `${user.usernameOrMention} is an ironman, so they can't join!`;
 		}
 
-		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -71,16 +71,16 @@ export const massCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ interaction, options, userID, channelID }: CommandRunOptions<{ monster: string }>) => {
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
-		const channel = globalClient.channels.cache.get(channelID.toString());
+		const channel = globalClient.channels.cache.get(channelID);
 		if (!channel || !channelIsSendable(channel)) return 'Invalid channel.';
 		const monster = findMonster(options.monster);
 		if (!monster) return "That monster doesn't exist!";
 		if (!monster.groupKillable) return "This monster can't be killed in groups!";
 
-		const check = checkReqs([user], monster, 2);
+		const check = await checkReqs([user], monster, 2);
 		if (check) return check;
 
 		let users: MUser[] = [];
@@ -98,7 +98,7 @@ export const massCommand: OSBMahojiCommand = {
 					if (user.minionIsBusy) {
 						return [true, 'your minion is busy.'];
 					}
-					const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+					const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 					if (!hasReqs) {
 						return [true, `you don't have the requirements for this monster; ${reason}`];
 					}
@@ -139,7 +139,7 @@ export const massCommand: OSBMahojiCommand = {
 		if (typeof durQtyRes === 'string') return durQtyRes;
 		const [quantity, duration, perKillTime, boostMsgs] = durQtyRes;
 
-		const checkRes = checkReqs(users, monster, quantity);
+		const checkRes = await checkReqs(users, monster, quantity);
 		if (checkRes) return checkRes;
 
 		if (1 > 2 && monster.healAmountNeeded) {

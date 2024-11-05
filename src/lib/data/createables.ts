@@ -1,8 +1,8 @@
-import { Bank } from 'oldschooljs';
+import { Bank, EItem, deepResolveItems } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
-import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank, Skills } from '../types';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
@@ -698,6 +698,154 @@ const metamorphPets: Createable[] = [
 		outputItems: {
 			[itemID('Greatish guardian')]: 1
 		}
+	},
+	{
+		name: 'Dark squirrel',
+		inputItems: {
+			[itemID('Dark acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Dark squirrel')]: 1
+		}
+	},
+	{
+		name: 'Bone Squirrel',
+		inputItems: {
+			[itemID('Calcified acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Bone squirrel')]: 1
+		}
+	},
+	{
+		name: 'Corrupted youngllef',
+		inputItems: new Bank().add('Youngllef').freeze(),
+		outputItems: new Bank().add('Corrupted youngllef').freeze(),
+		customReq: async user => {
+			const [kcName, kcAmount] = await user.getKCByName('Corrupted gauntlet');
+			if (kcAmount < 1) {
+				return `You need to have at least 1 ${kcName} KC.`;
+			}
+			return null;
+		}
+	}
+];
+
+const revertMetamorphPets: Createable[] = [
+	{
+		name: 'Revert midnight',
+		inputItems: {
+			[itemID('Midnight')]: 1
+		},
+		outputItems: {
+			[itemID('Noon')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert baby mole-rat',
+		inputItems: {
+			[itemID('Baby mole-rat')]: 1,
+			[itemID('Mole skin')]: 1
+		},
+		outputItems: {
+			[itemID('Baby mole')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert tzrek-zuk',
+		inputItems: {
+			[itemID('Tzrek-zuk')]: 1
+		},
+		outputItems: {
+			[itemID('Jal-nib-rek')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert little parasite',
+		inputItems: {
+			[itemID('Little parasite')]: 1
+		},
+		outputItems: {
+			[itemID('Little nightmare')]: 1,
+			[itemID('Parasitic egg')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert ziggy',
+		inputItems: {
+			[itemID('Ziggy')]: 1,
+			[itemID('White berries')]: 1
+		},
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert red',
+		inputItems: {
+			[itemID('Red')]: 1,
+			[itemID('White berries')]: 1
+		},
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert great blue heron',
+		inputItems: {
+			[itemID('Great blue heron')]: 1
+		},
+		outputItems: {
+			[itemID('Heron')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert greatish guardian',
+		inputItems: {
+			[itemID('Greatish guardian')]: 1
+		},
+		outputItems: {
+			[itemID('Rift guardian')]: 1,
+			[itemID("Guardian's eye")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Dark squirrel',
+		inputItems: {
+			[itemID('Dark squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Dark acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Bone Squirrel',
+		inputItems: {
+			[itemID('Bone squirrel')]: 1
+		},
+		outputItems: {
+			[itemID('Calcified acorn')]: 1,
+			[itemID('Giant squirrel')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Corrupted youngllef',
+		inputItems: new Bank().add('Corrupted youngllef').freeze(),
+		outputItems: new Bank().add('Youngllef').freeze(),
+		noCl: true
 	}
 ];
 
@@ -1271,91 +1419,6 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Revert midnight',
-		inputItems: {
-			[itemID('Midnight')]: 1
-		},
-		outputItems: {
-			[itemID('Noon')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert baby mole-rat',
-		inputItems: {
-			[itemID('Baby mole-rat')]: 1,
-			[itemID('Mole skin')]: 1
-		},
-		outputItems: {
-			[itemID('Baby mole')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert tzrek-zuk',
-		inputItems: {
-			[itemID('Tzrek-zuk')]: 1
-		},
-		outputItems: {
-			[itemID('Jal-nib-rek')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert little parasite',
-		inputItems: {
-			[itemID('Little parasite')]: 1
-		},
-		outputItems: {
-			[itemID('Little nightmare')]: 1,
-			[itemID('Parasitic egg')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert ziggy',
-		inputItems: {
-			[itemID('Ziggy')]: 1,
-			[itemID('White berries')]: 1
-		},
-		outputItems: {
-			[itemID('Rocky')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert red',
-		inputItems: {
-			[itemID('Red')]: 1,
-			[itemID('White berries')]: 1
-		},
-		outputItems: {
-			[itemID('Rocky')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert great blue heron',
-		inputItems: {
-			[itemID('Great blue heron')]: 1
-		},
-		outputItems: {
-			[itemID('Heron')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Revert greatish guardian',
-		inputItems: {
-			[itemID('Greatish guardian')]: 1
-		},
-		outputItems: {
-			[itemID('Rift guardian')]: 1,
-			[itemID("Guardian's eye")]: 1
-		},
-		noCl: true
-	},
-	{
 		name: "Revert xeric's talisman (inert)",
 		inputItems: {
 			[itemID("Xeric's talisman (inert)")]: 1
@@ -1370,7 +1433,8 @@ const Reverteables: Createable[] = [
 		inputItems: new Bank().add("Dizana's quiver (uncharged)"),
 		outputItems: new Bank().add('Sunfire splinters', 4000),
 		noCl: true
-	}
+	},
+	...revertMetamorphPets
 ];
 
 const Createables: Createable[] = [
@@ -2380,6 +2444,11 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Antique lamp (Historian Aldo)',
+		inputItems: new Bank().add("Scurrius' spine"),
+		outputItems: new Bank().add(28800)
+	},
+	{
 		name: 'Venator bow (uncharged)',
 		inputItems: new Bank().add('Venator shard', 5).freeze(),
 		outputItems: new Bank().add('Venator bow (uncharged)').freeze()
@@ -2393,6 +2462,119 @@ const Createables: Createable[] = [
 		name: "Dizana's max cape",
 		inputItems: new Bank().add("Blessed dizana's quiver").add('Max cape').add('Max hood').freeze(),
 		outputItems: new Bank().add("Dizana's max cape").add("Dizana's max hood").freeze()
+	},
+	{
+		name: 'Noxious halberd',
+		inputItems: new Bank().add('Noxious point').add('Noxious blade').add('Noxious pommel').freeze(),
+		outputItems: new Bank().add('Noxious halberd').freeze(),
+		requiredSkills: {
+			smithing: 72,
+			crafting: 72
+		}
+	},
+	{
+		name: 'Araxyte slayer helmet',
+		inputItems: new Bank().add('Slayer helmet').add('Araxyte head').freeze(),
+		outputItems: new Bank().add('Araxyte slayer helmet').freeze(),
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.EyeSeeYou]
+	},
+	{
+		name: 'Araxyte slayer helmet (i)',
+		inputItems: new Bank().add('Slayer helmet (i)').add('Araxyte head').freeze(),
+		outputItems: new Bank().add('Araxyte slayer helmet (i)').freeze(),
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.EyeSeeYou]
+	},
+	{
+		name: 'Rax',
+		inputItems: new Bank().add('Coagulated venom').add('Nid').freeze(),
+		outputItems: new Bank().add('Rax').freeze()
+	},
+	{
+		name: 'Revert Rax',
+		inputItems: new Bank().add('Rax').freeze(),
+		outputItems: new Bank().add('Coagulated venom').add('Nid').freeze(),
+		noCl: true
+	},
+	{
+		name: 'Amulet of rancour (s)',
+		inputItems: new Bank().add('Amulet of rancour').freeze(),
+		outputItems: new Bank().add('Amulet of rancour (s)').freeze(),
+		customReq: async user => {
+			const requiredItems = deepResolveItems([
+				'Amulet of rancour',
+				'Aranea boots',
+				[EItem.ARAXYTE_SLAYER_HELMET, EItem.ARAXYTE_SLAYER_HELMET_I],
+				'Noxious halberd',
+				['Rax', 'Nid']
+			]);
+			if (!requiredItems.every(item => (Array.isArray(item) ? item.some(i => user.owns(i)) : user.owns(item)))) {
+				return `You need to own all these items to create the Amulet of rancour (s): ${requiredItems.map(item => (Array.isArray(item) ? item.map(itemNameFromID).join(' OR ') : itemNameFromID(item))).join(', ')}.`;
+			}
+			return null;
+		}
+	},
+	{
+		name: 'Revert Amulet of rancour (s)',
+		inputItems: new Bank().add('Amulet of rancour (s)').freeze(),
+		outputItems: new Bank().add('Amulet of rancour').freeze(),
+		noCl: true
+	},
+	{
+		name: 'Zombie axe',
+		inputItems: new Bank().add('broken zombie axe').freeze(),
+		outputItems: new Bank().add('Zombie axe').freeze(),
+		requiredSkills: {
+			smithing: 70
+		}
+	},
+	{
+		name: 'Strange skull',
+		inputItems: new Bank({
+			'Left skull half': 1,
+			'Right skull half': 1
+		}),
+		outputItems: new Bank({
+			'Strange skull': 1
+		})
+	},
+	{
+		name: 'Runed sceptre',
+		inputItems: new Bank({
+			'Top of sceptre': 1,
+			'Bottom of sceptre': 1
+		}),
+		outputItems: new Bank({
+			'Runed sceptre': 1
+		})
+	},
+	{
+		name: 'Skull sceptre',
+		inputItems: new Bank({
+			'Strange skull': 1,
+			'Runed sceptre': 1
+		}),
+		outputItems: new Bank({
+			'Skull sceptre': 1
+		})
+	},
+	{
+		name: 'Skull sceptre(i)',
+		inputItems: new Bank({
+			'Skull sceptre': 1
+		}),
+		outputItems: new Bank({
+			'Skull sceptre(i)': 1
+		}),
+		customReq: async user => {
+			const count = await prisma.activity.count({
+				where: {
+					user_id: BigInt(user.id),
+					type: 'StrongholdOfSecurity'
+				}
+			});
+			if (count === 0) return 'You must complete the Stronghold of Security to imbue your Skull sceptre';
+			return null;
+		}
 	},
 	...Reverteables,
 	...crystalTools,

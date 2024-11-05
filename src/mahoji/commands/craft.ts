@@ -1,9 +1,9 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -105,7 +105,7 @@ export const craftCommand: OSBMahojiCommand = {
 		const itemsNeeded = craftable.inputItems.clone().multiply(quantity);
 
 		// Check the user has all the required items to craft.
-		if (!userBank.has(itemsNeeded.bank)) {
+		if (!userBank.has(itemsNeeded)) {
 			return `You don't have enough items. For ${quantity}x ${craftable.name}, you're missing **${itemsNeeded
 				.clone()
 				.remove(userBank)}**.`;

@@ -3,32 +3,25 @@ import { objectEntries, partition } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
 import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
 import { championScrolls } from './data/CollectionsExport';
 import { RandomEvents } from './randomEvents';
 import type { MinigameName } from './settings/minigames';
 import { Minigames } from './settings/minigames';
-import { getUsersActivityCounts } from './settings/prisma';
 import type { RequirementFailure } from './structures/Requirements';
 import { Requirements } from './structures/Requirements';
-import { itemNameFromID } from './util';
+import { joinStrings } from './util';
 
 export const musicCapeRequirements = new Requirements()
 	.add({
-		name: 'Do 20 slayer tasks',
-		has: async ({ user }) => {
-			const count = await prisma.slayerTask.count({
-				where: {
-					user_id: user.id
-				}
-			});
-			if (count >= 20) {
+		name: 'Reach level 50 Slayer',
+		has: ({ user }) => {
+			if (user.skillsAsLevels.slayer >= 50) {
 				return [];
 			}
 			return [
 				{
-					reason: 'You need to complete 20 slayer tasks.'
+					reason: 'You need level 50 slayer.'
 				}
 			];
 		}
@@ -108,14 +101,8 @@ export const musicCapeRequirements = new Requirements()
 		}
 	})
 	.add({
-		name: 'Runecraft all runes atleast once',
-		has: async ({ user }) => {
-			const counts = await prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
-FROM activity
-WHERE user_id = ${BigInt(user.id)}
-AND type = 'Runecraft'
-AND data->>'runeID' IS NOT NULL;`;
-
+		name: 'Runecraft all runes at least once',
+		has: ({ uniqueRunesCrafted }) => {
 			const runesToCheck = resolveItems([
 				'Mind rune',
 				'Air rune',
@@ -130,14 +117,11 @@ AND data->>'runeID' IS NOT NULL;`;
 				'Astral rune',
 				'Wrath rune'
 			]);
-			const notDoneRunes = runesToCheck
-				.filter(i => !counts.some(c => c.rune_id === i.toString()))
-				.map(i => itemNameFromID(i)!)
-				.map(s => s.split(' ')[0]);
+			const notDoneRunes = runesToCheck.filter(r => !uniqueRunesCrafted.includes(r));
 			if (notDoneRunes.length > 0) {
 				return [
 					{
-						reason: `You need to Runecraft these runes at least once: ${notDoneRunes.join(', ')}.`
+						reason: `You need to Runecraft these runes at least once: ${joinStrings(notDoneRunes)}.`
 					}
 				];
 			}
@@ -147,7 +131,7 @@ AND data->>'runeID' IS NOT NULL;`;
 	})
 	.add({
 		name: 'One of Every Activity',
-		has: async ({ user }) => {
+		has: ({ uniqueActivitiesDone }) => {
 			const typesNotRequiredForMusicCape: activity_type_enum[] = [
 				activity_type_enum.Easter,
 				activity_type_enum.HalloweenEvent,
@@ -157,12 +141,11 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 				activity_type_enum.ChampionsChallenge,
 				activity_type_enum.Nex,
-				activity_type_enum.Revenants // This is now under monsterActivity
+				activity_type_enum.Revenants, // This is now under monsterActivity
+				activity_type_enum.KourendFavour // Kourend favor activity was removed
 			];
-			const activityCounts = await getUsersActivityCounts(user);
-
 			const notDoneActivities = Object.values(activity_type_enum).filter(
-				type => !typesNotRequiredForMusicCape.includes(type) && activityCounts[type] < 1
+				type => !typesNotRequiredForMusicCape.includes(type) && !uniqueActivitiesDone.includes(type)
 			);
 
 			const [firstLot, secondLot] = partition(notDoneActivities, i => notDoneActivities.indexOf(i) < 5);
@@ -182,7 +165,7 @@ AND data->>'runeID' IS NOT NULL;`;
 	})
 	.add({
 		name: 'One of Every Minigame',
-		has: async ({ user }) => {
+		has: ({ minigames }) => {
 			const results: RequirementFailure[] = [];
 			const typesNotRequiredForMusicCape: MinigameName[] = [
 				'corrupted_gauntlet',
@@ -192,14 +175,13 @@ AND data->>'runeID' IS NOT NULL;`;
 				'champions_challenge'
 			];
 
-			const minigameScores = await user.fetchMinigames();
 			const minigamesNotDone = Minigames.filter(
-				i => !typesNotRequiredForMusicCape.includes(i.column) && minigameScores[i.column] < 1
+				i => !typesNotRequiredForMusicCape.includes(i.column) && minigames[i.column] < 1
 			).map(i => i.name);
 
 			if (minigamesNotDone.length > 0) {
 				results.push({
-					reason: `You need to do these minigames at least once: ${minigamesNotDone.slice(0, 5).join(', ')}.`
+					reason: `You need to do these minigames at least once: ${joinStrings(minigamesNotDone.slice(0, 5))}.`
 				});
 			}
 
@@ -208,7 +190,7 @@ AND data->>'runeID' IS NOT NULL;`;
 	})
 	.add({
 		name: 'One Random Event with a unique music track',
-		has: async ({ stats }) => {
+		has: ({ stats }) => {
 			const results: RequirementFailure[] = [];
 			const eventBank = stats.randomEventCompletionsBank();
 			const uniqueTracks = RandomEvents.filter(i => i.uniqueMusic);
@@ -216,7 +198,7 @@ AND data->>'runeID' IS NOT NULL;`;
 			if (!uniqueTracks.some(i => eventBank[i.id])) {
 				const tracksNeeded = RandomEvents.filter(i => i.uniqueMusic).map(i => i.name);
 				results.push({
-					reason: `You need to do one of these random events: ${tracksNeeded.join(', ')}.`
+					reason: `You need to do one of these random events: ${joinStrings(tracksNeeded, 'or')}.`
 				});
 			}
 			return results;
@@ -224,8 +206,7 @@ AND data->>'runeID' IS NOT NULL;`;
 	})
 	.add({
 		name: 'Must Build Something in PoH',
-		has: async ({ user }) => {
-			const poh = await getPOH(user.id);
+		has: ({ poh }) => {
 			for (const [key, value] of objectEntries(poh)) {
 				if (['user_id', 'background_id'].includes(key)) continue;
 				if (value !== null) {
@@ -237,7 +218,7 @@ AND data->>'runeID' IS NOT NULL;`;
 	})
 	.add({
 		name: 'Champions Challenge',
-		has: async ({ user }) => {
+		has: ({ user }) => {
 			for (const scroll of championScrolls) {
 				if (user.cl.has(scroll)) return [];
 			}

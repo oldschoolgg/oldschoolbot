@@ -6,21 +6,17 @@ export default defineConfig({
 	test: {
 		name: 'Old School Bot - Unit',
 		include: ['tests/unit/**/*.test.ts'],
-		coverage: {
-			provider: 'v8',
-			reporter: 'html',
-			include: ['src/lib/structures/Gear.ts', 'src/lib/util/parseStringBank.ts', 'src/lib/util/equipMulti.ts']
-		},
 		setupFiles: 'tests/unit/setup.ts',
 		resolveSnapshotPath: (testPath, extension) =>
 			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
 		slowTestThreshold: 0,
 		isolate: false,
+		pool: 'forks',
 		poolOptions: {
-			threads: {
-				minThreads: 10,
-				maxThreads: 20,
-				singleThread: true
+			forks: {
+				maxForks: 5,
+				minForks: 5,
+				execArgv: ['--disable-warning=ExperimentalWarning']
 			}
 		}
 	}

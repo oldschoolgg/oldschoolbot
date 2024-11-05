@@ -1,23 +1,23 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { ButtonInteraction, Interaction } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import type { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 
+import { RateLimitManager } from '@sapphire/ratelimits';
 import { InteractionID } from '../InteractionID';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import type { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
-import { deferInteraction, interactionReply } from './interactionReply';
+import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
@@ -54,6 +54,8 @@ type GlobalInteractionAction = (typeof globalInteractionActions)[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
+
+const buttonRatelimiter = new RateLimitManager(Time.Second * 2, 1);
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
@@ -146,7 +148,6 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			});
 		}
 
-		await deferInteraction(interaction);
 		return runCommand({
 			commandName: 'giveaway',
 			args: {
@@ -222,15 +223,19 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
 }
 
-async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
-	if (user.minionIsBusy) return interactionReply(interaction, { content: 'Your minion is busy.' });
+async function repeatTripHandler(interaction: ButtonInteraction) {
+	if (minionIsBusy(interaction.user.id))
+		return interactionReply(interaction, { content: 'Your minion is busy.', ephemeral: true });
 	const trips = await fetchRepeatTrips(interaction.user.id);
-	if (trips.length === 0)
+	if (trips.length === 0) {
 		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
+	}
 	const id = interaction.customId;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
-	if (!matchingActivity) return repeatTrip(interaction, trips[0]);
+	if (!matchingActivity) {
+		return repeatTrip(interaction, trips[0]);
+	}
 	return repeatTrip(interaction, matchingActivity);
 }
 
@@ -329,26 +334,22 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
-	debugLog(`Interaction hook for button [${interaction.customId}]`, {
-		user_id: interaction.user.id,
-		channel_id: interaction.channelId,
-		guild_id: interaction.guildId
-	});
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
-	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
-	if (cd !== null) {
+	const ratelimit = buttonRatelimiter.acquire(userID);
+	if (ratelimit.limited) {
 		return interactionReply(interaction, {
-			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
+			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(ratelimit.remainingTime, true)}.`,
 			ephemeral: true
 		});
 	}
 
+	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(interaction);
+
 	const user = await mUserFetch(userID);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
-	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 	if (id === 'TOA_CHECK') {
@@ -377,7 +378,7 @@ export async function interactionHook(interaction: Interaction) {
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
-		console.log(
+		debugLog(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
 				interaction.message.id
 			}]`
@@ -517,7 +518,9 @@ export async function interactionHook(interaction: Interaction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
-			if (response) interactionReply(interaction, response);
+			if (response) {
+				return interactionReply(interaction, response);
+			}
 			return;
 		}
 		case 'FARMING_CONTRACT_EASIER': {

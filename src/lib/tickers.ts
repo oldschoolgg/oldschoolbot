@@ -2,16 +2,16 @@ import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
+import { TimerManager } from '@sapphire/timer-manager';
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
-import { BitField, Channel, PeakTier, informationalButtons } from './constants';
+import { BitField, Channel, PeakTier } from './constants';
 import { GrandExchange } from './grandExchange';
-import { cacheGEPrices } from './marketPrices';
 import { collectMetrics } from './metrics';
-import { queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
+import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
@@ -69,9 +69,16 @@ export interface Peak {
 /**
  * Tickers should idempotent, and be able to run at any time.
  */
-export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => Promise<unknown> }[] = [
+export const tickers: {
+	name: string;
+	startupWait?: number;
+	interval: number;
+	timer: NodeJS.Timeout | null;
+	cb: () => Promise<unknown>;
+}[] = [
 	{
 		name: 'giveaways',
+		startupWait: Time.Second * 30,
 		interval: Time.Second * 10,
 		timer: null,
 		cb: async () => {
@@ -92,12 +99,9 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 		timer: null,
 		interval: Time.Minute,
 		cb: async () => {
-			const storedCount = queryCountStore.value;
-			queryCountStore.value = 0;
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
-				...(await collectMetrics()),
-				qps: storedCount / 60
+				...(await collectMetrics())
 			};
 			if (Number.isNaN(data.eventLoopDelayMean)) {
 				data.eventLoopDelayMean = 0;
@@ -109,6 +113,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	},
 	{
 		name: 'minion_activities',
+		startupWait: Time.Second * 10,
 		timer: null,
 		interval: production ? Time.Second * 5 : 500,
 		cb: async () => {
@@ -118,6 +123,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	{
 		name: 'daily_reminders',
 		interval: Time.Minute * 3,
+		startupWait: Time.Minute,
 		timer: null,
 		cb: async () => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; last_daily_timestamp: bigint }[]>(
@@ -197,6 +203,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 	},
 	{
 		name: 'farming_reminder_ticker',
+		startupWait: Time.Minute,
 		interval: Time.Minute * 3.5,
 		timer: null,
 		cb: async () => {
@@ -211,7 +218,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 							BitField.IsPatronTier4,
 							BitField.IsPatronTier5,
 							BitField.IsPatronTier6,
-							BitField.isContributor,
 							BitField.isModerator
 						]
 					}
@@ -231,12 +237,12 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 
 					const storeHarvestablePlant = patch.lastPlanted;
 					const planted = storeHarvestablePlant
-						? Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
+						? (Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
 							Farming.Plants.find(
 								plants =>
 									stringMatches(plants.name, storeHarvestablePlant) ||
 									stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-							)
+							))
 						: null;
 					const difference = now - patch.plantTime;
 					if (!planted) continue;
@@ -317,6 +323,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 	{
 		name: 'support_channel_messages',
 		timer: null,
+		startupWait: Time.Second * 22,
 		interval: Time.Minute * 20,
 		cb: async () => {
 			if (!production) return;
@@ -340,6 +347,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 	},
 	{
 		name: 'ge_channel_messages',
+		startupWait: Time.Second * 19,
 		timer: null,
 		interval: Time.Minute * 20,
 		cb: async () => {
@@ -361,18 +369,11 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 	},
 	{
 		name: 'ge_ticker',
+		startupWait: Time.Second * 30,
 		timer: null,
-		interval: Time.Second * 3,
+		interval: Time.Second * 10,
 		cb: async () => {
 			await GrandExchange.tick();
-		}
-	},
-	{
-		name: 'Cache g.e prices and validate',
-		timer: null,
-		interval: Time.Hour * 4,
-		cb: async () => {
-			await cacheGEPrices();
 		}
 	}
 ];
@@ -388,9 +389,12 @@ export function initTickers() {
 				logError(err);
 				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
 			} finally {
-				ticker.timer = setTimeout(fn, ticker.interval);
+				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
+				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);
 			}
 		};
-		fn();
+		ticker.timer = TimerManager.setTimeout(() => {
+			fn();
+		}, ticker.startupWait ?? 1);
 	}
 }

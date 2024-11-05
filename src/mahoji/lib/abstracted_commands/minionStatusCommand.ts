@@ -1,13 +1,13 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { BaseMessageOptions } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
-import { clArrayUpdate } from '../../../lib/handleNewCLItems';
-import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
+import { BitField, Emoji } from '../../../lib/constants';
+import { roboChimpUserFetch } from '../../../lib/roboChimp';
 
+import { minionBuyButton } from '../../../lib/sharedComponents';
 import { makeComponents } from '../../../lib/util';
 import {
 	makeAutoContractButton,
@@ -57,16 +57,14 @@ async function fetchPinnedTrips(userID: string) {
 
 export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
 	const { minionIsBusy } = user;
-	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
+	const birdhouseDetails = minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user);
+	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
 		roboChimpUserFetch(user.id),
-		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
 		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
 		minionIsBusy ? [] : fetchPinnedTrips(user.id),
 		isUsersDailyReady(user)
 	]);
 
-	roboChimpSyncData(user);
-	await clArrayUpdate(user, user.cl);
 	if (user.user.cached_networth_value === null || roll(100)) {
 		await user.update({
 			cached_networth_value: (await user.calculateNetWorth()).value

@@ -1,12 +1,12 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, averageBank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { PerkTier, averageBank } from '@oldschoolgg/toolkit';
+import { PerkTier } from '@oldschoolgg/toolkit/util';
 import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
 import pets from '../../lib/data/pets';
 import { assert, formatDuration } from '../../lib/util';
@@ -57,7 +57,10 @@ function simulateColosseumRuns(samples = 100) {
 				hasBF: false,
 				hasClaws: true,
 				hasSGS: true,
-				hasTorture: true
+				hasTorture: true,
+				scytheCharges: 300,
+				venatorBowCharges: 50,
+				bloodFuryCharges: 0
 			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);

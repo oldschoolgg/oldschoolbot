@@ -37,7 +37,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		break;
 	}
 
-	const glovesRate = 0;
+	const glovesEffect = 0;
 	const armourEffect = 0;
 	const miningCapeEffect = 0;
 	const goldSilverBoost = false;
@@ -47,15 +47,16 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 	// Calculate the time it takes to mine specific quantity or as many as possible
 	const [duration, newQuantity] = determineMiningTime({
 		quantity,
-		user,
+		gearBank: user.gearBank,
 		ore: barroniteRocks,
 		ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
-		glovesRate,
+		glovesEffect,
 		armourEffect,
 		miningCapeEffect,
 		powermining: powermine,
 		goldSilverBoost,
-		miningLvl: miningLevel
+		miningLvl: miningLevel,
+		maxTripLength: calcMaxTripLength(user, 'CamdozaalMining')
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;

@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -145,7 +145,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
 			const gp = user.GP;
 			if (gp < coinsToRemove) {
-				return `You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`;
+				return `You need at least ${coinsToRemove} GP to work at the Blast Furnace.`;
 			}
 
 			cost.add('Coins', coinsToRemove);

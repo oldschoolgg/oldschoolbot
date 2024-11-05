@@ -13,7 +13,7 @@ describe('Transactionalized Trade Test', async () => {
 		bank.remove('Coins', GP);
 
 		await global.prisma!.user.create({
-			data: { id: userId, GP, bank: bank.bank, ...userData }
+			data: { id: userId, GP, bank: bank.toJSON(), ...userData }
 		});
 
 		return userId;
@@ -120,7 +120,7 @@ describe('Transactionalized Trade Test', async () => {
 			.freeze();
 		const magna = await createUserWithBank(magnaStartingBank);
 
-		const uCyr = await mUserFetch(cyr);
+		const uCyr = await mUserFetch(cyr, { username: 'Cyr' });
 		const uMagna = await mUserFetch(magna);
 
 		expect(uCyr.GP).toBe(1_000_000);
@@ -131,7 +131,7 @@ describe('Transactionalized Trade Test', async () => {
 
 		const result = await tradePlayerItems(uCyr, uMagna, tradeFromCyr, tradeFromMagna);
 
-		const expectedResult = { success: false, message: `<@${cyr}> doesn't own all items.` };
+		const expectedResult = { success: false, message: `Cyr doesn't own all items.` };
 
 		expect(result).toMatchObject(expectedResult);
 		expect(uCyr.bankWithGP.toString()).toEqual(cyrStartingBank.toString());
@@ -155,14 +155,14 @@ describe('Transactionalized Trade Test', async () => {
 		const magna = await createUserWithBank(magnaStartingBank);
 
 		const uCyr = await mUserFetch(cyr);
-		const uMagna = await mUserFetch(magna);
+		const uMagna = await mUserFetch(magna, { username: 'magna' });
 
 		const tradeFromCyr = new Bank().add('Coins', 1_000_000).add('Twisted bow', 1).freeze();
 		const tradeFromMagna = new Bank().add('Coins', 2_000_000).add('Feather', 5000).add('Cannonball', 2000).freeze();
 
 		const result = await tradePlayerItems(uCyr, uMagna, tradeFromCyr, tradeFromMagna);
 
-		const expectedResult = { success: false, message: `<@${magna}> doesn't own all items.` };
+		const expectedResult = { success: false, message: `magna doesn't own all items.` };
 
 		expect(result).toMatchObject(expectedResult);
 		expect(uCyr.bankWithGP.equals(cyrStartingBank)).toBe(true);

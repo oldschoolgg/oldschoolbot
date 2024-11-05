@@ -5,22 +5,28 @@ on:
     branches:
       - master
       - bso
+    paths-ignore:
+      - "docs/**"
   pull_request:
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   test:
     name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    timeout-minutes: 5
     strategy:
       matrix:
         node_version: [20.15.0]
         os: [ubuntu-latest]
-
+    concurrency:
+      group: ${{ github.ref_name }}-unittests
+      cancel-in-progress: true
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4
-      - run: corepack enable &&  corepack install
+      - run: corepack enable && corepack install
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v4
         with:
@@ -32,7 +38,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
-        run: yarn --immutable
+        run: yarn remove zlib-sync && yarn install
       - name: Copy Configuration
         run: |
           pushd src &&
@@ -40,11 +46,5 @@ jobs:
           popd && cp .env.test .env
       - name: Generate Prisma Clients
         run: yarn gen
-      - name: Build
-        run: yarn build:tsc
       - name: Test
-        run: |
-          yarn test:unit
-          yarn test:lint
-          tsc -p tests/integration && tsc -p tests/unit
-          npm i -g dpdm && dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js
+        run: yarn test:ci:unit

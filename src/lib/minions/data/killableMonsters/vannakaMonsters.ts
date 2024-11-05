@@ -49,7 +49,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		superior: Monsters.GreaterAbyssalDemon,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Emberlight')]: 15
 			},
 			{
 				[itemID('Saradomin godsword')]: 5
@@ -89,7 +90,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10,
-				[itemID("Osmumten's fang")]: 12
+				[itemID("Osmumten's fang")]: 12,
+				[itemID('Emberlight')]: 15
 			},
 			{
 				[itemID('Bandos godsword')]: 5,
@@ -117,12 +119,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		canBarrage: true,
-		itemInBankBoosts: [
-			{
-				[itemID('Kodai wand')]: 12,
-				[itemID('Staff of the dead')]: 8
-			}
-		],
 		pkActivityRating: 4,
 		pkBaseDeathChance: 3,
 		revsWeaponBoost: true,
@@ -225,7 +221,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		superior: Monsters.InsatiableBloodveld,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 15
+				[itemID('Arclight')]: 15,
+				[itemID('Emberlight')]: 20
 			}
 		],
 		degradeableItemUsage: [
@@ -243,7 +240,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
-		canCannon: true,
 		pkActivityRating: 4,
 		pkBaseDeathChance: 6,
 		revsWeaponBoost: true
@@ -459,12 +455,6 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 65
 		},
 		superior: Monsters.ChokeDevil,
-		itemInBankBoosts: [
-			{
-				[itemID('Kodai wand')]: 15,
-				[itemID('Staff of the dead')]: 10
-			}
-		],
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: true,
@@ -641,8 +631,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10,
-				[itemID('Staff of the dead')]: 15,
-				[itemID('Kodai wand')]: 20
+				[itemID('Emberlight')]: 15
 			}
 		],
 		existsInCatacombs: true,
@@ -718,7 +707,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackStab],
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 15
+				[itemID('Arclight')]: 15,
+				[itemID('Emberlight')]: 20
 			}
 		],
 		canCannon: true,
@@ -901,7 +891,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 12
+				[itemID('Arclight')]: 12,
+				[itemID('Emberlight')]: 17
 			},
 			{
 				[itemID('Saradomin godsword')]: 3
@@ -1024,7 +1015,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 15
+				[itemID('Arclight')]: 15,
+				[itemID('Emberlight')]: 20
 			}
 		],
 		degradeableItemUsage: [
@@ -1059,7 +1051,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Emberlight')]: 15
 			}
 		],
 		levelRequirements: {

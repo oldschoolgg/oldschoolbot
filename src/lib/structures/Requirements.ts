@@ -1,4 +1,4 @@
-import type { Minigame } from '@prisma/client';
+import type { Minigame, PlayerOwnedHouse, activity_type_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 
@@ -7,14 +7,14 @@ import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashU
 import type { ClueTier } from '../clues/clueTiers';
 import type { BitField } from '../constants';
 import { BOT_TYPE, BitFieldData } from '../constants';
-import { diaries, userhasDiaryIDTier } from '../diaries';
+import { diaries, userhasDiaryTierSync } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
 import type { RobochimpUser } from '../roboChimp';
-import type { MinigameName } from '../settings/minigames';
+import { type MinigameName, minigameColumnToNameMap } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
 import type { Skills } from '../types';
-import { itemNameFromID } from '../util';
+import { itemNameFromID, joinStrings } from '../util';
 import { MUserStats } from './MUserStats';
 
 export interface RequirementFailure {
@@ -28,19 +28,12 @@ interface RequirementUserArgs {
 	stats: MUserStats;
 	roboChimpUser: RobochimpUser;
 	clueCounts: ClueBank;
+	poh: PlayerOwnedHouse;
+	uniqueRunesCrafted: number[];
+	uniqueActivitiesDone: activity_type_enum[];
 }
 
-type ManualHasFunction = (
-	args: RequirementUserArgs
-) =>
-	| Promise<RequirementFailure[]>
-	| RequirementFailure[]
-	| undefined
-	| Promise<undefined | string>
-	| string
-	| Promise<string>
-	| boolean
-	| Promise<boolean>;
+type ManualHasFunction = (args: RequirementUserArgs) => RequirementFailure[] | undefined | string | boolean;
 
 type Requirement = {
 	name?: string;
@@ -70,9 +63,9 @@ export class Requirements {
 		const requirementParts: (string | string[])[] = [];
 		if ('skillRequirements' in req) {
 			requirementParts.push(
-				`Required Skills: ${objectEntries(req.skillRequirements)
-					.map(([skill, level]) => `Level ${level} ${skill}`)
-					.join(', ')}`
+				`Required Skills: ${joinStrings(
+					objectEntries(req.skillRequirements).map(([skill, level]) => `Level ${level} ${skill}`)
+				)}`
 			);
 		}
 
@@ -80,7 +73,7 @@ export class Requirements {
 			requirementParts.push(
 				`Items Must Be in CL: ${
 					Array.isArray(req.clRequirement)
-						? req.clRequirement.map(itemNameFromID).join(', ')
+						? joinStrings(req.clRequirement.map(itemNameFromID))
 						: req.clRequirement.toString()
 				}`
 			);
@@ -88,9 +81,11 @@ export class Requirements {
 
 		if ('kcRequirement' in req) {
 			requirementParts.push(
-				`Kill Count Requirement: ${Object.entries(req.kcRequirement)
-					.map(([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name}`)
-					.join(', ')}.`
+				`Kill Count Requirement: ${joinStrings(
+					Object.entries(req.kcRequirement).map(
+						([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name} KC`
+					)
+				)}`
 			);
 		}
 
@@ -100,9 +95,11 @@ export class Requirements {
 
 		if ('lapsRequirement' in req) {
 			requirementParts.push(
-				`Agility Course Laps Requirements: ${Object.entries(req.lapsRequirement)
-					.map(([k, v]) => `${v}x laps of ${Agility.Courses.find(i => i.id === Number(k))?.name}`)
-					.join(', ')}.`
+				`Agility Course Laps Requirements: ${joinStrings(
+					Object.entries(req.lapsRequirement).map(
+						([k, v]) => `${v}x laps of ${Agility.Courses.find(i => i.id === Number(k))?.name}`
+					)
+				)}.`
 			);
 		}
 
@@ -112,9 +109,9 @@ export class Requirements {
 
 		if ('minigames' in req) {
 			requirementParts.push(
-				`Minigame Requirements: ${Object.entries(req.minigames)
-					.map(([k, v]) => `${v} KC in ${k}`)
-					.join(', ')}.`
+				`Minigame Requirements: ${joinStrings(
+					Object.entries(req.minigames).map(([k, v]) => `${v}x ${minigameColumnToNameMap.get(k)} KC`)
+				)}.`
 			);
 		}
 
@@ -124,15 +121,19 @@ export class Requirements {
 
 		if ('diaryRequirement' in req) {
 			requirementParts.push(
-				`Achievement Diary Requirement: ${req.diaryRequirement
-					.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])?.name}`)
-					.join(', ')}`
+				`Achievement Diary Requirement: ${joinStrings(
+					req.diaryRequirement.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])?.name}`)
+				)}`
 			);
 		}
 
 		if ('OR' in req) {
 			const subResults = req.OR.map(i => this.formatRequirement(i));
-			requirementParts.push(`ONE of the following requirements must be met: ${subResults.join(', ')}.`);
+			requirementParts.push(`ONE of the following requirements must be met: ${joinStrings(subResults, 'or')}.`);
+		}
+
+		if ('name' in req && req.name) {
+			requirementParts.push(req.name);
 		}
 
 		return requirementParts;
@@ -157,15 +158,12 @@ export class Requirements {
 		return this;
 	}
 
-	async checkSingleRequirement(
-		requirement: Requirement,
-		userArgs: RequirementUserArgs
-	): Promise<RequirementFailure[]> {
+	checkSingleRequirement(requirement: Requirement, userArgs: RequirementUserArgs): RequirementFailure[] {
 		const { user, stats, minigames, clueCounts } = userArgs;
 		const results: RequirementFailure[] = [];
 
 		if ('has' in requirement) {
-			const result = await requirement.has(userArgs);
+			const result = requirement.has(userArgs);
 			if (typeof result === 'boolean') {
 				if (!result) {
 					results.push({ reason: requirement.name });
@@ -188,7 +186,7 @@ export class Requirements {
 			}
 			if (insufficientLevels.length > 0) {
 				results.push({
-					reason: `You need these stats: ${insufficientLevels.join(', ')}.`
+					reason: `You need these stats: ${joinStrings(insufficientLevels)}.`
 				});
 			}
 		}
@@ -196,10 +194,7 @@ export class Requirements {
 		if ('clRequirement' in requirement) {
 			if (!user.cl.has(requirement.clRequirement)) {
 				const missingItems = Array.isArray(requirement.clRequirement)
-					? requirement.clRequirement
-							.filter(i => !user.cl.has(i))
-							.map(itemNameFromID)
-							.join(', ')
+					? joinStrings(requirement.clRequirement.filter(i => !user.cl.has(i)).map(itemNameFromID))
 					: requirement.clRequirement.clone().remove(user.cl);
 				results.push({
 					reason: `You need ${missingItems} in your CL.`
@@ -219,7 +214,7 @@ export class Requirements {
 			}
 			if (missingMonsterNames.length > 0) {
 				results.push({
-					reason: `You need the following KC's: ${missingMonsterNames.join(', ')}.`
+					reason: `You need the following KC's: ${joinStrings(missingMonsterNames)}.`
 				});
 			}
 		}
@@ -263,7 +258,7 @@ export class Requirements {
 			}
 			if (insufficientMinigames.length > 0) {
 				results.push({
-					reason: `You need these minigames scores: ${insufficientMinigames.join(', ')}.`
+					reason: `You need these minigames scores: ${joinStrings(insufficientMinigames)}.`
 				});
 			}
 		}
@@ -278,22 +273,23 @@ export class Requirements {
 		}
 
 		if ('diaryRequirement' in requirement) {
-			const unmetDiaries = (
-				await Promise.all(
-					requirement.diaryRequirement.map(async ([diary, tier]) => {
-						const res = await userhasDiaryIDTier(user, diary, tier);
-						return {
-							has: res.hasDiary,
-							tierName: `${tier} ${res.diaryGroup.name}`
-						};
-					})
-				)
-			).filter(i => !i.has);
+			const unmetDiaries = requirement.diaryRequirement
+				.map(([diary, tier]) => {
+					const { hasDiary, diaryGroup } = userhasDiaryTierSync(user, [diary, tier], {
+						stats,
+						minigameScores: minigames
+					});
+					return {
+						has: hasDiary,
+						tierName: `${tier} ${diaryGroup.name}`
+					};
+				})
+				.filter(i => !i.has);
 			if (unmetDiaries.length > 0) {
 				results.push({
-					reason: `You need to finish these achievement diaries: ${unmetDiaries
-						.map(i => i.tierName)
-						.join(', ')}.`
+					reason: `You need to finish these achievement diaries: ${joinStrings(
+						unmetDiaries.map(i => i.tierName)
+					)}.`
 				});
 			}
 		}
@@ -309,11 +305,11 @@ export class Requirements {
 		}
 
 		if ('OR' in requirement) {
-			const orResults = await Promise.all(requirement.OR.map(req => this.checkSingleRequirement(req, userArgs)));
+			const orResults = requirement.OR.map(req => this.checkSingleRequirement(req, userArgs));
 			if (!orResults.some(i => i.length === 0)) {
 				results.push({
 					reason: `You need to meet one of these requirements:\n${orResults.map((res, index) => {
-						return `${index + 1}. ${res.join(', ')})}`;
+						return `${index + 1}. ${joinStrings(res, 'or')})}`;
 					})}`
 				});
 			}
@@ -322,7 +318,7 @@ export class Requirements {
 		return results;
 	}
 
-	async check(user: MUser) {
+	static async fetchRequiredData(user: MUser) {
 		const minigames = await user.fetchMinigames();
 		const stashUnits = await getParsedStashUnits(user.id);
 		const stats = await MUserStats.fromID(user.id);
@@ -330,21 +326,44 @@ export class Requirements {
 		const clueCounts =
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
 
-		const requirementResults = this.requirements.map(async i => ({
-			result: await this.checkSingleRequirement(i, {
-				user,
-				minigames,
-				stashUnits,
-				stats,
-				roboChimpUser,
-				clueCounts
-			}),
+		const [_uniqueRunesCrafted, uniqueActivitiesDone, poh] = await prisma.$transaction([
+			prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+AND type = 'Runecraft'
+AND data->>'runeID' IS NOT NULL;`,
+			prisma.$queryRaw<{ type: activity_type_enum }[]>`SELECT DISTINCT(type)
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+GROUP BY type;`,
+			prisma.playerOwnedHouse.upsert({ where: { user_id: user.id }, update: {}, create: { user_id: user.id } })
+		]);
+		const uniqueRunesCrafted = _uniqueRunesCrafted.map(i => Number(i.rune_id));
+		return {
+			user,
+			minigames,
+			stashUnits,
+			stats,
+			roboChimpUser,
+			clueCounts,
+			poh,
+			uniqueRunesCrafted,
+			uniqueActivitiesDone: uniqueActivitiesDone.map(i => i.type)
+		};
+	}
+
+	static async checkMany(user: MUser, requirements: Requirements[]) {
+		const data = await Requirements.fetchRequiredData(user);
+		return requirements.map(i => i.check(data));
+	}
+
+	check(data: Awaited<ReturnType<typeof Requirements.fetchRequiredData>>) {
+		const results = this.requirements.map(i => ({
+			result: this.checkSingleRequirement(i, data),
 			requirement: i
 		}));
 
-		const results = await Promise.all(requirementResults);
 		const flatReasons = results.flatMap(r => r.result);
-
 		const totalRequirements = this.requirements.length;
 		const metRequirements = results.filter(i => i.result.length === 0).length;
 		const completionPercentage = calcWhatPercent(metRequirements, totalRequirements);
@@ -353,7 +372,7 @@ export class Requirements {
 			hasAll: results.filter(i => i.result.length !== 0).length === 0,
 			reasonsDoesnt: results
 				.filter(i => i.result.length > 0)
-				.map(i => `${i.requirement.name}: ${i.result.map(t => t.reason).join(', ')}`),
+				.map(i => `${i.requirement.name}: ${joinStrings(i.result.map(t => t.reason))}`),
 			rendered: `- ${flatReasons
 				.filter(i => i.reason)
 				.map(i => i.reason)
