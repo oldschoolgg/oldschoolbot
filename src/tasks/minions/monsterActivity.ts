@@ -286,7 +286,8 @@ export function doMonsterTrip(data: newOptions) {
 	});
 
 	const superiorTable = slayerContext.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
-	const isInCatacombs = (!(usingCannon || cannonMulti) ? (monster.existsInCatacombs ?? undefined) : undefined) && !isInWilderness;
+	const isInCatacombs =
+		(!(usingCannon || cannonMulti) ? (monster.existsInCatacombs ?? undefined) : undefined) && !isInWilderness;
 
 	const hasRingOfWealthI = gearBank.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
 	if (hasRingOfWealthI) {
