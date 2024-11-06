@@ -68,16 +68,6 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 				return [true, 'your minion is busy.'];
 			}
 
-			const max = calcMaxFloorUserCanDo(user);
-			if (max < floorToDo) {
-				return [
-					true,
-					`this party is doing Floor ${floorToDo}, you can't do this floor because you need level ${determineDgLevelForFloor(
-						floorToDo
-					)} Dungeoneering.`
-				];
-			}
-
 			if (!hasRequiredLevels(user, floorToDo)) {
 				return [
 					true,
