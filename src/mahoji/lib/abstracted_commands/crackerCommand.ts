@@ -4,6 +4,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { addToOpenablesScores } from '../../mahojiSettings';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)
@@ -56,6 +57,7 @@ export async function crackerCommand({
 	const [winner, loser] = shuffleArr([otherPerson, owner]);
 	await winner.addItemsToBank({ items: winnerLoot, collectionLog: true });
 	await loser.addItemsToBank({ items: loserLoot, collectionLog: true });
+	await addToOpenablesScores(owner, new Bank().add('Christmas cracker', 1).freeze());
 
 	return `${Emoji.ChristmasCracker} ${owner} pulled a Christmas cracker with ${otherPerson} and....\n\n ${winner} received ${winnerLoot}, ${loser} received ${loserLoot}.`;
 }
