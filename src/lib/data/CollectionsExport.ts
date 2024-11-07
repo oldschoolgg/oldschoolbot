@@ -2718,6 +2718,8 @@ const metamorphPets = resolveItems([
 	'Pheasant'
 ]);
 
+const mumpkinMetamorphPets = resolveItems(['Mumpkin (demonic)', 'Mumpkin (pumpkin)', 'Mumpkin (dead)']);
+
 export const allPetIDs = [
 	...allPetsCL,
 	...customPetsCL,
@@ -2728,7 +2730,8 @@ export const allPetIDs = [
 	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector']),
 	...metamorphPets,
 	...toaMetamorphPets,
-	...allDOAPets
+	...allDOAPets,
+	...mumpkinMetamorphPets
 ];
 
 export const antiSantaOutfit = new Bank({
