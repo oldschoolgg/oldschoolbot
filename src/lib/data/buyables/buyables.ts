@@ -1179,6 +1179,16 @@ const Buyables: Buyable[] = [
 			thieving: 50
 		}
 	},
+	{
+		name: 'Diving apparatus',
+		gpCost: 1000,
+		qpRequired: 30
+	},
+	{
+		name: 'Fishbowl helmet',
+		gpCost: 1000,
+		qpRequired: 30
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,

@@ -182,6 +182,21 @@ const killableMonsters: KillableMonster[] = [
 		canCannon: true,
 		superior: Monsters.DreadbornAraxyte,
 		canBarrage: true
+	},
+	{
+		id: Monsters.Crab.id,
+		name: Monsters.Crab.name,
+		aliases: Monsters.Crab.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.Crab,
+		wildy: false,
+		difficultyRating: 1,
+		qpRequired: 0,
+		respawnTime: Time.Second * 6,
+		healAmountNeeded: 3,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush],
+		itemsRequired: resolveItems(['Fishbowl helmet', 'Diving apparatus'])
 	}
 ];
 

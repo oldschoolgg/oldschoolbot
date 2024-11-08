@@ -229,7 +229,7 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/divination.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/divination.md): Doesnt use the new command formatting
 
-[/bso/Skills/dungeoneering.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/dungeoneering.md): Doesnt use the new command formatting
+[/bso/Skills/Dungeoneering.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Dungeoneering.md): Doesnt use the new command formatting
 
 [/bso/Skills/farming.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/farming.md): Doesnt use the new command formatting
 
@@ -251,9 +251,9 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/bso/Skills/runecraft.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/runecraft.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
-[/bso/Skills/Slayer/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Slayer/README.md): Doesnt use the new command formatting
+[/bso/Skills/slayer/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/slayer/README.md): Doesnt use the new command formatting
 
-[/bso/Skills/Slayer/slayer-masks-helms.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/Slayer/slayer-masks-helms.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+[/bso/Skills/slayer/slayer-masks-helms.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/slayer/slayer-masks-helms.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [/bso/Skills/smithing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/bso/Skills/smithing.md): Doesnt use the new command formatting
 
