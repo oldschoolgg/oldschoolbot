@@ -1473,8 +1473,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 15,
 			hasChance: (data, _user, index) =>
 				data.type === 'Colosseum' &&
-				(!data.diedAt ||
-				(Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 11)))
+				(!data.diedAt || (Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 11)))
 		}
 	},
 	{
