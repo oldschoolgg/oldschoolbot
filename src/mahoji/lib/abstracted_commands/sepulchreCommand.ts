@@ -8,6 +8,7 @@ import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/flet
 import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows';
 import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts';
 import Darts from '../../../lib/skilling/skills/fletching/fletchables/darts';
+import Javelins from '../../../lib/skilling/skills/fletching/fletchables/javelins';
 import { AmethystBroadBolts, BroadArrows, BroadBolts } from '../../../lib/skilling/skills/fletching/fletchables/slayer';
 import TippedBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedBolts';
 import TippedDragonBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedDragonBolts';
@@ -17,7 +18,6 @@ import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
-import Javelins from '../../../lib/skilling/skills/fletching/fletchables/javelins';
 
 export async function sepulchreCommand(user: MUser, channelID: string, fletching?: string) {
 	const skills = user.skillsAsLevels;
@@ -89,7 +89,10 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 				types: [Darts, Bolts, BroadBolts],
 				time: Time.Second * 0.2
 			},
-			{ types: [Arrows, BroadArrows, Javelins, TippedBolts, TippedDragonBolts, AmethystBroadBolts], time: Time.Second * 0.36 }
+			{
+				types: [Arrows, BroadArrows, Javelins, TippedBolts, TippedDragonBolts, AmethystBroadBolts],
+				time: Time.Second * 0.36
+			}
 		];
 
 		for (const { types, time } of fletchableTypes) {
