@@ -107,7 +107,14 @@ export async function handleTripFinish(
 	user: MUser,
 	channelID: string,
 	_message: string | ({ content: string } & MessageCreateOptions),
-	attachment: AttachmentBuilder | Buffer | undefined,
+	attachment:
+		| AttachmentBuilder
+		| Buffer
+		| undefined
+		| {
+				name: string;
+				attachment: Buffer;
+		  },
 	data: ActivityTaskData,
 	loot: Bank | null,
 	_messages?: string[],

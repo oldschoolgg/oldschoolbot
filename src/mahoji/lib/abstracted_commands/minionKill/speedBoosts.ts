@@ -203,10 +203,8 @@ const dragonHunterBoost: Boost = {
 	}
 };
 const revWildyGearBoost: Boost = {
-	description: 'A boost for using a wilderness weapon for killing revenants.',
+	description: 'A boost for using a wilderness weapon for killing in wildy.',
 	run: ({ monster, isInWilderness, combatMethods, primaryStyle: style, gearBank }) => {
-		const matchedRevenantMonster = revenantMonsters.find(m => m.id === monster.id);
-		if (!matchedRevenantMonster) return null;
 		if (!isInWilderness || !monster.revsWeaponBoost) return null;
 		if (combatMethods.includes('barrage') || combatMethods.includes('burst')) return null;
 
@@ -214,10 +212,10 @@ const revWildyGearBoost: Boost = {
 		const upgradedWeapon = revUpgradedWeapons[style];
 
 		let revBoost = 0;
-		if (gearBank.gear.wildy.hasEquipped(specialWeapon.name)) {
-			revBoost = 12.5;
-		} else if (gearBank.gear.wildy.hasEquipped(upgradedWeapon.name)) {
+		if (gearBank.gear.wildy.hasEquipped(upgradedWeapon.name)) {
 			revBoost = 17.5;
+		} else if (gearBank.gear.wildy.hasEquipped(specialWeapon.name)) {
+			revBoost = 12.5;
 		}
 
 		if (revBoost > 0) {

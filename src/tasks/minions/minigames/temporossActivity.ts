@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, randInt } from 'e';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -83,7 +83,7 @@ export const temporossTask: MinionTask = {
 
 		let output = `${user}, ${
 			user.minionName
-		} finished fighting Tempoross ${quantity}x times. ${xpStr.toLocaleString()}`;
+		} finished fighting Tempoross ${quantity}x times (${calcPerHour(quantity, data.duration).toFixed(1)}/hr), you now have ${newScore} KC. ${xpStr.toLocaleString()}`;
 
 		if (fBonusXP > 0) {
 			output += `\n\n**Fishing Bonus XP:** ${fBonusXP.toLocaleString()}`;
