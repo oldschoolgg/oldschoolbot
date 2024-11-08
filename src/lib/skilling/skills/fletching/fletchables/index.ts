@@ -35,5 +35,6 @@ export const zeroTimeFletchables: Fletchable[] = [
 	...Bolts,
 	AmethystBroadBolts,
 	...TippedBolts,
-	...TippedDragonBolts
+	...TippedDragonBolts,
+	...Javelins
 ];
