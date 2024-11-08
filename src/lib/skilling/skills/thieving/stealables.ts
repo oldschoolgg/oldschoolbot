@@ -37,7 +37,7 @@ export interface Stealable {
 	qpRequired?: number;
 	fireCapeRequired?: boolean;
 	questID?: QuestID;
-	questRequired?: string,
+	questRequired?: string;
 	table: LootTable;
 	id: number;
 	petChance: number;
@@ -545,7 +545,7 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 3,
 		slope: 100.0, //guaranteed
 		intercept: 0,
-		customTickRate: 10, // 2 tick thieving for 20s, downtime for ~80s 
+		customTickRate: 10, // 2 tick thieving for 20s, downtime for ~80s
 		petChance: 257_211,
 		questRequired: 'Children of the Sun',
 		questID: QuestID.ChildrenOfTheSun

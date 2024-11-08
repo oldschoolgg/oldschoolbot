@@ -84,7 +84,7 @@ export const stealCommand: OSBMahojiCommand = {
 				'quest'
 			)}.`;
 		}
-		
+
 		if (stealable.fireCapeRequired) {
 			if (user.cl.amount('Fire cape') === 0) {
 				return `In order to ${
@@ -110,7 +110,7 @@ export const stealCommand: OSBMahojiCommand = {
 			return 'This NPC/Stall is missing variable respawnTime.';
 		}
 
-		const maxTripLength = (stealable.name === 'Wealthy Citizen'? 2 : 1 ) * calcMaxTripLength(user, 'Pickpocket');
+		const maxTripLength = (stealable.name === 'Wealthy Citizen' ? 2 : 1) * calcMaxTripLength(user, 'Pickpocket');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToTheft);
