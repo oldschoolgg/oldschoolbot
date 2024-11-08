@@ -71,6 +71,7 @@
 		"simple-statistics": "^7.8.3",
 		"skia-canvas": "^1.0.2",
 		"sonic-boom": "^4.1.0",
+		"wtfnode": "^0.9.3",
 		"zlib-sync": "^0.1.9",
 		"zod": "^3.23.8"
 	},

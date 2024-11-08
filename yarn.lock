@@ -5186,6 +5186,7 @@ __metadata:
     tsx: "npm:^4.19.1"
     typescript: "npm:^5.5.3"
     vitest: "npm:^2.1.2"
+    wtfnode: "npm:^0.9.3"
     zlib-sync: "npm:^0.1.9"
     zod: "npm:^3.23.8"
   languageName: unknown
@@ -6220,6 +6221,15 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10c0/25eb33aff17edcb90721ed6b0eb250976328533ad3cd1a28a274bd263682e7296a6591ff1436d6cbc50fa67463158b062f9d1122013b361cec99a05f84680e06
+  languageName: node
+  linkType: hard
+
+"wtfnode@npm:^0.9.3":
+  version: 0.9.3
+  resolution: "wtfnode@npm:0.9.3"
+  bin:
+    wtfnode: proxy.js
+  checksum: 10c0/cfff53f2c8e514ebfbdb23bfd969c2a3b267df94085015faba8172f0ca7e1db70bc345e84fcd1e69e95c13ff4eb193b4a63001be037239e230bb00e40dc40db5
   languageName: node
   linkType: hard
 

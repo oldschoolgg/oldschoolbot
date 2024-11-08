@@ -123,6 +123,12 @@ To upload an image to the wiki, follow these steps:
 
 [[monkey.jpg]]
 
+### Gear Images
+
+[[Twisted bow, Bronze platelegs]]
+
+`[[Twisted bow, Bronze platelegs]]`
+
 ## Possible Issues
 
 This is an automatically generated list of pages with possible issues to be looked at.

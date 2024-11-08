@@ -505,12 +505,6 @@ const globalConfigSchema = z.object({
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
-if (!process.env.BOT_TOKEN && !process.env.CI) {
-	throw new Error(
-		`You need to specify the BOT_TOKEN environment variable, copy your bot token from your config.ts and put it in the ".env" file like so:\n\nBOT_TOKEN=your_token_here`
-	);
-}
-
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const isProduction = process.env.NODE_ENV === 'production';
 

@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "astro dev",
 		"start": "astro dev",
-		"build": "astro check && astro build",
+		"build": "concurrently --raw --kill-others-on-fail \"astro check --preserveWatchOutput=warning\" \"astro build\" && tsx --experimental-default-type=commonjs --env-file ../.env.test postbuild.ts",
 		"preview": "astro preview",
 		"astro": "astro"
 	},
@@ -19,6 +19,8 @@
 		"unist-util-visit": "^5.0.0"
 	},
 	"devDependencies": {
-		"@types/markdown-it": "^14"
+		"@types/markdown-it": "^14",
+		"concurrently": "^9.1.0",
+		"tsx": "^4.19.2"
 	}
 }

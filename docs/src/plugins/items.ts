@@ -1,9 +1,10 @@
+import { readFileSync, writeFileSync } from 'node:fs';
 import { collapseWhiteSpace } from 'collapse-white-space';
 import { visitParents } from 'unist-util-visit-parents';
 
+import { Items, getItem } from 'oldschooljs';
 import bsoItemsJson from '../../../data/bso_items.json';
 import commandsJson from '../../../data/osb.commands.json';
-import { Items } from '../../../node_modules/oldschooljs';
 import { SkillsArray } from '../../../src/lib/skilling/types';
 import { authorsMap } from './authors';
 
@@ -19,6 +20,25 @@ export function remarkItems(options: any) {
 			if (matches.length === 0) return;
 
 			for (const match of matches) {
+				if (match.includes(',')) {
+					const allItemNames = match.split(',').map(i => i.trim());
+					const allItems = allItemNames.map(itemName => getItem(itemName));
+					if (allItems.every(i => i?.equipable_by_player)) {
+						const imageKey = allItems
+							.map(i => i!.id)
+							.sort()
+							.join('_');
+						const g = readFileSync('./public/images/gear/gear.json', 'utf-8');
+						const gear = JSON.parse(g.toString());
+						gear[imageKey] = allItems.map(i => i!.id);
+						writeFileSync('./public/images/gear/gear.json', JSON.stringify(gear, null, 4));
+						node.type = 'html';
+						const html = `<img src="/images/gear/${imageKey}.png" alt="${allItemNames.join(' ')}" />`;
+						node.value = node.value.replace(`[[${match}]]`, html);
+						continue;
+					}
+				}
+
 				if (match.startsWith('#')) {
 					const [channelName, messageID] = match.split(':');
 					const html = `<a class="discord_channel" href="discord://discord.com/channels/342983479501389826/${messageID}" target="_blank">${channelName}</a>`;

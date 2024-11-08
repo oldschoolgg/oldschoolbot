@@ -1,13 +1,13 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
 import { Bank, type Item, resolveItems, toKMB } from 'oldschooljs';
 
-import { UserError } from '@oldschoolgg/toolkit/structures';
 import { BOT_TYPE, BitField, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
@@ -33,17 +33,18 @@ import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
+import { getSrcFilePathRel } from './util/smallUtils';
 
 const fonts = {
-	OSRSFont: './src/lib/resources/osrs-font.ttf',
-	OSRSFontCompact: './src/lib/resources/osrs-font-compact.otf',
-	'RuneScape Bold 12': './src/lib/resources/osrs-font-bold.ttf',
-	'Smallest Pixel-7': './src/lib/resources/small-pixel.ttf',
-	'RuneScape Quill 8': './src/lib/resources/osrs-font-quill-8.ttf'
+	OSRSFont: './resources/osrs-font.ttf',
+	OSRSFontCompact: './resources/osrs-font-compact.otf',
+	'RuneScape Bold 12': './resources/osrs-font-bold.ttf',
+	'Smallest Pixel-7': './resources/small-pixel.ttf',
+	'RuneScape Quill 8': './resources/osrs-font-quill-8.ttf'
 } as const;
 
 for (const [key, val] of Object.entries(fonts)) {
-	registerFont(key, val);
+	registerFont(key, getSrcFilePathRel(val));
 }
 
 interface BankImageResult {
@@ -302,7 +303,7 @@ export class BankImageTask {
 			transparent: 'rgba(0,0,0,0)'
 		};
 		// Init bank sprites
-		const basePath = './src/lib/resources/images/bank_backgrounds/spritesheet/';
+		const basePath = getSrcFilePathRel('./resources/images/bank_backgrounds/spritesheet/');
 		const files = await fs.readdir(basePath);
 		for (const file of files) {
 			const bgName: BGSpriteName = file.split('\\').pop()?.split('/').pop()?.split('.').shift()! as BGSpriteName;
@@ -320,9 +321,11 @@ export class BankImageTask {
 			};
 		}
 
-		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.png'));
+		this.spriteSheetImage = await loadImage(
+			await fs.readFile(getSrcFilePathRel('./resources/images/spritesheet.png'))
+		);
 		this.spriteSheetData = JSON.parse(
-			await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' })
+			await fs.readFile(getSrcFilePathRel('./resources/images/spritesheet.json'), { encoding: 'utf-8' })
 		);
 		await this.run();
 	}
@@ -333,9 +336,9 @@ export class BankImageTask {
 		this.backgroundImages = await Promise.all(
 			backgroundImages.map(async img => {
 				const ext = img.transparent ? 'png' : 'jpg';
-				const bgPath = `./src/lib/resources/images/bank_backgrounds/${img.id}.${ext}`;
+				const bgPath = getSrcFilePathRel(`resources/images/bank_backgrounds/${img.id}.${ext}`);
 				const purplePath = img.hasPurple
-					? `./src/lib/resources/images/bank_backgrounds/${img.id}_purple.${ext}`
+					? getSrcFilePathRel(`resources/images/bank_backgrounds/${img.id}_purple.${ext}`)
 					: null;
 
 				if (img.alternateImages) {
@@ -345,7 +348,7 @@ export class BankImageTask {
 							bgId: img.id,
 							image: await loadImage(
 								await fs.readFile(
-									`./src/lib/resources/images/bank_backgrounds/${img.id}_${bgId.id}.${ext}`
+									getSrcFilePathRel(`resources/images/bank_backgrounds/${img.id}_${bgId.id}.${ext}`)
 								)
 							)
 						}))
@@ -382,11 +385,15 @@ export class BankImageTask {
 			const directories = BOT_TYPE === 'OSB' ? ['osb'] : ['osb', 'bso'];
 
 			for (const dir of directories) {
-				const filesInThisDir = await fs.readdir(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}`);
+				const filesInThisDir = await fs.readdir(
+					getSrcFilePathRel(`resources/images/icon_packs/${pack.id}_${dir}`)
+				);
 				for (const fileName of filesInThisDir) {
 					const themedItemID = Number.parseInt(path.parse(fileName).name);
 					const image = await loadImage(
-						await fs.readFile(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`)
+						await fs.readFile(
+							getSrcFilePathRel(`resources/images/icon_packs/${pack.id}_${dir}/${fileName}`)
+						)
 					);
 					pack.icons.set(themedItemID, image);
 				}
@@ -875,8 +882,8 @@ export class BankImageTask {
 const chestLootTypes = [
 	{
 		title: 'Tombs of Amascut',
-		chestImage: loadImage('./src/lib/resources/images/toaChest.png'),
-		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
+		chestImage: loadImage(getSrcFilePathRel('resources/images/toaChest.png')),
+		chestImagePurple: loadImage(getSrcFilePathRel('resources/images/toaChestPurple.png')),
 		width: 240,
 		height: 220,
 		purpleItems: toaPurpleItems,
@@ -888,8 +895,8 @@ const chestLootTypes = [
 	},
 	{
 		title: 'Theatre of Blood',
-		chestImage: loadImage('./src/lib/resources/images/tobChest.png'),
-		chestImagePurple: loadImage('./src/lib/resources/images/tobChestPurple.png'),
+		chestImage: loadImage(getSrcFilePathRel('resources/images/tobChest.png')),
+		chestImagePurple: loadImage(getSrcFilePathRel('resources/images/tobChestPurple.png')),
 		width: 260,
 		height: 180,
 		purpleItems: TOBUniques,
@@ -901,8 +908,8 @@ const chestLootTypes = [
 	},
 	{
 		title: 'Chambers of Xerician',
-		chestImage: loadImage('./src/lib/resources/images/cox.png'),
-		chestImagePurple: loadImage('./src/lib/resources/images/cox.png'),
+		chestImage: loadImage(getSrcFilePathRel('resources/images/cox.png')),
+		chestImagePurple: loadImage(getSrcFilePathRel('resources/images/cox.png')),
 		width: 260,
 		height: 180,
 		purpleItems: resolveItems([

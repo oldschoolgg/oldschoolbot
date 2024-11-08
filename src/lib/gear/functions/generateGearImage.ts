@@ -1,6 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { bankImageTask } from '../../bankImage';
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import {
 	type Canvas,
@@ -11,6 +12,7 @@ import {
 	fillTextXTimesInCtx,
 	loadAndCacheLocalImage
 } from '../../util/canvasUtil';
+import { getSrcFilePathRel } from '../../util/smallUtils';
 import type { GearSetup, GearSetupType } from '../types';
 import { GearSetupTypes } from '../types';
 
@@ -83,12 +85,12 @@ export async function generateGearImage(
 ) {
 	const bankBg = user.user.bankBackground ?? 1;
 
-	const { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
+	const { sprite, uniqueSprite, background: userBgImage } = bankImageTask.getBgAndSprite(bankBg, user);
 
 	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
+	const gearTemplateImage = await loadAndCacheLocalImage(getSrcFilePathRel('./resources/images/gear_template.png'));
 	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
@@ -247,7 +249,9 @@ export async function generateAllGearImage(user: MUser) {
 	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
-	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template_compact.png');
+	const gearTemplateImage = await loadAndCacheLocalImage(
+		getSrcFilePathRel('./resources/images/gear_template_compact.png')
+	);
 	const canvas = createCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;

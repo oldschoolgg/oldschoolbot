@@ -1,8 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
 import { CanvasRenderingContext2D as CanvasContext, FontLibrary, Image, Canvas as RawCanvas } from 'skia-canvas';
-
-import { assert } from '../util';
+import { assert } from './logError';
 
 export function registerFont(fontFamily: string, fontPath: string) {
 	FontLibrary.use(fontFamily, fontPath);

@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { type CommandResponse, deepMerge, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
@@ -254,4 +255,17 @@ export function isValidNickname(str?: string) {
 			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
 			stripEmojis(str).length === str.length
 	);
+}
+
+function cutPath(p: string): string {
+	const srcIndex = p.indexOf(path.join('src'));
+	return srcIndex !== -1 ? p.slice(0, srcIndex + 3) : p;
+}
+
+export function getSrcFilePathRel(inputPath: string) {
+	const dirName = __dirname ?? process.cwd();
+	if (dirName.endsWith('dist')) {
+		return path.join(dirName, '..', 'src', 'lib', inputPath);
+	}
+	return path.join(cutPath(dirName), 'lib', inputPath);
 }

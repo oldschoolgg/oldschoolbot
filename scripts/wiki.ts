@@ -14,6 +14,7 @@ import { sorts } from '../src/lib/sorts';
 import { itemNameFromID } from '../src/lib/util';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
 import { miningXpHr } from './wiki/miningXphr';
+import { renderGearImages } from './wiki/renderGearImages';
 
 function combatAchievementHowToFinish(ca: CombatAchievement) {
 	if ('rng' in ca) {
@@ -437,11 +438,14 @@ function wikiIssues() {
 }
 
 async function wiki() {
+	if (1 > 0) {
+		renderGearImages();
+	}
 	renderQuestsMarkdown();
 	rendeCoxMarkdown();
 	wikiIssues();
 	miningXpHr();
-	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
+	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown(), renderGearImages()]);
 	process.exit(0);
 }
 
