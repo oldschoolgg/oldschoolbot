@@ -171,7 +171,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	}
 
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
-	const tempResult = speedCalculations({
+	const speedDurationResult = speedCalculations({
 		...args,
 		attackStyles,
 		isOnTask,
@@ -183,11 +183,9 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		addPostBoostEffect: (effect: PostBoostEffect) => ephemeralPostTripEffects.push(effect),
 		killsRemaining
 	});
-	if (typeof tempResult === 'string') {
-		return tempResult;
+	if (typeof speedDurationResult === 'string') {
+		return speedDurationResult;
 	}
-	let currentTaskOptions = tempResult.currentTaskOptions;
-	const speedDurationResult = tempResult.speedDurationResult;
 	const quantity = speedDurationResult.finalQuantity;
 	let duration = speedDurationResult.timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
@@ -235,13 +233,16 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			primaryStyle,
 			combatMethods,
 			relevantGearStat,
-			currentTaskOptions: currentTaskOptions,
+			currentTaskOptions: speedDurationResult.currentTaskOptions,
 			killsRemaining
 		});
 		if (!result) continue;
 		for (const boostResult of Array.isArray(result) ? result : [result]) {
 			if (boostResult.changes) {
-				currentTaskOptions = mergeDeep(currentTaskOptions, boostResult.changes);
+				speedDurationResult.currentTaskOptions = mergeDeep(
+					speedDurationResult.currentTaskOptions,
+					boostResult.changes
+				);
 				const newStyles = getAttackStylesContext(attackStyles);
 				primaryStyle = newStyles.primaryStyle;
 				relevantGearStat = newStyles.relevantGearStat;
@@ -272,7 +273,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		isOnTask,
 		isInWilderness,
 		attackStyles,
-		currentTaskOptions: currentTaskOptions,
+		currentTaskOptions: speedDurationResult.currentTaskOptions,
 		messages: speedDurationResult.messages,
 		updateBank: speedDurationResult.updateBank
 	});

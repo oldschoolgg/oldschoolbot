@@ -3,19 +3,33 @@ import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 
+import { SlayerActivityConstants } from '../../../../lib/minions/data/combatConstants';
 import { type AttackStyles, getAttackStylesContext } from '../../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import type { Consumable } from '../../../../lib/minions/types';
 import { ChargeBank } from '../../../../lib/structures/Bank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { SkillsRequired } from '../../../../lib/types';
+import { numberEnum } from '../../../../lib/util';
 import { getItemCostFromConsumables } from './handleConsumables';
 import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
 
 const schema = z.object({
 	timeToFinish: z.number().int().positive(),
 	messages: z.array(z.string()),
-	currentTaskOptions: z.object({}),
+	currentTaskOptions: z.object({
+		bob: z
+			.number()
+			.superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst]))
+			.optional(),
+		usingCannon: z.boolean().optional(),
+		cannonMulti: z.boolean().optional(),
+		chinning: z.boolean().optional(),
+		hasWildySupplies: z.boolean().optional(),
+		died: z.boolean().optional(),
+		pkEncounters: z.number().int().min(0).optional(),
+		isInWilderness: z.boolean().optional()
+	}),
 	finalQuantity: z.number().int().positive().min(1),
 	confirmations: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)
@@ -135,5 +149,5 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 		updateBank
 	});
 
-	return { speedDurationResult: result, currentTaskOptions: currentTaskOptions };
+	return result;
 }
