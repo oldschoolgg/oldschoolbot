@@ -401,7 +401,7 @@ export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOption
 	type: 'Sepulchre';
 	floors: number[];
 	fletch?: {
-		fletchable: Fletchable;
+		fletchableName: string;
 		fletchingQuantity: number;
 	};
 }

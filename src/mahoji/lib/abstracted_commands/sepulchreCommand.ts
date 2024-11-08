@@ -33,7 +33,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	}
 
 	if (!userHasGracefulEquipped(user)) {
-		return 'You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.';
+		return 'You need Graceful equipped in any setup to do the Hallowed Sepulchre.';
 	}
 
 	let fletchingQuantity = 0;
@@ -62,6 +62,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	const tripLength = maxLaps * lapLength;
 
 	let itemsNeeded: Bank | undefined;
+	const userBank = user.bankWithGP;
 	let sets = 'x';
 	let timeToFletchSingleItem = 0;
 
@@ -107,7 +108,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		if (max < fletchingQuantity && max !== 0) fletchingQuantity = max;
 
 		itemsNeeded = fletchable.inputItems.clone().multiply(fletchingQuantity);
-		if (!user.bank.has(itemsNeeded.bank)) {
+		if (!userBank.has(itemsNeeded)) {
 			return `You don't have enough items. For ${fletchingQuantity}x ${fletchable.name}, you're missing **${itemsNeeded
 				.clone()
 				.remove(user.bank)}**.`;
@@ -124,7 +125,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		type: 'Sepulchre',
 		channelID: channelID.toString(),
 		minigameID: 'sepulchre',
-		fletch: fletchable ? { fletchable, fletchingQuantity } : undefined
+		fletch: fletchable ? { fletchableName: fletchable.name, fletchingQuantity } : undefined
 	});
 
 	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${

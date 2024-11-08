@@ -541,7 +541,7 @@ const tripHandlers = {
 	[activity_type_enum.Sepulchre]: {
 		commandName: 'minigames',
 		args: (data: SepulchreActivityTaskOptions) => {
-			const fletch = data.fletch?.fletchable ? data.fletch.fletchable.name : undefined;
+			const fletch = data.fletch?.fletchableName;
 			return { sepulchre: { start: { fletching: fletch } } };
 		}
 	},

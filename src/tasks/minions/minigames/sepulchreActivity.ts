@@ -4,6 +4,7 @@ import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallo
 import { trackLoot } from '../../../lib/lootTrack';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -49,7 +50,12 @@ export const sepulchreTask: MinionTask = {
 		const fletchingLoot = new Bank();
 
 		if (fletch) {
-			const fletchable = fletch.fletchable;
+			const fletchable = zeroTimeFletchables.find(item => item.name === fletch.fletchableName);
+
+			if (!fletchable) {
+				throw new Error(`Fletchable item ${fletch.fletchableName} not found.`);
+			}
+
 			fletchQuantity = fletch.fletchingQuantity;
 
 			if (fletchable.outputMultiple) {
@@ -123,7 +129,7 @@ export const sepulchreTask: MinionTask = {
 				itemsToAdd: fletchingLoot
 			});
 
-			str += `\nYou also finished fletching ${fletchQuantity}${sets} ${fletch.fletchable.name}, and received ${fletchingLoot}. ${fletchXpRes}.`;
+			str += `\nYou also finished fletching ${fletchQuantity}${sets} ${fletch.fletchableName}, and received ${fletchingLoot}. ${fletchXpRes}.`;
 		}
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
