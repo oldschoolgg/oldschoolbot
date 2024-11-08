@@ -636,6 +636,20 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
+    "gpCost": 1000,
+    "itemCost": {},
+    "name": "Diving apparatus",
+    "outputItems": undefined,
+    "qpRequired": 30,
+  },
+  {
+    "gpCost": 1000,
+    "itemCost": {},
+    "name": "Fishbowl helmet",
+    "outputItems": undefined,
+    "qpRequired": 30,
+  },
+  {
     "itemCost": {
       "24711": 1,
     },
