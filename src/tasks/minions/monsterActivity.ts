@@ -1,6 +1,6 @@
 import { Time, calcWhatPercent, deepClone, percentChance, reduceNumByPercent } from 'e';
 import type { MonsterKillOptions } from 'oldschooljs';
-import { Bank, EMonster, Monsters } from 'oldschooljs';
+import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
 import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '../../lib/bso/pvmEffects';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
@@ -383,9 +383,10 @@ export function doMonsterTrip(data: newOptions) {
 			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
 		}
 		if (newSuperiorCount) {
-			loot.add(superiorTable?.kill(newSuperiorCount));
+			loot.add(superiorTable?.kill(newSuperiorCount).set('Brimstone key', 0)); //remove the rng keys, todo: remove drop from superiors in osjs?
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
+			if (killOptions.slayerMaster === MonsterSlayerMaster.Konar) loot.add('Brimstone key', newSuperiorCount);
 		}
 		if (isInWilderness && monster.name === 'Hill giant') {
 			for (let i = 0; i < quantity; i++) {
