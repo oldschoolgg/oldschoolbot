@@ -14,22 +14,24 @@ import { numberEnum } from '../../../../lib/util';
 import { getItemCostFromConsumables } from './handleConsumables';
 import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
 
+export const CombatMethodOptionsSchema = z.object({
+	bob: z
+		.number()
+		.superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst]))
+		.optional(),
+	usingCannon: z.boolean().optional(),
+	cannonMulti: z.boolean().optional(),
+	chinning: z.boolean().optional(),
+	hasWildySupplies: z.boolean().optional(),
+	died: z.boolean().optional(),
+	pkEncounters: z.number().int().min(0).optional(),
+	isInWilderness: z.boolean().optional()
+});
+
 const schema = z.object({
 	timeToFinish: z.number().int().positive(),
 	messages: z.array(z.string()),
-	currentTaskOptions: z.object({
-		bob: z
-			.number()
-			.superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst]))
-			.optional(),
-		usingCannon: z.boolean().optional(),
-		cannonMulti: z.boolean().optional(),
-		chinning: z.boolean().optional(),
-		hasWildySupplies: z.boolean().optional(),
-		died: z.boolean().optional(),
-		pkEncounters: z.number().int().min(0).optional(),
-		isInWilderness: z.boolean().optional()
-	}),
+	currentTaskOptions: CombatMethodOptionsSchema,
 	finalQuantity: z.number().int().positive().min(1),
 	confirmations: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)

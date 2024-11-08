@@ -5,7 +5,7 @@ import { mergeDeep } from 'remeda';
 import z from 'zod';
 import type { BitField, PvMMethod } from '../../../../lib/constants';
 import { getSimilarItems } from '../../../../lib/data/similarItems';
-import { type CombatOptionsEnum, SlayerActivityConstants } from '../../../../lib/minions/data/combatConstants';
+import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import {
 	type AttackStyles,
@@ -19,18 +19,11 @@ import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/s
 import type { GearBank } from '../../../../lib/structures/GearBank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { Peak } from '../../../../lib/tickers';
-import {
-	checkRangeGearWeapon,
-	formatDuration,
-	isWeekend,
-	itemNameFromID,
-	numberEnum,
-	zodEnum
-} from '../../../../lib/util';
+import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, zodEnum } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
-import { speedCalculations } from './timeAndSpeed';
+import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),
@@ -38,22 +31,11 @@ const newMinionKillReturnSchema = z.object({
 	isOnTask: z.boolean(),
 	isInWilderness: z.boolean(),
 	attackStyles: z.array(z.enum(zodEnum(attackStylesArr))),
-	currentTaskOptions: z.object({
-		bob: z
-			.number()
-			.superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst]))
-			.optional(),
-		usingCannon: z.boolean().optional(),
-		cannonMulti: z.boolean().optional(),
-		chinning: z.boolean().optional(),
-		hasWildySupplies: z.boolean().optional(),
-		died: z.boolean().optional(),
-		pkEncounters: z.number().int().min(0).optional(),
-		isInWilderness: z.boolean().optional()
-	}),
+	currentTaskOptions: CombatMethodOptionsSchema,
 	messages: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)
 });
+
 export type MinionKillReturn = z.infer<typeof newMinionKillReturnSchema>;
 export interface MinionKillOptions {
 	attackStyles: AttackStyles[];
