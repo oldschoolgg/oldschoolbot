@@ -77,7 +77,7 @@ Please confirm if you want to call your minion back from their trip.${refundMess
 		await cancelTask(user.id);
 		await addSubTaskToActivityTask<CancelOptions>({
 			userID: user.id,
-			duration: duration * 0.01,
+			duration: duration,
 			channelID: channelID,
 			refundItems: data.itemCost ? data.itemCost : new Bank(),
 			type: 'Cancel'
