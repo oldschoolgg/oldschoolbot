@@ -93,8 +93,13 @@ export async function minionKillCommand(
 	}
 
 	const updateResult = await result.updateBank.transact(user);
+
 	if (typeof updateResult === 'string') {
 		return updateResult;
+	}
+
+	if (updateResult.totalCost.length > 0) {
+		result.messages.push(`Removing items: ${updateResult.totalCost}`);
 	}
 
 	if (result.updateBank.itemCostBank.length > 0) {
@@ -128,7 +133,8 @@ export async function minionKillCommand(
 		bob: !bob ? undefined : bob,
 		hasWildySupplies,
 		isInWilderness: result.isInWilderness,
-		attackStyles: result.attackStyles
+		attackStyles: result.attackStyles,
+		itemCost: updateResult.totalCost
 	});
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration

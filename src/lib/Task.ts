@@ -3,6 +3,7 @@ import { activity_type_enum } from '@prisma/client';
 import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
+import { RefundTask } from '../mahoji/lib/abstracted_commands/cancelTaskCommand';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
@@ -193,13 +194,14 @@ const tasks: MinionTask[] = [
 	camdozaalFishingTask,
 	myNotesTask,
 	colosseumTask,
-	CreateForestersRationsTask
+	CreateForestersRationsTask,
+	RefundTask
 ];
 
 export async function processPendingActivities() {
 	const activities: Activity[] = globalConfig.isProduction
 		? await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
-		: await sql`SELECT * FROM activity WHERE completed = false;`;
+		: await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`;
 
 	if (activities.length > 0) {
 		await prisma.activity.updateMany({

@@ -1,5 +1,6 @@
 import type { CropUpgradeType } from '@prisma/client';
 
+import type { Bank } from 'oldschooljs';
 import type { ItemBank } from '.';
 import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
 import type { SlayerActivityConstants } from '../minions/data/combatConstants';
@@ -16,6 +17,8 @@ export interface ActivityTaskOptions {
 	id: number;
 	finishDate: number;
 	channelID: string;
+	itemCost?: Bank;
+	type?: string;
 }
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
@@ -568,6 +571,11 @@ export interface SpecificQuestOptions extends ActivityTaskOptions {
 	questID: number;
 }
 
+export interface CancelOptions extends ActivityTaskOptions {
+	type: 'Cancel';
+	refundItems: Bank;
+}
+
 export type ActivityTaskData =
 	| MonsterActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
@@ -634,4 +642,5 @@ export type ActivityTaskData =
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| CancelOptions;

@@ -258,6 +258,11 @@ export const minionCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'cancel_and_refund',
+			description: 'Cancel your current trip, and bring back supplies.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'set_icon',
 			description: 'Set the icon for your minion.',
 			options: [
@@ -432,6 +437,7 @@ export const minionCommand: OSBMahojiCommand = {
 		cracker?: { user: MahojiUserOption };
 		lamp?: { item: string; quantity?: number; skill: string };
 		cancel?: {};
+		cancel_and_refund?: {};
 		set_icon?: { icon: string };
 		set_name?: { name: string };
 		level?: { skill: string };
@@ -481,7 +487,9 @@ export const minionCommand: OSBMahojiCommand = {
 			return lampCommand(user, options.lamp.item, options.lamp.skill, options.lamp.quantity);
 		}
 
-		if (options.cancel) return cancelTaskCommand(user, interaction);
+		if (options.cancel) return cancelTaskCommand(user, channelID, interaction);
+
+		if (options.cancel_and_refund) return cancelTaskCommand(user, channelID, interaction, true);
 
 		if (options.set_icon) {
 			if (perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);

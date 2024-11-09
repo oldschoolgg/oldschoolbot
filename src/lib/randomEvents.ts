@@ -184,7 +184,7 @@ export const RandomEvents: RandomEvent[] = [
 
 const cache = new LRUCache<string, number>({ max: 500 });
 
-const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut];
+const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut, activity_type_enum.Cancel];
 
 export async function triggerRandomEvent(user: MUser, type: activity_type_enum, duration: number, messages: string[]) {
 	if (doesntGetRandomEvent.includes(type)) return {};

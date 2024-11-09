@@ -81,8 +81,10 @@ export class UpdateBank {
 		}
 
 		// Loot/Cost
+		const totalCost = new Bank();
 		if (this.itemCostBank.length > 0) {
-			await user.specialRemoveItems(this.itemCostBank, { isInWilderness });
+			const { realCost } = await user.specialRemoveItems(this.itemCostBank, { isInWilderness });
+			totalCost.add(realCost);
 		}
 		let itemTransactionResult: Awaited<ReturnType<MUserClass['addItemsToBank']>> | null = null;
 		if (this.itemLootBank.length > 0) {
@@ -142,6 +144,7 @@ export class UpdateBank {
 		await user.sync();
 		return {
 			itemTransactionResult,
+			totalCost,
 			rawResults: results,
 			message: results.filter(r => typeof r === 'string').join(', ')
 		};

@@ -2,18 +2,21 @@ import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { BaseMessageOptions } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
+import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 
 import { minionBuyButton } from '../../../lib/sharedComponents';
+import type { ActivityTaskOptions } from '../../../lib/types/minions';
 import { makeComponents } from '../../../lib/util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton
 } from '../../../lib/util/globalInteractions';
+import { getActivityOfUser } from '../../../lib/util/minionIsBusy';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
@@ -105,6 +108,20 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 				.setEmoji('778418736180494347')
 				.setStyle(ButtonStyle.Secondary)
 		);
+	}
+
+	if (minionIsBusy) {
+		const currentTask = getActivityOfUser(user.id) as ActivityTaskOptions;
+		const cost = new Bank(currentTask.itemCost);
+		if (cost.length > 0) {
+			buttons.push(
+				new ButtonBuilder()
+					.setCustomId('REFUND_TRIP')
+					.setLabel('Cancel Trip And Refund')
+					.setEmoji('778418736180494347')
+					.setStyle(ButtonStyle.Secondary)
+			);
+		}
 	}
 
 	if (!minionIsBusy && !user.bitfield.includes(BitField.DisableAutoSlayButton)) {

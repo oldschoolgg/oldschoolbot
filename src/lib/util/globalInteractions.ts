@@ -39,6 +39,7 @@ const globalInteractionActions = [
 	'CHECK_PATCHES',
 	'AUTO_SLAY',
 	'CANCEL_TRIP',
+	'REFUND_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
 	'FARMING_CONTRACT_EASIER',
@@ -435,6 +436,15 @@ export async function interactionHook(interaction: Interaction) {
 		return runCommand({
 			commandName: 'minion',
 			args: { cancel: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	if (id === 'REFUND_TRIP') {
+		return runCommand({
+			commandName: 'minion',
+			args: { cancel_and_refund: {} },
 			bypassInhibitors: true,
 			...options
 		});

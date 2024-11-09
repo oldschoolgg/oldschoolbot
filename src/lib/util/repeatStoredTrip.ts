@@ -82,7 +82,8 @@ const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.TokkulShop,
 			activity_type_enum.Birdhouse,
 			activity_type_enum.StrongholdOfSecurity,
-			activity_type_enum.CombatRing
+			activity_type_enum.CombatRing,
+			activity_type_enum.Cancel
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -666,6 +667,10 @@ const tripHandlers = {
 		args: () => ({
 			name: 'colosseum'
 		})
+	},
+	[activity_type_enum.Cancel]: {
+		commandName: 'm',
+		args: () => ({})
 	}
 } as const;
 
