@@ -8,6 +8,7 @@ import type { MUserClass } from '../MUser';
 import { degradeChargeBank } from '../degradeableItems';
 import type { GearSetup } from '../gear/types';
 import type { ItemBank } from '../types';
+import type { ActivityTaskOptions } from '../types/minions';
 import { type JsonKeys, objHasAnyPropInCommon } from '../util';
 import { ChargeBank, XPBank } from './Bank';
 import { KCBank } from './KCBank';
@@ -54,7 +55,12 @@ export class UpdateBank {
 		this.userUpdates = mergeDeep(this.userUpdates, other.userUpdates);
 	}
 
-	async transact(user: MUser, { isInWilderness }: { isInWilderness?: boolean } = { isInWilderness: false }) {
+	async transact(
+		user: MUser,
+		{ isInWilderness, tripOptions }: { isInWilderness?: boolean; tripOptions?: ActivityTaskOptions } = {
+			isInWilderness: false
+		}
+	) {
 		// Check everything first
 		if (this.chargeBank.length() > 0) {
 			const charges = user.hasCharges(this.chargeBank);
@@ -86,7 +92,12 @@ export class UpdateBank {
 		}
 		let itemTransactionResult: Awaited<ReturnType<MUserClass['addItemsToBank']>> | null = null;
 		if (this.itemLootBank.length > 0) {
-			itemTransactionResult = await user.addItemsToBank({ items: this.itemLootBank, collectionLog: true });
+			itemTransactionResult = await user.addItemsToBank({
+				items: this.itemLootBank,
+				collectionLog: true,
+				tripOptions
+			});
+			results.push(...itemTransactionResult.messages);
 		}
 
 		// XP

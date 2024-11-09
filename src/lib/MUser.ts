@@ -44,6 +44,7 @@ import { Gear, defaultGear } from './structures/Gear';
 import { GearBank } from './structures/GearBank';
 import type { XPBank } from './structures/XPBank';
 import type { ItemBank, Skills } from './types';
+import type { ActivityTaskOptions } from './types/minions';
 import { addItemToBank, convertXPtoLVL, fullGearToBank, hasSkillReqsRaw, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
@@ -340,13 +341,15 @@ GROUP BY data->>'ci';`);
 		collectionLog = false,
 		filterLoot = true,
 		dontAddToTempCL = false,
-		neverUpdateHistory = false
+		neverUpdateHistory = false,
+		tripOptions
 	}: {
 		items: ItemBank | Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
+		tripOptions?: ActivityTaskOptions;
 	}) {
 		const res = await transactItems({
 			collectionLog,
@@ -354,7 +357,8 @@ GROUP BY data->>'ci';`);
 			filterLoot,
 			dontAddToTempCL,
 			userID: this.id,
-			neverUpdateHistory
+			neverUpdateHistory,
+			tripOptions
 		});
 		this.user = res.newUser;
 		this.updateProperties();

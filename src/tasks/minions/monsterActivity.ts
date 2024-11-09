@@ -503,7 +503,10 @@ export const monsterTask: MinionTask = {
 			]
 		});
 
-		const resultOrError = await updateBank.transact(user, { isInWilderness: data.isInWilderness });
+		const resultOrError = await updateBank.transact(user, {
+			isInWilderness: data.isInWilderness,
+			tripOptions: data
+		});
 		if (typeof resultOrError === 'string') {
 			return resultOrError;
 		}

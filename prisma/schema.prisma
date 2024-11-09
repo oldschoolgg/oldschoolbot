@@ -1135,6 +1135,17 @@ model UserEvent {
   @@map("user_event")
 }
 
+model DroppedClueScroll {
+  id            String   @id @default(uuid()) @db.Uuid
+  user_id       String   @db.Text
+  date_received DateTime @db.Timestamp(6)
+  used          Boolean  @default(false)
+
+  item_id Int
+
+  @@map("dropped_clue_scroll")
+}
+
 enum command_name_enum {
   testpotato
   achievementdiary

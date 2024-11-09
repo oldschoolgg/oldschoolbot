@@ -96,6 +96,9 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(
 		prisma.reclaimableItem.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
+	transactions.push(
+		prisma.droppedClueScroll.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
 
 	transactions.push(
 		prisma.activity.updateMany({

@@ -1,5 +1,5 @@
 import { type CommandResponse, deepMerge, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { Prisma } from '@prisma/client';
+import type { DroppedClueScroll, Prisma } from '@prisma/client';
 import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
 import { clamp, objectEntries } from 'e';
@@ -7,6 +7,7 @@ import { type ArrayItemsResolved, Bank, type ItemBank, Items, getItemOrThrow } f
 import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
+import { CLUE_DROP_DESPAWN_TIME } from '../constants';
 import { skillEmoji } from '../data/emojis';
 import type { UserFullGearSetup } from '../gear/types';
 import type { Skills } from '../types';
@@ -254,4 +255,13 @@ export function isValidNickname(str?: string) {
 			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
 			stripEmojis(str).length === str.length
 	);
+}
+
+export function convertDroppedCluesToBank(droppedClues: Pick<DroppedClueScroll, 'item_id' | 'date_received'>[]) {
+	const bank = new Bank();
+	for (const clue of droppedClues) {
+		if (clue.date_received.getTime() < Date.now() - CLUE_DROP_DESPAWN_TIME) continue;
+		bank.add(clue.item_id, 1);
+	}
+	return bank;
 }

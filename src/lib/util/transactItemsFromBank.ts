@@ -1,14 +1,59 @@
 import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
+import { randomInteger } from 'remeda';
 import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
 import { mahojiUserSettingsUpdate } from '../MUser';
-import { deduplicateClueScrolls } from '../clues/clueUtils';
+import { ClueTiers } from '../clues/clueTiers';
 import { handleNewCLItems } from '../handleNewCLItems';
 import { filterLootReplace } from '../slayer/slayerUtil';
 import type { ItemBank } from '../types';
+import type { ActivityTaskOptions } from '../types/minions';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
+
+async function deduplicateClueScrolls({
+	userID,
+	loot,
+	currentBank,
+	tripOptions
+}: { userID: string; loot: Bank; currentBank: Bank; tripOptions: ActivityTaskOptions | undefined }): Promise<{
+	newLoot: Bank;
+	droppedClues: Prisma.DroppedClueScrollCreateInput[];
+}> {
+	const droppedClues: Prisma.DroppedClueScrollCreateInput[] = [];
+	const newLoot = loot.clone();
+	for (const { scrollID } of ClueTiers) {
+		if (!newLoot.has(scrollID)) continue;
+		const amountOwned = currentBank.amount(scrollID);
+		const amountInLoot = newLoot.amount(scrollID);
+
+		newLoot.set(scrollID, amountOwned > 0 ? 0 : 1);
+
+		const leftOvers = amountInLoot - amountOwned;
+		if (tripOptions) {
+			for (let i = 0; i < leftOvers; i++) {
+				const dateReceived = new Date(
+					randomInteger(tripOptions.finishDate - tripOptions.duration, tripOptions.finishDate)
+				);
+				droppedClues.push({
+					user_id: userID,
+					item_id: scrollID,
+					date_received: dateReceived
+				});
+			}
+		}
+	}
+	if (droppedClues.length > 0) {
+		await prisma.droppedClueScroll.createMany({
+			data: droppedClues
+		});
+	}
+	return {
+		newLoot,
+		droppedClues
+	};
+}
 
 export interface TransactItemsArgs {
 	userID: string;
@@ -19,6 +64,7 @@ export interface TransactItemsArgs {
 	dontAddToTempCL?: boolean;
 	neverUpdateHistory?: boolean;
 	otherUpdates?: Prisma.UserUpdateArgs['data'];
+	tripOptions?: ActivityTaskOptions;
 }
 
 declare global {
@@ -31,6 +77,7 @@ async function transactItemsFromBank({
 	collectionLog = false,
 	filterLoot = true,
 	dontAddToTempCL = false,
+	tripOptions,
 	...options
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
@@ -38,6 +85,7 @@ async function transactItemsFromBank({
 
 	return userQueueFn(userID, async function transactItemsInner() {
 		const settings = await mUserFetch(userID);
+		const messages: string[] = [];
 
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
 		if (itemsToRemove && settings.GP < gpToRemove) {
@@ -58,10 +106,14 @@ async function transactItemsFromBank({
 
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
-			itemsToAdd = deduplicateClueScrolls({
+			const dedupeResult = await deduplicateClueScrolls({
 				loot: itemsToAdd.clone(),
-				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
+				currentBank: currentBank.clone().remove(itemsToRemove ?? {}),
+				userID,
+				tripOptions
 			});
+			itemsToAdd = dedupeResult.newLoot;
+			messages.push(`Dropped ${dedupeResult.droppedClues.length} clue scrolls`);
 			const { bankLoot, clLoot } = filterLoot
 				? filterLootReplace(settings.allItemsOwned, itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
@@ -151,7 +203,8 @@ async function transactItemsFromBank({
 			itemsRemoved: itemsToRemove,
 			newBank: new Bank(newUser.bank as ItemBank),
 			newCL,
-			newUser
+			newUser,
+			messages
 		};
 	});
 }

@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import { getItemOrThrow, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
+import { Time } from 'e';
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
@@ -582,3 +583,5 @@ if (!process.env.TEST && isMainThread) {
 		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
 	);
 }
+
+export const CLUE_DROP_DESPAWN_TIME = Time.Minute * 61;

@@ -435,3 +435,12 @@ export function joinStrings(itemList: any[], end?: string) {
 		return itemList.join(', ');
 	}
 }
+
+export function fetchUsersDroppedClues() {
+	return prisma.droppedClueScroll.findMany({
+		select: {
+			user_id: true,
+			item_id: true
+		}
+	});
+}
