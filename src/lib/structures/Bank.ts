@@ -3,10 +3,17 @@ import { Bank } from 'oldschooljs';
 
 import type { DegradeableItem } from '../degradeableItems';
 import { degradeableItems } from '../degradeableItems';
+import type { ItemBank } from '../types';
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
-	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>) {
+	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>, charges?: ItemBank) {
 		super({ initialBank, allowedKeys: degradeableItems.map(i => i.settingsKey) });
+		if (charges) {
+			const entries = Object.entries(charges);
+			for (const [item, qty] of entries) {
+				this.add(degradeableItems.find(a => a.settingsKey === item)!.settingsKey, qty);
+			}
+		}
 	}
 
 	toString() {
@@ -16,6 +23,10 @@ export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 					`${qty.toLocaleString()} ${degradeableItems.find(i => i.settingsKey === key)!.item.name} charges`
 			)
 			.join(', ');
+	}
+
+	toJSON() {
+		return Object.fromEntries(this.entries());
 	}
 }
 

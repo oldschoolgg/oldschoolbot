@@ -3,7 +3,10 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { formatDuration } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
+import { refundChargeBank } from '../../../lib/degradeableItems';
 import { cancelTask } from '../../../lib/settings/settings';
+import { ChargeBank } from '../../../lib/structures/Bank';
+import type { ItemBank } from '../../../lib/types';
 import type { ActivityTaskOptions, CancelOptions, NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -73,13 +76,15 @@ Please confirm if you want to call your minion back from their trip.${refundMess
 
 	if (refund) {
 		const data = currentTask as ActivityTaskOptions;
+
 		const duration = Time.Second * 300;
 		await cancelTask(user.id);
 		await addSubTaskToActivityTask<CancelOptions>({
 			userID: user.id,
 			duration: duration,
 			channelID: channelID,
-			refundItems: data.itemCost ? data.itemCost : new Bank(),
+			refundItems: data.itemCost,
+			refundCharges: data.chargeCost,
 			type: 'Cancel'
 		});
 		return `${user.minionName} is returning from their trip with supplies, it'll take around ${formatDuration(
@@ -95,10 +100,18 @@ export const RefundTask: MinionTask = {
 	type: 'Cancel',
 	async run(data: CancelOptions) {
 		const user = await mUserFetch(data.userID);
-		await user.addItemsToBank({ items: data.refundItems });
+		let str = `${user}, ${user.minionName}'s trip has been cancelled, and they're now available.`;
 
-		const str = `${user}, ${user.minionName}'s trip has been cancelled and they have returned with the following supplies: ${new Bank(data.refundItems).toString()}. They are now available.`;
+		if (data.refundItems) {
+			await user.addItemsToBank({ items: data.refundItems });
+			str += ` They have returned with the following supplies: ${new Bank(data.refundItems).toString()}. `;
+		}
 
+		if (data.refundCharges) {
+			const refund = new ChargeBank(undefined, data.refundCharges as unknown as ItemBank); //vscode thinks it's a ChargeBank but it isn't, so we convert to unknown first
+			const results = await refundChargeBank(user, refund);
+			str += results.map(r => r.userMessage).join(' ');
+		}
 		return handleTripFinish(user, data.channelID, str, undefined, data, null);
 	}
 };

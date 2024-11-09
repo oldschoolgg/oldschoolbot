@@ -8,6 +8,7 @@ import type { IPatchData } from '../minions/farming/types';
 import type { AttackStyles } from '../minions/functions';
 import type { MinigameName } from '../settings/minigames';
 import type { RaidLevel } from '../simulation/toa';
+import type { ChargeBank } from '../structures/Bank';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
@@ -18,6 +19,7 @@ export interface ActivityTaskOptions {
 	finishDate: number;
 	channelID: string;
 	itemCost?: Bank;
+	chargeCost?: ChargeBank;
 	type?: string;
 }
 
@@ -573,7 +575,8 @@ export interface SpecificQuestOptions extends ActivityTaskOptions {
 
 export interface CancelOptions extends ActivityTaskOptions {
 	type: 'Cancel';
-	refundItems: Bank;
+	refundItems?: Bank;
+	refundCharges?: ChargeBank;
 }
 
 export type ActivityTaskData =
