@@ -201,7 +201,7 @@ const tasks: MinionTask[] = [
 export async function processPendingActivities() {
 	const activities: Activity[] = globalConfig.isProduction
 		? await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
-		: await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`;
+		: await sql`SELECT * FROM activity WHERE completed`;
 
 	if (activities.length > 0) {
 		await prisma.activity.updateMany({
