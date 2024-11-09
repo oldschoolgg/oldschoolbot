@@ -29,7 +29,7 @@ import { LRUCache } from 'lru-cache';
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
-import { BitField, globalConfig, projectiles } from './constants';
+import { BitField, MAX_XP, globalConfig, projectiles } from './constants';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
 import { GearSetupTypes, GearStat } from './gear/types';
@@ -280,12 +280,13 @@ export function roughMergeMahojiResponse(
 }
 
 export function skillingPetDropRate(
-	user: MUserClass | GearBank,
+	user: MUserClass | GearBank | number,
 	skill: SkillsEnum,
 	baseDropRate: number
 ): { petDropRate: number } {
-	const twoHundredMillXP = user.skillsAsXP[skill] >= 200_000_000;
-	const skillLevel = user.skillsAsLevels[skill];
+	const xp = typeof user === 'number' ? user : user.skillsAsXP[skill];
+	const twoHundredMillXP = xp >= MAX_XP;
+	const skillLevel = convertXPtoLVL(xp);
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
 	return { petDropRate: dropRate };

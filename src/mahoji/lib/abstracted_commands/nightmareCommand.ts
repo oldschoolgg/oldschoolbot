@@ -46,7 +46,7 @@ const inquisitorItems = resolveItems([
 
 const phosaniBISGear = new Gear({
 	head: "Inquisitor's great helm",
-	neck: 'Amulet of torture',
+	neck: 'Amulet of rancour',
 	body: "Inquisitor's hauberk",
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
