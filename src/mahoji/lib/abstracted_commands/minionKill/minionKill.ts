@@ -135,7 +135,7 @@ export async function minionKillCommand(
 		isInWilderness: result.isInWilderness,
 		attackStyles: result.attackStyles,
 		onTask: slayerInfo.assignedTask !== null
-	})
+	});
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
