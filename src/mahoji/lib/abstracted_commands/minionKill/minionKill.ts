@@ -1,6 +1,5 @@
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 
-import { killPumpkinhead } from '../../../../lib/bso/halloween2024';
 import { handleDTD } from '../../../../lib/bso/handleDTD';
 import { colosseumCommand } from '../../../../lib/colosseum';
 import type { PvMMethod } from '../../../../lib/constants';
@@ -55,7 +54,6 @@ export async function minionKillCommand(
 		});
 		name = 'Ogress Warrior';
 	}
-	if (stringMatches(name, 'pumpkinhead')) return killPumpkinhead(user);
 	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID, inputQuantity);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, inputQuantity);
