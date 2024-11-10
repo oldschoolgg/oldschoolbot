@@ -9,6 +9,7 @@ import { BitField, Emoji } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 
 import { minionBuyButton } from '../../../lib/sharedComponents';
+import { ChargeBank } from '../../../lib/structures/Bank';
 import type { ActivityTaskOptions } from '../../../lib/types/minions';
 import { makeComponents } from '../../../lib/util';
 import {
@@ -112,8 +113,9 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	if (minionIsBusy) {
 		const currentTask = getActivityOfUser(user.id) as ActivityTaskOptions;
-		const cost = new Bank(currentTask.itemCost);
-		if (cost.length > 0) {
+		const items = new Bank(currentTask.itemCost);
+		const charges = new ChargeBank(currentTask.chargeCost);
+		if (items.length > 0 || charges.length() > 0) {
 			buttons.push(
 				new ButtonBuilder()
 					.setCustomId('REFUND_TRIP')

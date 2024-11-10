@@ -1,4 +1,4 @@
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/structures';
+import { GeneralBank } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
 import type { DegradeableItem } from '../degradeableItems';
@@ -6,12 +6,13 @@ import { degradeableItems } from '../degradeableItems';
 import type { ItemBank } from '../types';
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
-	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>, charges?: ItemBank) {
-		super({ initialBank, allowedKeys: degradeableItems.map(i => i.settingsKey) });
+	constructor(charges?: ItemBank | ChargeBank) {
+		super({ allowedKeys: degradeableItems.map(i => i.settingsKey) });
 		if (charges) {
 			const entries = Object.entries(charges);
 			for (const [item, qty] of entries) {
-				this.add(degradeableItems.find(a => a.settingsKey === item)!.settingsKey, qty);
+				const degItem = degradeableItems.find(a => a.settingsKey === item);
+				if (degItem) this.add(degItem.settingsKey, qty);
 			}
 		}
 	}

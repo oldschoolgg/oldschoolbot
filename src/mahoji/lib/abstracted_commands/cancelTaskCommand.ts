@@ -6,14 +6,11 @@ import { Bank } from 'oldschooljs';
 import { refundChargeBank } from '../../../lib/degradeableItems';
 import { cancelTask } from '../../../lib/settings/settings';
 import { ChargeBank } from '../../../lib/structures/Bank';
-import type { ItemBank } from '../../../lib/types';
 import type { ActivityTaskOptions, CancelOptions, NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { getActivityOfUser } from '../../../lib/util/minionIsBusy';
-
-const nonRefundableTasks = ['Inferno', 'Cancel'];
 
 export async function cancelTaskCommand(
 	user: MUser,
@@ -56,8 +53,8 @@ export async function cancelTaskCommand(
 	}
 
 	if (refund) {
-		const data = currentTask as ActivityTaskOptions;
-		if (!data.itemCost || data.itemCost.length === 0 || nonRefundableTasks.some(task => task === data.type)) {
+		const { itemCost, chargeCost } = currentTask as ActivityTaskOptions;
+		if ((!itemCost || itemCost.length === 0) && (!chargeCost || new ChargeBank(chargeCost).length() > 0)) {
 			return 'You cannot be refunded for this trip!';
 		}
 	}
@@ -100,18 +97,21 @@ export const RefundTask: MinionTask = {
 	type: 'Cancel',
 	async run(data: CancelOptions) {
 		const user = await mUserFetch(data.userID);
-		let str = `${user}, ${user.minionName}'s trip has been cancelled, and they're now available.`;
+		let str = `${user}, ${user.minionName}'s trip has been cancelled, and they're now available. `;
 
-		if (data.refundItems) {
+		const items = new Bank(data.refundItems);
+		const charges = new ChargeBank(data.refundCharges);
+
+		if (data.refundItems && items.length > 0) {
 			await user.addItemsToBank({ items: data.refundItems });
-			str += ` They have returned with the following supplies: ${new Bank(data.refundItems).toString()}. `;
+			str += `They have returned with the following supplies: ${items.toString()}. `;
 		}
 
-		if (data.refundCharges) {
-			const refund = new ChargeBank(undefined, data.refundCharges as unknown as ItemBank); //vscode thinks it's a ChargeBank but it isn't, so we convert to unknown first
-			const results = await refundChargeBank(user, refund);
+		if (data.refundCharges && charges.length() > 0) {
+			const results = await refundChargeBank(user, charges);
 			str += results.map(r => r.userMessage).join(' ');
 		}
+
 		return handleTripFinish(user, data.channelID, str, undefined, data, null);
 	}
 };
