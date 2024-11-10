@@ -933,7 +933,7 @@ enum activity_type_enum {
   MyNotes
   Colosseum
   CreateForestersRations
-  Cancel
+  Refund
 }
 
 enum xp_gains_skill_enum {

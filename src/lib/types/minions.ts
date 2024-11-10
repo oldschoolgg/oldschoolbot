@@ -572,8 +572,8 @@ export interface SpecificQuestOptions extends ActivityTaskOptions {
 	questID: number;
 }
 
-export interface CancelOptions extends ActivityTaskOptions {
-	type: 'Cancel';
+export interface RefundOptions extends ActivityTaskOptions {
+	type: 'Refund';
 	refundItems?: Bank;
 	refundCharges?: ChargeBank;
 }
@@ -645,4 +645,4 @@ export type ActivityTaskData =
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions
-	| CancelOptions;
+	| RefundOptions;

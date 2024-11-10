@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import { refundChargeBank } from '../../../lib/degradeableItems';
 import { cancelTask } from '../../../lib/settings/settings';
 import { ChargeBank } from '../../../lib/structures/Bank';
-import type { ActivityTaskOptions, CancelOptions, NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
+import type { ActivityTaskOptions, NexTaskOptions, RaidsOptions, RefundOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -76,13 +76,13 @@ Please confirm if you want to call your minion back from their trip.${refundMess
 
 		const duration = Time.Second * 300;
 		await cancelTask(user.id);
-		await addSubTaskToActivityTask<CancelOptions>({
+		await addSubTaskToActivityTask<RefundOptions>({
 			userID: user.id,
-			duration: duration,
+			duration: duration * 0.01,
 			channelID: channelID,
 			refundItems: data.itemCost,
 			refundCharges: data.chargeCost,
-			type: 'Cancel'
+			type: 'Refund'
 		});
 		return `${user.minionName} is returning from their trip with supplies, it'll take around ${formatDuration(
 			duration
@@ -94,8 +94,8 @@ Please confirm if you want to call your minion back from their trip.${refundMess
 }
 
 export const RefundTask: MinionTask = {
-	type: 'Cancel',
-	async run(data: CancelOptions) {
+	type: 'Refund',
+	async run(data: RefundOptions) {
 		const user = await mUserFetch(data.userID);
 		let str = `${user}, ${user.minionName}'s trip has been cancelled, and they're now available. `;
 

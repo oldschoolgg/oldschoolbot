@@ -143,7 +143,7 @@ export const musicCapeRequirements = new Requirements()
 				activity_type_enum.Nex,
 				activity_type_enum.Revenants, // This is now under monsterActivity
 				activity_type_enum.KourendFavour, // Kourend favor activity was removed
-				activity_type_enum.Cancel
+				activity_type_enum.Refund
 			];
 			const notDoneActivities = Object.values(activity_type_enum).filter(
 				type => !typesNotRequiredForMusicCape.includes(type) && !uniqueActivitiesDone.includes(type)
