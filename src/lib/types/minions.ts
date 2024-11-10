@@ -20,7 +20,6 @@ export interface ActivityTaskOptions {
 	channelID: string;
 	itemCost?: Bank;
 	chargeCost?: ChargeBank;
-	type?: string;
 }
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
