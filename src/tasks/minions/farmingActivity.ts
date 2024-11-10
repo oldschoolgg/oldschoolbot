@@ -1,4 +1,4 @@
-import { Time, randInt } from 'e';
+import { Time, clamp, randInt } from 'e';
 import { Bank, Monsters, increaseBankQuantitesByPercent } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
@@ -500,13 +500,26 @@ export const farmingTask: MinionTask = {
 			}
 
 			if (plantToHarvest.name === 'Pumpkin') {
-				for (let i = 0; i < alivePlants; i++) {
-					if (roll(24)) {
-						const heirLoomPumpkinLoot = new Bank().add('Heirloom pumpkin');
-						await user.addItemsToBank({ items: heirLoomPumpkinLoot, collectionLog: true });
-						infoStr.push('🟣 **You found an Heirloom pumpkin**');
+				const _tripsDone = await prisma.farmedCrop.count({
+					where: {
+						user_id: user.id,
+						item_id: 1959,
+						date_planted: new Date(Date.now() - Time.Day * 12),
+						date_harvested: {
+							not: null
+						}
 					}
-					if (roll(600)) {
+				});
+				const tripsDone = clamp(_tripsDone, 1, 170);
+				let dropRate = 600;
+				if (!user.cl.has('Mumpkin')) {
+					dropRate -= tripsDone * 3.5;
+					infoStr.push(
+						`Your mumpkin droprate was boosted from 1/600 per pumpkin to 1/${dropRate} per pumpkin.`
+					);
+				}
+				for (let i = 0; i < alivePlants; i++) {
+					if (roll(dropRate)) {
 						await user.addItemsToBank({ items: new Bank().add('Mumpkin'), collectionLog: true });
 						infoStr.push(
 							`🟣 **You've found a little red panda eating your pumpkins. You've adopted it and named it Mumpkin.**`
