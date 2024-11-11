@@ -504,7 +504,9 @@ export const farmingTask: MinionTask = {
 					where: {
 						user_id: user.id,
 						item_id: 1959,
-						date_planted: new Date(Date.now() - Time.Day * 12),
+						date_planted: {
+							gte: new Date(Date.now() - Time.Day * 12)
+						},
 						date_harvested: {
 							not: null
 						}
@@ -513,7 +515,7 @@ export const farmingTask: MinionTask = {
 				const tripsDone = clamp(_tripsDone, 1, 170);
 				let dropRate = 600;
 				if (!user.cl.has('Mumpkin')) {
-					dropRate -= tripsDone * 3.5;
+					dropRate -= Math.ceil(tripsDone * 3.5);
 					infoStr.push(
 						`Your mumpkin droprate was boosted from 1/600 per pumpkin to 1/${dropRate} per pumpkin.`
 					);
