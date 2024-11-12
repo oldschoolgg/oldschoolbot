@@ -512,10 +512,11 @@ export const farmingTask: MinionTask = {
 						}
 					}
 				});
-				const tripsDone = clamp(_tripsDone, 1, 170);
+				const tripsDone = clamp(_tripsDone, 1, 100);
 				let dropRate = 600;
 				if (!user.cl.has('Mumpkin')) {
-					dropRate -= Math.ceil(tripsDone * 3.5);
+					dropRate -= clamp(Math.ceil(tripsDone * 9.5), 0, 560);
+					dropRate = clamp(dropRate, 2, 300);
 					infoStr.push(
 						`Your mumpkin droprate was boosted from 1/600 per pumpkin to 1/${dropRate} per pumpkin.`
 					);
