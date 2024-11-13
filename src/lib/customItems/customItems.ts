@@ -12922,9 +12922,7 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			superTradeableButTradeableOnGE: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -13044,9 +13042,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	500_000

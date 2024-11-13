@@ -5,8 +5,7 @@ import {
 	type ButtonBuilder,
 	type MessageCollector,
 	type MessageCreateOptions,
-	bold,
-	italic
+	bold
 } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -19,7 +18,6 @@ import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { PortentID, chargePortentIfHasCharges, getAllPortentCharges } from '../bso/divination';
 import { gods } from '../bso/divineDominion';
-import { handleHalloweenEvent } from '../bso/halloween2024';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
@@ -575,34 +573,6 @@ export async function handleTripFinish(
 
 	if (components.length > 0) {
 		message.components = makeComponents(components);
-	}
-	if (roll(3) && !user.cl.has('Spookling token')) {
-		const img = await mahojiChatHead({
-			head: 'pumpkin',
-			content:
-				'Halt! Do you care for a treat? Or maybe a trick? Avoid my Spooklings unless you want to feel my wrath...'
-		});
-		message.content += `\n\n${bold('Pumpkinhead appears! All of Gielenor turns into a pumpkin patch before your very eyes!')}`;
-		if (roll(10)) {
-			message.content += `\n\n${italic('Collect enough Spookling tokens, and who knows? You might just find... 10% more Mini PH! (Or maybe a few more than that...)')}`;
-		}
-		await user.addItemsToBank({ items: new Bank().add('Spookling token'), collectionLog: true });
-		if (!message.files) message.files = img.files;
-		else message.files = [...message.files, ...img.files];
-	} else if (user.cl.has('Spookling token')) {
-		const spookResult = handleHalloweenEvent(user, data.duration);
-		if (spookResult.message !== '') {
-			const img = await mahojiChatHead({ head: 'spookling', content: spookResult.message });
-			if (!message.files) message.files = img.files;
-			else message.files = [...message.files, ...img.files];
-		}
-		if (spookResult.loot) {
-			await user.addItemsToBank({ items: spookResult.loot, collectionLog: true });
-			if (spookResult.loot.has('Polterpup')) {
-				message.content += `\n\n${bold('A chill settles beside you, an eerie presence that clings to you no matter where you go. You have a feeling it’s here to stay, watching... and waiting.')}`;
-			}
-			message.content += `\nReceived: ${spookResult.loot}`;
-		}
 	}
 
 	if (!user.owns('Mysterious clue (1)') && roll(10) && !user.bitfield.includes(BitField.HasUnlockedYeti)) {
