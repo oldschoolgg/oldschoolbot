@@ -1017,11 +1017,6 @@ export const baseFilters: Filterable[] = [
 	{
 		name: 'Lamps',
 		aliases: ['lamps'],
-		items: () => XPLamps.map(i => i.itemID)
-	},
-	{
-		name: 'Lamps',
-		aliases: ['lamps'],
 		items: () => Lampables.flatMap(i => i.items)
 	},
 	{
