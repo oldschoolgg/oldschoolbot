@@ -1,4 +1,4 @@
-import { Time, clamp, randInt } from 'e';
+import { Time, randInt } from 'e';
 import { Bank, Monsters, increaseBankQuantitesByPercent } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
@@ -499,37 +499,6 @@ export const farmingTask: MinionTask = {
 				if (hesporiSeeds > 0) loot.add('Hespori seed', hesporiSeeds);
 			}
 
-			if (plantToHarvest.name === 'Pumpkin') {
-				const _tripsDone = await prisma.farmedCrop.count({
-					where: {
-						user_id: user.id,
-						item_id: 1959,
-						date_planted: {
-							gte: new Date(Date.now() - Time.Day * 12)
-						},
-						date_harvested: {
-							not: null
-						}
-					}
-				});
-				const tripsDone = clamp(_tripsDone, 1, 100);
-				let dropRate = 600;
-				if (!user.cl.has('Mumpkin')) {
-					dropRate -= clamp(Math.ceil(tripsDone * 9.5), 0, 560);
-					dropRate = clamp(dropRate, 2, 300);
-					infoStr.push(
-						`Your mumpkin droprate was boosted from 1/600 per pumpkin to 1/${dropRate} per pumpkin.`
-					);
-				}
-				for (let i = 0; i < alivePlants; i++) {
-					if (roll(dropRate)) {
-						await user.addItemsToBank({ items: new Bank().add('Mumpkin'), collectionLog: true });
-						infoStr.push(
-							`🟣 **You've found a little red panda eating your pumpkins. You've adopted it and named it Mumpkin.**`
-						);
-					}
-				}
-			}
 			if (loot.has('Tangleroot')) {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
