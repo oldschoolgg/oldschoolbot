@@ -23,7 +23,6 @@ import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { XPLamps } from '../xpLamps';
 import { allCollectionLogs } from './Collections';
 import {
 	allClueItems,
