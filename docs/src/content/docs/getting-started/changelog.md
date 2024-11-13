@@ -4,6 +4,71 @@ sidebar:
   order: 3
 ---
 
+## Update 13/11/2024 [[4fbfe429e9a1bdf817175cf497177e47fefc6be6...e03afd628fd7e1aa460acc417d822c2d697f9087]]
+
+- Hacktoberfest has finished, and everyone has been sent out their custom merch and other prizes! Thank you to all who participated.
+- OSB Bingo #3 has finished! Read the page for it for more information: [OSB Bingo #3](/osb/miscelleanous/bingo/#osb-bingo-3-finished)
+
+### [[gc]]
+
+- Lowered the food cost for araxytes
+- The BiS amulet for nightmare is now the [[Amulet of rancour]]
+
+### [[00justas]]
+
+- Added Nid to the pets CL
+- Allow buying genie lamps with frog tokens
+- You can now create these items: [[Strange skull]] [[Skull sceptre]] [[Runed sceptre]] [[Skull sceptre(i)]]
+
+### [[DayV-git]]
+
+- Fix araxxor boss task requirements
+- Allow buying genie lamps with frog tokens
+- Fixed a bug with agility-alching sometimes picking the wrong item
+- Improved the formatting of some messages
+- Allow global gear presets equip command to use similar items
+- The bot now shows loot as pictures when using implings in [[/clue]]
+- Fixed wildy rev weapon boost
+- Added total kc and kc/h to tempoross/wintertodt return message
+- Added task and catacomb modifiers to [[/kill]] simulation command
+- Added missing Graceful creates / reverts (Add Brimhaven and Dark graceful revert and individual item reverts for Brimhaven, Dark and Varlamore - same as every other graceful recolour)
+- Solo nex drops now are spoilered if you get a purple
+- Superiors now always drop brimstone keys on konar tasks
+
+### [[Felris]]
+
+- Added error message when trying to use twitcher gloves without having them equipped
+- Added boost to zulrah for zul-andra teleports (uses 1 tele per 4 kills for a 10% boost)
+- Added boost to cerberus for keymaster teleports (uses 1 tele per 10 kills for a 10% boost)
+- Added boost to tormented demons for Guthixian temple teleports (uses 1 tele per 20 kills for a 10% boost)
+- Added boost to revs for Guthixian temple teleports (uses 1 tele per 20 kills for a 5% boost)
+- You can now create a Corrupted Youngllef from a Youngllef if you have atleast 1 CG kc
+- Added [Armoured zombie](https://oldschool.runescape.wiki/w/Armoured_zombie) as a killable monster
+  - Added Broken zombie axe to misc CL page
+  - Added [[Zombie axe]] to [[/create]]
+
+### [[nwjgit]]
+
+- Updated the wyrm agility pet droprate
+- Add the ability to create [[Forester's ration]]
+- Fixed ash sanctifier not giving proper XP and removing ashes
+
+### [[Lajnux]]
+
+- Balanced the construction xp/hr rates (Some things are slower/faster now)
+- Updated/fixed some mining code
+
+### [[TastyPumPum]]
+
+- Added the combat achievements for all 4 DT2 bosses
+
+### [[DarkWorldsArtist]]
+
+- Added [Crab](https://oldschool.runescape.wiki/w/Crab) killable monster
+  - Added [[Fresh crab claw]] [[Fresh crab shell]] to misc CL
+  - Added [[Diving apparatus]] [[Fishbowl helmet]] to [[/buy]]
+  - Added [[Crab helmet]] [[Crab claw]] to [[/create]]
+
 ## Update 16/10/2024 [[68b130088f5e365ec2a341cae48bc5b353ccc2ff...4fbfe429e9a1bdf817175cf497177e47fefc6be6]]
 
 Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-started/bingo) for information.
