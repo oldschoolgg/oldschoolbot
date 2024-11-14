@@ -506,7 +506,7 @@ export class BossInstance {
 			if (this.users.length !== bossUsers.length) {
 				console.error('wtfffffffff');
 			}
-			const dwwhChance = calcDwwhChance(bossUsers.map(i => i.user));
+			const dwwhChance = calcDwwhChance(bossUsers.length, false);
 			results.push([
 				bossUsers.length,
 				bossUsers[0].userPercentChange.toFixed(1),
