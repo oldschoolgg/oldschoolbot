@@ -29,7 +29,7 @@ export default async ({
 			};
 		}
 		return {
-			...(simulatedKillable.message ? { content: simulatedKillable.message } : {}),
+			content: simulatedKillable.message,
 			bank: simulatedKillable.loot(quantity).toJSON()
 		};
 	}
