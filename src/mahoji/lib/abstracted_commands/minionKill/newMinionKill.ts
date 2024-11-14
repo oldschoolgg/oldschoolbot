@@ -263,10 +263,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	speedDurationResult.updateBank.itemCostBank.freeze();
 	speedDurationResult.updateBank.itemLootBank.freeze();
 
-	if (speedDurationResult.updateBank.itemCostBank.length > 0) {
-		speedDurationResult.messages.push(`Removing items: ${speedDurationResult.updateBank.itemCostBank}`);
-	}
-
 	const result = newMinionKillReturnSchema.parse({
 		duration,
 		quantity,
