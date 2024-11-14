@@ -21,8 +21,20 @@ export default async ({
 	limit,
 	lootTableTertiaryChanges
 }: KillWorkerArgs): KillWorkerReturn => {
-	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
+	const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, bossName));
+	if (simulatedKillable) {
+		if (quantity > limit) {
+			return {
+				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>`
+			};
+		}
+		return {
+			...(simulatedKillable.message ? { content: simulatedKillable.message } : {}),
+			bank: simulatedKillable.loot(quantity).toJSON()
+		};
+	}
 
+	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
 	if (osjsMonster) {
 		if (osjsMonster.id === YETI_ID && production) {
 			return { error: 'The bot is too scared to simulate fighting the yeti.' };
@@ -49,17 +61,6 @@ export default async ({
 		}
 
 		return { bank: result.bank.toJSON() };
-	}
-
-	const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, bossName));
-	if (simulatedKillable) {
-		if (quantity > limit) {
-			return {
-				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>`
-			};
-		}
-
-		return { bank: simulatedKillable.loot(quantity).toJSON() };
 	}
 
 	return { error: "I don't have that monster!" };

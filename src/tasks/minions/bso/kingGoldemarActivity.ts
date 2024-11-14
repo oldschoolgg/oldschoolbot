@@ -70,7 +70,10 @@ export const kingGoldemarTask: MinionTask = {
 
 		await Promise.all(users.map(u => u.incrementKC(KingGoldemar.id, 1)));
 
-		const dwwhChance = calcDwwhChance(users);
+		const dwwhChance = calcDwwhChance(
+			users.length,
+			users.some(u => u.gear.melee.hasEquipped('Ring of luck'))
+		);
 
 		const gotDWWH = roll(dwwhChance);
 		const dwwhRecipient = gotDWWH ? randArrItem(dwwhTable) : null;
