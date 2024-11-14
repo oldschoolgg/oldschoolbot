@@ -72,14 +72,9 @@ export class UpdateBank {
 
 		// Charges
 		if (this.chargeBank.length() > 0) {
-			const res = await degradeChargeBank(user, this.chargeBank).then(res =>
-				res.map(p => p.userMessage).join(', ')
-			);
-			if (res) {
-				results.push(res);
-				if (user.hasEquipped("Ghommal's lucky penny")) {
-					results.push("5% reduced charges for Ghommal's lucky penny");
-				}
+			const degradeResults = await degradeChargeBank(user, this.chargeBank);
+			if (degradeResults) {
+				results.push(degradeResults);
 			}
 		}
 

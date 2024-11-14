@@ -666,10 +666,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		}
 
 		const degradeResults = await degradeChargeBank(user, chargeBank);
-		messages.push(degradeResults.map(i => i.userMessage).join(', '));
-		if (user.hasEquipped("Ghommal's lucky penny")) {
-			messages.push("5% reduced charges for Ghommal's lucky penny.");
-		}
+		messages.push(degradeResults);
 	}
 
 	await addSubTaskToActivityTask<ColoTaskOptions>({
