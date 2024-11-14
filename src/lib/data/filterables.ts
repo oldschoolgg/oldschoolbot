@@ -23,7 +23,6 @@ import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { XPLamps } from '../xpLamps';
 import { allCollectionLogs } from './Collections';
 import {
 	allClueItems,
@@ -1013,11 +1012,6 @@ export const baseFilters: Filterable[] = [
 		name: 'Fruit',
 		aliases: ['fruit'],
 		items: () => monkeyEatables.map(i => i.item.id)
-	},
-	{
-		name: 'Lamps',
-		aliases: ['lamps'],
-		items: () => XPLamps.map(i => i.itemID)
 	},
 	{
 		name: 'Lamps',
