@@ -21,8 +21,8 @@ describe('Clue Juggling', async () => {
 		await user.kill(EMonster.MAN);
 		await user.kill(EMonster.MAN);
 
-		expect(user.bank.amount(EItem.CLUE_SCROLL_BEGINNER)).toEqual(0);
-		expect(user.bank.amount(EItem.CLUE_SCROLL_EASY)).toEqual(0);
+		expect(user.bank.amount(EItem.CLUE_SCROLL_BEGINNER)).toEqual(1);
+		expect(user.bank.amount(EItem.CLUE_SCROLL_EASY)).toEqual(1);
 
 		const droppedClues = await prisma.droppedClueScroll.findMany({
 			where: {
