@@ -5,13 +5,19 @@ on:
     branches:
       - master
       - bso
+    paths-ignore:
+      - "docs/**"
   pull_request:
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
+    concurrency:
+      group: ${{ github.ref_name }}-integrationtests
+      cancel-in-progress: true
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4

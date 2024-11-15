@@ -1,4 +1,4 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 

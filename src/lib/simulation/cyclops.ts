@@ -1,7 +1,4 @@
-import CommonSeedDropTable from 'oldschooljs/dist/simulation/subtables/CommonSeedDropTable';
-import HerbDropTable from 'oldschooljs/dist/simulation/subtables/HerbDropTable';
-import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { CommonSeedDropTable, GemTable, HerbDropTable, LootTable } from 'oldschooljs';
 
 export const CyclopsTable = new LootTable()
 	.every('Big bones')

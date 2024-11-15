@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { AttachmentBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { notEmpty } from 'e';

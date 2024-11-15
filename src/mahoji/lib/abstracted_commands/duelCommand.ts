@@ -1,4 +1,4 @@
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, noOp, sleep } from 'e';
@@ -134,7 +134,7 @@ export async function duelCommand(
 				guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
 				sender: BigInt(loser.id),
 				recipient: BigInt(winner.id),
-				items_sent: new Bank().add('Coins', Math.floor(amount * taxRate)).bank,
+				items_sent: new Bank().add('Coins', Math.floor(amount * taxRate)).toJSON(),
 				type: 'duel'
 			}
 		});

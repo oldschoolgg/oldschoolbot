@@ -1,9 +1,9 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
@@ -97,7 +97,7 @@ export const fletchCommand: OSBMahojiCommand = {
 		}
 
 		const itemsNeeded = fletchable.inputItems.clone().multiply(quantity);
-		if (!userBank.has(itemsNeeded.bank)) {
+		if (!userBank.has(itemsNeeded)) {
 			return `You don't have enough items. For ${quantity}x ${fletchable.name}, you're missing **${itemsNeeded
 				.clone()
 				.remove(userBank)}**.`;

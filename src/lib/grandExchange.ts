@@ -1,21 +1,20 @@
+import { getInterval } from '@oldschoolgg/toolkit/util';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
+import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, ONE_TRILLION, PerkTier, globalConfig } from './constants';
 import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
-
-import { BLACKLISTED_USERS } from './blacklists';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeComponents, toKMB } from './util';
+import { assert, generateGrandExchangeID, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -543,9 +542,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerListing.asking_price_per_item
 		}] SellerPrice[${
 			sellerListing.asking_price_per_item
-		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.bank)}] ExpectedAfterBank[${
-			geBank.clone().remove(bankToRemoveFromGeBank).bank
-		}]`;
+		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.toJSON())}] ExpectedAfterBank[${geBank
+			.clone()
+			.remove(bankToRemoveFromGeBank)
+			.toJSON()}]`;
 
 		assert(
 			bankToRemoveFromGeBank.amount('Coins') === Number(buyerListing.asking_price_per_item) * quantityToBuy,
@@ -563,13 +563,13 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		this.log(
-			`Completing a transaction, removing ${JSON.stringify(bankToRemoveFromGeBank.bank)} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${JSON.stringify(geBank.bank)}. ${debug}`,
+			`Completing a transaction, removing ${JSON.stringify(bankToRemoveFromGeBank.toJSON())} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${JSON.stringify(geBank.toJSON())}. ${debug}`,
 			{
 				totalPriceAfterTax,
 				totalTaxPaid,
 				totalPriceBeforeTax,
 				bankToRemoveFromGeBank: bankToRemoveFromGeBank.toString(),
-				currentGEBank: JSON.stringify(geBank.bank)
+				currentGEBank: JSON.stringify(geBank.toJSON())
 			}
 		);
 
@@ -625,7 +625,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		sanityCheckTransaction(newTx);
 
-		this.log(`Transaction completed, the new G.E bank is ${JSON.stringify((await this.fetchOwnedBank()).bank)}.`);
+		this.log(
+			`Transaction completed, the new G.E bank is ${JSON.stringify((await this.fetchOwnedBank()).toJSON())}.`
+		);
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
@@ -848,7 +850,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			shouldHave.add(listing.item_id, listing.quantity_remaining);
 		}
 
-		this.log(`Expected G.E Bank: ${JSON.stringify(shouldHave.bank)}`);
+		this.log(`Expected G.E Bank: ${JSON.stringify(shouldHave.toJSON())}`);
 		if (!currentBank.equals(shouldHave)) {
 			if (!currentBank.has(shouldHave)) {
 				throw new Error(

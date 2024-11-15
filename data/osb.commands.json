@@ -1,0 +1,544 @@
+[
+	{
+		"name": "activities",
+		"desc": "Miscellaneous activities you can do.",
+		"subOptions": [
+			"plank_make",
+			"chompy_hunt",
+			"my_notes",
+			"warriors_guild",
+			"camdozaal",
+			"collect",
+			"quest",
+			"decant",
+			"charge",
+			"fight_caves",
+			"inferno",
+			"birdhouses",
+			"aerial_fishing",
+			"enchant",
+			"bury",
+			"scatter",
+			"puro_puro",
+			"alch",
+			"cast",
+			"underwater",
+			"other"
+		]
+	},
+	{
+		"name": "ask",
+		"desc": "Ask a yes/no question to the bot and receive an answer.",
+		"subOptions": []
+	},
+	{
+		"name": "bank",
+		"desc": "See your minions bank.",
+		"subOptions": []
+	},
+	{
+		"name": "bingo",
+		"desc": "Bingo!",
+		"subOptions": ["make_team", "leave_team", "view", "leaderboard", "create_bingo", "manage_bingo", "items"]
+	},
+	{
+		"name": "bossrecords",
+		"desc": "Shows your OSRS boss records.",
+		"subOptions": []
+	},
+	{
+		"name": "botleagues",
+		"desc": "Compete in the OSB/BSO Leagues.",
+		"subOptions": ["help", "claim_trophy", "leaderboard", "buy_reward"]
+	},
+	{
+		"name": "bs",
+		"desc": "Search your minions bank.",
+		"subOptions": []
+	},
+	{
+		"name": "build",
+		"desc": "Sends your minion to train Construction by building things.",
+		"examples": ["/build name:Crude chair"],
+		"subOptions": []
+	},
+	{
+		"name": "buy",
+		"desc": "Allows you to purchase items.",
+		"subOptions": []
+	},
+	{
+		"name": "ca",
+		"desc": "Combat Achievements",
+		"subOptions": ["view", "claim"]
+	},
+	{
+		"name": "casket",
+		"desc": "Simulate opening lots of clues caskets.",
+		"subOptions": []
+	},
+	{
+		"name": "choose",
+		"desc": "Have the bot make a choice from a list of things.",
+		"examples": ["/choose list:First option, second option, third option"],
+		"subOptions": []
+	},
+	{
+		"name": "chop",
+		"desc": "Chop logs using the Woodcutting skill.",
+		"examples": ["/chop name:Logs"],
+		"subOptions": []
+	},
+	{
+		"name": "cl",
+		"desc": "See your Collection Log.",
+		"examples": ["/cl name:Boss"],
+		"subOptions": []
+	},
+	{
+		"name": "claim",
+		"desc": "Claim prizes, rewards and other things.",
+		"subOptions": []
+	},
+	{
+		"name": "clue",
+		"desc": "Send your minion to complete clue scrolls.",
+		"examples": ["/clue tier:easy"],
+		"subOptions": []
+	},
+	{
+		"name": "clues",
+		"desc": "See your OSRS clue scores.",
+		"examples": ["/clues rsn:Magnaboy"],
+		"subOptions": []
+	},
+	{
+		"name": "config",
+		"desc": "Commands configuring settings and options.",
+		"subOptions": ["server", "user"]
+	},
+	{
+		"name": "cook",
+		"desc": "Cook things using the cooking skill.",
+		"examples": ["/cook name:Shrimp"],
+		"subOptions": []
+	},
+	{
+		"name": "craft",
+		"desc": "Craft items with the Crafting skill.",
+		"examples": ["/craft name:Onyx necklace"],
+		"subOptions": []
+	},
+	{
+		"name": "create",
+		"desc": "Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.",
+		"subOptions": []
+	},
+	{
+		"name": "data",
+		"desc": "View various pieces of data.",
+		"examples": ["/data name:Personal Activity Types"],
+		"subOptions": []
+	},
+	{
+		"name": "drop",
+		"desc": "Drop items from your bank.",
+		"examples": ["/drop items:10 trout, 5 coal"],
+		"subOptions": []
+	},
+	{
+		"name": "drycalc",
+		"desc": "Calculate your drystreak chance.",
+		"subOptions": []
+	},
+	{
+		"name": "fake",
+		"desc": "Generate fake images of getting loot.",
+		"subOptions": []
+	},
+	{
+		"name": "fakepm",
+		"desc": "Generate fake images of PMs.",
+		"subOptions": []
+	},
+	{
+		"name": "farming",
+		"desc": "Allows you to do Farming related things.",
+		"subOptions": [
+			"check_patches",
+			"plant",
+			"auto_farm",
+			"auto_farm_filter",
+			"default_compost",
+			"always_pay",
+			"harvest",
+			"tithe_farm",
+			"compost_bin",
+			"contract"
+		]
+	},
+	{
+		"name": "finish",
+		"desc": "Simulate finishing a CL.",
+		"subOptions": []
+	},
+	{
+		"name": "fish",
+		"desc": "Send your minion to fish fish.",
+		"examples": ["/fish name:Shrimp"],
+		"subOptions": []
+	},
+	{
+		"name": "fletch",
+		"desc": "Fletch items with the Fletching skill.",
+		"examples": ["/craft name:Onyx necklace"],
+		"subOptions": []
+	},
+	{
+		"name": "gamble",
+		"desc": "Partake in various gambling activities.",
+		"subOptions": ["item", "dice", "duel", "lucky_pick", "slots", "hot_cold", "give_random_item"]
+	},
+	{
+		"name": "ge",
+		"desc": "Exchange grandly with other players on the bot!",
+		"subOptions": ["buy", "sell", "my_listings", "cancel", "stats", "price", "view"]
+	},
+	{
+		"name": "gear",
+		"desc": "Manage, equip, unequip your gear.",
+		"subOptions": ["equip", "unequip", "stats", "pet", "view", "swap"]
+	},
+	{
+		"name": "gearpresets",
+		"desc": "Manage, equip, unequip your gear presets.",
+		"subOptions": ["view", "equip", "create", "edit", "delete"]
+	},
+	{
+		"name": "gift",
+		"desc": "Create gifts for other users, or open one you received.",
+		"subOptions": ["open", "list", "create", "send"]
+	},
+	{
+		"name": "giveaway",
+		"desc": "Giveaway items from your ban to other players.",
+		"examples": ["/giveaway items:10 trout, 5 coal time:1h"],
+		"subOptions": ["start", "list"]
+	},
+	{
+		"name": "gp",
+		"desc": "See your current GP balance.",
+		"subOptions": []
+	},
+	{
+		"name": "help",
+		"desc": "Get information and help with the bot.",
+		"subOptions": []
+	},
+	{
+		"name": "hunt",
+		"desc": "Hunt creatures with the Hunter skill.",
+		"examples": ["/hunt name:Ferret"],
+		"subOptions": []
+	},
+	{
+		"name": "invite",
+		"desc": "Shows the invite link for the bot.",
+		"subOptions": []
+	},
+	{
+		"name": "k",
+		"desc": "Send your minion to kill things.",
+		"examples": ["/k name:zulrah"],
+		"subOptions": []
+	},
+	{
+		"name": "kc",
+		"desc": "See your OSRS kc for a monster/boss.",
+		"examples": ["/kc name:General Graardor"],
+		"subOptions": []
+	},
+	{
+		"name": "kill",
+		"desc": "Simulate killing monsters.",
+		"subOptions": []
+	},
+	{
+		"name": "laps",
+		"desc": "Do laps on Agility courses to train Agility.",
+		"examples": ["/laps name:Ardougne rooftop course"],
+		"subOptions": []
+	},
+	{
+		"name": "lb",
+		"desc": "Simulate killing monsters.",
+		"subOptions": [
+			"kc",
+			"farming_contracts",
+			"inferno",
+			"sacrifice",
+			"minigames",
+			"hunter_catches",
+			"agility_laps",
+			"gp",
+			"skills",
+			"opens",
+			"cl",
+			"clues",
+			"movers",
+			"global",
+			"combat_achievements",
+			"mastery"
+		]
+	},
+	{
+		"name": "light",
+		"desc": "Light logs to train Firemaking.",
+		"examples": ["/light name:Logs"],
+		"subOptions": []
+	},
+	{
+		"name": "loot",
+		"desc": "View your loot tracker data.",
+		"examples": ["/loot view name:Nex"],
+		"subOptions": ["view", "reset"]
+	},
+	{
+		"name": "lvl",
+		"desc": "See a level in your OSRS stats.",
+		"examples": ["/lvl rsn:Magnaboy skill:Mining"],
+		"subOptions": []
+	},
+	{
+		"name": "m",
+		"desc": "See your current minion status and helpful buttons.",
+		"subOptions": []
+	},
+	{
+		"name": "mass",
+		"desc": "Arrange to mass bosses, killing them as a group.",
+		"examples": ["/mass name:General graardor"],
+		"subOptions": []
+	},
+	{
+		"name": "mine",
+		"desc": "Send your minion to mine things.",
+		"examples": ["/mine name:Runite ore"],
+		"subOptions": []
+	},
+	{
+		"name": "minigames",
+		"desc": "Send your minion to do various minigames.",
+		"subOptions": [
+			"barb_assault",
+			"castle_wars",
+			"lms",
+			"pest_control",
+			"fishing_trawler",
+			"mage_arena",
+			"mage_arena_2",
+			"gnome_restaurant",
+			"temple_trek",
+			"sepulchre",
+			"gauntlet",
+			"mage_training_arena",
+			"mahogany_homes",
+			"tears_of_guthix",
+			"pyramid_plunder",
+			"rogues_den",
+			"soul_wars",
+			"volcanic_mine",
+			"agility_arena",
+			"trouble_brewing",
+			"giants_foundry",
+			"gotr",
+			"nmz",
+			"shades_of_morton"
+		]
+	},
+	{
+		"name": "minion",
+		"desc": "Manage and control your minion.",
+		"subOptions": [
+			"buy",
+			"status",
+			"cracker",
+			"stats",
+			"achievementdiary",
+			"bankbg",
+			"lamp",
+			"cancel",
+			"set_icon",
+			"set_name",
+			"level",
+			"kc",
+			"ironman",
+			"charge",
+			"daily",
+			"train",
+			"pat",
+			"blowpipe",
+			"info",
+			"peak",
+			"mastery"
+		]
+	},
+	{
+		"name": "mix",
+		"desc": "Mix potions to train Herblore.",
+		"examples": ["/mix name:Prayer potion"],
+		"subOptions": []
+	},
+	{
+		"name": "offer",
+		"desc": "Offer bones or bird eggs.",
+		"examples": ["/offer name:Dragon bones"],
+		"subOptions": []
+	},
+	{
+		"name": "open",
+		"desc": "Open an item (caskets, keys, boxes, etc).",
+		"subOptions": []
+	},
+	{
+		"name": "patreon",
+		"desc": "Shows the patreon link for the bot, where you can donate.",
+		"subOptions": []
+	},
+	{
+		"name": "pay",
+		"desc": "Send GP to another user.",
+		"subOptions": []
+	},
+	{
+		"name": "poh",
+		"desc": "Allows you to access and build in your POH.",
+		"examples": ["/poh build:Demonic throne"],
+		"subOptions": ["view", "wallkit", "build", "destroy", "mount_item", "items"]
+	},
+	{
+		"name": "poll",
+		"desc": "Create a reaction poll.",
+		"subOptions": []
+	},
+	{
+		"name": "price",
+		"desc": "Looks up the price of an item.",
+		"subOptions": []
+	},
+	{
+		"name": "raid",
+		"desc": "Send your minion to do raids - CoX or ToB.",
+		"subOptions": ["cox", "tob", "toa"]
+	},
+	{
+		"name": "redeem",
+		"desc": "Redeem a code you received.",
+		"subOptions": []
+	},
+	{
+		"name": "roll",
+		"desc": "Roll a random number from 1, up to a limit.",
+		"subOptions": []
+	},
+	{
+		"name": "rp",
+		"desc": "Admin tools second set",
+		"subOptions": ["action", "player", "user_event"]
+	},
+	{
+		"name": "runecraft",
+		"desc": "Sends your minion to craft runes with essence, or craft tiaras.",
+		"examples": ["/runecraft"],
+		"flags": ["minion", "skilling"],
+		"subOptions": []
+	},
+	{
+		"name": "sacrifice",
+		"desc": "Sacrifice items from your bank to the bot.",
+		"examples": ["/sacrifice items:10k trout, 5 coal"],
+		"flags": ["minion"],
+		"subOptions": []
+	},
+	{
+		"name": "sell",
+		"desc": "Sell items from your bank to the bot for GP.",
+		"examples": ["/sell items:10k trout, 5 coal"],
+		"flags": ["minion"],
+		"subOptions": []
+	},
+	{
+		"name": "simulate",
+		"desc": "Simulate various OSRS related things.",
+		"examples": ["/simulate cox quantity:1"],
+		"subOptions": ["cox", "petroll", "colosseum"]
+	},
+	{
+		"name": "slayer",
+		"desc": "Slayer skill commands",
+		"subOptions": ["autoslay", "new_task", "manage", "rewards", "status"]
+	},
+	{
+		"name": "smelt",
+		"desc": "Smelt ores/items.",
+		"examples": ["/smelt runite bar", "/smelt runite bar [quantity: 1]"],
+		"subOptions": []
+	},
+	{
+		"name": "smith",
+		"desc": "Smith things using the Smithing skill.",
+		"examples": ["/smith name:Bronze platebody"],
+		"subOptions": []
+	},
+	{
+		"name": "stats",
+		"desc": "Check the stats of a OSRS account.",
+		"subOptions": []
+	},
+	{
+		"name": "steal",
+		"desc": "Sends your minion to steal to train Thieving.",
+		"examples": ["/steal name:Man"],
+		"subOptions": []
+	},
+	{
+		"name": "tokkulshop",
+		"desc": "Buy or sell items from the Tzhaar shops.",
+		"examples": ["/tokkulshop buy Obsidian platebody", "/tokkulshop sell Chaos rune 5000"],
+		"flags": ["minion"],
+		"subOptions": ["buy", "sell"]
+	},
+	{
+		"name": "tools",
+		"desc": "Various tools and miscellaneous commands.",
+		"subOptions": ["patron", "user", "stash_units"]
+	},
+	{
+		"name": "trade",
+		"desc": "Allows you to trade items with other players.",
+		"subOptions": []
+	},
+	{
+		"name": "trivia",
+		"desc": "Try to answer a random trivia question!",
+		"examples": ["/trivia", "/trivia duel:@Magnaboy"],
+		"subOptions": []
+	},
+	{
+		"name": "use",
+		"desc": "Use items/things.",
+		"examples": ["/use name:Mithril seeds"],
+		"subOptions": []
+	},
+	{
+		"name": "wiki",
+		"desc": "Search the official OSRS wiki.",
+		"subOptions": []
+	},
+	{
+		"name": "xp",
+		"desc": "See your OSRS xp.",
+		"examples": ["/xp rsn:Magnaboy"],
+		"subOptions": []
+	}
+]

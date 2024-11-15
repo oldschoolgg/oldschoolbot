@@ -1,6 +1,6 @@
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
+
 import type { Skills } from '../../lib/types';
 import getOSItem from '../../lib/util/getOSItem';
 

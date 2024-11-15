@@ -1,5 +1,5 @@
-import { PerkTier, toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { PerkTier, toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
@@ -20,6 +20,8 @@ import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { mahojiParseNumber } from '../../mahojiSettings';
+
+import { getSimilarItems } from '../../../lib/data/similarItems';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
@@ -56,12 +58,25 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		}
 	}
 
+	const userBankWithEquippedItems = user.bank.clone();
+	for (const e of objectValues(user.gear[gearSetup].raw())) {
+		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
+	}
+
 	const toRemove = new Bank();
-	function gearItem(val: null | number) {
-		if (val === null) return null;
-		toRemove.add(val);
+	function gearItem(piece: null | number) {
+		if (piece === null) return null;
+		if (!userBankWithEquippedItems.has(piece) && globalPreset) {
+			for (const similarPiece of getSimilarItems(piece)) {
+				if (userBankWithEquippedItems.has(similarPiece)) {
+					piece = similarPiece;
+					break;
+				}
+			}
+		}
+		toRemove.add(piece);
 		return {
-			item: val,
+			item: piece,
 			quantity: 1
 		};
 	}
@@ -84,12 +99,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		toRemove.add(preset.ammo, preset.ammo_qty!);
 	}
 
-	const userBankWithEquippedItems = user.bank.clone();
-	for (const e of objectValues(user.gear[gearSetup].raw())) {
-		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
-	}
-
-	if (!userBankWithEquippedItems.has(toRemove.bank)) {
+	if (!userBankWithEquippedItems.has(toRemove)) {
 		return `You don't have the items in this preset. You're missing: ${toRemove.remove(user.bank)}.`;
 	}
 

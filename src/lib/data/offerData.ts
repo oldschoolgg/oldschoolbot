@@ -1,4 +1,4 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import itemID from '../util/itemID';
@@ -21,7 +21,7 @@ const UnsiredLootTable = new LootTable()
 	.add('Bludgeon claw', 1, 62)
 	.add('Jar of miasma', 1, 13);
 
-const ChewedBonesLootTable = new LootTable()
+export const ChewedBonesLootTable = new LootTable()
 	.oneIn(256, 'Dragon full helm')
 	.add('Adamant knife', 20, 3)
 	.add('Adamant dart(p)', 20, 3)

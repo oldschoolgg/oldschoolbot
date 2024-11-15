@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
-import { beforeEach, describe, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
-import { minigamesCommand } from '../../../src/mahoji/commands/minigames';
+import { agilityArenaBuyCommand } from '../../../src/mahoji/lib/abstracted_commands/agilityArenaCommand';
 import { createTestUser, mockClient } from '../util';
 
 describe('Agility Arena Command', async () => {
@@ -13,10 +13,10 @@ describe('Agility Arena Command', async () => {
 		await client.reset();
 	});
 
-	test('Buy graceful', async () => {
+	test('Buy brimhaven graceful recolour', async () => {
 		await user.addItemsToBank({
 			items: new Bank()
-				.add('Agility arena ticket', 250)
+				.add('Brimhaven voucher', 250)
 				.add('Graceful hood')
 				.add('Graceful top')
 				.add('Graceful legs')
@@ -25,7 +25,9 @@ describe('Agility Arena Command', async () => {
 				.add('Graceful cape')
 		});
 
-		await user.runCommand(minigamesCommand, { agility_arena: { recolor: {} } });
+		const response = await agilityArenaBuyCommand(user, 'Graceful outfit Recolour');
+		expect(response).toBe('Successfully purchased 1x Graceful outfit Recolour for 250x Brimhaven vouchers.');
+
 		await user.bankMatch(
 			new Bank()
 				.add('Brimhaven graceful hood')

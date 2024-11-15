@@ -1,6 +1,6 @@
 import { Time, sumArr } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '../../../lib/minions/data/quests';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
 import { hasSkillReqs } from '../../../lib/util';

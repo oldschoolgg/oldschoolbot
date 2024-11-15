@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { BitField } from '../../../lib/constants';

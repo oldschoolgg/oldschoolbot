@@ -1,4 +1,4 @@
-import { StoreBitfield } from '@oldschoolgg/toolkit';
+import { StoreBitfield } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PerkTier } from '../../constants';

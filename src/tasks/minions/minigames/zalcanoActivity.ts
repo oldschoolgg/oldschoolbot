@@ -2,7 +2,9 @@ import { randInt } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { Events, ZALCANO_ID } from '../../../lib/constants';
+import { KourendKebosDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { UpdateBank } from '../../../lib/structures/UpdateBank';
 import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -14,7 +16,8 @@ export const zalcanoTask: MinionTask = {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await mUserFetch(userID);
 		const { newKC } = await user.incrementKC(ZALCANO_ID, quantity);
-
+		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
+		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
 		const loot = new Bank();
 
 		let runecraftXP = 0;
@@ -49,7 +52,26 @@ export const zalcanoTask: MinionTask = {
 			await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, duration, source: 'Zalcano' })
 		);
 
-		await ashSanctifierEffect(user, loot, duration, xpRes);
+		let str = `${user}, ${
+			user.minionName
+		} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${newKC}.\n\n **XP Gains:** ${xpRes.join(
+			', '
+		)}\n`;
+
+		const updateBank = new UpdateBank();
+		updateBank.itemLootBank.add(loot);
+		if (hasKourendHard) {
+			const result = ashSanctifierEffect({
+				hasKourendElite,
+				updateBank,
+				gearBank: user.gearBank,
+				bitfield: user.bitfield,
+				duration
+			});
+			if (result) {
+				str += result.message;
+			}
+		}
 
 		if (loot.amount('Smolcano') > 0) {
 			globalClient.emit(
@@ -63,7 +85,7 @@ export const zalcanoTask: MinionTask = {
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,
-			itemsToAdd: loot
+			itemsToAdd: updateBank.itemLootBank
 		});
 
 		const image = await makeBankImage({
@@ -73,17 +95,6 @@ export const zalcanoTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${
-				user.minionName
-			} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${newKC}.\n\n **XP Gains:** ${xpRes.join(
-				', '
-			)}\n`,
-			image.file.attachment,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

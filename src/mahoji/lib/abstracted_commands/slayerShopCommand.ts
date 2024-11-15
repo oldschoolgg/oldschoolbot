@@ -36,7 +36,7 @@ export async function slayerShopBuyCommand({
 		if (buyableObj.haveOne && user.allItemsOwned.has(buyableObj.item)) {
 			return `You already own a ${buyableObj.name}`;
 		}
-		const qty = buyableObj.haveOne ? 1 : quantity ?? 1;
+		const qty = buyableObj.haveOne ? 1 : (quantity ?? 1);
 		const cost = qty * buyableObj.slayerPointCost;
 		if (user.user.slayer_points >= cost) {
 			try {

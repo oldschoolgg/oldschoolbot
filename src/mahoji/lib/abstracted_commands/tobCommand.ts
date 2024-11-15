@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { randomVariation } from 'oldschooljs/dist/util';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Emoji } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
@@ -60,7 +60,7 @@ async function calcTOBInput(u: MUser) {
 
 	items.add(
 		getUserFoodFromBank({
-			user: u,
+			gearBank: u.gearBank,
 			totalHealingNeeded: healingNeeded,
 			favoriteFood: u.user.favorite_food,
 			minimumHealAmount: 20

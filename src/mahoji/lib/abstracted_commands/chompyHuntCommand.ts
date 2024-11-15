@@ -1,7 +1,7 @@
 import { Time, percentChance, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { chompyHats } from '../../../lib/constants';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/minigames';

@@ -1,4 +1,4 @@
-import { UserError } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import type {
 	ButtonInteraction,
 	ChatInputCommandInteraction,

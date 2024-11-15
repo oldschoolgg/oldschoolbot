@@ -13,7 +13,7 @@ describe('Transactionalized Trade Test', async () => {
 		bank.remove('Coins', GP);
 
 		await global.prisma!.user.create({
-			data: { id: userId, GP, bank: bank.bank, ...userData }
+			data: { id: userId, GP, bank: bank.toJSON(), ...userData }
 		});
 
 		return userId;

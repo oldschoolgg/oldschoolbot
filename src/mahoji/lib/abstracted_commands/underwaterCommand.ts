@@ -1,7 +1,7 @@
 import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -72,7 +72,7 @@ export async function underwaterAgilityThievingCommand(
 	const quantity = Math.round(tripLength / oneLootActionTime);
 	const duration = quantity * oneLootActionTime;
 
-	if (!userBank.has(itemsToRemove.bank)) {
+	if (!userBank.has(itemsToRemove)) {
 		return `You need ${quantity}x Stamina potion(4) for the whole trip, try a lower trip length, turn of stamina usage or make/buy more Stamina potion(4).`;
 	}
 

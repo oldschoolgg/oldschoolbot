@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { userMention } from 'discord.js';
 
 import { NEX_ID } from '../../lib/constants';
@@ -92,9 +92,10 @@ ${loot.formatLoot()}`
 							bank: loot.totalLoot(),
 							title: `Loot From ${survivedQuantity}x Nex`,
 							user: allMUsers[0],
-							previousCL: undefined
+							previousCL: undefined,
+							spoiler: loot.purpleItems.some(i => loot.totalLoot().has(i))
 						})
-					).file.attachment
+					).file
 				: undefined,
 			data,
 			loot.totalLoot()

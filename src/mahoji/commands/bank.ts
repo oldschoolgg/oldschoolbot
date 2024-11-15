@@ -1,6 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, codeBlock } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, EmbedBuilder, codeBlock } from 'discord.js';
 import { chunk } from 'e';
 import type { Bank } from 'oldschooljs';
 
@@ -187,7 +186,7 @@ export const bankCommand: OSBMahojiCommand = {
 			return { content: 'Here is your selected bank:', ephemeral: true };
 		}
 		if (options.format === 'json') {
-			const json = JSON.stringify(baseBank.bank);
+			const json = JSON.stringify(baseBank.toJSON());
 			if (json.length > 1900) {
 				return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
 			}

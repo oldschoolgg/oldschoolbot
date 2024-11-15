@@ -1,8 +1,9 @@
+import { alphabeticalSort } from '@oldschoolgg/toolkit/util';
 import { expect, it } from 'vitest';
 
 import { BOT_TYPE } from '../../src/lib/constants';
 import { allCLItemsFiltered, allCollectionLogsFlat } from '../../src/lib/data/Collections';
-import { alphabeticalSort, itemNameFromID } from '../../src/lib/util';
+import { itemNameFromID } from '../../src/lib/util/smallUtils';
 
 it(`${BOT_TYPE} Overall Collection Log Items`, () => {
 	expect(

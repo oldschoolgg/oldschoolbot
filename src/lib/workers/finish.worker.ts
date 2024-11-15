@@ -50,5 +50,5 @@ export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerRetur
 				.join(', ')}`;
 		}
 	}
-	return { kc, kcBank: kcBank.bank, loot: loot.bank, cost: cost.bank };
+	return { kc, kcBank: kcBank.toJSON(), loot: loot.toJSON(), cost: cost.toJSON() };
 };

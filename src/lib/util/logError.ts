@@ -1,4 +1,4 @@
-import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit';
+import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit/util';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
@@ -16,9 +16,15 @@ export function assert(condition: boolean, desc?: string, context?: Record<strin
 	}
 }
 
-export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
+export function logError(err: any, context?: Record<string, string>, extra?: Record<string, string>) {
 	const metaInfo = deepMerge(context ?? {}, extra ?? {});
-	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, {
+	if (err?.requestBody?.files) {
+		err.requestBody = [];
+	}
+	if (err?.requestBody?.json) {
+		err.requestBody.json = String(err.requestBody.json).slice(0, 100);
+	}
+	console.error(`${(err as any)?.message ?? JSON.stringify(err)}`, {
 		type: 'ERROR',
 		raw: JSON.stringify(err),
 		metaInfo: JSON.stringify(metaInfo)
@@ -28,9 +34,6 @@ export function logError(err: Error | unknown, context?: Record<string, string>,
 			tags: context,
 			extra: metaInfo
 		});
-	} else {
-		console.error(err);
-		console.log(metaInfo);
 	}
 }
 

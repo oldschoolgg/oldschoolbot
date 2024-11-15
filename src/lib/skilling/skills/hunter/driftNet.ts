@@ -1,4 +1,4 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { LootTable } from 'oldschooljs';
 
 import type { Creature } from '../../types';
 import { HunterTechniqueEnum } from '../../types';

@@ -25,6 +25,8 @@ const killableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 19.5,
 		table: Monsters.Jogre,
 		wildy: false,
+		canCannon: true,
+		cannonMulti: true,
 		difficultyRating: 1,
 		qpRequired: 0,
 		respawnTime: Time.Second * 1.5,
@@ -158,9 +160,43 @@ const killableMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackMagic],
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Emberlight')]: 15
 			}
 		]
+	},
+	{
+		id: Monsters.Araxyte.id,
+		name: Monsters.Araxyte.name,
+		aliases: Monsters.Araxyte.aliases,
+		timeToFinish: Time.Second * 6,
+		table: Monsters.Araxyte,
+		qpRequired: 1,
+		healAmountNeeded: 40,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackStab],
+		levelRequirements: {
+			slayer: 92
+		},
+		cannonMulti: true,
+		canCannon: true,
+		superior: Monsters.DreadbornAraxyte,
+		canBarrage: true
+	},
+	{
+		id: Monsters.Crab.id,
+		name: Monsters.Crab.name,
+		aliases: Monsters.Crab.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.Crab,
+		wildy: false,
+		difficultyRating: 1,
+		qpRequired: 0,
+		respawnTime: Time.Second * 6,
+		healAmountNeeded: 3,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush],
+		itemsRequired: resolveItems(['Fishbowl helmet', 'Diving apparatus'])
 	}
 ];
 

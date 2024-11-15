@@ -1,6 +1,6 @@
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

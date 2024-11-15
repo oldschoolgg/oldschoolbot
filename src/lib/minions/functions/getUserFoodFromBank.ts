@@ -1,36 +1,39 @@
 import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../../data/eatables';
+import type { GearBank } from '../../structures/GearBank';
 
-function getRealHealAmount(user: MUser, healAmount: ((user: MUser) => number) | number) {
+function getRealHealAmount(gearBank: GearBank, healAmount: ((user: GearBank) => number) | number) {
 	if (typeof healAmount === 'number') {
 		return healAmount;
 	}
-	return healAmount(user);
+	return healAmount(gearBank);
 }
 
 export default function getUserFoodFromBank({
-	user,
+	gearBank,
 	totalHealingNeeded,
 	favoriteFood,
 	minimumHealAmount,
 	isWilderness,
 	unavailableBank
 }: {
-	user: MUser;
+	gearBank: GearBank;
 	totalHealingNeeded: number;
 	favoriteFood: readonly number[];
 	minimumHealAmount?: number;
 	isWilderness?: boolean;
 	unavailableBank?: Bank;
 }): false | Bank {
-	let userBank = user.bank;
+	let userBank = gearBank.bank;
 	if (unavailableBank) userBank = userBank.clone().remove(unavailableBank);
 	let totalHealingCalc = totalHealingNeeded;
 	const foodToRemove = new Bank();
 
 	let sorted = [...Eatables.filter(e => (isWilderness ? true : !e.wildyOnly))]
-		.sort((i, j) => (getRealHealAmount(user, i.healAmount) > getRealHealAmount(user, j.healAmount) ? 1 : -1))
+		.sort((i, j) =>
+			getRealHealAmount(gearBank, i.healAmount) > getRealHealAmount(gearBank, j.healAmount) ? 1 : -1
+		)
 		.sort((k, l) => {
 			if (isWilderness) {
 				if (k.wildyOnly && !l.wildyOnly) return -1;
@@ -51,19 +54,19 @@ export default function getUserFoodFromBank({
 
 	if (minimumHealAmount) {
 		sorted = sorted.filter(i =>
-			typeof i.healAmount === 'number' ? i.healAmount : i.healAmount(user) >= minimumHealAmount
+			typeof i.healAmount === 'number' ? i.healAmount : i.healAmount(gearBank) >= minimumHealAmount
 		);
 	}
 
 	// Gets all the eatables in the user bank
 	for (const eatable of sorted) {
-		const healAmount = typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(user);
+		const healAmount = typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(gearBank);
 		const amountOwned = userBank.amount(eatable.id);
-		const toRemove = Math.ceil(totalHealingCalc / healAmount);
+		const amountNeededOfThisFood = Math.ceil(totalHealingCalc / healAmount);
 		if (!amountOwned) continue;
-		if (amountOwned >= toRemove) {
-			totalHealingCalc -= Math.ceil(healAmount * toRemove);
-			foodToRemove.add(eatable.id, toRemove);
+		if (amountOwned >= amountNeededOfThisFood) {
+			totalHealingCalc -= Math.ceil(healAmount * amountNeededOfThisFood);
+			foodToRemove.add(eatable.id, amountNeededOfThisFood);
 			break;
 		} else {
 			totalHealingCalc -= Math.ceil(healAmount * amountOwned);

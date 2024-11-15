@@ -1,6 +1,5 @@
-import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit';
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
+import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,
@@ -26,6 +25,7 @@ import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
 import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
+import { joinStrings } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
@@ -518,23 +518,26 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		for (const items of objectValues(gearNeeded)) {
 			if (!items) continue;
 			if (!items.some(g => gear.hasEquipped(g))) {
-				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${items
-					.map(itemNameFromID)
-					.join(', ')}.`;
+				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${joinStrings(
+					items.map(itemNameFromID),
+					'or'
+				)}.`;
 			}
 		}
 	}
 
 	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i, true, true))) {
-		return `You need one of these equipped in your melee setup to enter the Colosseum: ${meleeWeapons
-			.map(itemNameFromID)
-			.join(', ')}.`;
+		return `You need one of these equipped in your melee setup to enter the Colosseum: ${joinStrings(
+			meleeWeapons.map(itemNameFromID),
+			'or'
+		)}.`;
 	}
 
 	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i, true, true))) {
-		return `You need one of these equipped in your range setup to enter the Colosseum: ${rangeWeapons
-			.map(itemNameFromID)
-			.join(', ')}.`;
+		return `You need one of these equipped in your range setup to enter the Colosseum: ${joinStrings(
+			rangeWeapons.map(itemNameFromID),
+			'or'
+		)}.`;
 	}
 
 	const messages: string[] = [];
@@ -674,7 +677,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		fakeDuration: res.fakeDuration,
 		maxGlory: res.maxGlory,
 		diedAt: res.diedAt ?? undefined,
-		loot: res.loot?.bank,
+		loot: res.loot?.toJSON(),
 		scytheCharges: res.scytheCharges,
 		venatorBowCharges: res.venatorBowCharges,
 		bloodFuryCharges: res.bloodFuryCharges

@@ -19,7 +19,6 @@ export const trawlerTask: MinionTask = {
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		const allItemsOwnedBank = user.allItemsOwned.bank;
 		const loot = new Bank();
 
 		let totalXP = 0;
@@ -28,7 +27,7 @@ export const trawlerTask: MinionTask = {
 			const { loot: _loot, xp } = fishingTrawlerLoot(
 				fishingLevel,
 				hasEliteArdy,
-				loot.clone().add(allItemsOwnedBank)
+				loot.clone().add(user.allItemsOwned)
 			);
 			totalXP += xp;
 			loot.add(_loot);

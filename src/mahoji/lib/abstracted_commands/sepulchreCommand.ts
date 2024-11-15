@@ -1,6 +1,6 @@
 import { Time, reduceNumByPercent, sumArr } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';

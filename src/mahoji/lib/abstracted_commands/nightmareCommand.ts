@@ -1,4 +1,4 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -46,7 +46,7 @@ const inquisitorItems = resolveItems([
 
 const phosaniBISGear = new Gear({
 	head: "Inquisitor's great helm",
-	neck: 'Amulet of torture',
+	neck: 'Amulet of rancour',
 	body: "Inquisitor's hauberk",
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
@@ -71,7 +71,7 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 		return `${user.usernameOrMention} is busy right now and can't fight the nightmare!`;
 	}
 
-	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+	const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
 	if (!hasReqs) {
 		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 	}

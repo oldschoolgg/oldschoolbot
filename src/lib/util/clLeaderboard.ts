@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { userEventsToMap } from './userEvents';
 
 export async function fetchMultipleCLLeaderboards(

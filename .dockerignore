@@ -6,3 +6,7 @@ node_modules
 coverage
 .yarn
 .tests
+.git
+.env.local
+docs
+data

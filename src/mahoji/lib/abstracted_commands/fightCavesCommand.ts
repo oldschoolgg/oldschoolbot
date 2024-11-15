@@ -1,10 +1,9 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, percentChance, randInt, reduceNumByPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
@@ -24,7 +23,7 @@ async function determineDuration(user: MUser): Promise<[number, string]> {
 	let debugStr = '';
 
 	// Reduce time based on KC
-	const jadKC = await user.getKC(TzTokJad.id);
+	const jadKC = await user.getKC(Monsters.TzTokJad.id);
 	const zukKC = await getMinigameScore(user.id, 'inferno');
 	const experienceKC = jadKC + zukKC * 3;
 	const percentIncreaseFromKC = Math.min(50, experienceKC);
@@ -111,7 +110,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 
 	const { fight_caves_attempts: attempts } = await user.fetchStats({ fight_caves_attempts: true });
 
-	const jadKC = await user.getKC(TzTokJad.id);
+	const jadKC = await user.getKC(Monsters.TzTokJad.id);
 	const zukKC = await getMinigameScore(user.id, 'inferno');
 	const hasInfernoKC = zukKC > 0;
 

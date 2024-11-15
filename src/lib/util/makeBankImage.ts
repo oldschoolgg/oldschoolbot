@@ -8,6 +8,7 @@ interface MakeBankImageOptions {
 	content?: string;
 	title?: string;
 	background?: number;
+	spoiler?: boolean;
 	flags?: Record<string, string | number>;
 	user?: MUser;
 	previousCL?: Bank;
@@ -21,12 +22,14 @@ export async function makeBankImage({
 	background,
 	user,
 	previousCL,
+	spoiler,
 	showNewCL = false,
 	flags = {},
 	mahojiFlags = []
 }: MakeBankImageOptions) {
 	const realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
+
 	const { image, isTransparent } = await bankImageGenerator.generateBankImage({
 		bank,
 		title,
@@ -39,7 +42,7 @@ export async function makeBankImage({
 
 	return {
 		file: {
-			name: isTransparent ? 'bank.png' : 'bank.jpg',
+			name: `${spoiler ? 'SPOILER_' : ''}${isTransparent ? 'bank.png' : 'bank.jpg'}`,
 			attachment: image!
 		}
 	};

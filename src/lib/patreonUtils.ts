@@ -12,7 +12,7 @@ export async function handleDeletedPatron(userID: string[]) {
 
 	for (const user of users) {
 		if (user.badges.includes(BadgesEnum.Patron) || user.badges.includes(BadgesEnum.LimitedPatron)) {
-			await prisma.user.update({
+			await prisma.user.updateMany({
 				where: {
 					id: user.id
 				},
@@ -35,20 +35,21 @@ export async function handleEditPatron(userID: string[]) {
 		}
 	});
 
-	for (const user of users) {
-		if (!user.badges.includes(BadgesEnum.Patron) && !user.badges.includes(BadgesEnum.LimitedPatron)) {
-			await prisma.user.update({
-				where: {
-					id: user.id
-				},
-				data: {
-					badges: {
-						push: BadgesEnum.Patron
-					}
-				}
-			});
+	const usersToGiveBadge = users.filter(
+		u => !u.badges.includes(BadgesEnum.Patron) && !u.badges.includes(BadgesEnum.LimitedPatron)
+	);
+	await prisma.user.updateMany({
+		where: {
+			id: {
+				in: usersToGiveBadge.map(u => u.id)
+			}
+		},
+		data: {
+			badges: {
+				push: BadgesEnum.Patron
+			}
 		}
-	}
+	});
 
 	await populateRoboChimpCache();
 }

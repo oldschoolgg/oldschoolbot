@@ -1,5 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, MessageEditOptions } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -687,8 +687,8 @@ async function globalLb(interaction: ChatInputCommandInteraction, user: MUser, c
 			}[]
 		>`SELECT id::text, osb_total_xp, bso_total_xp,
        (osb_total_xp / (200000000.0 * 23) * 100) as osb_xp_percent,
-       (bso_total_xp / (5000000000.0 * 25) * 100) as bso_xp_percent,
-       (((osb_total_xp / (200000000.0 * 23) * 100) + (bso_total_xp / (5000000000.0 * 25) * 100)) / 2) as average_percentage
+       (bso_total_xp / (5000000000.0 * 26) * 100) as bso_xp_percent,
+       (((osb_total_xp / (200000000.0 * 23) * 100) + (bso_total_xp / (5000000000.0 * 26) * 100)) / 2) as average_percentage
 FROM public.user
 WHERE osb_total_xp IS NOT NULL AND bso_total_xp IS NOT NULL
 ORDER BY average_percentage DESC

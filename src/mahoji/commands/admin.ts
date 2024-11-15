@@ -1,13 +1,15 @@
-import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import {
+	type CommandRunOptions,
+	type MahojiUserOption,
+	bulkUpdateCommands,
+	cleanString,
+	dateFm
+} from '@oldschoolgg/toolkit/util';
 import type { ClientStorage } from '@prisma/client';
 import { economy_transaction_type } from '@prisma/client';
-import type { InteractionReplyOptions } from 'discord.js';
-import { AttachmentBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -28,16 +30,7 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
-import {
-	calcPerHour,
-	cleanString,
-	convertBankToPerHourStats,
-	dateFm,
-	formatDuration,
-	sanitizeBank,
-	stringMatches,
-	toKMB
-} from '../../lib/util';
+import { calcPerHour, convertBankToPerHourStats, formatDuration, stringMatches, toKMB } from '../../lib/util';
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
@@ -217,11 +210,10 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 				economyBank.add("Zulrah's scales", scales);
 				economyBank.add(dart, qty);
 			}
-			sanitizeBank(economyBank);
 			return {
 				files: [
 					(await makeBankImage({ bank: economyBank })).file,
-					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.bank, null, 4)), {
+					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4)), {
 						name: 'bank.json'
 					})
 				]
@@ -1043,10 +1035,8 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			for (const res of results) {
 				if (!res.total_duration || !res.total_kc) continue;
 				if (Object.keys({ ...(res.cost as ItemBank), ...(res.loot as ItemBank) }).length === 0) continue;
-				const cost = new Bank(res.cost as ItemBank);
-				const loot = new Bank(res.loot as ItemBank);
-				sanitizeBank(cost);
-				sanitizeBank(loot);
+				const cost = Bank.withSanitizedValues(res.cost as ItemBank);
+				const loot = Bank.withSanitizedValues(res.loot as ItemBank);
 				const marketValueCost = Math.round(cost.value());
 				const marketValueLoot = Math.round(loot.value());
 				const ratio = marketValueLoot / marketValueCost;

@@ -1,5 +1,5 @@
-import { PerkTier, stringMatches } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -135,7 +135,7 @@ async function finalizeOpening({
 	const response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`,
+${messages.join(', ')}`.trim(),
 		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {

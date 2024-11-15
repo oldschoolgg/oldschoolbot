@@ -1,5 +1,5 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, round } from 'e';
@@ -97,7 +97,7 @@ export const buildCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const timeToBuildSingleObject = object.ticks * 300;
+		const timeToBuildSingleObject = object.ticks * Time.Second * 0.6;
 
 		const [plank, planksQtyCost] = object.input;
 

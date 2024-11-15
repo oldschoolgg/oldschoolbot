@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { TriviaQuestion, User } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
@@ -40,7 +40,7 @@ const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_
 
 export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 	const id = BigInt(user.id);
-	const newCLArray: number[] = Object.keys((newCL ?? user.cl).bank).map(i => Number(i));
+	const newCLArray: number[] = (newCL ?? user.cl).itemIDs;
 	const clArrayUpdateObject = {
 		cl_array: newCLArray,
 		cl_array_length: newCLArray.length

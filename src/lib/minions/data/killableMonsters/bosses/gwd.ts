@@ -186,7 +186,9 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				[itemID('Arclight')]: 9,
-				[itemID('Twisted bow')]: 10
+				[itemID('Twisted bow')]: 10,
+				[itemID('Emberlight')]: 14,
+				[itemID('Scorching bow')]: 20
 			}
 		],
 		groupKillable: true,

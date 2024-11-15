@@ -18,6 +18,8 @@ export type Skills = Partial<{
 	[key in SkillsEnum]: number;
 }>;
 
+export type SkillsRequired = Required<Skills>;
+
 export type CategoryFlag =
 	| 'minion'
 	| 'settings'

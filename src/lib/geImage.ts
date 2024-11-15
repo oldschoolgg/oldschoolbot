@@ -1,15 +1,21 @@
 import * as fs from 'node:fs/promises';
-import type { Image, SKRSContext2D } from '@napi-rs/canvas';
-import { Canvas, loadImage } from '@napi-rs/canvas';
-import { formatItemStackQuantity, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit';
+import { formatItemStackQuantity, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GEListing, GETransaction } from '@prisma/client';
 
 import type { GEListingWithTransactions } from './../mahoji/commands/ge';
 import { GrandExchange } from './grandExchange';
-import { fillTextXTimesInCtx } from './util/canvasUtil';
+import {
+	type Canvas,
+	type CanvasContext,
+	type CanvasImage,
+	canvasToBuffer,
+	createCanvas,
+	fillTextXTimesInCtx,
+	loadImage
+} from './util/canvasUtil';
 import getOSItem from './util/getOSItem';
 
-function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
+function drawTitle(ctx: CanvasContext, title: string, canvas: Canvas) {
 	// Draw Page Title
 	ctx.font = '16px RuneScape Bold 12';
 	const titleWidthPx = ctx.measureText(title);
@@ -22,13 +28,13 @@ function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 }
 
 class GeImageTask {
-	public geInterface: Image | null = null;
-	public geSlotLocked: Image | null = null;
-	public geSlotOpen: Image | null = null;
-	public geSlotActive: Image | null = null;
-	public geProgressShadow: Image | null = null;
-	public geIconBuy: Image | null = null;
-	public geIconSell: Image | null = null;
+	public geInterface: CanvasImage | null = null;
+	public geSlotLocked: CanvasImage | null = null;
+	public geSlotOpen: CanvasImage | null = null;
+	public geSlotActive: CanvasImage | null = null;
+	public geProgressShadow: CanvasImage | null = null;
+	public geIconBuy: CanvasImage | null = null;
+	public geIconSell: CanvasImage | null = null;
 
 	async init() {
 		await this.prepare();
@@ -58,7 +64,7 @@ class GeImageTask {
 		);
 	}
 
-	drawText(ctx: SKRSContext2D, text: string, x: number, y: number, maxWidth: number | undefined, lineHeight: number) {
+	drawText(ctx: CanvasContext, text: string, x: number, y: number, maxWidth: number | undefined, lineHeight: number) {
 		// If max width is set, we have to line break the text
 		const textLines = [];
 		const measuredText = ctx.measureText(text);
@@ -85,7 +91,7 @@ class GeImageTask {
 	}
 
 	async getSlotImage(
-		ctx: SKRSContext2D,
+		ctx: CanvasContext,
 		slot: number,
 		locked: boolean,
 		listing: GEListingWithTransactions | undefined
@@ -192,7 +198,7 @@ class GeImageTask {
 		let { user, page, activeListings } = opts;
 		const { slots, maxPossible } = await GrandExchange.calculateSlotsOfUser(user);
 		const canvasImage = this.geInterface!;
-		const canvas = new Canvas(canvasImage.width, canvasImage.height);
+		const canvas = createCanvas(canvasImage.width, canvasImage.height);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
 		ctx.imageSmoothingEnabled = false;
@@ -224,7 +230,7 @@ class GeImageTask {
 			x++;
 			if (i > (page - 1) * chunkSize + 8) break;
 		}
-		const image = await canvas.encode('png');
+		const image = await canvasToBuffer(canvas);
 
 		return image;
 	}

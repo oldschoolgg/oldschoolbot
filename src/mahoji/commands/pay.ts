@@ -1,5 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -76,7 +76,7 @@ export const payCommand: OSBMahojiCommand = {
 				guild_id: guildID ? BigInt(guildID) : undefined,
 				sender: BigInt(user.id),
 				recipient: BigInt(recipient.id),
-				items_sent: bank.bank,
+				items_sent: bank.toJSON(),
 				items_received: undefined,
 				type: 'trade'
 			}

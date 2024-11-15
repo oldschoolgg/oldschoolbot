@@ -1,4 +1,4 @@
-import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit';
+import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit/util';
 import type { AttachmentBuilder, BaseMessageOptions, EmbedBuilder, Message } from 'discord.js';
 import { PartialGroupDMChannel, PermissionsBitField, WebhookClient } from 'discord.js';
 
@@ -44,15 +44,18 @@ async function deleteWebhook(channelID: string) {
 
 export async function sendToChannelID(
 	channelID: string,
-	data: {
-		content?: string;
-		image?: Buffer | AttachmentBuilder;
-		embed?: EmbedBuilder;
-		files?: BaseMessageOptions['files'];
-		components?: BaseMessageOptions['components'];
-		allowedMentions?: BaseMessageOptions['allowedMentions'];
-	}
+	_data:
+		| string
+		| {
+				content?: string;
+				image?: Buffer | AttachmentBuilder;
+				embed?: EmbedBuilder;
+				files?: BaseMessageOptions['files'];
+				components?: BaseMessageOptions['components'];
+				allowedMentions?: BaseMessageOptions['allowedMentions'];
+		  }
 ) {
+	const data = typeof _data === 'string' ? { content: _data } : _data;
 	const allowedMentions = data.allowedMentions ?? {
 		parse: ['users']
 	};
@@ -133,7 +136,9 @@ async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'
 		return;
 	}
 
-	const res = await channel.send(input);
+	if (!(channel instanceof WebhookClient) && !channel.isSendable()) {
+		throw new Error('Channel is not sendable');
+	}
 
-	return res;
+	return channel.send(input);
 }
