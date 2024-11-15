@@ -420,7 +420,6 @@ export const clueCommand: OSBMahojiCommand = {
 			} from ${openedImplings}x ${clueImpling.name}s.`;
 		}
 
-		console.log({ timeToFinish: formatDuration(timeToFinish), duration: formatDuration(duration), quantity });
 		duration = timeToFinish * quantity;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
