@@ -7,7 +7,6 @@ import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from 
 import { pohImageGenerator } from '../../../lib/pohImage';
 import { prisma } from '../../../lib/settings/prisma';
 
-import { SkillsEnum } from '../../../lib/skilling/types';
 import { formatSkillRequirements, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
