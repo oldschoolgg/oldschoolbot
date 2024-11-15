@@ -1,10 +1,12 @@
+import type { InteractionReplyOptions } from 'discord.js';
 import { EItem, EMonster } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { clueCommand } from '../../src/mahoji/commands/clue';
-import { createTestUser } from './util';
+import { createTestUser, mockClient } from './util';
 
 describe('Clue Juggling', async () => {
+	await mockClient();
 	it('general test', async () => {
 		const user = await createTestUser();
 		await user.equip('melee', [
@@ -26,15 +28,23 @@ describe('Clue Juggling', async () => {
 
 		const droppedClues = await prisma.droppedClueScroll.findMany({
 			where: {
-				user_id: user.id
+				user_id: user.id,
+				used: false
 			}
 		});
 		expect(droppedClues.length).toBeGreaterThan(0);
-		const cmdResult = await user.runCommand(clueCommand, {
+		const cmdResult = (await user.runCommand(clueCommand, {
 			tier: 'beginner'
-		});
-		expect(cmdResult).toContain('is now completing ');
-		expect(cmdResult).not.toContain('is now completing 1x');
-		expect(user.bank.amount(EItem.CLUE_SCROLL_BEGINNER)).toEqual(0);
+		})) as InteractionReplyOptions;
+		expect(cmdResult.content).toContain('is now completing ');
+		expect(cmdResult.content).not.toContain('is now completing 1x');
+		expect(
+			await prisma.droppedClueScroll.count({
+				where: {
+					user_id: user.id,
+					used: false
+				}
+			})
+		).toBeLessThan(droppedClues.length);
 	});
 });
