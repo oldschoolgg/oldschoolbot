@@ -19,6 +19,7 @@ describe('Clue Juggling', async () => {
 		expect(user.bank.amount(EItem.CLUE_SCROLL_BEGINNER)).toBe(0);
 		expect(user.bank.amount(EItem.CLUE_SCROLL_EASY)).toBe(0);
 		await user.kill(EMonster.MAN);
+		await user.kill(EMonster.MAN);
 
 		expect(user.bank.amount(EItem.CLUE_SCROLL_BEGINNER)).toEqual(0);
 		expect(user.bank.amount(EItem.CLUE_SCROLL_EASY)).toEqual(0);
