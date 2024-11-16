@@ -58,10 +58,6 @@ async function transactItemsFromBank({
 
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
-			itemsToAdd = deduplicateClueScrolls({
-				loot: itemsToAdd.clone(),
-				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
-			});
 			const { bankLoot, clLoot } = filterLoot
 				? filterLootReplace(settings.allItemsOwned, itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
@@ -112,6 +108,8 @@ async function transactItemsFromBank({
 			}
 			newBank.remove(itemsToRemove);
 		}
+
+		deduplicateClueScrolls(newBank);
 
 		const { newUser } = await mahojiUserSettingsUpdate(userID, {
 			bank: newBank.toJSON(),

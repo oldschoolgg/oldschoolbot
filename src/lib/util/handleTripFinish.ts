@@ -4,6 +4,7 @@ import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateO
 import { Bank } from 'oldschooljs';
 
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { sumArr } from 'e';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
@@ -11,7 +12,7 @@ import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/ma
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { BitField, COINS_ID, Emoji, MAX_CLUES_DROPPED, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
@@ -159,6 +160,12 @@ export async function handleTripFinish(
 	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
 		clueReceived.map(
 			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
+		);
+	}
+
+	if (sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID))) >= MAX_CLUES_DROPPED) {
+		messages.push(
+			`You cannot stack anymore clue scrolls (${ClueTiers.map(tier => `${user.bank.amount(tier.scrollID)} ${tier.name}`)}), you can't hold anymore than this, but lower tier clues will be replaced with higher tier clues.`
 		);
 	}
 
