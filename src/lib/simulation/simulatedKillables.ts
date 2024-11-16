@@ -129,8 +129,9 @@ export const simulatedKillables: SimulatedKillable[] = [
 		message: '**Assumptions**:\n- Solo\n- Ring of Luck equipped',
 		loot: (quantity: number): Bank => {
 			const loot = new Bank();
+			const dwwhChance = calcDwwhChance(1, true)
 			for (let i = 0; i < quantity; i++) {
-				if (roll(calcDwwhChance(1, true))) {
+				if (roll(dwwhChance)) {
 					loot.add('Broken dwarven warhammer');
 				}
 				loot.add(KingGoldemarLootTable.roll());
