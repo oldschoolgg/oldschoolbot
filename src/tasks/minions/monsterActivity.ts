@@ -139,7 +139,7 @@ interface newOptions {
 	attackStyles: AttackStyles[];
 	bitfield: readonly BitField[];
 	cl: Bank;
-	combatOptions: readonly CombatOptionsEnum[];
+	combatOptions?: readonly CombatOptionsEnum[];
 }
 
 export function doMonsterTrip(data: newOptions) {
@@ -297,7 +297,7 @@ export function doMonsterTrip(data: newOptions) {
 	}
 
 	const table =
-		monster.id === Monsters.Araxxor.id && combatOptions.includes(CombatOptionsEnum.AraxxorDestroy) ? 1 : 0;
+		monster.id === Monsters.Araxxor.id && combatOptions?.includes(CombatOptionsEnum.AraxxorDestroy) ? 1 : 0;
 
 	const killOptions: MonsterKillOptions = {
 		onSlayerTask: slayerContext.isOnTask,
