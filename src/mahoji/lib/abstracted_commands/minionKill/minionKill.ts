@@ -136,8 +136,10 @@ export async function minionKillCommand(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
-	if (monster.id === Monsters.Araxxor.id && user.combatOptions.includes(CombatOptionsEnum.AraxxorDestroy)) {
-		response += " You are destroying Araxxor's corpse for a higher chance of pet.";
+	if (monster.id === Monsters.Araxxor.id) {
+		response += user.combatOptions.includes(CombatOptionsEnum.AraxxorDestroy)
+			? " You are destroying Araxxor's corpse for a higher chance of pet."
+			: " You are not destroying Araxxor's corpse to receive more loot.";
 	}
 
 	if (result.messages.length > 0) {
