@@ -634,7 +634,7 @@ export async function calcCoxDuration(
 
 	for (const u of team) {
 		let userPercentChange = 0;
-		const isUserReal  = !uniqueUsers.has(u.id);
+		const isUserReal = !uniqueUsers.has(u.id);
 		uniqueUsers.set(u.id, true);
 
 		// Reduce time for gear
