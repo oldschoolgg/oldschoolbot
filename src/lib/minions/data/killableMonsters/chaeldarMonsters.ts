@@ -419,7 +419,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 0,
 		notifyDrops: resolveItems(['Jar of darkness', 'Skotos']),
 		qpRequired: 0,
-		// Skotizo requires 1 totems per kill, and arclight makes kill 2x faster irl.
+		// Skotizo requires 1 totem per kill, and arclight makes kill 2x faster irl.
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 50,
