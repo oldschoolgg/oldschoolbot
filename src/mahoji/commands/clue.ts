@@ -2,65 +2,48 @@ import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit/ut
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, notEmpty, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField } from '../../lib/constants';
 import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
+import { SkillsEnum } from '../../lib/skilling/types';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { getItem } from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
+async function getStashBoost(userID: string, tierName: string): Promise<number> {
+	const parsedUnits = await getParsedStashUnits(userID);
+
+	// Filter parsed units based on the found stash tier
+	const tierSpecificUnits = parsedUnits.filter(unit => unit.tier.tier === tierName);
+	const filledUnits = tierSpecificUnits.filter(
+		unit => unit.builtUnit !== undefined && unit.builtUnit.items_contained.length > 0
+	).length;
+	const totalUnits = tierSpecificUnits.length;
+	const percentageFilled = totalUnits > 0 ? (filledUnits / totalUnits) * 100 : 0;
+
+	const boost = Math.min((percentageFilled / 100) * 15, 15);
+
+	return boost;
+}
+
 function reducedClueTime(clueTier: ClueTier, score: number) {
-	// Every 3 hours become 1% better to a cap of 10%
-	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 3) / clueTier.timeToFinish)), 10);
+	// Every 2 hours become 1% better to a cap of 25%
+	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 2) / clueTier.timeToFinish)), 25);
 	const amountReduced = (clueTier.timeToFinish * percentReduced) / 100;
 	const reducedTime = clueTier.timeToFinish - amountReduced;
 
 	return [reducedTime, percentReduced];
-}
-
-function shouldApplyBoost(clueTier: ClueTier, item: string, hasAchievementDiaryCape: boolean) {
-	switch (clueTier.name) {
-		case 'Elite':
-			return (item !== 'Kandarin headgear 4' && item !== 'Fremennik sea boots 4') || !hasAchievementDiaryCape;
-		case 'Master':
-			return item !== 'Kandarin headgear 4' || !hasAchievementDiaryCape;
-		case 'Hard':
-			return item !== 'Wilderness sword 3' || !hasAchievementDiaryCape;
-		default:
-			return true;
-	}
-}
-
-interface ClueBoost {
-	item: Item;
-	boost: string;
-	durationMultiplier: number;
-}
-
-function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: string[], duration: number, clueTier: ClueTier) {
-	let hasAchievementDiaryCape = false;
-	for (const boost of boostList) {
-		if (user.hasEquippedOrInBank(boost.item.name)) {
-			if (shouldApplyBoost(clueTier, boost.item.name, hasAchievementDiaryCape)) {
-				boosts.push(boost.boost);
-				duration *= boost.durationMultiplier;
-			}
-			if (boost.item.name === 'Achievement diary cape') {
-				hasAchievementDiaryCape = true;
-			}
-		}
-	}
-	return { duration, boosts };
 }
 
 export const clueCommand: OSBMahojiCommand = {
@@ -155,6 +138,30 @@ export const clueCommand: OSBMahojiCommand = {
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 		const hasJewelleryBox = poh.jewellery_box !== null;
 		const hasXericTalisman = poh.amulet === getPOHObject("Mounted xeric's talisman").id;
+		const hasAchievementDiaryCape = user.hasEquippedOrInBank('Achievement diary cape');
+
+		// Stash Unit boost
+		const stashBoost = await getStashBoost(userID, clueTier.name);
+		boosts.push(`${stashBoost.toFixed(2)}% for built STASH Units`);
+		duration *= 1 - stashBoost / 100;
+
+		// Combat stats boost
+		if (['Hard', 'Elite', 'Master'].includes(clueTier.name)) {
+			const totalCombatStats =
+				user.skillLevel(SkillsEnum.Attack) +
+				user.skillLevel(SkillsEnum.Strength) +
+				user.skillLevel(SkillsEnum.Ranged);
+			let combatBoost = (totalCombatStats / (3 * 99)) * 100;
+
+			if (combatBoost < 50) {
+				combatBoost = combatBoost - 50;
+			} else {
+				combatBoost = Math.min(10, combatBoost / 6.5);
+			}
+
+			boosts.push(`${combatBoost.toFixed(2)}% for combat stats`);
+			duration *= 1 - combatBoost / 100;
+		}
 
 		// Global Boosts
 		const globalBoosts = [
@@ -182,6 +189,11 @@ export const clueCommand: OSBMahojiCommand = {
 				condition: () => !hasOrnateJewelleryBox && hasJewelleryBox,
 				boost: '5% for Basic/Fancy jewellery box',
 				durationMultiplier: 0.95
+			},
+			{
+				condition: () => hasAchievementDiaryCape,
+				boost: '10% for Achievement diary cape',
+				durationMultiplier: 0.9
 			}
 		];
 
@@ -192,138 +204,164 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		}
 
-		// Xeric's Talisman boost
-		if (clueTier.name === 'Medium' && hasXericTalisman) {
-			boosts.push("2% for Mounted Xeric's Talisman");
-			duration *= 0.98;
-		}
-
-		// Specific boosts
-		const clueTierBoosts: Record<ClueTier['name'], ClueBoost[]> = {
+		// Specific tier boosts
+		const clueTierBoosts: Record<
+			ClueTier['name'],
+			{ condition: () => boolean; boost: string; durationMultiplier: number }[]
+		> = {
 			Beginner: [
 				{
-					item: getOSItem('Ring of the elements'),
+					condition: () => user.hasEquippedOrInBank('Ring of the elements'),
 					boost: '10% for Ring of the elements',
 					durationMultiplier: 0.9
+				},
+				{
+					condition: () => user.hasEquippedOrInBank('Skull sceptre'),
+					boost: '5% for Skull sceptre',
+					durationMultiplier: 0.95
 				}
 			],
 			Easy: [
 				{
-					item: getOSItem('Achievement diary cape'),
-					boost: '10% for Achievement diary cape',
+					condition: () => user.hasEquippedOrInBank('Ring of the elements'),
+					boost: '10% for Ring of the elements',
 					durationMultiplier: 0.9
 				},
 				{
-					item: getOSItem('Ring of the elements'),
-					boost: '6% for Ring of the elements',
-					durationMultiplier: 0.94
+					condition: () => user.hasEquippedOrInBank('Skull sceptre'),
+					boost: '5% for Skull sceptre',
+					durationMultiplier: 0.95
+				},
+				{
+					condition: () => user.hasEquippedOrInBank('Music cape'),
+					boost: '5% for Music cape',
+					durationMultiplier: 0.95
 				}
 			],
 			Medium: [
 				{
-					item: getOSItem('Ring of the elements'),
-					boost: '8% for Ring of the elements',
-					durationMultiplier: 0.92
+					condition: () => hasXericTalisman,
+					boost: "5% for Mounted Xeric's Talisman",
+					durationMultiplier: 0.95
+				},
+				{
+					condition: () => user.hasEquippedOrInBank('Ring of the elements'),
+					boost: '10% for Ring of the elements',
+					durationMultiplier: 0.9
+				},
+				{
+					condition: () => user.hasEquippedOrInBank('Skull sceptre'),
+					boost: '5% for Skull sceptre',
+					durationMultiplier: 0.95
+				},
+				{
+					condition: () => user.hasEquippedOrInBank('Music cape'),
+					boost: '5% for Music cape',
+					durationMultiplier: 0.95
 				}
 			],
 			Hard: [
 				{
-					item: getOSItem('Achievement diary cape'),
-					boost: '10% for Achievement diary cape',
-					durationMultiplier: 0.9
+					condition: () => user.hasEquippedOrInBank('Book of the dead'),
+					boost: '5% for Book of the dead',
+					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem('Wilderness sword 3'),
-					boost: '8% for Wilderness sword 3',
-					durationMultiplier: 0.92
+					condition: () => user.hasEquippedOrInBank('Wilderness sword 3') && !hasAchievementDiaryCape,
+					boost: '5% for Wilderness sword 3',
+					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem('Royal seed pod'),
-					boost: '6% for Royal seed pod',
-					durationMultiplier: 0.94
+					condition: () => user.hasEquippedOrInBank('Royal seed pod'),
+					boost: '5% for Royal seed pod',
+					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem('Eternal teleport crystal'),
-					boost: '4% for Eternal teleport crystal',
-					durationMultiplier: 0.96
+					condition: () => user.hasEquippedOrInBank('Eternal teleport crystal'),
+					boost: '5% for Eternal teleport crystal',
+					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem("Pharaoh's sceptre"),
-					boost: "4% for Pharaoh's sceptre",
-					durationMultiplier: 0.96
+					condition: () => user.hasEquippedOrInBank("Pharaoh's sceptre"),
+					boost: "5% for Pharaoh's sceptre",
+					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem('Toxic blowpipe'),
-					boost: '4% for Toxic blowpipe',
-					durationMultiplier: 0.96
+					condition: () => user.hasEquippedOrInBank('Toxic blowpipe'),
+					boost: '5% for Toxic blowpipe',
+					durationMultiplier: 0.95
 				}
 			],
 			Elite: [
 				{
-					item: getOSItem('Achievement diary cape'),
-					boost: '10% for Achievement diary cape',
-					durationMultiplier: 0.9
+					condition: () => user.hasEquippedOrInBank('Book of the dead'),
+					boost: '5% for Book of the dead',
+					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem('Kandarin headgear 4'),
-					boost: '7% for Kandarin headgear 4',
-					durationMultiplier: 0.93
+					condition: () => user.hasEquippedOrInBank("Pharaoh's sceptre"),
+					boost: "5% for Pharaoh's sceptre",
+					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem('Fremennik sea boots 4'),
+					condition: () => user.hasEquippedOrInBank('Kandarin headgear 4') && !hasAchievementDiaryCape,
+					boost: '5% for Kandarin headgear 4',
+					durationMultiplier: 0.95
+				},
+				{
+					condition: () => user.hasEquippedOrInBank('Fremennik sea boots 4') && !hasAchievementDiaryCape,
 					boost: '3% for Fremennik sea boots 4',
 					durationMultiplier: 0.97
 				},
 				{
-					item: getOSItem("Pharaoh's sceptre"),
-					boost: "4% for Pharaoh's sceptre",
-					durationMultiplier: 0.96
-				},
-				{
-					item: getOSItem('Toxic blowpipe'),
+					condition: () => user.hasEquippedOrInBank('Toxic blowpipe'),
 					boost: '4% for Toxic blowpipe',
 					durationMultiplier: 0.96
 				}
 			],
 			Master: [
 				{
-					item: getOSItem('Achievement diary cape'),
-					boost: '10% for Achievement diary cape',
-					durationMultiplier: 0.9
-				},
-				{
-					item: getOSItem('Kandarin headgear 4'),
+					condition: () => user.hasEquippedOrInBank('Kandarin headgear 4') && !hasAchievementDiaryCape,
 					boost: '6% for Kandarin headgear 4',
 					durationMultiplier: 0.94
 				},
 				{
-					item: getOSItem('Music cape'),
+					condition: () => user.hasEquippedOrInBank('Book of the dead'),
+					boost: '5% for Book of the dead',
+					durationMultiplier: 0.95
+				},
+				{
+					condition: () => user.hasEquippedOrInBank('Music cape'),
 					boost: '5% for Music cape',
 					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem('Eternal teleport crystal'),
+					condition: () => user.hasEquippedOrInBank('Eternal teleport crystal'),
 					boost: '3% for Eternal teleport crystal',
 					durationMultiplier: 0.97
 				},
 				{
-					item: getOSItem('Toxic blowpipe'),
+					condition: () => user.hasEquippedOrInBank('Toxic blowpipe'),
 					boost: '2% for Toxic blowpipe',
 					durationMultiplier: 0.98
 				},
 				{
-					item: getOSItem('Dragon claws'),
+					condition: () => user.hasEquippedOrInBank('Dragon claws'),
 					boost: '1% for Dragon claws',
 					durationMultiplier: 0.99
 				}
 			]
 		};
 
-		const clueTierName = clueTier.name;
-		const boostList = clueTierBoosts[clueTierName];
-		const result = applyClueBoosts(user, boostList, boosts, duration, clueTier);
+		for (const tierBoost of clueTierBoosts[clueTier.name]) {
+			const { condition, boost, durationMultiplier } = tierBoost;
+			if (condition()) {
+				boosts.push(boost);
+				duration *= durationMultiplier;
+			}
+		}
 
-		timeToFinish = result.duration;
+		timeToFinish = duration;
 
 		const response: Awaited<CommandResponse> = {};
 
@@ -396,7 +434,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		response.content = `${user.minionName} is now completing ${quantity}x ${
 			clueTier.name
-		} clues, it'll take around ${formatDuration(duration)} to finish.${
+		} clues, it'll take around ${formatDuration(duration)} to finish (${((quantity / duration) * 3600000).toFixed(1)}/hr).${
 			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
 		}${implingLootString}`;
 		return response;
