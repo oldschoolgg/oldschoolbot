@@ -1,33 +1,77 @@
 ---
-title: "OSB Bingo #3"
-sidebar:
-  order: 4
+title: "Bingo"
 ---
-import Time from "../../../components/Time.astro";
+import Time from "../../../../components/Time.astro";
+
+You can run community bingo's using the `/bingo` command, and the bot will automatically handle all of it for you.
+
+## Notes
+
+- Ironmen can join bingos for free. They cannot be given GP prizes, or create bingos.
+- Upon the bingo finishing, the creator of the bingo needs to do `/bingo finalize` to receive the GP pool. The creator of the bingo is responsible for handing out the GP, based on whatever split you have decided. You do not need to finalize the bingo on time, the bingo will automatically finish at the exact second it needs to, the finalize command just does some final things, and hands out the gp.
+- A person can participate in several bingos at once.
+- Bingos are private to the server they were made in. In other words, you can only join it from that server. Global bingos are limited to the official bingos. However, for any bingo, the commands/trips the players do (to get loot) can be done anywhere.
+
+## Creating a Bingo
+
+To create a bingo, you need to input the following things:
+
+- Title
+- Duration in days(7 = 7 days)
+- Start Date unix seconds. Use [https://hammertime.cyou/?tz=Etc%2FGMT](https://hammertime.cyou/?tz=Etc%2FGMT) to find this number. It's the last in the list, and is just a plain number that looks like this: `1695859800`. This indicates the exact time at which your bingo starts.
+- Ticket price: The ticket price per person. Each person must pay this when making their team. If the team disbands, the GP is refunded.
+- Team size: Size of the teams.
+- Organizers: people who are allowed to manage the bingo (Add tiles, etc)
+
+## Managing your Bingo
+
+Commands for managing the bingo are in `/bingo manage`. You can add/remove tiles, add extra GP to the prize pool, and more.
+
+### Adding Tiles
+
+You can add tiles in 2 ways.
+
+1. Add global tiles. You can select global tiles to add, which are tiles that are premade for you to use.
+2. Add custom tiles. You can add 2 kinds of tiles. AND tiles, OR tiles. Example:
+   1. `add_tile:coal+egg+trout` Adds a tile where you have to receive a coal, egg AND trout.
+   2. `add_tile:coal|egg|trout` Adds a tile where you have to receive a coal, or egg, or a trout.
+
+## OSB Bingo #3 (Finished)
 
 Start Date: <Time time="2024-10-25 12:00:00 UTC"/>
 
 Finish Date: <Time time="2024-11-8 12:00:00 UTC"/>
+OSB Bingo #3  has finished!
 
-We are hosting the 3rd OSB Bingo! You can compete for a chance of winning some GP, and a guaranteed chance of getting a trophy.
+**1st**: @vKoko @delman @Merisorax  @Huśtajdupa  @Prztynkinista
+(Prize Pool 22.825b)
 
-## Information
-- When completing tiles, the bot automatically tracks and handles it for you. Your team "shares" tiles, so if one person completes a tile, it counts for the whole team.
-- Ironmen can join teams and participate, no entry free is required, but they will not be eligible for item/GP rewards.
-- Each player pays a 250m entry fee (when joining a team) which goes into the prize pool.
+**2nd** Place @Ironici @Ecto @TheItchIsReal @CrankItUp @drunkenbeer
+(Prize Pool 12.450b)
 
-## How to Join
-1. Gather 4 friends (for a team of 5), OR find people from our server to make a team.
-1. Ensure all 5 people have the 250m entry free, and are ready to confirm.
-1. Use this command in the main discord server: [[/bingo make_team bingo\:OSB Bingo #3]], and everyone click the confirm button.
+**3rd:** @papi @ImZ @Southernz @yekzerr @mikehunt
+(Prize Pool 6.225b)
 
-## Bingo Channels
-- Receive info/announcements/updates about the bingo: [[# bingo-info:1039869985989861466]]
-- Discuss the bingo: [[# bingo-discussion:1039870142651301979]]
-- Look for a team: [[# bingo-looking-4-team:1149907771937001522]]
+The Below Winner is the OSB Bingo #3 MvP which has won the following:
+- 2b Coins
+- 1m Sunfire Splinters
+- 2 x Scythe of Vitur (uncharged)
+- 3k Vial of Blood
+- 2 x Ancestral Robes Set
+- Justiciar Armour Set
+- Ghrazi Rapier
+- 2 x Sanguinesti Staff (uncharged)
+- 2 x Kodai Wand
+- 2 x Dragon Claws
+- Spectral Spirit Shield
+- Thammarons Sceptre (u)
+- Zaryte Crossbow
+Donated by Loot Game Event Team
 
-## Prizes
+**MvP:** Garousse with 13!!! Solo Tiles
 
+<details>
+<summary>Prizes</summary>
 You can see the actual GP prize pool with the bingo command.
 
 - 1st Place team - 55% of GP Prize Pool, Bingo Winner role
@@ -35,9 +79,10 @@ You can see the actual GP prize pool with the bingo command.
 - 3rd Place team - 15% of GP Prize Pool
 
 *More rewards may be added later*
+</details>
 
-## Trophies
-
+<details>
+<summary>Trophies</summary>
 You can earn a Trophy (an item you get in your bank) by your performance. You get each one either by being in a certain percentile, or guaranteed if you complete a certain number of tiles.
 
 - Bronze - 100% - Guaranteed at 1 Tile
@@ -47,11 +92,10 @@ You can earn a Trophy (an item you get in your bank) by your performance. You ge
 - Adamant - top 20% - Guaranteed at 16 Tiles
 - Rune - top 10% - Guaranteed at 22 Tiles
 - Dragon - top 5% - Guaranteed at 28 Tiles
+</details>
 
-[[osbbingo3.png]]
-
-## Tiles
-
+<details>
+<summary>Tiles</summary>
 1. Receive A Skilling Pet - Receive Any Pet From The Skilling Pet CL (No Exclusions)
 1. Receive Any Nightmare Orb - Receive Any of The Following - Eldritch Orb, Volatile Orb, Harmonised Orb
 1. Receive Any Sigil From The Corporeal Beast - Receive Any of The Following - Spectral Sigil, Arcane Sigil, Elysian Sigil
@@ -80,3 +124,4 @@ You can earn a Trophy (an item you get in your bank) by your performance. You ge
 1. Receive a Boss Pet - Receive Any of The Following -  Pet dagannoth supreme, Pet dagannoth prime, Pet dagannoth rex, Pet kree'arra, Pet general graardor, Pet zilyana, Pet k'ril tsutsaroth, Baby mole, Prince black dragon, Kalphite princess, Pet smoke devil, Pet kraken, Pet dark core, Pet snakeling, Venenatis spiderling, Callisto cub, Vet'ion jr., Scorpia's offspring, Hellpuppy, Olmlet, Noon, Vorki, Lil' zik, Ikkle hydra, Sraracha, Little nightmare, Nexling, Tumeken's guardian, Muphin, Wisp, Butch, Lil'viathan, Baron, Nid, Scurry
 1. Receive a Boss Jar - Receive Any Jar (Excluding Jar or Darkness + Jar of Miasma)
 1. Receive a Tormented Demon Unique - Receive Any of The Following - Burning Claw or Tormented Synapse
+</details>
