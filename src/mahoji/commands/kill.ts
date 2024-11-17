@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
+import { combatOptionChoices } from '../../lib/minions/data/combatConstants';
 import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
@@ -86,13 +87,20 @@ export const killCommand: OSBMahojiCommand = {
 			description: 'On slayer task from a master?',
 			required: false,
 			choices: slayerMasterChoices
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'modifier',
+			description: 'Additional Combat Modifier for some monsters',
+			required: false,
+			choices: combatOptionChoices
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		interaction
-	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string }>) => {
+	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string; modifier: string }>) => {
 		const user = await mUserFetch(userID);
 		await deferInteraction(interaction);
 		const result = await Workers.kill({
@@ -106,7 +114,8 @@ export const killCommand: OSBMahojiCommand = {
 				user
 					.buildTertiaryItemChanges(false, options.master === 'Krystilia', options.master !== undefined)
 					.entries()
-			)
+			),
+			table: options.name === Monsters.Araxxor.name && options.modifier === "Destroy Araxxor's Corpse" ? 1 : 0
 		});
 
 		if (result.error) {
