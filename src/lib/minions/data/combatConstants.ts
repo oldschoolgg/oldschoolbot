@@ -1,4 +1,4 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import type { Consumable } from '../types';
 
@@ -72,7 +72,9 @@ export const CombatOptionsArray: CombatOptionsDesc[] = [
 	}
 ];
 
-export const combatOptionChoices = CombatOptionsArray.filter(o => o.id >= 4).map(o => {
+export const combatOptionChoices = CombatOptionsArray.filter(o =>
+	Object.values(SlayerActivityConstants).every(i => i !== o.id)
+).map(o => {
 	return { name: o.name, value: o.name };
 });
 
@@ -95,3 +97,9 @@ export const iceBurstConsumables: Consumable = {
 	qtyPerMinute: 16,
 	isRuneCost: true
 };
+
+export function chooseLootTable(monsterName: string, combatOptions?: readonly CombatOptionsDesc[]) {
+	return monsterName === Monsters.Araxxor.name && combatOptions?.some(o => o.id === CombatOptionsEnum.AraxxorDestroy)
+		? 1
+		: 0;
+}

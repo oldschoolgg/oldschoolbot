@@ -5,7 +5,7 @@ import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { type BitField, Emoji } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
-import { CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
+import { CombatOptionsArray, type CombatOptionsEnum, chooseLootTable } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -296,8 +296,10 @@ export function doMonsterTrip(data: newOptions) {
 		messages.push('\nYour clue scroll chance is doubled due to wearing a Ring of Wealth (i).');
 	}
 
-	const table =
-		monster.id === Monsters.Araxxor.id && combatOptions?.includes(CombatOptionsEnum.AraxxorDestroy) ? 1 : 0;
+	const table = chooseLootTable(
+		monster.name,
+		CombatOptionsArray.filter(o => combatOptions?.includes(o.id))
+	);
 
 	const killOptions: MonsterKillOptions = {
 		onSlayerTask: slayerContext.isOnTask,

@@ -4,7 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
-import { combatOptionChoices } from '../../lib/minions/data/combatConstants';
+import { CombatOptionsArray, chooseLootTable, combatOptionChoices } from '../../lib/minions/data/combatConstants';
 import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
@@ -115,7 +115,10 @@ export const killCommand: OSBMahojiCommand = {
 					.buildTertiaryItemChanges(false, options.master === 'Krystilia', options.master !== undefined)
 					.entries()
 			),
-			table: options.name === Monsters.Araxxor.name && options.modifier === "Destroy Araxxor's Corpse" ? 1 : 0
+			table: chooseLootTable(
+				options.name,
+				CombatOptionsArray.filter(o => o.name === options.modifier)
+			)
 		});
 
 		if (result.error) {
