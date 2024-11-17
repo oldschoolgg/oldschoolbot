@@ -1,5 +1,5 @@
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { clamp, increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
@@ -165,10 +165,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 				slayerUnlocks
 			})
 		: null;
-
-	if (monster.maxQuantity) {
-		args.inputQuantity = clamp(args.inputQuantity ?? 1, 1, monster.maxQuantity);
-	}
 
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
 	const speedDurationResult = speedCalculations({
