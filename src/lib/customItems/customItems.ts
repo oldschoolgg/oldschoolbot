@@ -956,7 +956,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	100_000_000
+	200_000_000
 );
 
 setCustomItem(
@@ -1013,7 +1013,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	100_000_000
+	200_000_000
 );
 
 setCustomItem(
@@ -1070,7 +1070,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	100_000_000
+	200_000_000
 );
 
 setCustomItem(47_517, 'Perfect chitin', 'Magic seed', {}, 1_000_000);
@@ -8477,7 +8477,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	400_000_000
 );
 
 setCustomItem(
@@ -8501,7 +8501,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	400_000_000
 );
 
 setCustomItem(
@@ -9085,7 +9085,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1_000_000
+	400_000_000
 );
 
 setCustomItem(
@@ -12247,7 +12247,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	100_000_000
+	200_000_000
 );
 
 setCustomItem(
