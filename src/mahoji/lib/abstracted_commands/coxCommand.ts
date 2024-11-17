@@ -207,9 +207,12 @@ export async function coxCommand(
 	if (!channelIsSendable(channel)) return 'No channel found.';
 
 	let users: MUser[] = [];
+	let isFakeMass = false;
+
 	const fakeUsers = Math.min(maxSizeInput ?? 5, maxSize);
 	if (type === 'fakemass') {
 		users = new Array(fakeUsers).fill(user);
+		isFakeMass = true;
 	} else if (type === 'mass') {
 		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
 	} else {
@@ -240,7 +243,6 @@ export async function coxCommand(
 
 	let debugStr = '';
 	const isSolo = users.length === 1;
-	const isFakeMass = users.length > 1 && new Set(users).size === 1;
 
 	for (const d of degradeables) {
 		d.chargesToDegrade *= quantity;
