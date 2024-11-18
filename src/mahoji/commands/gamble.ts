@@ -1,5 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
@@ -264,7 +264,7 @@ export const gambleCommand: OSBMahojiCommand = {
 					guild_id: guildID ? BigInt(guildID) : undefined,
 					sender: BigInt(senderUser.id),
 					recipient: BigInt(recipientuser.id),
-					items_sent: loot.bank,
+					items_sent: loot.toJSON(),
 					items_received: undefined,
 					type: 'gri'
 				}

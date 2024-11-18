@@ -2,7 +2,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -234,6 +234,6 @@ export async function volcanicMineStatsCommand(user: MUser) {
 	const currentUserPoints = user.user.volcanic_mine_points;
 	const kc = await getMinigameScore(user.id, 'volcanic_mine');
 
-	return `You have ${currentUserPoints.toLocaleString()} Volanic Mine points points.
+	return `You have ${currentUserPoints.toLocaleString()} Volcanic Mine points.
 You have completed ${kc} games of Volcanic Mine.`;
 }

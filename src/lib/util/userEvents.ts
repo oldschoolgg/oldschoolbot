@@ -1,4 +1,4 @@
-import { dateFm } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/toolkit/util';
 import type { Prisma, UserEvent, xp_gains_skill_enum } from '@prisma/client';
 import { UserEventType } from '@prisma/client';
 

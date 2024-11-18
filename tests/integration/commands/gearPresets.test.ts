@@ -1,4 +1,5 @@
 import { randInt } from 'e';
+import { EItem } from 'oldschooljs';
 import { describe, expect, test, vi } from 'vitest';
 
 import itemID from '../../../src/lib/util/itemID';
@@ -62,13 +63,16 @@ describe('Gear Presets Command', async () => {
 			edit: { gear_preset: 'TestEdit', weapon: 'Ghrazi rapier', feet: 'None' }
 		});
 
-		const gpEditResult = await global.prisma!.gearPreset.findFirst({
+		await user.runCommand(gearPresetsCommand, {
+			edit: { gear_preset: 'TestEdit', ammo: "Rada's blessing 4" }
+		});
+
+		const gpEditResult = await global.prisma!.gearPreset.findFirstOrThrow({
 			where: { user_id: user.id, name: 'testedit' }
 		});
 
 		// Verify row found:
 		expect(gpEditResult).toBeTruthy();
-		if (!gpEditResult) return false;
 
 		// Make sure row is as expected:
 		expect(gpEditResult.head).toEqual(itemID('Bronze full helm'));
@@ -76,6 +80,25 @@ describe('Gear Presets Command', async () => {
 		expect(gpEditResult.weapon).toEqual(itemID('Ghrazi rapier'));
 		expect(gpEditResult.shield).toEqual(itemID('Bronze kiteshield'));
 		expect(gpEditResult.hands).toBeNull();
-		expect(gpEditResult.ammo).toBeNull();
+		expect(gpEditResult.ammo).toEqual(EItem.RADAS_BLESSING_4);
+
+		await user.runCommand(gearPresetsCommand, {
+			edit: { gear_preset: 'TestEdit', head: 'Bronze med helm' }
+		});
+
+		const gpEditResult2 = await global.prisma!.gearPreset.findFirstOrThrow({
+			where: { user_id: user.id, name: 'testedit' }
+		});
+		expect(gpEditResult2.ammo).toEqual(EItem.RADAS_BLESSING_4);
+		expect(gpEditResult2.head).toEqual(EItem.BRONZE_MED_HELM);
+
+		await user.runCommand(gearPresetsCommand, {
+			edit: { gear_preset: 'TestEdit', ammo: 'None' }
+		});
+		const gpEditResult3 = await global.prisma!.gearPreset.findFirstOrThrow({
+			where: { user_id: user.id, name: 'testedit' }
+		});
+		expect(gpEditResult3.ammo).toBeNull();
+		expect(gpEditResult3.ammo_qty).toBeNull();
 	});
 });

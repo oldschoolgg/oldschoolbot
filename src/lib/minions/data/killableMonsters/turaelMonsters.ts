@@ -270,7 +270,7 @@ export const turaelMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Torva platebody', 'Bandos chestplate'],
 			["Verac's plateskirt", 'Bandos tassets', 'Torva platelegs'],
-			['Arclight', 'Abyssal whip', 'Dragon scimitar'],
+			['Arclight', 'Emberlight', 'Abyssal whip', 'Dragon scimitar'],
 			['Rune crossbow', "Karil's crossbow", 'Armadyl crossbow'],
 			['Armadyl chestplate', "Karil's leathertop"],
 			['Armadyl chainskirt', "Karil's leatherskirt"]
@@ -278,7 +278,8 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 175,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 20
+				[itemID('Arclight')]: 20,
+				[itemID('Emberlight')]: 25
 			}
 		],
 		levelRequirements: {
@@ -1061,7 +1062,8 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 175,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 20
+				[itemID('Arclight')]: 20,
+				[itemID('Emberlight')]: 25
 			}
 		],
 		levelRequirements: {
@@ -1239,6 +1241,22 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 32,
 		healAmountNeeded: 6,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackCrush]
+	},
+	{
+		id: Monsters.ArmouredZombie.id,
+		name: Monsters.ArmouredZombie.name,
+		aliases: Monsters.ArmouredZombie.aliases,
+		timeToFinish: Time.Second * 23,
+		table: Monsters.ArmouredZombie,
+		wildy: false,
+
+		difficultyRating: 2,
+		qpRequired: 20,
+		canBarrage: true,
+		canChinning: true,
+		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	}

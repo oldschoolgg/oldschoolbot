@@ -4,7 +4,7 @@ import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/geImage';
 
-import { MahojiClient } from '@oldschoolgg/toolkit';
+import { MahojiClient } from '@oldschoolgg/toolkit/util';
 import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
@@ -74,7 +74,18 @@ const client = new OldSchoolBotClient({
 		VoiceStateManager: { maxSize: 0 },
 		GuildInviteManager: { maxSize: 0 },
 		ThreadManager: { maxSize: 0 },
-		ThreadMemberManager: { maxSize: 0 }
+		ThreadMemberManager: { maxSize: 0 },
+		AutoModerationRuleManager: { maxSize: 0 },
+		GuildMessageManager: { maxSize: 0 },
+		GuildBanManager: { maxSize: 0 },
+		GuildForumThreadManager: { maxSize: 0 },
+		GuildScheduledEventManager: { maxSize: 0 },
+		GuildTextThreadManager: { maxSize: 0 },
+		BaseGuildEmojiManager: { maxSize: 0 },
+		ReactionManager: { maxSize: 0 },
+		DMMessageManager: { maxSize: 0 },
+		ReactionUserManager: { maxSize: 0 },
+		StageInstanceManager: { maxSize: 0 }
 	}),
 	sweepers: {
 		guildMembers: {

@@ -5,8 +5,11 @@
 	},
 	"files": {
 		"maxSize": 10000000,
-		"ignore": ["node_modules", "dist", "coverage", "profiling", "logs", "icon_cache"],
-		"include": ["**/*.ts", "**/*.mts", "**/*.json", "**/*.test.ts"]
+		"ignore": ["node_modules", "dist", "coverage", "profiling", "logs", "icon_cache", ".astro", ".yarn"],
+		"include": ["**/*.ts", "**/*.mts", "**/*.json", "**/*.test.ts", "**/*.mdx", "**/*.md", "**/*.mjs", "**/*.cjs"]
+	},
+	"vcs": {
+		"defaultBranch": "master"
 	},
 	"linter": {
 		"enabled": true,
@@ -19,13 +22,16 @@
 			"suspicious": {
 				"noExplicitAny": "warn",
 				"noAssignInExpressions": "warn",
-				"noAsyncPromiseExecutor": "off"
+				"noAsyncPromiseExecutor": "off",
+				"noConfusingVoidType": "off",
+				"noFocusedTests": "off"
 			},
 			"style": {
 				"noNonNullAssertion": "off",
 				"noParameterAssign": "off",
 				"useExponentiationOperator": "off",
-				"noUselessElse": "off"
+				"noUselessElse": "off",
+				"useLiteralEnumMembers": "warn"
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "warn",

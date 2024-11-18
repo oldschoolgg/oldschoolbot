@@ -1,19 +1,24 @@
 import { Time } from 'e';
-import { Clues } from 'oldschooljs';
-import type { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
-import type { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
-import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
-import type { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
-import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
-import type { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
-import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
-import type { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
-import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import type { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
-import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
+import {
+	BeginnerCasket,
+	Clues,
+	EasyCasket,
+	EliteCasket,
+	HardCasket,
+	type LootTable,
+	MasterCasket,
+	MediumCasket
+} from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
+import {
+	cluesBeginnerCL,
+	cluesEasyCL,
+	cluesEliteCL,
+	cluesHardCL,
+	cluesMasterCL,
+	cluesMediumCL
+} from '../data/CollectionsExport';
 import itemID from '../util/itemID';
 import type { ClueReqs } from './clueReqs';
 import { beginnerReqs } from './clueReqs';
@@ -29,7 +34,7 @@ interface ClueMilestoneReward {
 
 export interface ClueTier {
 	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master';
-	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
+	table: LootTable;
 	id: number;
 	scrollID: number;
 	timeToFinish: number;
@@ -39,6 +44,7 @@ export interface ClueTier {
 	stashUnits: StashUnitTier;
 	reqs: ClueReqs;
 	implings?: number[];
+	cl: number[];
 }
 
 export const ClueTiers: ClueTier[] = [
@@ -47,86 +53,92 @@ export const ClueTiers: ClueTier[] = [
 		table: Beginner,
 		id: 23_245,
 		scrollID: 23_182,
-		timeToFinish: Time.Minute * 2.5,
+		timeToFinish: Time.Minute * 2.8,
 		mimicChance: false,
-		allItems: BeginnerClueTable.allItems,
+		allItems: BeginnerCasket.allItems,
 		stashUnits: beginnerStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Baby impling jar', 'Young impling jar'])
+		implings: resolveItems(['Baby impling jar', 'Young impling jar']),
+		cl: cluesBeginnerCL
 	},
 	{
 		name: 'Easy',
 		table: Easy,
 		id: 20_546,
 		scrollID: 2677,
-		timeToFinish: Time.Minute * 5.5,
+		timeToFinish: Time.Minute * 3.2,
 		milestoneReward: {
 			itemReward: itemID('Large spade'),
 			scoreNeeded: 500
 		},
 		mimicChance: false,
-		allItems: EasyClueTable.allItems,
+		allItems: EasyCasket.allItems,
 		stashUnits: easyStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar'])
+		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar']),
+		cl: cluesEasyCL
 	},
 	{
 		name: 'Medium',
 		table: Medium,
 		id: 20_545,
 		scrollID: 2801,
-		timeToFinish: Time.Minute * 7,
+		timeToFinish: Time.Minute * 5.1,
 		milestoneReward: {
 			itemReward: itemID('Clueless scroll'),
 			scoreNeeded: 400
 		},
 		mimicChance: false,
-		allItems: MediumClueTable.allItems,
+		allItems: MediumCasket.allItems,
 		stashUnits: mediumStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar'])
+		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar']),
+		cl: cluesMediumCL
 	},
 	{
 		name: 'Hard',
 		table: Hard,
 		id: 20_544,
 		scrollID: 2722,
-		timeToFinish: Time.Minute * 12.5,
+		timeToFinish: Time.Minute * 8.5,
 		mimicChance: false,
-		allItems: HardClueTable.allItems,
+		allItems: HardCasket.allItems,
 		stashUnits: hardStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar'])
+		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar']),
+		cl: cluesHardCL
 	},
 	{
 		name: 'Elite',
 		table: Elite,
 		id: 20_543,
 		scrollID: 12_073,
-		timeToFinish: Time.Minute * 14,
+		timeToFinish: Time.Minute * 8.5,
 		milestoneReward: {
 			itemReward: itemID('Heavy casket'),
 			scoreNeeded: 200
 		},
 		mimicChance: 35,
-		allItems: EliteClueTable.allItems,
+		allItems: EliteCasket.allItems,
 		stashUnits: eliteStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar'])
+		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar']),
+		cl: cluesEliteCL
 	},
 	{
 		name: 'Master',
 		table: Master,
 		id: 19_836,
 		scrollID: 19_835,
-		timeToFinish: Time.Minute * 19.3,
+		timeToFinish: Time.Minute * 19.5,
 		milestoneReward: {
 			itemReward: itemID('Scroll sack'),
 			scoreNeeded: 100
 		},
 		mimicChance: 15,
-		allItems: MasterClueTable.allItems,
+		allItems: MasterCasket.allItems,
 		stashUnits: masterStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		cl: cluesMasterCL
 	}
 ];

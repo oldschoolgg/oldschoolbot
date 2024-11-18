@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { logError } from './util/logError';
 
 const u = Prisma.UserScalarFieldEnum;
 
@@ -14,3 +15,14 @@ SET ${u.cl_array} = (
 )
 WHERE ${u.id} = '${userID}';`
 };
+
+export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> {
+	try {
+		const result = await prisma.$queryRawUnsafe<T>(query);
+		return result;
+	} catch (err) {
+		logError(err, { query: query.slice(0, 100) });
+	}
+
+	return null;
+}

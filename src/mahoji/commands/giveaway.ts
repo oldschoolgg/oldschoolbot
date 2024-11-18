@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import type { BaseMessageOptions } from 'discord.js';
@@ -200,7 +200,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 						start_date: new Date(),
 						finish_date: duration.fromNow,
 						completed: false,
-						loot: bank.bank,
+						loot: bank.toJSON(),
 						user_id: user.id,
 						duration: duration.offset,
 						message_id: message.id,

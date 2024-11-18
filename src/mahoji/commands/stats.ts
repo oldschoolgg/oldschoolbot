@@ -1,5 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores } from 'oldschooljs';
 import type { hiscoreURLs } from 'oldschooljs/dist/constants';
@@ -54,7 +54,7 @@ export const statsCommand: OSBMahojiCommand = {
 				type: options.type,
 				virtualLevels: Boolean(options.virtual)
 			});
-			const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : options.type ?? null;
+			const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : (options.type ?? null);
 			return {
 				embeds: [
 					statsEmbed({

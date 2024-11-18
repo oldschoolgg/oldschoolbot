@@ -114,7 +114,7 @@ async function transactItemsFromBank({
 		}
 
 		const { newUser } = await mahojiUserSettingsUpdate(userID, {
-			bank: newBank.bank,
+			bank: newBank.toJSON(),
 			GP: gpUpdate,
 			...clUpdates,
 			...options.otherUpdates

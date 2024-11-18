@@ -1,9 +1,11 @@
-import { Canvas } from '@napi-rs/canvas';
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import {
+	type Canvas,
+	canvasToBuffer,
+	createCanvas,
 	drawItemQuantityText,
 	drawTitleText,
 	fillTextXTimesInCtx,
@@ -87,7 +89,7 @@ export async function generateGearImage(
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
-	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
+	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -234,7 +236,7 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.encode('png');
+	return canvasToBuffer(canvas);
 }
 
 export async function generateAllGearImage(user: MUser) {
@@ -246,7 +248,7 @@ export async function generateAllGearImage(user: MUser) {
 
 	const hexColor = user.user.bank_bg_hex;
 	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template_compact.png');
-	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
+	const canvas = createCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -321,5 +323,5 @@ export async function generateAllGearImage(user: MUser) {
 
 	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
 
-	return canvas.encode('png');
+	return canvasToBuffer(canvas);
 }

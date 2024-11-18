@@ -24,5 +24,6 @@
 		"types": ["node", "node-fetch", "discord.js"],
 		"esModuleInterop": true,
 		"skipDefaultLibCheck": true
-	}
+	},
+	"exclude": ["**/node_modules", "**/.*/"]
 }

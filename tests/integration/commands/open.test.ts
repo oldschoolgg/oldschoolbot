@@ -14,7 +14,7 @@ describe('Open Command', async () => {
 		const result = await user.runCommand(openCommand, { name: 'reward casket (beginner)' });
 		expect(result).toMatchObject({
 			content: `You have now opened a total of 1x Reward casket (beginner)
-1x Beginner Clue Casket `
+1x Beginner Clue Casket`
 		});
 		await user.bankAmountMatch('Reward casket (beginner)', 99);
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 1));

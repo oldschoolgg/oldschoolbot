@@ -1,10 +1,9 @@
-import { resolve } from 'node:path';
+import path, { resolve } from 'node:path';
 
-import type { Bank } from 'oldschooljs';
 import Piscina from 'piscina';
 
-import { production } from '../../config';
 import type { ItemBank } from '../types';
+import type { MonsterSlayerMaster } from '../util';
 
 export interface CasketWorkerArgs {
 	clueTierID: number;
@@ -16,12 +15,13 @@ export interface KillWorkerArgs {
 	quantity: number;
 	limit: number;
 	onTask: boolean;
-	catacombs: boolean;
+	catacombs?: boolean;
+	slayerMaster?: MonsterSlayerMaster;
 	lootTableTertiaryChanges: [string, number][];
 }
 
 export type KillWorkerReturn = Promise<{
-	bank?: Bank;
+	bank?: ItemBank;
 	error?: string;
 	title?: string;
 	content?: string;
@@ -42,9 +42,9 @@ export type FinishWorkerReturn = Promise<
 	| string
 >;
 
-const maxThreads = production ? 3 : 1;
+const maxThreads = 1;
 
-let dirName = __dirname.replace('src/lib', 'dist/lib');
+let dirName = __dirname.replace(path.join('src', 'lib'), path.join('dist', 'lib'));
 if (dirName.endsWith('dist')) {
 	dirName = resolve(dirName, 'lib', 'workers');
 }
@@ -67,7 +67,7 @@ const casketWorker = new Piscina({
 });
 
 export const Workers = {
-	casketOpen: (args: CasketWorkerArgs): Promise<[Bank, string]> => casketWorker.run(args),
+	casketOpen: (args: CasketWorkerArgs): Promise<[ItemBank, string]> => casketWorker.run(args),
 	kill: (args: KillWorkerArgs): KillWorkerReturn => killWorker.run(args),
 	finish: (args: FinishWorkerArgs): FinishWorkerReturn => finishWorker.run(args)
 };

@@ -1,6 +1,4 @@
-import type { MonsterSlayerMaster } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
-import type Monster from 'oldschooljs/dist/structures/Monster';
+import type { Item, Monster, MonsterSlayerMaster } from 'oldschooljs';
 
 import type { LevelRequirements } from '../skilling/types';
 

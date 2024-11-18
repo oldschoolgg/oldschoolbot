@@ -1,18 +1,15 @@
-import { deepMerge, miniID, toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, deepMerge, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
-import type { InteractionReplyOptions } from 'discord.js';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
 import { clamp, objectEntries } from 'e';
-import { type Bank, Items } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
+import { type ArrayItemsResolved, Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
+import z from 'zod';
 
 import { skillEmoji } from '../data/emojis';
+import type { UserFullGearSetup } from '../gear/types';
 import type { Skills } from '../types';
-import getOSItem from './getOSItem';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -58,14 +55,6 @@ export function formatSkillRequirements(reqs: Record<string, number>, emojis = t
 	return arr.join(', ');
 }
 
-export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
-	const hasReqs = user.hasSkillReqs(reqs);
-	if (!hasReqs) {
-		return [false, formatSkillRequirements(reqs)];
-	}
-	return [true, null];
-}
-
 export function pluraliseItemName(name: string): string {
 	return name + (name.endsWith('s') ? '' : 's');
 }
@@ -76,11 +65,11 @@ export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 }
 
 const shortItemNames = new Map([
-	[getOSItem('Saradomin brew(4)'), 'Brew'],
-	[getOSItem('Super restore(4)'), 'Restore'],
-	[getOSItem('Super combat potion(4)'), 'Super combat'],
-	[getOSItem('Sanfew serum(4)'), 'Sanfew'],
-	[getOSItem('Ranging potion(4)'), 'Range pot']
+	[getItemOrThrow('Saradomin brew(4)'), 'Brew'],
+	[getItemOrThrow('Super restore(4)'), 'Restore'],
+	[getItemOrThrow('Super combat potion(4)'), 'Super combat'],
+	[getItemOrThrow('Sanfew serum(4)'), 'Sanfew'],
+	[getItemOrThrow('Ranging potion(4)'), 'Range pot']
 ]);
 
 export function bankToStrShortNames(bank: Bank) {
@@ -185,10 +174,84 @@ export function returnStringOrFile(string: string | InteractionReplyOptions): Aw
 
 export function makeTable(headers: string[], rows: unknown[][]) {
 	return new AsciiTable3()
+		.setStyle('github-markdown')
 		.setHeading(...headers)
 		.setAlign(1, AlignmentEnum.RIGHT)
 		.setAlign(2, AlignmentEnum.CENTER)
 		.setAlign(3, AlignmentEnum.LEFT)
 		.addRowMatrix(rows)
 		.toString();
+}
+
+export const staticTimeIntervals = ['day', 'week', 'month'] as const;
+type StaticTimeInterval = (typeof staticTimeIntervals)[number];
+export function parseStaticTimeInterval(input: string): input is StaticTimeInterval {
+	if (staticTimeIntervals.includes(input as any)) {
+		return true;
+	}
+	return false;
+}
+
+export function hasSkillReqsRaw(skills: Skills, requirements: Skills) {
+	for (const [skillName, requiredLevel] of objectEntries(requirements)) {
+		const lvl = skills[skillName];
+		if (!lvl || lvl < requiredLevel!) {
+			return false;
+		}
+	}
+	return true;
+}
+
+export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
+	const hasReqs = hasSkillReqsRaw(user.skillsAsLevels, reqs);
+	if (!hasReqs) {
+		return [false, formatSkillRequirements(reqs)];
+	}
+	return [true, null];
+}
+
+export function fullGearToBank(gear: UserFullGearSetup) {
+	const bank = new Bank();
+	for (const setup of Object.values(gear)) {
+		for (const equipped of Object.values(setup)) {
+			if (equipped?.item) {
+				bank.add(equipped.item, equipped.quantity);
+			}
+		}
+	}
+	return bank;
+}
+
+export function objHasAnyPropInCommon(obj: object, other: object): boolean {
+	for (const key of Object.keys(obj)) {
+		if (key in other) return true;
+	}
+	return false;
+}
+
+export const zodEnum = <T>(arr: T[] | readonly T[]): [T, ...T[]] => arr as [T, ...T[]];
+
+export function numberEnum<T extends number>(values: readonly T[]) {
+	const set = new Set<unknown>(values);
+	return (v: number, ctx: z.RefinementCtx): v is T => {
+		if (!set.has(v)) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.invalid_enum_value,
+				received: v,
+				options: [...values]
+			});
+		}
+		return z.NEVER;
+	};
+}
+
+export function isValidNickname(str?: string) {
+	return Boolean(
+		str &&
+			typeof str === 'string' &&
+			str.length >= 2 &&
+			str.length <= 30 &&
+			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
+			stripEmojis(str).length === str.length
+	);
 }

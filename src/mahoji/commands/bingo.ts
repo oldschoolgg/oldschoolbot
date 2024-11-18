@@ -1,7 +1,15 @@
-import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import {
+	dateFm,
+	formatOrdinal,
+	isValidDiscordSnowflake,
+	md5sum,
+	mentionCommand,
+	stringMatches,
+	truncateString
+} from '@oldschoolgg/toolkit/util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { bold, userMention } from 'discord.js';
@@ -15,16 +23,7 @@ import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { clImageGenerator } from '../../lib/collectionLogTask';
 import { BOT_TYPE, Emoji } from '../../lib/constants';
 
-import {
-	channelIsSendable,
-	dateFm,
-	getUsername,
-	getUsernameSync,
-	isValidDiscordSnowflake,
-	isValidNickname,
-	md5sum,
-	toKMB
-} from '../../lib/util';
+import { channelIsSendable, getUsername, getUsernameSync, isValidNickname, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -232,7 +231,8 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	}
 
 	if (!plus && !pipe) {
-		return { bank: parseBank({ inputStr: input, noDuplicateItems: true }) }.bank;
+		const bank = parseBank({ inputStr: input, noDuplicateItems: true });
+		return { bank: bank.toJSON() };
 	}
 
 	const delimiter = plus ? '+' : '|';
@@ -675,7 +675,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			const fee = BOT_TYPE === 'OSB' ? 20_000_000 : 50_000_000;
 			const creationCost = new Bank().add('Coins', fee);
 			if (user.GP < creationCost.amount('Coins')) {
-				return `You need atleast ${creationCost} to create a bingo.`;
+				return `You need at least ${creationCost} to create a bingo.`;
 			}
 
 			const channel = globalClient.channels.cache.get(options.create_bingo.notifications_channel_id);
@@ -713,9 +713,9 @@ export const bingoCommand: OSBMahojiCommand = {
 				return 'Team size must be between 1 and 5.';
 			}
 
-			// Start date must be atleast 3 hours into the future
+			// Start date must be at least 3 hours into the future
 			if (createOptions.start_date.getTime() < Date.now() + Time.Minute * 3) {
-				return 'Start date must be atleast 3 minutes into the future.';
+				return 'Start date must be at least 3 minutes into the future.';
 			}
 
 			// Start date cannot be more than 31 days into the future
@@ -914,7 +914,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 
 				const cost = new Bank().add('Coins', amount);
 				if (user.GP < cost.amount('Coins')) {
-					return `You need atleast ${cost} to add that much GP to the prize pool.`;
+					return `You need at least ${cost} to add that much GP to the prize pool.`;
 				}
 
 				await handleMahojiConfirmation(

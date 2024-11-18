@@ -69,7 +69,9 @@ export enum SlayerTaskUnlocksEnum {
 	DoubleTrouble = 49,
 	BroaderFletching = 50,
 	IWildyMoreSlayer = 200,
-	Revenenenenenants = 201
+	Revenenenenenants = 201,
+	EyeSeeYou = 202,
+	MoreEyesThanSense = 203
 }
 
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
@@ -184,6 +186,14 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 1000,
 		canBeRemoved: false,
 		aliases: ['vorkath slayer helmet', 'turquoise slayer helmet', 'blue slayer helmet']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.EyeSeeYou,
+		name: 'Eye see you',
+		desc: 'Unlocks ability to create the Araxyte slayer helmet.',
+		slayerPointCost: 1000,
+		canBeRemoved: false,
+		aliases: ['araxyte slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.UseMoreHead,
@@ -445,7 +455,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'Nechs please',
 		desc: 'Extends Nechryael tasks',
 		slayerPointCost: 100,
-		extendID: [Monsters.Nechryael.id],
+		extendID: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend nechs', 'extend nechryaels']
@@ -535,5 +545,15 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend revenants', 'extend revs']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.MoreEyesThanSense,
+		name: 'More eyes than sense',
+		desc: 'Number of araxytes assigned is increased to 200-250.',
+		slayerPointCost: 150,
+		extendID: [Monsters.Araxyte.id],
+		extendMult: 3.3,
+		canBeRemoved: true,
+		aliases: ['extend araxytes']
 	}
 ];

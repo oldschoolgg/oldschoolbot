@@ -1,5 +1,4 @@
 import { writeFileSync } from 'node:fs';
-
 import { objectEntries } from 'e';
 import { describe, expect, test } from 'vitest';
 

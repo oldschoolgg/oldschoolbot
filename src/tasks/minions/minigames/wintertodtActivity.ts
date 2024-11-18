@@ -1,9 +1,11 @@
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, winterTodtPointsTable } from '../../../lib/constants';
+import { calcPerHour } from '@oldschoolgg/toolkit';
+import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { winterTodtPointsTable } from '../../../lib/simulation/simulatedKillables';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -17,7 +19,7 @@ export const wintertodtTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await mUserFetch(userID);
-
+		const { newScore } = await incrementMinigameScore(user.id, 'wintertodt', quantity);
 		const loot = new Bank();
 
 		let totalPoints = 0;
@@ -29,7 +31,7 @@ export const wintertodtTask: MinionTask = {
 			loot.add(
 				WintertodtCrate.open({
 					points,
-					itemsOwned: user.allItemsOwned.clone().add(loot).bank,
+					itemsOwned: user.allItemsOwned.clone().add(loot),
 					skills: user.skillsAsXP,
 					firemakingXP: user.skillsAsXP.firemaking
 				})
@@ -45,7 +47,7 @@ export const wintertodtTask: MinionTask = {
 				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
-					(await getMinigameScore(user.id, 'wintertodt')) + quantity
+					newScore
 				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
 			);
 		}
@@ -110,7 +112,6 @@ export const wintertodtTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({
 			title: `Loot From ${quantity}x Wintertodt`,
@@ -119,7 +120,7 @@ export const wintertodtTask: MinionTask = {
 			previousCL
 		});
 
-		let output = `${user}, ${user.minionName} finished subduing Wintertodt ${quantity}x times. ${xpStr}, you cut ${numberOfRoots}x Bruma roots.`;
+		let output = `${user}, ${user.minionName} finished subduing Wintertodt ${quantity}x times (${calcPerHour(quantity, data.duration).toFixed(1)}/hr), you now have ${newScore} KC. ${xpStr}, you cut ${numberOfRoots}x Bruma roots.`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;

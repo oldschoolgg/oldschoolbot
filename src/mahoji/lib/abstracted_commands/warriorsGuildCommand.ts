@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -82,7 +82,7 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 	// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 	const amountTokens = userBank.amount('Warrior guild token');
 	if (!hasAttackCape && amountTokens < 100) {
-		return 'You need atleast 100 Warriors guild tokens to kill Cyclops.';
+		return 'You need at least 100 Warriors guild tokens to kill Cyclops.';
 	}
 	// If no quantity provided, set it to the max.
 	if (!quantity) {
@@ -107,7 +107,7 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 	if (!hasAttackCape && amountTokens < tokensToSpend) {
 		return `You don't have enough Warrior guild tokens to kill cyclopes for ${formatDuration(
 			duration
-		)}, try a lower quantity. You need atleast ${Math.floor(
+		)}, try a lower quantity. You need at least ${Math.floor(
 			(duration / Time.Minute) * 10 + 10
 		)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
 	}
@@ -144,7 +144,7 @@ export async function warriorsGuildCommand(
 	const atkLvl = user.skillLevel('attack');
 	const strLvl = user.skillLevel('strength');
 	if (atkLvl + strLvl < 130 && atkLvl !== 99 && strLvl !== 99) {
-		return "To enter the Warrior's Guild, your Attack and Strength levels must add up to atleast 130, or you must have level 99 in either.";
+		return "To enter the Warrior's Guild, your Attack and Strength levels must add up to at least 130, or you must have level 99 in either.";
 	}
 
 	if (choice === 'cyclops') {

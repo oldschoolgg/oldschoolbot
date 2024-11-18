@@ -1,13 +1,116 @@
-import { Time, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { Time, increaseNumByPercent, randInt, roll, sumArr } from 'e';
 
 import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import Mining from '../../lib/skilling/skills/mining';
-import { SkillsEnum } from '../../lib/skilling/types';
+import Mining, { prospectorItemsArr } from '../../lib/skilling/skills/mining';
+import { type Ore, SkillsEnum } from '../../lib/skilling/types';
+import type { GearBank } from '../../lib/structures/GearBank';
+import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+
+export function determineMiningResult({
+	ore,
+	quantity,
+	gearBank,
+	duration,
+	isPowermining
+}: { ore: Ore; quantity: number; gearBank: GearBank; duration: number; isPowermining: boolean }) {
+	const miningLvl = gearBank.skillsAsLevels.mining;
+	const messages: string[] = [];
+	let xpToReceive = quantity * ore.xp;
+
+	const equippedProsItems = prospectorItemsArr.filter(item => gearBank.hasEquipped(item.id));
+	const bonusPercent =
+		equippedProsItems.length === 4 ? 2.5 : sumArr(equippedProsItems.map(item => item.boostPercent));
+	if (bonusPercent > 0) {
+		const newXP = Math.floor(increaseNumByPercent(xpToReceive, bonusPercent));
+		messages.push(`${bonusPercent}% (${newXP - xpToReceive}) XP for prospector`);
+		xpToReceive = newXP;
+	}
+
+	const updateBank = new UpdateBank();
+	if (ore.xp) {
+		updateBank.xpBank.add('mining', xpToReceive, { duration });
+	}
+
+	// Add clue scrolls
+	if (ore.clueScrollChance) {
+		addSkillingClueToLoot(gearBank, SkillsEnum.Mining, quantity, ore.clueScrollChance, updateBank.itemLootBank);
+	}
+
+	// Roll for pet
+	if (ore.petChance) {
+		const { petDropRate } = skillingPetDropRate(gearBank, SkillsEnum.Mining, ore.petChance);
+		if (roll(petDropRate / quantity)) {
+			updateBank.itemLootBank.add('Rock golem');
+			messages.push("You have a funny feeling you're being followed...");
+		}
+	}
+
+	const numberOfMinutes = duration / Time.Minute;
+
+	if (numberOfMinutes > 10 && ore.minerals && miningLvl >= 60) {
+		let numberOfMinerals = 0;
+		for (let i = 0; i < quantity; i++) {
+			if (roll(ore.minerals)) numberOfMinerals++;
+		}
+
+		if (numberOfMinerals > 0) {
+			updateBank.itemLootBank.add('Unidentified minerals', numberOfMinerals);
+		}
+	}
+
+	let daeyaltQty = 0;
+
+	if (!isPowermining) {
+		// Gem rocks roll off the GemRockTable
+		if (ore.name === 'Gem rock') {
+			for (let i = 0; i < quantity; i++) {
+				updateBank.itemLootBank.add(Mining.GemRockTable.roll());
+			}
+		} else if (ore.name === 'Volcanic ash') {
+			// Volcanic ash
+			const tiers = [
+				[22, 1],
+				[37, 2],
+				[52, 3],
+				[67, 4],
+				[82, 5],
+				[97, 6]
+			];
+			for (const [lvl, multiplier] of tiers.reverse()) {
+				if (miningLvl >= lvl) {
+					updateBank.itemLootBank.add(ore.id, quantity * multiplier);
+					break;
+				}
+			}
+		} else if (ore.name === 'Sandstone') {
+			// Sandstone roll off the SandstoneRockTable
+			for (let i = 0; i < quantity; i++) {
+				updateBank.itemLootBank.add(Mining.SandstoneRockTable.roll());
+			}
+		} else if (ore.name === 'Granite') {
+			// Granite roll off the GraniteRockTable
+			for (let i = 0; i < quantity; i++) {
+				updateBank.itemLootBank.add(Mining.GraniteRockTable.roll());
+			}
+		} else if (ore.name === 'Daeyalt essence rock') {
+			for (let i = 0; i < quantity; i++) {
+				daeyaltQty += randInt(2, 3);
+			}
+			updateBank.itemLootBank.add(ore.id, daeyaltQty);
+		} else {
+			updateBank.itemLootBank.add(ore.id, quantity);
+		}
+	}
+
+	return {
+		updateBank,
+		messages
+	};
+}
 
 export const miningTask: MinionTask = {
 	type: 'Mining',
@@ -17,127 +120,27 @@ export const miningTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
-		let xpReceived = quantity * ore.xp;
-		let bonusXP = 0;
-
-		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
-		if (
-			user.gear.skilling.hasEquipped(
-				Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
-			xpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each prospector item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasEquipped(Number.parseInt(itemID))) {
-					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
-					xpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
-		const currentLevel = user.skillLevel(SkillsEnum.Mining);
-		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
-			amount: xpReceived,
-			duration
+		const { updateBank, messages } = determineMiningResult({
+			ore,
+			quantity,
+			gearBank: user.gearBank,
+			duration,
+			isPowermining: powermine
 		});
-
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
-
-		const loot = new Bank();
-
-		// Add clue scrolls
-		if (ore.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
+		const updateResult = await updateBank.transact(user);
+		if (typeof updateResult === 'string') throw new Error(updateResult);
+		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. You received ${updateResult.itemTransactionResult?.itemsAdded} and ${updateBank.xpBank}.`;
+		if (messages.length > 0) {
+			str += `\n${messages.join(', ')}.`;
 		}
 
-		// Roll for pet
-		if (ore.petChance) {
-			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance);
-			if (roll(petDropRate / quantity)) {
-				loot.add('Rock golem');
-				str += "\nYou have a funny feeling you're being followed...";
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
-				);
-			}
+		if (updateBank.itemLootBank.has('Rock golem')) {
+			globalClient.emit(
+				Events.ServerNotification,
+				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${user.skillsAsLevels.mining} Mining!`
+			);
 		}
 
-		const numberOfMinutes = duration / Time.Minute;
-
-		if (numberOfMinutes > 10 && ore.minerals && user.skillLevel(SkillsEnum.Mining) >= 60) {
-			let numberOfMinerals = 0;
-			for (let i = 0; i < quantity; i++) {
-				if (roll(ore.minerals)) numberOfMinerals++;
-			}
-
-			if (numberOfMinerals > 0) {
-				loot.add('Unidentified minerals', numberOfMinerals);
-			}
-		}
-
-		let daeyaltQty = 0;
-
-		if (!powermine) {
-			// Gem rocks roll off the GemRockTable
-			if (ore.name === 'Gem rock') {
-				for (let i = 0; i < quantity; i++) {
-					loot.add(Mining.GemRockTable.roll());
-				}
-			} else if (ore.name === 'Volcanic ash') {
-				// Volcanic ash
-				const userLevel = user.skillLevel(SkillsEnum.Mining);
-				const tiers = [
-					[22, 1],
-					[37, 2],
-					[52, 3],
-					[67, 4],
-					[82, 5],
-					[97, 6]
-				];
-				for (const [lvl, multiplier] of tiers.reverse()) {
-					if (userLevel >= lvl) {
-						loot.add(ore.id, quantity * multiplier);
-						break;
-					}
-				}
-			} else if (ore.name === 'Sandstone') {
-				// Sandstone roll off the SandstoneRockTable
-				for (let i = 0; i < quantity; i++) {
-					loot.add(Mining.SandstoneRockTable.roll());
-				}
-			} else if (ore.name === 'Granite') {
-				// Granite roll off the GraniteRockTable
-				for (let i = 0; i < quantity; i++) {
-					loot.add(Mining.GraniteRockTable.roll());
-				}
-			} else if (ore.name === 'Daeyalt essence rock') {
-				for (let i = 0; i < quantity; i++) {
-					daeyaltQty += randInt(2, 3);
-				}
-				loot.add(ore.id, daeyaltQty);
-			} else {
-				loot.add(ore.id, quantity);
-			}
-		}
-
-		str += `\n\nYou received: ${loot}.`;
-		if (bonusXP > 0) {
-			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
-		}
-
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
-
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, updateResult.itemTransactionResult?.itemsAdded ?? null);
 	}
 };

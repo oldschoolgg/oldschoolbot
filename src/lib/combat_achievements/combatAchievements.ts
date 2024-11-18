@@ -1,10 +1,10 @@
 import type { activity_type_enum } from '@prisma/client';
 import { deepClone, notEmpty, roll, sumArr } from 'e';
-import type { Item } from 'oldschooljs/dist/meta/types';
 
+import type { Item } from 'oldschooljs';
 import type { Requirements } from '../structures/Requirements';
 import type { ActivityTaskData, TOAOptions } from '../types/minions';
-import { assert } from '../util';
+import { assert, joinStrings } from '../util';
 import getOSItem from '../util/getOSItem';
 import type { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
@@ -161,14 +161,13 @@ const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
 export const combatAchievementTripEffect = async ({ data, messages, user }: Parameters<TripFinishEffect['fn']>[0]) => {
 	const dataCopy = deepClone(data);
-	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
-		(dataCopy as any).q = 1;
+
+	let quantity = 1;
+	if ('q' in dataCopy) {
+		quantity = (dataCopy as any).q;
+	} else if ('quantity' in dataCopy) {
+		quantity = (dataCopy as any).quantity;
 	}
-	if (dataCopy.type === 'Colosseum') {
-		(dataCopy as any).q = 1;
-	}
-	if (!('q' in dataCopy)) return;
-	let quantity = Number(dataCopy.q);
 	if (Number.isNaN(quantity)) return;
 
 	if (data.type === 'TombsOfAmascut') {
@@ -210,9 +209,9 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 
 		if (completedTasks.length > 0) {
 			messages.push(
-				`${users.length === 1 ? 'You' : `${user}`} completed the ${completedTasks
-					.map(i => i.name)
-					.join(', ')} Combat Achievement Task${completedTasks.length > 1 ? 's' : ''}!`
+				`${users.length === 1 ? 'You' : `${user}`} completed the ${joinStrings(
+					completedTasks.map(i => i.name)
+				)} Combat Achievement Task${completedTasks.length > 1 ? 's' : ''}!`
 			);
 			await user.update({
 				completed_ca_task_ids: {

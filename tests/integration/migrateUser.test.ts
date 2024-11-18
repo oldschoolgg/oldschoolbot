@@ -705,8 +705,8 @@ const allTableCommands: TestCommand[] = [
 				data: {
 					user_id: BigInt(user.id),
 					cost_gp: randInt(10_000, 10_000_000),
-					cost_bank_excluding_gp: new Bank().bank,
-					loot_bank: lootBank.bank
+					cost_bank_excluding_gp: {},
+					loot_bank: lootBank.toJSON()
 				}
 			});
 		}
@@ -943,7 +943,7 @@ const allTableCommands: TestCommand[] = [
 				userStatsUpdate(
 					user.id,
 					{
-						items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).bank,
+						items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).toJSON(),
 						sell_gp: {
 							increment: totalPrice
 						}
@@ -1312,7 +1312,7 @@ test.concurrent('test migrating full user on top of full profile', async () => {
 	expect(compareResult.result).toBe(true);
 
 	if (newData.poh) newData.poh.spellbook_altar = 33;
-	if (newData.userStats) newData.userStats.sacrificed_bank = new Bank().add('Cannonball').bank;
+	if (newData.userStats) newData.userStats.sacrificed_bank = new Bank().add('Cannonball').toJSON();
 	newData.skillsAsLevels!.cooking = 1_000_000;
 	newData.bingos = [];
 	newData.botItemSell = [];

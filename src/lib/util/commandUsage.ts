@@ -1,4 +1,4 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit';
+import type { CommandOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma, command_name_enum } from '@prisma/client';
 
 import { getCommandArgs } from '../../mahoji/lib/util';

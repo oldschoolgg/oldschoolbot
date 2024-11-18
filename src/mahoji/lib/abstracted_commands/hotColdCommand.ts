@@ -1,4 +1,4 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { LootTable } from 'oldschooljs';

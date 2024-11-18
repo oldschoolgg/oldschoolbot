@@ -1,5 +1,5 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -280,8 +280,8 @@ export const huntCommand: OSBMahojiCommand = {
 			type: 'Hunter'
 		});
 
-		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`} ${
-			crystalImpling ? '' : ` ${quantity}x `
+		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
+			crystalImpling ? ' ' : ` ${quantity}x `
 		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {

@@ -1,6 +1,6 @@
 import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';

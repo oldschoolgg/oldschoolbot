@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { CropUpgradeType } from '@prisma/client';
 import { AutoFarmFilterEnum } from '@prisma/client';
 import type { User } from 'discord.js';

@@ -1,20 +1,23 @@
-import { noOp, uniqueArr } from 'e';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { Prisma } from '@prisma/client';
+import { noOp, notEmpty, uniqueArr } from 'e';
+import PQueue from 'p-queue';
+import { partition } from 'remeda';
+import z from 'zod';
 
 import { SupportServer } from '../config';
 import { BadgesEnum, Roles } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
-
-import { Prisma } from '@prisma/client';
-import PQueue from 'p-queue';
-import { partition } from 'remeda';
-import z from 'zod';
-import { type CommandResponse, Stopwatch, convertXPtoLVL, getUsernameSync, returnStringOrFile } from '../lib/util';
 import { ClueTiers } from './clues/clueTiers';
+import { loggedRawPrismaQuery } from './rawSql';
 import { TeamLoot } from './simulation/TeamLoot';
 import { SkillsArray } from './skilling/types';
 import type { ItemBank } from './types';
+import { convertXPtoLVL, getUsernameSync, returnStringOrFile } from './util';
 import { fetchMultipleCLLeaderboards } from './util/clLeaderboard';
+import { logError } from './util/logError';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),
@@ -239,9 +242,9 @@ LIMIT 2;`
 	for (const { id, desc } of res.flat()) {
 		results.push({
 			userID: id,
-			roleID: '894194027363205150',
+			roleID: Roles.TopFarmer,
 			reason: desc,
-			badge: BadgesEnum.Slayer
+			badge: BadgesEnum.Farmer
 		});
 	}
 	return results;
@@ -347,6 +350,7 @@ async function globalCL() {
 
 export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 	const results: RoleResult[] = [];
+	const debugMessages: string[] = [];
 
 	const promiseQueue = new PQueue({ concurrency: 2 });
 
@@ -365,22 +369,29 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 	for (const [name, fn] of tup) {
 		promiseQueue.add(async () => {
 			const stopwatch = new Stopwatch();
-			const res = await fn();
-			console.log(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
-			const [validResults, invalidResults] = partition(res, i => RoleResultSchema.safeParse(i).success);
-			results.push(...validResults);
-			if (invalidResults.length > 0) {
-				console.error(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
+			try {
+				const res = await fn();
+				const [validResults, invalidResults] = partition(res, i => RoleResultSchema.safeParse(i).success);
+				results.push(...validResults);
+				if (invalidResults.length > 0) {
+					logError(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
+					debugMessages.push(`The ${name} roles had invalid results.`);
+				}
+			} catch (err) {
+				debugMessages.push(`The ${name} roles errored.`);
+				logError(`[RolesTask] Error in ${name}: ${err}`);
+			} finally {
+				debugLog(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
 			}
 		});
 	}
 
 	await promiseQueue.onIdle();
 
-	debugLog(`Finished role functions, ${results.length} results`);
+	debugMessages.push(`Finished role functions, ${results.length} results`);
 
-	const allBadgeIDs = uniqueArr(results.map(i => i.badge));
-	const allRoleIDs = uniqueArr(results.map(i => i.roleID));
+	const allBadgeIDs = uniqueArr(results.map(i => i.badge)).filter(notEmpty);
+	const allRoleIDs = uniqueArr(results.map(i => i.roleID)).filter(notEmpty);
 
 	if (!dryRun) {
 		const roleNames = new Map<string, string>();
@@ -388,41 +399,51 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 		if (!supportServerGuild) throw new Error('No support guild');
 
 		// Remove all top badges from all users (and add back later)
-		debugLog('Removing badges...');
 		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
-		await prisma.$queryRawUnsafe(`
+		await loggedRawPrismaQuery(`
 UPDATE users
 SET badges = badges - ${badgeIDs}
 WHERE badges && ${badgeIDs}
 `);
 
 		// Remove roles from ineligible users
-		debugLog('Remove roles from ineligible users...');
 		for (const member of supportServerGuild.members.cache.values()) {
-			const rolesToRemove = member.roles.cache.filter(r => allRoleIDs.includes(r.id));
+			const rolesToRemove = member.roles.cache
+				.filter(r => allRoleIDs.includes(r.id))
+				.filter(roleToRemove => {
+					const shouldHaveThisRole = results.some(
+						r => r.userID === member.id && r.roleID === roleToRemove.id
+					);
+					return !shouldHaveThisRole;
+				});
 			if (rolesToRemove.size > 0) {
 				await member.roles.remove(rolesToRemove.map(r => r.id)).catch(console.error);
+				debugMessages.push(
+					`Removing these roles from ${member.user.tag}: ${rolesToRemove.map(r => r.name).join(', ')}`
+				);
 			}
 		}
 
 		// Add roles to users
-		debugLog('Add roles to users...');
 		for (const { userID, roleID, badge } of results) {
 			if (!userID) continue;
 			const role = await supportServerGuild.roles.fetch(roleID).catch(console.error);
 			const member = await supportServerGuild.members.fetch(userID).catch(noOp);
 			if (!member) {
-				debugLog(`Failed to find member ${userID}`);
+				debugMessages.push(`Failed to find member ${userID}`);
 				continue;
 			}
 			if (!role) {
-				debugLog(`Failed to find role ${roleID}`);
+				debugMessages.push(`Failed to find role ${roleID}`);
 				continue;
 			}
 			roleNames.set(roleID, role.name);
 
 			if (!member.roles.cache.has(roleID)) {
 				await member.roles.add(roleID).catch(console.error);
+				debugMessages.push(`Adding the ${role.name} role to ${member.user.tag}`);
+			} else {
+				debugMessages.push(`${member.user.tag} already has the ${role.name} role`);
 			}
 
 			if (badge) {
@@ -433,12 +454,19 @@ WHERE badges && ${badgeIDs}
 							push: badge
 						}
 					});
+					debugMessages.push(`Adding badge ${badge} to ${member.user.tag}`);
+				} else {
+					debugMessages.push(`${member.user.tag} already has badge ${badge}`);
 				}
 			}
 		}
 
 		return returnStringOrFile(
-			`**Roles**\n${results.map(r => `${getUsernameSync(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`).join('\n')}`
+			`Roles
+${results.map(r => `${getUsernameSync(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`).join('\n')}
+
+Debug Messages:
+${debugMessages.join('\n')}`
 		);
 	}
 

@@ -1,0 +1,521 @@
+:root { font-family: "Inter", sans-serif; }
+@supports (font-variation-settings: normal) {
+  :root { font-family: "InterVariable", sans-serif; font-optical-sizing: auto; }
+}
+
+:root {
+  --sl-color-accent-low: #4e2d1e;
+  --sl-color-accent: #3e2317;
+  --sl-color-accent-high: #e5c9a8;
+  --sl-color-bg-nav: #1f1611;
+  --sl-color-white: #dcc4b1;
+  --sl-color-gray-1: #b8987a;
+  --sl-color-gray-2: #a3785e;
+  --sl-color-gray-3: #7e5a45;
+  --sl-color-gray-4: #5d3f2e;
+  --sl-color-gray-5: #3e2317;
+  --sl-color-gray-6: #1f1611;
+  --sl-color-black: #130e0b;
+  --sl-nav-pad-x: 1rem;
+  --sl-icon-color: #dcc4b1;
+  --sl-color-text-accent: #c88440;
+  --sl-color-text: #cda988;
+  --sl-font: "Inter", sans-serif; 
+  --sl-nav-pad-x: 1rem;
+  --sl-font: "Inter", sans-serif; 
+  --sl-color-bg-inline-code: #3d362f;
+  --sl-content-width: 55rem;
+
+
+  scrollbar-color: #3d312d #251d17;
+  --sl-color-hairline-light: rgba(0,0,0,0);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+starlight-menu-button > button {
+  background-color: transparent;
+}
+
+.sidebar {
+  font-weight: bold;
+}
+
+.sl-container:where(.astro-7nkwcw3z) {
+  --sl-content-margin-inline: 30px 0;
+}
+
+.bso-theme {
+  --sl-color-accent-low: #3e2d5c;
+  --sl-color-accent: #2e1f4b;
+  --sl-color-accent-high: #c5a8e5;
+  --sl-color-bg-nav: #18111f;
+  --sl-color-white: #c4b1dc;
+  --sl-color-gray-1: #9b7ab8;
+  --sl-color-gray-2: #7a5ea3;
+  --sl-color-gray-3: #5a4587;
+  --sl-color-gray-4: #3f2e66;
+  --sl-color-gray-5: #2e1f4b;
+  --sl-color-gray-6: #18111f;
+  --sl-color-black: #0b0b13;
+  --sl-color-text-accent: rgb(140, 121, 197);
+  --sl-color-text: rgba(196, 177, 220, 0.9);
+  --sl-color-bg-sidebar: #1a1625;
+  --sl-color-bg-inline-code: #362c47;
+  --sl-icon-color: #c4b1dc;
+  --sl-color-hairline: #3e2858;
+  background-color: #0d0c12;
+  scrollbar-color: #241e24 #0d0c12;
+
+  .site-title {
+    color: #8e5ee7;
+  }
+}
+
+.site-title {
+  color: #f4ddcb;
+}
+
+.main-pane {
+  font-size: 14px;
+}
+
+starlight-toc > nav > ul a[aria-current=true] {
+  color: var(--sl-color-gray-1);
+}
+
+starlight-theme-select {
+  display:none;
+}
+
+.sl-markdown-content aside:not(.not-content),
+.sl-markdown-content blockquote:not(:where(.not-content *)) {
+  border-inline-start: 1px solid #ff4e00;
+  background: #ff810038;
+  border-radius: 8px;
+  padding: 10px 20px;
+}
+
+.social-icons::after {
+  display: none;
+}
+#starlight__sidebar details > summary {
+  padding: 0.5rem 0;
+}
+h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4,
+.sl-markdown-content h5,
+.sl-markdown-content h6,
+.group-label span,
+.right-sidebar-panel h2,
+strong {
+  @apply font-medium;
+}
+
+h1 {
+  font-size: 3rem;
+  line-height: 1.0833;
+  letter-spacing: -0.03em;
+}
+
+.sl-markdown-content h2 {
+  font-size: 2.4rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.33333;
+  margin-top: 0.7em!important;
+}
+
+.sl-markdown-content h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.sl-markdown-content h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  line-height: 1.5;
+}
+
+p {
+  @apply text-base font-normal tracking-[-0.005em] leading-normal;
+}
+
+.sidebar-content .top-level > li > details > summary {
+  padding: 0.625rem 0;
+}
+
+.sidebar-content .top-level > li > details > ul {
+  padding-inline-start: 0;
+  margin-block-end: 0.5rem;
+}
+
+.sidebar-content .top-level > li > details > ul > li {
+  border-inline-start: 0;
+  margin-inline-start: 0;
+  padding-block: 0;
+  padding-inline: 0;
+}
+
+.sidebar-content .top-level > li > details > ul > li > details > summary {
+  border-inline-start: 0;
+  margin-inline-start: 0;
+  padding: 0.5rem 0;
+}
+
+.sidebar-content .top-level li details ul li {
+  margin-inline: 0;
+  padding-inline-end: 0;
+  padding-inline-start: 0;
+  position: relative;
+  position: relative;
+}
+
+.sidebar-content .top-level li details ul li a {
+  padding-block: 0.4rem;
+  padding-inline-start: 0.75rem;
+  border-radius: 4px;
+}
+.sidebar-content .top-level li details ul li details {
+  padding-inline-start: 0.75rem;
+  border-radius: 4px;
+}
+
+.sidebar-content .top-level li details ul li details ul li a {
+  padding-block: 0.4rem;
+  border-radius: 4px;
+}
+
+.sidebar-content {
+  @apply bg-white dark:bg-black;
+}
+
+.sidebar-content {
+  padding-inline-start: var(--sl-nav-pad-x);
+}
+
+.sidebar-content > .top-level > li > details > summary > div.group-label > span {
+  font-size: 1rem;
+}
+
+.sidebar-content > ul > li > details > ul > li > details > summary > svg {
+  color: #bbb;
+}
+
+.sidebar-content details > summary > svg {
+  transform: rotateZ(90deg);
+  transition: none;
+}
+
+.sidebar-content details[open] > summary > svg {
+  transform: rotateZ(270deg);
+}
+
+.right-sidebar-container {
+  width: var(--sl-sidebar-width);
+}
+
+.right-sidebar {
+  border-inline-start: none;
+}
+
+.right-sidebar-panel h2 {
+  font-size: 1rem;
+  margin-block-end: 1.5rem;
+}
+
+.sl-markdown-content
+  :not(h1, h2, h3, h4, h5, h6)
+  + :is(h1, h2, h3, h4, h5, h6):not(:where(.not-content *)) {
+  margin-block-start: 1.5em;
+}
+
+.content-panel + .content-panel {
+  border-top: 0;
+}
+
+starlight-toc > nav > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+starlight-toc > nav > ul > li > a > span {
+  font-size: 0.875rem;
+}
+
+.social-icons a {
+  font-size: 2em;
+}
+
+.social-icons a[href*="github"] {
+  font-size: 24px;
+}
+
+@media (min-width: 72.85rem) {
+  :root {
+    --sl-nav-pad-x: 1.5rem;
+  }
+
+  :root[data-theme="dark"] {
+    --sl-nav-pad-x: 1.5rem;
+  }
+
+  .sidebar-pane {
+    border-inline-end: none;
+  }
+}
+
+@media (min-width: 90rem) {
+  .right-sidebar-panel {
+    max-width: calc(var(--sl-sidebar-width) - var(--sl-nav-pad-x));
+    padding-inline-end: 0;
+    display: flex;
+  }
+
+  .right-sidebar-panel .sl-container {
+    max-width: calc(var(--sl-sidebar-width) - var(--sl-nav-pad-x));
+  }
+}
+
+.rehype-heading-wrapper .rehype-anchor-link {
+  margin-inline-start: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.rehype-heading-wrapper:hover .rehype-anchor-link {
+  opacity: 1;
+}
+
+.rehype-anchor-link:focus {
+  opacity: 1;
+}
+
+.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h3, .rehype-level-h4, .rehype-level-h5) {
+  margin-block-start: 2em;
+}
+
+.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h2):not(.rehype-with-extra-margin) {
+  margin-block-start: 3.75em;
+}
+
+[aria-labelledby="starlight__on-this-page"] ul li a {
+  @apply pl-0;
+}
+
+.sl-markdown-content ol ol {
+  list-style-type: lower-alpha;
+}
+
+.table-wrapper {
+  @apply w-full block whitespace-normal overflow-x-auto;
+}
+
+.sl-markdown-content .table-2-cols {
+  @apply w-1/2;
+}
+
+.sl-markdown-content td.table-3-cols,
+.sl-markdown-content th.table-3-cols {
+  @apply w-1/3;
+}
+
+.table-4-cols {
+  @apply w-1/4;
+}
+
+.table-5-cols {
+  @apply w-1/5;
+}
+
+.table-6-cols {
+  @apply w-1/6;
+}
+
+.sl-markdown-content :is(th:first-child, td:first-child):not(:where(.not-content *)) {
+  @apply pl-4;
+}
+
+.sl-markdown-content :is(th:last-child, td:last-child):not(:where(.not-content *)) {
+  @apply pr-4;
+}
+
+.sl-markdown-content td {
+  @apply py-4 px-4;
+}
+
+.sl-markdown-content tr * {
+  @apply text-sm;
+}
+
+starlight-menu-button button,
+starlight-menu-button[aria-expanded="true"] button {
+  @apply bg-transparent;
+}
+
+button[aria-controls="starlight__sidebar"] {
+  @apply shadow-none;
+}
+
+button[aria-controls="starlight__sidebar"] svg {
+  transform: scale(1.5);
+}
+
+body.DocSearch--active .c-help-widget,
+body.DocSearch--active header .header {
+  padding-right: 15px;
+}
+
+body.DocSearch--active .main-frame {
+  padding-right: 15px;
+}
+
+ol + ol li aside,
+ol + ol li blockquote {
+  margin-inline-start: 20px;
+}
+
+.osrs_item {
+  background-color: #221f1e;
+  width: max-content;
+  display: flex;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  padding: 3px 9px;
+  font-size: 13px;
+  gap: 5px;
+  font-weight: bold;
+}
+
+.osrs_item {
+  margin: 3px 0px!important;
+}
+
+.osrs_item_name, .osrs_item_image{
+  margin: 0!important;
+}
+
+.discord_command {
+  background-color: #4e538f;
+  width: max-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  padding: 0px 5px;
+  font-size: 13px;
+  color: white;
+  border-width: 6px 10px;
+}
+
+sl-sidebar-state-persist > ul > li:nth-child(2) > details > summary,
+sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary {
+  text-align: center;
+  justify-content: center;
+}
+
+sl-sidebar-state-persist > ul > li:nth-child(2) > details > summary > svg,
+sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
+  display: none;
+}
+
+
+/* Make Getting-Started section look like its at top level */
+#starlight__sidebar > div > sl-sidebar-state-persist > ul > li:nth-child(1) > details > summary {
+  display:none;
+}
+#starlight__sidebar > div > sl-sidebar-state-persist > ul > li:nth-child(1) > details > ul {
+  padding: 0;
+}
+
+.sl-markdown-content .injected {
+  display: inline;
+  gap: 8px; 
+  white-space: normal;
+  margin-top: 0px;
+}
+
+.osrs_item,
+.discord_command {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle; 
+  margin-top: 0px!important;
+}
+
+.osrs_item_image {
+  max-height: 21px; 
+  vertical-align: middle;
+}
+
+.osrs_item_name,
+.discord_command_name {
+  font-size: 0.9em; 
+  text-align: center;
+  white-space: nowrap; 
+}
+
+.contributor {
+  width: max-content;
+  border-radius: 8px;
+  color: var(--sl-color-text-accent);
+  font-weight: bold;
+  padding: 1px 9px;
+  font-size: 25px;
+  display:flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+.contributor .contributor_name {
+    margin-top: 0
+}
+.contributor_avatar {
+  height: 38px!important;
+  border-radius: 64px;
+}
+
+.git_hash {
+  font-size: 20px;
+  margin-top: 0px;
+}
+
+.edit_this_page {
+  color: var(--sl-color-text-accent);
+}
+
+#starlight__sidebar .group-label {
+  text-transform: capitalize;
+}
+
+.discord_channel {
+  font-size: 16px;
+  font-weight: 500;
+  background: #35373c;
+  width: max-content;
+  padding: 3px 10px;
+  font-size: 13.4px;
+  color: #81868f!important;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  text-decoration: none;
+
+  &:hover {
+    color: rgb(192, 192, 192)!important;
+    cursor: pointer;
+     background: rgb(50, 50, 55);
+  }
+}

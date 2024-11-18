@@ -53,7 +53,7 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 				const updateSender = prisma.user.update({
 					data: {
 						GP: senderGP,
-						bank: newSenderBank.bank
+						bank: newSenderBank.toJSON()
 					},
 					where: {
 						id: sender.id
@@ -62,7 +62,7 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 				const updateRecipient = prisma.user.update({
 					data: {
 						GP: recipientGP,
-						bank: newRecipientBank.bank
+						bank: newRecipientBank.toJSON()
 					},
 					where: {
 						id: recipient.id

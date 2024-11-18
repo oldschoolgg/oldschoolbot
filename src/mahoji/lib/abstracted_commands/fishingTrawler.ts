@@ -1,6 +1,6 @@
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -8,7 +8,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 	if (user.skillLevel('fishing') < 15) {
-		return 'You need atleast level 15 Fishing to do the Fishing Trawler.';
+		return 'You need at least level 15 Fishing to do the Fishing Trawler.';
 	}
 
 	const tripsDone = await getMinigameScore(user.id, 'fishing_trawler');

@@ -1,5 +1,5 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
-import type { CommandOptions } from '@oldschoolgg/toolkit';
+import type { CommandOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { Activity, NewUser, Prisma } from '@prisma/client';
 import type {
 	APIInteractionGuildMember,

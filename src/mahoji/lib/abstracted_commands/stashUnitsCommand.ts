@@ -1,8 +1,8 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import type { StashUnit, User } from '@prisma/client';
 import { partition } from 'e';
-import Bank from 'oldschooljs/dist/structures/Bank';
+import { Bank } from 'oldschooljs';
 
 import type { IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../../lib/clues/stashUnits';

@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { type GearSetup, GearStat } from '../../src/lib/gear/types';

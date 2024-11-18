@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { strikethrough } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
@@ -147,7 +147,7 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 			return `You successfully completed the ${name} and received ${loot}.`;
 		}
 
-		return `You can't claim the ${name} because: \n -${reason}.`;
+		return `You can't claim the ${name} because: \n- ${reason}.`;
 	}
 
 	return `You have already completed the entire ${diary.name} diary!`;

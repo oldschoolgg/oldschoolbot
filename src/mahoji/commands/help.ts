@@ -1,6 +1,6 @@
 import { ButtonStyle, ComponentType } from 'discord.js';
 
-import { mahojiInformationalButtons } from '../../lib/constants';
+import { mahojiInformationalButtons } from '../../lib/sharedComponents';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const helpCommand: OSBMahojiCommand = {

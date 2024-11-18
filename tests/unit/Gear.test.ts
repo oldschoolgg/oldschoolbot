@@ -1,6 +1,5 @@
 import type { GearPreset } from '@prisma/client';
-import { Bank } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, itemID } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
 import { GearStat } from '../../src/lib/gear/types';
@@ -274,7 +273,7 @@ describe('Gear', () => {
 		});
 
 		const equipRes1 = gear.equip('Dragon arrow', 1000);
-		expect(equipRes1.refundBank?.bank).toEqual(new Bank().add('Bronze arrow').bank);
+		expect(equipRes1.refundBank?.toJSON()).toEqual(new Bank().add('Bronze arrow').toJSON());
 		expect(gear.ammo).toEqual({ item: getOSItem('Dragon arrow').id, quantity: 1000 });
 	});
 
@@ -284,7 +283,7 @@ describe('Gear', () => {
 		});
 
 		const equipRes1 = gear.equip('Dragon 2h sword');
-		expect(equipRes1.refundBank?.bank).toEqual(new Bank().add('Armadyl godsword').bank);
+		expect(equipRes1.refundBank?.toJSON()).toEqual(new Bank().add('Armadyl godsword').toJSON());
 		expect(gear['2h']).toEqual({ item: getOSItem('Dragon 2h sword').id, quantity: 1 });
 	});
 
@@ -294,7 +293,7 @@ describe('Gear', () => {
 		});
 
 		const equipRes1 = gear.equip('Dragon dagger');
-		expect(equipRes1.refundBank?.bank).toEqual(new Bank().add('Armadyl godsword').bank);
+		expect(equipRes1.refundBank?.toJSON()).toEqual(new Bank().add('Armadyl godsword').toJSON());
 		expect(gear.weapon).toEqual({ item: getOSItem('Dragon dagger').id, quantity: 1 });
 	});
 
@@ -304,7 +303,7 @@ describe('Gear', () => {
 		});
 
 		const equipRes1 = gear.equip('Armadyl godsword');
-		expect(equipRes1.refundBank?.bank).toEqual(new Bank().add('Bronze kiteshield').bank);
+		expect(equipRes1.refundBank?.toJSON()).toEqual(new Bank().add('Bronze kiteshield').toJSON());
 		expect(gear['2h']).toEqual({ item: getOSItem('Armadyl godsword').id, quantity: 1 });
 	});
 

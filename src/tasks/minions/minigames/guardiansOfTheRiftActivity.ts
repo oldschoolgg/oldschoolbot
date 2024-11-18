@@ -1,7 +1,6 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { randArrItem, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
