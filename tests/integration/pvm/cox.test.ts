@@ -52,7 +52,7 @@ test('CoX ', async () => {
 	await user.processActivities(client);
 	await user.sync();
 	expect(user.bank.amount('Scythe of vitur (uncharged)')).toBe(1);
-	expect(user.bank.amount('Scythe of vitur')).toBe(1);
+	expect(user.bank.amount('Scythe of vitur')).toBe(0);
 	expect(user.gear.melee.weapon?.item).toBeUndefined();
 	expect(user.allItemsOwned.amount('Scythe of vitur (uncharged)')).toBe(1);
 	expect(user.allItemsOwned.amount('Scythe of vitur')).toBe(0);
