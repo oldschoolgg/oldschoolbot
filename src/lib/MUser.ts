@@ -43,7 +43,7 @@ import { ChargeBank } from './structures/Bank';
 import { Gear, defaultGear } from './structures/Gear';
 import { GearBank } from './structures/GearBank';
 import type { XPBank } from './structures/XPBank';
-import type { ItemBank, Skills } from './types';
+import {ItemBank, SkillRequirements, Skills} from './types';
 import { addItemToBank, convertXPtoLVL, fullGearToBank, hasSkillReqsRaw, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
@@ -172,6 +172,10 @@ export class MUserClass {
 		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
 		const mage = 0.325 * (Math.floor(magic / 2) + magic);
 		return Math.floor(base + Math.max(melee, range, mage));
+	}
+
+	get skillsAsRequirements(): Required<SkillRequirements> {
+		return { ... this.skillsAsLevels, combat: this.combatLevel}
 	}
 
 	favAlchs(duration: number, agility?: boolean) {
@@ -666,8 +670,8 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return updates;
 	}
 
-	hasSkillReqs(requirements: Skills) {
-		return hasSkillReqsRaw(this.skillsAsLevels, requirements);
+	hasSkillReqs(requirements: SkillRequirements) {
+		return hasSkillReqsRaw(this.skillsAsRequirements, requirements);
 	}
 
 	allEquippedGearBank() {
