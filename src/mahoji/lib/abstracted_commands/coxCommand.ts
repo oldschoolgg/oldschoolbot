@@ -204,13 +204,16 @@ export async function coxCommand(
 		}
 	};
 	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'No channel found.';
 
 	let users: MUser[] = [];
+	let isFakeMass = false;
+
 	const fakeUsers = Math.min(maxSizeInput ?? 5, maxSize);
 	if (type === 'fakemass') {
 		users = new Array(fakeUsers).fill(user);
+		isFakeMass = true;
 	} else if (type === 'mass') {
+		if (!channelIsSendable(channel)) return 'No channel found.';
 		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
@@ -240,7 +243,6 @@ export async function coxCommand(
 
 	let debugStr = '';
 	const isSolo = users.length === 1;
-	const isFakeMass = users.length > 1 && new Set(users).size === 1;
 
 	for (const d of degradeables) {
 		d.chargesToDegrade *= quantity;
