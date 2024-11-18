@@ -320,29 +320,6 @@ async function minigamesLb(
 		return lbMsg(`${minigame.name} Leaderboard`);
 	}
 
-	if (minigame.name === 'Champions Challenge') {
-		const championsCompletions = await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
-			`SELECT user_id::text as id, champions_challenge::int as amount
-					   FROM minigames
-					   INNER JOIN users ON users.id = minigames.user_id
-					   WHERE champions_challenge > 1
-					   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
-					   ORDER BY champions_challenge DESC
-					   LIMIT 100;`
-		);
-		return doMenuWrapper({
-			interaction,
-			user,
-			channelID,
-			users: championsCompletions.map(c => ({
-				id: c.id,
-				score: c.amount
-			})),
-			title: 'Champions Challenge Leaderboard',
-			ironmanOnly
-		});
-	}
-
 	// General Minigame handling with raw SQL
 	const minValue = column === 'champions_challenge' ? 1 : 10;
 
