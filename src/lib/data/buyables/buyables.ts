@@ -745,6 +745,12 @@ const questBuyables: Buyable[] = [
 		name: 'Ring of shadows',
 		gpCost: 75_000,
 		requiredQuests: [QuestID.DesertTreasureII]
+	},
+	{
+		name: 'Book of the dead',
+		gpCost: 1_000_000,
+		qpRequired: 120,
+		ironmanPrice: 9_750
 	}
 ];
 

@@ -1381,6 +1381,14 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 1000000,
+    "ironmanPrice": 9750,
+    "itemCost": {},
+    "name": "Book of the dead",
+    "outputItems": undefined,
+    "qpRequired": 120,
+  },
+  {
+    "gpCost": 1000000,
     "itemCost": {},
     "name": "Beer",
     "outputItems": undefined,
