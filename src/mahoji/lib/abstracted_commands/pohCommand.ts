@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { BitField } from '../../../lib/constants';
 import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh';
 import { pohImageGenerator } from '../../../lib/pohImage';
-import { prisma } from '../../../lib/settings/prisma';
 
 import { formatSkillRequirements, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
