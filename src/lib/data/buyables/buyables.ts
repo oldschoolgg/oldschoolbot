@@ -750,7 +750,7 @@ const questBuyables: Buyable[] = [
 		name: 'Book of the dead',
 		gpCost: 1_000_000,
 		qpRequired: 120,
-		ironmanPrice: 9_750
+		ironmanPrice: 9_500
 	}
 ];
 
