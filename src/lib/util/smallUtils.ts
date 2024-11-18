@@ -9,7 +9,7 @@ import z from 'zod';
 
 import { skillEmoji } from '../data/emojis';
 import type { UserFullGearSetup } from '../gear/types';
-import {SkillRequirements, Skills} from '../types';
+import type { SkillRequirements, Skills } from '../types';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;

@@ -43,7 +43,7 @@ import { ChargeBank } from './structures/Bank';
 import { Gear, defaultGear } from './structures/Gear';
 import { GearBank } from './structures/GearBank';
 import type { XPBank } from './structures/XPBank';
-import {ItemBank, SkillRequirements, Skills} from './types';
+import type { ItemBank, SkillRequirements, Skills } from './types';
 import { addItemToBank, convertXPtoLVL, fullGearToBank, hasSkillReqsRaw, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
@@ -175,7 +175,7 @@ export class MUserClass {
 	}
 
 	get skillsAsRequirements(): Required<SkillRequirements> {
-		return { ... this.skillsAsLevels, combat: this.combatLevel}
+		return { ...this.skillsAsLevels, combat: this.combatLevel };
 	}
 
 	favAlchs(duration: number, agility?: boolean) {
