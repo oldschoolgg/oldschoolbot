@@ -432,8 +432,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		itemCost: { itemCost: new Bank().add('Dark totem', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
-		maxQuantity: 1
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.TzHaarKet.id,

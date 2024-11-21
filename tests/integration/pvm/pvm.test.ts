@@ -184,35 +184,6 @@ describe('PVM', async () => {
 		expect(user.bank.amount('Dark totem')).toBe(99);
 	});
 
-	describe('should default to 1 skotizo kill', async () => {
-		const user = await client.mockUser({
-			bank: new Bank().add('Dark totem', 5),
-			rangeLevel: 99,
-			QP: 300,
-			maxed: true,
-			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
-		});
-		let lastKc = await user.getKC(EMonster.SKOTIZO);
-		for (const quantity of [undefined, 1, 2, 5]) {
-			it(`should default to 1 skotizo kill with input of ${quantity}`, async () => {
-				await user.update({ bank: new Bank().add('Dark totem', 5).toJSON() });
-				expect(user.bank.amount('Dark totem')).toBe(5);
-				const result = await user.kill(EMonster.SKOTIZO, { quantity });
-				expect(result.activityResult!.q).toEqual(1);
-				expect(result.activityResult?.userID).toEqual(user.id);
-				expect(result.activityResult?.mi).toEqual(EMonster.SKOTIZO);
-				expect(result.commandResult).toContain('is now killing 1x Skotizo');
-				await user.sync();
-				expect(
-					result.newKC,
-					`LastKC=${lastKc} NewKC=${result.newKC} RawNEWKC=${await user.getKC(EMonster.SKOTIZO)}`
-				).toEqual(lastKc + 1);
-				expect(user.bank.amount('Dark totem')).toBe(4);
-				lastKc = result.newKC;
-			});
-		}
-	});
-
 	describe(
 		'should fail to kill skotizo with no totems',
 		async () => {

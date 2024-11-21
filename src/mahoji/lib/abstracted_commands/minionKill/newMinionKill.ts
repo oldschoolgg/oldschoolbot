@@ -1,5 +1,5 @@
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { Time, clamp, increaseNumByPercent, reduceNumByPercent } from 'e';
+import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
@@ -173,10 +173,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 				slayerUnlocks
 			})
 		: null;
-
-	if (monster.maxQuantity) {
-		args.inputQuantity = clamp(args.inputQuantity ?? 1, 1, monster.maxQuantity);
-	}
 
 	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {
 		args.inputQuantity = 1;
