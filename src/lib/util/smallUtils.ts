@@ -9,7 +9,7 @@ import z from 'zod';
 
 import { skillEmoji } from '../data/emojis';
 import type { UserFullGearSetup } from '../gear/types';
-import type { Skills } from '../types';
+import type { SkillRequirements, Skills } from '../types';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -219,7 +219,7 @@ export function parseStaticTimeInterval(input: string): input is StaticTimeInter
 	return false;
 }
 
-export function hasSkillReqsRaw(skills: Skills, requirements: Skills) {
+export function hasSkillReqsRaw(skills: SkillRequirements, requirements: SkillRequirements) {
 	for (const [skillName, requiredLevel] of objectEntries(requirements)) {
 		const lvl = skills[skillName];
 		if (!lvl || lvl < requiredLevel!) {
@@ -230,7 +230,7 @@ export function hasSkillReqsRaw(skills: Skills, requirements: Skills) {
 }
 
 export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
-	const hasReqs = hasSkillReqsRaw(user.skillsAsLevels, reqs);
+	const hasReqs = hasSkillReqsRaw(user.skillsAsRequirements, reqs);
 	if (!hasReqs) {
 		return [false, formatSkillRequirements(reqs)];
 	}
