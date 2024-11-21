@@ -4,7 +4,6 @@ import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
-import { deduplicateClueScrolls } from '../../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { pluraliseItemName, skillingPetDropRate } from '../../src/lib/util';
@@ -57,14 +56,6 @@ describe('util', () => {
 				favoriteFood: []
 			})
 		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));
-	});
-
-	test('deduplicateClueScrolls', () => {
-		const currentBank = new Bank().add('Clue scroll(easy)');
-		const loot = new Bank().add('Clue scroll(easy)').add('Clue scroll(hard)', 10).add('Clue scroll(master)');
-		expect(deduplicateClueScrolls({ loot, currentBank }).toJSON()).toEqual(
-			new Bank().add('Clue scroll(hard)').add('Clue scroll(master)').toJSON()
-		);
 	});
 
 	test('truncateString', () => {

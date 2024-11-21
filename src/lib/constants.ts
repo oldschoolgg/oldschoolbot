@@ -582,3 +582,5 @@ if (!process.env.TEST && isMainThread) {
 		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
 	);
 }
+
+export const MAX_CLUES_DROPPED = 100;

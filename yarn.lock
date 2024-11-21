@@ -2411,13 +2411,13 @@ __metadata:
   linkType: hard
 
 "cross-spawn@npm:^7.0.0":
-  version: 7.0.3
-  resolution: "cross-spawn@npm:7.0.3"
+  version: 7.0.6
+  resolution: "cross-spawn@npm:7.0.6"
   dependencies:
     path-key: "npm:^3.1.0"
     shebang-command: "npm:^2.0.0"
     which: "npm:^2.0.1"
-  checksum: 10c0/5738c312387081c98d69c98e105b6327b069197f864a60593245d64c8089c8a0a744e16349281210d56835bb9274130d825a78b2ad6853ca13cfbeffc0c31750
+  checksum: 10c0/053ea8b2135caff68a9e81470e845613e374e7309a47731e81639de3eaeb90c3d01af0e0b44d2ab9d50b43467223b88567dfeb3262db942dc063b9976718ffc1
   languageName: node
   linkType: hard
 
@@ -4362,13 +4362,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@git+https://github.com/oldschoolgg/oldschooljs.git#7deb56970f6458aed87f314dd18da6916a0e732c":
+"oldschooljs@git+https://github.com/oldschoolgg/oldschooljs.git#f2a51a15756303207b955ac9bf5091ef5c78ec93":
   version: 0.0.0
-  resolution: "oldschooljs@https://github.com/oldschoolgg/oldschooljs.git#commit=7deb56970f6458aed87f314dd18da6916a0e732c"
+  resolution: "oldschooljs@https://github.com/oldschoolgg/oldschooljs.git#commit=f2a51a15756303207b955ac9bf5091ef5c78ec93"
   dependencies:
     e: "npm:^0.2.33"
     node-fetch: "npm:2.6.7"
-  checksum: 10c0/c160e1b7eac166d7094fec2e555916bc6c4bd09480cc4abb8842ef5685446e38748c5549288b1a72a7d25447286af3518d05c81d5feb9a6816894e8f9fa6e8ca
+  checksum: 10c0/54ecf77f8434f7b9f95614aa542d16f16c3ee29aba7d5cad6c6b5b13c32d6f5181c39358a1964f66047267109322f400811fccc1a3971c5ec27b3907741c543d
   languageName: node
   linkType: hard
 
@@ -5171,7 +5171,7 @@ __metadata:
     node-cron: "npm:^3.0.3"
     node-fetch: "npm:^2.6.7"
     nodemon: "npm:^3.1.7"
-    oldschooljs: "git+https://github.com/oldschoolgg/oldschooljs.git#7deb56970f6458aed87f314dd18da6916a0e732c"
+    oldschooljs: "git+https://github.com/oldschoolgg/oldschooljs.git#f2a51a15756303207b955ac9bf5091ef5c78ec93"
     p-queue: "npm:^6.6.2"
     piscina: "npm:^4.7.0"
     postgres: "npm:^3.4.4"
