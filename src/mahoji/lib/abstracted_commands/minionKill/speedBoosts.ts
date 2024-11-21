@@ -436,7 +436,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 						const actualDegItem = degradeableItems.find(i => i.item.id === degItem.item.id);
 						if (!actualDegItem) throw new Error(`Missing actual degradeable item for ${rawItem.item.name}`);
 						charges.add(actualDegItem.settingsKey, chargesNeeded);
-						messages.push(`${rawItem.boostPercent}% for ${rawItem.item.name} (${chargesNeeded} charges)`);
+						messages.push(`${rawItem.boostPercent}% for ${rawItem.item.name}`);
 					}
 
 					return {
