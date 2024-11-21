@@ -18,6 +18,7 @@ export type Skills = Partial<{
 	[key in SkillsEnum]: number;
 }>;
 
+export type SkillRequirements = Skills & { combat?: number };
 export type SkillsRequired = Required<Skills>;
 
 export type CategoryFlag =
