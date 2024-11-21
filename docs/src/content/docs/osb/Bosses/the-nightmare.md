@@ -36,7 +36,7 @@ There are certain boosts and penalties given based on specific stats and gear. T
 
 Less than 65 crush attack - 5% speed penalty
 
-Essentially, any weapon weaker then a Zamorakian hasta will incur this penalty.
+Essentially, any weapon weaker than a Zamorakian hasta will incur this penalty.
 
 In masses, your damage output will be halved if you have lower than 65 crush attack.
 
