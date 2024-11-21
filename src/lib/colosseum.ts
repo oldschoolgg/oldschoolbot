@@ -666,7 +666,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		}
 
 		const degradeResults = await degradeChargeBank(user, chargeBank);
-		messages.push(degradeResults.map(i => i.userMessage).join(', '));
+		messages.push(degradeResults);
 	}
 
 	await addSubTaskToActivityTask<ColoTaskOptions>({
