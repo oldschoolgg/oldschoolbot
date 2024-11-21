@@ -399,9 +399,8 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining${
-			pennyReduction > 0 ? `. Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
-		}`
+		chargesToDegrade: chargesToDegrade,
+		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges`
 	};
 }
 
@@ -429,10 +428,12 @@ export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
 	for (const [key, chargesToDegrade] of chargeBank.entries()) {
 		const { item } = degradeableItems.find(i => i.settingsKey === key)!;
 		const result = await degradeItem({ item, chargesToDegrade, user });
-		results.push(result);
+		results.push(result.userMessage);
 	}
 
-	return results;
+	if (user.hasEquipped("Ghommal's lucky penny")) results.push("5% reduced charges for Ghommal's lucky penny");
+
+	return results.join(', ');
 }
 
 export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Promise<RefundResult[]> {
