@@ -17,8 +17,8 @@ import type { Gear } from './Gear';
 export const gpCostPerKill = (user: MUser) =>
 	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
 
-export const calcDwwhChance = (users: MUser[]) => {
-	const size = Math.min(users.length, 10);
+export const calcDwwhChance = (amount: number, hasROL: boolean) => {
+	const size = Math.min(amount, 10);
 	const baseRate = 850;
 	const modDenominator = 15;
 
@@ -26,7 +26,7 @@ export const calcDwwhChance = (users: MUser[]) => {
 	let groupRate = Math.ceil(dropRate / size);
 	groupRate = Math.ceil(groupRate);
 
-	if (users.some(u => u.gear.melee.hasEquipped('Ring of luck'))) {
+	if (hasROL) {
 		groupRate = Math.floor(reduceNumByPercent(groupRate, 15));
 	}
 	return groupRate;
@@ -506,7 +506,7 @@ export class BossInstance {
 			if (this.users.length !== bossUsers.length) {
 				console.error('wtfffffffff');
 			}
-			const dwwhChance = calcDwwhChance(bossUsers.map(i => i.user));
+			const dwwhChance = calcDwwhChance(bossUsers.length, false);
 			results.push([
 				bossUsers.length,
 				bossUsers[0].userPercentChange.toFixed(1),
