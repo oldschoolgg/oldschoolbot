@@ -121,7 +121,7 @@ const source: [string, (string | number)[]][] = [
 	['Tzhaar-ket-om', ['Tzhaar-ket-om (t)']],
 	['Berserker necklace', ['Berserker necklace (or)']],
 	['Amulet of fury', ['Amulet of fury (or)', 'Amulet of blood fury']],
-	['Amulet of torture', ['Amulet of torture (or)']],
+	['Amulet of torture', ['Amulet of torture (or)', 'Amulet of rancour', 'Amulet of rancour (s)']],
 	['Tormented bracelet', ['Tormented bracelet (or)']],
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
