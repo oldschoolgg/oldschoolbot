@@ -4,7 +4,7 @@ title: "The Nightmare"
 
 # Nightmare of Ashihama
 
-You can kill The Nightmare to receive the inquisitor's armour set, the inquisitor's mace, the nightmare staff, and the 3 orbs that can be combined with the nightmare staff (harmonised orb, eldritch orb, & volatile orb). Phosani's nightmare is also available to kill, which has it's own page here.
+You can kill The Nightmare to receive the inquisitor's armour set, the inquisitor's mace, the nightmare staff, and the 3 orbs that can be combined with the nightmare staff (harmonised orb, eldritch orb, & volatile orb). Phosani's nightmare is also available to kill, which has its own page here.
 
 While killing The Nightmare, your minion has a chance to die. This chance is affected by your kc and gear. Your chance of death has a maximum of 90%, and a minimum of 2%.
 
