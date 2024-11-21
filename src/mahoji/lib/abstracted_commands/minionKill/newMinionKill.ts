@@ -1,5 +1,5 @@
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { clamp, increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
@@ -148,10 +148,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 			})
 		: null;
 
-	if (monster.maxQuantity) {
-		args.inputQuantity = clamp(args.inputQuantity ?? 1, 1, monster.maxQuantity);
-	}
-
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
 	const speedDurationResult = speedCalculations({
 		...args,
@@ -244,10 +240,6 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	speedDurationResult.updateBank.itemCostBank.freeze();
 	speedDurationResult.updateBank.itemLootBank.freeze();
-
-	if (speedDurationResult.updateBank.itemCostBank.length > 0) {
-		speedDurationResult.messages.push(`Removing items: ${speedDurationResult.updateBank.itemCostBank}`);
-	}
 
 	const result = newMinionKillReturnSchema.parse({
 		duration,
