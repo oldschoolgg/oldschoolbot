@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { glob } from 'glob';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
 import process from 'node:process';
