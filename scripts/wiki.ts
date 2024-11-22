@@ -1,13 +1,13 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { glob } from 'glob';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
 import process from 'node:process';
 import { groupBy } from 'remeda';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
-import killableMonsters from '../src/lib/minions/data/killableMonsters';
+import { wikiMonsters } from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
 import { itemNameFromID } from '../src/lib/util';
@@ -68,13 +68,11 @@ function escapeItemName(str: string) {
 }
 
 const name = (id: number) => escapeItemName(itemNameFromID(id)!);
+
 async function renderMonstersMarkdown() {
 	const markdown = new Markdown();
 
-	for (const monster of killableMonsters
-		.filter(m => m.equippedItemBoosts || m.itemInBankBoosts || m.itemCost)
-		.filter(m => Monsters.get(m.id)!.data.combatLevel >= 80 && !m.name.includes('Revenant'))
-		.sort((a, b) => a.name.localeCompare(b.name))) {
+	for (const monster of wikiMonsters) {
 		const monstermd = new Markdown();
 		monstermd.addLine(`## ${monster.name}`);
 

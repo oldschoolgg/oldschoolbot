@@ -154,12 +154,6 @@ export const minionKCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Boolean,
-			name: 'show_info',
-			description: 'Show information on this monster.',
-			required: false
-		},
-		{
-			type: ApplicationCommandOptionType.Boolean,
 			name: 'wilderness',
 			description: 'If you want to kill the monster in the wilderness.',
 			required: false
@@ -180,14 +174,11 @@ export const minionKCommand: OSBMahojiCommand = {
 		name: string;
 		quantity?: number;
 		method?: PvMMethod;
-		show_info?: boolean;
 		wilderness?: boolean;
 		solo?: boolean;
 	}>) => {
 		const user = await mUserFetch(userID);
-		if (options.show_info) {
-			return 'This feature is currently disabled.';
-		}
+
 		return minionKillCommand(
 			user,
 			interaction,
@@ -200,3 +191,4 @@ export const minionKCommand: OSBMahojiCommand = {
 		);
 	}
 };
+
