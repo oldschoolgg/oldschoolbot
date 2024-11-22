@@ -361,7 +361,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		let implingLootString = '';
 		let implingClues = 0;
-		if (!clueImpling) {
+		if (!clueImpling || quantity > 1) {
 			const cost = new Bank().add(clueTier.scrollID, quantity);
 			if (!user.owns(cost)) return `You don't own ${cost}.`;
 			await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
