@@ -22,7 +22,7 @@
 		"creatables": "tsx ./scripts/renderCreatablesFile.ts",
 		"generate:robochimp": "prisma generate --no-hints --schema prisma/robochimp.prisma",
 		"============BUILDING": "============",
-		"build": "pnpm build:esbuild",
+		"build": "npx nx run-many -t build --exclude=oldschoolbot && pnpm build:esbuild",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"pnpm generate:robochimp\" && echo \"Generated Prisma Client\"",
 		"build:tsc": "tsc -p src",
 		"build:esbuild": "concurrently --raw \"pnpm build:main\" \"pnpm build:workers\"",

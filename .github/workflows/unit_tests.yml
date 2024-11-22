@@ -12,7 +12,7 @@ on:
       - "docs/**"
 
 jobs:
-  test:
+  unit_tests:
     name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
@@ -38,7 +38,9 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
       - name: Install Dependencies
-        run: pnpm remove zlib-sync && pnpm install
+        run: pnpm install
+      - name: Build
+        run: pnpm build
       - name: Copy Configuration
         run: |
           pushd src &&
