@@ -1,10 +1,17 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 
 import type { PvMMethod } from '../../lib/constants';
 import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
 
+import { Time, reduceNumByPercent } from 'e';
+import { Eatables } from '../../lib/data/eatables';
+import { calculateMonsterFood } from '../../lib/minions/functions';
+import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
+import { formatDuration, returnStringOrFile, stringMatches } from '../../lib/util';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import findMonster from '../../lib/util/findMonster';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -144,7 +151,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await mUserFetch(userID);
 		if (options.show_info) {
-			return 'This feature is currently disabled.';
+			return returnStringOrFile(await monsterInfo(user, options.name));
 		}
 		return minionKillCommand(
 			user,
@@ -158,3 +165,132 @@ export const minionKCommand: OSBMahojiCommand = {
 		);
 	}
 };
+
+export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
+	const monster = findMonster(name);
+
+	const prefix = 'https://wiki.oldschool.gg/osb';
+
+	if (stringMatches(name, 'nex')) {
+		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/nex/>).\n`;
+	}
+
+	if (stringMatches(name, 'colosseum')) {
+		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/colosseum/>).\n`;
+	}
+
+	if (stringMatches(name, 'wintertodt')) {
+		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/activities/wintertodt/>).\n`;
+	}
+
+	if (stringMatches(name, 'tempoross')) {
+		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/skills/fishing/tempoross/>).\n`;
+	}
+
+	if (stringMatches(name, 'zalcano')) {
+		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/miscelleanous/zalcano/>).\n`;
+	}
+
+	if (stringMatches(name.split(' ').pop(), 'nightmare')) {
+		const link = stringMatches(name.split(' ')[0], 'phosanis') ? 'phosanis-nightmare' : 'the-nightmare';
+		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/${link}/>).\n`;
+	}
+
+	if (!monster) {
+		return "That's not a valid monster";
+	}
+
+	const str = [`**${monster.name}**\n`];
+
+	if (wikiMonsters.includes(monster)) {
+		str.push(
+			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/monsters/#${monster.name.toLowerCase().replace(' ', '-')}>).\n`
+		);
+	}
+
+	if (monster.name.includes('Revenant')) {
+		str.push(
+			'View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/wildy/#revenants>).\n'
+		);
+	}
+
+	const userKc = await user.getKC(monster.id);
+	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, userKc);
+
+	let hpString = '';
+	// Find best eatable boost and add 1% extra
+	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
+	if (monster.healAmountNeeded) {
+		const [hpNeededPerKill] = calculateMonsterFood(monster, user);
+		if (hpNeededPerKill === 0) {
+			timeToFinish = reduceNumByPercent(timeToFinish, noFoodBoost);
+			hpString = `${noFoodBoost}% boost for no food`;
+		}
+	}
+	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
+	const maxCanKill = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
+
+	const { QP } = user;
+
+	str.push(`**Barrage/Burst**: ${monster.canBarrage ? 'Yes' : 'No'}`);
+	str.push(
+		`**Cannon**: ${monster.canCannon ? `Yes, ${monster.cannonMulti ? 'multi' : 'single'} combat area` : 'No'}\n`
+	);
+
+	if (monster.qpRequired) {
+		str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
+	}
+
+	if (monster.healAmountNeeded) {
+		const itemRequirements = [];
+		const [hpNeededPerKill, gearStats] = calculateMonsterFood(monster, user);
+		const gearReductions = gearStats.replace(/: Reduced from (?:[0-9]+?), /, '\n').replace('), ', ')\n');
+		if (hpNeededPerKill > 0) {
+			itemRequirements.push(
+				`**Healing Required:** ${gearReductions}\nYou require ${
+					hpNeededPerKill * maxCanKill
+				} hp for a full trip.\n`
+			);
+		} else {
+			itemRequirements.push(`**Healing Required:** ${gearReductions}\n**Food boost**: ${hpString}.\n`);
+		}
+		str.push(`${itemRequirements.join('')}`);
+	}
+
+	str.push('**Trip info**');
+
+	str.push(
+		`Maximum trip length: ${formatDuration(
+			calcMaxTripLength(user, 'MonsterKilling')
+		)}.\nNormal kill time: ${formatDuration(
+			monster.timeToFinish
+		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`
+	);
+
+	str.push(
+		`If you were on a slayer task: ${maxCanKillSlay} per trip (${formatDuration(
+			reduceNumByPercent(timeToFinish, 15)
+		)} per kill).`
+	);
+
+	const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
+
+	str.push(
+		`Every ${kcForOnePercent}kc you will gain a 1% (upto 10%).\nYou currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`
+	);
+
+	const min = timeToFinish * maxCanKill * 1.01;
+	const max = timeToFinish * maxCanKill * 1.2;
+	str.push(
+		`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills can take between (${formatDuration(
+			min
+		)}) and (${formatDuration(max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
+			min * 0.9
+		)}) to (${formatDuration(max * 0.9)}) to finish.\n`
+	);
+	const response: InteractionReplyOptions = {
+		content: str.join('\n')
+	};
+
+	return response;
+}
