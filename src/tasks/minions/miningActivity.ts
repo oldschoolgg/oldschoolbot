@@ -273,6 +273,8 @@ export function determineMiningResult({
 		updateBank.xpBank.add('mining', xpToReceive, { duration });
 	}
 
+	const xpHr = toKMB((xpToReceive / (duration / Time.Minute)) * 60).toLocaleString();
+
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
 		addSkillingClueToLoot(gearBank, SkillsEnum.Mining, quantity, ore.clueScrollChance, updateBank.itemLootBank);
@@ -346,7 +348,8 @@ export function determineMiningResult({
 
 	return {
 		updateBank,
-		messages
+		messages,
+		xpHr
 	};
 }
 
