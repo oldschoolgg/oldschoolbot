@@ -1,0 +1,67 @@
+{
+	"name": "oldschooljs",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Allows you to interact with the OSRS Hiscores, Wiki, Items, & more.",
+	"exports": {
+		".": {
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs",
+			"types": "./dist/types/index.d.ts"
+		},
+		"./util": {
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs",
+			"types": "./dist/types/index.d.ts"
+		},
+		"./dist/util": {
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs",
+			"types": "./dist/types/index.d.ts"
+		},
+		"./dist/util/util": {
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs",
+			"types": "./dist/types/index.d.ts"
+		},
+		"./dist/meta/types": {
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs",
+			"types": "./dist/types/index.d.ts"
+		},
+		"./dist/*": {
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs",
+			"types": "./dist/types/index.d.ts"
+		}
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/oldschoolgg/oldschooljs.git"
+	},
+	"scripts": {
+		"wipedist": "node -e \"try { require('fs').rmSync('dist', { recursive: true }) } catch(_){}\"",
+		"test": "pnpm build && concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\"",
+		"test:unit": "vitest run --coverage",
+		"build": "pnpm wipedist && tsc -p src && node esbuild.cjs",
+		"preparexx": "tsx scripts/prepare",
+		"dev": "pnpm prepare && pnpm build && pnpm test"
+	},
+	"dependencies": {
+		"e": "^0.2.33",
+		"node-fetch": "2.6.7"
+	},
+	"devDependencies": {
+		"@types/node": "^20.14.9",
+		"@types/node-fetch": "^2.6.1",
+		"concurrently": "^9.1.0",
+		"deep-object-diff": "^1.1.9",
+		"deepmerge": "^4.3.1",
+		"remeda": "^2.17.3",
+		"tsx": "^4.19.2",
+		"wtf_wikipedia": "^10.3.2"
+	},
+	"keywords": ["runescape"],
+	"files": ["dist"]
+}

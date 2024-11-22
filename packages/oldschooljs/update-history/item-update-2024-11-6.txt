@@ -1,0 +1,10 @@
+Updated on 22/11/2024, 08:45:20 pm AEDT Sydney / 11/22/2024, 01:45:20 AM PST California
+
+[ShapeChange]: Butler's tray (29912) had equipable added
+[ShapeChange]: Butler's tray (29912) had weapon added
+[Gear Slot Change]: The gear slot of Butler's tray slot changed.
+Name Changes:
+	Ring of shadows to Ring of shadows (uncharged)
+
+New Items: https://chisel.weirdgloop.org/moid/item_id.html#0
+Deleted Items: No items.

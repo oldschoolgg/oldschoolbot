@@ -48,3 +48,9 @@ tests/**/*.tsbuildinfo
 item/
 
 tmp
+
+
+.nx/cache
+.nx/workspace-data
+robochimp
+wiki.xml

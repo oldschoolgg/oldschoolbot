@@ -1,0 +1,29 @@
+Updated on 07/07/2024, 01:58:19 am AEST Sydney / 07/06/2024, 08:58:19 AM PDT California
+
+Name Changes:
+	Servant's moneybag to Servant's money bag
+	Group iron helm to Group ironman helm
+	Group iron platebody to Group ironman platebody
+	Group iron platebody to Group ironman platebody
+	Group iron platebody to Group ironman platebody
+	Group iron platebody to Group ironman platebody
+	Group iron platelegs to Group ironman platelegs
+	Group iron bracers to Group ironman bracers
+	Hardcore group iron helm to Hardcore group ironman helm
+	Hardcore group iron platebody to Hardcore group ironman platebody
+	Hardcore group iron platebody to Hardcore group ironman platebody
+	Hardcore group iron platebody to Hardcore group ironman platebody
+	Hardcore group iron platebody to Hardcore group ironman platebody
+	Hardcore group iron platelegs to Hardcore group ironman platelegs
+	Hardcore group iron bracers to Hardcore group ironman bracers
+	Group iron helm (unranked) to Group ironman helm (unranked)
+	Group iron platelegs (unranked) to Group ironman platelegs (unranked)
+	Group iron bracers (unranked) to Group ironman bracers (unranked)
+	Group iron platebody (unranked) to Group ironman platebody (unranked)
+	Group iron platebody (unranked) to Group ironman platebody (unranked)
+	Group iron platebody (unranked) to Group ironman platebody (unranked)
+	Group iron platebody (unranked) to Group ironman platebody (unranked)
+	Ring of shadows to Ring of shadows (uncharged)
+
+New Items: https://chisel.weirdgloop.org/moid/item_id.html#29486
+Deleted Items: No items.

@@ -1,9 +1,9 @@
 import { collapseWhiteSpace } from 'collapse-white-space';
+import { Items } from 'oldschooljs';
 import { visitParents } from 'unist-util-visit-parents';
 
 import bsoItemsJson from '../../../data/bso_items.json';
 import commandsJson from '../../../data/osb.commands.json';
-import { Items } from '../../../node_modules/oldschooljs';
 import { SkillsArray } from '../../../src/lib/skilling/types';
 import { authorsMap } from './authors';
 

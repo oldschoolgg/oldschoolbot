@@ -1,0 +1,90 @@
+{
+	"$schema": "./node_modules/nx/schemas/nx-schema.json",
+	"targetDefaults": {
+		"spritesheet": {
+			"outputs": ["{projectRoot}/src/lib/resources"],
+			"cache": true
+		},
+		"data": {
+			"outputs": ["{projectRoot}/data"],
+			"cache": true
+		},
+		"wiki": {
+			"outputs": ["{projectRoot}/docs/src/content/docs"],
+			"cache": true
+		},
+		"commands": {
+			"outputs": ["{projectRoot}/data"],
+			"cache": true
+		},
+		"creatables": {
+			"outputs": ["{projectRoot}/src/lib/data"],
+			"cache": true
+		},
+		"generate:robochimp": {
+			"outputs": ["{projectRoot}/node_modules/@prisma/robochimp"],
+			"cache": true
+		},
+		"build": {
+			"outputs": ["{projectRoot}/dist"],
+			"cache": true
+		},
+		"gen": {
+			"outputs": ["{projectRoot}/node_modules/@prisma"],
+			"cache": true
+		},
+		"build:tsc": {
+			"outputs": ["{projectRoot}/dist"],
+			"cache": true
+		},
+		"build:esbuild": {
+			"outputs": ["{projectRoot}/dist"],
+			"cache": true
+		},
+		"build:main": {
+			"outputs": ["{projectRoot}/dist"],
+			"cache": true
+		},
+		"build:workers": {
+			"outputs": ["{projectRoot}/dist"],
+			"cache": true
+		},
+		"test": {
+			"cache": true
+		},
+		"test:typecheck": {
+			"cache": true
+		},
+		"test:circular": {
+			"cache": true
+		},
+		"test:lint": {
+			"cache": true
+		},
+		"test:unit": {
+			"cache": true
+		},
+		"test:docker": {
+			"cache": true
+		},
+		"test:watch": {
+			"cache": true
+		},
+		"test:ci:unit": {
+			"cache": true
+		},
+		"lint:biome": {
+			"cache": true
+		},
+		"lint:prettier": {
+			"cache": true
+		},
+		"lint:prisma": {
+			"cache": true
+		},
+		"lint": {
+			"cache": true
+		}
+	},
+	"defaultBase": "dev"
+}

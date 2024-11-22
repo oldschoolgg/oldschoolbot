@@ -93,7 +93,7 @@ async function bingoTeamLeaderboard(
 			subList
 				.map(
 					(team, j) =>
-						`${getPos(i, j)}** ${`${team.trophy?.emoji} ` ?? ''}${team.participants
+						`${getPos(i, j)}** ${`${team.trophy?.emoji} `}${team.participants
 							.map(pt => getUsernameSync(pt.user_id))
 							.join(', ')}:** ${team.tilesCompletedCount.toLocaleString()}`
 				)

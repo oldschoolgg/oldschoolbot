@@ -258,7 +258,9 @@ FROM users
 WHERE "slayer.points" > 50
 ORDER BY "slayer.points" DESC
 LIMIT 1;`),
-		prisma.$queryRawUnsafe<{ id: string; desc: string }[]>(`SELECT user_id::text as id, 'Longest Task Streak' as desc
+		prisma.$queryRawUnsafe<
+			{ id: string; desc: string }[]
+		>(`SELECT user_id::text as id, 'Longest Task Streak' as desc
 FROM user_stats
 WHERE "slayer_task_streak" > 20
 ORDER BY "slayer_task_streak" DESC
@@ -331,7 +333,9 @@ async function giveaways() {
 
 async function globalCL() {
 	const results: RoleResult[] = [];
-	const result = await roboChimpClient.$queryRaw<{ id: string; total_cl_percent: number }[]>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
+	const result = await roboChimpClient.$queryRaw<
+		{ id: string; total_cl_percent: number }[]
+	>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
 	FROM public.user
 	WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
 	ORDER BY total_cl_percent DESC

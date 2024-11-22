@@ -462,7 +462,8 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 }
 
 export async function getSlayerTaskStats(userID: string) {
-	const result: { monster_id: number; total_quantity: number; qty: number }[] = await prisma.$queryRaw`SELECT monster_id, SUM(quantity)::int AS total_quantity, COUNT(monster_id)::int AS qty
+	const result: { monster_id: number; total_quantity: number; qty: number }[] =
+		await prisma.$queryRaw`SELECT monster_id, SUM(quantity)::int AS total_quantity, COUNT(monster_id)::int AS qty
 FROM slayer_tasks
 WHERE user_id = ${userID}
 AND quantity_remaining = 0
