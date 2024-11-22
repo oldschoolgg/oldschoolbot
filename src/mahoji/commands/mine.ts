@@ -96,7 +96,9 @@ export function determineMiningTrip({
 
 	if (ore.bankingTime === 0) {
 		isPowermining = false;
-	} else {
+	}
+
+	if (isPowermining) {
 		boosts.push('**Powermining**');
 	}
 

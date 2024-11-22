@@ -9,7 +9,7 @@ export const helpCommand: OSBMahojiCommand = {
 	options: [],
 	run: async () => {
 		return {
-			content: `🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a ban: <https://wiki.oldschool.gg/rules>
+			content: `🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a ban: <https://wiki.oldschool.gg/getting-started/rules/>
 
 <:patreonLogo:679334888792391703> **Patreon:** If you're able too, please consider supporting my work on Patreon, it's highly appreciated and helps me hugely <https://www.patreon.com/oldschoolbot> ❤️
 

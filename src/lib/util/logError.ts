@@ -22,7 +22,7 @@ export function logError(err: any, context?: Record<string, string>, extra?: Rec
 		err.requestBody = [];
 	}
 	if (err?.requestBody?.json) {
-		err.requestBody.json = String(err.requestBody.json).slice(0, 100);
+		err.requestBody.json = String(err.requestBody.json).slice(0, 500);
 	}
 	console.error(`${(err as any)?.message ?? JSON.stringify(err)}`, {
 		type: 'ERROR',

@@ -7,7 +7,7 @@ import { type Ore, SkillsEnum } from '../../lib/skilling/types';
 import type { GearBank } from '../../lib/structures/GearBank';
 import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
+import { skillingPetDropRate, toKMB } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export function determineMiningResult({
@@ -34,6 +34,8 @@ export function determineMiningResult({
 	if (ore.xp) {
 		updateBank.xpBank.add('mining', xpToReceive, { duration });
 	}
+
+	const xpHr = toKMB((xpToReceive / (duration / Time.Minute)) * 60).toLocaleString();
 
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
@@ -108,7 +110,8 @@ export function determineMiningResult({
 
 	return {
 		updateBank,
-		messages
+		messages,
+		xpHr
 	};
 }
 
@@ -120,16 +123,20 @@ export const miningTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
-		const { updateBank, messages } = determineMiningResult({
+		const { updateBank, messages, xpHr } = determineMiningResult({
 			ore,
 			quantity,
 			gearBank: user.gearBank,
 			duration,
 			isPowermining: powermine
 		});
+
 		const updateResult = await updateBank.transact(user);
 		if (typeof updateResult === 'string') throw new Error(updateResult);
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. You received ${updateResult.itemTransactionResult?.itemsAdded} and ${updateBank.xpBank}.`;
+		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. `;
+		if (!powermine) str += `You received ${updateResult.itemTransactionResult?.itemsAdded} and `;
+
+		str += `${updateBank.xpBank}. ${xpHr} XP/hr`;
 		if (messages.length > 0) {
 			str += `\n${messages.join(', ')}.`;
 		}
