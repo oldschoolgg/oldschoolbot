@@ -45,7 +45,5 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm build:monorepo
-      - name: Generate Prisma Clients
-        run: pnpm gen
       - name: Test
-        run: pnpm test:ci:unit
+        run: pnpm test:monorepo
