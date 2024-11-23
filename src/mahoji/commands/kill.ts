@@ -52,8 +52,10 @@ export const killCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (value: string) => {
 				return [
-					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
-					...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] }))
+					...Array.from(Monsters.values()).map(i => ({ name: i.name, aliases: i.aliases })),
+					...simulatedKillables
+						.filter(i => !Array.from(Monsters.values()).some(monster => monster.name === i.name))
+						.map(i => ({ name: i.name, aliases: [i.name] }))
 				]
 					.filter(i =>
 						!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
