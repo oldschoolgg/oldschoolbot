@@ -37,15 +37,14 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - name: Copy Configuration
+        run: |
+          cp src/config.example.ts src/config.ts &&
+          cp .env.test .env
       - name: Install Dependencies
         run: pnpm install
       - name: Build
-        run: pnpm build
-      - name: Copy Configuration
-        run: |
-          pushd src &&
-          cp config.example.ts config.ts &&
-          popd && cp .env.test .env
+        run: pnpm build:monorepo
       - name: Generate Prisma Clients
         run: pnpm gen
       - name: Test

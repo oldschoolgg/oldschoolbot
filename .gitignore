@@ -50,7 +50,9 @@ item/
 tmp
 
 
-.nx/cache
-.nx/workspace-data
 robochimp
 wiki.xml
+
+.pnpm-store
+*.tsbuildinfo
+/coverage

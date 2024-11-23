@@ -5,6 +5,7 @@
 		"checkJs": false,
 		"skipLibCheck": true,
 		"types": ["node"],
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"emitDeclarationOnly": true
 	}
 }
