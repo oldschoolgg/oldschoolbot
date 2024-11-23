@@ -40,6 +40,6 @@ CMD (/wait > /dev/null 2>&1) && \
     (pnpm prisma db push --schema='./prisma/robochimp.prisma' > /dev/null 2>&1 & \
     pnpm prisma db push --schema='./prisma/schema.prisma' > /dev/null 2>&1 & \
     wait) && \
-    pnpm run build:monorepo && \
+    pnpm run monorepo:build && \
     NODE_NO_WARNINGS=1 pnpmvitest run --config vitest.integration.config.mts && \
     exit 0

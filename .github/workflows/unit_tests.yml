@@ -44,6 +44,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
       - name: Build
-        run: pnpm build:monorepo
+        run: pnpm monorepo:build
       - name: Test
-        run: pnpm test:monorepo
+        run: pnpm monorepo:test
