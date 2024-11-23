@@ -41,12 +41,12 @@
 		"url": "git+https://github.com/oldschoolgg/oldschooljs.git"
 	},
 	"scripts": {
-		"wipedist": "node -e \"try { require('fs').rmSync('dist', { recursive: true }) } catch(_){}\"",
 		"test": "concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
 		"test:unit": "vitest run --coverage",
-		"build": "node esbuild.cjs",
 		"preparexx": "tsx scripts/prepare",
-		"dev": "pnpm prepare && pnpm build && pnpm test"
+		"dev": "pnpm prepare && pnpm build && pnpm test",
+		"build:esbuild": "node esbuild.cjs",
+		"build:types": "tsc -p src"
 	},
 	"dependencies": {
 		"deepmerge": "4.3.1"

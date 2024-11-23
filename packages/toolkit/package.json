@@ -21,8 +21,9 @@
 		}
 	},
 	"scripts": {
-		"build": "node esbuild.js",
-		"test": "concurrently \"tsc -p src\" \"pnpm vitest run\" \"tsc -p tests\""
+		"test": "concurrently \"tsc -p src\" \"pnpm vitest run\" \"tsc -p tests\"",
+		"build:esbuild": "node esbuild.cjs",
+		"build:types": "tsc -p src"
 	},
 	"dependencies": {
 		"decimal.js": "^10.4.3",
