@@ -42,7 +42,7 @@
 		"concurrent": "concurrently --raw --kill-others-on-fail",
 		"build:packages": "pnpm --stream -r build",
 		"============monorepo": "============",
-		"monorepo:build": "pnpm build:packages && pnpm build",
+		"monorepo:build": "pnpm concurrent \"pnpm build:packages\" \"pnpm gen\" && pnpm build",
 		"monorepo:test": "pnpm concurrent \"pnpm --stream -r test\" \"pnpm test\""
 	},
 	"dependencies": {
