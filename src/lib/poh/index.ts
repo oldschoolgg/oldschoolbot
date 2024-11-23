@@ -1,3 +1,4 @@
+import type { PlayerOwnedHouse } from '@prisma/client';
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -18,7 +19,6 @@ import { SpellbookAltars } from './objects/spellbook_altars';
 import { Teleports } from './objects/teleports';
 import { Thrones } from './objects/thrones';
 import { Torches } from './objects/torches';
-import type { PlayerOwnedHouse } from '.prisma/client';
 
 export const HOUSE_WIDTH = 585;
 export const TOP_FLOOR_Y = 118;

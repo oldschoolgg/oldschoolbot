@@ -55,4 +55,4 @@ wiki.xml
 
 .pnpm-store
 *.tsbuildinfo
-/coverage
+*/coverage
