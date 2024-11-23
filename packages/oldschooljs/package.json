@@ -44,7 +44,7 @@
 		"wipedist": "node -e \"try { require('fs').rmSync('dist', { recursive: true }) } catch(_){}\"",
 		"test": "concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
 		"test:unit": "vitest run --coverage",
-		"build": "pnpm wipedist && tsc -p src && node esbuild.cjs",
+		"build": "node esbuild.cjs",
 		"preparexx": "tsx scripts/prepare",
 		"dev": "pnpm prepare && pnpm build && pnpm test"
 	},
