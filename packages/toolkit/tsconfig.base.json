@@ -1,0 +1,11 @@
+{
+	"extends": "@oldschoolgg/ts-config",
+	"compilerOptions": {
+		"allowJs": false,
+		"checkJs": false,
+		"skipLibCheck": true,
+		"types": ["node"],
+		"esModuleInterop": true,
+		"emitDeclarationOnly": true
+	}
+}

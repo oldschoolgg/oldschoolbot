@@ -739,7 +739,9 @@ LIMIT 10;
 		return lbMsg('Global Mastery Leaderboard');
 	}
 
-	const result = await roboChimpClient.$queryRaw<{ id: string; total_cl_percent: number }[]>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
+	const result = await roboChimpClient.$queryRaw<
+		{ id: string; total_cl_percent: number }[]
+	>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
 FROM public.user
 WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
 ORDER BY total_cl_percent DESC

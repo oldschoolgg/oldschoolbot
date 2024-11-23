@@ -64,7 +64,9 @@ const whereInMassClause = (id: string) =>
 	`OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${id}%')`;
 
 async function activityExport(user: User): CommandResponse {
-	const allActivities = await prisma.$queryRawUnsafe<Activity[]>(`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
+	const allActivities = await prisma.$queryRawUnsafe<
+		Activity[]
+	>(`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
 FROM activity
 WHERE user_id = '${user.id}'
 OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${user.id}%');`);
@@ -369,7 +371,9 @@ export const dryStreakEntities: DrystreakEntity[] = [
 			'Olmlet'
 		]),
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<{ id: string; points: number; raids_total_kc: number }[]>(`SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; points: number; raids_total_kc: number }[]
+			>(`SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc
 FROM user_stats
 INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text
 INNER JOIN "minigames" on "minigames"."user_id" = "user_stats"."user_id"::text
@@ -432,7 +436,9 @@ LIMIT 10;`);
 		name: 'Guardians of the Rift',
 		items: guardiansOfTheRiftCL,
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, gotr_rift_searches AS val
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT users.id, gotr_rift_searches AS val
             FROM users
             INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
             WHERE "collectionLogBank"->>'${item.id}' IS NULL
@@ -527,7 +533,9 @@ LIMIT 10;`);
 		name: 'Superior Slayer Creatures',
 		items: resolveItems(['Imbued heart', 'Eternal gem']),
 		run: async ({ ironmanOnly, item }) => {
-			const result = await prisma.$queryRawUnsafe<{ id: string; slayer_superior_count: number }[]>(`SELECT id, slayer_superior_count
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; slayer_superior_count: number }[]
+			>(`SELECT id, slayer_superior_count
 FROM users
 INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'${item.id}' IS NULL

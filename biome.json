@@ -5,7 +5,17 @@
 	},
 	"files": {
 		"maxSize": 10000000,
-		"ignore": ["node_modules", "dist", "coverage", "profiling", "logs", "icon_cache", ".astro", ".yarn"],
+		"ignore": [
+			"node_modules",
+			"dist",
+			"coverage",
+			"profiling",
+			"logs",
+			"icon_cache",
+			".astro",
+			".yarn",
+			".pnpm-store"
+		],
 		"include": ["**/*.ts", "**/*.mts", "**/*.json", "**/*.test.ts", "**/*.mdx", "**/*.md", "**/*.mjs", "**/*.cjs"]
 	},
 	"vcs": {

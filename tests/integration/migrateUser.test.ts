@@ -2,10 +2,12 @@ import {
 	type Activity,
 	type Bingo,
 	type BingoParticipant,
+	type BotItemSell,
 	type BuyCommandTransaction,
 	type CommandUsage,
 	type EconomyTransaction,
 	type FarmedCrop,
+	type GEListing,
 	type GearPreset,
 	type Giveaway,
 	type HistoricalData,
@@ -17,6 +19,7 @@ import {
 	type Prisma,
 	type ReclaimableItem,
 	type SlayerTask,
+	type StashUnit,
 	type UserStats,
 	type XPGain,
 	type activity_type_enum,
@@ -58,7 +61,6 @@ import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/ma
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
 import type { TestUser } from './util';
 import { createTestUser, mockClient, mockedId } from './util';
-import type { BotItemSell, GEListing, StashUnit } from '.prisma/client';
 
 interface TestCommand {
 	name: string;

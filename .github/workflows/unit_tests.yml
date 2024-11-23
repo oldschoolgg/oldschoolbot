@@ -12,7 +12,7 @@ on:
       - "docs/**"
 
 jobs:
-  test:
+  unit_tests:
     name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
@@ -31,20 +31,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
-          cache: yarn
+          cache: pnpm
       - name: Restore CI Cache
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies
-        run: yarn remove zlib-sync && yarn install
+          key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
       - name: Copy Configuration
         run: |
-          pushd src &&
-          cp config.example.ts config.ts &&
-          popd && cp .env.test .env
-      - name: Generate Prisma Clients
-        run: yarn gen
+          cp .env.test .env
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm monorepo:build
       - name: Test
-        run: yarn test:ci:unit
+        run: pnpm monorepo:test

@@ -3,7 +3,6 @@
 /config/private.js
 /config/private.json
 private.json
-src/config.ts
 trivia-questions.json
 dist/
 bwd/
@@ -48,3 +47,11 @@ tests/**/*.tsbuildinfo
 item/
 
 tmp
+
+
+robochimp
+wiki.xml
+
+.pnpm-store
+*.tsbuildinfo
+*/coverage

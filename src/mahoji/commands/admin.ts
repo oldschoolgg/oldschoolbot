@@ -53,7 +53,9 @@ export const gifs = [
 ];
 
 async function allEquippedPets() {
-	const pets = await prisma.$queryRawUnsafe<{ pet: number; qty: number }[]>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet")::int AS qty
+	const pets = await prisma.$queryRawUnsafe<
+		{ pet: number; qty: number }[]
+	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet")::int AS qty
 FROM users
 WHERE "minion.equippedPet" IS NOT NULL
 GROUP BY "minion.equippedPet"
@@ -186,7 +188,9 @@ AND ("gear.melee" IS NOT NULL OR
 		name: 'Economy Bank',
 		run: async () => {
 			const [blowpipeRes, totalGP, result] = await prisma.$transaction([
-				prisma.$queryRawUnsafe<{ scales: number; dart: number; qty: number }[]>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
+				prisma.$queryRawUnsafe<
+					{ scales: number; dart: number; qty: number }[]
+				>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
 FROM users
 WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 				prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
@@ -340,14 +344,18 @@ LIMIT
 	{
 		name: 'Sell GP Sources',
 		run: async () => {
-			const result = await prisma.$queryRawUnsafe<{ item_id: number; gp: number }[]>(`select item_id, sum(gp_received) as gp
+			const result = await prisma.$queryRawUnsafe<
+				{ item_id: number; gp: number }[]
+			>(`select item_id, sum(gp_received) as gp
 from bot_item_sell
 group by item_id
 order by gp desc
 limit 80;
 `);
 
-			const totalGPGivenOut = await prisma.$queryRawUnsafe<{ total_gp_given_out: number }[]>(`select sum(gp_received) as total_gp_given_out
+			const totalGPGivenOut = await prisma.$queryRawUnsafe<
+				{ total_gp_given_out: number }[]
+			>(`select sum(gp_received) as total_gp_given_out
 from bot_item_sell;`);
 
 			return {

@@ -119,7 +119,8 @@ WHERE
 }
 
 async function personalConstructionStats(user: MUser) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'objectID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'objectID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Construction'
 AND user_id = '${user.id}'::bigint
@@ -136,7 +137,8 @@ GROUP BY data->>'objectID';`);
 }
 
 async function personalFiremakingStats(user: MUser) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'burnableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'burnableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Firemaking'
 AND user_id = '${user.id}'::bigint
@@ -153,7 +155,8 @@ GROUP BY data->>'burnableID';`);
 }
 
 async function personalWoodcuttingStats(user: MUser) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'logID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'logID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Woodcutting'
 AND user_id = '${user.id}'::bigint
@@ -170,7 +173,8 @@ GROUP BY data->>'logID';`);
 }
 
 async function personalMiningStats(user: MUser) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'oreID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'oreID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Mining'
 AND user_id = '${user.id}'::bigint
@@ -187,7 +191,8 @@ GROUP BY data->>'oreID';`);
 }
 
 async function personalHerbloreStats(user: MUser, stats: UserStats) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Herblore'
 AND user_id = '${user.id}'::bigint
@@ -204,14 +209,16 @@ GROUP BY data->>'mixableID';`);
 	return items;
 }
 async function personalAlchingStats(user: MUser, includeAgilityAlching = true) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'itemID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'itemID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Alching'
 AND user_id = '${user.id}'::bigint
 AND data->>'itemID' IS NOT NULL
 AND completed = true
 GROUP BY data->>'itemID';`);
-	const agilityAlchRes: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (((data->>'alch')::json)->>'itemID')::int AS id, SUM((((data->>'alch')::json)->>'quantity')::int)::int AS qty
+	const agilityAlchRes: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (((data->>'alch')::json)->>'itemID')::int AS id, SUM((((data->>'alch')::json)->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Agility'
 AND user_id = '${user.id}'::bigint
@@ -228,7 +235,8 @@ GROUP BY ((data->>'alch')::json)->>'itemID';`);
 	return items;
 }
 async function personalSmithingStats(user: MUser) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'smithedBarID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'smithedBarID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Smithing'
 AND user_id = '${user.id}'::bigint
@@ -244,7 +252,8 @@ GROUP BY data->>'smithedBarID';`);
 	return items;
 }
 async function personalSmeltingStats(user: MUser) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'barID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'barID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Smelting'
 AND user_id = '${user.id}'::bigint
@@ -260,7 +269,8 @@ GROUP BY data->>'barID';`);
 	return items;
 }
 async function personalSpellCastStats(user: MUser) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'spellID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'spellID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Casting'
 AND user_id = '${user.id}'::bigint
@@ -270,7 +280,8 @@ GROUP BY data->>'spellID';`);
 	return result.map(i => ({ castable: Castables.find(t => t.id === i.id)!, id: i.id, qty: i.qty }));
 }
 async function personalCollectingStats(user: MUser) {
-	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'collectableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'collectableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Collecting'
 AND user_id = '${user.id}'::bigint
@@ -316,7 +327,8 @@ export const dataPoints: readonly DataPiece[] = [
 		name: 'Personal Activity Types',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { type: activity_type_enum; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT type, count(type)::int AS qty
+			const result: { type: activity_type_enum; qty: number }[] =
+				await prisma.$queryRawUnsafe(`SELECT type, count(type)::int AS qty
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
@@ -362,7 +374,8 @@ GROUP BY type;`);
 		name: 'Personal Monster KC',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { id: number; kc: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'mi')::int as id, SUM((data->>'q')::int)::int AS kc
+			const result: { id: number; kc: number }[] =
+				await prisma.$queryRawUnsafe(`SELECT (data->>'mi')::int as id, SUM((data->>'q')::int)::int AS kc
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
@@ -429,7 +442,8 @@ GROUP BY data->>'mi';`);
 		name: 'Global Inferno Death Times',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
-			const result: { mins: number; count: number }[] = await prisma.$queryRaw`SELECT mins, COUNT(mins)::int FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
+			const result: { mins: number; count: number }[] =
+				await prisma.$queryRaw`SELECT mins, COUNT(mins)::int FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
 WHERE type = 'Inferno'
 AND completed = true
@@ -451,7 +465,8 @@ GROUP BY mins;`;
 		name: 'Personal Inferno Death Times',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { mins: number; count: number }[] = await prisma.$queryRawUnsafe(`SELECT mins, COUNT(mins)::int FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
+			const result: { mins: number; count: number }[] =
+				await prisma.$queryRawUnsafe(`SELECT mins, COUNT(mins)::int FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${BigInt(user.id)}
@@ -509,7 +524,8 @@ GROUP BY mins;`);
 		name: 'Personal TOB Wipes',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { wiped_room: number; count: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
+			const result: { wiped_room: number; count: number }[] =
+				await prisma.$queryRawUnsafe(`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
 FROM activity
 WHERE type = 'TheatreOfBlood'
 AND completed = true
@@ -535,7 +551,8 @@ GROUP BY 1;`);
 		name: 'Global TOB Wipes',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
-			const result: { wiped_room: number; count: number }[] = await prisma.$queryRaw`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
+			const result: { wiped_room: number; count: number }[] =
+				await prisma.$queryRaw`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
 FROM activity
 WHERE type = 'TheatreOfBlood'
 AND completed = true
@@ -583,7 +600,8 @@ WHERE "skills.${skillName}" = 200000000::int;`) as Promise<{ qty: number; skill_
 		name: 'Personal Farmed Crops',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { plant: string; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName')::int AS qty
+			const result: { plant: string; qty: number }[] =
+				await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName')::int AS qty
 FROM activity
 WHERE type = 'Farming'
 AND data->>'plantsName' IS NOT NULL
@@ -605,7 +623,8 @@ GROUP BY data->>'plantsName'`);
 		name: 'Global Farmed Crops',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
-			const result: { plant: string; qty: number }[] = await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName')::int AS qty
+			const result: { plant: string; qty: number }[] =
+				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName')::int AS qty
 FROM activity
 WHERE type = 'Farming'
 AND data->>'plantsName' IS NOT NULL

@@ -1,5 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { Activity, GearSetupType, Prisma } from '@prisma/client';
+import type { Activity, ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Monsters } from 'oldschooljs';
 
@@ -22,7 +22,6 @@ import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
-import type { ClientStorage, User, UserStats } from '.prisma/client';
 
 const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
 	userID,

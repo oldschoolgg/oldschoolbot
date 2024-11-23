@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
+import type { PlayerOwnedHouse } from '@prisma/client';
 import { objectEntries, randInt } from 'e';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
@@ -13,7 +14,6 @@ import {
 	loadImage
 } from './util/canvasUtil';
 import { getActivityOfUser } from './util/minionIsBusy';
-import type { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
