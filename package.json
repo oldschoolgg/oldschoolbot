@@ -33,7 +33,7 @@
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"test:ci:unit": "pnpm concurrent \"pnpm test:unit\" \"pnpm test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"============LINTING": "============",
-		"lint:biome": "biome check --write --unsafe --diagnostic-level=error",
+		"lint:biome": "git diff --name-only | xargs biome check --write --unsafe --diagnostic-level=error",
 		"lint:prettier": "prettier --use-tabs \"./**/*.{md,yml}\" --write --log-level silent",
 		"lint:prisma": "pnpm concurrent \"prisma format --schema ./prisma/robochimp.prisma\" \"prisma format --schema ./prisma/schema.prisma\"",
 		"lint": "pnpm concurrent \"pnpm lint:biome\" \"pnpm lint:prettier\" \"pnpm lint:prisma\"",
