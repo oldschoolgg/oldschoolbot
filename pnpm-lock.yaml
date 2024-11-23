@@ -12,7 +12,7 @@ importers:
   .:
     dependencies:
       '@oldschoolgg/toolkit':
-        specifier: 0.0.1
+        specifier: workspace:*
         version: link:packages/toolkit
       '@prisma/client':
         specifier: ^5.20.0
@@ -69,7 +69,7 @@ importers:
         specifier: ^2.6.7
         version: 2.6.7
       oldschooljs:
-        specifier: 0.0.1
+        specifier: workspace:*
         version: link:packages/oldschooljs
       p-queue:
         specifier: ^6.6.2

@@ -46,8 +46,8 @@
 		"monorepo:test": "pnpm concurrent \"pnpm --stream -r test\" \"pnpm test\""
 	},
 	"dependencies": {
-		"@oldschoolgg/toolkit": "0.0.1",
-		"oldschooljs": "0.0.1",
+		"@oldschoolgg/toolkit": "workspace:*",
+		"oldschooljs": "workspace:*",
 		"@prisma/client": "^5.20.0",
 		"@sapphire/ratelimits": "^2.4.9",
 		"@sapphire/snowflake": "^3.5.3",
