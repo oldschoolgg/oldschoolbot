@@ -3,7 +3,6 @@
 /config/private.js
 /config/private.json
 private.json
-src/config.ts
 trivia-questions.json
 dist/
 bwd/

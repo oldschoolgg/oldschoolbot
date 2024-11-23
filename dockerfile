@@ -22,6 +22,8 @@ FROM base AS dependencies
 WORKDIR /usr/src/app
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY src/config.example.ts src/config.ts
+COPY .env.test .env
 
 RUN pnpm install --frozen-lockfile
 
