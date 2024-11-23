@@ -34,8 +34,7 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
    - Using **pgAdmin 4** select `Servers > PostgreSQL > Databases > Create > Database...`.
    - Enter the database name into `Database` and hit `Save`.
 4. Change `DATABASE_URL` and `ROBOCHIMP_DATABASE_URL` in your .env file with the format `postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME`.
-5. Make a config file from the example: `cp src/config.example.ts src/config.ts`.
-6. Edit this new `config.ts` file:
+5. Edit `config.ts`:
    - Copy your Discord ID into both `OWNER_IDS` and `ADMIN_IDS`.
    - Enter the Server ID where you want to Administer your bot from in `SupportServer`.
 

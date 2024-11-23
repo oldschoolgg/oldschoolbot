@@ -39,7 +39,6 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
       - name: Copy Configuration
         run: |
-          cp src/config.example.ts src/config.ts &&
           cp .env.test .env
       - name: Install Dependencies
         run: pnpm install
