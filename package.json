@@ -43,7 +43,7 @@
 		"build:packages": "pnpm --stream -r build",
 		"============monorepo": "============",
 		"monorepo:build": "pnpm build:packages && pnpm build",
-		"monorepo:test": "pnpm concurrent \"pnpm --stream -r test\" \"pnpm test"
+		"monorepo:test": "pnpm concurrent \"pnpm --stream -r test\" \"pnpm test\""
 	},
 	"dependencies": {
 		"@oldschoolgg/toolkit": "0.0.1",
