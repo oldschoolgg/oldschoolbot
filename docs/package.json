@@ -14,11 +14,12 @@
 		"@astrojs/starlight": "^0.28.2",
 		"astro": "^4.16.1",
 		"collapse-white-space": "^2.1.0",
+		"docs": "link:",
 		"markdown-it": "^14.1.0",
+		"oldschooljs": "workspace:*",
 		"sharp": "^0.32.5",
 		"unist-util-visit": "^5.0.0",
-		"unist-util-visit-parents": "^6.0.1",
-		"oldschooljs": "workspace:*"
+		"unist-util-visit-parents": "^6.0.1"
 	},
 	"devDependencies": {
 		"@types/markdown-it": "^14"
