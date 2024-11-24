@@ -2,7 +2,7 @@
 title: "Theatre of Blood (ToB)"
 ---
 
-See the [OSB wiki](https://wiki.oldschool.gg/raids/theatre-of-blood) for general info.
+See the [OSB wiki](https://wiki.oldschool.gg/osb/raids/tob) for general info.
 
 ## Boosts
 
@@ -41,7 +41,7 @@ See the [OSB wiki](https://wiki.oldschool.gg/raids/theatre-of-blood) for general
 
 ## Reference Setups
 
-See [How does 'BiS gear' work?](./#how-does-bis-gear-work) for an explanation on gear setups.
+See [How does 'BiS gear' work?](https://wiki.oldschool.gg/bso/monsters/raids/readme/#how-does-bis-gear-work) for an explanation on gear setups.
 
 <figure><figcaption>Melee - not bis</figcaption></figure>
 
