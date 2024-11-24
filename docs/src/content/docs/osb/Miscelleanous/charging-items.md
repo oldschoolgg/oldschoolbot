@@ -17,7 +17,7 @@ The weapons listed on this page will provide global boosts to all PvM, _provided
 - [Trident of the swamp](./#trident-of-the-swamp) - 3% global boost
 - [Sanguinesti staff](./#sanguinesti-staff) - 5% global boost
 - [Scythe of vitur](./#scythe-of-vitur) - 5% global boost
-- [Tumeken's shadow](./#tumeken's-shadow) - 6% global boost
+- [Tumeken's shadow](./#tumekens-shadow) - 6% global boost
 
 ---
 
