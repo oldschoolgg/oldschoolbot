@@ -33,7 +33,7 @@ All boosts work from the bank unless otherwise specified. Gorajan armour does no
 
 ### Reference Setups
 
-See [How does 'BiS gear' work?](./#how-does-bis-gear-work) for an explanation on gear setups.
+See [How does 'BiS gear' work?](https://wiki.oldschool.gg/bso/monsters/raids/readme/#how-does-bis-gear-work) for an explanation on gear setups.
 
 <figure><figcaption>Mage</figcaption></figure>
 
