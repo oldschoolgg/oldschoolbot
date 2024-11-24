@@ -428,12 +428,16 @@ export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
 	for (const [key, chargesToDegrade] of chargeBank.entries()) {
 		const { item } = degradeableItems.find(i => i.settingsKey === key)!;
 		const result = await degradeItem({ item, chargesToDegrade, user });
+		if (result.chargesToDegrade && result.chargesToDegrade !== chargesToDegrade) {
+			//if Ghommal's penny has procced
+			chargeBank.add(key, result.chargesToDegrade);
+			chargeBank.remove(key, chargesToDegrade);
+		}
 		results.push(result.userMessage);
 	}
+	if (user.hasEquipped("Ghommal's lucky penny")) results.push(" 5% reduced charges for Ghommal's lucky penny");
 
-	if (user.hasEquipped("Ghommal's lucky penny")) results.push("5% reduced charges for Ghommal's lucky penny");
-
-	return results.join(', ');
+	return { chargeBank, results: results.join(',') };
 }
 
 export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Promise<RefundResult[]> {

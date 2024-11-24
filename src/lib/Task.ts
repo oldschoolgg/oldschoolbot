@@ -3,6 +3,7 @@ import { activity_type_enum } from '@prisma/client';
 import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
+import { RefundTask } from '../mahoji/lib/abstracted_commands/cancelTaskCommand';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
@@ -193,7 +194,8 @@ const tasks: MinionTask[] = [
 	camdozaalFishingTask,
 	myNotesTask,
 	colosseumTask,
-	CreateForestersRationsTask
+	CreateForestersRationsTask,
+	RefundTask
 ];
 
 export async function processPendingActivities() {
