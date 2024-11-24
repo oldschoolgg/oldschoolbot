@@ -1,20 +1,20 @@
-import { roll } from 'e';
+import { roll } from "e";
 
-import { MonsterSlayerMaster } from '../meta/monsterData';
-import type { CustomKillLogic, MonsterKillOptions, MonsterOptions } from '../meta/types';
+import { MonsterSlayerMaster } from "../meta/monsterData";
+import type { CustomKillLogic, MonsterKillOptions, MonsterOptions } from "../meta/types";
 import {
 	getAncientShardChanceFromHP,
 	getBrimKeyChanceFromCBLevel,
 	getLarranKeyChanceFromCBLevel,
 	getSlayersEnchantmentChanceFromHP,
-	getTotemChanceFromHP
-} from '../util/util';
-import Bank from './Bank';
-import type LootTable from './LootTable';
-import Monster from './Monster';
+	getTotemChanceFromHP,
+} from "../util/util";
+import Bank from "./Bank";
+import LootTable from "./LootTable";
+import Monster from "./Monster";
 
 interface SimpleMonsterOptions extends MonsterOptions {
-	table?: LootTable;
+	table?: LootTable | LootTable[];
 	onTaskTable?: LootTable;
 	wildyCaveTable?: LootTable;
 	pickpocketTable?: LootTable;
@@ -22,7 +22,7 @@ interface SimpleMonsterOptions extends MonsterOptions {
 }
 
 export default class SimpleMonster extends Monster {
-	public table?: LootTable;
+	public table?: LootTable | LootTable[];
 	public onTaskTable?: LootTable;
 	public wildyCaveTable?: LootTable;
 	public pickpocketTable?: LootTable;
@@ -31,7 +31,9 @@ export default class SimpleMonster extends Monster {
 	constructor(options: SimpleMonsterOptions) {
 		let allItems: number[] = [];
 		if (options.table) {
-			allItems = allItems.concat(options.table.allItems);
+			for (const table of options.table instanceof LootTable ? [options.table] : options.table) {
+				allItems = allItems.concat(table.allItems);
+			}
 		}
 		if (options.pickpocketTable) {
 			allItems = allItems.concat(options.pickpocketTable.allItems);
@@ -53,11 +55,16 @@ export default class SimpleMonster extends Monster {
 		);
 		const lootTableOptions = {
 			...options.lootTableOptions,
-			targetBank: loot
+			targetBank: loot,
 		};
+		const rollTable = this.table
+			? this.table instanceof LootTable
+				? this.table
+				: this.table[lootTableOptions.table ? lootTableOptions.table : 0]
+			: undefined;
 
 		if (!canGetBrimKey && !wildySlayer && !options.inCatacombs && !options.onSlayerTask) {
-			this.table?.roll(quantity, lootTableOptions);
+			rollTable?.roll(quantity, lootTableOptions);
 			if (this.customKillLogic) {
 				for (let i = 0; i < quantity; i++) {
 					this.customKillLogic(options, loot);
@@ -69,7 +76,7 @@ export default class SimpleMonster extends Monster {
 		for (let i = 0; i < quantity; i++) {
 			if (canGetBrimKey) {
 				if (roll(getBrimKeyChanceFromCBLevel(this.data.combatLevel))) {
-					loot.add('Brimstone key');
+					loot.add("Brimstone key");
 				}
 			}
 			if (wildySlayer && this.data.hitpoints) {
@@ -82,11 +89,11 @@ export default class SimpleMonster extends Monster {
 			}
 			if (options.inCatacombs && this.data.hitpoints && !wildySlayer) {
 				if (roll(getAncientShardChanceFromHP(this.data.hitpoints))) {
-					loot.add('Ancient shard');
+					loot.add("Ancient shard");
 				}
 				if (roll(getTotemChanceFromHP(this.data.hitpoints))) {
 					// Always drop Dark totem base and bot will transmog accordingly.
-					loot.add('Dark totem base');
+					loot.add("Dark totem base");
 				}
 			}
 			if (options.onSlayerTask) {
@@ -98,11 +105,11 @@ export default class SimpleMonster extends Monster {
 					this.onTaskTable.roll(1, lootTableOptions);
 				} else {
 					// Monster doesn't have a unique on-slayer table
-					this.table?.roll(1, lootTableOptions);
+					rollTable?.roll(1, lootTableOptions);
 				}
 			} else {
 				// Not on slayer task
-				this.table?.roll(1, lootTableOptions);
+				rollTable?.roll(1, lootTableOptions);
 			}
 			if (this.customKillLogic) {
 				this.customKillLogic(options, loot);

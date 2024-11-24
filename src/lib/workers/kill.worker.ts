@@ -20,7 +20,8 @@ export default async ({
 	onTask,
 	slayerMaster,
 	limit,
-	lootTableTertiaryChanges
+	lootTableTertiaryChanges,
+	table
 }: KillWorkerArgs): KillWorkerReturn => {
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
 	if (osjsMonster) {
@@ -36,7 +37,8 @@ export default async ({
 				onSlayerTask: onTask,
 				slayerMaster: slayerMaster,
 				lootTableOptions: {
-					tertiaryItemPercentageChanges: new Map(lootTableTertiaryChanges)
+					tertiaryItemPercentageChanges: new Map(lootTableTertiaryChanges),
+					table: table
 				}
 			})
 		};

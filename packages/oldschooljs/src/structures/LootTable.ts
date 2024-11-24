@@ -1,7 +1,7 @@
-import { randArrItem } from 'e';
-import itemID from '../util/itemID';
-import Bank from './Bank';
-import Items from './Items';
+import { randArrItem } from "e";
+import itemID from "../util/itemID";
+import Bank from "./Bank";
+import Items from "./Items";
 
 export function reduceNumByPercent(value: number, percent: number): number {
 	if (percent <= 0) return value;
@@ -49,6 +49,7 @@ export interface LootTableRollOptions {
 	 */
 	tertiaryItemPercentageChanges?: Map<string, number>;
 	targetBank?: Bank;
+	table?: number;
 }
 
 export default class LootTable {
@@ -103,7 +104,7 @@ export default class LootTable {
 			return;
 		}
 
-		if (typeof items === 'number') {
+		if (typeof items === "number") {
 			if (this.allItems.includes(items)) return;
 			this.allItems.push(items);
 		} else {
@@ -115,14 +116,14 @@ export default class LootTable {
 		chance: number,
 		item: LootTable | number | string,
 		quantity: number | number[] = 1,
-		options?: LootTableMoreOptions
+		options?: LootTableMoreOptions,
 	): this {
-		const resolved = typeof item === 'string' ? this.resolveName(item) : item;
+		const resolved = typeof item === "string" ? this.resolveName(item) : item;
 		this.oneInItems.push({
 			item: resolved,
 			chance,
 			quantity,
-			options
+			options,
 		});
 
 		this.addToAllItems(resolved);
@@ -134,14 +135,14 @@ export default class LootTable {
 		chance: number,
 		item: LootTable | number | string,
 		quantity: number | number[] = 1,
-		options?: LootTableMoreOptions
+		options?: LootTableMoreOptions,
 	): this {
-		const resolved = typeof item === 'string' ? this.resolveName(item) : item;
+		const resolved = typeof item === "string" ? this.resolveName(item) : item;
 		this.tertiaryItems.push({
 			item: resolved,
 			chance,
 			quantity,
-			options
+			options,
 		});
 
 		this.addToAllItems(resolved);
@@ -152,13 +153,13 @@ export default class LootTable {
 	public every(
 		item: LootTable | number | string,
 		quantity: number | number[] = 1,
-		options?: LootTableMoreOptions
+		options?: LootTableMoreOptions,
 	): this {
-		const resolved = typeof item === 'string' ? this.resolveName(item) : item;
+		const resolved = typeof item === "string" ? this.resolveName(item) : item;
 		this.everyItems.push({
 			item: resolved,
 			quantity,
-			options
+			options,
 		});
 
 		this.addToAllItems(resolved);
@@ -170,12 +171,12 @@ export default class LootTable {
 		item: LootTable | number | string,
 		quantity: number[] | number = 1,
 		weight = 1,
-		options?: LootTableMoreOptions
+		options?: LootTableMoreOptions,
 	): this {
 		if (this.limit && weight + this.totalWeight > this.limit) {
-			throw new Error('Loot table total weight exceeds limit');
+			throw new Error("Loot table total weight exceeds limit");
 		}
-		if (typeof item === 'string') {
+		if (typeof item === "string") {
 			return this.add(this.resolveName(item), quantity, weight, options);
 		}
 
@@ -188,7 +189,7 @@ export default class LootTable {
 			item,
 			weight,
 			quantity,
-			options
+			options,
 		});
 
 		return this;
@@ -202,13 +203,13 @@ export default class LootTable {
 		const loot = options.targetBank ?? new Bank();
 		const effectiveTertiaryItems = options.tertiaryItemPercentageChanges
 			? this.tertiaryItems.map(i => {
-					if (typeof i.item !== 'number') return i;
+					if (typeof i.item !== "number") return i;
 					if (i.options?.freeze === true) return i;
 					const change = options.tertiaryItemPercentageChanges?.get(Items.get(i.item)!.name);
 					if (!change) return i;
 					return {
 						...i,
-						chance: Math.ceil(reduceNumByPercent(i.chance, change))
+						chance: Math.ceil(reduceNumByPercent(i.chance, change)),
 					};
 				})
 			: this.tertiaryItems;
@@ -266,7 +267,7 @@ export default class LootTable {
 	}
 
 	private addResultToLoot(result: LootTableItem, loot: Bank): void {
-		if (typeof result?.item === 'number') {
+		if (typeof result?.item === "number") {
 			loot.addItem(result.item, this.determineQuantity(result.quantity));
 			return;
 		}
