@@ -26,7 +26,14 @@ const equipmentModSrc = [
 for (const [toChange, toCopy] of equipmentModSrc) {
 	equipmentModifications.set(toChange, toCopy);
 }
-const itemsBeingModified = new Set(equipmentModSrc.map(i => i[0]));
+
+const itemsToRename = [
+	{
+		id: 30105,
+		name: 'Tooth half of key (moon key)'
+	}
+];
+const itemsBeingModified = new Set([...equipmentModSrc.map(i => i[0]), ...itemsToRename.map(i => i.id)]);
 
 const newItemJSON: { [key: string]: Item } = {};
 
@@ -440,6 +447,11 @@ export default async function prepareItems(): Promise<void> {
 			if (item.equipment?.slot !== previousItem.equipment?.slot) {
 				messages.push(`[Gear Slot Change]: The gear slot of ${previousItem.name} slot changed.`);
 			}
+		}
+
+		const rename = itemsToRename.find(i => i.id === item.id);
+		if (rename) {
+			item.name = rename.name;
 		}
 
 		if (equipmentModifications.has(item.id)) {
