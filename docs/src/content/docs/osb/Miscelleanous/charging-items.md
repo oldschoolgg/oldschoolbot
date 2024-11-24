@@ -12,12 +12,12 @@ All items can be charged using [[/minion charge item\: amount\:]]
 
 The weapons listed on this page will provide global boosts to all PvM, _provided they are equipped in their respective setup, are sufficiently charged, and you're training that specific combat style._ These global boosts stack with existing boosts (E.g. Shadow gives 20% boost at Kraken, and a further 6% if equipped in mage, charged, and your training is set to magic).
 
-- [Abyssal tentacle](charging-items.md#abyssal-tentacle) - 3% global boost
-- [Venator bow](charging-items.md#venator-bow) - 3% global boost
-- [Trident of the swamp](charging-items.md#trident-of-the-swamp) - 3% global boost
-- [Sanguinesti staff](charging-items.md#sanguinesti-staff) - 5% global boost
-- [Scythe of vitur](charging-items.md#scythe-of-vitur) - 5% global boost
-- [Tumeken's shadow](charging-items.md#tumekens-shadow) - 6% global boost
+- [Abyssal tentacle](./#abyssal-tentacle) - 3% global boost
+- [Venator bow](./#venator-bow) - 3% global boost
+- [Trident of the swamp](./#trident-of-the-swamp) - 3% global boost
+- [Sanguinesti staff](./#sanguinesti-staff) - 5% global boost
+- [Scythe of vitur](./#scythe-of-vitur) - 5% global boost
+- [Tumeken's shadow](./#tumeken's-shadow) - 6% global boost
 
 ---
 
