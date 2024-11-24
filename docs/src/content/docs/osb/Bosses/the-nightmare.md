@@ -76,7 +76,7 @@ Level 90 Attack/Strength/Defence/Magic/Hitpoints
 
 Level 70 Prayer
 
-A Defence Slash stat of least 150
+A Defence Slash stat of at least 150
 
 An Attack Crush stat of at least 80
 
