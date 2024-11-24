@@ -52,10 +52,9 @@ The maximum melee strength bonus is 204. Anything above 123 will not incur these
 
 #### Inquisitor Items Equipped
 
- 
 **Solos:** 2% boost per piece (10% boost if all 4 items are equipped)
 
- **Masses:** 0.5% boost per piece (3% boost if all 4 items are equipped)
+**Masses:** 0.5% boost per piece (3% boost if all 4 items are equipped)
 
 Having an [[Elysian spirit shield]] equipped in your melee setup will also reduce food usage by 17.5%. However, this is outweighed by the food reduction of using an [[Elder maul]] or a [[Dragon defender]].
 
@@ -121,4 +120,3 @@ Your melee gear will provide a boost up to 13.2%. This boost is based on each pi
 [[phosani-bis.jpg]]
 
 Shown Gear: [[Inquisitor's great helm]], [[Amulet of rancour]], [[Inquisitor's hauberk]], [[Infernal cape]], [[Ferocious gloves]], [[Inquisitor's plateskirt]], [[Primordial boots]],[[Ultor ring]], [[Inquisitor's mace]], [[Avernic defender]], [[Rada's blessing 4]].
-
