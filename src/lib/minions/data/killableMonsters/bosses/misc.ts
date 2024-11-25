@@ -768,11 +768,12 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.TheHueycoatl.id,
 		name: Monsters.TheHueycoatl.name,
 		aliases: Monsters.TheHueycoatl.aliases,
-		timeToFinish: Time.Minute * 3,
+		timeToFinish: Time.Minute * 8,
 		respawnTime: 2000,
 		table: Monsters.TheHueycoatl,
 		difficultyRating: 8,
-		qpRequired: 200,
+		requiredQuests: [QuestID.ChildrenOfTheSun],
+		qpRequired: 100,
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99
@@ -780,14 +781,13 @@ const killableBosses: KillableMonster[] = [
 		equippedItemBoosts: [
 			{
 				items: [
-					{ boostPercent: 18, itemID: itemID("Inquisitor's mace") },
-					{ boostPercent: 15, itemID: itemID('Soulreaper axe') },
-					{ boostPercent: 10, itemID: itemID('Abyssal bludgeon') },
-					{ boostPercent: 7, itemID: itemID('Ursine chainmace') },
-					{ boostPercent: 1, itemID: itemID('Sarachnis cudgel') }
+					{ boostPercent: 10, itemID: itemID('Dragon hunter lance') },
+					{ boostPercent: 9, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 9, itemID: itemID('Soulreaper axe') },
+					{ boostPercent: 9, itemID: itemID('Abyssal bludgeon') }
 				],
 				gearSetup: 'melee',
-				required: true
+				required: false
 			},
 			{
 				items: [{ boostPercent: 5, itemID: itemID('Avernic defender') }],
@@ -799,7 +799,7 @@ const killableBosses: KillableMonster[] = [
 					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
 				],
 				gearSetup: 'melee',
-				required: true
+				required: false
 			},
 			{
 				items: [
@@ -807,7 +807,7 @@ const killableBosses: KillableMonster[] = [
 					{ boostPercent: 2, itemID: itemID('Fire cape') }
 				],
 				gearSetup: 'melee',
-				required: true
+				required: false
 			},
 			{
 				items: [
@@ -815,7 +815,7 @@ const killableBosses: KillableMonster[] = [
 					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
 				],
 				gearSetup: 'melee',
-				required: true
+				required: false
 			},
 			{
 				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(id => ({
@@ -823,7 +823,7 @@ const killableBosses: KillableMonster[] = [
 					itemID: id
 				})),
 				gearSetup: 'melee',
-				required: true
+				required: false
 			},
 			{
 				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(id => ({
@@ -831,12 +831,12 @@ const killableBosses: KillableMonster[] = [
 					itemID: id
 				})),
 				gearSetup: 'melee',
-				required: true
+				required: false
 			},
 			{
 				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
 				gearSetup: 'melee',
-				required: true
+				required: false
 			}
 		],
 		itemInBankBoosts: [
@@ -857,12 +857,11 @@ const killableBosses: KillableMonster[] = [
 			}
 		],
 		levelRequirements: {
-			prayer: 70,
-			slayer: 92,
-			attack: 85,
-			strength: 85,
-			defence: 80,
-			hitpoints: 90
+			prayer: 43,
+			attack: 70,
+			strength: 70,
+			defence: 70,
+			hitpoints: 70
 		},
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 575,
@@ -889,7 +888,6 @@ const killableBosses: KillableMonster[] = [
 				defence_stab: 0
 			}
 		},
-		requiredQuests: [QuestID.TheHeartofDarkness],
 		itemCost: [
 			{
 				itemCost: new Bank().add('Super restore(4)'),

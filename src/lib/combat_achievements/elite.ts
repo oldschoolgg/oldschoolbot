@@ -1746,7 +1746,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'TheHueycoatl',
 		rng: {
-			chancePerKill: 100,
+			chancePerKill: 50,
 			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
 		}
 	},

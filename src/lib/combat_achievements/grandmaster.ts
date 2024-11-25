@@ -1304,7 +1304,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'TheHueycoatl',
 		rng: {
-			chancePerKill: 150,
+			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
 		}
 	}
