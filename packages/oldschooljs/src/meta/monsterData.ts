@@ -40,7 +40,7 @@ export interface MonsterData {
 	immuneToPoison: boolean;
 	immuneToVenom: boolean;
 	attributes: MonsterAttribute[];
-	category: string[];
+	category?: string[];
 	examineText?: string;
 	wikiName: string;
 	wikiURL: string;
@@ -64,7 +64,7 @@ export interface MonsterData {
 	rangedStrength: number;
 	magicDamage: number;
 	isSlayerMonster: boolean;
-	slayerLevelRequired: number;
-	slayerXP: number;
-	assignableSlayerMasters: MonsterSlayerMaster[];
+	slayerLevelRequired?: number;
+	slayerXP?: number;
+	assignableSlayerMasters?: MonsterSlayerMaster[];
 }

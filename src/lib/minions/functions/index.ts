@@ -131,7 +131,7 @@ export function addMonsterXPRaw(params: {
 	let superiorXp = 0;
 	if (superiorQty && osjsSuperior?.data?.hitpoints) {
 		superiorXp = 4 * superiorQty * osjsSuperior?.data?.hitpoints;
-		superiorSlayXp = superiorQty * osjsSuperior?.data?.slayerXP;
+		superiorSlayXp = superiorQty * (osjsSuperior?.data?.slayerXP ?? 0);
 	}
 
 	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
@@ -175,7 +175,7 @@ export function addMonsterXPRaw(params: {
 	});
 
 	// Add cannon xp last so it's easy to distinguish
-	if (params.usingCannon) {
+	if (params.usingCannon || params.cannonMulti) {
 		xpBank.add('ranged', Math.floor(hp * 2 * cannonQty), {
 			duration: params.duration,
 			minimal: params.minimal ?? true

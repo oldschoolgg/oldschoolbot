@@ -156,6 +156,16 @@ const unfinishedPotions: Mixable[] = [
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
+	},
+	{
+		item: getOSItem('Huasca potion (unf)'),
+		aliases: ['huasca potion (unf)'],
+		level: 58,
+		xp: 132,
+		inputItems: new Bank().add('Huasca').add('Vial of water'),
+		tickRate: 1,
+		bankTimePerPotion: 0.3,
+		zahur: true
 	}
 ];
 

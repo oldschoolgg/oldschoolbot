@@ -192,8 +192,8 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	}
 
 	if (stringMatches(name.split(' ').pop(), 'nightmare')) {
-		const link = stringMatches(name.split(' ')[0], 'phosanis') ? 'phosanis-nightmare' : 'the-nightmare';
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/${link}/>).\n`;
+		const link = stringMatches(name.split(' ')[0], 'phosanis') ? '#phosanis-nightmare' : '';
+		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/the-nightmare/${link}>).\n`;
 	}
 
 	if (!monster) {

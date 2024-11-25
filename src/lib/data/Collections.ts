@@ -374,6 +374,18 @@ export const allCollectionLogs: ICollection = {
 				items: hesporiCL,
 				fmtProg: kcProg(Monsters.Hespori)
 			},
+			'The Hueycoatl': {
+				allItems: Monsters.TheHueycoatl.allItems,
+				items: resolveItems([
+					'Huberte',
+					'Dragon hunter wand',
+					'Tome of earth (empty)',
+					'Soiled page',
+					'Hueycoatl hide',
+					'Huasca seed'
+				]),
+				fmtProg: kcProg(Monsters.Hespori)
+			},
 			'The Inferno': {
 				kcActivity: {
 					Default: async (_, minigameScores) =>

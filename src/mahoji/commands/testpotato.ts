@@ -19,7 +19,7 @@ import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import potions from '../../lib/minions/data/potions';
-import { MAX_QP } from '../../lib/minions/data/quests';
+import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 
@@ -825,7 +825,8 @@ ${droprates.join('\n')}`),
 							scales: 100_000,
 							dartQuantity: 100_000,
 							dartID: itemID('Dragon dart')
-						}
+						},
+						finished_quest_ids: quests.map(q => q.id)
 					});
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';

@@ -20,6 +20,7 @@ import PhantomMuspah from './PhantomMuspah';
 import Sarachnis from './Sarachnis';
 import Scurrius from './Scurrius';
 import Skotizo from './Skotizo';
+import { TheHueycoatl } from './TheHueycoatl';
 import { TheLeviathan } from './TheLeviathan';
 import { TheWhisperer } from './TheWhisperer';
 import { Vardorvis } from './Vardorvis';
@@ -58,6 +59,7 @@ export const allBosses = {
 	AwakenedTheWhisperer,
 	AwakenedVardorvis,
 	Scurrius,
+	TheHueycoatl,
 	...allWildyBosses,
 	...allSlayerBosses
 };
