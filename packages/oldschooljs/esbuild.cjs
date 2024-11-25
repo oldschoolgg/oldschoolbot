@@ -8,10 +8,10 @@ esbuild
 		entryPoints: ['./src/index.ts', './src/util/util.ts'],
 		bundle: true,
 		sourcemap: true,
-		format: 'esm',
-		target: 'esnext',
+		format: 'cjs',
+		target: 'node20',
 		outdir: './dist',
 		platform: 'node',
-		outExtension: { '.js': '.mjs' }
+		outExtension: { '.js': '.cjs' }
 	})
 	.catch(() => process.exit(1));

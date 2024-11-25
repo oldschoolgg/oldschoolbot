@@ -3,29 +3,17 @@
 	"version": "0.0.1",
 	"private": true,
 	"description": "Allows you to interact with the OSRS Hiscores, Wiki, Items, & more.",
+	"main": "dist/index.cjs",
+	"types": "dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.cjs",
 			"types": "./dist/index.d.ts"
 		},
-		"./util": {
-			"import": "./dist/index.mjs",
-			"types": "./dist/index.d.ts"
-		},
-		"./dist/util": {
-			"import": "./dist/index.mjs",
-			"types": "./dist/index.d.ts"
-		},
-		"./dist/util/util": {
-			"import": "./dist/index.mjs",
-			"types": "./dist/index.d.ts"
-		},
-		"./dist/meta": {
-			"import": "./dist/index.mjs",
-			"types": "./dist/index.d.ts"
-		},
-		"./dist/*": {
-			"import": "./dist/index.mjs",
+		"./*": {
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.cjs",
 			"types": "./dist/index.d.ts"
 		}
 	},

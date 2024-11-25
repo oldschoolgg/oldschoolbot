@@ -1726,5 +1726,39 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				[Monsters.DukeSucellus.id]: 1
 			}
 		})
+	},
+	{
+		id: 1149,
+		name: 'Hueycoatl Veteran',
+		desc: 'Kill the Hueycoatl 25 times.',
+		type: 'kill_count',
+		monster: 'TheHueycoatl',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheHueycoatl.id]: 25
+			}
+		})
+	},
+	{
+		id: 1150,
+		name: 'Perfect Hueycoatl',
+		desc: "Kill the Hueycoatl perfectly 5 times without leaving. To get a perfect kill, you must not take any avoidable damage from the Hueycoatl's lightning attack, tail slam attack or off-prayer projectile attacks.",
+		type: 'perfection',
+		monster: 'TheHueycoatl',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
+		}
+	},
+	{
+		id: 1151,
+		name: 'Hueycoatl Speed-Trialist',
+		desc: 'Kill the Hueycoatl in 2:30.',
+		type: 'speed',
+		monster: 'TheHueycoatl',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
+		}
 	}
 ];
