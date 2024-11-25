@@ -347,16 +347,7 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		}
 		let quantity = clamp(user.bank.amount(clueTier.scrollID), 1, Math.floor(maxTripLength / timePerClue));
-
-		const duration = timePerClue * quantity;
 		const maxCanDo = Math.floor(maxTripLength / timePerClue);
-
-		if (duration > maxTripLength || quantity > maxCanDo) {
-			return `${user.minionName} can't go on Clue trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
-		}
-
 		const response: Awaited<CommandResponse> = {};
 
 		let implingLootString = '';
@@ -410,6 +401,13 @@ export const clueCommand: OSBMahojiCommand = {
 			implingLootString = `\n\nYou will find ${implingClues} clue${
 				implingClues === 0 || implingClues > 1 ? 's' : ''
 			} from ${openedImplings}x ${clueImpling.name}s.`;
+		}
+
+		const duration = timePerClue * quantity;
+		if (duration > maxTripLength || quantity > maxCanDo) {
+			return `${user.minionName} can't go on Clue trips longer than ${formatDuration(
+				maxTripLength
+			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
 		}
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
