@@ -73,7 +73,7 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 		const realActivity = convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
 		return (
 			realActivity.implingID !== undefined ||
-			user.owns(ClueTiers.find(mon => mon.id === realActivity.ci)!.scrollID)
+			user.owns(ClueTiers.find(clue => clue.id === realActivity.ci)!.scrollID)
 		);
 	}
 	return !(
