@@ -131,7 +131,7 @@ export function addMonsterXPRaw(params: {
 	let superiorXp = 0;
 	if (superiorQty && osjsSuperior?.data?.hitpoints) {
 		superiorXp = 4 * superiorQty * osjsSuperior?.data?.hitpoints;
-		superiorSlayXp = superiorQty * osjsSuperior?.data?.slayerXP;
+		superiorSlayXp = superiorQty * (osjsSuperior?.data?.slayerXP ?? 0);
 	}
 
 	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;

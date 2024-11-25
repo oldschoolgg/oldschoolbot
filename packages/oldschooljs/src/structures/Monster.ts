@@ -1,4 +1,4 @@
-import rawMonsterData from '../data/monsters_data.json' assert { type: 'json' };
+import rawMonsterData from '../data/monsters_data.json';
 import type { MonsterData } from '../meta/monsterData';
 import type { MonsterKillOptions, MonsterOptions } from '../meta/types';
 import type Bank from './Bank';

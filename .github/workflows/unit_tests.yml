@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node_version: [20.15.0]
+        node_version: [20.18.1]
         os: [ubuntu-latest]
     concurrency:
       group: ${{ github.ref_name }}-unittests
@@ -37,11 +37,11 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - name: Install Dependencies
+        run: pnpm install --shamefully-hoist --frozen-lockfile
       - name: Copy Configuration
         run: |
           cp .env.test .env
-      - name: Install Dependencies
-        run: pnpm install
       - name: Build
         run: pnpm monorepo:build
       - name: Test

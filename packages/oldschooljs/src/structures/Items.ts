@@ -1,13 +1,11 @@
 import deepMerge from 'deepmerge';
 
-import _items from '../data/items/item_data.json' assert { type: 'json' };
+import _items from '../data/items/item_data.json';
 import type { Item, ItemID } from '../meta/types';
 import { cleanString } from '../util/cleanString';
 import { Collection } from './Collection';
 
-// @ts-ignore asdf
 const items = _items as Record<string, Item>;
-
 export const itemNameMap: Map<string, number> = new Map();
 
 type ItemResolvable = number | string;

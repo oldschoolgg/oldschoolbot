@@ -1,5 +1,7 @@
 import { execSync } from 'node:child_process';
 
+const ignoredFiles = ['pnpm-lock.yaml'];
+
 try {
 	const changedFiles = execSync(
 		'git diff --name-only --diff-filter=AM HEAD && git ls-files --others --exclude-standard'
@@ -14,7 +16,7 @@ try {
 		});
 
 		// Prettier
-		const prettierFiles = changedFiles.filter(f => /\.(md|yaml)$/.exec(f));
+		const prettierFiles = changedFiles.filter(f => /\.(md|yaml)$/.exec(f) && !ignoredFiles.includes(f));
 		if (prettierFiles.length) {
 			console.log(`Prettier is formatting: ${prettierFiles.join(', ')}`);
 			execSync(`prettier --use-tabs ${prettierFiles.join(' ')} --write --log-level silent`, {

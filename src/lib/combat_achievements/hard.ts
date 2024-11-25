@@ -1,4 +1,4 @@
-import { Monsters } from 'oldschooljs';
+import { Monsters, resolveItems } from 'oldschooljs';
 
 import { NIGHTMARE_ID, demonBaneWeapons } from '../constants';
 import { anglerOutfit } from '../data/CollectionsExport';
@@ -728,6 +728,47 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.DagannothPrime.id]: 25
+			}
+		})
+	},
+	{
+		id: 263,
+		name: "I'm your son",
+		desc: 'Kill the Hueycoatl whilst wearing two pieces of Hueycoatl armour.',
+		type: 'restriction',
+		monster: 'TheHueycoatl',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.TheHueycoatl.id)(data) &&
+				resolveItems([
+					'Hueycoatl hide body',
+					'Hueycoatl hide chaps',
+					'Hueycoatl hide coif',
+					'Hueycoatl hide vambraces'
+				]).filter(i => user.hasEquipped(i)).length >= 2
+		}
+	},
+	{
+		id: 264,
+		name: 'Pillar Lover',
+		desc: 'Kill the Hueycoatl whilst it is vulnerable.',
+		type: 'mechanical',
+		monster: 'TheHueycoatl',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
+		}
+	},
+	{
+		id: 265,
+		name: 'Hueycoatl Adept',
+		desc: 'Kill the Hueycoatl 10 times.',
+		type: 'kill_count',
+		monster: 'TheHueycoatl',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheHueycoatl.id]: 10
 			}
 		})
 	}
