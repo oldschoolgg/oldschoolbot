@@ -43,7 +43,7 @@ jobs:
         run: |
           cp .env.test .env
       - name: Install Dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
       - name: Build
         run: pnpm monorepo:build
       - name: Test
