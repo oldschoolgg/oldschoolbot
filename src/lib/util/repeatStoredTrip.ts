@@ -5,6 +5,7 @@ import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { autocompleteMonsters } from '../../mahoji/commands/k';
+import { ClueTiers } from '../clues/clueTiers';
 import type { PvMMethod } from '../constants';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
@@ -67,10 +68,13 @@ import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOpt
 import getOSItem from './getOSItem';
 import { interactionReply } from './interactionReply';
 
-const taskCanBeRepeated = (activity: Activity) => {
+const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
-		return realActivity.implingID !== undefined;
+		return (
+			realActivity.implingID !== undefined ||
+			user.owns(ClueTiers.find(mon => mon.id === realActivity.ci)!.scrollID)
+		);
 	}
 	return !(
 		[
@@ -90,7 +94,10 @@ const taskCanBeRepeated = (activity: Activity) => {
 const tripHandlers = {
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'clue',
-		args: (data: ClueActivityTaskOptions) => ({ tier: data.ci, implings: getOSItem(data.implingID!).name })
+		args: (data: ClueActivityTaskOptions) => ({
+			tier: data.ci,
+			implings: data.implingID ? getOSItem(data.implingID!).name : undefined
+		})
 	},
 	[activity_type_enum.SpecificQuest]: {
 		commandName: 'm',
@@ -692,8 +699,9 @@ export async function fetchRepeatTrips(userID: string) {
 		type: activity_type_enum;
 		data: Prisma.JsonValue;
 	}[] = [];
+	const user = await mUserFetch(userID);
 	for (const trip of res) {
-		if (!taskCanBeRepeated(trip)) continue;
+		if (!taskCanBeRepeated(trip, user)) continue;
 		if (trip.type === activity_type_enum.Farming && !(trip.data as any as FarmingActivityTaskOptions).autoFarmed) {
 			continue;
 		}
