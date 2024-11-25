@@ -21,7 +21,7 @@ ENTRYPOINT ["dumb-init", "--"]
 FROM base AS dependencies
 WORKDIR /usr/src/app
 
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY .env.test .env
 
 RUN pnpm install --frozen-lockfile
