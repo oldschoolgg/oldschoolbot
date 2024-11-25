@@ -37,11 +37,11 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
       - name: Copy Configuration
         run: |
           cp .env.test .env
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
       - name: Build
         run: pnpm monorepo:build
       - name: Test
