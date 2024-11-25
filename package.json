@@ -81,6 +81,7 @@
 		"@vitest/coverage-v8": "^2.1.2",
 		"concurrently": "^8.2.2",
 		"esbuild": "0.24.0",
+		"node-gyp-build": "^4.8.4",
 		"nodemon": "^3.1.7",
 		"prettier": "^3.3.3",
 		"prisma": "^5.22.0",
