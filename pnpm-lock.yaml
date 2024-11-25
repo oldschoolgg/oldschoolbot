@@ -15,7 +15,7 @@ importers:
         specifier: workspace:*
         version: link:packages/toolkit
       '@prisma/client':
-        specifier: ^5.20.0
+        specifier: ^5.22.0
         version: 5.22.0(prisma@5.22.0)
       '@sapphire/ratelimits':
         specifier: ^2.4.9
@@ -78,13 +78,13 @@ importers:
         specifier: ^4.7.0
         version: 4.7.0
       postgres:
-        specifier: ^3.4.4
+        specifier: ^3.4.5
         version: 3.4.5
       random-js:
         specifier: ^2.1.0
         version: 2.1.0
       remeda:
-        specifier: ^2.15.0
+        specifier: ^2.17.3
         version: 2.17.3
       simple-statistics:
         specifier: ^7.8.3
@@ -93,7 +93,7 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       sonic-boom:
-        specifier: ^4.1.0
+        specifier: ^4.2.0
         version: 4.2.0
       zlib-sync:
         specifier: ^0.1.9
@@ -103,7 +103,7 @@ importers:
         version: 3.23.8
     devDependencies:
       '@biomejs/biome':
-        specifier: ^1.9.3
+        specifier: ^1.9.4
         version: 1.9.4
       '@types/lodash':
         specifier: ^4.14.195
@@ -133,19 +133,19 @@ importers:
         specifier: ^3.3.3
         version: 3.3.3
       prisma:
-        specifier: ^5.20.0
+        specifier: ^5.22.0
         version: 5.22.0
       spritesmith:
         specifier: ^3.4.1
         version: 3.5.1
       tsx:
-        specifier: ^4.19.1
+        specifier: ^4.19.2
         version: 4.19.2
       typescript:
         specifier: ^5.5.3
         version: 5.6.3
       vitest:
-        specifier: ^2.1.2
+        specifier: ^2.1.5
         version: 2.1.5(@types/node@20.17.6)
 
   packages/oldschooljs:
@@ -4197,6 +4197,7 @@ packages:
   /vite@5.4.11(@types/node@20.17.6):
     resolution: {integrity: sha512-c7jFQRklXua0mTzneGW9QVyxFjUgwcihC4bXEtujIo2ouWCe1Ajt/amn2PCxYnhYfd5k09JX3SB7OYWFKYqj8Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
     peerDependencies:
       '@types/node': ^18.0.0 || >=20.0.0
       less: '*'
@@ -4235,6 +4236,7 @@ packages:
   /vitest@2.1.5(@types/node@20.17.6):
     resolution: {integrity: sha512-P4ljsdpuzRTPI/kbND2sDZ4VmieerR2c9szEZpjc+98Z9ebvnXmM5+0tHEKqYZumXqlvnmfWsjeFOjXVriDG7A==}
     engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
       '@types/node': ^18.0.0 || >=20.0.0
