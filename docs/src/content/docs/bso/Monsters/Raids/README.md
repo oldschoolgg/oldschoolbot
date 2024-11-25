@@ -4,11 +4,11 @@ title: "Raids"
 
 The OSB Wiki has most of the information on each raid, the purpose of this space is to highlight the BSO specific differences.
 
-[OSB Chambers of Xeric (CoX)](https://wiki.oldschool.gg/raids/cox-raids)
+[OSB Chambers of Xeric (CoX)](https://wiki.oldschool.gg/osb/raids/cox)
 
-[OSB Theatre of Blood (ToB)](https://wiki.oldschool.gg/raids/theatre-of-blood)
+[OSB Theatre of Blood (ToB)](https://wiki.oldschool.gg/osb/raids/tob)
 
-[OSB Tombs of Amascut (ToA)](https://wiki.oldschool.gg/raids/tombs-of-amascut-toa)
+[OSB Tombs of Amascut (ToA)](https://wiki.oldschool.gg/osb/raids/toa)
 
 ## How does 'BiS gear' work?
 
