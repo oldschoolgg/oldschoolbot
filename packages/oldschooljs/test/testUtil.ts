@@ -1,4 +1,4 @@
-import { type Bank, Items } from '../src';
+import { type Bank, Items } from '../dist';
 
 export function withinThreshold(source: number, target: number, epsilon = 5): boolean {
 	if (source === target) return true;

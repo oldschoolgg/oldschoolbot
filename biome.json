@@ -19,6 +19,8 @@
 		"include": ["**/*.ts", "**/*.mts", "**/*.json", "**/*.test.ts", "**/*.mdx", "**/*.md", "**/*.mjs", "**/*.cjs"]
 	},
 	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
 		"defaultBranch": "master"
 	},
 	"linter": {

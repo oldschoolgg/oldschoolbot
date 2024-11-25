@@ -5,34 +5,28 @@
 	"description": "Allows you to interact with the OSRS Hiscores, Wiki, Items, & more.",
 	"exports": {
 		".": {
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.mjs",
-			"types": "./dist/types/index.d.ts"
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.ts"
 		},
 		"./util": {
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.mjs",
-			"types": "./dist/types/index.d.ts"
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.ts"
 		},
 		"./dist/util": {
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.mjs",
-			"types": "./dist/types/index.d.ts"
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.ts"
 		},
 		"./dist/util/util": {
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.mjs",
-			"types": "./dist/types/index.d.ts"
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.ts"
 		},
-		"./dist/meta/types": {
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.mjs",
-			"types": "./dist/types/index.d.ts"
+		"./dist/meta": {
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.ts"
 		},
 		"./dist/*": {
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.mjs",
-			"types": "./dist/types/index.d.ts"
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.ts"
 		}
 	},
 	"license": "MIT",

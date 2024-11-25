@@ -1,31 +1,8 @@
 {
-	"compileOnSave": true,
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"allowSyntheticDefaultImports": true,
-		"alwaysStrict": true,
-		"incremental": true,
-		"module": "ESNext",
-		"moduleResolution": "Node",
-		"newLine": "lf",
-		"noFallthroughCasesInSwitch": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"pretty": true,
-		"resolveJsonModule": true,
-		"strict": true,
-		"useDefineForClassFields": true,
-		"types": ["node", "node-fetch"],
-		"skipDefaultLibCheck": true,
-		"strictNullChecks": true,
-		"sourceMap": true,
-		"declaration": true,
-		"declarationMap": true,
-		"removeComments": true,
-		"outDir": "./dist",
-		"target": "ES2022",
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"lib": ["ES2023"]
+		"outDir": "./dist"
 	},
-	"include": ["src/**/*"]
+	"include": ["src/**/*.ts"],
+	"exclude": ["**/*.json", "node_modules"]
 }

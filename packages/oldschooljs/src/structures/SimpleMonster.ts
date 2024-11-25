@@ -48,7 +48,9 @@ export default class SimpleMonster extends Monster {
 		const loot = new Bank();
 		const canGetBrimKey = options.onSlayerTask && options.slayerMaster === MonsterSlayerMaster.Konar;
 		const wildySlayer = options.onSlayerTask && options.slayerMaster === MonsterSlayerMaster.Krystilia;
-		const slayerMonster: boolean = Boolean(options.onSlayerTask && this.data.slayerLevelRequired > 1);
+		const slayerMonster: boolean = Boolean(
+			options.onSlayerTask && (this.data.slayerLevelRequired || this.data.isSlayerMonster)
+		);
 		const lootTableOptions = {
 			...options.lootTableOptions,
 			targetBank: loot

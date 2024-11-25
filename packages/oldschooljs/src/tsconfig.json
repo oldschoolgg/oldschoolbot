@@ -1,12 +1,9 @@
 {
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
-		"sourceMap": false,
-		"types": ["node"],
-		"esModuleInterop": true,
 		"outDir": "../dist",
 		"emitDeclarationOnly": true,
-		"declarationDir": "../dist/types"
+		"declarationDir": "../dist"
 	},
-	"include": ["./**/*.ts", "./**/*.json"]
+	"include": ["."]
 }
