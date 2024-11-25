@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { Openables, itemID } from '../dist';
+import { Openables, itemID } from '../';
 
 describe('Openables', () => {
 	test('allItems', () => {

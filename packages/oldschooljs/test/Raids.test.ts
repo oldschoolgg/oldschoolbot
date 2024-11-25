@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { ChambersOfXeric } from '../dist';
+import { ChambersOfXeric } from '../';
 
 test('Chambers Of Xeric', async () => {
 	expect.assertions(3);

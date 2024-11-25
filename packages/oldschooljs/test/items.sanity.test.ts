@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { Items } from '../dist';
+import { Items } from '../';
 
 test('Items Sanity Test', async () => {
 	const item27624 = Items.get(27_624)!;

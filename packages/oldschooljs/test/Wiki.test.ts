@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { Wiki } from '../dist';
+import { Wiki } from '../';
 
 describe('Wiki', () => {
 	test('Searching', async () => {

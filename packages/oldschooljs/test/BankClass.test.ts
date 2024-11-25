@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 
-import { Bank, type Item, Items, LootTable, getItemOrThrow, itemID, resolveNameBank } from '../dist';
+import { Bank, type Item, Items, LootTable, getItemOrThrow, itemID, resolveNameBank } from '../';
 
 const TestLootTable = new LootTable().add('Toolkit');
 
