@@ -80,9 +80,11 @@ export const stealCommand: OSBMahojiCommand = {
 			const incompleteQuest = stealable.requiredQuests.find(
 				quest => !user.user.finished_quest_ids.includes(quest)
 			);
-			return `You need to have completed the ${bold(
-				quests.find(i => i.id === incompleteQuest)!.name
-			)} quest to steal from ${stealable.name}.`;
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to steal from ${stealable.name}.`;
+			}
 		}
 
 		if (stealable.fireCapeRequired) {
