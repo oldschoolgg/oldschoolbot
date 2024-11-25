@@ -4,16 +4,16 @@ import { visitParents } from 'unist-util-visit-parents';
 
 import bsoItemsJson from '../../../data/bso_items.json';
 import commandsJson from '../../../data/osb.commands.json';
-import { SkillsArray } from '../../../src/lib/skilling/types';
-import { authorsMap } from './authors';
+import { SkillsArray } from '../../../src/lib/skilling/types.js';
+import { authorsMap } from './authors.js';
 
 const bsoItems = Object.entries(bsoItemsJson);
 
 const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
 
-export function remarkItems(options: any) {
+export function remarkItems(_options: any) {
 	return (tree: any) => {
-		visitParents(tree, 'text', (node, parents) => {
+		visitParents(tree, 'text', (node, _parents) => {
 			const value = collapseWhiteSpace(node.value, { style: 'html', trim: true });
 			const matches = [...value.matchAll(/\[\[([\s\S]*?)\]\]/g)].map(i => i[1]);
 			if (matches.length === 0) return;

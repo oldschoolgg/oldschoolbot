@@ -1,8 +1,5 @@
 import { beforeAll, describe, test } from 'vitest';
-
-import { Monsters, SimpleMonster } from '../src';
-import LootTable from '../src/structures/LootTable';
-import { itemTupleToTable } from '../src/util';
+import { LootTable, Monsters, SimpleMonster, itemTupleToTable } from '../';
 import { checkThreshold } from './testUtil';
 
 describe('Monsters', () => {

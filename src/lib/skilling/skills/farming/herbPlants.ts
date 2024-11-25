@@ -435,6 +435,49 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy huasca'),
+		level: 65,
+		plantXp: 86,
+		checkXp: 0,
+		harvestXp: 110,
+		name: 'Huasca',
+		aliases: ['huasca'],
+		inputItems: new Bank().add('Huasca seed').freeze(),
+		outputCrop: itemID('Grimy huasca'),
+		cleanHerbCrop: itemID('Huasca'),
+		herbXp: 11.8,
+		herbLvl: 58,
+		petChance: 98_364,
+		seedType: 'herb',
+		growthTime: 80,
+		numOfStages: 4,
+		chance1: 31,
+		chance99: 80,
+		chanceOfDeath: 28,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
+	},
+	{
 		id: itemID('Grimy cadantine'),
 		level: 67,
 		plantXp: 0,

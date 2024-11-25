@@ -408,6 +408,15 @@ const Potions = [
 	{
 		name: 'Extended super antifire mix',
 		items: resolveItems(['Extended super antifire mix(1)', 'Extended super antifire mix(2)'])
+	},
+	{
+		name: 'Prayer regeneration potion',
+		items: resolveItems([
+			'Prayer regeneration potion(1)',
+			'Prayer regeneration potion(2)',
+			'Prayer regeneration potion(3)',
+			'Prayer regeneration potion(4)'
+		])
 	}
 ];
 

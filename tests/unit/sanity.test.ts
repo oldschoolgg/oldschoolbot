@@ -25,6 +25,7 @@ describe('Sanity', () => {
 		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Trailblazer tool ornament kit'))).toEqual(false);
 		expect(itemIsTradeable(itemID('Twisted horns'))).toEqual(false);
+		expect(itemIsTradeable(itemID("Pharaoh's sceptre"))).toEqual(true);
 	});
 	test('casket names', () => {
 		expect(itemID('Reward casket (beginner)')).toEqual(23_245);

@@ -2,7 +2,7 @@
 title: "Tombs of Amascut (ToA)"
 ---
 
-See the [OSB wiki ](https://wiki.oldschool.gg/raids/tombs-of-amascut-toa)for general info.
+See the [OSB wiki ](https://wiki.oldschool.gg/osb/raids/toa)for general info.
 
 ## Boosts
 
@@ -18,7 +18,7 @@ Boosts are different in BSO to the OSB version, they are as followed:
 
 ## Reference Setups
 
-See [How does 'BiS gear' work?](./#how-does-bis-gear-work) for an explanation on gear setups.
+See [How does 'BiS gear' work?](https://wiki.oldschool.gg/bso/monsters/raids/readme/#how-does-bis-gear-work) for an explanation on gear setups.
 
 ### Melee
 

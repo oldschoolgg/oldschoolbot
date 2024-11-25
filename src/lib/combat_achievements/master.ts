@@ -1781,5 +1781,28 @@ export const masterCombatAchievements: CombatAchievement[] = [
 				[Monsters.DukeSucellus.id]: 50
 			}
 		})
+	},
+	{
+		id: 2156,
+		name: 'Is it a bird?',
+		desc: 'Kill the Hueycoatl using only dragonbane weaponry.',
+		type: 'restriction',
+		monster: 'TheHueycoatl',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.TheHueycoatl.id)(data) && user.hasEquipped('Dragon hunter lance')
+		}
+	},
+	{
+		id: 2157,
+		name: 'Hueycoatl Speed-Chaser',
+		desc: 'Kill the Hueycoatl in 2:30 with five or fewer players.',
+		type: 'speed',
+		monster: 'TheHueycoatl',
+		rng: {
+			chancePerKill: 70,
+			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
+		}
 	}
 ];

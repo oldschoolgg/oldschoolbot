@@ -1,12 +1,11 @@
 {
-	"compileOnSave": true,
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
 		"alwaysStrict": true,
 		"declaration": true,
 		"declarationMap": true,
 		"incremental": true,
-		"lib": ["ES2023"],
+		"lib": ["ESNext"],
 		"module": "node16",
 		"moduleResolution": "node16",
 		"newLine": "lf",
@@ -21,9 +20,9 @@
 		"target": "ES2022",
 		"useDefineForClassFields": true,
 		"skipLibCheck": true,
-		"types": ["node", "node-fetch", "discord.js"],
+		"types": ["node", "node-fetch"],
 		"esModuleInterop": true,
 		"skipDefaultLibCheck": true
 	},
-	"exclude": ["**/node_modules", "**/.*/"]
+	"exclude": ["**/node_modules", "node_modules"]
 }
