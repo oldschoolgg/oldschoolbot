@@ -1291,5 +1291,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
 		}
+	},
+	{
+		id: 3110,
+		name: 'Hueycoatl Speed-Runner',
+		desc: 'Kill the Hueycoatl in 2:30 with three or fewer players.',
+		type: 'speed',
+		monster: 'TheHueycoatl',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
+		}
 	}
 ];

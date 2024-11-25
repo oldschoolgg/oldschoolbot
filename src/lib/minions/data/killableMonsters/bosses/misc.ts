@@ -9,6 +9,7 @@ import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
+import { QuestID } from '../../quests';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -814,6 +815,151 @@ const killableBosses: KillableMonster[] = [
 				qtyPerKill: 0.05,
 				boostPercent: 10,
 				optional: true
+			}
+		]
+	},
+	{
+		id: Monsters.TheHueycoatl.id,
+		name: Monsters.TheHueycoatl.name,
+		aliases: Monsters.TheHueycoatl.aliases,
+		timeToFinish: Time.Minute * 8,
+		respawnTime: 2000,
+		table: Monsters.TheHueycoatl,
+		difficultyRating: 8,
+		requiredQuests: [QuestID.ChildrenOfTheSun],
+		qpRequired: 100,
+		deathProps: {
+			hardness: 0.2,
+			steepness: 0.99
+		},
+		equippedItemBoosts: [
+			{
+				items: [
+					{ boostPercent: 10, itemID: itemID('Dragon hunter lance') },
+					{ boostPercent: 9, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 9, itemID: itemID('Soulreaper axe') },
+					{ boostPercent: 9, itemID: itemID('Abyssal bludgeon') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Avernic defender') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(id => ({
+					boostPercent: 2,
+					itemID: id
+				})),
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(id => ({
+					boostPercent: 2,
+					itemID: id
+				})),
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
+				gearSetup: 'melee',
+				required: false
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon claws')]: 4
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID('Scythe of vitur'),
+						boostPercent: 10
+					}
+				]
+			}
+		],
+		levelRequirements: {
+			prayer: 43,
+			attack: 70,
+			strength: 70,
+			defence: 70,
+			hitpoints: 70
+		},
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 575,
+		combatXpMultiplier: 1.2,
+		healAmountNeeded: 20 * 200,
+		minimumGearRequirements: {
+			melee: {
+				...new Gear({
+					head: 'Slayer helmet (i)',
+					neck: 'Amulet of fury',
+					cape: 'Fire cape',
+					body: 'Bandos chestplate',
+					legs: 'Bandos tassets',
+					hands: 'Ferocious gloves',
+					feet: 'Dragon boots',
+					ring: 'Berserker ring (i)',
+					ammo: "Rada's blessing 3"
+				}).stats,
+				defence_magic: 0,
+				prayer: 0,
+				defence_crush: 0,
+				defence_ranged: 0,
+				defence_slash: 0,
+				defence_stab: 0
+			}
+		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Super restore(4)'),
+				qtyPerKill: 0.2,
+				alternativeConsumables: [
+					{
+						itemCost: new Bank().add('Prayer potion(4)'),
+						qtyPerKill: 0.2
+					}
+				]
+			},
+			{
+				itemCost: new Bank().add('Divine super combat potion(4)'),
+				qtyPerKill: 0.125
+			},
+			{
+				itemCost: new Bank().add('Cooked karambwan'),
+				qtyPerKill: 0.24
 			}
 		]
 	}

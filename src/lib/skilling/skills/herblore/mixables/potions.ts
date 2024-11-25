@@ -219,6 +219,15 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
+		item: getOSItem('Prayer regeneration potion(3)'),
+		aliases: ['prayer regeneration potion'],
+		level: 58,
+		xp: 132,
+		inputItems: new Bank().add('Huasca potion (unf)').add('Aldarium'),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
 		item: getOSItem('Super defence (3)'),
 		aliases: ['super defence (3)', 'super defence'],
 		level: 66,

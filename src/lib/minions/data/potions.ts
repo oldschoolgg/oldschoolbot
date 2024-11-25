@@ -432,6 +432,15 @@ const Potions = [
 	{
 		name: 'Heat res. restore',
 		items: resolveItems('Heat res. restore')
+	},
+	{
+		name: 'Prayer regeneration potion',
+		items: resolveItems([
+			'Prayer regeneration potion(1)',
+			'Prayer regeneration potion(2)',
+			'Prayer regeneration potion(3)',
+			'Prayer regeneration potion(4)'
+		])
 	}
 ];
 
