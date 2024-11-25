@@ -109,7 +109,10 @@ const cannonBoost: Boost = {
 			return {
 				percentageReduction: boostCannon,
 				consumables: [cannonSingleConsumables],
-				message: `${boostCannon}% for Cannon in singles`
+				message: `${boostCannon}% for Cannon in singles`,
+				changes: {
+					usingCannon: true
+				}
 			};
 		}
 
