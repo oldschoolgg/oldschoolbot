@@ -89,3 +89,34 @@ Here's an example: `/create dharoks armour set` to turn items into a set, or `/u
 The bot says it needs permission to ‘Manage messages’ in order to use a command. ### How do I do this?
 
 Server settings > Roles > Old School Bot (The auto assigned one) > Turn `Manage Messages` on.
+
+### How do I create a Ornate Jewellery Box?
+
+_The recharge spell has a minimum quantity of 25, so we'll be creating 25 of the dragonstone items (26 for RoW)._
+
+Bolt of cloth `/buy name:Bolt of cloth`
+
+Gold Leaf `/buy name:Gold leaf quantity:3`
+
+Ring of Dueling `/craft name:Emerald ring quantity:20` \
+`/activities enchant name:Emerald ring quantity:20`
+
+Games necklace(8) `/craft name:Sapphire necklace quantity:20` \
+`/activities enchant name:Sapphire necklac equantity:20`
+
+Skills necklace(4) `/craft name:Dragon necklacequantity:25` \
+`/activities enchant name:Dragon necklacequantity:25` \
+`/activities cast spell:Recharge Skills Necklace quantity:1`
+
+Combat Bracelet(4) `/craft name:Dragonstone braceletquantity:25` \
+`/activities enchant name:Dragonstone bracelet quantity:25` \
+`/activities castspell:Recharge Combat Bracelet quantity:1`
+
+Ring of wealth (5) `/craft name:Dragonstone ringquantity:26` \
+`/activities enchant name:Dragonstone ringquantity:26` \
+`/activities charge item:Ring of wealthquantity:1`
+
+Amulet of glory(4) `/craft name:Dragonstone amulet (u)quantity:25` \
+`/craft name:Dragonstone amuletquantity:25` \
+`/activities enchant name:Dragonstone amuletquantity:25` \
+`/activities castspell:Recharge Gloryquantity:1`

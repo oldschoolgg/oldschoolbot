@@ -6,7 +6,7 @@ You can use the Fountain of Rune to charge Rings of wealth and Amulets of glory.
 
 To charge at the Fountain of Rune, use the following command:
 
-- `/activities charge item:[Amulet of glory/Ring of wealth]`
+- [[/activities charge item\:[Amulet of glory/Ring of wealth]]]
 
 **Note:** quantity refers to 1 inventory (1 invent = 26 items)
 
@@ -17,13 +17,13 @@ To charge at the Fountain of Rune, use the following command:
 
 ### Charging Glories
 
-- Amulet of glory(6) are only used in the [Gnome Restaurant](https://wiki.oldschool.gg/minigames/gnome-restaurant) minigame.
+- Amulet of glory(6) are only used in the [Gnome Restaurant](https://wiki.oldschool.gg/osb/minigames/gnome-restaurant) minigame.
 - Gnome Restaurant is currently the only way to remove charges from a glory.
-- If you want to create Amulet of glory(4), use the `/activities cast spell:recharge glory` command. However, these are not used in Gnome restaurant and are only used to create the Ornate jewelley box in your POH.
+- If you want to create Amulet of glory(4), use the [[/activities cast spell\:recharge glory]] command. However, these are not used in Gnome restaurant and are only used to create the Ornate jewelley box in your POH.
 
 ### Amulet of Eternal Glory
 
 - You can obtain this amulet at a 1/25,000 chance when charging glories here.
 - Possessing the stats for the Wilderness elite diary provides a 3x speed boost.
   - It is **not recommended** to charge glories unless you have this unlocked.
-- Currently, the only use of the Eternal glory is at the [Gnome Restaurant](https://wiki.oldschool.gg/minigames/gnome-restaurant) minigame.
+- Currently, the only use of the Eternal glory is at the [Gnome Restaurant](https://wiki.oldschool.gg/osb/minigames/gnome-restaurant) minigame.

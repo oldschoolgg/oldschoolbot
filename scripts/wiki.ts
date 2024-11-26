@@ -6,12 +6,14 @@ import { Bank } from 'oldschooljs';
 import '../src/lib/safeglobals';
 import process from 'node:process';
 import { groupBy } from 'remeda';
+import { ClueTiers } from '../src/lib/clues/clueTiers';
 import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
 import { wikiMonsters } from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
 import { itemNameFromID } from '../src/lib/util';
+import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
 import { miningXpHr } from './wiki/miningXphr';
 
@@ -434,11 +436,35 @@ function wikiIssues() {
 	handleMarkdownEmbed('wikiissues', 'getting-started/wiki.md', markdown.toString());
 }
 
+function clueBoosts() {
+	const markdown = new Markdown();
+
+	markdown.addLine('### Global Boosts');
+	markdown.add('These boosts apply to all clues.');
+	for (const x of clueGlobalBoosts) {
+		markdown.addLine(`- ${x.boost}`);
+	}
+	markdown.addLine('- You get a boost for having relevant stash units filled');
+	markdown.addLine('- For Hard/Elite/Master, you get a boost for your attack/strength/ranged levels being higher');
+
+	const clueTierBoostsEntries = Object.entries(clueTierBoosts);
+	for (const clueTier of ClueTiers) {
+		markdown.addLine(`### ${clueTier.name} Clues Boosts`);
+		const entry = clueTierBoostsEntries.find(([key]) => key === clueTier.name)!;
+		for (const boost of entry[1]) {
+			markdown.addLine(`- ${boost.boost}`);
+		}
+	}
+
+	handleMarkdownEmbed('clueboosts', 'osb/clues.md', markdown.toString());
+}
+
 async function wiki() {
 	renderQuestsMarkdown();
 	rendeCoxMarkdown();
 	wikiIssues();
 	miningXpHr();
+	clueBoosts();
 	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
 	process.exit(0);
 }
