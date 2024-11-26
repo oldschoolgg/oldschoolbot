@@ -895,8 +895,9 @@ export async function fetchRepeatTrips(userID: string) {
 		type: activity_type_enum;
 		data: Prisma.JsonValue;
 	}[] = [];
+	const user = await mUserFetch(userID);
 	for (const trip of res) {
-		if (!taskCanBeRepeated(trip)) continue;
+		if (!taskCanBeRepeated(trip, user)) continue;
 		if (trip.type === activity_type_enum.Farming && !(trip.data as any as FarmingActivityTaskOptions).autoFarmed) {
 			continue;
 		}
