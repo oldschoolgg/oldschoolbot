@@ -21,7 +21,7 @@ import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-const clueTierBoosts: Record<
+export const clueTierBoosts: Record<
 	ClueTier['name'],
 	{ condition: (user: MUser, poh: PlayerOwnedHouse) => boolean; boost: string; durationMultiplier: number }[]
 > = {
@@ -174,7 +174,7 @@ const clueTierBoosts: Record<
 	]
 };
 
-const globalBoosts: {
+export const clueGlobalBoosts: {
 	condition: (user: MUser, poh: PlayerOwnedHouse) => boolean;
 	boost: string;
 	durationMultiplier: number;
@@ -332,7 +332,7 @@ export const clueCommand: OSBMahojiCommand = {
 			timePerClue *= 1 - combatBoost / 100;
 		}
 
-		for (const { condition, boost, durationMultiplier } of globalBoosts) {
+		for (const { condition, boost, durationMultiplier } of clueGlobalBoosts) {
 			if (condition(user, poh)) {
 				boosts.push(boost);
 				timePerClue *= durationMultiplier;
