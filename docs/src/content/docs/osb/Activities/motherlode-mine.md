@@ -4,6 +4,8 @@ title: "Motherlode Mine"
 
 You can select to mine here for a chance to receive golden nuggets and a vast array of ores. You cannot receive clue scrolls from mining here, and you cannot powermine here. The Varrock armour effect does not work here. The xp with all boosts before collecting 100 golden nuggets and 99 mining is roughly 44k xp/h, whereas after unlocking the upper level, it is around 54k xp/h.
 
+[[/mine name\:Motherlode mine]]
+
 ## Requirements
 
 - 30 Mining
@@ -13,8 +15,8 @@ You can select to mine here for a chance to receive golden nuggets and a vast ar
 - Approx 20% faster mining for having 100 golden nuggets in your skilling CL + 72 mining
 - Falador elite diary provides slightly increased better ores
 - Invisible 4 mining levels boost for Celestial ring/Celestial signet - Works from bank
-- Pickaxe boost (see [Mining page](./#pickaxes))
-- Prospector outfit (see [Mining page](./#prospectors-outfit)) - **MUST BE EQUIPPED IN SKILLING SETUP**
+- Pickaxe boost (see [Mining page](https://wiki.oldschool.gg/osb/skills/mining/#pickaxes))
+- Prospector outfit (see [Mining page](https://wiki.oldschool.gg/osb/skills/mining//#prospectors-outfit)) - **MUST BE EQUIPPED IN SKILLING SETUP**
 
 ## Golden Nuggets
 
@@ -22,7 +24,7 @@ Motherlode mine is the only place where you can obtain Golden nuggets. They are 
 
 ## Golden Nugget Shop
 
-You can use golden nuggets to purchase the Prospector's outfit through the `/buy` command. The outfit must be equipped in the **skilling setup**, and provides bonus xp on the return of your trip.
+You can use golden nuggets to purchase the Prospector's outfit through the [[/buy]] command. The outfit must be equipped in the **skilling setup**, and provides bonus xp on the return of your trip.
 
 | **Item**          | **XP Boost** | **Golden Nugget Cost** |
 | ----------------- | ------------ | ---------------------- |

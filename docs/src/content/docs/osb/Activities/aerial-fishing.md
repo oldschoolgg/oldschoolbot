@@ -4,9 +4,9 @@ title: "Aerial Fishing"
 
 Requirements: 35 Hunter, 43 fishing.
 
-You can start aerial fishing with either `/activities aerial_fishing`
+You can start aerial fishing with either [[/activities aerial_fishing]]
 
-You can purchase buyables via `/buy name:[itemName]`
+You can purchase buyables via [[/buy name\:[itemName]]]
 
 You can sell Golden Tenches for 100 Molch pearls via [[/sell items\:golden tench]]
 
