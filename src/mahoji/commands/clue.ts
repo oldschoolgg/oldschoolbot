@@ -301,7 +301,10 @@ export const clueCommand: OSBMahojiCommand = {
 			25
 		);
 
-		if (learningReductionPercent >= 1) boosts.push(`${learningReductionPercent}% for Clue score`);
+		if (learningReductionPercent >= 1) {
+			timePerClue *= 1 - learningReductionPercent / 100;
+			boosts.push(`${learningReductionPercent}% for Clue score`);
+		}
 
 		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
