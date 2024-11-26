@@ -402,8 +402,9 @@ ol + ol li blockquote {
   margin: 3px 0px!important;
 }
 
-.osrs_item_name, .osrs_item_image{
+.osrs_item_name, .osrs_item_image, .osrs_item_name a {
   margin: 0!important;
+  text-decoration: none!important;
 }
 
 .discord_command {
@@ -479,17 +480,16 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
   justify-content: center;
   justify-items: center;
 }
+
 .contributor .contributor_name {
-    margin-top: 0
-}
-.contributor_avatar {
-  height: 38px!important;
-  border-radius: 64px;
+    margin-top: 0;
+    font-weight: 500;
 }
 
-.git_hash {
-  font-size: 20px;
-  margin-top: 0px;
+.contributor_avatar {
+  height: 29px!important;
+  border-radius: 64px;
+    margin-right: 3px;
 }
 
 .edit_this_page {
@@ -518,4 +518,16 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
     cursor: pointer;
      background: rgb(50, 50, 55);
   }
+}
+
+
+
+.sl-badge {
+  font-family: "Inter", sans-serif;
+}
+
+.danger:where(.astro-ixkmpc6r) {
+    --sl-badge-danger-bg: #b80e0e;
+    --sl-badge-danger-border: #3b0d0d;
+    --sl-badge-danger-text: #fff;
 }

@@ -900,10 +900,6 @@ const killableBosses: KillableMonster[] = [
 				]
 			},
 			{
-				itemCost: new Bank().add('Divine super combat potion(4)'),
-				qtyPerKill: 0.125
-			},
-			{
 				itemCost: new Bank().add('Cooked karambwan'),
 				qtyPerKill: 0.24
 			}

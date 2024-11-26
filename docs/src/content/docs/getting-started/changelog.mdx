@@ -2,10 +2,61 @@
 title: "Changelog"
 sidebar:
   order: 3
+tableOfContents: false
 ---
+import Update from '../../../components/Update.astro';
 
-## Update 13/11/2024 [[4fbfe429e9a1bdf817175cf497177e47fefc6be6...e03afd628fd7e1aa460acc417d822c2d697f9087]]
+<Update date="26/11/2024" firstHash="4ccf60f038be9a7251cc7f4f9c66f4b181948ab3" secondHash="bc2e2ce8065c2edd5ca9966c9802a7df6c9da596" isNew />
 
+**Clue scrolls** have received several updates/changes in this update, view our [Clue Scrolls](/osb/clues/#implings) page for updated information.
+
+### [[Arodab]]
+
+- Rebalanced clue scroll speeds to more closely match OSRS rates
+  - Beginner, Easy, Medium, Elite clues got a fairly significant buff (are now faster to complete)
+  - Added some more boosts, see the [Clue Scrolls](/osb/clues/#boosts) page to see all boosts
+  - You can now get a larger boost from your minions experience doing clues
+
+### [[gc]]
+
+- You can now stack clue scrolls, view the clue scrolls page for more information. Although the bot lets you stack clues in your bank, we are just emulating the mechanic of clue juggling. In other words, your minion keeps the clues in your bank juggled, allowing you to hold them - and your minion can only juggle a maximum of 100 clues. If you receive more clues while at the limit of 100 clues, your minion will drop the lowest tier ones you have to fit higher tier ones (e.g. it will drop an easy clue to pick up an elite clue).
+- Boosts to clue scrolls now apply *per clue* instead of to the entire trip, allowing you to complete more clues per trip.
+- *'Engine Changes:'* I have integrated the packages we use into the main repo as a monorepo, with the simple explanation being it makes it easier for myself and others to add new things, like bosses.
+- The Pharaoh's sceptre is now tradeable
+
+#### The Hueycoatl 
+[[huey.webp]]
+
+The Hueycoatl boss can now be killed using [[/k]]!
+
+The combat achievements, collection log, and pet have all been added.
+
+To see the boosts, requirements and all information on the boss, see our [The Hueycoatl on Monster Page](/osb/monsters/#the-hueycoatl)
+
+### [[themrrobert]]
+
+- Fixed an issue where black masks (and other items) became unequippable
+
+### [[DayV-git]]
+
+- Added [[Book of the dead]] to [[/buy]]
+- Improved the messages the bot shows for ammo/charge usage in [[/k]]
+- Removed the max quantity of killing 1 Skotizo per trip (as clues can now stack)
+- Added nightmare wiki page
+- Ensure repeat trips remember your chosen combat methods
+- Fix xp received from cannoning
+- Prevent cannoning in catacombs
+- Fixed a bug with the clue stacking update
+
+### [[TastyPumPum]]
+
+- Fixed the messaging/formatting of the mining command
+
+### [[Luunae]]
+
+- Fixed/improved some wiki pages
+
+<Update date="13/11/2024" firstHash="4fbfe429e9a1bdf817175cf497177e47fefc6be6" secondHash="e03afd628fd7e1aa460acc417d822c2d697f9087"  />
 - Hacktoberfest has finished, and everyone has been sent out their custom merch and other prizes! Thank you to all who participated.
 - OSB Bingo #3 has finished! Read the page for it for more information: [OSB Bingo #3](/osb/miscelleanous/bingo/#osb-bingo-3-finished)
 
@@ -22,7 +73,7 @@ sidebar:
 
 ### [[DayV-git]]
 
-- Fix araxxor boss task requirements
+- Fix araxxor boss task requidrements
 - Allow buying genie lamps with frog tokens
 - Fixed a bug with agility-alching sometimes picking the wrong item
 - Improved the formatting of some messages
@@ -69,7 +120,7 @@ sidebar:
   - Added [[Diving apparatus]] [[Fishbowl helmet]] to [[/buy]]
   - Added [[Crab helmet]] [[Crab claw]] to [[/create]]
 
-## Update 16/10/2024 [[68b130088f5e365ec2a341cae48bc5b353ccc2ff...4fbfe429e9a1bdf817175cf497177e47fefc6be6]]
+<Update date="16/10/2024" firstHash="68b130088f5e365ec2a341cae48bc5b353ccc2ff" secondHash="4fbfe429e9a1bdf817175cf497177e47fefc6be6"  />
 
 Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-started/bingo) for information.
 
@@ -121,7 +172,7 @@ Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-
 - Updated agility xp/hr rates based on the osrs update (buffed)
 - Added [[Clue scroll (elite)]] drop to Araxxor
 
-## Update 9/10/2024 [[8de72b2de5a275497c67123904a280981415c553...68b130088f5e365ec2a341cae48bc5b353ccc2ff]]
+<Update date="9/10/2024" firstHash="8de72b2de5a275497c67123904a280981415c553" secondHash="68b130088f5e365ec2a341cae48bc5b353ccc2ff"  />
 
 ### Hacktoberfest
 
@@ -150,7 +201,7 @@ I am running our own Hacktoberfest! Check out the [Hacktoberfest](/getting-start
   - The [[Emberlight]], [[Scorching bow]] and [[Purging staff]] weapons now act as demonbane weapons.
   - [[Emberlight]] boosts at all demon mobs, Scorching Bow, Purging Staff and Burning Claws only affect TDs (with the exception of Scorching Bow also being BIS at K'ril)
 
-## Update 6/10/2024
+## 
 
 We now have a new wiki at https://wiki.oldschool.gg/, and the BSO Wiki is now combined together with the OSB wiki. Many pages are out of date, I'm trying to update pages when I have time. Currently, the only way to contribute to the new wiki is by editing files in [this folder on github](https://github.com/oldschoolgg/oldschoolbot/tree/master/docs/src/content/docs).
 
