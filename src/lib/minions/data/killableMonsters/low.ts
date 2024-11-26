@@ -169,7 +169,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Araxyte.id,
 		name: Monsters.Araxyte.name,
 		aliases: Monsters.Araxyte.aliases,
-		timeToFinish: Time.Second * 6,
+		timeToFinish: Time.Second * 16,
 		table: Monsters.Araxyte,
 		qpRequired: 1,
 		healAmountNeeded: 40,
@@ -181,7 +181,7 @@ const killableMonsters: KillableMonster[] = [
 		cannonMulti: true,
 		canCannon: true,
 		superior: Monsters.DreadbornAraxyte,
-		canBarrage: true
+		canBarrage: false
 	},
 	{
 		id: Monsters.Crab.id,
