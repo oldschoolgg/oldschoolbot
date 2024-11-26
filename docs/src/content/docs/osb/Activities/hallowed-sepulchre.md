@@ -34,7 +34,7 @@ Most of the boosts will come from items purchased from the shop.
 
 ## Hallowed Sepulchre Shop
 
-The following items can be purchased with hallowed marks by using the `/buy` command.
+The following items can be purchased with hallowed marks by using the [[/buy]] command.
 
 | **Item**               | **Hallowed marks required** | **Uses**                                    |
 | ---------------------- | :-------------------------: | ------------------------------------------- |
@@ -49,7 +49,7 @@ The following items can be purchased with hallowed marks by using the `/buy` com
 | Dark dye               |             300             | Used to dye graceful                        |
 | Dark acorn             |            3,000            | Used to transmogrify the Dark squirrel pet. |
 
-- If you have obtained a Giant Squirrel agility pet, you can `/buyname: ``Dark squirrel` after purchasing the dark acorn from the shop to transmogrify the pet. Be advised that you **CANNOT**revert the dark squirrel.
+- If you have obtained a Giant Squirrel agility pet, you can [[/buy name\: Dark squirrel]] after purchasing the dark acorn from the shop to transmogrify the pet. Be advised that you **CANNOT** revert the dark squirrel.
 
 ## Mysterious Pages
 
@@ -61,8 +61,8 @@ You **cannot** revert Dark graceful! If you are trying to obtain all graceful se
 
 - The dark graceful set can be acquired through purchasing the dark dye from the shop. It requires a full set of the base graceful and 1 dark dye per piece.
 - To create the set, simply type:
-  - `/createitem:Dark graceful [piece]` - piece by piece
-  - `/createitem:Dark graceful` - whole set in one command
+  - [[/create item\:Dark graceful [piece]]] - piece by piece
+  - [[/create item\:Dark graceful]] - whole set in one command
 - You need 6 dark dyes to create the full set, totaling 1800 hallowed marks.
 
 ## **Strange Old Lockpick**
@@ -87,7 +87,7 @@ The Ring of endurance also provides boosts to several activities within the bot.
 
 To create the charged Ring of endurance, use the following command:
 
-- `/createitem:Ring of endurance`
+- [[/create item\:Ring of endurance]]
   - Requires 125 Stamina potion(4)
 
 The boosts apply to the following activities:
