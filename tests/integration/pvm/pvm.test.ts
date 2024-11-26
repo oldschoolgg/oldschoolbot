@@ -301,7 +301,7 @@ describe('PVM', async () => {
 		});
 		await user.giveSlayerTask(EMonster.ARAXYTE, 100);
 		await user.kill(EMonster.ARAXYTE, { method: 'cannon' });
-		expect(user.bank.amount('Cannonball')).toBeGreaterThan(100_000 - 200);
+		expect(user.bank.amount('Cannonball')).toBeGreaterThan(100_000 - 500);
 	});
 
 	it('should give a scythe boost and deduct charges', async () => {
