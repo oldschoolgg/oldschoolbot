@@ -2,11 +2,14 @@
 title: "Minion Icons"
 ---
 
-You can sacrifice items, and their GP value will go towards you unlocking new minion icons. You will automatically receive the icon immediately after sacrificing enough GP.
+You can sacrifice items, and their GP value will go towards you unlocking new minion icons. You will automatically receive the icon immediately after sacrificing enough GP. Ironmen only need half of the gp value listed to obtain the icon.
 
-Below is an image of the different minion icons and their respective sacrifice value that you need to obtain them.  Ironmen only need half of the amount listed to obtain the icon.
-
-[[minionicons.webp]]
+[[minion-icon.png]] 0 gp  
+[[yellow-minion-icon.png]] 100m gp  
+[[emerald-minion-icon.png]] 500m gp  
+[[amethyst-minion-icon.png]] 1b gp  
+[[sapphire-minion-icon.png]] 5b gp  
+[[white-minion-icon.png]] 10b gp  
 
 You can sacrifice items by using: [[/sacrifice]] (to specify quantity, put the number before the name).
 - E.g. [[/sacrifice items\: bandos chestplate]]
