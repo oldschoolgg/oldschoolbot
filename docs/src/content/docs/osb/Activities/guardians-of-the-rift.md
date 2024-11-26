@@ -20,7 +20,7 @@ Mining xp scales with mined fragments.
 
 **Raiments of the eye** outfit will boost the number of runes created during the minigame.
 
-- 10% extra runes for each piece or 60% extra runes for the full outfit _(MUSTbe equipped in skilling)_
+- 10% extra runes for each piece or 60% extra runes for the full outfit _(MUST be equipped in skilling)_
 - This extra runes effect also applies to other runes outside of GOTR
 
 **Fragments**
