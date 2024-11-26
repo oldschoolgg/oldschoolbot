@@ -187,8 +187,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 						let list = quests
 							.filter(i => !mUser.user.finished_quest_ids.includes(i.id))
 							.map(i => ({ name: i.name, value: i.name }));
-						if (list.length === 0)
+						if (list.length === 0) {
 							list = quests.map(i => ({ name: `${i.name} (completed)`, value: i.name }));
+						}
 						return list;
 					},
 					required: false
