@@ -917,10 +917,11 @@ const killableBosses: KillableMonster[] = [
 			defence: 70,
 			hitpoints: 70
 		},
+
+		attackStylesUsed: [GearStat.AttackSlash],
+		attackStyleToUse: GearStat.AttackSlash,
 		defaultAttackStyles: [SkillsEnum.Attack],
-		customMonsterHP: 575,
-		combatXpMultiplier: 1.2,
-		healAmountNeeded: 20 * 200,
+		healAmountNeeded: 20 * 10,
 		minimumGearRequirements: {
 			melee: {
 				...new Gear({
