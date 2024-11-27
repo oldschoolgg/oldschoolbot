@@ -169,7 +169,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Araxyte.id,
 		name: Monsters.Araxyte.name,
 		aliases: Monsters.Araxyte.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 36,
 		table: Monsters.Araxyte,
 		qpRequired: 1,
 		healAmountNeeded: 40,
