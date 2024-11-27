@@ -9,7 +9,10 @@ const TheHueycoatlTable = new LootTable()
 
 	.oneIn(
 		23,
-		new LootTable().add('Hueycoatl hide', 1, 6).add('Tome of earth (empty)', 1, 3).add('Dragon hunter wand', 1, 1)
+		new LootTable()
+			.add('Hueycoatl hide', [2, 3], 6)
+			.add('Tome of earth (empty)', 1, 3)
+			.add('Dragon hunter wand', 1, 1)
 	)
 	.add('Rune mace', [1, 26], 3)
 	.add('Rune scimitar', [1, 20], 3)
