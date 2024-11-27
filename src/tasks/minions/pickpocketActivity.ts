@@ -1,6 +1,7 @@
 import { percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events } from '../../lib/constants';
 import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
 import { stealables } from '../../lib/skilling/skills/thieving/stealables';
@@ -63,6 +64,13 @@ export const pickpocketTask: MinionTask = {
 				const lootItems = obj.table.roll(1, {
 					tertiaryItemPercentageChanges: user.buildTertiaryItemChanges()
 				});
+
+				//add clues to loot before rogue boost
+				for (const id of ClueTiers.map(c => c.scrollID).filter(sid => lootItems.has(sid))) {
+					loot.add(id, lootItems.amount(id));
+					lootItems.remove(id);
+				}
+
 				// TODO: Remove Rocky from loot tables in oldschoolJS
 				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
