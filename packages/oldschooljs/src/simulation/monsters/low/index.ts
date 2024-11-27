@@ -95,6 +95,7 @@ import FossilIslandWyvernLongTailed from './a-f/FossilIslandWyvernLongTailed';
 import FossilIslandWyvernSpitting from './a-f/FossilIslandWyvernSpitting';
 import FossilIslandWyvernTaloned from './a-f/FossilIslandWyvernTaloned';
 import FremennikCitizen from './a-f/FremennikCitizen';
+import { FrostNagua } from './a-f/FrostNagua';
 import Gargoyle from './g-m/Gargoyle';
 import Ghost from './g-m/Ghost';
 import Ghoul from './g-m/Ghoul';
@@ -229,6 +230,7 @@ import SpiritualRanger from './n-s/SpiritualRanger';
 import SpiritualWarrior from './n-s/SpiritualWarrior';
 import SteelDragon from './n-s/SteelDragon';
 import SulphurLizard from './n-s/SulphurLizard';
+import { SulphurNagua } from './n-s/SulphurNagua';
 import Suqah from './n-s/Suqah';
 import TempleSpider from './t-z/TempleSpider';
 import TerrorBird from './t-z/TerrorBird';
@@ -543,5 +545,7 @@ export const allLowMonsters = {
 	ArmouredZombie,
 	Crab,
 	ChilledJelly,
-	WealthyCitizen
+	WealthyCitizen,
+	FrostNagua,
+	SulphurNagua
 };

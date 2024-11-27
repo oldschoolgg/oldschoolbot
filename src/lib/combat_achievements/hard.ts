@@ -771,5 +771,61 @@ export const hardCombatAchievements: CombatAchievement[] = [
 				[Monsters.TheHueycoatl.id]: 10
 			}
 		})
+	},
+	{
+		id: 266,
+		name: 'Nagua Negation',
+		desc: 'Kill Amoxliatl without taking any damage.',
+		type: 'perfection',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 267,
+		name: 'Amoxliatl Adept',
+		desc: 'Kill Amoxliatl 20 times.',
+		type: 'kill_count',
+		monster: 'Amoxliatl',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Amoxliatl.id]: 20
+			}
+		})
+	},
+	{
+		id: 268,
+		name: 'Totally Shattered',
+		desc: 'Kill Amoxliatl without any of her unstable ice shattering.',
+		type: 'mechanical',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 269,
+		name: 'Kemo Makti',
+		desc: 'Kill Amoxliatl 10 times without leaving her chamber.',
+		type: 'mechanical',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 270,
+		name: 'Amoxliatl Speed-Trialist',
+		desc: 'Kill Amoxliatl in less than 1 minute.',
+		type: 'speed',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 70,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
 	}
 ];

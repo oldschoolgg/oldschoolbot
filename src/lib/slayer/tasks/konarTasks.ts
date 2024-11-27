@@ -433,5 +433,13 @@ export const konarTasks: AssignableSlayerTask[] = [
 		slayerLevel: 62,
 		unlocked: true
 	},
+	{
+		monster: Monsters.Amoxliatl,
+		amount: [55, 120],
+		weight: 2,
+		monsters: [Monsters.Amoxliatl.id, Monsters.FrostNagua.id, Monsters.SulphurNagua.id],
+		slayerLevel: 48,
+		unlocked: true
+	},
 	...bossTasks
 ];
