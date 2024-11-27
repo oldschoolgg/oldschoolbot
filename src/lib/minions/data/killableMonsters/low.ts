@@ -197,6 +197,26 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush],
 		itemsRequired: resolveItems(['Fishbowl helmet', 'Diving apparatus'])
+	},
+	{
+		id: Monsters.FrostNagua.id,
+		name: Monsters.FrostNagua.name,
+		aliases: Monsters.FrostNagua.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.FrostNagua,
+		healAmountNeeded: 100,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush]
+	},
+	{
+		id: Monsters.SulphurNagua.id,
+		name: Monsters.SulphurNagua.name,
+		aliases: Monsters.SulphurNagua.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.SulphurNagua,
+		healAmountNeeded: 100,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush]
 	}
 ];
 

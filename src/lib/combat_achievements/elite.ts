@@ -1761,5 +1761,27 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 50,
 			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
 		}
+	},
+	{
+		id: 1152,
+		name: 'Amoxliatl Speed-Chaser',
+		desc: 'Kill Amoxliatl in less than 30 seconds.',
+		type: 'speed',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 120,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 1153,
+		name: "Without Ralos' Light",
+		desc: 'Kill Amoxliatl without losing any prayer points.',
+		type: 'restriction',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 150,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
 	}
 ];

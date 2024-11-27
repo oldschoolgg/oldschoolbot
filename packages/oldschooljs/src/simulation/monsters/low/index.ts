@@ -257,8 +257,6 @@ import Vyrewatch from './t-z/Vyrewatch';
 import VyrewatchSentinel from './t-z/VyrewatchSentinel';
 import WallBeast from './t-z/WallBeast';
 import WarpedJelly from './t-z/WarpedJelly';
-import { WarpedTerrorbird } from './t-z/WarpedTerrorbird';
-import { WarpedTortoise } from './t-z/WarpedTortoise';
 import WarriorWoman from './t-z/WarriorWoman';
 import Waterfiend from './t-z/Waterfiend';
 import WealthyCitizen from './t-z/WealthyCitizen';
@@ -549,7 +547,5 @@ export const allLowMonsters = {
 	ChilledJelly,
 	WealthyCitizen,
 	FrostNagua,
-	SulphurNagua,
-	WarpedTerrorbird,
-	WarpedTortoise
+	SulphurNagua
 };

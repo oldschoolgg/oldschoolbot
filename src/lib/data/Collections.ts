@@ -58,6 +58,7 @@ import {
 	akumuCL,
 	alchemicalHydraCL,
 	allPetsCL,
+	amoxliatlCL,
 	araxxorCL,
 	balthazarsBigBonanzaCL,
 	barbarianAssaultCL,
@@ -245,6 +246,11 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.AlchemicalHydra.allItems,
 				items: alchemicalHydraCL,
 				fmtProg: kcProg(Monsters.AlchemicalHydra)
+			},
+			Amoxliatl: {
+				allItems: uniqueArr([...amoxliatlCL, ...Monsters.Amoxliatl.allItems]),
+				items: amoxliatlCL,
+				fmtProg: kcProg(Monsters.Amoxliatl)
 			},
 			Araxxor: {
 				alias: [...Monsters.Araxxor.aliases, 'rax'],

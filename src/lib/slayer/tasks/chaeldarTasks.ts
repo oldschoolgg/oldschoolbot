@@ -395,5 +395,14 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	...bossTasks,
-	...polyporeTasks
+	...polyporeTasks,
+	{
+		monster: Monsters.Amoxliatl,
+		amount: [50, 100],
+		weight: 4,
+		monsters: [Monsters.Amoxliatl.id, Monsters.FrostNagua.id, Monsters.SulphurNagua.id],
+		slayerLevel: 48,
+		unlocked: true
+	},
+	...bossTasks
 ];
