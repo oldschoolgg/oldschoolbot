@@ -1549,7 +1549,8 @@ export const allPetsCL = resolveItems([
 	'Scurry',
 	'Smol heredit',
 	'Nid',
-	'Huberte'
+	'Huberte',
+	'Moxi'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2379,3 +2380,5 @@ export const araxxorCL = resolveItems([
 	'Jar of venom',
 	'Coagulated venom'
 ]);
+
+export const amoxliatlCL = resolveItems(['Moxi', 'Glacial temotli', 'Pendant of ates (inert)', 'Frozen tear']);
