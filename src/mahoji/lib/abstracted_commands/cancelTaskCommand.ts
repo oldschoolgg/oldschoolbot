@@ -57,6 +57,9 @@ export async function cancelTaskCommand(
 		if ((!itemCost || itemCost.length === 0) && (!chargeCost || new ChargeBank(chargeCost).length() > 0)) {
 			return 'You cannot be refunded for this trip!';
 		}
+		if (currentTask.finishDate - Date.now() < Time.Second * 30) {
+			return 'It is too late to be refunded for this trip.';
+		}
 	}
 
 	const refundMessage = refund
@@ -78,7 +81,7 @@ Please confirm if you want to call your minion back from their trip.${refundMess
 		await cancelTask(user.id);
 		await addSubTaskToActivityTask<RefundOptions>({
 			userID: user.id,
-			duration: duration,
+			duration: duration * 0.03,
 			channelID: channelID,
 			refundItems: data.itemCost,
 			refundCharges: data.chargeCost,
