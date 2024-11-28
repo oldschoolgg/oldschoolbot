@@ -111,7 +111,8 @@ export const fletchCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity,
 			duration,
-			type: 'Fletching'
+			type: 'Fletching',
+			itemCost: itemsNeeded
 		});
 
 		return `${user.minionName} is now Fletching ${quantity}${sets} ${

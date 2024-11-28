@@ -116,7 +116,8 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Casting'
+		type: 'Casting',
+		itemCost: cost
 	});
 
 	const magicXpHr = `${Math.round(

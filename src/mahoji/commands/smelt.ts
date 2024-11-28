@@ -161,7 +161,8 @@ export const smeltingCommand: OSBMahojiCommand = {
 			quantity,
 			blastf: blast_furnace,
 			duration,
-			type: 'Smelting'
+			type: 'Smelting',
+			itemCost: cost
 		});
 
 		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {

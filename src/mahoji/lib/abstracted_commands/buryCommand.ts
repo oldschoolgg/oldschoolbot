@@ -57,7 +57,8 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Burying'
+		type: 'Burying',
+		itemCost: cost
 	});
 
 	return `${user.minionName} is now burying ${cost}, it'll take around ${formatDuration(duration)} to finish.`;

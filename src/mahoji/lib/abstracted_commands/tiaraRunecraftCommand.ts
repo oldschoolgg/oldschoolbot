@@ -103,7 +103,8 @@ export async function tiaraRunecraftCommand({
 		channelID: channelID.toString(),
 		tiaraQuantity: quantity,
 		duration,
-		type: 'TiaraRunecraft'
+		type: 'TiaraRunecraft',
+		itemCost: totalCost
 	});
 
 	let response = `${user.minionName} is now turning ${quantity}x Tiaras into ${
