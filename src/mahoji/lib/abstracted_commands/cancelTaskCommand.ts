@@ -77,17 +77,16 @@ Please confirm if you want to call your minion back from their trip.${refundMess
 		return `${mName} isn't doing anything at the moment, so there's nothing to cancel.`;
 	}
 
-	if (refund) {
-		const data = currentTask as ActivityTaskOptions;
+	await cancelTask(user.id);
 
+	if (refund) {
 		const duration = Time.Second * 300;
-		await cancelTask(user.id);
 		await addSubTaskToActivityTask<RefundOptions>({
 			userID: user.id,
 			duration: duration,
 			channelID: channelID,
-			refundItems: data.itemCost,
-			refundCharges: data.chargeCost,
+			refundItems: itemCost,
+			refundCharges: chargeCost,
 			type: 'Refund'
 		});
 		return `${user.minionName} is returning from their trip with supplies, it'll take around ${formatDuration(
@@ -95,7 +94,6 @@ Please confirm if you want to call your minion back from their trip.${refundMess
 		)} to finish.`;
 	}
 
-	await cancelTask(user.id);
 	return `${mName}'s trip was cancelled, and they're now available.`;
 }
 
