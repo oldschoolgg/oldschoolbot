@@ -66,7 +66,7 @@ const client = new OldSchoolBotClient({
 		},
 		GuildEmojiManager: {
 			maxSize: 1,
-			keepOverLimit: i => [globalConfig.supportServerID].includes(i.guild.id)
+			keepOverLimit: i => globalConfig.supportServerID === i.guild.id
 		},
 		GuildStickerManager: { maxSize: 0 },
 		PresenceManager: { maxSize: 0 },
