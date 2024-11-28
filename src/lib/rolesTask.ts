@@ -6,8 +6,7 @@ import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
 
-import { SupportServer } from '../config';
-import { BadgesEnum, Roles } from '../lib/constants';
+import { BadgesEnum, Roles, globalConfig } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 import { ClueTiers } from './clues/clueTiers';
@@ -399,7 +398,7 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 
 	if (!dryRun) {
 		const roleNames = new Map<string, string>();
-		const supportServerGuild = globalClient.guilds.cache.get(SupportServer)!;
+		const supportServerGuild = globalClient.guilds.cache.get(globalConfig.supportServerID)!;
 		if (!supportServerGuild) throw new Error('No support guild');
 
 		// Remove all top badges from all users (and add back later)

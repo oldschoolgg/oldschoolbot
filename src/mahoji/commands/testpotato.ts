@@ -9,11 +9,10 @@ import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
-import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { MAX_INT_JAVA } from '../../lib/constants';
+import { MAX_INT_JAVA, globalConfig } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -245,7 +244,7 @@ const spawnPresets = [
 
 const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
 
-export const testPotatoCommand: OSBMahojiCommand | null = production
+export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduction
 	? null
 	: {
 			name: 'testpotato',
@@ -611,7 +610,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setslayertask?: { master: string; monster: string; quantity: number };
 				events?: {};
 			}>) => {
-				if (production) {
+				if (globalConfig.isProduction) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}

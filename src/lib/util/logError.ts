@@ -3,12 +3,11 @@ import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
 import { isObject } from 'e';
-import { production } from '../../config';
 import { globalConfig } from '../constants';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
-		if (production) {
+		if (globalConfig.isProduction) {
 			logError(new Error(desc ?? 'Failed assertion'), context);
 		} else {
 			throw new Error(desc ?? 'Failed assertion');

@@ -3,9 +3,8 @@ import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Time, roll, shuffleArr, uniqueArr } from 'e';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { SupportServer } from '../../../config';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
-import { Emoji } from '../../../lib/constants';
+import { Emoji, globalConfig } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
@@ -31,7 +30,7 @@ export async function isUsersDailyReady(
 }
 
 async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
-	const guild = globalClient.guilds.cache.get(SupportServer);
+	const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
 	const member = await guild?.members.fetch(user.id).catch(() => null);
 
 	const loot = dailyRoll(1, triviaCorrect);

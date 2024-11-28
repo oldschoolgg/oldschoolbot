@@ -2,13 +2,11 @@ import { Prisma } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 
-import { OWNER_IDS, SupportServer } from '../../config';
 import { globalConfig } from '../constants';
 import { runTimedLoggedFn } from '../util';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();
 CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
-for (const id of OWNER_IDS) CACHED_ACTIVE_USER_IDS.add(id);
 
 export const syncActiveUserIDs = async () => {
 	const users = await prisma.$queryRawUnsafe<
@@ -127,7 +125,7 @@ export function cacheCleanup() {
 
 		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
 			for (const guild of globalClient.guilds.cache.values()) {
-				if (guild.id !== SupportServer) {
+				if (guild.id !== globalConfig.supportServerID) {
 					for (const member of guild.members.cache.values()) {
 						if (member.user.id === globalConfig.clientID) continue;
 						guild.members.cache.delete(member.user.id);

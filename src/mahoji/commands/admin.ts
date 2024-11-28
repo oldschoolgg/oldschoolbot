@@ -11,7 +11,6 @@ import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyO
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import {
@@ -407,7 +406,7 @@ ORDER BY slots_used DESC;
 export const adminCommand: OSBMahojiCommand = {
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
-	guildID: SupportServer,
+	guildID: globalConfig.supportServerID,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -672,11 +671,13 @@ export const adminCommand: OSBMahojiCommand = {
 		await deferInteraction(interaction);
 
 		const adminUser = await mUserFetch(userID);
-		const isOwner = OWNER_IDS.includes(userID.toString());
-		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+		const isAdmin = globalConfig.adminUserIDs.includes(userID);
+		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
+		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID))
+			return randArrItem(gifs);
 
-		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
+		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== '342983479501389826'))
+			return randArrItem(gifs);
 
 		/**
 		 *
@@ -869,7 +870,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.shut_down) {
 			debugLog('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
-			const timer = production ? Time.Second * 30 : Time.Second * 5;
+			const timer = globalConfig.isProduction ? Time.Second * 30 : Time.Second * 5;
 			await interactionReply(interaction, {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
@@ -895,12 +896,12 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		 * Admin Only Commands
 		 *
 		 */
-		if (!isOwner && !ADMIN_IDS.includes(userID)) {
+		if (!isAdmin) {
 			return randArrItem(gifs);
 		}
 
 		if (options.sync_commands) {
-			const global = Boolean(production);
+			const global = Boolean(globalConfig.isProduction);
 			const totalCommands = Array.from(globalClient.mahojiClient.commands.values());
 			const globalCommands = totalCommands.filter(i => !i.guildID);
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
@@ -924,7 +925,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			}
 
 			// If not in production, remove all global commands.
-			if (!production) {
+			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
 					client: globalClient.mahojiClient,
 					commands: [],
@@ -967,15 +968,6 @@ ${guildCommands.length} Guild commands`;
 
 			await user.addItemsToBank({ items, collectionLog: false });
 			return `Gave ${items} to ${user.mention}`;
-		}
-
-		/**
-		 *
-		 * Owner Only Commands
-		 *
-		 */
-		if (!isOwner) {
-			return randArrItem(gifs);
 		}
 
 		if (options.item_stats) {
