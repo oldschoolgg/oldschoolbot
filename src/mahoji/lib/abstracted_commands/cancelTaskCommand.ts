@@ -52,32 +52,29 @@ export async function cancelTaskCommand(
 		return 'Your minion is on a group activity and cannot cancel!';
 	}
 	const { itemCost, chargeCost } = currentTask as ActivityTaskOptions;
-	const canRefund =
-		currentTask.finishDate - Date.now() > Time.Second * 30 &&
-		(!itemCost || itemCost.length === 0 || !chargeCost || new ChargeBank(chargeCost).length() > 0);
+	const cannotRefund =
+		(!itemCost || itemCost.length === 0) && (!chargeCost || new ChargeBank(chargeCost).length() === 0);
 
-	if (refund) {
-		if ((!itemCost || itemCost.length === 0) && (!chargeCost || new ChargeBank(chargeCost).length() > 0)) {
-			return 'You cannot be refunded for this trip!';
-		}
-		if (currentTask.finishDate - Date.now() < Time.Second * 30) {
-			return 'It is too late to be refunded for this trip.';
-		}
-	}
+	if (refund && cannotRefund) return 'You cannot be refunded for this trip!';
 
 	const refundMessage = refund
 		? ' They will return in 5 minutes with their supplies.'
 		: " They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.";
-	const couldRefundMessage =
-		canRefund && !refund
-			? ` This trip can be refunded using ${mentionCommand(globalClient, 'minion', 'cancel_and_refund')}.`
-			: '';
+	const couldRefundMessage = !(refund || cannotRefund)
+		? ` Note: this trip **can be refunded** using ${mentionCommand(globalClient, 'minion', 'cancel_and_refund')}.`
+		: '';
+
 	if (interaction) {
 		await handleMahojiConfirmation(
 			interaction,
 			`${mName} is currently doing a ${currentTask.type} trip.
 Please confirm if you want to call your minion back from their trip.${refundMessage}${couldRefundMessage}`
 		);
+	}
+
+	// given ~15s interaction timer, task might have finished by now
+	if (!getActivityOfUser(user.id)) {
+		return `${mName} isn't doing anything at the moment, so there's nothing to cancel.`;
 	}
 
 	if (refund) {
