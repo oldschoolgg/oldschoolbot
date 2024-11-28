@@ -1,6 +1,6 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { refundChargeBank } from '../../../lib/degradeableItems';
@@ -51,9 +51,12 @@ export async function cancelTaskCommand(
 	if ((currentTask as any).users && (currentTask as any).users.length > 1) {
 		return 'Your minion is on a group activity and cannot cancel!';
 	}
+	const { itemCost, chargeCost } = currentTask as ActivityTaskOptions;
+	const canRefund =
+		currentTask.finishDate - Date.now() > Time.Second * 30 &&
+		(!itemCost || itemCost.length === 0 || !chargeCost || new ChargeBank(chargeCost).length() > 0);
 
 	if (refund) {
-		const { itemCost, chargeCost } = currentTask as ActivityTaskOptions;
 		if ((!itemCost || itemCost.length === 0) && (!chargeCost || new ChargeBank(chargeCost).length() > 0)) {
 			return 'You cannot be refunded for this trip!';
 		}
@@ -65,12 +68,15 @@ export async function cancelTaskCommand(
 	const refundMessage = refund
 		? ' They will return in 5 minutes with their supplies.'
 		: " They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.";
-
+	const couldRefundMessage =
+		canRefund && !refund
+			? ` This trip can be refunded using ${mentionCommand(globalClient, 'minion', 'cancel_and_refund')}.`
+			: '';
 	if (interaction) {
 		await handleMahojiConfirmation(
 			interaction,
 			`${mName} is currently doing a ${currentTask.type} trip.
-Please confirm if you want to call your minion back from their trip.${refundMessage}`
+Please confirm if you want to call your minion back from their trip.${refundMessage}${couldRefundMessage}`
 		);
 	}
 
@@ -81,7 +87,7 @@ Please confirm if you want to call your minion back from their trip.${refundMess
 		await cancelTask(user.id);
 		await addSubTaskToActivityTask<RefundOptions>({
 			userID: user.id,
-			duration: duration * 0.03,
+			duration: duration,
 			channelID: channelID,
 			refundItems: data.itemCost,
 			refundCharges: data.chargeCost,
