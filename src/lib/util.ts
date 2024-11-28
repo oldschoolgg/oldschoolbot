@@ -26,7 +26,6 @@ import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
-import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { BitField, MAX_XP, globalConfig, projectiles } from './constants';
@@ -121,7 +120,7 @@ export function isNexActivity(data: any): data is NexTaskOptions {
 
 export function getSupportGuild(): Guild | null {
 	if (!globalClient || Object.keys(globalClient).length === 0) return null;
-	const guild = globalClient.guilds.cache.get(SupportServer);
+	const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
 	if (!guild) return null;
 	return guild;
 }
@@ -363,7 +362,7 @@ export function logWrapFn<T extends (...args: any[]) => Promise<unknown>>(
 }
 
 export function isModOrAdmin(user: MUser) {
-	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
+	return globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
 export { assert } from './util/logError';

@@ -13,7 +13,6 @@ import { ApplicationCommandOptionType, SnowflakeUtil, codeBlock } from 'discord.
 import { Time, objectValues, randArrItem, sumArr } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 
-import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { BitField, Channel, globalConfig } from '../../lib/constants';
 import { allCollectionLogsFlat } from '../../lib/data/Collections';
 import type { GearSetupType } from '../../lib/gear/types';
@@ -147,7 +146,7 @@ async function usernameSync() {
 
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
-	if ([...ADMIN_IDS, ...OWNER_IDS, ...botAccounts].includes(user.id)) return true;
+	if (globalConfig.adminUserIDs.includes(user.id) || botAccounts.includes(user.id)) return true;
 	if ([BitField.isModerator].some(bf => user.bitfield.includes(bf))) return true;
 	return false;
 }
@@ -155,7 +154,7 @@ function isProtectedAccount(user: MUser) {
 const actions = [
 	{
 		name: 'validate_ge',
-		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
 		run: async () => {
 			const isValid = await GrandExchange.extensiveVerification();
 			if (isValid) {
@@ -167,21 +166,21 @@ const actions = [
 	{
 		name: 'sync_roles',
 		allowed: (user: MUser) =>
-			ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id) || user.bitfield.includes(BitField.isModerator),
+			globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator),
 		run: async () => {
 			return runRolesTask(!globalConfig.isProduction);
 		}
 	},
 	{
 		name: 'sync_usernames',
-		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
 		run: async () => {
 			return usernameSync();
 		}
 	},
 	{
 		name: 'force_garbage_collection',
-		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
 		run: async () => {
 			const timer = new Stopwatch();
 			for (let i = 0; i < 3; i++) {
@@ -192,7 +191,7 @@ const actions = [
 	},
 	{
 		name: 'prismadebug',
-		allowed: (user: MUser) => ADMIN_IDS.includes(user.id) || OWNER_IDS.includes(user.id),
+		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
 		run: async () => {
 			const debugs = [
 				{
@@ -274,7 +273,7 @@ const actions = [
 export const rpCommand: OSBMahojiCommand = {
 	name: 'rp',
 	description: 'Admin tools second set',
-	guildID: SupportServer,
+	guildID: globalConfig.supportServerID,
 	options: [
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
@@ -651,10 +650,11 @@ export const rpCommand: OSBMahojiCommand = {
 		await deferInteraction(interaction);
 
 		const adminUser = await mUserFetch(userID);
-		const isOwner = OWNER_IDS.includes(userID.toString());
-		const isAdmin = ADMIN_IDS.includes(userID);
-		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+		const isAdmin = globalConfig.adminUserIDs.includes(userID);
+		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
+		if (!guildID || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
+			return randArrItem(gifs);
+		}
 		if (!isAdmin && !isMod) return randArrItem(gifs);
 
 		if (options.user_event) {
@@ -766,7 +766,7 @@ Date: ${dateFm(date)}`;
 
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
-			if (!isOwner && !isAdmin) {
+			if (!isAdmin) {
 				return randArrItem(gifs);
 			}
 			const allGearSlots = ['melee', 'range', 'mage', 'misc', 'skilling', 'other', 'wildy', 'fashion'];
@@ -804,7 +804,7 @@ Date: ${dateFm(date)}`;
 
 		// Steal Items
 		if (options.player?.steal_items) {
-			if (!isOwner && !isAdmin) {
+			if (!isAdmin) {
 				return randArrItem(gifs);
 			}
 			const toDelete = options.player.steal_items.delete ?? false;
@@ -863,7 +863,7 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.migrate_user) {
-			if (!isOwner && !isAdmin) {
+			if (!isAdmin) {
 				return randArrItem(gifs);
 			}
 

@@ -3,11 +3,10 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'disc
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
 import { TimerManager } from '@sapphire/timer-manager';
-import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
-import { BitField, Channel, PeakTier } from './constants';
+import { BitField, Channel, PeakTier, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
 import { runCommand } from './settings/settings';
@@ -115,7 +114,7 @@ export const tickers: {
 		name: 'minion_activities',
 		startupWait: Time.Second * 10,
 		timer: null,
-		interval: production ? Time.Second * 5 : 500,
+		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
 			await processPendingActivities();
 		}
@@ -143,7 +142,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 			const str = 'Your daily is ready!';
 
 			for (const row of result.values()) {
-				if (!production) continue;
+				if (!globalConfig.isProduction) continue;
 				if (Number(row.last_daily_timestamp) === -1) continue;
 
 				await userStatsUpdate(
@@ -207,7 +206,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		interval: Time.Minute * 3.5,
 		timer: null,
 		cb: async () => {
-			if (!production) return;
+			if (!globalConfig.isProduction) return;
 			const basePlantTime = 1_626_556_507_451;
 			const now = Date.now();
 			const users = await prisma.user.findMany({
@@ -326,7 +325,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		startupWait: Time.Second * 22,
 		interval: Time.Minute * 20,
 		cb: async () => {
-			if (!production) return;
+			if (!globalConfig.isProduction) return;
 			const guild = getSupportGuild();
 			const channel = guild?.channels.cache.get(Channel.HelpAndSupport) as TextChannel | undefined;
 			if (!channel) return;
@@ -351,7 +350,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		timer: null,
 		interval: Time.Minute * 20,
 		cb: async () => {
-			if (!production) return;
+			if (!globalConfig.isProduction) return;
 			const guild = getSupportGuild();
 			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel | undefined;
 			if (!channel) return;

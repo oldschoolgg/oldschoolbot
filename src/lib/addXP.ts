@@ -4,12 +4,12 @@ import { bold } from 'discord.js';
 import { Time, noOp } from 'e';
 import { convertXPtoLVL, toKMB } from './util';
 
-import { MAXING_MESSAGE, SupportServer } from '../config';
-import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
+import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
 import { skillEmoji } from './data/emojis';
 import type { AddXpParams } from './minions/types';
 import { sql } from './postgres';
 import Skills from './skilling/skills';
+import { mahojiClientSettingsFetch } from './util/clientSettings';
 import { insertUserEvent } from './util/userEvents';
 import { sendToChannelID } from './util/webhook';
 
@@ -43,9 +43,10 @@ async function onMax(user: MUser) {
 	} 🎉`;
 
 	globalClient.emit(Events.ServerNotification, str);
-	sendToChannelID(SupportServer, { content: str }).catch(noOp);
+	sendToChannelID(globalConfig.supportServerID, { content: str }).catch(noOp);
 	const kUser = await globalClient.fetchUser(user.id);
-	kUser.send(MAXING_MESSAGE).catch(noOp);
+	const clientSettings = await mahojiClientSettingsFetch({ maxing_message: true });
+	kUser.send(clientSettings.maxing_message).catch(noOp);
 }
 
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
