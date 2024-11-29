@@ -48,7 +48,8 @@ export async function mageArena2Command(user: MUser, channelID: string) {
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
-		type: 'MageArena2'
+		type: 'MageArena2',
+		itemCost: totalCost
 	});
 
 	return `${user.minionName} is now doing the Mage Arena II, it will take approximately ${formatDuration(

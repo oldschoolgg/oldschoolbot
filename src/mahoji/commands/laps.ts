@@ -188,7 +188,8 @@ export const lapsCommand: OSBMahojiCommand = {
 					: {
 							itemID: alchResult.itemToAlch.id,
 							quantity: alchResult.maxCasts
-						}
+						},
+			itemCost: alchResult?.bankToRemove
 		});
 
 		return response;

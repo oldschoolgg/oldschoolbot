@@ -69,7 +69,8 @@ export async function cutLeapingFishCommand({
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'CutLeapingFish'
+		type: 'CutLeapingFish',
+		itemCost: finalCost
 	});
 
 	return `${user.minionName} is now cutting ${quantity}x ${

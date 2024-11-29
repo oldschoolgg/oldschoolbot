@@ -238,7 +238,8 @@ export async function giantsFoundryStartCommand(
 		channelID: channelID.toString(),
 		minigameID: 'giants_foundry',
 		alloyID: alloy.id,
-		metalScore: alloy.metalScore
+		metalScore: alloy.metalScore,
+		itemCost: totalCost
 	});
 
 	return `${user.minionName} is now doing ${quantity}x Giants' Foundry! It will take ${formatDuration(

@@ -89,7 +89,8 @@ export const lightCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity,
 			duration,
-			type: 'Firemaking'
+			type: 'Firemaking',
+			itemCost: cost
 		});
 
 		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDuration(

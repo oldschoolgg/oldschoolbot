@@ -141,7 +141,8 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
-		channelID: channelID.toString()
+		channelID: channelID.toString(),
+		itemCost: costBank
 	});
 
 	let response = `${user.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${

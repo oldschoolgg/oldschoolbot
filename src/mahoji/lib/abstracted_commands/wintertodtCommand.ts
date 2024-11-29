@@ -58,6 +58,8 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		)}.`;
 	}
 
+	const cost = new Bank();
+
 	for (const food of Eatables) {
 		const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(user.gearBank);
 		const amountNeeded = Math.ceil(healAmountNeeded / healAmount) * quantity;
@@ -85,7 +87,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 
 		messages.push(foodStr);
 
-		const cost = new Bank().add(food.id, amountNeeded);
+		cost.add(food.id, amountNeeded);
 
 		await user.removeItemsFromBank(cost);
 
@@ -115,7 +117,8 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Wintertodt'
+		type: 'Wintertodt',
+		itemCost: cost
 	});
 
 	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(

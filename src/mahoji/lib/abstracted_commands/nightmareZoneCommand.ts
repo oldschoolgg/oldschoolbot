@@ -394,7 +394,8 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 		type: 'NightmareZone',
 		channelID: channelID.toString(),
 		minigameID: 'nmz',
-		strategy
+		strategy,
+		itemCost: totalCost
 	});
 
 	return `${

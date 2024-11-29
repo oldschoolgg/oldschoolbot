@@ -76,15 +76,16 @@ export async function driftNetCommand(
 		return `You need ${quantity}x Drift net for the whole trip, try a lower trip length or make/buy more Drift net.`;
 	}
 
+	await user.removeItemsFromBank(itemsToRemove);
+
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'DriftNet'
+		type: 'DriftNet',
+		itemCost: itemsToRemove
 	});
-
-	await user.removeItemsFromBank(itemsToRemove);
 
 	let str = `${user.minionName} is now doing Drift net fishing, it will take around ${formatDuration(duration)}.`;
 

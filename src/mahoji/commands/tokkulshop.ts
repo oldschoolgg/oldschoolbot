@@ -194,7 +194,8 @@ export const tksCommand: OSBMahojiCommand = {
 			quantity: loot.items()[0][1],
 			type: 'TokkulShop',
 			duration,
-			itemID: loot.items()[0][0].id
+			itemID: loot.items()[0][0].id,
+			itemCost: cost
 		});
 
 		// Trip start message

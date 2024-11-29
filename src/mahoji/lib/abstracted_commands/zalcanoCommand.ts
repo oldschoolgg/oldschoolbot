@@ -83,7 +83,8 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 		duration,
 		type: 'Zalcano',
 		performance: calcPerformance(kcLearned, skillPercentage),
-		isMVP: percentChance(80)
+		isMVP: percentChance(80),
+		itemCost: foodRemoved
 	});
 
 	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(

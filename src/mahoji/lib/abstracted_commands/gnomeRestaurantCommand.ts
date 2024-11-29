@@ -105,7 +105,8 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 		type: 'GnomeRestaurant',
 		quantity,
 		minigameID: 'gnome_restaurant',
-		gloriesRemoved: itemsToRemove.amount('Amulet of glory(6)')
+		gloriesRemoved: itemsToRemove.amount('Amulet of glory(6)'),
+		itemCost: itemsToRemove
 	});
 
 	let str = `${user.minionName} is now working at the Gnome Restaurant for ${formatDuration(

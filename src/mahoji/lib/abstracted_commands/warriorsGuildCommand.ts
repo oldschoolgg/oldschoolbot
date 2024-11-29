@@ -112,12 +112,20 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 		)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
 	}
 
+	const cost = new Bank();
+
+	if (!hasAttackCape) {
+		cost.add('Warrior guild token', tokensToSpend);
+		await user.removeItemsFromBank(cost);
+	}
+
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Cyclops'
+		type: 'Cyclops',
+		itemCost: cost
 	});
 
 	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(
@@ -127,10 +135,6 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 			? 'You used no warrior guild tokens because you have an Attack cape.'
 			: `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
 	}`;
-
-	if (!hasAttackCape) {
-		await user.removeItemsFromBank(new Bank().add('Warrior guild token', tokensToSpend));
-	}
 
 	return response;
 }

@@ -76,6 +76,8 @@ export async function underwaterAgilityThievingCommand(
 		return `You need ${quantity}x Stamina potion(4) for the whole trip, try a lower trip length, turn of stamina usage or make/buy more Stamina potion(4).`;
 	}
 
+	await user.removeItemsFromBank(itemsToRemove);
+
 	await addSubTaskToActivityTask<UnderwaterAgilityThievingTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
@@ -83,10 +85,9 @@ export async function underwaterAgilityThievingCommand(
 		quantity,
 		duration,
 		noStams,
-		type: 'UnderwaterAgilityThieving'
+		type: 'UnderwaterAgilityThieving',
+		itemCost: itemsToRemove
 	});
-
-	await user.removeItemsFromBank(itemsToRemove);
 
 	let str = `${user.minionName} is now doing Underwater Agility and Thieving, it will take around ${formatDuration(
 		duration

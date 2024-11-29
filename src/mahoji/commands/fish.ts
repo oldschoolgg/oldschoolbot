@@ -198,7 +198,8 @@ export const fishCommand: OSBMahojiCommand = {
 			iQty: options.quantity ? options.quantity : undefined,
 			duration,
 			type: 'Fishing',
-			flakesQuantity
+			flakesQuantity,
+			itemCost: cost
 		});
 
 		let response = `${user.minionName} is now fishing ${quantity}x ${fish.name}, it'll take around ${formatDuration(

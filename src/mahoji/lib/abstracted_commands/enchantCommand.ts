@@ -65,7 +65,8 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Enchanting'
+		type: 'Enchanting',
+		itemCost: cost
 	});
 
 	const xpHr = `${Math.round(((enchantable.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;

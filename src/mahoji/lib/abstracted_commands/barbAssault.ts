@@ -10,6 +10,7 @@ import { degradeItem } from '../../../lib/degradeableItems';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
+import { ChargeBank } from '../../../lib/structures/Bank';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
@@ -264,18 +265,19 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	let quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
 
 	// 10% speed boost for Venator bow
+	const chargeCost = new ChargeBank();
 	const venatorBowChargesPerWave = 50;
 	const totalVenChargesUsed = venatorBowChargesPerWave * quantity;
-	let venBowMsg = '';
 	if (user.gear.range.hasEquipped('Venator Bow') && user.user.venator_bow_charges >= totalVenChargesUsed) {
-		await degradeItem({
+		const degradeResult = await degradeItem({
 			item: getOSItem('Venator Bow'),
 			chargesToDegrade: totalVenChargesUsed,
 			user
 		});
-		boosts.push('10% for venator bow.');
-		venBowMsg = `\n\nYou have used ${totalVenChargesUsed} charges on your Venator bow, and have ${user.user.venator_bow_charges} remaining.`;
+		boosts.push('10% for venator bow');
+		boosts.push(degradeResult.userMessage);
 		waveTime = reduceNumByPercent(waveTime, 10);
+		chargeCost.add('venator_bow_charges', degradeResult.chargesToDegrade);
 	}
 
 	quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
@@ -290,14 +292,15 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		waveTime
 	)} - the total trip will take ${formatDuration(duration)}.`;
 
-	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
+	str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
 		duration,
 		type: 'BarbarianAssault',
-		minigameID: 'barb_assault'
+		minigameID: 'barb_assault',
+		chargeCost: chargeCost
 	});
 
 	return str;

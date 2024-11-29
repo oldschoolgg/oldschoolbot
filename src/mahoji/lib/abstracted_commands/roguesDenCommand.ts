@@ -56,7 +56,8 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 		quantity,
 		duration,
 		minigameID: 'rogues_den',
-		type: 'RoguesDenMaze'
+		type: 'RoguesDenMaze',
+		itemCost: staminasToRemove
 	});
 
 	let str = `${

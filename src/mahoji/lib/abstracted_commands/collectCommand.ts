@@ -90,7 +90,8 @@ export async function collectCommand(
 		quantity,
 		duration,
 		noStaminas: no_stams,
-		type: 'Collecting'
+		type: 'Collecting',
+		itemCost: cost
 	});
 
 	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
