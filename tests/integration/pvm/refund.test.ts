@@ -17,8 +17,7 @@ describe('Refund trips should fully refund PvM', async () => {
 	const client = await mockClient();
 
 	const userBank = new Bank();
-	Items.array().map(item => userBank.add(item.name));
-	userBank.multiply(1000).set('Dragon Arrow', 0).set('Ruby Dragon Bolts (e)', 0);
+	Items.array().map(item => userBank.set(item.name, 1000));
 
 	const user = await client.mockUser({
 		bank: userBank,
@@ -76,7 +75,12 @@ describe('Refund trips should fully refund PvM', async () => {
 			...(COXMaxRangeGear.raw() as any)
 		},
 		finished_quest_ids: quests.map(q => q.id),
-		combat_options: [CombatOptionsEnum.AlwaysCannon, CombatOptionsEnum.AlwaysIceBarrage]
+		combat_options: [CombatOptionsEnum.AlwaysCannon, CombatOptionsEnum.AlwaysIceBarrage],
+		blowpipe: {
+			scales: 10_000,
+			dartQuantity: 10_000,
+			dartID: itemID('Dragon dart')
+		}
 	});
 
 	const currentBank = user.bank.clone().freeze();
@@ -106,7 +110,6 @@ describe('Refund trips should fully refund PvM', async () => {
 
 			const ammo = monster.name === 'Rabbit' ? 'Ruby dragon bolts (e)' : 'Dragon arrow';
 
-			await user.addItemsToBank({ items: new Bank().add(ammo, 10_000) });
 			await user.update({
 				gear_range: {
 					...(COXMaxRangeGear.raw() as any),
@@ -137,24 +140,42 @@ describe('Refund trips should fully refund PvM', async () => {
 
 			expect(refundRes).toContain('is returning from');
 			await user.processActivities(client);
-			if (user.bank.has(ammo)) {
+
+			if (user.bank.amount(ammo) > 1000) {
 				await user.update({
 					gear_range: {
 						...(COXMaxRangeGear.raw() as any),
 						ammo: {
 							item: itemID(ammo),
-							quantity: user.bank.amount(ammo) + user.gearBank.gear.range.ammo!.quantity
+							quantity: user.bank.amount(ammo) + user.gearBank.gear.range.ammo!.quantity - 1000
 						}
 					}
 				});
-				await user.removeItemsFromBank(new Bank().add(ammo, user.bank.amount(ammo)));
+				await user.removeItemsFromBank(new Bank().add(ammo, user.bank.amount(ammo) - 1000));
 			}
+
+			if (user.bank.amount('Dragon Dart') > 1000) {
+				await user.update({
+					blowpipe: {
+						scales: user.blowpipe.scales + user.bank.amount("Zulrah's Scales") - 1000,
+						dartQuantity: user.blowpipe.dartQuantity + user.bank.amount('Dragon dart') - 1000,
+						dartID: itemID('Dragon dart')
+					}
+				});
+				await user.removeItemsFromBank(
+					new Bank().add("Zulrah's Scales", user.bank.amount("Zulrah's Scales") - 1000)
+				);
+				await user.removeItemsFromBank(new Bank().add('Dragon dart', user.bank.amount('Dragon dart') - 1000));
+			}
+
 			for (const item of currentBank.items()) {
 				expect([item[0].name, currentBank.amount(item[0])]).toEqual([item[0].name, user.bank.amount(item[0])]);
 			}
-			expect(user.gearBank.gear.range.ammo!.quantity).toEqual(20_000);
+			expect(user.gearBank.gear.range.ammo!.quantity).toEqual(10_000);
 			expect(user.user.scythe_of_vitur_charges).toEqual(10_000);
 			expect(user.user.tum_shadow_charges).toEqual(10_000);
+			expect(user.blowpipe.dartQuantity).toEqual(10_000);
+			expect(user.blowpipe.scales).toEqual(10_000);
 		});
 	}
 });
