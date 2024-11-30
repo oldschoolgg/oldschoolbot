@@ -93,7 +93,6 @@ export async function minionKillCommand(
 	}
 
 	const updateResult = await result.updateBank.transact(user);
-
 	if (typeof updateResult === 'string') {
 		return updateResult;
 	}

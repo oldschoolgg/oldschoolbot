@@ -9,7 +9,7 @@ import killableMonsters, { effectiveMonsters } from '../../../src/lib/minions/da
 import { quests } from '../../../src/lib/minions/data/quests';
 import { stringMatches } from '../../../src/lib/util';
 import { minionKCommand } from '../../../src/mahoji/commands/k';
-import { cancelTaskCommand } from '../../../src/mahoji/lib/abstracted_commands/cancelTaskCommand';
+import { minionCommand } from '../../../src/mahoji/commands/minion';
 import { userStatsUpdate } from '../../../src/mahoji/mahojiSettings';
 import { mockClient } from './../util';
 
@@ -24,8 +24,6 @@ describe('Refund trips should fully refund PvM', async () => {
 		QP: 300,
 		maxed: true
 	});
-
-	//finish wildy easy
 
 	async function doDiary(collectionLogReqs?: number[], monsterScores?: Record<string, number>) {
 		if (collectionLogReqs) {
@@ -51,6 +49,7 @@ describe('Refund trips should fully refund PvM', async () => {
 		}
 	}
 
+	//do wildy diaries for wildy demi bosses
 	await doDiary(WildernessDiary.easy.collectionLogReqs, WildernessDiary.easy.monsterScores);
 	await doDiary(WildernessDiary.medium.collectionLogReqs, WildernessDiary.medium.monsterScores);
 
@@ -126,17 +125,7 @@ describe('Refund trips should fully refund PvM', async () => {
 				true
 			);
 			expect(killRes).toContain('now killing');
-			const refundRes = await cancelTaskCommand(
-				user,
-				'111111111',
-				{
-					channelId: '1',
-					deferReply: () => Promise.resolve(),
-					editReply: () => Promise.resolve(),
-					followUp: () => Promise.resolve()
-				} as any,
-				true
-			);
+			const refundRes = await user.runCommand(minionCommand, { cancel_and_refund: {} }, true);
 
 			expect(refundRes).toContain('is returning from');
 			await user.processActivities(client);
