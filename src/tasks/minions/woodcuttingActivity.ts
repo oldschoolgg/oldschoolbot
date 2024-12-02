@@ -1,6 +1,6 @@
 import { perTimeUnitChance } from '@oldschoolgg/toolkit';
 import { Time, objectEntries, percentChance, randInt, roll } from 'e';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EItem, itemID } from 'oldschooljs';
 
 import { MAX_LEVEL, MIN_LENGTH_FOR_PET, type TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
@@ -16,6 +16,7 @@ import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	const eventCounts: { [key: number]: number } = {};
@@ -362,6 +363,10 @@ export const woodcuttingTask: MinionTask = {
 				loot.add('Beaver');
 				str += "\n**You have a funny feeling you're being followed...**";
 			}
+		}
+
+		if ([EItem.MAGIC_LOGS, EItem.YEW_LOGS, EItem.TEAK_LOGS, EItem.MAPLE_LOGS].includes(log.id)) {
+			rollForMoonKeyHalf({ user, duration, loot });
 		}
 
 		// Loot received, items used, and logs/loot rolls lost message
