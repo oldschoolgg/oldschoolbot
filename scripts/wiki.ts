@@ -7,7 +7,7 @@ import '../src/lib/safeglobals';
 import process from 'node:process';
 import { groupBy, omit } from 'remeda';
 import { ClueTiers } from '../src/lib/clues/clueTiers';
-import { type CombatAchievement, CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
+import { CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
 import { wikiMonsters } from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
@@ -16,20 +16,6 @@ import { itemNameFromID } from '../src/lib/util';
 import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
 import { miningXpHr } from './wiki/miningXphr';
-
-function combatAchievementHowToFinish(ca: CombatAchievement) {
-	if ('rng' in ca) {
-		return `1 in ${ca.rng.chancePerKill} chance per kill`;
-	}
-	if ('requirements' in ca) {
-		return ca.requirements.requirements
-			.map(req => ca.requirements.formatRequirement(req))
-			.join(',')
-			.replace('Kill Count Requirement: ', '')
-			.replace('Minigame Requirements: ', '');
-	}
-	throw ca;
-}
 
 export function handleMarkdownEmbed(identifier: string, filePath: string, contentToInject: string) {
 	const contentToReplace = readFileSync(`./docs/src/content/docs/${filePath}`, 'utf8');
