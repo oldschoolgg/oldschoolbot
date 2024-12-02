@@ -1,48 +1,9 @@
-
-.site-title {
-	color: light-dark(var(--dark-brown), #f4ddcb );
-}
-
-.sidebar  {
-	summary, a {
-		color: var(--light-brown);
-	}
-
-	summary:hover, a:hover {
-		color: light-dark(var(--dark-brown), #f4ddcb );
-	}
-
-	[aria-current=page] {
-		color: var(--dark-brown);
-		background-color:  light-dark(var(--cream), var(--cream));
-	}
-
-  [aria-current=page]:hover {
-		color: var(--sl-color-accent);
-	}
+:root { font-family: "Inter", sans-serif; }
+@supports (font-variation-settings: normal) {
+  :root { font-family: "InterVariable", sans-serif; font-optical-sizing: auto; }
 }
 
 :root {
-  font-family: "InterVariable", sans-serif; font-optical-sizing: auto; 
-	color-scheme: light dark;
-
-  --light-brown: #a3785e;
-  --cream: #dcc4b1;
-  --medium-brown: #31231c;
-  --dark-brown: #1f1611;
-	
-	--sl-color-text-accent: light-dark(red, #c88440);
-	--sl-color-accent: light-dark(red, #c88440);
-
-  --sl-icon-color: light-dark(var(--dark-brown), var(--cream));
-	--secondary-bg-color: light-dark(var(--cream), #221f1e );
-	--secondary-text-color: light-dark(black, white);
-  --sl-color-text: light-dark(var(--dark-brown), #cda988);
-
-  --sl-color-accent-input:  light-dark(var(--cream), #cda988);
-  --sl-color-bg-input: light-dark(var(--cream), var( --medium-brown));
-  --color-input-bg-hover: light-dark(var(--light-brown),#4b3529);
-
   --sl-color-accent-low: #4e2d1e;
   --sl-color-accent: #3e2317;
   --sl-color-accent-high: #e5c9a8;
@@ -56,33 +17,23 @@
   --sl-color-gray-6: #1f1611;
   --sl-color-black: #130e0b;
   --sl-nav-pad-x: 1rem;
+  --sl-icon-color: #dcc4b1;
+  --sl-color-text-accent: #c88440;
+  --sl-color-text: #cda988;
   --sl-font: "Inter", sans-serif; 
   --sl-nav-pad-x: 1rem;
   --sl-font: "Inter", sans-serif; 
   --sl-color-bg-inline-code: #3d362f;
   --sl-content-width: 55rem;
- 
+
+
+  scrollbar-color: #3d312d #251d17;
   --sl-color-hairline-light: rgba(0,0,0,0);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-:root[data-theme='light'] {
-	--sl-color-text-accent: var(--light-brown);
-	--sl-color-accent: var(--light-brown);
-	 scrollbar-color: var(--cream) #fff;
-}
-
-.theme-toggle {
-  fill: var(--sl-icon-color);
-  color: var(--sl-icon-color);
-}
-
-body {
-  background-color: var(--sl-color-bg);
 }
 
 starlight-menu-button > button {
@@ -124,8 +75,8 @@ starlight-menu-button > button {
   }
 }
 
-.sidebar ul li {
-  font-weight: normal;
+.site-title {
+  color: #f4ddcb;
 }
 
 .main-pane {
@@ -134,6 +85,10 @@ starlight-menu-button > button {
 
 starlight-toc > nav > ul a[aria-current=true] {
   color: var(--sl-color-gray-1);
+}
+
+starlight-theme-select {
+  display:none;
 }
 
 .sl-markdown-content aside:not(.not-content),
@@ -279,7 +234,7 @@ starlight-toc > nav > ul > li > a > span {
 }
 
 .social-icons a {
-  font-size: 1.7em;
+  font-size: 2em;
 }
 
 .social-icons a[href*="github"] {
@@ -338,14 +293,8 @@ starlight-toc > nav > ul > li > a > span {
   @apply pl-0;
 }
 
-.sl-markdown-content ol, .sl-markdown-content ul {
-  list-style-type: disc;
-  padding-inline-start: 40px;
-}
-
-starlight-tabs ul, starlight-tabs ol {
-  list-style-type: none!important;
-  padding-inline-start: 0!important;
+.sl-markdown-content ol ol {
+  list-style-type: lower-alpha;
 }
 
 .table-wrapper {
@@ -381,14 +330,11 @@ starlight-tabs ul, starlight-tabs ol {
   @apply pr-4;
 }
 
-.sl-markdown-content th {
-  background-color: light-dark(var(--cream), var(--medium-brown));
-  padding: 0.75rem 1rem;
-  @apply font-bold;
+.sl-markdown-content td {
+  @apply py-4 px-4;
 }
 
-.sl-markdown-content td {
-  @apply py-2 px-2;
+.sl-markdown-content tr * {
   @apply text-sm;
 }
 
@@ -411,8 +357,7 @@ ol + ol li blockquote {
 }
 
 .osrs_item {
-  background-color: var(--secondary-bg-color);
-  color: var(--secondary-text-color);
+  background-color: #221f1e;
   width: max-content;
   display: flex;
   border-radius: 10px;
@@ -546,6 +491,8 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
   }
 }
 
+
+
 .sl-badge {
   font-family: "Inter", sans-serif;
 }
@@ -556,25 +503,26 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
     --sl-badge-danger-text: #fff;
 }
 
+
 .input:focus,
 .button:focus,
 .input:focus-visible,
 .button:focus-visible{
-	outline: 2px solid var(--sl-color-accent-input);
+	outline: 2px solid var(--sl-color-accent);
 	border-radius: 2px;
 }
 
 .input, .button {
-  background-color: var(--sl-color-bg-input);
+  background-color: var(--sl-color-bg-nav);
 	padding: 5px 10px;
 }
 
 .button {
 	margin: 5px;
-	border: 1px solid transparent;
+	border: 1px solid var(--sl-color-accent);
 	&:hover {
-		background-color: var(--color-input-bg-hover);
-	  border: 1px solid var(--sl-color-accent-input);
+		background-color: var(--sl-color-accent);
+		color: var(--sl-color-white);
 	}
 }
 
