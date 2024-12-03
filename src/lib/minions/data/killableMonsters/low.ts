@@ -6,6 +6,7 @@ import { resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
 import type { KillableMonster } from '../../types';
+import { QuestID } from '../quests';
 
 const killableMonsters: KillableMonster[] = [
 	{
@@ -279,7 +280,7 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 200,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush],
-		qpRequired: 150
+		requiredQuests: [QuestID.ThePathOfGlouphrie]
 	},
 	{
 		id: Monsters.WarpedTortoise.id,
@@ -290,7 +291,7 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 200,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush],
-		qpRequired: 150
+		requiredQuests: [QuestID.ThePathOfGlouphrie]
 	}
 ];
 
