@@ -481,7 +481,6 @@ export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id
 
 const globalConfigSchema = z.object({
 	clientID: z.string().min(10).max(25),
-	redisPort: z.coerce.number().int().optional(),
 	botToken: z.string().min(1),
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.boolean(),
@@ -503,7 +502,6 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
-	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
 	isProduction,

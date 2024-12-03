@@ -30,7 +30,7 @@
 		"test:types": "concurrently \"tsc --noEmit -p tests/unit\" \"tsc --noEmit -p tests/integration\" \"tsc --noEmit -p src\"",
 		"test:lint": "biome check --diagnostic-level=error",
 		"test:unit": "vitest run --config vitest.unit.config.mts",
-		"test:docker": "docker compose up --no-attach db --no-attach redis --build --abort-on-container-exit && docker compose down -v",
+		"test:docker": "docker compose up --no-attach db --build --abort-on-container-exit && docker compose down -v",
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"test:ci:unit": "pnpm concurrent \"pnpm test:unit\" \"pnpm test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"============MISC": "============",
