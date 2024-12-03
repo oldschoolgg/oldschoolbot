@@ -503,7 +503,7 @@ export const allCollectionLogs: ICollection = {
 					'Hueycoatl hide',
 					'Huasca seed'
 				]),
-				fmtProg: kcProg(Monsters.Hespori)
+				fmtProg: kcProg(Monsters.TheHueycoatl)
 			},
 			'The Inferno': {
 				kcActivity: {
