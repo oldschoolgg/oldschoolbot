@@ -241,7 +241,7 @@ const killableMonsters: KillableMonster[] = [
 			{
 				itemCost: new Bank().add('Burning amulet(5)'),
 				qtyPerMinute: 1 / 60,
-				boostPercent: 15,
+				boostPercent: 25,
 				optional: true
 			}
 		],
