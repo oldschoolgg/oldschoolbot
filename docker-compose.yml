@@ -11,14 +11,6 @@ services:
       POSTGRES_PASSWORD: postgres
       PGPORT: 5435
 
-  redis:
-    image: redis:latest
-    restart: always
-    environment:
-      - REDIS_PORT=6379
-    ports:
-      - "6379:6379"
-
   app:
     build:
       context: .
@@ -26,8 +18,8 @@ services:
       target: build-run
     depends_on:
       - db
-      - redis
+      - 
     environment:
       ROBOCHIMP_DATABASE_URL: postgresql://postgres:postgres@db:5435/robochimp_integration_test?connection_limit=10&pool_timeout=0&schema=public
       DATABASE_URL: postgresql://postgres:postgres@db:5435/osb_integration_test?connection_limit=10&pool_timeout=0&schema=public
-      WAIT_HOSTS: db:5435, redis:6379
+      WAIT_HOSTS: db:5435
