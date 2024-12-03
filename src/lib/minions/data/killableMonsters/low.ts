@@ -249,7 +249,7 @@ const killableMonsters: KillableMonster[] = [
 			{
 				gearSetup: 'wildy',
 				items: [
-					{ itemID: itemID('Venator bow'), boostPercent: 20 },
+					{ itemID: itemID('Venator bow'), boostPercent: 25 },
 					{ itemID: itemID('Webweaver bow'), boostPercent: 20 },
 					{ itemID: itemID("Craw's bow"), boostPercent: 20 }
 				]

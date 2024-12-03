@@ -256,7 +256,7 @@ export const krystiliaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Pirate,
 		amount: [62, 75],
 		weight: 3,
-		monsters: [Monsters.Pirate.id,Monsters.ZombiePirate.id],
+		monsters: [Monsters.Pirate.id, Monsters.ZombiePirate.id],
 		unlocked: true,
 		wilderness: true
 	},

@@ -266,7 +266,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.Zogre.id,
 			Monsters.Vorkath.id,
 			Monsters.ArmouredZombie.id,
-			Monsters.ZombiePirate.id,
+			Monsters.ZombiePirate.id
 		],
 		combatLevel: 10,
 		unlocked: true

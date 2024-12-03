@@ -455,7 +455,7 @@ async function wiki() {
 	wikiIssues();
 	miningXpHr();
 	clueBoosts();
-	await Promise.all([renderMonstersMarkdown()]);
+	renderMonstersMarkdown();
 	process.exit(0);
 }
 
