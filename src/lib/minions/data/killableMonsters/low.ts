@@ -269,6 +269,28 @@ const killableMonsters: KillableMonster[] = [
 		canCannon: true,
 		canBarrage: false,
 		canChinning: false
+	},
+	{
+		id: Monsters.WarpedTerrorbird.id,
+		name: Monsters.WarpedTerrorbird.name,
+		aliases: Monsters.WarpedTerrorbird.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.WarpedTerrorbird,
+		healAmountNeeded: 200,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush],
+		qpRequired: 150
+	},
+	{
+		id: Monsters.WarpedTortoise.id,
+		name: Monsters.WarpedTortoise.name,
+		aliases: Monsters.WarpedTortoise.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.WarpedTortoise,
+		healAmountNeeded: 200,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush],
+		qpRequired: 150
 	}
 ];
 

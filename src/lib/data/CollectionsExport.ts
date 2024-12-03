@@ -1858,6 +1858,7 @@ export const slayerCL = resolveItems([
 	'Ancient ceremonial legs',
 	'Ancient ceremonial gloves',
 	'Ancient ceremonial boots',
+	'Warped sceptre',
 	'Sulphur blades',
 	'Teleport anchoring scroll',
 	'Aranea boots',
