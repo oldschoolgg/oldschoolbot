@@ -13,64 +13,122 @@ const tiers = Object.keys(combatAchievements).map(t => t.toLowerCase());
 const allTasksFlat = Object.values(combatAchievements).flatMap((tier: any) =>
 	tier.tasks.map(t => ({ ...t, tier: tier.name.toLowerCase() }))
 );
+
+export type APIUser = {
+	id: string;
+	completed_ca_task_ids: number[];
+	is_ironman: boolean;
+	leagues_completed_tasks_ids: number[];
+};
+
 export function Leagues() {
 	const [tiersBeingShown, setTiersBeingShown] = useState(tiers);
 	const [tasksBeingShown, setTasksBeingShown] = useState(allTasksFlat);
+	const [hideCompleted, setHideCompleted] = useState(false);
 	const [userID, setUserID] = useState<string | null>(null);
-	// const [data, setData] = useState();
+	const [data, setData] = useState<APIUser | null>(null);
 
-	// console.log({data});
-	// useEffect(() => {
-	// 	fetch('https://api.oldschool.gg/')
-	// 		.then(response => response.json())
-	// 		.then(data => setData(data));
-	// }, []);
+	console.log({ data });
 
 	useEffect(() => {
-		setTasksBeingShown(allTasksFlat.filter(task => tiersBeingShown.includes(task.tier)));
-	}, [tiersBeingShown]);
+		setTasksBeingShown(
+			allTasksFlat.filter(task => {
+				if (hideCompleted && data?.completed_ca_task_ids.includes(task.id)) return false;
+				return tiersBeingShown.includes(task.tier);
+			})
+		);
+	}, [tiersBeingShown, data, hideCompleted]);
+
+	useEffect(() => {
+		if (localStorage) {
+			const storedUserID = localStorage.getItem('userID');
+			if (storedUserID) setUserID(storedUserID);
+
+			const storedData = localStorage.getItem(`minion.${storedUserID}`);
+			if (storedData) setData(JSON.parse(storedData));
+		}
+	}, []);
 
 	return (
 		<>
 			<div className="mt-3">
-				{/* <div className="flex flex-col">
-					<label for="user" className="text-lg font-bold">
-						User ID
+				<div className="flex flex-col">
+					<label for="user" className="font-bold">
+						Discord User ID
 					</label>
-					<div>
+					<div className="no_margin">
 						<input
 							id="user"
 							name="user"
 							value={userID ?? ''}
 							onInput={e => setUserID(e.currentTarget.value)}
-							className="w-52"
+							className="w-52 input"
 						/>
-						<button type="submit" disabled={!userID}>
+						<button
+							className="button"
+							type="submit"
+							disabled={!userID}
+							onClick={() => {
+								localStorage.setItem('userID', userID!);
+								fetch(`https://api.oldschool.gg/minion/${userID}`)
+									.then(response => response.json())
+									.then(data => {
+										setData(data);
+										if (localStorage) {
+											localStorage.setItem(`minion.${userID}`, JSON.stringify(data));
+										}
+									});
+							}}
+						>
 							Look Up
 						</button>
 					</div>
-				</div> */}
+				</div>
 				<fieldset>
 					<legend className="text-2xl font-bold"> Filters</legend>
-					{tiers.map(t => (
-						<div key={t} class="p-1 no_margin w-max">
-							<input
-								type="checkbox"
-								id={t}
-								name={t}
-								checked={tiersBeingShown.includes(t)}
-								onChange={() => {
-									tiersBeingShown.includes(t)
-										? setTiersBeingShown(tiersBeingShown.filter(i => i !== t))
-										: setTiersBeingShown([...tiersBeingShown, t]);
-								}}
-							/>
-							<label className="ml-2" for={t}>
-								{toTitleCase(t)}
-							</label>
-						</div>
-					))}
+					<div className="flex flex-row flex-wrap gap-4">
+						{tiers.map(t => (
+							<div key={t} class="p-1 no_margin w-max">
+								<input
+									type="checkbox"
+									id={t}
+									name={t}
+									checked={tiersBeingShown.includes(t)}
+									onChange={() => {
+										tiersBeingShown.includes(t)
+											? setTiersBeingShown(tiersBeingShown.filter(i => i !== t))
+											: setTiersBeingShown([...tiersBeingShown, t]);
+									}}
+								/>
+								<label className="ml-2" for={t}>
+									{toTitleCase(t)}
+								</label>
+							</div>
+						))}
+					</div>
+					<div class="p-1 no_margin w-max">
+						<input
+							id="hide_completed"
+							type="checkbox"
+							name="Hide Completed"
+							checked={hideCompleted}
+							onChange={() => setHideCompleted(!hideCompleted)}
+						/>
+						<label className="ml-2" for="hide_completed	">
+							Hide Completed Tasks
+						</label>
+					</div>
 				</fieldset>
+				{data ? (
+					<p>
+						Showing {tasksBeingShown.length}/{allTasksFlat.length} tasks
+					</p>
+				) : null}
+				{data ? (
+					<p>
+						Completed {data.completed_ca_task_ids.length}/{allTasksFlat.length} tasks
+					</p>
+				) : null}
 				<table>
 					<thead>
 						<tr>

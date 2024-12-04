@@ -25,15 +25,19 @@
   --sl-font: "Inter", sans-serif; 
   --sl-color-bg-inline-code: #3d362f;
   --sl-content-width: 55rem;
-
-
   scrollbar-color: #3d312d #251d17;
   --sl-color-hairline-light: rgba(0,0,0,0);
+
+  --sl-color-bg: #dbd8d6;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--sl-color-bg);
 }
 
 starlight-menu-button > button {
@@ -502,7 +506,6 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
     --sl-badge-danger-border: #3b0d0d;
     --sl-badge-danger-text: #fff;
 }
-
 
 .input:focus,
 .button:focus,
