@@ -27,8 +27,7 @@ export function Leagues() {
 	const [hideCompleted, setHideCompleted] = useState(false);
 	const [userID, setUserID] = useState<string | null>(null);
 	const [data, setData] = useState<APIUser | null>(null);
-
-	console.log({ data });
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		setTasksBeingShown(
@@ -67,8 +66,9 @@ export function Leagues() {
 						<button
 							className="button"
 							type="submit"
-							disabled={!userID}
+							disabled={isLoading || !userID}
 							onClick={() => {
+								setIsLoading(true);
 								localStorage.setItem('userID', userID!);
 								fetch(`https://api.oldschool.gg/minion/${userID}`)
 									.then(response => response.json())
@@ -77,7 +77,8 @@ export function Leagues() {
 										if (localStorage) {
 											localStorage.setItem(`minion.${userID}`, JSON.stringify(data));
 										}
-									});
+									})
+									.finally(() => setIsLoading(false));
 							}}
 						>
 							Look Up

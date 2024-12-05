@@ -1,9 +1,40 @@
-:root { font-family: "Inter", sans-serif; }
-@supports (font-variation-settings: normal) {
-  :root { font-family: "InterVariable", sans-serif; font-optical-sizing: auto; }
+
+.site-title {
+	color: light-dark(var(--dark-brown), #f4ddcb );
+}
+
+[data-theme="light"] {
+	 scrollbar-color: var(--cream) #fff;
+}
+
+.sidebar  {
+	summary, a {
+		color: var(--light-brown);
+	}
+
+	summary:hover, a:hover {
+		color: var(--dark-brown);
+	}
+
+	[aria-current=page] {
+		color: var(--dark-brown);
+		background-color:  light-dark(var(--cream), var(--cream));
+	}
 }
 
 :root {
+  font-family: "InterVariable", sans-serif; font-optical-sizing: auto; 
+	color-scheme: light dark;
+
+  --light-brown: #a3785e;
+  --cream: #dcc4b1;
+  --dark-brown: #1f1611;
+	
+	--sl-color-text-accent: light-dark(black, white);
+	--sl-icon-color: light-dark(red, var(--cream));
+	--secondary-bg-color: light-dark(red, #221f1e );
+	--secondary-text-color: light-dark(black, white);
+
   --sl-color-accent-low: #4e2d1e;
   --sl-color-accent: #3e2317;
   --sl-color-accent-high: #e5c9a8;
@@ -17,7 +48,6 @@
   --sl-color-gray-6: #1f1611;
   --sl-color-black: #130e0b;
   --sl-nav-pad-x: 1rem;
-  --sl-icon-color: #dcc4b1;
   --sl-color-text-accent: #c88440;
   --sl-color-text: #cda988;
   --sl-font: "Inter", sans-serif; 
@@ -25,10 +55,8 @@
   --sl-font: "Inter", sans-serif; 
   --sl-color-bg-inline-code: #3d362f;
   --sl-content-width: 55rem;
-  scrollbar-color: #3d312d #251d17;
+ 
   --sl-color-hairline-light: rgba(0,0,0,0);
-
-  --sl-color-bg: #dbd8d6;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -79,8 +107,8 @@ starlight-menu-button > button {
   }
 }
 
-.site-title {
-  color: #f4ddcb;
+.sidebar ul li {
+  font-weight: normal;
 }
 
 .main-pane {
@@ -89,10 +117,6 @@ starlight-menu-button > button {
 
 starlight-toc > nav > ul a[aria-current=true] {
   color: var(--sl-color-gray-1);
-}
-
-starlight-theme-select {
-  display:none;
 }
 
 .sl-markdown-content aside:not(.not-content),
@@ -361,7 +385,8 @@ ol + ol li blockquote {
 }
 
 .osrs_item {
-  background-color: #221f1e;
+  background-color: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
   width: max-content;
   display: flex;
   border-radius: 10px;
@@ -511,21 +536,20 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 .button:focus,
 .input:focus-visible,
 .button:focus-visible{
-	outline: 2px solid var(--sl-color-accent);
+	outline: 2px solid var(--sl-color-accent-input);
 	border-radius: 2px;
 }
 
 .input, .button {
-  background-color: var(--sl-color-bg-nav);
+  background-color: var(--sl-color-bg-input);
 	padding: 5px 10px;
 }
 
 .button {
 	margin: 5px;
-	border: 1px solid var(--sl-color-accent);
+	border: 1px solid var(--sl-color-accent-input);
 	&:hover {
-		background-color: var(--sl-color-accent);
-		color: var(--sl-color-white);
+		background-color: var(--sl-color-accent-input);
 	}
 }
 
