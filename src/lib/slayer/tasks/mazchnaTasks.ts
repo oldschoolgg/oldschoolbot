@@ -305,7 +305,8 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 			Monsters.ZombieRat.id,
 			Monsters.Zogre.id,
 			Monsters.Vorkath.id,
-			Monsters.ArmouredZombie.id
+			Monsters.ArmouredZombie.id,
+			Monsters.ZombiePirate.id
 		],
 		combatLevel: 10,
 		unlocked: true

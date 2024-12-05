@@ -5,12 +5,18 @@ import { Bank } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
 import process from 'node:process';
-import { groupBy } from 'remeda';
+import { groupBy, omit } from 'remeda';
+import { ClueTiers } from '../src/lib/clues/clueTiers';
+import { CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
 import { wikiMonsters } from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
 import { itemNameFromID } from '../src/lib/util';
+import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
+import { miningXpHr } from './wiki/miningXphr';
+import { updateAuthors } from './wiki/updateAuthors';
 
 export function handleMarkdownEmbed(identifier: string, filePath: string, contentToInject: string) {
 	const contentToReplace = readFileSync(`./docs/src/content/docs/${filePath}`, 'utf8');
@@ -289,6 +295,55 @@ function renderQuestsMarkdown() {
 	handleMarkdownEmbed('quests', 'osb/quests.mdx', markdown.toString());
 }
 
+function rendeCoxMarkdown() {
+	const markdown = new Markdown();
+
+	markdown.addLine('## Gear');
+	markdown.addLine('This is the best-in-slot gear you should use for CoX, substitute the next best items you have. ');
+	for (const gear of [
+		['mage', 'Magic Damage', COXMaxMageGear],
+		['range', 'Ranged Strength', COXMaxRangeGear],
+		['melee', 'Melee Strength', COXMaxMeleeGear]
+	] as const) {
+		markdown.addLine(`### ${toTitleCase(gear[0])}`);
+		markdown.addLine(`For ${gear[0]}, use these items, or the next best '${gear[1]}' gear you have:`);
+		markdown.addLine(
+			`- ${gear[2]
+				.allItems(false)
+				.map(id => `[[${id}]]`)
+				.join(' ')}`
+		);
+	}
+
+	markdown.addLine('## Boosts');
+	markdown.addLine(`Higher Kc makes raids faster. Here is the maximum kc that will give a boost:
+
+| Difficulty | Solo Kc | Mass Kc |
+| ---------- | ------- | ------- |
+| Normal     | 250     | 400     |
+| Challenge  | 75      | 100     |
+
+`);
+	for (const boostSet of itemBoosts) {
+		markdown.addLine(
+			`- ${boostSet
+				.map(boost => {
+					const messages = [];
+					if (!boost.mustBeEquipped) {
+						messages.push('Works from bank');
+					}
+					if (boost.mustBeCharged) {
+						messages.push('Must be charged');
+					}
+					const msgStr = messages.length > 0 ? ` (${messages.join(', ')})` : '';
+					return `${boost.boost}% boost for [[${boost.item.name}]]${msgStr}`;
+				})
+				.join(' or ')}`
+		);
+	}
+
+	handleMarkdownEmbed('cox', 'osb/Raids/cox.mdx', markdown.toString());
+}
 function wikiIssues() {
 	const untemplatedCommandRegex = /(?<!\[\[[^\]]*|[)\]]\s*)\/\w+/g;
 	const unintendedHtmlRegex = /<td>/g;
@@ -353,11 +408,56 @@ function wikiIssues() {
 	handleMarkdownEmbed('wikiissues', 'getting-started/wiki.md', markdown.toString());
 }
 
+function clueBoosts() {
+	const markdown = new Markdown();
+
+	markdown.addLine('### Global Boosts');
+	markdown.add('These boosts apply to all clues.');
+	for (const x of clueGlobalBoosts) {
+		markdown.addLine(`- ${x.boost}`);
+	}
+	markdown.addLine('- You get a boost for having relevant stash units filled');
+	markdown.addLine('- For Hard/Elite/Master, you get a boost for your attack/strength/ranged levels being higher');
+
+	const clueTierBoostsEntries = Object.entries(clueTierBoosts);
+	for (const clueTier of ClueTiers) {
+		markdown.addLine(`### ${clueTier.name} Clues Boosts`);
+		const entry = clueTierBoostsEntries.find(([key]) => key === clueTier.name)!;
+		for (const boost of entry[1]) {
+			markdown.addLine(`- ${boost.boost}`);
+		}
+	}
+
+	handleMarkdownEmbed('clueboosts', 'osb/clues.md', markdown.toString());
+}
+
+function renderCombatAchievementsFile() {
+	const finalJSON: any = {};
+	for (const [tier, data] of Object.entries(CombatAchievements)) {
+		finalJSON[tier] = {
+			...omit(data, ['staticRewards', 'length']),
+			tasks: data.tasks
+				.map(t => {
+					return {
+						...t,
+						requirements: undefined
+					};
+				})
+				.sort((a, b) => a.id - b.id)
+		};
+	}
+	writeFileSync('data/combat_achievements.json', JSON.stringify(finalJSON, null, 4));
+}
+
 async function wiki() {
 	renderCombatAchievementsFile();
 	renderQuestsMarkdown();
+	rendeCoxMarkdown();
 	wikiIssues();
-	await Promise.all([renderCAMarkdown(), renderMonstersMarkdown()]);
+	miningXpHr();
+	clueBoosts();
+	renderMonstersMarkdown();
+	updateAuthors();
 	process.exit(0);
 }
 

@@ -2,11 +2,13 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import {
 	Bank,
 	BrimstoneChest,
+	EItem,
 	EliteMimicTable,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
-	Openables
+	Openables,
+	ZombiePiratesLocker
 } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { Item, ItemBank, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
@@ -451,6 +453,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['intricate pouch', 'intricate'],
 		output: Openables.IntricatePouch.table,
 		allItems: Openables.IntricatePouch.table.allItems
+	},
+	{
+		name: "Zombie Pirate's Locker",
+		id: EItem.ZOMBIE_PIRATE_KEY,
+		openedItem: getOSItem('Zombie pirate key'),
+		aliases: ['zombie pirate key', 'zombie pirate locker', 'pirate locker'],
+		output: ZombiePiratesLocker.table,
+		allItems: ZombiePiratesLocker.table.allItems
 	}
 ];
 

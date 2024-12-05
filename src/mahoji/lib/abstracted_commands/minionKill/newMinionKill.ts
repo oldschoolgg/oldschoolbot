@@ -90,7 +90,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 	}
 
 	if (monster.canBePked && !isTryingToUseWildy) {
-		return `You can't kill ${monster.name} outside the wilderness.`;
+		return `You can't kill ${monster.name} outside the wilderness. Use this instead: \`/k name:${monster.name} wilderness:True\``;
 	}
 
 	const isInWilderness = Boolean(

@@ -76,7 +76,8 @@ export enum SlayerTaskUnlocksEnum {
 	IWildyMoreSlayer = 200,
 	Revenenenenenants = 201,
 	EyeSeeYou = 202,
-	MoreEyesThanSense = 203
+	MoreEyesThanSense = 203,
+	WarpedReality = 204
 }
 
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
@@ -592,6 +593,13 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 3.3,
 		canBeRemoved: true,
 		aliases: ['extend araxytes']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.WarpedReality,
+		name: 'Warped Reality',
+		desc: 'Konar, Duradel, Nieve, and Chaeldar will be able to assign warped creatures as your task.',
+		slayerPointCost: 60,
+		aliases: ['warped reality']
 	}
 ];
 
