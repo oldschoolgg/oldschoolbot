@@ -122,11 +122,7 @@ export function Leagues() {
 				</fieldset>
 				{data ? (
 					<p>
-						Showing {tasksBeingShown.length}/{allTasksFlat.length} tasks
-					</p>
-				) : null}
-				{data ? (
-					<p>
+						Showing {tasksBeingShown.length}/{allTasksFlat.length} tasks{' / '}
 						Completed {data.completed_ca_task_ids.length}/{allTasksFlat.length} tasks
 					</p>
 				) : null}
@@ -140,7 +136,14 @@ export function Leagues() {
 					</thead>
 					<tbody>
 						{tasksBeingShown.map(task => (
-							<tr key={task.id}>
+							<tr
+								key={task.id}
+								className={
+									data?.completed_ca_task_ids.includes(task.id)
+										? 'bg-green-500 bg-opacity-20'
+										: undefined
+								}
+							>
 								<td>{task.name}</td>
 								<td>{task.desc}</td>
 								<td>{toTitleCase(task.tier)}</td>

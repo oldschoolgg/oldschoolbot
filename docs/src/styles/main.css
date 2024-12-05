@@ -28,6 +28,7 @@
 
   --light-brown: #a3785e;
   --cream: #dcc4b1;
+  --medium-brown: #31231c;
   --dark-brown: #1f1611;
 	
 	--sl-color-text-accent: light-dark(red, #c88440);
@@ -36,7 +37,11 @@
   --sl-icon-color: light-dark(var(--dark-brown), var(--cream));
 	--secondary-bg-color: light-dark(var(--cream), #221f1e );
 	--secondary-text-color: light-dark(black, white);
-  --sl-color-text:  light-dark(var(--dark-brown), #cda988);
+  --sl-color-text: light-dark(var(--dark-brown), #cda988);
+
+  --sl-color-accent-input:  light-dark(var(--cream), #cda988);
+  --sl-color-bg-input: light-dark(var(--cream), var( --medium-brown));
+  --color-input-bg-hover: light-dark(var(--light-brown),#4b3529);
 
   --sl-color-accent-low: #4e2d1e;
   --sl-color-accent: #3e2317;
@@ -365,11 +370,14 @@ starlight-toc > nav > ul > li > a > span {
   @apply pr-4;
 }
 
-.sl-markdown-content td {
-  @apply py-4 px-4;
+.sl-markdown-content th {
+  background-color: light-dark(var(--cream), var(--medium-brown));
+  padding: 0.75rem 1rem;
+  @apply font-bold;
 }
 
-.sl-markdown-content tr * {
+.sl-markdown-content td {
+  @apply py-2 px-2;
   @apply text-sm;
 }
 
@@ -552,9 +560,10 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 
 .button {
 	margin: 5px;
-	border: 1px solid var(--sl-color-accent-input);
+	border: 1px solid transparent;
 	&:hover {
-		background-color: var(--sl-color-accent-input);
+		background-color: var(--color-input-bg-hover);
+	  border: 1px solid var(--sl-color-accent-input);
 	}
 }
 
