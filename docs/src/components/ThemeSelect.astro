@@ -10,8 +10,6 @@ const parseTheme = (theme: unknown): Theme => theme === 'auto' || theme === 'dar
 const loadTheme = (): Theme => parseTheme(typeof localStorage !== 'undefined' && localStorage.getItem(storageKey));
 
 function onThemeChange(theme: Theme): void {
-	console.log('theme', theme);
-	StarlightThemeProvider.updatePickers(theme);
 	document.documentElement.dataset.theme = theme === 'auto' ? getPreferredColorScheme() : theme;
 	storeTheme(theme);
 
@@ -64,20 +62,10 @@ if (typeof window !== 'undefined') {
   </svg>
 </button> 
 <style is:global>
-@import "https://unpkg.com/open-props/easings.min.css";
-
 #theme-toggle {
   height: 32px;
   width: 32px;
 }
-
-
-/* [data-theme="light"] #theme-toggle > :is(.moon, .sun, .sun-beams) {
-  fill: red;
-}
-[data-theme="dark"] #theme-toggle > :is(.moon, .sun, .sun-beams) {
-  fill: red;
-} */
 
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
   transform-origin: center;

@@ -16,6 +16,7 @@ import { itemNameFromID } from '../src/lib/util';
 import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
 import { miningXpHr } from './wiki/miningXphr';
+import { updateAuthors } from './wiki/updateAuthors';
 
 export function handleMarkdownEmbed(identifier: string, filePath: string, contentToInject: string) {
 	const contentToReplace = readFileSync(`./docs/src/content/docs/${filePath}`, 'utf8');
@@ -456,6 +457,7 @@ async function wiki() {
 	miningXpHr();
 	clueBoosts();
 	renderMonstersMarkdown();
+	updateAuthors();
 	process.exit(0);
 }
 

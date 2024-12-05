@@ -11,7 +11,7 @@ function toTitleCase(str: string) {
 
 const tiers = Object.keys(combatAchievements).map(t => t.toLowerCase());
 const allTasksFlat = Object.values(combatAchievements).flatMap((tier: any) =>
-	tier.tasks.map(t => ({ ...t, tier: tier.name.toLowerCase() }))
+	tier.tasks.map((t: any) => ({ ...t, tier: tier.name.toLowerCase() }))
 );
 
 export type APIUser = {
