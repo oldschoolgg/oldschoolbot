@@ -491,5 +491,12 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true,
 		slayerLevel: 92
 	},
+	{
+		monster: Monsters.WarpedTerrorbird,
+		amount: [120, 185],
+		weight: 6,
+		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
+		unlocked: false
+	},
 	...bossTasks
 ];

@@ -174,6 +174,9 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 		!myUnlocks.includes(SlayerTaskUnlocksEnum.IWildyMoreSlayer)
 	)
 		return false;
+
+	if (stringMatches(lmon, 'warped tortoise') && !myUnlocks.includes(SlayerTaskUnlocksEnum.WarpedReality))
+		return false;
 	return true;
 }
 

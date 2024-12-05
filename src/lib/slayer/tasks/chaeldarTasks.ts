@@ -397,5 +397,12 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		slayerLevel: 48,
 		unlocked: true
 	},
+	{
+		monster: Monsters.WarpedTerrorbird,
+		amount: [70, 130],
+		weight: 6,
+		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
+		unlocked: false
+	},
 	...bossTasks
 ];
