@@ -40,7 +40,7 @@ export const PreactThemeSelect = () => {
 			console.error('No theme toggle found');
 		}
 
-		onThemeChange(loadTheme() || 'auto');
+		onThemeChange(loadTheme());
 
 		return () => {
 			matchMedia('(prefers-color-scheme: light)').removeEventListener('change', preferredSchemeChangeListener);
