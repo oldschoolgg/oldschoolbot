@@ -863,10 +863,11 @@ const killableBosses: KillableMonster[] = [
 			defence: 70,
 			hitpoints: 70
 		},
+
+		attackStylesUsed: [GearStat.AttackSlash],
+		attackStyleToUse: GearStat.AttackSlash,
 		defaultAttackStyles: [SkillsEnum.Attack],
-		customMonsterHP: 575,
-		combatXpMultiplier: 1.2,
-		healAmountNeeded: 20 * 200,
+		healAmountNeeded: 20 * 10,
 		minimumGearRequirements: {
 			melee: {
 				...new Gear({
@@ -902,6 +903,144 @@ const killableBosses: KillableMonster[] = [
 			{
 				itemCost: new Bank().add('Cooked karambwan'),
 				qtyPerKill: 0.24
+			}
+		]
+	},
+	{
+		id: Monsters.Amoxliatl.id,
+		name: Monsters.Amoxliatl.name,
+		aliases: Monsters.Amoxliatl.aliases,
+		timeToFinish: Time.Minute * 3,
+		respawnTime: 500,
+		table: Monsters.Amoxliatl,
+		requiredQuests: [QuestID.TheHeartofDarkness],
+		qpRequired: 100,
+		deathProps: {
+			hardness: 0.2,
+			steepness: 0.99
+		},
+		equippedItemBoosts: [
+			{
+				items: [{ boostPercent: 7, itemID: itemID('Avernic defender') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 7, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 7, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 7, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(
+					(id, index) => ({
+						boostPercent: index === 0 ? 10 : 5,
+						itemID: id
+					})
+				),
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(
+					(id, index) => ({
+						boostPercent: index === 0 ? 10 : 5,
+						itemID: id
+					})
+				),
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 5, itemID: id })),
+				gearSetup: 'melee',
+				required: false
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Pendant of ates (inert)')]: 5
+			},
+			{
+				[itemID('Dragon claws')]: 5
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID('Scythe of vitur'),
+						boostPercent: 25
+					}
+				]
+			}
+		],
+		levelRequirements: {
+			prayer: 43,
+			attack: 65,
+			strength: 65,
+			defence: 65,
+			hitpoints: 65
+		},
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackMagic],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		healAmountNeeded: 40 * 10,
+		minimumGearRequirements: {
+			melee: {
+				...new Gear({
+					neck: 'Amulet of fury',
+					cape: 'Fire cape',
+					body: 'Bandos chestplate',
+					legs: 'Bandos tassets',
+					hands: 'Ferocious gloves',
+					feet: 'Dragon boots',
+					ring: 'Berserker ring (i)',
+					ammo: "Rada's blessing 3"
+				}).stats,
+				defence_magic: 0,
+				prayer: 0,
+				defence_crush: 0,
+				defence_ranged: 0,
+				defence_slash: 0,
+				defence_stab: 0
+			}
+		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Super restore(4)'),
+				qtyPerKill: 0.2,
+				alternativeConsumables: [
+					{
+						itemCost: new Bank().add('Prayer potion(4)'),
+						qtyPerKill: 0.2
+					}
+				]
+			},
+			{
+				itemCost: new Bank().add('Super combat potion(4)'),
+				qtyPerMinute: 0.03,
+				optional: true,
+				boostPercent: 7
 			}
 		]
 	}

@@ -4,8 +4,8 @@ import { visitParents } from 'unist-util-visit-parents';
 
 import bsoItemsJson from '../../../data/bso_items.json';
 import commandsJson from '../../../data/osb.commands.json';
+import { authorsMap } from '../../../scripts/wiki/authors.js';
 import { SkillsArray } from '../../../src/lib/skilling/types.js';
-import { authorsMap } from './authors.js';
 
 const bsoItems = Object.entries(bsoItemsJson);
 

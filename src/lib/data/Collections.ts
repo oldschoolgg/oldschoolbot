@@ -27,6 +27,7 @@ import {
 	aerialFishingCL,
 	alchemicalHydraCL,
 	allPetsCL,
+	amoxliatlCL,
 	araxxorCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
@@ -173,6 +174,11 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.AlchemicalHydra.allItems,
 				items: alchemicalHydraCL,
 				fmtProg: kcProg(Monsters.AlchemicalHydra)
+			},
+			Amoxliatl: {
+				allItems: uniqueArr([...amoxliatlCL, ...Monsters.Amoxliatl.allItems]),
+				items: amoxliatlCL,
+				fmtProg: kcProg(Monsters.Amoxliatl)
 			},
 			Araxxor: {
 				alias: [...Monsters.Araxxor.aliases, 'rax'],
@@ -384,7 +390,7 @@ export const allCollectionLogs: ICollection = {
 					'Hueycoatl hide',
 					'Huasca seed'
 				]),
-				fmtProg: kcProg(Monsters.Hespori)
+				fmtProg: kcProg(Monsters.TheHueycoatl)
 			},
 			'The Inferno': {
 				kcActivity: {

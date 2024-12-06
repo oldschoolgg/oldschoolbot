@@ -18,10 +18,9 @@ import { Time, chunk, noOp, notEmpty, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { clImageGenerator } from '../../lib/collectionLogTask';
-import { BOT_TYPE, Emoji } from '../../lib/constants';
+import { BOT_TYPE, Emoji, globalConfig } from '../../lib/constants';
 
 import { channelIsSendable, getUsername, getUsernameSync, isValidNickname, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
@@ -686,7 +685,7 @@ export const bingoCommand: OSBMahojiCommand = {
 				return 'Invalid title.';
 			}
 			const member = await channel.guild.members.fetch(userID).catch(noOp);
-			if (production && (!member || !member.permissions.has('Administrator'))) {
+			if (globalConfig.isProduction && (!member || !member.permissions.has('Administrator'))) {
 				return 'You can only use a notifications channel if you are an Administrator of that server.';
 			}
 			if (channel.guild.id !== interaction.guildId) {

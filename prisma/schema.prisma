@@ -138,6 +138,8 @@ model ClientStorage {
   grand_exchange_total_tax BigInt  @default(0)
   grand_exchange_tax_bank  BigInt  @default(0)
 
+  maxing_message String @default("Congratulations on maxing!")
+
   @@map("clientStorage")
 }
 

@@ -6,8 +6,8 @@ export const ZombiePirateTable = new LootTable()
 
 	/* Pre-roll */
 	.oneIn(2, new LootTable()) // 'Nothing' drop
-	.oneIn(24, 'Zombie pirate key')
-	.oneIn(20_000, 'Teleport anchoring scroll')
+	.tertiary(24, 'Zombie pirate key')
+	.tertiary(20_000, 'Teleport anchoring scroll')
 
 	/* Runes */
 	.add('Blood rune', [30, 60], 4)

@@ -1,3 +1,4 @@
+import { Amoxliatl } from './Amoxliatl';
 import { Araxxor } from './Araxxor';
 import { AwakenedDukeSucellus } from './AwakenedDukeSucellus';
 import { AwakenedTheLeviathan } from './AwakenedTheLeviathan';
@@ -60,6 +61,7 @@ export const allBosses = {
 	AwakenedVardorvis,
 	Scurrius,
 	TheHueycoatl,
+	Amoxliatl,
 	...allWildyBosses,
 	...allSlayerBosses
 };

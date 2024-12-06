@@ -1,4 +1,4 @@
-import { production } from '../../config';
+import { globalConfig } from '../../lib/constants';
 import type { OSBMahojiCommand } from '../lib/util';
 import { activitiesCommand } from './activities';
 import { adminCommand } from './admin';
@@ -169,7 +169,7 @@ export const allCommands: OSBMahojiCommand[] = [
 	xpCommand
 ];
 
-if (!production && testPotatoCommand) {
+if (!globalConfig.isProduction && testPotatoCommand) {
 	allCommands.push(testPotatoCommand);
 }
 

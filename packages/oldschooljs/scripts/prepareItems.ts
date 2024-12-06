@@ -29,10 +29,15 @@ for (const [toChange, toCopy] of equipmentModSrc) {
 
 const itemsToRename = [
 	{
-		id: 30105,
+		id: 30_105,
 		name: 'Tooth half of key (moon key)'
+	},
+	{
+		id: 30_107,
+		name: 'Loop half of key (moon key)'
 	}
 ];
+
 const itemsBeingModified = new Set([...equipmentModSrc.map(i => i[0]), ...itemsToRename.map(i => i.id)]);
 
 const newItemJSON: { [key: string]: Item } = {};

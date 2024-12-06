@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
+import { QuestID } from '../../../minions/data/quests';
 
 const {
 	BeardedBandit,
@@ -23,6 +24,7 @@ const {
 	TzHaarHur,
 	Vyre,
 	WarriorWoman,
+	WealthyCitizen,
 	YanilleWatchman
 } = Monsters;
 
@@ -34,6 +36,7 @@ export interface Stealable {
 	xp: number;
 	qpRequired?: number;
 	fireCapeRequired?: boolean;
+	requiredQuests?: QuestID[];
 	table: LootTable;
 	id: number;
 	petChance: number;
@@ -530,6 +533,22 @@ const pickpocketables: Stealable[] = [
 		petChance: 257_211
 	},
 	{
+		name: 'Wealthy Citizen',
+		type: 'pickpockable',
+		level: 50,
+		xp: 96,
+		aliases: ['wealthy', 'varlamore'],
+		table: WealthyCitizen.pickpocketTable!,
+		id: WealthyCitizen.id,
+		stunTime: 5,
+		stunDamage: 3,
+		slope: 100.0, //guaranteed
+		intercept: 0,
+		customTickRate: 10, // 2 tick thieving for 20s, downtime for ~80s
+		petChance: 257_211,
+		requiredQuests: [QuestID.ChildrenOfTheSun]
+	},
+	{
 		name: 'Desert Bandit',
 		type: 'pickpockable',
 		level: 53,
@@ -605,39 +624,39 @@ const pickpocketables: Stealable[] = [
 		name: 'Paladin',
 		type: 'pickpockable',
 		level: 70,
-		xp: 151.7,
+		xp: 131.8,
 		table: Paladin.pickpocketTable!,
 		id: Paladin.id,
 		stunTime: 5,
 		stunDamage: 3,
-		slope: 0.404_29,
-		intercept: 18.955_29,
+		slope: 0.512_07,
+		intercept: 16.105_17,
 		petChance: 127_056
 	},
 	{
 		name: 'Gnome',
 		type: 'pickpockable',
 		level: 75,
-		xp: 198.5,
+		xp: 133.3,
 		table: Gnome.pickpocketTable!,
 		id: Gnome.id,
 		stunTime: 5,
 		stunDamage: 1,
-		slope: 0.475_65,
-		intercept: 0.180_65,
+		slope: 0.520_83,
+		intercept: 17.187_5,
 		petChance: 108_718
 	},
 	{
 		name: 'Hero',
 		type: 'pickpockable',
 		level: 80,
-		xp: 275,
+		xp: 163.3,
 		table: Hero.pickpocketTable!,
 		id: Hero.id,
 		stunTime: 6,
-		stunDamage: 4,
-		slope: 0.390_56,
-		intercept: 0.784_56,
+		stunDamage: 3,
+		slope: 0.472_63,
+		intercept: 16.099_47,
 		petChance: 99_175
 	},
 	{

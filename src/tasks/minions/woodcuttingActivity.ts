@@ -1,6 +1,6 @@
 import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
 import { Time, objectEntries, percentChance, randInt } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import type { TwitcherGloves } from '../../lib/constants';
 import { Emoji, Events } from '../../lib/constants';
@@ -14,6 +14,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { resolveItems, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
@@ -332,6 +333,10 @@ export const woodcuttingTask: MinionTask = {
 					)} Woodcutting!`
 				);
 			}
+		}
+
+		if ([EItem.MAGIC_LOGS, EItem.YEW_LOGS, EItem.TEAK_LOGS, EItem.MAPLE_LOGS].includes(log.id)) {
+			rollForMoonKeyHalf({ user, duration, loot });
 		}
 
 		// Loot received, items used, and logs/loot rolls lost message

@@ -9,8 +9,7 @@ import { Time, clamp, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { production } from '../../config';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
+import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 
@@ -635,7 +634,7 @@ export async function pinTripCommand(
 		emoji = res[3];
 
 		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
+		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && globalConfig.isProduction) {
 			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
 		}
 	}

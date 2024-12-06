@@ -1549,7 +1549,8 @@ export const allPetsCL = resolveItems([
 	'Scurry',
 	'Smol heredit',
 	'Nid',
-	'Huberte'
+	'Huberte',
+	'Moxi'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1857,7 +1858,13 @@ export const slayerCL = resolveItems([
 	'Ancient ceremonial legs',
 	'Ancient ceremonial gloves',
 	'Ancient ceremonial boots',
-	'Aranea boots'
+	'Warped sceptre',
+	'Sulphur blades',
+	'Teleport anchoring scroll',
+	'Aranea boots',
+	'Glacial temotli',
+	'Pendant of ates (inert)',
+	'Frozen tear'
 ]);
 
 export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
@@ -2379,3 +2386,5 @@ export const araxxorCL = resolveItems([
 	'Jar of venom',
 	'Coagulated venom'
 ]);
+
+export const amoxliatlCL = resolveItems(['Moxi', 'Glacial temotli', 'Pendant of ates (inert)', 'Frozen tear']);

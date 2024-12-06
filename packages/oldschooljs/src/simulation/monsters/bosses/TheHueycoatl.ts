@@ -5,11 +5,14 @@ const TheHueycoatlTable = new LootTable()
 	.every('Big bones')
 	.tertiary(50, 'Clue scroll (hard)')
 	.tertiary(150, 'Tooth half of key (moon key)')
-	.tertiary(400, 'Huberte')
+	.tertiary(400 * 3.5, 'Huberte')
 
 	.oneIn(
 		23,
-		new LootTable().add('Hueycoatl hide', 1, 6).add('Tome of earth (empty)', 1, 3).add('Dragon hunter wand', 1, 1)
+		new LootTable()
+			.add('Hueycoatl hide', [2, 3], 6)
+			.add('Tome of earth (empty)', 1, 3)
+			.add('Dragon hunter wand', 1, 1)
 	)
 	.add('Rune mace', [1, 26], 3)
 	.add('Rune scimitar', [1, 20], 3)

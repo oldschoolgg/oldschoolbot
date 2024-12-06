@@ -1,6 +1,5 @@
-import { SupportServer } from '../config';
 import { perkTierCache } from './cache';
-import { BitField, PerkTier, Roles } from './constants';
+import { BitField, PerkTier, Roles, globalConfig } from './constants';
 import { roboChimpCache } from './perkTier';
 
 export const allPerkBitfields: BitField[] = [
@@ -27,7 +26,7 @@ function getUsersPerkTierRaw(user: { bitfield: BitField[]; id: string }): PerkTi
 	) {
 		elligibleTiers.push(PerkTier.Two);
 	} else {
-		const guild = globalClient.guilds.cache.get(SupportServer);
+		const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
 		const member = guild?.members.cache.get(user.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
 			elligibleTiers.push(PerkTier.One);

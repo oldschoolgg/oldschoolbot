@@ -1,11 +1,13 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { perTimeUnitChance, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { BaseMessageOptions } from 'discord.js';
 import { escapeMarkdown, time } from 'discord.js';
 import { Time } from 'e';
-import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
+import { type Bank, convertXPtoLVL } from 'oldschooljs/dist/util/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 
+import { MUserClass } from '../MUser';
 import { Emoji } from '../constants';
+import { QuestID } from '../minions/data/quests';
 import type { SkillsEnum } from '../skilling/types';
 import type { Peak } from './../tickers';
 
@@ -102,4 +104,12 @@ export function checkPeakTimes(): BaseMessageOptions {
 	return {
 		content: str
 	};
+}
+
+export function rollForMoonKeyHalf({ user, duration, loot }: { user: MUser | boolean; duration: number; loot: Bank }) {
+	if (user instanceof MUserClass && !user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) return;
+	if (!user) return;
+	perTimeUnitChance(duration, 1, Time.Minute * 60, () => {
+		loot.add('Loop half of key (moon key)');
+	});
 }

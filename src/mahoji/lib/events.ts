@@ -78,7 +78,7 @@ export const onStartup = logWrapFn('onStartup', async () => {
 		: bulkUpdateCommands({
 				client: globalClient.mahojiClient,
 				commands: Array.from(globalClient.mahojiClient.commands.values()),
-				guildID: globalConfig.testingServerID
+				guildID: globalConfig.supportServerID
 			});
 
 	initCrons();
@@ -92,7 +92,7 @@ export const onStartup = logWrapFn('onStartup', async () => {
 
 	await Promise.all([
 		globalClient.application.commands.fetch({
-			guildId: globalConfig.isProduction ? undefined : globalConfig.testingServerID
+			guildId: globalConfig.isProduction ? undefined : globalConfig.supportServerID
 		}),
 		updateTestBotStatus(),
 		sendStartupMessage,
