@@ -10,7 +10,6 @@ import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
 
-import { SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events, gitHash, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
@@ -29,9 +28,9 @@ import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
-if (SENTRY_DSN) {
+if (globalConfig.sentryDSN) {
 	init({
-		dsn: SENTRY_DSN,
+		dsn: globalConfig.sentryDSN,
 		enableTracing: false,
 		defaultIntegrations: false,
 		integrations: [],
@@ -67,7 +66,7 @@ const client = new OldSchoolBotClient({
 		},
 		GuildEmojiManager: {
 			maxSize: 1,
-			keepOverLimit: i => [globalConfig.testingServerID, SupportServer].includes(i.guild.id)
+			keepOverLimit: i => globalConfig.supportServerID === i.guild.id
 		},
 		GuildStickerManager: { maxSize: 0 },
 		PresenceManager: { maxSize: 0 },
@@ -100,7 +99,6 @@ const client = new OldSchoolBotClient({
 });
 
 export const mahojiClient = new MahojiClient({
-	developmentServerID: globalConfig.testingServerID,
 	applicationID: globalConfig.clientID,
 	commands: allCommands,
 	handlers: {

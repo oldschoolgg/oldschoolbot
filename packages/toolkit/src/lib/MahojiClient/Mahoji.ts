@@ -202,7 +202,6 @@ export type ICommand = Readonly<{
 }>;
 
 interface MahojiOptions {
-	developmentServerID: string;
 	applicationID: string;
 	handlers?: Handlers;
 	djsClient: Client;
@@ -226,13 +225,11 @@ export interface Handlers {
 
 export class MahojiClient {
 	commands: Map<string, ICommand> = new Map();
-	developmentServerID: string;
 	applicationID: string;
 	handlers: Handlers;
 	djsClient: Client;
 
 	constructor(options: MahojiOptions) {
-		this.developmentServerID = options.developmentServerID;
 		this.applicationID = options.applicationID;
 		this.handlers = options.handlers ?? {};
 		this.djsClient = options.djsClient;

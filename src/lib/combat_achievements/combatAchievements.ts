@@ -1,5 +1,5 @@
 import type { activity_type_enum } from '@prisma/client';
-import { deepClone, notEmpty, roll, sumArr } from 'e';
+import { deepClone, notEmpty, roll, sumArr, uniqueArr } from 'e';
 
 import type { Item } from 'oldschooljs';
 import type { Requirements } from '../structures/Requirements';
@@ -156,6 +156,7 @@ export const allCombatAchievementTasks = entries.flatMap(i => i[1].tasks);
 
 const allCATaskIDs = entries.flatMap(i => i[1].tasks.map(t => t.id));
 assert(allCATaskIDs.length === new Set(allCATaskIDs).size);
+assert(uniqueArr(entries.flatMap(i => i[1].tasks.map(t => t.name))).length === new Set(allCATaskIDs).size);
 assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATaskIDs.length);
 const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 

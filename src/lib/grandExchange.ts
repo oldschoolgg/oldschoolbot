@@ -7,7 +7,6 @@ import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 
-import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, ONE_TRILLION, PerkTier, globalConfig } from './constants';
 import { marketPricemap } from './marketPrices';
@@ -233,12 +232,12 @@ class GrandExchangeSingleton {
 
 	async lockGE(reason: string) {
 		if (this.locked) return;
-		const idsToNotify = [...ADMIN_IDS, ...OWNER_IDS];
+		const idsToNotify = globalConfig.adminUserIDs;
 		await sendToChannelID(globalConfig.geAdminChannelID, {
 			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
 				.map(i => userMention(i))
 				.join(', ')}`,
-			allowedMentions: production ? { users: idsToNotify } : undefined
+			allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
 		}).catch(noOp);
 		await mahojiClientSettingsUpdate({
 			grand_exchange_is_locked: true
@@ -976,7 +975,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	}
 
 	async totalReset() {
-		if (production) throw new Error("You can't reset the GE in production.");
+		if (globalConfig.isProduction) throw new Error("You can't reset the GE in production.");
 		await mahojiClientSettingsUpdate({
 			grand_exchange_is_locked: false,
 			grand_exchange_tax_bank: 0,

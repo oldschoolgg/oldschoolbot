@@ -1,11 +1,12 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
+import { quests } from '../../lib/minions/data/quests';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
 import { stealables } from '../../lib/skilling/skills/thieving/stealables';
@@ -75,6 +76,17 @@ export const stealCommand: OSBMahojiCommand = {
 			} a ${stealable.name}.`;
 		}
 
+		if (stealable.requiredQuests) {
+			const incompleteQuest = stealable.requiredQuests.find(
+				quest => !user.user.finished_quest_ids.includes(quest)
+			);
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to steal from ${stealable.name}.`;
+			}
+		}
+
 		if (stealable.fireCapeRequired) {
 			if (user.cl.amount('Fire cape') === 0) {
 				return `In order to ${
@@ -100,7 +112,7 @@ export const stealCommand: OSBMahojiCommand = {
 			return 'This NPC/Stall is missing variable respawnTime.';
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Pickpocket');
+		const maxTripLength = (stealable.name === 'Wealthy Citizen' ? 2 : 1) * calcMaxTripLength(user, 'Pickpocket');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToTheft);

@@ -1,14 +1,9 @@
 # Klasa
 *.log
-/config/private.js
-/config/private.json
-private.json
 trivia-questions.json
 dist/
-bwd/
 icon_cache/
 .env
-queries.txt
 /logs
 
 .yarn
@@ -27,15 +22,10 @@ node_modules/
 # Optional npm cache directory
 .npm
 
-# Optional eslint cache
-.eslintcache
-
 /coverage
 *.cpuprofile
 
 cache.json
-
-tests/**/*.tsbuildinfo
 
 .pnp.*
 .yarn/*
@@ -48,10 +38,8 @@ item/
 
 tmp
 
-
 robochimp
 wiki.xml
 
-.pnpm-store
 *.tsbuildinfo
 */coverage

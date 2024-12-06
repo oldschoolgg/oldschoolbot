@@ -7,7 +7,6 @@ import { Items } from 'oldschooljs';
 
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { command_name_enum } from '@prisma/client';
-import { SupportServer, production } from '../config';
 import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { BitField, Channel, Emoji, globalConfig } from './constants';
@@ -45,7 +44,7 @@ const userCache = new LRUCache<string, number>({ max: 1000 });
 function rareRoles(msg: Message) {
 	if (!globalConfig.isProduction) return;
 
-	if (!msg.guild || msg.guild.id !== SupportServer) {
+	if (!msg.guild || msg.guild.id !== globalConfig.supportServerID) {
 		return;
 	}
 
@@ -58,7 +57,7 @@ function rareRoles(msg: Message) {
 	for (const [roleID, chance, name] of rareRolesSrc) {
 		if (roll(chance / 10)) {
 			if (msg.member?.roles.cache.has(roleID)) continue;
-			if (!production && msg.channel.isSendable()) {
+			if (!globalConfig.isProduction && msg.channel.isSendable()) {
 				return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
 			}
 			msg.member?.roles.add(roleID);

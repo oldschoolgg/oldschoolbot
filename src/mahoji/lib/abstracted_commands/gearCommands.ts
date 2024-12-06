@@ -5,7 +5,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
+import { PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
 import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
 import { GearStat } from '../../../lib/gear/types';
@@ -19,7 +19,6 @@ import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { mahojiParseNumber } from '../../mahojiSettings';
 
 import { getSimilarItems } from '../../../lib/data/similarItems';
 
@@ -119,19 +118,8 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	};
 }
 
-async function gearEquipMultiCommand(
-	user: MUser,
-	interaction: ChatInputCommandInteraction,
-	setup: string,
-	items: string
-) {
+async function gearEquipMultiCommand(user: MUser, setup: string, items: string) {
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
-	if (setup === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
-			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
-		);
-	}
 
 	// We must update the user after any confirmation because the bank/gear could change from something else.
 	await user.sync();
@@ -161,6 +149,12 @@ async function gearEquipMultiCommand(
 	if (skillFailBank!.length > 0) {
 		content += `\nThese items failed to be equipped as you don't have the requirements: ${skillFailBank}.`;
 	}
+
+	if (setup === 'wildy') {
+		content +=
+			"\n\nYou're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this.";
+	}
+
 	return {
 		content,
 		files: [{ name: 'gear.jpg', attachment: image }]
@@ -178,7 +172,7 @@ export async function gearEquipCommand(args: {
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { interaction, userID, setup, item, items, preset, quantity: _quantity, auto } = args;
+	const { userID, setup, item, items, preset, quantity: _quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	const user = await mUserFetch(userID);
 	if (minionIsBusy(user.id)) {
@@ -186,7 +180,7 @@ export async function gearEquipCommand(args: {
 	}
 
 	if (items) {
-		return gearEquipMultiCommand(user, interaction, setup, items);
+		return gearEquipMultiCommand(user, setup, items);
 	}
 	if (setup === 'other' && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
@@ -197,59 +191,13 @@ export async function gearEquipCommand(args: {
 	if (auto) {
 		return autoEquipCommand(user, setup, auto);
 	}
-	const itemToEquip = getItem(item);
-	if (!itemToEquip) return "You didn't supply the name of an item or preset you want to equip.";
-	const quantity = mahojiParseNumber({ input: _quantity ?? 1, min: 1, max: MAX_INT_JAVA }) ?? 1;
-	if (!itemToEquip.equipable_by_player || !itemToEquip.equipment) return "This item isn't equipable.";
 
-	const bank = new Bank(user.bank);
-	const cost = new Bank().add(itemToEquip.id, quantity);
-	if (!bank.has(cost)) return `You don't own ${cost}.`;
-
-	const dbKey = `gear_${setup}` as const;
-	const allGear = user.gear;
-	const currentEquippedGear = allGear[setup];
-
-	if (!itemToEquip.stackable && quantity > 1) {
-		return "You can't equip more than 1 of this item at once, as it isn't stackable!";
+	if (!item) {
+		return 'You need to specify an item to equip.';
 	}
 
-	if (itemToEquip.equipment.requirements) {
-		if (!user.hasSkillReqs(itemToEquip.equipment.requirements)) {
-			return `You can't equip a ${
-				itemToEquip.name
-			} because you don't have the required stats: ${formatSkillRequirements(
-				itemToEquip.equipment.requirements
-			)}.`;
-		}
-	}
-
-	if (setup === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
-			"You are equipping items to your **wilderness** setup. *Every* item in this setup can potentially be lost if you're doing activities in the wilderness. Are you sure you want to equip it?"
-		);
-	}
-
-	const result = currentEquippedGear.equip(itemToEquip, quantity);
-
-	await transactItems({
-		userID: user.id,
-		collectionLog: false,
-		dontAddToTempCL: true,
-		itemsToAdd: result.refundBank ?? undefined,
-		itemsToRemove: cost
-	});
-
-	const { newUser } = await user.update({
-		[dbKey]: currentEquippedGear.raw()
-	});
-	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
-
-	return {
-		content: `You equipped ${itemToEquip.name} in your ${toTitleCase(setup)} setup.`,
-		files: [{ attachment: image, name: 'osbot.png' }]
-	};
+	// They are trying to equip 1 item
+	return gearEquipMultiCommand(user, setup, item);
 }
 
 export async function gearUnequipCommand(

@@ -2,7 +2,7 @@ import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit/util';
 import type { AttachmentBuilder, BaseMessageOptions, EmbedBuilder, Message } from 'discord.js';
 import { PartialGroupDMChannel, PermissionsBitField, WebhookClient } from 'discord.js';
 
-import { production } from '../../config';
+import { globalConfig } from '../constants';
 import { logError } from './logError';
 
 async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
@@ -15,7 +15,10 @@ async function resolveChannel(channelID: string): Promise<WebhookClient | Messag
 		return new WebhookClient({ id: db.webhook_id, token: db.webhook_token });
 	}
 
-	if (!production || !channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.ManageWebhooks)) {
+	if (
+		!globalConfig.isProduction ||
+		!channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.ManageWebhooks)
+	) {
 		return channel;
 	}
 

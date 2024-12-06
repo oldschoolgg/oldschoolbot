@@ -2,8 +2,7 @@ import { type CommandOption, type CommandRunOptions, cleanString, stringMatches 
 import type { GearPreset } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { production } from '../../config';
-import { ParsedCustomEmojiWithGroups } from '../../lib/constants';
+import { ParsedCustomEmojiWithGroups, globalConfig } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import type { GearSetup, GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes } from '../../lib/gear/types';
@@ -120,7 +119,7 @@ export async function createOrEditGearSetup(
 		emoji = res[3];
 
 		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
+		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && globalConfig.isProduction) {
 			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
 		}
 	}

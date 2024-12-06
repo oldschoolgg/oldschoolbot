@@ -1,7 +1,6 @@
 import { percentChance, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { BOT_TYPE } from '../../constants';
 import {
 	birdsNestID,
 	eggNest,
@@ -70,16 +69,10 @@ export default function addSkillingClueToLoot(
 		}
 
 		if (!roll(chance)) continue;
-		let nextTier = false;
 		let gotClue = false;
 		let clueRoll = randFloat(0, cluesTotalWeight);
 		for (const clue of clues) {
-			if (clueRoll < clue[1] || nextTier) {
-				if (BOT_TYPE === 'OSB' && (user.bank.amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1)) {
-					nextTier = true;
-					continue;
-				}
-
+			if (clueRoll < clue[1]) {
 				nests++;
 				gotClue = true;
 				loot.add(clue[0]);

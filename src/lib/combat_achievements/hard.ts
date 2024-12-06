@@ -1,4 +1,4 @@
-import { Monsters } from 'oldschooljs';
+import { Monsters, resolveItems } from 'oldschooljs';
 
 import { NIGHTMARE_ID, demonBaneWeapons } from '../constants';
 import { anglerOutfit } from '../data/CollectionsExport';
@@ -730,5 +730,102 @@ export const hardCombatAchievements: CombatAchievement[] = [
 				[Monsters.DagannothPrime.id]: 25
 			}
 		})
+	},
+	{
+		id: 263,
+		name: "I'm your son",
+		desc: 'Kill the Hueycoatl whilst wearing two pieces of Hueycoatl armour.',
+		type: 'restriction',
+		monster: 'TheHueycoatl',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.TheHueycoatl.id)(data) &&
+				resolveItems([
+					'Hueycoatl hide body',
+					'Hueycoatl hide chaps',
+					'Hueycoatl hide coif',
+					'Hueycoatl hide vambraces'
+				]).filter(i => user.hasEquipped(i)).length >= 2
+		}
+	},
+	{
+		id: 264,
+		name: 'Pillar Lover',
+		desc: 'Kill the Hueycoatl whilst it is vulnerable.',
+		type: 'mechanical',
+		monster: 'TheHueycoatl',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
+		}
+	},
+	{
+		id: 265,
+		name: 'Hueycoatl Adept',
+		desc: 'Kill the Hueycoatl 10 times.',
+		type: 'kill_count',
+		monster: 'TheHueycoatl',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TheHueycoatl.id]: 10
+			}
+		})
+	},
+	{
+		id: 266,
+		name: 'Nagua Negation',
+		desc: 'Kill Amoxliatl without taking any damage.',
+		type: 'perfection',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 267,
+		name: 'Amoxliatl Adept',
+		desc: 'Kill Amoxliatl 20 times.',
+		type: 'kill_count',
+		monster: 'Amoxliatl',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Amoxliatl.id]: 20
+			}
+		})
+	},
+	{
+		id: 268,
+		name: 'Totally Shattered',
+		desc: 'Kill Amoxliatl without any of her unstable ice shattering.',
+		type: 'mechanical',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 269,
+		name: 'Kemo Makti',
+		desc: 'Kill Amoxliatl 10 times without leaving her chamber.',
+		type: 'mechanical',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 270,
+		name: 'Amoxliatl Speed-Trialist',
+		desc: 'Kill Amoxliatl in less than 1 minute.',
+		type: 'speed',
+		monster: 'Amoxliatl',
+		rng: {
+			chancePerKill: 70,
+			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
 	}
 ];

@@ -9,17 +9,16 @@ import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
-import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { MAX_INT_JAVA } from '../../lib/constants';
+import { MAX_INT_JAVA, globalConfig } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import potions from '../../lib/minions/data/potions';
-import { MAX_QP } from '../../lib/minions/data/quests';
+import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 
@@ -245,7 +244,7 @@ const spawnPresets = [
 
 const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
 
-export const testPotatoCommand: OSBMahojiCommand | null = production
+export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduction
 	? null
 	: {
 			name: 'testpotato',
@@ -611,7 +610,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setslayertask?: { master: string; monster: string; quantity: number };
 				events?: {};
 			}>) => {
-				if (production) {
+				if (globalConfig.isProduction) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
@@ -825,7 +824,8 @@ ${droprates.join('\n')}`),
 							scales: 100_000,
 							dartQuantity: 100_000,
 							dartID: itemID('Dragon dart')
-						}
+						},
+						finished_quest_ids: quests.map(q => q.id)
 					});
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';

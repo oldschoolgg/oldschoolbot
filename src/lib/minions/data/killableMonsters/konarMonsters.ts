@@ -252,8 +252,8 @@ export const konarMonsters: KillableMonster[] = [
 		healAmountNeeded: 16,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
-		canCannon: true,
-		cannonMulti: true,
+		canCannon: false,
+		cannonMulti: false,
 		canBarrage: true
 	},
 	{

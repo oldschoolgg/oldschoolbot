@@ -6,7 +6,6 @@ import * as dotenv from 'dotenv';
 import { getItemOrThrow, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
@@ -14,56 +13,43 @@ import type { CanvasImage } from './util/canvasUtil';
 
 export { PerkTier };
 
-const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
-
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB' as 'BSO' | 'OSB';
 export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
+const isProduction = process.env.NODE_ENV === 'production';
+const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
+const GENERAL_CHANNEL_ID =
+	BOT_TYPE === 'OSB'
+		? isProduction
+			? '346304390858145792'
+			: '1154056119019393035'
+		: isProduction
+			? '792691343284764693'
+			: '1154056119019393035';
+const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 
 export const Channel = {
-	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications:
-		DISCORD_SETTINGS.Channels?.Notifications ?? (production ? '469523207691436042' : '1042760447830536212'),
-	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
-	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
-	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
-	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
-	PatronLogs: '806744016309714966',
+	General: isProduction ? '342983479501389826' : GENERAL_CHANNEL_ID,
+	Notifications: isProduction ? '469523207691436042' : GENERAL_CHANNEL_ID,
+	GrandExchange: isProduction ? '682996313209831435' : GENERAL_CHANNEL_ID,
+	EconomyLogs: isProduction ? '802029843712573510' : TEST_SERVER_LOG_CHANNEL,
 	HelpAndSupport: '668073484731154462',
-	TestingMain: TestingMainChannelID,
-	BarbarianAssault: DISCORD_SETTINGS.Channels?.BarbarianAssault ?? '789717054902763520',
-	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581',
-	BotLogs: production ? '1051725977320964197' : TestingMainChannelID,
-	GeneralChannel:
-		BOT_TYPE === 'OSB'
-			? production
-				? '346304390858145792'
-				: '1154056119019393035'
-			: production
-				? '792691343284764693'
-				: '1154056119019393035'
+	BotLogs: isProduction ? '1051725977320964197' : GENERAL_CHANNEL_ID,
+	GeneralChannel: GENERAL_CHANNEL_ID
 };
 
 export const Roles = {
-	Booster: DISCORD_SETTINGS.Roles?.Booster ?? '665908237152813057',
-	Contributor: DISCORD_SETTINGS.Roles?.Contributor ?? '456181501437018112',
-	Moderator: DISCORD_SETTINGS.Roles?.Moderator ?? '622806157563527178',
-	PatronTier1: DISCORD_SETTINGS.Roles?.PatronTier1 ?? '678970545789730826',
-	PatronTier2: DISCORD_SETTINGS.Roles?.PatronTier2 ?? '678967943979204608',
-	PatronTier3: DISCORD_SETTINGS.Roles?.PatronTier3 ?? '687408140832342043',
-	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424',
-	Testers: DISCORD_SETTINGS.Roles?.Tester ?? '682052620809928718',
-	MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? '734055552933429280',
-	Mass: DISCORD_SETTINGS.Roles?.Mass ?? '711215501543473182',
-	BarbarianAssaultMass: DISCORD_SETTINGS.Roles?.BarbarianAssaultMass ?? '789724904885846016',
-	ChambersOfXericMass: DISCORD_SETTINGS.Roles?.ChambersOfXericMass ?? '836539487815204865',
+	Booster: '665908237152813057',
+	Contributor: '456181501437018112',
+	Moderator: '622806157563527178',
+	Patron: '679620175838183424',
 	// Top Roles
-	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '795266465329709076',
-	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '795271210141351947',
-	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '795933981715464192',
-	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
-	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324',
-	TopFarmer: DISCORD_SETTINGS.Roles?.TopFarmer ?? '894194027363205150',
+	TopSkiller: '795266465329709076',
+	TopCollector: '795271210141351947',
+	TopSacrificer: '795933981715464192',
+	TopMinigamer: '832798997033779220',
+	TopClueHunter: '839135887467610123',
+	TopSlayer: '856080958247010324',
+	TopFarmer: '894194027363205150',
 	TopGlobalCL: '1072426869028294747'
 };
 
@@ -495,14 +481,17 @@ export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id
 
 const globalConfigSchema = z.object({
 	clientID: z.string().min(10).max(25),
-	geAdminChannelID: z.string().default(''),
-	redisPort: z.coerce.number().int().optional(),
 	botToken: z.string().min(1),
 	isCI: z.coerce.boolean().default(false),
-	isProduction: z.coerce.boolean().default(production),
-	testingServerID: z.string(),
-	timeZone: z.literal('UTC')
+	isProduction: z.boolean(),
+	timeZone: z.literal('UTC'),
+	sentryDSN: z.string().url().optional(),
+	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
+	maxingMessage: z.string().default('Congratulations on maxing!'),
+	geAdminChannelID: z.string().default(''),
+	supportServerID: z.string()
 });
+
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
 if (!process.env.BOT_TOKEN && !process.env.CI) {
@@ -511,21 +500,19 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
-const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
-const isProduction = process.env.NODE_ENV === 'production';
-
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
-	geAdminChannelID: isProduction ? '830145040495411210' : '1042760447830536212',
-	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
 	isProduction,
-	testingServerID: process.env.TESTING_SERVER_ID ?? OLDSCHOOLGG_TESTING_SERVER_ID,
-	timeZone: process.env.TZ
+	timeZone: process.env.TZ,
+	sentryDSN: process.env.SENTRY_DSN,
+
+	geAdminChannelID: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
+	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID
 });
 
-if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
+if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 	throw new Error('The NODE_ENV and isProduction variables must match');
 }
 

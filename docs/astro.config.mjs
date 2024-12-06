@@ -3,8 +3,19 @@ import starlight from '@astrojs/starlight';
 import { defineConfig } from 'astro/config';
 import { remarkItems } from './src/plugins/items';
 
+import preact from '@astrojs/preact';
+
+import tailwind from '@astrojs/tailwind';
+
 // https://astro.build/config
 export default defineConfig({
+	vite: {
+		resolve: {
+			alias: {
+				'@data': '../../../data'
+			}
+		}
+	},
 	experimental: {
 		clientPrerender: true
 	},
@@ -16,7 +27,8 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			components: {
-				Footer: './src/components/Footer.astro'
+				Footer: './src/components/Footer.astro',
+				Header: './src/components/Header.astro'
 			},
 			title: 'Oldschool.gg Wiki',
 			favicon: 'favicon.ico',
@@ -30,7 +42,7 @@ export default defineConfig({
 				{
 					tag: 'script',
 					content: `if (window.location.href.includes('/bso/')) {
-  window.onload = () => document.body.classList.add('bso-theme');
+window.onload = () => document.body.classList.add('bso-theme');
 }`
 				}
 			],
@@ -54,6 +66,8 @@ export default defineConfig({
 					collapsed: false
 				}
 			]
-		})
+		}),
+		preact({ compat: true }),
+		tailwind()
 	]
 });

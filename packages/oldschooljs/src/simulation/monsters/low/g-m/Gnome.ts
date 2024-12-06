@@ -8,6 +8,7 @@ const GnomeTable = new LootTable({ limit: 128 })
 	.add('Gold ore', 1, 8)
 	.add('Earth rune', 1, 5)
 	.add('Fire orb', 1, 2)
+	.tertiary(150, 'Clue scroll (medium)')
 	.tertiary(108_718, 'Rocky');
 
 export default new SimpleMonster({

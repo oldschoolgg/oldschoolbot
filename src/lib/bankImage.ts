@@ -220,6 +220,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Tarromin potion (unf)'), 'tarro'],
 	[i('Toadflax potion (unf)'), 'toad'],
 	[i('Torstol potion (unf)'), 'torstol'],
+	[i('Huasca potion (unf)'), 'huasca'],
 
 	// Logs
 	[i('Logs'), 'Logs'],

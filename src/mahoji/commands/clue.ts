@@ -21,7 +21,7 @@ import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-const clueTierBoosts: Record<
+export const clueTierBoosts: Record<
 	ClueTier['name'],
 	{ condition: (user: MUser, poh: PlayerOwnedHouse) => boolean; boost: string; durationMultiplier: number }[]
 > = {
@@ -174,7 +174,7 @@ const clueTierBoosts: Record<
 	]
 };
 
-const globalBoosts: {
+export const clueGlobalBoosts: {
 	condition: (user: MUser, poh: PlayerOwnedHouse) => boolean;
 	boost: string;
 	durationMultiplier: number;
@@ -301,7 +301,10 @@ export const clueCommand: OSBMahojiCommand = {
 			25
 		);
 
-		if (learningReductionPercent >= 1) boosts.push(`${learningReductionPercent}% for Clue score`);
+		if (learningReductionPercent >= 1) {
+			timePerClue *= 1 - learningReductionPercent / 100;
+			boosts.push(`${learningReductionPercent}% for Clue score`);
+		}
 
 		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
@@ -332,7 +335,7 @@ export const clueCommand: OSBMahojiCommand = {
 			timePerClue *= 1 - combatBoost / 100;
 		}
 
-		for (const { condition, boost, durationMultiplier } of globalBoosts) {
+		for (const { condition, boost, durationMultiplier } of clueGlobalBoosts) {
 			if (condition(user, poh)) {
 				boosts.push(boost);
 				timePerClue *= durationMultiplier;
@@ -347,16 +350,7 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		}
 		let quantity = clamp(user.bank.amount(clueTier.scrollID), 1, Math.floor(maxTripLength / timePerClue));
-
-		const duration = timePerClue * quantity;
 		const maxCanDo = Math.floor(maxTripLength / timePerClue);
-
-		if (duration > maxTripLength || quantity > maxCanDo) {
-			return `${user.minionName} can't go on Clue trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
-		}
-
 		const response: Awaited<CommandResponse> = {};
 
 		let implingLootString = '';
@@ -410,6 +404,13 @@ export const clueCommand: OSBMahojiCommand = {
 			implingLootString = `\n\nYou will find ${implingClues} clue${
 				implingClues === 0 || implingClues > 1 ? 's' : ''
 			} from ${openedImplings}x ${clueImpling.name}s.`;
+		}
+
+		const duration = timePerClue * quantity;
+		if (duration > maxTripLength || quantity > maxCanDo) {
+			return `${user.minionName} can't go on Clue trips longer than ${formatDuration(
+				maxTripLength
+			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
 		}
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({

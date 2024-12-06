@@ -5,7 +5,8 @@ exports[`OSB Collection Log Groups/Categories 1`] = `
 Achievement Diary (48)
 Aerial Fishing (9)
 Alchemical Hydra (11)
-All Pets (59)
+All Pets (61)
+Amoxliatl (4)
 Araxxor (10)
 Barbarian Assault (11)
 Barrows Chests (25)
@@ -36,7 +37,7 @@ Duke Sucellus (10)
 Easy Treasure Trails (131)
 Elite Treasure Trail Rewards (Rare) (39)
 Elite Treasure Trails (59)
-Farming (141)
+Farming (143)
 Fishing Trawler (4)
 Forestry (23)
 Fortis Colosseum (9)
@@ -91,13 +92,14 @@ Shooting Stars (2)
 Skilling (41)
 Skilling Pets (8)
 Skotizo (6)
-Slayer (74)
+Slayer (80)
 Soul Wars (3)
 Temple Trekking (4)
 Tempoross (12)
 The Fight Caves (2)
 The Forgotten Four (40)
 The Gauntlet (5)
+The Hueycoatl (6)
 The Inferno (2)
 The Leviathan (10)
 The Nightmare (12)
@@ -640,6 +642,7 @@ Dragon full helm
 Dragon full helm ornament kit
 Dragon harpoon
 Dragon hunter crossbow
+Dragon hunter wand
 Dragon kiteshield ornament kit
 Dragon knife
 Dragon legs/skirt ornament kit
@@ -727,6 +730,7 @@ Frog slippers
 Frog token
 Frozen cache
 Frozen tablet
+Frozen tear
 Frozen whip mix
 Funky shaped log
 Fury ornament kit
@@ -760,6 +764,7 @@ Gilded smile flag
 Gilded spade
 Gilded spear
 Gilded sq shield
+Glacial temotli
 Gloves of darkness
 Gnome goggles
 Gnome scarf
@@ -894,6 +899,9 @@ Hosidius banner
 Hosidius blueprints
 Hosidius hood
 Hosidius scarf
+Huasca seed
+Huberte
+Hueycoatl hide
 Hydra leather
 Hydra tail
 Hydra's claw
@@ -1070,6 +1078,7 @@ Monocle
 Mort'ton teleport
 Mos le'harmless teleport
 Mossy key
+Moxi
 Mud battlestaff
 Mudskipper hat
 Mummy's body
@@ -1144,6 +1153,7 @@ Pearl fly fishing rod
 Pegasian crystal
 Penance gloves
 Penance skirt
+Pendant of ates (inert)
 Penguin mask
 Pest control teleport
 Pet chaos elemental
@@ -1415,6 +1425,7 @@ Smol heredit
 Smolcano
 Smouldering stone
 Soaked page
+Soiled page
 Spectral sigil
 Spider cave teleport
 Spiked manacles
@@ -1453,6 +1464,7 @@ Studded body (t)
 Studded chaps (g)
 Studded chaps (t)
 Sturdy beehive parts
+Sulphur blades
 Sunfire fanatic chausses
 Sunfire fanatic cuirass
 Sunfire fanatic helm
@@ -1471,6 +1483,7 @@ Teacher wand
 Team cape i
 Team cape x
 Team cape zero
+Teleport anchoring scroll
 Thammaron's sceptre (u)
 The stuff
 Thieving bag
@@ -1481,6 +1494,7 @@ Toktz-mej-tal
 Toktz-xil-ak
 Toktz-xil-ek
 Toktz-xil-ul
+Tome of earth (empty)
 Tome of fire
 Tome of water (empty)
 Tonalztics of ralos (uncharged)
@@ -1561,6 +1575,7 @@ Vorki
 War blessing
 Ward upgrade kit
 Warm gloves
+Warped sceptre
 Warrior ring
 White beret
 White boater
