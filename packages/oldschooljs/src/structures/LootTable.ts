@@ -168,13 +168,17 @@ export default class LootTable {
 
 	public add(
 		item: LootTable | number | string,
-		quantity: number[] | number = 1,
+		quantity: [number, number] | number = 1,
 		weight = 1,
 		options?: LootTableMoreOptions
 	): this {
 		if (this.limit && weight + this.totalWeight > this.limit) {
 			throw new Error('Loot table total weight exceeds limit');
 		}
+		if (Array.isArray(quantity) && (quantity.length !== 2 || quantity[0] > quantity[1])) {
+			throw new Error(`Invalid quantity array: ${quantity}`);
+		}
+
 		if (typeof item === 'string') {
 			return this.add(this.resolveName(item), quantity, weight, options);
 		}
