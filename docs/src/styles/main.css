@@ -72,8 +72,13 @@
 
 :root[data-theme='light'] {
 	--sl-color-text-accent: var(--light-brown);
-	--sl-color-accent:  var(--light-brown);
+	--sl-color-accent: var(--light-brown);
 	 scrollbar-color: var(--cream) #fff;
+}
+
+.theme-toggle {
+  fill: var(--sl-icon-color);
+  color: var(--sl-icon-color);
 }
 
 body {
@@ -274,7 +279,7 @@ starlight-toc > nav > ul > li > a > span {
 }
 
 .social-icons a {
-  font-size: 2em;
+  font-size: 1.7em;
 }
 
 .social-icons a[href*="github"] {
@@ -333,8 +338,14 @@ starlight-toc > nav > ul > li > a > span {
   @apply pl-0;
 }
 
-.sl-markdown-content ol ol {
-  list-style-type: lower-alpha;
+.sl-markdown-content ol, .sl-markdown-content ul {
+  list-style-type: disc;
+  padding-inline-start: 40px;
+}
+
+starlight-tabs ul, starlight-tabs ol {
+  list-style-type: none!important;
+  padding-inline-start: 0!important;
 }
 
 .table-wrapper {
