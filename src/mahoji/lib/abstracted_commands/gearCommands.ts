@@ -172,7 +172,7 @@ export async function gearEquipCommand(args: {
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { userID, setup, item, items, preset, quantity: _quantity, auto } = args;
+	const { userID, setup, item, items, preset, quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	const user = await mUserFetch(userID);
 	if (minionIsBusy(user.id)) {
@@ -197,7 +197,7 @@ export async function gearEquipCommand(args: {
 	}
 
 	// They are trying to equip 1 item
-	return gearEquipMultiCommand(user, setup, item);
+	return gearEquipMultiCommand(user, setup, `${quantity ? quantity : 1} ${item}`);
 }
 
 export async function gearUnequipCommand(
