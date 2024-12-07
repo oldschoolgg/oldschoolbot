@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../minions/data/killableMonsters';
+import { QuestID } from '../../minions/data/quests';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
@@ -478,7 +479,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		weight: 8,
 		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
 		unlocked: false,
-		slayerLevel: 56
+		slayerLevel: 56,
+		requiredQuests: [QuestID.ThePathOfGlouphrie]
 	},
 	...bossTasks
 ];
