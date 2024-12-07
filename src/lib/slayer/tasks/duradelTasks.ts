@@ -477,7 +477,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 8,
 		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
-		unlocked: false
+		unlocked: false,
+		slayerLevel: 56
 	},
 	...bossTasks
 ];

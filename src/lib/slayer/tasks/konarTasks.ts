@@ -446,7 +446,8 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [110, 170],
 		weight: 4,
 		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
-		unlocked: false
+		unlocked: false,
+		slayerLevel: 56
 	},
 	...bossTasks
 ];
