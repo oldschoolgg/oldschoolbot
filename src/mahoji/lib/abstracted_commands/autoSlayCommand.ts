@@ -214,6 +214,12 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientName: Monsters.RevenantDemon.name,
 		efficientMonster: Monsters.RevenantDemon.id,
 		efficientMethod: 'none'
+	},
+	{
+		monsterID: Monsters.WarpedTerrorbird.id,
+		efficientName: Monsters.WarpedTerrorbird.name,
+		efficientMonster: Monsters.WarpedTerrorbird.id,
+		efficientMethod: 'cannon'
 	}
 ];
 
