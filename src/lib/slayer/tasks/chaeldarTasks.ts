@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { QuestID } from '../../minions/data/quests';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
@@ -402,7 +403,9 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		amount: [70, 130],
 		weight: 6,
 		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
-		unlocked: false
+		unlocked: false,
+		slayerLevel: 56,
+		requiredQuests: [QuestID.ThePathOfGlouphrie]
 	},
 	...bossTasks
 ];
