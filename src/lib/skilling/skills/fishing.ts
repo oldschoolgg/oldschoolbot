@@ -1,7 +1,7 @@
 import { sumArr } from 'e';
+import { EItem } from 'oldschooljs';
 import { Emoji } from '../../constants';
 import type { GearBank } from '../../structures/GearBank';
-import { EItem } from 'oldschooljs';
 import itemID from '../../util/itemID';
 import type { Fish } from '../types';
 import { SkillsEnum } from '../types';

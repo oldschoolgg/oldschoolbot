@@ -109,19 +109,43 @@ export interface Burnable {
 	inputLogs: number;
 }
 
-export interface Fish {
+export interface FishInSpot {
+	id: number;
 	level: number;
 	xp: number;
-	id: number;
+	intercept: number;
+	slope: number;
+	otherXP?: number; // Omit<Skills, 'fishing'>;
+	/**
+	 * Items that have a tertiary chance to drop from catching one of these fish, i.e "Big swordfish" from swordfish.
+	 *
+	 * 1 in X chance, to receive item with the id
+	 */
+	tertiary?: { chance: number; id: number };
+}
+
+export interface Fish {
 	name: string;
+	alias?: string[];
+	subfishes?: FishInSpot[]; // Array of subfishes with level, xp, and id
+
 	petChance?: number;
-	timePerFish: number;
+	clueScrollChance?: number;
+	lostTicks?: number;
+	bankingTime?: number;
+	ticksPerRoll?: number;
 	bait?: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
-	clueScrollChance?: number;
-	alias?: string[];
+
+	// still needed for camdozaal
+	timePerFish?: number;
+	level?: number;
+	xp?: number;
+	id?: number;
+
+	skillReqs?: Omit<LevelRequirements, 'fishing'>;
 }
 
 export interface Course {
