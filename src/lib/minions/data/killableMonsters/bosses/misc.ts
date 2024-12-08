@@ -155,7 +155,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.KalphiteQueen.id,
 		name: Monsters.KalphiteQueen.name,
 		aliases: Monsters.KalphiteQueen.aliases,
-		timeToFinish: Time.Minute * 4,
+		timeToFinish: Time.Minute * 3.1,
 		table: Monsters.KalphiteQueen,
 		emoji: '<:Kalphite_princess_2nd_form:324127376915300352>',
 		wildy: false,
@@ -175,7 +175,7 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Elder maul')]: 12
 			},
 			{
-				[itemID('Keris partisan of breaching')]: 5
+				[itemID('Keris partisan of breaching')]: 15
 			}
 		],
 		levelRequirements: {
