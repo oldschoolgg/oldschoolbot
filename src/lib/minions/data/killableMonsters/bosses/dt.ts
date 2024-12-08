@@ -589,6 +589,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'melee'
 			}
 		],
+		itemInBankBoosts: [
+			{
+				[itemID('Voidwaker')]: 5,
+			}
+		],
 
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -615,6 +620,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					{
 						itemID: itemID('Scythe of vitur'),
 						boostPercent: 15
+					},
+					{
+						itemID: itemID('Soulreaper axe'),
+						boostPercent: 18
 					}
 				]
 			}
