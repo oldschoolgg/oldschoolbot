@@ -26,7 +26,7 @@ describe('Fish Command', async () => {
 	it('should handle invalid fish', async () => {
 		const user = await createTestUser();
 		const res = await user.runCommand(fishCommand, { name: 'asdf' });
-		expect(res).toEqual('Thats not a valid fish to catch.');
+		expect(res).toEqual('Thats not a valid spot you can fish at.');
 	});
 
 	it('should handle insufficient barb fishing levels', async () => {
