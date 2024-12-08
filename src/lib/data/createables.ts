@@ -2576,6 +2576,46 @@ const Createables: Createable[] = [
 			return null;
 		}
 	},
+	{
+		name: 'Warped extract',
+		inputItems: new Bank({
+			'Tainted essence chunk': 1,
+			Coins: 1_250
+		}),
+		outputItems: new Bank({
+			'Warped extract': 1
+		})
+	},
+	{
+		name: 'Twisted extract',
+		inputItems: new Bank({
+			'Tainted essence chunk': 1,
+			Coins: 6_000
+		}),
+		outputItems: new Bank({
+			'Twisted extract': 1
+		})
+	},
+	{
+		name: 'Mangled extract',
+		inputItems: new Bank({
+			'Tainted essence chunk': 1,
+			Coins: 12_000
+		}),
+		outputItems: new Bank({
+			'Mangled extract': 1
+		})
+	},
+	{
+		name: 'Scarred extract',
+		inputItems: new Bank({
+			'Tainted essence chunk': 1,
+			Coins: 24_000
+		}),
+		outputItems: new Bank({
+			'Scarred extract': 1
+		})
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

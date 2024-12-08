@@ -68,15 +68,27 @@ export const runecraftCommand: OSBMahojiCommand = {
 			name: 'daeyalt_essence',
 			description: 'Set this to true to use daeyalt essence (default false)',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'extracts',
+			description: 'Set this to true to use extracts (default false)',
+			required: false
 		}
 	],
 	run: async ({
 		userID,
 		options,
 		channelID
-	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean; daeyalt_essence?: boolean }>) => {
+	}: CommandRunOptions<{
+		rune: string;
+		quantity?: number;
+		usestams?: boolean;
+		daeyalt_essence?: boolean;
+		extracts?: boolean;
+	}>) => {
 		const user = await mUserFetch(userID.toString());
-		let { rune, quantity, usestams, daeyalt_essence } = options;
+		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
 
@@ -126,6 +138,27 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const { bank } = user;
 		const numEssenceOwned = bank.amount('Pure essence');
 		const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
+
+		const warpedRunes = new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']);
+		const twistedRunes = new Set(['mist', 'dust', 'mud', 'smoke', 'steam', 'lava', 'cosmic', 'chaos', 'sunfire']);
+		const mangledRunes = new Set(['nature', 'law', 'astral', 'death']);
+		const scarredRunes = new Set(['blood', 'soul', 'wrath']);
+
+		let extractsOwned = 0;
+		let extractType = '';
+		if (warpedRunes.has(rune)) {
+			extractsOwned = bank.amount('Warped extract');
+			extractType = 'Warped extract';
+		} else if (twistedRunes.has(rune)) {
+			extractsOwned = bank.amount('Twisted extract');
+			extractType = 'Twisted extract';
+		} else if (mangledRunes.has(rune)) {
+			extractsOwned = bank.amount('Mangled extract');
+			extractType = 'Mangled extract';
+		} else if (scarredRunes.has(rune)) {
+			extractsOwned = bank.amount('Scarred extract');
+			extractType = 'Scarred extract';
+		}
 
 		let { tripLength } = runeObj;
 		const boosts = [];
@@ -186,6 +219,13 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 			if (numEssenceOwned === 0 || quantity === 0 || numEssenceOwned < quantity) {
 				return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
+			}
+		}
+
+		if (extracts) {
+			if (!quantity) quantity = Math.min(extractsOwned, maxCanDo);
+			if (extractsOwned === 0 || quantity === 0 || extractsOwned < quantity) {
+				return "You don't have enough Extracts to craft these runes. You can acquire Tainted Essence Chunks through Mining, and then exchange for extracts with the `/create` command.";
 			}
 		}
 
@@ -296,6 +336,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
+		if (extracts) {
+			totalCost.add(`${extractType}`, quantity);
+			if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+		}
+
 		await user.removeItemsFromBank(totalCost);
 		updateBankSetting('runecraft_cost', totalCost);
 
@@ -306,6 +351,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			essenceQuantity: quantity,
 			useStaminas: usestams,
 			daeyaltEssence: daeyalt_essence,
+			useExtracts: extracts,
 			duration,
 			imbueCasts,
 			type: 'Runecraft'

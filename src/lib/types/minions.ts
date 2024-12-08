@@ -89,6 +89,7 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	imbueCasts: number;
 	useStaminas?: boolean;
 	daeyaltEssence?: boolean;
+	useExtracts?: boolean;
 }
 
 export interface TiaraRunecraftActivityTaskOptions extends ActivityTaskOptions {
