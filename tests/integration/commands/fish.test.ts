@@ -64,7 +64,7 @@ describe('Fish Command', async () => {
 			skills_strength: 999_999
 		});
 		const res = await user.runCommand(fishCommand, { name: 'Barbarian fishing' });
-		expect(res).toContain('is now fishing 100x Barbarian fishing');
+		expect(res).toContain('is now fishing Barbarian fishing');
 	});
 
 	it('should fish barrel boost', async () => {
