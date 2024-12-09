@@ -190,7 +190,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		id: Monsters.TheLeviathan.id,
 		name: Monsters.TheLeviathan.name,
 		aliases: Monsters.TheLeviathan.aliases,
-		timeToFinish: Time.Minute * 5.1,
+		timeToFinish: Time.Minute * 4.8,
 		table: Monsters.TheLeviathan,
 		notifyDrops: resolveItems(['Virtus robe top', "Lil'viathan", 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
@@ -229,15 +229,18 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [
-					{ boostPercent: 5, itemID: itemID('Lightbearer') },
-					{ boostPercent: 5, itemID: itemID('Venator ring') }
-				],
+				items: [{ boostPercent: 5, itemID: itemID('Venator ring') }],
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 5, itemID: itemID('Zaryte crossbow') }],
+				items: [{ boostPercent: 15, itemID: itemID('Zaryte crossbow') }],
 				gearSetup: 'range'
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Lightbearer')]: 5,
+				[itemID('Webweaver bow')]: 10
 			}
 		],
 
@@ -552,17 +555,21 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		id: Monsters.Vardorvis.id,
 		name: Monsters.Vardorvis.name,
 		aliases: Monsters.Vardorvis.aliases,
-		timeToFinish: Time.Minute * 5.1,
+		timeToFinish: Time.Minute * 4.1,
 		table: Monsters.Vardorvis,
 		notifyDrops: resolveItems(['Virtus robe top', 'Butch', 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Avernic defender') }],
+				items: [{ boostPercent: 25, itemID: itemID('Soulreaper axe') }],
 				gearSetup: 'melee'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Ferocious gloves') }],
+				items: [{ boostPercent: 5, itemID: itemID('Avernic defender') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Ferocious gloves') }],
 				gearSetup: 'melee'
 			},
 			{
@@ -587,6 +594,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					{ boostPercent: 5, itemID: itemID('Ultor ring') }
 				],
 				gearSetup: 'melee'
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Voidwaker')]: 10
 			}
 		],
 
@@ -614,7 +626,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				items: [
 					{
 						itemID: itemID('Scythe of vitur'),
-						boostPercent: 15
+						boostPercent: 20
 					}
 				]
 			}
