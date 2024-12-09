@@ -562,6 +562,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'Warped Reality',
 		desc: 'Konar, Duradel, Nieve, and Chaeldar will be able to assign warped creatures as your task.',
 		slayerPointCost: 60,
+		canBeRemoved: true,
 		aliases: ['warped reality']
 	}
 ];
