@@ -93,37 +93,59 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
-				[itemID('Ranger boots')]: 2,
-				[itemID('Pegasian boots')]: 4
+				[itemID('Ranger boots')]: 1,
+				[itemID('Pegasian boots')]: 2
 			},
 			{
 				[itemID("Iban's staff")]: 1,
-				[itemID('Trident of the seas')]: 2,
-				[itemID('Trident of the swamp')]: 3,
-				[itemID('Sanguinesti staff')]: 4,
-				[itemID('Harmonised nightmare staff')]: 5,
-				[itemID("Tumeken's shadow")]: 8
+				[itemID('Trident of the seas')]: 3,
+				[itemID('Harmonised nightmare staff')]: 7,
 			},
 			{
-				[itemID('Barrows gloves')]: 3
+				[itemID('Barrows gloves')]: 2,
+				[itemID('Zaryte vambraces')]: 3
 			},
 			{
-				[itemID('Twisted bow')]: 5,
-				[itemID('Toxic blowpipe')]: 4,
-				[itemID('Bow of faerdhinen (c)')]: 3,
-				[itemID('Magic shortbow')]: 2
+				[itemID('Tormented bracelet')]: 4
 			},
 			{
-				[itemID('Ancestral hat')]: 2
+				[itemID('Twisted bow')]: 10,
+				[itemID('Toxic blowpipe')]: 7,
+				[itemID('Bow of faerdhinen (c)')]: 6,
+				[itemID('Magic shortbow')]: 3
 			},
 			{
-				[itemID('Ancestral robe top')]: 2
+				[itemID('Ancestral hat')]: 3
 			},
 			{
-				[itemID('Ancestral robe bottom')]: 2
+				[itemID('Ancestral robe top')]: 3
 			},
 			{
-				[itemID('Imbued heart')]: 3
+				[itemID('Ancestral robe bottom')]: 3
+			},
+			{
+				[itemID('Imbued heart')]: 2,
+				[itemID('Saturated heart')]: 4
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: true,
+				gearSetup: 'mage',
+				items: [
+					{
+						itemID: itemID("Tumeken's shadow"),
+						boostPercent: 10
+					},
+					{
+						itemID: itemID('Sanguinesti staff'),
+						boostPercent: 5
+					},
+					{
+						itemID: itemID('Trident of the swamp'),
+						boostPercent: 4
+					}
+				]
 			}
 		],
 		levelRequirements: {
@@ -448,7 +470,8 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Saturated heart')]: 4,
-				[itemID('Imbued heart')]: 2
+				[itemID('Imbued heart')]: 2,
+				[itemID('Frozen tablet')]: 10
 			}
 		],
 		projectileUsage: {
@@ -482,13 +505,6 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [
-					{ boostPercent: 11, itemID: itemID("Tumeken's shadow") },
-					{ boostPercent: 6, itemID: itemID('Sanguinesti staff') }
-				],
-				gearSetup: 'mage'
-			},
-			{
 				items: [{ boostPercent: 6, itemID: itemID('Ancestral robe top') }],
 				gearSetup: 'mage'
 			},
@@ -497,12 +513,19 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID("Ava's assembler") }],
+				items: [
+					{ boostPercent: 5, itemID: itemID("Blessed dizana's quiver") },
+					{ boostPercent: 3, itemID: itemID("Ava's assembler") }
+				],
 				gearSetup: 'range'
 			},
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }],
 				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Tormented bracelet') }],
+				gearSetup: 'mage'
 			},
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
