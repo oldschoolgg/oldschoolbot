@@ -93,59 +93,38 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
-				[itemID('Ranger boots')]: 1,
-				[itemID('Pegasian boots')]: 2
+				[itemID('Ranger boots')]: 2,
+				[itemID('Pegasian boots')]: 4
 			},
 			{
 				[itemID("Iban's staff")]: 1,
-				[itemID('Trident of the seas')]: 3,
-				[itemID('Harmonised nightmare staff')]: 7
+				[itemID('Trident of the seas')]: 2,
+				[itemID('Trident of the swamp')]: 3,
+				[itemID('Sanguinesti staff')]: 4,
+				[itemID('Harmonised nightmare staff')]: 5,
+				[itemID("Tumeken's shadow")]: 8
 			},
 			{
-				[itemID('Barrows gloves')]: 2,
-				[itemID('Zaryte vambraces')]: 3
+				[itemID('Barrows gloves')]: 3
 			},
 			{
-				[itemID('Tormented bracelet')]: 4
+				[itemID('Twisted bow')]: 5,
+				[itemID('Toxic blowpipe')]: 4,
+				[itemID('Bow of faerdhinen (c)')]: 3,
+				[itemID('Magic shortbow')]: 2
 			},
 			{
-				[itemID('Twisted bow')]: 10,
-				[itemID('Toxic blowpipe')]: 7,
-				[itemID('Bow of faerdhinen (c)')]: 6,
-				[itemID('Magic shortbow')]: 3
+				[itemID('Ancestral hat')]: 2
 			},
 			{
-				[itemID('Ancestral hat')]: 3
+				[itemID('Ancestral robe top')]: 2
 			},
 			{
-				[itemID('Ancestral robe top')]: 3
+				[itemID('Ancestral robe bottom')]: 2
 			},
 			{
-				[itemID('Ancestral robe bottom')]: 3
-			},
-			{
-				[itemID('Imbued heart')]: 2,
+				[itemID('Imbued heart')]: 3,
 				[itemID('Saturated heart')]: 4
-			}
-		],
-		degradeableItemUsage: [
-			{
-				required: true,
-				gearSetup: 'mage',
-				items: [
-					{
-						itemID: itemID("Tumeken's shadow"),
-						boostPercent: 10
-					},
-					{
-						itemID: itemID('Sanguinesti staff'),
-						boostPercent: 5
-					},
-					{
-						itemID: itemID('Trident of the swamp'),
-						boostPercent: 4
-					}
-				]
 			}
 		],
 		levelRequirements: {
@@ -422,7 +401,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.PhantomMuspah.name,
 		aliases: Monsters.PhantomMuspah.aliases,
 		table: Monsters.PhantomMuspah,
-		timeToFinish: Time.Minute * 8,
+		timeToFinish: Time.Minute * 7,
 		qpRequired: 215,
 		respawnTime: 10_000,
 		levelRequirements: {
