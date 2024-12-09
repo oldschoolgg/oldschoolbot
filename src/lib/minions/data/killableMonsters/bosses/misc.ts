@@ -99,7 +99,7 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID("Iban's staff")]: 1,
 				[itemID('Trident of the seas')]: 3,
-				[itemID('Harmonised nightmare staff')]: 7,
+				[itemID('Harmonised nightmare staff')]: 7
 			},
 			{
 				[itemID('Barrows gloves')]: 2,
