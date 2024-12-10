@@ -127,7 +127,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Ancestral robe bottom')]: 2
 			},
 			{
-				[itemID('Imbued heart')]: 3
+				[itemID('Imbued heart')]: 3,
+				[itemID('Saturated heart')]: 4
 			}
 		],
 		levelRequirements: {
@@ -159,7 +160,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.KalphiteQueen.id,
 		name: Monsters.KalphiteQueen.name,
 		aliases: Monsters.KalphiteQueen.aliases,
-		timeToFinish: Time.Minute * 4,
+		timeToFinish: Time.Minute * 3.1,
 		table: Monsters.KalphiteQueen,
 		emoji: '<:Kalphite_princess_2nd_form:324127376915300352>',
 		wildy: false,
@@ -178,7 +179,7 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Elder maul')]: 12
 			},
 			{
-				[itemID('Keris partisan of breaching')]: 5
+				[itemID('Keris partisan of breaching')]: 15
 			}
 		],
 		levelRequirements: {
@@ -422,7 +423,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.PhantomMuspah.name,
 		aliases: Monsters.PhantomMuspah.aliases,
 		table: Monsters.PhantomMuspah,
-		timeToFinish: Time.Minute * 8,
+		timeToFinish: Time.Minute * 7,
 		qpRequired: 215,
 		respawnTime: 10_000,
 		levelRequirements: {
@@ -474,7 +475,8 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Saturated heart')]: 4,
-				[itemID('Imbued heart')]: 2
+				[itemID('Imbued heart')]: 2,
+				[itemID('Frozen tablet')]: 10
 			}
 		],
 		projectileUsage: {
@@ -559,11 +561,30 @@ const killableBosses: KillableMonster[] = [
 				],
 				gearSetup: 'range'
 			},
+		   {
+				items: [
+					{ boostPercent: 5, itemID: itemID("Blessed dizana's quiver") },
+					{ boostPercent: 3, itemID: itemID("Ava's assembler") }
+				],
+				gearSetup: 'range'
+			},
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Gorajan occult boots') },
 					{ boostPercent: 3, itemID: itemID('Eternal boots') }
 				],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Tormented bracelet') }],
+				gearSetup: 'mage'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
 				gearSetup: 'mage'
 			}
 		],
