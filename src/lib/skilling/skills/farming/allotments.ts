@@ -285,6 +285,44 @@ const allotmentPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Pumpkin'),
+		level: 47,
+		plantXp: 48.5,
+		checkXp: 0,
+		harvestXp: 54.5,
+		inputItems: new Bank({ 'Pumpkin seed': 3 }).freeze(),
+		outputCrop: itemID('Pumpkin'),
+		name: 'Pumpkin',
+		aliases: ['pumpkin'],
+		petChance: 173_977,
+		seedType: 'allotment',
+		growthTime: 80,
+		numOfStages: 8,
+		chance1: 154,
+		chance99: 193.56,
+		chanceOfDeath: 25,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 2,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 2], // Canifs Patches (2)
+			[15, 3] // Harmony Island Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 2] // Farming Guild Low (2)
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 20
+	},
+	{
 		id: itemID('Snape grass'),
 		level: 61,
 		plantXp: 82,

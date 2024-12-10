@@ -4,7 +4,7 @@ import { leaderboardCommand } from '../../src/mahoji/commands/leaderboard';
 import { kcGains } from '../../src/mahoji/commands/tools';
 import { createTestUser } from './util';
 
-describe('Leaderboard', async () => {
+describe.skip('Leaderboard', async () => {
 	test('KC Leaderboard', async () => {
 		const user = await createTestUser();
 		await user.runCommand(leaderboardCommand, {

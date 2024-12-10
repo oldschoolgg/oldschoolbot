@@ -6,8 +6,8 @@ import { askCommand } from './ask';
 import { bankCommand } from './bank';
 import { bingoCommand } from './bingo';
 import { bossrecordCommand } from './bossrecords';
-import { botLeaguesCommand } from './botleagues';
 import { bsCommand } from './bs';
+import { bsoMinigamesCommand } from './bsominigames';
 import { buildCommand } from './build';
 import { buyCommand } from './buy';
 import { caCommand } from './ca';
@@ -17,14 +17,16 @@ import { chopCommand } from './chop';
 import { collectionLogCommand } from './cl';
 import { claimCommand } from './claim';
 import { clueCommand } from './clue';
-import { cluesCommand } from './clues';
+import { completionCommand } from './completion';
 import { configCommand } from './config';
 import { cookCommand } from './cook';
 import { craftCommand } from './craft';
 import { createCommand } from './create';
 import { dataCommand } from './data';
+import { dgCommand } from './dg';
+import { divinationCommand } from './divination';
 import { dropCommand } from './drop';
-import { dryCalcCommand } from './drycalc';
+import { dropRatesCommand } from './droprates';
 import { fakeCommand } from './fake';
 import { fakepmCommand } from './fakepm';
 import { farmingCommand } from './farming';
@@ -38,31 +40,40 @@ import { gearPresetsCommand } from './gearpresets';
 import { giftCommand } from './gift';
 import { giveawayCommand } from './giveaway';
 import { gpCommand } from './gp';
+import { halloweenCommand } from './halloween';
 import { helpCommand } from './help';
 import { huntCommand } from './hunt';
+import { icCommand } from './ic';
+import { inventionCommand } from './invention';
 import { inviteCommand } from './invite';
 import { minionKCommand } from './k';
 import { kcCommand } from './kc';
+import { kibbleCommand } from './kibble';
 import { killCommand } from './kill';
 import { lapsCommand } from './laps';
 import { leaderboardCommand } from './leaderboard';
+import { bsoLeaguesCommand } from './leagues';
 import { lightCommand } from './light';
 import { lootCommand } from './loot';
-import { lvlCommand } from './lvl';
+import { lotteryCommand } from './lottery';
 import { mCommand } from './m';
 import { massCommand } from './mass';
+import { megaDuckCommand } from './megaduck';
 import { mineCommand } from './mine';
 import { minigamesCommand } from './minigames';
 import { minionCommand } from './minion';
 import { mixCommand } from './mix';
+import { nurseryCommand } from './nursery';
 import { offerCommand } from './offer';
 import { openCommand } from './open';
+import { paintCommand } from './paint';
 import { patreonCommand } from './patreon';
 import { payCommand } from './pay';
 import { pohCommand } from './poh';
 import { pollCommand } from './poll';
 import { priceCommand } from './price';
 import { raidCommand } from './raid';
+import { ratesCommand } from './rates';
 import { redeemCommand } from './redeem';
 import { rollCommand } from './roll';
 import { rpCommand } from './rp';
@@ -73,21 +84,19 @@ import { simulateCommand } from './simulate';
 import { slayerCommand } from './slayer';
 import { smeltingCommand } from './smelt';
 import { smithCommand } from './smith';
-import { statsCommand } from './stats';
 import { stealCommand } from './steal';
+import { tamesCommand } from './tames';
+import { testerShopCommand } from './testershop';
 import { testPotatoCommand } from './testpotato';
 import { tksCommand } from './tokkulshop';
 import { toolsCommand } from './tools';
 import { tradeCommand } from './trade';
 import { triviaCommand } from './trivia';
 import { mahojiUseCommand } from './use';
-import { wikiCommand } from './wiki';
-import { xpCommand } from './xp';
 
 export const allCommands: OSBMahojiCommand[] = [
 	adminCommand,
 	askCommand,
-	botLeaguesCommand,
 	bsCommand,
 	buildCommand,
 	buyCommand,
@@ -98,7 +107,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	clueCommand,
 	configCommand,
 	claimCommand,
-	cluesCommand,
 	mCommand,
 	gpCommand,
 	payCommand,
@@ -106,7 +114,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	fishCommand,
 	farmingCommand,
 	dropCommand,
-	dryCalcCommand,
 	createCommand,
 	activitiesCommand,
 	dataCommand,
@@ -156,8 +163,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	bingoCommand,
 	bankCommand,
 	bossrecordCommand,
-	wikiCommand,
-	lvlCommand,
 	casketCommand,
 	finishCommand,
 	killCommand,
@@ -165,8 +170,23 @@ export const allCommands: OSBMahojiCommand[] = [
 	rpCommand,
 	collectionLogCommand,
 	gearPresetsCommand,
-	statsCommand,
-	xpCommand
+	bsoMinigamesCommand,
+	completionCommand,
+	dgCommand,
+	divinationCommand,
+	dropRatesCommand,
+	icCommand,
+	inventionCommand,
+	kibbleCommand,
+	lotteryCommand,
+	megaDuckCommand,
+	nurseryCommand,
+	paintCommand,
+	ratesCommand,
+	tamesCommand,
+	testerShopCommand,
+	bsoLeaguesCommand,
+	halloweenCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {

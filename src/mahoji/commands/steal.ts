@@ -1,12 +1,10 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { randInt } from 'e';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
+
+import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { randInt, reduceNumByPercent } from 'e';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { quests } from '../../lib/minions/data/quests';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
 import { stealables } from '../../lib/skilling/skills/thieving/stealables';
@@ -18,7 +16,7 @@ import { logError } from '../../lib/util/logError';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import type { OSBMahojiCommand } from '../lib/util';
-import { rogueOutfitPercentBonus } from '../mahojiSettings';
+import { rogueOutfitPercentBonus, userStatsBankUpdate } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',
@@ -76,17 +74,6 @@ export const stealCommand: OSBMahojiCommand = {
 			} a ${stealable.name}.`;
 		}
 
-		if (stealable.requiredQuests) {
-			const incompleteQuest = stealable.requiredQuests.find(
-				quest => !user.user.finished_quest_ids.includes(quest)
-			);
-			if (incompleteQuest) {
-				return `You need to have completed the ${bold(
-					quests.find(i => i.id === incompleteQuest)!.name
-				)} quest to steal from ${stealable.name}.`;
-			}
-		}
-
 		if (stealable.fireCapeRequired) {
 			if (user.cl.amount('Fire cape') === 0) {
 				return `In order to ${
@@ -101,7 +88,7 @@ export const stealCommand: OSBMahojiCommand = {
 			} a ${stealable.name}.`;
 		}
 
-		const timeToTheft =
+		let timeToTheft =
 			stealable.type === 'pickpockable' ? (stealable.customTickRate ?? 2) * 600 : stealable.respawnTime;
 
 		if (!timeToTheft) {
@@ -112,7 +99,18 @@ export const stealCommand: OSBMahojiCommand = {
 			return 'This NPC/Stall is missing variable respawnTime.';
 		}
 
-		const maxTripLength = (stealable.name === 'Wealthy Citizen' ? 2 : 1) * calcMaxTripLength(user, 'Pickpocket');
+		const boosts = [];
+
+		if (user.hasEquipped('Thieving master cape')) {
+			timeToTheft = reduceNumByPercent(timeToTheft, 30);
+			boosts.push('30% boost for Thieving master cape');
+		}
+		if (user.usingPet('Wilvus')) {
+			timeToTheft = reduceNumByPercent(timeToTheft, 50);
+			boosts.push('50% boost for Wilvus');
+		}
+
+		const maxTripLength = calcMaxTripLength(user, 'Pickpocket');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToTheft);
@@ -127,7 +125,6 @@ export const stealCommand: OSBMahojiCommand = {
 			} a ${stealable.name} is ${Math.floor(maxTripLength / timeToTheft)}.`;
 		}
 
-		const boosts = [];
 		let successfulQuantity = 0;
 		let xpReceived = 0;
 		let damageTaken = 0;
@@ -135,6 +132,13 @@ export const stealCommand: OSBMahojiCommand = {
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (stealable.name === 'Black knight guard') {
+			const godFavour = await user.getGodFavour();
+			if (godFavour.Zamorak < 90) {
+				return 'Zamorak does not bid you access to the Dark Temple, where the Black knight guards are.';
+			}
+		}
 
 		if (stealable.type === 'pickpockable') {
 			const [hasArdyHard] = await userhasDiaryTier(user, ArdougneDiary.hard);
@@ -147,10 +151,11 @@ export const stealCommand: OSBMahojiCommand = {
 				stealable,
 				quantity,
 				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
-				hasArdyHard
+				hasArdyHard,
+				user.hasEquippedOrInBank(["Thieves' armband"])
 			);
 
-			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)'])) {
+			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)', 'Thieving master cape'])) {
 				boosts.push('+10% chance of success from Thieving cape');
 			}
 
@@ -166,7 +171,10 @@ export const stealCommand: OSBMahojiCommand = {
 				attackStylesUsed: []
 			});
 
-			updateBankSetting('economyStats_thievingCost', foodRemoved);
+			await Promise.all([
+				userStatsBankUpdate(user.id, 'steal_loot_bank', foodRemoved),
+				updateBankSetting('economyStats_thievingCost', foodRemoved)
+			]);
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random

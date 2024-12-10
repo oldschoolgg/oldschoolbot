@@ -50,6 +50,11 @@ export const trawlerFish = [
 		id: itemID('Raw manta ray'),
 		level: 81,
 		xp: 46
+	},
+	{
+		id: itemID('Raw rocktail'),
+		level: 99,
+		xp: 90
 	}
 ];
 

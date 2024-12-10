@@ -3,21 +3,17 @@ import { Monsters } from 'oldschooljs';
 import { Time } from 'e';
 import {
 	MIMIC_MONSTER_ID,
-	NEX_ID,
 	NIGHTMARE_ID,
 	PHOSANI_NIGHTMARE_ID,
 	ZALCANO_ID,
+	clawWeapon,
 	demonBaneWeapons
 } from '../constants';
+import { NexMonster } from '../nex';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
-import type {
-	ActivityTaskData,
-	GauntletOptions,
-	MonsterActivityTaskOptions,
-	NightmareActivityTaskOptions,
-	TOAOptions
-} from '../types/minions';
+import type { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
+import type { MonsterActivityTaskOptions } from '../types/minions';
 import { anyoneDiedInTOARaid } from '../util';
 import { resolveItems } from '../util';
 import { crossbows } from '../util/minionUtils';
@@ -796,7 +792,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NEX_ID]: 1
+				[NexMonster.id]: 1
 			}
 		})
 	},
@@ -1509,7 +1505,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 5,
-			hasChance: 'Colosseum'
+			hasChance: (data, user, index) =>
+				user.hasEquippedOrInBank(clawWeapon, 'one') &&
+				data.type === 'Colosseum' &&
+				Array.isArray(data.diedAt) &&
+				data.diedAt[index]! > 1
 		}
 	},
 	{
@@ -1520,8 +1520,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 7))
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 7)))
 		}
 	},
 	{
@@ -1532,8 +1533,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 4))
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 4))
 		}
 	},
 	{
@@ -1726,61 +1727,5 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				[Monsters.DukeSucellus.id]: 1
 			}
 		})
-	},
-	{
-		id: 1149,
-		name: 'Hueycoatl Veteran',
-		desc: 'Kill the Hueycoatl 25 times.',
-		type: 'kill_count',
-		monster: 'TheHueycoatl',
-		requirements: new Requirements().add({
-			kcRequirement: {
-				[Monsters.TheHueycoatl.id]: 25
-			}
-		})
-	},
-	{
-		id: 1150,
-		name: 'Perfect Hueycoatl',
-		desc: "Kill the Hueycoatl perfectly 5 times without leaving. To get a perfect kill, you must not take any avoidable damage from the Hueycoatl's lightning attack, tail slam attack or off-prayer projectile attacks.",
-		type: 'perfection',
-		monster: 'TheHueycoatl',
-		rng: {
-			chancePerKill: 50,
-			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
-		}
-	},
-	{
-		id: 1151,
-		name: 'Hueycoatl Speed-Trialist',
-		desc: 'Kill the Hueycoatl in 2:30.',
-		type: 'speed',
-		monster: 'TheHueycoatl',
-		rng: {
-			chancePerKill: 50,
-			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
-		}
-	},
-	{
-		id: 1152,
-		name: 'Amoxliatl Speed-Chaser',
-		desc: 'Kill Amoxliatl in less than 30 seconds.',
-		type: 'speed',
-		monster: 'Amoxliatl',
-		rng: {
-			chancePerKill: 120,
-			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
-		}
-	},
-	{
-		id: 1153,
-		name: "Without Ralos' Light",
-		desc: 'Kill Amoxliatl without losing any prayer points.',
-		type: 'restriction',
-		monster: 'Amoxliatl',
-		rng: {
-			chancePerKill: 150,
-			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
-		}
 	}
 ];

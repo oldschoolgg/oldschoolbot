@@ -1,5 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import type { AssignableSlayerTask } from '../types';
 
 export const turaelTasks: AssignableSlayerTask[] = [
@@ -142,7 +144,8 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			KalphiteKingMonster.id
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -233,6 +236,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.Sarachnis.id,
 			Monsters.TempleSpider.id,
 			Monsters.Venenatis.id,
+			BSOMonsters.Venatrix.id,
 			Monsters.Araxxor.id
 		],
 		unlocked: true
@@ -265,8 +269,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.ZombieRat.id,
 			Monsters.Zogre.id,
 			Monsters.Vorkath.id,
-			Monsters.ArmouredZombie.id,
-			Monsters.ZombiePirate.id
+			Monsters.ArmouredZombie.id
 		],
 		combatLevel: 10,
 		unlocked: true

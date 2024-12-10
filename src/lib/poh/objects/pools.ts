@@ -45,5 +45,19 @@ export const Pools: PoHObject[] = [
 		level: 90,
 		itemCost: new Bank().add('Anti-venom(4)', 10).add('Gold leaf', 5).add('Blood rune', 1000),
 		requiredInPlace: 29_240
+	},
+	{
+		id: 99_950,
+		name: 'Ancient rejuvenation pool',
+		slot: 'pool',
+		level: 105,
+		itemCost: new Bank()
+			.add('Saradomin brew(4)', 500)
+			.add('Super restore(4)', 150)
+			.add('Stamina potion(4)', 100)
+			.add('Prayer potion(4)', 200)
+			.add('Marble block', 20)
+			.add('Elder plank', 30),
+		requiredInPlace: 29_241
 	}
 ];

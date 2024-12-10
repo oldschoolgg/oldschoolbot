@@ -101,6 +101,15 @@ const Arrows: Fletchable[] = [
 		xp: 15,
 		inputItems: new Bank({ 'Dragon arrowtips': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
+	},
+	{
+		name: 'Hellfire arrow',
+		id: itemID('Hellfire arrow'),
+		level: 110,
+		xp: 750,
+		outputMultiple: 5,
+		inputItems: new Bank({ 'Headless arrow': 1, 'Ignecarus scales': 1 }),
+		tickRate: 0.13
 	}
 ];
 

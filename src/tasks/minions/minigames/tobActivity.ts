@@ -1,18 +1,19 @@
-import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit/util';
-import { roll, shuffleArr } from 'e';
+import { miniID } from '@oldschoolgg/toolkit';
+import { randArrItem, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
-import { Emoji, Events } from '../../../lib/constants';
+import { BOT_TYPE, CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
+import { TOBRooms, TOBUniques } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
+import { convertPercentChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
@@ -63,7 +64,17 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',
 	async run(data: TheatreOfBloodTaskOptions) {
-		const { channelID, users, hardMode, leader, wipedRooms, duration, deaths: allDeaths, quantity } = data;
+		const {
+			channelID,
+			users,
+			hardMode,
+			leader,
+			wipedRooms,
+			duration,
+			deaths: allDeaths,
+			quantity,
+			cc: chincannonUser
+		} = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const minigameID = hardMode ? 'tob_hard' : 'tob';
 		const allTag = allUsers.map(u => u.toString()).join('');
@@ -81,7 +92,7 @@ export const tobTask: MinionTask = {
 			const deaths = allDeaths[i];
 			const wipedRoom = wipedRooms[i];
 			const tobUsers = users.map((i, index) => ({ id: i, deaths: deaths[index] }));
-			if (data.solo) {
+			if (data.solo === 'trio') {
 				tobUsers.push({ id: miniID(3), deaths: [] });
 				tobUsers.push({ id: miniID(3), deaths: [] });
 			}
@@ -113,11 +124,13 @@ export const tobTask: MinionTask = {
 			)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})`;
 
 			// Track loot for T3+ patrons
-			await Promise.all(
-				allUsers.map(user => {
-					return userStatsBankUpdate(user, 'tob_loot', new Bank(result.loot[user.id]));
-				})
-			);
+			if (!chincannonUser) {
+				await Promise.all(
+					allUsers.map(user => {
+						return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+					})
+				);
+			}
 
 			for (const [userID, _userLoot] of Object.entries(result.loot)) {
 				if (data.solo && userID !== leader) continue;
@@ -126,6 +139,9 @@ export const tobTask: MinionTask = {
 				const userDeaths = deaths[users.indexOf(user.id)];
 
 				const userLoot = new Bank(_userLoot);
+				if (roll(100)) {
+					userLoot.add('Clue scroll (grandmaster)');
+				}
 
 				// Merge existing loot to prevent duplicate pets:
 				const bank = user.allItemsOwned.clone().add(teamsLoot.get(userID));
@@ -140,6 +156,13 @@ export const tobTask: MinionTask = {
 				// Refund initial 100k entry cost
 				userLoot.add('Coins', 100_000);
 
+				// Remove elite clue scroll if OSB & user has one in bank
+				if (BOT_TYPE === 'OSB') {
+					if (user.owns('Clue scroll (elite)')) {
+						userLoot.remove('Clue scroll (elite)', 1);
+					}
+				}
+
 				// Add this raids loot to the raid's total loot:
 				totalLoot.add(userLoot);
 
@@ -152,37 +175,30 @@ export const tobTask: MinionTask = {
 				const items = userLoot.items();
 
 				const isPurple = items.some(([item]) => TOBUniques.includes(item.id));
-				const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
-				if (shouldAnnounce) {
-					const itemsToAnnounce = userLoot.filter(item => TOBUniques.includes(item.id));
-					globalClient.emit(
-						Events.ServerNotification,
-						`${Emoji.Purple} ${
-							user.badgedUsername
-						} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-							(await getMinigameScore(user.id, minigameID)) + (raidId - wipeCount)
-						)} raid.`
-					);
-				}
 				const deathStr =
 					userDeaths.length === 0 ? '' : `${Emoji.Skull}(${userDeaths.map(i => TOBRooms[i].name)})`;
 
 				const lootStr = userLoot.remove('Coins', 100_000).toString();
 				const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `${lootStr}`;
 
-				resultMessage += `\n ${deathStr}**${user}** received: ${str} ${xpResult}`;
+				resultMessage += `\n ${deathStr}**${user}** ${
+					chincannonUser ? 'had this loot blown up' : 'received'
+				}: ${str} ${xpResult}`;
 
 				if (raidId < quantity) {
 					resultMessage += '\n';
 				}
 			}
 		}
-		// Give everyone their loot:
-		await Promise.all(
-			allUsers.map(u => {
-				u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true });
-			})
-		);
+
+		if (chincannonUser) {
+			await Promise.all(
+				allUsers.map(u => userStatsBankUpdate(u.id, 'chincannon_destroyed_loot_bank', teamsLoot.get(u.id)))
+			);
+		} else {
+			// Give everyone their loot:
+			await Promise.all(allUsers.map(u => u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true })));
+		}
 
 		// Give them their earned attempts:
 		if (earnedAttempts > 0) {
@@ -206,9 +222,10 @@ export const tobTask: MinionTask = {
 			await updateBankSetting('tob_cost', globalTobCost);
 		}
 
-		await updateBankSetting('tob_loot', totalLoot);
+		const effectiveTotalLoot = chincannonUser ? new Bank() : totalLoot;
+		await updateBankSetting('tob_loot', effectiveTotalLoot);
 		await trackLoot({
-			totalLoot,
+			totalLoot: effectiveTotalLoot,
 			id: minigameID,
 			type: 'Minigame',
 			changeType: 'loot',
@@ -220,6 +237,11 @@ export const tobTask: MinionTask = {
 				duration
 			}))
 		});
+
+		if (chincannonUser) {
+			const msg = randArrItem(CHINCANNON_MESSAGES);
+			resultMessage += `\n\n**${msg}**`;
+		}
 		const shouldShowImage =
 			allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6 && i[1].length > 0);
 

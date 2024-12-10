@@ -1,9 +1,7 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
@@ -78,6 +76,21 @@ export const fletchCommand: OSBMahojiCommand = {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
 		}
 
+		const boostMsg: string[] = [];
+		let boost = 1;
+		if (user.usingPet('Scruffy')) {
+			boost += 1;
+			boostMsg.push(
+				'<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy! (+100% for Scruffy)'
+			);
+		}
+		if (user.hasEquippedOrInBank('Dwarven knife')) {
+			boostMsg.push('+100% for Dwarven knife');
+			boost += 1;
+		}
+
+		timeToFletchSingleItem /= boost;
+
 		const maxTripLength = calcMaxTripLength(user, 'Fletching');
 		let { quantity } = options;
 
@@ -116,6 +129,8 @@ export const fletchCommand: OSBMahojiCommand = {
 
 		return `${user.minionName} is now Fletching ${quantity}${sets} ${
 			fletchable.name
-		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		}, it'll take around ${formatDuration(
+			duration
+		)} to finish. Removed ${itemsNeeded} from your bank.\n${boostMsg.join(', ')}`;
 	}
 };

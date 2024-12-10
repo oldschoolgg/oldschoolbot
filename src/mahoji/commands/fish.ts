@@ -1,13 +1,13 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, calcPercentOfNum, randInt } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Time, calcPercentOfNum, randInt, reduceNumByPercent } from 'e';
+import { Bank, Monsters, itemID } from 'oldschooljs';
 
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -96,30 +96,56 @@ export const fishCommand: OSBMahojiCommand = {
 			Time.Second * fish.timePerFish * (1 + (100 - user.skillLevel(SkillsEnum.Fishing)) / 100);
 
 		const boosts = [];
+		const hasShelldon = user.usingPet('Shelldon');
+		if (hasShelldon) {
+			scaledTimePerFish /= 2;
+			boosts.push('2x faster for Shelldon');
+		}
+		let maxTripLength = calcMaxTripLength(user, 'Fishing');
+
+		const boostedTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
+		const res = await inventionItemBoost({
+			user,
+			inventionID: InventionID.MechaRod,
+			duration: Math.min(
+				maxTripLength,
+				(options.quantity ?? Math.floor(maxTripLength / boostedTimePerFish)) * boostedTimePerFish
+			)
+		});
+		if (res.success) {
+			scaledTimePerFish = boostedTimePerFish;
+			boosts.push(`${inventionBoosts.mechaRod.speedBoostPercent}% faster for Mecha rod (${res.messages})`);
+		}
+
 		switch (fish.bait) {
 			case itemID('Fishing bait'):
 				if (fish.name === 'Infernal eel') {
 					scaledTimePerFish *= 1;
-				} else if (user.hasEquipped('Pearl fishing rod') && fish.name !== 'Infernal eel') {
+				} else if (user.hasEquippedOrInBank('Pearl fishing rod') && fish.name !== 'Infernal eel') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fishing rod');
 				}
 				break;
 			case itemID('Feather'):
-				if (fish.name === 'Barbarian fishing' && user.hasEquipped('Pearl barbarian rod')) {
+				if (fish.name === 'Barbarian fishing' && user.hasEquippedOrInBank('Pearl barbarian rod')) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl barbarian rod');
-				} else if (user.hasEquipped('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
+				} else if (user.hasEquippedOrInBank('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fly fishing rod');
 				}
 				break;
 			default:
-				if (user.hasEquipped('Crystal harpoon')) {
+				if (user.hasEquippedOrInBank('Crystal harpoon')) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
 				}
 				break;
+		}
+
+		if (user.hasEquippedOrInBank('Shark tooth necklace')) {
+			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 5);
+			boosts.push('5% for Shark tooth necklace');
 		}
 
 		if (fish.id === itemID('Minnow')) {
@@ -131,6 +157,20 @@ export const fishCommand: OSBMahojiCommand = {
 			);
 		}
 
+		const tackleBoxes = [
+			"Champion's tackle box",
+			'Professional tackle box',
+			'Standard tackle box',
+			'Basic tackle box'
+		];
+		for (let i = 0; i < tackleBoxes.length; i++) {
+			if (user.hasEquippedOrInBank([tackleBoxes[i]])) {
+				const num = Time.Minute * (tackleBoxes.length - i);
+				maxTripLength += num;
+				boosts.push(`${formatDuration(num)} for ${tackleBoxes[i]}`);
+				break;
+			}
+		}
 		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
 			boosts.push(
 				`+9 trip minutes for having a ${
@@ -139,12 +179,9 @@ export const fishCommand: OSBMahojiCommand = {
 			);
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Fishing');
-
 		let { quantity, flakes } = options;
-		if (!quantity) {
-			quantity = Math.floor(maxTripLength / scaledTimePerFish);
-		}
+		if (!quantity) quantity = Math.floor(maxTripLength / scaledTimePerFish);
+
 		let flakesQuantity: number | undefined;
 		const cost = new Bank();
 

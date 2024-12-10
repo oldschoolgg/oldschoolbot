@@ -4,11 +4,13 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, noOp, sleep } from 'e';
 import { Bank, Util } from 'oldschooljs';
 
+import { MUserClass } from '../../../lib/MUser';
 import { BLACKLISTED_USERS } from '../../../lib/blacklists';
 import { Emoji, Events } from '../../../lib/constants';
+
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -37,6 +39,7 @@ export async function duelCommand(
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
+	if (!(duelTargetUser instanceof MUserClass)) return "You didn't mention a user to duel.";
 	if (BLACKLISTED_USERS.has(duelTargetUser.id)) return 'Target user is blacklisted.';
 	if (targetAPIUser.user.bot) return 'You cant duel a bot.';
 
@@ -102,11 +105,7 @@ export async function duelCommand(
 		await duelMessage.edit('The fight is almost over...').catch(noOp);
 		await sleep(2000);
 
-		const taxRate = 0.95;
 		const winningAmount = amount * 2;
-		const tax = winningAmount - Math.floor(winningAmount * taxRate);
-		const dividedAmount = tax / 1_000_000;
-		await updateClientGPTrackSetting('economyStats_duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
 		await userStatsUpdate(
 			winner.id,
@@ -127,14 +126,13 @@ export async function duelCommand(
 			{}
 		);
 
-		const loot = new Bank().add('Coins', winningAmount - tax);
-		await winner.addItemsToBank({ items: loot, collectionLog: false });
+		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount), collectionLog: false });
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
 				sender: BigInt(loser.id),
 				recipient: BigInt(winner.id),
-				items_sent: new Bank().add('Coins', Math.floor(amount * taxRate)).toJSON(),
+				items_sent: new Bank().add('Coins', Math.floor(amount)).toJSON(),
 				type: 'duel'
 			}
 		});
@@ -154,9 +152,7 @@ export async function duelCommand(
 		);
 
 		duelMessage.edit(
-			`Congratulations ${winner.badgedUsername}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(
-				tax
-			)} tax.`
+			`Congratulations ${winner.usernameOrMention}! You won ${Util.toKMB(winningAmount)}, and paid 0 tax.`
 		);
 
 		return `Duel finished, ${winner} won.`;

@@ -2,7 +2,6 @@ import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import type { Minigame } from '@prisma/client';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { MAX_QP } from './minions/data/quests';
 import type { DiaryTier, DiaryTierName } from './minions/types';
 import { DiaryID } from './minions/types';
@@ -13,9 +12,10 @@ import { MUserStats } from './structures/MUserStats';
 import type { Skills } from './types';
 import { joinStrings } from './util';
 import getOSItem from './util/getOSItem';
+import resolveItems from './util/resolveItems';
 import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
 
-interface Diary {
+export type Diary = {
 	name: string;
 	id: DiaryID;
 	alias?: string[];
@@ -23,7 +23,7 @@ interface Diary {
 	medium: DiaryTier;
 	hard: DiaryTier;
 	elite: DiaryTier;
-}
+};
 
 export function userhasDiaryTierSync(
 	user: MUser,
@@ -329,7 +329,7 @@ export const ArdougneDiary: Diary = {
 	}
 };
 
-const DesertDiary: Diary = {
+export const DesertDiary: Diary = {
 	name: 'Desert',
 	id: DiaryID.Desert,
 	easy: {
@@ -492,6 +492,7 @@ export const FaladorDiary: Diary = {
 			thieving: 13,
 			woodcutting: 75
 		},
+		qp: MAX_QP,
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)']),
 		customReq: (user, summary) => {
 			if (summary) return [false, 'Quest point cape or Skill cape.'];
@@ -508,7 +509,7 @@ export const FaladorDiary: Diary = {
 	}
 };
 
-const FremennikDiary: Diary = {
+export const FremennikDiary: Diary = {
 	name: 'Fremennik',
 	id: DiaryID.Fremennik,
 	alias: ['fremmy', 'fremenik', 'fremmenik', 'frem'],
@@ -971,7 +972,7 @@ export const MorytaniaDiary: Diary = {
 	}
 };
 
-const VarrockDiary: Diary = {
+export const VarrockDiary: Diary = {
 	name: 'Varrock',
 	id: DiaryID.Varrock,
 	alias: ['var'],

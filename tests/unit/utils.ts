@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types';
+import { MaterialBank } from '../../src/lib/invention/MaterialBank';
 import { SkillsArray } from '../../src/lib/skilling/types';
 import { ChargeBank } from '../../src/lib/structures/Bank';
 import { Gear } from '../../src/lib/structures/Gear';
@@ -29,6 +30,8 @@ export function makeGearBank({ bank }: { bank?: Bank } = {}) {
 		bank: bank ?? new Bank(),
 		skillsAsLevels: makeSkillsAsLevels(),
 		chargeBank: new ChargeBank(),
+		materials: new MaterialBank(),
+		pet: null,
 		skillsAsXP: makeSkillsAsLevels(13034431)
 	});
 }

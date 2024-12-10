@@ -4,16 +4,17 @@ import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
 import { TimerManager } from '@sapphire/timer-manager';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
+import { runTameTask } from '../tasks/tames/tameTasks';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
 import { BitField, Channel, PeakTier, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
-import { populateRoboChimpCache } from './perkTier';
 import { runCommand } from './settings/settings';
 import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
+import { MTame } from './structures/MTame';
 import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
@@ -21,7 +22,6 @@ import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 
 let lastMessageID: string | null = null;
-let lastMessageGEID: string | null = null;
 const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
 	.addFields({
@@ -39,25 +39,6 @@ const supportEmbed = new EmbedBuilder()
 	.addFields({
 		name: '⚠️ Dont ping anyone',
 		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
-	});
-
-const geEmbed = new EmbedBuilder()
-	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-	.addFields({
-		name: "⚠️ Don't get scammed",
-		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
-	})
-	.addFields({
-		name: '🔎 Search',
-		value: 'Search this channel first, someone might already be selling/buying what you want.'
-	})
-	.addFields({
-		name: '💬 Read the rules/Pins',
-		value: 'Read the pinned rules/instructions before using the channel.'
-	})
-	.addFields({
-		name: 'Keep Ads Short',
-		value: 'Keep your ad less than 10 lines long, as short as possible.'
 	});
 
 export interface Peak {
@@ -131,7 +112,7 @@ export const tickers: {
 SELECT users.id, user_stats.last_daily_timestamp
 FROM users
 JOIN user_stats ON users.id::bigint = user_stats.user_id
-WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '12 hours';
+WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '4 hours';
 `
 			);
 			const dailyDMButton = new ButtonBuilder()
@@ -346,25 +327,40 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		}
 	},
 	{
-		name: 'ge_channel_messages',
-		startupWait: Time.Second * 19,
+		name: 'tame_activities',
+		startupWait: Time.Second * 15,
 		timer: null,
-		interval: Time.Minute * 20,
+		interval: Time.Second * 5,
 		cb: async () => {
-			if (!globalConfig.isProduction) return;
-			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel | undefined;
-			if (!channel) return;
-			const messages = await channel.messages.fetch({ limit: 5 });
-			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
-			if (lastMessageGEID) {
-				const message = await channel.messages.fetch(lastMessageGEID).catch(noOp);
-				if (message) {
-					await message.delete();
+			const tameTasks = await prisma.tameActivity.findMany({
+				where: {
+					finish_date: globalConfig.isProduction
+						? {
+								lt: new Date()
+							}
+						: undefined,
+					completed: false
+				},
+				include: {
+					tame: true
+				},
+				take: 5
+			});
+
+			await prisma.tameActivity.updateMany({
+				where: {
+					id: {
+						in: tameTasks.map(i => i.id)
+					}
+				},
+				data: {
+					completed: true
 				}
+			});
+
+			for (const task of tameTasks) {
+				await runTameTask(task, new MTame(task.tame));
 			}
-			const res = await channel.send({ embeds: [geEmbed] });
-			lastMessageGEID = res.id;
 		}
 	},
 	{
@@ -374,15 +370,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		interval: Time.Second * 10,
 		cb: async () => {
 			await GrandExchange.tick();
-		}
-	},
-	{
-		name: 'robochimp_cache',
-		startupWait: Time.Minute * 5,
-		timer: null,
-		interval: Time.Minute * 5,
-		cb: async () => {
-			await populateRoboChimpCache();
 		}
 	}
 ];

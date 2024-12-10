@@ -184,6 +184,16 @@ export const courses: Course[] = [
 		cantFail: true,
 		petChance: agilLevel => (agilLevel >= 62 ? 25_406 : 28_503),
 		requiredQuests: [QuestID.ChildrenOfTheSun]
+	},
+	{
+		id: 30,
+		name: 'Daemonheim Rooftop Course',
+		aliases: ['daemonheim', 'dh', 'daemonheim rooftop course'],
+		level: 101,
+		xp: 10_140.6,
+		marksPer60: 35,
+		lapTime: 140.2,
+		petChance: 25_146
 	}
 ];
 

@@ -4,6 +4,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
+import { makeKillTable } from '../../../util/setCustomMonster';
 import type { KillableMonster } from '../../types';
 
 export const vannakaMonsters: KillableMonster[] = [
@@ -40,7 +41,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		notifyDrops: resolveItems(['Abyssal head', 'Abyssal dagger']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 85
@@ -83,7 +83,8 @@ export const vannakaMonsters: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 10,
 				'Fancy rejuvenation pool': 10,
-				'Ornate rejuvenation pool': 10
+				'Ornate rejuvenation pool': 10,
+				'Ancient rejuvenation pool': 20
 			}
 		},
 		slayerOnly: true,
@@ -1102,10 +1103,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		name: Monsters.OgressWarrior.name,
 		aliases: Monsters.OgressWarrior.aliases,
 		timeToFinish: Time.Second * 25,
-		table: Monsters.OgressWarrior,
-
+		table: makeKillTable(Monsters.OgressWarrior.table!.tertiary(6500, 'Ishi')),
 		wildy: false,
-
 		difficultyRating: 2,
 		qpRequired: 0,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -1151,9 +1150,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		aliases: Monsters.SeaSnakeYoung.aliases,
 		timeToFinish: Time.Second * 28,
 		table: Monsters.SeaSnakeYoung,
-
 		wildy: false,
-
 		difficultyRating: 2,
 		levelRequirements: {
 			slayer: 40
@@ -1311,8 +1308,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		existsInCatacombs: true,
 		itemsRequired: deepResolveItems([
-			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
-			["Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 0,
 		levelRequirements: {

@@ -1,15 +1,15 @@
-import { type CommandResponse, deepMerge, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, deepMerge, md5sum, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
-import { clamp, objectEntries } from 'e';
+import { clamp, objectEntries, roll } from 'e';
 import { type ArrayItemsResolved, Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
 import { skillEmoji } from '../data/emojis';
 import type { UserFullGearSetup } from '../gear/types';
-import type { SkillRequirements, Skills } from '../types';
+import type { Skills } from '../types';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -62,6 +62,13 @@ export function pluraliseItemName(name: string): string {
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
+}
+
+export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
+	let rate = 1 / (((xpBeingReceived / 30) * 30) / 50_000_000);
+	const amountInCl = cl.amount('Baby yaga house');
+	if (amountInCl > 1) rate *= amountInCl;
+	return Math.floor(rate);
 }
 
 const shortItemNames = new Map([
@@ -147,24 +154,44 @@ export function calculateSimpleMonsterDeathChance({
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }
 
+export function perHourChance(
+	durationMilliseconds: number,
+	oneInXPerHourChance: number,
+	successFunction: () => unknown
+) {
+	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
+	const perMinuteChance = oneInXPerHourChance * 60;
+
+	for (let i = 0; i < minutesPassed; i++) {
+		if (roll(perMinuteChance)) {
+			successFunction();
+		}
+	}
+}
+
 const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
 
-export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
+export function returnStringOrFile(
+	string: string | InteractionReplyOptions,
+	forceFile = false
+): Awaited<CommandResponse> {
 	if (typeof string === 'string') {
-		if (string.length > 2000) {
+		const hash = md5sum(string).slice(0, 5);
+		if (string.length > 2000 || forceFile) {
 			return {
 				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
+				files: [{ attachment: Buffer.from(string), name: `result-${hash}.txt` }]
 			};
 		}
 		return string;
 	}
-	if (string.content && string.content.length > 2000) {
+	if (string.content && (string.content.length > 2000 || forceFile)) {
+		const hash = md5sum(string.content).slice(0, 5);
 		return deepMerge(
 			string,
 			{
 				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
+				files: [{ attachment: Buffer.from(string.content), name: `result-${hash}.txt` }]
 			},
 			{ clone: false }
 		);
@@ -192,7 +219,7 @@ export function parseStaticTimeInterval(input: string): input is StaticTimeInter
 	return false;
 }
 
-export function hasSkillReqsRaw(skills: SkillRequirements, requirements: SkillRequirements) {
+export function hasSkillReqsRaw(skills: Skills, requirements: Skills) {
 	for (const [skillName, requiredLevel] of objectEntries(requirements)) {
 		const lvl = skills[skillName];
 		if (!lvl || lvl < requiredLevel!) {
@@ -203,7 +230,7 @@ export function hasSkillReqsRaw(skills: SkillRequirements, requirements: SkillRe
 }
 
 export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
-	const hasReqs = hasSkillReqsRaw(user.skillsAsRequirements, reqs);
+	const hasReqs = hasSkillReqsRaw(user.skillsAsLevels, reqs);
 	if (!hasReqs) {
 		return [false, formatSkillRequirements(reqs)];
 	}

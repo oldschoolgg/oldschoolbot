@@ -1,6 +1,16 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit/util';
-import type { ButtonInteraction, Channel, ChatInputCommandInteraction, ComponentType } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionResponseType, Routes } from 'discord.js';
+import { channelIsSendable } from '@oldschoolgg/toolkit';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	type ButtonInteraction,
+	ButtonStyle,
+	type ChatInputCommandInteraction,
+	type ComponentType,
+	InteractionResponseType,
+	type MessageCreateOptions,
+	Routes
+} from 'discord.js';
+import type { Channel } from 'discord.js';
 import { Time, noOp } from 'e';
 
 import { SILENT_ERROR } from '../constants';
@@ -16,8 +26,8 @@ export async function silentButtonAck(interaction: ButtonInteraction) {
 }
 
 export async function handleMahojiConfirmation(
-	interaction: ChatInputCommandInteraction,
-	str: string,
+	interaction: ChatInputCommandInteraction | ButtonInteraction,
+	str: string | MessageCreateOptions,
 	_users?: string[]
 ) {
 	let channel: Channel | null = globalClient.channels.cache.get(interaction.channelId) ?? null;
@@ -27,7 +37,7 @@ export async function handleMahojiConfirmation(
 	if (!channelIsSendable(channel)) {
 		const error = new Error('Channel for confirmation not found.');
 		logErrorForInteraction(error, interaction, {
-			str: str.slice(0, 200),
+			str: (typeof str === 'string' ? str : str.content!).slice(0, 200),
 			users: _users?.join(',').slice(0, 20) ?? 'N/A'
 		});
 		throw error;
@@ -38,7 +48,7 @@ export async function handleMahojiConfirmation(
 	const confirmed: string[] = [];
 	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
-		content: str,
+		...(typeof str === 'string' ? { content: str } : str),
 		components: [
 			new ActionRowBuilder<ButtonBuilder>().addComponents([
 				new ButtonBuilder({

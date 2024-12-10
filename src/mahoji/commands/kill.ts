@@ -5,8 +5,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
-import { slayerMasterChoices } from '../../lib/slayer/constants';
-import { slayerMasters } from '../../lib/slayer/slayerMasters';
+import { stringMatches } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
@@ -53,10 +52,10 @@ export const killCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (value: string) => {
 				return [
-					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
-					...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] })),
-					{ name: 'nex', aliases: ['nex'] },
-					{ name: 'nightmare', aliases: ['nightmare'] }
+					...Array.from(Monsters.values()).map(i => ({ name: i.name, aliases: i.aliases })),
+					...simulatedKillables
+						.filter(i => !Array.from(Monsters.values()).some(monster => monster.name === i.name))
+						.map(i => ({ name: i.name, aliases: [i.name] }))
 				]
 					.filter(i =>
 						!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
@@ -73,40 +72,36 @@ export const killCommand: OSBMahojiCommand = {
 			description: 'The quantity you want to simulate.',
 			required: true,
 			min_value: 1
-		},
-		{
-			type: ApplicationCommandOptionType.Boolean,
-			name: 'catacombs',
-			description: 'Killing in catacombs?',
-			required: false
-		},
-		{
-			type: ApplicationCommandOptionType.String,
-			name: 'master',
-			description: 'On slayer task from a master?',
-			required: false,
-			choices: slayerMasterChoices
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction
-	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string }>) => {
+	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
 		const user = await mUserFetch(userID);
 		await deferInteraction(interaction);
+		const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, options.name)));
+		const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, options.name));
+
+		let limit = determineKillLimit(user);
+		if (osjsMonster && 'isCustom' in osjsMonster) {
+			if (user.perkTier() < PerkTier.Four) {
+				return 'Simulating kills of custom monsters is a T3 perk!';
+			}
+			limit /= 4;
+		}
+
+		if (simulatedKillable?.isCustom) {
+			if (user.perkTier() < PerkTier.Four) {
+				return 'Simulating kills of custom monsters or raids is a T3 perk!';
+			}
+			limit /= 4;
+		}
+
 		const result = await Workers.kill({
 			quantity: options.quantity,
 			bossName: options.name,
-			limit: determineKillLimit(user),
-			catacombs: options.catacombs,
-			onTask: options.master !== undefined,
-			slayerMaster: slayerMasters.find(sMaster => sMaster.name === options.master)?.osjsEnum,
-			lootTableTertiaryChanges: Array.from(
-				user
-					.buildTertiaryItemChanges(false, options.master === 'Krystilia', options.master !== undefined)
-					.entries()
-			)
+			limit,
+			catacombs: false,
+			onTask: false,
+			lootTableTertiaryChanges: Array.from(user.buildTertiaryItemChanges().entries())
 		});
 
 		if (result.error) {
@@ -118,6 +113,7 @@ export const killCommand: OSBMahojiCommand = {
 			title: result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
 			user
 		});
+
 		return {
 			files: [image.file],
 			content: result.content

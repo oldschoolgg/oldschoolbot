@@ -8,7 +8,7 @@ import { Eatables } from '../../data/eatables';
 import type { GearSetupType } from '../../gear/types';
 import type { GearBank } from '../../structures/GearBank';
 import { updateBankSetting } from '../../util/updateBankSetting';
-import getUserFoodFromBank from './getUserFoodFromBank';
+import getUserFoodFromBank, { getRealHealAmount } from './getUserFoodFromBank';
 
 export function removeFoodFromUserRaw({
 	totalHealingNeeded,
@@ -80,7 +80,8 @@ export default async function removeFoodFromUser({
 	attackStylesUsed,
 	learningPercentage,
 	isWilderness,
-	unavailableBank
+	unavailableBank,
+	minimumHealAmount
 }: {
 	user: MUser;
 	totalHealingNeeded: number;
@@ -90,6 +91,7 @@ export default async function removeFoodFromUser({
 	learningPercentage?: number;
 	isWilderness?: boolean;
 	unavailableBank?: Bank;
+	minimumHealAmount?: number;
 }): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
 	const result = removeFoodFromUserRaw({
 		gearBank: user.gearBank,
@@ -102,9 +104,14 @@ export default async function removeFoodFromUser({
 	});
 	if (!result) {
 		throw new UserError(
-			`You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
-				i => i.name
-			).join(', ')}.`
+			`You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items${
+				minimumHealAmount ? ` (Each food item must heal atleast ${minimumHealAmount}HP)` : ''
+			}: ${Eatables.filter(food => {
+				if (!minimumHealAmount) return true;
+				return getRealHealAmount(user.gearBank, food.healAmount) >= minimumHealAmount;
+			})
+				.map(i => i.name)
+				.join(', ')}.`
 		);
 	} else {
 		await transactItems({ userID: user.id, itemsToRemove: result.foodToRemove });

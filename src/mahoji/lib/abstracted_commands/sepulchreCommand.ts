@@ -1,9 +1,9 @@
 import { Time, reduceNumByPercent, sumArr } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
@@ -40,9 +40,16 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 
 	lapLength = reduceNumByPercent(lapLength, percentReduced);
 
-	for (const [item, percent] of sepulchreBoosts.items()) {
-		if (user.hasEquippedOrInBank(item.id)) {
-			boosts.push(`${percent}% for ${item.name}`);
+	const hasCob = user.usingPet('Cob');
+
+	if (hasCob) {
+		lapLength /= 2;
+		boosts.push("2x boost with Cob's help");
+	}
+
+	for (const [id, percent] of sepulchreBoosts.items()) {
+		if (user.hasEquippedOrInBank(id.id)) {
+			boosts.push(`${percent}% for ${id.name}`);
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
 	}

@@ -1,39 +1,37 @@
 import { Time, percentChance } from 'e';
-
-import type { GearBank } from '../../structures/GearBank';
-import type { Ore } from './../types';
+import type { Ore } from '../types';
 
 interface MiningTimeOptions {
+	hasGlory: boolean;
+	maxTripLength: number;
 	quantity: number | undefined;
 	ore: Ore;
 	ticksBetweenRolls: number;
-	glovesEffect: number;
+	glovesRate: number;
 	armourEffect: number;
 	miningCapeEffect: number;
 	powermining: boolean;
 	goldSilverBoost: boolean;
 	miningLvl: number;
 	passedDuration?: number;
-	maxTripLength: number;
-	gearBank: GearBank;
 }
 
 export function determineMiningTime({
 	quantity,
 	ore,
 	ticksBetweenRolls,
-	glovesEffect,
+	glovesRate,
 	armourEffect,
 	miningCapeEffect,
 	powermining,
 	goldSilverBoost,
 	miningLvl,
 	passedDuration,
-	maxTripLength,
-	gearBank
+	hasGlory,
+	maxTripLength
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
-	if (ore.name === 'Gem rock' && gearBank.hasEquipped('Amulet of glory')) {
+	if (ore.name === 'Gem rock' && hasGlory) {
 		intercept *= 3;
 	}
 	let timeElapsed = 0;
@@ -54,18 +52,12 @@ export function determineMiningTime({
 		userMaxTripTicks *= 1.5;
 	}
 
-	let remainingNoDeplete = glovesEffect;
-
 	while (timeElapsed < userMaxTripTicks) {
 		while (!percentChance(chanceOfSuccess)) {
 			timeElapsed += ticksBetweenRolls;
 		}
-		if (remainingNoDeplete <= 0) {
+		if (!percentChance(glovesRate)) {
 			timeElapsed += respawnTimeOrPick;
-			remainingNoDeplete = glovesEffect;
-		} else {
-			timeElapsed += ticksBetweenRolls;
-			remainingNoDeplete--;
 		}
 		newQuantity++;
 		if (percentChance(miningCapeEffect)) {

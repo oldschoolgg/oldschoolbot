@@ -206,17 +206,17 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 	for (const star of stars) {
 		const [timeToMine, newQuantity] = determineMiningTime({
 			quantity: Math.round(star.dustAvailable / usersWith),
-			gearBank: user.gearBank,
 			ore: star,
 			ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
-			glovesEffect: 0,
+			glovesRate: 0,
 			armourEffect: 0,
 			miningCapeEffect: 0,
 			powermining: false,
 			goldSilverBoost: false,
 			miningLvl: miningLevel,
 			passedDuration: duration,
-			maxTripLength: calcMaxTripLength(user, 'ShootingStars')
+			maxTripLength: calcMaxTripLength(user, 'Mining'),
+			hasGlory: user.hasEquipped('Amulet of glory')
 		});
 		duration += timeToMine;
 		dustReceived += newQuantity;

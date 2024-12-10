@@ -1,15 +1,16 @@
-import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 
 import { userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { percentChance } from '../../../lib/util';
+import { formatDuration, percentChance } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
@@ -148,6 +149,11 @@ export const fightCavesTask: MinionTask = {
 			);
 		}
 
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
+			loot.multiply(2);
+		}
+
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
@@ -203,6 +209,10 @@ export const fightCavesTask: MinionTask = {
 
 			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
 			// End slayer code
+		}
+
+		if (flappyRes.shouldGiveBoost) {
+			msg += `\n\n${flappyRes.userMsg}`;
 		}
 
 		handleTripFinish(

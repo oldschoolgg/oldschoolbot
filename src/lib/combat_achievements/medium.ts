@@ -525,52 +525,5 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 10,
 			hasChance: isCertainMonsterTrip(Monsters.Scurrius.id)
 		}
-	},
-	{
-		id: 144,
-		name: "You're a wizard",
-		desc: 'Kill the Hueycoatl using only earth spells.',
-		type: 'restriction',
-		monster: 'TheHueycoatl',
-		rng: {
-			chancePerKill: 10,
-			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
-		}
-	},
-	{
-		id: 145,
-		name: 'Hueycoatl Champion',
-		desc: 'Kill the Hueycoatl once.',
-		type: 'kill_count',
-		monster: 'TheHueycoatl',
-		requirements: new Requirements().add({
-			kcRequirement: {
-				[Monsters.TheHueycoatl.id]: 1
-			}
-		})
-	},
-	{
-		id: 146,
-		name: 'Temotli Triumph',
-		desc: 'Kill Amoxliatl using only glacial temotli as a weapon.',
-		type: 'restriction',
-		monster: 'Amoxliatl',
-		rng: {
-			chancePerKill: 10,
-			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Amoxliatl.id)(data) && user.hasEquipped('Glacial temotli')
-		}
-	},
-	{
-		id: 147,
-		name: 'Amoxliatl Champion',
-		desc: 'Kill Amoxliatl once.',
-		type: 'kill_count',
-		monster: 'Amoxliatl',
-		requirements: new Requirements().add({
-			kcRequirement: {
-				[Monsters.Amoxliatl.id]: 1
-			}
-		})
 	}
 ];

@@ -1,11 +1,13 @@
 import { clamp, objectValues } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import type { Skills } from '../../../lib/types';
+import type { ItemBank, Skills } from '../../../lib/types';
 import { assert, isValidSkill, itemID } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
+import resolveItems from '../../../lib/util/resolveItems';
+import { userStatsUpdate } from '../../mahojiSettings';
 
 interface IXPLamp {
 	itemID: number;
@@ -54,6 +56,37 @@ export const XPLamps: IXPLamp[] = [
 			SkillsEnum.Magic,
 			SkillsEnum.Prayer
 		]
+	},
+	// BSO Lamps
+	{
+		itemID: 6796,
+		amount: 20_000,
+		name: 'Tiny lamp',
+		minimumLevel: 1
+	},
+	{
+		itemID: 21_642,
+		amount: 50_000,
+		name: 'Small lamp',
+		minimumLevel: 1
+	},
+	{
+		itemID: 23_516,
+		amount: 100_000,
+		name: 'Average lamp',
+		minimumLevel: 1
+	},
+	{
+		itemID: 22_320,
+		amount: 1_000_000,
+		name: 'Large lamp',
+		minimumLevel: 1
+	},
+	{
+		itemID: 11_157,
+		amount: 5_000_000,
+		name: 'Huge lamp',
+		minimumLevel: 1
 	},
 	{
 		itemID: 28_587,
@@ -163,7 +196,8 @@ export const Lampables: IXPObject[] = [
 						SkillsEnum.Fishing,
 						SkillsEnum.Thieving,
 						SkillsEnum.Firemaking,
-						SkillsEnum.Agility
+						SkillsEnum.Agility,
+						SkillsEnum.Dungeoneering
 					].includes(skill)
 						? 150
 						: 50) *
@@ -285,6 +319,9 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 	if (!xpObject) return "That's not a valid item to use.";
 
 	if (!isValidSkill(skill)) return "That's not a valid skill.";
+	if (skill === SkillsEnum.Invention) {
+		return 'A magic force prevents you from using lamps on this skill.';
+	}
 
 	const qty = !_quantity ? 1 : clamp(_quantity, 1, 1000);
 	const toRemoveFromBank = new Bank().add(item.id, qty);
@@ -313,9 +350,18 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 
 	const amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
+	const stats = await user.fetchStats({ lamped_xp: true });
+	const newLampedXp = {
+		...(stats.lamped_xp as ItemBank)
+	};
+	if (!newLampedXp[skill]) newLampedXp[skill] = amount;
+	else newLampedXp[skill] += amount;
+	userStatsUpdate(user.id, {
+		lamped_xp: newLampedXp
+	});
 
 	await user.removeItemsFromBank(toRemoveFromBank);
-	const xpStr = await user.addXP({ skillName: skill, amount, artificial: true });
+	const xpStr = await user.addXP({ skillName: skill, amount, artificial: true, multiplier: false });
 
 	return { content: `You used ${toRemoveFromBank}. ${xpStr}` };
 }

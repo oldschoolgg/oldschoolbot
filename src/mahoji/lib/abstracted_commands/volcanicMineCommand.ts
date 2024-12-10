@@ -2,11 +2,10 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
+import { formatDuration, formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -123,7 +122,9 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 		.add('Numulite', 30);
 
 	// Activity boosts
-	if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
+	if (userMiningLevel >= 99 && userSkillingGear.hasEquipped('Dwarven pickaxe')) {
+		boosts.push(`3x boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Dwarven pickaxe'} equipped.`);
+	} else if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
 		boosts.push(`50% boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Crystal pickaxe'} equipped.`);
 	} else if (userMiningLevel >= 61 && userSkillingGear.hasEquipped('Dragon pickaxe')) {
 		boosts.push(`30% boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Dragon pickaxe'} equipped.`);
@@ -159,6 +160,10 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 	}
 
 	await transactItems({ userID: user.id, itemsToRemove: suppliesUsage });
+
+	if (user.usingPet('Doug')) {
+		boosts.push('20% more Mining XP for having Doug helping you!');
+	}
 
 	const duration = VolcanicMineGameTime * gameQuantity;
 

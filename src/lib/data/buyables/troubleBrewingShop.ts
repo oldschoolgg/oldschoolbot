@@ -99,6 +99,25 @@ export const troubleBrewingBuyables: Buyable[] = [
 	},
 	//
 	{
+		name: 'Golden naval shirt',
+		itemCost: new Bank({
+			'Pieces of eight': 1000
+		})
+	},
+	{
+		name: 'Golden tricorn hat',
+		itemCost: new Bank({
+			'Pieces of eight': 500
+		})
+	},
+	{
+		name: 'Golden navy slacks',
+		itemCost: new Bank({
+			'Pieces of eight': 1000
+		})
+	},
+	//
+	{
 		name: 'Grey naval shirt',
 		itemCost: new Bank({
 			'Pieces of eight': 1000
@@ -170,6 +189,12 @@ export const troubleBrewingBuyables: Buyable[] = [
 		name: 'Phasmatys flag',
 		itemCost: new Bank({
 			'Pieces of eight': 6000
+		})
+	},
+	{
+		name: 'Jolly roger cape',
+		itemCost: new Bank({
+			'Pieces of eight': 8000
 		})
 	},
 	{

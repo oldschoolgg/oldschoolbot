@@ -1,21 +1,24 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { shuffleArr } from 'e';
+import { randArrItem, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
-import { Emoji, Events } from '../../../lib/constants';
+import { MysteryBoxes } from '../../../lib/bsoOpenables';
+import { CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { coxCMUniques, coxUniques, createTeam } from '../../../lib/data/cox';
+import { createTeam } from '../../../lib/data/cox';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import type { RaidsOptions } from '../../../lib/types/minions';
-import { randomVariation, resolveItems, roll } from '../../../lib/util';
+import { randomVariation, roll } from '../../../lib/util';
+import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 interface RaidResultUser {
 	personalPoints: number;
@@ -24,12 +27,14 @@ interface RaidResultUser {
 	deaths: number;
 	deathChance: number;
 	gotAncientTablet?: boolean;
+	naturalDouble: boolean;
+	flappyMsg: string | null;
 }
 
+const orangeItems = resolveItems(['Takon', 'Steve']);
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
-const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
 const coxPurpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
@@ -79,23 +84,12 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 export const raidsTask: MinionTask = {
 	type: 'Raids',
 	async run(data: RaidsOptions) {
-		const {
-			channelID,
-			users,
-			challengeMode,
-			isFakeMass,
-			maxSizeInput,
-			duration,
-			leader,
-			quantity: _quantity
-		} = data;
+		const { channelID, users, challengeMode, duration, leader, quantity: _quantity, cc } = data;
 		const quantity = _quantity ?? 1;
-		const fetchedUsers = await Promise.all(users.map(async u => mUserFetch(u)));
-		let allUsers = isFakeMass ? Array(maxSizeInput).fill(fetchedUsers[0]) : fetchedUsers;
+		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
 		let totalPoints = 0;
-		const fakeUserResults = new Map<string, Bank>();
 		const raidResults = new Map<string, RaidResultUser>();
 		for (let x = 0; x < quantity; x++) {
 			const team = await createTeam(allUsers, challengeMode);
@@ -105,42 +99,38 @@ export const raidsTask: MinionTask = {
 					teamMate.canReceiveAncientTablet = false;
 				}
 			}
-
-			if (isFakeMass) {
-				// Remove the users ID from fake users
-				for (let i = 1; i < team.length; i++) {
-					team[i].id = `${i}`;
-				}
-			}
-
-			// Vary completion times for multiple raids in 1 trip
-			const timeToComplete = quantity === 1 ? duration : randomVariation(duration / quantity, 2);
+			// Vary completion times for CM time limits
+			const timeToComplete = quantity === 1 ? duration : randomVariation(duration / quantity, 5);
 			const raidLoot = ChambersOfXeric.complete({
 				challengeMode,
 				timeToComplete,
 				team
 			});
-
 			for (const [userID, userLoot] of Object.entries(raidLoot)) {
-				//track the simulated users loot to show the user on trip return
-				if (isFakeMass) {
-					if (userID !== leader) {
-						const existingLoot = fakeUserResults.get(userID) || new Bank();
-						existingLoot.add(userLoot);
-						fakeUserResults.set(userID, existingLoot);
-					}
-				}
 				let userData = raidResults.get(userID);
 				// Do all the one-time / per-user stuff:
 				if (!userData) {
 					// User already fetched earlier, no need to make another DB call
 					const mUser = allUsers.find(u => u.id === userID)!;
+					// Set the double flags, so we don't charge for flappy repeatedly / give multiple boxes
+					let naturalDouble = false;
+					let flappyMsg: string | null = null;
+					if (roll(10)) {
+						naturalDouble = true;
+					} else {
+						const flappyRes = await userHasFlappy({ user: mUser, duration });
+						if (flappyRes.shouldGiveBoost) {
+							flappyMsg = flappyRes.userMsg;
+						}
+					}
 					userData = {
 						personalPoints: 0,
 						loot: new Bank(),
 						mUser,
 						deaths: 0,
-						deathChance: 0
+						deathChance: 0,
+						naturalDouble,
+						flappyMsg
 					};
 				}
 				// Handle the per-raid stuff
@@ -150,29 +140,22 @@ export const raidsTask: MinionTask = {
 				userData.deathChance = member.deathChance;
 				totalPoints += member.personalPoints;
 
-				// logic for cox metamorph pets
-				const addMetamorphPet = (userData: RaidResultUser, userLoot: Bank, challengeMode: boolean) => {
-					const hasDust = userData.loot.has('Metamorphic dust') || userData.mUser.cl.has('Metamorphic dust');
-					if (challengeMode && roll(50) && hasDust) {
-						const result = userData.loot.clone().add(userData.mUser.allItemsOwned);
-						const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !result.has(pet));
-						if (unownedPet) {
-							userLoot.add(unownedPet);
-						}
-					}
-				};
-				if (isFakeMass) {
-					if (userID === leader) {
-						addMetamorphPet(userData, userLoot, challengeMode);
-					}
-				} else {
-					addMetamorphPet(userData, userLoot, challengeMode);
-				}
+				// Double loot now, so we don't double Steve / Takon / etc
+				if (userData.naturalDouble || userData.flappyMsg) userLoot.multiply(2);
 
+				const hasDust = userData.loot.has('Metamorphic dust') || userData.mUser.cl.has('Metamorphic dust');
+				if (challengeMode && roll(50) && hasDust) {
+					const result = userData.loot.clone().add(userData.mUser.allItemsOwned);
+					const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !result.has(pet));
+					if (unownedPet) {
+						userLoot.add(unownedPet);
+					}
+				}
 				if (userLoot.has('Ancient tablet')) {
 					userData.gotAncientTablet = true;
 				}
 
+				handleSpecialCoxLoot(userData.mUser, userLoot);
 				userData.loot.add(userLoot);
 				raidResults.set(userID, userData);
 			}
@@ -181,51 +164,28 @@ export const raidsTask: MinionTask = {
 		const minigameID = challengeMode ? 'raids_challenge_mode' : 'raids';
 
 		const totalLoot = new Bank();
+
 		let resultMessage = `<@${leader}> Your ${challengeMode ? 'Challenge Mode Raid' : 'Raid'}${
 			quantity > 1 ? 's have' : ' has'
-		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.`;
-
-		// create the simulated users loot message
-		if (isFakeMass) {
-			const fakeUsersStr: string[] = [];
-			for (const [fakeID, fakeLoot] of fakeUserResults) {
-				const greenUnique = coxCMUniques.find(u => fakeLoot.has(u));
-				const purpleUnique = coxUniques.find(u => fakeLoot.has(u));
-				const fakeUserOlmlet = fakeLoot.has('Olmlet');
-				fakeUsersStr.push(
-					`${fakeUserOlmlet ? '<:Olmlet:324127376873357316>' : ''}${greenUnique ? `${Emoji.Green}` : ''}${purpleUnique ? `${Emoji.Purple}` : ''}User #${fakeID}: ${fakeLoot}\n`
-				);
-			}
-			const fakeUsersString = fakeUsersStr.join(' ');
-			const greenUnique = coxCMUniques.find(u => fakeUsersString.includes(u));
-			const purpleUnique = coxUniques.find(u => fakeUsersString.includes(u));
-			const fakeUserOlmlet = fakeUsersString.includes('Olmlet');
-			resultMessage += `\n${`\n${fakeUserOlmlet ? '<:Olmlet:324127376873357316>' : ''}${greenUnique ? `${Emoji.Green}` : ''}${purpleUnique ? `${Emoji.Purple}` : ''}Simulated users loot:\n||${fakeUsersStr.join('')}||`}`;
-		}
-
-		// Filter out fake users and only retain the leader's results
-		if (isFakeMass) {
-			allUsers = fetchedUsers;
-			const leaderResult = raidResults.get(leader) as RaidResultUser;
-			raidResults.clear();
-			if (leaderResult) {
-				raidResults.set(leader, leaderResult);
-			}
-		}
-
+		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, quantity)));
 
 		for (const [userID, userData] of raidResults) {
-			const { personalPoints, deaths, deathChance, loot, mUser: user } = userData;
+			const { personalPoints, deaths, deathChance, loot, mUser: user, naturalDouble, flappyMsg } = userData;
 			if (!user) continue;
+			if (naturalDouble) loot.add(MysteryBoxes.roll());
 
 			const [xpResult, { itemsAdded }] = await Promise.all([
 				handleCoxXP(user, quantity, challengeMode),
-				transactItems({
-					userID,
-					itemsToAdd: loot,
-					collectionLog: true
-				}),
+				cc
+					? userStatsBankUpdate(user.id, 'chincannon_destroyed_loot_bank', loot).then(() => ({
+							itemsAdded: new Bank()
+						}))
+					: transactItems({
+							userID,
+							itemsToAdd: loot,
+							collectionLog: true
+						}),
 				userStatsUpdate(
 					user.id,
 					{
@@ -244,28 +204,28 @@ export const raidsTask: MinionTask = {
 			const isPurple = items.some(([item]) => coxPurpleItems.includes(item.id));
 			const isGreen = items.some(([item]) => greenItems.includes(item.id));
 			const isBlue = items.some(([item]) => blueItems.includes(item.id));
-			const specialLoot = isPurple;
-			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
-			if (items.some(([item]) => coxPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
-				const itemsToAnnounce = itemsAdded.filter(item => coxPurpleItems.includes(item.id));
-				globalClient.emit(
-					Events.ServerNotification,
-					`${emote} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						await getMinigameScore(user.id, minigameID)
-					)} raid.`
-				);
-			}
+			const isOrange = items.some(([item]) => orangeItems.includes(item.id));
+			const specialLoot = isPurple || isOrange;
+			const emote = isOrange ? Emoji.Orange : isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
+
 			const str = specialLoot ? `${emote} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
-			resultMessage += `\n${deathStr}${user} received: ${str} (${personalPoints?.toLocaleString()} pts, ${
+			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
 				Emoji.Skull
 			}${deathChance.toFixed(0)}%) ${xpResult}`;
+			if (flappyMsg) resultMessage += users.length === 1 ? `\n${flappyMsg}` : Emoji.Flappy;
 		}
 
-		updateBankSetting('cox_loot', totalLoot);
+		if (cc) {
+			const msg = randArrItem(CHINCANNON_MESSAGES);
+			resultMessage += `\n\n**${msg}**`;
+		}
+
+		const effectiveTotalLoot = cc ? new Bank() : totalLoot;
+		updateBankSetting('cox_loot', effectiveTotalLoot);
 		await trackLoot({
-			totalLoot,
+			totalLoot: effectiveTotalLoot,
 			id: minigameID,
 			type: 'Minigame',
 			changeType: 'loot',

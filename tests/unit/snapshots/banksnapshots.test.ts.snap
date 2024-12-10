@@ -14,6 +14,16 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "aliases": [
+      "rope",
+    ],
+    "gpCost": 100,
+    "ironmanPrice": 25,
+    "itemCost": {},
+    "name": "Rope",
+    "outputItems": undefined,
+  },
+  {
+    "aliases": [
       "fishing bait",
     ],
     "gpCost": 20,
@@ -132,10 +142,20 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 400,
+    "gpCost": 10000,
+    "itemCost": {},
+    "name": "Empty bucket pack",
+    "outputItems": {
+      "1925": 100,
+    },
+  },
+  {
+    "gpCost": 500,
     "itemCost": {},
     "name": "Compost",
-    "outputItems": undefined,
+    "outputItems": {
+      "6032": 1,
+    },
   },
   {
     "itemCost": {
@@ -162,10 +182,12 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 650,
+    "gpCost": 1666,
     "itemCost": {},
     "name": "Potato with cheese",
-    "outputItems": undefined,
+    "outputItems": {
+      "6705": 1,
+    },
     "skillsNeeded": {
       "attack": 65,
       "strength": 65,
@@ -182,6 +204,14 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ogre bow",
+    "outputItems": {
+      "2883": 1,
+    },
+  },
+  {
+    "gpCost": 100000,
+    "itemCost": {},
+    "name": "M'speak amulet",
     "outputItems": undefined,
   },
   {
@@ -199,6 +229,14 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 500,
     "itemCost": {},
     "name": "Sandworms",
+    "outputItems": undefined,
+  },
+  {
+    "gpCost": 100000000,
+    "itemCost": {
+      "62338": 10,
+    },
+    "name": "Festive present",
     "outputItems": undefined,
   },
   {
@@ -634,20 +672,6 @@ exports[`OSB Buyables 1`] = `
       "agility": 50,
       "thieving": 50,
     },
-  },
-  {
-    "gpCost": 1000,
-    "itemCost": {},
-    "name": "Diving apparatus",
-    "outputItems": undefined,
-    "qpRequired": 30,
-  },
-  {
-    "gpCost": 1000,
-    "itemCost": {},
-    "name": "Fishbowl helmet",
-    "outputItems": undefined,
-    "qpRequired": 30,
   },
   {
     "itemCost": {
@@ -1327,7 +1351,9 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200625,
     "itemCost": {},
     "name": "Cannon barrels",
-    "outputItems": undefined,
+    "outputItems": {
+      "10": 1,
+    },
     "qpRequired": 5,
   },
   {
@@ -1335,7 +1361,9 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200625,
     "itemCost": {},
     "name": "Cannon base",
-    "outputItems": undefined,
+    "outputItems": {
+      "6": 1,
+    },
     "qpRequired": 5,
   },
   {
@@ -1343,7 +1371,9 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200625,
     "itemCost": {},
     "name": "Cannon furnace",
-    "outputItems": undefined,
+    "outputItems": {
+      "12": 1,
+    },
     "qpRequired": 5,
   },
   {
@@ -1351,7 +1381,9 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200625,
     "itemCost": {},
     "name": "Cannon stand",
-    "outputItems": undefined,
+    "outputItems": {
+      "8": 1,
+    },
     "qpRequired": 5,
   },
   {
@@ -1378,14 +1410,6 @@ exports[`OSB Buyables 1`] = `
     "requiredQuests": [
       1,
     ],
-  },
-  {
-    "gpCost": 1000000,
-    "ironmanPrice": 9500,
-    "itemCost": {},
-    "name": "Book of the dead",
-    "outputItems": undefined,
-    "qpRequired": 120,
   },
   {
     "gpCost": 1000000,
@@ -2260,7 +2284,9 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 225,
     "itemCost": {},
     "name": "Unfinished broad bolts",
-    "outputItems": undefined,
+    "outputItems": {
+      "11876": 1,
+    },
   },
   {
     "gpCost": 22500,
@@ -2274,55 +2300,73 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 100000,
     "itemCost": {},
     "name": "Enchanted gem",
-    "outputItems": undefined,
+    "outputItems": {
+      "4155": 1,
+    },
   },
   {
     "gpCost": 310000,
     "itemCost": {},
     "name": "Leaf-bladed spear",
-    "outputItems": undefined,
+    "outputItems": {
+      "4158": 1,
+    },
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Facemask",
-    "outputItems": undefined,
+    "outputItems": {
+      "4164": 1,
+    },
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Earmuffs",
-    "outputItems": undefined,
+    "outputItems": {
+      "4166": 1,
+    },
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Nose peg",
-    "outputItems": undefined,
+    "outputItems": {
+      "4168": 1,
+    },
   },
   {
     "gpCost": 210000,
     "itemCost": {},
     "name": "Slayer's staff",
-    "outputItems": undefined,
+    "outputItems": {
+      "4170": 1,
+    },
   },
   {
     "gpCost": 65000,
     "itemCost": {},
     "name": "Spiny helmet",
-    "outputItems": undefined,
+    "outputItems": {
+      "4551": 1,
+    },
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Boots of stone",
-    "outputItems": undefined,
+    "outputItems": {
+      "23037": 1,
+    },
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Antipoison(4)",
-    "outputItems": undefined,
+    "outputItems": {
+      "2446": 1,
+    },
   },
   {
     "aliases": [
@@ -2335,7 +2379,7 @@ exports[`OSB Buyables 1`] = `
       "9813": 1,
       "9814": 1,
     },
-    "qpRequired": 319,
+    "qpRequired": 5026,
   },
   {
     "aliases": [
@@ -2348,7 +2392,16 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13068": 1,
     },
-    "qpRequired": 319,
+    "qpRequired": 5026,
+  },
+  {
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Master quest cape",
+    "outputItems": {
+      "40053": 1,
+    },
+    "qpRequired": 5000,
   },
   {
     "aliases": [
@@ -2374,7 +2427,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13069": 1,
     },
-    "qpRequired": 319,
+    "qpRequired": 5026,
   },
   {
     "customReq": [Function],
@@ -2403,6 +2456,67 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13280": 1,
       "13281": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": {
+      "40014": 1,
+      "40016": 1,
+      "40022": 1,
+      "40060": 1,
+    },
+    "name": "Support cape",
+    "outputItems": {
+      "40054": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": {
+      "40003": 1,
+      "40005": 1,
+      "40008": 1,
+      "40010": 1,
+      "40015": 1,
+      "73000": 1,
+    },
+    "name": "Gatherer's cape",
+    "outputItems": {
+      "40055": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": {
+      "40009": 1,
+      "40011": 1,
+      "40017": 1,
+      "40018": 1,
+      "40019": 1,
+      "40020": 1,
+      "40021": 1,
+    },
+    "name": "Combatant's cape",
+    "outputItems": {
+      "40056": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": {
+      "40000": 1,
+      "40001": 1,
+      "40002": 1,
+      "40004": 1,
+      "40006": 1,
+      "40007": 1,
+      "40012": 1,
+      "40013": 1,
+    },
+    "name": "Artisan's cape",
+    "outputItems": {
+      "40057": 1,
     },
   },
   {
@@ -2521,6 +2635,388 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Mind rune",
     "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "4067": 100,
+    },
+    "name": "Castle wars cape (beginner)",
+    "outputItems": {
+      "40072": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "4067": 500,
+    },
+    "name": "Castle wars cape (intermediate)",
+    "outputItems": {
+      "40073": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "4067": 1000,
+    },
+    "name": "Castle wars cape (advanced)",
+    "outputItems": {
+      "40074": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "4067": 2500,
+    },
+    "name": "Castle wars cape (expert)",
+    "outputItems": {
+      "40075": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "4067": 5000,
+    },
+    "name": "Castle wars cape (legend)",
+    "outputItems": {
+      "40076": 1,
+    },
+  },
+  {
+    "gpCost": 500000,
+    "itemCost": {},
+    "name": "Fishbowl helmet",
+    "outputItems": {
+      "7534": 1,
+    },
+    "qpRequired": 85,
+  },
+  {
+    "gpCost": 500000,
+    "itemCost": {},
+    "name": "Diving apparatus",
+    "outputItems": {
+      "7535": 1,
+    },
+    "qpRequired": 85,
+  },
+  {
+    "gpCost": 500000,
+    "itemCost": {},
+    "name": "Beginner's tackle box",
+    "outputItems": {
+      "50610": 1,
+    },
+    "skillsNeeded": {
+      "fishing": 50,
+    },
+  },
+  {
+    "gpCost": 500000,
+    "itemCost": {},
+    "name": "Contest rod",
+    "outputItems": {
+      "50615": 1,
+    },
+    "skillsNeeded": {
+      "fishing": 50,
+    },
+  },
+  {
+    "gpCost": 1000000,
+    "itemCost": {},
+    "name": "Rainbow cape",
+    "outputItems": {
+      "70019": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "70064": 100,
+    },
+    "name": "Rune spikeshield",
+    "outputItems": {
+      "70061": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "70064": 150,
+    },
+    "name": "Rune berserker shield",
+    "outputItems": {
+      "70060": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "70064": 100,
+    },
+    "name": "Adamant spikeshield",
+    "outputItems": {
+      "70063": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "70064": 150,
+    },
+    "name": "Adamant berserker shield",
+    "outputItems": {
+      "70062": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "70064": 500,
+    },
+    "name": "Guthix engram",
+    "outputItems": {
+      "70065": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "70165": 160,
+    },
+    "name": "Fletcher's skilling outfit",
+    "outputItems": {
+      "70160": 1,
+      "70161": 1,
+      "70162": 1,
+      "70163": 1,
+      "70164": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "70165": 20,
+    },
+    "name": "Fletcher's gloves",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "70165": 20,
+    },
+    "name": "Fletcher's boots",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "70165": 50,
+    },
+    "name": "Fletcher's top",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "70165": 30,
+    },
+    "name": "Fletcher's hat",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "70165": 40,
+    },
+    "name": "Fletcher's legs",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "70361": 500,
+    },
+    "name": "Ringmaster set",
+    "outputItems": {
+      "70388": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "70361": 200,
+    },
+    "name": "Clown set",
+    "outputItems": {
+      "70390": 1,
+    },
+  },
+  {
+    "itemCost": {
+      "70361": 50,
+    },
+    "name": "Acrobat set",
+    "outputItems": {
+      "70389": 1,
+    },
+  },
+  {
+    "gpCost": 50000000,
+    "ironmanPrice": 5000000,
+    "itemCost": {},
+    "name": "Supply crate key (s1)",
+    "outputItems": undefined,
+  },
+  {
+    "gpCost": 50000000,
+    "ironmanPrice": 5000000,
+    "itemCost": {},
+    "name": "Birthday crate key (s2)",
+    "outputItems": undefined,
+  },
+  {
+    "gpCost": 20000000,
+    "ironmanPrice": 2000000,
+    "itemCost": {},
+    "name": "Spooky crate key (s3)",
+    "outputItems": undefined,
+  },
+  {
+    "gpCost": 20000000,
+    "ironmanPrice": 2000000,
+    "itemCost": {},
+    "name": "Festive crate key (s4)",
+    "outputItems": undefined,
+  },
+  {
+    "gpCost": 10000000,
+    "ironmanPrice": 1000000,
+    "itemCost": {},
+    "name": "Easter crate key (s5)",
+    "outputItems": undefined,
+  },
+  {
+    "gpCost": 12000000,
+    "ironmanPrice": 1200000,
+    "itemCost": {},
+    "name": "Birthday crate key (s6)",
+    "outputItems": undefined,
+  },
+  {
+    "gpCost": 20666666,
+    "ironmanPrice": 2066666,
+    "itemCost": {},
+    "name": "Sinister crate key (s7)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000,
+    "itemCost": {},
+    "name": "Veteran cape (1 year)",
+    "outputItems": {
+      "71450": 1,
+      "71456": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 2000000,
+    "itemCost": {},
+    "name": "Veteran cape (2 year)",
+    "outputItems": {
+      "71451": 1,
+      "71457": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 3000000,
+    "itemCost": {},
+    "name": "Veteran cape (3 year)",
+    "outputItems": {
+      "71452": 1,
+      "71458": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 4000000,
+    "itemCost": {},
+    "name": "Veteran cape (4 year)",
+    "outputItems": {
+      "71453": 1,
+      "71459": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 5000000000,
+    "itemCost": {},
+    "name": "Golden cape shard",
+    "outputItems": {
+      "71455": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "globalAnnouncementOnFirstBuy": true,
+    "itemCost": {
+      "13069": 1,
+      "13222": 1,
+      "40000": 1,
+      "40001": 1,
+      "40002": 1,
+      "40003": 1,
+      "40004": 1,
+      "40005": 1,
+      "40006": 1,
+      "40007": 1,
+      "40008": 1,
+      "40009": 1,
+      "40010": 1,
+      "40011": 1,
+      "40012": 1,
+      "40013": 1,
+      "40014": 1,
+      "40015": 1,
+      "40016": 1,
+      "40017": 1,
+      "40018": 1,
+      "40019": 1,
+      "40020": 1,
+      "40021": 1,
+      "40022": 1,
+      "40053": 1,
+      "40060": 1,
+      "63205": 1,
+      "73000": 1,
+    },
+    "name": "Completionist cape",
+    "outputItems": {
+      "40058": 1,
+      "71479": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "globalAnnouncementOnFirstBuy": true,
+    "itemCost": {
+      "40058": 1,
+      "71479": 1,
+    },
+    "name": "Completionist cape (t)",
+    "outputItems": {
+      "40059": 1,
+      "71946": 1,
+    },
+  },
+  {
+    "gpCost": 2000,
+    "itemCost": {},
+    "name": "Wooden spoon",
+    "outputItems": {
+      "7433": 1,
+    },
+  },
+  {
+    "gpCost": 500,
+    "ironmanPrice": 500,
+    "itemCost": {},
+    "maxQuantity": 500,
+    "name": "Pumpkin seed",
+    "outputItems": {
+      "70187": 1,
+    },
   },
   {
     "itemCost": {
@@ -3210,12 +3706,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Mining master cape",
+    "outputItems": {
+      "40010": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Smithing cape",
     "outputItems": {
       "9795": 1,
       "9797": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Smithing master cape",
+    "outputItems": {
+      "40013": 1,
     },
   },
   {
@@ -3230,12 +3744,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Woodcutting master cape",
+    "outputItems": {
+      "40015": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Firemaking cape",
     "outputItems": {
       "9804": 1,
       "9806": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Firemaking master cape",
+    "outputItems": {
+      "40004": 1,
     },
   },
   {
@@ -3250,12 +3782,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Agility master cape",
+    "outputItems": {
+      "40016": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Fishing cape",
     "outputItems": {
       "9798": 1,
       "9800": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Fishing master cape",
+    "outputItems": {
+      "40005": 1,
     },
   },
   {
@@ -3270,12 +3820,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Runecraft master cape",
+    "outputItems": {
+      "40012": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Cooking cape",
     "outputItems": {
       "9801": 1,
       "9803": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Cooking master cape",
+    "outputItems": {
+      "40001": 1,
     },
   },
   {
@@ -3290,12 +3858,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Crafting master cape",
+    "outputItems": {
+      "40002": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Prayer cape",
     "outputItems": {
       "9759": 1,
       "9761": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Prayer master cape",
+    "outputItems": {
+      "40011": 1,
     },
   },
   {
@@ -3310,12 +3896,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Fletching master cape",
+    "outputItems": {
+      "40006": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Thieving cape",
     "outputItems": {
       "9777": 1,
       "9779": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Thieving master cape",
+    "outputItems": {
+      "40014": 1,
     },
   },
   {
@@ -3330,12 +3934,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Farming master cape",
+    "outputItems": {
+      "40003": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Herblore cape",
     "outputItems": {
       "9774": 1,
       "9776": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Herblore master cape",
+    "outputItems": {
+      "40007": 1,
     },
   },
   {
@@ -3350,12 +3972,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Hunter master cape",
+    "outputItems": {
+      "40008": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Construction cape",
     "outputItems": {
       "9789": 1,
       "9791": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Construction master cape",
+    "outputItems": {
+      "40000": 1,
     },
   },
   {
@@ -3370,12 +4010,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Magic master cape",
+    "outputItems": {
+      "40009": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Attack cape",
     "outputItems": {
       "9747": 1,
       "9749": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Attack master cape",
+    "outputItems": {
+      "40017": 1,
     },
   },
   {
@@ -3390,12 +4048,30 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Strength master cape",
+    "outputItems": {
+      "40018": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Defence cape",
     "outputItems": {
       "9753": 1,
       "9755": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Defence master cape",
+    "outputItems": {
+      "40019": 1,
     },
   },
   {
@@ -3410,6 +4086,15 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Ranged master cape",
+    "outputItems": {
+      "40021": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Hitpoints cape",
@@ -3420,12 +4105,87 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Hitpoints master cape",
+    "outputItems": {
+      "40020": 1,
+    },
+  },
+  {
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Slayer cape",
     "outputItems": {
       "9786": 1,
       "9788": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Slayer master cape",
+    "outputItems": {
+      "40060": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": {},
+    "name": "Dungeoneering cape",
+    "outputItems": {
+      "40023": 1,
+      "40025": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Dungeoneering master cape",
+    "outputItems": {
+      "40022": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": {},
+    "name": "Invention cape",
+    "outputItems": {
+      "63206": 1,
+      "63208": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Invention master cape",
+    "outputItems": {
+      "63205": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": {},
+    "name": "Divination cape",
+    "outputItems": {
+      "73001": 1,
+      "73002": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Divination master cape",
+    "outputItems": {
+      "73000": 1,
     },
   },
   {
@@ -3593,6 +4353,27 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {
       "8951": 1000,
     },
+    "name": "Golden naval shirt",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "8951": 500,
+    },
+    "name": "Golden tricorn hat",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "8951": 1000,
+    },
+    "name": "Golden navy slacks",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "8951": 1000,
+    },
     "name": "Grey naval shirt",
     "outputItems": undefined,
   },
@@ -3675,6 +4456,13 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "itemCost": {
+      "8951": 8000,
+    },
+    "name": "Jolly roger cape",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
       "8951": 50,
     },
     "name": "The stuff",
@@ -3693,6 +4481,116 @@ exports[`OSB Buyables 1`] = `
     },
     "name": "Blue rum (trouble brewing)",
     "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "50046": 200,
+    },
+    "name": "Banana enchantment scroll",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "50046": 500,
+    },
+    "name": "Monkey dye",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "50046": 35,
+    },
+    "name": "Monkey crate",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "50046": 1000,
+    },
+    "minigameScoreReq": [
+      "monkey_rumble",
+      1000,
+    ],
+    "name": "Gorilla rumble greegree",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "strength": 120,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": {
+      "995": 50000,
+    },
+    "minigameScoreReq": [
+      "monkey_rumble",
+      0,
+    ],
+    "name": "Beginner rumble greegree",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "strength": 80,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": {
+      "50046": 17,
+    },
+    "minigameScoreReq": [
+      "monkey_rumble",
+      50,
+    ],
+    "name": "Intermediate rumble greegree",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "strength": 90,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": {
+      "50046": 25,
+    },
+    "minigameScoreReq": [
+      "monkey_rumble",
+      100,
+    ],
+    "name": "Ninja rumble greegree",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "strength": 100,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": {
+      "50046": 34,
+    },
+    "minigameScoreReq": [
+      "monkey_rumble",
+      200,
+    ],
+    "name": "Expert ninja rumble greegree",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "strength": 110,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": {
+      "50046": 42,
+    },
+    "minigameScoreReq": [
+      "monkey_rumble",
+      500,
+    ],
+    "name": "Elder rumble greegree",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "strength": 120,
+    },
   },
   {
     "customReq": [Function],
@@ -3960,6 +4858,41 @@ exports[`OSB Buyables 1`] = `
       "21656": 30,
     },
     "name": "Bowl of fish",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000,
+    "itemCost": {},
+    "name": "Oceanic shroud (tier 1)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 2500,
+    "itemCost": {},
+    "name": "Oceanic shroud (tier 2)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 5000,
+    "itemCost": {},
+    "name": "Oceanic shroud (tier 3)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 7500,
+    "itemCost": {},
+    "name": "Oceanic shroud (tier 4)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 10000,
+    "itemCost": {},
+    "name": "Oceanic shroud (tier 5)",
     "outputItems": undefined,
   },
   {
@@ -4419,7 +5352,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-1 cape",
     "outputItems": {
@@ -4427,7 +5360,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-2 cape",
     "outputItems": {
@@ -4435,7 +5368,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-3 cape",
     "outputItems": {
@@ -4443,7 +5376,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-4 cape",
     "outputItems": {
@@ -4451,7 +5384,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-5 cape",
     "outputItems": {
@@ -4459,7 +5392,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-6 cape",
     "outputItems": {
@@ -4467,7 +5400,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-7 cape",
     "outputItems": {
@@ -4475,7 +5408,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-8 cape",
     "outputItems": {
@@ -4483,7 +5416,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-9 cape",
     "outputItems": {
@@ -4491,7 +5424,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-10 cape",
     "outputItems": {
@@ -4499,7 +5432,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-11 cape",
     "outputItems": {
@@ -4507,7 +5440,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-12 cape",
     "outputItems": {
@@ -4515,7 +5448,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-13 cape",
     "outputItems": {
@@ -4523,7 +5456,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-14 cape",
     "outputItems": {
@@ -4531,7 +5464,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-15 cape",
     "outputItems": {
@@ -4539,7 +5472,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-16 cape",
     "outputItems": {
@@ -4547,7 +5480,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-17 cape",
     "outputItems": {
@@ -4555,7 +5488,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-18 cape",
     "outputItems": {
@@ -4563,7 +5496,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-19 cape",
     "outputItems": {
@@ -4571,7 +5504,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-20 cape",
     "outputItems": {
@@ -4579,7 +5512,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-21 cape",
     "outputItems": {
@@ -4587,7 +5520,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-22 cape",
     "outputItems": {
@@ -4595,7 +5528,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-23 cape",
     "outputItems": {
@@ -4603,7 +5536,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-24 cape",
     "outputItems": {
@@ -4611,7 +5544,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-25 cape",
     "outputItems": {
@@ -4619,7 +5552,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-26 cape",
     "outputItems": {
@@ -4627,7 +5560,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-27 cape",
     "outputItems": {
@@ -4635,7 +5568,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-28 cape",
     "outputItems": {
@@ -4643,7 +5576,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-29 cape",
     "outputItems": {
@@ -4651,7 +5584,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-30 cape",
     "outputItems": {
@@ -4659,7 +5592,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-31 cape",
     "outputItems": {
@@ -4667,7 +5600,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-32 cape",
     "outputItems": {
@@ -4675,7 +5608,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-33 cape",
     "outputItems": {
@@ -4683,7 +5616,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-34 cape",
     "outputItems": {
@@ -4691,7 +5624,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-35 cape",
     "outputItems": {
@@ -4699,7 +5632,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-36 cape",
     "outputItems": {
@@ -4707,7 +5640,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-37 cape",
     "outputItems": {
@@ -4715,7 +5648,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-38 cape",
     "outputItems": {
@@ -4723,7 +5656,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-39 cape",
     "outputItems": {
@@ -4731,7 +5664,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-40 cape",
     "outputItems": {
@@ -4739,7 +5672,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-41 cape",
     "outputItems": {
@@ -4747,7 +5680,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-42 cape",
     "outputItems": {
@@ -4755,7 +5688,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-43 cape",
     "outputItems": {
@@ -4763,7 +5696,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-44 cape",
     "outputItems": {
@@ -4771,7 +5704,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-45 cape",
     "outputItems": {
@@ -4779,7 +5712,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-46 cape",
     "outputItems": {
@@ -4787,7 +5720,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-47 cape",
     "outputItems": {
@@ -4795,7 +5728,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-48 cape",
     "outputItems": {
@@ -4803,7 +5736,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-49 cape",
     "outputItems": {
@@ -4811,7 +5744,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": {},
     "name": "Team-50 cape",
     "outputItems": {
@@ -4885,6 +5818,17 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "11798": 1,
+      "26370": 1,
+    },
+    "name": "Ancient godsword",
+    "outputItems": {
+      "26233": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "11920": 1,
       "13233": 1,
     },
@@ -4932,9 +5876,7 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
-    "cantHaveItems": {
-      "19835": 1,
-    },
+    "cantHaveItems": undefined,
     "inputItems": {
       "12073": 1,
       "2677": 1,
@@ -5632,21 +6574,11 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
-      "21043": 1,
-      "6914": 1,
-    },
-    "name": "Kodai wand",
-    "outputItems": {
-      "21006": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
       "1042": 1,
       "12337": 1,
     },
     "name": "Partyhat & specs",
+    "noCreatablesCl": true,
     "outputItems": {
       "12399": 1,
     },
@@ -5780,6 +6712,17 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": {
+      "21043": 1,
+      "6914": 1,
+    },
+    "name": "Kodai wand",
+    "outputItems": {
+      "21006": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": {
       "4081": 1,
@@ -5908,6 +6851,16 @@ exports[`OSB Creatables 1`] = `
     "name": "Trident of the swamp",
     "outputItems": {
       "12899": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71455": 7,
+    },
+    "name": "Golden cape",
+    "outputItems": {
+      "71446": 1,
     },
   },
   {
@@ -9263,7 +10216,6 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
-      "13124": 1,
       "13280": 1,
       "13281": 1,
     },
@@ -9278,7 +10230,6 @@ exports[`OSB Creatables 1`] = `
     "inputItems": {
       "13280": 1,
       "13281": 1,
-      "21295": 1,
     },
     "name": "Infernal max cape",
     "outputItems": {
@@ -9291,7 +10242,6 @@ exports[`OSB Creatables 1`] = `
     "inputItems": {
       "13280": 1,
       "13281": 1,
-      "22109": 1,
     },
     "name": "Assembler max cape",
     "outputItems": {
@@ -9304,7 +10254,6 @@ exports[`OSB Creatables 1`] = `
     "inputItems": {
       "13280": 1,
       "13281": 1,
-      "21793": 1,
     },
     "name": "Imbued guthix max cape",
     "outputItems": {
@@ -9317,7 +10266,6 @@ exports[`OSB Creatables 1`] = `
     "inputItems": {
       "13280": 1,
       "13281": 1,
-      "21791": 1,
     },
     "name": "Imbued saradomin max cape",
     "outputItems": {
@@ -9330,7 +10278,6 @@ exports[`OSB Creatables 1`] = `
     "inputItems": {
       "13280": 1,
       "13281": 1,
-      "21795": 1,
     },
     "name": "Imbued zamorak max cape",
     "outputItems": {
@@ -12162,6 +13109,7 @@ exports[`OSB Creatables 1`] = `
       "1048": 1,
     },
     "name": "Partyhat set",
+    "noCreatablesCl": true,
     "outputItems": {
       "13173": 1,
     },
@@ -12325,6 +13273,453 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "70362": 1,
+      "70363": 1,
+      "70364": 1,
+      "70365": 1,
+    },
+    "name": "Clown set",
+    "outputItems": {
+      "70390": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70390": 1,
+    },
+    "name": "Unpack Clown set",
+    "noCl": true,
+    "outputItems": {
+      "70362": 1,
+      "70363": 1,
+      "70364": 1,
+      "70365": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70357": 1,
+      "70358": 1,
+      "70359": 1,
+      "70360": 1,
+    },
+    "name": "Acrobat set",
+    "outputItems": {
+      "70389": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70389": 1,
+    },
+    "name": "Unpack Acrobat set",
+    "noCl": true,
+    "outputItems": {
+      "70357": 1,
+      "70358": 1,
+      "70359": 1,
+      "70360": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70367": 1,
+      "70368": 1,
+      "70386": 1,
+      "70387": 1,
+    },
+    "name": "Ringmaster set",
+    "outputItems": {
+      "70388": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70388": 1,
+    },
+    "name": "Unpack Ringmaster set",
+    "noCl": true,
+    "outputItems": {
+      "70367": 1,
+      "70368": 1,
+      "70386": 1,
+      "70387": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71442": 1,
+      "71443": 1,
+      "71444": 1,
+      "71445": 1,
+    },
+    "name": "Acrylic set",
+    "outputItems": {
+      "71478": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71478": 1,
+    },
+    "name": "Unpack Acrylic set",
+    "noCl": true,
+    "outputItems": {
+      "71442": 1,
+      "71443": 1,
+      "71444": 1,
+      "71445": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71492": 1,
+      "71493": 1,
+      "71494": 1,
+      "71495": 1,
+      "71496": 1,
+      "71497": 1,
+    },
+    "name": "Warpriest of Zamorak set",
+    "outputItems": {
+      "71498": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71498": 1,
+    },
+    "name": "Unpack Warpriest of Zamorak set",
+    "noCl": true,
+    "outputItems": {
+      "71492": 1,
+      "71493": 1,
+      "71494": 1,
+      "71495": 1,
+      "71496": 1,
+      "71497": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71499": 1,
+      "71500": 1,
+      "71501": 1,
+      "71502": 1,
+      "71503": 1,
+      "71504": 1,
+    },
+    "name": "Warpriest of Saradomin set",
+    "outputItems": {
+      "71505": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71505": 1,
+    },
+    "name": "Unpack Warpriest of Saradomin set",
+    "noCl": true,
+    "outputItems": {
+      "71499": 1,
+      "71500": 1,
+      "71501": 1,
+      "71502": 1,
+      "71503": 1,
+      "71504": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71506": 1,
+      "71507": 1,
+      "71508": 1,
+      "71509": 1,
+      "71510": 1,
+      "71511": 1,
+    },
+    "name": "Warpriest of Armadyl set",
+    "outputItems": {
+      "71512": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71512": 1,
+    },
+    "name": "Unpack Warpriest of Armadyl set",
+    "noCl": true,
+    "outputItems": {
+      "71506": 1,
+      "71507": 1,
+      "71508": 1,
+      "71509": 1,
+      "71510": 1,
+      "71511": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71513": 1,
+      "71514": 1,
+      "71515": 1,
+      "71516": 1,
+      "71517": 1,
+      "71518": 1,
+    },
+    "name": "Warpriest of Bandos set",
+    "outputItems": {
+      "71519": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71519": 1,
+    },
+    "name": "Unpack Warpriest of Bandos set",
+    "noCl": true,
+    "outputItems": {
+      "71513": 1,
+      "71514": 1,
+      "71515": 1,
+      "71516": 1,
+      "71517": 1,
+      "71518": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48015": 1,
+      "48016": 1,
+      "48017": 1,
+      "48018": 1,
+      "48019": 1,
+    },
+    "name": "Dwarven armour set",
+    "outputItems": {
+      "71706": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71706": 1,
+    },
+    "name": "Unpack Dwarven armour set",
+    "noCl": true,
+    "outputItems": {
+      "48015": 1,
+      "48016": 1,
+      "48017": 1,
+      "48018": 1,
+      "48019": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47511": 1,
+      "47512": 1,
+    },
+    "name": "Drygore longsword set",
+    "outputItems": {
+      "71705": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71705": 1,
+    },
+    "name": "Unpack Drygore longsword set",
+    "noCl": true,
+    "outputItems": {
+      "47511": 1,
+      "47512": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47515": 1,
+      "47516": 1,
+    },
+    "name": "Drygore rapier set",
+    "outputItems": {
+      "71703": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71703": 1,
+    },
+    "name": "Unpack Drygore rapier set",
+    "noCl": true,
+    "outputItems": {
+      "47515": 1,
+      "47516": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47513": 1,
+      "47514": 1,
+    },
+    "name": "Drygore mace set",
+    "outputItems": {
+      "71704": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71704": 1,
+    },
+    "name": "Unpack Drygore mace set",
+    "noCl": true,
+    "outputItems": {
+      "47513": 1,
+      "47514": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2404": 1,
+      "2838": 1,
+      "4273": 1,
+      "432": 1,
+      "709": 1,
+    },
+    "name": "Torva armour set",
+    "outputItems": {
+      "71700": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71700": 1,
+    },
+    "name": "Unpack Torva armour set",
+    "noCl": true,
+    "outputItems": {
+      "2404": 1,
+      "2838": 1,
+      "4273": 1,
+      "432": 1,
+      "709": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "4272": 1,
+      "601": 1,
+      "605": 1,
+      "758": 1,
+      "759": 1,
+    },
+    "name": "Pernix armour set",
+    "outputItems": {
+      "71701": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71701": 1,
+    },
+    "name": "Unpack Pernix armour set",
+    "noCl": true,
+    "outputItems": {
+      "4272": 1,
+      "601": 1,
+      "605": 1,
+      "758": 1,
+      "759": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2409": 1,
+      "2423": 1,
+      "788": 1,
+      "9654": 1,
+      "983": 1,
+    },
+    "name": "Virtus armour set",
+    "outputItems": {
+      "71702": 1,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71702": 1,
+    },
+    "name": "Unpack Virtus armour set",
+    "noCl": true,
+    "outputItems": {
+      "2409": 1,
+      "2423": 1,
+      "788": 1,
+      "9654": 1,
+      "983": 1,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "28933": 1,
       "28936": 1,
       "28939": 1,
@@ -12348,6 +13743,4468 @@ exports[`OSB Creatables 1`] = `
       "28939": 1,
     },
     "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "12592": 1,
+      "12831": 1,
+    },
+    "name": "Divine spirit shield",
+    "outputItems": {
+      "3454": 1,
+    },
+    "requiredSkills": {
+      "prayer": 90,
+      "smithing": 85,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "741": 1,
+      "742": 1,
+      "743": 1,
+    },
+    "name": "Heart crystal",
+    "outputItems": {
+      "745": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Vasa cloak",
+    "outputItems": {
+      "41084": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "magic": 105,
+      "runecraft": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "22370": 1,
+      "50023": 1,
+    },
+    "name": "Bryophyta's staff(i)",
+    "outputItems": {
+      "47528": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "magic": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48205": 1,
+      "50023": 1,
+    },
+    "name": "Ignis ring(i)",
+    "outputItems": {
+      "48206": 1,
+    },
+    "requiredSkills": {
+      "crafting": 120,
+      "magic": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24212": 1,
+      "5514": 1,
+    },
+    "name": "Abyssal pouch",
+    "outputItems": {
+      "24210": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24210": 1,
+      "41082": 1,
+    },
+    "name": "Elder pouch",
+    "outputItems": {
+      "41081": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1925": 1,
+      "6958": 1,
+    },
+    "name": "Bucket of sand",
+    "outputItems": {
+      "1783": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2309": 1,
+    },
+    "name": "Breadcrumbs",
+    "outputItems": {
+      "7515": 4,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21015": 1,
+      "48319": 1,
+      "6573": 5,
+    },
+    "name": "Infernal bulwark",
+    "outputItems": {
+      "48320": 1,
+    },
+    "requiredSkills": {
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21295": 1,
+      "24214": 1,
+      "48326": 1,
+      "6573": 20,
+    },
+    "name": "TzKal cape",
+    "outputItems": {
+      "48322": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48321": 1,
+      "6573": 30,
+      "8921": 1,
+    },
+    "name": "Infernal slayer helmet",
+    "outputItems": {
+      "48323": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "432": 1,
+      "48012": 3,
+      "48323": 1,
+      "50023": 1,
+      "601": 1,
+      "6573": 10,
+      "788": 1,
+    },
+    "name": "Infernal slayer helmet(i)",
+    "outputItems": {
+      "48327": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48004": 1,
+      "50094": 1,
+      "50095": 1,
+      "50096": 1,
+      "50097": 1,
+    },
+    "name": "Royal crossbow",
+    "outputItems": {
+      "50098": 1,
+    },
+    "requiredSkills": {
+      "farming": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50063": 7000,
+      "50073": 1,
+    },
+    "name": "Polypore staff",
+    "outputItems": {
+      "50114": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "62348": 7,
+    },
+    "name": "Golden partyhat",
+    "outputItems": {
+      "62546": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "23953": 1,
+      "50615": 1,
+    },
+    "name": "Crystal fishing rod",
+    "outputItems": {
+      "50616": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2834": 1,
+      "70008": 1,
+      "70011": 750,
+    },
+    "name": "Void staff (u)",
+    "outputItems": {
+      "70009": 1,
+    },
+    "requiredSkills": {
+      "crafting": 110,
+      "magic": 110,
+      "runecraft": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70009": 1,
+    },
+    "name": "Void staff",
+    "outputItems": {
+      "70010": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70010": 1,
+    },
+    "name": "Revert void staff",
+    "outputItems": {
+      "70009": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2836": 1,
+      "70012": 1,
+    },
+    "name": "Abyssal tome",
+    "outputItems": {
+      "70013": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50023": 1,
+      "70016": 1,
+    },
+    "name": "Spellbound ring(i)",
+    "outputItems": {
+      "70017": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50116": 1,
+      "62496": 1,
+    },
+    "name": "Black swan",
+    "outputItems": {
+      "62497": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11196": 1,
+    },
+    "name": "Nexterminator",
+    "outputItems": {
+      "50588": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50114": 1,
+    },
+    "name": "Seamonkey staff (t1)",
+    "outputItems": {
+      "70433": 1,
+    },
+    "requiredSkills": {
+      "magic": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70420": 1,
+      "70433": 1,
+    },
+    "name": "Seamonkey staff (t2)",
+    "outputItems": {
+      "70434": 1,
+    },
+    "requiredSkills": {
+      "magic": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70425": 1,
+      "70434": 1,
+    },
+    "name": "Seamonkey staff (t3)",
+    "outputItems": {
+      "70435": 1,
+    },
+    "requiredSkills": {
+      "magic": 115,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "12002": 1,
+      "40040": 1,
+    },
+    "name": "Arcane blast necklace",
+    "outputItems": {
+      "48009": 1,
+    },
+    "requiredSkills": {
+      "crafting": 99,
+      "dungeoneering": 99,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "19547": 1,
+      "40040": 1,
+    },
+    "name": "Farsight snapshot necklace",
+    "outputItems": {
+      "48010": 1,
+    },
+    "requiredSkills": {
+      "crafting": 99,
+      "dungeoneering": 99,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "19553": 1,
+      "40040": 1,
+    },
+    "name": "Brawler's hook necklace",
+    "outputItems": {
+      "48011": 1,
+    },
+    "requiredSkills": {
+      "crafting": 99,
+      "dungeoneering": 99,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48012": 3,
+      "48014": 1,
+    },
+    "name": "Gorajan bonecrusher",
+    "outputItems": {
+      "48013": 1,
+    },
+    "requiredSkills": {
+      "crafting": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48014": 1,
+    },
+    "name": "Revert gorajan bonecrusher",
+    "noCl": true,
+    "outputItems": {
+      "48012": 1,
+    },
+    "requiredSkills": {
+      "crafting": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20445": 1,
+    },
+    "name": "Fix fire cape",
+    "noCl": true,
+    "outputItems": {
+      "6570": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20447": 1,
+    },
+    "name": "Fix fire max cape",
+    "noCl": true,
+    "outputItems": {
+      "13329": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21287": 1,
+    },
+    "name": "Fix infernal cape",
+    "noCl": true,
+    "outputItems": {
+      "21295": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21289": 1,
+    },
+    "name": "Fix infernal max cape",
+    "noCl": true,
+    "outputItems": {
+      "21285": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21916": 1,
+    },
+    "name": "Fix assembler max cape",
+    "noCl": true,
+    "outputItems": {
+      "21898": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24236": 1,
+    },
+    "name": "Fix imbued saradomin cape",
+    "noCl": true,
+    "outputItems": {
+      "21791": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24238": 1,
+    },
+    "name": "Fix imbued saradomin max cape",
+    "noCl": true,
+    "outputItems": {
+      "21776": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24240": 1,
+    },
+    "name": "Fix imbued guthix cape",
+    "noCl": true,
+    "outputItems": {
+      "21793": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24242": 1,
+    },
+    "name": "Fix imbued guthix max cape",
+    "noCl": true,
+    "outputItems": {
+      "21784": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24244": 1,
+    },
+    "name": "Fix imbued zamorak cape",
+    "noCl": true,
+    "outputItems": {
+      "21795": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24246": 1,
+    },
+    "name": "Fix imbued zamorak max cape",
+    "noCl": true,
+    "outputItems": {
+      "21780": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20463": 1,
+    },
+    "name": "Fix dragon defender",
+    "noCl": true,
+    "outputItems": {
+      "12954": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "22441": 1,
+    },
+    "name": "Fix avernic defender",
+    "noCl": true,
+    "outputItems": {
+      "22322": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20465": 1,
+    },
+    "name": "Fix void knight top",
+    "noCl": true,
+    "outputItems": {
+      "8839": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20469": 1,
+    },
+    "name": "Fix void knight robe",
+    "noCl": true,
+    "outputItems": {
+      "8840": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20467": 1,
+    },
+    "name": "Fix elite void top",
+    "noCl": true,
+    "outputItems": {
+      "13072": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20471": 1,
+    },
+    "name": "Fix elite void robe",
+    "noCl": true,
+    "outputItems": {
+      "13073": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20475": 1,
+    },
+    "name": "Fix void knight gloves",
+    "noCl": true,
+    "outputItems": {
+      "8842": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20477": 1,
+    },
+    "name": "Fix void mage helm",
+    "noCl": true,
+    "outputItems": {
+      "11663": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20479": 1,
+    },
+    "name": "Fix void ranger helm",
+    "noCl": true,
+    "outputItems": {
+      "11664": 1,
+    },
+  },
+  {
+    "GPCost": 100000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20481": 1,
+    },
+    "name": "Fix void melee helm",
+    "noCl": true,
+    "outputItems": {
+      "11665": 1,
+    },
+  },
+  {
+    "GPCost": 200000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "13233": 1,
+      "48208": 1,
+      "48209": 1,
+      "48221": 1,
+    },
+    "name": "Fix hellfire bow",
+    "noCl": true,
+    "outputItems": {
+      "48220": 1,
+    },
+  },
+  {
+    "GPCost": 200000000,
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "13233": 1,
+      "40071": 1,
+      "48208": 1,
+      "48209": 1,
+    },
+    "name": "Fix hellfire bownana",
+    "noCl": true,
+    "outputItems": {
+      "40070": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24143": 1,
+    },
+    "name": "Unlock dragon defender",
+    "noCl": true,
+    "outputItems": {
+      "12954": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24469": 1,
+    },
+    "name": "Unpack twisted relichunter (t1) armour set",
+    "noCl": true,
+    "outputItems": {
+      "24405": 1,
+      "24407": 1,
+      "24409": 1,
+      "24411": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24405": 1,
+      "24407": 1,
+      "24409": 1,
+      "24411": 1,
+    },
+    "name": "Twisted relichunter (t1) armour set",
+    "outputItems": {
+      "24469": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24472": 1,
+    },
+    "name": "Unpack twisted relichunter (t2) armour set",
+    "noCl": true,
+    "outputItems": {
+      "24397": 1,
+      "24399": 1,
+      "24401": 1,
+      "24403": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24397": 1,
+      "24399": 1,
+      "24401": 1,
+      "24403": 1,
+    },
+    "name": "Twisted relichunter (t2) armour set",
+    "outputItems": {
+      "24472": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24475": 1,
+    },
+    "name": "Unpack twisted relichunter (t3) armour set",
+    "noCl": true,
+    "outputItems": {
+      "24387": 1,
+      "24389": 1,
+      "24391": 1,
+      "24393": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24387": 1,
+      "24389": 1,
+      "24391": 1,
+      "24393": 1,
+    },
+    "name": "Twisted relichunter (t3) armour set",
+    "outputItems": {
+      "24475": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "25380": 1,
+    },
+    "name": "Unpack trailblazer relichunter (t1) armour set",
+    "noCl": true,
+    "outputItems": {
+      "25028": 1,
+      "25031": 1,
+      "25034": 1,
+      "25037": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "25028": 1,
+      "25031": 1,
+      "25034": 1,
+      "25037": 1,
+    },
+    "name": "Trailblazer relichunter (t1) armour set",
+    "outputItems": {
+      "25380": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "25383": 1,
+    },
+    "name": "Unpack trailblazer relichunter (t2) armour set",
+    "noCl": true,
+    "outputItems": {
+      "25016": 1,
+      "25019": 1,
+      "25022": 1,
+      "25025": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "25016": 1,
+      "25019": 1,
+      "25022": 1,
+      "25025": 1,
+    },
+    "name": "Trailblazer relichunter (t2) armour set",
+    "outputItems": {
+      "25383": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "25386": 1,
+    },
+    "name": "Unpack trailblazer relichunter (t3) armour set",
+    "noCl": true,
+    "outputItems": {
+      "25001": 1,
+      "25004": 1,
+      "25007": 1,
+      "25010": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "25001": 1,
+      "25004": 1,
+      "25007": 1,
+      "25010": 1,
+    },
+    "name": "Trailblazer relichunter (t3) armour set",
+    "outputItems": {
+      "25386": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24333": 1,
+    },
+    "name": "Unpack dagon'hai robes set",
+    "noCl": true,
+    "outputItems": {
+      "24288": 1,
+      "24291": 1,
+      "24294": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24288": 1,
+      "24291": 1,
+      "24294": 1,
+    },
+    "name": "Dagon'hai robes set",
+    "outputItems": {
+      "24333": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47515": 1,
+      "48203": 1,
+    },
+    "name": "Drygore rapier (blood)",
+    "outputItems": {
+      "41060": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47515": 1,
+      "48202": 1,
+    },
+    "name": "Drygore rapier (ice)",
+    "outputItems": {
+      "41054": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47515": 1,
+      "48201": 1,
+    },
+    "name": "Drygore rapier (shadow)",
+    "outputItems": {
+      "41066": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47515": 1,
+      "48204": 1,
+    },
+    "name": "Drygore rapier (3a)",
+    "outputItems": {
+      "41072": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47515": 1,
+      "70235": 1,
+    },
+    "name": "Drygore rapier (xmas)",
+    "outputItems": {
+      "70238": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47516": 1,
+      "48203": 1,
+    },
+    "name": "Offhand drygore rapier (blood)",
+    "outputItems": {
+      "41059": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47516": 1,
+      "48202": 1,
+    },
+    "name": "Offhand drygore rapier (ice)",
+    "outputItems": {
+      "41053": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47516": 1,
+      "48201": 1,
+    },
+    "name": "Offhand drygore rapier (shadow)",
+    "outputItems": {
+      "41065": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47516": 1,
+      "48204": 1,
+    },
+    "name": "Offhand drygore rapier (3a)",
+    "outputItems": {
+      "41071": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47516": 1,
+      "70235": 1,
+    },
+    "name": "Offhand drygore rapier (xmas)",
+    "outputItems": {
+      "70237": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47513": 1,
+      "48203": 1,
+    },
+    "name": "Drygore mace (blood)",
+    "outputItems": {
+      "41062": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47513": 1,
+      "48202": 1,
+    },
+    "name": "Drygore mace (ice)",
+    "outputItems": {
+      "41056": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47513": 1,
+      "48201": 1,
+    },
+    "name": "Drygore mace (shadow)",
+    "outputItems": {
+      "41068": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47513": 1,
+      "48204": 1,
+    },
+    "name": "Drygore mace (3a)",
+    "outputItems": {
+      "41074": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47513": 1,
+      "70235": 1,
+    },
+    "name": "Drygore mace (xmas)",
+    "outputItems": {
+      "70240": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47514": 1,
+      "48203": 1,
+    },
+    "name": "Offhand drygore mace (blood)",
+    "outputItems": {
+      "41061": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47514": 1,
+      "48202": 1,
+    },
+    "name": "Offhand drygore mace (ice)",
+    "outputItems": {
+      "41055": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47514": 1,
+      "48201": 1,
+    },
+    "name": "Offhand drygore mace (shadow)",
+    "outputItems": {
+      "41067": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47514": 1,
+      "48204": 1,
+    },
+    "name": "Offhand drygore mace (3a)",
+    "outputItems": {
+      "41073": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47514": 1,
+      "70235": 1,
+    },
+    "name": "Offhand drygore mace (xmas)",
+    "outputItems": {
+      "70239": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47511": 1,
+      "48203": 1,
+    },
+    "name": "Drygore longsword (blood)",
+    "outputItems": {
+      "41064": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47511": 1,
+      "48202": 1,
+    },
+    "name": "Drygore longsword (ice)",
+    "outputItems": {
+      "41058": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47511": 1,
+      "48201": 1,
+    },
+    "name": "Drygore longsword (shadow)",
+    "outputItems": {
+      "41070": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47511": 1,
+      "48204": 1,
+    },
+    "name": "Drygore longsword (3a)",
+    "outputItems": {
+      "41076": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47511": 1,
+      "70235": 1,
+    },
+    "name": "Drygore longsword (xmas)",
+    "outputItems": {
+      "70242": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47512": 1,
+      "48203": 1,
+    },
+    "name": "Offhand drygore longsword (blood)",
+    "outputItems": {
+      "41063": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47512": 1,
+      "48202": 1,
+    },
+    "name": "Offhand drygore longsword (ice)",
+    "outputItems": {
+      "41057": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47512": 1,
+      "48201": 1,
+    },
+    "name": "Offhand drygore longsword (shadow)",
+    "outputItems": {
+      "41069": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47512": 1,
+      "48204": 1,
+    },
+    "name": "Offhand drygore longsword (3a)",
+    "outputItems": {
+      "41075": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47512": 1,
+      "70235": 1,
+    },
+    "name": "Offhand drygore longsword (xmas)",
+    "outputItems": {
+      "70241": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48203": 1,
+      "6741": 1,
+    },
+    "name": "Dwarven warhammer (blood)",
+    "outputItems": {
+      "41088": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48202": 1,
+      "6741": 1,
+    },
+    "name": "Dwarven warhammer (ice)",
+    "outputItems": {
+      "41086": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48201": 1,
+      "6741": 1,
+    },
+    "name": "Dwarven warhammer (shadow)",
+    "outputItems": {
+      "41087": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48204": 1,
+      "6741": 1,
+    },
+    "name": "Dwarven warhammer (3a)",
+    "outputItems": {
+      "41089": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48228": 1,
+      "6741": 1,
+    },
+    "name": "Dwarven warnana",
+    "outputItems": {
+      "40067": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52672": 1,
+      "6741": 1,
+    },
+    "name": "Dwarven warhammer (volcanic)",
+    "outputItems": {
+      "52673": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "6741": 1,
+      "70235": 1,
+    },
+    "name": "Ho-ho hammer",
+    "outputItems": {
+      "70233": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "6741": 1,
+      "71620": 1,
+    },
+    "name": "Dwarven pumpkinsmasher",
+    "outputItems": {
+      "71622": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20997": 1,
+      "48202": 1,
+    },
+    "name": "Twisted bow (ice)",
+    "outputItems": {
+      "40081": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20997": 1,
+      "48201": 1,
+    },
+    "name": "Twisted bow (shadow)",
+    "outputItems": {
+      "40082": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20997": 1,
+      "48203": 1,
+    },
+    "name": "Twisted bow (blood)",
+    "outputItems": {
+      "40083": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20997": 1,
+      "48204": 1,
+    },
+    "name": "Twisted bow (3a)",
+    "outputItems": {
+      "40084": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "20997": 1,
+      "48228": 1,
+    },
+    "name": "Twisted bownana",
+    "outputItems": {
+      "40068": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2832": 1,
+      "48202": 1,
+    },
+    "name": "Zaryte bow (ice)",
+    "outputItems": {
+      "40077": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2832": 1,
+      "48201": 1,
+    },
+    "name": "Zaryte bow (shadow)",
+    "outputItems": {
+      "40078": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2832": 1,
+      "48203": 1,
+    },
+    "name": "Zaryte bow (blood)",
+    "outputItems": {
+      "40079": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2832": 1,
+      "48204": 1,
+    },
+    "name": "Zaryte bow (3a)",
+    "outputItems": {
+      "40080": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2832": 1,
+      "48228": 1,
+    },
+    "name": "Zaryte bownana",
+    "outputItems": {
+      "40069": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48220": 1,
+      "48228": 1,
+    },
+    "name": "Hellfire bownana",
+    "outputItems": {
+      "40070": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48220": 1,
+      "70235": 1,
+    },
+    "name": "Mistleboe",
+    "outputItems": {
+      "70227": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48202": 1,
+      "48220": 1,
+    },
+    "name": "Hellfire bow (ice)",
+    "outputItems": {
+      "71426": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48220": 1,
+      "70441": 1,
+    },
+    "name": "Hellfire bow (Oceanic)",
+    "outputItems": {
+      "71427": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48220": 1,
+      "71620": 1,
+    },
+    "name": "Demonic piercer",
+    "outputItems": {
+      "71919": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "26374": 1,
+      "70235": 1,
+    },
+    "name": "Zaryte crossbow (xmas)",
+    "outputItems": {
+      "70247": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "41084": 1,
+      "70235": 1,
+    },
+    "name": "Vasa cloak (xmas)",
+    "outputItems": {
+      "70249": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "41084": 1,
+      "71491": 1,
+    },
+    "name": "Vasa cloak (zamorak)",
+    "outputItems": {
+      "71521": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "41084": 1,
+      "71489": 1,
+    },
+    "name": "Vasa cloak (saradomin)",
+    "outputItems": {
+      "71520": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "13652": 1,
+      "70235": 1,
+    },
+    "name": "Santa claws",
+    "outputItems": {
+      "70258": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48322": 1,
+      "70441": 1,
+    },
+    "name": "TzKal cape (Oceanic)",
+    "outputItems": {
+      "70464": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48322": 1,
+      "52672": 1,
+    },
+    "name": "TzKal cape (Volcanic)",
+    "outputItems": {
+      "70463": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48322": 1,
+      "71620": 1,
+    },
+    "name": "TzKal cape (spooky)",
+    "outputItems": {
+      "71922": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40033": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan warrior helmet (Primal)",
+    "outputItems": {
+      "41100": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40033": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan warrior helmet (Oceanic)",
+    "outputItems": {
+      "70448": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40034": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan warrior top (Primal)",
+    "outputItems": {
+      "41101": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40034": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan warrior top (Oceanic)",
+    "outputItems": {
+      "70449": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40035": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan warrior legs (Primal)",
+    "outputItems": {
+      "41102": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40035": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan warrior legs (Oceanic)",
+    "outputItems": {
+      "70450": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40036": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan warrior gloves (Primal)",
+    "outputItems": {
+      "41103": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40036": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan warrior gloves (Oceanic)",
+    "outputItems": {
+      "70451": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40037": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan warrior boots (Primal)",
+    "outputItems": {
+      "41104": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40037": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan warrior boots (Oceanic)",
+    "outputItems": {
+      "70452": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40042": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan occult helmet (Celestial)",
+    "outputItems": {
+      "40105": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40042": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan occult helmet (Oceanic)",
+    "outputItems": {
+      "70453": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40043": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan occult top (Celestial)",
+    "outputItems": {
+      "40106": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40043": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan occult top (Oceanic)",
+    "outputItems": {
+      "70454": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40044": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan occult legs (Celestial)",
+    "outputItems": {
+      "40107": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40044": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan occult legs (Oceanic)",
+    "outputItems": {
+      "70455": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40045": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan occult gloves (Celestial)",
+    "outputItems": {
+      "40108": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40045": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan occult gloves (Oceanic)",
+    "outputItems": {
+      "70456": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40046": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan occult boots (Celestial)",
+    "outputItems": {
+      "40109": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40046": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan occult boots (Oceanic)",
+    "outputItems": {
+      "70457": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40047": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan archer helmet (Sagittarian)",
+    "outputItems": {
+      "40110": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40047": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan archer helmet (Oceanic)",
+    "outputItems": {
+      "70458": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40048": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan archer top (Sagittarian)",
+    "outputItems": {
+      "40111": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40048": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan archer top (Oceanic)",
+    "outputItems": {
+      "70459": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40049": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan archer legs (Sagittarian)",
+    "outputItems": {
+      "40112": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40049": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan archer legs (Oceanic)",
+    "outputItems": {
+      "70460": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40050": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan archer gloves (Sagittarian)",
+    "outputItems": {
+      "40113": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40050": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan archer gloves (Oceanic)",
+    "outputItems": {
+      "70461": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40051": 1,
+      "48254": 1,
+    },
+    "name": "Gorajan archer boots (Sagittarian)",
+    "outputItems": {
+      "40114": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40051": 1,
+      "70441": 1,
+    },
+    "name": "Gorajan archer boots (Oceanic)",
+    "outputItems": {
+      "70462": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48015": 1,
+      "52672": 1,
+    },
+    "name": "Dwarven full helm (Volcanic)",
+    "outputItems": {
+      "52656": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48016": 1,
+      "52672": 1,
+    },
+    "name": "Dwarven platebody (Volcanic)",
+    "outputItems": {
+      "52655": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48017": 1,
+      "52672": 1,
+    },
+    "name": "Dwarven platelegs (Volcanic)",
+    "outputItems": {
+      "52654": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48019": 1,
+      "52672": 1,
+    },
+    "name": "Dwarven gloves (Volcanic)",
+    "outputItems": {
+      "52652": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48018": 1,
+      "52672": 1,
+    },
+    "name": "Dwarven boots (Volcanic)",
+    "outputItems": {
+      "52653": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "476": 1,
+      "70235": 1,
+    },
+    "name": "Dwarven pickaxe (xmas)",
+    "outputItems": {
+      "70246": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48202": 1,
+      "48327": 1,
+    },
+    "name": "Infernal slayer helmet(i) (ice)",
+    "outputItems": {
+      "71440": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48327": 1,
+      "70235": 1,
+    },
+    "name": "Infernal slayer helmet(i) (xmas)",
+    "outputItems": {
+      "72015": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "22325": 1,
+      "71620": 1,
+    },
+    "name": "The Grim Reaper",
+    "outputItems": {
+      "71621": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70432": 1,
+      "71620": 1,
+    },
+    "name": "Deathly collector",
+    "outputItems": {
+      "71623": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50072": 500,
+      "50074": 1,
+    },
+    "name": "Ganodermic visor",
+    "outputItems": {
+      "50079": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50072": 5000,
+      "50075": 1,
+    },
+    "name": "Ganodermic poncho",
+    "outputItems": {
+      "50078": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50072": 1500,
+      "50076": 1,
+    },
+    "name": "Ganodermic leggings",
+    "outputItems": {
+      "50077": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50067": 500,
+      "50074": 1,
+    },
+    "name": "Grifolic visor",
+    "outputItems": {
+      "50080": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50067": 5000,
+      "50075": 1,
+    },
+    "name": "Grifolic poncho",
+    "outputItems": {
+      "50081": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50067": 1500,
+      "50076": 1,
+    },
+    "name": "Grifolic leggings",
+    "outputItems": {
+      "50082": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11840": 1,
+      "50099": 1,
+    },
+    "name": "Dragonbone boots",
+    "outputItems": {
+      "50108": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11335": 1,
+      "50099": 1,
+    },
+    "name": "Dragonbone full helm",
+    "outputItems": {
+      "50107": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21892": 1,
+      "50099": 1,
+    },
+    "name": "Dragonbone platebody",
+    "outputItems": {
+      "50106": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "4087": 1,
+      "50099": 1,
+    },
+    "name": "Dragonbone platelegs",
+    "outputItems": {
+      "50105": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50099": 1,
+      "7461": 1,
+    },
+    "name": "Dragonbone gloves",
+    "outputItems": {
+      "50104": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50099": 1,
+      "6920": 1,
+    },
+    "name": "Dragonbone mage boots",
+    "outputItems": {
+      "50103": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50099": 1,
+      "6922": 1,
+    },
+    "name": "Dragonbone mage gloves",
+    "outputItems": {
+      "50101": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50099": 1,
+      "6924": 1,
+    },
+    "name": "Dragonbone mage bottoms",
+    "outputItems": {
+      "50102": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50099": 1,
+      "6918": 1,
+    },
+    "name": "Dragonbone mage hat",
+    "outputItems": {
+      "50100": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50099": 1,
+      "6916": 1,
+    },
+    "name": "Dragonbone mage top",
+    "outputItems": {
+      "50109": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50602": 1,
+      "50603": 1,
+      "50604": 1,
+    },
+    "name": "Royal dragon platebody",
+    "outputItems": {
+      "50605": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "10501": 50,
+      "70217": 1,
+      "70218": 1,
+    },
+    "name": "Frosty",
+    "outputItems": {
+      "70232": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21006": 1,
+      "51015": 1,
+    },
+    "name": "Virtus wand",
+    "outputItems": {
+      "2834": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51015": 1,
+      "6889": 1,
+    },
+    "name": "Virtus book",
+    "outputItems": {
+      "2836": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51010": 1,
+      "51016": 1,
+    },
+    "name": "Pernix cowl",
+    "outputItems": {
+      "601": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51011": 1,
+      "51016": 1,
+    },
+    "name": "Pernix body",
+    "outputItems": {
+      "605": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51012": 1,
+      "51016": 1,
+    },
+    "name": "Pernix chaps",
+    "outputItems": {
+      "4272": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51014": 1,
+      "51016": 1,
+    },
+    "name": "Pernix boots",
+    "outputItems": {
+      "758": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51013": 1,
+      "51016": 1,
+    },
+    "name": "Pernix gloves",
+    "outputItems": {
+      "759": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "26394": 1,
+      "51000": 1,
+    },
+    "name": "Torva full helm",
+    "outputItems": {
+      "432": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "26394": 1,
+      "51001": 1,
+    },
+    "name": "Torva platebody",
+    "outputItems": {
+      "709": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "26394": 1,
+      "51002": 1,
+    },
+    "name": "Torva platelegs",
+    "outputItems": {
+      "2404": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "26394": 1,
+      "51004": 1,
+    },
+    "name": "Torva boots",
+    "outputItems": {
+      "2838": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "26394": 1,
+      "51003": 1,
+    },
+    "name": "Torva gloves",
+    "outputItems": {
+      "4273": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51005": 1,
+      "51017": 1,
+    },
+    "name": "Virtus mask",
+    "outputItems": {
+      "788": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51006": 1,
+      "51017": 1,
+    },
+    "name": "Virtus robe top",
+    "outputItems": {
+      "983": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51007": 1,
+      "51017": 1,
+    },
+    "name": "Virtus robe legs",
+    "outputItems": {
+      "2409": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51009": 1,
+      "51017": 1,
+    },
+    "name": "Virtus boots",
+    "outputItems": {
+      "9654": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51008": 1,
+      "51017": 1,
+    },
+    "name": "Virtus gloves",
+    "outputItems": {
+      "2423": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51010": 1,
+    },
+    "name": "Revert Pernix cowl (broken)",
+    "outputItems": {
+      "73224": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51011": 1,
+    },
+    "name": "Revert Pernix body (broken)",
+    "outputItems": {
+      "73224": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51012": 1,
+    },
+    "name": "Revert Pernix chaps (broken)",
+    "outputItems": {
+      "73224": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51014": 1,
+    },
+    "name": "Revert Pernix boots (broken)",
+    "outputItems": {
+      "73224": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51013": 1,
+    },
+    "name": "Revert Pernix gloves (broken)",
+    "outputItems": {
+      "73224": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51000": 1,
+    },
+    "name": "Revert Torva full helm (broken)",
+    "outputItems": {
+      "26394": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51001": 1,
+    },
+    "name": "Revert Torva platebody (broken)",
+    "outputItems": {
+      "26394": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51002": 1,
+    },
+    "name": "Revert Torva platelegs (broken)",
+    "outputItems": {
+      "26394": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51004": 1,
+    },
+    "name": "Revert Torva boots (broken)",
+    "outputItems": {
+      "26394": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51003": 1,
+    },
+    "name": "Revert Torva gloves (broken)",
+    "outputItems": {
+      "26394": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51005": 1,
+    },
+    "name": "Revert Virtus mask (broken)",
+    "outputItems": {
+      "51017": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51006": 1,
+    },
+    "name": "Revert Virtus robe top (broken)",
+    "outputItems": {
+      "51017": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51007": 1,
+    },
+    "name": "Revert Virtus robe legs (broken)",
+    "outputItems": {
+      "51017": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51009": 1,
+    },
+    "name": "Revert Virtus boots (broken)",
+    "outputItems": {
+      "51017": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "51008": 1,
+    },
+    "name": "Revert Virtus gloves (broken)",
+    "outputItems": {
+      "51017": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "11832": 1,
+    },
+    "name": "Revert bandos chestplate",
+    "outputItems": {
+      "26394": 3,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "11834": 1,
+    },
+    "name": "Revert bandos tassets",
+    "outputItems": {
+      "26394": 2,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "11826": 1,
+    },
+    "name": "Revert armadyl helmet (components)",
+    "outputItems": {
+      "51016": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "11828": 1,
+    },
+    "name": "Revert armadyl chestplate (components)",
+    "outputItems": {
+      "51016": 3,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "11830": 1,
+    },
+    "name": "Revert armadyl chainskirt (components)",
+    "outputItems": {
+      "51016": 2,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "21018": 1,
+    },
+    "name": "Revert ancestral hat",
+    "outputItems": {
+      "51017": 2,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "21021": 1,
+    },
+    "name": "Revert ancestral robe top",
+    "outputItems": {
+      "51017": 3,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "21024": 1,
+    },
+    "name": "Revert ancestral robe bottom",
+    "outputItems": {
+      "51017": 3,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "27226": 1,
+    },
+    "name": "Revert masori mask",
+    "outputItems": {
+      "70447": 2,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "27229": 1,
+    },
+    "name": "Revert masori body",
+    "outputItems": {
+      "70447": 4,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "27232": 1,
+    },
+    "name": "Revert masori chaps",
+    "outputItems": {
+      "70447": 3,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Wolf bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Monkey bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Bat bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Big bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Jogre bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Zogre bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Shaikahan bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Babydragon bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Wyrm bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Dragon bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Wyvern bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Drake bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Fayrg bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Lava dragon bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Raurg bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Hydra bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Dagannoth bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Ourg bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Superior dragon bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Abyssal dragon bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Frost dragon bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": "function",
+    "name": "Divine water (Royal dragon bones)",
+    "outputItems": {
+      "50599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "23962": 1,
+    },
+    "name": "Crystal dust",
+    "outputItems": {
+      "23804": 10,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70292": 1,
+    },
+    "name": "Dagannoth slayer helm",
+    "outputItems": {
+      "70293": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70294": 1,
+    },
+    "name": "Jelly slayer helm",
+    "outputItems": {
+      "70295": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70296": 1,
+    },
+    "name": "Abyssal slayer helm",
+    "outputItems": {
+      "70297": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70300": 1,
+    },
+    "name": "Black demonical slayer helm",
+    "outputItems": {
+      "70301": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70302": 1,
+    },
+    "name": "Troll slayer helm",
+    "outputItems": {
+      "70303": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70304": 1,
+    },
+    "name": "Ganodermic slayer helm",
+    "outputItems": {
+      "70305": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70306": 1,
+    },
+    "name": "Gargoyle slayer helm",
+    "outputItems": {
+      "70307": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70308": 1,
+    },
+    "name": "Dark beast slayer helm",
+    "outputItems": {
+      "70309": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70310": 1,
+    },
+    "name": "Dust devil slayer helm",
+    "outputItems": {
+      "70311": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70312": 1,
+    },
+    "name": "Crawling hand slayer helm",
+    "outputItems": {
+      "70313": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70314": 1,
+    },
+    "name": "Basilisk slayer helm",
+    "outputItems": {
+      "70315": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70316": 1,
+    },
+    "name": "Bloodveld slayer helm",
+    "outputItems": {
+      "70317": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70318": 1,
+    },
+    "name": "Banshee slayer helm",
+    "outputItems": {
+      "70319": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70320": 1,
+    },
+    "name": "Cockatrice slayer helm",
+    "outputItems": {
+      "70321": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70322": 1,
+    },
+    "name": "Aberrant slayer helm",
+    "outputItems": {
+      "70323": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": {
+      "11864": 1,
+      "70298": 1,
+    },
+    "name": "Kurask slayer helm",
+    "outputItems": {
+      "70299": 1,
+    },
+    "requiredSlayerUnlocks": [
+      56,
+    ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "19481": 1,
+      "19610": 3,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "flexible": 5000,
+        "heavy": 5000,
+        "powerful": 5000,
+      },
+    },
+    "name": "Titan ballista",
+    "outputItems": {
+      "70422": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "fletching": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "21649": 2,
+      "48208": 3,
+    },
+    "name": "Piercing trident",
+    "outputItems": {
+      "70421": 1,
+    },
+    "requiredSkills": {
+      "crafting": 99,
+      "smithing": 99,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70420": 1,
+      "70421": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "magic": 5000,
+        "powerful": 1000,
+        "precious": 1000,
+        "swift": 1000,
+        "treasured": 5000,
+      },
+    },
+    "name": "Atlantean trident",
+    "outputItems": {
+      "70431": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "magic": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70426": 5,
+    },
+    "name": "Shark tooth necklace",
+    "outputItems": {
+      "70427": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "magic": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "51016": 3,
+      "6733": 10,
+      "70425": 1,
+      "70447": 6,
+    },
+    "name": "Ring of piercing",
+    "outputItems": {
+      "70429": 1,
+    },
+    "requiredSkills": {
+      "crafting": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50023": 1,
+      "70429": 1,
+    },
+    "name": "Ring of piercing (i)",
+    "outputItems": {
+      "70430": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24214": 1,
+      "27374": 1,
+      "51016": 10,
+      "70428": 1,
+      "70447": 10,
+    },
+    "name": "Tidal collector",
+    "outputItems": {
+      "70432": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40058": 1,
+      "71479": 1,
+    },
+    "name": "Revert completionist cape",
+    "noCl": true,
+    "outputItems": "function",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40059": 1,
+      "71946": 1,
+    },
+    "name": "Revert completionist cape (t)",
+    "noCl": true,
+    "outputItems": {
+      "40058": 1,
+      "71479": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly zombie gloves",
+    "outputItems": {
+      "71617": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71617": 1,
+    },
+    "name": "Revert Ghostly zombie gloves",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly zombie trousers",
+    "outputItems": {
+      "71616": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71616": 1,
+    },
+    "name": "Revert Ghostly zombie trousers",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly zombie shirt",
+    "outputItems": {
+      "71615": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71615": 1,
+    },
+    "name": "Revert Ghostly zombie shirt",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly zombie boots",
+    "outputItems": {
+      "71614": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71614": 1,
+    },
+    "name": "Revert Ghostly zombie boots",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly zombie mask",
+    "outputItems": {
+      "71613": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71613": 1,
+    },
+    "name": "Revert Ghostly zombie mask",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly lederhosen hat",
+    "outputItems": {
+      "71607": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71607": 1,
+    },
+    "name": "Revert Ghostly lederhosen hat",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly lederhosen shorts",
+    "outputItems": {
+      "71606": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71606": 1,
+    },
+    "name": "Revert Ghostly lederhosen shorts",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly lederhosen gloves",
+    "outputItems": {
+      "71610": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71610": 1,
+    },
+    "name": "Revert Ghostly lederhosen gloves",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly lederhosen top",
+    "outputItems": {
+      "71605": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71605": 1,
+    },
+    "name": "Revert Ghostly lederhosen top",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly lederhosen boots",
+    "outputItems": {
+      "71604": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71604": 1,
+    },
+    "name": "Revert Ghostly lederhosen boots",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly jester hat",
+    "outputItems": {
+      "71609": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71609": 1,
+    },
+    "name": "Revert Ghostly jester hat",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly jester gloves",
+    "outputItems": {
+      "71598": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71598": 1,
+    },
+    "name": "Revert Ghostly jester gloves",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly jester boots",
+    "outputItems": {
+      "71597": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71597": 1,
+    },
+    "name": "Revert Ghostly jester boots",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly jester top",
+    "outputItems": {
+      "71596": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71596": 1,
+    },
+    "name": "Revert Ghostly jester top",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly jester tights",
+    "outputItems": {
+      "71595": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71595": 1,
+    },
+    "name": "Revert Ghostly jester tights",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly ringmaster hat",
+    "outputItems": {
+      "71608": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71608": 1,
+    },
+    "name": "Revert Ghostly ringmaster hat",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly ringmaster pants",
+    "outputItems": {
+      "71594": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71594": 1,
+    },
+    "name": "Revert Ghostly ringmaster pants",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly ringmaster boots",
+    "outputItems": {
+      "71593": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71593": 1,
+    },
+    "name": "Revert Ghostly ringmaster boots",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly ringmaster shirt",
+    "outputItems": {
+      "71592": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71592": 1,
+    },
+    "name": "Revert Ghostly ringmaster shirt",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly ringmaster gloves",
+    "outputItems": {
+      "71591": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71591": 1,
+    },
+    "name": "Revert Ghostly ringmaster gloves",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly chicken feet",
+    "outputItems": {
+      "71603": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71603": 1,
+    },
+    "name": "Revert Ghostly chicken feet",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly chicken wings",
+    "outputItems": {
+      "71602": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71602": 1,
+    },
+    "name": "Revert Ghostly chicken wings",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly chicken gloves",
+    "outputItems": {
+      "71600": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71600": 1,
+    },
+    "name": "Revert Ghostly chicken gloves",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly chicken legs",
+    "outputItems": {
+      "71601": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71601": 1,
+    },
+    "name": "Revert Ghostly chicken legs",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71590": 100,
+    },
+    "name": "Ghostly chicken head",
+    "outputItems": {
+      "71599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "71599": 1,
+    },
+    "name": "Revert Ghostly chicken head",
+    "outputItems": {
+      "71590": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73010": 1,
+    },
+    "name": "Revert Pale energy",
+    "outputItems": {
+      "73090": 2,
+    },
+    "requiredSkills": {
+      "divination": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73006": 1,
+    },
+    "name": "Revert Flickering energy",
+    "outputItems": {
+      "73090": 3,
+    },
+    "requiredSkills": {
+      "divination": 10,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73010": 500,
+    },
+    "name": "Boon of flickering energy",
+    "outputItems": {
+      "73029": 1,
+    },
+    "requiredSkills": {
+      "divination": 10,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73004": 1,
+    },
+    "name": "Revert Bright energy",
+    "outputItems": {
+      "73090": 6,
+    },
+    "requiredSkills": {
+      "divination": 20,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73006": 1000,
+    },
+    "name": "Boon of bright energy",
+    "outputItems": {
+      "73028": 1,
+    },
+    "requiredSkills": {
+      "divination": 20,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73009": 1,
+    },
+    "name": "Revert Glowing energy",
+    "outputItems": {
+      "73090": 11,
+    },
+    "requiredSkills": {
+      "divination": 30,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73004": 1500,
+    },
+    "name": "Boon of glowing energy",
+    "outputItems": {
+      "73027": 1,
+    },
+    "requiredSkills": {
+      "divination": 30,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73015": 1,
+    },
+    "name": "Revert Sparkling energy",
+    "outputItems": {
+      "73090": 18,
+    },
+    "requiredSkills": {
+      "divination": 40,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73009": 2000,
+    },
+    "name": "Boon of sparkling energy",
+    "outputItems": {
+      "73026": 1,
+    },
+    "requiredSkills": {
+      "divination": 40,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73008": 1,
+    },
+    "name": "Revert Gleaming energy",
+    "outputItems": {
+      "73090": 28,
+    },
+    "requiredSkills": {
+      "divination": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73015": 2500,
+    },
+    "name": "Boon of gleaming energy",
+    "outputItems": {
+      "73025": 1,
+    },
+    "requiredSkills": {
+      "divination": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73014": 1,
+    },
+    "name": "Revert Vibrant energy",
+    "outputItems": {
+      "73090": 42,
+    },
+    "requiredSkills": {
+      "divination": 60,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73008": 3000,
+    },
+    "name": "Boon of vibrant energy",
+    "outputItems": {
+      "73024": 1,
+    },
+    "requiredSkills": {
+      "divination": 60,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73013": 1,
+    },
+    "name": "Revert Lustrous energy",
+    "outputItems": {
+      "73090": 61,
+    },
+    "requiredSkills": {
+      "divination": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73014": 3500,
+    },
+    "name": "Boon of lustrous energy",
+    "outputItems": {
+      "73023": 1,
+    },
+    "requiredSkills": {
+      "divination": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73007": 1,
+    },
+    "name": "Revert Elder energy",
+    "outputItems": {
+      "73090": 72,
+    },
+    "requiredSkills": {
+      "divination": 75,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73013": 3750,
+    },
+    "name": "Boon of elder energy",
+    "outputItems": {
+      "73022": 1,
+    },
+    "requiredSkills": {
+      "divination": 75,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73005": 1,
+    },
+    "name": "Revert Brilliant energy",
+    "outputItems": {
+      "73090": 85,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73007": 4000,
+    },
+    "name": "Boon of brilliant energy",
+    "outputItems": {
+      "73033": 1,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73016": 1,
+    },
+    "name": "Revert Radiant energy",
+    "outputItems": {
+      "73090": 99,
+    },
+    "requiredSkills": {
+      "divination": 85,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73005": 4250,
+    },
+    "name": "Boon of radiant energy",
+    "outputItems": {
+      "73032": 1,
+    },
+    "requiredSkills": {
+      "divination": 85,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73012": 1,
+    },
+    "name": "Revert Luminous energy",
+    "outputItems": {
+      "73090": 115,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73016": 4500,
+    },
+    "name": "Boon of luminous energy",
+    "outputItems": {
+      "73031": 1,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73011": 1,
+    },
+    "name": "Revert Incandescent energy",
+    "outputItems": {
+      "73090": 133,
+    },
+    "requiredSkills": {
+      "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73012": 4750,
+    },
+    "name": "Boon of incandescent energy",
+    "outputItems": {
+      "73030": 1,
+    },
+    "requiredSkills": {
+      "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": {
+      "73045": 1,
+    },
+    "name": "Revert Ancient energy",
+    "outputItems": {
+      "73090": 394,
+    },
+    "requiredSkills": {
+      "divination": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73011": 5500,
+    },
+    "name": "Boon of ancient energy",
+    "outputItems": {
+      "73046": 1,
+    },
+    "requiredSkills": {
+      "divination": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1775": 50,
+      "50021": 20,
+      "73016": 500,
+    },
+    "name": "Cache portent",
+    "outputItems": {
+      "73041": 1,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "3016": 30,
+      "50021": 20,
+      "73012": 500,
+    },
+    "name": "Graceful portent",
+    "outputItems": {
+      "73043": 1,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50021": 520,
+      "73045": 200,
+    },
+    "name": "Rogues portent",
+    "outputItems": {
+      "73044": 1,
+    },
+    "requiredSkills": {
+      "divination": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50021": 20,
+      "73045": 512,
+    },
+    "name": "Dungeon portent",
+    "outputItems": {
+      "73047": 1,
+    },
+    "requiredSkills": {
+      "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50021": 20,
+      "73011": 256,
+    },
+    "name": "Lucky portent",
+    "outputItems": {
+      "73048": 1,
+    },
+    "requiredSkills": {
+      "divination": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50021": 20,
+      "73045": 512,
+    },
+    "name": "Rebirth portent",
+    "outputItems": {
+      "73052": 1,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50021": 20,
+      "73011": 1200,
+    },
+    "name": "Spiritual mining portent",
+    "outputItems": {
+      "73053": 1,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50002": 30,
+      "50021": 20,
+      "73011": 1000,
+    },
+    "name": "Pacifist hunting portent",
+    "outputItems": {
+      "73054": 1,
+    },
+    "requiredSkills": {
+      "divination": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "4587": 1,
+      "73057": 7500,
+      "73090": 30000,
+    },
+    "name": "Sundial scimitar",
+    "outputItems": {
+      "73094": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47516": 1,
+      "73162": 1,
+    },
+    "name": "Offhand spidergore rapier",
+    "outputItems": {
+      "73164": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50021": 30,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "wooden": 15,
+      },
+    },
+    "name": "Lumina (Materials)",
+    "outputItems": {
+      "73167": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73128": 3,
+    },
+    "name": "Clue scroll (elder)",
+    "outputItems": {
+      "73123": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "28955": 5,
+      "51016": 10,
+      "70432": 1,
+      "70447": 4,
+      "73224": 3,
+    },
+    "name": "Tidal collector (i)",
+    "outputItems": {
+      "73223": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "28955": 5,
+      "51016": 10,
+      "70447": 4,
+      "71623": 1,
+      "73224": 3,
+    },
+    "name": "Deathly collector (i)",
+    "noCreatablesCl": true,
+    "outputItems": {
+      "73225": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50017": 5,
+      "50021": 30,
+    },
+    "name": "Lumina (Elder logs)",
+    "outputItems": {
+      "73167": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "19669": 10,
+      "50021": 30,
+    },
+    "name": "Lumina (Redwood logs)",
+    "outputItems": {
+      "73167": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1513": 30,
+      "50021": 30,
+    },
+    "name": "Lumina (Magic logs)",
+    "outputItems": {
+      "73167": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1515": 50,
+      "50021": 30,
+    },
+    "name": "Lumina (Yew logs)",
+    "outputItems": {
+      "73167": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40054": 1,
+    },
+    "name": "Revert Support cape",
+    "noCl": true,
+    "outputItems": "function",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40055": 1,
+    },
+    "name": "Revert Gatherer's cape",
+    "noCl": true,
+    "outputItems": "function",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40056": 1,
+    },
+    "name": "Revert Combatant's cape",
+    "noCl": true,
+    "outputItems": "function",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40057": 1,
+    },
+    "name": "Revert Artisan's cape",
+    "noCl": true,
+    "outputItems": "function",
   },
   {
     "cantHaveItems": undefined,
@@ -12510,7 +18367,7 @@ exports[`OSB Creatables 1`] = `
       "11860": 1,
       "24729": 6,
     },
-    "name": "Dark graceful",
+    "name": "Dark Graceful",
     "outputItems": {
       "24743": 1,
       "24746": 1,
@@ -12526,7 +18383,7 @@ exports[`OSB Creatables 1`] = `
       "11850": 1,
       "24729": 1,
     },
-    "name": "Dark graceful hood",
+    "name": "Dark Graceful hood",
     "outputItems": {
       "24743": 1,
     },
@@ -12584,93 +18441,6 @@ exports[`OSB Creatables 1`] = `
     "name": "Dark graceful cape",
     "outputItems": {
       "24746": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "24743": 1,
-      "24746": 1,
-      "24749": 1,
-      "24752": 1,
-      "24755": 1,
-      "24758": 1,
-    },
-    "name": "Revert dark graceful",
-    "noCl": true,
-    "outputItems": {
-      "11850": 1,
-      "11852": 1,
-      "11854": 1,
-      "11856": 1,
-      "11858": 1,
-      "11860": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "24743": 1,
-    },
-    "name": "Revert dark graceful hood",
-    "noCl": true,
-    "outputItems": {
-      "11850": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "24749": 1,
-    },
-    "name": "Revert dark graceful top",
-    "noCl": true,
-    "outputItems": {
-      "11854": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "24752": 1,
-    },
-    "name": "Revert dark graceful legs",
-    "noCl": true,
-    "outputItems": {
-      "11856": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "24755": 1,
-    },
-    "name": "Revert dark graceful gloves",
-    "noCl": true,
-    "outputItems": {
-      "11858": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "24758": 1,
-    },
-    "name": "Revert dark graceful boots",
-    "noCl": true,
-    "outputItems": {
-      "11860": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "24746": 1,
-    },
-    "name": "Revert dark graceful cape",
-    "noCl": true,
-    "outputItems": {
-      "11852": 1,
     },
   },
   {
@@ -13728,7 +19498,7 @@ exports[`OSB Creatables 1`] = `
       "11860": 1,
       "30044": 1,
     },
-    "name": "Varlamore graceful",
+    "name": "Varlamore graceful outfit",
     "outputItems": {
       "30045": 1,
       "30048": 1,
@@ -13748,7 +19518,7 @@ exports[`OSB Creatables 1`] = `
       "30057": 1,
       "30060": 1,
     },
-    "name": "Revert Varlamore graceful",
+    "name": "Revert Varlamore graceful outfit",
     "noCl": true,
     "outputItems": {
       "11850": 1,
@@ -13757,159 +19527,6 @@ exports[`OSB Creatables 1`] = `
       "11856": 1,
       "11858": 1,
       "11860": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "30045": 1,
-    },
-    "name": "Revert Varlamore graceful hood",
-    "noCl": true,
-    "outputItems": {
-      "11850": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "30051": 1,
-    },
-    "name": "Revert Varlamore graceful top",
-    "noCl": true,
-    "outputItems": {
-      "11854": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "30054": 1,
-    },
-    "name": "Revert Varlamore graceful legs",
-    "noCl": true,
-    "outputItems": {
-      "11856": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "30057": 1,
-    },
-    "name": "Revert Varlamore graceful gloves",
-    "noCl": true,
-    "outputItems": {
-      "11858": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "30060": 1,
-    },
-    "name": "Revert Varlamore graceful boots",
-    "noCl": true,
-    "outputItems": {
-      "11860": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "30048": 1,
-    },
-    "name": "Revert Varlamore graceful cape",
-    "noCl": true,
-    "outputItems": {
-      "11852": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "21061": 1,
-      "21064": 1,
-      "21067": 1,
-      "21070": 1,
-      "21073": 1,
-      "21076": 1,
-    },
-    "name": "Revert Brimhaven graceful",
-    "noCl": true,
-    "outputItems": {
-      "11850": 1,
-      "11852": 1,
-      "11854": 1,
-      "11856": 1,
-      "11858": 1,
-      "11860": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "21061": 1,
-    },
-    "name": "Revert Brimhaven graceful hood",
-    "noCl": true,
-    "outputItems": {
-      "11850": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "21067": 1,
-    },
-    "name": "Revert Brimhaven graceful top",
-    "noCl": true,
-    "outputItems": {
-      "11854": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "21070": 1,
-    },
-    "name": "Revert Brimhaven graceful legs",
-    "noCl": true,
-    "outputItems": {
-      "11856": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "21073": 1,
-    },
-    "name": "Revert Brimhaven graceful gloves",
-    "noCl": true,
-    "outputItems": {
-      "11858": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "21076": 1,
-    },
-    "name": "Revert Brimhaven graceful boots",
-    "noCl": true,
-    "outputItems": {
-      "11860": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "21064": 1,
-    },
-    "name": "Revert Brimhaven graceful cape",
-    "noCl": true,
-    "outputItems": {
-      "11852": 1,
     },
   },
   {
@@ -14671,70 +20288,6 @@ exports[`OSB Creatables 1`] = `
     },
     "requiredSkills": {
       "prayer": 31,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "forceAddToCl": true,
-    "inputItems": {
-      "11832": 1,
-    },
-    "name": "Revert bandos chestplate",
-    "outputItems": {
-      "26394": 3,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "forceAddToCl": true,
-    "inputItems": {
-      "11834": 1,
-    },
-    "name": "Revert bandos tassets",
-    "outputItems": {
-      "26394": 2,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "26376": 1,
-      "26394": 1,
-    },
-    "name": "Torva full helm",
-    "outputItems": {
-      "26382": 1,
-    },
-    "requiredSkills": {
-      "smithing": 90,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "26378": 1,
-      "26394": 2,
-    },
-    "name": "Torva platebody",
-    "outputItems": {
-      "26384": 1,
-    },
-    "requiredSkills": {
-      "smithing": 90,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
-      "26380": 1,
-      "26394": 2,
-    },
-    "name": "Torva platelegs",
-    "outputItems": {
-      "26386": 1,
-    },
-    "requiredSkills": {
-      "smithing": 90,
     },
   },
   {
@@ -16131,6 +21684,738 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "1741": 10,
+      "2363": 30,
+      "52661": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "flexible": 500,
+        "metallic": 1000,
+        "sharp": 500,
+        "strong": 500,
+      },
+    },
+    "name": "Runite igne claws",
+    "outputItems": {
+      "52662": 1,
+    },
+    "requiredSkills": {
+      "crafting": 80,
+      "invention": 80,
+      "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "13652": 1,
+      "1741": 10,
+      "52662": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "flexible": 200,
+        "metallic": 1500,
+        "orikalkum": 50,
+        "sharp": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Dragon igne claws",
+    "outputItems": {
+      "52663": 1,
+    },
+    "requiredSkills": {
+      "crafting": 85,
+      "invention": 85,
+      "smithing": 85,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52663": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "barrows": 100,
+        "flexible": 200,
+        "metallic": 1500,
+        "sharp": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Barrows igne claws",
+    "outputItems": {
+      "52664": 1,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52650": 250,
+      "52664": 1,
+      "52671": 2,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "flexible": 200,
+        "metallic": 1500,
+        "sharp": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Volcanic igne claws",
+    "outputItems": {
+      "52665": 1,
+    },
+    "requiredSkills": {
+      "crafting": 95,
+      "invention": 95,
+      "smithing": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52665": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "drygore": 2000,
+        "flexible": 200,
+        "metallic": 1500,
+        "sharp": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Drygore igne claws",
+    "outputItems": {
+      "52667": 1,
+    },
+    "requiredSkills": {
+      "crafting": 100,
+      "invention": 100,
+      "smithing": 100,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52667": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "dwarven": 2500,
+        "flexible": 200,
+        "metallic": 1500,
+        "sharp": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Dwarven igne claws",
+    "outputItems": {
+      "52668": 1,
+    },
+    "requiredSkills": {
+      "crafting": 110,
+      "invention": 110,
+      "smithing": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "48012": 2,
+      "52668": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "flexible": 200,
+        "metallic": 2000,
+        "sharp": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Gorajan igne claws",
+    "outputItems": {
+      "52669": 1,
+    },
+    "requiredSkills": {
+      "crafting": 120,
+      "invention": 120,
+      "smithing": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52661": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "metallic": 1500,
+        "orikalkum": 80,
+        "protective": 1000,
+        "strong": 200,
+      },
+    },
+    "name": "Dragon igne armor",
+    "outputItems": {
+      "52680": 1,
+    },
+    "requiredSkills": {
+      "crafting": 85,
+      "invention": 85,
+      "smithing": 85,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52680": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "barrows": 100,
+        "metallic": 1500,
+        "protective": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Barrows igne armor",
+    "outputItems": {
+      "52681": 1,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52650": 250,
+      "52671": 2,
+      "52681": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "metallic": 1500,
+        "protective": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Volcanic igne armor",
+    "outputItems": {
+      "52682": 1,
+    },
+    "requiredSkills": {
+      "crafting": 95,
+      "invention": 95,
+      "smithing": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52682": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "justiciar": 5,
+        "metallic": 1500,
+        "protective": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Justiciar igne armor",
+    "outputItems": {
+      "52683": 1,
+    },
+    "requiredSkills": {
+      "crafting": 95,
+      "invention": 95,
+      "smithing": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52683": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "drygore": 2500,
+        "metallic": 1500,
+        "protective": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Drygore igne armor",
+    "outputItems": {
+      "52684": 1,
+    },
+    "requiredSkills": {
+      "crafting": 100,
+      "invention": 100,
+      "smithing": 100,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "52684": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "dwarven": 3000,
+        "metallic": 1500,
+        "protective": 200,
+        "strong": 200,
+      },
+    },
+    "name": "Dwarven igne armor",
+    "outputItems": {
+      "52685": 1,
+    },
+    "requiredSkills": {
+      "crafting": 110,
+      "invention": 110,
+      "smithing": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1741": 10,
+      "48012": 2,
+      "52685": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "metallic": 2000,
+        "protective": 500,
+        "strong": 200,
+      },
+    },
+    "name": "Gorajan igne armor",
+    "outputItems": {
+      "52686": 1,
+    },
+    "requiredSkills": {
+      "crafting": 120,
+      "invention": 120,
+      "smithing": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "19685": 10,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "strong": 500,
+      },
+    },
+    "name": "Demonic jibwings",
+    "outputItems": {
+      "73097": 1,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "19677": 10,
+      "50024": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "abyssal": 30,
+      },
+    },
+    "name": "Abyssal jibwings",
+    "outputItems": {
+      "73098": 1,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "2357": 1000,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "third-age": 6,
+      },
+    },
+    "name": "3rd age jibwings",
+    "outputItems": {
+      "73099": 1,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48207": 1000,
+      "73099": 1,
+    },
+    "name": "3rd age jibwings (e)",
+    "outputItems": {
+      "73104": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48207": 1000,
+      "73097": 1,
+    },
+    "name": "Demonic jibwings (e)",
+    "outputItems": {
+      "73102": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "48207": 1000,
+      "73098": 1,
+    },
+    "name": "Abyssal jibwings (e)",
+    "outputItems": {
+      "73103": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73090": 1000000,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "precious": 10000,
+      },
+    },
+    "name": "Divine ring",
+    "outputItems": {
+      "73101": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50021": 1000,
+      "73090": 200000,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "orikalkum": 100,
+      },
+    },
+    "name": "Impling locator",
+    "outputItems": {
+      "73100": 1,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "magic": 120,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52662": 1,
+    },
+    "name": "Revert Runite igne claws",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52663": 1,
+    },
+    "name": "Revert Dragon igne claws",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52664": 1,
+    },
+    "name": "Revert Barrows igne claws",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52665": 1,
+    },
+    "name": "Revert Volcanic igne claws",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52667": 1,
+    },
+    "name": "Revert Drygore igne claws",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52668": 1,
+    },
+    "name": "Revert Dwarven igne claws",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52669": 1,
+    },
+    "name": "Revert Gorajan igne claws",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52680": 1,
+    },
+    "name": "Revert Dragon igne armor",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52681": 1,
+    },
+    "name": "Revert Barrows igne armor",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52682": 1,
+    },
+    "name": "Revert Volcanic igne armor",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52683": 1,
+    },
+    "name": "Revert Justiciar igne armor",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52684": 1,
+    },
+    "name": "Revert Drygore igne armor",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52685": 1,
+    },
+    "name": "Revert Dwarven igne armor",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "52686": 1,
+    },
+    "name": "Revert Gorajan igne armor",
+    "outputItems": {
+      "52661": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "476": 1,
+      "52650": 250,
+      "52671": 2,
+    },
+    "name": "Volcanic pickaxe",
+    "outputItems": {
+      "52658": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "476": 1,
+      "52650": 150,
+      "52671": 1,
+    },
+    "name": "Offhand volcanic pickaxe",
+    "outputItems": {
+      "52659": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "50021": 20,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "magic": 20,
+        "rocky": 50,
+      },
+    },
+    "name": "Moktang totem",
+    "outputItems": {
+      "52670": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24034": 1,
+      "71529": 1,
+    },
+    "name": "Dragonstone full helm(u)",
+    "outputItems": {
+      "71530": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24037": 1,
+      "71529": 1,
+    },
+    "name": "Dragonstone platebody(u)",
+    "outputItems": {
+      "71531": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24040": 1,
+      "71529": 1,
+    },
+    "name": "Dragonstone platelegs(u)",
+    "outputItems": {
+      "71532": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24043": 1,
+      "71529": 1,
+    },
+    "name": "Dragonstone boots(u)",
+    "outputItems": {
+      "71533": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24046": 1,
+      "71529": 1,
+    },
+    "name": "Dragonstone gauntlets(u)",
+    "outputItems": {
+      "71534": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "25442": 1,
       "25457": 1,
     },
@@ -16181,6 +22466,342 @@ exports[`OSB Creatables 1`] = `
     "name": "Gold coffin",
     "outputItems": {
       "25467": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "24333": 1,
+      "3470": 50,
+      "70259": 3,
+    },
+    "name": "Necromancer outfit",
+    "outputItems": {
+      "70260": 1,
+      "70261": 1,
+      "70262": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1405": 1,
+      "70263": 1,
+    },
+    "name": "Necromancer's air staff",
+    "outputItems": {
+      "70265": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70265": 1,
+    },
+    "name": "Revert Necromancer's air staff",
+    "noCl": true,
+    "outputItems": {
+      "1405": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1407": 1,
+      "70263": 1,
+    },
+    "name": "Necromancer's earth staff",
+    "outputItems": {
+      "70266": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70266": 1,
+    },
+    "name": "Revert Necromancer's earth staff",
+    "noCl": true,
+    "outputItems": {
+      "1407": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1401": 1,
+      "70263": 1,
+    },
+    "name": "Necromancer's fire staff",
+    "outputItems": {
+      "70267": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70267": 1,
+    },
+    "name": "Revert Necromancer's fire staff",
+    "noCl": true,
+    "outputItems": {
+      "1401": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "3054": 1,
+      "70263": 1,
+    },
+    "name": "Necromancer's lava staff",
+    "outputItems": {
+      "70268": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70268": 1,
+    },
+    "name": "Revert Necromancer's lava staff",
+    "noCl": true,
+    "outputItems": {
+      "3054": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "6563": 1,
+      "70263": 1,
+    },
+    "name": "Necromancer's mud staff",
+    "outputItems": {
+      "70269": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70269": 1,
+    },
+    "name": "Revert Necromancer's mud staff",
+    "noCl": true,
+    "outputItems": {
+      "6563": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11789": 1,
+      "70263": 1,
+    },
+    "name": "Necromancer's steam staff",
+    "outputItems": {
+      "70270": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70270": 1,
+    },
+    "name": "Revert Necromancer's steam staff",
+    "noCl": true,
+    "outputItems": {
+      "11789": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1403": 1,
+      "70263": 1,
+    },
+    "name": "Necromancer's water staff",
+    "outputItems": {
+      "70271": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70271": 1,
+    },
+    "name": "Revert Necromancer's water staff",
+    "noCl": true,
+    "outputItems": {
+      "1403": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1397": 1,
+      "70263": 1,
+    },
+    "name": "Skeletal battlestaff of air",
+    "outputItems": {
+      "70272": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70272": 1,
+    },
+    "name": "Revert Skeletal battlestaff of air",
+    "noCl": true,
+    "outputItems": {
+      "1397": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1399": 1,
+      "70263": 1,
+    },
+    "name": "Skeletal battlestaff of earth",
+    "outputItems": {
+      "70273": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70273": 1,
+    },
+    "name": "Revert Skeletal battlestaff of earth",
+    "noCl": true,
+    "outputItems": {
+      "1399": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1393": 1,
+      "70263": 1,
+    },
+    "name": "Skeletal battlestaff of fire",
+    "outputItems": {
+      "70274": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70274": 1,
+    },
+    "name": "Revert Skeletal battlestaff of fire",
+    "noCl": true,
+    "outputItems": {
+      "1393": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "1395": 1,
+      "70263": 1,
+    },
+    "name": "Skeletal battlestaff of water",
+    "outputItems": {
+      "70275": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70275": 1,
+    },
+    "name": "Revert Skeletal battlestaff of water",
+    "noCl": true,
+    "outputItems": {
+      "1395": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "3053": 1,
+      "70263": 1,
+    },
+    "name": "Skeletal lava battlestaff",
+    "outputItems": {
+      "70276": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70276": 1,
+    },
+    "name": "Revert Skeletal lava battlestaff",
+    "noCl": true,
+    "outputItems": {
+      "3053": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "6562": 1,
+      "70263": 1,
+    },
+    "name": "Skeletal mud battlestaff",
+    "outputItems": {
+      "70277": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70277": 1,
+    },
+    "name": "Revert Skeletal mud battlestaff",
+    "noCl": true,
+    "outputItems": {
+      "6562": 1,
+      "70263": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "11787": 1,
+      "70263": 1,
+    },
+    "name": "Skeletal steam battlestaff",
+    "outputItems": {
+      "70278": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "70278": 1,
+    },
+    "name": "Revert Skeletal steam battlestaff",
+    "noCl": true,
+    "outputItems": {
+      "11787": 1,
+      "70263": 1,
     },
   },
   {
@@ -16306,7 +22927,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": {
       "11826": 1,
     },
-    "name": "Revert Armadyl helmet",
+    "name": "Revert Armadyl helmet (to plates)",
     "outputItems": {
       "27269": 1,
     },
@@ -16317,7 +22938,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": {
       "11828": 1,
     },
-    "name": "Revert Armadyl chestplate",
+    "name": "Revert Armadyl chestplate (to plates)",
     "outputItems": {
       "27269": 4,
     },
@@ -16328,7 +22949,7 @@ exports[`OSB Creatables 1`] = `
     "inputItems": {
       "11830": 1,
     },
-    "name": "Revert Armadyl chainskirt",
+    "name": "Revert Armadyl chainskirt (to plates)",
     "outputItems": {
       "27269": 3,
     },
@@ -16779,7 +23400,7 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": {
-      "26382": 1,
+      "432": 1,
       "565": 20000,
     },
     "name": "Sanguine torva full helm",
@@ -16791,8 +23412,8 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": {
-      "26384": 1,
       "565": 20000,
+      "709": 1,
     },
     "name": "Sanguine torva platebody",
     "outputItems": {
@@ -16803,7 +23424,7 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": {
-      "26386": 1,
+      "2404": 1,
       "565": 20000,
     },
     "name": "Sanguine torva platelegs",
@@ -17393,6 +24014,52 @@ exports[`OSB Creatables 1`] = `
     "noCl": false,
     "outputItems": {
       "25644": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "506": 1,
+      "52671": 1,
+    },
+    "name": "Axe handle base",
+    "outputItems": {
+      "73093": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "47517": 1,
+      "50011": 10,
+      "50028": 30,
+      "73093": 1,
+    },
+    "name": "Axe handle",
+    "outputItems": {
+      "73096": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73095": 1,
+      "73096": 1,
+    },
+    "name": "Axe of the high sungod (u)",
+    "outputItems": {
+      "73074": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73074": 1,
+      "73090": 2000000,
+    },
+    "name": "Axe of the high sungod",
+    "outputItems": {
+      "73072": 1,
     },
   },
 ]

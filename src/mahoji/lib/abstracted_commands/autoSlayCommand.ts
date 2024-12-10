@@ -214,12 +214,6 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientName: Monsters.RevenantDemon.name,
 		efficientMonster: Monsters.RevenantDemon.id,
 		efficientMethod: 'none'
-	},
-	{
-		monsterID: Monsters.WarpedTerrorbird.id,
-		efficientName: Monsters.WarpedTerrorbird.name,
-		efficientMonster: Monsters.WarpedTerrorbird.id,
-		efficientMethod: 'cannon'
 	}
 ];
 
@@ -466,8 +460,8 @@ export async function autoSlayCommand({
 	}
 	if (method === 'ehp') {
 		let ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
-			const masterMatch = !e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask?.slayer_master_id);
-			return masterMatch && e.monsterID === usersTask.assignedTask?.monster.id;
+			const masterMatch = !e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayer_master_id);
+			return masterMatch && e.monsterID === usersTask.assignedTask!.monster.id;
 		});
 
 		if (usersTask.currentTask.slayer_master_id === 8) {

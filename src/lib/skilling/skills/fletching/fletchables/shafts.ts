@@ -86,6 +86,15 @@ const Shafts: Fletchable[] = [
 		outputMultiple: 105
 	},
 	{
+		name: 'Elder arrow shaft',
+		id: itemID('Arrow shaft'),
+		level: 105,
+		xp: 100,
+		inputItems: new Bank({ 'Elder logs': 1 }),
+		tickRate: 2,
+		outputMultiple: 300
+	},
+	{
 		name: 'Battlestaff',
 		id: itemID('Battlestaff'),
 		level: 40,

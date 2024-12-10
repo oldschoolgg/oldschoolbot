@@ -1,5 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 
@@ -22,7 +24,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		weight: 5,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		unlocked: true
@@ -272,7 +274,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			KalphiteKingMonster.id
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -443,7 +446,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			BSOMonsters.VladimirDrakan.id
 		],
 		combatLevel: 35,
 		questPoints: 1,

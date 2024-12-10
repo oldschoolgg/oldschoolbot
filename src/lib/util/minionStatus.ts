@@ -1,11 +1,14 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { collectables } from '../../mahoji/lib/collectables';
+import { bossEvents } from '../bossEvents';
+import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
+import { fishingLocations } from '../fishingContest';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import { quests } from '../minions/data/quests';
@@ -32,6 +35,7 @@ import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
+	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
@@ -43,12 +47,16 @@ import type {
 	CraftingActivityTaskOptions,
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
+	DOAOptions,
 	DarkAltarOptions,
+	DisassembleTaskOptions,
+	DungeoneeringOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FightCavesActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
+	FishingContestOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
 	GroupMonsterActivityTaskOptions,
@@ -56,16 +64,20 @@ import type {
 	HunterActivityTaskOptions,
 	InfernoOptions,
 	KourendFavourActivityTaskOptions,
+	MemoryHarvestOptions,
 	MinigameActivityTaskOptionsWithNoChanges,
 	MiningActivityTaskOptions,
+	MoktangTaskOptions,
+	MonkeyRumbleOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
-	NexTaskOptions,
+	NewBossOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
 	RaidsOptions,
+	ResearchTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -77,10 +89,11 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TinkeringWorkshopOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
+import { itemNameFromID, randomVariation, stringMatches } from '../util';
 import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
@@ -625,13 +638,6 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
-		case 'Nex': {
-			const data = currentTask as NexTaskOptions;
-			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
-			return `${name} is currently killing Nex ${data.quantity} times with a team of ${
-				data.users.length
-			}. The trip should take ${formatDuration(durationRemaining)}.`;
-		}
 		case 'TroubleBrewing': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${
@@ -640,6 +646,82 @@ export function minionStatus(user: MUser) {
 		}
 		case 'PuroPuro': {
 			return `${name} is currently hunting in Puro-Puro. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'Nex': {
+			const data = currentTask as BossActivityTaskOptions;
+			return `${name} is currently killing ${data.quantity} Nex, with a party of ${data.users.length}. ${formattedDuration}`;
+		}
+		case 'KingGoldemar': {
+			const data = currentTask as NewBossOptions;
+			return `${name} is currently killing ${data.quantity} King Goldemar, with a party of ${data.users.length}. ${formattedDuration}`;
+		}
+		case 'KalphiteKing': {
+			return `${name} is currently killing the Kalphite King. ${formattedDuration}`;
+		}
+		case 'Dungeoneering': {
+			const data = currentTask as DungeoneeringOptions;
+			return `${name} is currently doing Dungeoneering with a team of ${
+				data.users.length
+			} minions, on the ${formatOrdinal(data.floor)} floor. ${formattedDuration}`;
+		}
+
+		case 'OuraniaDeliveryService': {
+			return `${name} is currently delivering in the Ourania Deliver Service. ${formattedDuration}`;
+		}
+		case 'VasaMagus': {
+			return `${name} is currently killing Vasa Magus. ${formattedDuration}`;
+		}
+		case 'Ignecarus': {
+			return `${name} is currently killing Ignecarus. ${formattedDuration}`;
+		}
+		case 'KibbleMaking': {
+			return `${name} is currently making Kibble. ${formattedDuration}`;
+		}
+		case 'MonkeyRumble': {
+			const data = currentTask as MonkeyRumbleOptions;
+			return `${data.monkeys.some(m => m.special) ? Emoji.Purple : ''} ${name} is currently doing ${
+				data.quantity
+			} fights in Monkey Rumble. ${formattedDuration}`;
+		}
+		case 'BossEvent': {
+			const data = currentTask as NewBossOptions;
+			const bossDoing = bossEvents.find(b => b.id === data.bossID)!;
+			return `${name} is currently doing a ${bossDoing.name} Boss Event! ${formattedDuration}`;
+		}
+		case 'FishingContest': {
+			const data = currentTask as FishingContestOptions;
+			return `${name} is currently fishing for the fishing contest at ${
+				fishingLocations.find(i => i.id === data.location)!.name
+			}. ${formattedDuration}`;
+		}
+		case 'BaxtorianBathhouses': {
+			return `${name} is currently heating baths at the Baxtorian Bathhouses. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'Naxxus': {
+			const data = currentTask as ActivityTaskOptionsWithQuantity;
+			return `${name} is currently fighting ${data.quantity} Naxxus. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'Disassembling': {
+			const data = currentTask as DisassembleTaskOptions;
+			return `${name} is currently disassembling ${data.qty}x ${itemNameFromID(
+				data.i
+			)}. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'Research': {
+			const data = currentTask as ResearchTaskOptions;
+			return `${name} is currently researching with '${
+				data.material
+			}' materials. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'Moktang': {
+			const data = currentTask as MoktangTaskOptions;
+			return `${name} is currently killing ${data.qty}x Moktang. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}
@@ -660,6 +742,24 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'FistOfGuthix': {
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
+			return `${name} is currently doing ${
+				data.quantity
+			}x games of Fist of Guthix. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'StealingCreation': {
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
+			return `${name} is currently doing ${
+				data.quantity
+			}x games of Stealing Creation. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'TinkeringWorkshop': {
+			const data = currentTask as TinkeringWorkshopOptions;
+			return `${name} is currently doing ${data.quantity}x projects with ${
+				data.material
+			} materials in the Tinkering Workshop. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'NightmareZone': {
 			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatDuration(
@@ -690,6 +790,22 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'BalthazarsBigBonanza': {
+			return `${name} is currently performing at Balthazars Big Bonanza, the trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'DepthsOfAtlantis': {
+			const data = currentTask as DOAOptions;
+			const durationRemainingNum = data.finishDate - data.duration + data.fakeDuration - Date.now();
+
+			return `${name} is currently attempting the Depths of Atlantis, if your team is successful and doesn't die, the trip should take ${formatDuration(
+				durationRemainingNum
+			)}.`;
+		}
+		case 'BirthdayCollectIngredients': {
+			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(durationRemaining)}.`;
+		}
 		case 'CombatRing': {
 			return `${name} is currently fighting in the Combat Ring! The trip should take ${formatDuration(
 				durationRemaining
@@ -701,6 +817,10 @@ export function minionStatus(user: MUser) {
 				quests.find(i => i.id === data.questID)?.name
 			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'Mortimer':
+			return `${name} is currently fighting Maledict Mortimer! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
 		case 'Colosseum': {
 			const data = currentTask as ColoTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
@@ -709,12 +829,28 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
-		case 'HalloweenEvent': {
+		case 'HalloweenEvent':
 			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
+		case 'GuthixianCache':
+			return `${name} is currently participating in a Guthixian cache. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		case 'MemoryHarvest': {
+			const data = currentTask as MemoryHarvestOptions;
+			const energy = divinationEnergies.find(e => e.item.id === data.e)!;
+			const method = memoryHarvestTypes.find(t => t.id === data.t)!;
+			return `${name} is currently harvesting ${energy.type} memories using ${
+				method.name
+			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'TuraelsTrials':
+			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		case 'HalloweenMiniMinigame':
 		case 'Easter':
-		case 'BlastFurnace': {
+		case 'BlastFurnace':
+		case 'TrickOrTreat':
 			throw new Error('Removed');
-		}
 	}
 }

@@ -1,9 +1,10 @@
-import { percentChance } from 'e';
+import { Time, percentChance } from 'e';
 import { Bank, type Item, type Monster } from 'oldschooljs';
 
 import type { GearSetupType, PrimaryGearSetupType } from './gear/types';
 import type { KillableMonster } from './minions/types';
-import type { ChargeBank } from './structures/Bank';
+import type { ChargeBank } from './structures/Banks';
+import type { GearBank } from './structures/GearBank';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
@@ -14,6 +15,7 @@ export interface DegradeableItem {
 	settingsKey:
 		| 'tentacle_charges'
 		| 'sang_charges'
+		| 'void_staff_charges'
 		| 'celestial_ring_charges'
 		| 'ash_sanctifier_charges'
 		| 'serp_helm_charges'
@@ -36,7 +38,7 @@ export interface DegradeableItem {
 	};
 	unchargedItem?: Item;
 	convertOnCharge?: boolean;
-	emoji: string;
+	emoji?: string;
 }
 
 interface DegradeableItemPVMBoost {
@@ -47,12 +49,14 @@ interface DegradeableItemPVMBoost {
 		killableMon,
 		osjsMonster,
 		totalHP,
-		duration
+		duration,
+		gearBank
 	}: {
 		killableMon?: KillableMonster;
 		osjsMonster?: Monster;
 		totalHP: number;
 		duration: number;
+		gearBank: GearBank;
 	}) => number;
 	boost: number;
 }
@@ -95,8 +99,22 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 1
 		},
 		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
+		convertOnCharge: true
+	},
+	{
+		item: getOSItem('Void staff'),
+		settingsKey: 'void_staff_charges',
+		itemsToRefundOnBreak: new Bank().add('Void staff (u)'),
+		setup: 'mage',
+		aliases: ['void staff'],
+		chargeInput: {
+			cost: new Bank().add('Elder rune', 5),
+			charges: 1
+		},
 		convertOnCharge: true,
-		emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>'
+		unchargedItem: getOSItem('Void staff (u)'),
+		emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>',
+		refundVariants: []
 	},
 	{
 		item: getOSItem('Celestial ring'),
@@ -285,6 +303,22 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		boost: 3
 	},
 	{
+		item: getOSItem('Void staff'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Void staff'))!,
+		attackStyle: 'mage',
+		boost: 8,
+		charges: ({ duration, gearBank }) => {
+			const mageGear = gearBank.gear.mage;
+			const minutesDuration = Math.ceil(duration / Time.Minute);
+			if (gearBank.hasEquipped('Magic master cape')) {
+				return Math.ceil(minutesDuration / 3);
+			} else if (mageGear.hasEquipped('Vasa cloak')) {
+				return Math.ceil(minutesDuration / 2);
+			}
+			return minutesDuration;
+		}
+	},
+	{
 		item: getOSItem('Amulet of blood fury'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Amulet of blood fury'))!,
 		attackStyle: 'melee',
@@ -399,8 +433,9 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		chargesToDegrade: chargesToDegrade,
-		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges`
+		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining${
+			pennyReduction > 0 ? `. Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
+		}`
 	};
 }
 
@@ -428,12 +463,10 @@ export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
 	for (const [key, chargesToDegrade] of chargeBank.entries()) {
 		const { item } = degradeableItems.find(i => i.settingsKey === key)!;
 		const result = await degradeItem({ item, chargesToDegrade, user });
-		results.push(result.userMessage);
+		results.push(result);
 	}
 
-	if (user.hasEquipped("Ghommal's lucky penny")) results.push("5% reduced charges for Ghommal's lucky penny");
-
-	return results.join(', ');
+	return results;
 }
 
 export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Promise<RefundResult[]> {
@@ -449,7 +482,7 @@ export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Pro
 		const newCharges = currentCharges + chargesToRefund;
 
 		// Prepare result message
-		const userMessage = `Refunded ${chargesToRefund} charges for ${degItem.item.name}.`;
+		const userMessage = `Refunded ${chargesToRefund} charges for ${degItem.item.name}`;
 
 		// Create result object
 		const result: RefundResult = {

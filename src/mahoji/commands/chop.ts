@@ -2,9 +2,8 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import type { TwitcherGloves } from '../../lib/constants';
-import { TWITCHERS_GLOVES } from '../../lib/constants';
+import { IVY_MAX_TRIP_LENGTH_BOOST, TWITCHERS_GLOVES, type TwitcherGloves } from '../../lib/constants';
+import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -12,9 +11,15 @@ import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
+import resolveItems from '../../lib/util/resolveItems';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const axes = [
+	{
+		id: itemID('Dwarven greataxe'),
+		multiplier: 8,
+		wcLvl: 99
+	},
 	{
 		id: itemID('Crystal axe'),
 		multiplier: 4,
@@ -151,6 +156,11 @@ export const chopCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
 		}
 
+		if (log.customReq) {
+			const res = await log.customReq(user);
+			if (typeof res === 'string') return res;
+		}
+
 		if (twitchers_gloves && !user.hasEquipped("Twitcher's gloves")) {
 			return "You need to have Twitcher's gloves equipped to use them.";
 		}
@@ -159,9 +169,15 @@ export const chopCommand: OSBMahojiCommand = {
 
 		let wcLvl = skills.woodcutting;
 		const farmingLvl = user.skillsAsLevels.farming;
+		const pekyBoost = user.usingPet('Peky');
 
-		// Redwood logs, logs, sulliuscep, farming patches, woodcutting guild don't spawn forestry events
-		if (!forestry_events || resolveItems(['Redwood logs', 'Logs']).includes(log.id) || log.lootTable) {
+		// Ivy, Redwood logs, Logs, Sulliuscep, Farming patches, Woodcutting guild don't spawn forestry events
+		if (
+			!forestry_events ||
+			resolveItems(['Redwood logs', 'Logs']).includes(log.id) ||
+			log.lootTable ||
+			log.name === 'Ivy'
+		) {
 			forestry_events = false;
 			// Invisible wc boost for woodcutting guild
 			if (skills.woodcutting >= 60 && log.wcGuild) {
@@ -178,19 +194,59 @@ export const chopCommand: OSBMahojiCommand = {
 				}
 			}
 		} else {
-			boosts.push('Participating in Forestry events');
+			boosts.push(
+				`Participating in Forestry events${
+					pekyBoost ? " (uniques are 5x as common thanks to Peky's help)" : ''
+				}`
+			);
 		}
 
 		// Default bronze axe, last in the array
 		let axeMultiplier = 1;
 		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
-		for (const axe of axes) {
-			if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
-			axeMultiplier = axe.multiplier;
-			boosts.pop();
-			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
-			break;
+		if (user.hasEquippedOrInBank(['Drygore axe'])) {
+			const [predeterminedTotalTime] = determineWoodcuttingTime({
+				quantity,
+				user,
+				log,
+				axeMultiplier: 10,
+				powerchopping: Boolean(powerchop),
+				forestry: forestry_events,
+				woodcuttingLvl: wcLvl
+			});
+			const boostRes = await inventionItemBoost({
+				user,
+				inventionID: InventionID.DrygoreAxe,
+				duration: predeterminedTotalTime
+			});
+			if (boostRes.success) {
+				axeMultiplier = 10;
+				boosts.pop();
+				boosts.push(`**10x** success multiplier for Drygore axe (${boostRes.messages})`);
+			} else {
+				axeMultiplier = 8;
+				boosts.pop();
+				boosts.push('**8x** success multiplier for Dwarven greataxe');
+			}
+		} else {
+			for (const axe of axes) {
+				if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
+				axeMultiplier = axe.multiplier;
+				boosts.pop();
+				boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
+				break;
+			}
+		}
+
+		// Ivy choping
+		if (!forestry_events && log.name === 'Ivy') {
+			boosts.push(`+${formatDuration(IVY_MAX_TRIP_LENGTH_BOOST, true)} max trip length for Ivy`);
+			powerchop = false;
+			if (user.owns('Herbicide')) {
+				axeMultiplier = Math.ceil(axeMultiplier * 2.7);
+				boosts.push('3x faster Ivy chopping for using Herbicide');
+			}
 		}
 
 		if (!powerchop) {

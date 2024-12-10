@@ -1,14 +1,14 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, SimpleMonster } from 'oldschooljs';
 
 import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
+import { CorporealBeastTable } from '../../../../simulation/Corp';
 import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
 import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
-import { QuestID } from '../../quests';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -21,7 +21,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]),
-		notifyDrops: resolveItems(['Baby mole']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -53,8 +52,10 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 8,
-		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
-		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
+		itemsRequired: deepResolveItems([
+			['Pernix body', 'Armadyl chestplate'],
+			['Pernix chaps', 'Armadyl chainskirt']
+		]),
 		qpRequired: 205,
 		itemInBankBoosts: [
 			{
@@ -89,9 +90,11 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 8,
-		notifyDrops: resolveItems(['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling']),
 		qpRequired: 75,
 		itemInBankBoosts: [
+			{
+				[itemID('Vasa cloak')]: 5
+			},
 			{
 				[itemID('Ranger boots')]: 2,
 				[itemID('Pegasian boots')]: 4
@@ -123,8 +126,7 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Ancestral robe bottom')]: 2
 			},
 			{
-				[itemID('Imbued heart')]: 3,
-				[itemID('Saturated heart')]: 4
+				[itemID('Imbued heart')]: 3
 			}
 		],
 		levelRequirements: {
@@ -156,7 +158,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.KalphiteQueen.id,
 		name: Monsters.KalphiteQueen.name,
 		aliases: Monsters.KalphiteQueen.aliases,
-		timeToFinish: Time.Minute * 3.1,
+		timeToFinish: Time.Minute * 4,
 		table: Monsters.KalphiteQueen,
 		emoji: '<:Kalphite_princess_2nd_form:324127376915300352>',
 		wildy: false,
@@ -165,10 +167,9 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			"Verac's flail",
 			"Verac's plateskirt",
-			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
-			["Black d'hide chaps", "karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Black d'hide chaps", "karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -176,7 +177,7 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Elder maul')]: 12
 			},
 			{
-				[itemID('Keris partisan of breaching')]: 15
+				[itemID('Keris partisan of breaching')]: 5
 			}
 		],
 		levelRequirements: {
@@ -186,7 +187,8 @@ const killableBosses: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 10,
 				'Fancy rejuvenation pool': 10,
-				'Ornate rejuvenation pool': 10
+				'Ornate rejuvenation pool': 10,
+				'Ancient rejuvenation pool': 20
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
@@ -206,7 +208,12 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.CorporealBeast.id,
 		name: Monsters.CorporealBeast.name,
 		aliases: Monsters.CorporealBeast.aliases,
-		table: Monsters.CorporealBeast,
+		table: new SimpleMonster({
+			id: 319,
+			name: 'Corporeal Beast',
+			table: CorporealBeastTable,
+			aliases: ['corporeal beast', 'corp']
+		}),
 		timeToFinish: Time.Minute * 30,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,
@@ -218,6 +225,7 @@ const killableBosses: KillableMonster[] = [
 			'Arcane sigil',
 			'Elysian sigil',
 			'Pet dark core',
+			'Divine sigil',
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
@@ -294,7 +302,8 @@ const killableBosses: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 50,
 				'Fancy rejuvenation pool': 50,
-				'Ornate rejuvenation pool': 50
+				'Ornate rejuvenation pool': 50,
+				'Ancient rejuvenation pool': 57
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -325,7 +334,6 @@ const killableBosses: KillableMonster[] = [
 				"Inquisitor's mace"
 			]
 		]),
-		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Spectral spirit shield')]: 10 },
@@ -374,15 +382,27 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.KingBlackDragon,
 		timeToFinish: Time.Minute * 3.1,
 		emoji: '<:Prince_black_dragon:324127378538364928>',
-		wildy: false,
+		wildy: true,
+
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			'Anti-dragon shield',
-			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
-			["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)", "Karil's leathertop"],
-			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)", "Karil's leatherskirt"]
+			['Dragonfire shield', 'Anti-dragon shield'],
+			['Zaryte bow', 'Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
+			[
+				'Pernix body',
+				"Black d'hide body",
+				"Black d'hide body (g)",
+				"Black d'hide body (t)",
+				"Karil's leathertop"
+			],
+			[
+				'Pernix chaps',
+				"Black d'hide chaps",
+				"Black d'hide chaps (g)",
+				"Black d'hide chaps (t)",
+				"Karil's leatherskirt"
+			]
 		]),
-		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -401,7 +421,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.PhantomMuspah.name,
 		aliases: Monsters.PhantomMuspah.aliases,
 		table: Monsters.PhantomMuspah,
-		timeToFinish: Time.Minute * 7,
+		timeToFinish: Time.Minute * 8,
 		qpRequired: 215,
 		respawnTime: 10_000,
 		levelRequirements: {
@@ -432,6 +452,10 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'mage',
 				items: [
 					{
+						itemID: itemID('Void Staff'),
+						boostPercent: 20
+					},
+					{
 						itemID: itemID("Tumeken's shadow"),
 						boostPercent: 15
 					},
@@ -449,8 +473,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Saturated heart')]: 4,
-				[itemID('Imbued heart')]: 2,
-				[itemID('Frozen tablet')]: 10
+				[itemID('Imbued heart')]: 2
 			}
 		],
 		projectileUsage: {
@@ -459,11 +482,15 @@ const killableBosses: KillableMonster[] = [
 		},
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 10, itemID: itemID('Twisted bow') }],
+				items: [
+					{ boostPercent: 15, itemID: itemID('Hellfire bow') },
+					{ boostPercent: 10, itemID: itemID('Twisted bow') }
+				],
 				gearSetup: 'range'
 			},
 			{
 				items: [
+					{ boostPercent: 15, itemID: itemID('Hellfire arrow') },
 					{ boostPercent: 10, itemID: itemID('Dragon arrow') },
 					{ boostPercent: 6, itemID: itemID('Amethyst arrow') }
 				],
@@ -471,6 +498,8 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: [
+					{ boostPercent: 10, itemID: itemID('Gorajan archer top') },
+					{ boostPercent: 8, itemID: itemID('Pernix body') },
 					{ boostPercent: 6, itemID: itemID('Masori body (f)') },
 					{ boostPercent: 3, itemID: itemID('Masori body') }
 				],
@@ -478,40 +507,62 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: [
+					{ boostPercent: 10, itemID: itemID('Gorajan archer legs') },
+					{ boostPercent: 8, itemID: itemID('Pernix chaps') },
 					{ boostPercent: 6, itemID: itemID('Masori chaps (f)') },
 					{ boostPercent: 3, itemID: itemID('Masori chaps') }
 				],
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 6, itemID: itemID('Ancestral robe top') }],
-				gearSetup: 'mage'
-			},
-			{
-				items: [{ boostPercent: 6, itemID: itemID('Ancestral robe bottom') }],
+				items: [
+					{ boostPercent: 10, itemID: itemID('Gorajan occult top') },
+					{ boostPercent: 8, itemID: itemID('Virtus robe top') },
+					{ boostPercent: 6, itemID: itemID('Ancestral robe top') }
+				],
 				gearSetup: 'mage'
 			},
 			{
 				items: [
-					{ boostPercent: 5, itemID: itemID("Blessed dizana's quiver") },
+					{ boostPercent: 10, itemID: itemID('Gorajan occult legs') },
+					{ boostPercent: 8, itemID: itemID('Virtus robe legs') },
+					{ boostPercent: 6, itemID: itemID('Ancestral robe bottom') }
+				],
+				gearSetup: 'mage'
+			},
+			{
+				items: [
+					{ boostPercent: 6, itemID: itemID('Tidal collector') },
 					{ boostPercent: 3, itemID: itemID("Ava's assembler") }
 				],
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan archer gloves') },
+					{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }
+				],
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 5, itemID: itemID('Tormented bracelet') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan occult gloves') },
+					{ boostPercent: 3, itemID: itemID('Tormented bracelet') }
+				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan archer boots') },
+					{ boostPercent: 3, itemID: itemID('Pegasian boots') }
+				],
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Gorajan occult boots') },
+					{ boostPercent: 3, itemID: itemID('Eternal boots') }
+				],
 				gearSetup: 'mage'
 			}
 		],
@@ -763,286 +814,6 @@ const killableBosses: KillableMonster[] = [
 				qtyPerKill: 0.05,
 				boostPercent: 10,
 				optional: true
-			}
-		]
-	},
-	{
-		id: Monsters.TheHueycoatl.id,
-		name: Monsters.TheHueycoatl.name,
-		aliases: Monsters.TheHueycoatl.aliases,
-		timeToFinish: Time.Minute * 8,
-		respawnTime: 2000,
-		table: Monsters.TheHueycoatl,
-		difficultyRating: 8,
-		requiredQuests: [QuestID.ChildrenOfTheSun],
-		qpRequired: 100,
-		deathProps: {
-			hardness: 0.2,
-			steepness: 0.99
-		},
-		equippedItemBoosts: [
-			{
-				items: [
-					{ boostPercent: 10, itemID: itemID('Dragon hunter lance') },
-					{ boostPercent: 9, itemID: itemID("Inquisitor's mace") },
-					{ boostPercent: 9, itemID: itemID('Soulreaper axe') },
-					{ boostPercent: 9, itemID: itemID('Abyssal bludgeon') }
-				],
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: [{ boostPercent: 5, itemID: itemID('Avernic defender') }],
-				gearSetup: 'melee'
-			},
-			{
-				items: [
-					{ boostPercent: 4, itemID: itemID('Amulet of rancour') },
-					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
-				],
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: [
-					{ boostPercent: 4, itemID: itemID('Infernal cape') },
-					{ boostPercent: 2, itemID: itemID('Fire cape') }
-				],
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: [
-					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
-					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
-				],
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(id => ({
-					boostPercent: 2,
-					itemID: id
-				})),
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(id => ({
-					boostPercent: 2,
-					itemID: id
-				})),
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
-				gearSetup: 'melee',
-				required: false
-			}
-		],
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon claws')]: 4
-			}
-		],
-		degradeableItemUsage: [
-			{
-				required: false,
-				gearSetup: 'melee',
-				items: [
-					{
-						itemID: itemID('Scythe of vitur'),
-						boostPercent: 10
-					}
-				]
-			}
-		],
-		levelRequirements: {
-			prayer: 43,
-			attack: 70,
-			strength: 70,
-			defence: 70,
-			hitpoints: 70
-		},
-
-		attackStylesUsed: [GearStat.AttackSlash],
-		attackStyleToUse: GearStat.AttackSlash,
-		defaultAttackStyles: [SkillsEnum.Attack],
-		healAmountNeeded: 20 * 10,
-		minimumGearRequirements: {
-			melee: {
-				...new Gear({
-					head: 'Slayer helmet (i)',
-					neck: 'Amulet of fury',
-					cape: 'Fire cape',
-					body: 'Bandos chestplate',
-					legs: 'Bandos tassets',
-					hands: 'Ferocious gloves',
-					feet: 'Dragon boots',
-					ring: 'Berserker ring (i)',
-					ammo: "Rada's blessing 3"
-				}).stats,
-				defence_magic: 0,
-				prayer: 0,
-				defence_crush: 0,
-				defence_ranged: 0,
-				defence_slash: 0,
-				defence_stab: 0
-			}
-		},
-		itemCost: [
-			{
-				itemCost: new Bank().add('Super restore(4)'),
-				qtyPerKill: 0.2,
-				alternativeConsumables: [
-					{
-						itemCost: new Bank().add('Prayer potion(4)'),
-						qtyPerKill: 0.2
-					}
-				]
-			},
-			{
-				itemCost: new Bank().add('Cooked karambwan'),
-				qtyPerKill: 0.24
-			}
-		]
-	},
-	{
-		id: Monsters.Amoxliatl.id,
-		name: Monsters.Amoxliatl.name,
-		aliases: Monsters.Amoxliatl.aliases,
-		timeToFinish: Time.Minute * 3,
-		respawnTime: 500,
-		table: Monsters.Amoxliatl,
-		requiredQuests: [QuestID.TheHeartofDarkness],
-		qpRequired: 100,
-		deathProps: {
-			hardness: 0.2,
-			steepness: 0.99
-		},
-		equippedItemBoosts: [
-			{
-				items: [{ boostPercent: 7, itemID: itemID('Avernic defender') }],
-				gearSetup: 'melee'
-			},
-			{
-				items: [
-					{ boostPercent: 7, itemID: itemID('Amulet of rancour') },
-					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
-				],
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: [
-					{ boostPercent: 7, itemID: itemID('Infernal cape') },
-					{ boostPercent: 2, itemID: itemID('Fire cape') }
-				],
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: [
-					{ boostPercent: 7, itemID: itemID('Ferocious gloves') },
-					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
-				],
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(
-					(id, index) => ({
-						boostPercent: index === 0 ? 10 : 5,
-						itemID: id
-					})
-				),
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(
-					(id, index) => ({
-						boostPercent: index === 0 ? 10 : 5,
-						itemID: id
-					})
-				),
-				gearSetup: 'melee',
-				required: false
-			},
-			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 5, itemID: id })),
-				gearSetup: 'melee',
-				required: false
-			}
-		],
-		itemInBankBoosts: [
-			{
-				[itemID('Pendant of ates (inert)')]: 5
-			},
-			{
-				[itemID('Dragon claws')]: 5
-			}
-		],
-		degradeableItemUsage: [
-			{
-				required: false,
-				gearSetup: 'melee',
-				items: [
-					{
-						itemID: itemID('Scythe of vitur'),
-						boostPercent: 25
-					}
-				]
-			}
-		],
-		levelRequirements: {
-			prayer: 43,
-			attack: 65,
-			strength: 65,
-			defence: 65,
-			hitpoints: 65
-		},
-		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackMagic],
-		defaultAttackStyles: [SkillsEnum.Attack],
-		healAmountNeeded: 40 * 10,
-		minimumGearRequirements: {
-			melee: {
-				...new Gear({
-					neck: 'Amulet of fury',
-					cape: 'Fire cape',
-					body: 'Bandos chestplate',
-					legs: 'Bandos tassets',
-					hands: 'Ferocious gloves',
-					feet: 'Dragon boots',
-					ring: 'Berserker ring (i)',
-					ammo: "Rada's blessing 3"
-				}).stats,
-				defence_magic: 0,
-				prayer: 0,
-				defence_crush: 0,
-				defence_ranged: 0,
-				defence_slash: 0,
-				defence_stab: 0
-			}
-		},
-		itemCost: [
-			{
-				itemCost: new Bank().add('Super restore(4)'),
-				qtyPerKill: 0.2,
-				alternativeConsumables: [
-					{
-						itemCost: new Bank().add('Prayer potion(4)'),
-						qtyPerKill: 0.2
-					}
-				]
-			},
-			{
-				itemCost: new Bank().add('Super combat potion(4)'),
-				qtyPerMinute: 0.03,
-				optional: true,
-				boostPercent: 7
 			}
 		]
 	}

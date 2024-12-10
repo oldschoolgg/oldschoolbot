@@ -197,11 +197,41 @@ const Bows: Fletchable[] = [
 		tickRate: 2
 	},
 	{
+		name: 'Elder bow(u)',
+		id: itemID('Elder bow(u)'),
+		level: 105,
+		xp: 391.5,
+		inputItems: new Bank({ 'Elder logs': 1 }),
+		tickRate: 3
+	},
+	{
+		name: 'Elder bow',
+		id: itemID('Elder bow'),
+		level: 105,
+		xp: 391.5,
+		inputItems: new Bank({ 'Elder bow(u)': 1, 'Bow string': 1 }),
+		tickRate: 2
+	},
+	{
 		name: 'Toxic blowpipe (empty)',
 		id: itemID('Toxic blowpipe (empty)'),
 		level: 53,
 		xp: 120,
 		inputItems: new Bank({ 'Tanzanite fang': 1 }),
+		tickRate: 2
+	},
+	{
+		name: 'Hellfire bow',
+		id: itemID('Hellfire bow'),
+		level: 110,
+		xp: 250_000,
+		inputItems: new Bank({
+			'Zaryte bow': 1,
+			'Twisted bow': 1,
+			'Ignecarus dragonclaw': 1,
+			'Smouldering stone': 3,
+			"Dragon's fury": 1
+		}),
 		tickRate: 2
 	}
 ];

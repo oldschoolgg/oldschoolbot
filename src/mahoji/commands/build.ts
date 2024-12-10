@@ -1,10 +1,9 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, round } from 'e';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { Time, reduceNumByPercent, round } from 'e';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
@@ -97,7 +96,7 @@ export const buildCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const timeToBuildSingleObject = object.ticks * Time.Second * 0.6;
+		let timeToBuildSingleObject = object.ticks * Time.Second * 0.6;
 
 		const [plank, planksQtyCost] = object.input;
 
@@ -105,15 +104,44 @@ export const buildCommand: OSBMahojiCommand = {
 		const planksHas = userBank.amount(plank);
 
 		const maxTripLength = calcMaxTripLength(user, 'Construction');
+		const maxForMaterials = planksHas / planksQtyCost;
+
+		const boosts: string[] = [];
+
+		const boostedActionTime = reduceNumByPercent(
+			timeToBuildSingleObject,
+			inventionBoosts.drygoreSaw.buildBoostPercent
+		);
+		if (user.hasEquippedOrInBank(['Drygore saw'])) {
+			const boostRes = await inventionItemBoost({
+				user,
+				inventionID: InventionID.DrygoreSaw,
+				duration: Math.min(
+					maxTripLength,
+					Math.min(maxForMaterials, options.quantity ?? Math.floor(maxTripLength / boostedActionTime)) *
+						boostedActionTime
+				)
+			});
+			if (boostRes.success) {
+				timeToBuildSingleObject = boostedActionTime;
+				boosts.push(
+					`${inventionBoosts.drygoreSaw.buildBoostPercent}% faster building from Drygore saw (${boostRes.messages})`
+				);
+			}
+		}
+		const maxForTime = Math.floor(maxTripLength / timeToBuildSingleObject);
+
+		const defaultQuantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
 
 		let { quantity } = options;
-		if (!quantity) {
-			const maxForMaterials = planksHas / planksQtyCost;
-			const maxForTime = Math.floor(maxTripLength / timeToBuildSingleObject);
-			quantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
-		}
+		if (!quantity) quantity = defaultQuantity;
 
 		const cost = new Bank().add(plank, planksQtyCost * quantity);
+		const hasScroll = user.owns('Scroll of proficiency');
+		if (hasScroll) {
+			cost.set(plank, Math.floor(reduceNumByPercent(cost.amount(plank), 15)));
+			boosts.push('15% less planks used from Scroll of proficiency');
+		}
 
 		const objectsPerInv = 26 / planksQtyCost;
 		const invsPerTrip = round(quantity / objectsPerInv, 2);
@@ -147,11 +175,14 @@ export const buildCommand: OSBMahojiCommand = {
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish. Removed ${cost} from your bank. **${xpHr}**
+		let str = `${user.minionName} is now constructing ${quantity}x ${
+			object.name
+		}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost} from your bank. **${xpHr}**
 
-You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
-`;
+You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.`;
+		if (boosts.length > 0) {
+			str += `**Boosts:** ${boosts.join(', ')}`;
+		}
+		return str;
 	}
 };

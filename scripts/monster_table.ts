@@ -1,25 +1,27 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
-import { Bank, Items, convertBankToPerHourStats } from 'oldschooljs';
+import { Bank, Items, SkillsEnum, convertBankToPerHourStats, itemID, resolveItems, toKMB } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
 
 import { omit } from 'remeda';
 import { type BitField, PVM_METHODS } from '../src/lib/constants';
 import { degradeableItems } from '../src/lib/degradeableItems';
+import { maxMage, maxMelee, maxRange } from '../src/lib/depthsOfAtlantis';
+import { materialTypes } from '../src/lib/invention';
+import { MaterialBank } from '../src/lib/invention/MaterialBank';
 import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import type { AttackStyles } from '../src/lib/minions/functions';
-import { SkillsArray, SkillsEnum } from '../src/lib/skilling/types';
+import { SkillsArray } from '../src/lib/skilling/types';
 import { slayerMasters } from '../src/lib/slayer/slayerMasters';
-import type { SlayerTaskUnlocksEnum } from '../src/lib/slayer/slayerUnlocks';
+import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '../src/lib/slayer/slayerUnlocks';
 import { ChargeBank } from '../src/lib/structures/Bank';
 import { Gear } from '../src/lib/structures/Gear';
 import { GearBank } from '../src/lib/structures/GearBank';
 import { KCBank } from '../src/lib/structures/KCBank';
 import { MUserStats } from '../src/lib/structures/MUserStats';
-import { resolveItems, toKMB } from '../src/lib/util';
 import {
 	type MinionKillReturn,
 	newMinionKillCommand
@@ -33,14 +35,14 @@ const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints',
 function round(int: number) {
 	return Math.round(int / 1000) * 1000;
 }
-const slayerUnlocks: SlayerTaskUnlocksEnum[] = [];
+const slayerUnlocks: SlayerTaskUnlocksEnum[] = SlayerRewardsShop.map(i => i.id);
 const bank = new Bank();
 for (const item of Items.values()) bank.add(item.id, 1000000);
 bank.add('Black chinchompa', 100000000);
 const chargeBank = new ChargeBank();
 for (const deg of degradeableItems) chargeBank.add(deg.settingsKey, 1000000);
 const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: MinionKillReturn }[] = [];
-const userStats = new MUserStats({} as any);
+const userStats = new MUserStats({ sacrificed_bank: {} } as any);
 
 const attackStyleSets: AttackStyles[][] = [
 	[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence],
@@ -54,23 +56,46 @@ const skillsAsLevels: any = {};
 for (const skill of SkillsArray) {
 	skillsAsLevels[skill] = 99;
 }
+const materials = new MaterialBank();
+for (const t of materialTypes) materials.add(t, 100000000);
+const wildyGear = new Gear(maxRange.raw());
+wildyGear.equip('Hellfire bow');
+wildyGear.equip('Hellfire arrow', 10000);
 
+const rangeGear = new Gear({
+	head: 'Gorajan archer helmet',
+	neck: 'Farsight snapshot necklace',
+	body: 'Gorajan archer top',
+	cape: 'Tidal collector (i)',
+	hands: 'Gorajan archer gloves',
+	legs: 'Gorajan archer legs',
+	feet: 'Gorajan archer boots',
+	'2h': 'Twisted bow',
+	ring: 'Ring of piercing (i)',
+	ammo: 'Dragon arrow'
+});
+rangeGear.equip('Dragon arrow', 1000000);
+const gear = {
+	mage: maxMage,
+	melee: maxMelee,
+	range: rangeGear,
+	misc: new Gear(),
+	skilling: new Gear(),
+	wildy: wildyGear,
+	fashion: new Gear(),
+	other: new Gear()
+};
+
+const failures = new Set();
 for (const monster of killableMonsters) {
 	const monsterKC = 10000;
 	const gearBank = new GearBank({
 		chargeBank,
-		gear: {
-			mage: new Gear(),
-			melee: new Gear(),
-			range: new Gear(),
-			misc: new Gear(),
-			skilling: new Gear(),
-			wildy: new Gear(),
-			fashion: new Gear(),
-			other: new Gear()
-		},
+		gear,
 		bank,
-		skillsAsLevels
+		skillsAsLevels,
+		materials,
+		pet: itemID('Ori')
 	});
 
 	const pkEvasionExperience = 100000000;
@@ -101,8 +126,10 @@ for (const monster of killableMonsters) {
 				};
 
 	for (const isTryingToUseWildy of [true, false]) {
+		if ((isTryingToUseWildy && !monster.wildy) || (monster.canBePked && !isTryingToUseWildy)) continue;
 		for (const inputPVMMethod of PVM_METHODS) {
 			for (const attackStyles of attackStyleSets) {
+				if (['barrage', 'burst'].includes(inputPVMMethod) && !monster.canBarrage) continue;
 				const bitfield: BitField[] = [];
 				const kcBank = new KCBank();
 				const commandResult = newMinionKillCommand({
@@ -123,9 +150,16 @@ for (const monster of killableMonsters) {
 					slayerUnlocks: [],
 					favoriteFood: resolveItems(['Shark']),
 					bitfield: [],
-					currentPeak: { peakTier: 'medium' } as any
+					currentPeak: { peakTier: 'medium' } as any,
+					disabledInventions: []
 				});
-				if (typeof commandResult === 'string') continue;
+				if (typeof commandResult === 'string') {
+					if (!failures.has(commandResult)) {
+						console.log(commandResult);
+					}
+					failures.add(commandResult);
+					continue;
+				}
 				if (commandResult.quantity === null || !commandResult.quantity) {
 					throw new Error(`Invalid quantity: ${commandResult.quantity} for ${monster.name}`);
 				}
@@ -162,7 +196,9 @@ for (const monster of killableMonsters) {
 					attackStyles,
 					duration: commandResult.duration,
 					bitfield,
-					chinning
+					chinning,
+					disabledInventions: [],
+					cl: new Bank()
 				});
 
 				results.push({ tripResult, commandResult });

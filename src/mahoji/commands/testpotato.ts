@@ -6,14 +6,13 @@ import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, noOp } from 'e';
 import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
-import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
+import { itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { MAX_INT_JAVA, globalConfig } from '../../lib/constants';
-import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
+import { MAX_INT_JAVA, MAX_XP, globalConfig } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -22,7 +21,6 @@ import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -49,7 +47,7 @@ import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 export async function giveMaxStats(user: MUser) {
 	const updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
-		updates[`skills_${skill}`] = convertLVLtoXP(99);
+		updates[`skills_${skill}`] = MAX_XP - 50_000_000;
 	}
 	await user.update({
 		QP: MAX_QP,
@@ -93,12 +91,6 @@ for (const gear of resolveItems([
 }
 
 const gearPresets = [
-	{
-		name: 'Cox',
-		melee: COXMaxMeleeGear,
-		mage: COXMaxMageGear,
-		range: COXMaxRangeGear
-	},
 	{
 		name: 'ToB',
 		melee: TOBMaxMeleeGear,
@@ -182,9 +174,6 @@ farmingPreset.add('Ultracompost', 10_000);
 const usables = new Bank();
 for (const usable of allUsableItems) usables.add(usable, 100);
 
-const leaguesPreset = new Bank();
-for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
-
 const allStashUnitItems = new Bank();
 for (const unit of allStashUnitsFlat) {
 	for (const i of [unit.items].flat(2)) {
@@ -235,7 +224,6 @@ const spawnPresets = [
 	['equippables', equippablesBank],
 	['farming', farmingPreset],
 	['usables', usables],
-	['leagues', leaguesPreset],
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],

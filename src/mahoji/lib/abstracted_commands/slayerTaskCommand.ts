@@ -1,7 +1,6 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { Time, notEmpty, randInt, removeFromArr } from 'e';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
+import { Time, notEmpty, removeFromArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
@@ -9,7 +8,6 @@ import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { InteractionID } from '../../../lib/InteractionID';
 import { runCommand } from '../../../lib/settings/settings';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
-import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
 import {
 	assignNewSlayerTask,
 	calcMaxBlockedTasks,
@@ -307,7 +305,7 @@ export async function slayerNewTaskCommand({
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
 			` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}${getAlternateMonsterList(
 				newSlayerTask.assignedTask
-			)}.`;
+			)}.${newSlayerTask.messages.length > 0 ? `\n\n${newSlayerTask.messages.join('\n')}` : ''}`;
 
 		if (showButtons) {
 			await returnSuccess(channelID, user, `${extraContent ?? ''}\n\n${returnMessage}`);
@@ -352,23 +350,6 @@ export async function slayerNewTaskCommand({
 	}
 
 	const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
-	const myUnlocks = user.user.slayer_unlocks ?? [];
-	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(newSlayerTask.currentTask.monster_id));
-	if (extendReward && myUnlocks.includes(extendReward.id)) {
-		const quantity = newSlayerTask.assignedTask.extendedAmount
-			? randInt(newSlayerTask.assignedTask.extendedAmount[0], newSlayerTask.assignedTask.extendedAmount[1])
-			: Math.ceil(newSlayerTask.currentTask.quantity * extendReward.extendMult!);
-		newSlayerTask.currentTask.quantity = quantity;
-		await prisma.slayerTask.update({
-			where: {
-				id: newSlayerTask.currentTask.id
-			},
-			data: {
-				quantity: newSlayerTask.currentTask.quantity,
-				quantity_remaining: newSlayerTask.currentTask.quantity
-			}
-		});
-	}
 
 	let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 	if (commonName === 'TzHaar') {
@@ -380,7 +361,9 @@ export async function slayerNewTaskCommand({
 
 	resultMessage += `${slayerMaster.name} has assigned you to kill ${
 		newSlayerTask.currentTask.quantity
-	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
+	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.${
+		newSlayerTask.messages.length > 0 ? `\n\n${newSlayerTask.messages.join('\n')}` : ''
+	}`;
 	if (showButtons) {
 		returnSuccess(channelID, user, resultMessage);
 		await interactionReply(interaction, { content: 'Slayer task assigned.', ephemeral: true });

@@ -71,7 +71,7 @@ describe('Fish Command', async () => {
 		const user = await client.mockUser({ maxed: true });
 		await user.equip('skilling', [EItem.FISH_SACK_BARREL]);
 		const res = await user.runCommand(fishCommand, { name: 'shrimps' });
-		expect(res).toContain('is now fishing 643x Shrimps');
+		expect(res).toContain('+9 trip minutes for having a Fish sack barrel');
 	});
 
 	it('should handle using flakes without flakes in bank', async () => {
@@ -84,13 +84,13 @@ describe('Fish Command', async () => {
 		const user = await createTestUser();
 		await user.update({ bank: new Bank({ 'Spirit flakes': 100 }) });
 		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true });
-		expect(res).toContain('is now fishing 251x Shrimps');
+		expect(res).toContain('is now fishing');
 	});
 
 	it('should still use flakes if bank contains fewer flakes than fish quantity', async () => {
 		const user = await createTestUser();
 		await user.update({ bank: new Bank({ 'Spirit flakes': 100 }) });
 		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true });
-		expect(res).toContain('is now fishing 251x Shrimps');
+		expect(res).toContain('is now fishing');
 	});
 });

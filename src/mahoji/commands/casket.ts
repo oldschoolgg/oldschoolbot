@@ -1,9 +1,11 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';
+import { marketPriceOfBank } from '../../lib/marketPrices';
+import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
@@ -59,6 +61,7 @@ export const casketCommand: OSBMahojiCommand = {
 
 		const [_loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
 		const loot = new Bank(_loot);
+
 		if (loot.length === 0) return `${title} and got nothing :(`;
 
 		const image = await makeBankImage({
@@ -68,6 +71,11 @@ export const casketCommand: OSBMahojiCommand = {
 		});
 
 		return {
+			content: `You opened ${options.quantity} ${clueTier.name} caskets.
+**Bot Value:** ${toKMB(loot.value())} (Average of ${toKMB(loot.value() / options.quantity)} per casket)
+**Market Value:** ${toKMB(marketPriceOfBank(loot))} (Average of ${toKMB(marketPriceOfBank(loot) / options.quantity)} per casket)
+**Droprates:** ${calcDropRatesFromBankWithoutUniques(loot, options.quantity).slice(0, 20).join(', ')}`,
+
 			files: [image.file]
 		};
 	}

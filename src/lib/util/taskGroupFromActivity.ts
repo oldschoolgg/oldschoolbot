@@ -8,6 +8,10 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 			return ActivityGroup.Clue;
 		case 'GroupMonsterKilling':
 		case 'MonsterKilling':
+		case 'KalphiteKing':
+		case 'Nex':
+		case 'KingGoldemar':
+		case 'VasaMagus':
 			return ActivityGroup.Monster;
 		case 'Fishing':
 		case 'Agility':

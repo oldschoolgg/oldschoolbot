@@ -1,16 +1,21 @@
-import { Time, deepClone, percentChance } from 'e';
+import { Time, calcWhatPercent, deepClone, percentChance, reduceNumByPercent } from 'e';
 import type { MonsterKillOptions } from 'oldschooljs';
-import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { Bank, EMonster, Monsters } from 'oldschooljs';
 
+import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '../../lib/bso/pvmEffects';
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { type BitField, Emoji } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
+import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { KOSCHEI_ID } from '../../lib/minions/data/killableMonsters/custom/bosses/Koschei';
 import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { DiaryID, type KillableMonster } from '../../lib/minions/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import type { SlayerMaster } from '../../lib/slayer/types';
 import type { GearBank } from '../../lib/structures/GearBank';
 import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank';
 import { MUserStats } from '../../lib/structures/MUserStats';
@@ -22,17 +27,22 @@ import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { sendToChannelID } from '../../lib/util/webhook';
 
 function handleSlayerTaskCompletion({
 	slayerContext,
 	updateBank,
 	userStats,
-	hasKourendElite
+	hasKourendElite,
+	monster,
+	slayerMaster
 }: {
 	hasKourendElite: boolean;
 	userStats: MUserStats;
 	slayerContext: ReturnType<typeof getSlayerContext>;
 	updateBank: UpdateBank;
+	monster: KillableMonster;
+	slayerMaster: SlayerMaster;
 }) {
 	if (!slayerContext.isOnTask) {
 		throw new Error('handleSlayerTaskCompletion called when not on task.');
@@ -56,9 +66,26 @@ function handleSlayerTaskCompletion({
 		message += ' You received 5000 bonus Slayer XP for doing a boss task.';
 	}
 
+	let mysteryBoxChance = 25;
+	if (slayerMaster.id >= 4) {
+		mysteryBoxChance -= 20;
+	}
+	mysteryBoxChance = reduceNumByPercent(
+		mysteryBoxChance,
+		calcWhatPercent(monster.timeToFinish, Time.Minute * 15) / 3
+	);
+	mysteryBoxChance = Math.floor(mysteryBoxChance);
+	mysteryBoxChance = Math.max(1, mysteryBoxChance);
+	if (roll(mysteryBoxChance)) {
+		const boxLoot = MysteryBoxes.roll();
+		updateBank.itemLootBank.add(boxLoot);
+		message += ` You received ${boxLoot} for completing your task.`;
+	}
+
 	return message;
 }
 
+export type SlayerContext = ReturnType<typeof getSlayerContext>;
 function getSlayerContext({
 	slayerInfo,
 	monsterID,
@@ -136,8 +163,9 @@ interface newOptions {
 	tertiaryItemPercentageChanges: ReturnType<MUser['buildTertiaryItemChanges']>;
 	userStats: MUserStats;
 	attackStyles: AttackStyles[];
-	bitfield: readonly BitField[];
+	bitfield: readonly BitField[] | BitField[];
 	cl: Bank;
+	disabledInventions: number[];
 }
 
 export function doMonsterTrip(data: newOptions) {
@@ -162,7 +190,9 @@ export function doMonsterTrip(data: newOptions) {
 		userStats,
 		attackStyles,
 		duration,
-		bitfield
+		bitfield,
+		cl,
+		disabledInventions
 	} = data;
 	const currentKC = kcBank.amount(monster.id);
 	const updateBank = new UpdateBank();
@@ -229,11 +259,17 @@ export function doMonsterTrip(data: newOptions) {
 			});
 
 			let reEquipedItems = false;
-			if (!gearBank.bank.has(calc.lostItems)) {
+			const itemsToReplace = new Bank().add(calc.lostItems).add(calc.gearThatBroke);
+			if (!gearBank.bank.has(itemsToReplace)) {
 				updateBank.gearChanges.wildy = calc.newGear;
 			} else {
-				updateBank.itemCostBank.add(calc.lostItems);
+				updateBank.itemCostBank.add(itemsToReplace);
 				reEquipedItems = true;
+			}
+
+			if (calc.gearToRefund.length > 0) {
+				updateBank.itemLootBankNoCL.add(calc.gearToRefund);
+				messages.push(`Your ${calc.gearThatBroke} broke, turning into ${calc.gearToRefund} in your bank.`);
 			}
 
 			messages.push(
@@ -286,8 +322,7 @@ export function doMonsterTrip(data: newOptions) {
 	});
 
 	const superiorTable = slayerContext.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
-	const isInCatacombs =
-		(!(usingCannon || cannonMulti) ? (monster.existsInCatacombs ?? undefined) : undefined) && !isInWilderness;
+	const isInCatacombs = (!usingCannon ? (monster.existsInCatacombs ?? undefined) : undefined) && !isInWilderness;
 
 	const hasRingOfWealthI = gearBank.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
 	if (hasRingOfWealthI) {
@@ -324,22 +359,33 @@ export function doMonsterTrip(data: newOptions) {
 					newSuperiorCount++;
 				}
 			}
+
+			if (gearBank.hasEquippedOrInBank('Slayer master cape')) {
+				newSuperiorCount *= 2;
+				messages.push('Your Slayer master cape doubled your superior spawn rate.');
+			}
 		}
 	}
 
 	// Loot
 	const finalQuantity = quantity - newSuperiorCount;
 
-	const loot = wiped ? new Bank() : monster.table.kill(finalQuantity, killOptions);
+	const loot = wiped
+		? new Bank()
+		: monster.table.kill(oriEffect({ gearBank, quantity: finalQuantity, duration, messages }), killOptions);
+	if (isDoubleLootActive(duration)) {
+		loot.multiply(2);
+		messages.push('**Double loot activated!**');
+	}
+
 	if (!wiped) {
 		if (monster.specialLoot) {
 			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
 		}
 		if (newSuperiorCount) {
-			loot.add(superiorTable?.kill(newSuperiorCount).set('Brimstone key', 0)); //remove the rng keys, todo: remove drop from superiors in osjs?
+			loot.add(superiorTable?.kill(newSuperiorCount));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
-			if (killOptions.slayerMaster === MonsterSlayerMaster.Konar) loot.add('Brimstone key', newSuperiorCount);
 		}
 		if (isInWilderness && monster.name === 'Hill giant') {
 			for (let i = 0; i < quantity; i++) {
@@ -348,6 +394,18 @@ export function doMonsterTrip(data: newOptions) {
 				}
 			}
 		}
+		if (
+			monster.id === Monsters.Unicorn.id &&
+			gearBank.hasEquipped('Iron dagger') &&
+			!gearBank.hasEquippedOrInBank('Clue hunter cloak')
+		) {
+			loot.add('Clue hunter cloak');
+			loot.add('Clue hunter boots');
+			messages.push(
+				'\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.'
+			);
+		}
+
 		updateBank.itemLootBank.add(loot);
 		updateBank.xpBank.add(
 			addMonsterXPRaw({
@@ -387,7 +445,16 @@ export function doMonsterTrip(data: newOptions) {
 
 	if (slayerContext.isOnTask) {
 		if (slayerContext.quantityLeft === 0) {
-			messages.push(handleSlayerTaskCompletion({ slayerContext, updateBank, hasKourendElite, userStats }));
+			messages.push(
+				handleSlayerTaskCompletion({
+					slayerContext,
+					updateBank,
+					hasKourendElite,
+					userStats,
+					monster,
+					slayerMaster: slayerContext.slayerMaster
+				})
+			);
 		} else {
 			messages.push(
 				`You killed ${slayerContext.effectiveSlayed}x of your ${
@@ -415,6 +482,22 @@ export function doMonsterTrip(data: newOptions) {
 		}
 	}
 
+	const midTripArgs: MidPVMEffectArgs = {
+		gearBank,
+		updateBank,
+		messages,
+		disabledInventions,
+		duration,
+		slayerContext,
+		quantity,
+		monster,
+		cl,
+		userStats: userStats.userStats,
+		slayerUnlocks,
+		bitfield
+	};
+	rollForBSOThings(midTripArgs);
+
 	if (!wiped) updateBank.kcBank.add(monster.id, quantity);
 	const newKC = kcBank.amount(monster.id) + quantity;
 
@@ -436,6 +519,13 @@ export const monsterTask: MinionTask = {
 		const stats = await MUserStats.fromID(data.userID);
 		const minigameScores = await user.fetchMinigames();
 		const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
+
+		if (data.mi === KOSCHEI_ID) {
+			sendToChannelID(data.channelID, {
+				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
+			});
+			return;
+		}
 		const monster = killableMonsters.find(mon => mon.id === data.mi)!;
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
 		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({
@@ -458,7 +548,8 @@ export const monsterTask: MinionTask = {
 			attackStyles,
 			hasEliteCA: user.hasCompletedCATier('elite'),
 			bitfield: user.bitfield,
-			cl: user.cl
+			cl: user.cl,
+			disabledInventions: user.user.disabled_inventions
 		});
 		if (slayerContext.isOnTask) {
 			await prisma.slayerTask.update({

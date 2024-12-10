@@ -55,7 +55,7 @@ export async function motherlodeMineCommand({
 		);
 	}
 
-	const glovesEffect = 0;
+	const glovesRate = 0;
 	const armourEffect = 0;
 	const miningCapeEffect = 0;
 	const goldSilverBoost = false;
@@ -64,16 +64,16 @@ export async function motherlodeMineCommand({
 	// Calculate the time it takes to mine specific quantity or as many as possible
 	const [duration, newQuantity] = determineMiningTime({
 		quantity,
-		gearBank: user.gearBank,
 		ore: motherlode,
 		ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
-		glovesEffect,
+		glovesRate,
 		armourEffect,
 		miningCapeEffect,
 		powermining: powermine,
 		goldSilverBoost,
 		miningLvl: miningLevel,
-		maxTripLength: calcMaxTripLength(user, 'MotherlodeMining')
+		maxTripLength: calcMaxTripLength(user, 'Mining'),
+		hasGlory: user.hasEquippedOrInBank('Amulet of glory')
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
@@ -96,6 +96,10 @@ export async function motherlodeMineCommand({
 			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
 			: formatDuration(duration)
 	} to finish.`;
+
+	if (user.usingPet('Doug')) {
+		response += '\n<:doug:748892864813203591> Doug joins you on your mining trip!';
+	}
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

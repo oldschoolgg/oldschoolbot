@@ -1,9 +1,11 @@
 import { Monsters } from 'oldschooljs';
 
-import { QuestID } from '../../minions/data/quests';
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
+import { polyporeTasks } from './polyporeTasks';
 
 export const chaeldarTasks: AssignableSlayerTask[] = [
 	{
@@ -24,7 +26,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		weight: 12,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -114,7 +116,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		extendedAmount: [150, 200],
 		extendedUnlockId: SlayerTaskUnlocksEnum.KrackOn,
 		weight: 12,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, BSOMonsters.SeaKraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -258,7 +260,8 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			KalphiteKingMonster.id
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -376,7 +379,8 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			BSOMonsters.VladimirDrakan.id
 		],
 		combatLevel: 35,
 		questPoints: 1,
@@ -390,22 +394,6 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		slayerLevel: 62,
 		unlocked: true
 	},
-	{
-		monster: Monsters.Amoxliatl,
-		amount: [50, 100],
-		weight: 4,
-		monsters: [Monsters.Amoxliatl.id, Monsters.FrostNagua.id, Monsters.SulphurNagua.id],
-		slayerLevel: 48,
-		unlocked: true
-	},
-	{
-		monster: Monsters.WarpedTerrorbird,
-		amount: [70, 130],
-		weight: 6,
-		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
-		unlocked: false,
-		slayerLevel: 56,
-		requiredQuests: [QuestID.ThePathOfGlouphrie]
-	},
-	...bossTasks
+	...bossTasks,
+	...polyporeTasks
 ];

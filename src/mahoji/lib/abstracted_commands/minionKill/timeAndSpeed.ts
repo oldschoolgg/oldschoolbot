@@ -3,35 +3,19 @@ import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 
-import { SlayerActivityConstants } from '../../../../lib/minions/data/combatConstants';
 import { type AttackStyles, getAttackStylesContext } from '../../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import type { Consumable } from '../../../../lib/minions/types';
 import { ChargeBank } from '../../../../lib/structures/Bank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { SkillsRequired } from '../../../../lib/types';
-import { numberEnum } from '../../../../lib/util';
 import { getItemCostFromConsumables } from './handleConsumables';
 import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
-
-export const CombatMethodOptionsSchema = z.object({
-	bob: z
-		.number()
-		.superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst]))
-		.optional(),
-	usingCannon: z.boolean().optional(),
-	cannonMulti: z.boolean().optional(),
-	chinning: z.boolean().optional(),
-	hasWildySupplies: z.boolean().optional(),
-	died: z.boolean().optional(),
-	pkEncounters: z.number().int().min(0).optional(),
-	isInWilderness: z.boolean().optional()
-});
 
 const schema = z.object({
 	timeToFinish: z.number().int().positive(),
 	messages: z.array(z.string()),
-	currentTaskOptions: CombatMethodOptionsSchema,
+	currentTaskOptions: z.object({}),
 	finalQuantity: z.number().int().positive().min(1),
 	confirmations: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)
@@ -55,7 +39,7 @@ function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, style
 }
 
 export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
-	const { monster, monsterKC, attackStyles, gearBank, maxTripLength, inputQuantity } = args;
+	const { monster, monsterKC, attackStyles, gearBank, maxTripLength, inputQuantity, isInWilderness } = args;
 	const { skillsAsLevels } = args.gearBank;
 	const messages: string[] = [];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
@@ -64,6 +48,15 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	messages.push(skillBoostMsg);
 
 	if (percentReduced >= 1) messages.push(`${percentReduced}% for KC`);
+
+	timeToFinish /= 2;
+	messages.push('2x BSO Boost');
+
+	if (gearBank.gear.wildy.hasEquipped(['Hellfire bow']) && isInWilderness) {
+		timeToFinish /= 3;
+		messages.push('3x boost for Hellfire bow');
+	}
+
 	let currentTaskOptions: CombatMethodOptions = {};
 	const itemCost = new Bank();
 	const charges = new ChargeBank();

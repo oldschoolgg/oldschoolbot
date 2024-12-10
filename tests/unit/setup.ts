@@ -1,6 +1,8 @@
 import { vi } from 'vitest';
 
+import '../../src/lib/customItems/customItems';
 import '../../src/lib/data/itemAliases';
+import { Decimal } from '@prisma/client/runtime/library';
 import { MUserStats } from '../../src/lib/structures/MUserStats';
 
 vi.mock('../../src/lib/settings/minigames.ts', async () => {
@@ -104,6 +106,58 @@ MUserStats.fromID = async (id: string) => {
 		colo_loot: {},
 		colo_kc_bank: {},
 		colo_max_glory: null,
-		quivers_sacrificed: 0
+		quivers_sacrificed: 0,
+		bars_from_adze_bank: {},
+		ores_from_spirits_bank: {},
+		bars_from_klik_bank: {},
+		portable_tanner_bank: {},
+		clue_upgrader_bank: {},
+		ic_cost_bank: {},
+		ic_loot_bank: {},
+		loot_from_zippy_bank: {},
+		peky_loot_bank: {},
+		obis_loot_bank: {},
+		brock_loot_bank: {},
+		wilvus_loot_bank: {},
+		doug_loot_bank: {},
+		harry_loot_bank: {},
+		smokey_loot_bank: {},
+		doubled_loot_bank: {},
+		silverhawk_boots_passive_xp: 0n,
+		bonecrusher_prayer_xp: 0n,
+		ic_donations_given_bank: {},
+		ic_donations_received_bank: {},
+		lamped_xp: {},
+		tame_cl_bank: {},
+		tinker_workshop_mats_bank: {},
+		tworkshop_material_cost_bank: {},
+		tworkshop_xp_gained: 0,
+		death_touched_darts_used: 0,
+		on_task_monster_scores: {},
+		on_task_with_mask_monster_scores: {},
+		main_server_challenges_won: 0,
+		doa_attempts: 0,
+		doa_cost: {},
+		doa_loot: {},
+		doa_room_attempts_bank: {},
+		doa_total_minutes_raided: 0,
+		chincannon_destroyed_loot_bank: {},
+		comp_cape_percent: new Decimal(0),
+		untrimmed_comp_cape_percent: new Decimal(0),
+		god_favour_bank: null,
+		god_items_sacrificed_bank: {},
+		steal_cost_bank: {},
+		steal_loot_bank: {},
+		xp_from_graceful_portent: 0n,
+		xp_from_dungeon_portent: 0n,
+		xp_from_mining_portent: 0n,
+		xp_from_hunter_portent: 0n,
+		loot_from_rogues_portent: {},
+		loot_from_lucky_portent: {},
+		loot_destroyed_by_hunter_portent: {},
+		divination_loot: {},
+		octo_loot_bank: {},
+		turaels_trials_cost_bank: {},
+		turaels_trials_loot_bank: {}
 	});
 };

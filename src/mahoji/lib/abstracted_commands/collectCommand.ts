@@ -25,6 +25,10 @@ export async function collectCommand(
 			.join(', ')}.`;
 	}
 
+	if (collectable.onlyTamesCan) {
+		return 'Only Tames can collect this.';
+	}
+
 	const maxTripLength = calcMaxTripLength(user, 'Collecting');
 	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;

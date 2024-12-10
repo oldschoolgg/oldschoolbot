@@ -33,6 +33,10 @@ function getUsersPerkTierRaw(user: { bitfield: BitField[]; id: string }): PerkTi
 		}
 	}
 
+	if (user.bitfield.includes(BitField.IsPatronTier2) || user.bitfield.includes(BitField.HasPermanentTierOne)) {
+		elligibleTiers.push(PerkTier.Three);
+	}
+
 	const roboChimpCached = roboChimpCache.get(user.id);
 	if (roboChimpCached) {
 		elligibleTiers.push(roboChimpCached.perk_tier);

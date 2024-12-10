@@ -2,23 +2,22 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import {
 	Bank,
 	BrimstoneChest,
-	EItem,
 	EliteMimicTable,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
-	Openables,
-	ZombiePiratesLocker
+	Openables
 } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { randInt } from 'e';
+import { bsoOpenables } from './bsoOpenables';
 import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
-import { cluesRaresCL } from './data/CollectionsExport';
+import { clueHunterOutfit } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import type { FarmingContract } from './minions/farming/types';
 import { shadeChestOpenables } from './shadesKeys';
@@ -31,9 +30,9 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import type { ItemBank } from './types';
-import { itemID, roll } from './util';
+import { itemID, percentChance, roll } from './util';
 import getOSItem from './util/getOSItem';
+import resolveItems from './util/resolveItems';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -69,10 +68,11 @@ const FrozenCacheTable = new LootTable()
 	.add('Spirit seed', 1, 2)
 	.add('Rune sword');
 
-interface OpenArgs {
+export interface OpenArgs {
 	quantity: number;
 	user: MUser;
 	self: UnifiedOpenable;
+	totalLeaguesPoints: number;
 }
 
 export interface UnifiedOpenable {
@@ -88,11 +88,52 @@ export interface UnifiedOpenable {
 	emoji?: string;
 	aliases: string[];
 	allItems: number[];
+	isMysteryBox?: boolean;
+	smokeyApplies?: boolean;
+	excludeLootFromBoxes?: boolean;
+	excludeFromOpenAll?: true;
+	extraCostPerOpen?: Bank;
+	trickableItems?: number[];
 }
 
-const clueItemsToNotifyOf = cluesRaresCL
+const clueItemsToNotifyOf = resolveItems([
+	'3rd age range coif',
+	'3rd age range top',
+	'3rd age range legs',
+	'3rd age vambraces',
+	'3rd age robe top',
+	'3rd age robe',
+	'3rd age mage hat',
+	'3rd age amulet',
+	'3rd age plateskirt',
+	'3rd age platelegs',
+	'3rd age platebody',
+	'3rd age full helmet',
+	'3rd age kiteshield',
+	'3rd age longsword',
+	'3rd age wand',
+	'3rd age cloak',
+	'3rd age bow',
+	'3rd age pickaxe',
+	'3rd age axe',
+	'3rd age druidic robe bottoms',
+	'3rd age druidic robe top',
+	'3rd age druidic staff',
+	'3rd age druidic cloak'
+])
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
-	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
+	.concat(
+		resolveItems([
+			'Dwarven blessing',
+			'First age tiara',
+			'First age amulet',
+			'First age cape',
+			'First age bracelet',
+			'First age ring',
+			'First age robe bottom',
+			'First age robe top'
+		])
+	);
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
@@ -104,7 +145,28 @@ for (const clueTier of ClueTiers) {
 		aliases: [clueTier.name.toLowerCase()],
 		output: async ({ quantity, user, self }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			const loot = clueTier.table.roll(quantity);
+
+			// BSO Clue roll code:
+			const includeBuggedRolls = true;
+
+			const loot = new Bank();
+			const hasCHEquipped = user.hasEquippedOrInBank(clueHunterOutfit, 'every');
+			let totalRolls = 0;
+			for (let i = 0; i < quantity; i++) {
+				// Calculate rolls, including bonus rolls (average 2 rolls total per casket):
+				const rolls = randInt(1, 3);
+				totalRolls += rolls;
+				if (clueTier.name === 'Master' && percentChance(hasCHEquipped ? 3.5 : 1.5)) {
+					loot.add('Clue scroll (grandmaster)');
+				}
+			}
+			// Roll loot, and calculate how many bonus rolls were received:
+			clueTier.table.roll(includeBuggedRolls ? totalRolls + quantity : totalRolls, {
+				targetBank: loot,
+				cl: user.cl
+			});
+			const extraClueRolls = totalRolls - quantity;
+
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
@@ -116,9 +178,12 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 
-			const message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+			let message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
+			if (extraClueRolls > 0) {
+				message += `${mimicNumber ? ' ' : ''}${extraClueRolls} extra rolls`;
+			}
 
 			const stats = await user.fetchStats({ openable_scores: true });
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
@@ -164,9 +229,13 @@ for (const clueTier of ClueTiers) {
 			return { bank: loot, message };
 		},
 		emoji: Emoji.Casket,
-		allItems: clueTier.allItems
+		allItems: clueTier.allItems,
+		trickableItems: clueTier.trickableItems
 	});
 }
+
+const masterClue = clueOpenables.find(c => c.name === 'Reward casket (master)');
+masterClue!.allItems.push(itemID('Clue scroll (grandmaster)'));
 
 const osjsOpenables: UnifiedOpenable[] = [
 	{
@@ -283,14 +352,6 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: Openables.MuddyChest.table.allItems
 	},
 	{
-		name: 'Mystery box',
-		id: 6199,
-		openedItem: getOSItem(6199),
-		aliases: ['mystery box', 'mystery', 'mbox'],
-		output: Openables.MysteryBox.table,
-		allItems: Openables.MysteryBox.table.allItems
-	},
-	{
 		name: 'Nest box (empty)',
 		id: 12_792,
 		openedItem: getOSItem(12_792),
@@ -390,14 +451,6 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['intricate pouch', 'intricate'],
 		output: Openables.IntricatePouch.table,
 		allItems: Openables.IntricatePouch.table.allItems
-	},
-	{
-		name: "Zombie Pirate's Locker",
-		id: EItem.ZOMBIE_PIRATE_KEY,
-		openedItem: getOSItem('Zombie pirate key'),
-		aliases: ['zombie pirate key', 'zombie pirate locker', 'pirate locker'],
-		output: ZombiePiratesLocker.table,
-		allItems: ZombiePiratesLocker.table.allItems
 	}
 ];
 
@@ -510,6 +563,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	},
 	...clueOpenables,
 	...osjsOpenables,
+	...bsoOpenables,
 	...shadeChestOpenables
 ];
 
@@ -523,13 +577,15 @@ export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
 export function getOpenableLoot({
 	openable,
 	quantity,
-	user
+	user,
+	totalLeaguesPoints
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
+	totalLeaguesPoints: number;
 }) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity });
+		: openable.output({ user, self: openable, quantity, totalLeaguesPoints });
 }

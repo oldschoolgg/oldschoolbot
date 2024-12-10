@@ -115,16 +115,6 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Huasca'),
-		aliases: ['huasca', 'grimy huasca'],
-		level: 58,
-		xp: 11.8,
-		inputItems: new Bank({ 'Grimy huasca': 1 }),
-		tickRate: 0.5,
-		bankTimePerPotion: 0.15,
-		zahur: true
-	},
-	{
 		item: getOSItem('Lantadyme'),
 		aliases: ['lantadyme', 'grimy lantadyme'],
 		level: 67,
@@ -150,6 +140,26 @@ const Grimy: Mixable[] = [
 		level: 75,
 		xp: 15,
 		inputItems: new Bank({ 'Grimy torstol': 1 }),
+		tickRate: 0.5,
+		bankTimePerPotion: 0.15,
+		zahur: true
+	},
+	{
+		item: getOSItem('Korulsi'),
+		aliases: ['grimy korulsi', 'korulsi'],
+		level: 110,
+		xp: 25,
+		inputItems: new Bank({ 'Grimy korulsi': 1 }),
+		tickRate: 0.5,
+		bankTimePerPotion: 0.15,
+		zahur: true
+	},
+	{
+		item: getOSItem('Spirit weed'),
+		aliases: ['grimy spirit weed'],
+		level: 105,
+		xp: 25,
+		inputItems: new Bank({ 'Grimy spirit weed': 1 }),
 		tickRate: 0.5,
 		bankTimePerPotion: 0.15,
 		zahur: true

@@ -1,5 +1,5 @@
 import type { activity_type_enum } from '@prisma/client';
-import { deepClone, notEmpty, roll, sumArr, uniqueArr } from 'e';
+import { deepClone, notEmpty, roll, sumArr } from 'e';
 
 import type { Item } from 'oldschooljs';
 import type { Requirements } from '../structures/Requirements';
@@ -47,7 +47,7 @@ export type CombatAchievement = {
 	| {
 			rng: {
 				chancePerKill: number;
-				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser) => boolean);
+				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser, index: number) => boolean);
 			};
 	  }
 	| {
@@ -156,7 +156,6 @@ export const allCombatAchievementTasks = entries.flatMap(i => i[1].tasks);
 
 const allCATaskIDs = entries.flatMap(i => i[1].tasks.map(t => t.id));
 assert(allCATaskIDs.length === new Set(allCATaskIDs).size);
-assert(uniqueArr(entries.flatMap(i => i[1].tasks.map(t => t.name))).length === new Set(allCATaskIDs).size);
 assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATaskIDs.length);
 const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
@@ -194,12 +193,12 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 			if (qty === 0) break;
 			if (user.user.completed_ca_task_ids.includes(task.id)) continue;
 			if (!('rng' in task)) continue;
-			const hasChance =
-				typeof task.rng.hasChance === 'string'
-					? dataCopy.type === task.rng.hasChance
-					: task.rng.hasChance(dataCopy, user);
-			if (!hasChance) continue;
 			for (let i = 0; i < qty; i++) {
+				const hasChance =
+					typeof task.rng.hasChance === 'string'
+						? dataCopy.type === task.rng.hasChance
+						: task.rng.hasChance(dataCopy, user, i);
+				if (!hasChance) continue;
 				if (roll(task.rng.chancePerKill)) {
 					completedTasks.push(task);
 					qty--;

@@ -1,9 +1,8 @@
-import type { Bank, Item, LootTable } from 'oldschooljs';
+import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
 
-import type { Emoji } from '../constants';
 import type { QuestID } from '../minions/data/quests';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import type { ItemBank } from '../types';
+import type { Skills } from '../types';
 import type { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
@@ -29,7 +28,10 @@ export enum SkillsEnum {
 	Defence = 'defence',
 	Ranged = 'ranged',
 	Hitpoints = 'hitpoints',
-	Slayer = 'slayer'
+	Dungeoneering = 'dungeoneering',
+	Slayer = 'slayer',
+	Invention = 'invention',
+	Divination = 'divination'
 }
 
 export const SkillsArray = [
@@ -55,7 +57,10 @@ export const SkillsArray = [
 	'defence',
 	'ranged',
 	'hitpoints',
-	'slayer'
+	'dungeoneering',
+	'slayer',
+	'invention',
+	'divination'
 ] as const;
 
 export type SkillNameType = (typeof SkillsArray)[number];
@@ -79,6 +84,7 @@ export interface Ore {
 	petChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
+	requiredPickaxes?: number[];
 	aliases?: string[];
 }
 
@@ -99,6 +105,8 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
+	customReq?: (user: MUser) => string | undefined;
+	hasNoLoot?: true;
 	clueNestsOnly?: boolean;
 }
 
@@ -190,6 +198,8 @@ export interface SmithedItem {
 	timeToUse: number;
 	outputMultiple: number;
 	qpRequired?: number;
+	requiresBlacksmith?: boolean;
+	cantBeDoubled?: boolean;
 }
 
 export interface Craftable {
@@ -203,8 +213,10 @@ export interface Craftable {
 	crushChance?: number[];
 	bankChest?: boolean;
 	outputMultiple?: number;
+	otherSkillRequirements?: Partial<Skills>;
 	qpRequired?: number;
 	wcLvl?: number;
+	cantBeDoubled?: boolean;
 }
 
 export interface Fletchable {
@@ -231,6 +243,7 @@ export interface Mixable {
 	zahur?: boolean;
 	wesley?: boolean;
 	qpRequired?: number;
+	defaultQuantity?: number;
 }
 
 export interface CutLeapingFish {
@@ -260,7 +273,7 @@ export type LevelRequirements = Partial<{
 export interface Skill {
 	aliases: string[];
 	id: SkillsEnum;
-	emoji: Emoji;
+	emoji: string;
 	name: string;
 }
 
@@ -312,6 +325,8 @@ export interface Plant {
 	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
+	onHarvest?: (options: { user: MUser; loot: Bank; quantity: number; messages: string[] }) => Promise<unknown>;
+	noArcaneHarvester?: boolean;
 }
 
 export enum HunterTechniqueEnum {
@@ -349,4 +364,5 @@ export interface Creature {
 	qpRequired?: number;
 	slope: number;
 	intercept: number;
+	bait?: (quantity: number) => Bank;
 }

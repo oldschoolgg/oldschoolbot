@@ -159,6 +159,8 @@ const GoldChest = new LootTable({ limit: 143 })
 	.every('Swamp paste', [40, 70])
 	.tertiary(61, 'Gold locks')
 	.tertiary(54, SplitBarkScrollsTable)
+	.oneIn(75 * 5, 'Necromancer kit')
+	.oneIn(80 * 5, 'Shade skull')
 
 	.add('Battlestaff', 3, 11)
 	.add('Adamant spear', 1, 7)
@@ -194,19 +196,13 @@ const GoldChest = new LootTable({ limit: 143 })
 	.add('Redwood logs', [5, 14], 2)
 	.add('Dragonstone', 1, 2)
 	.add('Clue scroll (elite)', 1, 1)
-	.add('Coins', [1, 3160]);
+	.add('Coins', [1, 3]);
 
 const chests = [
 	{
 		name: 'Bronze chest',
 		table: BronzeChest,
-		items: resolveItems([
-			'Bronze key red',
-			'Bronze key brown',
-			'Bronze key crimson',
-			'Bronze key black',
-			'Bronze key purple'
-		])
+		items: resolveItems(['Bronze key red', 'Bronze key brown', 'Bronze key crimson', 'Bronze key black'])
 	},
 	{
 		name: 'Steel chest',
@@ -233,13 +229,7 @@ const chests = [
 	{
 		name: 'Silver chest',
 		table: SilverChest,
-		items: resolveItems([
-			'Silver key red',
-			'Silver key brown',
-			'Silver key crimson',
-			'Silver key black',
-			'Silver key purple'
-		])
+		items: resolveItems(['Silver key red', 'Silver key brown', 'Silver key crimson', 'Silver key black'])
 	},
 	{
 		name: 'Gold chest',

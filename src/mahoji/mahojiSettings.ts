@@ -1,17 +1,20 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User, UserStats } from '@prisma/client';
-import { isObject, objectEntries, round } from 'e';
-import { Bank } from 'oldschooljs';
+import { isObject, notEmpty, objectEntries, round } from 'e';
+import { Bank, resolveItems } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
+import { getSimilarItems } from '../lib/data/similarItems';
+import { type GearSetupType, GearStat } from '../lib/gear';
 import type { KillableMonster } from '../lib/minions/types';
 
 import { bold } from 'discord.js';
 import { userhasDiaryTier } from '../lib/diaries';
+import { BSOMonsters } from '../lib/minions/data/killableMonsters/custom/customMonsters';
 import { quests } from '../lib/minions/data/quests';
 import type { Rune } from '../lib/skilling/skills/runecraft';
-import { hasGracefulEquipped } from '../lib/structures/Gear';
+import { addStatsOfItemsTogether, hasGracefulEquipped } from '../lib/structures/Gear';
 import type { GearBank } from '../lib/structures/GearBank';
 import type { ItemBank } from '../lib/types';
 import {
@@ -20,9 +23,9 @@ import {
 	formatItemReqs,
 	hasSkillReqs,
 	itemNameFromID,
-	readableStatName,
-	resolveItems
+	readableStatName
 } from '../lib/util';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
 
 export function mahojiParseNumber({
@@ -73,6 +76,17 @@ export function patronMsg(tierNeeded: number) {
 
 export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
+}
+
+export type ClientBankKey = Parameters<typeof trackClientBankStats>['0'];
+export async function trackClientBankStats(
+	key: 'clue_upgrader_loot' | 'portable_tanner_loot' | 'turaels_trials_cost_bank' | 'turaels_trials_loot_bank',
+	newItems: Bank
+) {
+	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
+	await mahojiClientSettingsUpdate({
+		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).toJSON()
+	});
 }
 
 export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
@@ -154,7 +168,8 @@ export async function updateClientGPTrackSetting(
 		| 'gp_daily'
 		| 'gp_sell'
 		| 'gp_pvm'
-		| 'economyStats_duelTaxBank',
+		| 'economyStats_duelTaxBank'
+		| 'gp_ic',
 	amount: number
 ) {
 	await prisma.clientStorage.update({
@@ -183,6 +198,22 @@ export async function updateGPTrackSetting(
 	});
 }
 
+const masterFarmerOutfit = resolveItems([
+	'Master farmer hat',
+	'Master farmer jacket',
+	'Master farmer pants',
+	'Master farmer gloves',
+	'Master farmer boots'
+]);
+
+export function userHasMasterFarmerOutfit(user: MUser) {
+	const allItems = user.allItemsOwned;
+	for (const item of masterFarmerOutfit) {
+		if (!allItems.has(item)) return false;
+	}
+	return true;
+}
+
 export function userHasGracefulEquipped(user: MUser) {
 	const rawGear = user.gear;
 	for (const i of Object.values(rawGear)) {
@@ -192,11 +223,10 @@ export function userHasGracefulEquipped(user: MUser) {
 }
 
 export function anglerBoostPercent(user: MUser) {
-	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
 	let boostPercent = 0;
 	for (const [id, percent] of anglerBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
+		if (user.hasEquippedOrInBank(id)) {
 			boostPercent += percent;
 			amountEquipped++;
 		}
@@ -210,10 +240,9 @@ export function anglerBoostPercent(user: MUser) {
 const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
 
 export function rogueOutfitPercentBonus(user: MUser): number {
-	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
 	for (const id of rogueOutfit) {
-		if (skillingSetup.hasEquipped([id])) {
+		if (user.hasEquippedOrInBank(id)) {
 			amountEquipped++;
 		}
 	}
@@ -265,7 +294,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 				if (!item.some(itemReq => user.hasEquippedOrInBank(itemReq as number))) {
 					return [false, `You need these items to kill ${monster.name}: ${itemsRequiredStr}`];
 				}
-			} else if (!user.hasEquippedOrInBank(item)) {
+			} else if (!getSimilarItems(item).some(id => user.hasEquippedOrInBank(id))) {
 				return [
 					false,
 					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`
@@ -285,6 +314,19 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
 			const gear = user.gear[setup];
 			if (setup && requirements) {
+				if (setup === 'wildy' && user.gear.wildy.hasEquipped('Hellfire bow')) {
+					const attackOverrides = [
+						GearStat.AttackSlash,
+						GearStat.AttackCrush,
+						GearStat.AttackStab,
+						GearStat.MeleeStrength,
+						GearStat.AttackMagic,
+						GearStat.MagicDamage
+					];
+					for (const override of attackOverrides) {
+						delete requirements[override];
+					}
+				}
 				const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(requirements);
 				if (!meetsRequirements) {
 					return [
@@ -343,10 +385,68 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		}
 	}
 
+	const monsterScores = await user.fetchMonsterScores();
+
+	if (monster.kcRequirements) {
+		for (const [key, val] of Object.entries(monster.kcRequirements)) {
+			const { id } = BSOMonsters[key as keyof typeof BSOMonsters];
+
+			const kc = monsterScores[id] ?? 0;
+
+			if (kc < val) {
+				return `You need at least ${val} ${key} KC to kill ${monster.name}, you have ${kc}.`;
+			}
+		}
+	}
+
+	if (monster.minimumWeaponShieldStats) {
+		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
+			const gear = user.gear[setup as GearSetupType];
+			const stats = addStatsOfItemsTogether(
+				[gear['2h']?.item, gear.weapon?.item, gear.shield?.item].filter(notEmpty)
+			);
+
+			for (const [key, requiredValue] of Object.entries(minimum)) {
+				if (requiredValue < 1) continue;
+				const theirValue = stats[key as GearStat] ?? 0;
+				if (theirValue < requiredValue) {
+					return `Your ${setup} weapons/shield need to have at least ${requiredValue} ${readableStatName(
+						key
+					)} to kill ${monster.name}, you have ${theirValue}.`;
+				}
+			}
+		}
+	}
+
+	if (monster.customRequirement && monsterScores[monster.id] === 0) {
+		const reasonDoesntHaveReq = await monster.customRequirement(user);
+		if (reasonDoesntHaveReq) {
+			return `You don't meet the requirements to kill this monster: ${reasonDoesntHaveReq}.`;
+		}
+	}
+
+	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
+		return "You haven't unlocked this monster.";
+	}
+
+	const rangeAmmo = user.gear.range.ammo?.item;
+	if (
+		monster.projectileUsage?.requiredAmmo &&
+		(!rangeAmmo || !monster.projectileUsage?.requiredAmmo.includes(rangeAmmo))
+	) {
+		return `You need to be using one of these projectiles to fight ${
+			monster.name
+		}: ${monster.projectileUsage.requiredAmmo.map(itemNameFromID).join(', ')}.`;
+	}
+
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster, isInWilderness = false): Bank {
+export function resolveAvailableItemBoosts(
+	gearBank: GearBank,
+	monster: KillableMonster,
+	_isInWilderness = false
+): Bank {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -356,7 +456,7 @@ export function resolveAvailableItemBoosts(gearBank: GearBank, monster: Killable
 			// find the highest boost that the player has
 			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 				const parsedId = Number.parseInt(itemID);
-				if (!gearBank.wildyGearCheck(parsedId, isInWilderness)) {
+				if (!gearBank.hasEquippedOrInBank(parsedId)) {
 					continue;
 				}
 				if (boostAmount > highestBoostAmount) {

@@ -1,7 +1,7 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

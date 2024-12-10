@@ -19,6 +19,7 @@ type TrackLootOptions =
 				loot: Bank;
 				duration: number;
 			}[];
+			suffix?: 'tame';
 	  }
 	| {
 			id: string;
@@ -29,6 +30,7 @@ type TrackLootOptions =
 				id: string;
 				cost: Bank;
 			}[];
+			suffix?: 'tame';
 	  };
 
 async function trackIndividualsLoot({
@@ -93,7 +95,10 @@ async function trackIndividualsLoot({
 }
 
 export async function trackLoot(opts: TrackLootOptions) {
-	const key = cleanString(opts.id).toLowerCase().replace(/ /g, '_');
+	let key = cleanString(opts.id).toLowerCase().replace(/ /g, '_');
+	if (opts.suffix) {
+		key = `${key}-${opts.suffix}`;
+	}
 	const totalBank = opts.changeType === 'cost' ? opts.totalCost : opts.totalLoot;
 	if (totalBank.length === 0) return;
 

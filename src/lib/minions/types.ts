@@ -1,10 +1,10 @@
-import type { StoreBitfield } from '@oldschoolgg/toolkit/util';
-import type { XpGainSource } from '@prisma/client';
-import type { Bank, Item, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
+import type { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
+import type { GearSetupType, XpGainSource } from '@prisma/client';
+import type { Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 
 import type { ClueTier } from '../clues/clueTiers';
-import type { BitField, PerkTier } from '../constants';
-import type { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
+import type { BitField } from '../constants';
+import type { GearStat, OffenceGearStat } from '../gear';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
 import type { LevelRequirements, SkillsEnum } from '../skilling/types';
@@ -12,9 +12,10 @@ import type { XPBank } from '../structures/Bank';
 import type { GearBank } from '../structures/GearBank';
 import type { MUserStats } from '../structures/MUserStats';
 import type { UpdateBank } from '../structures/UpdateBank';
-import type { ItemBank, Skills } from '../types';
-import type { ArrayItemsResolved, calculateSimpleMonsterDeathChance } from '../util';
+import type { ArrayItemsResolved, Skills } from '../types';
+import type { calculateSimpleMonsterDeathChance } from '../util';
 import type { CanvasImage } from '../util/canvasUtil';
+import type { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
 import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';
 
@@ -40,6 +41,7 @@ export type BankBackground = {
 	sacValueRequired?: number;
 	skillsNeeded?: Skills;
 	transparent?: true;
+	owners?: string[];
 	alternateImages?: { id: number }[];
 	storeBitField?: StoreBitfield;
 } & (
@@ -128,6 +130,7 @@ export interface KillableMonster {
 		items: { boostPercent: number; itemID: number }[];
 	}[];
 	projectileUsage?: {
+		requiredAmmo?: number[];
 		required: boolean;
 		calculateQuantity: (opts: { quantity: number }) => number;
 	};
@@ -140,6 +143,14 @@ export interface KillableMonster {
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 	diaryRequirement?: [DiaryID, DiaryTierName];
 	wildySlayerCave?: boolean;
+	requiredBitfield?: BitField;
+
+	minimumWeaponShieldStats?: Partial<Record<GearSetupType, Required<GearRequirement>>>;
+	tameCantKill?: true;
+	customRequirement?: (user: MUser) => Promise<string | null>;
+	setupsUsed?: GearSetupType[];
+	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
+	maxQuantity?: number;
 }
 /*
  * Monsters will have an array of Consumables
@@ -164,6 +175,7 @@ export interface AddXpParams {
 	multiplier?: boolean;
 	minimal?: boolean;
 	artificial?: boolean;
+	masterCapeBoost?: boolean;
 	source?: XpGainSource;
 }
 
@@ -185,11 +197,27 @@ export interface BlowpipeData {
 	dartQuantity: number;
 	dartID: number | null;
 }
+
+export interface MegaDuckLocation {
+	x: number;
+	y: number;
+	placesVisited: string[];
+	usersParticipated: Record<string, number>;
+	steps: [number, number][];
+}
+
+export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
+	x: 1356,
+	y: 209,
+	usersParticipated: {},
+	placesVisited: [],
+	steps: []
+};
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
 
-const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
+export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
 export type DiaryTierName = (typeof diaryTiers)[number];
 
 export interface DiaryTier {

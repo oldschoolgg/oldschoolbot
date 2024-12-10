@@ -2,7 +2,8 @@ import type { CommandOptions } from '@oldschoolgg/toolkit/util';
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
-import { busyImmuneCommands } from '../../lib/constants';
+import { busyImmuneCommands, gearValidationChecks } from '../../lib/constants';
+import { roll } from '../../lib/util';
 import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
 
@@ -41,6 +42,19 @@ export async function preCommand({
 	if (userIsBusy(userID) && !bypassInhibitors && !busyImmuneCommands.includes(abstractCommand.name)) {
 		return { reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}
+
+	if (!gearValidationChecks.has(userID) && roll(3)) {
+		const user = await mUserFetch(userID);
+		const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
+		if (itemsUnequippedAndRefunded.length > 0) {
+			return {
+				reason: {
+					content: `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`
+				}
+			};
+		}
+	}
+
 	if (!busyImmuneCommands.includes(abstractCommand.name)) modifyBusyCounter(userID, 1);
 
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;

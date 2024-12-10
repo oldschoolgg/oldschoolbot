@@ -1,7 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../minions/data/killableMonsters';
-import { QuestID } from '../../minions/data/quests';
+import { Ignecarus } from '../../minions/data/killableMonsters/custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
@@ -23,7 +25,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [130, 200],
 		weight: 12,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		combatLevel: 85,
@@ -89,7 +91,9 @@ export const duradelTasks: AssignableSlayerTask[] = [
 			Monsters.BlackDragon.id,
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
-			Monsters.KingBlackDragon.id
+			Monsters.KingBlackDragon.id,
+			Ignecarus.id,
+			BSOMonsters.QueenBlackDragon.id
 		],
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.FireAndDarkness,
@@ -139,7 +143,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [100, 120],
 		weight: 9,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, BSOMonsters.SeaKraken.id],
 		extendedAmount: [150, 200],
 		extendedUnlockId: SlayerTaskUnlocksEnum.KrackOn,
 		combatLevel: 80,
@@ -288,7 +292,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			KalphiteKingMonster.id
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -440,7 +445,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			BSOMonsters.VladimirDrakan.id
 		],
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.MoreAtStake,
@@ -472,15 +478,6 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Araxyte.id, Monsters.Araxxor.id],
 		unlocked: true,
 		slayerLevel: 92
-	},
-	{
-		monster: Monsters.WarpedTerrorbird,
-		amount: [130, 200],
-		weight: 8,
-		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
-		unlocked: false,
-		slayerLevel: 56,
-		requiredQuests: [QuestID.ThePathOfGlouphrie]
 	},
 	...bossTasks
 ];

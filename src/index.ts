@@ -66,7 +66,7 @@ const client = new OldSchoolBotClient({
 		},
 		GuildEmojiManager: {
 			maxSize: 1,
-			keepOverLimit: i => globalConfig.supportServerID === i.guild.id
+			keepOverLimit: i => [globalConfig.supportServerID].includes(i.guild.id)
 		},
 		GuildStickerManager: { maxSize: 0 },
 		PresenceManager: { maxSize: 0 },
@@ -145,7 +145,7 @@ client.on('interactionCreate', async interaction => {
 		if (interaction.isRepliable()) {
 			await interactionReply(interaction, {
 				content:
-					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'BSO is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}

@@ -1,6 +1,7 @@
 import { Bank, EMonster } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
+import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
 import { UpdateBank } from '../../src/lib/structures/UpdateBank';
 import type { ItemBank } from '../../src/lib/types';
 import { createTestUser } from './util';
@@ -19,6 +20,48 @@ describe(
 			// Repeat
 			await updateBank.transact(user);
 			expect(await user.getKC(EMonster.MAN)).toBe(69 * 2);
+		});
+
+		it('should add xp', async () => {
+			const user = await createTestUser();
+			await user.update({});
+			const updateBank = new UpdateBank();
+			updateBank.xpBank.add('slayer', 555);
+			updateBank.xpBank.add('attack', 123);
+			updateBank.xpBank.add('attack', 123, { source: 'AerialFishing' });
+			updateBank.xpBank.add('strength', 123);
+			await updateBank.transact(user);
+			await user.sync();
+
+			expect(user.skillsAsXP.slayer).toBe(555 * GLOBAL_BSO_XP_MULTIPLIER);
+			expect(user.skillsAsXP.attack).toBe(123 * 2 * GLOBAL_BSO_XP_MULTIPLIER);
+			expect(user.skillsAsXP.strength).toBe(123 * GLOBAL_BSO_XP_MULTIPLIER);
+		});
+
+		it('should add/remove items', async () => {
+			const user = await createTestUser();
+			await user.addItemsToBank({ items: new Bank().add('Coal', 100) });
+			const updateBank = new UpdateBank();
+			updateBank.itemCostBank.add('Coal', 50);
+			updateBank.itemLootBank.add('Egg', 50);
+			updateBank.itemLootBankNoCL.add('Trout', 50);
+			await updateBank.transact(user);
+			await user.sync();
+
+			expect(user.bank.amount('Coal')).toBe(50);
+			expect(user.bank.amount('Egg')).toBe(50);
+			expect(user.bank.amount('Trout')).toBe(50);
+			expect(user.cl.amount('Trout')).toBe(0);
+			expect(user.cl.amount('Egg')).toBe(50);
+		});
+
+		it('should add items with no cl', async () => {
+			const user = await createTestUser();
+			const updateBank = new UpdateBank();
+			updateBank.itemLootBankNoCL.add('Trout', 50);
+			await updateBank.transact(user);
+			expect(user.bank.amount('Trout')).toBe(50);
+			expect(user.cl.amount('Trout')).toBe(0);
 		});
 
 		it('should remove charges', async () => {
@@ -50,9 +93,9 @@ describe(
 			await updateBank.transact(user);
 			await user.sync();
 
-			expect(user.skillsAsXP.slayer).toBe(555);
-			expect(user.skillsAsXP.attack).toBe(123 * 2);
-			expect(user.skillsAsXP.strength).toBe(123);
+			expect(user.skillsAsXP.slayer).toBe(555 * GLOBAL_BSO_XP_MULTIPLIER);
+			expect(user.skillsAsXP.attack).toBe(123 * 2 * GLOBAL_BSO_XP_MULTIPLIER);
+			expect(user.skillsAsXP.strength).toBe(123 * GLOBAL_BSO_XP_MULTIPLIER);
 		});
 
 		it('should add/remove items', async () => {
@@ -132,8 +175,8 @@ describe(
 			expect(user.bank.amount('Egg')).toBe(50);
 			expect(user.bank.amount('Trout')).toBe(50);
 			expect(user.cl.amount('Trout')).toBe(0);
-			expect(user.skillsAsXP.attack).toEqual(555);
-			expect(user.skillsAsXP.slayer).toEqual(555);
+			expect(user.skillsAsXP.attack).toEqual(555 * GLOBAL_BSO_XP_MULTIPLIER);
+			expect(user.skillsAsXP.slayer).toEqual(555 * GLOBAL_BSO_XP_MULTIPLIER);
 		});
 	},
 	{ repeats: 5 }

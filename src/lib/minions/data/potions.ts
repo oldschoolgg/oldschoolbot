@@ -410,13 +410,28 @@ const Potions = [
 		items: resolveItems(['Extended super antifire mix(1)', 'Extended super antifire mix(2)'])
 	},
 	{
-		name: 'Prayer regeneration potion',
-		items: resolveItems([
-			'Prayer regeneration potion(1)',
-			'Prayer regeneration potion(2)',
-			'Prayer regeneration potion(3)',
-			'Prayer regeneration potion(4)'
-		])
+		name: 'Enhanced saradomin brew',
+		items: resolveItems('Enhanced saradomin brew')
+	},
+	{
+		name: 'Enhanced super restore',
+		items: resolveItems('Enhanced super restore')
+	},
+	{
+		name: 'Enhanced stamina potion',
+		items: resolveItems('Enhanced stamina potion')
+	},
+	{
+		name: 'Enhanced divine water',
+		items: resolveItems('Enhanced divine water')
+	},
+	{
+		name: 'Heat res. brew',
+		items: resolveItems('Heat res. brew')
+	},
+	{
+		name: 'Heat res. restore',
+		items: resolveItems('Heat res. restore')
 	}
 ];
 

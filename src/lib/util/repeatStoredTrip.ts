@@ -5,28 +5,33 @@ import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { autocompleteMonsters } from '../../mahoji/commands/k';
-import { ClueTiers } from '../clues/clueTiers';
+import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
 import type { PvMMethod } from '../constants';
+import { kibbles } from '../data/kibble';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
-import { convertStoredActivityToFlatActivity } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
+	BathhouseTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
+	ColoTaskOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
+	DOAOptions,
 	DarkAltarOptions,
+	DisassembleTaskOptions,
+	DungeoneeringOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -38,10 +43,15 @@ import type {
 	GuardiansOfTheRiftActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	InfernoOptions,
+	KibbleOptions,
 	MahoganyHomesActivityTaskOptions,
+	MemoryHarvestOptions,
 	MiningActivityTaskOptions,
+	MoktangTaskOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
+	NewBossOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -49,6 +59,7 @@ import type {
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
+	ResearchTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -59,23 +70,18 @@ import type {
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TinkeringWorkshopOptions,
+	TuraelsTrialsOptions,
+	UndoneChangesMonsterOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
-import getOSItem from './getOSItem';
 import { interactionReply } from './interactionReply';
 
-const taskCanBeRepeated = (activity: Activity, user: MUser) => {
-	if (activity.type === activity_type_enum.ClueCompletion) {
-		const realActivity = convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
-		return (
-			realActivity.implingID !== undefined ||
-			user.owns(ClueTiers.find(clue => clue.id === realActivity.ci)!.scrollID)
-		);
-	}
+export const taskCanBeRepeated = (activity: Activity) => {
 	return !(
 		[
 			activity_type_enum.TearsOfGuthix,
@@ -84,6 +90,12 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
 			activity_type_enum.TokkulShop,
+			activity_type_enum.FishingContest,
+			activity_type_enum.BossEvent,
+			activity_type_enum.Birdhouse,
+			activity_type_enum.HalloweenMiniMinigame,
+			activity_type_enum.BalthazarsBigBonanza,
+			activity_type_enum.GuthixianCache,
 			activity_type_enum.Birdhouse,
 			activity_type_enum.StrongholdOfSecurity,
 			activity_type_enum.CombatRing
@@ -91,19 +103,33 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	).includes(activity.type);
 };
 
-const tripHandlers = {
-	[activity_type_enum.ClueCompletion]: {
-		commandName: 'clue',
-		args: (data: ClueActivityTaskOptions) => ({
-			tier: data.ci,
-			implings: data.implingID ? getOSItem(data.implingID!).name : undefined
-		})
+export const tripHandlers = {
+	[activity_type_enum.HalloweenMiniMinigame]: {
+		commandName: 'm',
+		args: () => ({})
 	},
+	[activity_type_enum.TrickOrTreat]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.BossEvent]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.GuthixianCache]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.FishingContest]: { commandName: 'm', args: () => ({}) },
 	[activity_type_enum.SpecificQuest]: {
 		commandName: 'm',
 		args: () => ({})
 	},
 	[activity_type_enum.HalloweenEvent]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.BirthdayCollectIngredients]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -136,6 +162,10 @@ const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.BlastFurnace]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.Mortimer]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -393,7 +423,7 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Inferno]: {
 		commandName: 'activities',
-		args: () => ({ inferno: { action: 'start' } })
+		args: (data: InfernoOptions) => ({ inferno: { action: 'start', emerged: data.isEmergedZuk } })
 	},
 	[activity_type_enum.LastManStanding]: {
 		commandName: 'minigames',
@@ -434,12 +464,12 @@ const tripHandlers = {
 		commandName: 'k',
 		args: (data: MonsterActivityTaskOptions) => {
 			let method: PvMMethod = 'none';
-			if (data.usingCannon || data.cannonMulti) method = 'cannon';
-			if (data.chinning) method = 'chinning';
+			if (data.usingCannon) method = 'cannon';
+			if (data.chinning) (method as string) = 'chinning';
 			else if (data.bob === SlayerActivityConstants.IceBarrage) method = 'barrage';
 			else if (data.bob === SlayerActivityConstants.IceBurst) method = 'burst';
 			return {
-				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString(),
+				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi?.toString(),
 				quantity: data.iQty,
 				method,
 				wilderness: data.isInWilderness
@@ -450,9 +480,8 @@ const tripHandlers = {
 		commandName: 'k',
 		args: (data: NexTaskOptions) => {
 			return {
-				name: 'nex',
-				quantity: data.quantity,
-				solo: data.userDetails.length === 1
+				name: `nex ${data.users.length === 1 ? 'solo' : 'mass'}`,
+				quantity: data.users.length === 1 ? data.quantity : undefined
 			};
 		}
 	},
@@ -518,8 +547,7 @@ const tripHandlers = {
 				cox: {
 					start: {
 						challenge_mode: data.challengeMode,
-						type: data.isFakeMass ? 'fakemass' : data.users.length === 1 ? 'solo' : 'mass',
-						max_team_size: data.maxSizeInput,
+						type: data.users.length === 1 ? 'solo' : 'mass',
 						quantity: data.quantity
 					}
 				}
@@ -596,11 +624,129 @@ const tripHandlers = {
 	[activity_type_enum.Woodcutting]: {
 		commandName: 'chop',
 		args: (data: WoodcuttingActivityTaskOptions) => ({
-			name: itemNameFromID(data.logID),
+			name: data.logID === 323_424 ? 'Ivy' : itemNameFromID(data.logID),
 			quantity: data.iQty,
 			powerchop: data.powerchopping,
 			forestry_events: data.forestry,
 			twitchers_gloves: data.twitchers
+		})
+	},
+	[activity_type_enum.VasaMagus]: {
+		commandName: 'k',
+		args: (data: UndoneChangesMonsterOptions) => ({
+			name: 'vasa',
+			quantity: data.quantity
+		})
+	},
+	[activity_type_enum.OuraniaDeliveryService]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			ourania_delivery_service: {
+				start: {}
+			}
+		})
+	},
+	[activity_type_enum.MonkeyRumble]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			monkey_rumble: {
+				start: {}
+			}
+		})
+	},
+	[activity_type_enum.BaxtorianBathhouses]: {
+		commandName: 'bsominigames',
+		args: (data: BathhouseTaskOptions) => ({
+			baxtorian_bathhouses: {
+				start: { tier: data.tier, heating: data.ore, water_mixture: data.mixture }
+			}
+		})
+	},
+	[activity_type_enum.Naxxus]: {
+		commandName: 'k',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			name: 'Naxxus',
+			quantity: data.quantity
+		})
+	},
+	[activity_type_enum.Moktang]: {
+		commandName: 'k',
+		args: (data: MoktangTaskOptions) => ({
+			name: 'Moktang',
+			quantity: data.qty
+		})
+	},
+	[activity_type_enum.KingGoldemar]: {
+		commandName: 'k',
+		args: (data: NewBossOptions) => ({
+			name: `King Goldemar ${data.users.length === 1 ? 'solo' : 'mass'}`
+		})
+	},
+	[activity_type_enum.KalphiteKing]: {
+		commandName: 'k',
+		args: (data: NewBossOptions) => ({
+			name: `Kalphite King ${data.users.length === 1 ? 'solo' : 'mass'}`,
+			quantity: data.users.length === 1 ? data.quantity : undefined
+		})
+	},
+	[activity_type_enum.Ignecarus]: {
+		commandName: 'k',
+		args: (data: NewBossOptions) => ({
+			name: `Ignecarus ${data.users.length === 1 ? 'solo' : 'mass'}`
+		})
+	},
+	[activity_type_enum.KibbleMaking]: {
+		commandName: 'kibble',
+		args: (data: KibbleOptions) => ({
+			kibble: kibbles.find(i => i.type === data.kibbleType)?.item.name,
+			quantity: data.quantity
+		})
+	},
+	[activity_type_enum.Dungeoneering]: {
+		commandName: 'dg',
+		args: (data: DungeoneeringOptions) => ({
+			start: {
+				floor: data.floor,
+				solo: data.users.length === 1
+			}
+		})
+	},
+	[activity_type_enum.Disassembling]: {
+		commandName: 'invention',
+		args: (data: DisassembleTaskOptions) => ({
+			disassemble: {
+				name: itemNameFromID(data.i),
+				quantity: data.qty
+			}
+		})
+	},
+	[activity_type_enum.Research]: {
+		commandName: 'invention',
+		args: (data: ResearchTaskOptions) => ({
+			research: {
+				material: data.material,
+				quantity: data.quantity
+			}
+		})
+	},
+	[activity_type_enum.ClueCompletion]: {
+		commandName: 'clue',
+		args: (data: ClueActivityTaskOptions) => ({ tier: data.ci, quantity: data.q })
+	},
+	[activity_type_enum.FistOfGuthix]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			fist_of_guthix: {
+				start: {}
+			}
+		})
+	},
+	[activity_type_enum.StealingCreation]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			stealing_creation: {
+				start: {}
+			}
 		})
 	},
 	[activity_type_enum.GiantsFoundry]: {
@@ -616,6 +762,16 @@ const tripHandlers = {
 		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
 			gotr: {
 				start: { combination_runes: data.combinationRunes }
+			}
+		})
+	},
+	[activity_type_enum.TinkeringWorkshop]: {
+		commandName: 'bsominigames',
+		args: (data: TinkeringWorkshopOptions) => ({
+			tinkering_workshop: {
+				start: {
+					material: data.material
+				}
 			}
 		})
 	},
@@ -648,6 +804,14 @@ const tripHandlers = {
 			}
 		})
 	},
+	[activity_type_enum.BalthazarsBigBonanza]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			balthazars_big_bonanza: {
+				start: {}
+			}
+		})
+	},
 	[activity_type_enum.UnderwaterAgilityThieving]: {
 		commandName: 'activities',
 		args: (data: UnderwaterAgilityThievingTaskOptions) => ({
@@ -668,10 +832,42 @@ const tripHandlers = {
 			}
 		})
 	},
+	[activity_type_enum.DepthsOfAtlantis]: {
+		commandName: 'raid',
+		args: (data: DOAOptions) => ({
+			doa: {
+				start: {
+					challenge_mode: data.cm,
+					solo: data.users.length === 1 ? true : undefined,
+					quantity: data.quantity
+				}
+			}
+		})
+	},
+	[activity_type_enum.MemoryHarvest]: {
+		commandName: 'divination',
+		args: (data: MemoryHarvestOptions) => ({
+			harvest_memories: {
+				energy: divinationEnergies.find(i => i.item.id === data.e)!.type,
+				type: memoryHarvestTypes[data.t].id
+			}
+		})
+	},
+	[activity_type_enum.TuraelsTrials]: {
+		commandName: 'bsominigames',
+		args: (_data: TuraelsTrialsOptions) => ({
+			turaels_trials: {
+				start: {
+					method: _data.m
+				}
+			}
+		})
+	},
 	[activity_type_enum.Colosseum]: {
 		commandName: 'k',
-		args: () => ({
-			name: 'colosseum'
+		args: (data: ColoTaskOptions) => ({
+			name: 'colosseum',
+			quantity: data.quantity
 		})
 	}
 } as const;
@@ -699,9 +895,8 @@ export async function fetchRepeatTrips(userID: string) {
 		type: activity_type_enum;
 		data: Prisma.JsonValue;
 	}[] = [];
-	const user = await mUserFetch(userID);
 	for (const trip of res) {
-		if (!taskCanBeRepeated(trip, user)) continue;
+		if (!taskCanBeRepeated(trip)) continue;
 		if (trip.type === activity_type_enum.Farming && !(trip.data as any as FarmingActivityTaskOptions).autoFarmed) {
 			continue;
 		}

@@ -1,10 +1,10 @@
-import { ProductID, products } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { bold } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty } from 'e';
 
+import { Time } from 'e';
 import { BOT_TYPE } from '../../lib/constants';
+import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { roboChimpSyncData } from '../../lib/roboChimp';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -83,6 +83,21 @@ export const redeemCommand: OSBMahojiCommand = {
 					: undefined
 			].filter(notEmpty)
 		);
+
+		if (BOT_TYPE === 'BSO') {
+			if (product.type === 'active') {
+				switch (product.id) {
+					case ProductID.OneHourDoubleLoot: {
+						await addToDoubleLootTimer(Time.Hour, `Purchased by ${user}`);
+						break;
+					}
+					case ProductID.ThreeHourDoubleLoot: {
+						await addToDoubleLootTimer(Time.Hour * 3, `Purchased by ${user}`);
+						break;
+					}
+				}
+			}
+		}
 
 		await roboChimpSyncData(user);
 

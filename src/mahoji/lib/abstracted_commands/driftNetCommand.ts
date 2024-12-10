@@ -1,9 +1,9 @@
 import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -24,7 +24,10 @@ export async function driftNetCommand(
 		return 'You need at least level 44 Hunter and 47 Fishing to do Drift net fishing.';
 	}
 
-	if (!user.hasEquipped(['Graceful gloves', 'Graceful top', 'Graceful legs'])) {
+	if (
+		!user.hasEquipped(['Graceful gloves', 'Graceful top', 'Graceful legs']) &&
+		!user.hasEquippedOrInBank(['Agility master cape'])
+	) {
 		return 'You need Graceful top, legs and gloves equipped to do Drift net fishing.';
 	}
 

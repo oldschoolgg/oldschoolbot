@@ -37,42 +37,46 @@ export enum SlayerTaskUnlocksEnum {
 	Basilocked = 19,
 	ActualVampyreSlayer = 20,
 	// Extension Unlocks
-	NeedMoreDarkness = 21,
-	AnkouVeryMuch = 22,
-	SuqANotherOne = 23,
-	FireAndDarkness = 24,
-	PedalToTheMetals = 25,
-	IReallyMithYou = 26,
-	AdamindSomeMore = 27,
-	RUUUUUNE = 28,
-	SpiritualFervour = 29,
-	BirdsOfAFeather = 30,
-	GreaterChallenge = 31,
-	ItsDarkInHere = 32,
-	BleedMeDry = 33,
-	SmellYaLater = 34,
-	Horrorific = 35,
-	ToDustYouShallReturn = 36,
-	WyverNotherOne = 37,
-	GetSmashed = 38,
-	NechsPlease = 39,
-	AugmentMyAbbies = 40,
-	KrackOn = 41,
-	GetScabarightOnIt = 42,
-	WyverNotherTwo = 43,
-	Basilonger = 44,
-	MoreAtStake = 45,
+	NeedMoreDarkness = 22,
+	AnkouVeryMuch = 23,
+	SuqANotherOne = 24,
+	FireAndDarkness = 25,
+	PedalToTheMetals = 26,
+	IReallyMithYou = 27,
+	AdamindSomeMore = 28,
+	RUUUUUNE = 29,
+	SpiritualFervour = 30,
+	BirdsOfAFeather = 31,
+	GreaterChallenge = 32,
+	ItsDarkInHere = 33,
+	BleedMeDry = 34,
+	SmellYaLater = 35,
+	Horrorific = 36,
+	ToDustYouShallReturn = 37,
+	WyverNotherOne = 38,
+	GetSmashed = 39,
+	NechsPlease = 40,
+	AugmentMyAbbies = 41,
+	KrackOn = 42,
+	GetScabarightOnIt = 43,
+	WyverNotherTwo = 44,
+	Basilonger = 45,
+	MoreAtStake = 46,
 	// Item Purchases:
-	SlayerRing = 46,
-	HerbSack = 47,
-	RunePouch = 48,
-	DoubleTrouble = 49,
-	BroaderFletching = 50,
+	SlayerRing = 48,
+	HerbSack = 49,
+	RunePouch = 50,
+	DoubleTrouble = 51,
+	BroaderFletching = 52,
+	// Custom
+	SizeMatters = 53,
+	BlockAndRoll = 54,
+	PoreDecisions = 55,
+	Maskuerade = 56,
 	IWildyMoreSlayer = 200,
 	Revenenenenenants = 201,
 	EyeSeeYou = 202,
-	MoreEyesThanSense = 203,
-	WarpedReality = 204
+	MoreEyesThanSense = 203
 }
 
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
@@ -548,6 +552,38 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		aliases: ['extend revenants', 'extend revs']
 	},
 	{
+		id: SlayerTaskUnlocksEnum.SizeMatters,
+		name: 'Size Matters',
+		desc: 'Makes all tasks have double quantity',
+		slayerPointCost: 1500,
+		canBeRemoved: true,
+		aliases: ['size matters']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.BlockAndRoll,
+		name: 'Block and Roll',
+		desc: 'Allows you to have 3 extra task blocks',
+		slayerPointCost: 5000,
+		canBeRemoved: true,
+		aliases: ['block n roll', 'block and roll']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.PoreDecisions,
+		name: 'Pore Decisions',
+		desc: 'Allows you to get Polypore Dungeon monsters as slayer tasks',
+		slayerPointCost: 600,
+		canBeRemoved: true,
+		aliases: ['pore decisions', 'poor decisions']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.Maskuerade,
+		name: 'Maskuerade',
+		desc: 'Allows you to get Slayer masks and turn them into helms.',
+		slayerPointCost: 750,
+		canBeRemoved: true,
+		aliases: ['maskuerade', 'masquerade']
+	},
+	{
 		id: SlayerTaskUnlocksEnum.MoreEyesThanSense,
 		name: 'More eyes than sense',
 		desc: 'Number of araxytes assigned is increased to 200-250.',
@@ -556,13 +592,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 3.3,
 		canBeRemoved: true,
 		aliases: ['extend araxytes']
-	},
-	{
-		id: SlayerTaskUnlocksEnum.WarpedReality,
-		name: 'Warped Reality',
-		desc: 'Konar, Duradel, Nieve, and Chaeldar will be able to assign warped creatures as your task.',
-		slayerPointCost: 60,
-		canBeRemoved: true,
-		aliases: ['warped reality']
 	}
 ];
+
+export const slayerUnlockableRewards = SlayerRewardsShop.filter(reward => !reward.item);

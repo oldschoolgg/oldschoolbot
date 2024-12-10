@@ -1,28 +1,30 @@
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { PerkTier, cleanUsername, mentionCommand, seedShuffle } from '@oldschoolgg/toolkit';
+import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
-import { calcWhatPercent, percentChance, sumArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-
-import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
+import { Time, calcWhatPercent, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
+import { Bank, EquipmentSlot, type Item, type ItemBank } from 'oldschooljs';
 
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { pick } from 'remeda';
 import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
+import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
+import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { partialUserCache } from './cache';
 import { ClueTiers } from './clues/clueTiers';
-import type { CATier } from './combat_achievements/combatAchievements';
-import { CombatAchievements } from './combat_achievements/combatAchievements';
+import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
 import { BitField, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { degradeableItems } from './degradeableItems';
-import type { GearSetup, UserFullGearSetup } from './gear/types';
+import { type GearSetup, type UserFullGearSetup, defaultGear } from './gear';
+import { gearImages } from './gear/functions/generateGearImage';
 import { handleNewCLItems } from './handleNewCLItems';
+import type { IMaterialBank } from './invention';
+import { MaterialBank } from './invention/MaterialBank';
 import { marketPriceOfBank } from './marketPrices';
 import backgroundImages from './minions/data/bankBackgrounds';
 import type { CombatOptionsEnum } from './minions/data/combatConstants';
@@ -31,6 +33,7 @@ import type { FarmingContract } from './minions/farming/types';
 import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
+import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
 import { getUsersPerkTier } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
 import type { MinigameScore } from './settings/minigames';
@@ -39,19 +42,22 @@ import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import type { BankSortMethod } from './sorts';
-import { ChargeBank } from './structures/Bank';
-import { Gear, defaultGear } from './structures/Gear';
+import { ChargeBank, type XPBank } from './structures/Banks';
+import { Gear } from './structures/Gear';
 import { GearBank } from './structures/GearBank';
-import type { XPBank } from './structures/XPBank';
-import type { ItemBank, SkillRequirements, Skills } from './types';
+import { MTame } from './structures/MTame';
+import type { Skills } from './types';
 import { addItemToBank, convertXPtoLVL, fullGearToBank, hasSkillReqsRaw, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
+import { findGroupOfUser } from './util/findGroupOfUser';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
+import itemID from './util/itemID';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
+import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
@@ -101,6 +107,7 @@ export class MUserClass {
 	gear!: UserFullGearSetup;
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
+	paintedItems!: Map<number, number>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
 
@@ -138,9 +145,14 @@ export class MUserClass {
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
 
+		this.paintedItems = this.buildPaintedItems();
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
+	}
+
+	get gearTemplate() {
+		return gearImages.find(i => i.id === this.user.gear_template)!;
 	}
 
 	public get gearBank() {
@@ -149,6 +161,8 @@ export class MUserClass {
 			bank: this.bank,
 			skillsAsLevels: this.skillsAsLevels,
 			chargeBank: this.ownedChargeBank(),
+			materials: this.ownedMaterials(),
+			pet: this.user.minion_equippedPet,
 			skillsAsXP: this.skillsAsXP
 		});
 	}
@@ -172,10 +186,6 @@ export class MUserClass {
 		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
 		const mage = 0.325 * (Math.floor(magic / 2) + magic);
 		return Math.floor(base + Math.max(melee, range, mage));
-	}
-
-	get skillsAsRequirements(): Required<SkillRequirements> {
-		return { ...this.skillsAsLevels, combat: this.combatLevel };
 	}
 
 	favAlchs(duration: number, agility?: boolean) {
@@ -453,7 +463,10 @@ GROUP BY data->>'ci';`);
 			defence: Number(this.user.skills_defence),
 			ranged: Number(this.user.skills_ranged),
 			hitpoints: Number(this.user.skills_hitpoints),
-			slayer: Number(this.user.skills_slayer)
+			slayer: Number(this.user.skills_slayer),
+			dungeoneering: Number(this.user.skills_dungeoneering),
+			invention: Number(this.user.skills_invention),
+			divination: Number(this.user.skills_divination)
 		};
 		if (levels) {
 			for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
@@ -671,8 +684,8 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return updates;
 	}
 
-	hasSkillReqs(requirements: SkillRequirements) {
-		return hasSkillReqsRaw(this.skillsAsRequirements, requirements);
+	hasSkillReqs(requirements: Skills) {
+		return hasSkillReqsRaw(this.skillsAsLevels, requirements);
 	}
 
 	allEquippedGearBank() {
@@ -691,6 +704,15 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			}
 		}
 		return allItems.has(checkBank);
+	}
+
+	usingPet(name: string | number) {
+		if (typeof name === 'number') return this.user.minion_equippedPet === name;
+		return this.user.minion_equippedPet === itemID(name);
+	}
+
+	materialsOwned() {
+		return new MaterialBank(this.user.materials_owned as IMaterialBank);
 	}
 
 	async sync() {
@@ -716,6 +738,12 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return Boolean(this.user.minion_hasBought);
 	}
 
+	accountAgeInDays(): null | number {
+		const createdAt = this.user.minion_bought_date;
+		if (!createdAt) return null;
+		return (Date.now() - createdAt.getTime()) / Time.Day;
+	}
+
 	farmingContract() {
 		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
 		const plant = !currentFarmingContract
@@ -726,6 +754,90 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			contract: currentFarmingContract ?? defaultFarmingContract,
 			plant,
 			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
+		};
+	}
+
+	private buildPaintedItems(): Map<number, number> {
+		const rawPaintedItems = this.user.painted_items_tuple;
+		if (!rawPaintedItems) return new Map();
+		return new Map(rawPaintedItems as [number, number][]);
+	}
+
+	async getGodFavour(): Promise<GodFavourBank> {
+		const { god_favour_bank: currentFavour } = await this.fetchStats({ god_favour_bank: true });
+		if (!currentFavour) {
+			return {
+				Zamorak: 0,
+				Armadyl: 0,
+				Bandos: 0,
+				Guthix: 0,
+				Saradomin: 0
+			};
+		}
+		return currentFavour as GodFavourBank;
+	}
+
+	async addToGodFavour(gods: GodName[], duration: number) {
+		const currentFavour = await this.getGodFavour();
+		const newFavour = { ...currentFavour };
+
+		for (const god of gods) {
+			const newGodFavour = currentFavour[god] + duration / (Time.Minute * 6.125);
+			newFavour[god] = newGodFavour;
+		}
+
+		// Dont update if nothing changed
+		if (gods.every(god => newFavour[god] === currentFavour[god])) {
+			return currentFavour;
+		}
+
+		const res = await userStatsUpdate(
+			this.id,
+			{
+				god_favour_bank: newFavour
+			},
+			{
+				god_favour_bank: true
+			}
+		);
+
+		return {
+			newFavourBank: res.god_favour_bank
+		};
+	}
+
+	ownedMaterials() {
+		const materialsOwnedBank = new MaterialBank(this.user.materials_owned as IMaterialBank);
+		return materialsOwnedBank;
+	}
+
+	async repairBrokenItems() {
+		await repairBrokenItemsFromUser(this);
+		await this.sync();
+	}
+
+	getMysteriousTrailData() {
+		const currentStepID = this.user.bso_mystery_trail_current_step_id as 1 | 2 | 3 | 4 | 5 | 6 | 7 | null;
+		if (currentStepID === null) {
+			return { step: null, track: null };
+		}
+		const [trackID] = seedShuffle(
+			mysteriousTrailTracks.map(i => i.id),
+			this.id
+		);
+		const track = mysteriousTrailTracks.find(i => i.id === trackID)!;
+		const step = track.steps[currentStepID - 1];
+		if (!step) {
+			throw new Error(`No step for ${currentStepID} ${this.id}`);
+		}
+		return {
+			step,
+			nextStep: track.steps[currentStepID as any] ?? null,
+			track,
+			stepData: mysteriousStepData[currentStepID],
+			nextStepData: mysteriousStepData[(currentStepID + 1) as keyof typeof mysteriousStepData],
+			previousStepData: mysteriousStepData[(currentStepID - 1) as keyof typeof mysteriousStepData],
+			minionMessage: randArrItem(mysteriousStepData[currentStepID].messages).replace('{minion}', this.minionName)
 		};
 	}
 
@@ -809,8 +921,14 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
 			return;
 		}
-		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield) {
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield && !background.owners) {
 			return;
+		}
+		if (background.owners) {
+			const userIDs = await findGroupOfUser(this.id);
+			if (background.owners.some(owner => userIDs.includes(owner))) {
+				return;
+			}
 		}
 		return resetBackground();
 	}
@@ -848,6 +966,11 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		);
 
 		return { refundBank };
+	}
+
+	async fetchStashUnits() {
+		const units = await getParsedStashUnits(this.id);
+		return units;
 	}
 
 	async validateEquippedGear() {
@@ -893,6 +1016,52 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return {
 			itemsUnequippedAndRefunded
 		};
+	}
+
+	async fetchTames() {
+		const rawTames = await prisma.tame.findMany({
+			where: {
+				user_id: this.id
+			}
+		});
+
+		const tames = rawTames.map(t => new MTame(t));
+
+		const totalBank = new Bank();
+		for (const tame of tames) {
+			totalBank.add(tame.totalLoot);
+		}
+		await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(this.id)
+			},
+			create: {
+				user_id: BigInt(this.id),
+				tame_cl_bank: totalBank.toJSON()
+			},
+			update: {
+				tame_cl_bank: totalBank.toJSON()
+			}
+		});
+
+		return tames;
+	}
+
+	async fetchActiveTame(): Promise<{ tame: null; activity: null } | { activity: TameActivity | null; tame: MTame }> {
+		if (!this.user.selected_tame) {
+			return {
+				tame: null,
+				activity: null
+			};
+		}
+		const tame = await prisma.tame.findFirst({ where: { id: this.user.selected_tame } });
+		if (!tame) {
+			throw new Error('No tame found for selected tame.');
+		}
+		const activity = await prisma.tameActivity.findFirst({
+			where: { user_id: this.id, tame_id: tame.id, completed: false }
+		});
+		return { activity, tame: new MTame(tame) };
 	}
 
 	async calculateNetWorth() {
@@ -969,4 +1138,24 @@ async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
 }
 
 global.mUserFetch = srcMUserFetch;
+
+export const dailyResetTime = Time.Hour * 4;
+export const spawnLampResetTime = (user: MUser) => {
+	const bf = user.bitfield;
+	const perkTier = user.perkTier();
+
+	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
+	const hasTier5 = perkTier >= PerkTier.Five;
+	const hasTier4 = !hasTier5 && perkTier === PerkTier.Four;
+
+	let cooldown = ([PerkTier.Six, PerkTier.Five] as number[]).includes(perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+
+	if (!hasTier5 && !hasTier4 && hasPerm) {
+		cooldown = Time.Hour * 48;
+	}
+
+	return cooldown - Time.Minute * 15;
+};
+export const itemContractResetTime = Time.Hour * 7.8;
+export const giveBoxResetTime = Time.Hour * 23.5;
 global.GlobalMUserClass = MUserClass;

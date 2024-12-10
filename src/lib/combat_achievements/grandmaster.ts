@@ -4,7 +4,6 @@ import { Bank, Monsters } from 'oldschooljs';
 import { PHOSANI_NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
 import type {
-	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NexTaskOptions,
@@ -52,10 +51,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).users.length >= 5 &&
-					!(data as RaidsOptions).isFakeMass &&
 					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
-					(data as RaidsOptions).isFakeMass &&
 					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
 					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1))
 		}
@@ -83,7 +80,6 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).users.length === 1 &&
-				!(data as RaidsOptions).isFakeMass &&
 				data.duration < Time.Minute * 17 * (data.quantity ?? 1)
 		}
 	},
@@ -98,10 +94,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).users.length >= 3 &&
-					!(data as RaidsOptions).isFakeMass &&
 					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
-					(data as RaidsOptions).isFakeMass &&
 					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
 					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1))
 		}
@@ -118,7 +112,6 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
 				(data as RaidsOptions).users.length === 1 &&
-				!(data as RaidsOptions).isFakeMass &&
 				data.duration < Time.Minute * 38.5 * (data.quantity ?? 1)
 		}
 	},
@@ -146,11 +139,9 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
 					(data as RaidsOptions).users.length >= 3 &&
-					!(data as RaidsOptions).isFakeMass &&
 					data.duration < Time.Minute * 27 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
-					(data as RaidsOptions).isFakeMass &&
 					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
 					data.duration < Time.Minute * 27 * (data.quantity ?? 1))
 		}
@@ -167,11 +158,9 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
 					(data as RaidsOptions).users.length >= 5 &&
-					!(data as RaidsOptions).isFakeMass &&
 					data.duration < Time.Minute * 25 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
-					(data as RaidsOptions).isFakeMass &&
 					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
 					data.duration < Time.Minute * 25 * (data.quantity ?? 1))
 		}
@@ -1075,8 +1064,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 24
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				Array.isArray(data.diedAt) &&
+				!data.diedAt[index] &&
+				data.duration < Time.Minute * 24 * data.quantity
 		}
 	},
 	{
@@ -1087,7 +1079,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{
@@ -1098,7 +1091,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 30,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{
@@ -1109,7 +1103,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 20,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{
@@ -1295,17 +1290,6 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
-		}
-	},
-	{
-		id: 3110,
-		name: 'Hueycoatl Speed-Runner',
-		desc: 'Kill the Hueycoatl in 2:30 with three or fewer players.',
-		type: 'speed',
-		monster: 'TheHueycoatl',
-		rng: {
-			chancePerKill: 100,
-			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
 		}
 	}
 ];

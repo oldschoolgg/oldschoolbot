@@ -2,7 +2,6 @@ import { mentionCommand } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../../lib/constants';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -17,6 +16,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import getOSItem from '../../../lib/util/getOSItem';
+import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../mahojiSettings';
 
@@ -46,7 +46,7 @@ const inquisitorItems = resolveItems([
 
 const phosaniBISGear = new Gear({
 	head: "Inquisitor's great helm",
-	neck: 'Amulet of rancour',
+	neck: 'Amulet of torture',
 	body: "Inquisitor's hauberk",
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
@@ -228,6 +228,10 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		}
 	}
 
+	const hasCob = user.usingPet('Cob');
+	if (hasCob && type === 'solo') {
+		effectiveTime /= 2;
+	}
 	const durQtyRes = await calcDurQty(
 		users,
 		{ ...NightmareMonster, timeToFinish: effectiveTime },
@@ -318,7 +322,9 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
 				)} - the total trip will take ${formatDuration(duration)}.`;
-
+	if (hasCob && type === 'solo') {
+		str += '\n2x Boost from Cob\n';
+	}
 	str += `\nRemoved ${soloFoodUsage} from your bank.${
 		isPhosani
 			? hasShadow

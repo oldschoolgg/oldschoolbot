@@ -1,5 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 
@@ -153,7 +155,8 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			KalphiteKingMonster.id
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -258,7 +261,8 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			BSOMonsters.VladimirDrakan.id
 		],
 		combatLevel: 35,
 		questPoints: 1,
@@ -301,8 +305,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 			Monsters.ZombieRat.id,
 			Monsters.Zogre.id,
 			Monsters.Vorkath.id,
-			Monsters.ArmouredZombie.id,
-			Monsters.ZombiePirate.id
+			Monsters.ArmouredZombie.id
 		],
 		combatLevel: 10,
 		unlocked: true

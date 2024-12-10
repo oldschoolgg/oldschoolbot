@@ -1,10 +1,9 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { randArrItem, randInt } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
-import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/minigames';
+import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { itemID, stringMatches } from '../../../lib/util';
@@ -41,9 +40,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		const { channelID, userID, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } =
 			data;
 		const user = await mUserFetch(userID);
-		const previousScore = (await getMinigameEntity(user.id)).guardians_of_the_rift;
-		const { newScore } = await incrementMinigameScore(userID, 'guardians_of_the_rift', quantity);
-		const kcForPet = randInt(previousScore, newScore);
+		await incrementMinigameScore(userID, 'guardians_of_the_rift', quantity);
 
 		const miningXP = quantity * 5 * minedFragments;
 		const craftingXP = quantity * 80 * barrierAndGuardian;
@@ -86,16 +83,16 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
 		let setBonus = 1;
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => Number.parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			setBonus += 60 / 100;
 		} else {
 			// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
 			for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
-				if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
+				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
 					setBonus += bonus / 100;
 				}
 			}
@@ -128,6 +125,8 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			rewardsQty += randInt(rolls - 1, rolls);
 		}
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) rewardsQty *= 2;
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
 		await userStatsUpdate(
@@ -166,19 +165,13 @@ export const guardiansOfTheRiftTask: MinionTask = {
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''
 		}. ${xpResRunecraft} ${xpResCrafting} ${xpResMining}`;
+		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
+
 		if (bonusBloods > 0) {
 			str += `\n\n**Blood essence used:** ${bonusBloods.toLocaleString()}`;
 		}
 		if (rewardsGuardianLoot.amount('Abyssal Protector') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Abyssal Protector while doing the Guardians of the Rift minigame at level ${user.skillLevel(
-					SkillsEnum.Runecraft
-				)} Runecrafting and on run ${formatOrdinal(kcForPet)}!`
-			);
 		}
 
 		updateBankSetting('gotr_loot', totalLoot);

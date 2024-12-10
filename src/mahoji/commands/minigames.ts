@@ -232,19 +232,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 							max_value: 1000
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'simulate',
-					description: 'Simulate a Last Man Standing game with Discord friends.',
-					options: [
-						{
-							name: 'names',
-							description: 'Names. e.g. Magnaboy, Kyra, Alex',
-							required: false,
-							type: ApplicationCommandOptionType.String
-						}
-					]
 				}
 			]
 		},
@@ -1059,7 +1046,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 			stats?: {};
 			start?: {};
 			buy?: { name?: string; quantity?: number };
-			simulate?: { names?: string };
 		};
 		pest_control?: {
 			stats?: {};

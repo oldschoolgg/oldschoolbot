@@ -18,3 +18,6 @@ globalClient._peakIntervalCache = [
 		peakTier: PeakTier.Medium
 	}
 ];
+
+// @ts-ignore
+globalClient.channels.cache.get = () => ({ id: '1234', isTextBased: () => true, isDMBased: () => true, send: vi.fn() });

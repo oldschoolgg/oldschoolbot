@@ -1,20 +1,22 @@
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, type Monster, Monsters } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import type { PvMMethod } from '../constants';
+import { BitField, type PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
+import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import type { KillableMonster } from '../minions/types';
 
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { roll, stringMatches } from '../util';
 import { logError } from '../util/logError';
+import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
+import { allSlayerTasks } from './tasks';
 import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
 import type { AssignableSlayerTask, SlayerMaster } from './types';
 
@@ -38,7 +40,7 @@ interface DetermineBoostParams {
 }
 export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[] {
 	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
-	const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
+	const boostMethods: PvMMethod[] = (params.methods ?? ['none']).flat().filter(method => method);
 
 	// check if user has cannon combat option turned on
 	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
@@ -141,7 +143,6 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	if (myLastTask === task.monster.id) return false;
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.QP) return false;
-	if (task.requiredQuests?.find(quest => !user.user.finished_quest_ids.includes(quest))) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
 	if (task.levelRequirements && !user.hasSkillReqs(task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];
@@ -150,6 +151,20 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
+	if (
+		[
+			BSOMonsters.FungalRodent.name,
+			BSOMonsters.InfestedAxe.name,
+			BSOMonsters.FungalMage.name,
+			BSOMonsters.Grifolaroo.name,
+			BSOMonsters.Grifolapine.name,
+			BSOMonsters.GanodermicRunt.name,
+			BSOMonsters.GanodermicBeast.name
+		].includes(task.monster.name) &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.PoreDecisions)
+	) {
+		return false;
+	}
 	if (lmon === 'grotesque guardians' && !user.bank.has('Brittle key')) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
@@ -175,13 +190,11 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 		!myUnlocks.includes(SlayerTaskUnlocksEnum.IWildyMoreSlayer)
 	)
 		return false;
-
-	if (stringMatches(lmon, 'warped terrorbird') && !myUnlocks.includes(SlayerTaskUnlocksEnum.WarpedReality))
-		return false;
 	return true;
 }
 
 export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
+	const unlocks = _user.user.slayer_unlocks;
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
 	let bossTask = false;
@@ -232,22 +245,43 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		}
 	}
 
-	const quantity = randInt(assignedTask?.amount[0], maxQuantity);
+	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
+
+	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(assignedTask!.monster.id));
+	if (extendReward && unlocks.includes(extendReward.id)) {
+		quantity = assignedTask.extendedAmount
+			? randInt(assignedTask.extendedAmount[0], assignedTask.extendedAmount[1])
+			: Math.ceil(quantity * extendReward.extendMult!);
+	}
+
+	const messages: string[] = [];
+	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters) && !_user.bitfield.includes(BitField.DisableSizeMatters)) {
+		quantity *= 2;
+		messages.push('2x qty for Size Matters unlock');
+	}
+	if (
+		_user.bitfield.includes(BitField.HasScrollOfLongevity) &&
+		!_user.bitfield.includes(BitField.ScrollOfLongevityDisabled)
+	) {
+		quantity *= 2;
+		messages.push('2x qty for Scroll of longevity');
+	}
+
 	const currentTask = await prisma.slayerTask.create({
 		data: {
 			user_id: newUser.id,
 			quantity,
 			quantity_remaining: quantity,
 			slayer_master_id: master.id,
-			monster_id: assignedTask?.monster.id,
+			monster_id: assignedTask.monster.id,
 			skipped: false
 		}
 	});
 	await _user.update({
-		slayer_last_task: assignedTask?.monster.id
+		slayer_last_task: assignedTask.monster.id
 	});
 
-	return { currentTask, assignedTask };
+	return { currentTask, assignedTask, messages };
 }
 
 export async function calcMaxBlockedTasks(user: MUser) {
@@ -262,6 +296,12 @@ export async function calcMaxBlockedTasks(user: MUser) {
 	// Limit blocks to 7 due to BSO quest points
 	blocks = Math.min(blocks, 7);
 
+	const unlocks = user.user.slayer_unlocks;
+	const hasBlockAndRoll = unlocks.includes(SlayerTaskUnlocksEnum.BlockAndRoll);
+
+	if (hasBlockAndRoll) {
+		blocks += 3;
+	}
 	return blocks;
 }
 
@@ -534,4 +574,42 @@ export async function setDefaultAutoslay(
 		slayer_autoslay_options: [autoslayOption.key]
 	});
 	return { success: true, message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})` };
+}
+
+export async function isOnSlayerTask({
+	user,
+	monsterID,
+	quantityKilled
+}: {
+	user: MUser;
+	monsterID: number;
+	quantityKilled: number;
+}) {
+	const usersTask = await getUsersCurrentSlayerInfo(user.id);
+	const isOnTask =
+		usersTask.assignedTask !== null &&
+		usersTask.currentTask !== null &&
+		usersTask.assignedTask.monsters.includes(monsterID);
+
+	const hasSuperiorsUnlocked = user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder);
+
+	if (!isOnTask) return { isOnTask, hasSuperiorsUnlocked };
+
+	const quantitySlayed = Math.min(usersTask.currentTask.quantity_remaining, quantityKilled);
+
+	return {
+		isOnTask,
+		hasSuperiorsUnlocked,
+		quantitySlayed,
+		...usersTask
+	};
+}
+
+export function getAllAlternateMonsters(options: { monster: Monster }): Monster[];
+export function getAllAlternateMonsters(options: { monsterId: number }): number[];
+export function getAllAlternateMonsters(options: { monster: Monster } | { monsterId: number }) {
+	const useMonster = 'monster' in options;
+	const monsterId = useMonster ? options.monster.id : options.monsterId;
+	const monsters = allSlayerTasks.map(task => (task.monsters.includes(monsterId) ? task.monsters : [])).flat(2);
+	return useMonster ? Monsters.filter(m => monsters.includes(m.id)).map(m => m) : monsters;
 }

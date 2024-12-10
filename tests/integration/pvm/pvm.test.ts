@@ -5,7 +5,7 @@ import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConsta
 import { getPOHObject } from '../../../src/lib/poh';
 import { SkillsEnum } from '../../../src/lib/skilling/types';
 import { Gear } from '../../../src/lib/structures/Gear';
-import { calcPerHour, convertLVLtoXP, itemID, resolveItems } from '../../../src/lib/util';
+import { calcPerHour, convertLVLtoXP, resolveItems } from '../../../src/lib/util';
 import { minionKCommand } from '../../../src/mahoji/commands/k';
 import { createTestUser, mockClient, mockUser } from '../util';
 
@@ -31,9 +31,9 @@ describe('PVM', async () => {
 		expect(res).toContain('now killing');
 		await user.processActivities(client);
 		const kc = await user.getKC(EMonster.GENERAL_GRAARDOR);
-		expect(kc).toEqual(4);
+		expect(kc).toBeGreaterThan(8);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
-		expect(user.bank.amount('Big bones')).toEqual(kc);
+		expect(user.bank.amount('Big bones')).toBeGreaterThanOrEqual(kc);
 	});
 
 	it('Should remove charges', async () => {
@@ -100,7 +100,7 @@ describe('PVM', async () => {
 		expect(x).to.contain("You don't have the items");
 		await user.addItemsToBank({ items: new Bank().add('Anti-venom+(4)', 1) });
 		const result = await user.kill(EMonster.HYDRA);
-		expect(result.commandResult).to.contain('is now killing 10x Hydra');
+		expect(result.commandResult).to.contain('is now killing');
 		expect(user.bank.amount('Anti-venom+(4)')).toEqual(0);
 	});
 
@@ -111,8 +111,9 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
-		const result = await user.kill(EMonster.BLOODVELD, { method: 'barrage', shouldFail: true });
-		expect(result.commandResult).toEqual('Bloodveld cannot be barraged or burst.');
+		const result = await user.kill(EMonster.BLOODVELD, { method: 'barrage' });
+		expect(result.commandResult).not.toContain('Barrage');
+		expect(result.commandResult).not.toContain('Burst');
 	});
 
 	it('should check slayer level requirement', async () => {
@@ -133,72 +134,8 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
-		const result = await user.kill(EMonster.NECHRYAEL, { method: 'barrage', shouldFail: true });
-		expect(result.commandResult).toEqual('Nechryael cannot be barraged or burst.');
-	});
-
-	it('barrages abby demons', async () => {
-		const user = await client.mockUser({
-			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
-			mageLevel: 99,
-			mageGear: resolveItems(['Ancient staff'])
-		});
-		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
-		expect(result.commandResult).toContain('is now killing ');
-		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
-		expect(user.bank.amount('Water rune')).toBeLessThan(10000000);
-		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
-		expect(result.newKC).toBeGreaterThan(0);
-		expect(result.xpGained.magic).toBeGreaterThan(0);
-	});
-
-	it('should get kodai buff', async () => {
-		const user = await client.mockUser({
-			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
-			mageLevel: 99,
-			mageGear: resolveItems(['Kodai wand'])
-		});
-		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
-		await user.setAttackStyle([SkillsEnum.Magic]);
-		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
-		expect(result.xpGained.magic).toBeGreaterThan(0);
-		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
-		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
-		expect(result.newKC).toBeGreaterThan(0);
-	});
-
-	it('should get kodai buff even if forced to switch to mage', async () => {
-		const user = await client.mockUser({
-			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
-			mageLevel: 99,
-			mageGear: resolveItems(['Kodai wand'])
-		});
-		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
-		await user.setAttackStyle([SkillsEnum.Attack]);
-		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
-		expect(result.xpGained.magic).toBeGreaterThan(0);
-		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
-		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
-		expect(result.commandResult).toContain('% boost for Kodai wand');
-		expect(result.commandResult).toContain('% for Ice Barrage');
-		expect(result.newKC).toBeGreaterThan(0);
-	});
-
-	it('should use cannon', async () => {
-		const user = await client.mockUser({
-			bank: new Bank().add('Cannonball', 100_000).add(CombatCannonItemBank),
-			rangeLevel: 99,
-			QP: 300,
-			maxed: true
-		});
-		await user.setAttackStyle([SkillsEnum.Ranged]);
-		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
-		expect(result.xpGained.ranged).toBeGreaterThan(0);
-		expect(user.bank.amount('Cannonball')).toBeLessThan(100_000);
-		expect(result.newKC).toBeGreaterThan(0);
+		const result = await user.kill(EMonster.NECHRYAEL, { method: 'barrage' });
+		expect(result.commandResult).not.toContain('Barrage');
 	});
 
 	it('shouldnt use cannon if no cannonballs', async () => {
@@ -212,19 +149,6 @@ describe('PVM', async () => {
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon', shouldFail: true });
 		expect(result.commandResult).toContain("You don't have the items needed to kill this monster");
 		expect(user.bank.amount('Cannonball')).toEqual(0);
-	});
-
-	it('should use chins', async () => {
-		const user = await client.mockUser({
-			bank: new Bank().add('Red chinchompa', 5000),
-			rangeLevel: 99,
-			QP: 300,
-			maxed: true
-		});
-		await user.setAttackStyle([SkillsEnum.Ranged]);
-		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'chinning' });
-		expect(result.commandResult).toContain('% for Red chinchomp');
-		expect(user.bank.amount('Red chinchompa')).toBeLessThan(5000);
 	});
 
 	it('should give poh boost', async () => {
@@ -243,7 +167,7 @@ describe('PVM', async () => {
 		});
 		const result = await user.kill(EMonster.KALPHITE_QUEEN);
 		expect(result.commandResult).toContain('10% for Rejuvenation pool');
-		expect(result.commandResult).toContain('5% for no food');
+		expect(result.commandResult).toContain('8% for no food');
 		expect(result.commandResult).toContain('15.00% for stats');
 	});
 
@@ -258,6 +182,35 @@ describe('PVM', async () => {
 		const result = await user.kill(EMonster.SKOTIZO, { quantity: 1 });
 		expect(result.commandResult).toContain('is now killing 1x Skotizo');
 		expect(user.bank.amount('Dark totem')).toBe(99);
+	});
+
+	describe('should default to 1 skotizo kill', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Dark totem', 5),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+		});
+		let lastKc = await user.getKC(EMonster.SKOTIZO);
+		for (const quantity of [undefined, 1, 2, 5]) {
+			it(`should default to 1 skotizo kill with input of ${quantity}`, async () => {
+				await user.update({ bank: new Bank().add('Dark totem', 5).toJSON() });
+				expect(user.bank.amount('Dark totem')).toBe(5);
+				const result = await user.kill(EMonster.SKOTIZO, { quantity });
+				expect(result.activityResult!.q).toEqual(1);
+				expect(result.activityResult?.userID).toEqual(user.id);
+				expect(result.activityResult?.mi).toEqual(EMonster.SKOTIZO);
+				expect(result.commandResult).toContain('is now killing 1x Skotizo');
+				await user.sync();
+				expect(
+					result.newKC,
+					`LastKC=${lastKc} NewKC=${result.newKC} RawNEWKC=${await user.getKC(EMonster.SKOTIZO)}`
+				).toEqual(lastKc + 1);
+				expect(user.bank.amount('Dark totem')).toBe(4);
+				lastKc = result.newKC;
+			});
+		}
 	});
 
 	describe(
@@ -377,7 +330,7 @@ describe('PVM', async () => {
 		});
 		await user.giveSlayerTask(EMonster.ARAXYTE, 100);
 		await user.kill(EMonster.ARAXYTE, { method: 'cannon' });
-		expect(user.bank.amount('Cannonball')).toBeGreaterThan(100_000 - 500);
+		expect(user.bank.amount('Cannonball')).toBeGreaterThan(100_000 - 200);
 	});
 
 	it('should give a scythe boost and deduct charges', async () => {

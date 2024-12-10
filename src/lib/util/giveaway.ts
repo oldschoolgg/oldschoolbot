@@ -1,6 +1,5 @@
 import type { Giveaway } from '@prisma/client';
-import type { MessageEditOptions } from 'discord.js';
-import { time, userMention } from 'discord.js';
+import { type MessageEditOptions, time, userMention } from 'discord.js';
 import { Time, debounce, noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -103,8 +102,8 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 		);
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... **${winner.mention}**
-			
-They received these items: ${loot}`;
+
+They received these items: ${loot}.`;
 
 		await sendToChannelID(giveaway.channel_id, {
 			content: str
