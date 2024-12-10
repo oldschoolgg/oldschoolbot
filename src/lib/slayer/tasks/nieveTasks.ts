@@ -8,6 +8,7 @@ import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 import { polyporeTasks } from './polyporeTasks';
+import { QuestID } from '../../minions/data/quests';
 
 export const nieveTasks: AssignableSlayerTask[] = [
 	{
@@ -506,7 +507,9 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [120, 185],
 		weight: 6,
 		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
-		unlocked: false
+		unlocked: false,
+		slayerLevel: 56,
+		requiredQuests: [QuestID.ThePathOfGlouphrie]
 	},
 	...bossTasks
 ];

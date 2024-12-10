@@ -1,5 +1,6 @@
 import type { Item, Monster, MonsterSlayerMaster } from 'oldschooljs';
 
+import type { QuestID } from '../minions/data/quests';
 import type { LevelRequirements } from '../skilling/types';
 
 export interface AssignableSlayerTask {
@@ -18,6 +19,7 @@ export interface AssignableSlayerTask {
 	extendedUnlockId?: number;
 	wilderness?: boolean;
 	dungeoneeringLevel?: number;
+	requiredQuests?: QuestID[];
 }
 
 export interface SlayerMaster {

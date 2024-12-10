@@ -7,6 +7,7 @@ import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMo
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
+import { QuestID } from '../../minions/data/quests';
 
 export const konarTasks: AssignableSlayerTask[] = [
 	{
@@ -458,7 +459,9 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [110, 170],
 		weight: 4,
 		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
-		unlocked: false
+		unlocked: false,
+		slayerLevel: 56,
+		requiredQuests: [QuestID.ThePathOfGlouphrie]
 	},
 	...bossTasks
 ];
