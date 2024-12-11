@@ -120,9 +120,7 @@ describe('Refund trips should fully refund PvM', async () => {
 						itemID("Inquisitor's plateskirt"),
 						itemID('Justiciar faceguard')
 					]);
-				}
-			} else if (monster.minimumGearRequirements?.wildy) {
-				if (Object.keys(monster.minimumGearRequirements.wildy).includes(GearStat.AttackRanged)) {
+				} else if (Object.keys(monster.minimumGearRequirements.wildy).includes(GearStat.AttackRanged)) {
 					await user.equip('wildy', [
 						itemID('Twisted bow'),
 						itemID('Masori body (f)'),
