@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../minions/data/killableMonsters';
+import { QuestID } from '../../minions/data/quests';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
@@ -440,6 +441,15 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Amoxliatl.id, Monsters.FrostNagua.id, Monsters.SulphurNagua.id],
 		slayerLevel: 48,
 		unlocked: true
+	},
+	{
+		monster: Monsters.WarpedTerrorbird,
+		amount: [110, 170],
+		weight: 4,
+		monsters: [Monsters.WarpedTerrorbird.id, Monsters.WarpedTortoise.id],
+		unlocked: false,
+		slayerLevel: 56,
+		requiredQuests: [QuestID.ThePathOfGlouphrie]
 	},
 	...bossTasks
 ];
