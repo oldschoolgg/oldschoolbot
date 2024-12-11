@@ -271,7 +271,7 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/getting-started/BSO.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/BSO.mdx): Doesnt use the new command formatting
 
-[/getting-started/changelog.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/changelog.md): Doesnt use the new command formatting
+[/getting-started/changelog.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/changelog.mdx): Doesnt use the new command formatting
 
 [/getting-started/developing.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/getting-started/developing.md): Doesnt use the new command formatting
 
@@ -309,7 +309,11 @@ This is an automatically generated list of pages with possible issues to be look
 
 [/osb/Bosses/nex.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Bosses/nex.md): Doesnt use the new command formatting
 
+[/osb/Bosses/the-nightmare.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Bosses/the-nightmare.md): Doesnt use the new command formatting
+
 [/osb/Bosses/wildy.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Bosses/wildy.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
+
+[/osb/clues.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/clues.md): Doesnt use the new command formatting
 
 [/osb/combat-achievements.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/combat-achievements.mdx): Doesnt use the new command formatting
 
@@ -320,8 +324,6 @@ This is an automatically generated list of pages with possible issues to be look
 [/osb/Getting Started/bank-filters.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Getting%20Started/bank-filters.md): Doesnt use the new command formatting
 
 [/osb/Getting Started/beginner-guide.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Getting%20Started/beginner-guide.md): Doesnt use the new command formatting
-
-[/osb/Getting Started/clues.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Getting%20Started/clues.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [/osb/Getting Started/combat-skills.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/docs/src/content/docs/osb/Getting%20Started/combat-skills.md): Doesnt use the new command formatting
 

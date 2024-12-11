@@ -1,7 +1,8 @@
+import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-import { calcPerHour } from '@oldschoolgg/toolkit';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
@@ -12,7 +13,6 @@ import { clAdjustedDroprate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasFlappy } from '../../../lib/invention/inventions';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',

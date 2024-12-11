@@ -191,4 +191,3 @@ export const minionKCommand: OSBMahojiCommand = {
 		);
 	}
 };
-

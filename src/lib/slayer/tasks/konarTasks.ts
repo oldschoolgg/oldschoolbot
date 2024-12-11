@@ -4,10 +4,10 @@ import killableMonsters from '../../minions/data/killableMonsters';
 import { Ignecarus } from '../../minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
+import { QuestID } from '../../minions/data/quests';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
-import { QuestID } from '../../minions/data/quests';
 
 export const konarTasks: AssignableSlayerTask[] = [
 	{

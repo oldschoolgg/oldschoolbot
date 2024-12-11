@@ -6,11 +6,11 @@ import { Bank, Monsters } from 'oldschooljs';
 import { PerkTier } from '../../lib/constants';
 import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
+import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import type { OSBMahojiCommand } from '../lib/util';
-import { slayerMasters } from '../../lib/slayer/slayerMasters';
 
 function determineKillLimit(user: MUser) {
 	const perkTier = user.perkTier();

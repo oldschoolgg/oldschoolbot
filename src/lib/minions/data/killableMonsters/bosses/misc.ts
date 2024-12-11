@@ -561,7 +561,7 @@ const killableBosses: KillableMonster[] = [
 				],
 				gearSetup: 'range'
 			},
-		   {
+			{
 				items: [
 					{ boostPercent: 5, itemID: itemID("Blessed dizana's quiver") },
 					{ boostPercent: 3, itemID: itemID("Ava's assembler") }

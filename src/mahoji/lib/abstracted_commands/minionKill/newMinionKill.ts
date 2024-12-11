@@ -7,7 +7,7 @@ import z from 'zod';
 import { BitField, type PvMMethod, YETI_ID } from '../../../../lib/constants';
 import { getSimilarItems } from '../../../../lib/data/similarItems';
 import type { InventionID } from '../../../../lib/invention/inventions';
-import { type CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
+import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import {
 	type AttackStyles,
@@ -27,7 +27,8 @@ import {
 	formatDuration,
 	isWeekend,
 	itemID,
-	itemNameFromID, zodEnum
+	itemNameFromID,
+	zodEnum
 } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
