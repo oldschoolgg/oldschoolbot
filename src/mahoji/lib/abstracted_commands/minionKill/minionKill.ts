@@ -134,7 +134,9 @@ export async function minionKillCommand(
 		bob: !bob ? undefined : bob,
 		hasWildySupplies,
 		isInWilderness: result.isInWilderness,
-		attackStyles: result.attackStyles
+		attackStyles: result.attackStyles,
+		itemCost: updateResult.totalCost,
+		chargeCost: result.updateBank.chargeBank
 	});
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration

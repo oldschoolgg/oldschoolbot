@@ -935,6 +935,7 @@ enum activity_type_enum {
   MyNotes
   Colosseum
   CreateForestersRations
+  Refund
 }
 
 enum xp_gains_skill_enum {

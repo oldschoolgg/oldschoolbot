@@ -42,6 +42,9 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		)}.`;
 	}
 	const quantityWealths = wealthInventorySize * quantity;
+	const cost = new Bank().add('Ring of wealth', quantityWealths);
+
+	await user.removeItemsFromBank(cost);
 
 	if (userBank.amount('Ring of wealth') < quantityWealths) {
 		return `You don't have enough Rings of wealth, ${quantityWealths} required.`;
@@ -52,10 +55,9 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'WealthCharging'
+		type: 'WealthCharging',
+		itemCost: cost
 	});
-
-	await user.removeItemsFromBank(new Bank().add('Ring of wealth', quantityWealths));
 
 	return `${
 		user.minionName

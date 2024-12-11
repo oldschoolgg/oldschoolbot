@@ -46,6 +46,8 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 	if (userBank.amount('Amulet of glory') < quantityGlories) {
 		return `You don't have enough ${quantityGlories}x Amulet of glory.`;
 	}
+	const cost = new Bank().add('Amulet of glory', quantityGlories);
+	await user.removeItemsFromBank(cost);
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
@@ -54,8 +56,6 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 		duration,
 		type: 'GloryCharging'
 	});
-
-	await user.removeItemsFromBank(new Bank().add('Amulet of glory', quantityGlories));
 
 	return `${
 		user.minionName

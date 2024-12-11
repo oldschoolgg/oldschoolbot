@@ -138,7 +138,8 @@ export const mixCommand: OSBMahojiCommand = {
 			wesley: Boolean(wesley),
 			quantity,
 			duration: quantity * timeToMixSingleItem,
-			type: 'Herblore'
+			type: 'Herblore',
+			itemCost: finalCost
 		});
 
 		return `${user.minionName} ${cost} making ${quantity}x ${

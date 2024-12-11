@@ -143,7 +143,8 @@ export const smithCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity,
 			duration,
-			type: 'Smithing'
+			type: 'Smithing',
+			itemCost: cost
 		});
 
 		return `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
