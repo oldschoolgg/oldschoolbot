@@ -66,6 +66,7 @@ const DestroyedTable = new LootTable().tertiary(50, 'Clue scroll (elite)').terti
 export const Araxxor = new SimpleMonster({
 	id: 13668,
 	name: 'Araxxor',
-	table: [AraxxorTable, DestroyedTable],
+	table: AraxxorTable,
+	modifiedTable: DestroyedTable,
 	aliases: ['araxxor']
 });

@@ -10,11 +10,12 @@ import {
 	getTotemChanceFromHP
 } from '../util/util';
 import Bank from './Bank';
-import LootTable from './LootTable';
+import type LootTable from './LootTable';
 import Monster from './Monster';
 
 interface SimpleMonsterOptions extends MonsterOptions {
-	table?: LootTable | LootTable[];
+	table?: LootTable;
+	modifiedTable?: LootTable;
 	onTaskTable?: LootTable;
 	wildyCaveTable?: LootTable;
 	pickpocketTable?: LootTable;
@@ -22,7 +23,8 @@ interface SimpleMonsterOptions extends MonsterOptions {
 }
 
 export default class SimpleMonster extends Monster {
-	public table?: LootTable | LootTable[];
+	public table?: LootTable;
+	public modifiedTable?: LootTable;
 	public onTaskTable?: LootTable;
 	public wildyCaveTable?: LootTable;
 	public pickpocketTable?: LootTable;
@@ -31,9 +33,7 @@ export default class SimpleMonster extends Monster {
 	constructor(options: SimpleMonsterOptions) {
 		let allItems: number[] = [];
 		if (options.table) {
-			for (const table of options.table instanceof LootTable ? [options.table] : options.table) {
-				allItems = allItems.concat(table.allItems);
-			}
+			allItems = allItems.concat(options.table.allItems);
 		}
 		if (options.pickpocketTable) {
 			allItems = allItems.concat(options.pickpocketTable.allItems);
@@ -42,6 +42,7 @@ export default class SimpleMonster extends Monster {
 		this.table = options.table;
 		this.pickpocketTable = options.pickpocketTable;
 		this.onTaskTable = options.onTaskTable;
+		this.modifiedTable = options.modifiedTable;
 		this.wildyCaveTable = options.wildyCaveTable;
 		this.customKillLogic = options.customKillLogic;
 	}
@@ -57,11 +58,8 @@ export default class SimpleMonster extends Monster {
 			...options.lootTableOptions,
 			targetBank: loot
 		};
-		const rollTable = this.table
-			? this.table instanceof LootTable
-				? this.table
-				: this.table[lootTableOptions.table ? lootTableOptions.table : 0]
-			: undefined;
+
+		const rollTable = this.modifiedTable && options.lootTableOptions?.modifyTable ? this.modifiedTable : this.table;
 
 		if (!canGetBrimKey && !wildySlayer && !options.inCatacombs && !options.onSlayerTask) {
 			rollTable?.roll(quantity, lootTableOptions);

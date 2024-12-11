@@ -98,8 +98,6 @@ export const iceBurstConsumables: Consumable = {
 	isRuneCost: true
 };
 
-export function chooseLootTable(monsterName: string, combatOptions?: readonly CombatOptionsDesc[]) {
-	return monsterName === Monsters.Araxxor.name && combatOptions?.some(o => o.id === CombatOptionsEnum.AraxxorDestroy)
-		? 1
-		: 0;
+export function modifyTable(monsterName: string, combatOptions?: readonly CombatOptionsDesc[]) {
+	return monsterName === Monsters.Araxxor.name && combatOptions?.some(o => o.id === CombatOptionsEnum.AraxxorDestroy);
 }
