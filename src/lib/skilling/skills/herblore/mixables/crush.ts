@@ -108,7 +108,7 @@ const Crush: Mixable[] = [
 		inputItems: new Bank({ Athelas: 1 }),
 		tickRate: 2,
 		bankTimePerPotion: 0.17,
-		wesley: false,
+		wesley: true,
 		outputMultiple: 2
 	},
 	{
