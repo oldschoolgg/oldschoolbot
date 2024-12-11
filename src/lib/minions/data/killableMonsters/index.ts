@@ -399,6 +399,6 @@ export const effectiveMonsters = [
 export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));
 
 export const wikiMonsters = killableMonsters
-	.filter(m => m.equippedItemBoosts || m.itemInBankBoosts || m.itemCost)
-	.filter(m => Monsters.get(m.id)!.data.combatLevel >= 80 && !m.name.includes('Revenant'))
+	.filter(m => m.equippedItemBoosts || m.itemInBankBoosts || m.itemCost || m.requiredQuests)
+	.filter(m => ['Revenant', 'Reanim'].every(b => !m.name.includes(b)))
 	.sort((a, b) => a.name.localeCompare(b.name));

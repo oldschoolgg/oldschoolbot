@@ -1,11 +1,12 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
 import type { KillableMonster } from '../../types';
+import { QuestID } from '../quests';
 
 const killableMonsters: KillableMonster[] = [
 	{
@@ -217,6 +218,83 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 100,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush]
+	},
+	{
+		id: Monsters.ZombiePirate.id,
+		name: Monsters.ZombiePirate.name,
+		aliases: Monsters.ZombiePirate.aliases,
+		timeToFinish: Time.Second * 30,
+		table: Monsters.ZombiePirate,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 9,
+		pkBaseDeathChance: 8,
+		itemCost: [
+			{
+				itemCost: new Bank().add('Blighted super restore (4)', 1),
+				qtyPerMinute: 0.17,
+				alternativeConsumables: [
+					{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+					{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+				]
+			},
+			{
+				itemCost: new Bank().add('Burning amulet(5)'),
+				qtyPerMinute: 1 / 60,
+				boostPercent: 25,
+				optional: true
+			}
+		],
+		equippedItemBoosts: [
+			{
+				gearSetup: 'wildy',
+				items: [
+					{ itemID: itemID('Venator bow'), boostPercent: 25 },
+					{ itemID: itemID('Webweaver bow'), boostPercent: 20 },
+					{ itemID: itemID("Craw's bow"), boostPercent: 20 }
+				]
+			}
+		],
+		minimumGearRequirements: {
+			wildy: {
+				attack_ranged: 69
+			}
+		},
+		levelRequirements: {
+			prayer: 43,
+			hitpoints: 40
+		},
+		canBePked: true,
+		cannonMulti: true,
+		canCannon: true,
+		canBarrage: false,
+		canChinning: false
+	},
+	{
+		id: Monsters.WarpedTerrorbird.id,
+		name: Monsters.WarpedTerrorbird.name,
+		aliases: Monsters.WarpedTerrorbird.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.WarpedTerrorbird,
+		healAmountNeeded: 200,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush],
+		requiredQuests: [QuestID.ThePathOfGlouphrie],
+		customMonsterHP: 150,
+		canCannon: true
+	},
+	{
+		id: Monsters.WarpedTortoise.id,
+		name: Monsters.WarpedTortoise.name,
+		aliases: Monsters.WarpedTortoise.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.WarpedTortoise,
+		healAmountNeeded: 200,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush],
+		requiredQuests: [QuestID.ThePathOfGlouphrie],
+		canCannon: true
 	}
 ];
 
