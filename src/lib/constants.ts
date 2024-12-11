@@ -18,7 +18,7 @@ import type { CanvasImage } from './util/canvasUtil';
 export { PerkTier };
 
 type BotType = 'OSB' | 'BSO';
-export const BOT_TYPE: BotType = 'OSB' as 'BSO' | 'OSB';
+export const BOT_TYPE: BotType = 'BSO' as 'BSO' | 'OSB';
 export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
 const isProduction = process.env.NODE_ENV === 'production';
 const GENERAL_CHANNEL_ID =

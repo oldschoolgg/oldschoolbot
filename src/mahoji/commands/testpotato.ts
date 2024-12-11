@@ -300,7 +300,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							name: 'skill',
 							description: 'The skill.',
 							required: true,
-							choices: Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+							choices: Object.values(Skills)
+								.map(s => ({ name: s.name, value: s.id }))
+								.slice(0, 25)
 						},
 						{
 							type: ApplicationCommandOptionType.Integer,

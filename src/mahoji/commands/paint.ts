@@ -2,7 +2,8 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { getPaintedItemImage, paintColors } from '../../lib/paintColors';
+import { paintColors } from '../../lib/customItems/paintCans';
+import { getPaintedItemImage } from '../../lib/paintColors';
 import { canvasToBuffer } from '../../lib/util/canvasUtil';
 import { itemEffectImageCache } from '../../lib/util/customItemEffects';
 import { getItem } from '../../lib/util/getOSItem';

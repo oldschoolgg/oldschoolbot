@@ -6,7 +6,7 @@
 		"============DEVELOPMENT": "============",
 		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm build && node --enable-source-maps dist\"",
 		"dev:stage1": "pnpm concurrent \"pnpm install\" \"prisma db push\" \"pnpm generate:robochimp\"",
-		"dev:stage2": "pnpm concurrent \"pnpm commands\" \"pnpm creatables\" \"pnpm wiki\" \"pnpm build\"",
+		"dev:stage2": "pnpm concurrent \"pnpm commands\" \"pnpm creatables\" \"pnpm build\" \"tsx ./scripts/bsoData.ts\"",
 		"dev:stage3": "pnpm lint && pnpm test",
 		"dev": "pnpm dev:stage1 && pnpm dev:stage2 && pnpm dev:stage3",
 		"watch:tsc": "tsc -w -p src",

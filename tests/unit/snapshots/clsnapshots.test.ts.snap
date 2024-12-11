@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`OSB Collection Log Groups/Categories 1`] = `
+exports[`BSO Collection Log Groups/Categories 1`] = `
 "Abyssal Sire (9)
 Achievement Diary (48)
 Aerial Fishing (9)
@@ -200,7 +200,7 @@ Zalcano (4)
 Zulrah (11)"
 `;
 
-exports[`OSB Overall Collection Log Items 1`] = `
+exports[`BSO Overall Collection Log Items 1`] = `
 "2nd age bow
 2nd age mage bottom
 2nd age mage mask

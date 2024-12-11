@@ -1,4 +1,4 @@
-import { promises as fs, writeFileSync } from 'node:fs';
+import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import Spritesmith from 'spritesmith';
@@ -8,11 +8,9 @@ import { isFunction, uniqueArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
 import { BOT_TYPE } from '../src/lib/constants';
-import { customItems } from '../src/lib/customItems/util';
 import { allCLItems } from '../src/lib/data/Collections';
 import Buyables from '../src/lib/data/buyables/buyables';
 import Createables from '../src/lib/data/createables';
-import { itemNameFromID } from '../src/lib/util';
 
 const stopwatch = new Stopwatch();
 
@@ -44,7 +42,7 @@ const trades = Items.filter(i => Boolean(i.tradeable_on_ge)).map(i => i.id);
 const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	...allCLItems,
 	...trades,
-	...Createables.map(c => new Bank(c.outputItems).items().flatMap(i => i[0].id)).flat(2),
+	...Createables.map(c => new Bank(c.outputItems as any).items().flatMap(i => i[0].id)).flat(2),
 	...Buyables.flatMap(b => {
 		if (!b.outputItems) return [];
 		if (isFunction(b.outputItems)) {
@@ -138,23 +136,6 @@ async function main() {
 	).catch(err => console.error(`Failed to make BSO spritesheet: ${err.message}`));
 
 	stopwatch.check('Finished');
-
-	writeFileSync(
-		'data/bso_items.json',
-		JSON.stringify(
-			customItems.reduce(
-				(acc, id) => {
-					acc[id] = itemNameFromID(id)!;
-					return acc;
-				},
-				{} as Record<number, string>
-			),
-			null,
-			4
-		),
-		'utf-8'
-	);
-
 	process.exit();
 }
 

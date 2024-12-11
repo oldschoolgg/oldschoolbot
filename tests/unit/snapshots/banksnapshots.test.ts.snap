@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`OSB Buyables 1`] = `
+exports[`BSO Buyables 1`] = `
 [
   {
     "aliases": [
@@ -5754,7 +5754,7 @@ exports[`OSB Buyables 1`] = `
 ]
 `;
 
-exports[`OSB Creatables 1`] = `
+exports[`BSO Creatables 1`] = `
 [
   {
     "cantHaveItems": undefined,

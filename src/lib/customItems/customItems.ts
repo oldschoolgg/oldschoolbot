@@ -12,6 +12,7 @@ import './baxBath';
 import './dwarven';
 import './moktang';
 import './leagues';
+import './paintCans';
 
 import { EquipmentSlot, type ItemRequirements } from 'oldschooljs/dist/meta/types';
 
