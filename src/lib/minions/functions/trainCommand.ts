@@ -3,6 +3,7 @@ import { uniqueArr } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import type { AttackStyles } from '.';
+import { formatList } from '../../util';
 
 const validStyles: AttackStyles[] = [
 	SkillsEnum.Attack,
@@ -66,13 +67,13 @@ export async function trainCommand(user: MUser, _styles: string | undefined) {
 
 	for (const comb of invalidCombinations) {
 		if (comb.every(i => styles.includes(i))) {
-			return `That's not a valid attack style, you can't train these at the same time: ${comb.join(', ')}.`;
+			return `That's not a valid attack style, you can't train these at the same time: ${formatList(comb)}.`;
 		}
 	}
 
 	await user.setAttackStyle(styles);
 
-	return `You're now training: ${styles
-		.map(toTitleCase)
-		.join(', ')}. When you do PvM, you will receive XP in these skills.`;
+	return `You're now training: ${formatList(
+		styles.map(toTitleCase)
+	)}. When you do PvM, you will receive XP in these skills.`;
 }

@@ -181,14 +181,14 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 		}
 
 		if (multiple) {
-			str.push(joinStrings(subStr));
+			str.push(formatList(subStr));
 		} else {
 			str.push(subStr.join(''));
 		}
 	}
 
 	if (consumables.length > 1) {
-		return `(${joinStrings(str, 'or')})`;
+		return `(${formatList(str, 'or')})`;
 	}
 
 	return str.join('');
@@ -204,10 +204,10 @@ export function formatPohBoosts(boosts: POHBoosts) {
 			bonusStr.push(`${boostPercent}% for ${name}`);
 		}
 
-		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${joinStrings(bonusStr, 'or')})\n`);
+		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${formatList(bonusStr, 'or')})\n`);
 	}
 
-	return joinStrings(slotStr);
+	return formatList(slotStr);
 }
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
@@ -389,7 +389,7 @@ export function checkRangeGearWeapon(gear: Gear) {
 	if (!projectileCategory[1].items.includes(ammo.item)) {
 		return `You have invalid ammo for your equipped weapon. For ${
 			projectileCategory[0]
-		}-based weapons, you can use: ${joinStrings(projectileCategory[1].items.map(itemNameFromID), 'or')}.`;
+		}-based weapons, you can use: ${formatList(projectileCategory[1].items.map(itemNameFromID), 'or')}.`;
 	}
 
 	return {
@@ -419,18 +419,8 @@ export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
 
-export function replaceLast(str: string, pattern: string, replacement: string) {
-	const last = str.lastIndexOf(pattern);
-	return last !== -1 ? `${str.slice(0, last)}${replacement}${str.slice(last + pattern.length)}` : str;
-}
-
-export function joinStrings(itemList: any[], end?: string) {
+export function formatList(itemList: any[], end?: string) {
 	if (itemList.length < 2) return itemList.join(', ');
-	const lastItem = itemList[itemList.length - 1];
-	if (lastItem && (typeof lastItem !== 'string' || !lastItem.toString().includes(','))) {
-		return replaceLast(itemList.join(', '), ',', ` ${end ? end : 'and'}`);
-	} else {
-		// commas in last term will put str in weird place
-		return itemList.join(', ');
-	}
+	const lastItem = itemList.pop();
+	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
 }

@@ -18,6 +18,7 @@ import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit/ut
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';
+import { formatList } from '../util';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
@@ -43,9 +44,9 @@ function nexGearStats(user: MUser) {
 }
 
 const allowedWeapons = resolveItems(['Armadyl crossbow', 'Dragon crossbow', 'Zaryte crossbow', 'Twisted bow']);
-const weaponsStr = allowedWeapons.map(itemNameFromID).join(', ');
+const weaponsStr = formatList(allowedWeapons.map(itemNameFromID), 'or');
 const allowedAmmo = resolveItems(['Dragon arrow', 'Ruby dragon bolts (e)', 'Rune arrow']);
-const ammoStr = allowedAmmo.map(itemNameFromID).join(', ');
+const ammoStr = formatList(allowedAmmo.map(itemNameFromID), 'or');
 
 const minimumCostOwned = new Bank()
 	.add('Saradomin brew(4)', 8)
