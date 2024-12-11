@@ -4,10 +4,11 @@ import { colosseumCommand } from '../../../../lib/colosseum';
 import type { PvMMethod } from '../../../../lib/constants';
 import { getCurrentPeak } from '../../../../lib/getCurrentPeak';
 import { trackLoot } from '../../../../lib/lootTrack';
+import { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../../lib/util';
+import { Monsters, formatDuration, stringMatches } from '../../../../lib/util';
 import addSubTaskToActivityTask from '../../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../../lib/util/findMonster';
@@ -134,11 +135,18 @@ export async function minionKillCommand(
 		bob: !bob ? undefined : bob,
 		hasWildySupplies,
 		isInWilderness: result.isInWilderness,
-		attackStyles: result.attackStyles
+		attackStyles: result.attackStyles,
+		combatOptions: user.combatOptions
 	});
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
+
+	if (monster.id === Monsters.Araxxor.id) {
+		response += user.combatOptions.includes(CombatOptionsEnum.AraxxorDestroy)
+			? " You are destroying Araxxor's corpse for a higher chance of pet."
+			: " You are not destroying Araxxor's corpse to receive more loot.";
+	}
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;
