@@ -93,7 +93,7 @@ export const killCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'modifier',
-			description: 'Additional Combat Modifier for some monsters',
+			description: 'Additional combat modifier for some monsters',
 			required: false,
 			choices: combatOptionChoices
 		}
