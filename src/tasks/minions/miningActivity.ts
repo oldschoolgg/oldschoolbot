@@ -1,6 +1,7 @@
 import { Time, increaseNumByPercent, randInt, roll, sumArr } from 'e';
 
 import { Emoji, Events } from '../../lib/constants';
+import { QuestID } from '../../lib/minions/data/quests';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining, { prospectorItemsArr } from '../../lib/skilling/skills/mining';
 import { type Ore, SkillsEnum } from '../../lib/skilling/types';
@@ -9,14 +10,23 @@ import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { skillingPetDropRate, toKMB } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
 
 export function determineMiningResult({
 	ore,
 	quantity,
 	gearBank,
 	duration,
-	isPowermining
-}: { ore: Ore; quantity: number; gearBank: GearBank; duration: number; isPowermining: boolean }) {
+	isPowermining,
+	hasFinishedCOTS
+}: {
+	ore: Ore;
+	quantity: number;
+	gearBank: GearBank;
+	duration: number;
+	isPowermining: boolean;
+	hasFinishedCOTS: boolean;
+}) {
 	const miningLvl = gearBank.skillsAsLevels.mining;
 	const messages: string[] = [];
 	let xpToReceive = quantity * ore.xp;
@@ -108,6 +118,10 @@ export function determineMiningResult({
 		}
 	}
 
+	if (ore.name === 'Runite ore') {
+		rollForMoonKeyHalf({ user: hasFinishedCOTS, duration, loot: updateBank.itemLootBank });
+	}
+
 	return {
 		updateBank,
 		messages,
@@ -128,7 +142,8 @@ export const miningTask: MinionTask = {
 			quantity,
 			gearBank: user.gearBank,
 			duration,
-			isPowermining: powermine
+			isPowermining: powermine,
+			hasFinishedCOTS: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)
 		});
 
 		const updateResult = await updateBank.transact(user);

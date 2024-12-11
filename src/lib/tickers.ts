@@ -9,6 +9,7 @@ import { processPendingActivities } from './Task';
 import { BitField, Channel, PeakTier, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
+import { populateRoboChimpCache } from './perkTier';
 import { runCommand } from './settings/settings';
 import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
@@ -373,6 +374,15 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		interval: Time.Second * 10,
 		cb: async () => {
 			await GrandExchange.tick();
+		}
+	},
+	{
+		name: 'robochimp_cache',
+		startupWait: Time.Minute * 5,
+		timer: null,
+		interval: Time.Minute * 5,
+		cb: async () => {
+			await populateRoboChimpCache();
 		}
 	}
 ];

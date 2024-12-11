@@ -10,7 +10,7 @@ const baseConfig = {
 	entryPoints,
 	platform: 'node',
 	sourcemap: false,
-	external: ['discord.js', 'ioredis'],
+	external: ['discord.js'],
 	loader: {
 		'.json': 'copy'
 	}

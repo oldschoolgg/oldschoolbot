@@ -16,7 +16,18 @@
 			".yarn",
 			".pnpm-store"
 		],
-		"include": ["**/*.ts", "**/*.mts", "**/*.json", "**/*.test.ts", "**/*.mdx", "**/*.md", "**/*.mjs", "**/*.cjs"]
+		"include": [
+			"**/*.ts",
+			"**/*.mts",
+			"**/*.json",
+			"**/*.test.ts",
+			"**/*.mdx",
+			"**/*.md",
+			"**/*.mjs",
+			"**/*.cjs",
+			"**/*.tsx",
+			"**/*.astro"
+		]
 	},
 	"vcs": {
 		"enabled": true,

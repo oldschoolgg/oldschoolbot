@@ -8,12 +8,7 @@ export async function exitCleanup() {
 		console.log('Cleaning up and exiting...');
 		TimerManager.destroy();
 		await updateTestBotStatus(false);
-		await Promise.all([
-			globalClient.destroy(),
-			prisma.$disconnect(),
-			redis.disconnect(),
-			roboChimpClient.$disconnect()
-		]);
+		await Promise.all([globalClient.destroy(), prisma.$disconnect(), roboChimpClient.$disconnect()]);
 		console.log('\nCleaned up and exited.');
 	} catch (err) {
 		console.error(err);
