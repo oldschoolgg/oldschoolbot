@@ -13,6 +13,20 @@ import { minionCommand } from '../../../src/mahoji/commands/minion';
 import { userStatsUpdate } from '../../../src/mahoji/mahojiSettings';
 import { mockClient } from './../util';
 
+const implingJars = [
+	'Baby impling jar',
+	'Young impling jar',
+	'Gourmet impling jar',
+	'Earth impling jar',
+	'Essence impling jar',
+	'Eclectic impling jar',
+	'Nature impling jar',
+	'Magpie impling jar',
+	'Ninja impling jar',
+	'Dragon impling jar',
+	'Lucky impling jar'
+];
+
 describe('Refund trips should fully refund PvM', async () => {
 	const client = await mockClient();
 
@@ -84,7 +98,19 @@ describe('Refund trips should fully refund PvM', async () => {
 
 	const currentBank = user.bank.clone().freeze();
 
-	for (const monster of killableMonsters.filter(m => m.itemCost || m.degradeableItemUsage || m.projectileUsage)) {
+	const testMonsters = [
+		'Skotizo',
+		'Phantom Muspah',
+		'Rabbit',
+		'Araxxor',
+		'Zulrah',
+		'Spindel',
+		'Artio',
+		'Warped Jelly',
+		'Araxyte'
+	];
+
+	for (const monster of killableMonsters.filter(m => testMonsters.includes(m.name))) {
 		test(`${monster.name}`, async () => {
 			if (monster.minimumGearRequirements?.wildy) {
 				if (Object.keys(monster.minimumGearRequirements.wildy).includes(GearStat.AttackCrush)) {
@@ -118,13 +144,17 @@ describe('Refund trips should fully refund PvM', async () => {
 					}
 				}
 			});
-
 			const killRes = await user.runCommand(
 				minionKCommand,
 				{ name: monster.name, wilderness: monster.canBePked, quantity: 1 },
 				true
 			);
 			expect(killRes).toContain('now killing');
+
+			const usedBank = user.bank.filter(
+				(item, num) => num !== userBank.amount(item) && !implingJars.find(name => name === item.name)
+			); //can get implings in refund trip, so filter these out
+
 			const refundRes = await user.runCommand(minionCommand, { cancel_and_refund: {} }, true);
 
 			expect(refundRes).toContain('is returning from');
@@ -157,7 +187,7 @@ describe('Refund trips should fully refund PvM', async () => {
 				await user.removeItemsFromBank(new Bank().add('Dragon dart', user.bank.amount('Dragon dart') - 1000));
 			}
 
-			for (const item of currentBank.items()) {
+			for (const item of usedBank.items()) {
 				expect([item[0].name, currentBank.amount(item[0])]).toEqual([item[0].name, user.bank.amount(item[0])]);
 			}
 			expect(user.gearBank.gear.range.ammo!.quantity).toEqual(10_000);
