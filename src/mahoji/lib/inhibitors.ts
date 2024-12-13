@@ -108,7 +108,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'commandRoleLimit',
 		run: ({ member, guild, channel, userID }) => {
 			if (!guild || guild.id !== globalConfig.supportServerID) return false;
-			if (channel.id !== Channel.General) return false;
+			if (channel.id !== Channel.ServerGeneral) return false;
 			const perkTier = perkTierCache.get(userID) ?? 0;
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
