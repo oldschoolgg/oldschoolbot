@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
+import { CombatOptionsArray, combatOptionChoices, modifyTable } from '../../lib/minions/data/combatConstants';
 import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
@@ -85,14 +86,23 @@ export const killCommand: OSBMahojiCommand = {
 			name: 'master',
 			description: 'On slayer task from a master?',
 			required: false,
-			choices: slayerMasterChoices
+			choices: slayerMasterChoices.filter(master =>
+				['Duradel', 'Konar quo Maten', 'Krystilia'].includes(master.name)
+			)
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'modifier',
+			description: 'Additional combat modifier for some monsters',
+			required: false,
+			choices: combatOptionChoices
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		interaction
-	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string }>) => {
+	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string; modifier: string }>) => {
 		const user = await mUserFetch(userID);
 		await deferInteraction(interaction);
 		const result = await Workers.kill({
@@ -106,12 +116,20 @@ export const killCommand: OSBMahojiCommand = {
 				user
 					.buildTertiaryItemChanges(false, options.master === 'Krystilia', options.master !== undefined)
 					.entries()
+			),
+			modifyTable: modifyTable(
+				options.name,
+				CombatOptionsArray.filter(o => o.name === options.modifier)
 			)
 		});
 
 		if (result.error) {
 			return result.error;
 		}
+
+		const killString = `Simulated loot from killing ${options.quantity} ${options.name}, ${options.master ? `on task (${options.master})` : 'off task'}${options.catacombs ? ', in catacombs' : ''}${options.modifier ? `, with modifier: ${options.modifier}` : ''}. `;
+
+		result.content = result.content ? result.content : killString;
 
 		const image = await makeBankImage({
 			bank: new Bank(result.bank),

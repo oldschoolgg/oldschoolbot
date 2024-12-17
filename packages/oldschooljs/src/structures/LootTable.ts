@@ -49,6 +49,7 @@ export interface LootTableRollOptions {
 	 */
 	tertiaryItemPercentageChanges?: Map<string, number>;
 	targetBank?: Bank;
+	modifyTable?: boolean;
 }
 
 export default class LootTable {
