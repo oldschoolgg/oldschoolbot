@@ -791,7 +791,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		}
 
 		const degradeResults = await degradeChargeBank(user, chargeBank);
-		costStr.push(degradeResults.map(i => i.userMessage).join(', '));
+		costStr.push(degradeResults);
 	}
 
 	// update user stats

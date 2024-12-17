@@ -110,7 +110,7 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 	await user.removeItemsFromBank(cost);
 	await trackClientBankStats('turaels_trials_cost_bank', cost);
 	await userStatsBankUpdate(user.id, 'turaels_trials_cost_bank', cost);
-	messages.push(degradeResults.map(i => i.userMessage).join(', '));
+	messages.push(degradeResults);
 	messages.push(`Removed ${cost}`);
 
 	const task = await addSubTaskToActivityTask<TuraelsTrialsOptions>({
