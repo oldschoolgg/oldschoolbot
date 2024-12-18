@@ -4,7 +4,9 @@ import { Bank, resolveItems } from 'oldschooljs';
 import getOSItem from './getOSItem';
 import { itemNameFromID } from './smallUtils';
 
-const crateItem = getOSItem('Sinister crate (s7)');
+const crateItem = getOSItem('Frozen crate (s8)');
+
+const xmasPets = resolveItems(['Smokey', 'Rudolph', 'Frosty']);
 
 export function handleCrateSpawns(user: MUser, duration: number, messages?: string[]) {
 	const accountAge = user.accountAgeInDays();
@@ -18,20 +20,7 @@ export function handleCrateSpawns(user: MUser, duration: number, messages?: stri
 	dropratePerMinute = Math.ceil(dropratePerMinute / 3);
 	dropratePerMinute = Math.ceil(dropratePerMinute / 2);
 
-	const hweenPets = resolveItems([
-		'Kuro',
-		'Gregoyle',
-		'Mumpkin',
-		'Mumpkin (demonic)',
-		'Mumpkin (pumpkin)',
-		'Mumpkin (dead)',
-		'Polterpup',
-		'Mini pumpkinhead',
-		'Mini mortimer',
-		'Casper',
-		'Cob'
-	]);
-	if (hweenPets.some(pet => user.usingPet(pet))) {
+	if (xmasPets.some(pet => user.usingPet(pet))) {
 		dropratePerMinute = Math.ceil(dropratePerMinute / 10);
 		if (messages) {
 			messages.push(`10x higher droprates for ${itemNameFromID(user.user.minion_equippedPet!)}`);

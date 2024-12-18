@@ -235,5 +235,41 @@ export const keyCrates: Crate[] = [
 				1,
 				100
 			)
+	},
+	{
+		item: getOSItem('Frozen crate (s8)'),
+		key: getOSItem('Frozen crate key (s8)'),
+		keyCostGP: 20_666_666,
+		table: new LootTable()
+			.tertiary(3111, 'BSO Santa hat')
+			.tertiary(110, 'Paint box')
+			.add(
+				new LootTable()
+					.add('Atlantis jumper')
+					.add('OSB earmuffs')
+					.add('BSO earmuffs')
+					.add('Skippers')
+					.add('BSO socks')
+					.add('White beanie')
+					.add('OSB beanie')
+					.add('BSO beanie')
+					.add('Green beanie')
+					.add('Orange beanie')
+					.add('Jolly beanie')
+					.add('Aquatic beanie')
+					.add('Dark beanie')
+					.add('Frosticle top'),
+				1,
+				1
+			)
+			.add(
+				new LootTable()
+					.add('Cinnamon doughnut-ball')
+					.add('Christmas choc-stocking')
+					.add('Cake')
+					.add('Purple sweets', [1, 3]),
+				1,
+				100
+			)
 	}
 ];
