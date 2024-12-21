@@ -795,9 +795,7 @@ export const adminCommand: OSBMahojiCommand = {
 			if (!price || price < 1 || price > 1_000_000_000) return 'Invalid price.';
 			await handleMahojiConfirmation(
 				interaction,
-				`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
-					item.wiki_url
-				}) to \`${price.toLocaleString()}\`?`
+				`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}) to \`${price.toLocaleString()}\`?`
 			);
 			const settings = await mahojiClientSettingsFetch({ custom_prices: true });
 			const current = settings.custom_prices as ItemBank;

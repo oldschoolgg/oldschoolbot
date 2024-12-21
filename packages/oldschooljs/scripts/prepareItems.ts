@@ -105,9 +105,6 @@ const manualItems: Item[] = [
 		cost: 75_000,
 		lowalch: 30_000,
 		highalch: 45_000,
-		weight: 0.004,
-		wiki_name: 'Ring of shadows (uncharged)',
-		wiki_url: 'https://oldschool.runescape.wiki/w/Ring_of_shadows#Uncharged',
 		equipment: {
 			attack_stab: 4,
 			attack_slash: 4,
@@ -133,7 +130,6 @@ const manualItems: Item[] = [
 		name: 'Ancient lamp',
 		cost: 1,
 		wiki_name: 'Ancient lamp',
-		wiki_url: 'https://oldschool.runescape.wiki/w/Ancient_lamp',
 		price: 0
 	},
 	{
@@ -147,7 +143,6 @@ const manualItems: Item[] = [
 		lowalch: 40,
 		highalch: 60,
 		wiki_name: 'Scaly blue dragonhide',
-		wiki_url: 'https://oldschool.runescape.wiki/w/Scaly_blue_dragonhide',
 		price: 2011
 	},
 	{
@@ -161,7 +156,6 @@ const manualItems: Item[] = [
 		lowalch: 1,
 		highalch: 1,
 		wiki_name: "Butler's tray",
-		wiki_url: 'https://oldschool.runescape.wiki/w/Butler%27s_tray',
 		price: 1,
 		equipment: {
 			attack_stab: 0,
@@ -193,7 +187,6 @@ const manualItems: Item[] = [
 		lowalch: 1,
 		highalch: 1,
 		wiki_name: 'Costume needle',
-		wiki_url: 'https://oldschool.runescape.wiki/w/Costume_needle',
 		price: 1
 	}
 ];
@@ -355,7 +348,8 @@ export default async function prepareItems(): Promise<void> {
 			'release_date',
 			'quest_item',
 			'weight',
-			'examine'
+			'examine',
+			'wiki_url'
 		]) {
 			// @ts-ignore
 			delete item[delKey];
@@ -373,8 +367,6 @@ export default async function prepareItems(): Promise<void> {
 			'equipable_weapon',
 			'weight',
 			'buy_limit',
-			'wiki_name',
-			'wiki_url',
 			'equipment',
 			'weapon'
 		] as const) {
@@ -470,7 +462,6 @@ export default async function prepareItems(): Promise<void> {
 			item.cost = previousItem.cost;
 			item.lowalch = previousItem.lowalch;
 			item.highalch = previousItem.highalch;
-			item.wiki_url = previousItem.wiki_url;
 			item.wiki_name = previousItem.wiki_name;
 			if (previousItem.equipment?.requirements) {
 				// @ts-ignore ignore
@@ -553,22 +544,11 @@ GROUP BY id
 `);
 	}
 
-	const date = new Date();
-	const formattedDate = formatDateForTimezones(date);
-
 	const diffOutput: any = diff(previousItems, newItemJSON);
 	for (const [key, val] of objectEntries(diffOutput as any)) {
 		if (!val || Object.values(val).every(t => !t)) {
 			delete diffOutput[key];
 		}
 	}
-	const baseFilename = `item-update-${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDay() + 1}`;
-	writeFileSync(
-		`./update-history/${baseFilename}.txt`,
-		`Updated on ${formattedDate.sydney} Sydney / ${formattedDate.cali} California
-
-${messages.join('\n')}`
-	);
-	writeFileSync(`./update-history/${baseFilename}.json`, `${JSON.stringify(diffOutput, null, '	')}`);
 	writeFileSync('./src/data/items/item_data.json', `${JSON.stringify(newItemJSON, null, '	')}\n`);
 }

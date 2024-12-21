@@ -13,7 +13,7 @@
 		"start": "pnpm watch",
 		"lint": "tsx scripts/lint.ts",
 		"============SCRIPTS": "============",
-		"spritesheet": "tsx ./scripts/spritesheet.ts && pnpm lint:biome",
+		"spritesheet": "tsx ./scripts/spritesheet.ts && pnpm lint",
 		"data": "concurrently \"tsx ./scripts/monster_table.ts\" && pnpm lint",
 		"wiki": "tsx ./scripts/wiki.ts",
 		"commands": "tsx ./scripts/renderCommandsFile.ts",
