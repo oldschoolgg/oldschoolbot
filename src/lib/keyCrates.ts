@@ -243,6 +243,7 @@ export const keyCrates: Crate[] = [
 		table: new LootTable()
 			.tertiary(3111, 'BSO Santa hat')
 			.tertiary(110, 'Paint box')
+			.tertiary(150, 'Christmas dye')
 			.add(
 				new LootTable()
 					.add('Atlantis jumper')
