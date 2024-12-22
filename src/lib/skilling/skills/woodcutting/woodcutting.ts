@@ -19,6 +19,21 @@ const logs: Log[] = [
 	{
 		level: 1,
 		xp: 25,
+		id: itemID('Snowdream logs'),
+		name: 'Snowdream logs',
+		findNewTreeTime: 100,
+		bankingTime: 50,
+		slope: 0.54,
+		intercept: 24.85,
+		depletionChance: 100,
+		wcGuild: true,
+		petChance: 317_647,
+		qpRequired: 0,
+		clueScrollChance: 317_647
+	},
+	{
+		level: 1,
+		xp: 25,
 		id: itemID('Logs'),
 		name: 'Logs',
 		leaf: itemID('Leaves'),

@@ -32,6 +32,7 @@ import { naxxusTask } from '../tasks/minions/bso/naxxusActivity';
 import { nexTask } from '../tasks/minions/bso/nexActivity';
 import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
 import { researchActivityTask } from '../tasks/minions/bso/researchActivity';
+import { snoozeSpellActiveTask } from '../tasks/minions/bso/snoozeActivity.js';
 import { scTask } from '../tasks/minions/bso/stealingCreationActivity';
 import { twTask } from '../tasks/minions/bso/tinkeringWorkshopActivity';
 import { turaelsTrialsTask } from '../tasks/minions/bso/turaelsTrialsActivity';
@@ -239,7 +240,8 @@ const tasks: MinionTask[] = [
 	turaelsTrialsTask,
 	myNotesTask,
 	colosseumTask,
-	CreateForestersRationsTask
+	CreateForestersRationsTask,
+	snoozeSpellActiveTask
 ];
 
 export async function processPendingActivities() {

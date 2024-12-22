@@ -6,7 +6,7 @@ import { itemNameFromID } from './smallUtils';
 
 const crateItem = getOSItem('Frozen crate (s8)');
 
-const xmasPets = resolveItems(['Smokey', 'Rudolph', 'Frosty']);
+const xmasPets = resolveItems(['Smokey', 'Rudolph', 'Frosty', 'Grinchling', 'Shrimpy']);
 
 export function handleCrateSpawns(user: MUser, duration: number, messages?: string[]) {
 	const accountAge = user.accountAgeInDays();

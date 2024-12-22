@@ -14,6 +14,7 @@ import { caCommand } from './ca';
 import { casketCommand } from './casket';
 import { chooseCommand } from './choose';
 import { chopCommand } from './chop';
+import { christmasCommand } from './christmas';
 import { collectionLogCommand } from './cl';
 import { claimCommand } from './claim';
 import { clueCommand } from './clue';
@@ -40,7 +41,6 @@ import { gearPresetsCommand } from './gearpresets';
 import { giftCommand } from './gift';
 import { giveawayCommand } from './giveaway';
 import { gpCommand } from './gp';
-import { halloweenCommand } from './halloween';
 import { helpCommand } from './help';
 import { huntCommand } from './hunt';
 import { icCommand } from './ic';
@@ -186,7 +186,7 @@ export const allCommands: OSBMahojiCommand[] = [
 	tamesCommand,
 	testerShopCommand,
 	bsoLeaguesCommand,
-	halloweenCommand
+	christmasCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {

@@ -71,6 +71,11 @@ export const runecraftTask: MinionTask = {
 			runeQuantity += bonusBlood;
 		}
 
+		if (runeID === itemID('Snowdream rune') && user.isIronman && user.hasEquipped('Snowflake amulet')) {
+			runeQuantity *= 3;
+			str += ' You received 3x the amount of Snowdream runes from your Snowflake amulet.';
+		}
+
 		const loot = new Bank({
 			[rune.id]: runeQuantity
 		});

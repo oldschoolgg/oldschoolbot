@@ -66,6 +66,7 @@ import type {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	SnoozeSpellActiveCastOptions,
 	TOAOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
@@ -869,6 +870,14 @@ export const tripHandlers = {
 			name: 'colosseum',
 			quantity: data.quantity
 		})
+	},
+	[activity_type_enum.SnoozeSpellActive]: {
+		commandName: 'christmas',
+		args: (data: SnoozeSpellActiveCastOptions) => ({
+			active_cast: {
+				hours: data.hours
+			}
+		})
 	}
 } as const;
 
@@ -930,6 +939,7 @@ export async function repeatTrip(
 		return interactionReply(interaction, { content: "Couldn't find any trip to repeat.", ephemeral: true });
 	}
 	const handler = tripHandlers[data.type];
+
 	return runCommand({
 		commandName: handler.commandName,
 		isContinue: true,

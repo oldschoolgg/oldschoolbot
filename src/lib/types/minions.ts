@@ -735,6 +735,11 @@ export interface MemoryHarvestOptions extends ActivityTaskOptions {
 	r: number;
 }
 
+export interface SnoozeSpellActiveCastOptions extends ActivityTaskOptions {
+	type: 'SnoozeSpellActive';
+	hours: number;
+}
+
 export type ActivityTaskData =
 	| MonsterActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
@@ -818,4 +823,5 @@ export type ActivityTaskData =
 	| TuraelsTrialsOptions
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| SnoozeSpellActiveCastOptions;
