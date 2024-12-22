@@ -49,7 +49,7 @@ import {
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
 import { assert, logError } from './logError';
-import { itemNameFromID, perHourChance } from './smallUtils';
+import { perHourChance } from './smallUtils';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
@@ -479,7 +479,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Snooze spell passive',
-		fn: async ({ data, user, messages }) => {
+		fn: async ({ data, user }) => {
 			if (
 				!user.hasEquippedOrInBank('Snowdream staff') ||
 				!user.owns('Snowdream rune') ||
@@ -500,9 +500,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				if (drop.clDropRateIncrease && user.cl.amount(drop.items[0]) >= 1) {
 					dropRate *= user.cl.amount(drop.items[0]) * drop.clDropRateIncrease;
 				}
-				messages.push(
-					`\`${spellsCast} rolls at 1/${dropRate} chance of ${drop.items.map(itemNameFromID).join('+')}\``
-				);
+
 				for (let i = 0; i < spellsCast; i++) {
 					if (roll(dropRate)) {
 						for (const item of drop.items) loot.add(item);
