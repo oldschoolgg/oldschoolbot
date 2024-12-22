@@ -153,11 +153,10 @@ const mentionCommands: MentionCommand[] = [
 					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
 					const price = toKMB(Math.floor(item.price));
-					const wikiURL = isCustom ? '' : `[Wiki Page](${item.wiki_url}) `;
 					const searchMbTable = user.isIronman ? allIronmanMbTables : allMbTables;
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
 						searchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
-					} ${wikiURL}${icons.join(' ')}`;
+					} ${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
 					}
