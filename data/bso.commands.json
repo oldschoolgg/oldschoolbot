@@ -102,6 +102,11 @@
 		"subOptions": []
 	},
 	{
+		"name": "christmas",
+		"desc": "The 2024 Christmas Event",
+		"subOptions": ["check", "active_cast", "drop_rates"]
+	},
+	{
 		"name": "cl",
 		"desc": "See your Collection Log.",
 		"examples": ["/cl name:Boss"],
@@ -250,11 +255,6 @@
 		"name": "gp",
 		"desc": "See your current GP balance.",
 		"subOptions": []
-	},
-	{
-		"name": "halloween",
-		"desc": "The 2024 Halloween Event",
-		"subOptions": ["check", "hand_in"]
 	},
 	{
 		"name": "help",

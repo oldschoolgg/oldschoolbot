@@ -3,6 +3,7 @@ import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr }
 import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { divinationEnergies, portents } from '../bso/divination';
+import { allChristmasEventItems } from '../christmasEvent.js';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
 import type { CollectionLogType } from '../collectionLogTask';
@@ -49,6 +50,7 @@ import { MUserStats } from '../structures/MUserStats';
 import { getAllIgneTameKCs, tameKillableMonsters } from '../tames';
 import type { ItemBank } from '../types';
 import getOSItem from '../util/getOSItem';
+import itemID from '../util/itemID.js';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {
@@ -1861,6 +1863,11 @@ export const allCollectionLogs: ICollection = {
 					'Seer',
 					'Festive present'
 				]),
+				counts: false
+			},
+			'Christmas 2024': {
+				alias: ['xmas 2024', 'christmas 2024'],
+				items: allChristmasEventItems.filter(i => i !== itemID('Snowflake amulet')),
 				counts: false
 			},
 			'BSO Birthday 2022': {

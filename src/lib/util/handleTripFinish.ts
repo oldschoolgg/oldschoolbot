@@ -1,4 +1,5 @@
 import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/toolkit';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { activity_type_enum } from '@prisma/client';
 import {
 	type AttachmentBuilder,
@@ -7,10 +8,9 @@ import {
 	type MessageCreateOptions,
 	bold
 } from 'discord.js';
+import { Time, notEmpty, randArrItem, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { Time, notEmpty, randArrItem, randInt } from 'e';
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -19,6 +19,7 @@ import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from
 import { PortentID, chargePortentIfHasCharges, getAllPortentCharges } from '../bso/divination';
 import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
+import { SNOWDREAM_RUNES_PER_MINUTE, christmasDroprates } from '../christmasEvent.js';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
@@ -47,8 +48,8 @@ import {
 } from './globalInteractions';
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
-import { logError } from './logError';
-import { perHourChance } from './smallUtils';
+import { assert, logError } from './logError';
+import { itemNameFromID, perHourChance } from './smallUtils';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
@@ -474,6 +475,41 @@ const tripFinishEffects: TripFinishEffect[] = [
 					itemsToRemove: cost
 				};
 			}
+		}
+	},
+	{
+		name: 'Snooze spell passive',
+		fn: async ({ data, user, messages }) => {
+			if (
+				!user.hasEquippedOrInBank('Snowdream staff') ||
+				!user.owns('Snowdream rune') ||
+				data.type === 'SnoozeSpellActive'
+			) {
+				return;
+			}
+
+			const minutes = Math.floor(data.duration / Time.Minute);
+			if (minutes < 1) return;
+			const spellsCast = Math.min(minutes, user.bank.amount('Snowdream rune') / SNOWDREAM_RUNES_PER_MINUTE);
+			if (spellsCast < 1) return;
+			const runeCost = new Bank().add('Snowdream rune', spellsCast * SNOWDREAM_RUNES_PER_MINUTE);
+			assert(user.bank.has(runeCost), 'User does not have enough runes to cast Snooze spell');
+			const loot = new Bank();
+			for (const drop of christmasDroprates) {
+				let dropRate = drop.chancePerMinute;
+				if (drop.clDropRateIncrease && user.cl.amount(drop.items[0]) >= 1) {
+					dropRate *= user.cl.amount(drop.items[0]) * drop.clDropRateIncrease;
+				}
+				messages.push(
+					`\`${spellsCast} rolls at 1/${dropRate} chance of ${drop.items.map(itemNameFromID).join('+')}\``
+				);
+				for (let i = 0; i < spellsCast; i++) {
+					if (roll(dropRate)) {
+						for (const item of drop.items) loot.add(item);
+					}
+				}
+			}
+			await user.transactItems({ itemsToAdd: loot, collectionLog: true, itemsToRemove: runeCost });
 		}
 	}
 ];

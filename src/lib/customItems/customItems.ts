@@ -13521,3 +13521,221 @@ setCustomItem(
 	},
 	500_000
 );
+
+setCustomItem(
+	73_304,
+	'Snowdream logs',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_305,
+	'Snowdream staff',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_306,
+	'Snowdream rune',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_307,
+	'Snowdream robe legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_308,
+	'Snowdream wizard hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_309,
+	'Snowdream robe top',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_310,
+	'Snowdream wizard socks',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_311,
+	'Snowdream pillow',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_312,
+	'Black santa top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_313,
+	'Black santa legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_314,
+	'Black santa gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_315,
+	'Black santa boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_316,
+	'Chef-touched heart (choc)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_317,
+	'Icey santa hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_318,
+	'Sungod slippers',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500
+);
+
+setCustomItem(
+	73_319,
+	'Axe of the high sungod (xmas)',
+	'Axe of the high sungod',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_320,
+	'Grinchling',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_321,
+	'Snowflake amulet',
+	'Amulet of strength',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);

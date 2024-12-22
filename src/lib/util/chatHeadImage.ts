@@ -13,6 +13,7 @@ const gertrudeChatHead = loadAndCacheLocalImage('./src/lib/resources/images/gert
 const antiSantaChatHead = loadAndCacheLocalImage('./src/lib/resources/images/antisanta.png');
 const bunnyChatHead = loadAndCacheLocalImage('./src/lib/resources/images/bunny.png');
 const monkeyChildChatHead = loadAndCacheLocalImage('./src/lib/resources/images/monkeychild.png');
+const magnaboyChatHead = loadAndCacheLocalImage('./src/lib/resources/images/magnaboy.png');
 const marimboChatHead = loadAndCacheLocalImage('./src/lib/resources/images/marimbo.png');
 const partyPeteHead = loadAndCacheLocalImage('./src/lib/resources/images/partyPete.png');
 const mysteriousFigureHead = loadAndCacheLocalImage('./src/lib/resources/images/mysteriousFigure.png');
@@ -29,6 +30,7 @@ const chatHeads = {
 	izzy: izzyChatHead,
 	alry: alryTheAnglerChatHead,
 	wurMuTheMonkey: monkeyChildChatHead,
+	magnaboy: magnaboyChatHead,
 	marimbo: marimboChatHead,
 	ketKeh: ketKehChatHead,
 	gertrude: gertrudeChatHead,
@@ -59,7 +61,8 @@ const names: Record<keyof typeof chatHeads, string> = {
 	rudolph: 'Rudolph the Reindeer',
 	minimus: 'Minimus',
 	pumpkin: 'Pumpkinhead',
-	spookling: 'Spookling'
+	spookling: 'Spookling',
+	magnaboy: 'Magnaboy'
 };
 
 export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
