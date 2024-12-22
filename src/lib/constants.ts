@@ -54,7 +54,7 @@ const OSBChannelConfig: ChannelConfig = {
 
 const BSOChannelConfig: ChannelConfig = {
 	ServerGeneral: '342983479501389826',
-	Notifications: '1042760447830536212',
+	Notifications: '811589869314899980',
 	GrandExchange: '738780181946171493',
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '792691343284764693',

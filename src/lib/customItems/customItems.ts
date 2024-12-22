@@ -13585,7 +13585,7 @@ setCustomItem(
 setCustomItem(
 	73_309,
 	'Snowdream robe top',
-	'Bronze full helm',
+	'Bronze platebody',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
