@@ -843,10 +843,17 @@ export function minionStatus(user: MUser) {
 				method.name
 			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
-		case 'TuraelsTrials':
+		case 'TuraelsTrials': {
 			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+
+		case 'SnoozeSpellActive': {
+			return `${name} is currently actively casting the christmas event snooze spell. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
 		case 'BlastFurnace':
