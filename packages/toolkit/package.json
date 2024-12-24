@@ -5,19 +5,19 @@
 	"description": "Oldschoolgg Toolkit",
 	"exports": {
 		".": {
+			"types": "./dist/util.d.ts",
 			"require": "./dist/cjs/util.cjs",
-			"import": "./dist/esm/util.mjs",
-			"types": "./dist/util.d.ts"
+			"import": "./dist/esm/util.mjs"
 		},
 		"./util": {
+			"types": "./dist/util.d.ts",
 			"require": "./dist/cjs/util.cjs",
-			"import": "./dist/esm/util.mjs",
-			"types": "./dist/util.d.ts"
+			"import": "./dist/esm/util.mjs"
 		},
 		"./structures": {
+			"types": "./dist/structures.d.ts",
 			"require": "./dist/cjs/structures.cjs",
-			"import": "./dist/esm/structures.mjs",
-			"types": "./dist/structures.d.ts"
+			"import": "./dist/esm/structures.mjs"
 		}
 	},
 	"scripts": {

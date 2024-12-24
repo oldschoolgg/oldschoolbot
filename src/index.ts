@@ -209,10 +209,10 @@ async function main() {
 			asyncExitHook(exitCleanup, {
 				wait: 2000
 			})
-		)
+		),
+		client.login(globalConfig.botToken)
 	]);
 	if (process.env.TEST) return;
-	await client.login(globalConfig.botToken);
 	console.log(`Logged in as ${globalClient.user.username}`);
 }
 
