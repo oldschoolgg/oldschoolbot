@@ -396,7 +396,10 @@ export function initTickers() {
 				await ticker.cb();
 			} catch (err) {
 				logError(err);
-				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
+				debugLog(`${ticker.name} ticker errored`, {
+					type: 'TICKER',
+					error: err instanceof Error ? (err.message ?? err) : err
+				});
 			} finally {
 				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
 				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);
