@@ -212,7 +212,6 @@ async function main() {
 		),
 		client.login(globalConfig.botToken)
 	]);
-	if (process.env.TEST) return;
 	console.log(`Logged in as ${globalClient.user.username}`);
 }
 
