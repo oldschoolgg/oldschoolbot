@@ -899,6 +899,15 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.sync_commands) {
+			if (!globalConfig.isProduction) {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: Array.from(globalClient.mahojiClient.commands.values()),
+					guildID: globalConfig.supportServerID
+				});
+				return 'Done.';
+			}
+
 			const global = Boolean(globalConfig.isProduction);
 			const totalCommands = Array.from(globalClient.mahojiClient.commands.values());
 			const globalCommands = totalCommands.filter(i => !i.guildID);
