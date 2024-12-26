@@ -16,7 +16,8 @@ const authors: Author[] = [
 	{ gitIDs: ['Felris'], displayName: 'Felris', avatar: 'felris.webp' },
 	{ gitIDs: ['Lajnux'], displayName: 'Fishy', avatar: 'fishy.webp' },
 	{ gitIDs: ['DarkWorldsArtist'], displayName: 'DarkWorldsArtist', avatar: 'dark.webp' },
-	{ gitIDs: ['Luunae'], displayName: 'Luunae' }
+	{ gitIDs: ['Luunae'], displayName: 'Luunae' },
+	{ gitIDs: ['wontonstrips'], displayName: 'wontonstrips' }
 ];
 
 export const authorsMap = new Map<string, Author>();

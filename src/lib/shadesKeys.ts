@@ -194,7 +194,7 @@ const GoldChest = new LootTable({ limit: 143 })
 	.add('Redwood logs', [5, 14], 2)
 	.add('Dragonstone', 1, 2)
 	.add('Clue scroll (elite)', 1, 1)
-	.add('Coins', [1, 3, 160]);
+	.add('Coins', [1, 3160]);
 
 const chests = [
 	{

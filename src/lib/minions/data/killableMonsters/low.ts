@@ -280,7 +280,9 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 200,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush],
-		requiredQuests: [QuestID.ThePathOfGlouphrie]
+		requiredQuests: [QuestID.ThePathOfGlouphrie],
+		customMonsterHP: 150,
+		canCannon: true
 	},
 	{
 		id: Monsters.WarpedTortoise.id,
@@ -291,7 +293,8 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 200,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush],
-		requiredQuests: [QuestID.ThePathOfGlouphrie]
+		requiredQuests: [QuestID.ThePathOfGlouphrie],
+		canCannon: true
 	}
 ];
 

@@ -9,7 +9,7 @@ const SulphurNaguaTable = new LootTable()
 	.add('Fire rune', [10, 40], 26)
 	.add('Fire rune', [40, 60], 14)
 	.add('Chaos rune', [40, 60], 11)
-	.add('Nature rune', [50, 10], 4)
+	.add('Nature rune', [5, 10], 4)
 	.add('Death rune', [40, 60], 2)
 
 	.add('Iron ore', [5, 10], 27)

@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"============DEVELOPMENT": "============",
-		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm build && node --enable-source-maps dist\"",
+		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm build:esbuild && node --enable-source-maps dist\"",
 		"dev:stage1": "pnpm concurrent \"pnpm install\" \"prisma db push\" \"pnpm generate:robochimp\"",
 		"dev:stage2": "pnpm concurrent \"pnpm commands\" \"pnpm creatables\" \"pnpm wiki\" \"pnpm build\"",
 		"dev:stage3": "pnpm lint && pnpm test",
@@ -13,7 +13,7 @@
 		"start": "pnpm watch",
 		"lint": "tsx scripts/lint.ts",
 		"============SCRIPTS": "============",
-		"spritesheet": "tsx ./scripts/spritesheet.ts && pnpm lint:biome",
+		"spritesheet": "tsx ./scripts/spritesheet.ts && pnpm lint",
 		"data": "concurrently \"tsx ./scripts/monster_table.ts\" && pnpm lint",
 		"wiki": "tsx ./scripts/wiki.ts",
 		"commands": "tsx ./scripts/renderCommandsFile.ts",
