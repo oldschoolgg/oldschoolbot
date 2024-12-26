@@ -291,7 +291,7 @@ const tripHandlers = {
 			quantity: data.essenceQuantity,
 			daeyalt_essence: data.daeyaltEssence,
 			usestams: data.useStaminas,
-			useExtract: data.useExtracts
+			extracts: data.useExtracts
 		})
 	},
 	[activity_type_enum.TiaraRunecraft]: {

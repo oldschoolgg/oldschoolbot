@@ -13,11 +13,22 @@ import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
+import { getOSItem } from '../../lib/util/getOSItem';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
+
+const runeTypes = [
+	{ item: getOSItem('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },
+	{
+		item: getOSItem('Twisted extract'),
+		runes: new Set(['mist', 'dust', 'mud', 'smoke', 'steam', 'lava', 'cosmic', 'chaos', 'sunfire'])
+	},
+	{ item: getOSItem('Mangled extract'), runes: new Set(['nature', 'law', 'astral', 'death']) },
+	{ item: getOSItem('Scarred extract'), runes: new Set(['blood', 'soul', 'wrath']) }
+];
 
 export const runecraftCommand: OSBMahojiCommand = {
 	name: 'runecraft',
@@ -139,27 +150,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const numEssenceOwned = bank.amount('Pure essence');
 		const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 
-		const warpedRunes = new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']);
-		const twistedRunes = new Set(['mist', 'dust', 'mud', 'smoke', 'steam', 'lava', 'cosmic', 'chaos', 'sunfire']);
-		const mangledRunes = new Set(['nature', 'law', 'astral', 'death']);
-		const scarredRunes = new Set(['blood', 'soul', 'wrath']);
-
-		let extractsOwned = 0;
-		let extractType = '';
-		if (warpedRunes.has(rune)) {
-			extractsOwned = bank.amount('Warped extract');
-			extractType = 'Warped extract';
-		} else if (twistedRunes.has(rune)) {
-			extractsOwned = bank.amount('Twisted extract');
-			extractType = 'Twisted extract';
-		} else if (mangledRunes.has(rune)) {
-			extractsOwned = bank.amount('Mangled extract');
-			extractType = 'Mangled extract';
-		} else if (scarredRunes.has(rune)) {
-			extractsOwned = bank.amount('Scarred extract');
-			extractType = 'Scarred extract';
-		}
-
 		let { tripLength } = runeObj;
 		const boosts = [];
 		if (userHasGracefulEquipped(user)) {
@@ -205,7 +195,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
-
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
@@ -219,6 +208,19 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 			if (numEssenceOwned === 0 || quantity === 0 || numEssenceOwned < quantity) {
 				return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
+			}
+		}
+
+		let extractsOwned = 0;
+		const totalCost = new Bank();
+		for (const { item, runes } of runeTypes) {
+			if (runes.has(rune)) {
+				extractsOwned = bank.amount(item.name);
+				if (extracts) {
+					totalCost.add(item, quantity);
+					if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+				}
+				break;
 			}
 		}
 
@@ -244,8 +246,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 				return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 			}
 		}
-
-		const totalCost = new Bank();
 
 		let imbueCasts = 0;
 		let teleportReduction = 1;
@@ -330,16 +330,10 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (daeyalt_essence) {
 			totalCost.add('Daeyalt essence', quantity);
-			if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 		} else {
 			totalCost.add('Pure essence', quantity);
 		}
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
-
-		if (extracts) {
-			totalCost.add(`${extractType}`, quantity);
-			if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
-		}
 
 		await user.removeItemsFromBank(totalCost);
 		updateBankSetting('runecraft_cost', totalCost);
