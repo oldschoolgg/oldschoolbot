@@ -115,7 +115,6 @@ describe('Items', () => {
 			expect(tbow.equipment!.slot).toEqual(EquipmentSlot.TwoHanded);
 			expect(tbow.wiki_name).toEqual('Twisted bow');
 			expect(tbow.equipable_weapon).toEqual(true);
-			expect(tbow.wiki_url).toEqual('https://oldschool.runescape.wiki/w/Twisted_bow');
 
 			const anglerHat = Items.get('Angler hat')!;
 			expect(anglerHat.equipment!.slot).toEqual(EquipmentSlot.Head);

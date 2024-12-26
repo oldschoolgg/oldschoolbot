@@ -4,6 +4,7 @@ import { BitField } from '../constants';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank, Skills } from '../types';
+import { formatList } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { itemNameFromID } from '../util/smallUtils';
@@ -2508,7 +2509,7 @@ const Createables: Createable[] = [
 				['Rax', 'Nid']
 			]);
 			if (!requiredItems.every(item => (Array.isArray(item) ? item.some(i => user.owns(i)) : user.owns(item)))) {
-				return `You need to own all these items to create the Amulet of rancour (s): ${requiredItems.map(item => (Array.isArray(item) ? item.map(itemNameFromID).join(' OR ') : itemNameFromID(item))).join(', ')}.`;
+				return `You need to own all these items to create the Amulet of rancour (s): ${formatList(requiredItems.map(item => (Array.isArray(item) ? formatList(item.map(itemNameFromID), 'OR') : itemNameFromID(item))))}.`;
 			}
 			return null;
 		}

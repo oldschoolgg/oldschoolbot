@@ -1138,6 +1138,14 @@ model UserEvent {
   @@map("user_event")
 }
 
+model Badges {
+  id Int @id @default(autoincrement())
+
+  text String
+
+  @@map("badges")
+}
+
 enum command_name_enum {
   testpotato
   achievementdiary

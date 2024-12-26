@@ -38,7 +38,6 @@ export async function populateRoboChimpCache() {
 		roboChimpCache.set(strId, user);
 		perkTierCache.set(strId, user.perk_tier);
 	}
-	debugLog(`Populated RoboChimp cache with ${users.length} users.`);
 }
 
 export function cacheRoboChimpUser(user: RobochimpUser) {
