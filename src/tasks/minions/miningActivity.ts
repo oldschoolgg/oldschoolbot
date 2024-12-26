@@ -149,7 +149,8 @@ export const miningTask: MinionTask = {
 		const updateResult = await updateBank.transact(user);
 		if (typeof updateResult === 'string') throw new Error(updateResult);
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. `;
-		if (!powermine) str += `You received ${updateResult.itemTransactionResult?.itemsAdded} and `;
+		if (updateResult.itemTransactionResult?.itemsAdded)
+			str += `You received ${updateResult.itemTransactionResult?.itemsAdded} and `;
 
 		str += `${updateBank.xpBank}. ${xpHr} XP/hr`;
 		if (messages.length > 0) {
