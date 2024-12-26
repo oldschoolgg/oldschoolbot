@@ -205,7 +205,7 @@ const mentionCommands: MentionCommand[] = [
 
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
 						item.tradeable ? 'Tradeable' : 'Untradeable'
-					} [Wiki Page](${item.wiki_url}) ${icons.join(' ')}`;
+					} ${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
 					}

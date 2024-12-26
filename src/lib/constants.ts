@@ -13,10 +13,10 @@ import type { CanvasImage } from './util/canvasUtil';
 
 export { PerkTier };
 
-export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB' as 'BSO' | 'OSB';
+type BotType = 'OSB' | 'BSO';
+export const BOT_TYPE: BotType = 'OSB' as 'BSO' | 'OSB';
 export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
 const isProduction = process.env.NODE_ENV === 'production';
-const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
 const GENERAL_CHANNEL_ID =
 	BOT_TYPE === 'OSB'
 		? isProduction
@@ -26,31 +26,80 @@ const GENERAL_CHANNEL_ID =
 			? '792691343284764693'
 			: '1154056119019393035';
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
+const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
 
-export const Channel = {
-	General: isProduction ? '342983479501389826' : GENERAL_CHANNEL_ID,
-	Notifications: isProduction ? '469523207691436042' : GENERAL_CHANNEL_ID,
-	GrandExchange: isProduction ? '682996313209831435' : GENERAL_CHANNEL_ID,
-	EconomyLogs: isProduction ? '802029843712573510' : TEST_SERVER_LOG_CHANNEL,
+interface ChannelConfig {
+	ServerGeneral: string;
+	Notifications: string;
+	GrandExchange: string;
+	EconomyLogs: string;
+	HelpAndSupport: string;
+	BotLogs: string;
+	GeneralChannel: string;
+}
+
+const OSBChannelConfig: ChannelConfig = {
+	ServerGeneral: '342983479501389826',
+	Notifications: '469523207691436042',
+	GrandExchange: '682996313209831435',
+	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '668073484731154462',
-	BotLogs: isProduction ? '1051725977320964197' : GENERAL_CHANNEL_ID,
+	BotLogs: '1051725977320964197',
 	GeneralChannel: GENERAL_CHANNEL_ID
 };
+
+const BSOChannelConfig: ChannelConfig = {
+	ServerGeneral: '342983479501389826',
+	Notifications: '1042760447830536212',
+	GrandExchange: '738780181946171493',
+	EconomyLogs: '802029843712573510',
+	HelpAndSupport: '792691343284764693',
+	BotLogs: '792691343284764693',
+	GeneralChannel: GENERAL_CHANNEL_ID
+};
+
+const TestChannelConfig: ChannelConfig = {
+	ServerGeneral: TEST_SERVER_LOG_CHANNEL,
+	Notifications: TEST_SERVER_LOG_CHANNEL,
+	GrandExchange: TEST_SERVER_LOG_CHANNEL,
+	EconomyLogs: TEST_SERVER_LOG_CHANNEL,
+	HelpAndSupport: TEST_SERVER_LOG_CHANNEL,
+	BotLogs: TEST_SERVER_LOG_CHANNEL,
+	GeneralChannel: TEST_SERVER_LOG_CHANNEL
+};
+
+export const Channel = isProduction ? (BOT_TYPE === 'OSB' ? OSBChannelConfig : BSOChannelConfig) : TestChannelConfig;
 
 export const Roles = {
 	Booster: '665908237152813057',
 	Contributor: '456181501437018112',
 	Moderator: '622806157563527178',
 	Patron: '679620175838183424',
+	EventOrganizer: '1149907536749801542',
+
 	// Top Roles
-	TopSkiller: '795266465329709076',
-	TopCollector: '795271210141351947',
-	TopSacrificer: '795933981715464192',
-	TopMinigamer: '832798997033779220',
-	TopClueHunter: '839135887467610123',
-	TopSlayer: '856080958247010324',
-	TopFarmer: '894194027363205150',
-	TopGlobalCL: '1072426869028294747'
+	OSBTopSkiller: '795266465329709076',
+	OSBTopCollector: '795271210141351947',
+	OSBTopSacrificer: '795933981715464192',
+	OSBTopMinigamer: '832798997033779220',
+	OSBTopClueHunter: '839135887467610123',
+	OSBTopSlayer: '856080958247010324',
+	OSBTopFarmer: '894194027363205150',
+	OSBTopGlobalCL: '1072426869028294747',
+
+	BSOMassHoster: '759572886364225558',
+	BSOTopSkiller: '848966830617788427',
+	BSOTopCollector: '848966773885763586',
+	BSOTopSacrificer: '848966732265160775',
+	BSOTopMinigamer: '867967884515770419',
+	BSOTopClueHunter: '848967350120218636',
+	BSOTopSlayer: '867967551819358219',
+	BSOTopInventor: '992799099801833582',
+	BSOTopLeagues: '1005417171112972349',
+	BSOTopTamer: '1054356709222666240',
+	BSOTopMysterious: '1074592096968785960',
+	BSOTopGlobalCL: '848966773885763586',
+	BSOTopFarmer: '894194259731828786'
 };
 
 export enum Emoji {

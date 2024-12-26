@@ -70,7 +70,7 @@ async function topSkillers() {
 	for (const { id, skill } of top200ms.flat()) {
 		results.push({
 			userID: id,
-			roleID: Roles.TopSkiller,
+			roleID: Roles.OSBTopSkiller,
 			reason: `Rank 1 ${skill} XP`,
 			badge: BadgesEnum.TopSkiller
 		});
@@ -91,7 +91,7 @@ async function topSkillers() {
 
 	results.push({
 		userID: rankOneTotal.id,
-		roleID: Roles.TopSkiller,
+		roleID: Roles.OSBTopSkiller,
 		reason: 'Rank 1 Total Level',
 		badge: BadgesEnum.TopSkiller
 	});
@@ -119,7 +119,7 @@ async function topCollector() {
 		for (const user of users) {
 			results.push({
 				userID: user.id,
-				roleID: Roles.TopCollector,
+				roleID: Roles.OSBTopCollector,
 				reason: `Rank 1 ${ironmenOnly ? 'Iron' : 'Main'} ${clName}`,
 				badge: BadgesEnum.TopCollector
 			});
@@ -153,7 +153,7 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`)
 		results.push({
 			userID: res.id,
 			reason: res.reason,
-			roleID: Roles.TopSacrificer,
+			roleID: Roles.OSBTopSacrificer,
 			badge: BadgesEnum.TopSacrifice
 		});
 	}
@@ -177,7 +177,7 @@ LIMIT 1;`
 	for (const { id, minigame_name } of topMinigamers.flat()) {
 		results.push({
 			userID: id,
-			roleID: Roles.TopMinigamer,
+			roleID: Roles.OSBTopMinigamer,
 			reason: `Rank 1 ${minigame_name}`,
 			badge: BadgesEnum.TopMinigame
 		});
@@ -204,7 +204,7 @@ LIMIT 1;`
 	for (const res of topClueHunters.flat()) {
 		results.push({
 			userID: res.user_id,
-			roleID: Roles.TopClueHunter,
+			roleID: Roles.OSBTopClueHunter,
 			reason: `Rank 1 ${res.tier_name} Clues`,
 			badge: BadgesEnum.TopMinigame
 		});
@@ -241,7 +241,7 @@ LIMIT 2;`
 	for (const { id, desc } of res.flat()) {
 		results.push({
 			userID: id,
-			roleID: Roles.TopFarmer,
+			roleID: Roles.OSBTopFarmer,
 			reason: desc,
 			badge: BadgesEnum.Farmer
 		});
@@ -274,7 +274,7 @@ LIMIT 1;`)
 	for (const { id, desc } of topSlayers.flat()) {
 		results.push({
 			userID: id,
-			roleID: Roles.TopSlayer,
+			roleID: Roles.OSBTopSlayer,
 			reason: desc,
 			badge: BadgesEnum.Slayer
 		});
@@ -343,7 +343,7 @@ async function globalCL() {
 	for (const user of result) {
 		results.push({
 			userID: user.id,
-			roleID: Roles.TopGlobalCL,
+			roleID: Roles.OSBTopGlobalCL,
 			reason: `Top Global CL ${user.total_cl_percent}%`,
 			badge: BadgesEnum.TopCollector
 		});
