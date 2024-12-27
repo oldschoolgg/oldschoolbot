@@ -1147,6 +1147,15 @@ model Badges {
   @@map("badges")
 }
 
+model CollectionLogSlot {
+  group_name String
+  item_id    Int
+
+  @@id([group_name, item_id])
+  @@unique([group_name, item_id])
+  @@map("collection_log_slot")
+}
+
 enum command_name_enum {
   testpotato
   achievementdiary
