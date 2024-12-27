@@ -1,9 +1,7 @@
-import type { Guild, Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import type { Guild as DJSGuild } from 'discord.js';
-import { LRUCache } from 'lru-cache';
 
-type CachedGuild = Pick<Guild, 'disabledCommands' | 'id' | 'petchannel' | 'staffOnlyChannels'>;
-export const untrustedGuildSettingsCache = new LRUCache<string, CachedGuild>({ max: 1000 });
+import { untrustedGuildSettingsCache } from '../lib/cache.js';
 
 export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	const id = typeof guild === 'string' ? guild : guild.id;

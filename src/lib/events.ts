@@ -7,8 +7,8 @@ import { Items } from 'oldschooljs';
 
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { command_name_enum } from '@prisma/client';
-import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
+import { untrustedGuildSettingsCache } from './cache.js';
 import { BitField, Channel, Emoji, globalConfig } from './constants';
 import pets from './data/pets';
 import type { ItemBank } from './types';
