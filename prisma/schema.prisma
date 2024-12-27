@@ -995,6 +995,7 @@ model GEListing {
   buyTransactions  GETransaction[] @relation("buy_transactions")
   sellTransactions GETransaction[] @relation("sell_transactions")
 
+  @@index([created_at])
   @@map("ge_listing")
 }
 
@@ -1017,6 +1018,7 @@ model GETransaction {
   sell_listing_id Int
 
   @@index([sell_listing_id])
+  @@index([created_at])
   @@map("ge_transaction")
 }
 
