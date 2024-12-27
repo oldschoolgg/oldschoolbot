@@ -176,6 +176,7 @@ export const minionKCommand: OSBMahojiCommand = {
 		method?: PvMMethod;
 		wilderness?: boolean;
 		solo?: boolean;
+		onTask?: boolean;
 	}>) => {
 		const user = await mUserFetch(userID);
 
@@ -187,7 +188,8 @@ export const minionKCommand: OSBMahojiCommand = {
 			options.quantity,
 			options.method,
 			options.wilderness,
-			options.solo
+			options.solo,
+			options.onTask
 		);
 	}
 };

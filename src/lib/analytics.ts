@@ -2,6 +2,7 @@ import { ActivityGroup, globalConfig } from '../lib/constants';
 
 import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
+import { sql } from './postgres.js';
 import { getItem } from './util/getOSItem';
 
 async function calculateMinionTaskCounts() {
@@ -34,16 +35,19 @@ async function calculateMinionTaskCounts() {
 }
 
 export async function analyticsTick() {
-	const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP] = (
-		await Promise.all(
-			[
-				'SELECT COUNT(*)::int FROM users WHERE "minion.hasBought" = true;',
-				'SELECT SUM("sacrificedValue") AS count FROM users;',
-				'SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true;',
-				'SELECT SUM("GP") AS count FROM users;'
-			].map(query => prisma.$queryRawUnsafe(query))
-		)
-	).map((result: any) => Number.parseInt(result[0].count)) as number[];
+	const [{ has_bought_count, total_gp, ironman_count, total_sacrificed_value }]: {
+		has_bought_count: bigint;
+		total_sacrificed_value: bigint;
+		ironman_count: bigint;
+		total_gp: bigint;
+	}[] = await sql`
+SELECT 
+    COUNT(*) FILTER (WHERE "minion.hasBought" = true) AS has_bought_count,
+    SUM("sacrificedValue")::bigint AS total_sacrificed_value,
+    COUNT(*) FILTER (WHERE "minion.ironman" = true) AS ironman_count,
+    SUM("GP")::bigint AS total_gp
+FROM users;
+`;
 
 	const artifact = getItem('Magical artifact')!;
 	const statuette = getItem('Demon statuette')!;
@@ -94,12 +98,12 @@ export async function analyticsTick() {
 			minigameTasksCount: taskCounts.Minigame,
 			monsterTasksCount: taskCounts.Monster,
 			skillingTasksCount: taskCounts.Skilling,
-			ironMinionsCount: numberOfIronmen,
-			minionsCount: numberOfMinions,
-			totalSacrificed,
-			totalGP,
 			totalGeGp,
 			totalBigAlchGp: totalDemonStatuetteGp + totalArtifactGp,
+			ironMinionsCount: Number(ironman_count),
+			minionsCount: Number(has_bought_count),
+			totalSacrificed: total_sacrificed_value,
+			totalGP: total_gp,
 			dicingBank: currentClientSettings.economyStats_dicingBank,
 			duelTaxBank: currentClientSettings.economyStats_duelTaxBank,
 			dailiesAmount: currentClientSettings.economyStats_dailiesAmount,

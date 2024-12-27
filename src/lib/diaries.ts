@@ -10,7 +10,7 @@ import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
 import { MUserStats } from './structures/MUserStats';
 import type { Skills } from './types';
-import { joinStrings } from './util';
+import { formatList } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
@@ -54,7 +54,7 @@ export function userhasDiaryTierSync(
 		const unownedItems = tier.ownedItems.filter(i => !bank.has(i));
 		if (unownedItems.length > 0) {
 			canDo = false;
-			reasons.push(`You don't own ${joinStrings(unownedItems.map(itemNameFromID), 'or')}`);
+			reasons.push(`You don't own ${formatList(unownedItems.map(itemNameFromID), 'or')}`);
 		}
 	}
 
@@ -63,7 +63,7 @@ export function userhasDiaryTierSync(
 		if (unownedItems.length > 0) {
 			canDo = false;
 			reasons.push(
-				`You don't have **${joinStrings(unownedItems.map(itemNameFromID), 'or')}** in your collection log`
+				`You don't have **${formatList(unownedItems.map(itemNameFromID), 'or')}** in your collection log`
 			);
 		}
 	}

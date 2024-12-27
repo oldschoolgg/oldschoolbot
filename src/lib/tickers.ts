@@ -27,7 +27,7 @@ const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
 	.addFields({
 		name: '📖 Read the FAQ',
-		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/faq - also make sure to read the other pages of the website, which might contain the information you need.'
+		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/getting-started/faq/ - also make sure to read the other pages of the website, which might contain the information you need.'
 	})
 	.addFields({
 		name: '🔎 Search',
@@ -393,7 +393,10 @@ export function initTickers() {
 				await ticker.cb();
 			} catch (err) {
 				logError(err);
-				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
+				debugLog(`${ticker.name} ticker errored`, {
+					type: 'TICKER',
+					error: err instanceof Error ? (err.message ?? err) : err
+				});
 			} finally {
 				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
 				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);

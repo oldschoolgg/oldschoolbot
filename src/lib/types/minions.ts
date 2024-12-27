@@ -173,6 +173,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	hasWildySupplies?: boolean;
 	isInWilderness?: boolean;
 	attackStyles?: AttackStyles[];
+	onTask?: boolean;
 }
 
 export type UndoneChangesMonsterOptions = Omit<MonsterActivityTaskOptions, 'q' | 'mi'> & {

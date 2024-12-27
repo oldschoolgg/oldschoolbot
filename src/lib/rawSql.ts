@@ -57,3 +57,11 @@ export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> 
 
 	return null;
 }
+
+export const SQL = {
+	SELECT_FULL_NAME:
+		"TRIM(COALESCE(string_agg(b.text, ' '), '') || ' ' || COALESCE(username, 'Unknown')) AS full_name",
+	LEFT_JOIN_BADGES: 'LEFT JOIN badges b ON b.id = ANY(u.badges)',
+	GROUP_BY_U_ID: 'GROUP BY u.id',
+	WHERE_IRON: (ironOnly: boolean) => (ironOnly ? '"minion.ironman" = true' : '')
+} as const;

@@ -39,7 +39,8 @@ export async function minionKillCommand(
 	inputQuantity: number | undefined,
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
-	_solo: boolean | undefined
+	_solo: boolean | undefined,
+	onTask: boolean | undefined
 ): Promise<string | InteractionReplyOptions> {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
@@ -94,13 +95,16 @@ export async function minionKillCommand(
 	if (typeof dtdResult === 'string') {
 		return dtdResult;
 	}
+	const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
+
+	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
 
 	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
 
 	const result = newMinionKillCommand({
 		gearBank: user.gearBank,
 		attackStyles: user.getAttackStyles(),
-		currentSlayerTask: await getUsersCurrentSlayerInfo(user.id),
+		currentSlayerTask: slayerInfo,
 		monster,
 		isTryingToUseWildy: wilderness ?? false,
 		monsterKC: await user.getKC(monster.id),
@@ -167,7 +171,8 @@ export async function minionKillCommand(
 		bob: !bob ? undefined : bob,
 		hasWildySupplies,
 		isInWilderness: result.isInWilderness,
-		attackStyles: result.attackStyles
+		attackStyles: result.attackStyles,
+		onTask: slayerInfo.assignedTask !== null
 	});
 
 	if (dtdResult) {

@@ -1,11 +1,10 @@
 import type { Giveaway } from '@prisma/client';
 import { type MessageEditOptions, time, userMention } from 'discord.js';
-import { Time, debounce, noOp, randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Time, debounce, noOp } from 'e';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { Events } from '../constants';
-
+import { sql } from '../postgres.js';
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
 import { sendToChannelID } from './webhook';
@@ -35,6 +34,27 @@ export function generateGiveawayContent(host: string, finishDate: Date, usersEnt
 	)}).
 
 There are ${usersEntered.length} users entered in this giveaway.`;
+}
+
+async function pickRandomGiveawayWinner(giveaway: Giveaway): Promise<MUser | null> {
+	if (giveaway.users_entered.length === 0) return null;
+	const result: { id: string }[] = await sql`WITH giveaway_users AS (
+  SELECT unnest(users_entered) AS user_id
+  FROM giveaway
+  WHERE id = ${giveaway.id}
+)
+SELECT id
+FROM users
+WHERE id IN (SELECT user_id FROM giveaway_users)
+AND "minion.ironman" = false
+AND id != ${giveaway.user_id}
+ORDER BY random()
+LIMIT 1;
+`;
+	const id = result[0]?.id;
+	if (!id) return null;
+	const user = await mUserFetch(id);
+	return user;
 }
 
 export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
@@ -71,19 +91,17 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 			}
 		});
 
-		const creator = await mUserFetch(giveaway.user_id);
-
-		const users = (await Promise.all(giveaway.users_entered.map(i => mUserFetch(i)))).filter(
-			u => !u.isIronman && u.id !== giveaway.user_id
-		);
 		await updateGiveawayMessage(giveaway);
 
-		if (users.length === 0) {
+		const creator = await mUserFetch(giveaway.user_id);
+
+		const winner = await pickRandomGiveawayWinner(giveaway);
+
+		if (winner === null) {
 			await refundGiveaway(creator, loot);
 			return;
 		}
 
-		const winner = randArrItem(users);
 		await transactItems({ userID: winner.id, itemsToAdd: loot });
 		await prisma.economyTransaction.create({
 			data: {
@@ -98,12 +116,12 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 
 		globalClient.emit(
 			Events.EconomyLog,
-			`${winner.mention}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.mention}[${creator.id}].`
+			`${winner.mention}[${winner.id}] won ${loot} in a giveaway of ${giveaway.users_entered.length} made by ${creator.mention}[${creator.id}].`
 		);
 
-		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... **${winner.mention}**
-
-They received these items: ${loot}.`;
+		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${giveaway.users_entered.length} users joined, the winner is... **${winner.mention}**
+			
+They received these items: ${loot}`;
 
 		await sendToChannelID(giveaway.channel_id, {
 			content: str

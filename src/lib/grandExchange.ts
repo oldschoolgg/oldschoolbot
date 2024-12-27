@@ -180,7 +180,7 @@ class GrandExchangeSingleton {
 
 	private slotsCache = new LRUCache<string, Awaited<ReturnType<typeof this.calculateSlotsOfUser>>>({
 		ttl: Time.Hour,
-		max: 100
+		max: 300
 	});
 	async calculateSlotsOfUser(
 		user: MUser

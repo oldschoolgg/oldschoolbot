@@ -41,6 +41,7 @@ import {
 	assert,
 	channelIsSendable,
 	formatDuration,
+	formatList,
 	formatSkillRequirements,
 	itemNameFromID,
 	randomVariation
@@ -256,8 +257,9 @@ const toaRequirements: {
 			return true;
 		},
 		desc: () =>
-			`at least ${BP_DARTS_NEEDED}x darts per raid, and using one of: ${ALLOWED_DARTS.map(i => i.name).join(
-				', '
+			`at least ${BP_DARTS_NEEDED}x darts per raid, and using one of: ${formatList(
+				ALLOWED_DARTS.map(i => i.name),
+				'or'
 			)}, loaded in Blowpipe`
 	},
 	{
@@ -268,7 +270,7 @@ const toaRequirements: {
 			}
 
 			if (!user.gear.range.hasEquipped(REQUIRED_RANGE_WEAPONS, false)) {
-				return `Must have one of these equipped: ${REQUIRED_RANGE_WEAPONS.map(itemNameFromID).join(', ')}`;
+				return `Must have one of these equipped: ${formatList(REQUIRED_RANGE_WEAPONS.map(itemNameFromID), 'or')}`;
 			}
 
 			const rangeAmmo = user.gear.range.ammo;
@@ -287,16 +289,17 @@ const toaRequirements: {
 				}
 
 				if (!REQUIRED_ARROWS.includes(rangeAmmo.item)) {
-					return `Need one of these arrows equipped: ${REQUIRED_ARROWS.map(itemNameFromID).join(', ')}`;
+					return `Need one of these arrows equipped: ${formatList(REQUIRED_ARROWS.map(itemNameFromID), 'or')}`;
 				}
 			}
 
 			return true;
 		},
 		desc: () =>
-			`decent range gear (BiS is ${maxRangeGear.toString()}), at least ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${REQUIRED_RANGE_WEAPONS.map(
-				itemNameFromID
-			).join(', ')}`
+			`decent range gear (BiS is ${maxRangeGear.toString()}), at least ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${formatList(
+				REQUIRED_RANGE_WEAPONS.map(itemNameFromID),
+				'or'
+			)}`
 	},
 	{
 		name: 'Melee gear',
@@ -306,20 +309,22 @@ const toaRequirements: {
 			}
 
 			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_WEAPONS, false)) {
-				return `Need one of these weapons in your melee setup: ${MELEE_REQUIRED_WEAPONS.map(
-					itemNameFromID
-				).join(', ')}`;
+				return `Need one of these weapons in your melee setup: ${formatList(
+					MELEE_REQUIRED_WEAPONS.map(itemNameFromID),
+					'or'
+				)}`;
 			}
 			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_ARMOR, false)) {
-				return `Need one of these in your melee setup: ${MELEE_REQUIRED_ARMOR.map(itemNameFromID).join(', ')}`;
+				return `Need one of these in your melee setup: ${formatList(MELEE_REQUIRED_ARMOR.map(itemNameFromID), 'or')}`;
 			}
 
 			return true;
 		},
 		desc: () =>
-			`decent melee gear (BiS is ${maxMeleeLessThan300Gear.toString()}, switched to a Osmumten fang if the raid level is over 300), and one of these weapons: ${MELEE_REQUIRED_WEAPONS.map(
-				itemNameFromID
-			).join(', ')}, and one of these armor pieces: ${MELEE_REQUIRED_ARMOR.map(itemNameFromID).join(', ')}`
+			`decent melee gear (BiS is ${maxMeleeLessThan300Gear.toString()}, switched to a Osmumten fang if the raid level is over 300), and one of these weapons: ${formatList(
+				MELEE_REQUIRED_WEAPONS.map(itemNameFromID),
+				'or'
+			)}, and one of these armor pieces: ${formatList(MELEE_REQUIRED_ARMOR.map(itemNameFromID), 'or')}`
 	},
 	{
 		name: 'Mage gear',
@@ -693,9 +698,9 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 				}
 			}
 			messages.push(
-				`You all received a ${specialItemsReceived
-					.map(itemNameFromID)
-					.join(', ')} for completing the raid without any deaths!`
+				`You all received a ${formatList(
+					specialItemsReceived.map(itemNameFromID)
+				)} for completing the raid without any deaths!`
 			);
 		}
 	}
@@ -1339,9 +1344,9 @@ export async function toaStartCommand(
 		cc: chinCannonUserID ?? undefined
 	});
 
-	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
-		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to do ${
+	let str = `${partyOptions.leader.usernameOrMention}'s party (${formatList(
+		users.map(u => u.usernameOrMention)
+	)}) are now off to do ${
 		quantity === 1 ? 'a' : `${quantity}x`
 	} level ${raidLevel} Tombs of Amascut raid - the total trip will take ${formatDuration(fakeDuration)}.`;
 
@@ -1628,10 +1633,7 @@ function calculateBoostString(user: MUser) {
 	const hasNoMisc = hasMiscBoosts.every(i => !i.has);
 	str += `**Misc Boosts:** ${hasEveryMisc ? '🟢' : hasNoMisc ? '🔴' : '🟠'}`;
 	if (!hasEveryMisc) {
-		str += ` (Missing ${hasMiscBoosts
-			.filter(i => !i.has)
-			.map(i => i.item.name)
-			.join(', ')})`;
+		str += ` (Missing ${formatList(hasMiscBoosts.filter(i => !i.has).map(i => i.item.name))})`;
 	}
 	str += '\n';
 
@@ -1647,7 +1649,10 @@ function calculateBoostString(user: MUser) {
 	str += `**Spec Weapon Boosts:** ${hasBestSpec ? '🟢' : hasNoSpec ? '🔴' : '🟠'}`;
 
 	if (hasNoSpec) {
-		str += ` (Missing one of these: ${hasSpecWepBoosts.map(i => i.item.name).join(' OR ')})`;
+		str += ` (Missing one of these: ${formatList(
+			hasSpecWepBoosts.map(i => i.item.name),
+			'or'
+		)})`;
 	} else if (!hasBestSpec) {
 		str += ` (Missing ${getOSItem(primarySpecWeaponBoosts[0][0]).name})`;
 	}

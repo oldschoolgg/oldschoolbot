@@ -35,7 +35,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 	const whistleChance = Math.ceil((90 - ((chanceWcLevel - 1) * (90 - 45)) / 98) / pekyBoost);
 	const garlandChance = Math.ceil(50 / pekyBoost);
 
-	perTimeUnitChance(duration, 20, Time.Minute, async () => {
+	perTimeUnitChance(duration, 10, Time.Minute, async () => {
 		const eventIndex = randInt(0, ForestryEvents.length - 1);
 		const event = ForestryEvents[eventIndex];
 		let eventRounds = 0;
