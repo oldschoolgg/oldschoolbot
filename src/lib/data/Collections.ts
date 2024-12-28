@@ -1071,7 +1071,7 @@ export const allCollectionLogs: ICollection = {
 						);
 					}
 				},
-				items: [...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL],
+				items: uniqueArr([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL]),
 				isActivity: true,
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
 			}
@@ -1582,7 +1582,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			Creatables: {
 				counts: false,
-				items: creatablesCL
+				items: uniqueArr(creatablesCL)
 			},
 			Leagues: {
 				items: leaguesCL

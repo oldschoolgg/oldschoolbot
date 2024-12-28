@@ -36,7 +36,6 @@ async function updateBadgeTable() {
 
 export const onStartup = logWrapFn('onStartup', async () => {
 	await syncDoubleLoot();
-
 	initCrons();
 	initTickers();
 	syncSlayerMaskLeaderboardCache();
