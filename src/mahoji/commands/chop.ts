@@ -240,8 +240,8 @@ export const chopCommand: OSBMahojiCommand = {
 			forestry: forestry_events,
 			twitchers: twitchers_gloves,
 			duration,
-			fakeDurationMin,
-			fakeDurationMax,
+			fakeDurationMin: Math.floor(fakeDurationMin),
+			fakeDurationMax: Math.floor(fakeDurationMax),
 			type: 'Woodcutting'
 		});
 
