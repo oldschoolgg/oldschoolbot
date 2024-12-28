@@ -117,9 +117,9 @@ export interface OuraniaAltarOptions extends ActivityTaskOptions {
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Agility';
-	courseID: string;
+	courseID: string | number;
 	quantity: number;
-	alch: {
+	alch?: {
 		itemID: number;
 		quantity: number;
 	} | null;
@@ -151,6 +151,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	hasWildySupplies?: boolean;
 	isInWilderness?: boolean;
 	attackStyles?: AttackStyles[];
+	onTask?: boolean;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
@@ -210,7 +211,7 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Woodcutting';
 	fakeDurationMax: number;
 	fakeDurationMin: number;
-	powerchopping: boolean;
+	powerchopping?: boolean;
 	forestry?: boolean;
 	twitchers?: TwitcherGloves;
 	logID: number;
@@ -296,10 +297,10 @@ export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
 
 export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Hunter';
-	creatureName: string;
+	creatureName: string | number;
 	quantity: number;
-	usingHuntPotion: boolean;
-	wildyPeak: Peak | null;
+	usingHuntPotion?: boolean;
+	wildyPeak?: Peak | null;
 	usingStaminaPotion: boolean;
 }
 

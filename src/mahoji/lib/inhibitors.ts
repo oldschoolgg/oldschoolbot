@@ -3,12 +3,12 @@ import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChanne
 import { ComponentType, PermissionsBitField } from 'discord.js';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import { type PartialUser, partialUserCache, perkTierCache } from '../../lib/cache';
+import { type PartialUser, partialUserCache, perkTierCache, untrustedGuildSettingsCache } from '../../lib/cache';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
 import { minionBuyButton } from '../../lib/sharedComponents';
 import type { CategoryFlag } from '../../lib/types';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
-import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
+import { mahojiGuildSettingsFetch } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
 
 export interface AbstractCommandAttributes {
@@ -108,7 +108,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'commandRoleLimit',
 		run: ({ member, guild, channel, userID }) => {
 			if (!guild || guild.id !== globalConfig.supportServerID) return false;
-			if (channel.id !== Channel.General) return false;
+			if (channel.id !== Channel.ServerGeneral) return false;
 			const perkTier = perkTierCache.get(userID) ?? 0;
 			if (member && perkTier >= PerkTier.Two) {
 				return false;

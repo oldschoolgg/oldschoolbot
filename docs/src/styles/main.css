@@ -97,33 +97,6 @@ starlight-menu-button > button {
   --sl-content-margin-inline: 30px 0;
 }
 
-.bso-theme {
-  --sl-color-accent-low: #3e2d5c;
-  --sl-color-accent: #2e1f4b;
-  --sl-color-accent-high: #c5a8e5;
-  --sl-color-bg-nav: #18111f;
-  --sl-color-white: #c4b1dc;
-  --sl-color-gray-1: #9b7ab8;
-  --sl-color-gray-2: #7a5ea3;
-  --sl-color-gray-3: #5a4587;
-  --sl-color-gray-4: #3f2e66;
-  --sl-color-gray-5: #2e1f4b;
-  --sl-color-gray-6: #18111f;
-  --sl-color-black: #0b0b13;
-  --sl-color-text-accent: rgb(140, 121, 197);
-  --sl-color-text: rgba(196, 177, 220, 0.9);
-  --sl-color-bg-sidebar: #1a1625;
-  --sl-color-bg-inline-code: #362c47;
-  --sl-icon-color: #c4b1dc;
-  --sl-color-hairline: #3e2858;
-  background-color: #0d0c12;
-  scrollbar-color: #241e24 #0d0c12;
-
-  .site-title {
-    color: #8e5ee7;
-  }
-}
-
 .sidebar ul li {
   font-weight: normal;
 }

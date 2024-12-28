@@ -176,15 +176,15 @@ export const lapsCommand: OSBMahojiCommand = {
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
-			courseID: course.name,
+			courseID: course.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Agility',
 			alch:
 				alchResult === null
-					? null
+					? undefined
 					: {
 							itemID: alchResult.itemToAlch.id,
 							quantity: alchResult.maxCasts

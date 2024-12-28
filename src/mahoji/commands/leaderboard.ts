@@ -11,8 +11,8 @@ import { masteryKey } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
+import { SQL } from '../../lib/rawSql.js';
 import { Minigames } from '../../lib/settings/minigames';
-
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -83,7 +83,7 @@ function doMenuWrapper({
 	formatter
 }: {
 	ironmanOnly: boolean;
-	users: { id: string; score: number }[];
+	users: { id: string; score: number; full_name?: string }[];
 	title: string;
 	interaction: ChatInputCommandInteraction;
 	user: MUser;
@@ -97,7 +97,7 @@ function doMenuWrapper({
 			const chnk = chunked[c];
 			const unwaited = chnk.map(
 				async (user, i) =>
-					`${getPos(c, i)}**${await getUsername(user.id)}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`
+					`${getPos(c, i)}**${user.full_name ?? (await getUsername(user.id))}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`
 			);
 			const pageText = (await Promise.all(unwaited)).join('\n');
 			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(pageText)] };
@@ -212,13 +212,20 @@ async function sacrificeLb(
 ) {
 	if (type === 'value') {
 		const list = (
-			await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
-				`SELECT "id", "sacrificedValue"
-					   FROM users
-					   WHERE "sacrificedValue" > 0
-					   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
-					   ORDER BY "sacrificedValue"
-					   DESC LIMIT 2000;`
+			await prisma.$queryRawUnsafe<{ id: string; full_name: string; amount: number }[]>(
+				`SELECT 
+	u.id,
+    ${SQL.SELECT_FULL_NAME},
+	"sacrificedValue"
+FROM 
+    users u
+${SQL.LEFT_JOIN_BADGES}
+WHERE 
+    "sacrificedValue" > 10000
+${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+${SQL.GROUP_BY_U_ID}
+ORDER BY "sacrificedValue" DESC
+LIMIT 400;`
 			)
 		).map((res: any) => ({ ...res, amount: Number.parseInt(res.sacrificedValue) }));
 
@@ -229,8 +236,7 @@ async function sacrificeLb(
 			chunk(list, LB_PAGE_SIZE).map((subList, i) =>
 				subList
 					.map(
-						({ id, amount }, j) =>
-							`${getPos(i, j)}**${getUsernameSync(id)}:** ${amount.toLocaleString()} GP `
+						({ full_name, amount }, j) => `${getPos(i, j)}**${full_name}:** ${amount.toLocaleString()} GP `
 					)
 					.join('\n')
 			),
@@ -240,13 +246,32 @@ async function sacrificeLb(
 		return lbMsg('Most Value Sacrificed');
 	}
 
-	const mostUniques: { id: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
-		`SELECT u.user_id::text AS id, u.sacbanklength
-				FROM (
-  					SELECT (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) sacbanklength, user_id FROM user_stats
-  						${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id WHERE "minion.ironman" = true' : ''}
-				) u
-				ORDER BY u.sacbanklength DESC LIMIT 10;
+	const mostUniques: { full_name: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
+		`
+SELECT 
+    ${SQL.SELECT_FULL_NAME}, 
+    u.sacbanklength
+FROM (
+    SELECT 
+        (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) AS sacbanklength, 
+        u.id AS user_id,
+        u.username,
+        u.badges
+    FROM 
+        user_stats 
+    INNER JOIN 
+        users u ON u.id::bigint = user_stats.user_id
+	WHERE
+		sacrificed_bank::text != '{}'
+		${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+) u
+LEFT JOIN 
+    badges b ON b.id = ANY(u.badges)
+GROUP BY 
+    u.username, u.sacbanklength
+ORDER BY 
+    u.sacbanklength DESC
+LIMIT 10;
 `
 	);
 	doMenu(
@@ -256,8 +281,8 @@ async function sacrificeLb(
 		chunk(mostUniques, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(
-					({ id, sacbanklength }, j) =>
-						`${getPos(i, j)}**${getUsernameSync(id)}:** ${sacbanklength.toLocaleString()} Unique Sac's`
+					({ full_name, sacbanklength }, j) =>
+						`${getPos(i, j)}**${full_name}:** ${sacbanklength.toLocaleString()} Unique Sac's`
 				)
 				.join('\n')
 		),

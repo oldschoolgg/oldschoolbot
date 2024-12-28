@@ -134,8 +134,8 @@ export function determineMiningTrip({
 		duration,
 		quantity: newQuantity,
 		boosts,
-		fakeDurationMin,
-		fakeDurationMax,
+		fakeDurationMin: Math.floor(fakeDurationMin),
+		fakeDurationMax: Math.floor(fakeDurationMax),
 		isPowermining
 	};
 }

@@ -25,7 +25,7 @@ import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
 import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
-import { joinStrings } from './util';
+import { formatList } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
@@ -518,7 +518,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		for (const items of objectValues(gearNeeded)) {
 			if (!items) continue;
 			if (!items.some(g => gear.hasEquipped(g))) {
-				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${joinStrings(
+				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${formatList(
 					items.map(itemNameFromID),
 					'or'
 				)}.`;
@@ -527,14 +527,14 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	}
 
 	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i, true, true))) {
-		return `You need one of these equipped in your melee setup to enter the Colosseum: ${joinStrings(
+		return `You need one of these equipped in your melee setup to enter the Colosseum: ${formatList(
 			meleeWeapons.map(itemNameFromID),
 			'or'
 		)}.`;
 	}
 
 	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i, true, true))) {
-		return `You need one of these equipped in your range setup to enter the Colosseum: ${joinStrings(
+		return `You need one of these equipped in your range setup to enter the Colosseum: ${formatList(
 			rangeWeapons.map(itemNameFromID),
 			'or'
 		)}.`;

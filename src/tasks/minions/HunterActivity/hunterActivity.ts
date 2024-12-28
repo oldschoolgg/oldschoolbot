@@ -13,6 +13,7 @@ import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { logError } from '../../../lib/util/logError.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
@@ -47,13 +48,20 @@ export const hunterTask: MinionTask = {
 		let pkStr = '';
 		let pkedQuantity = 0;
 
-		const creature = Hunter.Creatures.find(creature =>
-			creature.aliases.some(
-				alias => stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
-			)
-		);
+		const creature =
+			typeof creatureName === 'number'
+				? Hunter.Creatures.find(c => c.id === creatureName)
+				: Hunter.Creatures.find(creature =>
+						creature.aliases.some(
+							alias =>
+								stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
+						)
+					);
 
-		if (!creature) return;
+		if (!creature) {
+			logError(`Invalid creature name provided: ${creatureName}`);
+			return;
+		}
 
 		const crystalImpling = creature.name === 'Crystal impling';
 

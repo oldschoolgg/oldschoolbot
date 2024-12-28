@@ -85,8 +85,8 @@ export async function motherlodeMineCommand({
 		quantity: newQuantity,
 		iQty: quantity ? quantity : undefined,
 		duration,
-		fakeDurationMax,
-		fakeDurationMin,
+		fakeDurationMax: Math.floor(fakeDurationMax),
+		fakeDurationMin: Math.floor(fakeDurationMin),
 		type: 'MotherlodeMining'
 	});
 	let response = `${minionName(user)} is now mining at the Motherlode Mine until your minion ${

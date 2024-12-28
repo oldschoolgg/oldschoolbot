@@ -404,6 +404,13 @@ export class BankImageTask {
 			}
 		}
 
+		const data = this.spriteSheetData[itemID];
+		if (data) {
+			const [sX, sY, width, height] = data;
+			const image = await getClippedRegionImage(this.spriteSheetImage, sX, sY, width, height);
+			return image;
+		}
+
 		const cachedImage = this.itemIconImagesCache.get(itemID);
 		if (cachedImage) return cachedImage;
 
