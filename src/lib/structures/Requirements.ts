@@ -14,7 +14,7 @@ import type { RobochimpUser } from '../roboChimp';
 import { type MinigameName, minigameColumnToNameMap } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
 import type { Skills } from '../types';
-import { itemNameFromID, joinStrings } from '../util';
+import { formatList, itemNameFromID } from '../util';
 import { MUserStats } from './MUserStats';
 
 export interface RequirementFailure {
@@ -63,7 +63,7 @@ export class Requirements {
 		const requirementParts: (string | string[])[] = [];
 		if ('skillRequirements' in req) {
 			requirementParts.push(
-				`Required Skills: ${joinStrings(
+				`Required Skills: ${formatList(
 					objectEntries(req.skillRequirements).map(([skill, level]) => `Level ${level} ${skill}`)
 				)}`
 			);
@@ -73,7 +73,7 @@ export class Requirements {
 			requirementParts.push(
 				`Items Must Be in CL: ${
 					Array.isArray(req.clRequirement)
-						? joinStrings(req.clRequirement.map(itemNameFromID))
+						? formatList(req.clRequirement.map(itemNameFromID))
 						: req.clRequirement.toString()
 				}`
 			);
@@ -81,7 +81,7 @@ export class Requirements {
 
 		if ('kcRequirement' in req) {
 			requirementParts.push(
-				`Kill Count Requirement: ${joinStrings(
+				`Kill Count Requirement: ${formatList(
 					Object.entries(req.kcRequirement).map(
 						([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name} KC`
 					)
@@ -95,7 +95,7 @@ export class Requirements {
 
 		if ('lapsRequirement' in req) {
 			requirementParts.push(
-				`Agility Course Laps Requirements: ${joinStrings(
+				`Agility Course Laps Requirements: ${formatList(
 					Object.entries(req.lapsRequirement).map(
 						([k, v]) => `${v}x laps of ${Agility.Courses.find(i => i.id === Number(k))?.name}`
 					)
@@ -109,7 +109,7 @@ export class Requirements {
 
 		if ('minigames' in req) {
 			requirementParts.push(
-				`Minigame Requirements: ${joinStrings(
+				`Minigame Requirements: ${formatList(
 					Object.entries(req.minigames).map(([k, v]) => `${v}x ${minigameColumnToNameMap.get(k)} KC`)
 				)}.`
 			);
@@ -121,7 +121,7 @@ export class Requirements {
 
 		if ('diaryRequirement' in req) {
 			requirementParts.push(
-				`Achievement Diary Requirement: ${joinStrings(
+				`Achievement Diary Requirement: ${formatList(
 					req.diaryRequirement.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])?.name}`)
 				)}`
 			);
@@ -129,7 +129,9 @@ export class Requirements {
 
 		if ('OR' in req) {
 			const subResults = req.OR.map(i => this.formatRequirement(i));
-			requirementParts.push(`ONE of the following requirements must be met: ${joinStrings(subResults, 'or')}.`);
+			requirementParts.push(
+				`ONE of the following requirements must be met: ${formatList(subResults.flat(100), 'or')}.`
+			);
 		}
 
 		if ('name' in req && req.name) {
@@ -186,7 +188,7 @@ export class Requirements {
 			}
 			if (insufficientLevels.length > 0) {
 				results.push({
-					reason: `You need these stats: ${joinStrings(insufficientLevels)}.`
+					reason: `You need these stats: ${formatList(insufficientLevels)}.`
 				});
 			}
 		}
@@ -194,7 +196,7 @@ export class Requirements {
 		if ('clRequirement' in requirement) {
 			if (!user.cl.has(requirement.clRequirement)) {
 				const missingItems = Array.isArray(requirement.clRequirement)
-					? joinStrings(requirement.clRequirement.filter(i => !user.cl.has(i)).map(itemNameFromID))
+					? formatList(requirement.clRequirement.filter(i => !user.cl.has(i)).map(itemNameFromID))
 					: requirement.clRequirement.clone().remove(user.cl);
 				results.push({
 					reason: `You need ${missingItems} in your CL.`
@@ -214,7 +216,7 @@ export class Requirements {
 			}
 			if (missingMonsterNames.length > 0) {
 				results.push({
-					reason: `You need the following KC's: ${joinStrings(missingMonsterNames)}.`
+					reason: `You need the following KC's: ${formatList(missingMonsterNames)}.`
 				});
 			}
 		}
@@ -258,7 +260,7 @@ export class Requirements {
 			}
 			if (insufficientMinigames.length > 0) {
 				results.push({
-					reason: `You need these minigames scores: ${joinStrings(insufficientMinigames)}.`
+					reason: `You need these minigames scores: ${formatList(insufficientMinigames)}.`
 				});
 			}
 		}
@@ -287,7 +289,7 @@ export class Requirements {
 				.filter(i => !i.has);
 			if (unmetDiaries.length > 0) {
 				results.push({
-					reason: `You need to finish these achievement diaries: ${joinStrings(
+					reason: `You need to finish these achievement diaries: ${formatList(
 						unmetDiaries.map(i => i.tierName)
 					)}.`
 				});
@@ -309,7 +311,10 @@ export class Requirements {
 			if (!orResults.some(i => i.length === 0)) {
 				results.push({
 					reason: `You need to meet one of these requirements:\n${orResults.map((res, index) => {
-						return `${index + 1}. ${joinStrings(res, 'or')})}`;
+						return `${index + 1}. ${formatList(
+							res.map(r => r.reason),
+							'or'
+						)})}`;
 					})}`
 				});
 			}
@@ -372,7 +377,7 @@ GROUP BY type;`,
 			hasAll: results.filter(i => i.result.length !== 0).length === 0,
 			reasonsDoesnt: results
 				.filter(i => i.result.length > 0)
-				.map(i => `${i.requirement.name}: ${joinStrings(i.result.map(t => t.reason))}`),
+				.map(i => `${i.requirement.name}: ${formatList(i.result.map(t => t.reason))}`),
 			rendered: `- ${flatReasons
 				.filter(i => i.reason)
 				.map(i => i.reason)

@@ -18,7 +18,7 @@ import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { Skills } from '../types';
-import { itemID, itemNameFromID, randomVariation, resolveItems } from '../util';
+import { formatList, itemID, itemNameFromID, randomVariation, resolveItems } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { getSimilarItems } from './similarItems';
@@ -328,11 +328,11 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 			if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
 				if (REQUIRED_BOW.includes(rangeWeapon.id)) {
 					if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded || !REQUIRED_ARROWS.includes(rangeAmmo.item)) {
-						return `<@${user.id}> needs ${arrowsNeeded} of one of these arrows equipped: ${REQUIRED_ARROWS.map(itemNameFromID).join(', ')}.`;
+						return `<@${user.id}> needs ${arrowsNeeded} of one of these arrows equipped: ${formatList(REQUIRED_ARROWS.map(itemNameFromID), 'or')}.`;
 					}
 				} else if (REQUIRED_CROSSBOW.includes(rangeWeapon.id)) {
 					if (!rangeAmmo || rangeAmmo.quantity < boltsNeeded || !REQUIRED_BOLTS.includes(rangeAmmo.item)) {
-						return `<@${user.id}> needs ${boltsNeeded} of ones of these bolts equipped: ${REQUIRED_BOLTS.map(itemNameFromID).join(', ')}.`;
+						return `<@${user.id}> needs ${boltsNeeded} of ones of these bolts equipped: ${formatList(REQUIRED_BOLTS.map(itemNameFromID), 'or')}.`;
 					}
 				}
 			}

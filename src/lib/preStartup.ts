@@ -1,9 +1,10 @@
-import { noOp } from 'e';
+import { noOp, uniqueArr } from 'e';
 import { syncCustomPrices } from '../mahoji/lib/events';
 import { syncActivityCache } from './Task';
 import { cacheBadges } from './badges';
 import { syncBlacklists } from './blacklists';
 import { globalConfig } from './constants';
+import { allCollectionLogsFlat } from './data/Collections.js';
 import { GrandExchange } from './grandExchange';
 import { cacheGEPrices } from './marketPrices';
 import { populateRoboChimpCache } from './perkTier';
@@ -12,6 +13,22 @@ import { runStartupScripts } from './startupScripts';
 import { logWrapFn } from './util';
 import { syncActiveUserIDs } from './util/cachedUserIDs';
 import { syncDisabledCommands } from './util/syncDisabledCommands';
+
+async function syncCollectionLogSlotTable() {
+	await prisma.collectionLogSlot.deleteMany();
+	const items = allCollectionLogsFlat
+		.filter(i => i.counts !== false)
+		.map(cl =>
+			uniqueArr(cl.items).map(item => ({
+				group_name: cl.name,
+				item_id: item
+			}))
+		)
+		.flat(100);
+	await prisma.collectionLogSlot.createMany({
+		data: items
+	});
+}
 
 export const preStartup = logWrapFn('PreStartup', async () => {
 	await Promise.all([
@@ -30,6 +47,7 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 		GrandExchange.init(),
 		populateRoboChimpCache(),
 		cacheGEPrices(),
-		prisma.$queryRawUnsafe(RawSQL.updateAllUsersCLArrays()).then(noOp)
+		prisma.$queryRawUnsafe(RawSQL.updateAllUsersCLArrays()).then(noOp),
+		syncCollectionLogSlotTable()
 	]);
 });

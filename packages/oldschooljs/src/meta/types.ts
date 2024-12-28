@@ -233,10 +233,6 @@ export interface Item {
 	 * The OSRS Wiki name for the item.
 	 */
 	wiki_name?: string;
-	/**
-	 * The OSRS Wiki URL (possibly including anchor link).
-	 */
-	wiki_url?: string;
 	equipment?: ItemEquipment;
 	weapon?: ItemWeapon;
 	/**

@@ -5,6 +5,7 @@ import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 import { Emoji } from '../constants';
 import type { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
 import Farming from '../skilling/skills/farming';
+import { formatList } from '../util';
 import { makeAutoFarmButton } from './smallUtils';
 
 export const farmingPatchNames = [
@@ -60,7 +61,7 @@ export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): B
 		} ready at ${dateFm(patch.readyAt!)}\n`;
 	}
 	const notReady = patchesDetailed.filter(i => i.ready === null);
-	str += `${Emoji.RedX} **Nothing planted:** ${notReady.map(i => i.friendlyName).join(', ')}.`;
+	str += `${Emoji.RedX} **Nothing planted:** ${formatList(notReady.map(i => i.friendlyName))}.`;
 
 	const buttons: ButtonBuilder[] = [];
 

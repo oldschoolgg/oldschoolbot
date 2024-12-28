@@ -995,6 +995,7 @@ model GEListing {
   buyTransactions  GETransaction[] @relation("buy_transactions")
   sellTransactions GETransaction[] @relation("sell_transactions")
 
+  @@index([created_at])
   @@map("ge_listing")
 }
 
@@ -1017,6 +1018,7 @@ model GETransaction {
   sell_listing_id Int
 
   @@index([sell_listing_id])
+  @@index([created_at])
   @@map("ge_transaction")
 }
 
@@ -1135,6 +1137,23 @@ model UserEvent {
   collection_log_name String?
 
   @@map("user_event")
+}
+
+model Badges {
+  id Int @id @default(autoincrement())
+
+  text String
+
+  @@map("badges")
+}
+
+model CollectionLogSlot {
+  group_name String
+  item_id    Int
+
+  @@id([group_name, item_id])
+  @@unique([group_name, item_id])
+  @@map("collection_log_slot")
 }
 
 enum command_name_enum {
