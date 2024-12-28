@@ -111,7 +111,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		);
 		if (!clueTier) return 'Invalid clue tier.';
 
-		if (clueTier.name === 'Grandmaster') {
+		if (clueTier.name === 'Grandmaster' && !user.cl.has('Reward casket (grandmaster)')) {
 			const clueScores = await calcClueScores(user);
 			for (const { tier, actualOpened } of clueScores) {
 				if (actualOpened < tier.qtyForGrandmasters) {

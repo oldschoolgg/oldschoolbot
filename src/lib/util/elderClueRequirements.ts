@@ -125,9 +125,11 @@ export async function checkElderClueRequirements(user: MUser) {
 		);
 	}
 
-	const clueScores = await user.calcActualClues();
-	if (clueScores.clueCounts.Grandmaster < 100) {
-		unmetRequirements.push('You need atleast 100 Grandmaster clues completed.');
+	if (!user.cl.has('Reward casket (elder)')) {
+		const clueScores = await user.calcActualClues();
+		if (clueScores.clueCounts.Grandmaster < 100) {
+			unmetRequirements.push('You need atleast 100 Grandmaster clues completed.');
+		}
 	}
 
 	return {
