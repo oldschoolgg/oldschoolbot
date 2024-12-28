@@ -419,7 +419,8 @@ export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
 
-export function formatList(itemList: any[], end?: string) {
+export function formatList(_itemList: (string | undefined | null)[], end?: string) {
+	const itemList = _itemList.filter(i => i !== undefined && i !== null) as string[];
 	if (itemList.length < 2) return itemList.join(', ');
 	const lastItem = itemList.pop();
 	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
