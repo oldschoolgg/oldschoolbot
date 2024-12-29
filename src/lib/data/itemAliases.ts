@@ -468,3 +468,26 @@ Items.modifyItem(9044, {
 	tradeable: true,
 	tradeable_on_ge: true
 });
+
+/**
+ * START BSO Supply Crates
+ */
+setItemAlias(71_433, ['s1'], false);
+setItemAlias(71_434, ['s1 key'], false);
+setItemAlias(71_467, ['s2'], false);
+setItemAlias(71_468, ['s2 key'], false);
+setItemAlias(71_580, ['s3'], false);
+setItemAlias(71_581, ['s3 key'], false);
+setItemAlias(72_016, ['s4'], false);
+setItemAlias(72_017, ['s4 key'], false);
+setItemAlias(73_121, ['s5'], false);
+setItemAlias(73_122, ['s5 key'], false);
+setItemAlias(73_200, ['s6'], false);
+setItemAlias(73_201, ['s6 key'], false);
+setItemAlias(73_250, ['s7'], false);
+setItemAlias(73_251, ['s7 key'], false);
+setItemAlias(73_299, ['s8'], false);
+setItemAlias(73_300, ['s8 key'], false);
+/**
+ * END BSO Supply Crates
+ */
