@@ -1292,10 +1292,6 @@ export const allCollectionLogs: ICollection = {
 				alias: ['af', 'aerial fishing'],
 				items: aerialFishingCL
 			},
-			'All Pets': {
-				alias: ['pet', 'pets'],
-				items: allPetsCL
-			},
 			Camdozaal: {
 				items: camdozaalCL
 			},
@@ -1349,47 +1345,6 @@ export const allCollectionLogs: ICollection = {
 			'My Notes': {
 				alias: ['my notes'],
 				items: myNotesCL
-			},
-			'Random Events': {
-				alias: ['random'],
-				items: randomEventsCL
-			},
-			Revenants: {
-				alias: ['revs'],
-				kcActivity: {
-					Default: async user => {
-						const stats = await user.fetchStats({ monster_scores: true });
-						return sumArr(
-							[
-								Monsters.RevenantImp.id,
-								Monsters.RevenantGoblin.id,
-								Monsters.RevenantPyrefiend.id,
-								Monsters.RevenantHobgoblin.id,
-								Monsters.RevenantCyclops.id,
-								Monsters.RevenantHellhound.id,
-								Monsters.RevenantDemon.id,
-								Monsters.RevenantOrk.id,
-								Monsters.RevenantDarkBeast.id,
-								Monsters.RevenantKnight.id,
-								Monsters.RevenantDragon.id
-							].map(i => (stats.monster_scores as ItemBank)[i] ?? 0)
-						);
-					}
-				},
-				allItems: [
-					...Monsters.RevenantImp.allItems,
-					...Monsters.RevenantGoblin.allItems,
-					...Monsters.RevenantPyrefiend.allItems,
-					...Monsters.RevenantHobgoblin.allItems,
-					...Monsters.RevenantCyclops.allItems,
-					...Monsters.RevenantHellhound.allItems,
-					...Monsters.RevenantDemon.allItems,
-					...Monsters.RevenantOrk.allItems,
-					...Monsters.RevenantDarkBeast.allItems,
-					...Monsters.RevenantKnight.allItems,
-					...Monsters.RevenantDragon.allItems
-				],
-				items: revenantsCL
 			},
 			'Rooftop Agility': {
 				alias: ['rooftop', 'laps', 'agility', 'agil'],
