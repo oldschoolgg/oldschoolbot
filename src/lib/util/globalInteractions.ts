@@ -1,4 +1,4 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import { dateFm, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { ButtonInteraction, Interaction } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
@@ -12,17 +12,17 @@ import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { repeatTameTrip } from '../../tasks/tames/tameTasks';
 import { modifyBusyCounter } from '../busyCounterCache';
 import type { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
+import { BitField, Emoji, PerkTier } from '../constants';
 
 import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import { InteractionID } from '../InteractionID';
+import { itemContractResetTime } from '../MUser.js';
 import { giveawayCache } from '../cache.js';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import type { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
-import { CACHED_ACTIVE_USER_IDS } from './cachedUserIDs';
 import { updateGiveawayMessage } from './giveaway';
 import { handleMahojiConfirmation } from './handleMahojiConfirmation';
 import { interactionReply } from './interactionReply';
@@ -293,7 +293,7 @@ function icDonateValidation(user: MUser, donator: MUser) {
 
 async function donateICHandler(interaction: ButtonInteraction) {
 	const userID = interaction.customId.split('_')[2];
-	if (!userID || !CACHED_ACTIVE_USER_IDS.has(userID)) {
+	if (!userID) {
 		return interactionReply(interaction, { content: 'Invalid user.', ephemeral: true });
 	}
 
@@ -323,11 +323,14 @@ async function donateICHandler(interaction: ButtonInteraction) {
 		await tradePlayerItems(donator, user, cost);
 		await userStatsBankUpdate(donator.id, 'ic_donations_given_bank', cost);
 		await userStatsBankUpdate(user.id, 'ic_donations_received_bank', cost);
-
+		const handInResult = await handInContract(null, user);
+		const nextIcDetails = getItemContractDetails(user);
 		return interactionReply(interaction, {
-			content: `${donator}, you donated ${cost} to ${user}!
+			content: `${donator} donated ${cost} for ${user}'s Item Contract!
 
-${user.mention} ${await handInContract(null, user)}`,
+${user.mention} ${handInResult}
+
+${Emoji.ItemContract} Your next contract is: ${nextIcDetails.currentItem?.name} ${dateFm(new Date(Date.now() + itemContractResetTime))}.`,
 			allowedMentions: {
 				users: [user.id]
 			}
