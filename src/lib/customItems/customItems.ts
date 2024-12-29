@@ -13211,7 +13211,7 @@ setCustomItem(
 
 setCustomItem(
 	73_276,
-	'Vampyric hween mask',
+	'Vampyric halloween mask',
 	'Bronze full helm',
 	{
 		customItemData: {
@@ -13235,7 +13235,7 @@ setCustomItem(
 
 setCustomItem(
 	73_278,
-	'Zombie hween mask',
+	'Zombie halloween mask',
 	'Bronze full helm',
 	{
 		customItemData: {

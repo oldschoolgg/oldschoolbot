@@ -984,11 +984,11 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Halloween cracker'),
 		aliases: ['halloween cracker'],
 		output: new LootTable()
-			.add('Zombie hween mask')
+			.add('Zombie halloween mask')
 			.add('Demonic hween mask')
 			.add('Monster in a backpack')
 			.add('Pumpkin parasol')
-			.add('Vampyric hween mask')
+			.add('Vampyric halloween mask')
 			.add('Zombie cow plushie')
 			.add('Deathtouched tart'),
 		allItems: [],

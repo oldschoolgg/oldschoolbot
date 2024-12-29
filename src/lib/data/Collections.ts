@@ -1813,21 +1813,21 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Halloween Cracker': {
 				items: resolveItems([
-					'Zombie hween mask',
+					'Zombie halloween mask',
 					'Demonic hween mask',
 					'Monster in a backpack',
 					'Pumpkin parasol',
-					'Vampyric hween mask',
+					'Vampyric halloween mask',
 					'Zombie cow plushie',
 					'Deathtouched tart'
 				]),
 				counts: false,
 				allItems: resolveItems([
-					'Zombie hween mask',
+					'Zombie halloween mask',
 					'Demonic hween mask',
 					'Monster in a backpack',
 					'Pumpkin parasol',
-					'Vampyric hween mask',
+					'Vampyric halloween mask',
 					'Zombie cow plushie',
 					'Deathtouched tart'
 				])
