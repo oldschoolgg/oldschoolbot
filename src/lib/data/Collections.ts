@@ -1930,7 +1930,13 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Miscelleanous (Discontinued)': {
 				alias: ['discontinued misc'],
-				items: resolveItems(['Golden cape shard', 'Golden cape', 'Golden shard', 'Golden partyhat']),
+				items: resolveItems([
+					'Golden cape shard',
+					'Golden cape',
+					'Golden shard',
+					'Golden partyhat',
+					'Black swan'
+				]),
 				counts: false
 			}
 		}
