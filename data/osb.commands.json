@@ -368,6 +368,7 @@
 			"bankbg",
 			"lamp",
 			"cancel",
+			"cancel_and_refund",
 			"set_icon",
 			"set_name",
 			"level",

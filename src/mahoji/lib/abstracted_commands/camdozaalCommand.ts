@@ -114,15 +114,16 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 			maxTripLength / timePerSmith
 		)}.`;
 	}
-
-	await user.removeItemsFromBank(new Bank().add('Barronite deposit', quantity));
+	const itemCost = new Bank().add('Barronite deposit', quantity);
+	await user.removeItemsFromBank(itemCost);
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'CamdozaalSmithing'
+		type: 'CamdozaalSmithing',
+		itemCost
 	});
 
 	return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatDuration(

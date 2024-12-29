@@ -277,7 +277,8 @@ export const huntCommand: OSBMahojiCommand = {
 			usingHuntPotion: usingHuntPotion ? true : undefined,
 			usingStaminaPotion,
 			wildyPeak: wildyPeak ? wildyPeak : undefined,
-			type: 'Hunter'
+			type: 'Hunter',
+			itemCost: removeBank
 		});
 
 		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${

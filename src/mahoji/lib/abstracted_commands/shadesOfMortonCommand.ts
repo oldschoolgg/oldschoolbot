@@ -306,7 +306,8 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 		type: 'ShadesOfMorton',
 		minigameID: 'shades_of_morton',
 		logID: logItem.id,
-		shadeID: shade.shadeName
+		shadeID: shade.shadeName,
+		itemCost: cost
 	});
 
 	let str = `${

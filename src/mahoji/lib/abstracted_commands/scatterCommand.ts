@@ -57,7 +57,8 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Scattering'
+		type: 'Scattering',
+		itemCost: cost
 	});
 
 	return `${user.minionName} is now scattering ${cost}, it'll take around ${formatDuration(duration)} to finish.`;

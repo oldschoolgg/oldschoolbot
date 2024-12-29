@@ -716,5 +716,8 @@ export function minionStatus(user: MUser) {
 		case 'BlastFurnace': {
 			throw new Error('Removed');
 		}
+		case 'Refund': {
+			return `${name} is returning from their trip with supplies. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
 	}
 }

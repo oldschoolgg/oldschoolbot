@@ -308,7 +308,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 			daeyaltEssence: daeyalt_essence,
 			duration,
 			imbueCasts,
-			type: 'Runecraft'
+			type: 'Runecraft',
+			itemCost: totalCost
 		});
 
 		let response = `${user.minionName} is now turning ${quantity}x`;
