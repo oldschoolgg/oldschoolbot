@@ -33,12 +33,6 @@ export const mutatedSourceItems: MutatedSourceItem[] = [
 		surivalChance: 15
 	},
 	{
-		item: getOSItem('Blood orange seed'),
-		zygomite: 'Fruity zygomite',
-		weight: 3,
-		surivalChance: 10
-	},
-	{
 		item: getOSItem('Dragonfruit tree seed'),
 		zygomite: 'Fruity zygomite',
 		weight: 1,
