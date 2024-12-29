@@ -3269,7 +3269,12 @@ export const skillingMiscCL = resolveItems([
 	'Dwarven gauntlets'
 ]);
 
-export const crackerCL = resolveItems([...PartyhatTable.allItems, 'Partyhat & specs', 'Partyhat set']);
+export const crackerCL = resolveItems([
+	...PartyhatTable.allItems,
+	'Partyhat & specs',
+	'Partyhat set',
+	'Christmas cracker'
+]);
 
 export const leaguesCL = resolveItems(['Brain lee', 'Fuzzy dice', 'Karambinana']);
 export const upgradedDragonstoneOutfit = resolveItems([
