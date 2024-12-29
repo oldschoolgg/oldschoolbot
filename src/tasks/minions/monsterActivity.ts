@@ -5,6 +5,7 @@ import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { type BitField, Emoji } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
+import { CombatOptionsArray, type CombatOptionsEnum, modifyTable } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -138,6 +139,7 @@ interface newOptions {
 	attackStyles: AttackStyles[];
 	bitfield: readonly BitField[];
 	cl: Bank;
+	combatOptions?: readonly CombatOptionsEnum[];
 }
 
 export function doMonsterTrip(data: newOptions) {
@@ -162,7 +164,8 @@ export function doMonsterTrip(data: newOptions) {
 		userStats,
 		attackStyles,
 		duration,
-		bitfield
+		bitfield,
+		combatOptions
 	} = data;
 	const currentKC = kcBank.amount(monster.id);
 	const updateBank = new UpdateBank();
@@ -300,7 +303,11 @@ export function doMonsterTrip(data: newOptions) {
 		hasSuperiors: superiorTable,
 		inCatacombs: isInCatacombs,
 		lootTableOptions: {
-			tertiaryItemPercentageChanges
+			tertiaryItemPercentageChanges,
+			modifyTable: modifyTable(
+				monster.name,
+				CombatOptionsArray.filter(o => combatOptions?.includes(o.id))
+			)
 		}
 	};
 
@@ -375,6 +382,9 @@ export function doMonsterTrip(data: newOptions) {
 			if (ashSanctifierResult) {
 				messages.push(ashSanctifierResult.message);
 			}
+		}
+		if (loot.length === 0) {
+			messages.push('You received no loot');
 		}
 	}
 
@@ -458,6 +468,7 @@ export const monsterTask: MinionTask = {
 			attackStyles,
 			hasEliteCA: user.hasCompletedCATier('elite'),
 			bitfield: user.bitfield,
+			combatOptions: user.combatOptions,
 			cl: user.cl
 		});
 		if (slayerContext.isOnTask) {
