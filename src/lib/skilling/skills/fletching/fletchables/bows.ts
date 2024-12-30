@@ -199,7 +199,7 @@ const Bows: Fletchable[] = [
 	{
 		name: 'Toxic blowpipe (empty)',
 		id: itemID('Toxic blowpipe (empty)'),
-		level: 53,
+		level: 78,
 		xp: 120,
 		inputItems: new Bank({ 'Tanzanite fang': 1 }),
 		tickRate: 2
