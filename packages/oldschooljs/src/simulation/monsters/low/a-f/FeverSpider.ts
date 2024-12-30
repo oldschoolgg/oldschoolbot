@@ -11,7 +11,7 @@ const FeverSpiderTable = new LootTable({ limit: 36 })
 	.add('Coins', [200, 600], 8)
 	.add('Bass', [1, 2], 7)
 	.add('Limpwurt root', 1, 4)
-	.add('pure essence', [100, 200], 2)
+	.add('Pure essence', [100, 200], 2)
 	.add(GemTable, 1, 1);
 
 export default new SimpleMonster({
