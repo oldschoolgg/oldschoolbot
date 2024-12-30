@@ -2,12 +2,16 @@ import LootTable from '../../../../structures/LootTable';
 import SimpleMonster from '../../../../structures/SimpleMonster';
 import { GemTable } from '../../../subtables/RareDropTable';
 
-const BanditTable = new LootTable({ limit: 128 })
+const BanditTable = new LootTable({ limit: 143 })
 	.every('Bones')
 	.tertiary(128, 'Clue scroll (hard)')
+	.add('Rune full helm', 1, 5)
+	.add('Rune med helm', 1, 5)
+	.add('Rune Scimitar', 1, 5)
 	.add('Adamant scimitar', 1, 4)
 	.add('Mithril sq shield', 1, 2)
 	.add('Mithril axe', 1, 1)
+	.add('Dragon longsword', 1, 1)
 
 	.add('Chaos rune', 10, 3)
 	.add('Water rune', 11, 3)
@@ -42,7 +46,7 @@ const BanditTable = new LootTable({ limit: 128 })
 
 	.add('Coal', 5, 6)
 	.add('Dark fishing bait', [10, 24], 2)
-	.add(GemTable, 1, 3);
+	.add(GemTable, 1, 4);
 
 export default new SimpleMonster({
 	id: 6605,

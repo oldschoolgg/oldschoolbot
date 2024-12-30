@@ -19,11 +19,11 @@ interface trekBoost {
 	blisterwood: number;
 }
 
-export const EasyEncounterLoot = new LootTable().add('Riyl remains', 3).add('Nail beast nails', [2, 3]);
+export const EasyEncounterLoot = new LootTable().add('Riyl remains', 3).add('Nail beast nails', [4, 9]);
 
-export const MediumEncounterLoot = new LootTable().add('Asyn remains', 4).add('Nail beast nails', [3, 4]);
+export const MediumEncounterLoot = new LootTable().add('Asyn remains', 4).add('Nail beast nails', [6, 12]);
 
-export const HardEncounterLoot = new LootTable().add('Fiyr remains', 5).add('Nail beast nails', [4, 6]);
+export const HardEncounterLoot = new LootTable().add('Fiyr remains', 5).add('Nail beast nails', [8, 18]);
 
 export const difficulties: TrekDifficulty[] = [
 	{
