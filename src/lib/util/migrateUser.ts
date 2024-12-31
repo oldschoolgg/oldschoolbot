@@ -41,6 +41,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.stashUnit.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.bingoParticipant.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.userCounter.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 
 	// BSO: Delete target
 	transactions.push(prisma.tameActivity.deleteMany({ where: { user_id: destUser.id } }));
@@ -192,6 +193,13 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	);
 	transactions.push(
 		prisma.mortimerTricks.updateMany({ where: { target_id: sourceUser.id }, data: { target_id: destUser.id } })
+	);
+
+	transactions.push(
+		prisma.userCounter.updateMany({
+			where: { user_id: BigInt(sourceUser.id) },
+			data: { user_id: BigInt(destUser.id) }
+		})
 	);
 
 	// Update Users in group activities:

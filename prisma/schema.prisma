@@ -1494,6 +1494,16 @@ model CollectionLogSlot {
   @@map("collection_log_slot")
 }
 
+model UserCounter {
+  user_id BigInt
+  key     String
+  value   Decimal @db.Decimal(13, 3)
+
+  @@id([user_id, key])
+  @@unique([user_id, key])
+  @@map("user_counter")
+}
+
 enum command_name_enum {
   testpotato
   achievementdiary
