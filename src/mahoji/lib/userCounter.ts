@@ -1,4 +1,4 @@
-export async function incrementUserCounter(_userID: string, _key: string, incrementUserCounter: number) {
+export async function incrementUserCounter(_userID: string, _key: string, incrementValue: number) {
 	const userID = BigInt(_userID);
 	const key = _key.toLowerCase();
 	const result = await prisma.userCounter.upsert({
@@ -11,11 +11,11 @@ export async function incrementUserCounter(_userID: string, _key: string, increm
 		create: {
 			user_id: userID,
 			key,
-			value: incrementUserCounter
+			value: incrementValue
 		},
 		update: {
 			value: {
-				increment: incrementUserCounter
+				increment: incrementValue
 			}
 		}
 	});
