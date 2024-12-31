@@ -320,6 +320,8 @@ export default async function prepareItems(): Promise<void> {
 		if (itemShouldntBeAdded(item)) continue;
 
 		const price = allPrices[item.id];
+		const previousItem = Items.get(item.id);
+
 		if (itemChanges[item.id]) {
 			item = deepMerge(item, itemChanges[item.id]) as any;
 		}
@@ -367,7 +369,6 @@ export default async function prepareItems(): Promise<void> {
 		if (item.lowalch === null) item.lowalch = undefined;
 		if (item.highalch === null) item.highalch = undefined;
 
-		const previousItem = Items.get(item.id);
 		if (!previousItem) {
 			newItems.push(item);
 		}
