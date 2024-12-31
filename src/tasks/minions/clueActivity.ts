@@ -5,6 +5,7 @@ import { ClueTiers } from '../../lib/clues/clueTiers';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { incrementUserCounter } from '../../mahoji/lib/userCounter.js';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 const possibleFound = new LootTable()
@@ -29,6 +30,8 @@ export const clueTask: MinionTask = {
 		const { ci: clueID, userID, channelID, q: quantity, duration } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID)!;
 		const user = await mUserFetch(userID);
+
+		await incrementUserCounter(userID, `cluecompletions.${clueTier.name}`, quantity);
 
 		let str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
 			user.minionName
@@ -62,6 +65,7 @@ export const clueTask: MinionTask = {
 
 			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;
 		}
+
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

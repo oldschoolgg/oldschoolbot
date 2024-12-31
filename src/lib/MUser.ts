@@ -302,19 +302,18 @@ export class MUserClass {
 	}
 
 	async calcActualClues() {
-		const result: { id: number; qty: number }[] =
-			await prisma.$queryRawUnsafe(`SELECT (data->>'ci')::int AS id, SUM((data->>'q')::int)::int AS qty
-FROM activity
-WHERE type = 'ClueCompletion'
-AND user_id = '${this.id}'::bigint
-AND data->>'ci' IS NOT NULL
-AND completed = true
-GROUP BY data->>'ci';`);
+		const clueCompletionCounters = await prisma.userCounter.findMany({
+			where: {
+				user_id: BigInt(this.id),
+				key: {
+					startsWith: 'cluecompletions.'
+				}
+			}
+		});
 		const casketsCompleted = new Bank();
-		for (const res of result) {
-			const item = getItem(res.id);
-			if (!item) continue;
-			casketsCompleted.add(item.id, res.qty);
+		for (const res of clueCompletionCounters) {
+			const clueTier = ClueTiers.find(i => i.name.toLowerCase() === res.key.split('.')[1])!;
+			casketsCompleted.add(clueTier.id, res.value.toNumber());
 		}
 		const stats = await this.fetchStats({ openable_scores: true });
 		const opens = new Bank(stats.openable_scores as ItemBank);
