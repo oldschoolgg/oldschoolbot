@@ -83,7 +83,7 @@ export const manualSpriteIDs = [
 	[25_486, 28_313],
 	[25_487, 28_310],
 	[25_488, 28_316]
-]
+];
 
 const i = itemID;
 const forcedShortNameMap = new Map<number, string>([
