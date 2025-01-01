@@ -277,10 +277,18 @@ export function calculateHunterResult({
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion = false, wildyPeak, duration, usingStaminaPotion = false } =
-			data;
+		const {
+			creatureName,
+			quantity,
+			userID,
+			channelID,
+			usingHuntPotion = false,
+			wildyPeak,
+			duration,
+			usingStaminaPotion = false
+		} = data;
 		const user = await mUserFetch(userID);
-	const creature =
+		const creature =
 			typeof creatureName === 'number'
 				? Hunter.Creatures.find(c => c.id === creatureName)
 				: Hunter.Creatures.find(creature =>

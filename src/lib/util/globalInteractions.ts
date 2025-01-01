@@ -1,4 +1,4 @@
-import { cleanUsername, mentionCommand, dateFm } from '@oldschoolgg/toolkit/util';
+import { cleanUsername, dateFm, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { ButtonInteraction, Interaction } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';

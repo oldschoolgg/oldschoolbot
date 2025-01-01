@@ -36,6 +36,7 @@ const finalStep = {
 	didPass: async (data: ActivityTaskData) => {
 		if (
 			data.type === 'Hunter' &&
+			typeof data.creatureName === 'string' &&
 			[
 				'Polar kebbit',
 				'Cerulean twitch',
