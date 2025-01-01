@@ -6,11 +6,11 @@ import {
 	isValidDiscordSnowflake,
 	toTitleCase
 } from '@oldschoolgg/toolkit/util';
-import { type Prisma, UserEventType, xp_gains_skill_enum } from '@prisma/client';
+import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, SnowflakeUtil, codeBlock } from 'discord.js';
-import { Time, objectValues, randArrItem, sumArr } from 'e';
+import { Time, randArrItem, sumArr } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '../../lib/constants';
@@ -25,7 +25,6 @@ import { premiumPatronTime } from '../../lib/premiumPatronTime';
 import { sql } from '../../lib/postgres';
 import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
-import { SkillsEnum } from '../../lib/skilling/types';
 import type { ItemBank } from '../../lib/types';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -57,93 +56,6 @@ const itemFilters = [
 	}
 ];
 
-async function usernameSync() {
-	const roboChimpUsersToCache = (
-		await roboChimpClient.user.findMany({
-			where: {
-				OR: [
-					{
-						osb_cl_percent: {
-							gte: 80
-						}
-					},
-					{
-						bso_total_level: {
-							gte: 80
-						}
-					},
-					{
-						osb_total_level: {
-							gte: 1500
-						}
-					},
-					{
-						bso_total_level: {
-							gte: 1500
-						}
-					},
-					{
-						leagues_points_total: {
-							gte: 20_000
-						}
-					}
-				]
-			},
-			select: {
-				id: true
-			}
-		})
-	).map(i => i.id.toString());
-
-	const orConditions: Prisma.UserWhereInput[] = [];
-	for (const skill of objectValues(SkillsEnum)) {
-		orConditions.push({
-			[`skills_${skill}`]: {
-				gte: 15_000_000
-			}
-		});
-	}
-	const usersToCache = (
-		await prisma.user.findMany({
-			where: {
-				OR: [
-					...orConditions,
-					{
-						last_command_date: {
-							gt: new Date(Date.now() - Number(Time.Month))
-						}
-					}
-				],
-				id: {
-					notIn: roboChimpUsersToCache
-				}
-			},
-			select: {
-				id: true
-			}
-		})
-	).map(i => i.id);
-
-	const response: string[] = [];
-	const allNewUsers = await prisma.newUser.findMany({
-		where: {
-			username: {
-				not: null
-			},
-			id: {
-				in: [...usersToCache, ...roboChimpUsersToCache]
-			}
-		},
-		select: {
-			id: true,
-			username: true
-		}
-	});
-
-	response.push(`Cached ${allNewUsers.length} usernames.`);
-	return response.join(', ');
-}
-
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
 	if (globalConfig.adminUserIDs.includes(user.id) || botAccounts.includes(user.id)) return true;
@@ -169,13 +81,6 @@ const actions = [
 			globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator),
 		run: async () => {
 			return runRolesTask(!globalConfig.isProduction);
-		}
-	},
-	{
-		name: 'sync_usernames',
-		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
-		run: async () => {
-			return usernameSync();
 		}
 	},
 	{

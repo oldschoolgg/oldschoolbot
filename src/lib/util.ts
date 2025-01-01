@@ -624,7 +624,8 @@ export function replaceLast(str: string, pattern: string, replacement: string) {
 	return last !== -1 ? `${str.slice(0, last)}${replacement}${str.slice(last + pattern.length)}` : str;
 }
 
-export function formatList(itemList: any[], end?: string) {
+export function formatList(_itemList: (string | undefined | null)[], end?: string) {
+	const itemList = _itemList.filter(i => i !== undefined && i !== null) as string[];
 	if (itemList.length < 2) return itemList.join(', ');
 	const lastItem = itemList.pop();
 	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;

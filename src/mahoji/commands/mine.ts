@@ -186,8 +186,8 @@ export function calculateMiningInput({
 	}
 
 	return {
-		fakeDurationMax,
-		fakeDurationMin,
+		fakeDurationMin: Math.floor(fakeDurationMin),
+		fakeDurationMax: Math.floor(fakeDurationMax),
 		messages,
 		newQuantity,
 		ore,

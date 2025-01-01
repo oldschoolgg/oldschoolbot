@@ -1,4 +1,4 @@
-import { dateFm, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { cleanUsername, mentionCommand, dateFm } from '@oldschoolgg/toolkit/util';
 import type { ButtonInteraction, Interaction } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
@@ -450,7 +450,8 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(interaction);
 
-	const user = await mUserFetch(userID);
+	const userNameToInsert = cleanUsername(interaction.user.username);
+	const user = await mUserFetch(userID, { username: userNameToInsert });
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('DONATE_IC')) return donateICHandler(interaction);

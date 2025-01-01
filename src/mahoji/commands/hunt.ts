@@ -420,14 +420,14 @@ export const huntCommand: OSBMahojiCommand = {
 			]
 		});
 		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
-			creatureName: creature.name,
+			creatureName: creature.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
-			usingHuntPotion: isUsingHunterPotion,
-			usingStaminaPotion: shouldUseStaminaPotions,
-			wildyPeak,
+			usingHuntPotion: isUsingHunterPotion ? true : undefined,
+			usingStaminaPotion: shouldUseStaminaPotions ? true : undefined,
+			wildyPeak: wildyPeak ? wildyPeak : undefined,
 			type: 'Hunter'
 		});
 

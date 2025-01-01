@@ -131,7 +131,9 @@ export class Requirements {
 
 		if ('OR' in req) {
 			const subResults = req.OR.map(i => this.formatRequirement(i));
-			requirementParts.push(`ONE of the following requirements must be met: ${formatList(subResults, 'or')}.`);
+			requirementParts.push(
+				`ONE of the following requirements must be met: ${formatList(subResults.flat(100), 'or')}.`
+			);
 		}
 
 		if ('name' in req && req.name) {
@@ -311,7 +313,10 @@ export class Requirements {
 			if (!orResults.some(i => i.length === 0)) {
 				results.push({
 					reason: `You need to meet one of these requirements:\n${orResults.map((res, index) => {
-						return `${index + 1}. ${formatList(res, 'or')})}`;
+						return `${index + 1}. ${formatList(
+							res.map(r => r.reason),
+							'or'
+						)})}`;
 					})}`
 				});
 			}

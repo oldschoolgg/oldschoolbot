@@ -19,6 +19,7 @@ import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { clAdjustedDroprate, roll, skillingPetDropRate, stringMatches, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { logError } from '../../../lib/util/logError.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
@@ -276,16 +277,22 @@ export function calculateHunterResult({
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
+		const { creatureName, quantity, userID, channelID, usingHuntPotion = false, wildyPeak, duration, usingStaminaPotion = false } =
 			data;
 		const user = await mUserFetch(userID);
-		const creature = Hunter.Creatures.find(creature =>
-			creature.aliases.some(
-				alias => stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
-			)
-		);
-
-		if (!creature) return;
+	const creature =
+			typeof creatureName === 'number'
+				? Hunter.Creatures.find(c => c.id === creatureName)
+				: Hunter.Creatures.find(creature =>
+						creature.aliases.some(
+							alias =>
+								stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
+						)
+					);
+		if (!creature) {
+			logError(`Invalid creature name provided: ${creatureName}`);
+			return;
+		}
 
 		const crystalImpling = creature.name === 'Crystal impling';
 

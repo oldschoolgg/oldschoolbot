@@ -378,7 +378,9 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 					`This monster requires: ${group.itemCost.items().map(i => i[0].name)}${
 						group.alternativeConsumables
 							? `, ${formatList(
-									group.alternativeConsumables?.map(alt => alt.itemCost.items().map(i => i[0].name)),
+									group.alternativeConsumables
+										?.map(alt => alt.itemCost.items().map(i => i[0].name))
+										.flat(100),
 									'or'
 								)}`
 							: '.'

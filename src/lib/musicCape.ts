@@ -11,7 +11,7 @@ import type { MinigameName } from './settings/minigames';
 import { Minigames } from './settings/minigames';
 import type { RequirementFailure } from './structures/Requirements';
 import { Requirements } from './structures/Requirements';
-import { formatList } from './util';
+import { formatList, itemNameFromID } from './util';
 
 export const musicCapeRequirements = new Requirements()
 	.add({
@@ -124,7 +124,7 @@ export const musicCapeRequirements = new Requirements()
 			if (notDoneRunes.length > 0) {
 				return [
 					{
-						reason: `You need to Runecraft these runes at least once: ${formatList(notDoneRunes)}.`
+						reason: `You need to Runecraft these runes at least once: ${formatList(notDoneRunes.map(itemNameFromID))}.`
 					}
 				];
 			}
