@@ -77,6 +77,14 @@ export interface IBgSprite {
 	oddListColor: string;
 }
 
+// use correct IDs when generarting DT2 rings
+export const manualSpriteIDs = [
+	[25_485, 28_307],
+	[25_486, 28_313],
+	[25_487, 28_310],
+	[25_488, 28_316]
+];
+
 const i = itemID;
 const forcedShortNameMap = new Map<number, string>([
 	[i('Guam seed'), 'guam'],
@@ -396,34 +404,36 @@ export class BankImageTask {
 	}
 
 	async getItemImage(itemID: number, user?: MUser): Promise<CanvasImage> {
+		const spriteID = manualSpriteIDs.find(i => i[0] === itemID)?.[1] ?? itemID;
+
 		if (user && user.user.icon_pack_id !== null) {
 			for (const pack of ItemIconPacks) {
 				if (pack.id === user.user.icon_pack_id) {
-					return pack.icons.get(itemID) ?? this.getItemImage(itemID, undefined);
+					return pack.icons.get(spriteID) ?? this.getItemImage(spriteID, undefined);
 				}
 			}
 		}
 
-		const data = this.spriteSheetData[itemID];
+		const data = this.spriteSheetData[spriteID];
 		if (data) {
 			const [sX, sY, width, height] = data;
 			const image = await getClippedRegionImage(this.spriteSheetImage, sX, sY, width, height);
 			return image;
 		}
 
-		const cachedImage = this.itemIconImagesCache.get(itemID);
+		const cachedImage = this.itemIconImagesCache.get(spriteID);
 		if (cachedImage) return cachedImage;
 
-		const isOnDisk = this.itemIconsList.has(itemID);
+		const isOnDisk = this.itemIconsList.has(spriteID);
 		if (!isOnDisk) {
-			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID, user);
+			await this.fetchAndCacheImage(spriteID);
+			return this.getItemImage(spriteID, user);
 		}
 
 		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
 		try {
 			const image = await loadImage(imageBuffer);
-			this.itemIconImagesCache.set(itemID, image);
+			this.itemIconImagesCache.set(spriteID, image);
 			return image;
 		} catch (err) {
 			logError(`Failed to load item icon with id: ${itemID}`);
@@ -444,7 +454,8 @@ export class BankImageTask {
 		y: number;
 		outline?: { outlineColor: string; alpha: number };
 	}) {
-		const data = this.spriteSheetData[itemID];
+		const spriteID = manualSpriteIDs.find(i => i[0] === itemID)?.[1] ?? itemID;
+		const data = this.spriteSheetData[spriteID];
 		const drawOptions = {
 			image: this.spriteSheetImage,
 			sourceX: -1,
@@ -492,17 +503,17 @@ export class BankImageTask {
 		}
 	}
 
-	async fetchAndCacheImage(itemID: number) {
-		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
+	async fetchAndCacheImage(spriteID: number) {
+		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${spriteID}.png`).then(
 			result => result.buffer()
 		);
 
-		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
+		await fs.writeFile(path.join(CACHE_DIR, `${spriteID}.png`), imageBuffer);
 
 		const image = await loadImage(imageBuffer);
 
-		this.itemIconsList.add(itemID);
-		this.itemIconImagesCache.set(itemID, image);
+		this.itemIconsList.add(spriteID);
+		this.itemIconImagesCache.set(spriteID, image);
 	}
 
 	drawBorder(ctx: CanvasContext, sprite: IBgSprite, titleLine = true) {
