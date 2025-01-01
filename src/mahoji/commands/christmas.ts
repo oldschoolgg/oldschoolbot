@@ -1,8 +1,9 @@
 import { type CommandRunOptions, formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, userMention } from 'discord.js';
 
 import { Time, clamp } from 'e';
 import { SNOWDREAM_RUNES_PER_MINUTE, allChristmasEventItems, christmasDroprates } from '../../lib/christmasEvent.js';
+import { sql } from '../../lib/postgres.js';
 import type { SnoozeSpellActiveCastOptions } from '../../lib/types/minions.js';
 import { Bank, itemNameFromID } from '../../lib/util.js';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
@@ -39,6 +40,12 @@ export const christmasCommand: OSBMahojiCommand = {
 			name: 'drop_rates',
 			description: 'View the droprates of items.',
 			options: []
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'dry_streaks',
+			description: 'View the drystreaks of items.',
+			options: []
 		}
 	],
 	run: async ({
@@ -51,6 +58,7 @@ export const christmasCommand: OSBMahojiCommand = {
 		active_cast?: {
 			hours?: number;
 		};
+		dry_streaks?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
 
@@ -126,6 +134,37 @@ View the droprates with ${mentionCommand(globalClient, 'christmas', 'drop_rates'
 			});
 
 			return `${user.minionName} is now casting the Snooze Spell actively for ${formatDuration(duration)}, removed ${cost}.`;
+		}
+
+		if (options.dry_streaks) {
+			const shrimpyResult: { user_id: string; username: string; total_duration_hours: number }[] =
+				await sql`SELECT user_id::text, username, (SUM(duration) / 1000 / 60 / 60)::int AS total_duration_hours
+FROM activity
+INNER JOIN "users" ON activity.user_id::text = users.id
+WHERE "collectionLogBank"->>'73282' IS NULL 
+AND type = 'SnoozeSpellActive'
+GROUP BY user_id, username
+ORDER BY total_duration_hours DESC
+LIMIT 5;`;
+			const iceySantaHatResult: { user_id: string; username: string; total_duration_hours: number }[] =
+				await sql`SELECT user_id::text, username, (SUM(duration) / 1000 / 60 / 60)::int AS total_duration_hours
+FROM activity
+INNER JOIN "users" ON activity.user_id::text = users.id
+WHERE "collectionLogBank"->>'73317' IS NULL 
+AND type = 'SnoozeSpellActive'
+GROUP BY user_id, username
+ORDER BY total_duration_hours DESC
+LIMIT 5;`;
+			return {
+				content: `
+These show the drystreaks based only on the active spell casting trips, not the hours spent passively casting.
+
+**Driest for Shrimpy:**\n${shrimpyResult.map((r, i) => `${i + 1}. ${userMention(r.user_id)} - ${r.total_duration_hours} hours`).join('\n')}
+
+**Driest for Icey Santa Hat:**\n${iceySantaHatResult.map((r, i) => `${i + 1}. ${userMention(r.user_id)} - ${r.total_duration_hours} hours`).join('\n')}
+`,
+				allowedMentions: {}
+			};
 		}
 		return 'Invalid options.';
 	}

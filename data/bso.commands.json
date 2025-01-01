@@ -104,7 +104,7 @@
 	{
 		"name": "christmas",
 		"desc": "The 2024 Christmas Event",
-		"subOptions": ["check", "active_cast", "drop_rates"]
+		"subOptions": ["check", "active_cast", "drop_rates", "dry_streaks"]
 	},
 	{
 		"name": "cl",
