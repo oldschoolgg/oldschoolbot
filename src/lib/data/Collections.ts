@@ -1769,7 +1769,7 @@ export const allCollectionLogs: ICollection = {
 			'Halloween Cracker': {
 				items: resolveItems([
 					'Zombie halloween mask',
-					'Demonic hween mask',
+					'Bloody halloween mask',
 					'Monster in a backpack',
 					'Pumpkin parasol',
 					'Vampyric halloween mask',
@@ -1779,7 +1779,7 @@ export const allCollectionLogs: ICollection = {
 				counts: false,
 				allItems: resolveItems([
 					'Zombie halloween mask',
-					'Demonic hween mask',
+					'Bloody halloween mask',
 					'Monster in a backpack',
 					'Pumpkin parasol',
 					'Vampyric halloween mask',

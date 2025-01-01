@@ -985,7 +985,7 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: ['halloween cracker'],
 		output: new LootTable()
 			.add('Zombie halloween mask')
-			.add('Demonic hween mask')
+			.add('Bloody halloween mask')
 			.add('Monster in a backpack')
 			.add('Pumpkin parasol')
 			.add('Vampyric halloween mask')

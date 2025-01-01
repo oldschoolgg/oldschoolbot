@@ -13223,7 +13223,7 @@ setCustomItem(
 
 setCustomItem(
 	73_277,
-	'Demonic hween mask',
+	'Bloody halloween mask',
 	'Bronze full helm',
 	{
 		customItemData: {
