@@ -8,6 +8,7 @@ type DeepPartial<T> = T extends object
 
 export const itemChanges: Record<number, DeepPartial<Item>> = {
 	27665: {
+		//Accursed sceptre
 		equipment: {
 			requirements: {
 				magic: 70
@@ -15,6 +16,7 @@ export const itemChanges: Record<number, DeepPartial<Item>> = {
 		}
 	},
 	27690: {
+		//Voidwaker
 		equipment: {
 			requirements: {
 				attack: 75
@@ -22,6 +24,7 @@ export const itemChanges: Record<number, DeepPartial<Item>> = {
 		}
 	},
 	27655: {
+		//Webweaver bow
 		equipment: {
 			requirements: {
 				ranged: 75
@@ -29,6 +32,7 @@ export const itemChanges: Record<number, DeepPartial<Item>> = {
 		}
 	},
 	27610: {
+		//Venator bow
 		equipment: {
 			requirements: {
 				ranged: 80
@@ -36,6 +40,7 @@ export const itemChanges: Record<number, DeepPartial<Item>> = {
 		}
 	},
 	27624: {
+		//Ancient sceptre
 		equipment: {
 			requirements: {
 				magic: 70,
