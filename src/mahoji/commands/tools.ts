@@ -16,7 +16,7 @@ import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { BitField, Channel, Emoji, globalConfig } from '../../lib/constants';
-import { allCLItems, allDroppedItems } from '../../lib/data/Collections';
+import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
 import {
 	anglerOutfit,
 	evilChickenOutfit,
@@ -27,6 +27,7 @@ import {
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
+import { keyCrates } from '../../lib/keyCrates.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { getUsersPerkTier } from '../../lib/perkTiers';
 import type { MinigameName } from '../../lib/settings/minigames';
@@ -748,6 +749,27 @@ LIMIT 10;`);
 	});
 }
 
+for (const crate of keyCrates) {
+	dryStreakEntities.push({
+		name: crate.item.name,
+		items: crate.table.allItems,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+SELECT user_id::text AS id, (openable_scores->>'${crate.item.id}')::int AS val
+FROM user_stats
+INNER JOIN "users" ON users.id = user_stats.user_id::text
+WHERE (openable_scores->>'${crate.item.id}')::int > 0
+AND "collectionLogBank"->>'${item.id}' IS NULL
+${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+ORDER BY val DESC
+LIMIT 5;
+`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Opens`
+	});
+}
+
 async function dryStreakCommand(monsterName: string, itemName: string, ironmanOnly: boolean) {
 	const item = getItem(itemName);
 	if (!item) return 'Invalid item.';
@@ -1037,7 +1059,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							...itemOption(item => [...allCLItems, ...spookyTable.allItems].includes(item.id)),
+							...itemOption(item => [...allCLItemsFiltered, ...spookyTable.allItems].includes(item.id)),
 							required: true
 						},
 						{
