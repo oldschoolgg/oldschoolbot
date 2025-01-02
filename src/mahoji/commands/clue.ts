@@ -179,39 +179,39 @@ export const clueGlobalBoosts: {
 	boost: string;
 	durationMultiplier: number;
 }[] = [
-	{
-		condition: isWeekend,
-		boost: '10% for Weekend',
-		durationMultiplier: 0.9
-	},
-	{
-		condition: (user: MUser) => user.hasEquippedOrInBank('Max cape'),
-		boost: '10% for Max cape',
-		durationMultiplier: 0.9
-	},
-	{
-		condition: (user: MUser) =>
-			!user.hasEquippedOrInBank('Max cape') && user.hasEquippedOrInBank('Construct. cape'),
-		boost: '6% for Construction cape',
-		durationMultiplier: 0.94
-	},
-	{
-		condition: (_, poh) => poh.jewellery_box === getPOHObject('Ornate jewellery box').id,
-		boost: '10% for Ornate jewellery box',
-		durationMultiplier: 0.9
-	},
-	{
-		condition: (_, poh) =>
-			poh.jewellery_box !== getPOHObject('Ornate jewellery box').id && poh.jewellery_box !== null,
-		boost: '5% for Basic/Fancy jewellery box',
-		durationMultiplier: 0.95
-	},
-	{
-		condition: (user: MUser) => user.hasEquippedOrInBank('Achievement diary cape'),
-		boost: '10% for Achievement diary cape',
-		durationMultiplier: 0.9
-	}
-];
+		{
+			condition: isWeekend,
+			boost: '10% for Weekend',
+			durationMultiplier: 0.9
+		},
+		{
+			condition: (user: MUser) => user.hasEquippedOrInBank('Max cape'),
+			boost: '10% for Max cape',
+			durationMultiplier: 0.9
+		},
+		{
+			condition: (user: MUser) =>
+				!user.hasEquippedOrInBank('Max cape') && user.hasEquippedOrInBank('Construct. cape'),
+			boost: '6% for Construction cape',
+			durationMultiplier: 0.94
+		},
+		{
+			condition: (_, poh) => poh.jewellery_box === getPOHObject('Ornate jewellery box').id,
+			boost: '10% for Ornate jewellery box',
+			durationMultiplier: 0.9
+		},
+		{
+			condition: (_, poh) =>
+				poh.jewellery_box !== getPOHObject('Ornate jewellery box').id && poh.jewellery_box !== null,
+			boost: '5% for Basic/Fancy jewellery box',
+			durationMultiplier: 0.95
+		},
+		{
+			condition: (user: MUser) => user.hasEquippedOrInBank('Achievement diary cape'),
+			boost: '10% for Achievement diary cape',
+			durationMultiplier: 0.9
+		}
+	];
 
 async function getStashBoost(userID: string, tierName: string): Promise<number> {
 	const parsedUnits = await getParsedStashUnits(userID);
@@ -363,6 +363,7 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		const maxCanDo = Math.floor(maxTripLength / timePerClue);
+
 		quantity = quantity ?? maxCanDo;
 
 		const response: Awaited<CommandResponse> = {};
@@ -372,11 +373,13 @@ export const clueCommand: OSBMahojiCommand = {
 		const bankedClues = user.bank.amount(clueTier.scrollID);
 
 		let cluesDone = 0;
-		if (!clueImpling || bankedClues > 0) {
-			const cost = new Bank().add(clueTier.scrollID, bankedClues);
+		if (!clueImpling || quantity > 1) {
+			quantity = Math.min(quantity, bankedClues) || 1;
+
+			const cost = new Bank().add(clueTier.scrollID, quantity);
 			if (!user.owns(cost)) return `You don't own ${cost}.`;
-			await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, bankedClues));
-			cluesDone = bankedClues;
+			await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
+			cluesDone = quantity;
 		} else {
 			const implingJarOpenable = allOpenables.find(o => o.aliases.some(a => stringMatches(a, clueImpling.name)));
 			// If this triggers, it means OSJS probably broke / is missing an alias for an impling jar:
@@ -418,9 +421,8 @@ export const clueCommand: OSBMahojiCommand = {
 				return response;
 			}
 			quantity = bankedClues + implingClues;
-			implingLootString = `\n\nYou will find ${implingClues} clue${
-				implingClues === 0 || implingClues > 1 ? 's' : ''
-			} from ${openedImplings}x ${clueImpling.name}s.`;
+			implingLootString = `\n\nYou will find ${implingClues} clue${implingClues === 0 || implingClues > 1 ? 's' : ''
+				} from ${openedImplings}x ${clueImpling.name}s.`;
 
 			cluesDone = quantity;
 		}
@@ -443,11 +445,9 @@ export const clueCommand: OSBMahojiCommand = {
 			type: 'ClueCompletion'
 		});
 
-		response.content = `${user.minionName} is now completing ${cluesDone}x ${
-			clueTier.name
-		} clues, it'll take around ${formatDuration(duration)} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${
-			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
-		}${implingLootString}`;
+		response.content = `${user.minionName} is now completing ${cluesDone}x ${clueTier.name
+			} clues, it'll take around ${formatDuration(duration)} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
+			}${implingLootString}`;
 		return response;
 	}
 };
