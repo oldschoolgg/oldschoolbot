@@ -14,38 +14,17 @@ export const nexTask: MinionTask = {
 	type: 'Nex',
 	async run(data: NexTaskOptions) {
 		const { quantity, channelID, users, wipedKill, duration, userDetails } = data;
-		const allMention = userDetails.map(t => userMention(t[0])).join(' ');
+		const realUsers = userDetails.filter(u => !u[3]);
+		const allMention = realUsers.map(t => userMention(t[0])).join(' ');
 		const allMUsers = await Promise.all(users.map(id => mUserFetch(id)));
 
 		const survivedQuantity = wipedKill ? wipedKill - 1 : quantity;
-		let teamResult: NexContext['team'] = userDetails.map(u => ({
+		const teamResult: NexContext['team'] = userDetails.map(u => ({
 			id: u[0],
-			contribution: u[1],
-			deaths: u[2]
+			teamID: u[1],
+			deaths: u[2],
+			fake: u[3] ?? undefined
 		}));
-
-		if (allMUsers.length === 1) {
-			teamResult = teamResult.concat(
-				{
-					id: '2',
-					contribution: teamResult[0].contribution,
-					deaths: [],
-					ghost: true
-				},
-				{
-					id: '3',
-					contribution: teamResult[0].contribution,
-					deaths: [],
-					ghost: true
-				},
-				{
-					id: '4',
-					contribution: teamResult[0].contribution,
-					deaths: [],
-					ghost: true
-				}
-			);
-		}
 
 		const loot = handleNexKills({
 			quantity: survivedQuantity,
@@ -71,7 +50,10 @@ export const nexTask: MinionTask = {
 				duration
 			}))
 		});
+
 		await updateBankSetting('nex_loot', loot.totalLoot());
+
+		const solo = users.length === 1;
 
 		return handleTripFinish(
 			allMUsers[0],
@@ -79,8 +61,8 @@ export const nexTask: MinionTask = {
 			{
 				content:
 					survivedQuantity === 0
-						? `${allMention} your minion${users.length === 1 ? '' : 's'} died in all kill attempts.`
-						: `${allMention} Your team finished killing ${quantity}x Nex.${
+						? `${allMention} your minion${solo ? '' : 's'} died in all kill attempts.`
+						: `${allMention} Your team finished killing ${quantity}x Nex.${solo ? ` You died ${teamResult[0].deaths.length} time${teamResult[0].deaths.length === 1 ? '' : 's'}.` : ''}${
 								wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
 							}
 				

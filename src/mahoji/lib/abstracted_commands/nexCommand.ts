@@ -28,11 +28,9 @@ export async function nexCommand(
 	await deferInteraction(interaction);
 
 	let mahojiUsers: MUser[] = [];
-	let soloUser: MUser | undefined;
 
 	if (solo) {
 		mahojiUsers = [user];
-		soloUser = user;
 	} else {
 		let usersWhoConfirmed: MUser[] = [];
 		try {
@@ -65,16 +63,11 @@ export async function nexCommand(
 		}
 	}
 
-	const isSoloing = mahojiUsers.length === 1;
+	const details = await calculateNexDetails({
+		team: mahojiUsers.length === 1 ? [mahojiUsers[0], mahojiUsers[0], mahojiUsers[0], mahojiUsers[0]] : mahojiUsers
+	});
 
-	const details = await calculateNexDetails(
-		{
-			team: isSoloing ? [mahojiUsers[0], mahojiUsers[0], mahojiUsers[0], mahojiUsers[0]] : mahojiUsers
-		},
-		soloUser
-	);
-
-	const effectiveTeam = isSoloing ? [details.team[0]] : details.team;
+	const effectiveTeam = details.team.filter(m => !m.fake);
 
 	for (const user of effectiveTeam) {
 		const mUser = await mUserFetch(user.id);
@@ -85,10 +78,10 @@ export async function nexCommand(
 
 	const removeResult = await Promise.all(
 		effectiveTeam.map(async i => {
-			const klasaUser = await mUserFetch(i.id);
+			const mUser = await mUserFetch(i.id);
 			return {
-				id: klasaUser.id,
-				cost: (await klasaUser.specialRemoveItems(i.cost)).realCost
+				id: mUser.id,
+				cost: (await mUser.specialRemoveItems(i.cost)).realCost
 			};
 		})
 	);
@@ -117,7 +110,7 @@ export async function nexCommand(
 		type: 'Nex',
 		leader: user.id,
 		users: effectiveTeam.map(i => i.id),
-		userDetails: effectiveTeam.map(i => [i.id, i.contribution, i.deaths]),
+		userDetails: effectiveTeam.map(i => [i.id, i.teamID, i.deaths, i.fake ?? null]),
 		fakeDuration: details.fakeDuration,
 		quantity: details.quantity,
 		wipedKill: details.wipedKill

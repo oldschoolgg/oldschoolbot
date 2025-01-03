@@ -123,11 +123,13 @@ interface TeamMember {
 	messages: string[];
 	totalOffensivePecent: number;
 	totalDefensivePercent: number;
+	teamID: number;
+	fake?: boolean;
 }
 
 export interface NexContext {
 	quantity: number;
-	team: { id: string; contribution: number; deaths: number[]; ghost?: true }[];
+	team: { id: string; teamID: number; deaths: number[]; fake?: boolean }[];
 }
 
 const purpleNexItems = resolveItems([
@@ -149,12 +151,12 @@ export function handleNexKills({ quantity, team }: NexContext) {
 			continue;
 		}
 
-		const uniqueRecipient = roll(43) ? randArrItem(survivors).id : null;
+		const uniqueRecipient = roll(43) ? randArrItem(survivors).teamID : null;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
 
-		for (const teamMember of survivors) {
+		for (const teamMember of survivors.filter(m => !m.fake)) {
 			teamLoot.add(teamMember.id, nonUniqueDrop);
-			if (teamMember.id === uniqueRecipient) {
+			if (teamMember.teamID === uniqueRecipient) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
 			if (roll(48)) {
@@ -164,19 +166,20 @@ export function handleNexKills({ quantity, team }: NexContext) {
 
 		if (roll(500)) {
 			const recipient = randArrItem(survivors);
-			teamLoot.add(recipient.id, 'Nexling');
+			if (!recipient.fake) teamLoot.add(recipient.id, 'Nexling');
 		}
 	}
 
 	for (const member of team) {
-		if (member.ghost) {
+		if (member.fake) {
 			teamLoot.map.delete(member.id);
 		}
 	}
+
 	return teamLoot;
 }
 
-export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?: MUser) {
+export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
@@ -251,7 +254,9 @@ export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?
 			deaths: [],
 			messages,
 			totalOffensivePecent,
-			totalDefensivePercent
+			totalDefensivePercent,
+			teamID: resultTeam.length,
+			fake: resultTeam.find(m => m.id === member.id) ? true : undefined
 		});
 	}
 
@@ -261,13 +266,11 @@ export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?
 
 	let wipedKill: number | null = null;
 
-	const deaths: Record<string, number[]> = {};
-	for (const user of resultTeam) deaths[user.id] = [];
 	for (let i = 0; i < quantity; i++) {
 		let deathsThisKill = 0;
 		for (const user of resultTeam) {
 			if (percentChance(user.deathChance)) {
-				deaths[user.id].push(i);
+				user.deaths.push(i);
 				deathsThisKill++;
 			}
 		}
@@ -276,19 +279,13 @@ export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?
 			break;
 		}
 	}
-	for (const [id, deathArr] of Object.entries(deaths)) {
-		resultTeam[resultTeam.indexOf(resultTeam.find(i => i.id === id)!)].deaths = deathArr;
-	}
 
-	// Ammo calculation
-	const users = soloUser ? [soloUser] : team;
-
-	for (const user of users) {
+	for (const teamUser of resultTeam.filter(m => !m.fake)) {
+		const user = team.find(u => u.id === teamUser.id)!;
 		const { rangeGear } = nexGearStats(user);
-		const teamUser = resultTeam.findIndex(a => a.id === user.id);
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
 		// Between 50-60 ammo per kill (before reductions)
-		resultTeam[teamUser].cost.add(ammo, randInt(50, 60) * quantity);
+		teamUser.cost.add(ammo, randInt(50, 60) * quantity);
 	}
 
 	const duration = quantity * lengthPerKill;
@@ -298,7 +295,6 @@ export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?
 		quantity,
 		duration: wipedKill ? wipedKill * lengthPerKill - randomVariation(lengthPerKill / 2, 90) : duration,
 		fakeDuration: duration,
-		wipedKill,
-		deaths
+		wipedKill
 	};
 }

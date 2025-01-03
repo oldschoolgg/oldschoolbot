@@ -143,7 +143,7 @@ export const finishables: Finishable[] = [
 		name: 'Nex',
 		aliases: [],
 		cl: NexCL,
-		kill: () => handleNexKills({ quantity: 1, team: [{ id: '1', contribution: 100, deaths: [] }] }).get('1')
+		kill: () => handleNexKills({ quantity: 1, team: [{ id: '1', teamID: 1, deaths: [] }] }).get('1')
 	},
 	{
 		name: 'Wintertodt (500pt crates, Max stats)',

@@ -500,7 +500,7 @@ export interface NexTaskOptions extends ActivityTaskOptionsWithUsers {
 	type: 'Nex';
 	quantity: number;
 	leader: string;
-	userDetails: [string, number, number[]][];
+	userDetails: [string, number, number[], boolean | null][];
 	fakeDuration: number;
 	wipedKill: number | null;
 }
