@@ -5,7 +5,6 @@ import {
 	clamp,
 	increaseNumByPercent,
 	percentChance,
-	randArrItem,
 	randInt,
 	reduceNumByPercent,
 	roll,
@@ -15,6 +14,7 @@ import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util/util';
 
 import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit/util';
+import { max } from 'lodash';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';
@@ -129,7 +129,7 @@ interface TeamMember {
 
 export interface NexContext {
 	quantity: number;
-	team: { id: string; teamID: number; deaths: number[]; fake?: boolean }[];
+	team: { id: string; teamID: number; contribution: number; deaths: number[]; fake?: boolean }[];
 }
 
 const purpleNexItems = resolveItems([
@@ -146,23 +146,33 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	const teamLoot = new TeamLoot(purpleNexItems);
 
 	for (let i = 0; i < quantity; i++) {
-		const survivors = team.filter(usr => !usr.deaths.includes(i));
+		const survivors = team
+			.filter(u => !u.deaths.includes(i))
+			.map(u => ({ ...u, contribution: randomVariation(u.contribution, 10) }));
 		if (survivors.length === 0) {
 			continue;
 		}
 
-		const uniqueRecipient = roll(43) ? randArrItem(survivors).teamID : null;
-		const petRecipient = roll(500) ? randArrItem(survivors).teamID : null;
+		const totalContribution = sumArr(survivors.map(u => u.contribution));
+		const maxContribution = max(survivors.map(u => u.contribution));
+		const VIP = survivors.find(u => u.contribution === maxContribution)!.teamID;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
 
 		for (const teamMember of survivors.filter(m => !m.fake)) {
-			teamLoot.add(teamMember.id, nonUniqueDrop);
-			if (teamMember.teamID === uniqueRecipient) {
+			const VIPBonus = teamMember.teamID === VIP ? 1.1 : 1;
+
+			teamLoot.add(teamMember.id, nonUniqueDrop.multiply(VIPBonus));
+
+			if (teamMember.teamID === VIP) teamLoot.add(teamMember.id, 'Big bones');
+
+			if (roll(43) && percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
-			if (teamMember.teamID === petRecipient) {
+
+			if (roll(500) && percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
 				teamLoot.add(teamMember.id, 'Nexling');
 			}
+
 			if (roll(48)) {
 				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
 			}

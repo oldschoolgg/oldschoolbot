@@ -22,8 +22,9 @@ export const nexTask: MinionTask = {
 		const teamResult: NexContext['team'] = teamDetails.map(u => ({
 			id: u[0],
 			teamID: u[1],
-			deaths: u[2],
-			fake: u[3]
+			contribution: u[2],
+			deaths: u[3],
+			fake: u[4]
 		}));
 
 		const loot = handleNexKills({
@@ -34,7 +35,7 @@ export const nexTask: MinionTask = {
 		for (const [uID, uLoot] of loot.entries()) {
 			await transactItems({ userID: uID, collectionLog: true, itemsToAdd: uLoot });
 			const user = allMUsers.find(i => i.id === uID)!;
-			await user.incrementKC(NEX_ID, quantity - teamDetails.find(i => i[0] === uID)![2].length);
+			await user.incrementKC(NEX_ID, quantity - teamResult.find(i => i.id === uID)!.deaths.length);
 		}
 
 		await trackLoot({
@@ -44,11 +45,13 @@ export const nexTask: MinionTask = {
 			changeType: 'loot',
 			duration: duration * users.length,
 			kc: quantity,
-			users: teamDetails.map(i => ({
-				id: i[0],
-				loot: loot.get(i[0]),
-				duration
-			}))
+			users: teamResult
+				.filter(i => !i.fake)
+				.map(i => ({
+					id: i.id,
+					loot: loot.get(i.id),
+					duration
+				}))
 		});
 
 		await updateBankSetting('nex_loot', loot.totalLoot());
