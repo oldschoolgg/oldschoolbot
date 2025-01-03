@@ -124,7 +124,7 @@ interface TeamMember {
 	totalOffensivePecent: number;
 	totalDefensivePercent: number;
 	teamID: number;
-	fake?: boolean;
+	fake: boolean;
 }
 
 export interface NexContext {
@@ -152,6 +152,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 		}
 
 		const uniqueRecipient = roll(43) ? randArrItem(survivors).teamID : null;
+		const petRecipient = roll(500) ? randArrItem(survivors).teamID : null;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
 
 		for (const teamMember of survivors.filter(m => !m.fake)) {
@@ -159,20 +160,12 @@ export function handleNexKills({ quantity, team }: NexContext) {
 			if (teamMember.teamID === uniqueRecipient) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
+			if (teamMember.teamID === petRecipient) {
+				teamLoot.add(teamMember.id, 'Nexling');
+			}
 			if (roll(48)) {
 				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
 			}
-		}
-
-		if (roll(500)) {
-			const recipient = randArrItem(survivors);
-			if (!recipient.fake) teamLoot.add(recipient.id, 'Nexling');
-		}
-	}
-
-	for (const member of team) {
-		if (member.fake) {
-			teamLoot.map.delete(member.id);
 		}
 	}
 
@@ -256,7 +249,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 			totalOffensivePecent,
 			totalDefensivePercent,
 			teamID: resultTeam.length,
-			fake: resultTeam.find(m => m.id === member.id) ? true : undefined
+			fake: resultTeam.map(m => m.id).includes(member.id)
 		});
 	}
 
