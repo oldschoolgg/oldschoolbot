@@ -13,13 +13,13 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 export const nexTask: MinionTask = {
 	type: 'Nex',
 	async run(data: NexTaskOptions) {
-		const { quantity, channelID, users, wipedKill, duration, userDetails } = data;
-		const realUsers = userDetails.filter(u => !u[3]);
+		const { quantity, channelID, users, wipedKill, duration, teamDetails } = data;
+		const realUsers = teamDetails.filter(u => !u[3]);
 		const allMention = realUsers.map(t => userMention(t[0])).join(' ');
 		const allMUsers = await Promise.all(users.map(id => mUserFetch(id)));
 
 		const survivedQuantity = wipedKill ? wipedKill - 1 : quantity;
-		const teamResult: NexContext['team'] = userDetails.map(u => ({
+		const teamResult: NexContext['team'] = teamDetails.map(u => ({
 			id: u[0],
 			teamID: u[1],
 			deaths: u[2],
@@ -34,7 +34,7 @@ export const nexTask: MinionTask = {
 		for (const [uID, uLoot] of loot.entries()) {
 			await transactItems({ userID: uID, collectionLog: true, itemsToAdd: uLoot });
 			const user = allMUsers.find(i => i.id === uID)!;
-			await user.incrementKC(NEX_ID, quantity - userDetails.find(i => i[0] === uID)![2].length);
+			await user.incrementKC(NEX_ID, quantity - teamDetails.find(i => i[0] === uID)![2].length);
 		}
 
 		await trackLoot({
@@ -44,7 +44,7 @@ export const nexTask: MinionTask = {
 			changeType: 'loot',
 			duration: duration * users.length,
 			kc: quantity,
-			users: userDetails.map(i => ({
+			users: teamDetails.map(i => ({
 				id: i[0],
 				loot: loot.get(i[0]),
 				duration
