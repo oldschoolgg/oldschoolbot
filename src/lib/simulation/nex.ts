@@ -5,6 +5,7 @@ import {
 	clamp,
 	increaseNumByPercent,
 	percentChance,
+	randFloat,
 	randInt,
 	reduceNumByPercent,
 	roll,
@@ -14,7 +15,6 @@ import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util/util';
 
 import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit/util';
-import { max } from 'lodash';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';
@@ -146,6 +146,9 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	const teamLoot = new TeamLoot(purpleNexItems);
 
 	for (let i = 0; i < quantity; i++) {
+		// VIP logic: perturb contribution 10%, VIP is choisen randonmly with perturbed contirubtion as weight
+		// Unique loot chance also used perturbed contribution as weight
+
 		const survivors = team
 			.filter(u => !u.deaths.includes(i))
 			.map(u => ({ ...u, contribution: randomVariation(u.contribution, 10) }));
@@ -154,14 +157,23 @@ export function handleNexKills({ quantity, team }: NexContext) {
 		}
 
 		const totalContribution = sumArr(survivors.map(u => u.contribution));
-		const maxContribution = max(survivors.map(u => u.contribution));
-		const VIP = survivors.find(u => u.contribution === maxContribution)!.teamID;
+		const VIPContribution = randFloat(0, totalContribution); // random VIP, weighted by contribution
+		let cumulativeSum = 0;
+		let VIP = 0;
+		for (const user of survivors) {
+			cumulativeSum += user.contribution;
+			if (cumulativeSum >= VIPContribution) {
+				VIP = user.teamID;
+				break;
+			}
+		}
+
 		const nonUniqueDrop = NexNonUniqueTable.roll();
 
 		for (const teamMember of survivors.filter(m => !m.fake)) {
 			const VIPBonus = teamMember.teamID === VIP ? 1.1 : 1;
 
-			teamLoot.add(teamMember.id, nonUniqueDrop.multiply(VIPBonus));
+			teamLoot.add(teamMember.id, nonUniqueDrop.multiply(VIPBonus)); // VIPBonus may not be int, loot amounts rounded down in multply
 
 			if (teamMember.teamID === VIP) teamLoot.add(teamMember.id, 'Big bones');
 
