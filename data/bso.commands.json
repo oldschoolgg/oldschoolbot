@@ -102,11 +102,6 @@
 		"subOptions": []
 	},
 	{
-		"name": "christmas",
-		"desc": "The 2024 Christmas Event",
-		"subOptions": ["check", "active_cast", "drop_rates", "dry_streaks"]
-	},
-	{
 		"name": "cl",
 		"desc": "See your Collection Log.",
 		"examples": ["/cl name:Boss"],

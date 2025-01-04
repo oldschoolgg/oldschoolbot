@@ -66,7 +66,6 @@ import type {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	SnoozeSpellActiveCastOptions,
 	TOAOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
@@ -110,6 +109,10 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.TrickOrTreat]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.SnoozeSpellActive]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -869,14 +872,6 @@ export const tripHandlers = {
 		args: (data: ColoTaskOptions) => ({
 			name: 'colosseum',
 			quantity: data.quantity
-		})
-	},
-	[activity_type_enum.SnoozeSpellActive]: {
-		commandName: 'christmas',
-		args: (data: SnoozeSpellActiveCastOptions) => ({
-			active_cast: {
-				hours: data.hours
-			}
 		})
 	}
 } as const;

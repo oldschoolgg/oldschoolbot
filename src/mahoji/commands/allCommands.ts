@@ -14,7 +14,6 @@ import { caCommand } from './ca';
 import { casketCommand } from './casket';
 import { chooseCommand } from './choose';
 import { chopCommand } from './chop';
-import { christmasCommand } from './christmas';
 import { collectionLogCommand } from './cl';
 import { claimCommand } from './claim';
 import { clueCommand } from './clue';
@@ -185,8 +184,7 @@ export const allCommands: OSBMahojiCommand[] = [
 	ratesCommand,
 	tamesCommand,
 	testerShopCommand,
-	bsoLeaguesCommand,
-	christmasCommand
+	bsoLeaguesCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {
