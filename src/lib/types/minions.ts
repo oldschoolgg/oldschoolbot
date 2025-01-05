@@ -113,7 +113,7 @@ export interface OuraniaAltarOptions extends ActivityTaskOptions {
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Agility';
-	courseID: string | number;
+	courseID: number;
 	quantity: number;
 	alch?: {
 		itemID: number;
