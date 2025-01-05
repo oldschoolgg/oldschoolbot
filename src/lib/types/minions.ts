@@ -293,7 +293,7 @@ export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
 
 export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Hunter';
-	creatureName: string | number;
+	creatureID: number;
 	quantity: number;
 	usingHuntPotion?: boolean;
 	wildyPeak?: Peak | null;

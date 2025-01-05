@@ -28,7 +28,8 @@ export const agilityTask: MinionTask = {
 		const loot = new Bank();
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
-		const course = Agility.Courses.find(course => course.name === courseID)!;
+
+		const course = Agility.Courses.find(course => course.id === courseID)!;
 
 		// Calculate failed laps
 		let lapsFailed = 0;
