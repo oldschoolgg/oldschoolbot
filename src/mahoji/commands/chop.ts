@@ -145,8 +145,6 @@ export const chopCommand: OSBMahojiCommand = {
 
 		let { quantity, powerchop, forestry_events, twitchers_gloves } = options;
 
-		if (log.name === 'Snowdream logs') quantity = 8;
-
 		const skills = user.skillsAsLevels;
 
 		if (skills.woodcutting < log.level) {

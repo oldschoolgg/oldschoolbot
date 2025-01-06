@@ -30,13 +30,6 @@ interface Tiara {
 const Runes: Rune[] = [
 	{
 		xp: 5,
-		id: itemID('Snowdream rune'),
-		name: 'Snowdream rune',
-		levels: [[1, 1]],
-		tripLength: Time.Minute * 1.917
-	},
-	{
-		xp: 5,
 		id: itemID('Air rune'),
 		name: 'Air rune',
 		levels: [

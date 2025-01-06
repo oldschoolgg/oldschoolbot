@@ -1395,11 +1395,6 @@ export const BsoCreateables: Createable[] = [
 			.add('Pernix components', 3),
 		outputItems: new Bank().add('Deathly collector (i)'),
 		noCreatablesCl: true
-	},
-	{
-		name: 'Snowdream staff',
-		inputItems: new Bank().add('Snowdream logs', 8),
-		outputItems: new Bank().add('Snowdream staff')
 	}
 ];
 

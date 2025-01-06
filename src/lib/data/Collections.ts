@@ -3,7 +3,6 @@ import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr }
 import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { divinationEnergies, portents } from '../bso/divination';
-import { allChristmasEventItems } from '../christmasEvent.js';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
 import type { CollectionLogType } from '../collectionLogTask';
@@ -59,6 +58,7 @@ import {
 	aerialFishingCL,
 	akumuCL,
 	alchemicalHydraCL,
+	allChristmasEventItems,
 	allPetsCL,
 	amoxliatlCL,
 	araxxorCL,

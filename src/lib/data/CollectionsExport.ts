@@ -3359,3 +3359,31 @@ export const araxxorCL = resolveItems([
 ]);
 
 export const amoxliatlCL = resolveItems(['Moxi', 'Glacial temotli', 'Pendant of ates (inert)', 'Frozen tear']);
+
+const wizardOutfit = resolveItems([
+	'Snowdream robe legs',
+	'Snowdream wizard hat',
+	'Snowdream robe top',
+	'Snowdream wizard socks'
+]);
+
+export const blackSantaOutfit = resolveItems([
+	'Black santa top',
+	'Black santa legs',
+	'Black santa gloves',
+	'Black santa boots'
+]);
+
+export const allChristmasEventItems = resolveItems([
+	...wizardOutfit,
+	...blackSantaOutfit,
+	'Snowdream rune',
+	'Snowdream pillow',
+	'Chef-touched heart (choc)',
+	'Sungod slippers',
+	'Icey santa hat',
+	'Grinchling',
+	'Shrimpy',
+	'Snowflake amulet',
+	'Snowdream staff'
+]);

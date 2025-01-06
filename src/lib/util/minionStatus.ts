@@ -849,11 +849,7 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 
-		case 'SnoozeSpellActive': {
-			return `${name} is currently actively casting the christmas event snooze spell. The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
-		}
+		case 'SnoozeSpellActive':
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
 		case 'BlastFurnace':

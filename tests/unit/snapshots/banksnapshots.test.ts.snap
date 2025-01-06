@@ -18158,16 +18158,6 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
-      "73304": 8,
-    },
-    "name": "Snowdream staff",
-    "outputItems": {
-      "73305": 1,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": {
       "50017": 5,
       "50021": 30,
     },
