@@ -48,7 +48,7 @@ export const RandomEvents: RandomEvent[] = [
 		name: 'Bee keeper',
 		outfit: beekeeperOutfit,
 		uniqueMusic: true,
-		loot: new LootTable().add('Coins', [16, 36]).add('Flax', [1, 27])
+		loot: new LootTable().add('Coins', [16, 36]).add('Flax', [1, 27]).every('Genie lamp')
 	},
 	{
 		id: 2,

@@ -420,7 +420,7 @@ export const huntCommand: OSBMahojiCommand = {
 			]
 		});
 		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
-			creatureName: creature.id,
+			creatureID: creature.id,
 			userID: user.id,
 			channelID,
 			quantity,

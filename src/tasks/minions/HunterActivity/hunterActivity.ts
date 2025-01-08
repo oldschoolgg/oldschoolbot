@@ -16,7 +16,7 @@ import { type Creature, SkillsEnum } from '../../../lib/skilling/types';
 import type { Gear } from '../../../lib/structures/Gear';
 import type { Skills } from '../../../lib/types';
 import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { clAdjustedDroprate, roll, skillingPetDropRate, stringMatches, toKMB } from '../../../lib/util';
+import { clAdjustedDroprate, roll, skillingPetDropRate, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { logError } from '../../../lib/util/logError.js';
@@ -278,7 +278,7 @@ export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
 		const {
-			creatureName,
+			creatureID,
 			quantity,
 			userID,
 			channelID,
@@ -288,17 +288,10 @@ export const hunterTask: MinionTask = {
 			usingStaminaPotion = false
 		} = data;
 		const user = await mUserFetch(userID);
-		const creature =
-			typeof creatureName === 'number'
-				? Hunter.Creatures.find(c => c.id === creatureName)
-				: Hunter.Creatures.find(creature =>
-						creature.aliases.some(
-							alias =>
-								stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
-						)
-					);
+		const creature = Hunter.Creatures.find(c => c.id === creatureID);
+
 		if (!creature) {
-			logError(`Invalid creature name provided: ${creatureName}`);
+			logError(`Invalid creature ID provided: ${creatureID}`);
 			return;
 		}
 

@@ -220,6 +220,17 @@ const ores: Ore[] = [
 		aliases: ['dae', 'daey', 'daeyalt', 'daeyalt essence']
 	},
 	{
+		level: 64,
+		xp: 6,
+		id: 28_591,
+		name: 'Tainted essence chunk',
+		respawnTime: 3,
+		bankingTime: 9,
+		slope: 0,
+		intercept: 100,
+		aliases: ['scar', 'tainted']
+	},
+	{
 		level: 70,
 		xp: 95,
 		id: 449,

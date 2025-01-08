@@ -1,28 +1,12 @@
 import { Bank, Monsters } from 'oldschooljs';
 
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
+import creatures from './skilling/skills/hunter/creatures/index.js';
 import { getUsersCurrentSlayerInfo } from './slayer/slayerUtil';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
-
-/**
- * 1. Get Mysterious clue(1) from mysterious stranger
- * 2. Go do first step at cows, get dungsoaked msg
- * 3. do the clues
- * 4. final clue
- *
- *
- *  quest boss
- *
- * skippers wife is luring you to snow area to kill the yeti and save its child.
- *
- * hunter based
- * yeti is hunter boss
- * yeti boss at the end, defeated to get the pet/reward
- *
- */
 
 const firstStep = {
 	hint: `In Lumbridge's dawn, where bovine graze,
@@ -36,7 +20,6 @@ const finalStep = {
 	didPass: async (data: ActivityTaskData) => {
 		if (
 			data.type === 'Hunter' &&
-			typeof data.creatureName === 'string' &&
 			[
 				'Polar kebbit',
 				'Cerulean twitch',
@@ -44,7 +27,9 @@ const finalStep = {
 				'Snowy knight',
 				'Sabre-toothed kebbit',
 				'Sabre-toothed kyatt'
-			].includes(data.creatureName)
+			]
+				.map(name => creatures.find(c => c.name === name)?.id)
+				.includes(data.creatureID)
 		) {
 			return true;
 		}
@@ -209,8 +194,7 @@ export const mysteriousTrailTracks: Track[] = [
 			firstStep,
 			{
 				hint: "On the rooftops, a hidden maze, not easy to see, except for a lovers' gaze.",
-				didPass: (data: ActivityTaskData) =>
-					data.type === 'Agility' && data.courseID === 'Varrock Rooftop Course'
+				didPass: (data: ActivityTaskData) => data.type === 'Agility' && data.courseID === 4
 			},
 			{
 				hint: 'In rows and columns, a green parade, sitting in the dirt, where they were made.',
@@ -282,12 +266,11 @@ export const mysteriousTrailTracks: Track[] = [
 			},
 			{
 				hint: 'In the lantern of the swamp, seek refuge from those that chomp.',
-				didPass: (data: ActivityTaskData) =>
-					data.type === 'Agility' && data.courseID === 'Canifis Rooftop Course'
+				didPass: (data: ActivityTaskData) => data.type === 'Agility' && data.courseID === 5
 			},
 			{
 				hint: "Black as night, catch them, but don't let them bite.",
-				didPass: (data: ActivityTaskData) => data.type === 'Hunter' && data.creatureName === 'Black salamander'
+				didPass: (data: ActivityTaskData) => data.type === 'Hunter' && data.creatureID === 26
 			},
 			{
 				hint: 'Hear the echo of a crowned roar, in a place too dangerous to explore.',

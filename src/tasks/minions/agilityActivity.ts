@@ -15,6 +15,7 @@ import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { logError } from '../../lib/util/logError';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 function chanceOfFailingAgilityPyramid(lvl: number) {
@@ -158,7 +159,13 @@ export const agilityTask: MinionTask = {
 		const minutes = Math.round(duration / Time.Minute);
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
-		const course = Agility.Courses.find(course => course.name === courseID || course.id === courseID)!;
+
+		const course = Agility.Courses.find(course => course.id === courseID);
+
+		if (!course) {
+			logError(`Invalid course ID provided: ${courseID}`);
+			return;
+		}
 
 		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		const hasDiaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';

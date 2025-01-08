@@ -53,6 +53,7 @@ async function main() {
 		const codeKey = startsWithNumber(key) ? `'${key}'` : key;
 		str += `\n\t${codeKey} = ${value},`;
 	}
+	str = str.slice(0, -1); //remove last comma
 	str += '\n}';
 	str += '\n';
 	writeFileSync('./src/EItem.ts', str);
@@ -65,7 +66,9 @@ async function main() {
 		key = key.replace(/[^a-zA-Z0-9_]/g, '').toUpperCase();
 		monsterEnumStr += `\n\t${key} = ${monster.id},`;
 	}
+	monsterEnumStr = monsterEnumStr.slice(0, -1); //remove last comma
 	monsterEnumStr += '\n}';
+	monsterEnumStr += '\n';
 	writeFileSync('./src/EMonster.ts', monsterEnumStr);
 }
 

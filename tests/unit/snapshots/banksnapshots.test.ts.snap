@@ -7177,6 +7177,50 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "28591": 1,
+      "995": 1250,
+    },
+    "name": "Warped extract",
+    "outputItems": {
+      "28593": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "28591": 1,
+      "995": 6000,
+    },
+    "name": "Twisted extract",
+    "outputItems": {
+      "28595": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "28591": 1,
+      "995": 12000,
+    },
+    "name": "Mangled extract",
+    "outputItems": {
+      "28597": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "28591": 1,
+      "995": 24000,
+    },
+    "name": "Scarred extract",
+    "outputItems": {
+      "28599": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "12922": 1,
     },
     "name": "Revert tanzanite fang",

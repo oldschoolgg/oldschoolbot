@@ -64,6 +64,14 @@ export function calculateMiningResult({
 	let spiritualMiningPortentXP = 0;
 	let totalMiningXPToAdd = quantity * ore.xp;
 
+	let taintedQty = 0; // 6xp per chunk rolled
+	if (ore.name === 'Tainted essence chunk') {
+		for (let i = 0; i < quantity; i++) {
+			taintedQty += randInt(1, 4);
+		}
+		totalMiningXPToAdd = taintedQty * ore.xp;
+	}
+
 	// Prospector outfit
 	if (
 		allGear.skilling.hasEquipped(
@@ -173,6 +181,8 @@ export function calculateMiningResult({
 				daeyaltQty += randInt(2, 3);
 			}
 			loot.add(ore.id, daeyaltQty);
+		} else if (ore.name === 'Tainted essence chunk') {
+			loot.add(ore.id, 5 * taintedQty);
 		} else {
 			loot.add(ore.id, quantity);
 		}

@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
 import type { UserFullGearSetup } from '../../lib/gear';
+import { QuestID } from '../../lib/minions/data/quests';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
@@ -58,6 +59,27 @@ export function calculateMiningInput({
 		return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
 			Mining.MotherlodeMine.name
 		}.`;
+	}
+
+	if (user.skillsAsLevels.mining < ore.level) {
+		return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
+	}
+
+	// Check for daeyalt shard requirements.
+	const hasDaeyaltReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
+	if (ore.name === 'Daeyalt essence rock') {
+		if (!hasDaeyaltReqs) {
+			return `To mine ${ore.name}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
+		}
+		if (user.QP < 125) {
+			return `To mine ${ore.name}, you need at least 125 Quest Points.`;
+		}
+	}
+
+	if (ore.name === 'Tainted essence chunk') {
+		if (!user.user.finished_quest_ids.includes(QuestID.DesertTreasureII)) {
+			return 'You need to have completed the Desert Treasure II quest to access the scar essence mine.';
+		}
 	}
 
 	if (miningLevel < ore.level) {

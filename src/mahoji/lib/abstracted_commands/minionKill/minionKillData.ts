@@ -8,7 +8,7 @@ export const dragonHunterWeapons = [
 	},
 	{
 		item: getOSItem('Dragon hunter crossbow'),
-		attackStyle: 'ranged',
+		attackStyle: 'range',
 		boost: 15
 	}
 ] as const;
