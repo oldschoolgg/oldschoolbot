@@ -1,4 +1,4 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { ButtonInteraction, Interaction } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
@@ -10,8 +10,10 @@ import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_com
 import type { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 
+import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import { InteractionID } from '../InteractionID';
+import { giveawayCache } from '../cache.js';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import type { ItemBank } from '../types';
@@ -132,11 +134,15 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	const split = customID.split('_');
 	if (split[0] !== 'GIVEAWAY') return;
 	const giveawayID = Number(split[2]);
-	const giveaway = await prisma.giveaway.findFirst({
-		where: {
-			id: giveawayID
-		}
-	});
+	let giveaway: Giveaway | null = giveawayCache.get(giveawayID) ?? null;
+	if (!giveaway) {
+		giveaway = await prisma.giveaway.findFirst({
+			where: {
+				id: giveawayID
+			}
+		});
+		if (giveaway) giveawayCache.set(giveawayID, giveaway);
+	}
 	if (!giveaway) {
 		return interactionReply(interaction, { content: 'Invalid giveaway.', ephemeral: true });
 	}
@@ -347,7 +353,8 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(interaction);
 
-	const user = await mUserFetch(userID);
+	const userNameToInsert = cleanUsername(interaction.user.username);
+	const user = await mUserFetch(userID, { username: userNameToInsert });
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);

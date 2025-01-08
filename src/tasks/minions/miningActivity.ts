@@ -31,6 +31,14 @@ export function determineMiningResult({
 	const messages: string[] = [];
 	let xpToReceive = quantity * ore.xp;
 
+	let taintedQty = 0; // 6xp per chunk rolled
+	if (ore.name === 'Tainted essence chunk') {
+		for (let i = 0; i < quantity; i++) {
+			taintedQty += randInt(1, 4);
+		}
+		xpToReceive = taintedQty * ore.xp;
+	}
+
 	const equippedProsItems = prospectorItemsArr.filter(item => gearBank.hasEquipped(item.id));
 	const bonusPercent =
 		equippedProsItems.length === 4 ? 2.5 : sumArr(equippedProsItems.map(item => item.boostPercent));
@@ -113,6 +121,8 @@ export function determineMiningResult({
 				daeyaltQty += randInt(2, 3);
 			}
 			updateBank.itemLootBank.add(ore.id, daeyaltQty);
+		} else if (ore.name === 'Tainted essence chunk') {
+			updateBank.itemLootBank.add(ore.id, 5 * taintedQty);
 		} else {
 			updateBank.itemLootBank.add(ore.id, quantity);
 		}
@@ -149,7 +159,8 @@ export const miningTask: MinionTask = {
 		const updateResult = await updateBank.transact(user);
 		if (typeof updateResult === 'string') throw new Error(updateResult);
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. `;
-		if (!powermine) str += `You received ${updateResult.itemTransactionResult?.itemsAdded} and `;
+		if (updateResult.itemTransactionResult?.itemsAdded)
+			str += `You received ${updateResult.itemTransactionResult?.itemsAdded} and `;
 
 		str += `${updateBank.xpBank}. ${xpHr} XP/hr`;
 		if (messages.length > 0) {

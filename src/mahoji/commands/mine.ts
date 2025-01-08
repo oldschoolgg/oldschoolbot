@@ -3,6 +3,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import { QuestID } from '../../lib/minions/data/quests';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
@@ -134,8 +135,8 @@ export function determineMiningTrip({
 		duration,
 		quantity: newQuantity,
 		boosts,
-		fakeDurationMin,
-		fakeDurationMax,
+		fakeDurationMin: Math.floor(fakeDurationMin),
+		fakeDurationMax: Math.floor(fakeDurationMax),
 		isPowermining
 	};
 }
@@ -217,6 +218,12 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 			if (user.QP < 125) {
 				return `To mine ${ore.name}, you need at least 125 Quest Points.`;
+			}
+		}
+
+		if (ore.name === 'Tainted essence chunk') {
+			if (!user.user.finished_quest_ids.includes(QuestID.DesertTreasureII)) {
+				return 'You need to have completed the Desert Treasure II quest to access the scar essence mine.';
 			}
 		}
 

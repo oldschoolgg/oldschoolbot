@@ -236,12 +236,12 @@ export const chopCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
-			powerchopping: powerchop,
+			powerchopping: powerchop === true ? true : undefined,
 			forestry: forestry_events,
 			twitchers: twitchers_gloves,
 			duration,
-			fakeDurationMin,
-			fakeDurationMax,
+			fakeDurationMin: Math.floor(fakeDurationMin),
+			fakeDurationMax: Math.floor(fakeDurationMax),
 			type: 'Woodcutting'
 		});
 

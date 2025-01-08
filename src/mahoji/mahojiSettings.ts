@@ -18,6 +18,7 @@ import {
 	type JsonKeys,
 	anglerBoosts,
 	formatItemReqs,
+	formatList,
 	hasSkillReqs,
 	itemNameFromID,
 	readableStatName,
@@ -334,7 +335,12 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 				messages.push(
 					`This monster requires: ${group.itemCost.items().map(i => i[0].name)}${
 						group.alternativeConsumables
-							? `, OR ${group.alternativeConsumables?.map(alt => alt.itemCost.items().map(i => i[0].name)).join(', ')}`
+							? `, ${formatList(
+									group.alternativeConsumables
+										?.map(alt => alt.itemCost.items().map(i => i[0].name))
+										.flat(100),
+									'or'
+								)}`
 							: '.'
 					}`
 				);

@@ -89,6 +89,7 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	imbueCasts: number;
 	useStaminas?: boolean;
 	daeyaltEssence?: boolean;
+	useExtracts?: boolean;
 }
 
 export interface TiaraRunecraftActivityTaskOptions extends ActivityTaskOptions {
@@ -113,9 +114,9 @@ export interface OuraniaAltarOptions extends ActivityTaskOptions {
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Agility';
-	courseID: string;
+	courseID: number;
 	quantity: number;
-	alch: {
+	alch?: {
 		itemID: number;
 		quantity: number;
 	} | null;
@@ -147,6 +148,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	hasWildySupplies?: boolean;
 	isInWilderness?: boolean;
 	attackStyles?: AttackStyles[];
+	onTask?: boolean;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
@@ -206,7 +208,7 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Woodcutting';
 	fakeDurationMax: number;
 	fakeDurationMin: number;
-	powerchopping: boolean;
+	powerchopping?: boolean;
 	forestry?: boolean;
 	twitchers?: TwitcherGloves;
 	logID: number;
@@ -292,10 +294,10 @@ export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
 
 export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Hunter';
-	creatureName: string;
+	creatureID: number;
 	quantity: number;
-	usingHuntPotion: boolean;
-	wildyPeak: Peak | null;
+	usingHuntPotion?: boolean;
+	wildyPeak?: Peak | null;
 	usingStaminaPotion: boolean;
 }
 
@@ -499,7 +501,7 @@ export interface NexTaskOptions extends ActivityTaskOptionsWithUsers {
 	type: 'Nex';
 	quantity: number;
 	leader: string;
-	userDetails: [string, number, number[]][];
+	teamDetails: [string, number, number, number[], boolean][];
 	fakeDuration: number;
 	wipedKill: number | null;
 }

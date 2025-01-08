@@ -737,7 +737,7 @@ export const allCollectionLogs: ICollection = {
 						);
 					}
 				},
-				items: [...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL],
+				items: uniqueArr([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL]),
 				isActivity: true,
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
 			}
@@ -1139,12 +1139,14 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.Vardorvis.allItems,
 					...Monsters.DukeSucellus.allItems
 				],
-				items: [...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL]
+				items: uniqueArr([...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL])
 			},
 			Creatables: {
 				counts: false,
-				items: Createables.filter(i => i.noCl !== true).flatMap(i =>
-					new Bank(i.outputItems).items().map(i => i[0].id)
+				items: uniqueArr(
+					Createables.filter(i => i.noCl !== true).flatMap(i =>
+						new Bank(i.outputItems).items().map(i => i[0].id)
+					)
 				)
 			},
 			Leagues: {

@@ -17,9 +17,9 @@ import { Time, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { giveawayCache } from '../../lib/cache.js';
 import { Emoji, patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
-
 import { channelIsSendable, isModOrAdmin, makeComponents, toKMB } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -193,7 +193,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			}
 
 			try {
-				await prisma.giveaway.create({
+				const giveaway = await prisma.giveaway.create({
 					data: {
 						id: giveawayID,
 						channel_id: channelID.toString(),
@@ -207,6 +207,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 						users_entered: []
 					}
 				});
+				giveawayCache.set(giveaway.id, giveaway);
 			} catch (err: any) {
 				logError(err, {
 					user_id: user.id,
