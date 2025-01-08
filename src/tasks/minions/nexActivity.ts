@@ -6,6 +6,7 @@ import { trackLoot } from '../../lib/lootTrack';
 import type { NexContext } from '../../lib/simulation/nex';
 import { handleNexKills } from '../../lib/simulation/nex';
 import type { NexTaskOptions } from '../../lib/types/minions';
+import { getKCByName } from '../../lib/util/getKCByName';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -13,49 +14,31 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 export const nexTask: MinionTask = {
 	type: 'Nex',
 	async run(data: NexTaskOptions) {
-		const { quantity, channelID, users, wipedKill, duration, userDetails } = data;
-		const allMention = userDetails.map(t => userMention(t[0])).join(' ');
+		const { quantity, channelID, users, wipedKill, duration, teamDetails } = data;
+		const realUsers = teamDetails.filter(u => !u[3]);
+		const allMention = realUsers.map(t => userMention(t[0])).join(' ');
 		const allMUsers = await Promise.all(users.map(id => mUserFetch(id)));
 
 		const survivedQuantity = wipedKill ? wipedKill - 1 : quantity;
-		let teamResult: NexContext['team'] = userDetails.map(u => ({
+		const teamResult: NexContext['team'] = teamDetails.map(u => ({
 			id: u[0],
-			contribution: u[1],
-			deaths: u[2]
+			teamID: u[1],
+			contribution: u[2],
+			deaths: u[3],
+			fake: u[4]
 		}));
-
-		if (allMUsers.length === 1) {
-			teamResult = teamResult.concat(
-				{
-					id: '2',
-					contribution: teamResult[0].contribution,
-					deaths: [],
-					ghost: true
-				},
-				{
-					id: '3',
-					contribution: teamResult[0].contribution,
-					deaths: [],
-					ghost: true
-				},
-				{
-					id: '4',
-					contribution: teamResult[0].contribution,
-					deaths: [],
-					ghost: true
-				}
-			);
-		}
 
 		const loot = handleNexKills({
 			quantity: survivedQuantity,
 			team: teamResult
 		});
 
+		const kc = teamResult.map(u => ({ id: u.id, quantity: quantity - u.deaths.length }));
+
 		for (const [uID, uLoot] of loot.entries()) {
 			await transactItems({ userID: uID, collectionLog: true, itemsToAdd: uLoot });
 			const user = allMUsers.find(i => i.id === uID)!;
-			await user.incrementKC(NEX_ID, quantity - userDetails.find(i => i[0] === uID)![2].length);
+			await user.incrementKC(NEX_ID, kc.find(u => u.id === uID)!.quantity);
 		}
 
 		await trackLoot({
@@ -65,13 +48,18 @@ export const nexTask: MinionTask = {
 			changeType: 'loot',
 			duration: duration * users.length,
 			kc: quantity,
-			users: userDetails.map(i => ({
-				id: i[0],
-				loot: loot.get(i[0]),
-				duration
-			}))
+			users: teamResult
+				.filter(i => !i.fake)
+				.map(i => ({
+					id: i.id,
+					loot: loot.get(i.id),
+					duration
+				}))
 		});
+
 		await updateBankSetting('nex_loot', loot.totalLoot());
+
+		const solo = users.length === 1;
 
 		return handleTripFinish(
 			allMUsers[0],
@@ -79,12 +67,9 @@ export const nexTask: MinionTask = {
 			{
 				content:
 					survivedQuantity === 0
-						? `${allMention} your minion${users.length === 1 ? '' : 's'} died in all kill attempts.`
-						: `${allMention} Your team finished killing ${quantity}x Nex.${
-								wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
-							}
-				
-${loot.formatLoot()}`
+						? `${allMention} your minion${solo ? '' : 's'} died in all kill attempts.`
+						: `${allMention} Your team finished killing ${quantity}x Nex.${solo ? ` You died ${teamResult[0].deaths.length} time${teamResult[0].deaths.length === 1 ? '' : 's'}, your KC is now ${(await getKCByName(await mUserFetch(teamResult[0].id), 'Nex'))[1]}.` : ''}${wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''}
+${loot.formatLoot(kc)}`
 			},
 			users.length === 1 && loot.totalLoot().length > 0
 				? (
