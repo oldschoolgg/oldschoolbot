@@ -293,7 +293,8 @@ const tripHandlers = {
 			rune: itemNameFromID(data.runeID),
 			quantity: data.essenceQuantity,
 			daeyalt_essence: data.daeyaltEssence,
-			usestams: data.useStaminas
+			usestams: data.useStaminas,
+			extracts: data.useExtracts
 		})
 	},
 	[activity_type_enum.TiaraRunecraft]: {
