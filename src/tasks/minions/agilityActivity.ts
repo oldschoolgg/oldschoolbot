@@ -10,6 +10,7 @@ import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { logError } from '../../lib/util/logError';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 function chanceOfFailingAgilityPyramid(user: MUser) {
@@ -28,7 +29,13 @@ export const agilityTask: MinionTask = {
 		const loot = new Bank();
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
-		const course = Agility.Courses.find(course => course.name === courseID || course.id === courseID)!;
+
+		const course = Agility.Courses.find(course => course.id === courseID);
+
+		if (!course) {
+			logError(`Invalid course ID provided: ${courseID}`);
+			return;
+		}
 
 		// Calculate failed laps
 		let lapsFailed = 0;

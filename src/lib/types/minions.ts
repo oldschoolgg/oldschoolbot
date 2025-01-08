@@ -113,7 +113,7 @@ export interface OuraniaAltarOptions extends ActivityTaskOptions {
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Agility';
-	courseID: string | number;
+	courseID: number;
 	quantity: number;
 	alch?: {
 		itemID: number;
@@ -293,7 +293,7 @@ export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
 
 export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Hunter';
-	creatureName: string | number;
+	creatureID: number;
 	quantity: number;
 	usingHuntPotion?: boolean;
 	wildyPeak?: Peak | null;

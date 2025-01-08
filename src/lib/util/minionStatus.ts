@@ -80,7 +80,7 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
+import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
@@ -130,7 +130,7 @@ export function minionStatus(user: MUser) {
 		case 'Agility': {
 			const data = currentTask as AgilityActivityTaskOptions;
 
-			const course = Agility.Courses.find(course => course.name === data.courseID);
+			const course = Agility.Courses.find(course => course.id === data.courseID);
 
 			return `${name} is currently running ${data.quantity}x ${course?.name} laps. ${formattedDuration} Your ${
 				Emoji.Agility
@@ -442,12 +442,7 @@ export function minionStatus(user: MUser) {
 		case 'Hunter': {
 			const data = currentTask as HunterActivityTaskOptions;
 
-			const creature = Hunter.Creatures.find(creature =>
-				creature.aliases.some(
-					alias =>
-						stringMatches(alias, data.creatureName) || stringMatches(alias.split(' ')[0], data.creatureName)
-				)
-			);
+			const creature = Hunter.Creatures.find(c => c.id === data.creatureID);
 			const crystalImpling = creature?.name === 'Crystal impling';
 			return `${name} is currently hunting ${
 				crystalImpling ? creature?.name : `${data.quantity}x ${creature?.name}`
