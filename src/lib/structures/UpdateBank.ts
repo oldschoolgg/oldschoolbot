@@ -72,9 +72,10 @@ export class UpdateBank {
 
 		// Charges
 		if (this.chargeBank.length() > 0) {
-			const degradeResults = await degradeChargeBank(user, this.chargeBank);
-			if (degradeResults) {
-				results.push(degradeResults);
+			const degradeResult = await degradeChargeBank(user, this.chargeBank);
+			if (degradeResult) {
+				this.chargeBank = degradeResult.chargeBank;
+				results.push(degradeResult.results);
 			}
 		}
 

@@ -173,7 +173,8 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 		channelID: channelID.toString(),
 		quantity: gameQuantity,
 		duration,
-		type: 'VolcanicMine'
+		type: 'VolcanicMine',
+		itemCost: suppliesUsage
 	});
 
 	return str;

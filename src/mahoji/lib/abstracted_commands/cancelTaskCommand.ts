@@ -1,11 +1,20 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 
+import { formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
+import { Time } from 'e';
 import { cancelTask } from '../../../lib/settings/settings';
-import type { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
+import { ChargeBank } from '../../../lib/structures/Bank';
+import type { ActivityTaskOptions, NexTaskOptions, RaidsOptions, RefundOptions } from '../../../lib/types/minions';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { getActivityOfUser } from '../../../lib/util/minionIsBusy';
 
-export async function cancelTaskCommand(user: MUser, interaction?: ChatInputCommandInteraction): Promise<string> {
+export async function cancelTaskCommand(
+	user: MUser,
+	channelID: string,
+	interaction?: ChatInputCommandInteraction,
+	refund?: boolean
+): Promise<string> {
 	const currentTask = getActivityOfUser(user.id);
 
 	const mName = user.minionName;
@@ -39,17 +48,48 @@ export async function cancelTaskCommand(user: MUser, interaction?: ChatInputComm
 	if ((currentTask as any).users && (currentTask as any).users.length > 1) {
 		return 'Your minion is on a group activity and cannot cancel!';
 	}
+	const { itemCost, chargeCost } = currentTask as ActivityTaskOptions;
+	const cannotRefund =
+		(!itemCost || itemCost.length === 0) && (!chargeCost || new ChargeBank(chargeCost).length() === 0);
+
+	if (refund && cannotRefund) return 'You cannot be refunded for this trip!';
+
+	const refundMessage = refund
+		? ' They will return in 5 minutes with their supplies.'
+		: " They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.";
+	const couldRefundMessage = !(refund || cannotRefund)
+		? ` Note: this trip **can be refunded** using ${mentionCommand(globalClient, 'minion', 'cancel_and_refund')}.`
+		: '';
 
 	if (interaction) {
 		await handleMahojiConfirmation(
 			interaction,
 			`${mName} is currently doing a ${currentTask.type} trip.
-Please confirm if you want to call your minion back from their trip. 
-They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`
+Please confirm if you want to call your minion back from their trip.${refundMessage}${couldRefundMessage}`
 		);
 	}
 
+	// given ~15s interaction timer, task might have finished by now
+	if (!getActivityOfUser(user.id)) {
+		return `${mName} isn't doing anything at the moment, so there's nothing to cancel.`;
+	}
+
 	await cancelTask(user.id);
+
+	if (refund) {
+		const duration = Time.Second * 300;
+		await addSubTaskToActivityTask<RefundOptions>({
+			userID: user.id,
+			duration: duration,
+			channelID: channelID,
+			refundItems: itemCost,
+			refundCharges: chargeCost,
+			type: 'Refund'
+		});
+		return `${user.minionName} is returning from their trip with supplies, it'll take around ${formatDuration(
+			duration
+		)} to finish.`;
+	}
 
 	return `${mName}'s trip was cancelled, and they're now available.`;
 }

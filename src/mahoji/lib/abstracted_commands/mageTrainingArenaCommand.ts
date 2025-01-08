@@ -139,7 +139,8 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
 		duration,
 		type: 'MageTrainingArena',
 		quantity,
-		minigameID: 'magic_training_arena'
+		minigameID: 'magic_training_arena',
+		itemCost: cost
 	});
 
 	return `${

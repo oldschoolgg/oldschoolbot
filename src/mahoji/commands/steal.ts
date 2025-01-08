@@ -5,6 +5,7 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { Bank } from 'oldschooljs/dist/meta/types';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { quests } from '../../lib/minions/data/quests';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -136,6 +137,8 @@ export const stealCommand: OSBMahojiCommand = {
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
 
+		const cost = new Bank();
+
 		if (stealable.type === 'pickpockable') {
 			const [hasArdyHard] = await userhasDiaryTier(user, ArdougneDiary.hard);
 			if (hasArdyHard) {
@@ -165,6 +168,7 @@ export const stealCommand: OSBMahojiCommand = {
 				activityName: 'Pickpocketing',
 				attackStylesUsed: []
 			});
+			cost.add(foodRemoved);
 
 			updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.`;
@@ -183,7 +187,8 @@ export const stealCommand: OSBMahojiCommand = {
 			type: 'Pickpocket',
 			damageTaken,
 			successfulQuantity,
-			xpReceived
+			xpReceived,
+			itemCost: cost
 		});
 
 		if (boosts.length > 0) {

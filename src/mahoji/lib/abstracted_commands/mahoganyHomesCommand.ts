@@ -185,7 +185,8 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 		duration,
 		points,
 		xp,
-		tier: tierData.tier
+		tier: tierData.tier,
+		itemCost: itemsNeeded
 	});
 
 	let str = `${user.minionName} is now doing ${quantity}x ${
