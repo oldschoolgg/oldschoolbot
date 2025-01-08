@@ -27,18 +27,7 @@ for (const [toChange, toCopy] of equipmentModSrc) {
 	equipmentModifications.set(toChange, toCopy);
 }
 
-const itemsToRename = [
-	{
-		id: 30_105,
-		name: 'Tooth half of key (moon key)'
-	},
-	{
-		id: 30_107,
-		name: 'Loop half of key (moon key)'
-	}
-];
-
-const itemsBeingModified = new Set([...equipmentModSrc.map(i => i[0]), ...itemsToRename.map(i => i.id)]);
+const itemsBeingModified = new Set([...equipmentModSrc.map(i => i[0]), ...Object.keys(itemChanges)]);
 
 const newItemJSON: { [key: string]: Item } = {};
 
@@ -54,12 +43,15 @@ interface RawItemCollection {
 // This regex matches the nearly 600 individual clue-step items:
 const clueStepRegex = /^Clue scroll \((beginner|easy|medium|hard|elite|master)\) - .*$/;
 
+const overwrittenIDs = Object.values(itemChanges).map(i => i.id);
+
 function itemShouldntBeAdded(item: any) {
 	if (CLUE_SCROLLS.includes(item.id)) return false;
 
 	return (
 		(CLUE_SCROLL_NAMES.includes(item.name) && !CLUE_SCROLLS.includes(item.id)) ||
 		USELESS_ITEMS.includes(item.id) ||
+		overwrittenIDs.includes(item.id) ||
 		item.duplicate === true ||
 		item.noted ||
 		item.linked_id_item ||
@@ -305,7 +297,7 @@ const keysToWarnIfRemovedOrAdded: (keyof Item)[] = ['equipable', 'equipment', 'w
 export default async function prepareItems(): Promise<void> {
 	const messages: string[] = [];
 	const allItemsRaw: RawItemCollection = await fetch(
-		'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/master/docs/items-complete.json'
+		'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/1ecb931981ea66a34476d614b0c863c51f2738c8/docs/items-complete.json'
 	).then((res): Promise<any> => res.json());
 	const allItems = deepClone(allItemsRaw);
 
@@ -327,11 +319,11 @@ export default async function prepareItems(): Promise<void> {
 	for (let item of Object.values(allItems)) {
 		if (itemShouldntBeAdded(item)) continue;
 
-		if (item.name === "Pharaoh's sceptre") {
-			item = {
-				...allItems[26_950],
-				id: item.id
-			};
+		const price = allPrices[item.id];
+		const previousItem = Items.get(item.id);
+
+		if (itemChanges[item.id]) {
+			item = deepMerge(item, itemChanges[item.id]) as any;
 		}
 
 		for (const delKey of [
@@ -377,12 +369,10 @@ export default async function prepareItems(): Promise<void> {
 		if (item.lowalch === null) item.lowalch = undefined;
 		if (item.highalch === null) item.highalch = undefined;
 
-		const previousItem = Items.get(item.id);
 		if (!previousItem) {
 			newItems.push(item);
 		}
 
-		const price = allPrices[item.id];
 		if (price) {
 			// Fix weird bug with prices: (high can be 1 and low 2.14b for example... blame Jamflex)
 			if (price.high < price.low) price.high = price.low;
@@ -446,11 +436,6 @@ export default async function prepareItems(): Promise<void> {
 			}
 		}
 
-		const rename = itemsToRename.find(i => i.id === item.id);
-		if (rename) {
-			item.name = rename.name;
-		}
-
 		if (equipmentModifications.has(item.id)) {
 			const copyItem = Items.get(equipmentModifications.get(item.id)!)!;
 			item.equipment = copyItem.equipment;
@@ -495,10 +480,6 @@ export default async function prepareItems(): Promise<void> {
 				...item.equipment,
 				requirements: previousItem.equipment.requirements
 			};
-		}
-
-		if (itemChanges[item.id]) {
-			item = deepMerge(item, itemChanges[item.id]) as any;
 		}
 
 		newItemJSON[item.id] = item;
