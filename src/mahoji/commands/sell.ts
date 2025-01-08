@@ -6,6 +6,7 @@ import { Bank, type Item } from 'oldschooljs';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 
+import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -35,7 +36,9 @@ const specialSoldItems = new Map([
 	[itemID('Stone statuette'), 200],
 	[itemID('Gold seal'), 750],
 	[itemID('Golden scarab'), 1000],
-	[itemID('Golden statuette'), 1250]
+	[itemID('Golden statuette'), 1250],
+	// Ecumenical Key - requires wildy hard diary
+	[itemID('Ecumenical key'), 61_500]
 ]);
 
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
@@ -216,6 +219,13 @@ export const sellCommand: OSBMahojiCommand = {
 
 			await user.transactItems({ itemsToRemove: tenchBank, itemsToAdd: loot });
 			return `You exchanged ${tenchBank} and received: ${loot}.`;
+		}
+
+		if (bankToSell.has('Ecumenical key')) {
+			const [hasWildyHard] = await userhasDiaryTier(user, WildernessDiary.hard);
+			if (!hasWildyHard) {
+				return 'You need to have completed the Wilderness Hard Diary to sell Ecumenical keys.';
+			}
 		}
 
 		let totalPrice = 0;

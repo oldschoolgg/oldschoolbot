@@ -209,7 +209,7 @@ export default class Bank {
 		if (this.frozen) throw new Error(frozenErrorStr);
 		for (const [itemID, quantity] of this.map.entries()) {
 			if (itemsToNotMultiply?.includes(itemID)) continue;
-			this.map.set(itemID, quantity * multiplier);
+			this.map.set(itemID, Math.floor(quantity * multiplier));
 		}
 		return this;
 	}
@@ -240,7 +240,7 @@ export default class Bank {
 			if (val < 1) continue;
 			const item = Items.get(key)!;
 			if (!item) {
-				console.warn(`Bank has an invalid item: ${item}, with quantity of ${val}`);
+				console.trace(`Bank has an invalid item: ${item}, with quantity of ${val}`);
 				continue;
 			}
 			arr.push([item, val]);

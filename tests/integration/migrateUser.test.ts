@@ -121,8 +121,6 @@ class UserData {
 		} else {
 			await this.mUser.sync();
 		}
-		const newUser = await global.prisma!.newUser.findFirst({ where: { id: this.id }, select: { username: true } });
-		if (newUser) this.username = newUser.username;
 
 		this.bank = new Bank(this.mUser.bank);
 		this.clbank = new Bank(this.mUser.cl);

@@ -72,5 +72,5 @@ export function makeComponents(components: ButtonBuilder[]): InteractionReplyOpt
 }
 
 export function cleanUsername(username: string) {
-	return stripEmojis(username).substring(0, 32).replace(/[@|*]/g, '');
+	return stripEmojis(username).replace(/[@|*]/g, '').substring(0, 32);
 }

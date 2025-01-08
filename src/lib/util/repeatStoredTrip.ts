@@ -11,6 +11,8 @@ import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { convertStoredActivityToFlatActivity } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
+import { courses } from '../skilling/skills/agility';
+import Hunter from '../skilling/skills/hunter/hunter';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -159,7 +161,7 @@ const tripHandlers = {
 	[activity_type_enum.Agility]: {
 		commandName: 'laps',
 		args: (data: AgilityActivityTaskOptions) => ({
-			name: data.courseID,
+			name: courses.find(c => c.id === data.courseID)?.name ?? data.courseID.toString(),
 			quantity: data.quantity,
 			alch: Boolean(data.alch)
 		})
@@ -291,7 +293,8 @@ const tripHandlers = {
 			rune: itemNameFromID(data.runeID),
 			quantity: data.essenceQuantity,
 			daeyalt_essence: data.daeyaltEssence,
-			usestams: data.useStaminas
+			usestams: data.useStaminas,
+			extracts: data.useExtracts
 		})
 	},
 	[activity_type_enum.TiaraRunecraft]: {
@@ -386,7 +389,7 @@ const tripHandlers = {
 	[activity_type_enum.Hunter]: {
 		commandName: 'hunt',
 		args: (data: HunterActivityTaskOptions) => ({
-			name: data.creatureName,
+			name: Hunter.Creatures.find(i => i.id === data.creatureID)?.name ?? data.creatureID.toString(),
 			quantity: data.quantity,
 			hunter_potion: data.usingHuntPotion,
 			stamina_potions: data.usingStaminaPotion
@@ -453,7 +456,7 @@ const tripHandlers = {
 			return {
 				name: 'nex',
 				quantity: data.quantity,
-				solo: data.userDetails.length === 1
+				solo: data.users.length === 1
 			};
 		}
 	},

@@ -10,7 +10,7 @@ import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/fun
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
+import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { logError } from '../../../lib/util/logError.js';
@@ -36,7 +36,7 @@ const riskDeathNumbers = [
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
+		const { creatureID, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
 			data;
 		const user = await mUserFetch(userID);
 		const userBank = user.bank;
@@ -48,18 +48,10 @@ export const hunterTask: MinionTask = {
 		let pkStr = '';
 		let pkedQuantity = 0;
 
-		const creature =
-			typeof creatureName === 'number'
-				? Hunter.Creatures.find(c => c.id === creatureName)
-				: Hunter.Creatures.find(creature =>
-						creature.aliases.some(
-							alias =>
-								stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
-						)
-					);
+		const creature = Hunter.Creatures.find(c => c.id === creatureID);
 
 		if (!creature) {
-			logError(`Invalid creature name provided: ${creatureName}`);
+			logError(`Invalid creature ID provided: ${creatureID}`);
 			return;
 		}
 

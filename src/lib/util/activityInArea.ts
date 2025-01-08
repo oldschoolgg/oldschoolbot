@@ -2,6 +2,8 @@ import { Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 
 import { soteSkillRequirements } from '../skilling/functions/questRequirements';
+import { courses } from '../skilling/skills/agility';
+import butterflyNettingCreatures from '../skilling/skills/hunter/creatures/butterflyNetting';
 import type {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,
@@ -38,7 +40,8 @@ const WorldLocationsChecker = [
 				}
 				if (
 					activity.type === 'Agility' &&
-					(activity as AgilityActivityTaskOptions).courseID === 'Prifddinas Rooftop Course'
+					(activity as AgilityActivityTaskOptions).courseID ===
+						courses.find(c => c.name === 'Prifddinas Rooftop Course')!.id
 				) {
 					return true;
 				}
@@ -54,7 +57,8 @@ const WorldLocationsChecker = [
 			}
 			if (
 				activity.type === 'Hunter' &&
-				(activity as HunterActivityTaskOptions).creatureName === 'Crystal impling'
+				(activity as HunterActivityTaskOptions).creatureID ===
+					butterflyNettingCreatures.find(c => c.name === 'Crystal impling')!.id
 			) {
 				return true;
 			}

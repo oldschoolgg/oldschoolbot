@@ -23,6 +23,7 @@ export function logError(err: any, context?: Record<string, string>, extra?: Rec
 	if (err?.requestBody?.json) {
 		err.requestBody.json = String(err.requestBody.json).slice(0, 500);
 	}
+	console.error(err);
 	console.error(`${(err as any)?.message ?? JSON.stringify(err)}`, {
 		type: 'ERROR',
 		raw: JSON.stringify(err),

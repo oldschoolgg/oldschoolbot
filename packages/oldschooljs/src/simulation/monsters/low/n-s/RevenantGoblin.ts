@@ -3,6 +3,7 @@ import SimpleMonster from '../../../../structures/SimpleMonster';
 import { makeRevTable } from '../../../../util';
 
 export const RevenantGoblinTable = new LootTable()
+	.tertiary(5000, 'Goblin champion scroll')
 	.every('Revenant ether', [1, 4])
 
 	/* Weapons and armour */

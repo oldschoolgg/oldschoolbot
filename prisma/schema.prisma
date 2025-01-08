@@ -221,9 +221,8 @@ model Guild {
 }
 
 model NewUser {
-  id            String  @id @db.VarChar(19)
-  username      String? @db.VarChar(32)
-  pizazz_points Int     @default(0)
+  id            String @id @db.VarChar(19)
+  pizazz_points Int    @default(0)
 
   // Relations
   minigame_id  Int?         @unique

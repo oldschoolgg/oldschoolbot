@@ -44,13 +44,14 @@ export class TeamLoot {
 		return Array.from(this.map.entries());
 	}
 
-	formatLoot(): string {
+	formatLoot(kc?: { id: string; quantity: number }[]): string {
 		let str = '';
 		for (const [id, loot] of this.entries()) {
+			const kcString = kc ? ` (${kc.find(u => u.id === id)?.quantity ?? 0} KC)` : '';
 			const isPurple = this.purpleItems.some(i => loot.has(i));
 			str += isPurple
-				? `${Emoji.Purple} ${userMention(id)} received ${spoiler(loot.toString())}`
-				: `${userMention(id)} received ${loot}`;
+				? `${Emoji.Purple} ${userMention(id)}${kcString} received ${spoiler(loot.toString())}`
+				: `${userMention(id)}${kcString} received ${loot}.`;
 			str += '\n';
 		}
 		return str;

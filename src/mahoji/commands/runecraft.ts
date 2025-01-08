@@ -13,11 +13,22 @@ import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
+import { getOSItem } from '../../lib/util/getOSItem';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
+
+const runeTypes = [
+	{ item: getOSItem('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },
+	{
+		item: getOSItem('Twisted extract'),
+		runes: new Set(['mist', 'dust', 'mud', 'smoke', 'steam', 'lava', 'cosmic', 'chaos', 'sunfire'])
+	},
+	{ item: getOSItem('Mangled extract'), runes: new Set(['nature', 'law', 'astral', 'death']) },
+	{ item: getOSItem('Scarred extract'), runes: new Set(['blood', 'soul', 'wrath']) }
+];
 
 export const runecraftCommand: OSBMahojiCommand = {
 	name: 'runecraft',
@@ -68,15 +79,27 @@ export const runecraftCommand: OSBMahojiCommand = {
 			name: 'daeyalt_essence',
 			description: 'Set this to true to use daeyalt essence (default false)',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'extracts',
+			description: 'Set this to true to use extracts (default false)',
+			required: false
 		}
 	],
 	run: async ({
 		userID,
 		options,
 		channelID
-	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean; daeyalt_essence?: boolean }>) => {
+	}: CommandRunOptions<{
+		rune: string;
+		quantity?: number;
+		usestams?: boolean;
+		daeyalt_essence?: boolean;
+		extracts?: boolean;
+	}>) => {
 		const user = await mUserFetch(userID.toString());
-		let { rune, quantity, usestams, daeyalt_essence } = options;
+		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
 
@@ -172,7 +195,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
-
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
@@ -186,6 +208,26 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 			if (numEssenceOwned === 0 || quantity === 0 || numEssenceOwned < quantity) {
 				return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
+			}
+		}
+
+		let extractsOwned = 0;
+		const totalCost = new Bank();
+		for (const { item, runes } of runeTypes) {
+			if (runes.has(rune)) {
+				extractsOwned = bank.amount(item.name);
+				if (extracts) {
+					totalCost.add(item, quantity);
+					if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+				}
+				break;
+			}
+		}
+
+		if (extracts) {
+			if (!quantity) quantity = Math.min(extractsOwned, maxCanDo);
+			if (extractsOwned === 0 || quantity === 0 || extractsOwned < quantity) {
+				return "You don't have enough Extracts to craft these runes. You can acquire Tainted Essence Chunks through Mining, and then exchange for extracts with the `/create` command.";
 			}
 		}
 
@@ -204,8 +246,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 				return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 			}
 		}
-
-		const totalCost = new Bank();
 
 		let imbueCasts = 0;
 		let teleportReduction = 1;
@@ -290,7 +330,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (daeyalt_essence) {
 			totalCost.add('Daeyalt essence', quantity);
-			if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 		} else {
 			totalCost.add('Pure essence', quantity);
 		}
@@ -306,6 +345,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			essenceQuantity: quantity,
 			useStaminas: usestams,
 			daeyaltEssence: daeyalt_essence,
+			useExtracts: extracts,
 			duration,
 			imbueCasts,
 			type: 'Runecraft'

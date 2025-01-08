@@ -5,7 +5,7 @@ import {
 	clamp,
 	increaseNumByPercent,
 	percentChance,
-	randArrItem,
+	randFloat,
 	randInt,
 	reduceNumByPercent,
 	roll,
@@ -123,11 +123,13 @@ interface TeamMember {
 	messages: string[];
 	totalOffensivePecent: number;
 	totalDefensivePercent: number;
+	teamID: number;
+	fake: boolean;
 }
 
 export interface NexContext {
 	quantity: number;
-	team: { id: string; contribution: number; deaths: number[]; ghost?: true }[];
+	team: { id: string; teamID: number; contribution: number; deaths: number[]; fake?: boolean }[];
 }
 
 const purpleNexItems = resolveItems([
@@ -144,39 +146,55 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	const teamLoot = new TeamLoot(purpleNexItems);
 
 	for (let i = 0; i < quantity; i++) {
-		const survivors = team.filter(usr => !usr.deaths.includes(i));
+		// VIP logic: perturb contribution 10%, VIP is choisen randonmly with perturbed contirubtion as weight
+		// Unique loot chance also used perturbed contribution as weight
+
+		const survivors = team
+			.filter(u => !u.deaths.includes(i))
+			.map(u => ({ ...u, contribution: randomVariation(u.contribution, 10) }));
 		if (survivors.length === 0) {
 			continue;
 		}
 
-		const uniqueRecipient = roll(43) ? randArrItem(survivors).id : null;
+		const totalContribution = sumArr(survivors.map(u => u.contribution));
+		const VIPContribution = randFloat(0, totalContribution); // random VIP, weighted by contribution
+		let cumulativeSum = 0;
+		let VIP = 0;
+		for (const user of survivors) {
+			cumulativeSum += user.contribution;
+			if (cumulativeSum >= VIPContribution) {
+				VIP = user.teamID;
+				break;
+			}
+		}
+
 		const nonUniqueDrop = NexNonUniqueTable.roll();
 
-		for (const teamMember of survivors) {
-			teamLoot.add(teamMember.id, nonUniqueDrop);
-			if (teamMember.id === uniqueRecipient) {
+		for (const teamMember of survivors.filter(m => !m.fake)) {
+			const VIPBonus = teamMember.teamID === VIP ? 1.1 : 1;
+
+			teamLoot.add(teamMember.id, nonUniqueDrop.multiply(VIPBonus)); // VIPBonus may not be int, loot amounts rounded down in multply
+
+			if (teamMember.teamID === VIP) teamLoot.add(teamMember.id, 'Big bones');
+
+			if (roll(43) && percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
+
+			if (roll(500) && percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
+				teamLoot.add(teamMember.id, 'Nexling');
+			}
+
 			if (roll(48)) {
 				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
 			}
 		}
-
-		if (roll(500)) {
-			const recipient = randArrItem(survivors);
-			teamLoot.add(recipient.id, 'Nexling');
-		}
 	}
 
-	for (const member of team) {
-		if (member.ghost) {
-			teamLoot.map.delete(member.id);
-		}
-	}
 	return teamLoot;
 }
 
-export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?: MUser) {
+export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
@@ -251,7 +269,9 @@ export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?
 			deaths: [],
 			messages,
 			totalOffensivePecent,
-			totalDefensivePercent
+			totalDefensivePercent,
+			teamID: resultTeam.length,
+			fake: resultTeam.map(m => m.id).includes(member.id)
 		});
 	}
 
@@ -261,13 +281,11 @@ export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?
 
 	let wipedKill: number | null = null;
 
-	const deaths: Record<string, number[]> = {};
-	for (const user of resultTeam) deaths[user.id] = [];
 	for (let i = 0; i < quantity; i++) {
 		let deathsThisKill = 0;
 		for (const user of resultTeam) {
 			if (percentChance(user.deathChance)) {
-				deaths[user.id].push(i);
+				user.deaths.push(i);
 				deathsThisKill++;
 			}
 		}
@@ -276,19 +294,13 @@ export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?
 			break;
 		}
 	}
-	for (const [id, deathArr] of Object.entries(deaths)) {
-		resultTeam[resultTeam.indexOf(resultTeam.find(i => i.id === id)!)].deaths = deathArr;
-	}
 
-	// Ammo calculation
-	const users = soloUser ? [soloUser] : team;
-
-	for (const user of users) {
+	for (const teamUser of resultTeam.filter(m => !m.fake)) {
+		const user = team.find(u => u.id === teamUser.id)!;
 		const { rangeGear } = nexGearStats(user);
-		const teamUser = resultTeam.findIndex(a => a.id === user.id);
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
 		// Between 50-60 ammo per kill (before reductions)
-		resultTeam[teamUser].cost.add(ammo, randInt(50, 60) * quantity);
+		teamUser.cost.add(ammo, randInt(50, 60) * quantity);
 	}
 
 	const duration = quantity * lengthPerKill;
@@ -298,7 +310,6 @@ export async function calculateNexDetails({ team }: { team: MUser[] }, soloUser?
 		quantity,
 		duration: wipedKill ? wipedKill * lengthPerKill - randomVariation(lengthPerKill / 2, 90) : duration,
 		fakeDuration: duration,
-		wipedKill,
-		deaths
+		wipedKill
 	};
 }
