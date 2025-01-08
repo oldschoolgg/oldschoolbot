@@ -39,9 +39,18 @@ async function main() {
 		enumItems.push([key, item.id]);
 	}
 
+	// CAN BE REMOVED ONCE THERE IS JUST ONE OF EACH RING IN ITEM_DATA
+	const forcedChanges = [
+		['Ultor ring', 25485],
+		['Bellator ring', 25488],
+		['Magus ring', 25486],
+		['Venator ring', 25487]
+	] as [string, number][];
+	const forcedChangedIDs = new Set(forcedChanges.map(([, id]) => id));
+
 	let str = 'export enum EItem {';
 	for (const [key, value] of enumItems.sort((a, b) => a[1] - b[1])) {
-		if (itemsToIgnore.has(key)) continue;
+		if (itemsToIgnore.has(key) && !forcedChangedIDs.has(value)) continue;
 		const codeKey = startsWithNumber(key) ? `'${key}'` : key;
 		str += `\n\t${codeKey} = ${value},`;
 	}
