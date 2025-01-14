@@ -138,7 +138,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
 	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
-	const timePerFish = camdozaalfish.timePerFish * Time.Second;
+	const timePerFish = camdozaalfish.timePerFish! * Time.Second;
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerFish);
