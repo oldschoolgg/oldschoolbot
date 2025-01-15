@@ -175,7 +175,7 @@ export function addMonsterXPRaw(params: {
 	});
 
 	// Add cannon xp last so it's easy to distinguish
-	if (params.usingCannon || params.cannonMulti) {
+	if ((params.usingCannon || params.cannonMulti) && cannonQty > 0) {
 		xpBank.add('ranged', Math.floor(hp * 2 * cannonQty), {
 			duration: params.duration,
 			minimal: params.minimal ?? true
