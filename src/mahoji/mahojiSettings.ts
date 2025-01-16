@@ -17,8 +17,8 @@ import type { ItemBank } from '../lib/types';
 import {
 	type JsonKeys,
 	anglerBoosts,
+	formatItemCosts,
 	formatItemReqs,
-	formatList,
 	hasSkillReqs,
 	itemNameFromID,
 	readableStatName,
@@ -326,24 +326,17 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			const messages: string[] = [];
 			for (const group of items) {
 				if (group.optional) continue;
-				if (user.owns(group.itemCost)) {
+				if (user.owns(consumablesCost.itemCost.filter(i => group.itemCost.has(i)))) {
 					continue;
 				}
-				if (group.alternativeConsumables?.some(alt => user.owns(alt.itemCost))) {
+				if (
+					!group.alternativeConsumables?.some(alt =>
+						user.owns(consumablesCost.itemCost.filter(i => alt.itemCost.has(i)))
+					)
+				) {
 					continue;
 				}
-				messages.push(
-					`This monster requires: ${group.itemCost.items().map(i => i[0].name)}${
-						group.alternativeConsumables
-							? `, ${formatList(
-									group.alternativeConsumables
-										?.map(alt => alt.itemCost.items().map(i => i[0].name))
-										.flat(100),
-									'or'
-								)}`
-							: '.'
-					}`
-				);
+				messages.push(`This monster requires (per kill) ${formatItemCosts(group, timeToFinish)}.`);
 			}
 			return [false, `You don't have the items needed to kill this monster. ${messages.join(' ')}`];
 		}
