@@ -68,7 +68,7 @@ export async function abstractedOpenUntilCommand(
 	const loot = new Bank();
 	let amountOpened = 0;
 	let targetCount = 0;
-	const max = Math.min(5000, amountOfThisOpenableOwned);
+	const max = Math.min(10000, amountOfThisOpenableOwned);
 
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
