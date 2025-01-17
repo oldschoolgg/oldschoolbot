@@ -82,7 +82,6 @@ export const openCommand: OSBMahojiCommand = {
 		}
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(
-				interaction,
 				user.id,
 				options.name,
 				options.open_until,

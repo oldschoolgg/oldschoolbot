@@ -25,7 +25,6 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 	});
 
 export async function abstractedOpenUntilCommand(
-	interaction: ChatInputCommandInteraction,
 	userID: string,
 	name: string,
 	openUntilItem: string,
