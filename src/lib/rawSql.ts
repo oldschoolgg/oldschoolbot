@@ -1,23 +1,25 @@
-import { Prisma } from '@prisma/client';
-import { logError } from './util/logError';
+import { Prisma } from "@prisma/client";
+import { logError } from "./util/logError";
 
 const u = Prisma.UserScalarFieldEnum;
 
 export const RawSQL = {
-    updateAllUsersCLArrays: () => `UPDATE users
+	updateAllUsersCLArrays: () => `UPDATE users
     SET ${u.cl_array} = (
         SELECT ARRAY(SELECT jsonb_object_keys("${u.collectionLogBank}")::int)
     )
     WHERE last_command_date > now() - INTERVAL '1 week';`,
 
-    updateCLArray: (userID: string) => `UPDATE users
+	updateCLArray: (userID: string) => `UPDATE users
     SET ${u.cl_array} = (
         SELECT ARRAY(SELECT jsonb_object_keys("${u.collectionLogBank}")::int)
     )
-    WHERE ${u.id} = '${userID}';`
+    WHERE ${u.id} = '${userID}';`,
 };
 
-export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> {
+export async function loggedRawPrismaQuery<T>(
+	query: string,
+): Promise<T | null> {
 	try {
 		const result = await prisma.$queryRawUnsafe<T>(query);
 		return result;
@@ -31,7 +33,8 @@ export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> 
 export const SQL = {
 	SELECT_FULL_NAME:
 		"TRIM(COALESCE(string_agg(b.text, ' '), '') || ' ' || COALESCE(username, 'Unknown')) AS full_name",
-	LEFT_JOIN_BADGES: 'LEFT JOIN badges b ON b.id = ANY(u.badges)',
-	GROUP_BY_U_ID: 'GROUP BY u.id',
-	WHERE_IRON: (ironOnly: boolean) => (ironOnly ? '"minion.ironman" = true' : '')
+	LEFT_JOIN_BADGES: "LEFT JOIN badges b ON b.id = ANY(u.badges)",
+	GROUP_BY_U_ID: "GROUP BY u.id",
+	WHERE_IRON: (ironOnly: boolean) =>
+		ironOnly ? '"minion.ironman" = true' : "",
 } as const;
