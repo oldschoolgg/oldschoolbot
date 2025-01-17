@@ -28,43 +28,56 @@ export async function abstractedOpenUntilCommand(
 	interaction: ChatInputCommandInteraction,
 	userID: string,
 	name: string,
-	openUntilItem: string
+	openUntilItem: string,
+	result_quantity?: number
 ) {
+	let quantity = 1;
+
+	if (result_quantity) {
+		quantity = result_quantity;
+	}
+
+	if (quantity < 1 || !Number.isInteger(quantity)) {
+		return 'The quantity must be a positive integer.';
+	}
+
 	const user = await mUserFetch(userID);
 	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
+
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
+
 	const openable = allOpenables.find(i => i.openedItem === openableItem.openedItem);
 	if (!openable) return "That's not a valid item.";
+
 	const openUntil = getItem(openUntilItem);
 	if (!openUntil) {
 		return `That's not a valid item to open until, you can only do it with items that you can get from ${openable.openedItem.name}.`;
 	}
+
 	if (!openable.allItems.includes(openUntil.id)) {
 		return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
 	}
 
 	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
-	if (openUntil.name.includes('Clue') && user.owns(openUntil.id)) {
-		await handleMahojiConfirmation(
-			interaction,
-			`You're trying to open until you receive a ${openUntil.name}, but you already have one, and couldn't receive a second, are you sure you want to do this?`
-		);
-	}
 
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	const max = Math.min(100, amountOfThisOpenableOwned);
+	let targetCount = 0;
+	const max = Math.min(5000, amountOfThisOpenableOwned);
+
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
 		loot.add(thisLoot.bank);
 		amountOpened++;
-		if (loot.has(openUntil.id)) break;
+
+		targetCount = loot.amount(openUntil.id);
+		if (targetCount >= quantity) break;
 	}
 
 	return finalizeOpening({
@@ -73,9 +86,9 @@ export async function abstractedOpenUntilCommand(
 		loot,
 		messages: [
 			`You opened ${amountOpened}x ${openable.openedItem.name}, ${
-				loot.has(openUntil.id)
-					? `until you got a ${openUntil.name}!`
-					: `but you didn't get a ${openUntil.name}!`
+				targetCount >= quantity
+					? `until you got ${quantity}x ${openUntil.name}!`
+					: `but you didn't get ${quantity}x ${openUntil.name}!`
 			}`
 		],
 		openables: [openable],
