@@ -20,8 +20,7 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
    - Once downloaded select and install `Workloads > Desktop development with C++`.
 4. Install [Postgres 16](https://www.postgresql.org/download/) and **pgAdmin 4** for interacting with postgres (optional, but helpful).
    - Remember the **Port Number** and **Password**. Both are used later in **Configuration**.
-5. Install Yarn using: `npm i -g yarn`
-6. Clone the repo: `git clone https://github.com/oldschoolgg/oldschoolbot.git`
+5. Clone the repo: `git clone https://github.com/oldschoolgg/oldschoolbot.git`
 
 ### Configuration
 
@@ -39,13 +38,23 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 
 1. Run the following commands in the root of the repo:
    - `corepack enable`
-   - `yarn`
+   - `pnpm i`
    - `npx prisma db push`
    - `npx prisma db push --schema ./prisma/robochimp.prisma`
 
-### Running the bot
+### Commands
 
-1. Run `yarn start` or `yarn watch`.
+`pnpm dev`: Run this before pushing/PRing, or just at any time if you want, it does almost everything you need: Update deps, generate prisma clients, build, update files, lint and test.
+
+`pnpm start`: Starts/runs your bot, and restarts it when you make changes.
+
+`pnpm lint`: Run this if you only want to lint your code, and nothing else (pnpm dev runs this).
+
+`pnpm test`: Run this if you only want to test your code, and nothing else (pnpm dev runs this).
+
+`pnpm monorepo:build`: Run this if you have made changes to either monorepo (oldschooljs or toolkit) to update the dependency in the bot.
+
+`pnpm monorepo:test`: Run this if you want to either monorepo (oldschooljs or toolkit).
 
 #### VSCode settings (Optional)
 
@@ -67,11 +76,11 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 
 # Troubleshooting
 
-- Check your NodeJS/NPM/Yarn/Postgres versions.
+- Check your NodeJS/NPM/Pnpm/Postgres versions.
 - Uninstall prettier/eslint vscode plugins.
 - Delete these folders: node_modules, dist.
 - Your IDE may need to be ran with admin privileges.
-- "yarn.psl cannot be loaded because running scripts is disabled on this sytem"
+- "pnpm.psl cannot be loaded because running scripts is disabled on this sytem"
   - run this command in a terminal: `Set-ExecutionPolicy Unrestricted`
 - If either of the `npx prisma` commands fail in **Finalizing Setup** you may need to manually create 2 databases called "osb_test" and "robochimp_test".
 - Restarting your PC after **Environment** steps may be needed.
