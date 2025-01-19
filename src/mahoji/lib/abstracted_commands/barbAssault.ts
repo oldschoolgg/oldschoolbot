@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { Events } from '../../../lib/constants';
+import pets from '../../../lib/data/pets';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
@@ -202,7 +203,10 @@ export async function barbAssaultGambleCommand(
 		}
 	);
 	const loot = new Bank().add(table.roll(quantity));
-	if (loot.has('Pet penance queen')) {
+	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
+	if (loot.has('Pet Penance Queen')) {
+		str += `\n${pets.find(p => p.name === 'Pet Penance Queen')!.emoji} **You have a funny feeling you're being followed...**`;
+
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 
 		globalClient.emit(
@@ -220,7 +224,7 @@ export async function barbAssaultGambleCommand(
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	const response: Awaited<CommandResponse> = {
-		content: `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
+		content: str,
 		files: [
 			(
 				await makeBankImage({

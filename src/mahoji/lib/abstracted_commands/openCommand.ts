@@ -6,6 +6,8 @@ import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { BitField } from '../../../lib/constants';
+import { allPetsCL } from '../../../lib/data/CollectionsExport';
+import pets from '../../../lib/data/pets';
 import type { UnifiedOpenable } from '../../../lib/openables';
 import { allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { makeComponents } from '../../../lib/util';
@@ -143,6 +145,10 @@ ${messages.join(', ')}`.trim(),
 
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
+	}
+	if (allPetsCL.some(p => loot?.has(p))) {
+		const emoji = pets.find(p => loot?.has(p.name))?.emoji;
+		response.content += `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling you're being followed...**`;
 	}
 	return response;
 }
