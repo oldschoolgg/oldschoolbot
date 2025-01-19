@@ -193,7 +193,6 @@ export const hunterTask: MinionTask = {
 		}
 
 		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
-			str += "\n\n**You have a funny feeling like you're being followed....**";
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a ${

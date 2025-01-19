@@ -102,7 +102,6 @@ export const motherlodeMiningTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, motherlode.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
-			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining at the ${Mining.MotherlodeMine.name} at level ${currentLevel} Mining!`

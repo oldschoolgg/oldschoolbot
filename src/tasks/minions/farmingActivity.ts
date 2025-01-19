@@ -372,9 +372,6 @@ export const farmingTask: MinionTask = {
 			}
 
 			if (loot.has('Tangleroot')) {
-				infoStr.push('\n```diff');
-				infoStr.push("\n- You have a funny feeling you're being followed...");
-				infoStr.push('```');
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`

@@ -13,6 +13,8 @@ import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, MAX_CLUES_DROPPED, PerkTier } from '../constants';
+import { allPetsCL } from '../data/CollectionsExport';
+import pets from '../data/pets';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
@@ -161,6 +163,11 @@ export async function handleTripFinish(
 		clueReceived.map(
 			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
 		);
+	}
+
+	if (allPetsCL.some(p => loot?.has(p))) {
+		const emoji = pets.find(p => loot?.has(p.name))?.emoji;
+		message.content += `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling you're being followed...**`;
 	}
 
 	if (sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID))) >= MAX_CLUES_DROPPED) {
