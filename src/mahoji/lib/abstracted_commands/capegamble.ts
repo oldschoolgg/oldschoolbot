@@ -3,11 +3,11 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
-import pets from '../../../lib/data/pets';
 import { roll } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { petMessage } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../mahojiSettings';
 
 export async function capeGambleStatsCommand(user: MUser) {
@@ -110,8 +110,7 @@ export async function capeGambleCommand(
 	await user.transactItems({ itemsToAdd: loot, itemsToRemove: new Bank().add(item.id), collectionLog: true });
 	let str = '';
 	if (gotPet) {
-		const emoji = pets.find(p => loot?.has(p.name))?.emoji;
-		str += `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling you're being followed...**`;
+		str += petMessage(loot);
 		globalClient.emit(
 			Events.ServerNotification,
 			`**${user.badgedUsername}'s** just received their ${formatOrdinal(

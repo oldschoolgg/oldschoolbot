@@ -106,6 +106,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 	}
 ];
 
+export function petMessage(loot: Bank | null | undefined) {
+	const emoji = pets.find(p => loot?.has(p.name))?.emoji;
+	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling you're being followed...**`;
+}
+
 export async function handleTripFinish(
 	user: MUser,
 	channelID: string,
@@ -166,8 +171,7 @@ export async function handleTripFinish(
 	}
 
 	if (allPetsCL.some(p => loot?.has(p))) {
-		const emoji = pets.find(p => loot?.has(p.name))?.emoji;
-		message.content += `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling you're being followed...**`;
+		message.content += petMessage(loot);
 	}
 
 	if (sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID))) >= MAX_CLUES_DROPPED) {

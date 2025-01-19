@@ -6,7 +6,6 @@ import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { Events } from '../../../lib/constants';
-import pets from '../../../lib/data/pets';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
@@ -18,6 +17,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { petMessage } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahojiSettings';
 
@@ -205,8 +205,7 @@ export async function barbAssaultGambleCommand(
 	const loot = new Bank().add(table.roll(quantity));
 	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
 	if (loot.has('Pet Penance Queen')) {
-		str += `\n${pets.find(p => p.name === 'Pet Penance Queen')!.emoji} **You have a funny feeling you're being followed...**`;
-
+		str += petMessage(loot);
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 
 		globalClient.emit(
