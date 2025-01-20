@@ -108,7 +108,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 
 export function petMessage(loot: Bank | null | undefined) {
 	const emoji = pets.find(p => loot?.has(p.name))?.emoji;
-	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling you're being followed...**`;
+	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling like you're being followed...**`;
 }
 
 export async function handleTripFinish(
