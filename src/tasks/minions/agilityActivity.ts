@@ -142,7 +142,7 @@ export const agilityTask: MinionTask = {
 			updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
-		let str = `${user}, ${user.minionName} finished ${quantity} ${
+		const str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
 		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
 			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
@@ -156,7 +156,6 @@ export const agilityTask: MinionTask = {
 		);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
-			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`

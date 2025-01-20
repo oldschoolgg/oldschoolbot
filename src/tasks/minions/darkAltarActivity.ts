@@ -73,7 +73,6 @@ export const darkAltarTask: MinionTask = {
 		}
 
 		if (loot.amount('Rift guardian') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
