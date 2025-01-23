@@ -1,5 +1,4 @@
-import type { TextChannel } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
 import { TimerManager } from '@sapphire/timer-manager';
@@ -7,40 +6,19 @@ import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { runTameTask } from '../tasks/tames/tameTasks';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
-import { BitField, Channel, PeakTier, globalConfig } from './constants';
+import { BitField, PeakTier, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
 import { populateRoboChimpCache } from './perkTier';
 import { runCommand } from './settings/settings';
-import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { MTame } from './structures/MTame';
-import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
+import { awaitMessageComponentInteraction, makeComponents, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
-
-let lastMessageID: string | null = null;
-const supportEmbed = new EmbedBuilder()
-	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-	.addFields({
-		name: '📖 Read the FAQ',
-		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/getting-started/faq/ - also make sure to read the other pages of the website, which might contain the information you need.'
-	})
-	.addFields({
-		name: '🔎 Search',
-		value: 'Search this channel first, you might find your question has already been asked and answered.'
-	})
-	.addFields({
-		name: '💬 Ask',
-		value: "If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
-	})
-	.addFields({
-		name: '⚠️ Dont ping anyone',
-		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
-	});
 
 export interface Peak {
 	startTime: number;
@@ -300,31 +278,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 					}
 				}
 			}
-		}
-	},
-	{
-		name: 'support_channel_messages',
-		timer: null,
-		startupWait: Time.Second * 22,
-		interval: Time.Minute * 20,
-		cb: async () => {
-			if (!globalConfig.isProduction) return;
-			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.HelpAndSupport) as TextChannel | undefined;
-			if (!channel) return;
-			const messages = await channel.messages.fetch({ limit: 5 });
-			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
-			if (lastMessageID) {
-				const message = await channel.messages.fetch(lastMessageID).catch(noOp);
-				if (message) {
-					await message.delete();
-				}
-			}
-			const res = await channel.send({
-				embeds: [supportEmbed],
-				components: [new ActionRowBuilder<ButtonBuilder>().addComponents(informationalButtons)]
-			});
-			lastMessageID = res.id;
 		}
 	},
 	{
