@@ -54,7 +54,7 @@ const BSOChannelConfig: ChannelConfig = {
 	GrandExchange: '738780181946171493',
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '970752140324790384',
-	BotLogs: '792691343284764693',
+	BotLogs: '1051725977320964197',
 	GeneralChannel: GENERAL_CHANNEL_ID
 };
 
