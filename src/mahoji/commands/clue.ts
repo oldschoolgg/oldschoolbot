@@ -363,6 +363,7 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		const maxCanDo = Math.floor(maxTripLength / timePerClue);
+
 		quantity = quantity ?? maxCanDo;
 
 		const response: Awaited<CommandResponse> = {};
@@ -372,11 +373,13 @@ export const clueCommand: OSBMahojiCommand = {
 		const bankedClues = user.bank.amount(clueTier.scrollID);
 
 		let cluesDone = 0;
-		if (!clueImpling || bankedClues > 0) {
-			const cost = new Bank().add(clueTier.scrollID, bankedClues);
+		if (!clueImpling || quantity > 1) {
+			quantity = Math.min(quantity, bankedClues) || 1;
+
+			const cost = new Bank().add(clueTier.scrollID, quantity);
 			if (!user.owns(cost)) return `You don't own ${cost}.`;
-			await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, bankedClues));
-			cluesDone = bankedClues;
+			await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
+			cluesDone = quantity;
 		} else {
 			const implingJarOpenable = allOpenables.find(o => o.aliases.some(a => stringMatches(a, clueImpling.name)));
 			// If this triggers, it means OSJS probably broke / is missing an alias for an impling jar:
