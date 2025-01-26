@@ -5,7 +5,7 @@ import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } fr
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
-import { Bank, type Item, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, EItem, type Item, resolveItems, toKMB } from 'oldschooljs';
 
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { BOT_TYPE, BitField, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
@@ -79,10 +79,10 @@ export interface IBgSprite {
 
 // use correct IDs when generarting DT2 rings
 export const manualSpriteIDs = [
-	[25_485, 28_307],
-	[25_486, 28_313],
-	[25_487, 28_310],
-	[25_488, 28_316]
+	[EItem.ULTOR_RING, 28_307],
+	[EItem.MAGUS_RING, 28_313],
+	[EItem.VENATOR_RING, 28_310],
+	[EItem.BELLATOR_RING, 28_316]
 ];
 
 const i = itemID;
