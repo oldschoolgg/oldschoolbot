@@ -18,11 +18,11 @@ Contributors are allowed to merge PRs/changes to the wiki without approval.
 
 ## Running the wiki locally
 
-1. Clone the repo
+1. Install the bot - see [setup guide](https://github.com/oldschoolgg/oldschoolbot/blob/master/SETUP.md)
 2. `cd docs`
-3. `yarn dev`
+3. `pnpm dev`
 
-For running the scripts which build data in certain pages, do `yarn wiki` at the root.
+For running the scripts which build data in certain pages, do `pnpm wiki` at the root. You can preview .md files in VSCode with `Ctrl-Shift-V`.
 
 ## Auto generation
 
@@ -115,7 +115,7 @@ To upload an image to the wiki, follow these steps:
 
 1. Check the filesize of the image, _if_ its something like over 100kb in size, upload the image to <https://squoosh.app/>, select the "WebP" image format, max effort, and quality of 90. You can pick other formats/options and make sure the quality is good. If the dimensions of the image are very large, it may be worth resizing it in squoosh too). The only purpose is to compress it to a smaller size to be faster to load on the wiki page.
 
-2. Put the image in the `/docs/public` folder.
+2. Put the image in the `/docs/public/images` folder.
 
 3. You can now use the image anywhere in the wiki, for example if you uploaded `monkey.jpg`:
 

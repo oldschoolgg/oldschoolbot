@@ -65,7 +65,6 @@ export function determineMiningResult({
 		const { petDropRate } = skillingPetDropRate(gearBank, SkillsEnum.Mining, ore.petChance);
 		if (roll(petDropRate / quantity)) {
 			updateBank.itemLootBank.add('Rock golem');
-			messages.push("You have a funny feeling you're being followed...");
 		}
 	}
 

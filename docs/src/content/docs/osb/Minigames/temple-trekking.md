@@ -54,4 +54,4 @@ To buy rewards with your tokens, use `/minigames temple_trek buy`
 
 - E.g. `/minigames temple_trek buy reward:Experience difficulty:Hard`
 
-Rewards are same as in game. The treks themselves drop nails from nail beasts and remains from shades, as well as [Lumberjack outfit](https://wiki.oldschool.gg/skills/woodcutting#lumberjack-outfit). It's possible to get dupes of lumberjack after you get the full set.
+Rewards are same as in game. The treks themselves drop nails from nail beasts and remains from shades, as well as [Lumberjack outfit](https://wiki.oldschool.gg/osb/skills/woodcutting/readme/#lumberjack-outfit). It's possible to get dupes of lumberjack after you get the full set.

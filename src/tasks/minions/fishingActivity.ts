@@ -200,7 +200,6 @@ export const fishingTask: MinionTask = {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(petDropRate)) {
 					loot.add('Heron');
-					str += "\nYou have a funny feeling you're being followed...";
 					globalClient.emit(
 						Events.ServerNotification,
 						`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`

@@ -130,7 +130,6 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		if (loot.amount('Rocky') > 0) {
-			str += "\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
