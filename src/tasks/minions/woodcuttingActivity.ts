@@ -323,7 +323,6 @@ export const woodcuttingTask: MinionTask = {
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
 			if (roll(petDropRate / quantity)) {
 				loot.add('Beaver');
-				str += "\n**You have a funny feeling you're being followed...**";
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
