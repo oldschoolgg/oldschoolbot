@@ -188,7 +188,7 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	}
 
 	if (consumables.length > 1) {
-		return `(${formatList(str, 'or')})`;
+		return `${formatList(str, 'or')}`;
 	}
 
 	return str.join('');
