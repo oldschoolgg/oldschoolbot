@@ -28,7 +28,8 @@ export async function myNotesCommand(user: MUser, channelID: string) {
 		channelID: channelID.toString(),
 		duration,
 		type: 'MyNotes',
-		quantity
+		quantity,
+		itemCost: foodRemoved
 	});
 
 	return `${

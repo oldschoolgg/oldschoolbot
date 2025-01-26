@@ -26,7 +26,8 @@ export async function championsChallengeCommand(user: MUser, channelID: string) 
 		quantity: 1,
 		duration: randomVariation(Time.Minute * 20, 5),
 		type: 'ChampionsChallenge',
-		minigameID: 'champions_challenge'
+		minigameID: 'champions_challenge',
+		itemCost: cost
 	});
 
 	return `${user.minionName} is now doing the Champion's Challenge! Removed 1x of every Champion scroll from your bank.`;

@@ -10,6 +10,7 @@ import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import type { KillableMonster } from '../../../lib/minions/types';
+import { ChargeBank } from '../../../lib/structures/Bank';
 import { Gear } from '../../../lib/structures/Gear';
 import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
@@ -267,19 +268,25 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	}
 
 	// Only remove charges for phosani since these items only boost phosani
+	const chargeCost = new ChargeBank();
+	let chargeStr = '';
 	if (isPhosani) {
 		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
-			await degradeItem({
+			const { chargesToDegrade } = await degradeItem({
 				item: getOSItem("Tumeken's shadow"),
 				chargesToDegrade: shadowChargesPerKc * quantity,
 				user
 			});
+			chargeCost.add('tum_shadow_charges', chargesToDegrade);
+			chargeStr += ` Your minion is using ${chargesToDegrade} Tumeken's shadow charges. `;
 		} else if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
-			await degradeItem({
+			const { chargesToDegrade } = await degradeItem({
 				item: getOSItem('Sanguinesti staff'),
 				chargesToDegrade: sangChargesPerKc * quantity,
 				user
 			});
+			chargeCost.add('sang_charges', chargesToDegrade);
+			chargeStr += ` Your minion is using ${chargesToDegrade} Sanguinesti staff charges. `;
 		}
 	}
 
@@ -304,7 +311,9 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		duration,
 		type: 'Nightmare',
 		isPhosani,
-		method: type
+		method: type,
+		itemCost: isPhosani ? totalCost : undefined,
+		chargeCost: chargeCost
 	});
 
 	let str =
@@ -319,15 +328,7 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 					NightmareMonster.timeToFinish
 				)} - the total trip will take ${formatDuration(duration)}.`;
 
-	str += `\nRemoved ${soloFoodUsage} from your bank.${
-		isPhosani
-			? hasShadow
-				? ` Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. `
-				: hasSang
-					? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
-					: ''
-			: ''
-	}`;
+	str += `\nRemoved ${soloFoodUsage} from your bank.${chargeStr}`;
 
 	return str;
 }
