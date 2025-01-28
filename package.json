@@ -47,7 +47,7 @@
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sapphire/timer-manager": "^1.0.2",
-		"@sentry/node": "^8.34.0",
+		"@sentry/node": "^8.49.0",
 		"ascii-table3": "^0.9.0",
 		"bufferutil": "^4.0.8",
 		"discord.js": "^14.16.3",
