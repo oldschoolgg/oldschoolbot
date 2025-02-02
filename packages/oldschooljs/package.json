@@ -25,7 +25,7 @@
 	"scripts": {
 		"test": "concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
 		"test:unit": "vitest run --coverage",
-		"generate": "tsx scripts/prepare",
+		"prepare": "tsx scripts/prepare",
 		"dev": "pnpm generate && pnpm build && pnpm test",
 		"build:esbuild": "node esbuild.cjs",
 		"build:types": "tsc -p src"
