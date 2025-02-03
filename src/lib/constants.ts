@@ -320,7 +320,8 @@ export enum BitField {
 	HasUnlockedVenatrix = 229,
 	GrewFiveSpiritTrees = 230,
 	UseSuperRestoresForDwarvenBlessing = 231,
-	DisableSizeMatters = 232
+	DisableSizeMatters = 232,
+	DisabledTameImplingOpening = 233
 }
 
 interface BitFieldData {
@@ -514,6 +515,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisabledTameClueOpening]: {
 		name: 'Disable Eagle Tame Opening Caskets',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledTameImplingOpening]: {
+		name: 'Disable Tame from Opening Impling Jars',
 		protected: false,
 		userConfigurable: true
 	},

@@ -1,7 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
-import { xp_gains_skill_enum } from '@prisma/client';
+import { tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, noOp } from 'e';
@@ -29,6 +29,7 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { Gear } from '../../lib/structures/Gear';
+import { TameSpeciesID, tameFeedableItems } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
@@ -43,6 +44,7 @@ import { BingoManager } from '../lib/bingo/BingoManager';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
+import { tameEquippables } from './tames';
 
 export async function giveMaxStats(user: MUser) {
 	const updates: Prisma.UserUpdateArgs['data'] = {};
@@ -767,6 +769,70 @@ ${droprates.join('\n')}`),
 							}
 						}
 					});
+					// Tames without items
+					await Promise.all(
+						Object.entries(TameSpeciesID)
+							.filter(([, value]) => typeof value === 'number')
+							.flatMap(([speciesName, speciesID]) =>
+								(Object.keys(tame_growth) as Array<keyof typeof tame_growth>).map(async stageKey => {
+									const stage = tame_growth[stageKey];
+									const prefix = stageKey;
+									const nickname = `${prefix}_${speciesName.toLowerCase()}`;
+
+									await prisma.tame.create({
+										data: {
+											user_id: user.id,
+											species_id: speciesID as number,
+											max_artisan_level: 100,
+											max_combat_level: 100,
+											max_gatherer_level: 100,
+											max_support_level: 100,
+											growth_stage: stage,
+											nickname
+										}
+									});
+								})
+							)
+					);
+					// Tames with max items/gear
+					await Promise.all(
+						Object.entries(TameSpeciesID)
+							.filter(([, value]) => typeof value === 'number')
+							.map(async ([speciesName, speciesID]) => {
+								const nickname = `Max_adult_${speciesName.toLowerCase()}`;
+								const feedItems = tameFeedableItems
+									.filter(feedItem =>
+										feedItem.tameSpeciesCanBeFedThis.includes(speciesID as TameSpeciesID)
+									)
+									.reduce(
+										(acc, feedItem) => {
+											acc[feedItem.item.id] = 1;
+											return acc;
+										},
+										{} as Record<number, number>
+									);
+
+								await prisma.tame.create({
+									data: {
+										user_id: user.id,
+										species_id: speciesID as number,
+										max_artisan_level: 100,
+										max_combat_level: 100,
+										max_gatherer_level: 100,
+										max_support_level: 100,
+										growth_stage: tame_growth.adult,
+										nickname,
+										fed_items: feedItems
+									}
+								});
+							})
+					);
+					// Add all tame gear to users bank
+					for (const tameGear of tameEquippables) {
+						await user.addItemsToBank({
+							items: new Bank().add(tameGear.item, 1)
+						});
+					}
 					await user.addItemsToBank({
 						items: new Bank()
 							.add('Rune pouch')
@@ -818,7 +884,7 @@ ${droprates.join('\n')}`),
 						finished_quest_ids: quests.map(q => q.id)
 					});
 					await giveMaxStats(user);
-					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
+					return 'Fully maxed your account, stocked your bank, charged all chargeable items, spawned tames & gear.';
 				}
 				if (options.gear) {
 					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
