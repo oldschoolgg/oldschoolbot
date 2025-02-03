@@ -407,7 +407,7 @@ describe('PVM', async () => {
 
 		// Without scythe
 		await user.giveSlayerTask(EMonster.ARAXYTE, 500);
-		await user.equip('melee', [EItem.INQUISITORS_MACE]);
+		await user.equip('melee', [EItem.ABYSSAL_BLUDGEON]);
 		const res2 = await user.kill(EMonster.ARAXXOR);
 		expect(res2.commandResult).toContain('is now killing');
 		expect(res2.commandResult).not.toContain('Scythe of vitur');
