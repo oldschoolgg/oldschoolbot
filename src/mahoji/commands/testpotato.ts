@@ -769,7 +769,7 @@ ${droprates.join('\n')}`),
 							}
 						}
 					});
-					// Tames without items
+					// Tames at each growth stage without items
 					await Promise.all(
 						Object.entries(TameSpeciesID)
 							.filter(([, value]) => typeof value === 'number')
@@ -794,7 +794,7 @@ ${droprates.join('\n')}`),
 								})
 							)
 					);
-					// Tames with max items/gear
+					// Max tames with max items
 					await Promise.all(
 						Object.entries(TameSpeciesID)
 							.filter(([, value]) => typeof value === 'number')
