@@ -27,7 +27,6 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 
 	let strForestry = '';
 	const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const chanceWcLevel = Math.min(userWcLevel, 99);
 	const eggChance = 900;
 	const whistleChance = 30;
 
