@@ -28,10 +28,10 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 	let strForestry = '';
 	const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	const chanceWcLevel = Math.min(userWcLevel, 99);
-	const eggChance = Math.ceil(2700 - ((chanceWcLevel - 1) * (2700 - 1350)) / 98);
-	const whistleChance = Math.ceil(90 - ((chanceWcLevel - 1) * (90 - 45)) / 98);
+	const eggChance = 900;
+	const whistleChance = 30;
 
-	perTimeUnitChance(duration, 10, Time.Minute, async () => {
+	perTimeUnitChance(duration, 8, Time.Minute, async () => {
 		const eventIndex = randInt(0, ForestryEvents.length - 1);
 		const event = ForestryEvents[eventIndex];
 		let eventRounds = 0;
@@ -99,7 +99,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				break;
 			case 8: // Enchantment Ritual
 				eventInteraction = randInt(6, 8); // ritual circles
-				if (roll(50)) {
+				if (roll(30)) {
 					loot.add('Petal garland');
 				}
 				eventCounts[event.id]++;
