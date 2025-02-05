@@ -27,8 +27,6 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 
 	let strForestry = '';
 	const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const eggChance = 900;
-	const whistleChance = 30;
 
 	perTimeUnitChance(duration, 8, Time.Minute, async () => {
 		const eventIndex = randInt(0, ForestryEvents.length - 1);
@@ -89,7 +87,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				break;
 			case 7: // Poachers
 				eventInteraction = randInt(12, 15); // traps disarmed
-				if (roll(whistleChance)) {
+				if (roll(30)) {
 					loot.add('Fox whistle');
 				}
 				eventCounts[event.id]++;
@@ -110,7 +108,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 					if (percentChance(50)) {
 						loot.add('Pheasant tail feathers');
 					}
-					if (roll(eggChance)) {
+					if (roll(900)) {
 						loot.add('Golden pheasant egg');
 					}
 				}
