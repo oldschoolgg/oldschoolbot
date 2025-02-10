@@ -47,7 +47,7 @@
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sapphire/timer-manager": "^1.0.2",
-		"@sentry/node": "^8.34.0",
+		"@sentry/node": "^8.49.0",
 		"ascii-table3": "^0.9.0",
 		"bufferutil": "^4.0.8",
 		"discord.js": "^14.16.3",
@@ -94,5 +94,5 @@
 	"resolutions": {
 		"esbuild": "0.24.0"
 	},
-	"packageManager": "pnpm@9.14.2"
+	"packageManager": "pnpm@9.14.2+sha512.6e2baf77d06b9362294152c851c4f278ede37ab1eba3a55fda317a4a17b209f4dbb973fb250a77abc463a341fcb1f17f17cfa24091c4eb319cda0d9b84278387"
 }
