@@ -406,20 +406,20 @@ describe('PVM', async () => {
 		});
 
 		// Without scythe
+		await user.giveSlayerTask(EMonster.ARAXYTE, 500);
+		await user.equip('melee', [EItem.ABYSSAL_BLUDGEON]);
+		const res2 = await user.kill(EMonster.ARAXXOR);
+		expect(res2.commandResult).toContain('is now killing');
+		expect(res2.commandResult).not.toContain('Scythe of vitur');
+		const perHourWithoutScythe = calcPerHour(res2.activityResult!.q, res2.activityResult!.duration);
+
+		// With scythe
 		await user.equip('melee', [EItem.SCYTHE_OF_VITUR]);
 		await user.giveSlayerTask(EMonster.ARAXYTE, 500);
 		const res = await user.kill(EMonster.ARAXXOR);
 		expect(res.commandResult).toContain('is now killing');
 		expect(res.commandResult).toContain('25% for Scythe of vitur');
 		const perHourWithScythe = calcPerHour(res.activityResult!.q, res.activityResult!.duration);
-
-		// With scythe
-		await user.giveSlayerTask(EMonster.ARAXYTE, 500);
-		await user.equip('melee', [EItem.INQUISITORS_MACE]);
-		const res2 = await user.kill(EMonster.ARAXXOR);
-		expect(res2.commandResult).toContain('is now killing');
-		expect(res2.commandResult).not.toContain('Scythe of vitur');
-		const perHourWithoutScythe = calcPerHour(res2.activityResult!.q, res2.activityResult!.duration);
 
 		expect(perHourWithScythe).toBeGreaterThan(perHourWithoutScythe);
 		expect(user.user.scythe_of_vitur_charges).toBeLessThan(100_000);
