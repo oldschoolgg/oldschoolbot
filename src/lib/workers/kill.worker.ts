@@ -81,10 +81,10 @@ export default async ({
 		const loot = handleNexKills({
 			quantity,
 			team: [
-				{ id: '1', contribution: 100, deaths: [] },
-				{ id: '2', contribution: 100, deaths: [] },
-				{ id: '3', contribution: 100, deaths: [] },
-				{ id: '4', contribution: 100, deaths: [] }
+				{ id: '1', teamID: 1, contribution: 100, deaths: [] },
+				{ id: '2', teamID: 2, contribution: 100, deaths: [] },
+				{ id: '3', teamID: 3, contribution: 100, deaths: [] },
+				{ id: '4', teamID: 4, contribution: 100, deaths: [] }
 			]
 		});
 		return {

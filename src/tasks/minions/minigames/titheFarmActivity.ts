@@ -98,9 +98,6 @@ export const titheFarmTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, 7_494_389);
 		if (roll(petDropRate / determineHarvest)) {
 			loot.add('Tangleroot');
-			lootStr.push('\n\n```diff');
-			lootStr.push("\n- You have a funny feeling you're being followed...");
-			lootStr.push('```');
 			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${

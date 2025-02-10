@@ -102,7 +102,6 @@ export const camdozaalMiningTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, camdozaalMine.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
-			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining in Camdozaal at level ${currentLevel} Mining!`

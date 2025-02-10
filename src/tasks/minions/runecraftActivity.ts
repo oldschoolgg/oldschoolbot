@@ -12,7 +12,7 @@ import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
 		const user = await mUserFetch(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -52,13 +52,19 @@ export const runecraftTask: MinionTask = {
 			runeQuantity += bonusBlood;
 		}
 
+		let extractBonus = 0;
+		if (useExtracts) {
+			const f2pRunes = new Set(['Air rune', 'Mind rune', 'Water rune', 'Earth rune', 'Fire rune', 'Body rune']);
+			extractBonus = f2pRunes.has(rune.name) ? 250 * essenceQuantity : 60 * essenceQuantity;
+			runeQuantity += extractBonus;
+		}
+
 		const loot = new Bank({
 			[rune.id]: runeQuantity
 		});
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_795_758);
 		if (roll(petDropRate / essenceQuantity)) {
 			loot.add('Rift guardian');
-			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Runecraft} **${user.badgedUsername}'s** minion, ${
@@ -76,11 +82,15 @@ export const runecraftTask: MinionTask = {
 		str += `\n\nYou received: ${loot}.`;
 
 		if (bonusQuantity > 0) {
-			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
+			str += ` **\nRaiments of the eye bonus:** ${bonusQuantity.toLocaleString()}`;
 		}
 
 		if (bonusBlood > 0) {
-			str += ` **Blood essence Quantity:** ${bonusBlood.toLocaleString()}`;
+			str += ` **\nBlood essence bonus:** ${bonusBlood.toLocaleString()}`;
+		}
+
+		if (useExtracts) {
+			str += ` **\nExtract bonus:** ${extractBonus!.toLocaleString()}`;
 		}
 
 		await transactItems({

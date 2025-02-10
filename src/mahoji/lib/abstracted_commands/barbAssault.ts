@@ -17,6 +17,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { petMessage } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahojiSettings';
 
@@ -202,7 +203,9 @@ export async function barbAssaultGambleCommand(
 		}
 	);
 	const loot = new Bank().add(table.roll(quantity));
-	if (loot.has('Pet penance queen')) {
+	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
+	if (loot.has('Pet Penance Queen')) {
+		str += petMessage(loot);
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 
 		globalClient.emit(
@@ -220,7 +223,7 @@ export async function barbAssaultGambleCommand(
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	const response: Awaited<CommandResponse> = {
-		content: `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
+		content: str,
 		files: [
 			(
 				await makeBankImage({
