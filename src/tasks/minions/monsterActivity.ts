@@ -2,10 +2,10 @@ import { Time, deepClone, percentChance } from 'e';
 import type { MonsterKillOptions } from 'oldschooljs';
 import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
-import { type BitField, Emoji } from '../../lib/constants';
+import { ARAXXOR_DEAD_ID, type BitField, Emoji } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
-import { CombatOptionsArray, type CombatOptionsEnum, modifyTable } from '../../lib/minions/data/combatConstants';
+import { CombatOptionsArray, CombatOptionsEnum, modifyTable } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -167,7 +167,9 @@ export function doMonsterTrip(data: newOptions) {
 		bitfield,
 		combatOptions
 	} = data;
-	const currentKC = kcBank.amount(monster.id);
+	const currentKC =
+		kcBank.amount(monster.id) + (monster.name === 'Araxxor' ? kcBank.amount(ARAXXOR_DEAD_ID as EMonster) : 0);
+
 	const updateBank = new UpdateBank();
 
 	const isRevenantMonster = monster.name.includes('Revenant');
@@ -425,8 +427,15 @@ export function doMonsterTrip(data: newOptions) {
 		}
 	}
 
-	if (!wiped) updateBank.kcBank.add(monster.id, quantity);
-	const newKC = kcBank.amount(monster.id) + quantity;
+	if (!wiped) {
+		if (monster.id === Monsters.Araxxor.id && combatOptions?.includes(CombatOptionsEnum.AraxxorDestroy)) {
+			updateBank.kcBank.add(ARAXXOR_DEAD_ID as EMonster, quantity);
+		} else {
+			updateBank.kcBank.add(monster.id, quantity);
+		}
+	}
+
+	const newKC = currentKC + quantity;
 
 	return {
 		slayerContext,

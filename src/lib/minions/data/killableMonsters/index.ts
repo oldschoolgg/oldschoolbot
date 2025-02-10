@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
+import { ARAXXOR_DEAD_ID, NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
@@ -393,6 +393,11 @@ export const effectiveMonsters = [
 		name: 'Nex',
 		aliases: ['nex'],
 		id: NEX_ID
+	},
+	{
+		name: 'Araxxor (destroyed)',
+		aliases: ['araxxor destroyed'],
+		id: ARAXXOR_DEAD_ID
 	}
 ];
 
