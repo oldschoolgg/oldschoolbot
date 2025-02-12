@@ -80,7 +80,7 @@
 		"@types/node-fetch": "^2.6.1",
 		"@vitest/coverage-v8": "^2.1.2",
 		"concurrently": "^8.2.2",
-		"esbuild": "0.24.0",
+		"esbuild": "0.25.0",
 		"node-gyp": "^10.2.0",
 		"node-gyp-build": "^4.8.4",
 		"nodemon": "^3.1.7",
@@ -92,7 +92,7 @@
 		"vitest": "^2.1.5"
 	},
 	"resolutions": {
-		"esbuild": "0.24.0"
+		"esbuild": "0.25.0"
 	},
 	"packageManager": "pnpm@9.14.2+sha512.6e2baf77d06b9362294152c851c4f278ede37ab1eba3a55fda317a4a17b209f4dbb973fb250a77abc463a341fcb1f17f17cfa24091c4eb319cda0d9b84278387"
 }
