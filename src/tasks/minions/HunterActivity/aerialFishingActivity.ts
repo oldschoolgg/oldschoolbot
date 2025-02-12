@@ -138,7 +138,6 @@ export const aerialFishingTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, 636_833);
 		if (roll(petDropRate / totalFishCaught)) {
 			loot.add('Heron');
-			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`

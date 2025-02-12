@@ -115,7 +115,6 @@ export const camdozaalFishingTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, guppy.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Heron');
-			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing in Camdozaal at level ${currentFishLevel} Fishing!`

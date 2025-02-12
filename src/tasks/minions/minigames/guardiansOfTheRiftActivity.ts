@@ -170,7 +170,6 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			str += `\n\n**Blood essence used:** ${bonusBloods.toLocaleString()}`;
 		}
 		if (rewardsGuardianLoot.amount('Abyssal Protector') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
