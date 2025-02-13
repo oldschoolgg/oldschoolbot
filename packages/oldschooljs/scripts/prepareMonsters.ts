@@ -255,12 +255,21 @@ export default async function prepareMonsters(): Promise<void> {
 		monsterMap[mon.id] = parsed;
 	}
 
-	writeFileSync('./src/data/monsters_data.json', JSON.stringify(monsterMap, (key, value) => {
-		if (Array.isArray(value)) {
-			return JSON.stringify(value).replace(/,/g, ', ');
-		}
-		return value;
-	}, '\t').replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\"/g, '"') + '\n');
+	const lintedJSON = JSON.stringify(
+		monsterMap,
+		(_key, value) => {
+			if (Array.isArray(value)) {
+				return JSON.stringify(value).replace(/,/g, ', ');
+			}
+			return value;
+		},
+		'\t'
+	)
+		.replace(/"\[/g, '[')
+		.replace(/\]"/g, ']')
+		.replace(/\\"/g, '"');
+
+	writeFileSync('./src/data/monsters_data.json', `${lintedJSON}\n`);
 
 	console.log('Prepared Monsters. Check any new monsters quickly to see that the data looks okay.');
 }
