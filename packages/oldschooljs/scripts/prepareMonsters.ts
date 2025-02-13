@@ -139,10 +139,20 @@ const transformData = (data: any): MonsterData => {
 };
 
 export default async function prepareMonsters(): Promise<void> {
-	const allMonsters: { [key: string]: Monster } = await fetch(
-		'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/d760e5eada60cec1a4e62d4e6f8c62462fb86b0c/docs/monsters-complete.json'
-	).then((res): Promise<any> => res.json());
-
+	const allMonsters: { [key: string]: Monster } = await (async () => {
+		try {
+			const response = await fetch(
+				'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/d760e5eada60cec1a4e62d4e6f8c62462fb86b0c/docs/monsters-complete.json'
+			);
+			if (!response.ok) {
+				throw new Error(`Failed to fetch data: ${response.statusText}`);
+			}
+			return await response.json();
+		} catch (error) {
+			console.error('Error fetching monsters data:', error);
+			throw error;
+		}
+	})();
 	const monIDs = new Set(Monsters.map(mon => mon.id));
 
 	for (const mon of Object.values(allMonsters).filter(mon => monIDs.has(mon.id))) {
@@ -245,6 +255,12 @@ export default async function prepareMonsters(): Promise<void> {
 		monsterMap[mon.id] = parsed;
 	}
 
-	writeFileSync('./src/data/monsters_data.json', JSON.stringify(monsterMap, null, 4));
+	writeFileSync('./src/data/monsters_data.json', JSON.stringify(monsterMap, (key, value) => {
+		if (Array.isArray(value)) {
+			return JSON.stringify(value).replace(/,/g, ', ');
+		}
+		return value;
+	}, '\t').replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\"/g, '"') + '\n');
+
 	console.log('Prepared Monsters. Check any new monsters quickly to see that the data looks okay.');
 }
