@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { Monsters } from '../src';
 import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '../src/meta/monsterData';
 
-import { mergeDeep, omitBy } from 'remeda';
+import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
 
 const monsterMap: { [key: string]: MonsterData } = {};
@@ -59,7 +59,6 @@ interface Monster {
 
 const transformData = (data: any): MonsterData => {
 	let {
-		id,
 		members,
 		combat,
 		hitpoints,
@@ -70,7 +69,6 @@ const transformData = (data: any): MonsterData => {
 		immunevenom,
 		cat,
 		examine,
-		smwname,
 		name,
 		slaylvl,
 		slayxp,
@@ -109,7 +107,7 @@ const transformData = (data: any): MonsterData => {
 		poisonous: poisonous?.toLowerCase().includes('yes'),
 		immuneToPoison: immunepoison?.toLowerCase() === 'yes',
 		immuneToVenom: immunevenom?.toLowerCase() === 'yes',
-		attributes: attributes ?? [],
+		attributes: attributes,
 		category: cat?.toLowerCase().split(', '),
 		examineText: examine,
 		wikiName: name,
