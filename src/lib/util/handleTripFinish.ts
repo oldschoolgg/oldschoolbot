@@ -23,6 +23,7 @@ import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import pets from '../data/pets.js';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../invention/inventions';
@@ -477,6 +478,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 		}
 	}
 ];
+
+export function petMessage(loot: Bank | null | undefined) {
+	const emoji = pets.find(p => loot?.has(p.name))?.emoji;
+	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling like you're being followed...**`;
+}
 
 export async function handleTripFinish(
 	user: MUser,

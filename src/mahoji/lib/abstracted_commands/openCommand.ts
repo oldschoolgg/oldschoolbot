@@ -247,6 +247,7 @@ ${messages.join(', ')}`.trim(),
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
+
 	return response;
 }
 

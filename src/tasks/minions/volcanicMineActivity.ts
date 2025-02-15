@@ -97,9 +97,6 @@ export const vmTask: MinionTask = {
 			loot.length > 0 ? `\nYou received ${loot}` : ''
 		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
 
-		if (loot.has('Rock golem')) {
-			str += "\nYou have a funny feeling you're being followed...";
-		}
 		if (flappyRes.userMsg) {
 			str += `\n${flappyRes.userMsg}`;
 		}

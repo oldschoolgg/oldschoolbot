@@ -1,5 +1,6 @@
 import { Bank, LootTable } from 'oldschooljs';
 
+import { Emoji, Events } from '../../../lib/constants.js';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -114,7 +115,10 @@ export const camdozaalFishingTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, guppy.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Heron');
-			str += "\nYou have a funny feeling you're being followed...";
+			globalClient.emit(
+				Events.ServerNotification,
+				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing in Camdozaal at level ${currentFishLevel} Fishing!`
+			);
 		}
 
 		// Give the user the items from the trip

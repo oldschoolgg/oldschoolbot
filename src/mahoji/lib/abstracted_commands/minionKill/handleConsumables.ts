@@ -13,10 +13,7 @@ export const calculateTripConsumableCost = (c: Consumable, quantity: number, dur
 	if (c.qtyPerKill) {
 		consumableCost.multiply(quantity);
 	} else if (c.qtyPerMinute) {
-		consumableCost.multiply(duration / Time.Minute);
-	}
-	for (const [item, qty] of consumableCost.items()) {
-		consumableCost.set(item.id, Math.ceil(qty));
+		consumableCost.multiply(Math.ceil((c.qtyPerMinute * duration) / Time.Minute));
 	}
 	return consumableCost;
 };
