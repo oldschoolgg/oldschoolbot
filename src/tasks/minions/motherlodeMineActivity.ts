@@ -1,13 +1,13 @@
 import { roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { handleTripFinish } from '@/lib/util/handleTripFinish';
 import { Emoji, Events } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
