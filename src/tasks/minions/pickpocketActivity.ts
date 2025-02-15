@@ -176,9 +176,6 @@ export const pickpocketTask: MinionTask = {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
 		}
 
-		if (updateBank.itemLootBank.amount('Rocky') > 0) {
-			str += "\n**You have a funny feeling you're being followed...**";
-		}
 		if (boosts.length > 0) {
 			str += `\n\n**Messages:** ${boosts.join(', ')}`;
 		}

@@ -499,12 +499,6 @@ export const farmingTask: MinionTask = {
 				if (hesporiSeeds > 0) loot.add('Hespori seed', hesporiSeeds);
 			}
 
-			if (loot.has('Tangleroot')) {
-				infoStr.push('\n```diff');
-				infoStr.push("\n- You have a funny feeling you're being followed...");
-				infoStr.push('```');
-			}
-
 			let newPatch: PatchTypes.PatchData = {
 				lastPlanted: null,
 				patchPlanted: false,

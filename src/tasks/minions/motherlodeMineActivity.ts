@@ -113,7 +113,6 @@ export const motherlodeMiningTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, motherlode.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
-			str += "\nYou have a funny feeling you're being followed...";
 		}
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
