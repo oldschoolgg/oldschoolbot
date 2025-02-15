@@ -153,6 +153,10 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisabledTameClueOpening
 	},
 	{
+		name: 'Disable Igne Tame Opening Imping Jars',
+		bit: BitField.DisabledTameImplingOpening
+	},
+	{
 		name: 'Disable Clue Buttons',
 		bit: BitField.DisableClueButtons
 	},

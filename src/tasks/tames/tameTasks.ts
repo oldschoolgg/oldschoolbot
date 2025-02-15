@@ -63,7 +63,6 @@ export async function handleFinish({
 		}
 	});
 	const { itemsAdded } = await user.addItemsToBank({ items: lootToAdd, collectionLog: false });
-	results.push(`Received ${itemsAdded}`);
 
 	const addRes = await tame.addDuration(activity.duration);
 	if (addRes) results.push(addRes);
@@ -142,6 +141,7 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 ];
 
 async function handleImplingLocator(user: MUser, tame: MTame, duration: number, loot: Bank, messages: string[]) {
+	const keepJars = user.bitfield.includes(BitField.DisabledTameImplingOpening);
 	if (tame.hasBeenFed('Impling locator')) {
 		const result = await handlePassiveImplings(
 			user,
@@ -157,21 +157,25 @@ async function handleImplingLocator(user: MUser, tame: MTame, duration: number, 
 			for (const [item, qty] of result.bank.items()) {
 				const openable = allOpenables.find(i => i.id === item.id)!;
 				assert(!isEmpty(openable));
-				actualImplingLoot.add(
-					isFunction(openable.output)
-						? (
-								await openable.output({
-									user,
-									quantity: qty,
-									self: openable,
-									totalLeaguesPoints: 0
-								})
-							).bank
-						: openable.output.roll(qty)
-				);
+				if (keepJars) {
+					actualImplingLoot.add(openable.id, qty);
+				} else {
+					actualImplingLoot.add(
+						isFunction(openable.output)
+							? (
+									await openable.output({
+										user,
+										quantity: qty,
+										self: openable,
+										totalLeaguesPoints: 0
+									})
+								).bank
+							: openable.output.roll(qty)
+					);
+				}
 			}
 			loot.add(actualImplingLoot);
-			messages.push(`${tame} caught ${result.bank} with their Impling locator!`);
+			messages.push(`${tame} caught ${result.bank} with their Impling locator`);
 			await tame.addToStatsBank('implings_loot', actualImplingLoot);
 		}
 	}
