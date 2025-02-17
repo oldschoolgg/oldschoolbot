@@ -147,7 +147,8 @@ export const cookCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity,
 			duration,
-			type: 'Cooking'
+			type: 'Cooking',
+			itemCost: totalCost
 		});
 
 		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(

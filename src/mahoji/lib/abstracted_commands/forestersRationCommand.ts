@@ -68,7 +68,8 @@ export async function forestersRationCommand({
 		rationName: forestryFood.name,
 		quantity,
 		duration,
-		type: 'CreateForestersRations'
+		type: 'CreateForestersRations',
+		itemCost: finalCost
 	});
 
 	return `${user.minionName} is now creating ${quantity}x ${

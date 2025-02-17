@@ -128,7 +128,8 @@ export async function ouraniaAltarStartCommand({
 		type: 'OuraniaAltar',
 		channelID: channelID.toString(),
 		stamina,
-		daeyalt
+		daeyalt,
+		itemCost: totalCost
 	});
 
 	let response = `${user.minionName} is now crafting ${quantity}x`;

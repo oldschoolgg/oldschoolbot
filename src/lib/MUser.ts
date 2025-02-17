@@ -633,6 +633,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			bpData.scales -= scales;
 			validateBlowpipeData(bpData);
 			updates.blowpipe = bpData;
+			realCost.add("Zulrah's scales", scales);
 		}
 
 		if (bankRemove.length > 0) {
