@@ -212,7 +212,7 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 
 	if (monster.name.includes('Revenant')) {
 		str.push(
-			'View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/wildy/#revenants>).\n'
+			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/wildy/#revenants>).\n`
 		);
 	}
 

@@ -749,7 +749,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 
 		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
 		for (const tier of tiers) {
-			let change = hasRingOfWealthI ? 50 : 0;
+			let change = hasRingOfWealthI && inWildy ? 50 : 0;
 			if (this.hasCompletedCATier(tier)) {
 				change += 5;
 			}

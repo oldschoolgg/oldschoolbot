@@ -62,7 +62,6 @@ const MasterFarmerTable = new LootTable()
 export default new SimpleMonster({
 	id: 5730,
 	name: 'Master Farmer',
-	table: MasterFarmerTable,
 	pickpocketTable: MasterFarmerTable,
 	aliases: ['master farmer', 'mfarmer']
 });
