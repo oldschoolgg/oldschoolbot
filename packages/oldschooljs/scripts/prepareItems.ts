@@ -29,7 +29,7 @@ for (const [toChange, toCopy] of equipmentModSrc) {
 
 const itemsBeingModified = new Set([...equipmentModSrc.map(i => i[0]), ...Object.keys(itemChanges)]);
 
-const newItemJSON: { [key: string]: Item } = {};
+const newItemJSON: { [key: string]: Item | undefined } = {};
 
 interface RawItemCollection {
 	[index: string]: Item & {
@@ -43,15 +43,13 @@ interface RawItemCollection {
 // This regex matches the nearly 600 individual clue-step items:
 const clueStepRegex = /^Clue scroll \((beginner|easy|medium|hard|elite|master)\) - .*$/;
 
-const overwrittenIDs = Object.values(itemChanges).map(i => i.id);
-
 function itemShouldntBeAdded(item: any) {
 	if (CLUE_SCROLLS.includes(item.id)) return false;
 
 	return (
 		(CLUE_SCROLL_NAMES.includes(item.name) && !CLUE_SCROLLS.includes(item.id)) ||
 		USELESS_ITEMS.includes(item.id) ||
-		overwrittenIDs.includes(item.id) ||
+		Object.keys(itemChanges).includes(item.id) ||
 		item.duplicate === true ||
 		item.noted ||
 		item.linked_id_item ||
@@ -313,8 +311,8 @@ export default async function prepareItems(): Promise<void> {
 		throw new Error('Failed to fetch prices');
 	}
 
-	const newItems = [];
-	const nameChanges = [];
+	const newItems: Item[] = [];
+	const nameChanges: string[] = [];
 
 	for (let item of Object.values(allItems)) {
 		if (itemShouldntBeAdded(item)) continue;
