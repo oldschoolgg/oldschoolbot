@@ -5,7 +5,7 @@
 	"scripts": {
 		"============DEVELOPMENT": "============",
 		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm build:esbuild && node --enable-source-maps dist\"",
-		"dev:stage1": "pnpm concurrent \"pnpm install\" \"prisma db push\" \"pnpm generate:robochimp\"",
+		"dev:stage1": "pnpm concurrent \"pnpm install\" \"prisma db push\" \"pnpm generate:robochimp\" \"pnpm monorepo:build\"",
 		"dev:stage2": "pnpm concurrent \"pnpm commands\" \"pnpm creatables\" \"pnpm wiki\" \"pnpm build\"",
 		"dev:stage3": "pnpm lint && pnpm test",
 		"dev": "pnpm dev:stage1 && pnpm dev:stage2 && pnpm dev:stage3",
@@ -35,7 +35,7 @@
 		"test:ci:unit": "pnpm concurrent \"pnpm test:unit\" \"pnpm test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"============MISC": "============",
 		"concurrent": "concurrently --raw --kill-others-on-fail",
-		"build:packages": "concurrently --raw \"pnpm -r build:esbuild\" \"pnpm -r build:types\"",
+		"build:packages": "concurrently --raw \"pnpm -r generate\" \"pnpm -r build:esbuild\" \"pnpm -r build:types\"",
 		"============monorepo": "============",
 		"monorepo:build": "pnpm concurrent \"pnpm build:packages\" \"pnpm gen\" && pnpm build:esbuild",
 		"monorepo:test": "pnpm concurrent \"pnpm --stream -r test\" \"pnpm test\""
@@ -89,7 +89,7 @@
 		"spritesmith": "^3.4.1",
 		"tsx": "^4.19.2",
 		"typescript": "^5.5.3",
-		"vitest": "^2.1.5"
+		"vitest": "^2.1.9"
 	},
 	"resolutions": {
 		"esbuild": "0.24.0"
