@@ -2,7 +2,7 @@ import type { CropUpgradeType } from '@prisma/client';
 
 import type { ItemBank } from '.';
 import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
-import type { CombatOptionsEnum, SlayerActivityConstants } from '../minions/data/combatConstants';
+import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 import type { IPatchData } from '../minions/farming/types';
 import type { AttackStyles } from '../minions/functions';
 import type { MinigameName } from '../settings/minigames';
@@ -149,7 +149,6 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	isInWilderness?: boolean;
 	attackStyles?: AttackStyles[];
 	onTask?: boolean;
-	combatOptions?: readonly CombatOptionsEnum[];
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {

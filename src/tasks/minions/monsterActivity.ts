@@ -5,7 +5,6 @@ import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { ARAXXOR_DEAD_ID, BitField, Emoji } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
-import type { CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -139,7 +138,6 @@ interface newOptions {
 	attackStyles: AttackStyles[];
 	bitfield: readonly BitField[];
 	cl: Bank;
-	combatOptions?: readonly CombatOptionsEnum[];
 }
 
 export function doMonsterTrip(data: newOptions) {
@@ -472,7 +470,6 @@ export const monsterTask: MinionTask = {
 			attackStyles,
 			hasEliteCA: user.hasCompletedCATier('elite'),
 			bitfield: user.bitfield,
-			combatOptions: user.combatOptions,
 			cl: user.cl
 		});
 		if (slayerContext.isOnTask) {
