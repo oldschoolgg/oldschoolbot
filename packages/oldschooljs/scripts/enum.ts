@@ -39,6 +39,7 @@ async function main() {
 		enumItems.push([key, item.id]);
 	}
 
+	// CAN BE REMOVED ONCE THERE IS JUST ONE OF EACH RING IN ITEM_DATA
 	const forcedChanges = [
 		['Ultor ring', 25485],
 		['Bellator ring', 25488],
