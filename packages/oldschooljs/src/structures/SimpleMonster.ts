@@ -15,6 +15,7 @@ import Monster from './Monster';
 
 interface SimpleMonsterOptions extends MonsterOptions {
 	table?: LootTable;
+	sacrificedTable?: LootTable;
 	onTaskTable?: LootTable;
 	wildyCaveTable?: LootTable;
 	pickpocketTable?: LootTable;
@@ -23,6 +24,7 @@ interface SimpleMonsterOptions extends MonsterOptions {
 
 export default class SimpleMonster extends Monster {
 	public table?: LootTable;
+	public sacrificedTable?: LootTable;
 	public onTaskTable?: LootTable;
 	public wildyCaveTable?: LootTable;
 	public pickpocketTable?: LootTable;
@@ -40,6 +42,7 @@ export default class SimpleMonster extends Monster {
 		this.table = options.table;
 		this.pickpocketTable = options.pickpocketTable;
 		this.onTaskTable = options.onTaskTable;
+		this.sacrificedTable = options.sacrificedTable;
 		this.wildyCaveTable = options.wildyCaveTable;
 		this.customKillLogic = options.customKillLogic;
 	}
@@ -56,8 +59,11 @@ export default class SimpleMonster extends Monster {
 			targetBank: loot
 		};
 
+		const rollTable =
+			this.sacrificedTable && options.lootTableOptions?.sacrificeLoot ? this.sacrificedTable : this.table;
+
 		if (!canGetBrimKey && !wildySlayer && !options.inCatacombs && !options.onSlayerTask) {
-			this.table?.roll(quantity, lootTableOptions);
+			rollTable?.roll(quantity, lootTableOptions);
 			if (this.customKillLogic) {
 				for (let i = 0; i < quantity; i++) {
 					this.customKillLogic(options, loot);
@@ -98,11 +104,11 @@ export default class SimpleMonster extends Monster {
 					this.onTaskTable.roll(1, lootTableOptions);
 				} else {
 					// Monster doesn't have a unique on-slayer table
-					this.table?.roll(1, lootTableOptions);
+					rollTable?.roll(1, lootTableOptions);
 				}
 			} else {
 				// Not on slayer task
-				this.table?.roll(1, lootTableOptions);
+				rollTable?.roll(1, lootTableOptions);
 			}
 			if (this.customKillLogic) {
 				this.customKillLogic(options, loot);
