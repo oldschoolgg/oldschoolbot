@@ -1,4 +1,4 @@
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import type { Consumable } from '../types';
 
@@ -23,10 +23,8 @@ export enum CombatOptionsEnum {
 	NullOption = 0,
 	AlwaysCannon = 1,
 	AlwaysIceBurst = 2,
-	AlwaysIceBarrage = 3,
-	AraxxorDestroy = 4
+	AlwaysIceBarrage = 3
 }
-
 export enum SlayerActivityConstants {
 	None = 0,
 	IceBarrage = 1,
@@ -63,18 +61,10 @@ export const CombatOptionsArray: CombatOptionsDesc[] = [
 		name: 'Always Ice Barrage',
 		desc: 'Use Ice barrage whenever possible',
 		aliases: ['always barrage', 'alwaysicebarrage', 'always ice barrage', 'barrage', 'ice barrage']
-	},
-	{
-		id: CombatOptionsEnum.AraxxorDestroy,
-		name: "Destroy Araxxor's Corpse",
-		desc: 'When killing Araxxor, destroy corpse for higher pet chance',
-		aliases: ['destroy araxxors corpse', 'destroyaraxxorscorpse', 'destroy araxxor', 'araxxor']
 	}
 ];
 
-export const combatOptionChoices = CombatOptionsArray.filter(o =>
-	Object.values(SlayerActivityConstants).every(i => i !== o.id)
-).map(o => {
+export const combatOptionChoices = CombatOptionsArray.map(o => {
 	return { name: o.name, value: o.name };
 });
 
@@ -97,7 +87,3 @@ export const iceBurstConsumables: Consumable = {
 	qtyPerMinute: 16,
 	isRuneCost: true
 };
-
-export function modifyTable(monsterName: string, combatOptions?: readonly CombatOptionsDesc[]) {
-	return monsterName === Monsters.Araxxor.name && combatOptions?.some(o => o.id === CombatOptionsEnum.AraxxorDestroy);
-}

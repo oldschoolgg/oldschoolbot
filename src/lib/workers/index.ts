@@ -18,7 +18,7 @@ export interface KillWorkerArgs {
 	catacombs?: boolean;
 	slayerMaster?: MonsterSlayerMaster;
 	lootTableTertiaryChanges: [string, number][];
-	modifyTable?: boolean;
+	sacrificeLoot?: boolean;
 }
 
 export type KillWorkerReturn = Promise<{

@@ -263,7 +263,8 @@ export enum BitField {
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
-	DisableOpenableNames = 41
+	DisableOpenableNames = 41,
+	SacrificeLoot = 42
 }
 
 interface BitFieldData {
@@ -359,6 +360,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableOpenableNames]: {
 		name: 'Disable Names On Open',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.SacrificeLoot]: {
+		name: 'Sacrifice loot for extra pet chance, where available',
 		protected: false,
 		userConfigurable: true
 	}

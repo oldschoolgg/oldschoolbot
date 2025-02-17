@@ -1,6 +1,7 @@
 import { Bank, EItem, EMonster, Monsters } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
+import { BitField } from '../../../src/lib/constants';
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
 import { getPOHObject } from '../../../src/lib/poh';
 import { SkillsEnum } from '../../../src/lib/skilling/types';
@@ -325,15 +326,19 @@ describe('PVM', async () => {
 		return user;
 	}
 
+	const araxxorSupplies = new Bank()
+		.add('Anglerfish', 100)
+		.add('Cooked karambwan', 100)
+		.add('Super combat potion(4)', 100)
+		.add('Anti-venom+(4)', 100)
+		.add('Prayer potion(4)', 100)
+		.add('Cannonball', 100_000)
+		.add(CombatCannonItemBank);
+
 	test('Should be able to use anti-venom(+)/prayer pots with araxxor', async () => {
 		const user = await makeAraxxorUser();
 		await user.addItemsToBank({
-			items: new Bank()
-				.add('Anglerfish', 100)
-				.add('Cooked karambwan', 100)
-				.add('Super combat potion(4)', 100)
-				.add('Anti-venom+(4)', 100)
-				.add('Prayer potion(4)', 100)
+			items: araxxorSupplies
 		});
 		const result = await user.kill(EMonster.ARAXXOR);
 		const resultStr = result.commandResult as string;
@@ -348,12 +353,7 @@ describe('PVM', async () => {
 	test('Should use teleports for araxxor', async () => {
 		const user = await makeAraxxorUser();
 		await user.addItemsToBank({
-			items: new Bank()
-				.add('Anglerfish', 100)
-				.add('Cooked karambwan', 100)
-				.add('Super combat potion(4)', 100)
-				.add('Anti-venom+(4)', 100)
-				.add('Prayer potion(4)', 100)
+			items: araxxorSupplies
 		});
 		const firstResult = await user.kill(EMonster.ARAXXOR);
 		await user.addItemsToBank({ items: new Bank().add(EItem.SPIDER_CAVE_TELEPORT, 100) });
@@ -366,18 +366,29 @@ describe('PVM', async () => {
 	test('Should only charge as much cannonballs for what kills you actually do', async () => {
 		const user = await makeAraxxorUser();
 		await user.addItemsToBank({
-			items: new Bank()
-				.add('Anglerfish', 100)
-				.add('Cooked karambwan', 100)
-				.add('Super combat potion(4)', 100)
-				.add('Anti-venom+(4)', 100)
-				.add('Prayer potion(4)', 100)
-				.add('Cannonball', 100_000)
-				.add(CombatCannonItemBank)
+			items: araxxorSupplies
 		});
 		await user.giveSlayerTask(EMonster.ARAXYTE, 100);
 		await user.kill(EMonster.ARAXYTE, { method: 'cannon' });
 		expect(user.bank.amount('Cannonball')).toBeGreaterThan(100_000 - 500);
+	});
+
+	test('should sacrifice loot properly', async () => {
+		const user = await makeAraxxorUser();
+		await user.addItemsToBank({
+			items: araxxorSupplies
+		});
+		await user.update({
+			bitfield: [BitField.SacrificeLoot]
+		});
+		await user.giveSlayerTask(EMonster.ARAXYTE, 100);
+		const res = await user.kill(EMonster.ARAXXOR);
+		expect(res.commandResult).toContain('is now killing');
+		expect(res.commandResult).toContain('You are sacrificing loot');
+		await user.removeItemsFromBank(
+			user.bank.filter(item => araxxorSupplies.has(item) || ['Clue scroll (elite)', 'Nid'].includes(item.name))
+		);
+		expect(user.bank).toHaveLength(0);
 	});
 
 	it('should give a scythe boost and deduct charges', async () => {
@@ -392,14 +403,7 @@ describe('PVM', async () => {
 			EItem.INQUISITORS_PLATESKIRT
 		]);
 		await user.addItemsToBank({
-			items: new Bank()
-				.add('Anglerfish', 100)
-				.add('Cooked karambwan', 100)
-				.add('Super combat potion(4)', 100)
-				.add('Anti-venom+(4)', 100)
-				.add('Prayer potion(4)', 100)
-				.add('Cannonball', 100_000)
-				.add(CombatCannonItemBank)
+			items: araxxorSupplies
 		});
 		await user.update({
 			scythe_of_vitur_charges: 100_000

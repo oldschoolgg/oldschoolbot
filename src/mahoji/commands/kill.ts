@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
-import { CombatOptionsArray, combatOptionChoices, modifyTable } from '../../lib/minions/data/combatConstants';
 import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
@@ -91,18 +90,23 @@ export const killCommand: OSBMahojiCommand = {
 			)
 		},
 		{
-			type: ApplicationCommandOptionType.String,
-			name: 'modifier',
-			description: 'Additional combat modifier for some monsters',
-			required: false,
-			choices: combatOptionChoices
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'sacrifice',
+			description: 'Sacrifice loot for pet chance?',
+			required: false
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		interaction
-	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string; modifier: string }>) => {
+	}: CommandRunOptions<{
+		name: string;
+		quantity: number;
+		catacombs: boolean;
+		master: string;
+		sacrifice: boolean;
+	}>) => {
 		const user = await mUserFetch(userID);
 		await deferInteraction(interaction);
 		const result = await Workers.kill({
@@ -117,17 +121,14 @@ export const killCommand: OSBMahojiCommand = {
 					.buildTertiaryItemChanges(false, options.master === 'Krystilia', options.master !== undefined)
 					.entries()
 			),
-			modifyTable: modifyTable(
-				options.name,
-				CombatOptionsArray.filter(o => o.name === options.modifier)
-			)
+			sacrificeLoot: options.sacrifice
 		});
 
 		if (result.error) {
 			return result.error;
 		}
 
-		const killString = `Simulated loot from killing ${options.quantity} ${options.name}, ${options.master ? `on task (${options.master})` : 'off task'}${options.catacombs ? ', in catacombs' : ''}${options.modifier ? `, with modifier: ${options.modifier}` : ''}. `;
+		const killString = `Simulated loot from killing ${options.quantity} ${options.name}, ${options.master ? `on task (${options.master})` : 'off task'}${options.catacombs ? ', in catacombs' : ''}${options.sacrifice ? ', sacrificing loot' : ''}. `;
 
 		result.content = result.content ? result.content : killString;
 

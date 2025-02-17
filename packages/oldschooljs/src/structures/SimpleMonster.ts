@@ -15,7 +15,7 @@ import Monster from './Monster';
 
 interface SimpleMonsterOptions extends MonsterOptions {
 	table?: LootTable;
-	modifiedTable?: LootTable;
+	sacrificedTable?: LootTable;
 	onTaskTable?: LootTable;
 	wildyCaveTable?: LootTable;
 	pickpocketTable?: LootTable;
@@ -24,7 +24,7 @@ interface SimpleMonsterOptions extends MonsterOptions {
 
 export default class SimpleMonster extends Monster {
 	public table?: LootTable;
-	public modifiedTable?: LootTable;
+	public sacrificedTable?: LootTable;
 	public onTaskTable?: LootTable;
 	public wildyCaveTable?: LootTable;
 	public pickpocketTable?: LootTable;
@@ -42,7 +42,7 @@ export default class SimpleMonster extends Monster {
 		this.table = options.table;
 		this.pickpocketTable = options.pickpocketTable;
 		this.onTaskTable = options.onTaskTable;
-		this.modifiedTable = options.modifiedTable;
+		this.sacrificedTable = options.sacrificedTable;
 		this.wildyCaveTable = options.wildyCaveTable;
 		this.customKillLogic = options.customKillLogic;
 	}
@@ -59,7 +59,8 @@ export default class SimpleMonster extends Monster {
 			targetBank: loot
 		};
 
-		const rollTable = this.modifiedTable && options.lootTableOptions?.modifyTable ? this.modifiedTable : this.table;
+		const rollTable =
+			this.sacrificedTable && options.lootTableOptions?.sacrificeLoot ? this.sacrificedTable : this.table;
 
 		if (!canGetBrimKey && !wildySlayer && !options.inCatacombs && !options.onSlayerTask) {
 			rollTable?.roll(quantity, lootTableOptions);

@@ -140,6 +140,7 @@ export interface KillableMonster {
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 	diaryRequirement?: [DiaryID, DiaryTierName];
 	wildySlayerCave?: boolean;
+	sacrificeID?: number; // ID to use for incrementing KC for sacrificed loot (e.g. id for dead npc)
 }
 /*
  * Monsters will have an array of Consumables

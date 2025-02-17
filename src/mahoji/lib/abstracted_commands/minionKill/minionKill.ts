@@ -1,14 +1,13 @@
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 
 import { colosseumCommand } from '../../../../lib/colosseum';
-import type { PvMMethod } from '../../../../lib/constants';
+import { BitField, type PvMMethod } from '../../../../lib/constants';
 import { getCurrentPeak } from '../../../../lib/getCurrentPeak';
 import { trackLoot } from '../../../../lib/lootTrack';
-import { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import { Monsters, formatDuration, stringMatches } from '../../../../lib/util';
+import { formatDuration, stringMatches } from '../../../../lib/util';
 import addSubTaskToActivityTask from '../../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../../lib/util/findMonster';
@@ -141,17 +140,16 @@ export async function minionKillCommand(
 		hasWildySupplies,
 		isInWilderness: result.isInWilderness === true ? true : undefined,
 		attackStyles: result.attackStyles,
-		onTask: slayerInfo.assignedTask !== null,
-		combatOptions: user.combatOptions
+		onTask: slayerInfo.assignedTask !== null
 	});
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
-	if (monster.id === Monsters.Araxxor.id) {
-		response += user.combatOptions.includes(CombatOptionsEnum.AraxxorDestroy)
-			? " You are destroying Araxxor's corpse for a higher chance of pet."
-			: " You are not destroying Araxxor's corpse to receive more loot.";
+	if (monster.sacrificeID) {
+		response += user.bitfield.includes(BitField.SacrificeLoot)
+			? ' You are sacrificing loot for a higher chance of pet.'
+			: ' You are not sacrificing, so receive regular loot.';
 	}
 
 	if (result.messages.length > 0) {

@@ -2,6 +2,7 @@ import { Time, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
+import { ARAXXOR_DEAD_ID } from '../../../../constants';
 import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
@@ -596,6 +597,7 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 8,
 		notifyDrops: resolveItems(['Nid']),
 		qpRequired: 200,
+		sacrificeID: ARAXXOR_DEAD_ID,
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99
