@@ -1,4 +1,4 @@
-import { Bank, EItem, EMonster, Monsters } from 'oldschooljs';
+import { Bank, EItem, EMonster, Implings, Monsters } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
 import { BitField } from '../../../src/lib/constants';
@@ -386,7 +386,12 @@ describe('PVM', async () => {
 		expect(res.commandResult).toContain('is now killing');
 		expect(res.commandResult).toContain('You are sacrificing loot');
 		await user.removeItemsFromBank(
-			user.bank.filter(item => araxxorSupplies.has(item) || ['Clue scroll (elite)', 'Nid'].includes(item.name))
+			user.bank.filter(
+				item =>
+					araxxorSupplies.has(item) ||
+					['Clue scroll (elite)', 'Nid'].includes(item.name) ||
+					Implings.some(imp => imp.id === item.id)
+			)
 		);
 		expect(user.bank).toHaveLength(0);
 	});
