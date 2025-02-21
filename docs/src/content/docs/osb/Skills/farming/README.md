@@ -26,7 +26,7 @@ The speed of your farming trips and the xp you gain from farming activities can 
 - [Magic secateurs](../../miscellaneous/buyables.md#quest-items) - 10% to harvest quantity (stacks with Farming cape)
 - Farming cape - 5% to harvest quantity (stacks with Magic secateurs)
 - Full graceful outfit - 10% to trip speed **(must be equipped in any setup)**
-- [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) - 10% to trip speed **(works from bank but**\*\* \*\*\*\*must be charged)\*\*
+- [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) - 10% to trip speed **(must be equipped in any setup and must be charged**)\*\*
 
 ---
 
