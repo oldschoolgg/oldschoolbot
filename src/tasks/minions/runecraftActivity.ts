@@ -95,7 +95,6 @@ export const runecraftTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_795_758);
 		if (roll(petDropRate / essenceQuantity)) {
 			loot.add('Rift guardian');
-			str += "\nYou have a funny feeling you're being followed...";
 		}
 
 		if (daeyaltEssence) {

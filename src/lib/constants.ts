@@ -57,8 +57,8 @@ const BSOChannelConfig: ChannelConfig = {
 	Notifications: '811589869314899980',
 	GrandExchange: '738780181946171493',
 	EconomyLogs: '802029843712573510',
-	HelpAndSupport: '792691343284764693',
-	BotLogs: '792691343284764693',
+	HelpAndSupport: '970752140324790384',
+	BotLogs: '1051725977320964197',
 	GeneralChannel: GENERAL_CHANNEL_ID
 };
 
@@ -320,7 +320,8 @@ export enum BitField {
 	HasUnlockedVenatrix = 229,
 	GrewFiveSpiritTrees = 230,
 	UseSuperRestoresForDwarvenBlessing = 231,
-	DisableSizeMatters = 232
+	DisableSizeMatters = 232,
+	DisabledTameImplingOpening = 233
 }
 
 interface BitFieldData {
@@ -514,6 +515,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisabledTameClueOpening]: {
 		name: 'Disable Eagle Tame Opening Caskets',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledTameImplingOpening]: {
+		name: 'Disable Tame from Opening Impling Jars',
 		protected: false,
 		userConfigurable: true
 	},

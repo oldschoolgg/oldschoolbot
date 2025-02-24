@@ -71,10 +71,6 @@ export const darkAltarTask: MinionTask = {
 			str += ` **Blood essence Quantity:** ${bonusBlood.toLocaleString()}`;
 		}
 
-		if (loot.amount('Rift guardian') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
-		}
-
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

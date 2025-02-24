@@ -18,12 +18,9 @@ export async function shootingStarsActivity(data: ShootingStarsOptions) {
 		duration: data.duration
 	});
 
-	let str = `${user}, ${user.minionName} finished mining a size ${star.size} Crashed Star, there was ${
+	const str = `${user}, ${user.minionName} finished mining a size ${star.size} Crashed Star, there was ${
 		usersWith - 1 || 'no'
 	} other players mining with you.\nYou received ${loot}.\n${xpStr}`;
-	if (loot.has('Rock golem')) {
-		str += "\nYou have a funny feeling you're being followed...";
-	}
 
 	handleTripFinish(user, data.channelID, str, undefined, data, loot);
 }

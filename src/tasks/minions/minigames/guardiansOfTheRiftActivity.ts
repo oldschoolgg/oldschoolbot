@@ -170,9 +170,6 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		if (bonusBloods > 0) {
 			str += `\n\n**Blood essence used:** ${bonusBloods.toLocaleString()}`;
 		}
-		if (rewardsGuardianLoot.amount('Abyssal Protector') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
-		}
 
 		updateBankSetting('gotr_loot', totalLoot);
 		await trackLoot({

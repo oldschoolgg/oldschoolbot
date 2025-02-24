@@ -1,6 +1,8 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Events } from '../../../lib/constants.js';
 import { type MinigameName, getMinigameScore, incrementMinigameScore } from '../../../lib/settings/minigames';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import type { GauntletOptions } from '../../../lib/types/minions';
@@ -50,10 +52,17 @@ export const gauntletTask: MinionTask = {
 
 		const newKc = await getMinigameScore(user.id, key);
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
+		const str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
 
 		if (loot.amount('Youngllef') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
+			globalClient.emit(
+				Events.ServerNotification,
+				`**${user.badgedUsername}'s** minion, ${
+					user.minionName
+				}, just received a **Youngllef** <:Youngllef:604670894798798858> while doing the ${name} for the ${formatOrdinal(
+					newKc
+				)} time!`
+			);
 		}
 
 		updateBankSetting('gauntlet_loot', loot);

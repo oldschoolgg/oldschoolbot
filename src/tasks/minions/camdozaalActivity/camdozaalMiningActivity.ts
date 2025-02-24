@@ -100,7 +100,6 @@ export const camdozaalMiningTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, camdozaalMine.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
-			str += "\nYou have a funny feeling you're being followed...";
 		}
 
 		// Give the user the items from the trip

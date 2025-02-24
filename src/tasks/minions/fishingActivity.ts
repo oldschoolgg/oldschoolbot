@@ -189,7 +189,6 @@ export const fishingTask: MinionTask = {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(petDropRate)) {
 					loot.add('Heron');
-					str += "\nYou have a funny feeling you're being followed...";
 				}
 			}
 		}
