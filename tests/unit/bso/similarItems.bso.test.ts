@@ -14,3 +14,9 @@ test('comp cape similar items', () => {
 	expect(gear2.hasEquipped("Combatant's cape")).toEqual(true);
 	expect(gear2.hasEquipped('Support cape')).toEqual(true);
 });
+
+test('inverted master capes', () => {
+	const gear = new Gear();
+	gear.equip('Divination master cape (inverted)');
+	expect(gear.hasEquipped('Divination master cape')).toEqual(true);
+});
