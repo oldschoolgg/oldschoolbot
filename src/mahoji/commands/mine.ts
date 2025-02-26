@@ -3,7 +3,9 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import { userhasDiaryTier } from '../../lib/diaries.js';
 import { QuestID } from '../../lib/minions/data/quests';
+import { DiaryID } from '../../lib/minions/types.js';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
@@ -24,13 +26,17 @@ export function determineMiningTrip({
 	ore,
 	maxTripLength,
 	isPowermining,
-	quantityInput
+	quantityInput,
+	hasKaramjaMedium,
+	randomVariationEnabled = true
 }: {
 	gearBank: GearBank;
 	ore: Ore;
 	maxTripLength: number;
 	isPowermining: boolean;
 	quantityInput: number | undefined;
+	hasKaramjaMedium: boolean;
+	randomVariationEnabled?: boolean;
 }) {
 	const boosts = [];
 	// Invisible mining level, dosen't help equip pickaxe etc
@@ -115,13 +121,16 @@ export function determineMiningTrip({
 		powermining: isPowermining,
 		goldSilverBoost,
 		miningLvl: miningLevel,
-		maxTripLength
+		maxTripLength,
+		hasKaramjaMedium
 	});
 
 	const duration = timeToMine;
 
-	const fakeDurationMin = quantityInput ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-	const fakeDurationMax = quantityInput ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMin =
+		quantityInput && randomVariationEnabled ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMax =
+		quantityInput && randomVariationEnabled ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 	if (ore.name === 'Gem rock' && gearBank.hasEquipped('Amulet of glory')) {
 		boosts.push('3x success rate for having an Amulet of glory equipped');
@@ -227,12 +236,15 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
+		const hasKaramjaMedium =
+			ore.name === 'Gem rock' ? (await userhasDiaryTier(user, [DiaryID.Karamja, 'medium']))[0] : false;
 		const res = determineMiningTrip({
 			gearBank: user.gearBank,
 			ore,
 			maxTripLength: calcMaxTripLength(user, 'Mining'),
 			isPowermining: !!powermine,
-			quantityInput: quantity
+			quantityInput: quantity,
+			hasKaramjaMedium
 		});
 
 		await addSubTaskToActivityTask<MiningActivityTaskOptions>({
