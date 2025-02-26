@@ -16,6 +16,7 @@ interface MiningTimeOptions {
 	passedDuration?: number;
 	maxTripLength: number;
 	gearBank: GearBank;
+	hasKaramjaMedium: boolean;
 }
 
 export function determineMiningTime({
@@ -30,11 +31,15 @@ export function determineMiningTime({
 	miningLvl,
 	passedDuration,
 	maxTripLength,
-	gearBank
+	gearBank,
+	hasKaramjaMedium
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
 	if (ore.name === 'Gem rock' && gearBank.hasEquipped('Amulet of glory')) {
 		intercept *= 3;
+		if (hasKaramjaMedium) {
+			intercept *= 1.5;
+		}
 	}
 	let timeElapsed = 0;
 

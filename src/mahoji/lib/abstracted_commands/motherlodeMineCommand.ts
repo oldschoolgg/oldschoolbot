@@ -73,7 +73,8 @@ export async function motherlodeMineCommand({
 		powermining: powermine,
 		goldSilverBoost,
 		miningLvl: miningLevel,
-		maxTripLength: calcMaxTripLength(user, 'MotherlodeMining')
+		maxTripLength: calcMaxTripLength(user, 'MotherlodeMining'),
+		hasKaramjaMedium: false
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
