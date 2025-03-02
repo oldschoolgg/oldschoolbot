@@ -521,7 +521,8 @@ ${zygomiteFarmingSource
 										craftingLevel: 120,
 										strengthLevel: 120,
 										maxTripLength: duration,
-										user
+										user,
+										hasKaramjaMedium: true
 									});
 									if (typeof result === 'string') continue;
 									const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);

@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, Table } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
@@ -16,7 +16,7 @@ import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, inventCommand, inventingCost, inventionBoosts } from '../../lib/invention/inventions';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { calcPerHour, makeTable, stringMatches, toKMB } from '../../lib/util';
+import { calcPerHour, stringMatches, toKMB } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
@@ -291,8 +291,15 @@ These Inventions are still not unlocked: ${locked
 						.join(', ')}`;
 				}
 				case 'xp': {
-					const xpTable = [];
-
+					const table = new Table();
+					table.addHeader(
+						'Invention Level(1-120)',
+						'Item Weighting(1-120)',
+						'XP Per',
+						'XP/Hr',
+						'XP/Hr With Toolkit',
+						'XP/Hr With Toolkit&Cape'
+					);
 					const lvls = [1, 10, 30, 60, 80, 90, 99, 110, 120];
 					const weightings = [1, 10, 30, 60, 80, 90, 99];
 					for (const lvl of lvls) {
@@ -309,35 +316,23 @@ These Inventions are still not unlocked: ${locked
 								inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent
 							);
 
-							xpTable.push([
-								lvl,
-								weighting,
-								xp,
+							table.addRow(
+								lvl.toString(),
+								weighting.toString(),
+								xp.toString(),
 								toKMB(calcPerHour(xp, dur)),
 								lvl >= inventionBoosts.dwarvenToolkit.requiredLevel
 									? toKMB(calcPerHour(xp, toolkitDur))
 									: 'N/A',
 								lvl === 99 ? toKMB(calcPerHour(xp, capeAndToolkitDur)) : 'N/A'
-							]);
+							);
 						}
 					}
 
 					return {
 						files: [
 							{
-								attachment: Buffer.from(
-									makeTable(
-										[
-											'Invention Level(1-120)',
-											'Item Weighting(1-120)',
-											'XP Per',
-											'XP/Hr',
-											'XP/Hr With Toolkit',
-											'XP/Hr With Toolkit&Cape'
-										],
-										xpTable
-									)
-								),
+								attachment: Buffer.from(table.toString()),
 								name: 'invention-xp.txt'
 							}
 						]
