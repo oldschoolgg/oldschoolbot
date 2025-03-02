@@ -70,7 +70,7 @@
 		"skia-canvas": "^1.0.2",
 		"sonic-boom": "^4.2.0",
 		"zlib-sync": "^0.1.9",
-		"zod": "^3.23.8"
+		"zod": "^3.24.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
