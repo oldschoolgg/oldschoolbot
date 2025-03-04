@@ -6,6 +6,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 import { YETI_ID } from '../constants';
+import { customKillableMonsters } from '../minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '../minions/data/killableMonsters/index';
 import { simulatedKillables } from '../simulation/simulatedKillables';
 
@@ -56,11 +57,10 @@ export default async ({
 			})
 		};
 
-		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
+		const killableMonster = [...killableMonsters, ...customKillableMonsters].find(mon => mon.id === osjsMonster.id);
 		if (killableMonster?.specialLoot) {
 			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity, cl: new Bank() });
 		}
-
 		return { bank: result.bank.toJSON() };
 	}
 
