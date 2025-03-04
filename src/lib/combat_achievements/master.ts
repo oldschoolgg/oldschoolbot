@@ -1029,7 +1029,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Theatre of Blood: Hard Mode',
 		rng: {
-			chancePerKill: 55,
+			chancePerKill: 5,
 			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).hardMode
 		}
 	},
