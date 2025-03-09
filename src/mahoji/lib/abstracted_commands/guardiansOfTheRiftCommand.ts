@@ -187,7 +187,8 @@ export async function guardiansOfTheRiftStartCommand(
 		minedFragments,
 		barrierAndGuardian,
 		rolls,
-		combinationRunes
+		combinationRunes,
+		itemCost: removeRunesAndNecks
 	});
 
 	return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${formatDuration(

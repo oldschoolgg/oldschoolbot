@@ -10,6 +10,7 @@ import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
 import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
 import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
 import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
+import { RefundTask } from '../tasks/minions/RefundActivity';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
@@ -193,7 +194,8 @@ const tasks: MinionTask[] = [
 	camdozaalFishingTask,
 	myNotesTask,
 	colosseumTask,
-	CreateForestersRationsTask
+	CreateForestersRationsTask,
+	RefundTask
 ];
 
 export async function processPendingActivities() {

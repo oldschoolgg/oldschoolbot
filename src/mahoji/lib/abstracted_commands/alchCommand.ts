@@ -103,7 +103,8 @@ export async function alchCommand(
 		quantity,
 		duration,
 		alchValue,
-		type: 'Alching'
+		type: 'Alching',
+		itemCost: consumedItems
 	});
 
 	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDuration(

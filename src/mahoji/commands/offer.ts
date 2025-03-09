@@ -272,7 +272,8 @@ export const offerCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await user.removeItemsFromBank(new Bank().add(bone.inputId, quantity));
+		const cost = new Bank().add(bone.inputId, quantity);
+		await user.removeItemsFromBank(cost);
 
 		await addSubTaskToActivityTask<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,
@@ -280,7 +281,8 @@ export const offerCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity,
 			duration,
-			type: 'Offering'
+			type: 'Offering',
+			itemCost: cost
 		});
 		return `${user.minionName} is now offering ${quantity}x ${
 			bone.name
