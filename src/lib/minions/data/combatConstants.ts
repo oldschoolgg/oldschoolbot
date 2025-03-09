@@ -64,6 +64,10 @@ export const CombatOptionsArray: CombatOptionsDesc[] = [
 	}
 ];
 
+export const combatOptionChoices = CombatOptionsArray.map(o => {
+	return { name: o.name, value: o.name };
+});
+
 export const cannonSingleConsumables: Consumable = {
 	itemCost: new Bank().add('Cannonball', 1),
 	qtyPerMinute: 16

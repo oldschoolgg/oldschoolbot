@@ -1,7 +1,7 @@
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 
 import { colosseumCommand } from '../../../../lib/colosseum';
-import type { PvMMethod } from '../../../../lib/constants';
+import { BitField, type PvMMethod } from '../../../../lib/constants';
 import { getCurrentPeak } from '../../../../lib/getCurrentPeak';
 import { trackLoot } from '../../../../lib/lootTrack';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
@@ -145,6 +145,12 @@ export async function minionKillCommand(
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
+
+	if (monster.sacrificeID) {
+		response += user.bitfield.includes(BitField.SacrificeLoot)
+			? ' You are sacrificing loot for a higher chance of pet.'
+			: ' You are not sacrificing, so receive regular loot.';
+	}
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;

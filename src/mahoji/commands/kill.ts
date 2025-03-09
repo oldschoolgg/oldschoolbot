@@ -85,14 +85,28 @@ export const killCommand: OSBMahojiCommand = {
 			name: 'master',
 			description: 'On slayer task from a master?',
 			required: false,
-			choices: slayerMasterChoices
+			choices: slayerMasterChoices.filter(master =>
+				['Duradel', 'Konar quo Maten', 'Krystilia'].includes(master.name)
+			)
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'sacrifice',
+			description: 'Sacrifice loot for pet chance?',
+			required: false
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		interaction
-	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string }>) => {
+	}: CommandRunOptions<{
+		name: string;
+		quantity: number;
+		catacombs: boolean;
+		master: string;
+		sacrifice: boolean;
+	}>) => {
 		const user = await mUserFetch(userID);
 		await deferInteraction(interaction);
 		const result = await Workers.kill({
@@ -106,12 +120,17 @@ export const killCommand: OSBMahojiCommand = {
 				user
 					.buildTertiaryItemChanges(false, options.master === 'Krystilia', options.master !== undefined)
 					.entries()
-			)
+			),
+			sacrificeLoot: options.sacrifice
 		});
 
 		if (result.error) {
 			return result.error;
 		}
+
+		const killString = `Simulated loot from killing ${options.quantity} ${options.name}, ${options.master ? `on task (${options.master})` : 'off task'}${options.catacombs ? ', in catacombs' : ''}${options.sacrifice ? ', sacrificing loot' : ''}. `;
+
+		result.content = result.content ? result.content : killString;
 
 		const image = await makeBankImage({
 			bank: new Bank(result.bank),
