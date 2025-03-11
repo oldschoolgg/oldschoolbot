@@ -160,7 +160,7 @@ export const seaMonkeySpells: SeaMonkeySpell[] = [
 	},
 	{
 		id: 5,
-		tierRequired: 3,
+		tierRequired: 2,
 		name: 'Superheat Item',
 		description: 'Turns ore into bars',
 		itemIDs: Bars.map(i => i.id)
