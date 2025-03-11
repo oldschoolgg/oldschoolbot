@@ -29,6 +29,7 @@ import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank
 import { getUsersPerkTier } from '../../lib/perkTiers';
 
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
+import Bars from '../../lib/skilling/skills/smithing/smeltables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	type SeaMonkeySpell,
@@ -83,7 +84,6 @@ import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
 import { getItemCostFromConsumables } from '../lib/abstracted_commands/minionKill/handleConsumables';
 import { collectables } from '../lib/collectables';
 import type { OSBMahojiCommand } from '../lib/util';
-import Bars from '../../lib/skilling/skills/smithing/smeltables';
 
 const tameImageSize = 96;
 
@@ -1382,13 +1382,13 @@ async function superheatItemCommand(user: MUser, channelID: string, itemName: st
 	const hasKlik = new Bank((await getUsersTame(user))?.tame?.fed_items as ItemBank).has('Klik');
 
 	if (!item) {
-		return "That's not a valid item to tan.";
+		return "That's not a valid item to superheat.";
 	}
 
 	if (!hasKlik && (itemName === 'Dwarven bar' || itemName === 'Sun-metal bar')) {
 		return `You need to feed your tame a Klik to super heat ${itemName}.`;
 	}
-	
+
 	return monkeyMagicHandler(user, channelID, {
 		spell: seaMonkeySpells.find(i => i.id === 5)!,
 		itemID: item.id,
@@ -1777,7 +1777,7 @@ export type TamesCommandOptions = CommandRunOptions<{
 		spin_flax?: string;
 		plank_make?: string;
 		superglass_make?: string;
-		superheat_item?: string
+		superheat_item?: string;
 	};
 	activity?: {
 		name: string;
@@ -2002,7 +2002,7 @@ export const tamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'superheat_item',
-					description: 'The ore you want to make into bars',
+					description: 'Superheat ore into bars',
 					required: false,
 					choices: Bars.map(t => ({ name: t.name, value: t.name }))
 				}

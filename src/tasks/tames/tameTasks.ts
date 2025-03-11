@@ -490,7 +490,8 @@ export async function repeatTameTrip({
 				case 5: {
 					args = {
 						superheat_item: getOSItem(data.itemID).name
-					}
+					};
+					break;
 				}
 			}
 			return runCommand({
