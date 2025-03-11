@@ -17,6 +17,7 @@ import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
+import Bars from './skilling/skills/smithing/smeltables';
 
 export enum TameSpeciesID {
 	Igne = 1,
@@ -77,10 +78,10 @@ export const tameFeedableItems: FeedableItem[] = [
 	},
 	{
 		item: getOSItem('Klik'),
-		description: 'Makes tanning spell faster',
+		description: 'Makes tanning spell faster and the ability to superheat Dwarven & Sun-metal bars',
 		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
 		announcementString:
-			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster."
+			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster, and superheat Dwarven & Sun-metal bars"
 	},
 	{
 		item: getOSItem('Impling locator'),
@@ -121,7 +122,7 @@ export const seaMonkeyStaves = [
 ] as const;
 
 export interface SeaMonkeySpell {
-	id: 1 | 2 | 3 | 4;
+	id: 1 | 2 | 3 | 4 | 5;
 	tierRequired: number;
 	name: string;
 	description: string;
@@ -156,6 +157,13 @@ export const seaMonkeySpells: SeaMonkeySpell[] = [
 		name: 'Superglass make',
 		description: 'Turns seaweed/sand into molten glass',
 		itemIDs: [itemID('Molten glass')]
+	},
+	{
+		id: 5,
+		tierRequired: 3,
+		name: 'Superheat Item',
+		description: 'Turns ore into bars',
+		itemIDs: Bars.map(i => i.id)
 	}
 ];
 

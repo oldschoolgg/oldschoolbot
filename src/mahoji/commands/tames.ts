@@ -83,6 +83,7 @@ import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
 import { getItemCostFromConsumables } from '../lib/abstracted_commands/minionKill/handleConsumables';
 import { collectables } from '../lib/collectables';
 import type { OSBMahojiCommand } from '../lib/util';
+import Bars from '../../lib/skilling/skills/smithing/smeltables';
 
 const tameImageSize = 96;
 
@@ -1376,6 +1377,31 @@ async function superGlassCommand(user: MUser, channelID: string) {
 	});
 }
 
+async function superheatItemCommand(user: MUser, channelID: string, itemName: string) {
+	const item = Bars.find(i => getOSItem(i.id).name === itemName);
+	const hasKlik = new Bank((await getUsersTame(user))?.tame?.fed_items as ItemBank).has('Klik');
+
+	if (!item) {
+		return "That's not a valid item to tan.";
+	}
+
+	if (!hasKlik && (itemName === 'Dwarven bar' || itemName === 'Sun-metal bar')) {
+		return `You need to feed your tame a Klik to super heat ${itemName}.`;
+	}
+	
+	return monkeyMagicHandler(user, channelID, {
+		spell: seaMonkeySpells.find(i => i.id === 5)!,
+		itemID: item.id,
+		costPerItem: new Bank().add(item.inputOres),
+		lootPerItem: new Bank().add(item.id),
+		timePerSpell: Time.Second * 3,
+		runes: {
+			per: 1,
+			cost: new Bank().add('Nature rune', 1).add('Fire rune', 4)
+		}
+	});
+}
+
 async function plankMakeCommand(user: MUser, channelID: string, plankName: string) {
 	const item = Planks.find(p => p.name === plankName);
 	if (!item) {
@@ -1751,6 +1777,7 @@ export type TamesCommandOptions = CommandRunOptions<{
 		spin_flax?: string;
 		plank_make?: string;
 		superglass_make?: string;
+		superheat_item?: string
 	};
 	activity?: {
 		name: string;
@@ -1971,6 +1998,13 @@ export const tamesCommand: OSBMahojiCommand = {
 					description: 'Create glass.',
 					required: false,
 					choices: [{ name: 'Molten glass', value: 'molten glass' }]
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'superheat_item',
+					description: 'The ore you want to make into bars',
+					required: false,
+					choices: Bars.map(t => ({ name: t.name, value: t.name }))
 				}
 			]
 		},
@@ -2053,6 +2087,7 @@ export const tamesCommand: OSBMahojiCommand = {
 		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelID);
 		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
 		if (options.cast?.superglass_make) return superGlassCommand(user, channelID);
+		if (options.cast?.superheat_item) return superheatItemCommand(user, channelID, options.cast.superheat_item);
 		if (options.clue?.clue) {
 			return tameClueCommand(user, channelID, options.clue.clue);
 		}

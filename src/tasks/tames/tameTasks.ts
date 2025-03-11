@@ -487,6 +487,11 @@ export async function repeatTameTrip({
 					};
 					break;
 				}
+				case 5: {
+					args = {
+						superheat_item: getOSItem(data.itemID).name
+					}
+				}
 			}
 			return runCommand({
 				commandName: 'tames',
