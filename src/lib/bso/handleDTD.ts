@@ -1,7 +1,6 @@
 import type { Prisma } from '@prisma/client';
 import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import type { KillableMonster } from '../minions/types';
 import { itemID } from '../util';
 
