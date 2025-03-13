@@ -28,6 +28,7 @@ import { vasaCommand } from '../vasaCommand';
 import { wintertodtCommand } from '../wintertodtCommand';
 import { zalcanoCommand } from '../zalcanoCommand';
 import { newMinionKillCommand } from './newMinionKill';
+import { Time } from 'e';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -91,10 +92,6 @@ export async function minionKillCommand(
 		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
 	}
 
-	const dtdResult = await handleDTD(monster, user);
-	if (typeof dtdResult === 'string') {
-		return dtdResult;
-	}
 	const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
 
 	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
@@ -134,6 +131,11 @@ export async function minionKillCommand(
 		return updateResult;
 	}
 
+	const dtdResult = await handleDTD(monster, user);
+	if (typeof dtdResult === 'string') {
+		return dtdResult;
+	}
+
 	if (updateResult.message.length > 0) result.messages.push(updateResult.message);
 
 	if (updateResult.totalCost.length > 0) {
@@ -163,7 +165,7 @@ export async function minionKillCommand(
 		channelID,
 		q: result.quantity,
 		iQty: inputQuantity,
-		duration: result.duration,
+		duration: dtdResult ? Time.Second * 5 : result.duration,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
@@ -175,16 +177,16 @@ export async function minionKillCommand(
 		onTask: slayerInfo.assignedTask !== null
 	});
 
-	if (dtdResult) {
-		return `<:deathtouched_dart:822674661967265843> ${user.minionName} used a **Deathtouched dart**.`;
-	}
-
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;
+	}
+
+	if (dtdResult) {
+		response += `<:deathtouched_dart:822674661967265843> ${user.minionName} used a **Deathtouched dart**.`;
 	}
 
 	return response;
