@@ -1,5 +1,6 @@
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 
+import { Time } from 'e';
 import { handleDTD } from '../../../../lib/bso/handleDTD';
 import { colosseumCommand } from '../../../../lib/colosseum';
 import type { PvMMethod } from '../../../../lib/constants';
@@ -28,7 +29,6 @@ import { vasaCommand } from '../vasaCommand';
 import { wintertodtCommand } from '../wintertodtCommand';
 import { zalcanoCommand } from '../zalcanoCommand';
 import { newMinionKillCommand } from './newMinionKill';
-import { Time } from 'e';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -177,16 +177,10 @@ export async function minionKillCommand(
 		onTask: slayerInfo.assignedTask !== null
 	});
 
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
-		result.duration
-	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, ${dtdResult ? `using a <:deathtouched_dart:822674661967265843> **Deathtouched dart**, it'll take around ${formatDuration(Time.Second * 5)}` : `It'll take around ${formatDuration(result.duration)} to finish.`}. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;
-	}
-
-	if (dtdResult) {
-		response += `<:deathtouched_dart:822674661967265843> ${user.minionName} used a **Deathtouched dart**.`;
 	}
 
 	return response;

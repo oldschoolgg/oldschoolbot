@@ -40,8 +40,12 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
 		}
 
-		if ([BSOMonsters.Akumu.id, BSOMonsters.Venatrix.id].includes(monster.id)) {
-			return 'This monster is temporarily unable to be killed with a Deathtouched dart.';
+		if (monster.name === 'Akumu') {
+			return 'You throw your dart into the darkness for it to never return.';
+		}
+
+		if (monster.name === 'Venatrix') {
+			return `You throw your dart but gets stuck in Venatrix's web.`;
 		}
 
 		await userStatsUpdate(user.id, {
