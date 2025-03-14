@@ -4,7 +4,6 @@ import type { MonsterData } from 'oldschooljs/dist/meta/monsterData';
 import setCustomMonster, { makeKillTable } from '../../../../util/setCustomMonster';
 import type { KillableMonster } from '../../../types';
 import { SunMoonMonsters } from './SunMoon';
-import { KalphiteKingMonster } from './bosses/KalphiteKing.js';
 import { customDemiBosses } from './demiBosses';
 import { MiscCustomMonsters } from './misc';
 import { resourceDungeonMonsters } from './resourceDungeons';
@@ -18,7 +17,7 @@ export interface CustomMonster extends Readonly<Omit<Readonly<KillableMonster>, 
 	isCustom: true;
 }
 
-export const customKillableMonsters: KillableMonster[] = [KalphiteKingMonster];
+export const customKillableMonsters: KillableMonster[] = [];
 
 export const BSOMonsters = {
 	...customDemiBosses,
