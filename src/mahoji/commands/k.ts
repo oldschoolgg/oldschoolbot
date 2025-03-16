@@ -51,6 +51,19 @@ export const autocompleteMonsters = [
 	}
 ];
 
+const wikiPrefix = 'https://wiki.oldschool.gg/osb';
+
+const otherMonsters = [
+	{ name: 'nex', link: '/bosses/nex/' },
+	{ name: 'colosseum', link: '/bosses/colosseum/' },
+	{ name: 'wintertodt', link: '/activities/wintertodt/' },
+	{ name: 'tempoross', link: '/skills/fishing/tempoross/' },
+	{ name: 'zalcano', link: '/miscelleanous/zalcano/' },
+	{ name: "phosani's nightmare", link: '/bosses/the-nightmare/#phosanis-nightmare' },
+	{ name: 'mass nightmare', link: '/bosses/the-nightmare/' },
+	{ name: 'solo nightmare', link: '/bosses/the-nightmare/' }
+];
+
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
 	const res = await prisma.$queryRawUnsafe<{ mon_id: string; last_killed: Date }[]>(
 		`SELECT DISTINCT((data->>'mi')) AS mon_id, MAX(start_date) as last_killed
@@ -171,31 +184,9 @@ export const minionKCommand: OSBMahojiCommand = {
 export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
 	const monster = findMonster(name);
 
-	const prefix = 'https://wiki.oldschool.gg/osb';
-
-	if (stringMatches(name, 'nex')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/nex/>).\n`;
-	}
-
-	if (stringMatches(name, 'colosseum')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/colosseum/>).\n`;
-	}
-
-	if (stringMatches(name, 'wintertodt')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/activities/wintertodt/>).\n`;
-	}
-
-	if (stringMatches(name, 'tempoross')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/skills/fishing/tempoross/>).\n`;
-	}
-
-	if (stringMatches(name, 'zalcano')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/miscelleanous/zalcano/>).\n`;
-	}
-
-	if (stringMatches(name.split(' ').pop(), 'nightmare')) {
-		const link = stringMatches(name.split(' ')[0], 'phosanis') ? '#phosanis-nightmare' : '';
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/the-nightmare/${link}>).\n`;
+	const otherMon = otherMonsters.find(m => stringMatches(name, m.name));
+	if (otherMon) {
+		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;
 	}
 
 	if (!monster) {
@@ -206,13 +197,13 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 
 	if (wikiMonsters.includes(monster)) {
 		str.push(
-			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/monsters/#${monster.name.toLowerCase().replace(/\s/g, '-')}>).\n`
+			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${wikiPrefix}/monsters/#${monster.name.toLowerCase().replace(/\s/g, '-')}>).\n`
 		);
 	}
 
 	if (monster.name.includes('Revenant')) {
 		str.push(
-			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/wildy/#revenants>).\n`
+			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${wikiPrefix}/bosses/wildy/#revenants>).\n`
 		);
 	}
 
