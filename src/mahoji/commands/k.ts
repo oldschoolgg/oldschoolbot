@@ -56,10 +56,7 @@ const otherMonsters = [
 	}
 ];
 
-export const autocompleteMonsters = [
-	...killableMonsters,
-	...otherMonsters,
-]
+export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];
 
 const wikiPrefix = 'https://wiki.oldschool.gg/osb';
 
@@ -181,7 +178,7 @@ export const minionKCommand: OSBMahojiCommand = {
 };
 
 export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
-	const otherMon = otherMonsters.find(m => m.name == name || m.aliases.includes(name));
+	const otherMon = otherMonsters.find(m => m.name === name || m.aliases.includes(name));
 	if (otherMon) {
 		return `View information, item costs, boosts and requirements for ${otherMon.name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;
 	}
