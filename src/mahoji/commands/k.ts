@@ -206,7 +206,7 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 
 	if (wikiMonsters.includes(monster)) {
 		str.push(
-			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/monsters/#${monster.name.toLowerCase().replace(' ', '-')}>).\n`
+			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/monsters/#${monster.name.toLowerCase().replace(/\s/g, '-')}>).\n`
 		);
 	}
 
