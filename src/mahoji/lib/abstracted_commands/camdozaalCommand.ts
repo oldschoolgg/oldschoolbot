@@ -55,8 +55,9 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		powermining: powermine,
 		goldSilverBoost,
 		miningLvl: miningLevel,
-		maxTripLength: calcMaxTripLength(user, 'Mining'),
-		hasGlory: user.hasEquipped('Amulet of glory')
+		maxTripLength: calcMaxTripLength(user, 'CamdozaalMining'),
+		hasGlory: user.hasEquipped('Amulet of glory'),
+		hasKaramjaMedium: false
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;

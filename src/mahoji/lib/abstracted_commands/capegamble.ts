@@ -7,6 +7,7 @@ import { roll } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { petMessage } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../mahojiSettings';
 
 export async function capeGambleStatsCommand(user: MUser) {
@@ -107,8 +108,9 @@ export async function capeGambleCommand(
 	const loot = gotPet ? new Bank().add(pet.id) : undefined;
 
 	await user.transactItems({ itemsToAdd: loot, itemsToRemove: new Bank().add(item.id), collectionLog: true });
-
+	let str = '';
 	if (gotPet) {
+		str += petMessage(loot);
 		globalClient.emit(
 			Events.ServerNotification,
 			`**${user.badgedUsername}'s** just received their ${formatOrdinal(
@@ -116,6 +118,7 @@ export async function capeGambleCommand(
 			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);
 		return {
+			content: str,
 			files: [
 				{
 					name: 'image.jpg',

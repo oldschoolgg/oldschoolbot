@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, Table } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -8,13 +8,7 @@ import { globalDroprates } from '../../lib/data/globalDroprates';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import Potions from '../../lib/skilling/skills/herblore/mixables/potions';
-import {
-	calcBabyYagaHouseDroprate,
-	clAdjustedDroprate,
-	formatDuration,
-	makeTable,
-	stringMatches
-} from '../../lib/util';
+import { calcBabyYagaHouseDroprate, clAdjustedDroprate, formatDuration, stringMatches } from '../../lib/util';
 import type { OSBMahojiCommand } from '../lib/util';
 
 interface GlobalDroprate {
@@ -28,7 +22,8 @@ const droprates: GlobalDroprate[] = [
 		name: 'Baby yaga house pet',
 		output: () => {
 			const thirtyMinTicks = (Time.Minute * 30) / (Time.Millisecond * 600);
-
+			const table = new Table();
+			table.addHeader('Object', '1 in X Droprate', 'Num 30min trips');
 			const rows: [string, number, string][] = [];
 			for (const con of Constructables) {
 				const droprate = calcBabyYagaHouseDroprate(con.xp, new Bank());
@@ -36,35 +31,43 @@ const droprates: GlobalDroprate[] = [
 				rows.push([con.name, droprate, (droprate / numBuiltPerTrip).toFixed(2)]);
 			}
 			rows.sort((a, b) => a[1] - b[1]);
-			return makeTable(['Object', '1 in X Droprate', 'Num 30min trips'], rows);
+			for (const row of rows) {
+				table.addRow(...row.map(t => t.toString()));
+			}
+			return table.toString();
 		},
 		notes: ['If more than 1 in CL, droprate is multipled by the amount you have in your CL']
 	},
 	{
 		name: 'Slayer masks/helms',
 		output: () => {
-			const rows = [];
+			const table = new Table();
+			table.addHeader('Name', 'Kills For Helm', 'Mask Droprate');
 			for (const a of slayerMaskHelms) {
-				rows.push([a.helm.name, a.killsRequiredForUpgrade, a.maskDropRate]);
+				table.addRow(a.helm.name, a.killsRequiredForUpgrade.toString(), a.maskDropRate.toString());
 			}
-
-			return makeTable(['Name', 'Kills For Helm', 'Mask Droprate'], rows);
+			return table.toString();
 		}
 	},
 	{
 		name: 'Herbert (pet)',
 		output: () => {
-			const rows = [];
+			const table = new Table();
+			table.addHeader('Potion Name', 'Droprate per hour', 'Droprate per hour at max xp');
 
 			for (const pot of Potions) {
 				const dropratePerMinute = herbertDroprate(1, pot.level);
 				const dropratePerMinuteAtMax = herbertDroprate(MAX_XP, pot.level);
-				rows.push([pot.item.name, 1 / (60 / dropratePerMinute), 1 / (60 / dropratePerMinuteAtMax)]);
+				table.addRow(
+					pot.item.name,
+					(1 / (60 / dropratePerMinute)).toString(),
+					(1 / (60 / dropratePerMinuteAtMax)).toString()
+				);
 			}
 
 			return `Herbert is rolled per minute of your trip, and the droprate halves (becomes twice as common) when you have the max (${MAX_XP.toLocaleString()}) Herblore XP.
 
-${makeTable(['Potion Name', 'Droprate per hour', 'Droprate per hour at max xp'], rows)}`;
+${table.toString()}`;
 		}
 	}
 ];

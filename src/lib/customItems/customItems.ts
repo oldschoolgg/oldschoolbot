@@ -13739,3 +13739,341 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	73350,
+	'Attack master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73351,
+	'Strength master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73352,
+	'Defence master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73353,
+	'Ranging master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73354,
+	'Prayer master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73355,
+	'Magic master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73356,
+	'Runecraft master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73357,
+	'Construction master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73358,
+	'Hitpoints master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73359,
+	'Agility master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73360,
+	'Herblore master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73361,
+	'Thieving master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73362,
+	'Crafting master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73363,
+	'Fletching master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73364,
+	'Slayer master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73365,
+	'Hunter master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73366,
+	'Divination master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73367,
+	'Mining master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73368,
+	'Smithing master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73369,
+	'Fishing master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73370,
+	'Cooking master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73371,
+	'Firemaking master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73372,
+	'Woodcutting master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73373,
+	'Farming master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73374,
+	'Dungeoneering master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	73375,
+	'Invention master cape (inverted)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);

@@ -96,6 +96,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Avantoe seed'), 'avan'],
 	[i('Kwuarm seed'), 'kwuarm'],
 	[i('Snapdragon seed'), 'snap'],
+	[i('Huasca seed'), 'huas'],
 	[i('Cadantine seed'), 'cadan'],
 	[i('Lantadyme seed'), 'lanta'],
 	[i('Dwarf weed seed'), 'dwarf'],
@@ -170,6 +171,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Irit leaf'), 'irit'],
 	[i('Avantoe'), 'avan'],
 	[i('Kwuarm'), 'kwuarm'],
+	[i('Huasca'), 'huas'],
 	[i('Snapdragon'), 'snap'],
 	[i('Cadantine'), 'cadan'],
 	[i('Lantadyme'), 'lanta'],
@@ -185,6 +187,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Grimy irit leaf'), 'irit'],
 	[i('Grimy avantoe'), 'avan'],
 	[i('Grimy kwuarm'), 'kwuarm'],
+	[i('Grimy huasca'), 'huas'],
 	[i('Grimy snapdragon'), 'snap'],
 	[i('Grimy cadantine'), 'cadan'],
 	[i('Grimy lantadyme'), 'lanta'],
@@ -217,6 +220,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Harralander potion (unf)'), 'harra'],
 	[i('Irit potion (unf)'), 'irit'],
 	[i('Kwuarm potion (unf)'), 'kwuarm'],
+	[i('Huasca potion (unf)'), 'huas'],
 	[i('Lantadyme potion (unf)'), 'lanta'],
 	[i('Marrentill potion (unf)'), 'marren'],
 	[i('Ranarr potion (unf)'), 'ranarr'],
@@ -459,10 +463,16 @@ export class BankImageTask {
 			}
 		}
 
-		const data = this.spriteSheetData[itemID];
+		const data = this.spriteSheetData[itemID] ?? this.bsoSpriteSheetData[itemID];
 		if (data) {
 			const [sX, sY, width, height] = data;
-			const image = await getClippedRegionImage(this.spriteSheetImage, sX, sY, width, height);
+			const image = await getClippedRegionImage(
+				this.spriteSheetData[itemID] ? this.spriteSheetImage : this.bsoSpriteSheetImage,
+				sX,
+				sY,
+				width,
+				height
+			);
 			return image;
 		}
 

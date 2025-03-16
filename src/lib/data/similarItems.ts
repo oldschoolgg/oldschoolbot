@@ -442,9 +442,17 @@ for (const cape of skillcapes) {
 	const trimmedCape = getOSItem(cape.trimmed).name;
 	const masterCape = getOSItem(cape.masterCape.id).name;
 	const expertCape = cape.expertCape ? getOSItem(cape.expertCape.id).name : null;
+	const invertedMasterCape = cape.masterCapeInverted.name;
 
-	const skillCapeList = [trimmedCape, 'Max cape', masterCape, 'Completionist cape', 'Completionist cape (t)'];
-	const masterCapeList = ['Completionist cape', 'Completionist cape (t)'];
+	const skillCapeList = [
+		trimmedCape,
+		'Max cape',
+		masterCape,
+		'Completionist cape',
+		'Completionist cape (t)',
+		invertedMasterCape
+	];
+	const masterCapeList = ['Completionist cape', 'Completionist cape (t)', invertedMasterCape];
 
 	if (expertCape !== null) {
 		skillCapeList.push(expertCape);

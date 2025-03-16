@@ -14,6 +14,7 @@ interface MiningTimeOptions {
 	goldSilverBoost: boolean;
 	miningLvl: number;
 	passedDuration?: number;
+	hasKaramjaMedium: boolean;
 }
 
 export function determineMiningTime({
@@ -28,11 +29,15 @@ export function determineMiningTime({
 	miningLvl,
 	passedDuration,
 	hasGlory,
-	maxTripLength
+	maxTripLength,
+	hasKaramjaMedium
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
 	if (ore.name === 'Gem rock' && hasGlory) {
 		intercept *= 3;
+		if (hasKaramjaMedium) {
+			intercept *= 1.5;
+		}
 	}
 	let timeElapsed = 0;
 

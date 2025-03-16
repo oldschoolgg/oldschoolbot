@@ -215,8 +215,9 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 			goldSilverBoost: false,
 			miningLvl: miningLevel,
 			passedDuration: duration,
-			maxTripLength: calcMaxTripLength(user, 'Mining'),
-			hasGlory: user.hasEquipped('Amulet of glory')
+			maxTripLength: calcMaxTripLength(user, 'ShootingStars'),
+			hasGlory: user.hasEquipped('Amulet of glory'),
+			hasKaramjaMedium: false
 		});
 		duration += timeToMine;
 		dustReceived += newQuantity;

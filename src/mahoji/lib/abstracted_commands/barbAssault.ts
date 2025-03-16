@@ -199,13 +199,15 @@ export async function barbAssaultGambleCommand(
 		}
 	);
 	const loot = new Bank().add(table.roll(quantity));
+	const str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
+
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	const response: Awaited<CommandResponse> = {
-		content: `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
+		content: str,
 		files: [
 			(
 				await makeBankImage({

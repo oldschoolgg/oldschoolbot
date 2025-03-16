@@ -315,7 +315,6 @@ export const agilityTask: MinionTask = {
 		);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
-			petMessages.push("You have a funny feeling you're being followed...");
 		}
 
 		await transactItems({

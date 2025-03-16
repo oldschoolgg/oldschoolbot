@@ -5,7 +5,7 @@
 	"scripts": {
 		"============DEVELOPMENT": "============",
 		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm build:esbuild && node --enable-source-maps dist\"",
-		"dev:stage1": "pnpm concurrent \"pnpm install\" \"prisma db push\" \"pnpm generate:robochimp\"",
+		"dev:stage1": "pnpm concurrent \"pnpm install\" \"prisma db push\" \"pnpm generate:robochimp\" \"pnpm monorepo:build\"",
 		"dev:stage2": "pnpm concurrent \"pnpm commands\" \"pnpm creatables\" \"pnpm build\" \"tsx ./scripts/bsoData.ts\"",
 		"dev:stage3": "pnpm lint && pnpm test",
 		"dev": "pnpm dev:stage1 && pnpm dev:stage2 && pnpm dev:stage3",
@@ -47,8 +47,7 @@
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sapphire/timer-manager": "^1.0.2",
-		"@sentry/node": "^8.34.0",
-		"ascii-table3": "^0.9.0",
+		"@sentry/node": "^8.49.0",
 		"bufferutil": "^4.0.8",
 		"discord.js": "^14.16.3",
 		"dotenv": "^16.4.5",
@@ -70,7 +69,7 @@
 		"skia-canvas": "^1.0.2",
 		"sonic-boom": "^4.2.0",
 		"zlib-sync": "^0.1.9",
-		"zod": "^3.23.8"
+		"zod": "^3.24.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
@@ -80,7 +79,7 @@
 		"@types/node-fetch": "^2.6.1",
 		"@vitest/coverage-v8": "^2.1.2",
 		"concurrently": "^8.2.2",
-		"esbuild": "0.24.0",
+		"esbuild": "0.25.0",
 		"node-gyp": "^10.2.0",
 		"node-gyp-build": "^4.8.4",
 		"nodemon": "^3.1.7",
@@ -89,10 +88,10 @@
 		"spritesmith": "^3.4.1",
 		"tsx": "^4.19.2",
 		"typescript": "^5.5.3",
-		"vitest": "^2.1.5"
+		"vitest": "^2.1.9"
 	},
 	"resolutions": {
-		"esbuild": "0.24.0"
+		"esbuild": "0.25.0"
 	},
-	"packageManager": "pnpm@9.14.2"
+	"packageManager": "pnpm@9.14.2+sha512.6e2baf77d06b9362294152c851c4f278ede37ab1eba3a55fda317a4a17b209f4dbb973fb250a77abc463a341fcb1f17f17cfa24091c4eb319cda0d9b84278387"
 }

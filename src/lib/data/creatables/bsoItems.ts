@@ -1444,3 +1444,18 @@ for (const { cape, skills } of expertCapesSource) {
 		noCl: true
 	});
 }
+
+for (const cape of Skillcapes) {
+	BsoCreateables.push({
+		name: cape.masterCapeInverted.name,
+		inputItems: new Bank().add(cape.masterCape).add('Coins', 100_000_000),
+		outputItems: new Bank().add(cape.masterCapeInverted),
+		noCl: true
+	});
+	BsoCreateables.push({
+		name: `Revert ${cape.masterCapeInverted.name}`,
+		inputItems: new Bank().add(cape.masterCapeInverted),
+		outputItems: new Bank().add(cape.masterCape),
+		noCl: true
+	});
+}
