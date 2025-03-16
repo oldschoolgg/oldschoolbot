@@ -15,54 +15,53 @@ import findMonster from '../../lib/util/findMonster';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
 
-export const autocompleteMonsters = [
-	...killableMonsters,
+const otherMonsters = [
 	{
 		id: -1,
 		name: 'Tempoross',
-		aliases: ['temp', 'tempoross']
+		aliases: ['temp', 'tempoross'],
+		link: '/skills/fishing/tempoross/'
 	},
 	...["Phosani's Nightmare", 'Mass Nightmare', 'Solo Nightmare'].map(s => ({
 		id: -1,
 		name: s,
-		aliases: [s.toLowerCase()]
+		aliases: [s.toLowerCase()],
+		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
 	})),
 	{
 		name: 'Nex',
 		aliases: ['nex'],
-		id: NEX_ID
+		id: NEX_ID,
+		link: '/bosses/nex/'
 	},
 	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
 		id: ZALCANO_ID,
-		emoji: '<:Smolcano:604670895113633802>'
+		emoji: '<:Smolcano:604670895113633802>',
+		link: '/miscelleanous/zalcano/'
 	},
 	{
 		name: 'Wintertodt',
 		aliases: ['wt', 'wintertodt', 'todt'],
 		id: -1,
-		emoji: '<:Phoenix:324127378223792129>'
+		emoji: '<:Phoenix:324127378223792129>',
+		link: '/activities/wintertodt/'
 	},
 	{
 		name: 'Colosseum',
 		aliases: ['colo', 'colosseum'],
-		id: -1
+		id: -1,
+		link: '/bosses/colosseum/'
 	}
 ];
 
-const wikiPrefix = 'https://wiki.oldschool.gg/osb';
+export const autocompleteMonsters = [
+	...killableMonsters,
+	...otherMonsters,
+]
 
-const otherMonsters = [
-	{ name: 'nex', link: '/bosses/nex/' },
-	{ name: 'colosseum', link: '/bosses/colosseum/' },
-	{ name: 'wintertodt', link: '/activities/wintertodt/' },
-	{ name: 'tempoross', link: '/skills/fishing/tempoross/' },
-	{ name: 'zalcano', link: '/miscelleanous/zalcano/' },
-	{ name: "phosani's nightmare", link: '/bosses/the-nightmare/#phosanis-nightmare' },
-	{ name: 'mass nightmare', link: '/bosses/the-nightmare/' },
-	{ name: 'solo nightmare', link: '/bosses/the-nightmare/' }
-];
+const wikiPrefix = 'https://wiki.oldschool.gg/osb';
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
 	const res = await prisma.$queryRawUnsafe<{ mon_id: string; last_killed: Date }[]>(
@@ -182,13 +181,12 @@ export const minionKCommand: OSBMahojiCommand = {
 };
 
 export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
-	const monster = findMonster(name);
-
-	const otherMon = otherMonsters.find(m => stringMatches(name, m.name));
+	const otherMon = otherMonsters.find(m => m.name == name || m.aliases.includes(name));
 	if (otherMon) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;
+		return `View information, item costs, boosts and requirements for ${otherMon.name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;
 	}
 
+	const monster = findMonster(name);
 	if (!monster) {
 		return "That's not a valid monster";
 	}
@@ -197,13 +195,13 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 
 	if (wikiMonsters.includes(monster)) {
 		str.push(
-			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${wikiPrefix}/monsters/#${monster.name.toLowerCase().replace(/\s/g, '-')}>).\n`
+			`View information, item costs, boosts and requirements for ${monster.name} on the [wiki](<${wikiPrefix}/monsters/#${monster.name.toLowerCase().replace(/\s/g, '-')}>).\n`
 		);
 	}
 
 	if (monster.name.includes('Revenant')) {
 		str.push(
-			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${wikiPrefix}/bosses/wildy/#revenants>).\n`
+			`View information, item costs, boosts and requirements for ${monster.name} on the [wiki](<${wikiPrefix}/bosses/wildy/#revenants>).\n`
 		);
 	}
 
