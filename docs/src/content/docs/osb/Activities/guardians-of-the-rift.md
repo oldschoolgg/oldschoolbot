@@ -84,7 +84,7 @@ Each game will reward you with runes, talismans, and some untradeable items, alo
 | Law talisman            | 50                     | -                          |
 | Death talisman          | 80                     | -                          |
 | Blood talisman          | 100                    | -                          |
-| Abyssal Lantern         | -                      | 100                        |
+| Abyssal Lantern         | 1500                   | 100                        |
 | Abyssal red dye         | -                      | 50                         |
 | Abyssal green dye       | -                      | 50                         |
 | Abyssal blue dye        | -                      | 50                         |
