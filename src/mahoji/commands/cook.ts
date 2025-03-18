@@ -102,7 +102,7 @@ export const cookCommand: OSBMahojiCommand = {
 
 		const skills = user.skillsAsLevels;
 		let timeToCookSingleCookable = Time.Second * 2.4 + Time.Second * 0.45;
-		
+
 		let cookingBoost = 1;
 		const cookingBoostItems: string[] = [];
 		if (hasRemy) {
@@ -111,7 +111,7 @@ export const cookCommand: OSBMahojiCommand = {
 		}
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.9;
-		} else if (skills.cooking >= 92 && cookable.id === itemID('Cooked karambwan')) { 
+		} else if (skills.cooking >= 92 && cookable.id === itemID('Cooked karambwan')) {
 			timeToCookSingleCookable /= 3.8;
 			boosts.push('1t karambwans cooking with 92+ cooking');
 		} else {
