@@ -132,7 +132,7 @@ export interface NexContext {
 	team: { id: string; teamID: number; contribution: number; deaths: number[]; fake?: boolean }[];
 }
 
-const purpleNexItems = resolveItems([
+export const purpleNexItems = resolveItems([
 	'Nexling',
 	'Ancient hilt',
 	'Nihil horn',
