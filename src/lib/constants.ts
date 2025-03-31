@@ -263,7 +263,8 @@ export enum BitField {
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
-	DisableOpenableNames = 41
+	DisableOpenableNames = 41,
+	SacrificeLoot = 42
 }
 
 interface BitFieldData {
@@ -361,6 +362,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Disable Names On Open',
 		protected: false,
 		userConfigurable: true
+	},
+	[BitField.SacrificeLoot]: {
+		name: 'Sacrifice loot for extra pet chance, where available',
+		protected: false,
+		userConfigurable: true
 	}
 } as const;
 
@@ -417,6 +423,7 @@ export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const NEX_ID = 11_278;
+export const ARAXXOR_DEAD_ID = 13_669;
 
 export const LEVEL_99_XP = 13_034_431;
 export const MAX_LEVEL = 99;

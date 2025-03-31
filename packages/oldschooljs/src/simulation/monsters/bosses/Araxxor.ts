@@ -61,9 +61,12 @@ const AraxxorTable = new LootTable()
 	.add('Bark', 15, 1)
 	.add(RareDropTable);
 
+const sacrificedTable = new LootTable().tertiary(50, 'Clue scroll (elite)').tertiary(1500, 'Nid');
+
 export const Araxxor = new SimpleMonster({
 	id: 13668,
 	name: 'Araxxor',
 	table: AraxxorTable,
+	sacrificedTable,
 	aliases: ['araxxor']
 });
