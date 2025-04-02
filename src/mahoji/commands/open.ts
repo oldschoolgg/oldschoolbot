@@ -57,13 +57,19 @@ export const openCommand: OSBMahojiCommand = {
 					value: i.name
 				}));
 			}
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'disable_pets',
+			description: 'Disables octo & smokey when opening.',
+			required: false
 		}
 	],
 	run: async ({
 		userID,
 		options,
 		interaction
-	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string }>) => {
+	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; disable_pets?: boolean }>) => {
 		if (interaction) await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		if (!options.name) {
@@ -74,11 +80,11 @@ export const openCommand: OSBMahojiCommand = {
 		}
 		options.quantity = clamp(options.quantity ?? 1, 1, 100_000_000);
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(user.id, options.name, options.open_until);
+			return abstractedOpenUntilCommand(user.id, options.name, options.open_until, options.disable_pets);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');
+			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto', false);
 		}
-		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
+		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity, options.disable_pets);
 	}
 };
