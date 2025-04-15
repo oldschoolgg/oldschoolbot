@@ -142,7 +142,8 @@ export const buildCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity,
 			duration,
-			type: 'Construction'
+			type: 'Construction',
+			itemCost: cost
 		});
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;

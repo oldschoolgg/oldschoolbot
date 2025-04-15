@@ -90,7 +90,8 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 		duration: tripLength,
 		type: 'BigChompyBirdHunting',
 		quantity,
-		minigameID: 'big_chompy_bird_hunting'
+		minigameID: 'big_chompy_bird_hunting',
+		itemCost: cost
 	});
 
 	let str = `${user.minionName} is now hunting Big Chompy's! The trip will take ${formatDuration(
