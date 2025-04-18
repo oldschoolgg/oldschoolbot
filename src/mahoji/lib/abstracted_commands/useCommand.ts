@@ -7,7 +7,6 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
-import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
@@ -488,21 +487,21 @@ const genericUsables: {
 		cost: new Bank().add('Ensouled demon head').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (demonic)'),
 		response: () => 'Your mumpkin is now demonic.',
-		addToCL: false
+		addToCL: true
 	},
 	{
 		items: [getOSItem('Pumpkin'), getOSItem('Mumpkin')],
 		cost: new Bank().add('Pumpkin').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (pumpkin)'),
 		response: () => 'Your mumpkin is now wearing a Pumpkin on his head.',
-		addToCL: false
+		addToCL: true
 	},
 	{
 		items: [getOSItem('Bones'), getOSItem('Mumpkin')],
 		cost: new Bank().add('Bones').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (dead)'),
 		response: () => 'You have turned your mumpkin into a dead mumpkin.',
-		addToCL: false
+		addToCL: true
 	}
 ];
 usables.push({
@@ -607,23 +606,6 @@ usables.push({
 		};
 	}
 });
-
-for (const group of dyedItems) {
-	for (const dyedVersion of group.dyedVersions) {
-		for (const dye of allDyes.filter(i => i !== dyedVersion.dye)) {
-			const resultingItem = group.dyedVersions.find(i => i.dye === dye);
-			if (!resultingItem) continue;
-			genericUsables.push({
-				items: [dyedVersion.item, dye],
-				cost: new Bank().add(dyedVersion.item.id).add(dye.id),
-				loot: new Bank().add(resultingItem.item.id),
-				response: () =>
-					`You used a ${dye.name} on your ${dyedVersion.item.name}, and received a ${resultingItem.item.name}.`,
-				addToCL: false
-			});
-		}
-	}
-}
 
 for (const genericU of genericUsables) {
 	usables.push({
