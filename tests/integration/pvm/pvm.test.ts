@@ -257,7 +257,7 @@ describe('PVM', async () => {
 		});
 		const result = await user.kill(EMonster.SKOTIZO, { quantity: 1 });
 		expect(result.commandResult).toContain('is now killing 1x Skotizo');
-		expect(user.bank.amount('Dark totem')).toBe(99);
+		expect(result.tripStartBank.amount('Dark totem')).toBe(99);
 	});
 
 	describe(
