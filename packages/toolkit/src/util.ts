@@ -13,6 +13,7 @@ export * from './util/purerand';
 export * from './util/runescape';
 export * from './util/string';
 export * from './lib/Store';
+export * from './util/markdown.js';
 
 // External
 export { default as deepMerge } from 'deepmerge';

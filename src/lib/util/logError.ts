@@ -1,8 +1,8 @@
 import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit/util';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
-
 import { isObject } from 'e';
+
 import { globalConfig } from '../constants';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
@@ -23,12 +23,14 @@ export function logError(err: any, context?: Record<string, string>, extra?: Rec
 	if (err?.requestBody?.json) {
 		err.requestBody.json = String(err.requestBody.json).slice(0, 500);
 	}
-	console.error(err);
-	console.error(`${(err as any)?.message ?? JSON.stringify(err)}`, {
-		type: 'ERROR',
-		raw: JSON.stringify(err),
-		metaInfo: JSON.stringify(metaInfo)
-	});
+	console.error(
+		JSON.stringify({
+			type: 'ERROR',
+			error: err.stack ?? err.message,
+			info: metaInfo
+		})
+	);
+
 	if (globalConfig.isProduction) {
 		captureException(err, {
 			tags: context,

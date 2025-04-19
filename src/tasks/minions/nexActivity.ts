@@ -1,10 +1,12 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { userMention } from 'discord.js';
 
+import { Bank, type ItemBank } from 'oldschooljs/dist/meta/types';
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';
+import announceLoot from '../../lib/minions/functions/announceLoot';
 import type { NexContext } from '../../lib/simulation/nex';
-import { handleNexKills } from '../../lib/simulation/nex';
+import { handleNexKills, purpleNexItems } from '../../lib/simulation/nex';
 import type { NexTaskOptions } from '../../lib/types/minions';
 import { getKCByName } from '../../lib/util/getKCByName';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -18,6 +20,8 @@ export const nexTask: MinionTask = {
 		const realUsers = teamDetails.filter(u => !u[3]);
 		const allMention = realUsers.map(t => userMention(t[0])).join(' ');
 		const allMUsers = await Promise.all(users.map(id => mUserFetch(id)));
+		const solo = users.length === 1;
+		const previousCL = solo ? new Bank(allMUsers[0].user.collectionLogBank as ItemBank) : undefined;
 
 		const survivedQuantity = wipedKill ? wipedKill - 1 : quantity;
 		const teamResult: NexContext['team'] = teamDetails.map(u => ({
@@ -39,6 +43,18 @@ export const nexTask: MinionTask = {
 			await transactItems({ userID: uID, collectionLog: true, itemsToAdd: uLoot });
 			const user = allMUsers.find(i => i.id === uID)!;
 			await user.incrementKC(NEX_ID, kc.find(u => u.id === uID)!.quantity);
+
+			await announceLoot({
+				user,
+				monsterID: NEX_ID,
+				loot: uLoot,
+				notifyDrops: purpleNexItems,
+				team: {
+					leader: allMUsers[0],
+					lootRecipient: user,
+					size: users.length
+				}
+			});
 		}
 
 		await trackLoot({
@@ -59,8 +75,6 @@ export const nexTask: MinionTask = {
 
 		await updateBankSetting('nex_loot', loot.totalLoot());
 
-		const solo = users.length === 1;
-
 		return handleTripFinish(
 			allMUsers[0],
 			channelID,
@@ -77,7 +91,7 @@ ${loot.formatLoot(kc)}`
 							bank: loot.totalLoot(),
 							title: `Loot From ${survivedQuantity}x Nex`,
 							user: allMUsers[0],
-							previousCL: undefined,
+							previousCL,
 							spoiler: loot.purpleItems.some(i => loot.totalLoot().has(i))
 						})
 					).file

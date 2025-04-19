@@ -17,7 +17,7 @@ model Activity {
   group_activity Boolean
   type           activity_type_enum
   channel_id     BigInt
-  data           Json               @db.JsonB
+  data           Json?              @db.JsonB
   pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])

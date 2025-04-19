@@ -95,4 +95,4 @@ The boosts apply to the following activities:
 - Runecrafting trips - 1% _(**must be charged**)_ **(works from bank)**
 - Underwater agility - 6% _(uncharged or charged)_ **(works from bank)**
 - Drift net fishing - 6% _(uncharged or charged)_ **(works from bank)**
-- Farming trips - 10% _(**must be charged**)_ **(works from bank)**
+- Farming trips - 10% _(**must be charged**)_ **(must be equipped in any setup)**

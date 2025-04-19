@@ -806,7 +806,7 @@ Date: ${dateFm(date)}`;
 		}
 		if (options.player?.list_trades) {
 			const baseSql =
-				'SELECT date, sender::text as sender_id, recipient::text as recipient_id, s.username as sender, r.username as recipient, items_sent, items_received, type, guild_id::text from economy_transaction e inner join new_users s on sender = s.id::bigint inner join new_users r on recipient = r.id::bigint';
+				'SELECT date, sender::text as sender_id, recipient::text as recipient_id, s.username as sender, r.username as recipient, items_sent, items_received, type, guild_id::text from economy_transaction e inner join users s on sender = s.id::bigint inner join users r on recipient = r.id::bigint';
 			const where: string[] = [];
 			if (options.player.list_trades.partner) {
 				const inUsers = `(${options.player.list_trades.partner.user.id}, ${options.player.list_trades.user.user.id})`;

@@ -6,21 +6,22 @@ import {
 	makeComponents,
 	stringMatches
 } from '@oldschoolgg/toolkit/util';
-import type {
-	BaseMessageOptions,
-	ButtonInteraction,
-	CacheType,
-	Collection,
-	CollectorFilter,
-	Guild,
-	InteractionReplyOptions,
-	Message,
-	MessageEditOptions,
-	SelectMenuInteraction,
-	TextChannel
+import {
+	type BaseMessageOptions,
+	type ButtonInteraction,
+	type CacheType,
+	type Collection,
+	type CollectorFilter,
+	type Guild,
+	type InteractionReplyOptions,
+	type Message,
+	type MessageEditOptions,
+	type SelectMenuInteraction,
+	type TextChannel,
+	userMention
 } from 'discord.js';
 import type { ComponentType } from 'discord.js';
-import { Time, objectEntries } from 'e';
+import { Time, noOp, objectEntries } from 'e';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
@@ -49,6 +50,7 @@ import { getOSItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
+import { sendToChannelID } from './util/webhook.js';
 
 export * from 'oldschooljs';
 
@@ -424,4 +426,16 @@ export function formatList(_itemList: (string | undefined | null)[], end?: strin
 	if (itemList.length < 2) return itemList.join(', ');
 	const lastItem = itemList.pop();
 	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
+}
+
+export async function adminPingLog(message: string) {
+	if (!globalConfig.isProduction) {
+		console.log(message);
+		return;
+	}
+
+	await sendToChannelID(globalConfig.moderatorLogsChannels, {
+		content: `${message} ${globalConfig.adminUserIDs.map(i => userMention(i)).join(', ')}`,
+		allowedMentions: { users: globalConfig.adminUserIDs }
+	}).catch(noOp);
 }

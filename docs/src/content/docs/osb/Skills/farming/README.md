@@ -23,10 +23,10 @@ The speed of your farming trips and the xp you gain from farming activities can 
 - Farmers boro trousers - 0.6% to XP
 - Farmers boots - 0.2% to XP
 - Full Farmers outfit - 2.5% to XP **(works from bank)**
-- [Magic secateurs](../../miscellaneous/buyables.md#quest-items) - 10% to harvest quantity (stacks with Farming cape)
-- Farming cape - 5% to harvest quantity (stacks with Magic secateurs)
-- Full graceful outfit - 10% to trip speed **(must be equipped in any setup)**
-- [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) - 10% to trip speed **(works from bank but**\*\* \*\*\*\*must be charged)\*\*
+- [Magic secateurs](../../miscellaneous/buyables.md#quest-items) - 10% to harvest quantity (stacks with Farming cape) **(works from bank)**
+- Farming cape - 5% to harvest quantity (stacks with Magic secateurs) **(works from bank)**
+- Full graceful outfit - 10% to trip speed **(must be equipped and charged for harvesting)**
+- [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) - 10% to trip speed **(must be equipped in any setup and must be charged**)\*\*
 
 ---
 

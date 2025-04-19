@@ -216,7 +216,8 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 			goldSilverBoost: false,
 			miningLvl: miningLevel,
 			passedDuration: duration,
-			maxTripLength: calcMaxTripLength(user, 'ShootingStars')
+			maxTripLength: calcMaxTripLength(user, 'ShootingStars'),
+			hasKaramjaMedium: false
 		});
 		duration += timeToMine;
 		dustReceived += newQuantity;

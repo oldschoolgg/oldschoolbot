@@ -164,8 +164,8 @@ const ores: Ore[] = [
 		name: 'Gem rock',
 		respawnTime: 3,
 		bankingTime: 16,
-		slope: 0.18,
-		intercept: 10.04,
+		slope: 0.76,
+		intercept: 12,
 		petChance: 211_886,
 		clueScrollChance: 211_886,
 		aliases: ['gems', 'gem', 'gem rocks']
