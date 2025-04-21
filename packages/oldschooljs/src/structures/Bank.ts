@@ -240,7 +240,7 @@ export default class Bank {
 			if (val < 1) continue;
 			const item = Items.get(key)!;
 			if (!item) {
-				console.trace(`Bank has an invalid item: ${item}, with quantity of ${val}`);
+				console.trace(`Bank has an invalid item: ${key}, with quantity of ${val}`);
 				continue;
 			}
 			arr.push([item, val]);
