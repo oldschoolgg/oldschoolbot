@@ -47,7 +47,7 @@ import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
-	'https://gfycat.com/serenegleamingfruitbat',
+	'https://tenor.com/view/bat-fruit-bat-eating-gif-26036539',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
 

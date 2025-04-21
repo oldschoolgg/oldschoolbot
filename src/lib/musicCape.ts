@@ -149,7 +149,8 @@ export const musicCapeRequirements = new Requirements()
 				activity_type_enum.Revenants, // This is now under monsterActivity,
 				activity_type_enum.HalloweenMiniMinigame,
 				activity_type_enum.Mortimer,
-				activity_type_enum.BirthdayCollectIngredients
+				activity_type_enum.BirthdayCollectIngredients,
+				activity_type_enum.SnoozeSpellActive
 			];
 			const notDoneActivities = Object.values(activity_type_enum).filter(
 				type => !typesNotRequiredForMusicCape.includes(type) && !uniqueActivitiesDone.includes(type)
