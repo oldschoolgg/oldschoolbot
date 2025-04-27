@@ -33,7 +33,7 @@ export const easterEventMainTable = resolveItems([
 	'Waddles'
 ]);
 
-export const ALL_EASTER_PETS = resolveItems(['Leia', 'Eggy', 'Waddles', 'Tasty']);
+export const ALL_EASTER_PETS = resolveItems(['Leia', 'Eggy', 'Waddles', 'Tasty', 'Cluckers', 'Hoppy', 'Flappy']);
 
 const hoursActive = 12 * 10;
 const totalMinutes = hoursActive * 60;
