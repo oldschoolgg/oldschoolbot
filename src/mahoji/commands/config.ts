@@ -171,6 +171,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Use super restores for Dwarven blessing',
 		bit: BitField.UseSuperRestoresForDwarvenBlessing
+	},
+	{
+		name: 'Show Detailed Info',
+		bit: BitField.ShowDetailedInfo
 	}
 ];
 

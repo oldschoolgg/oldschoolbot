@@ -1,7 +1,4 @@
-import { calcWhatPercent, roll } from 'e';
 import { resolveItems } from './util.js';
-
-// "Tasty",
 
 export const easterEventMainTable = resolveItems([
 	'Easter egg (1)',
@@ -42,18 +39,3 @@ const hoursActive = 12 * 10;
 const totalMinutes = hoursActive * 60;
 export const easterEventItemChance = Math.ceil((totalMinutes / easterEventMainTable.length) * 0.65);
 export const tastyPetChance = easterEventItemChance * 30 * 2 * 1.5;
-
-const samples = 5000;
-let usersThatGot = 0;
-for (let user = 0; user < samples; user++) {
-	let successes = 0;
-	for (let i = 0; i < totalMinutes; i++) {
-		if (roll(tastyPetChance)) {
-			successes++;
-		}
-	}
-	if (successes > 0) {
-		usersThatGot++;
-	}
-}
-console.log(`Users that got the pet: ${calcWhatPercent(usersThatGot, samples)}% (${usersThatGot}/${samples})`);

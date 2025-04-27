@@ -6,7 +6,8 @@ import {
 	type ButtonBuilder,
 	type MessageCollector,
 	type MessageCreateOptions,
-	bold
+	bold,
+	codeBlock
 } from 'discord.js';
 import { Time, notEmpty, randArrItem, randInt, reduceNumByPercent, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -537,16 +538,32 @@ export async function handleTripFinish(
 
 		const pet = user.equippedPet;
 		if (pet && ALL_EASTER_PETS.some(p => user.usingPet(p))) {
-			effectiveTastyPetChance = Math.floor(reduceNumByPercent(effectiveTastyPetChance, 15));
-			effectiveEasterItemChance = Math.floor(reduceNumByPercent(effectiveEasterItemChance, 15));
-			messages.push(`Your ${pet.name} pet is making you 15% more likely to get Easter items`);
+			effectiveTastyPetChance = Math.floor(reduceNumByPercent(effectiveTastyPetChance, 20));
+			effectiveEasterItemChance = Math.floor(reduceNumByPercent(effectiveEasterItemChance, 20));
+			messages.push(`Your ${pet.name} pet is making you 20% more likely to get Easter items`);
 		}
 		const effectiveCl = user.cl.clone();
-		console.log(
-			`User receiving ${minutes}x rolls of 1 in ${effectiveTastyPetChance} for tasty, equating to a 1 in ${Math.floor(
-				1 / (1 - Math.pow(1 - 1 / effectiveTastyPetChance, minutes))
-			)}`
-		);
+
+		if (user.bitfield.includes(BitField.ShowDetailedInfo) && message.content) {
+			const tastyPerHourChance = 1 - Math.pow(1 - 1 / effectiveTastyPetChance, 60);
+			const easterPerHourChance = 1 - Math.pow(1 - 1 / effectiveEasterItemChance, 60);
+			const estimatedHoursForTasty = 1 / tastyPerHourChance;
+			const estimatedHoursPerEasterItem = 1 / easterPerHourChance;
+			const totalEasterItems = easterEventMainTable.length;
+			const estimatedHoursForAllEasterItems = estimatedHoursPerEasterItem * totalEasterItems;
+
+			message.content += codeBlock(`
+Easter Event:
+- Tasty Chance: 1 in ${effectiveTastyPetChance} per minute
+- Easter Item Chance: 1 in ${effectiveEasterItemChance} per minute
+- ~${(tastyPerHourChance * 100).toFixed(2)}% chance for Tasty per hour
+- ~${(easterPerHourChance * 100).toFixed(2)}% chance for an Easter item per hour
+- Estimated ~${estimatedHoursForTasty.toFixed(1)} hours to get a Tasty
+- Estimated ~${estimatedHoursPerEasterItem.toFixed(1)} hours to get one Easter item
+- Estimated ~${estimatedHoursForAllEasterItems.toFixed(1)} hours to collect all ${totalEasterItems} Easter items
+`);
+		}
+
 		for (let i = 0; i < minutes; i++) {
 			if (roll(effectiveTastyPetChance)) {
 				itemsToAddWithCL.add('Tasty');
