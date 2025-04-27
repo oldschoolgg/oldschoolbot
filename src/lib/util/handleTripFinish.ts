@@ -8,7 +8,7 @@ import {
 	type MessageCreateOptions,
 	bold
 } from 'discord.js';
-import { Time, notEmpty, randArrItem, randInt } from 'e';
+import { Time, notEmpty, randArrItem, randInt, reduceNumByPercent, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -24,6 +24,7 @@ import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import pets from '../data/pets.js';
+import { ALL_EASTER_PETS, easterEventItemChance, easterEventMainTable, tastyPetChance } from '../easter.js';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../invention/inventions';
@@ -49,7 +50,7 @@ import {
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
 import { logError } from './logError';
-import { perHourChance } from './smallUtils';
+import { itemNameFromID, perHourChance } from './smallUtils';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
@@ -527,6 +528,45 @@ export async function handleTripFinish(
 			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
 	}
+
+	const minutes = Math.floor(data.duration / Time.Minute);
+	if (minutes >= 1) {
+		const shuffledEasterItems = shuffleArr(easterEventMainTable);
+		let effectiveTastyPetChance = tastyPetChance;
+		let effectiveEasterItemChance = easterEventItemChance;
+
+		const pet = user.equippedPet;
+		if (pet && ALL_EASTER_PETS.some(p => user.usingPet(p))) {
+			effectiveTastyPetChance = Math.floor(reduceNumByPercent(effectiveTastyPetChance, 15));
+			effectiveEasterItemChance = Math.floor(reduceNumByPercent(effectiveEasterItemChance, 15));
+			messages.push(`Your ${pet.name} pet is making you 15% more likely to get Easter items`);
+		}
+		const effectiveCl = user.cl.clone();
+		console.log(
+			`User receiving ${minutes}x rolls of 1 in ${effectiveTastyPetChance} for tasty, equating to a 1 in ${Math.floor(
+				1 / (1 - Math.pow(1 - 1 / effectiveTastyPetChance, minutes))
+			)}`
+		);
+		for (let i = 0; i < minutes; i++) {
+			if (roll(effectiveTastyPetChance)) {
+				itemsToAddWithCL.add('Tasty');
+				if (message.content) {
+					message.content +=
+						'\n:easterEgg:695473553314938920> **You received a very tasty looking chocolate bunny!**';
+				}
+			}
+			if (!roll(effectiveEasterItemChance)) continue;
+			const unownedItem = shuffledEasterItems.find(_item => !effectiveCl.has(_item)) ?? shuffledEasterItems[0];
+			if (unownedItem) {
+				effectiveCl.add(unownedItem);
+				itemsToAddWithCL.add(unownedItem);
+				if (message.content) {
+					message.content += `\n<:easterEgg:695473553314938920> **You received a ${itemNameFromID(unownedItem)} from the Easter event!**`;
+				}
+			}
+		}
+	}
+
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
