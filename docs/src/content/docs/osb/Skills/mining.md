@@ -111,37 +111,37 @@ The only other thing unidentified minerals can be used to purchase are:
 | Gem rock | 99 | 115,000 | Yes | Karamja Medium | No items |
 | Gem rock | 90 | 107,000 | Yes | Karamja Medium | No items |
 | Granite | 80 | 105,000 | Yes | | No items |
-| Gem rock | 99 | 98,000 | No | Karamja Medium | 47x Uncut diamond, 59x Uncut emerald, 355x Uncut jade, 709x Uncut opal, 177x Uncut red topaz, 60x Uncut ruby, 107x Uncut sapphire |
+| Gem rock | 99 | 98,000 | No | Karamja Medium | 48x Uncut diamond, 59x Uncut emerald, 354x Uncut jade, 709x Uncut opal, 177x Uncut red topaz, 60x Uncut ruby, 107x Uncut sapphire |
 | Gem rock | 80 | 97,000 | Yes | Karamja Medium | No items |
 | Granite | 70 | 94,000 | Yes | | No items |
 | Sandstone | 99 | 93,000 | Yes | | No items |
-| Gem rock | 90 | 92,000 | No | Karamja Medium | 45x Uncut diamond, 56x Uncut emerald, 333x Uncut jade, 663x Uncut opal, 166x Uncut red topaz, 55x Uncut ruby, 100x Uncut sapphire |
+| Gem rock | 90 | 92,000 | No | Karamja Medium | 44x Uncut diamond, 56x Uncut emerald, 332x Uncut jade, 662x Uncut opal, 167x Uncut red topaz, 56x Uncut ruby, 100x Uncut sapphire |
 | Gem rock | 70 | 87,000 | Yes | Karamja Medium | No items |
 | Sandstone | 90 | 86,000 | Yes | | No items |
-| Gem rock | 80 | 85,000 | No | Karamja Medium | 41x Uncut diamond, 51x Uncut emerald, 306x Uncut jade, 612x Uncut opal, 154x Uncut red topaz, 51x Uncut ruby, 92x Uncut sapphire |
-| Sandstone | 99 | 83,000 | No | | 464x Sandstone (10kg), 464x Sandstone (1kg), 463x Sandstone (2kg), 463x Sandstone (5kg) |
+| Gem rock | 80 | 85,000 | No | Karamja Medium | 41x Uncut diamond, 52x Uncut emerald, 306x Uncut jade, 613x Uncut opal, 153x Uncut red topaz, 52x Uncut ruby, 92x Uncut sapphire |
+| Sandstone | 99 | 83,000 | No | | 463x Sandstone (10kg), 464x Sandstone (1kg), 463x Sandstone (2kg), 463x Sandstone (5kg) |
 | Iron ore | 80 | 82,000 | Yes | | 24x Unidentified minerals |
-| Iron ore | 70 | 81,000 | Yes | | 24x Unidentified minerals |
-| Sandstone | 90 | 78,000 | No | | 431x Sandstone (10kg), 430x Sandstone (1kg), 431x Sandstone (2kg), 430x Sandstone (5kg) |
-| Gem rock | 70 | 77,000 | No | Karamja Medium | 37x Uncut diamond, 46x Uncut emerald, 277x Uncut jade, 554x Uncut opal, 139x Uncut red topaz, 47x Uncut ruby, 84x Uncut sapphire |
+| Iron ore | 70 | 81,000 | Yes | | 23x Unidentified minerals |
+| Sandstone | 90 | 78,000 | No | | 430x Sandstone (10kg), 432x Sandstone (1kg), 430x Sandstone (2kg), 430x Sandstone (5kg) |
+| Gem rock | 70 | 77,000 | No | Karamja Medium | 37x Uncut diamond, 47x Uncut emerald, 278x Uncut jade, 553x Uncut opal, 139x Uncut red topaz, 47x Uncut ruby, 83x Uncut sapphire |
 | Sandstone | 80 | 77,000 | Yes | | No items |
-| Sandstone | 80 | 71,000 | No | | 393x Sandstone (10kg), 393x Sandstone (1kg), 392x Sandstone (2kg), 395x Sandstone (5kg) |
+| Sandstone | 80 | 71,000 | No | | 394x Sandstone (10kg), 393x Sandstone (1kg), 394x Sandstone (2kg), 393x Sandstone (5kg) |
 | Sandstone | 70 | 68,000 | Yes | | No items |
-| Granite | 99 | 66,000 | No | | 366x Granite (2kg), 365x Granite (500g), 365x Granite (5kg) |
-| Granite | 90 | 63,000 | No | | 350x Granite (2kg), 350x Granite (500g), 351x Granite (5kg) |
-| Sandstone | 70 | 63,000 | No | | 350x Sandstone (10kg), 349x Sandstone (1kg), 350x Sandstone (2kg), 349x Sandstone (5kg) |
-| Granite | 80 | 60,000 | No | | 332x Granite (2kg), 332x Granite (500g), 333x Granite (5kg) |
+| Granite | 99 | 66,000 | No | | 365x Granite (2kg), 365x Granite (500g), 366x Granite (5kg) |
+| Granite | 90 | 63,000 | No | | 351x Granite (2kg), 350x Granite (500g), 350x Granite (5kg) |
+| Sandstone | 70 | 63,000 | No | | 350x Sandstone (10kg), 349x Sandstone (1kg), 350x Sandstone (2kg), 350x Sandstone (5kg) |
+| Granite | 80 | 60,000 | No | | 333x Granite (2kg), 332x Granite (500g), 333x Granite (5kg) |
 | Iron ore | 80 | 58,000 | No | | 1.7k Iron ore, 17x Unidentified minerals |
 | Silver ore | 99 | 58,000 | Yes | | No items |
 | Iron ore | 70 | 57,000 | No | | 1.6k Iron ore, 17x Unidentified minerals |
-| Granite | 70 | 56,000 | No | | 310x Granite (2kg), 311x Granite (500g), 311x Granite (5kg) |
+| Granite | 70 | 56,000 | No | | 312x Granite (2kg), 310x Granite (500g), 311x Granite (5kg) |
 | Silver ore | 90 | 54,000 | Yes | | No items |
 | Silver ore | 99 | 53,000 | No | | 1.3k Silver ore |
 | Silver ore | 80 | 50,000 | Yes | | No items |
 | Silver ore | 80 | 47,000 | No | | 1.2k Silver ore |
 | Coal | 99 | 45,000 | Yes | | 15x Unidentified minerals |
 | Silver ore | 70 | 44,000 | Yes | | No items |
-| Coal | 90 | 42,000 | Yes | | 15x Unidentified minerals |
+| Coal | 90 | 42,000 | Yes | | 14x Unidentified minerals |
 | Gold ore | 99 | 42,000 | Yes | | No items |
 | Silver ore | 70 | 42,000 | No | | 1.1k Silver ore |
 | Gold ore | 99 | 40,000 | No | | 621x Gold ore |
@@ -149,18 +149,18 @@ The only other thing unidentified minerals can be used to purchase are:
 | Copper ore | 70 | 38,000 | Yes | | No items |
 | Gold ore | 90 | 38,000 | Yes | | No items |
 | Tin ore | 70 | 38,000 | Yes | | No items |
-| Gold ore | 90 | 37,000 | No | | 575x Gold ore |
-| Coal | 90 | 36,000 | No | | 728x Coal, 13x Unidentified minerals |
+| Gold ore | 90 | 37,000 | No | | 576x Gold ore |
+| Coal | 90 | 36,000 | No | | 727x Coal, 13x Unidentified minerals |
 | Gold ore | 80 | 35,000 | Yes | | No items |
 | Coal | 70 | 34,000 | Yes | | 12x Unidentified minerals |
 | Gold ore | 80 | 34,000 | No | | 523x Gold ore |
 | Mithril ore | 99 | 32,000 | Yes | | No items |
-| Coal | 70 | 30,000 | No | | 612x Coal, 11x Unidentified minerals |
+| Coal | 70 | 30,000 | No | | 611x Coal, 11x Unidentified minerals |
 | Gold ore | 70 | 30,000 | Yes | | No items |
 | Granite | 60 | 30,000 | Yes | | No items |
 | Mithril ore | 90 | 30,000 | Yes | | No items |
 | Tainted essence chunk | 70 | 30,000 | Yes | | No items |
-| Iron ore | 60 | 29,000 | Yes | | 8x Unidentified minerals |
+| Iron ore | 60 | 29,000 | Yes | | 9x Unidentified minerals |
 | Gem rock | 60 | 28,000 | Yes | Karamja Medium | No items |
 | Mithril ore | 90 | 28,000 | No | | 352x Mithril ore |
 | Gem rock | 60 | 27,000 | No | Karamja Medium | 13x Uncut diamond, 17x Uncut emerald, 98x Uncut jade, 195x Uncut opal, 49x Uncut red topaz, 17x Uncut ruby, 30x Uncut sapphire |
@@ -168,39 +168,37 @@ The only other thing unidentified minerals can be used to purchase are:
 | Tainted essence chunk | 70 | 27,000 | No | | 22.6k Tainted essence chunk |
 | Granite | 50 | 26,000 | Yes | | No items |
 | Iron ore | 50 | 26,000 | Yes | | No items |
-| Mithril ore | 80 | 26,000 | No | | 323x Mithril ore |
-| Granite | 60 | 25,000 | No | | 139x Granite (2kg), 139x Granite (500g), 139x Granite (5kg) |
+| Granite | 60 | 25,000 | No | | 138x Granite (2kg), 140x Granite (500g), 138x Granite (5kg) |
 | Iron ore | 60 | 25,000 | No | | 720x Iron ore, 8x Unidentified minerals |
+| Mithril ore | 80 | 25,000 | No | | 323x Mithril ore |
 | Gem rock | 50 | 24,000 | Yes | Karamja Medium | No items |
 | Mithril ore | 70 | 24,000 | Yes | | No items |
-| Amethyst | 99 | 23,000 | Yes | | 5x Unidentified minerals |
-| Gem rock | 50 | 23,000 | No | Karamja Medium | 12x Uncut diamond, 15x Uncut emerald, 86x Uncut jade, 171x Uncut opal, 43x Uncut red topaz, 15x Uncut ruby, 26x Uncut sapphire |
+| Gem rock | 50 | 23,000 | No | Karamja Medium | 12x Uncut diamond, 15x Uncut emerald, 86x Uncut jade, 170x Uncut opal, 43x Uncut red topaz, 15x Uncut ruby, 26x Uncut sapphire |
 | Iron ore | 40 | 23,000 | Yes | | No items |
-| Amethyst | 99 | 22,000 | No | | 94x Amethyst, 5x Unidentified minerals |
-| Granite | 50 | 22,000 | No | | 123x Granite (2kg), 122x Granite (500g), 123x Granite (5kg) |
+| Amethyst | 99 | 22,000 | Yes | | 5x Unidentified minerals |
+| Granite | 50 | 22,000 | No | | 123x Granite (2kg), 123x Granite (500g), 123x Granite (5kg) |
 | Mithril ore | 70 | 22,000 | No | | 284x Mithril ore |
 | Sandstone | 60 | 21,000 | Yes | | No items |
+| Adamantite ore | 99 | 20,000 | Yes | | No items |
 | Gem rock | 40 | 20,000 | Yes | Karamja Medium | No items |
 | Iron ore | 30 | 20,000 | Yes | | No items |
-| Adamantite ore | 99 | 19,000 | Yes | | No items |
+| Adamantite ore | 99 | 19,000 | No | | 201x Adamantite ore |
 | Copper ore | 70 | 19,000 | No | | 1.1k Copper ore |
 | Tin ore | 70 | 19,000 | No | | 1.1k Tin ore |
 | Adamantite ore | 90 | 18,000 | Yes | | No items |
 | Iron ore | 30 | 18,000 | No | | 529x Iron ore |
 | Sandstone | 50 | 18,000 | Yes | | No items |
-| Adamantite ore | 90 | 17,000 | No | | 187x Adamantite ore |
+| Adamantite ore | 90 | 17,000 | No | | 186x Adamantite ore |
 | Iron ore | 20 | 17,000 | Yes | | No items |
-| Silver ore | 60 | 17,000 | Yes | | No items |
 | Adamantite ore | 80 | 16,000 | Yes | | No items |
-| Iron ore | 20 | 16,000 | No | | 465x Iron ore |
-| Silver ore | 60 | 16,000 | No | | 412x Silver ore |
-| Adamantite ore | 80 | 15,000 | No | | 167x Adamantite ore |
+| Iron ore | 20 | 16,000 | No | | 464x Iron ore |
+| Silver ore | 60 | 16,000 | Yes | | No items |
 | Sandstone | 40 | 15,000 | Yes | | No items |
 | Adamantite ore | 70 | 14,000 | Yes | | No items |
 | Copper ore | 50 | 14,000 | Yes | | No items |
 | Silver ore | 50 | 14,000 | Yes | | No items |
 | Tin ore | 50 | 14,000 | Yes | | No items |
-| Adamantite ore | 70 | 13,000 | No | | 146x Adamantite ore |
+| Adamantite ore | 70 | 13,000 | No | | 145x Adamantite ore |
 | Copper ore | 40 | 13,000 | Yes | | No items |
 | Runite ore | 99 | 13,000 | Yes | COTS | No items |
 | Tin ore | 40 | 13,000 | Yes | | No items |
@@ -208,7 +206,7 @@ The only other thing unidentified minerals can be used to purchase are:
 | Runite ore | 90 | 12,000 | Yes | COTS | No items |
 | Silver ore | 40 | 12,000 | Yes | | No items |
 | Clay | 70 | 11,000 | Yes | | No items |
-| Coal | 60 | 11,000 | Yes | | 4x Unidentified minerals |
+| Coal | 60 | 11,000 | Yes | | 5x Unidentified minerals |
 | Copper ore | 30 | 11,000 | Yes | | No items |
 | Tin ore | 30 | 11,000 | Yes | | No items |
 | Copper ore | 20 | 10,000 | Yes | | No items |
@@ -220,7 +218,7 @@ The only other thing unidentified minerals can be used to purchase are:
 | Coal | 50 | 9,000 | Yes | | No items |
 | Copper ore | 30 | 9,000 | No | | 520x Copper ore |
 | Silver ore | 30 | 9,000 | Yes | | No items |
-| Tin ore | 30 | 9,000 | No | | 519x Tin ore |
+| Tin ore | 30 | 9,000 | No | | 520x Tin ore |
 | Coal | 40 | 8,000 | Yes | | No items |
 | Copper ore | 10 | 8,000 | Yes | | No items |
 | Gold ore | 50 | 8,000 | Yes | | No items |
@@ -236,7 +234,7 @@ The only other thing unidentified minerals can be used to purchase are:
 | Volcanic ash | 50 | 7,000 | Yes | | No items |
 | Coal | 30 | 6,000 | Yes | | No items |
 | Copper ore | 1 | 6,000 | No | | 353x Copper ore |
-| Tin ore | 1 | 6,000 | No | | 354x Tin ore |
+| Tin ore | 1 | 6,000 | No | | 352x Tin ore |
 | Volcanic ash | 30 | 6,000 | Yes | | No items |
 | Clay | 70 | 5,000 | No | | 1.1k Clay |
 | Clay | 50 | 4,000 | Yes | | No items |
@@ -245,7 +243,7 @@ The only other thing unidentified minerals can be used to purchase are:
 | Pure essence | 30 | 3,000 | Yes | | No items |
 | Rune essence | 1 | 3,000 | Yes | | No items |
 | Clay | 1 | 2,000 | Yes | | No items |
-| Clay | 1 | 1,000 | No | | 353x Clay |
+| Clay | 1 | 1,000 | No | | 352x Clay |
 | Saltpetre | 1 | 0 | Yes | | No items |
 
 {/_ DO NOT EDIT - This section is auto-generated by the build script _/}
