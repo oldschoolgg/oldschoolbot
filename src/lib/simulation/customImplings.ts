@@ -49,6 +49,7 @@ export const EternalImpling = new SimpleOpenable({
 		.add('Pure essence', [500, 1000])
 		.add('Magic logs', [150, 200])
 		.add('Magic seed', [5, 20])
+		.tertiary(100, 'Elder scroll piece')
 		.add('Clue scroll (easy)', [1, 5])
 		.add(RuneTable, [5, 10])
 		.tertiary(8, 'Clue scroll (grandmaster)')
@@ -65,6 +66,7 @@ export const MysteryImpling = new SimpleOpenable({
 		.add('Pet Mystery Box')
 		.add('Equippable mystery box')
 		.add('Clue scroll (grandmaster)')
+		.tertiary(100, 'Elder scroll piece')
 		.add('Clue scroll (hard)')
 		.tertiary(1_000_000, 'Mystery impling jar')
 });
@@ -100,6 +102,7 @@ export const ChimplingImpling = new SimpleOpenable({
 		.add('Clue scroll (grandmaster)')
 		.tertiary(300, 'Gorilla rumble greegree')
 		.tertiary(7000, 'Monkey egg')
+		.tertiary(100, 'Elder scroll piece')
 		.tertiary(3000, 'Monkey dye')
 		.tertiary(100, 'Banana enchantment scroll')
 });
