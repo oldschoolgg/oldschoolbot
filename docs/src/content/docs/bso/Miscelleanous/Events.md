@@ -2,6 +2,32 @@
 title: "Holiday Events"
 ---
 
+## Easter 2025
+
+The 2025 Easter Event is a fully passive event, where you can receive the rewards from doing any trip. The droprates are common enough to ensure you can get all the drops without much trouble. The event is planned to last for around 7-10 days.
+
+_All_ the rewards are fully tradeable now with no restrictions.
+
+### Rewards
+
+For each minute your minion is on a trip, you get a roll of a main event item. The items will drop in random order, giving only the ones you haven't got yet (no duplicates). Once you have all the items, you will instead get a true random roll of all the items. You can get many items in a single trip, and none of the items are more or less rare than the others.
+
+[[Easter egg (1)]] (14 variations) [[Easter cape (1)]] [[Easter cape (2)]] [[Monkey egg (Edible)]] [[Easter Bunny hat]] [[Easter Bunny top]] [[Easter Bunny legs]] [[Easter Bunny gloves]] [[Easter Bunny boots]] [[Easter Bunny tail]] [[Elven bunny ears]] [[Dragon bunny ears]] [[Tzhaar bunny ears]] [[Rune bunny ears]] [[Vyrewatch bunny ears]] [[Arceuus bunny ears]] [[Waddles]] (Pet)
+
+[[Tasty]] is a cute chocolate rabbit, and is a second pet that drops at a much rarer rate.
+
+### Boosts
+
+Having any of the following easter pets _equipped_ will give you a 20% higher chance of receiving a easter item (including Tasty), if you are getting the boost, you'll see a message in your return trips.
+
+[[Leia]] [[Eggy]] [[Waddles]] [[Tasty]] [[Cluckers]] [[Hoppy]] [[Flappy]]
+
+### Droprates
+
+To see the exact droprates the bot is using, you can toggle the 'Show Detailed Info' toggle, and it will be shown in your return trip messages.
+
+The Main event items drop at a 1 in 156 chance per minute. With 30 items, on average it will take 3.25 days to get all the items (excluding Tasty). If you're using a Easter pet for the boost, this comes down to 2.6 days.
+
 ## Halloween 2024
 
 ### Main Event
