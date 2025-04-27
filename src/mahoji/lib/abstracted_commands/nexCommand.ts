@@ -118,7 +118,7 @@ export async function nexCommand(
 
 	const str = `${user.usernameOrMention}'s party (${mahojiUsers
 		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
+		.join(', ')}${solo ? ' and 3 others' : ''}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
 		details.quantity,
 		details.fakeDuration
 	).toFixed(1)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
