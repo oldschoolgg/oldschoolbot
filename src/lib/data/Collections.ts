@@ -1622,6 +1622,42 @@ export const allCollectionLogs: ICollection = {
 				]),
 				counts: false
 			},
+			'Easter 2025': {
+				items: resolveItems([
+					'Easter egg (1)',
+					'Easter egg (2)',
+					'Easter egg (3)',
+					'Easter egg (4)',
+					'Easter egg (5)',
+					'Easter egg (6)',
+					'Easter egg (7)',
+					'Easter egg (8)',
+					'Easter egg (9)',
+					'Easter egg (10)',
+					'Easter egg (11)',
+					'Easter egg (12)',
+					'Easter egg (13)',
+					'Easter egg (14)',
+					'Easter cape (1)',
+					'Easter cape (2)',
+					'Monkey egg (Edible)',
+					'Easter Bunny hat',
+					'Easter Bunny top',
+					'Easter Bunny legs',
+					'Easter Bunny gloves',
+					'Easter Bunny boots',
+					'Easter Bunny tail',
+					'Elven bunny ears',
+					'Dragon bunny ears',
+					'Tzhaar bunny ears',
+					'Rune bunny ears',
+					'Vyrewatch bunny ears',
+					'Arceuus bunny ears',
+					'Waddles',
+					'Tasty'
+				]),
+				counts: false
+			},
 			'Thanksgiving 2021': {
 				items: resolveItems(['Raw turkey', 'Turkey', 'Turkey drumstick', 'Burnt turkey', 'Cornucopia']),
 				counts: false
