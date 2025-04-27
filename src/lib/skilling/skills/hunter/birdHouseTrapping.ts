@@ -190,7 +190,8 @@ const birdhouses: Birdhouse[] = [
 			.every('Raw bird meat', [1, 3])
 			.tertiary(2, nestTable, [5, 18])
 			.tertiary(3, 'Feather', [10, 100])
-			.tertiary(150, 'Clue scroll (grandmaster)'),
+			.tertiary(80, 'Clue scroll (grandmaster)')
+			.tertiary(140, 'Elder scroll piece'),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
