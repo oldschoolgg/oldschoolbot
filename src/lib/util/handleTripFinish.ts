@@ -569,7 +569,7 @@ Easter Event:
 				itemsToAddWithCL.add('Tasty');
 				if (message.content) {
 					message.content +=
-						'\n:easterEgg:695473553314938920> **You received a very tasty looking chocolate bunny!**';
+						'\n:<easterEgg:695473553314938920> **You received a very tasty looking chocolate bunny!**';
 				}
 			}
 			if (!roll(effectiveEasterItemChance)) continue;
