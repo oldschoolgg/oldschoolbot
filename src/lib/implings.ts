@@ -4,7 +4,13 @@ import { Bank, LootTable, Openables } from 'oldschooljs';
 
 import { BitField } from './constants';
 import { InventionID, inventionBoosts, inventionItemBoost } from './invention/inventions';
-import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
+import {
+	ChimplingImpling,
+	EternalImpling,
+	InfernalImpling,
+	MysteryImpling,
+	ShrimplingImpling
+} from './simulation/customImplings';
 import type { ActivityTaskData } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 
@@ -48,6 +54,7 @@ export const implings: Record<number, { level: number; customRequirements?: (use
 			return false;
 		}
 	},
+	[ShrimplingImpling.id]: { level: 97 },
 	[EternalImpling.id]: { level: 99, customRequirements: async user => user.hasEquippedOrInBank('Vasa cloak') },
 	[MysteryImpling.id]: { level: 105 }
 };
@@ -142,7 +149,11 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 		return new LootTable({ limit: Math.floor(142 / reductionFactor) }).add('Crystal impling jar', 1, 1);
 	},
 	[WorldLocations.World]: (caughtChance, hasMrE) =>
-		new LootTable().oneIn(caughtChance, hasMrE ? mrETable : defaultImpTable)
+		new LootTable().oneIn(caughtChance, hasMrE ? mrETable : defaultImpTable),
+	[WorldLocations.Underwater]: caughtChance => {
+		const reductionFactor = IMPLING_CHANCE_PER_MINUTE / caughtChance;
+		return new LootTable({ limit: Math.floor(400 / reductionFactor) }).add('Shrimpling', 1, 1);
+	}
 };
 
 export async function handlePassiveImplings(
@@ -166,8 +177,6 @@ export async function handlePassiveImplings(
 			activity_type_enum.Construction,
 			activity_type_enum.TombsOfAmascut,
 			activity_type_enum.BalthazarsBigBonanza,
-			activity_type_enum.DriftNet,
-			activity_type_enum.UnderwaterAgilityThieving,
 			activity_type_enum.Colosseum
 		].includes(data.type)
 	)

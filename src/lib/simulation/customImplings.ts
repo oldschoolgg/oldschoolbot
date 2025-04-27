@@ -69,6 +69,23 @@ export const MysteryImpling = new SimpleOpenable({
 		.tertiary(1_000_000, 'Mystery impling jar')
 });
 
+export const ShrimplingImpling = new SimpleOpenable({
+	id: 73_411,
+	name: 'Shrimpling',
+	aliases: ['shrimpling'],
+	table: new LootTable()
+		.every('Raw shrimps', 500)
+		.every(
+			new LootTable()
+				.add('Raw rocktail', [60, 120])
+				.add('Raw dark crab', [60, 220])
+				.add('Raw anglerfish', [60, 500])
+		)
+		.tertiary(40, 'Clue scroll (grandmaster)')
+		.tertiary(80, 'Elder scroll piece')
+		.tertiary(1_000_000, 'Shrimps')
+});
+
 export const ChimplingImpling = new SimpleOpenable({
 	id: 48_226,
 	name: 'Chimpling jar',

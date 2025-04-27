@@ -4845,7 +4845,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -14270,6 +14270,12 @@ setCustomItem(73_409, 'Tuah', 'Herbi', {
 });
 
 setCustomItem(73_410, 'Burnie', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_411, 'Shrimpling', 'Coal', {
 	customItemData: {
 		cantDropFromMysteryBoxes: true
 	}
