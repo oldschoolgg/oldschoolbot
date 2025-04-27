@@ -15,11 +15,11 @@ import { randFloat, roll } from '../../util';
 import itemID from '../../util/itemID';
 
 const clues = [
-	[itemID('Clue scroll (grandmaster)'), 0.2 / 10],
-	[itemID('Clue scroll(elite)'), 1 / 10],
+	[itemID('Elder scroll piece'), 0.5 / 10],
+	[itemID('Clue scroll (grandmaster)'), 0.9 / 10],
+	[itemID('Clue scroll(elite)'), 1.5 / 10],
 	[itemID('Clue scroll(hard)'), 2 / 10],
-	[itemID('Clue scroll(medium)'), 3 / 10],
-	[itemID('Clue scroll(easy)'), 4 / 10]
+	[itemID('Clue scroll(medium)'), 2.5 / 10]
 ];
 
 export default function addSkillingClueToLoot(
