@@ -20,10 +20,11 @@ import {
 	type SelectMenuInteraction,
 	type TextChannel,
 	bold,
-	escapeMarkdown
+	escapeMarkdown,
+	userMention
 } from 'discord.js';
 import type { ComponentType } from 'discord.js';
-import { Time, calcWhatPercent, notEmpty, objectEntries, randArrItem, randInt, shuffleArr, sumArr } from 'e';
+import { Time, calcWhatPercent, noOp, notEmpty, objectEntries, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
@@ -58,6 +59,7 @@ import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 import resolveItems from './util/resolveItems';
 import { itemNameFromID } from './util/smallUtils';
+import { sendToChannelID } from './util/webhook.js';
 
 export * from 'oldschooljs';
 
@@ -629,4 +631,16 @@ export function formatList(_itemList: (string | undefined | null)[], end?: strin
 	if (itemList.length < 2) return itemList.join(', ');
 	const lastItem = itemList.pop();
 	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
+}
+
+export async function adminPingLog(message: string) {
+	if (!globalConfig.isProduction) {
+		console.log(message);
+		return;
+	}
+
+	await sendToChannelID(globalConfig.moderatorLogsChannels, {
+		content: `${message} ${globalConfig.adminUserIDs.map(i => userMention(i)).join(', ')}`,
+		allowedMentions: { users: globalConfig.adminUserIDs }
+	}).catch(noOp);
 }

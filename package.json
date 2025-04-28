@@ -48,7 +48,7 @@
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sapphire/timer-manager": "^1.0.2",
 		"@sentry/node": "^8.49.0",
-		"bufferutil": "^4.0.8",
+		"bufferutil": "^4.0.9",
 		"discord.js": "^14.16.3",
 		"dotenv": "^16.4.5",
 		"e": "0.2.33",
@@ -61,15 +61,15 @@
 		"node-fetch": "^2.6.7",
 		"oldschooljs": "workspace:*",
 		"p-queue": "^6.6.2",
-		"piscina": "^4.7.0",
+		"piscina": "^4.9.2",
 		"postgres": "^3.4.5",
 		"random-js": "^2.1.0",
-		"remeda": "^2.17.3",
+		"remeda": "^2.21.3",
 		"simple-statistics": "^7.8.3",
 		"skia-canvas": "^1.0.2",
 		"sonic-boom": "^4.2.0",
 		"zlib-sync": "^0.1.9",
-		"zod": "^3.24.2"
+		"zod": "^3.24.3"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
@@ -78,20 +78,20 @@
 		"@types/node-cron": "^3.0.7",
 		"@types/node-fetch": "^2.6.1",
 		"@vitest/coverage-v8": "^2.1.2",
-		"concurrently": "^8.2.2",
-		"esbuild": "0.25.0",
+		"concurrently": "^9.1.2",
+		"esbuild": "0.25.3",
 		"node-gyp": "^10.2.0",
 		"node-gyp-build": "^4.8.4",
 		"nodemon": "^3.1.7",
 		"prettier": "^3.3.3",
 		"prisma": "^5.22.0",
 		"spritesmith": "^3.4.1",
-		"tsx": "^4.19.2",
+		"tsx": "^4.19.3",
 		"typescript": "^5.5.3",
 		"vitest": "^2.1.9"
 	},
 	"resolutions": {
-		"esbuild": "0.25.0"
+		"esbuild": "0.25.3"
 	},
 	"packageManager": "pnpm@9.14.2+sha512.6e2baf77d06b9362294152c851c4f278ede37ab1eba3a55fda317a4a17b209f4dbb973fb250a77abc463a341fcb1f17f17cfa24091c4eb319cda0d9b84278387"
 }
