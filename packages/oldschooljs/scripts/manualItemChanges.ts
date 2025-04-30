@@ -76,3 +76,10 @@ export const itemChanges: Record<number, DeepPartial<Item>> = {
 		id: 25_488
 	}
 };
+
+export const itemsToDuplicate = [
+	{ id: 28_307, idToDupe: 25_485 }, //Ultor ring
+	{ id: 28_313, idToDupe: 25_486 }, //Magus ring
+	{ id: 28_310, idToDupe: 25_487 }, //Venator ring
+	{ id: 28_316, idToDupe: 25_488 } //Bellator ring
+];

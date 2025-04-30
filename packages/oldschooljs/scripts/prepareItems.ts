@@ -8,7 +8,7 @@ import { EquipmentSlot, type Item } from '../src/meta/types';
 import Items, { CLUE_SCROLLS, CLUE_SCROLL_NAMES, USELESS_ITEMS } from '../src/structures/Items';
 import itemID from '../src/util/itemID';
 import { getItemOrThrow } from '../src/util/util';
-import { itemChanges } from './manualItemChanges';
+import { itemChanges, itemsToDuplicate } from './manualItemChanges';
 
 const ITEM_UPDATE_CONFIG = {
 	SHOULD_UPDATE_PRICES: false
@@ -488,6 +488,14 @@ export default async function prepareItems(): Promise<void> {
 	}
 
 	newItemJSON[0] = undefined;
+
+	for (const item of itemsToDuplicate) {
+		// DT2 Rings have been moved to OSB IDs, create a second copy of them to preserve old item_data
+		const itemToDuplicate = Items.get(item.idToDupe);
+		if (!itemToDuplicate) continue;
+		newItemJSON[item.id] = itemToDuplicate;
+		newItemJSON[item.id]!.id = item.id;
+	}
 
 	if (nameChanges.length > 0) {
 		messages.push(`Name Changes:\n	${nameChanges.join('\n	')}`);
