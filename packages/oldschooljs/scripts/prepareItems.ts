@@ -8,7 +8,7 @@ import { EquipmentSlot, type Item } from '../src/meta/types';
 import Items, { CLUE_SCROLLS, CLUE_SCROLL_NAMES, USELESS_ITEMS } from '../src/structures/Items';
 import itemID from '../src/util/itemID';
 import { getItemOrThrow } from '../src/util/util';
-import { itemChanges } from './manualItemChanges';
+import { itemChanges, itemsToDuplicate } from './manualItemChanges';
 
 const ITEM_UPDATE_CONFIG = {
 	SHOULD_UPDATE_PRICES: false
@@ -27,20 +27,9 @@ for (const [toChange, toCopy] of equipmentModSrc) {
 	equipmentModifications.set(toChange, toCopy);
 }
 
-const itemsToRename = [
-	{
-		id: 30_105,
-		name: 'Tooth half of key (moon key)'
-	},
-	{
-		id: 30_107,
-		name: 'Loop half of key (moon key)'
-	}
-];
+const itemsBeingModified = new Set([...equipmentModSrc.map(i => i[0]), ...Object.keys(itemChanges)]);
 
-const itemsBeingModified = new Set([...equipmentModSrc.map(i => i[0]), ...itemsToRename.map(i => i.id)]);
-
-const newItemJSON: { [key: string]: Item } = {};
+const newItemJSON: { [key: string]: Item | undefined } = {};
 
 interface RawItemCollection {
 	[index: string]: Item & {
@@ -60,6 +49,7 @@ function itemShouldntBeAdded(item: any) {
 	return (
 		(CLUE_SCROLL_NAMES.includes(item.name) && !CLUE_SCROLLS.includes(item.id)) ||
 		USELESS_ITEMS.includes(item.id) ||
+		Object.keys(itemChanges).includes(item.id) ||
 		item.duplicate === true ||
 		item.noted ||
 		item.linked_id_item ||
@@ -321,17 +311,17 @@ export default async function prepareItems(): Promise<void> {
 		throw new Error('Failed to fetch prices');
 	}
 
-	const newItems = [];
-	const nameChanges = [];
+	const newItems: Item[] = [];
+	const nameChanges: string[] = [];
 
 	for (let item of Object.values(allItems)) {
 		if (itemShouldntBeAdded(item)) continue;
 
-		if (item.name === "Pharaoh's sceptre") {
-			item = {
-				...allItems[26_950],
-				id: item.id
-			};
+		const price = allPrices[item.id];
+		const previousItem = Items.get(item.id);
+
+		if (itemChanges[item.id]) {
+			item = deepMerge(item, itemChanges[item.id]) as any;
 		}
 
 		for (const delKey of [
@@ -377,12 +367,10 @@ export default async function prepareItems(): Promise<void> {
 		if (item.lowalch === null) item.lowalch = undefined;
 		if (item.highalch === null) item.highalch = undefined;
 
-		const previousItem = Items.get(item.id);
 		if (!previousItem) {
 			newItems.push(item);
 		}
 
-		const price = allPrices[item.id];
 		if (price) {
 			// Fix weird bug with prices: (high can be 1 and low 2.14b for example... blame Jamflex)
 			if (price.high < price.low) price.high = price.low;
@@ -446,11 +434,6 @@ export default async function prepareItems(): Promise<void> {
 			}
 		}
 
-		const rename = itemsToRename.find(i => i.id === item.id);
-		if (rename) {
-			item.name = rename.name;
-		}
-
 		if (equipmentModifications.has(item.id)) {
 			const copyItem = Items.get(equipmentModifications.get(item.id)!)!;
 			item.equipment = copyItem.equipment;
@@ -497,10 +480,6 @@ export default async function prepareItems(): Promise<void> {
 			};
 		}
 
-		if (itemChanges[item.id]) {
-			item = deepMerge(item, itemChanges[item.id]) as any;
-		}
-
 		newItemJSON[item.id] = item;
 
 		for (const item of manualItems) {
@@ -509,6 +488,14 @@ export default async function prepareItems(): Promise<void> {
 	}
 
 	newItemJSON[0] = undefined;
+
+	for (const item of itemsToDuplicate) {
+		// DT2 Rings have been moved to OSB IDs, create a second copy of them to preserve old item_data
+		const itemToDuplicate = newItemJSON[item.idToDuplicate];
+		if (!itemToDuplicate) continue;
+		newItemJSON[item.id] = itemToDuplicate;
+		newItemJSON[item.id]!.id = item.id;
+	}
 
 	if (nameChanges.length > 0) {
 		messages.push(`Name Changes:\n	${nameChanges.join('\n	')}`);
