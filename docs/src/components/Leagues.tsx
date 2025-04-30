@@ -131,6 +131,7 @@ export function Leagues() {
 						<tr>
 							<th>Name</th>
 							<th>Description</th>
+							<th>Chance</th>
 							<th>Tier</th>
 						</tr>
 					</thead>
@@ -146,6 +147,7 @@ export function Leagues() {
 							>
 								<td>{task.name}</td>
 								<td>{task.desc}</td>
+								<td>{task.rng?.chancePerKill > 1 ? `1 / ${task.rng?.chancePerKill}` : undefined}</td>
 								<td>{toTitleCase(task.tier)}</td>
 							</tr>
 						))}

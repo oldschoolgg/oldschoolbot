@@ -4,10 +4,15 @@ sidebar:
   order: 3
 tableOfContents: false
 ---
-import Update from '../../../components/Update.astro';
 
+import Update from "../../../components/Update.astro";
 
-<Update date="6/12/2024" firstHash="bc2e2ce8065c2edd5ca9966c9802a7df6c9da596" secondHash="92b3b66d8af3fda390fbdf875fdf17dd62ecaef6" isNew />
+<Update
+	date="6/12/2024"
+	firstHash="bc2e2ce8065c2edd5ca9966c9802a7df6c9da596"
+	secondHash="92b3b66d8af3fda390fbdf875fdf17dd62ecaef6"
+	isNew
+/>
 
 ### [[gc]]
 
@@ -36,9 +41,9 @@ import Update from '../../../components/Update.astro';
 ### [[DayV-git]]
 
 - Fixed the hueycoatl CL notifications showing the wrong KC
-- Update Gnomes, Paladins and Heros according to the [osrs update](https://oldschool.runescape.wiki/w/Update:Project_Rebalance:_Skilling_%26_Poll_81_MTA_Changes#Pickpocketing  ), dropping med/hard/elite clues respectively. Success rates have been updated and added clues as tertiary drops.
+- Update Gnomes, Paladins and Heros according to the [osrs update](https://oldschool.runescape.wiki/w/Update:Project_Rebalance:_Skilling_%26_Poll_81_MTA_Changes#Pickpocketing), dropping med/hard/elite clues respectively. Success rates have been updated and added clues as tertiary drops.
 - Fixed a bug with the rogues outfit doubling clue scrolls.
-- Added wealthy citizens to [[/steal]], they have a *doubled* max trip length because they are afk.
+- Added wealthy citizens to [[/steal]], they have a _doubled_ max trip length because they are afk.
 - Clue stacking/juggling now applies properly for clues from skilling and TOB.
 - Fixed a bug with a clue speed boost not being applied when it should.
 - Clue trips can now be repeated if you have more clues in your bank.
@@ -51,7 +56,11 @@ import Update from '../../../components/Update.astro';
 
 - Added the droptables for Zombie pirates and the Zombie pirate locker
 
-<Update date="26/11/2024" firstHash="4ccf60f038be9a7251cc7f4f9c66f4b181948ab3" secondHash="bc2e2ce8065c2edd5ca9966c9802a7df6c9da596" />
+<Update
+	date="26/11/2024"
+	firstHash="4ccf60f038be9a7251cc7f4f9c66f4b181948ab3"
+	secondHash="bc2e2ce8065c2edd5ca9966c9802a7df6c9da596"
+/>
 
 **Clue scrolls** have received several updates/changes in this update, view our [Clue Scrolls](/osb/clues/#implings) page for updated information.
 
@@ -65,11 +74,12 @@ import Update from '../../../components/Update.astro';
 ### [[gc]]
 
 - You can now stack clue scrolls, view the clue scrolls page for more information. Although the bot lets you stack clues in your bank, we are just emulating the mechanic of clue juggling. In other words, your minion keeps the clues in your bank juggled, allowing you to hold them - and your minion can only juggle a maximum of 100 clues. If you receive more clues while at the limit of 100 clues, your minion will drop the lowest tier ones you have to fit higher tier ones (e.g. it will drop an easy clue to pick up an elite clue).
-- Boosts to clue scrolls now apply *per clue* instead of to the entire trip, allowing you to complete more clues per trip.
-- *'Engine Changes:'* I have integrated the packages we use into the main repo as a monorepo, with the simple explanation being it makes it easier for myself and others to add new things, like bosses.
+- Boosts to clue scrolls now apply _per clue_ instead of to the entire trip, allowing you to complete more clues per trip.
+- _'Engine Changes:'_ I have integrated the packages we use into the main repo as a monorepo, with the simple explanation being it makes it easier for myself and others to add new things, like bosses.
 - The Pharaoh's sceptre is now tradeable
 
-#### The Hueycoatl 
+#### The Hueycoatl
+
 [[huey.webp]]
 
 The Hueycoatl boss can now be killed using [[/k]]!
@@ -101,9 +111,15 @@ To see the boosts, requirements and all information on the boss, see our [The Hu
 
 - Fixed/improved some wiki pages
 
-<Update date="13/11/2024" firstHash="4fbfe429e9a1bdf817175cf497177e47fefc6be6" secondHash="e03afd628fd7e1aa460acc417d822c2d697f9087"  />
-- Hacktoberfest has finished, and everyone has been sent out their custom merch and other prizes! Thank you to all who participated.
-- OSB Bingo #3 has finished! Read the page for it for more information: [OSB Bingo #3](/osb/miscelleanous/bingo/#osb-bingo-3-finished)
+<Update
+	date="13/11/2024"
+	firstHash="4fbfe429e9a1bdf817175cf497177e47fefc6be6"
+	secondHash="e03afd628fd7e1aa460acc417d822c2d697f9087"
+/>
+- Hacktoberfest has finished, and everyone has been sent out their custom merch
+and other prizes! Thank you to all who participated. - OSB Bingo #3 has
+finished! Read the page for it for more information: [OSB Bingo
+#3](/osb/miscelleanous/bingo/#osb-bingo-3-finished)
 
 ### [[gc]]
 
@@ -165,7 +181,11 @@ To see the boosts, requirements and all information on the boss, see our [The Hu
   - Added [[Diving apparatus]] [[Fishbowl helmet]] to [[/buy]]
   - Added [[Crab helmet]] [[Crab claw]] to [[/create]]
 
-<Update date="16/10/2024" firstHash="68b130088f5e365ec2a341cae48bc5b353ccc2ff" secondHash="4fbfe429e9a1bdf817175cf497177e47fefc6be6"  />
+<Update
+	date="16/10/2024"
+	firstHash="68b130088f5e365ec2a341cae48bc5b353ccc2ff"
+	secondHash="4fbfe429e9a1bdf817175cf497177e47fefc6be6"
+/>
 
 Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-started/bingo) for information.
 
@@ -217,7 +237,11 @@ Bingo! We are running the 3rd official OSB bingo. See the [Bingo Page](/getting-
 - Updated agility xp/hr rates based on the osrs update (buffed)
 - Added [[Clue scroll (elite)]] drop to Araxxor
 
-<Update date="9/10/2024" firstHash="8de72b2de5a275497c67123904a280981415c553" secondHash="68b130088f5e365ec2a341cae48bc5b353ccc2ff"  />
+<Update
+	date="9/10/2024"
+	firstHash="8de72b2de5a275497c67123904a280981415c553"
+	secondHash="68b130088f5e365ec2a341cae48bc5b353ccc2ff"
+/>
 
 ### Hacktoberfest
 
@@ -246,7 +270,7 @@ I am running our own Hacktoberfest! Check out the [Hacktoberfest](/getting-start
   - The [[Emberlight]], [[Scorching bow]] and [[Purging staff]] weapons now act as demonbane weapons.
   - [[Emberlight]] boosts at all demon mobs, Scorching Bow, Purging Staff and Burning Claws only affect TDs (with the exception of Scorching Bow also being BIS at K'ril)
 
-## 
+##
 
 We now have a new wiki at https://wiki.oldschool.gg/, and the BSO Wiki is now combined together with the OSB wiki. Many pages are out of date, I'm trying to update pages when I have time. Currently, the only way to contribute to the new wiki is by editing files in [this folder on github](https://github.com/oldschoolgg/oldschoolbot/tree/master/docs/src/content/docs).
 

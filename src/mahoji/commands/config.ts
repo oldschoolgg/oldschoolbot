@@ -144,6 +144,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable Names on Opens',
 		bit: BitField.DisableOpenableNames
+	},
+	{
+		name: 'Show Detailed Info',
+		bit: BitField.ShowDetailedInfo
 	}
 ];
 

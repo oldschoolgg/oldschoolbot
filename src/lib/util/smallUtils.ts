@@ -1,6 +1,5 @@
 import { type CommandResponse, deepMerge, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
-import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
 import { clamp, objectEntries } from 'e';
 import { type ArrayItemsResolved, Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
@@ -170,17 +169,6 @@ export function returnStringOrFile(string: string | InteractionReplyOptions): Aw
 		);
 	}
 	return string;
-}
-
-export function makeTable(headers: string[], rows: unknown[][]) {
-	return new AsciiTable3()
-		.setStyle('github-markdown')
-		.setHeading(...headers)
-		.setAlign(1, AlignmentEnum.RIGHT)
-		.setAlign(2, AlignmentEnum.CENTER)
-		.setAlign(3, AlignmentEnum.LEFT)
-		.addRowMatrix(rows)
-		.toString();
 }
 
 export const staticTimeIntervals = ['day', 'week', 'month'] as const;

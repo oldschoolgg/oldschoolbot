@@ -17,7 +17,13 @@ export class XPBank {
 			return this;
 		}
 		if (!amount) {
-			throw new Error('You must provide an amount of XP to add');
+			console.trace(`Tried to add ${amount} XP to ${skill}`);
+		}
+		if (typeof amount !== 'number') {
+			throw new Error(`You must provide an amount of XP to add for ${skill}`);
+		}
+		if (amount < 0) {
+			throw new Error(`Provided a negative amount of XP to add for ${skill}`);
 		}
 		this.xpList.push({ skillName: skill as SkillsEnum, amount, ...options });
 		return this;

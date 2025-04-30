@@ -3561,7 +3561,7 @@
 				"type": "speed",
 				"monster": "Theatre of Blood: Hard Mode",
 				"rng": {
-					"chancePerKill": 55
+					"chancePerKill": 5
 				}
 			},
 			{

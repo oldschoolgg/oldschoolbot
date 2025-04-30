@@ -4,6 +4,9 @@ import type { activity_type_enum } from '@prisma/client';
 import type { ActivityTaskData } from '../types/minions';
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
+	if (!activity.channel_id) {
+		throw new Error(`Activity ${activity.id} has no channel_id`);
+	}
 	return {
 		...(activity.data as Prisma.JsonObject),
 		type: activity.type as activity_type_enum,

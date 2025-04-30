@@ -1,10 +1,11 @@
+import { Table } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
-import { makeTable, stringMatches } from '../../../lib/util';
+import { stringMatches } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
 
@@ -124,14 +125,20 @@ export function slayerShopListRewards(type: 'all' | 'unlocks' | 'buyables') {
 		type === 'all' ? true : type === 'unlocks' ? !srs.item : Boolean(srs.item)
 	);
 
-	const unlockTable = makeTable(
-		['Slayer Points', 'name: ', 'Description', 'Type'],
-		availableUnlocks.map(i => [i.slayerPointCost, i.name, i.desc, i.extendMult === undefined ? 'unlock' : 'extend'])
-	);
+	const table = new Table();
+	table.addHeader('Slayer Points', 'name: ', 'Description', 'Type');
+	for (const unlock of availableUnlocks) {
+		table.addRow(
+			unlock.slayerPointCost.toString(),
+			unlock.name!,
+			unlock.desc!,
+			unlock.extendMult === undefined ? 'unlock' : 'extend'
+		);
+	}
 
 	const content = type === 'all' ? 'List of all slayer rewards' : `List sof slayer ${type}`;
 	return {
 		content,
-		files: [{ attachment: Buffer.from(unlockTable), name: 'slayerRewardsUnlocks.txt' }]
+		files: [{ attachment: Buffer.from(table.toString()), name: 'slayerRewardsUnlocks.txt' }]
 	};
 }

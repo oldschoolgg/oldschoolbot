@@ -364,7 +364,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const maxCanDo = Math.floor(maxTripLength / timePerClue);
 
-		quantity = quantity ?? maxCanDo;
+		quantity = quantity ? Math.min(quantity, maxCanDo) : maxCanDo;
 
 		const response: Awaited<CommandResponse> = {};
 
