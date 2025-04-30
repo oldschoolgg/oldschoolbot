@@ -491,7 +491,7 @@ export default async function prepareItems(): Promise<void> {
 
 	for (const item of itemsToDuplicate) {
 		// DT2 Rings have been moved to OSB IDs, create a second copy of them to preserve old item_data
-		const itemToDuplicate = Items.get(item.idToDupe);
+		const itemToDuplicate = newItemJSON[item.idToDuplicate];
 		if (!itemToDuplicate) continue;
 		newItemJSON[item.id] = itemToDuplicate;
 		newItemJSON[item.id]!.id = item.id;
