@@ -15,8 +15,8 @@ import { randFloat, roll } from '../../util';
 import itemID from '../../util/itemID';
 
 const clues = [
-	[itemID('Elder scroll piece'), 0.1 / 10],
-	[itemID('Clue scroll (grandmaster)'), 0.3 / 10],
+	[itemID('Elder scroll piece'), 0.2 / 10],
+	[itemID('Clue scroll (grandmaster)'), 0.45 / 10],
 	[itemID('Clue scroll(elite)'), 2 / 10],
 	[itemID('Clue scroll(hard)'), 3 / 10],
 	[itemID('Clue scroll(medium)'), 5 / 10]
