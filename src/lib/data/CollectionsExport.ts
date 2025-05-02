@@ -2737,7 +2737,7 @@ export const allPetIDs = [
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.flatMap(petSeries => petSeries.stages),
-	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector']),
+	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector', 'Waddles']),
 	...metamorphPets,
 	...toaMetamorphPets,
 	...allDOAPets,
