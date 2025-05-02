@@ -36,3 +36,15 @@ for (const paintColor of paintColors) {
 
 	paintColor.paintCanItem = getOSItem(`${paintColor.name} paint can`);
 }
+
+setCustomItem(
+	72_449,
+	'Paint removal cloth',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000_000
+);

@@ -458,8 +458,8 @@
 	},
 	{
 		"name": "paint",
-		"desc": "Paint an item.",
-		"subOptions": []
+		"desc": "Paint or remove paint from an item.",
+		"subOptions": ["add", "remove"]
 	},
 	{
 		"name": "patreon",

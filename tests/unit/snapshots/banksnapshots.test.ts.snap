@@ -3048,6 +3048,14 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
+    "gpCost": 1000000000,
+    "itemCost": {},
+    "name": "Paint removal cloth",
+    "outputItems": {
+      "72449": 1,
+    },
+  },
+  {
     "itemCost": {
       "6183": 1,
     },
