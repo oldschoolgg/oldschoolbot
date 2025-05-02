@@ -111,3 +111,4 @@ Openables.set(InfernalImpling.id, InfernalImpling);
 Openables.set(EternalImpling.id, EternalImpling);
 Openables.set(MysteryImpling.id, MysteryImpling);
 Openables.set(ChimplingImpling.id, ChimplingImpling);
+Openables.set(ShrimplingImpling.id, ShrimplingImpling);

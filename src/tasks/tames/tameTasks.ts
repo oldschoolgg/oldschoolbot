@@ -67,6 +67,10 @@ export async function handleFinish({
 	const addRes = await tame.addDuration(activity.duration);
 	if (addRes) results.push(addRes);
 
+	if (!activity.channel_id) {
+		throw new Error('No channel ID found for tame activity');
+	}
+
 	return sendToChannelID(activity.channel_id, {
 		content: results.join(', '),
 		components: [
