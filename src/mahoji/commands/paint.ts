@@ -69,7 +69,6 @@ export const paintCommand: OSBMahojiCommand = {
 			item: string;
 		};
 	}>) => {
-		// Handle "add" subcommand
 		if (options.add) {
 			const paint = paintColors.find(i => i.itemId.toString() === options.add?.paint);
 			if (!paint) {
@@ -110,7 +109,6 @@ export const paintCommand: OSBMahojiCommand = {
 			return `You painted your ${item.name} with ${paint.paintCanItem.name}!`;
 		}
 
-		// Handle "remove" subcommand
 		if (options.remove) {
 			const user = await mUserFetch(userID);
 			const item = getItem(options.remove.item);
