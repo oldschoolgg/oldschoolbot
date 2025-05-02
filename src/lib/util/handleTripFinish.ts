@@ -531,7 +531,6 @@ export async function handleTripFinish(
 
 	const minutes = Math.floor(data.duration / Time.Minute);
 	if (minutes >= 1) {
-		const shuffledEasterItems = shuffleArr(easterEventMainTable);
 		let effectiveTastyPetChance = tastyPetChance;
 		let effectiveEasterItemChance = easterEventItemChance;
 
@@ -572,6 +571,7 @@ Easter Event:
 				}
 			}
 			if (!roll(effectiveEasterItemChance)) continue;
+			const shuffledEasterItems = shuffleArr(easterEventMainTable);
 			const unownedItem = shuffledEasterItems.find(_item => !effectiveCl.has(_item)) ?? shuffledEasterItems[0];
 			if (unownedItem) {
 				effectiveCl.add(unownedItem);
