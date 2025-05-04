@@ -2536,7 +2536,9 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Polterpup',
 	'Mumpkin',
 	'Grinchling',
-	'Shrimpy'
+	'Shrimpy',
+	'Waddles',
+	'Tasty'
 ]);
 
 export const kingGoldemarCL = resolveItems([
@@ -2737,7 +2739,7 @@ export const allPetIDs = [
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.flatMap(petSeries => petSeries.stages),
-	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector', 'Waddles']),
+	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector']),
 	...metamorphPets,
 	...toaMetamorphPets,
 	...allDOAPets,
