@@ -6,9 +6,10 @@ import {
 	type ButtonBuilder,
 	type MessageCollector,
 	type MessageCreateOptions,
-	bold
+	bold,
+	codeBlock
 } from 'discord.js';
-import { Time, notEmpty, randArrItem, randInt } from 'e';
+import { Time, notEmpty, randArrItem, randInt, reduceNumByPercent, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -24,6 +25,7 @@ import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import pets from '../data/pets.js';
+import { ALL_EASTER_PETS, easterEventItemChance, easterEventMainTable, tastyPetChance } from '../easter.js';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../invention/inventions';
@@ -35,7 +37,7 @@ import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { roll, toKMB } from '../util';
+import { clAdjustedDroprate, roll, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
@@ -49,7 +51,7 @@ import {
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
 import { logError } from './logError';
-import { perHourChance } from './smallUtils';
+import { itemNameFromID, perHourChance } from './smallUtils';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
@@ -524,6 +526,68 @@ export async function handleTripFinish(
 		stopwatch.stop();
 		if (stopwatch.duration > 500) {
 			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
+		}
+	}
+
+	const minutes = Math.floor(data.duration / Time.Minute);
+	if (minutes >= 1) {
+		const effectiveCl = user.cl.clone();
+
+		let effectiveTastyPetChance = clAdjustedDroprate(user, 'Tasty', tastyPetChance, 6);
+		let effectiveEasterItemChance = easterEventItemChance;
+
+		const clCompleteCheck = easterEventMainTable.every(_item => effectiveCl.has(_item));
+		if (clCompleteCheck) {
+			effectiveEasterItemChance *= 2;
+		} else {
+			effectiveEasterItemChance /= 2;
+		}
+
+		const pet = user.equippedPet;
+		if (pet && ALL_EASTER_PETS.some(p => user.usingPet(p))) {
+			effectiveTastyPetChance = Math.floor(reduceNumByPercent(effectiveTastyPetChance, 20));
+			effectiveEasterItemChance = Math.floor(reduceNumByPercent(effectiveEasterItemChance, 20));
+			messages.push(`Your ${pet.name} pet is making you 20% more likely to get Easter items`);
+		}
+
+		if (user.bitfield.includes(BitField.ShowDetailedInfo) && message.content) {
+			const tastyPerHourChance = 1 - Math.pow(1 - 1 / effectiveTastyPetChance, 60);
+			const easterPerHourChance = 1 - Math.pow(1 - 1 / effectiveEasterItemChance, 60);
+			const estimatedHoursForTasty = 1 / tastyPerHourChance;
+			const estimatedHoursPerEasterItem = 1 / easterPerHourChance;
+			const totalEasterItems = easterEventMainTable.length;
+			const estimatedHoursForAllEasterItems = estimatedHoursPerEasterItem * totalEasterItems;
+
+			message.content += codeBlock(`
+Easter Event:
+- Tasty Chance: 1 in ${effectiveTastyPetChance} per minute
+- Easter Item Chance: 1 in ${effectiveEasterItemChance} per minute
+- ~${(tastyPerHourChance * 100).toFixed(2)}% chance for Tasty per hour
+- ~${(easterPerHourChance * 100).toFixed(2)}% chance for an Easter item per hour
+- Estimated ~${estimatedHoursForTasty.toFixed(1)} hours to get a Tasty
+- Estimated ~${estimatedHoursPerEasterItem.toFixed(1)} hours to get one Easter item
+- Estimated ~${estimatedHoursForAllEasterItems.toFixed(1)} hours to collect all ${totalEasterItems} Easter items
+`);
+		}
+
+		for (let i = 0; i < minutes; i++) {
+			if (roll(effectiveTastyPetChance)) {
+				itemsToAddWithCL.add('Tasty');
+				if (message.content) {
+					message.content +=
+						'\n:<easterEgg:695473553314938920> **You received a very tasty looking chocolate bunny!**';
+				}
+			}
+			if (!roll(effectiveEasterItemChance)) continue;
+			const shuffledEasterItems = shuffleArr(easterEventMainTable);
+			const unownedItem = shuffledEasterItems.find(_item => !effectiveCl.has(_item)) ?? shuffledEasterItems[0];
+			if (unownedItem) {
+				effectiveCl.add(unownedItem);
+				itemsToAddWithCL.add(unownedItem);
+				if (message.content) {
+					message.content += `\n<:easterEgg:695473553314938920> **You received a ${itemNameFromID(unownedItem)} from the Easter event!**`;
+				}
+			}
 		}
 	}
 
