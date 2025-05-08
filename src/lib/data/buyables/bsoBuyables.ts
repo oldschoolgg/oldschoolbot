@@ -153,5 +153,10 @@ export const bsoBuyables: Buyable[] = [
 		outputItems: new Bank().add('Pumpkin seed'),
 		ironmanPrice: 500,
 		maxQuantity: 500
+	},
+	{
+		name: 'Paint removal cloth',
+		gpCost: 1_000_000_000,
+		outputItems: new Bank().add('Paint removal cloth')
 	}
 ];
