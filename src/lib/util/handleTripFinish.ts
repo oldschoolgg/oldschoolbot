@@ -37,7 +37,7 @@ import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { roll, toKMB } from '../util';
+import { clAdjustedDroprate, roll, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
@@ -531,9 +531,17 @@ export async function handleTripFinish(
 
 	const minutes = Math.floor(data.duration / Time.Minute);
 	if (minutes >= 1) {
-		const shuffledEasterItems = shuffleArr(easterEventMainTable);
-		let effectiveTastyPetChance = tastyPetChance;
+		const effectiveCl = user.cl.clone();
+
+		let effectiveTastyPetChance = clAdjustedDroprate(user, 'Tasty', tastyPetChance, 6);
 		let effectiveEasterItemChance = easterEventItemChance;
+
+		const clCompleteCheck = easterEventMainTable.every(_item => effectiveCl.has(_item));
+		if (clCompleteCheck) {
+			effectiveEasterItemChance *= 2;
+		} else {
+			effectiveEasterItemChance /= 2;
+		}
 
 		const pet = user.equippedPet;
 		if (pet && ALL_EASTER_PETS.some(p => user.usingPet(p))) {
@@ -541,7 +549,6 @@ export async function handleTripFinish(
 			effectiveEasterItemChance = Math.floor(reduceNumByPercent(effectiveEasterItemChance, 20));
 			messages.push(`Your ${pet.name} pet is making you 20% more likely to get Easter items`);
 		}
-		const effectiveCl = user.cl.clone();
 
 		if (user.bitfield.includes(BitField.ShowDetailedInfo) && message.content) {
 			const tastyPerHourChance = 1 - Math.pow(1 - 1 / effectiveTastyPetChance, 60);
@@ -572,6 +579,7 @@ Easter Event:
 				}
 			}
 			if (!roll(effectiveEasterItemChance)) continue;
+			const shuffledEasterItems = shuffleArr(easterEventMainTable);
 			const unownedItem = shuffledEasterItems.find(_item => !effectiveCl.has(_item)) ?? shuffledEasterItems[0];
 			if (unownedItem) {
 				effectiveCl.add(unownedItem);
