@@ -550,7 +550,6 @@ export async function handleTripFinish(
 			messages.push(`Your ${pet.name} pet is making you 20% more likely to get Easter items`);
 		}
 
-
 		if (user.bitfield.includes(BitField.ShowDetailedInfo) && message.content) {
 			const tastyPerHourChance = 1 - Math.pow(1 - 1 / effectiveTastyPetChance, 60);
 			const easterPerHourChance = 1 - Math.pow(1 - 1 / effectiveEasterItemChance, 60);
