@@ -13,8 +13,8 @@ import { Bank, type EMonster, Monsters } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { expect, vi } from 'vitest';
 
-import { clone } from 'lodash';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { clone } from 'remeda';
 import { MUserClass } from '../../src/lib/MUser';
 import { completeActivity } from '../../src/lib/Task';
 import { type PvMMethod, globalConfig } from '../../src/lib/constants';

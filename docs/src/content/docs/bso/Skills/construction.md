@@ -18,9 +18,11 @@ Carpenter's helmet, Carpenter's shirt, Carpenter's trousers, Carpenter's boots, 
 
 ### Methods
 
-<table><thead><tr><th>Method</th><th>Xp / Hr</th><th data-hidden></th></tr></thead><tbody><tr><td>Elder Table</td><td>15,633,221</td><td></td></tr></tbody></table>
+| Method      | Xp / Hr    |
+| ----------- | ---------- |
+| Elder Table | 15,633,221 |
 
-**n.b.** you can increase sawmill speed with `/activities plank_make action:Sawmill type:[Plank] speed:[x]` at an additional cost. The sawmill charges 2x the base cost and an additional increase for higher speeds
+**n.b.** you can increase sawmill speed with [[/activities plank_make action\:Sawmill type\:[Plank] speed\:[x]]] at an additional cost. The sawmill charges 2x the base cost and an additional increase for higher speeds
 
 1x speed - 2x cost
 

@@ -1,4 +1,5 @@
-import { pick } from 'lodash';
+import { pick } from 'remeda';
+
 import { perkTierCache } from './cache';
 import type { RobochimpUser } from './roboChimp';
 
