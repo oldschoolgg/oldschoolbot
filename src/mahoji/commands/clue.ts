@@ -373,8 +373,8 @@ export const clueCommand: OSBMahojiCommand = {
 		const bankedClues = user.bank.amount(clueTier.scrollID);
 
 		let cluesDone = 0;
-		if (!clueImpling || quantity > 1) {
-			quantity = Math.min(quantity, bankedClues) || 1;
+		if (!clueImpling || bankedClues > 0) {
+			quantity = Math.min(quantity, bankedClues);
 
 			const cost = new Bank().add(clueTier.scrollID, quantity);
 			if (!user.owns(cost)) return `You don't own ${cost}.`;
