@@ -21,7 +21,6 @@ model Activity {
   pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])
-  @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
   @@index([finish_date])
