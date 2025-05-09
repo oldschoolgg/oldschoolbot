@@ -4,14 +4,14 @@ title: "Invention"
 
 Invention is a skill where you disassemble items to get materials, and then use those materials to make inventions. Inventions are items which give you boosts and perks, at the cost of materials. You need level 90 Crafting to train Invention.
 
-All aspects of the Invention skill are accessed using `/invention`
+All aspects of the Invention skill are accessed using [[/invention]]
 
 Invention has a minigame, [Tinkering Workshop](../../minigames/tinkering-workshop.md).
 
 ## Disassembling
 
-- Using `/invention disassemble` , select the item you want to disassemble.
-- You will disassemble those items into materials. The materials you get are dependent on the _group_ the item is in. For example, items in the _Food_ group will give _Organic_ materials at a 100% ratio. However, some items are obviously more valuable, like a Shark vs a Trout. Check out `/invention tools command:Material Groups for a full list of items you can disassemble.`
+- Using [[/invention disassemble]] , select the item you want to disassemble.
+- You will disassemble those items into materials. The materials you get are dependent on the _group_ the item is in. For example, items in the _Food_ group will give _Organic_ materials at a 100% ratio. However, some items are obviously more valuable, like a Shark vs a Trout. Check out [[/invention tools command\:Material Groups]] for a full list of items you can disassemble.`
 - Use `/invention materials` to see what materials you own. Note: They are not tradeable, and cannot be transferred to other players.
 - The difference between items (e.g. Shark vs Trout) is their _level_, a Shark has a higher level - and the level determines the _Junk Chance_ of the item, so a Shark is much less likely to become junk. Everything has a chance (high or small) of becoming junk.
 - The amount of XP you get from disassembly is dependent on the level of the item and your invention level.
@@ -19,23 +19,45 @@ Invention has a minigame, [Tinkering Workshop](../../minigames/tinkering-worksho
 ## Research
 
 - Now you have materials!
-- Use `/invention research` to research with a particular material type, effectively sending your minion to use this material and try to research and discover things it can make with it.
+- Use [[/invention research]] to research with a particular material type, effectively sending your minion to use this material and try to research and discover things it can make with it.
 - If successful, you will discover a _blueprint_ which uses the material that you are researching with. For example, if a particular invention uses _sharp_ materials, and you're researching with _sharp_ materials, you have a chance to unlock the blueprint for it.
 - Blueprints only need to be unlocked once, and they grant you the ability to create that invention.
 
 ## Inventing
 
 - Now you have materials, and the blueprint for the Invention you want!
-- Use `/invention invent` to create the particular invention you want.
+- Use [[/invention invent]] to create the particular invention you want.
 - Inventions cost _materials_ to make, and some inventions cost items to make. These are one-time costs.
 - Once you have made an invention, if its one that works from the bank, its ready to go! If it's one that needs to be equipped (like Silverhawk boosts), then you'll need to equip them.
 - Inventions cost a small amount of _materials_ each time you use them.
-- You can use `/config user toggle_invention invention:name` to temporarily toggle a invention off, if you don't want to use it.
+- You can use [[/config user toggle_invention invention\:name]] to temporarily toggle a invention off, if you don't want to use it.
 - That's it! Your inventions will never break or need to be created again. You cannot trade inventions.
 
 ## Inventions
 
-<table><thead><tr><th width="259.77486910994764">Invention (level)</th><th>Effect</th><th>Materials [Weight]</th></tr></thead><tbody><tr><td>Superior Bonecrusher (70)</td><td>25% bonus xp over Gorajan Bonecrusher</td><td>Pious[5] Sharp[1] Magic[4]</td></tr><tr><td>Dwarven Toolkit (80)</td><td>35% speed boost to disassembly</td><td>Dwarven[8] Metallic[2]</td></tr><tr><td>Superior Inferno Adze (80)</td><td>Automatically burns logs chopped and smelts ores mined. Costs nothing to use.</td><td>Sharp[3] Base[3] Metallic[1] Magic[3]</td></tr><tr><td>Superior Dwarf Multicannon (80)</td><td>37%-65% speed boost to pvm when cannoning</td><td>Strong[4] Heavy[2] Metallic[4]</td></tr><tr><td>Mecha Rod (85)</td><td>45% speed boost to fishing</td><td>Flexible[5] Organic[3] Strong[2]</td></tr><tr><td>Master Hammer and Chisel (90)</td><td>45% speed boost to crafting</td><td>Simple[3] Sharp[2] Metallic[2] Swift[3]</td></tr><tr><td>Quick Trap (90)</td><td>25% speed boost to box-trap hunting</td><td>Precious[1] Magic[6] Organic[3]</td></tr><tr><td>Silverhawk Boots (90)</td><td>1.9x speed boost to agility, up to 36k agility xp/hr <em>fully</em> passive (Must be equipped)</td><td>Swift[5] Protective[1] Dextrous[4]<br></td></tr><tr><td>Mecha Mortar (95)</td><td>45% speed boost to herblore</td><td>Organic[8] Metallic[2]</td></tr><tr><td>Portable Tanner (95)</td><td>Tans hides you get from PvM</td><td>Metallic[2] Plated[3] Organic[5]</td></tr><tr><td>Chincannon (100)</td><td>60% speed boost to raids at cost of raid loot.</td><td>Explosive (10)</td></tr><tr><td>Wisp-buster (100)</td><td>30% xp boost to Divination</td><td>Pious[4] Powerful[1] Magic[4] Heavy[1]</td></tr><tr><td>Divine Hand (100)</td><td>30% boost to energy yield in Divination</td><td>Pious[2] Magic[7] Strong[1]</td></tr><tr><td>Drygore axe (100)</td><td>10x success multiplier to woodcutting (Compared to 8x for Dwarven)</td><td>Drygore[7] Sharp[3]</td></tr><tr><td>Moonlight Mutator (100)</td><td>Converts random seeds into zyogmite spores</td><td>Organic[5] Magic[5]</td></tr><tr><td>Webshooter (100)</td><td>20% speed boost to all hunting and 30% boost to passive implings</td><td>Strong[4] Flexible[4] Organic[2]</td></tr><tr><td>Drygore Saw (105)</td><td>40% speed boost to construction</td><td>Drygore[7] Sharp[3]</td></tr><tr><td>Arcane Harvester (110)</td><td>Increases farming yield by 100%</td><td>Organic[5] Magic[5]</td></tr><tr><td>Clue Upgrader (110)</td><td>Chance to upgrade Beginner-Elite clues to next tier when received as loot in PvM.</td><td>Treasured[8] Metallic[2]</td></tr><tr><td>Abyssal Amulet (120)</td><td>Boosts runecrafting by varying amounts depending on the rune</td><td>Magic[4] Metallic[2] Treasured[2]</td></tr><tr><td>RoboFlappy (120)</td><td>Provides double loot from minigames, replicates the effect of the discontinued pet <a href="../../custom-items/pets.md#discontinued-pets">Flappy</a> but with material costs</td><td>Magic[4] Organic[2] Metallic[4]</td></tr></tbody></table>
+| Invention (level)               | Effect                                                    | Materials [Weight]                      |
+| ------------------------------- | --------------------------------------------------------- | --------------------------------------- |
+| Superior Bonecrusher (70)       | 25% bonus xp over Gorajan Bonecrusher                     | Pious[5] Sharp[1] Magic[4]              |
+| Dwarven Toolkit (80)            | 35% speed boost to disassembly                            | Dwarven[8] Metallic[2]                  |
+| Superior Inferno Adze (80)      | Auto burns logs and smelts ores mined; free to use        | Sharp[3] Base[3] Metallic[1] Magic[3]   |
+| Superior Dwarf Multicannon (80) | 37%-65% speed boost to PvM when cannoning                 | Strong[4] Heavy[2] Metallic[4]          |
+| Mecha Rod (85)                  | 45% speed boost to fishing                                | Flexible[5] Organic[3] Strong[2]        |
+| Master Hammer and Chisel (90)   | 45% speed boost to crafting                               | Simple[3] Sharp[2] Metallic[2] Swift[3] |
+| Quick Trap (90)                 | 25% speed boost to box-trap hunting                       | Precious[1] Magic[6] Organic[3]         |
+| Silverhawk Boots (90)           | 1.9x agility speed, up to 36k xp/h passive (must equip)   | Swift[5] Protective[1] Dextrous[4]      |
+| Mecha Mortar (95)               | 45% speed boost to herblore                               | Organic[8] Metallic[2]                  |
+| Portable Tanner (95)            | Tans hides received from PvM                              | Metallic[2] Plated[3] Organic[5]        |
+| Chincannon (100)                | 60% speed boost to raids at cost of raid loot             | Explosive[10]                           |
+| Wisp-buster (100)               | 30% xp boost to Divination                                | Pious[4] Powerful[1] Magic[4] Heavy[1]  |
+| Divine Hand (100)               | 30% boost to energy yield in Divination                   | Pious[2] Magic[7] Strong[1]             |
+| Drygore axe (100)               | 10x success multiplier to woodcutting                     | Drygore[7] Sharp[3]                     |
+| Moonlight Mutator (100)         | Converts random seeds into zyogmite spores                | Organic[5] Magic[5]                     |
+| Webshooter (100)                | 20% speed boost to hunting, 30% boost to passive implings | Strong[4] Flexible[4] Organic[2]        |
+| Drygore Saw (105)               | 40% speed boost to construction                           | Drygore[7] Sharp[3]                     |
+| Arcane Harvester (110)          | Increases farming yield by 100%                           | Organic[5] Magic[5]                     |
+| Clue Upgrader (110)             | Chance to upgrade Beginner-Elite clues in PvM loot        | Treasured[8] Metallic[2]                |
+| Abyssal Amulet (120)            | Boosts runecrafting by rune                               | Magic[4] Metallic[2] Treasured[2]       |
+| RoboFlappy (120)                | Double minigame loot; replicates Flappy pet               | Magic[4] Organic[2] Metallic[4]         |
 
 ## Tips
 

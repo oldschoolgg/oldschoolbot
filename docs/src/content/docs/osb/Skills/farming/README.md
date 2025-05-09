@@ -100,4 +100,24 @@ Crops can be protected by using the pay option on farming commands. Protection c
 
 ## **Farming Patches**
 
-<table data-header-hidden><thead><tr><th width="166">Patch type</th><th width="113" align="center">Base patches</th><th width="186" align="center">Number of possible additional patches</th><th align="center">Additional patch requirements</th></tr></thead><tbody><tr><td><strong>Patch type</strong></td><td align="center"><strong>Base patches</strong></td><td align="center"><strong>Number of possible additional patches</strong></td><td align="center"><strong>Additional patch requirements</strong></td></tr><tr><td>Herb</td><td align="center">4</td><td align="center">6</td><td align="center">65 Farming, completion of Children of the Sun quest, and 1, 10, 15, &#x26; 31 QP</td></tr><tr><td>Tree</td><td align="center">5</td><td align="center">1</td><td align="center">65 Farming</td></tr><tr><td>Allotment</td><td align="center">8</td><td align="center">9</td><td align="center">45 Farming, completion of Children of the Sun quest, and 1, 15, &#x26; 33 QP</td></tr><tr><td>Fruit tree</td><td align="center">4</td><td align="center">2</td><td align="center">85 Farming and 22 QP</td></tr><tr><td>Seaweed</td><td align="center">0</td><td align="center">2</td><td align="center">22 QP</td></tr><tr><td>Flower</td><td align="center">4</td><td align="center">4</td><td align="center">45 Farming and 1 &#x26; 33 QP</td></tr><tr><td>Hardwood</td><td align="center">0</td><td align="center">3</td><td align="center">3 QP</td></tr><tr><td>Vine</td><td align="center">12</td><td align="center">0</td><td align="center">-</td></tr><tr><td>Bush</td><td align="center">3</td><td align="center">2</td><td align="center">45 Farming and 3 QP</td></tr><tr><td>Hops</td><td align="center">4</td><td align="center">0</td><td align="center">-</td></tr><tr><td>Mushroom</td><td align="center">1</td><td align="center">0</td><td align="center">-</td></tr><tr><td>Belladonna</td><td align="center">1</td><td align="center">0</td><td align="center">-</td></tr><tr><td>Cactus</td><td align="center">1</td><td align="center">1</td><td align="center">45 Farming</td></tr><tr><td>Hespori</td><td align="center">1</td><td align="center">0</td><td align="center">-</td></tr><tr><td>Calquat</td><td align="center">1</td><td align="center">0</td><td align="center">-</td></tr><tr><td>Crystal</td><td align="center">0</td><td align="center">1</td><td align="center">33 QP</td></tr><tr><td>Spirit</td><td align="center">1</td><td align="center">4</td><td align="center">91 and 99 Farming</td></tr><tr><td>Celastrus</td><td align="center">0</td><td align="center">1</td><td align="center">85 Farming</td></tr><tr><td>Redwood</td><td align="center">0</td><td align="center">1</td><td align="center">85 Farming</td></tr></tbody></table>
+| Patch type | Base patches | Additional patches | Additional patch requirements                             |
+| ---------- | ------------ | ------------------ | --------------------------------------------------------- |
+| Herb       | 4            | 6                  | 65 Farming, Children of the Sun quest, 1, 10, 15, & 31 QP |
+| Tree       | 5            | 1                  | 65 Farming                                                |
+| Allotment  | 8            | 9                  | 45 Farming, Children of the Sun quest, 1, 15, & 33 QP     |
+| Fruit tree | 4            | 2                  | 85 Farming and 22 QP                                      |
+| Seaweed    | 0            | 2                  | 22 QP                                                     |
+| Flower     | 4            | 4                  | 45 Farming and 1 & 33 QP                                  |
+| Hardwood   | 0            | 3                  | 3 QP                                                      |
+| Vine       | 12           | 0                  | -                                                         |
+| Bush       | 3            | 2                  | 45 Farming and 3 QP                                       |
+| Hops       | 4            | 0                  | -                                                         |
+| Mushroom   | 1            | 0                  | -                                                         |
+| Belladonna | 1            | 0                  | -                                                         |
+| Cactus     | 1            | 1                  | 45 Farming                                                |
+| Hespori    | 1            | 0                  | -                                                         |
+| Calquat    | 1            | 0                  | -                                                         |
+| Crystal    | 0            | 1                  | 33 QP                                                     |
+| Spirit     | 1            | 4                  | 91 and 99 Farming                                         |
+| Celastrus  | 0            | 1                  | 85 Farming                                                |
+| Redwood    | 0            | 1                  | 85 Farming                                                |

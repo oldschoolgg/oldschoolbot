@@ -18,4 +18,9 @@ Scruffy, Dwarven knife, Fletching master cape, Fletcher's outfit
 
 ### Methods
 
-<table><thead><tr><th>Method</th><th>Xp / Hr</th><th data-hidden></th></tr></thead><tbody><tr><td>Hellfire Arrow</td><td>550,851,923</td><td></td></tr><tr><td>Elder Bow (u)</td><td>10,940,725</td><td></td></tr><tr><td>Elder Bow</td><td>15,467,922</td><td></td></tr><tr><td>Elder Bow (Both)</td><td>12,816,278</td><td></td></tr></tbody></table>
+| Method           | Xp / Hr     |
+| ---------------- | ----------- |
+| Hellfire Arrow   | 550,851,923 |
+| Elder Bow (u)    | 10,940,725  |
+| Elder Bow        | 15,467,922  |
+| Elder Bow (Both) | 12,816,278  |

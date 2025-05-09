@@ -15,4 +15,6 @@ Full lumberjack outfit in skilling, Drygore Axe, Woodcutting master cape
 
 ### Methods
 
-<table><thead><tr><th>Method</th><th>Xp / Hr</th><th data-hidden></th></tr></thead><tbody><tr><td>Elder Logs</td><td>2,130,514 (varies)</td><td></td></tr></tbody></table>
+| Method     | Xp / Hr            |
+| ---------- | ------------------ |
+| Elder Logs | 2,130,514 (varies) |
