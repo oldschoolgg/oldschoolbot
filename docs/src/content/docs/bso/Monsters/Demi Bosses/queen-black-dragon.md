@@ -2,31 +2,33 @@
 title: "Queen Black Dragon"
 ---
 
-The Queen Black Dragon is a Demi-Boss that drops several mid game items and mid tier loot. The boss uses the **Ranged** gear setup
+## Queen Black Dragon
+
+The Queen Black Dragon is a demi-boss that drops several mid-game items and mid-tier loot. The boss uses your **Ranged** gear setup.
 
 ## Requirements
 
-- 182 Quest Points
-- 70 Prayer
-- 80 Defence
-- 85 Ranged
-- Dragonfire shield OR Dragonfire ward
+- [[qp:182]]
+- [[prayer:70]]
+- [[defence:80]]
+- [[ranged:85]]
+- Dragonfire Shield **or** Dragonfire Ward
 
 ## Boosts
 
-- Ancient Rejuvenation Pool - 6%
-- Royal crossbow - 8%
-- Dragon hunter crossbow/Dragon hunter lance - 20%
+- Ancient Rejuvenation Pool – 6%
+- Royal Crossbow – 8%
+- Dragon Hunter Crossbow / Dragon Hunter Lance – 20%
 - [Additional global boosts apply](../../skills/combat-skills.md#boosts)
 
 ## Loot
 
-- **Royal dragonhide:** Used to craft Royal Dragonhide, providing the best xp rates
-- **Royal dragon bones:** Equal in experience rates to Abyssal Dragon Bones
-- **Queen black dragonling:** Perkless pet
-- **Royal dragon kiteshield:** An offhand shield, with no currently known use
-- **Dragonbone upgrade kit:** Used to upgrade dragon equipment and infinity equipment into special cosmetic dragonbone versions
-- **Royal crossbow pieces:** Royal torsion spring, Royal sight, Royal frame, and Royal bolt stabiliser. Not dropped in order. Combined with a Chaotic crossbow to make a Royal crossbow with `/create`\*\*`item:royal crossbow`
+- **Royal Dragonhide:** Used to craft royal gear, provides best XP rates
+- **Royal Dragon Bones:** Grants XP equal to Abyssal Dragon Bones
+- **Queen Black Dragonling:** Pet with no perk
+- **Royal Dragon Kiteshield:** Cosmetic offhand item
+- **Dragonbone Upgrade Kit:** Used to convert dragon and infinity gear into cosmetic dragonbone versions
+- **Royal Crossbow Pieces:** Royal Torsion Spring, Royal Sight, Royal Frame, Royal Bolt Stabiliser (not dropped in order). Combine with a Chaotic Crossbow using [[/create item\:royal crossbow]]
 
 | **Unique Drop Table**      | **Drop Rate** |
 | -------------------------- | ------------- |

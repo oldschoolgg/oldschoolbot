@@ -38,7 +38,7 @@ When searching your bank you can use multiple options to find exactly what you'r
 
 The following command is an example of a bank search for the term "rune" with many filters.
 
-- E.g. `/banksearch:runeflag:show_namesflag_extra:wide`
+- E.g. [[/bank search\:rune flag\:show_names flag_extra\:wide]]
 
 ### Category Filters
 
