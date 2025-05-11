@@ -50,7 +50,7 @@ export function remarkItems(_options: any) {
 				} else if (authorsMap.has(match)) {
 					const author = authorsMap.get(match);
 					const customHtml = `<div class="contributor">
-											${author?.avatar ? `<img class="contributor_avatar" src="/${author?.avatar}" />` : ''}
+											${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` : ''}
 											<p class="contributor_name">${author!.displayName}</p>
 										</div>`;
 					node.type = 'html';
