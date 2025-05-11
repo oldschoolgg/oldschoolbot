@@ -1,5 +1,6 @@
 import { roll } from 'e';
 
+import type { MonsterKillOptions } from '../../../meta/types';
 import Bank from '../../../structures/Bank';
 import LootTable from '../../../structures/LootTable';
 import Monster from '../../../structures/Monster';
@@ -48,16 +49,16 @@ const OtherTable = new LootTable()
 	.add(new LootTable().add('Loop half of key').add('Tooth half of key'), 1, 6)
 	.add('Dragon med helm');
 
-const ClueTable = new LootTable().tertiary(34, 'Clue scroll (elite)');
+const ClueTable = new LootTable().tertiary(29, 'Clue scroll (elite)');
 
 const NUMBER_OF_BROTHERS = 6;
 
 export class Barrows extends Monster {
-	public kill(quantity = 1): Bank {
+	public kill(quantity: number, options: MonsterKillOptions): Bank {
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			ClueTable.roll(1, { targetBank: loot });
+			ClueTable.roll(1, { ...options.lootTableOptions, targetBank: loot });
 
 			// We use a set to track items received, you cannot get
 			// the same item twice per chest.
