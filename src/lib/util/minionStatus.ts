@@ -624,7 +624,7 @@ export function minionStatus(user: MUser) {
 			const data = currentTask as NexTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 			return `${name} is currently killing Nex ${data.quantity} times with a team of ${
-				data.users.length
+				data.teamDetails.length
 			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'TroubleBrewing': {
