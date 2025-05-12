@@ -5,13 +5,17 @@ import { randArrItem, randInt, roll } from 'e';
 import { DOANonUniqueTable } from '../bso/doa/doaLootTable';
 import { nexUniqueDrops } from '../data/CollectionsExport';
 import { chanceOfDOAUnique, pickUniqueToGiveUser } from '../depthsOfAtlantis';
+import {
+	drygoreDropChance,
+	drygoreWeapons,
+	kalphiteKingLootTable
+} from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { KingGoldemarLootTable } from '../minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { NEX_UNIQUE_DROPRATE, nexLootTable } from '../nex';
 import { zygomiteFarmingSource } from '../skilling/skills/farming/zygomites';
 import { calcDwwhChance } from '../structures/Boss';
 import { WintertodtCrate } from './wintertodt';
-import { drygoreDropChance, drygoreWeapons, kalphiteKingLootTable } from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 
 export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(420)
@@ -154,12 +158,12 @@ export const simulatedKillables: SimulatedKillable[] = [
 			let drygoreCount = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(drygoreDropChance)) {
-				  loot.add(drygoreWeapons[drygoreCount % drygoreWeapons.length]);
-				  drygoreCount++;
+					loot.add(drygoreWeapons[drygoreCount % drygoreWeapons.length]);
+					drygoreCount++;
 				}
 			}
 			loot.add(kalphiteKingLootTable.roll(quantity));
-			return loot
+			return loot;
 		}
 	},
 	...zygomiteFarmingSource.map(src => ({
