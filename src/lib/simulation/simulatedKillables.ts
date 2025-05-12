@@ -11,6 +11,7 @@ import { NEX_UNIQUE_DROPRATE, nexLootTable } from '../nex';
 import { zygomiteFarmingSource } from '../skilling/skills/farming/zygomites';
 import { calcDwwhChance } from '../structures/Boss';
 import { WintertodtCrate } from './wintertodt';
+import { drygoreDropChance, drygoreWeapons, kalphiteKingLootTable } from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 
 export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(420)
@@ -143,6 +144,22 @@ export const simulatedKillables: SimulatedKillable[] = [
 		isCustom: true,
 		loot: (quantity: number) => {
 			return MoktangLootTable.roll(quantity);
+		}
+	},
+	{
+		name: 'Kalphite King',
+		isCustom: true,
+		loot: (quantity: number) => {
+			const loot = new Bank();
+			let drygoreCount = 0;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(drygoreDropChance)) {
+				  loot.add(drygoreWeapons[drygoreCount % drygoreWeapons.length]);
+				  drygoreCount++;
+				}
+			}
+			loot.add(kalphiteKingLootTable.roll(quantity));
+			return loot
 		}
 	},
 	...zygomiteFarmingSource.map(src => ({
