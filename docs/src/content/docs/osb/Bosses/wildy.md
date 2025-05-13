@@ -12,7 +12,11 @@ Killing Callisto, Vet'ion or Venenatis (and their weaker variants) can risk some
 
 Your death chance is based on a number of factors. Firstly, you need to encounter a PKer for a death to be possible. There are 3 time periods when doing wildy bosses that will influence the chances of you running into a PKer. The below percentages represent how likely you will encounter a PKer _**for every minute of your trip**_. These time periods are random and change every \~2 hours.
 
-<table data-full-width="false"><thead><tr><th></th><th align="center"></th><th align="center"></th></tr></thead><tbody><tr><td><strong>PK Peak Times</strong></td><td align="center"><strong>Chance of PKer at</strong> <strong>Callisto, Vet'ion, Venenatis</strong></td><td align="center"><strong>Chance of PKer at</strong> <strong>Artio, Calvarion, Spindel</strong></td></tr><tr><td>Low period</td><td align="center">1.52%</td><td align="center">2.85%</td></tr><tr><td>Medium period</td><td align="center">7.59%</td><td align="center">14.29%</td></tr><tr><td>High period</td><td align="center">18.98%%</td><td align="center">35.71%</td></tr></tbody></table>
+| PK Peak Times | Chance of PKer at Callisto, Vet'ion, Venenatis | Chance of PKer at Artio, Calvarion, Spindel |
+| ------------- | ---------------------------------------------- | ------------------------------------------- |
+| Low period    | 1.52%                                          | 2.85%                                       |
+| Medium period | 7.59%                                          | 14.29%                                      |
+| High period   | 18.98%                                         | 35.71%                                      |
 
 You will be asked for confirmation when attempting to send a trip during a high PK period. This can be enabled/disabled using:
 

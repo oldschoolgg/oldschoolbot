@@ -11,8 +11,8 @@ import {
 	userMention
 } from 'discord.js';
 import { Time, increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, roll } from 'e';
-import { isEmpty } from 'lodash';
 import { Bank, type ItemBank } from 'oldschooljs';
+import { isEmpty } from 'remeda';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField } from '../../lib/constants';
@@ -66,6 +66,10 @@ export async function handleFinish({
 
 	const addRes = await tame.addDuration(activity.duration);
 	if (addRes) results.push(addRes);
+
+	if (!activity.channel_id) {
+		throw new Error('No channel ID found for tame activity');
+	}
 
 	return sendToChannelID(activity.channel_id, {
 		content: results.join(', '),

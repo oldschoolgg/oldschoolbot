@@ -20,4 +20,7 @@ Klik when tanning, Dwarven Greathammer when crafting, Crafting master cape, Mate
 
 ### Methods
 
-<table><thead><tr><th>Method</th><th>Xp / Hr</th><th data-hidden></th></tr></thead><tbody><tr><td>Heat Res. Vial</td><td>2,630,953</td><td></td></tr><tr><td>Royal dragonhide body</td><td>16,180,364</td><td></td></tr></tbody></table>
+| Method                | Xp / Hr    |
+| --------------------- | ---------- |
+| Heat Res. Vial        | 2,630,953  |
+| Royal dragonhide body | 16,180,364 |

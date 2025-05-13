@@ -21,7 +21,6 @@ model Activity {
   pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])
-  @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
   @@index([finish_date])
@@ -716,7 +715,7 @@ model TameActivity {
   duration    Int
   completed   Boolean
   type        String   @db.VarChar
-  channel_id  String   @db.VarChar(19)
+  channel_id  String?  @db.VarChar(19)
   data        Json     @db.Json
   tame_id     Int
   tame        Tame     @relation(fields: [tame_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_aa012dd3d9d58b8acb4e2cffd4d")

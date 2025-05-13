@@ -33,4 +33,8 @@ Equipped in skilling: Raiments outfit
 
 ### Methods
 
-<table><thead><tr><th>Method</th><th>Xp / Hr</th><th data-hidden></th></tr></thead><tbody><tr><td>ODS</td><td>~211k</td><td></td></tr><tr><td>Lava Runes</td><td>4,997,932</td><td></td></tr><tr><td>Elder Runes</td><td>5,788,081</td><td></td></tr></tbody></table>
+| Method      | Xp / Hr   |
+| ----------- | --------- |
+| ODS         | ~211k     |
+| Lava Runes  | 4,997,932 |
+| Elder Runes | 5,788,081 |
