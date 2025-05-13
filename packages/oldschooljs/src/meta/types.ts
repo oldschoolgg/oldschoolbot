@@ -163,7 +163,7 @@ export interface ItemWeaponStance {
 }
 
 export interface ItemWeapon {
-	attack_speed: number;
+	attack_speed: number | null;
 	weapon_type: string;
 	stances: ItemWeaponStance[];
 }
@@ -233,7 +233,7 @@ export interface Item {
 	 * The OSRS Wiki name for the item.
 	 */
 	wiki_name?: string;
-	equipment?: ItemEquipment;
+	equipment?: ItemEquipment | null;
 	weapon?: ItemWeapon;
 	/**
 	 * The OSRS Wiki market price for this item, 0 if untradeable or has no price.
