@@ -28,6 +28,7 @@ import {
 	cluesMasterCL,
 	cluesMediumCL,
 	evilChickenOutfit,
+	kalphiteKingCL,
 	moktangCL,
 	naxxusCL,
 	nexCL,
@@ -43,6 +44,11 @@ import {
 } from './data/CollectionsExport';
 import pets from './data/pets';
 import killableMonsters from './minions/data/killableMonsters';
+import {
+	drygoreDropChance,
+	drygoreWeapons,
+	kalphiteKingLootTable
+} from './minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
@@ -194,6 +200,24 @@ export const finishables: Finishable[] = [
 		name: 'Moktang',
 		cl: moktangCL,
 		kill: () => MoktangLootTable.roll()
+	},
+	{
+		name: 'Kalphite King',
+		cl: kalphiteKingCL,
+		kill: ({ accumulatedLoot }) => {
+			const loot = new Bank();
+
+			const sortedDrops = [...drygoreWeapons].sort(
+				(a, b) => accumulatedLoot.amount(a) - accumulatedLoot.amount(b)
+			);
+			if (roll(drygoreDropChance)) {
+				const unowned = sortedDrops.find(d => !accumulatedLoot.has(d)) ?? sortedDrops[0];
+				loot.add(unowned);
+			}
+
+			loot.add(kalphiteKingLootTable.roll());
+			return loot;
+		}
 	},
 	{
 		name: 'Tempoross',
