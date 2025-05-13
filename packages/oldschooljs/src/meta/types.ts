@@ -233,7 +233,7 @@ export interface Item {
 	 * The OSRS Wiki name for the item.
 	 */
 	wiki_name?: string;
-	equipment?: ItemEquipment | null;
+	equipment?: ItemEquipment;
 	weapon?: ItemWeapon;
 	/**
 	 * The OSRS Wiki market price for this item, 0 if untradeable or has no price.
