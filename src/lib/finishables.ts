@@ -16,7 +16,6 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import { shuffle } from 'remeda';
 import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
