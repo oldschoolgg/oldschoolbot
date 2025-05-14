@@ -163,7 +163,7 @@ export interface ItemWeaponStance {
 }
 
 export interface ItemWeapon {
-	attack_speed: number;
+	attack_speed: number | null;
 	weapon_type: string;
 	stances: ItemWeaponStance[];
 }
