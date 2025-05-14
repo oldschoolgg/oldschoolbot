@@ -16,8 +16,7 @@ For more info, see: [Minion Icons](https://wiki.oldschool.gg/#minion-icons)
 
 ## Ironman Leaderboards
 
-Use the `ironmen_only: true` flag to filter any leaderboard to only show ironmen:  
-e.g., `/lb skill:smithing ironmen_only: true`
+Use the `ironmen_only: true` flag to filter any leaderboard to only show ironmen: e.g., [[/lb skill\:smithing ironmen_only\:true]]
 
 ## Ironman Discord Server
 

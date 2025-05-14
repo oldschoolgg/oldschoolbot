@@ -271,6 +271,8 @@ This is an automatically generated list of pages with possible issues to be look
 
 [.//getting-started/rules.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/getting-started/rules.md): Doesnt use the new command formatting
 
+[.//getting-started/test.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/getting-started/test.mdx): Doesnt use the new command formatting
+
 [.//getting-started/wiki.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/getting-started/wiki.md): Doesnt use the new command formatting, Contains unintended HTML (e.g. `<td>`)
 
 [.//index.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/index.mdx): Doesnt use the new command formatting
@@ -304,8 +306,6 @@ This is an automatically generated list of pages with possible issues to be look
 [.//osb/Getting Started/advanced-resources.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/osb/Getting%20Started/advanced-resources.md): Doesnt use the new command formatting
 
 [.//osb/Getting Started/bank-background.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/osb/Getting%20Started/bank-background.md): Doesnt use the new command formatting
-
-[.//osb/Getting Started/bank-filters.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/osb/Getting%20Started/bank-filters.md): Doesnt use the new command formatting
 
 [.//osb/Getting Started/beginner-guide.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/osb/Getting%20Started/beginner-guide.md): Doesnt use the new command formatting
 
@@ -366,8 +366,6 @@ This is an automatically generated list of pages with possible issues to be look
 [.//osb/Raids/tob.mdx](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/osb/Raids/tob.mdx): Doesnt use the new command formatting
 
 [.//osb/Skills/agility.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/osb/Skills/agility.md): Doesnt use the new command formatting
-
-[.//osb/Skills/construction/player-owned-houses.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/osb/Skills/construction/player-owned-houses.md): Doesnt use the new command formatting
 
 [.//osb/Skills/construction/README.md](https://github.com/oldschoolgg/oldschoolbot/blob/master/./docs/src/content/docs/osb/Skills/construction/README.md): Doesnt use the new command formatting
 
