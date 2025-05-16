@@ -798,7 +798,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Superior Tormented Demons': {
 				items: superiorTormentedDemonCL,
-				alias: ['td', 'tormented demon', 'tormented demons'],
+				alias: ['superior tormented demon', 'std', 'stds', 'sup torm', 'sup torm demon', 'superior tormented demons'],
 				fmtProg: kcProg(BSOMonsters.SuperiorTormentedDemon.id)
 			},
 			"Champion's Challenge": {
