@@ -8385,18 +8385,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	71_700,
-	'Torva armour set',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000
-);
-
-setCustomItem(
 	71_572,
 	'Skip',
 	'Coal',
@@ -8406,18 +8394,6 @@ setCustomItem(
 		}
 	},
 	1_000_000
-);
-
-setCustomItem(
-	71_701,
-	'Pernix armour set',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000
 );
 
 setCustomItem(
@@ -8442,18 +8418,6 @@ setCustomItem(
 		}
 	},
 	1_000_000
-);
-
-setCustomItem(
-	71_702,
-	'Virtus armour set',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000
 );
 
 setCustomItem(
