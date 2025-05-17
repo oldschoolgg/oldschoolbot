@@ -391,7 +391,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							required: false,
 							autocomplete: async value => {
 								return Object.entries(BitFieldData)
-									.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
+									.filter(bf =>
+										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+									)
 									.map(i => ({ name: i[1].name, value: i[0] }));
 							}
 						},
@@ -402,7 +404,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							required: false,
 							autocomplete: async value => {
 								return Object.entries(BitFieldData)
-									.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
+									.filter(bf =>
+										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+									)
 									.map(i => ({ name: i[1].name, value: i[0] }));
 							}
 						}
@@ -618,7 +622,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							.join('\n');
 					}
 					const bit = Number.parseInt(bitEntry[0]);
-		
+
 					if (
 						!bit ||
 						!(BitFieldData as any)[bit] ||
@@ -627,9 +631,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					) {
 						return 'Invalid bitfield.';
 					}
-		
+
 					let newBits = [...user.bitfield];
-		
+
 					if (action === 'add') {
 						if (newBits.includes(bit)) {
 							return "Already has this bit, so can't add.";
@@ -641,11 +645,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 						}
 						newBits = newBits.filter(i => i !== bit);
 					}
-		
+
 					await user.update({
 						bitfield: uniqueArr(newBits)
 					});
-		
+
 					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData as any)[bit].name}' bit.`;
 				}
 				if (options.bingo_tools) {
