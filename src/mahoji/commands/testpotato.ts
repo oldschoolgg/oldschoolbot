@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client';
 import { tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, noOp } from 'e';
+import { Time, noOp, uniqueArr } from 'e';
 import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
 import { itemID, toKMB } from 'oldschooljs/dist/util';
 
@@ -12,7 +12,7 @@ import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { MAX_INT_JAVA, MAX_XP, globalConfig } from '../../lib/constants';
+import { BitFieldData, MAX_INT_JAVA, MAX_XP, globalConfig } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -381,40 +381,34 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'patron',
-					description: 'Set your patron perk level.',
+					name: 'bitfield',
+					description: 'Manage your bitfields',
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'tier',
-							description: 'The patron tier to give yourself.',
-							required: true,
-							choices: [
-								{
-									name: 'Non-patron',
-									value: '0'
-								},
-								{
-									name: 'Tier 1',
-									value: '1'
-								},
-								{
-									name: 'Tier 2',
-									value: '2'
-								},
-								{
-									name: 'Tier 3',
-									value: '3'
-								},
-								{
-									name: 'Tier 4',
-									value: '4'
-								},
-								{
-									name: 'Tier 5',
-									value: '5'
-								}
-							]
+							name: 'add',
+							description: 'The bitfield to add',
+							required: false,
+							autocomplete: async value => {
+								return Object.entries(BitFieldData)
+									.filter(bf =>
+										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i[1].name, value: i[0] }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'remove',
+							description: 'The bitfield to remove',
+							required: false,
+							autocomplete: async value => {
+								return Object.entries(BitFieldData)
+									.filter(bf =>
+										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i[1].name, value: i[0] }));
+							}
 						}
 					]
 				},
@@ -586,7 +580,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				userID
 			}: CommandRunOptions<{
 				max?: {};
-				patron?: { tier: string };
+				bitfield?: { add?: string; remove?: string };
 				gear?: { thing: string };
 				reset?: { thing: string };
 				setminigamekc?: { minigame: string; kc: number };
@@ -617,6 +611,46 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 						}
 					});
 					return events.map(userEventToStr).join('\n');
+				}
+				if (options.bitfield) {
+					const bitInput = options.bitfield.add ?? options.bitfield.remove;
+					const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);
+					const action: 'add' | 'remove' = options.bitfield.add ? 'add' : 'remove';
+					if (!bitEntry) {
+						return Object.entries(BitFieldData)
+							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
+							.join('\n');
+					}
+					const bit = Number.parseInt(bitEntry[0]);
+
+					if (
+						!bit ||
+						!(BitFieldData as any)[bit] ||
+						[7, 8].includes(bit) ||
+						(action !== 'add' && action !== 'remove')
+					) {
+						return 'Invalid bitfield.';
+					}
+
+					let newBits = [...user.bitfield];
+
+					if (action === 'add') {
+						if (newBits.includes(bit)) {
+							return "Already has this bit, so can't add.";
+						}
+						newBits.push(bit);
+					} else {
+						if (!newBits.includes(bit)) {
+							return "Doesn't have this bit, so can't remove.";
+						}
+						newBits = newBits.filter(i => i !== bit);
+					}
+
+					await user.update({
+						bitfield: uniqueArr(newBits)
+					});
+
+					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData as any)[bit].name}' bit.`;
 				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
