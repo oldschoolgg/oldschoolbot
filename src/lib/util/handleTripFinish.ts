@@ -20,6 +20,7 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
+import { formatList } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -164,20 +165,19 @@ export async function handleTripFinish(
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
-		clueReceived.map(
-			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
-		);
+	if (clueReceived.length > 0) {
+		const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
+		message.content += `\n${Emoji.Casket} **You got a ${formatList(clueReceived.map(clue => clue.name))} clue scroll** in your loot.`;
+
+		if (clueStack >= MAX_CLUES_DROPPED) {
+			message.content += `\n**You have reached the maximum clue stack of ${MAX_CLUES_DROPPED}!** (${formatList(ClueTiers.filter(tier => user.bank.amount(tier.scrollID) > 0).map(tier => `${user.bank.amount(tier.scrollID)} ${tier.name}`))}). If you receive more clues, lower tier clues will be replaced with higher tier clues.`;
+		} else {
+			message.content += ` You now own ${clueStack} clues.`;
+		}
 	}
 
 	if (allPetsCL.some(p => loot?.has(p))) {
 		message.content += petMessage(loot);
-	}
-
-	if (sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID))) >= MAX_CLUES_DROPPED) {
-		messages.push(
-			`You cannot stack anymore clue scrolls (${ClueTiers.map(tier => `${user.bank.amount(tier.scrollID)} ${tier.name}`)}), you can't hold anymore than this, but lower tier clues will be replaced with higher tier clues.`
-		);
 	}
 
 	const existingCollector = collectors.get(user.id);
