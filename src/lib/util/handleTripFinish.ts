@@ -107,6 +107,25 @@ const tripFinishEffects: TripFinishEffect[] = [
 	}
 ];
 
+export function displayCluesAndPets(user: MUser, loot: Bank | null | undefined) {
+	let ret = '';
+	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
+	if (clueReceived.length > 0) {
+		const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
+		ret += `\n${Emoji.Casket} **You got a ${formatList(clueReceived.map(clue => clue.name))} clue scroll** in your loot.`;
+
+		if (clueStack >= MAX_CLUES_DROPPED) {
+			ret += `\n**You have reached the maximum clue stack of ${MAX_CLUES_DROPPED}!** (${formatList(ClueTiers.filter(tier => user.bank.amount(tier.scrollID) > 0).map(tier => `${user.bank.amount(tier.scrollID)} ${tier.name}`))}). If you receive more clues, lower tier clues will be replaced with higher tier clues.`;
+		} else {
+			ret += ` You are now stacking ${clueStack} total clues.`;
+		}
+	}
+	if (allPetsCL.some(p => loot?.has(p))) {
+		ret += petMessage(loot);
+	}
+	return ret;
+}
+
 export function petMessage(loot: Bank | null | undefined) {
 	const emoji = pets.find(p => loot?.has(p.name))?.emoji;
 	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling like you're being followed...**`;
@@ -158,27 +177,12 @@ export async function handleTripFinish(
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
 
-	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
-
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	if (clueReceived.length > 0) {
-		const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
-		message.content += `\n${Emoji.Casket} **You got a ${formatList(clueReceived.map(clue => clue.name))} clue scroll** in your loot.`;
-
-		if (clueStack >= MAX_CLUES_DROPPED) {
-			message.content += `\n**You have reached the maximum clue stack of ${MAX_CLUES_DROPPED}!** (${formatList(ClueTiers.filter(tier => user.bank.amount(tier.scrollID) > 0).map(tier => `${user.bank.amount(tier.scrollID)} ${tier.name}`))}). If you receive more clues, lower tier clues will be replaced with higher tier clues.`;
-		} else {
-			message.content += ` You now own ${clueStack} clues.`;
-		}
-	}
-
-	if (allPetsCL.some(p => loot?.has(p))) {
-		message.content += petMessage(loot);
-	}
+	message.content += displayCluesAndPets(user, loot);
 
 	const existingCollector = collectors.get(user.id);
 
