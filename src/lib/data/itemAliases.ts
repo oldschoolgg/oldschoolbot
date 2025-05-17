@@ -398,8 +398,3 @@ for (const item of allTeamCapes) {
 		throw new Error(`Failed to modify price of item ${item.id}`);
 	}
 }
-
-Items.modifyItem(9044, {
-	tradeable: true,
-	tradeable_on_ge: true
-});
