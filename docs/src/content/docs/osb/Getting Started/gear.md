@@ -2,58 +2,67 @@
 title: "Gear"
 ---
 
-Your minion has 8 gear setups (Melee, Mage, Range, Skilling, Misc, Wildy, Fashion and Other) in which you can equip your gear into depending on what activity you want to do on the bot. Below is a list of the commands that deal with equip and unequipping gear on your minion. Lets say you just finished questing and bought yourself a pair of barrows gloves and you want to equip those in your range setup, you would type `/gear equip gear_setup\:Range item\:Barrows gloves` . Now lets say you already had a pair of mithril gloves equipped in your range setup and you wanted to equip the barrows gloves instead now, you do not need to unequip the other gloves first, the equip command will take the other pair off for you and equip the new item. Further below we will talk about gearpresets, a way for you to save a setup you like for later for easy equipping (Please note that the some gear setups are locked to T3 Patron or higher).
+Your minion has 8 gear setups: Melee, Mage, Range, Skilling, Misc, Wildy, Fashion, and Other. You can equip items in each setup depending on the activity you're doing.
+
+For example, after questing, to equip Barrows gloves into your Range setup, use: [[/gear equip gear_setup\:Range item\:Barrows gloves]]
+
+If you already had Mithril gloves equipped, they will be automatically unequipped.
+
+You can also save entire setups with gearpresets for quick re-equipping. (Some gear setups are locked to Tier 3 Patron or higher.)
 
 ## Commands
 
-There are 4 options: `/gear equip`, `/gear unequip`, `/gear stats` and `/gear pet`. You can simply type `/gear` for all 4 of these options to appear.
+There are 4 main commands:  
+[[/gear equip]], [[/gear unequip]], [[/gear stats]], [[/gear pet]]
+
+You can also type [[/gear]] to view them all.
 
 ### Gear Equip
 
-The `/gear equip` command lets you equip and change gear. You will firstly select the gear setup you wish to edit. There are 4 options under it:
+The [[/gear equip]] command lets you equip and change gear. First, choose a gear setup. Options:
 
-|             |                                                                  |                                                            |
-| ----------- | ---------------------------------------------------------------- | ---------------------------------------------------------- |
-| **Command** | **What it does**                                                 | **Example**                                                |
-| Item        | Selects a single item you wish to equip.                         | `/gear equip gear_setup:Meleeitem:Barrows gloves`          |
-| Preset      | Selects a previously made or default gear preset to equip.       | `/gear equip gear_setup:Skillingpreset:graceful`           |
-| Quantity    | Selects a specific number of an item to equip (ammunition only). | `/gear equip gear_setup:Rangeitem:Rune arrowquantity:1000` |
-| Auto        | Selects the BiS equipment for a specific attack style.           | `/gear equip gear_setup:Meleeauto:melee_strength`          |
+| **Command** | **What it does**                  | **Example**                                                       |
+| ----------- | --------------------------------- | ----------------------------------------------------------------- |
+| Item        | Equip one specific item           | [[/gear equip gear_setup\:Melee item\:Barrows gloves]]            |
+| Preset      | Equip a saved/default gear preset | [[/gear equip gear_setup\:Skilling preset\:graceful]]             |
+| Quantity    | Equip a set quantity (for ammo)   | [[/gear equip gear_setup\:Range item\:Rune arrow quantity\:1000]] |
+| Auto        | Auto-equip BiS gear for a style   | [[/gear equip gear_setup\:Melee auto\:melee_strength]]            |
 
 ### Gear Unequip
 
-You can use this command to unequip items from any gear setup. There are 2 options: unequip all the items from a specific setup, or just 1 item at a time.
+Unequip items from a setup. You can unequip all items or just a specific item.
 
 ### Gear Stats
 
-This is simply for simulation of equipping items and checking the stats of a particular setup. You do not need to own the items to perform this command, but you will need the items full name.
+Simulate gear to see stats. You don't need to own the items — just use the full item names.
 
 ### Gear Pet
 
-Use this command to simply equip or unequip a pet. You can equip and unequip a pet during a trip.
+Equip or unequip a pet, even during trips:
 
-- `/gear petequip: ``[petName]`
-- `/gear petunequip: ``true`
+- [[/gear pet equip\:[petName]]]
+- [[/gear pet unequip\:true]]
 
 ## Gear Presets
 
-The `/gearpresets` command gives you the ability to save a particular gear setup for quick-equipping if you decide to switch between content. By default, you are restricted to having 3 gear presets. However, this can be increased if you are a patron or a github supporter.
+[[/gearpresets]] lets you save a gear setup for quick use.
 
-- Tier 1 - 7 presets
-- Tier 2 - 9 presets
-- Tier 3+ - 11 presets
+- Tier 0 (default): 3 presets
+- Tier 1: 7 presets
+- Tier 2: 9 presets
+- Tier 3+: 11 presets
 
-| **Command** | **What it does**                                                                                     | **Example**                                              |
-| ----------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| Create      | Allows you to create a gear preset. You can copy an existing setup or hand pick items to create one. | `/gearpresets createname: ``Examplecopy_setup: ``Melee`  |
-| Edit        | Allows you to edit an existing gear preset.                                                          | `/gearpresets editpreset: ``Examplehands:Barrows gloves` |
-| Delete      | Allows you to delete an existing gear preset.                                                        | `/gearpresets deletepreset: ``Example`                   |
-| Equip       | Allows you to equip an existing gear preset.                                                         | `/gearpresets equipgear_setup: ``Meleepreset: ``Example` |
-| View        | Allows you to view an existing gear preset.                                                          | `/gearpresets viewpreset: ``Example`                     |
+| **Command** | **What it does**                                          | **Example**                                                 |
+| ----------- | --------------------------------------------------------- | ----------------------------------------------------------- |
+| Create      | Create a new preset (copy from setup or specify manually) | [[/gearpresets create name\:Example copy_setup\:Melee]]     |
+| Edit        | Edit an existing preset                                   | [[/gearpresets edit preset\:Example hands\:Barrows gloves]] |
+| Delete      | Delete a preset                                           | [[/gearpresets delete preset\:Example]]                     |
+| Equip       | Equip a preset                                            | [[/gearpresets equip gear_setup\:Melee preset\:Example]]    |
+| View        | View contents of a preset                                 | [[/gearpresets view preset\:Example]]                       |
 
 ### Global Gear Presets
 
-Along with the ability to make your own presets there are some global presets available to you at the start such as the "Graceful" preset which will equip full graceful in the specified gear setup. These do not count towards the total numbers of presets that are available to you.
+These are built-in and don't count toward your preset limit:
 
 - Graceful
 - Carpenter
@@ -70,4 +79,8 @@ Along with the ability to make your own presets there are some global presets av
 
 ### Wildy Setup
 
-The wilderness setup is currently used at the Wilderness Bosses, Revenants and doing Wilderness Hunter and Slayer. Items equipped in this setup can be **permanently lost** if you are killed while doing activities that use this setup (hunter activities ONLY risk shirt and pants item slots). Read more about death chance and mechanics on their respective pages.
+The Wilderness setup is used for Wilderness Bosses, Revenants, Hunter, and Slayer.
+
+**Warning:** Items in this setup can be permanently lost if killed during Wilderness activities. (Hunter only risks shirt and pants slots.)
+
+See related pages for more info on death chance and mechanics.

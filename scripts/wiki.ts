@@ -354,7 +354,7 @@ function wikiIssues() {
 		lineNumbers: number[];
 	}
 
-	const files = glob.sync('./docs/**/*.{md,mdx}', {
+	const files = glob.sync('./docs/src/content/**/*.{md,mdx}', {
 		ignore: ['**/node_modules/**']
 	});
 

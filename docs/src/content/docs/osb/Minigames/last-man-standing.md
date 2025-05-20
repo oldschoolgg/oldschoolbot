@@ -2,27 +2,24 @@
 title: "Last Man Standing"
 ---
 
-Last Man Standing (LMS) is a solo minigame where you fight other players (i.e. NPCs) to gain points and, as the name suggets, be the last player alive. There are no boosts or requirements to start this minigame.
+Last Man Standing (LMS) is a solo minigame where you fight other players (i.e. NPCs) to gain points and, as the name suggests, be the last player alive. There are no boosts or requirements to start this minigame.
 
-Your minion will continuously improve at LMS every game until it has played 120 games in total. After 120 games, the minion's win-rate will be about 7x that of a minion with 0 games played.
+Your minion will continuously improve at LMS every game until it has played 120 games in total. After 120 games, the minion's win rate will be about 7× that of a minion with 0 games played.
 
-Be aware that `/minigames lms simulate` is **NOT** the same.
+Be aware that [[/minigames lms simulate]] is **NOT** the same.
 
-To start the minigame, use the following:
+To start the minigame:  
+[[/minigames lms start]]
 
-- `/minigames lms start`
-
-To view your LMS stats, use the following:
-
-- `/minigames lms stats`
+To view your LMS stats:  
+[[/minigames lms stats]]
 
 ## Rewards
 
-You can spend your hard earned points at the LMS shop. Use the following command to buy items:
+You can spend your hard-earned points at the LMS shop. Use the command:  
+[[/minigames lms buy name\:(item name)]]
 
-`/minigames lms buyname:`\*\*
-
-You need 4,130 points to acquire all rewards (except capes)
+You need 4,130 points to acquire all rewards (excluding capes).
 
 | Item Name                  | Point Cost | Item Uses                            |
 | -------------------------- | ---------- | ------------------------------------ |

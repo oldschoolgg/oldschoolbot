@@ -2,7 +2,7 @@
 title: "Tempoross"
 ---
 
-Starting at 35 Fishing, you can send your minion out with [[/k name:Tempoross]]
+Starting at 35 Fishing, you can send your minion out with [[/k name\:Tempoross]]
 
 ## Boosts
 
@@ -41,5 +41,5 @@ The following table assumes you have the full KC boost and outfit equipped. _The
 
 - All rewards are dropped as your minion returns, no need to fish the reward pool. The rewards and their drop rates are exactly the same as the main game. Refer to the [OSRS Tempoross rewards page](https://oldschool.runescape.wiki/w/Reward_pool) for the various fish that will be given at your fishing level.
 - You can only acquire 1 Fish barrel, Tackle box, Big harpoonfish, and Tiny tempor. If you roll any of these items again, you will be given 25 soaked pages instead.
-- Spirit angler outfit can be acquired with `/create`, but provides no additional boost over normal anglers.
+- Spirit angler outfit can be acquired with [[/create]], but provides no additional boost over normal anglers.
 - Excess Spirit flakes can be used during normal fishing trips for increased yield per trip. It provides a 50% boost to quantity of fish caught per trip.

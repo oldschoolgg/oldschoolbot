@@ -2,48 +2,53 @@
 title: "Combat Training"
 ---
 
-While strength can be leveled through barbarian fishing and magic has various non-combat applications, PvM is a more efficient and profitable way to level up your combat stats.
+While strength can be trained through barbarian fishing and magic has various non-combat uses, PvM is a more efficient and profitable way to level up combat stats.
 
-By using the `/minion train` command, you can select which style of combat you would like to level. Here is a list of all possible combat styles:
+To train combat, use:  
+[[/minion train style\:shared]] (or choose another style)
 
-- `/minion train style: ``shared` - provides equally split xp to all 3 melee styles
-- `/minion train style: ``attack`
-- `/minion train style: ``strength`
-- `/minion train style: ``defence`
-- `/minion train style: ``strength attack` - trains strength + attack together
-- `/minion train style: ``defence attack` - trains defence + attack together
-- `/minion train style: ``strength defence` - trains strength + defence together
-- `/minion train style: ``ranged`
-- `/minion train style: ``ranged defence` - trains ranged + defence together
-- `/minion train style: ``magic`
-- `/minion train style: ``magic defence` - trains magic + defence together
+### Combat Styles
 
-**Note:** Hitpoints xp is gained alongside any combat style and cannot be selected as a primary training focus.
+- [[/minion train style\:shared]] – XP split equally between attack, strength, and defence
+- [[/minion train style\:attack]]
+- [[/minion train style\:strength]]
+- [[/minion train style\:defence]]
+- [[/minion train style\:strength attack]] – Trains strength and attack
+- [[/minion train style\:defence attack]] – Trains defence and attack
+- [[/minion train style\:strength defence]] – Trains strength and defence
+- [[/minion train style\:ranged]]
+- [[/minion train style\:ranged defence]] – Trains ranged and defence
+- [[/minion train style\:magic]]
+- [[/minion train style\:magic defence]] – Trains magic and defence
 
-You can leave this in the default mode where your style will change depending on the mob you are attacking, or you can specify a specific combat skill to train in. You cannot change it back to the default mode, however, there is no real need to as it provides no benefits over other styles.
+**Note:** hitpoints XP is always gained alongside any style and cannot be directly trained.
 
-The amount of xp you gain is based off of the hitpoints of the monster you're killing, and the hourly rate can vary from monster to monster. Giant spiders, Fire giants, and Greater nechryaels offer the fastest combat experience in the game, but it is advisable to train combat stats alongside slayer.
+You can choose a fixed style or leave it in default mode (based on the monster attacked).  
+Once changed, you cannot revert to default mode, but there is no benefit to doing so anyway.
+
+XP is based on the HP of the monster being killed. The best XP/hr comes from monsters like Giant Spiders, Fire Giants, and Greater Nechryaels.  
+Training combat alongside Slayer is advised for efficiency.
 
 ## Food
 
-#### Favourite Food
+### Favourite Food
 
-When PvMing, you will consume any food you currently have in your bank. The consumption of your food is used from **lowest healing** to **highest healing**. Because of this mechanic, any jugs of wine you create during cooking training will be used before many other high tier foods.
+When PvMing, your minion consumes food from your bank starting from **lowest healing** to **highest**.  
+This means items like Jugs of Wine (from Cooking training) are used first unless specified otherwise.
 
-To set and remove prioritised food when PvMing, you can use the following command:
+To set/remove prioritized food:  
+[[/config user favorite_food]]
 
-- `/config user favorite_food`
+### Food Boosts
 
-#### Food Boosts
+Some foods boost trip speed. Jug of wine is the only food that gives a **penalty**.
 
-Certain foods give boosts to the trip time during PvM. Jug of wine is the only food to give a **penalty** instead of a boost.
-
-|             |      |
-| ----------- | ---- |
-| Jug of wine | -10% |
-| Monkfish    | 1%   |
-| Shark       | 2%   |
-| Sea turtle  | 2%   |
-| Manta ray   | 3%   |
-| Dark crab   | 3%   |
-| Anglerfish  | 4%   |
+| Food        | Boost |
+| ----------- | ----- |
+| Jug of wine | -10%  |
+| Monkfish    | +1%   |
+| Shark       | +2%   |
+| Sea turtle  | +2%   |
+| Manta ray   | +3%   |
+| Dark crab   | +3%   |
+| Anglerfish  | +4%   |

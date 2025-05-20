@@ -30,7 +30,7 @@ When equipped in the skilling setup, these robes provide a 1.25% chance per piec
 
 ## Ensouled Heads
 
-Through slayer and other combat related activities, you may obtain ensouled heads in various forms. You can use these heads for Prayer xp by using the `/k` command. They require a specific magic level to kill along with a rune cost for each cast. To view the rune cost and xp given, visit the [Ensouled heads page](ensouled-heads.md).
+Through slayer and other combat related activities, you may obtain ensouled heads in various forms. You can use these heads for Prayer xp by using the [[/k]] command. They require a specific magic level to kill along with a rune cost for each cast. To view the rune cost and xp given, visit the [Ensouled heads page](ensouled-heads.md).
 
 ## Demonic Ashes
 

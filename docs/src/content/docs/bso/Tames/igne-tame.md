@@ -2,38 +2,45 @@
 title: "Igne"
 ---
 
-Once you have received a Dragon Egg drop from Ignecarus, you can go about growing your own tame! You can send the dragon tame out on PvM trips and it will get you loot.
+Once you've received a Dragon Egg drop from Ignecarus, you can grow your own tame! The dragon tame can go on PvM trips to earn loot.
 
-Having an idle dragon tame gives a 20% reduction in log and ore cost at the [Baxtorian Bathhouses](../../minigames/baxtorian-bathhouses.md#boosts).
+An idle dragon tame reduces log and ore costs by 20% at the [Baxtorian Bathhouses](../../minigames/baxtorian-bathhouses.md#boosts).
 
 ## Hatching the Tame
 
-The dragon tame will take 18.5 hours to hatch. Once hatched there is a 1/30 chance its a rare shiny dragon, which is increased by 3% (to 1/29) with a Ring of luck equipped or in the bank.
+The dragon tame takes 18.5 hours to hatch. There is a 1/30 chance of hatching a shiny dragon, increased to 1/29 with a Ring of Luck equipped or in the bank.
 
-See [Tames](./#hatching-the-tame) for more information on hatching it.
+See [Tames](./#hatching-the-tame) for more info.
 
 ## Growth
 
-It starts off as a baby, but grows from baby -> juvenile -> adult. At the adult stage, its the strongest. It grows up over time while doing PvM trips. You need to feed it raw food each time it goes on a trip.
+The tame progresses from baby → juvenile → adult. Only adults reach full strength. Growth happens during PvM trips, and each trip requires feeding raw food.
 
-When your tame hatches, their stats are decided. However, it doesn't reach its full potential until it's fully grown. You can calculate what max-stats your dragon will have by multiplying the baby stats by 3 (keeping in mind rounding up/down). This stat influences how fast it does PvM trips.
+Base stats are set on hatch. Multiply baby stats by 3 to estimate max stats (rounding applies). Stats affect PvM trip speed.
 
-You can send the dragon tame on trips with `/tames kill [monster]`.
+Send your tame on trips with [[/tames kill monster\:MonsterName]].
 
-For more information on tame commands see [Tames](./)
+For more commands, see [Tames](./).
 
 ## Boosts
 
-You can feed the dragon tame certain items with `/tames feed [item]`\
-**Note:** Feeding any other items (food included) will have no effect\\
+Feed items using [[/tames feed item\:ItemName]]  
+**Note:** Feeding non-boost items has no effect.
 
-<table><thead><tr><th width="652">Item</th><th>Boost</th></tr></thead><tbody><tr><td>Abyssal Cape</td><td>20% food reduction</td></tr><tr><td>Zak</td><td>+35 minutes to trip lengths</td></tr><tr><td>Ori</td><td>25% extra loot</td></tr><tr><td>Dwarven Warhammer</td><td>30% speed boost</td></tr><tr><td>Mr. E</td><td>1/12 chance to double loot</td></tr><tr><td>Impling Locator</td><td>chance to find implings</td></tr><tr><td><strong>Equip, do not feed:</strong> Igne Claws</td><td>5-35% (See <a href="igne-equipment.md#igne-claw-creation">Igne Claws</a>)</td></tr><tr><td><strong>Equip, do not feed:</strong> Igne Armor</td><td>Allow you to kill additional monsters, as well as reduce food usage by 5-33% (See <a href="igne-equipment.md#igne-armor-creation">Igne Armo</a>r)</td></tr></tbody></table>
+| **Item**                   | **Effect**                                                                                                 |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Abyssal Cape               | 20% food reduction                                                                                         |
+| Zak                        | +35 minutes to trip length                                                                                 |
+| Ori                        | 25% extra loot                                                                                             |
+| Dwarven Warhammer          | 30% speed boost                                                                                            |
+| Mr. E                      | 1/12 chance to double loot                                                                                 |
+| Impling Locator            | Chance to find implings                                                                                    |
+| **Equip only:** Igne Claws | 5–35% speed boost ([Igne Claws](igne-equipment.md#igne-claw-creation))                                     |
+| **Equip only:** Igne Armor | Reduces food usage by 5–33%, allows additional kills ([Igne Armor](igne-equipment.md#igne-armor-creation)) |
 
-### Boss requirements
+### Boss Requirements
 
-Certain [demi bosses](../../bso-custom-killables/demi-bosses/) require a minimum tier of [Igne Armor](igne-equipment.md#igne-armor-creation) to be killed.
-
-A minimum of Justiciar igne armor is needed for the following:
+The following [demi bosses](../../bso-custom-killables/demi-bosses/) require **Justiciar Igne Armor** or higher:
 
 - [Nihiliz](../../bso-custom-killables/demi-bosses/nihiliz.md)
 - [Treebeard](../../bso-custom-killables/demi-bosses/treebeard.md)
@@ -46,29 +53,46 @@ A minimum of Justiciar igne armor is needed for the following:
 
 ## Equipment
 
-**`Warning: Do NOT feed your claws or armor to your tame. You will not get any boost and lose the item forever.`**
+**Warning:** Do **not** feed your claws or armor to your tame. You will lose the item and get no benefit.
 
-You can create each tier of igne claws and armor by using the `/create` command, starting with **Runite igne claws or Dragon Igne Armor**.
+Create gear using [[/create]] starting with **Runite Igne Claws** or **Dragon Igne Armor**.
 
-To equip igne claws and armor, use `/tames equip` and select the tier you would like to equip. To unequip (and upgrade) the igne equipment, use `/tames unequip`
+Equip gear with [[/tames equip item\:TierName]]  
+Unequip gear with [[/tames unequip item\:TierName]]
 
-Each set of claws and armor require a certain _**smithing, crafting, and invention**_ level to create them:
+**Skill requirements to craft:**
 
-- Runite: Level 80 (Claws only tier)
-- Dragon: Level 85
-- Barrows: Level 90
-- Volcanic: Level 95
-- Justiciar: Level 95 (Armor only tier)
-- Drygore: Level 100
-- Dwarven: Level 110
-- Gorajan: Level 120
-
-Justiciar requires Level 99 invention to disassemble
+- Runite: [[smithing:80]] [[crafting:80]] [[invention:80]] (Claws only)
+- Dragon: 85
+- Barrows: 90
+- Volcanic: 95
+- Justiciar: 95 (armor only), requires [[invention:99]] to disassemble
+- Drygore: 100
+- Dwarven: 110
+- Gorajan: 120
 
 ### Igne Claw Creation
 
-<table><thead><tr><th width="175.94170403587444" align="center">Tier + PvM Boost</th><th width="443.33333333333337" align="center">Materials Cost</th><th data-hidden align="center">Speed Boost</th></tr></thead><tbody><tr><td align="center">Runite (5%)</td><td align="center">Igne Gear frame, 30x runite bar, 10x leather, 1000x metallic, 500x strong, 500x flexible, 500x sharp</td><td align="center">5%</td></tr><tr><td align="center">Dragon (8%)</td><td align="center">Runite Igne Claws, Dragon Claws, 10x leather, 1500x metallic, 200x strong, 200x sharp, 200x flexible, 50x orikalkum </td><td align="center">8%</td></tr><tr><td align="center">Barrows (14%)</td><td align="center">Dragon Igne Claws, 10x leather, 1500x metallic, 200x strong, 200x flexible, 200x sharp, 100x barrows</td><td align="center">14%</td></tr><tr><td align="center">Volcanic (17%)</td><td align="center">Barrows Igne Claws, 10x leather, 250x Obsidian Shards, 2x Volcanic Shards, 1500x metallic, 200x strong, 200x flexible, 200x sharp</td><td align="center">17%</td></tr><tr><td align="center">Drygore (22%)</td><td align="center">Volcanic Igne Claws, 10x leather, 2000x drygore, 1500x metallic, 200x strong, 200x flexible, 200x sharp</td><td align="center">22%</td></tr><tr><td align="center">Dwarven (27%)</td><td align="center">Drygore Igne Claws, 10x leather, 2500x dwarven, 1500x metallic, 200x strong, 200x flexible, 200x sharp</td><td align="center">27%</td></tr><tr><td align="center">Gorajan (35%)</td><td align="center">Dwarven Igne Claws, 10x leather, 2x gorajan shards, 2000x metallic, 200x strong, 200x flexible, 200x sharp</td><td align="center">35%</td></tr><tr><td align="center"><strong>Grand Total</strong></td><td align="center"><strong>Igne Gear Frame, 30 Runite Bars, 70 Leather, 10,500 Metallic, 1,700 Strong, 1,700 Flexible, 1,700 Sharp, 50 Orikalkum, 100 Barrows, 2,000 Drygore, 250 Obsidian Shards, 2 Volcanic Shards, 2,500 Dwarven, 2 Gorajan Shards</strong></td><td align="center">-</td></tr></tbody></table>
+| **Tier (PvM Boost)** | **Materials Cost**                                                                                                                                                                                                        | **Speed Boost** |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| Runite (5%)          | Igne Gear Frame, 30x Runite Bar, 10x Leather, 1000x Metallic, 500x Strong, 500x Flexible, 500x Sharp                                                                                                                      | 5%              |
+| Dragon (8%)          | Runite Igne Claws, Dragon Claws, 10x Leather, 1500x Metallic, 200x Strong, 200x Sharp, 200x Flexible, 50x Orikalkum                                                                                                       | 8%              |
+| Barrows (14%)        | Dragon Igne Claws, 10x Leather, 1500x Metallic, 200x Strong, 200x Flexible, 200x Sharp, 100x Barrows                                                                                                                      | 14%             |
+| Volcanic (17%)       | Barrows Igne Claws, 10x Leather, 250x Obsidian Shards, 2x Volcanic Shards, 1500x Metallic, 200x Strong, 200x Flexible, 200x Sharp                                                                                         | 17%             |
+| Drygore (22%)        | Volcanic Igne Claws, 10x Leather, 2000x Drygore, 1500x Metallic, 200x Strong, 200x Flexible, 200x Sharp                                                                                                                   | 22%             |
+| Dwarven (27%)        | Drygore Igne Claws, 10x Leather, 2500x Dwarven, 1500x Metallic, 200x Strong, 200x Flexible, 200x Sharp                                                                                                                    | 27%             |
+| Gorajan (35%)        | Dwarven Igne Claws, 10x Leather, 2x Gorajan Shards, 2000x Metallic, 200x Strong, 200x Flexible, 200x Sharp                                                                                                                | 35%             |
+| **Grand Total**      | **Igne Gear Frame, 30 Runite Bars, 70 Leather, 10,500 Metallic, 1700 Strong, 1700 Flexible, 1700 Sharp, 50 Orikalkum, 100 Barrows, 2000 Drygore, 250 Obsidian Shards, 2 Volcanic Shards, 2500 Dwarven, 2 Gorajan Shards** | —               |
 
 ### Igne Armor Creation
 
-<table><thead><tr><th width="132" align="center">Name</th><th width="126" align="center">Food Reduction</th><th width="107" align="center">Cox/Tob Death Chance</th><th align="center">Materials Cost</th></tr></thead><tbody><tr><td align="center">Dragon Igne Armor</td><td align="center">5%</td><td align="center">85%</td><td align="center">Igne gear frame, 10x leather, 1500x metallic, 200x strong, 1000x protective, 80x orikalkum </td></tr><tr><td align="center">Barrows Igne Armor</td><td align="center">8%</td><td align="center">75%</td><td align="center">Dragon Igne Armor, 10x leather, 1500x metallic, 200x strong, 200x protective, 100x barrows</td></tr><tr><td align="center">Volcanic Igne Armor</td><td align="center">10%</td><td align="center">65%</td><td align="center">Barrows Igne Armor, 10x leather, 250x Obsidian Shards, 2x Volcanic Shards, 1500x metallic, 200x strong, 200x protective</td></tr><tr><td align="center">Justiciar Igne Armor</td><td align="center">15%</td><td align="center">50%</td><td align="center">Volcanic Igne Armor, 10x leather, 1500x metallic, 200x strong, 200x protective, 5x justiciar</td></tr><tr><td align="center">Drygore Igne Armor</td><td align="center">22%</td><td align="center">30%</td><td align="center">Justiciar Igne Armor, 10x leather, 2500x drygore, 1500x metallic, 200x strong, 200x protective</td></tr><tr><td align="center">Dwarven Igne Armor</td><td align="center">27%</td><td align="center">10%</td><td align="center">Drygore Igne Armor, 10x leather, 3000x dwarven, 1500x metallic, 200x strong, 200x protective</td></tr><tr><td align="center">Gorajan Igne Armor</td><td align="center">33%</td><td align="center">5%</td><td align="center">Dwarven Igne Armor, 10x leather, 2x Gorajan shards, 2000x metallic, 200x strong, 200x protective</td></tr><tr><td align="center"><strong>Grand Total</strong></td><td align="center"></td><td align="center"></td><td align="center"><strong>Igne gear frame, 70 leather, 11,000 metallic, 1,400 strong, 2,200 protective, 80 orikalkum, 100 barrows, 5 justiciar, 2500 drygore, 3000 dwarven, 250 obsidian shards, 2 volcanic shards, 2 gorajan shards</strong></td></tr></tbody></table>
+| **Tier**             | **Food Reduction** | **CoX/ToB Death Chance** | **Materials Cost**                                                                                                                                                                                           |
+| -------------------- | ------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Dragon Igne Armor    | 5%                 | 85%                      | Igne Gear Frame, 10x Leather, 1500x Metallic, 200x Strong, 1000x Protective, 80x Orikalkum                                                                                                                   |
+| Barrows Igne Armor   | 8%                 | 75%                      | Dragon Igne Armor, 10x Leather, 1500x Metallic, 200x Strong, 200x Protective, 100x Barrows                                                                                                                   |
+| Volcanic Igne Armor  | 10%                | 65%                      | Barrows Igne Armor, 10x Leather, 250x Obsidian Shards, 2x Volcanic Shards, 1500x Metallic, 200x Strong, 200x Protective                                                                                      |
+| Justiciar Igne Armor | 15%                | 50%                      | Volcanic Igne Armor, 10x Leather, 1500x Metallic, 200x Strong, 200x Protective, 5x Justiciar                                                                                                                 |
+| Drygore Igne Armor   | 22%                | 30%                      | Justiciar Igne Armor, 10x Leather, 2500x Drygore, 1500x Metallic, 200x Strong, 200x Protective                                                                                                               |
+| Dwarven Igne Armor   | 27%                | 10%                      | Drygore Igne Armor, 10x Leather, 3000x Dwarven, 1500x Metallic, 200x Strong, 200x Protective                                                                                                                 |
+| Gorajan Igne Armor   | 33%                | 5%                       | Dwarven Igne Armor, 10x Leather, 2x Gorajan Shards, 2000x Metallic, 200x Strong, 200x Protective                                                                                                             |
+| **Grand Total**      | —                  | —                        | **Igne Gear Frame, 70 Leather, 11,000 Metallic, 1400 Strong, 2200 Protective, 80 Orikalkum, 100 Barrows, 5 Justiciar, 2500 Drygore, 3000 Dwarven, 250 Obsidian Shards, 2 Volcanic Shards, 2 Gorajan Shards** |
