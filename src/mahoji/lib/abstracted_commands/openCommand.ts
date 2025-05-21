@@ -6,13 +6,12 @@ import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { BitField } from '../../../lib/constants';
-import { allPetsCL } from '../../../lib/data/CollectionsExport';
 import type { UnifiedOpenable } from '../../../lib/openables';
 import { allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { petMessage } from '../../../lib/util/handleTripFinish';
+import { displayCluesAndPets } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings';
 
@@ -146,9 +145,9 @@ ${messages.join(', ')}`.trim(),
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
-	if (allPetsCL.some(p => loot?.has(p))) {
-		response.content += petMessage(loot);
-	}
+
+	response.content += displayCluesAndPets(user, loot);
+
 	return response;
 }
 
