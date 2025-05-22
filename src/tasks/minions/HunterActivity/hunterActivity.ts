@@ -250,7 +250,7 @@ export function calculateHunterResult({
 	}
 
 	if (equippedPet === itemID('Sandy') && creature.name !== 'Eastern ferret') {
-		if (creature.id === 3251) {
+		if (creature.name === 'Sand Gecko') {
 			if (hasHunterMasterCape) {
 				messages.push('You received **double** loot because of Sandy, and being a master hunter.');
 				loot.multiply(2);
