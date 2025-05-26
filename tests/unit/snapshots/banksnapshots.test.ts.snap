@@ -6151,6 +6151,19 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "30324": 1,
+    },
+    "name": "Zombie helmet",
+    "outputItems": {
+      "30321": 1,
+    },
+    "requiredSkills": {
+      "smithing": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "9007": 1,
       "9008": 1,
     },
