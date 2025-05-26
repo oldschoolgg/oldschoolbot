@@ -45,9 +45,8 @@ import {
 import pets from './data/pets';
 import killableMonsters from './minions/data/killableMonsters';
 import {
-	drygoreDropChance,
-	drygoreWeapons,
-	kalphiteKingLootTable
+	kalphiteKingLootTable,
+	KalphiteKingMonster
 } from './minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
@@ -207,13 +206,12 @@ export const finishables: Finishable[] = [
 		kill: ({ accumulatedLoot }) => {
 			const loot = new Bank();
 
-			const sortedDrops = [...drygoreWeapons].sort(
-				(a, b) => accumulatedLoot.amount(a) - accumulatedLoot.amount(b)
-			);
-			if (roll(drygoreDropChance)) {
-				const unowned = sortedDrops.find(d => !accumulatedLoot.has(d)) ?? sortedDrops[0];
-				loot.add(unowned);
-			}
+			KalphiteKingMonster.specialLoot?.({
+				loot: accumulatedLoot,
+				ownedItems: new Bank(),
+				quantity: 1,
+				cl: accumulatedLoot
+			});
 
 			loot.add(kalphiteKingLootTable.roll());
 			return loot;

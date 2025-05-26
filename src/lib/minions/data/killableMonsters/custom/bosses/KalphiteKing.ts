@@ -10,8 +10,6 @@ import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMo
 import type { KillableMonster } from '../../../../types';
 import { GrimyHerbTable } from '../Treebeard';
 
-export const drygoreDropChance = 150;
-
 export const kalphiteKingLootTable = new LootTable()
 	.tertiary(18, 'Clue scroll (grandmaster)')
 	.tertiary(3000, 'Baby kalphite king')
@@ -64,7 +62,7 @@ export const KalphiteKingMonster: KillableMonster = {
 					{
 						type: 'DropsLeastOwnedFirst',
 						drops: drygoreWeapons,
-						chance: drygoreDropChance
+						chance: 150
 					}
 				],
 				collectionLog: cl,
