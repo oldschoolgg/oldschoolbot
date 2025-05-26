@@ -2,28 +2,28 @@
 title: "Offering"
 ---
 
-Apart from [offering bones](../skills/prayer/) to the chaos altar in the wilderness, there are other items which utilise the `/offer` command. Here is a list:
+Apart from [offering bones](../skills/prayer/) to the Chaos Altar in the Wilderness, there are other items that utilize the [[/offer]] command. Here is a list:
 
-**Unsired**
+### Unsired
 
-- `/offer name: ``Unsired`
+[[/offer name\:Unsired]]
 
-  **Chewed bones**
+### Chewed Bones
 
-- `/offe rname: ``Chewed bones`
+[[/offer name\:Chewed bones]]
 
-  **Long bone**
+### Long Bone
 
-- `/offer name: ``Long bone`
-- Provides 4,500 Construction Xp per bone
+[[/offer name\:Long bone]]  
+Provides 4,500 Construction XP per bone
 
-  **Curved bone**
+### Curved Bone
 
-- `/offer name: ``Curved bone`
-- Provides 6,750 Construction Xp per bone
+[[/offer name\:Curved bone]]  
+Provides 6,750 Construction XP per bone
 
-**Bird eggs**
+### Bird Eggs
 
-- `/offer name:Red bird egg`
-- `/offer name:Green bird egg`
-- `/offer name:Blue bird egg`
+[[/offer name\:Red bird egg]]  
+[[/offer name\:Green bird egg]]  
+[[/offer name\:Blue bird egg]]

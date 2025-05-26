@@ -1,49 +1,103 @@
 ---
-title: "Ignecarus"
+title: "Igne"
 ---
 
-# Ignecarus
+Once you've received a Dragon Egg drop from Ignecarus, you can begin growing your own tame! Dragon tames can go on PvM trips and bring back loot.
 
-Ignecarus is a giant dragon boss that attacks primarily using dragonfire, far hotter than any other dragon in Runescape, therefore your resistance to fire is the most important aspect of the fight. When killed, it gives 71,820 Hitpoints experience and 68,666 experience in Attack, Strength, and Defence per kill.
+An idle dragon tame provides a 20% reduction in log and ore cost at the [Baxtorian Bathhouses](../../minigames/baxtorian-bathhouses.md#boosts).
 
-Regular potions will be destroyed during the fight by the incredible heat, and as such you need special [Heat Resistant Potions](/skills/herblore).
+## Hatching the Tame
 
-You can kill Ignecarus using `/k name:Ignecarus (Solo)` to solo or `/k name:Ignecarus (Mass)` to start a mass.
+The dragon tame takes 18.5 hours to hatch. Once hatched, there’s a 1/30 chance it will be a rare shiny dragon. This increases to 1/29 with a Ring of Luck equipped or in the bank.
 
-## Requirements
+See [Tames](./#hatching-the-tame) for more on hatching.
 
-- 110 Slayer
-- [Heat res. brews and Heat res. restores](../../skills/herblore.md)
-- Highly recommended: Dragonfire shield
+## Growth
 
-### Boosts
+The tame grows from baby → juvenile → adult. Growth occurs over time while on PvM trips. Each trip requires feeding it raw food.
 
-Drygore Longsword - 15%
+The tame’s stats are determined at hatching but don’t reach full potential until it becomes an adult. Multiply the baby stats by 3 to estimate its max stats (accounting for rounding). Stats affect PvM trip speed.
 
-Ignis ring (i) - 10%
+Send your tame on a trip with:  
+[[/tames kill monster\:Monster Name]]
 
-TzKal Cape - 6%
+More tame commands: [Tames](./)
 
-Brawler's Hook Necklace - 4%
+## Boosts
 
-## Gear
+Feed the tame items using:  
+[[/tames feed item\:Item Name]]  
+**Note:** Feeding other items (including food) has no effect.
 
-Protection from dragonfire is paramount to killing Ignecarus. You should aim for [dwarven armour](../../custom-items/equippables/#dwarven-armour) (which has a special dragonfire resistance) and a dragonfire shield. Torva can be used as a substitute, but your chance of death will increase from the lack of fire protection.
+| Item                            | Boost                                                                                                       |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Abyssal Cape                    | 20% food reduction                                                                                          |
+| Zak                             | +35 minutes to trip length                                                                                  |
+| Ori                             | 25% extra loot                                                                                              |
+| Dwarven Warhammer               | 30% speed boost                                                                                             |
+| Mr. E                           | 1/12 chance to double loot                                                                                  |
+| Impling Locator                 | Chance to find implings                                                                                     |
+| **Equip, not feed:** Igne Claws | 5–35% speed boost (see [Igne Claws](igne-equipment.md#igne-claw-creation))                                  |
+| **Equip, not feed:** Igne Armor | Reduces food usage 5–33%, allows additional kills (see [Igne Armor](igne-equipment.md#igne-armor-creation)) |
 
-You have a base death chance of 95%. This is cut in half to 47.5% with full Dwarven armour and furthered reduced to 14.5% with a dragonfire shield.
+## Boss Requirements
 
-## Loot
+Some [demi bosses](../../bso-custom-killables/demi-bosses/) require minimum [Igne Armor](igne-equipment.md#igne-armor-creation) tier.
 
-Ignecarus drops large quantities of metal bars, uncut gems and rune items.
+**Requires Justiciar Igne Armor:**
 
-- **Ignis ring:** Can be imbued with a Magus scroll from [Vasa Magus](vasa-magus.md#loot) with 120 Crafting and 105 Magic to create the Ignis Ring (i), requiring 105 Defence to equip.
-- **Ignecarus scales:** Can be used with abyssal dragon bones to create the Dragon's fury potion (2 scales, 1 abyssal dragon bones per potion). The potion is used in the creation of the Hellfire Bow. The scales can also be used to create Hellfire Arrows, requiring one scale and one headless arrow, producing five arrows.
-- **Ignecarus dragonclaw:** Used in conjunction with Dragon's fury, twisted bow, zaryte bow, and 3 smouldering stones to create a Hellfire Bow.
-- **Dragon egg**_**:**_ Can be placed in a nursery to hatch into a [dragon tame](../../custom-items/tames/igne-tame.md), which can be sent out on PvM trips. Eggs are tradeable, but once placed in a nursery they cannot be retrieved or traded.
+- [Nihiliz](../../bso-custom-killables/demi-bosses/nihiliz.md)
+- [Treebeard](../../bso-custom-killables/demi-bosses/treebeard.md)
+- [Queen Black Dragon](../../bso-custom-killables/demi-bosses/queen-black-dragon.md)
+- [Sea Kraken](../../bso-custom-killables/demi-bosses/sea-kraken.md)
+- [Malygos](../../bso-custom-killables/demi-bosses/malygos.md)
+- Callisto
+- Vet'ion
+- Venenatis
 
-| **Unique Drop Table**     | **Drop Rate** |
-| ------------------------- | ------------- |
-| Ignecarus dragonclaw      | 1/200         |
-| Dragon egg                | 1/500         |
-| Ignis ring                | 1/300         |
-| Clue scroll (grandmaster) | 1/13          |
+## Equipment
+
+**Warning:** Do NOT feed your claws or armor to the tame. You will lose the item with no benefit.
+
+Create Igne gear using [[/create]] starting with **Runite Igne Claws** or **Dragon Igne Armor**.
+
+Equip with [[/tames equip]], and unequip (to upgrade) with [[/tames unequip]].
+
+**Creation level requirements (Smithing, Crafting, Invention):**
+
+- Runite: 80 (Claws only tier)
+- Dragon: 85
+- Barrows: 90
+- Volcanic: 95
+- Justiciar: 95 (Armor only tier)
+- Drygore: 100
+- Dwarven: 110
+- Gorajan: 120
+
+Justiciar requires [[invention:99]] to disassemble.
+
+## Igne Claw Creation
+
+| **Tier + PvM Boost** | **Materials Cost**                                                                                                                                                                                                                     | **Speed Boost** |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| Runite (5%)          | Igne Gear Frame, 30x Runite Bar, 10x Leather, 1000x Metallic, 500x Strong, 500x Flexible, 500x Sharp                                                                                                                                   | 5%              |
+| Dragon (8%)          | Runite Igne Claws, Dragon Claws, 10x Leather, 1500x Metallic, 200x Strong, 200x Sharp, 200x Flexible, 50x Orikalkum                                                                                                                    | 8%              |
+| Barrows (14%)        | Dragon Igne Claws, 10x Leather, 1500x Metallic, 200x Strong, 200x Flexible, 200x Sharp, 100x Barrows                                                                                                                                   | 14%             |
+| Volcanic (17%)       | Barrows Igne Claws, 10x Leather, 250x Obsidian Shards, 2x Volcanic Shards, 1500x Metallic, 200x Strong, 200x Flexible, 200x Sharp                                                                                                      | 17%             |
+| Drygore (22%)        | Volcanic Igne Claws, 10x Leather, 2000x Drygore, 1500x Metallic, 200x Strong, 200x Flexible, 200x Sharp                                                                                                                                | 22%             |
+| Dwarven (27%)        | Drygore Igne Claws, 10x Leather, 2500x Dwarven, 1500x Metallic, 200x Strong, 200x Flexible, 200x Sharp                                                                                                                                 | 27%             |
+| Gorajan (35%)        | Dwarven Igne Claws, 10x Leather, 2x Gorajan Shards, 2000x Metallic, 200x Strong, 200x Flexible, 200x Sharp                                                                                                                             | 35%             |
+| **Grand Total**      | **Igne Gear Frame, 30x Runite Bars, 70x Leather, 10,500x Metallic, 1700x Strong, 1700x Flexible, 1700x Sharp, 50x Orikalkum, 100x Barrows, 2000x Drygore, 250x Obsidian Shards, 2x Volcanic Shards, 2500x Dwarven, 2x Gorajan Shards** | -               |
+
+## Igne Armor Creation
+
+| **Name**             | **Food Reduction** | **CoX/ToB Death Chance** | **Materials Cost**                                                                                                                                                                           |
+| -------------------- | ------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dragon Igne Armor    | 5%                 | 85%                      | Igne Gear Frame, 10x Leather, 1500x Metallic, 200x Strong, 1000x Protective, 80x Orikalkum                                                                                                   |
+| Barrows Igne Armor   | 8%                 | 75%                      | Dragon Igne Armor, 10x Leather, 1500x Metallic, 200x Strong, 200x Protective, 100x Barrows                                                                                                   |
+| Volcanic Igne Armor  | 10%                | 65%                      | Barrows Igne Armor, 10x Leather, 250x Obsidian Shards, 2x Volcanic Shards, 1500x Metallic, 200x Strong, 200x Protective                                                                      |
+| Justiciar Igne Armor | 15%                | 50%                      | Volcanic Igne Armor, 10x Leather, 1500x Metallic, 200x Strong, 200x Protective, 5x Justiciar                                                                                                 |
+| Drygore Igne Armor   | 22%                | 30%                      | Justiciar Igne Armor, 10x Leather, 2500x Drygore, 1500x Metallic, 200x Strong, 200x Protective                                                                                               |
+| Dwarven Igne Armor   | 27%                | 10%                      | Drygore Igne Armor, 10x Leather, 3000x Dwarven, 1500x Metallic, 200x Strong, 200x Protective                                                                                                 |
+| Gorajan Igne Armor   | 33%                | 5%                       | Dwarven Igne Armor, 10x Leather, 2x Gorajan Shards, 2000x Metallic, 200x Strong, 200x Protective                                                                                             |
+| **Grand Total**      | -                  | -                        | **Igne Gear Frame, 70x Leather, 11,000x Metallic, 1400x Strong, 2200x Protective, 80x Orikalkum, 100x Barrows, 5x Justiciar, 2500x Drygore, 3000x Dwarven, 250x Obsidian Shards, 2x Volcan** |

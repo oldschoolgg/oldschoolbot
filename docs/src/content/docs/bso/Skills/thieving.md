@@ -3,22 +3,37 @@ title: "Thieving"
 description: /steal
 ---
 
-### Custom Content and Boosts
+## Custom Content and Boosts
 
-- [Wilvus](../custom-items/pets.md#miscellaneous-pets) - 2x Speed boost to `/steal`
-- [Thieving Master Cape](../custom-items/equippables/#master-capes) - 30% Speed boost to `/steal`
-- Thieves' Armband:
-  - Drops from sending trips with [Wilvus](../custom-items/pets.md#resource-gathering-and-loot-affecting-pets) equipped at a rate of 1/5,000 per 6 minutes (rounded up) in a trip. i.e. a 30 minute trip will give 5x 1/5,000 rolls, a 10 minute trip will give 2x 1/5,000 rolls etc.
-  - 50% increased success chance when pickpocketing. This effect works from the bank.
-  - 3x Loot from pickpocketing, excluding Blood shard, Enhanced crystal teleport seed and clue scrolls. Must be equipped for this effect.
-  - While equipped this can break at a rate of 1/2,400 per minute of your trip. This cannot be repaired once broken.
-- Black knight guard - Requires 90% Zamorak god favor. 1/215 chance to get the Dark Temple key which allows you to `/k name:Elite Black Knight` .
-- Royal dwarven guard - An alternative way of leveling at 99 and beyond. Around one third of XP/h at Vyre's but reward around 45m coins per hour.
+- [**Wilvus**](../custom-items/pets.md#miscellaneous-pets) – 2× speed boost to [[/steal]]
+- [**Thieving Master Cape**](../custom-items/equippables/#master-capes) – 30% speed boost to [[/steal]]
 
-### Optimal Gear Setup
+- **Thieves' Armband**
 
-### Methods
+  - Dropped when sending trips with [Wilvus](../custom-items/pets.md#resource-gathering-and-loot-affecting-pets) equipped
+  - Drop rate: 1/5,000 per 6 minutes (rounded up)
+    - e.g. 30-minute trip = 5 rolls, 10-minute trip = 2 rolls
+  - 50% increased pickpocket success (works from bank)
+  - 3× loot from pickpocketing (must be equipped) — excludes Blood shard, Enhanced crystal teleport seed, clue scrolls
+  - Breaks at a rate of 1/2,400 per minute of trip duration — cannot be repaired
 
-| Method          | Xp / Hr   |
+- **Black Knight Guard**
+
+  - Requires 90% Zamorak god favor
+  - 1/215 chance to receive Dark Temple Key (used to [[/k name\:Elite Black Knight]])
+
+- **Royal Dwarven Guard**
+  - Alternate thieving method for [[thieving:99]]+
+  - ~⅓ XP/hr of Vyres, but ~45m coins/hr reward
+
+## Optimal Gear Setup
+
+- Wilvus
+- Thieving Master Cape
+- Thieves' Armband (equipped)
+
+## Methods
+
+| Method          | XP/hr     |
 | --------------- | --------- |
 | Pickpocket Vyre | 9,483,210 |

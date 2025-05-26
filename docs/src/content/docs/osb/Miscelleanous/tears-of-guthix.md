@@ -2,31 +2,36 @@
 title: "Tears of Guthix"
 ---
 
-You can gain a small amount of xp through the Tears of Guthix minigame. Like the real game, you can only use this command once per week and all xp will go to your lowest skill. It can be helpful to set a reminder using `.rmm 7d tog` (_requires Skyra bot in your server_) to maximise ToG usage.
+You can gain a small amount of XP through the Tears of Guthix minigame. Like in the real game, you may only use this command once per week. All XP will be awarded to your **lowest levelled skill**.
 
-To start a round of Tears of Guthix, type `/minigames tears_of_guthix start`
+To start: [[/minigames tears_of_guthix start]]
+
+To maximize usage, set a reminder with `.rmm 7d tog` (requires Skyra bot).
+
+---
 
 ## Requirements
 
-- 43 Quest points
-- 49 Firemaking
-- 20 Crafting
-- 20 Mining
+- [[qp:43]]
+- [[firemaking:49]]
+- [[crafting:20]]
+- [[mining:20]]
 
 **Ironmen also require ONE of the following:**
 
-- 49 Smithing (Ironman only)
-- 36 Thieving (Ironman only)
-- 35 Slayer (Ironman only)
+- [[smithing:49]]
+- [[thieving:36]]
+- [[slayer:35]]
 
 ---
 
 ## Boosts
 
-- 10% extra XP for completion of Lumbridge & Draynor Hard diary
+- +10% XP with completion of Lumbridge & Draynor Hard Diary
 
 ---
 
 ## Rewards
 
-You will gain roughly the same amount of xp as you would in-game, which is heavily dependent on the amount of quest points you have. For reference, if your lowest skill is over 30, you will gain 60xp per tear collected.
+You’ll receive similar XP to the real game, based on the number of quest points you have.  
+If your lowest skill is over level 30, you will gain ~60 XP per tear collected.
