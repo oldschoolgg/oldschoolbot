@@ -67,7 +67,7 @@ export function calculateHunterInput({
 	let wildyScore = 0;
 
 	if (
-		creature.id === 3251 &&
+		creature.name === 'Sand Gecko' &&
 		(skillsAsLevels.hunter < 120 || skillsAsLevels.agility < 99 || skillsAsLevels.fishing < 99)
 	) {
 		return "You need level 120 Hunter, 99 Agility, 99 Fishing to hunt Sand Gecko's.";
@@ -348,7 +348,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		const hunterInputArgs: Parameters<typeof calculateHunterInput>['0'] = {
 			creature,
-			hasHunterMasterCape: user.hasEquipped('Hunter master cape'),
+			hasHunterMasterCape: user.hasEquippedOrInBank('Hunter master cape'),
 			hasGraceful: userHasGracefulEquipped(user),
 			maxTripLength,
 			quantityInput: options.quantity,

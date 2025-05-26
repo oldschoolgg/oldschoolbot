@@ -5,6 +5,10 @@ import { randArrItem, randInt, roll } from 'e';
 import { DOANonUniqueTable } from '../bso/doa/doaLootTable';
 import { nexUniqueDrops } from '../data/CollectionsExport';
 import { chanceOfDOAUnique, pickUniqueToGiveUser } from '../depthsOfAtlantis';
+import {
+	KalphiteKingMonster,
+	kalphiteKingLootTable
+} from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { KingGoldemarLootTable } from '../minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { NEX_UNIQUE_DROPRATE, nexLootTable } from '../nex';
@@ -143,6 +147,23 @@ export const simulatedKillables: SimulatedKillable[] = [
 		isCustom: true,
 		loot: (quantity: number) => {
 			return MoktangLootTable.roll(quantity);
+		}
+	},
+	{
+		name: 'Kalphite King',
+		isCustom: true,
+		loot: (quantity: number) => {
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				KalphiteKingMonster.specialLoot?.({
+					loot: loot,
+					ownedItems: new Bank(),
+					quantity: 1,
+					cl: loot
+				});
+			}
+			loot.add(kalphiteKingLootTable.roll(quantity));
+			return loot;
 		}
 	},
 	...zygomiteFarmingSource.map(src => ({

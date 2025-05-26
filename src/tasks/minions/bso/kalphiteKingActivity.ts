@@ -71,14 +71,34 @@ export const kalphiteKingTask: MinionTask = {
 
 			const loot = new Bank();
 			loot.add(KalphiteKingMonster.table.kill(1, {}));
-			if (isDoubleLootActive(duration)) {
-				loot.multiply(2);
-			}
+
 			const winner = teamTable.roll();
 			if (!winner) continue;
 			teamsLoot.add(winner, loot);
 
 			kcAmounts[winner] = kcAmounts[winner] ? ++kcAmounts[winner] : 1;
+		}
+
+		//Roll for Drygores
+		for (const [userID, kc] of Object.entries(kcAmounts)) {
+			const user = await mUserFetch(userID);
+
+			KalphiteKingMonster.specialLoot?.({
+				loot: teamsLoot.get(userID),
+				ownedItems: new Bank(),
+				quantity: kc,
+				cl: user.cl.clone()
+			});
+		}
+
+		//Check for double loot
+		for (const user of users) {
+			const loot = teamsLoot.get(user);
+			if (loot) {
+				if (isDoubleLootActive(duration)) {
+					loot.multiply(2);
+				}
+			}
 		}
 
 		const leaderUser = parsedUsers.find(p => p.id === userID)?.user ?? parsedUsers[0].user;
