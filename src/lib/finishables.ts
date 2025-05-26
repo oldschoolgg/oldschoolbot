@@ -44,10 +44,7 @@ import {
 } from './data/CollectionsExport';
 import pets from './data/pets';
 import killableMonsters from './minions/data/killableMonsters';
-import {
-	kalphiteKingLootTable,
-	KalphiteKingMonster
-} from './minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { KalphiteKingMonster, kalphiteKingLootTable } from './minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
