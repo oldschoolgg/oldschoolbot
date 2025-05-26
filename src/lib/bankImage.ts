@@ -463,11 +463,11 @@ export class BankImageTask {
 			}
 		}
 
-		const data = this.spriteSheetData[itemID] ?? this.bsoSpriteSheetData[itemID];
+		const data = this.bsoSpriteSheetData[itemID] ?? this.spriteSheetData[itemID];
 		if (data) {
 			const [sX, sY, width, height] = data;
 			const image = await getClippedRegionImage(
-				this.spriteSheetData[itemID] ? this.spriteSheetImage : this.bsoSpriteSheetImage,
+				this.bsoSpriteSheetData[itemID] ? this.bsoSpriteSheetImage : this.spriteSheetImage,
 				sX,
 				sY,
 				width,
