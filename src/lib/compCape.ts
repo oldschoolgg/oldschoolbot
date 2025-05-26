@@ -38,7 +38,8 @@ import {
 	shayzienArmourCL,
 	theatreOfBLoodCL,
 	toaCL,
-	tobMetamorphPets} from './data/CollectionsExport';
+	tobMetamorphPets
+} from './data/CollectionsExport';
 import { creatablesCL } from './data/createables';
 import { getSimilarItems } from './data/similarItems';
 import { slayerMasksHelmsCL } from './data/slayerMaskHelms';
@@ -140,15 +141,14 @@ for (const [name, activity] of Object.entries(allCollectionLogs.Skilling.activit
 		});
 	}
 }
-skillingRequirements
-	.add({
-		name: 'Grow 5 Spirit trees',
-		has: ({ user }) => {
-			const info = getFarmingInfoFromUser(user.user);
-			const hasFive = info.patches.spirit.lastQuantity >= 5;
-			return hasFive || user.bitfield.includes(BitField.GrewFiveSpiritTrees);
-		}
-	});
+skillingRequirements.add({
+	name: 'Grow 5 Spirit trees',
+	has: ({ user }) => {
+		const info = getFarmingInfoFromUser(user.user);
+		const hasFive = info.patches.spirit.lastQuantity >= 5;
+		return hasFive || user.bitfield.includes(BitField.GrewFiveSpiritTrees);
+	}
+});
 
 for (const cape of Skillcapes) {
 	skillingRequirements.add({
