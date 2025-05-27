@@ -4,6 +4,7 @@ import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallo
 import { trackLoot } from '../../../lib/lootTrack';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -13,7 +14,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
 	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, userID, duration } = data;
+		const { channelID, quantity, floors, userID, duration, fletch } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'sepulchre', quantity);
 
@@ -41,6 +42,38 @@ export const sepulchreTask: MinionTask = {
 			if (roll(highestCompletedFloor.petChance)) {
 				loot.add('Giant squirrel');
 			}
+		}
+		let fletchXpReceived = 0;
+		let fletchXpRes = '';
+		let sets = 'x';
+		let fletchQuantity = 0;
+		const fletchingLoot = new Bank();
+
+		if (fletch) {
+			const fletchable = zeroTimeFletchables.find(item => item.name === fletch.fletchableName);
+
+			if (!fletchable) {
+				throw new Error(`Fletchable item ${fletch.fletchableName} not found.`);
+			}
+
+			fletchQuantity = fletch.fletchingQuantity;
+
+			if (fletchable.outputMultiple) {
+				sets = ' sets of';
+			}
+
+			const quantityToGive = fletchable.outputMultiple
+				? fletchQuantity * fletchable.outputMultiple
+				: fletchQuantity;
+
+			fletchXpReceived = fletchQuantity * fletchable.xp;
+
+			fletchXpRes = await user.addXP({
+				skillName: SkillsEnum.Fletching,
+				amount: fletchXpReceived,
+				duration
+			});
+			fletchingLoot.add(fletchable.id, quantityToGive);
 		}
 
 		const { previousCL, itemsAdded } = await transactItems({
@@ -77,7 +110,7 @@ export const sepulchreTask: MinionTask = {
 			]
 		});
 
-		const str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
+		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
 		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
 
@@ -87,6 +120,17 @@ export const sepulchreTask: MinionTask = {
 			user,
 			previousCL
 		});
+
+		// Handle fletching loot separately after generating the main loot image
+		if (fletch) {
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: fletchingLoot
+			});
+
+			str += `\nYou also finished fletching ${fletchQuantity}${sets} ${fletch.fletchableName}, and received ${fletchingLoot}. ${fletchXpRes}.`;
+		}
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}

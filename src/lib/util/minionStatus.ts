@@ -395,7 +395,11 @@ export function minionStatus(user: MUser) {
 		case 'Sepulchre': {
 			const data = currentTask as SepulchreActivityTaskOptions;
 
-			return `${name} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
+			const fletchingPart = data.fletch
+				? `They are also fletching ${data.fletch.fletchingQuantity}x ${data.fletch.fletchableName}. `
+				: '';
+
+			return `${name} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${fletchingPart}${formattedDuration}`;
 		}
 
 		case 'Plunder': {

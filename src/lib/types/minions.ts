@@ -401,6 +401,10 @@ export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOption
 export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
 	type: 'Sepulchre';
 	floors: number[];
+	fletch?: {
+		fletchableName: string;
+		fletchingQuantity: number;
+	};
 }
 
 export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions {
