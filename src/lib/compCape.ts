@@ -80,7 +80,7 @@ minigameRequirements
 
 const pvmRequirements = new Requirements();
 for (const [name, activity] of Object.entries(allCollectionLogs.PvM.activities)) {
-	if (activity.items) {
+	if (activity.items && !activity.isRaid) {
 		pvmRequirements.add({
 			name: `Complete ${name} CL`,
 			clRequirement: activity.items
