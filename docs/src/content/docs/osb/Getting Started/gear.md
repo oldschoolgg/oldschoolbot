@@ -62,7 +62,7 @@ Equip or unequip a pet, even during trips:
 
 These are built-in and don't count toward your preset limit:
 
-- Graceful
+- Graceful (Will equip any variant)
 - Clue_hunter
 - Construction (Carpenter's Outfit)
 - Thieving (Rogue Equipment)
