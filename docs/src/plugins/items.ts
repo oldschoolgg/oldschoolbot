@@ -44,8 +44,8 @@ export function remarkItems(_options: any) {
 				} else if (imageExtensions.some(ext => content.endsWith(ext))) {
 					html = `<img src="/images/${content}" alt="${content}" />`;
 				} else if (
-					[...SkillsArray, 'divination', 'dungeoneering', 'invention', 'qp'].some(s =>
-						content.includes(`${s}`)
+					[...SkillsArray, 'divination', 'dungeoneering', 'invention', 'qp'].some(
+						s => content.includes(`${s}`) && !content.includes('/') // some commands contain names of skills
 					)
 				) {
 					const [skillName, level] = content.split(':');
