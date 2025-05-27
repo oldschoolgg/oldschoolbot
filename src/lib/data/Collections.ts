@@ -751,6 +751,7 @@ export const allCollectionLogs: ICollection = {
 				},
 				items: chambersOfXericCL,
 				isActivity: true,
+				isRaid: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.raids} KC, ${minigames.raids_challenge_mode} CM KC`];
 				}
@@ -763,6 +764,7 @@ export const allCollectionLogs: ICollection = {
 				},
 				items: theatreOfBLoodCL,
 				isActivity: true,
+				isRaid: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tob} KC, ${minigames.tob_hard} Hard KC`];
 				}
@@ -778,6 +780,7 @@ export const allCollectionLogs: ICollection = {
 				},
 				items: toaCL,
 				isActivity: true,
+				isRaid: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tombs_of_amascut} KC`];
 				}
@@ -792,6 +795,7 @@ export const allCollectionLogs: ICollection = {
 				},
 				items: doaCL,
 				isActivity: true,
+				isRaid: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.depths_of_atlantis} KC`, `${minigames.depths_of_atlantis_cm} CM KC`];
 				}

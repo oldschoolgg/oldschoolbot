@@ -66,6 +66,7 @@ interface ICollectionActivity {
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
+		isRaid?: boolean;
 		fmtProg?: FormatProgressFunction;
 	};
 }
