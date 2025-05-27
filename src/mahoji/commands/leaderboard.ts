@@ -291,20 +291,32 @@ LIMIT 10;
 	return lbMsg('Unique Sacrifice');
 }
 
-async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, name: string) {
+async function minigamesLb(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	channelID: string,
+	name: string,
+	ironmanOnly: boolean
+) {
 	const minigame = Minigames.find(m => stringMatches(m.name, name) || m.aliases.some(a => stringMatches(a, name)));
 	if (!minigame) {
 		return `That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`;
 	}
 
+	const column = minigame.column;
+	if (!column) {
+		return `No column found for minigame ${name}.`;
+	}
+
 	if (minigame.name === 'Tithe farm') {
 		const titheCompletions = await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
 			`SELECT user_id::text as id, tithe_farms_completed::int as amount
-					   FROM user_stats
-					   WHERE "tithe_farms_completed" > 10
-					   ORDER BY "tithe_farms_completed"
-					   DESC LIMIT 10;`
+		   FROM user_stats
+		   WHERE "tithe_farms_completed" > 10
+		   ORDER BY "tithe_farms_completed" DESC
+		   LIMIT 100;`
 		);
+
 		doMenu(
 			interaction,
 			user,
@@ -316,27 +328,33 @@ async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser
 			),
 			'Tithe farm Leaderboard'
 		);
+
 		return lbMsg(`${minigame.name} Leaderboard`);
 	}
-	const res = await prisma.minigame.findMany({
-		where: {
-			[minigame.column]: {
-				gt: minigame.column === 'champions_challenge' ? 1 : 10
-			}
-		},
-		orderBy: {
-			[minigame.column]: 'desc'
-		},
-		take: 10
-	});
+
+	// General Minigame handling with raw SQL
+	const minValue = column === 'champions_challenge' ? 1 : 10;
+
+	const minigameResults = await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
+		`SELECT user_id::text as id, ${column} AS score
+			   FROM minigames
+			   INNER JOIN users ON users.id = minigames.user_id
+			   WHERE ${column} > ${minValue}
+			   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+			   ORDER BY ${column} DESC
+			   LIMIT 100;`
+	);
 
 	return doMenuWrapper({
-		ironmanOnly: false,
-		user,
 		interaction,
+		user,
 		channelID,
-		users: res.map(u => ({ id: u.user_id, score: u[minigame.column] })),
-		title: `${minigame.name} Leaderboard`
+		users: minigameResults.map(result => ({
+			id: result.id,
+			score: result.score
+		})),
+		title: `${minigame.name} Leaderboard`,
+		ironmanOnly
 	});
 }
 
@@ -1236,7 +1254,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			return sacrificeLb(interaction, user, channelID, sacrifice.type, Boolean(sacrifice.ironmen_only));
 		}
 		if (minigames) {
-			return minigamesLb(interaction, user, channelID, minigames.minigame);
+			return minigamesLb(interaction, user, channelID, minigames.minigame, Boolean(minigames.ironmen_only));
 		}
 		if (hunter_catches) {
 			return creaturesLb(interaction, user, channelID, hunter_catches.creature);
