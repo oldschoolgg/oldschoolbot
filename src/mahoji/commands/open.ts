@@ -57,13 +57,22 @@ export const openCommand: OSBMahojiCommand = {
 					value: i.name
 				}));
 			}
-		}
+		
+	},
+	{
+		type: ApplicationCommandOptionType.Integer,
+		name: 'result_quantity',
+		description: 'The number of the target item you want to obtain before stopping.',
+		required: false,
+		min_value: 1,
+		max_value: 1000
+	}
 	],
 	run: async ({
 		userID,
 		options,
 		interaction
-	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string }>) => {
+	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; result_quantity?: number }>) => {
 		if (interaction) await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		if (!options.name) {
@@ -73,7 +82,7 @@ export const openCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(interaction, user.id, options.name, options.open_until);
+			return abstractedOpenUntilCommand(interaction, user.id, options.name, options.open_until, options.result_quantity);
 		}
 		if (options.name.toLowerCase() === 'all') {
 			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');

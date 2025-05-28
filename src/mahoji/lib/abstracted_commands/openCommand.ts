@@ -30,8 +30,19 @@ export async function abstractedOpenUntilCommand(
 	interaction: ChatInputCommandInteraction,
 	userID: string,
 	name: string,
-	openUntilItem: string
+	openUntilItem: string,
+	result_quantity?: number
 ) {
+	let quantity = 1;
+
+	if (result_quantity) {
+		quantity = result_quantity;
+	}
+
+	if (quantity < 1 || !Number.isInteger(quantity)) {
+		return 'The quantity must be a positive integer.';
+	}
+
 	const user = await mUserFetch(userID);
 	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
@@ -64,13 +75,15 @@ export async function abstractedOpenUntilCommand(
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	const max = Math.min(100, amountOfThisOpenableOwned);
+	let targetCount = 0;
+	const max = Math.min(10000, amountOfThisOpenableOwned);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
 		loot.add(thisLoot.bank);
 		amountOpened++;
-		if (loot.has(openUntil.id)) break;
+		targetCount = loot.amount(openUntil.id);
+		if (targetCount >= quantity) break;
 	}
 
 	return finalizeOpening({
@@ -78,10 +91,10 @@ export async function abstractedOpenUntilCommand(
 		cost,
 		loot,
 		messages: [
-			`You opened ${amountOpened}x ${openable.openedItem.name}, ${
-				loot.has(openUntil.id)
-					? `until you got a ${openUntil.name}!`
-					: `but you didn't get a ${openUntil.name}!`
+			`You opened ${amountOpened}x ${openable.openedItem.name} ${
+	targetCount >= quantity
+		? `and successfully obtained ${targetCount}x ${openUntil.name}.`
+		: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
 			}`
 		],
 		openables: [openable],
