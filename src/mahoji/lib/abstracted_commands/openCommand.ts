@@ -1,12 +1,11 @@
 import { PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { notEmpty, sumArr, uniqueArr } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField, MAX_CLUES_DROPPED } from '../../../lib/constants';
+import { BitField } from '../../../lib/constants';
 import type { UnifiedOpenable } from '../../../lib/openables';
 import { allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { makeComponents } from '../../../lib/util';
@@ -50,14 +49,10 @@ export async function abstractedOpenUntilCommand(
 
 	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
-
-	const targetClue = ClueTiers.find(t => t.scrollID === openUntil.id);
-	const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
-
-	if (targetClue && clueStack >= MAX_CLUES_DROPPED) {
+	if (openUntil.name.includes('Clue') && user.owns(openUntil.id)) {
 		await handleMahojiConfirmation(
 			interaction,
-			`You're trying to open until you receive a ${openUntil.name}, but you already have ${MAX_CLUES_DROPPED} clues banked, which is the maximum. You won't be able to receive more. Are you sure you want to continue?`
+			`You're trying to open until you receive a ${openUntil.name}, but you already have one, and couldn't receive a second, are you sure you want to do this?`
 		);
 	}
 
