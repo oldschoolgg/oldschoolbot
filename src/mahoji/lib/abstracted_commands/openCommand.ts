@@ -92,9 +92,9 @@ export async function abstractedOpenUntilCommand(
 		loot,
 		messages: [
 			`You opened ${amountOpened}x ${openable.openedItem.name} ${
-	targetCount >= quantity
-		? `and successfully obtained ${targetCount}x ${openUntil.name}.`
-		: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
+				targetCount >= quantity
+					? `and successfully obtained ${targetCount}x ${openUntil.name}.`
+					: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
 			}`
 		],
 		openables: [openable],
