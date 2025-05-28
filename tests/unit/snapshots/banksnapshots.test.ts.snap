@@ -4932,9 +4932,7 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
-    "cantHaveItems": {
-      "19835": 1,
-    },
+    "cantHaveItems": undefined,
     "inputItems": {
       "12073": 1,
       "2677": 1,
