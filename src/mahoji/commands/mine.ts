@@ -2,8 +2,10 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import { userhasDiaryTier } from '../../lib/diaries.js';
 import type { UserFullGearSetup } from '../../lib/gear';
 import { QuestID } from '../../lib/minions/data/quests';
+import { DiaryID } from '../../lib/minions/types.js';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
@@ -34,7 +36,9 @@ export function calculateMiningInput({
 	craftingLevel,
 	strengthLevel,
 	maxTripLength,
-	user
+	user,
+	hasKaramjaMedium,
+	randomVariationEnabled = true
 }: {
 	nameInput: string;
 	quantityInput: number | undefined;
@@ -47,6 +51,8 @@ export function calculateMiningInput({
 	strengthLevel: number;
 	maxTripLength: number;
 	user: MUser;
+	hasKaramjaMedium: boolean;
+	randomVariationEnabled?: boolean;
 }) {
 	const ore = Mining.Ores.find(
 		ore =>
@@ -189,7 +195,8 @@ export function calculateMiningInput({
 		miningCapeEffect,
 		powermining: isPowermining,
 		goldSilverBoost,
-		miningLvl: effectiveMiningLevel
+		miningLvl: effectiveMiningLevel,
+		hasKaramjaMedium
 	});
 
 	if (gearValues.some(g => g.hasEquipped('Offhand volcanic pickaxe')) && strengthLevel >= 100 && miningLevel >= 105) {
@@ -200,8 +207,10 @@ export function calculateMiningInput({
 
 	const duration = timeToMine;
 
-	const fakeDurationMin = quantityInput ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-	const fakeDurationMax = quantityInput ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMin =
+		quantityInput && randomVariationEnabled ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMax =
+		quantityInput && randomVariationEnabled ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 	if (ore.name === 'Gem rock' && gearValues.some(g => g.hasEquipped('Amulet of glory'))) {
 		messages.push('3x success rate for having an Amulet of glory equipped');
@@ -282,7 +291,8 @@ export const mineCommand: OSBMahojiCommand = {
 			craftingLevel: user.skillLevel('crafting'),
 			strengthLevel: user.skillLevel('strength'),
 			maxTripLength: calcMaxTripLength(user, 'Mining'),
-			user
+			user,
+			hasKaramjaMedium: (await userhasDiaryTier(user, [DiaryID.Karamja, 'medium']))[0]
 		});
 
 		if (typeof result === 'string') {

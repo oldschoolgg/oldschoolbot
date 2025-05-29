@@ -6,6 +6,7 @@ import bsoItemsJson from '../../../data/bso_items.json';
 import commandsJson from '../../../data/osb.commands.json';
 import { authorsMap } from '../../../scripts/wiki/authors.js';
 import { SkillsArray } from '../../../src/lib/skilling/types.js';
+import { toTitleCase } from '../docs-util.js';
 
 const bsoItems = Object.entries(bsoItemsJson);
 
@@ -30,16 +31,25 @@ export function remarkItems(_options: any) {
 					const html = `<img src="/images/${match}" alt="${match}" />`;
 					node.value = node.value.replace(`[[${match}]]`, html);
 					continue;
-				} else if ([...SkillsArray, 'qp'].some(s => match.includes(`${s}:`))) {
+				} else if (
+					[...SkillsArray, 'divination', 'dungeoneering', 'invention', 'qp'].some(s => match.includes(`${s}`))
+				) {
 					const [skillName, level] = match.split(':');
 					node.type = 'html';
 					const imageURL =
 						skillName === 'qp'
 							? 'https://oldschool.runescape.wiki/images/Quest_point_icon.png'
-							: `https://raw.githubusercontent.com/runelite/runelite.net/refs/heads/master/public/img/skillicons/${skillName}.png`;
-					const html = `<div class="osrs_item">
-<img class="osrs_item_image" src="${imageURL}" alt="${match}" />
+							: `https://cdn.oldschool.gg/icons/skills/${skillName}.png`;
+					const imgEl = `<img class="osrs_item_image" src="${imageURL}" alt="${match}" />`;
+					const html =
+						typeof level !== 'undefined'
+							? `<div class="osrs_item">
+${imgEl}
 <p class="osrs_item_name">${level}</p>
+</div>`
+							: `<div class="osrs_item">
+${imgEl}
+${toTitleCase(skillName)}
 </div>`;
 					node.value = node.value.replace(`[[${match}]]`, html);
 					continue;
@@ -50,7 +60,7 @@ export function remarkItems(_options: any) {
 				} else if (authorsMap.has(match)) {
 					const author = authorsMap.get(match);
 					const customHtml = `<div class="contributor">
-											${author?.avatar ? `<img class="contributor_avatar" src="/${author?.avatar}" />` : ''}
+											${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` : ''}
 											<p class="contributor_name">${author!.displayName}</p>
 										</div>`;
 					node.type = 'html';

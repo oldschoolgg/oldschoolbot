@@ -18282,6 +18282,604 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "40010": 1,
+      "995": 100000000,
+    },
+    "name": "Mining master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73367": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73367": 1,
+    },
+    "name": "Revert Mining master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40010": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40013": 1,
+      "995": 100000000,
+    },
+    "name": "Smithing master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73368": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73368": 1,
+    },
+    "name": "Revert Smithing master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40013": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40015": 1,
+      "995": 100000000,
+    },
+    "name": "Woodcutting master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73372": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73372": 1,
+    },
+    "name": "Revert Woodcutting master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40015": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40004": 1,
+      "995": 100000000,
+    },
+    "name": "Firemaking master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73371": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73371": 1,
+    },
+    "name": "Revert Firemaking master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40004": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40016": 1,
+      "995": 100000000,
+    },
+    "name": "Agility master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73359": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73359": 1,
+    },
+    "name": "Revert Agility master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40016": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40005": 1,
+      "995": 100000000,
+    },
+    "name": "Fishing master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73369": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73369": 1,
+    },
+    "name": "Revert Fishing master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40005": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40012": 1,
+      "995": 100000000,
+    },
+    "name": "Runecraft master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73356": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73356": 1,
+    },
+    "name": "Revert Runecraft master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40012": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40001": 1,
+      "995": 100000000,
+    },
+    "name": "Cooking master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73370": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73370": 1,
+    },
+    "name": "Revert Cooking master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40001": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40002": 1,
+      "995": 100000000,
+    },
+    "name": "Crafting master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73362": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73362": 1,
+    },
+    "name": "Revert Crafting master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40002": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40011": 1,
+      "995": 100000000,
+    },
+    "name": "Prayer master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73354": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73354": 1,
+    },
+    "name": "Revert Prayer master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40011": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40006": 1,
+      "995": 100000000,
+    },
+    "name": "Fletching master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73363": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73363": 1,
+    },
+    "name": "Revert Fletching master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40006": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40014": 1,
+      "995": 100000000,
+    },
+    "name": "Thieving master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73361": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73361": 1,
+    },
+    "name": "Revert Thieving master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40014": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40003": 1,
+      "995": 100000000,
+    },
+    "name": "Farming master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73373": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73373": 1,
+    },
+    "name": "Revert Farming master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40003": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40007": 1,
+      "995": 100000000,
+    },
+    "name": "Herblore master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73360": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73360": 1,
+    },
+    "name": "Revert Herblore master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40007": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40008": 1,
+      "995": 100000000,
+    },
+    "name": "Hunter master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73365": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73365": 1,
+    },
+    "name": "Revert Hunter master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40008": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40000": 1,
+      "995": 100000000,
+    },
+    "name": "Construction master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73357": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73357": 1,
+    },
+    "name": "Revert Construction master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40000": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40009": 1,
+      "995": 100000000,
+    },
+    "name": "Magic master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73355": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73355": 1,
+    },
+    "name": "Revert Magic master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40009": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40017": 1,
+      "995": 100000000,
+    },
+    "name": "Attack master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73350": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73350": 1,
+    },
+    "name": "Revert Attack master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40017": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40018": 1,
+      "995": 100000000,
+    },
+    "name": "Strength master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73351": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73351": 1,
+    },
+    "name": "Revert Strength master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40018": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40019": 1,
+      "995": 100000000,
+    },
+    "name": "Defence master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73352": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73352": 1,
+    },
+    "name": "Revert Defence master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40019": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40021": 1,
+      "995": 100000000,
+    },
+    "name": "Ranging master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73353": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73353": 1,
+    },
+    "name": "Revert Ranging master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40021": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40020": 1,
+      "995": 100000000,
+    },
+    "name": "Hitpoints master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73358": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73358": 1,
+    },
+    "name": "Revert Hitpoints master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40020": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40060": 1,
+      "995": 100000000,
+    },
+    "name": "Slayer master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73364": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73364": 1,
+    },
+    "name": "Revert Slayer master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40060": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "40022": 1,
+      "995": 100000000,
+    },
+    "name": "Dungeoneering master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73374": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73374": 1,
+    },
+    "name": "Revert Dungeoneering master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "40022": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "63205": 1,
+      "995": 100000000,
+    },
+    "name": "Invention master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73375": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73375": 1,
+    },
+    "name": "Revert Invention master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "63205": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73000": 1,
+      "995": 100000000,
+    },
+    "name": "Divination master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73366": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73366": 1,
+    },
+    "name": "Revert Divination master cape (inverted)",
+    "noCl": true,
+    "outputItems": {
+      "73000": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "11849": 260,
     },
     "name": "Graceful",

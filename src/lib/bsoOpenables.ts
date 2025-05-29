@@ -19,7 +19,13 @@ import { keyCrates } from './keyCrates';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import type { UnifiedOpenable } from './openables';
 import { PaintBoxTable } from './paintColors';
-import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
+import {
+	ChimplingImpling,
+	EternalImpling,
+	InfernalImpling,
+	MysteryImpling,
+	ShrimplingImpling
+} from './simulation/customImplings';
 import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
 import { clAdjustedDroprate } from './util';
@@ -922,6 +928,14 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: InfernalImpling.aliases,
 		output: InfernalImpling.table,
 		allItems: InfernalImpling.table.allItems
+	},
+	{
+		name: 'Shrimpling',
+		id: itemID('Shrimpling'),
+		openedItem: getOSItem('Shrimpling'),
+		aliases: ShrimplingImpling.aliases,
+		output: ShrimplingImpling.table,
+		allItems: ShrimplingImpling.table.allItems
 	},
 	{
 		name: 'Spooky box',

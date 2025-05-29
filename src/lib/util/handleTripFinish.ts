@@ -99,8 +99,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ data, messages, user }) => {
 			const imp = await handlePassiveImplings(user, data, messages);
 			if (imp && imp.bank.length > 0) {
-				const many = imp.bank.length > 1;
-				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
+				messages.push(`Caught ${imp.bank}`);
 				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
 				return {
 					itemsToAddWithCL: imp.bank
@@ -527,6 +526,7 @@ export async function handleTripFinish(
 			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
 	}
+
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}

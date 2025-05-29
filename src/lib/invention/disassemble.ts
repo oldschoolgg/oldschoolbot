@@ -1,4 +1,4 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, Table } from '@oldschoolgg/toolkit';
 import { Time, calcWhatPercent, clamp, percentChance, reduceNumByPercent, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
@@ -13,7 +13,7 @@ import {
 import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import type { DisassembleTaskOptions } from '../types/minions';
-import { calcPerHour, formatDuration, makeTable, toKMB } from '../util';
+import { calcPerHour, formatDuration, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { getItem } from '../util/getOSItem';
@@ -328,10 +328,12 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 	}
 	// @ts-ignore ignore
 	results.sort((a, b) => b.xp - a.xp);
-	const normalTable = makeTable(
-		['Item', 'XP', 'Time'],
-		results.map(r => (r.error === null ? [r.item.name, r.xp, formatDuration(r.duration)] : []))
-	);
+	const table = new Table();
+	table.addHeader('Item', 'XP', 'Time');
+	for (const r of results) {
+		if (r.error !== null) continue;
+		table.addRow(r.item.name, toKMB(r.xp), formatDuration(r.duration));
+	}
 
 	return {
 		content: `
@@ -341,7 +343,7 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			.join(', ')
 			.slice(0, 1500)}`,
 		files: [
-			{ name: 'disassemble-analysis.txt', attachment: Buffer.from(normalTable) },
+			{ name: 'disassemble-analysis.txt', attachment: Buffer.from(table.toString()) },
 			{ name: 'material-analysis.txt', attachment: Buffer.from(await materialAnalysis(user, bank)) }
 		]
 	};

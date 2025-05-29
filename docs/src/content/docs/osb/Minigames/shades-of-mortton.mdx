@@ -1,0 +1,151 @@
+---
+title: "Shades Of Mort'ton"
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+The Shades of Mort'ton minigame works in a condensed manner compared to OSRS. Your minion only needs logs and shade remains to send trips—no need to collect sacred oil or burn the shades yourself, as it's all done in one trip. There are no skill requirements to start Shades of Mort'ton.
+
+To start a trip of the minigame, use the following:
+
+- [[/minigames shades_of_morton start shade\:shadeType logs\:logType]]
+
+## Boosts
+
+- 50% more Prayer XP for completion of the Morytania hard diary.  
+- 50% more Firemaking XP for completion of the Morytania elite diary.
+
+## Shade Remains
+
+You can kill shades by using the [[/k]] command. When burned, each shade gives either a key or coins. In order from lowest to highest tier:
+
+| **Shade Type** | **Key Chance**                                         | **Coin Range** |
+| -------------- | ------------------------------------------------------ | -------------- |
+| Loar shade     | Bronze key - 79%<br />Coins - 21%                        | 400–500gp      |
+| Phrin shade    | Bronze key - 12.5%<br />Steel key - 66.5%<br />Coins - 21% | 600–700gp      |
+| Riyl shade     | Steel key - 12.5%<br />Black key - 66.5%<br />Coins - 21%  | 700–800gp      |
+| Asyn shade     | Black key - 28.2%<br />Silver key - 50.8%<br />Coins - 21% | 800–900gp      |
+| Fiyr shade     | Silver key - 63.4%<br />Gold key - 15.6%<br />Coins - 21%  | 1,500–5,000gp  |
+| Urium shade    | Gold key - 79%<br />Coins - 21%                          | 2,000–7,000gp  |
+
+## Burning Shade Remains
+
+Certain logs can only be used for certain shades. Higher-tier logs allow burning more types of shades and give more XP. Example: redwood logs can burn any shade, but regular logs only allow burning Loar and Phrin.
+
+| **Log Type**     | **Burnable Shades / Prayer XP**                                                                     | **Firemaking XP Per Shade** |
+| ---------------- | --------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Logs             | Loar - 25<br />Phrin - 37.5                                                                           | 50                           |
+| Oak logs         | Loar - 33<br />Phrin - 45.5                                                                           | 70                           |
+| Willow logs      | Loar - 33.5<br />Phrin - 46<br />Riyl - 61                                                              | 100                          |
+| Teak logs        | Loar - 33.7<br />Phrin - 46.2<br />Riyl - 61.2                                                          | 120                          |
+| Arctic pine logs | Loar - 33.9<br />Phrin - 46.4<br />Riyl - 61.4                                                          | 158                          |
+| Maple logs       | Loar - 34<br />Phrin - 46.5<br />Riyl - 61.5                                                            | 175                          |
+| Mahogany logs    | Loar - 34.3<br />Phrin - 46.8<br />Riyl - 61.8                                                          | 210                          |
+| Yew logs         | Loar - 34.5<br />Phrin - 47<br />Riyl - 62<br />Asyn - 79.5                                               | 255                          |
+| Magic logs       | Loar - 35<br />Phrin - 47.5<br />Riyl - 62.5<br />Asyn - 80<br />Fiyr - 100                                 | 404.5                        |
+| Redwood logs     | Loar - 35.5<br />Phrin - 48<br />Riyl - 63<br />Asyn - 80.5<br />Fiyr - 100.5<br />Urium - 120.5              | 500                          |
+
+## Rewards
+
+You can loot chests using keys obtained from burning shades. Only matching keys can open each chest. Locks are only found in their respective chests. Use [[/open]] to open a chest.
+
+_There is a 1/2 chance to obtain the Flamtaer bag from any level chest._
+
+<Tabs>
+<TabItem label="Bronze Chest">
+
+- Bronze locks - 1/63  
+- Clue scroll (easy) - 1/50  
+- 10–20 Swamp paste - every chest  
+- Steel–mithril items  
+- Chaos runes
+
+</TabItem>
+<TabItem label="Steel Chest">
+
+- Steel locks - 1/63  
+- Fine cloth - 1/62  
+- Tree wizards' journal - 1/597*  
+- Bloody notes - 1/597*  
+- Runescroll of swampbark - 1/597*  
+- Runescroll of bloodbark - 1/597*  
+- Clue scroll (medium) - 1/45  
+- 15–30 Swamp paste - every chest  
+- Steel–Adamant items  
+- Chaos/Nature runes
+
+*These four items are on the same table: chance for any one of them is ~1/149.
+
+</TabItem>
+<TabItem label="Black Chest">
+
+- Black locks - 1/61  
+- Fine cloth - 1/20  
+- Tree wizards' journal - 1/61*  
+- Bloody notes - 1/61*  
+- Runescroll of swampbark - 1/61*  
+- Runescroll of bloodbark - 1/61*  
+- Clue scroll (medium) - 1/35  
+- Flamtaer hammer - 1/140  
+- Steel–Adamant items  
+- Chaos/Nature/Death runes  
+- Willow/Yew logs
+
+*These four items are on the same table: chance for any one of them is ~1/15.
+
+</TabItem>
+<TabItem label="Silver Chest">
+
+- Silver locks - 1/61  
+- Fine cloth - 1/9.6  
+- Tree wizards' journal - 1/54*  
+- Bloody notes - 1/54*  
+- Runescroll of swampbark - 1/54*  
+- Runescroll of bloodbark - 1/54*  
+- Clue scroll (hard) - 1/77  
+- Flamtaer hammer - 1/14  
+- Amulet of the damned (full) - 1/15.4  
+- 25–40 Swamp paste - every chest  
+- Black–Rune items  
+- Death/Blood runes  
+- Yew/Magic logs
+
+*These four items are on the same table: chance for any one of them is ~1/13.5.
+
+</TabItem>
+<TabItem label="Gold Chest">
+
+- Gold locks - 1/61  
+- Fine cloth - 1/8.6  
+- Tree wizards' journal - 1/54*  
+- Bloody notes - 1/54*  
+- Runescroll of swampbark - 1/54*  
+- Runescroll of bloodbark - 1/54*  
+- Clue scroll (elite) - 1/143  
+- Flamtaer hammer - 1/35.7  
+- Amulet of the damned (full) - 1/23.8  
+- Zealots outfit piece - 1/128**  
+- 40–70 Swamp paste - every chest  
+- Mithril–Dragon items  
+- Death/Soul runes  
+- Yew/Redwood logs
+
+*These four items are on the same table: chance for any one of them is ~1/13.5.  
+**You cannot obtain duplicate Zealots outfit pieces unless you drop or sell them.
+
+</TabItem>
+</Tabs>
+
+## Creating Coffins
+
+To create the Bronze coffin, first purchase the Broken coffin:
+
+- [[/buy name\:Broken coffin]]
+
+After that, each new tier is unlocked by obtaining the next set of locks. Upgrades are sequential and cannot be skipped. Each tier gives an additional minute to Shades of Mort'ton trip time when equipped in any setup.
+
+- Bronze coffin: No boost  
+- Steel coffin: +1 minute  
+- Black coffin: +2 minutes  
+- Silver coffin: +3 minutes  
+- Gold coffin: +4 minutes

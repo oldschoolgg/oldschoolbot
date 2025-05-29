@@ -28,7 +28,12 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 		return 0;
 	});
 
-export async function abstractedOpenUntilCommand(userID: string, name: string, openUntilItem: string) {
+export async function abstractedOpenUntilCommand(
+	userID: string,
+	name: string,
+	openUntilItem: string,
+	disable_pets: boolean | undefined
+) {
 	const user = await mUserFetch(userID);
 	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
@@ -90,7 +95,8 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 			}`
 		],
 		openables: [openable],
-		kcBank: new Bank().add(openable.openedItem.id, amountOpened)
+		kcBank: new Bank().add(openable.openedItem.id, amountOpened),
+		disable_pets: Boolean(disable_pets)
 	});
 }
 
@@ -114,7 +120,8 @@ async function finalizeOpening({
 	loot,
 	messages,
 	openables,
-	kcBank
+	kcBank,
+	disable_pets
 }: {
 	kcBank: Bank;
 	user: MUser;
@@ -122,12 +129,13 @@ async function finalizeOpening({
 	loot: Bank;
 	messages: string[];
 	openables: UnifiedOpenable[];
+	disable_pets: boolean;
 }) {
 	if (!user.bank.has(cost)) return `You don't have ${cost}.`;
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 
-	const hasSmokey = user.allItemsOwned.has('Smokey');
-	const hasOcto = user.allItemsOwned.has('Octo');
+	const hasSmokey = !disable_pets && user.allItemsOwned.has('Smokey');
+	const hasOcto = !disable_pets && user.allItemsOwned.has('Octo');
 	let smokeyMsg: string | null = null;
 
 	if (hasSmokey || hasOcto) {
@@ -255,7 +263,8 @@ export async function abstractedOpenCommand(
 	interaction: ChatInputCommandInteraction | null,
 	userID: string,
 	_names: string[],
-	_quantity: number | 'auto' = 1
+	_quantity: number | 'auto',
+	disable_pets: boolean | undefined
 ) {
 	const user = await mUserFetch(userID);
 	const favorites = user.user.favoriteItems;
@@ -319,5 +328,5 @@ export async function abstractedOpenCommand(
 		if (thisLoot.message) messages.push(thisLoot.message);
 	}
 
-	return finalizeOpening({ user, cost, loot, messages, openables, kcBank });
+	return finalizeOpening({ user, cost, loot, messages, openables, kcBank, disable_pets: Boolean(disable_pets) });
 }

@@ -1,5 +1,4 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { CommandOptions, CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { Activity, NewUser, Prisma } from '@prisma/client';
 import type {
 	APIInteractionGuildMember,
@@ -8,9 +7,9 @@ import type {
 	GuildMember,
 	User
 } from 'discord.js';
-
 import { Time } from 'e';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'remeda';
+
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';

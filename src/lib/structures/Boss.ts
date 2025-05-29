@@ -2,13 +2,14 @@ import { AttachmentBuilder, type BaseMessageOptions, type TextChannel } from 'di
 import { Time, calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Table } from '@oldschoolgg/toolkit';
 import type { GearSetupType, GearStats } from '../gear';
 import { trackLoot } from '../lootTrack';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { setupParty } from '../party';
 import type { Skills } from '../types';
 import type { NewBossOptions } from '../types/minions';
-import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend, makeTable } from '../util';
+import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { type ClientBankKey, updateBankSetting } from '../util/updateBankSetting';
@@ -498,8 +499,18 @@ export class BossInstance {
 	}
 
 	async simulate() {
+		const table = new Table();
+		table.addHeader(
+			'Team Size',
+			'%',
+			'Duration',
+			'Death Chance',
+			'DWWH Chance',
+			'DWWH Hours',
+			'Item Cost For DWWH'
+		);
+
 		const arr = Array(30).fill(this.leader);
-		const results: any[] = [];
 		for (const num of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
 			this.users = arr.slice(0, num);
 			const { bossUsers, duration } = await this.calculateBossUsers();
@@ -507,20 +518,17 @@ export class BossInstance {
 				console.error('wtfffffffff');
 			}
 			const dwwhChance = calcDwwhChance(bossUsers.length, false);
-			results.push([
-				bossUsers.length,
+			table.addRow(
+				bossUsers.length.toString(),
 				bossUsers[0].userPercentChange.toFixed(1),
 				formatDuration(duration),
 				bossUsers[0].deathChance.toFixed(1),
-				dwwhChance,
+				dwwhChance.toString(),
 				formatDuration(dwwhChance * duration),
-				bossUsers[0].itemsToRemove.multiply(bossUsers.length).multiply(dwwhChance)
-			]);
+				bossUsers[0].itemsToRemove.multiply(bossUsers.length).multiply(dwwhChance).toString()
+			);
 		}
-		const normalTable = makeTable(
-			['Team Size', '%', 'Duration', 'Death Chance', 'DWWH Chance', 'DWWH Hours', 'Item Cost For DWWH'],
-			results
-		);
-		return new AttachmentBuilder(Buffer.from(normalTable), { name: 'boss-sim.txt' });
+
+		return new AttachmentBuilder(Buffer.from(table.toString()), { name: 'boss-sim.txt' });
 	}
 }

@@ -15,7 +15,7 @@ import { sorts } from '../src/lib/sorts';
 import { itemNameFromID } from '../src/lib/util';
 import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
 import { Markdown, Tab, Tabs } from './markdown/markdown';
-import { miningXpHr } from './wiki/miningXphr';
+import { miningSnapshots } from './wiki/miningSnapshots.ts';
 import { updateAuthors } from './wiki/updateAuthors';
 
 export function handleMarkdownEmbed(identifier: string, filePath: string, contentToInject: string) {
@@ -354,7 +354,7 @@ function wikiIssues() {
 		lineNumbers: number[];
 	}
 
-	const files = glob.sync('./docs/**/*.{md,mdx}', {
+	const files = glob.sync('./docs/src/content/**/*.{md,mdx}', {
 		ignore: ['**/node_modules/**']
 	});
 
@@ -454,10 +454,10 @@ async function wiki() {
 	renderQuestsMarkdown();
 	rendeCoxMarkdown();
 	wikiIssues();
-	miningXpHr();
 	clueBoosts();
 	renderMonstersMarkdown();
 	updateAuthors();
+	miningSnapshots();
 	process.exit(0);
 }
 

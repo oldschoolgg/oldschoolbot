@@ -715,6 +715,11 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return this.user.minion_equippedPet === itemID(name);
 	}
 
+	get equippedPet(): Item | null {
+		if (this.user.minion_equippedPet === null) return null;
+		return getOSItem(this.user.minion_equippedPet);
+	}
+
 	materialsOwned() {
 		return new MaterialBank(this.user.materials_owned as IMaterialBank);
 	}

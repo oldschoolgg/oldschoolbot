@@ -3,8 +3,8 @@ import { type CommandRunOptions, calcPerHour, formatDuration } from '@oldschoolg
 import type { InteractionReplyOptions } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, increaseNumByPercent, sumArr } from 'e';
-import { uniq } from 'lodash';
 import { Bank, convertBankToPerHourStats } from 'oldschooljs';
+import { unique } from 'remeda';
 
 import {
 	BathhouseOres,
@@ -202,7 +202,7 @@ export const ratesCommand: OSBMahojiCommand = {
 		if (options.misc?.zygomite_seeds) {
 			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
 
-			const validZygomiteList = uniq(mutatedSourceItems.map(m => m.zygomite));
+			const validZygomiteList = unique(mutatedSourceItems.map(m => m.zygomite));
 			// Returns an array containing [totalWeight, totalWeightedChance] for each Zygomite
 			const survivalChanceData = validZygomiteList.map(z =>
 				mutatedSourceItems
@@ -521,7 +521,8 @@ ${zygomiteFarmingSource
 										craftingLevel: 120,
 										strengthLevel: 120,
 										maxTripLength: duration,
-										user
+										user,
+										hasKaramjaMedium: true
 									});
 									if (typeof result === 'string') continue;
 									const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);

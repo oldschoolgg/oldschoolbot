@@ -186,7 +186,7 @@ export async function autoContract(user: MUser, channelID: string, userID: strin
 	const bestContractTierCanDo = bestFarmingContractUserCanDo(user);
 
 	if (user.owns('Seed pack')) {
-		const openResponse = await abstractedOpenCommand(null, user.id, ['seed pack'], 'auto');
+		const openResponse = await abstractedOpenCommand(null, user.id, ['seed pack'], 'auto', false);
 		const contractResponse = await farmingContractCommand(userID, bestContractTierCanDo);
 		return roughMergeMahojiResponse(openResponse, contractResponse);
 	}

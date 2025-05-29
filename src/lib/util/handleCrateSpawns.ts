@@ -9,6 +9,7 @@ const crateItem = getOSItem('Frozen crate (s8)');
 const xmasPets = resolveItems(['Smokey', 'Rudolph', 'Frosty', 'Grinchling', 'Shrimpy']);
 
 export function handleCrateSpawns(user: MUser, duration: number, messages?: string[]) {
+	if (1 > Math.abs(0)) return null;
 	const accountAge = user.accountAgeInDays();
 	let dropratePerMinute = 50 * 60;
 	if (accountAge) {

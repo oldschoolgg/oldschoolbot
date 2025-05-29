@@ -4,6 +4,7 @@ import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
+import { Table } from '@oldschoolgg/toolkit';
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
 import { incrementMinigameScore } from './settings/minigames';
@@ -12,7 +13,7 @@ import { SkillsEnum } from './skilling/types';
 import { TameSpeciesID, getAllUserTames } from './tames';
 import type { Skills } from './types';
 import type { BathhouseTaskOptions } from './types/minions';
-import { formatDuration, formatSkillRequirements, makeTable, skillsMeetRequirements, stringMatches } from './util';
+import { formatDuration, formatSkillRequirements, skillsMeetRequirements, stringMatches } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
@@ -441,15 +442,17 @@ export function baxBathSim() {
 	}
 
 	results.sort((a, b) => b.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER - a.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER);
-	const tableArr = [];
+	const table = new Table();
+	table.addHeader('Combo', 'FM XP', 'Herb XP');
 	for (const { tier, ore, mixture, firemakingXP, herbXP } of results) {
-		tableArr.push([
+		table.addRow(
 			`${tier.name} ${ore.item.name} ${mixture.name}`,
 			(firemakingXP * GLOBAL_BSO_XP_MULTIPLIER).toLocaleString(),
 			(herbXP * GLOBAL_BSO_XP_MULTIPLIER).toLocaleString()
-		]);
+		);
 	}
-	return makeTable(['Combo', 'FM XP', 'Herb XP'], tableArr);
+
+	return table.toString();
 }
 
 export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {

@@ -13,8 +13,8 @@ import { Bank, type EMonster, Monsters } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { expect, vi } from 'vitest';
 
-import { clone } from 'lodash';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { clone } from 'remeda';
 import { MUserClass } from '../../src/lib/MUser';
 import { completeActivity } from '../../src/lib/Task';
 import { type PvMMethod, globalConfig } from '../../src/lib/constants';
@@ -231,6 +231,7 @@ export class TestUser extends MUserClass {
 		if (shouldFail) {
 			expect(commandResult).not.toContain('is now killing');
 		}
+		const tripStartBank = this.bank.clone();
 		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
 		const newKC = await this.getKC(monster);
 		const newXP = clone(this.skillsAsXP);
@@ -240,7 +241,7 @@ export class TestUser extends MUserClass {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
 
-		return { commandResult, newKC, xpGained, previousBank, activityResult };
+		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
 
 	async pickpocket(
