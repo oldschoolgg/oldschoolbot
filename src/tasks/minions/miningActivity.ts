@@ -117,7 +117,7 @@ export function determineMiningResult({
 			}
 		} else if (ore.name === 'Daeyalt essence rock') {
 			for (let i = 0; i < quantity; i++) {
-				daeyaltQty += randInt(2, 3);
+				daeyaltQty += ore.name === 'Daeyalt essence rock' && isPowermining ? Math.floor(randInt(2, 3) * 1.5) : randInt(2, 3);
 			}
 			updateBank.itemLootBank.add(ore.id, daeyaltQty);
 		} else if (ore.name === 'Tainted essence chunk') {

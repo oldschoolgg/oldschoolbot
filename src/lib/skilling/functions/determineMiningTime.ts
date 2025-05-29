@@ -55,8 +55,8 @@ export function determineMiningTime({
 
 	let userMaxTripTicks = (maxTripLength - passedDuration) / (Time.Second * 0.6);
 
-	if (ore.name === 'Amethyst' || ore.name === 'Daeyalt essence rock') {
-		userMaxTripTicks *= 1.5;
+	if (ore.name === 'Amethyst' || (ore.name === 'Daeyalt essence rock' && !powermining)) {
+		userMaxTripTicks *= ore.name === 'Daeyalt essence rock' ? 2 : 1.5;
 	}
 
 	let remainingNoDeplete = glovesEffect;
