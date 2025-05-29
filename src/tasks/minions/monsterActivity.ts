@@ -343,9 +343,7 @@ export function doMonsterTrip(data: newOptions) {
 		) {
 			loot.add('Clue hunter boots', 1);
 			loot.add('Clue hunter cloak', 1);
-			messages.push(
-				'While killing a Unicorn, you discover some strange clothing - you pick them up'
-			);
+			messages.push('While killing a Unicorn, you discover some strange clothing - you pick them up');
 		}
 		if (newSuperiorCount) {
 			loot.add(superiorTable?.kill(newSuperiorCount).set('Brimstone key', 0)); //remove the rng keys, todo: remove drop from superiors in osjs?
