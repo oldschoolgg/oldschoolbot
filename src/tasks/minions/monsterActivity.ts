@@ -344,7 +344,7 @@ export function doMonsterTrip(data: newOptions) {
 			loot.add('Clue hunter boots', 1);
 			loot.add('Clue hunter cloak', 1);
 			messages.push(
-				'While killing a Unicorn, you discover some strange clothing in the ground - you pick them up.'
+				'While killing a Unicorn, you discover some strange clothing - you pick them up'
 			);
 		}
 		if (newSuperiorCount) {
