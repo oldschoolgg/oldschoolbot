@@ -764,7 +764,8 @@ const chests: Stealable[] = [
 		id: 11736,
 		respawnTime: Time.Second * 1.2,
 		slope: 0.007042,
-		intercept: 0.005917
+		intercept: 0.005917,
+		stunTime: Time.Second * 30
 	},
 	{
 		name: 'Aldarin Villas chest',
