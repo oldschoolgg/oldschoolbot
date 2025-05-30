@@ -212,7 +212,7 @@ export default class LootTable {
 					if (!change) return i;
 					return {
 						...i,
-						chance: Math.floor(reduceNumByPercent(i.chance, change))
+						chance: Math.max(1, Math.floor(reduceNumByPercent(i.chance, change)))
 					};
 				})
 			: this.tertiaryItems;
