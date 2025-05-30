@@ -72,9 +72,6 @@ export const pickpocketTask: MinionTask = {
 					lootItems.remove(id);
 				}
 
-				// TODO: Remove Rocky from loot tables in oldschoolJS
-				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
-
 				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);

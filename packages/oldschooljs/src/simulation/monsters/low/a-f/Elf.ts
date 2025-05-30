@@ -8,8 +8,7 @@ const ElfTable = new LootTable({ limit: 128 })
 	.add('Nature rune', [1, 3], 5)
 	.add('Fire orb', 1, 2)
 	.add('Diamond', 1, 1)
-	.add('Gold ore', 1, 1)
-	.tertiary(99_175, 'Rocky');
+	.add('Gold ore', 1, 1);
 
 export default new SimpleMonster({
 	id: 5299,
