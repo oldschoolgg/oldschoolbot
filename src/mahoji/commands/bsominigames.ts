@@ -31,7 +31,7 @@ import {
 } from '../lib/abstracted_commands/odsCommand';
 import { stealingCreationCommand } from '../lib/abstracted_commands/stealingCreation';
 import { tinkeringWorkshopCommand } from '../lib/abstracted_commands/tinkeringWorkshopCommand';
-import { itemOption, ownedItemOption, ownedMaterialOption } from '../lib/mahojiCommandOptions';
+import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
