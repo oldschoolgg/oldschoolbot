@@ -84,7 +84,7 @@ export const pickpocketTask: MinionTask = {
 				}
 
 				// Roll for pet
-				if (petDropRate !== null && roll(petDropRate)) {
+				if (roll(petDropRate)) {
 					loot.add('Rocky');
 				}
 			}
@@ -95,7 +95,7 @@ export const pickpocketTask: MinionTask = {
 				}
 
 				// Roll for pet
-				if (petDropRate !== null && roll(petDropRate)) {
+				if (roll(petDropRate)) {
 					loot.add('Rocky');
 				}
 			}
