@@ -57,7 +57,8 @@ export const pickpocketTask: MinionTask = {
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance);
+
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance ?? 0);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
@@ -83,7 +84,7 @@ export const pickpocketTask: MinionTask = {
 				}
 
 				// Roll for pet
-				if (roll(petDropRate)) {
+				if (petDropRate !== null && roll(petDropRate)) {
 					loot.add('Rocky');
 				}
 			}
@@ -94,7 +95,7 @@ export const pickpocketTask: MinionTask = {
 				}
 
 				// Roll for pet
-				if (roll(petDropRate)) {
+				if (petDropRate !== null && roll(petDropRate)) {
 					loot.add('Rocky');
 				}
 			}
