@@ -41,6 +41,8 @@ import type {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	MahoganyHomesActivityTaskOptions,
+	MasteringMixologyActivityTaskOptions,
+	MasteringMixologyCreatingTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
@@ -418,6 +420,27 @@ const tripHandlers = {
 	[activity_type_enum.MahoganyHomes]: {
 		commandName: 'minigames',
 		args: (data: MahoganyHomesActivityTaskOptions) => ({ mahogany_homes: { start: { tier: data.tier } } })
+	},
+	[activity_type_enum.MasteringMixologyCreate]: {
+		commandName: 'mastering_mixology',
+		args: (data: MasteringMixologyCreatingTaskOptions) => ({
+			mastering_mixology: {
+				create: {
+					herb: data.herbName,
+					quantity: data.quantity
+				}
+			}
+		})
+	},
+	[activity_type_enum.MasteringMixology]: {
+		commandName: 'mastering_mixology',
+		args: (data: MasteringMixologyActivityTaskOptions) => ({
+			mastering_mixology: {
+				start: {
+					contracts: data.quantity
+				}
+			}
+		})
 	},
 	[activity_type_enum.Mining]: {
 		commandName: 'mine',

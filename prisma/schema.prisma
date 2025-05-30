@@ -63,6 +63,7 @@ model ClientStorage {
   sold_items_bank              Json     @default("{}") @db.Json
   herblore_cost_bank           Json     @default("{}") @db.Json
   construction_cost_bank       Json     @default("{}") @db.Json
+  mastering_mixology_cost      Json     @default("{}") @db.Json
   farming_cost_bank            Json     @default("{}") @db.Json
   farming_loot_bank            Json     @default("{}") @db.Json
   buy_cost_bank                Json     @default("{}") @db.Json
@@ -558,6 +559,7 @@ model Minigame {
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
   colosseum               Int    @default(0)
+  mastering_mixology      Int    @default(0)
 
   new_user NewUser?
 
@@ -885,6 +887,7 @@ enum activity_type_enum {
   AerialFishing
   DriftNet
   MahoganyHomes
+  MasteringMixology
   GnomeRestaurant
   SoulWars
   RoguesDenMaze
