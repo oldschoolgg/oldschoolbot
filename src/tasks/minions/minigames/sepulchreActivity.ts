@@ -45,7 +45,6 @@ export const sepulchreTask: MinionTask = {
 		}
 		let fletchXpReceived = 0;
 		let fletchXpRes = '';
-		let sets = 'x';
 		let fletchQuantity = 0;
 		const fletchingLoot = new Bank();
 
@@ -59,8 +58,6 @@ export const sepulchreTask: MinionTask = {
 			}
 
 			fletchQuantity = fletch.qty;
-
-			sets = fletchable.outputMultiple ? ' sets of' : '';
 
 			const quantityToGive = fletchable.outputMultiple
 				? fletchQuantity * fletchable.outputMultiple
