@@ -146,7 +146,7 @@ ${messages.join(', ')}`.trim(),
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
 
-	response.content += displayCluesAndPets(user, loot);
+	response.content += displayCluesAndPets(await mUserFetch(user.id), loot);
 
 	return response;
 }
