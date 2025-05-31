@@ -78,11 +78,11 @@
 		"concurrently": "^9.1.2",
 		"esbuild": "0.25.3",
 		"nodemon": "^3.1.7",
-		"prettier": "^3.3.3",
+		"prettier": "^3.5.3",
 		"prisma": "^5.22.0",
-		"spritesmith": "^3.4.1",
+		"spritesmith": "^3.5.1",
 		"tsx": "^4.19.3",
-		"typescript": "^5.5.3",
+		"typescript": "^5.8.3",
 		"vitest": "^2.1.9"
 	},
 	"resolutions": {
