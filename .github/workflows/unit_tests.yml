@@ -20,8 +20,9 @@ jobs:
       matrix:
         node_version: [20.18.1, 22]
         os: [ubuntu-latest]
+      fail-fast: false
     concurrency:
-      group: ${{ github.ref_name }}-unittests
+      group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
       cancel-in-progress: true
     steps:
       - name: Checkout Project
