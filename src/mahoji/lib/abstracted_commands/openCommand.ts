@@ -95,8 +95,8 @@ export async function abstractedOpenUntilCommand(
 				targetCount === 0
 					? `but you didn't get a ${openUntil.name}!`
 					: targetCount >= quantity
-					? `and successfully obtained ${targetCount}x ${openUntil.name}.`
-					: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
+						? `and successfully obtained ${targetCount}x ${openUntil.name}.`
+						: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
 			}`
 		],
 		openables: [openable],
