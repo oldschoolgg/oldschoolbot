@@ -129,8 +129,12 @@ export const sepulchreTask: MinionTask = {
 				itemsToAdd: fletchingLoot
 			});
 
-			const fletchableName = `${fletchable.name}${sets ? 's' : ''}`;
-			str += `\nYou also fletched ${fletchQuantity}${sets} ${fletchableName} and received ${fletchingLoot}. ${fletchXpRes}.`;
+			if (fletchable.outputMultiple) {
+				const fletchableName = `${fletchable.name}s`;
+				str += `\nYou also fletched ${fletchQuantity} sets of ${fletchableName} and received ${fletchingLoot}. ${fletchXpRes}.`;
+			} else {
+				str += `\nYou also fletched ${fletchQuantity} ${fletchable.name} and received ${fletchXpRes}.`;
+			}
 		}
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);

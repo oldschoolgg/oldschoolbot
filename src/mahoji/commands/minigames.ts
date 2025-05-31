@@ -490,16 +490,17 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Start a Sepulchre trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'fletching',
 							description: 'The item you wish to fletch',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async (value: number) => {
+								const search = value?.toString() ?? '';
 								return zeroTimeFletchables
-									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.filter(i => i.name.toLowerCase().includes(search.toLowerCase()))
 									.map(i => ({
 										name: i.name,
-										value: i.name
+										value: i.id
 									}));
 							}
 						}
@@ -1092,7 +1093,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: { difficulty: string; quantity?: number };
 			buy?: { reward: string; difficulty: string; quantity?: number };
 		};
-		sepulchre?: { start?: { fletching?: string } };
+		sepulchre?: { start?: { fletching?: number } };
 		gauntlet?: { start?: { corrupted?: boolean } };
 		mage_training_arena?: {
 			start?: {};
