@@ -82,34 +82,14 @@ const Slayer: Fletchable[] = [
 	}
 ];
 
-const BroadArrows: Fletchable = {
-	name: 'Broad arrows',
-	id: itemID('Broad arrows'),
-	level: 52,
-	xp: 10,
-	inputItems: new Bank({ 'Broad arrowheads': 1, 'Headless arrow': 1 }),
-	tickRate: 0.13,
-	requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
+const get = (id: number) => {
+	const found = Slayer.find(f => f.id === id);
+	if (!found) throw new Error(`Slayer fletchable with ID "${id}" not found.`);
+	return found;
 };
 
-const BroadBolts: Fletchable = {
-	name: 'Broad bolts',
-	id: itemID('Broad bolts'),
-	level: 55,
-	xp: 3,
-	inputItems: new Bank({ 'Unfinished broad bolts': 1, Feather: 1 }),
-	tickRate: 0.08,
-	requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
-};
-
-const AmethystBroadBolts: Fletchable = {
-	name: 'Amethyst broad bolts',
-	id: itemID('Amethyst broad bolts'),
-	level: 76,
-	xp: 10.6,
-	inputItems: new Bank({ 'Broad bolts': 1, 'Amethyst bolt tips': 1 }),
-	tickRate: 0.13,
-	requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
-};
+const BroadArrows = get(itemID('Broad arrows'));
+const BroadBolts = get(itemID('Broad bolts'));
+const AmethystBroadBolts = get(itemID('Amethyst broad bolts'));
 
 export { Slayer, BroadArrows, BroadBolts, AmethystBroadBolts };

@@ -129,7 +129,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		type: 'Sepulchre',
 		channelID: channelID.toString(),
 		minigameID: 'sepulchre',
-		fletch: fletchable ? { fletchableName: fletchable.name, fletchingQuantity } : undefined
+		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});
 
 	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${

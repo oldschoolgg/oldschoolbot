@@ -49,18 +49,18 @@ export const sepulchreTask: MinionTask = {
 		let fletchQuantity = 0;
 		const fletchingLoot = new Bank();
 
+		let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
+
 		if (fletch) {
-			const fletchable = zeroTimeFletchables.find(item => item.name === fletch.fletchableName);
+			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
 
 			if (!fletchable) {
-				throw new Error(`Fletchable item ${fletch.fletchableName} not found.`);
+				throw new Error(`Fletchable id ${fletch.id} not found.`);
 			}
 
-			fletchQuantity = fletch.fletchingQuantity;
+			fletchQuantity = fletch.qty;
 
-			if (fletchable.outputMultiple) {
-				sets = ' sets of';
-			}
+			sets = fletchable.outputMultiple ? ' sets of' : '';
 
 			const quantityToGive = fletchable.outputMultiple
 				? fletchQuantity * fletchable.outputMultiple
@@ -122,14 +122,15 @@ export const sepulchreTask: MinionTask = {
 		});
 
 		// Handle fletching loot separately after generating the main loot image
-		if (fletch) {
+		if (fletchable && fletch) {
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,
 				itemsToAdd: fletchingLoot
 			});
 
-			str += `\nYou also finished fletching ${fletchQuantity}${sets} ${fletch.fletchableName}, and received ${fletchingLoot}. ${fletchXpRes}.`;
+			const fletchableName = `${fletchable.name}${sets ? 's' : ''}`;
+			str += `\nYou also fletched ${fletchQuantity}${sets} ${fletchableName} and received ${fletchingLoot}. ${fletchXpRes}.`;
 		}
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
