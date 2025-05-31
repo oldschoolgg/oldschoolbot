@@ -12,9 +12,7 @@ You can also save entire setups with gearpresets for quick re-equipping. (Some g
 
 ## Commands
 
-There are 4 main commands:  
-[[/gear equip]], [[/gear unequip]], [[/gear stats]], [[/gear pet]]
-
+There are 4 main commands: [[/gear equip]], [[/gear unequip]], [[/gear stats]] and [[/gear pet]].
 You can also type [[/gear]] to view them all.
 
 ### Gear Equip
@@ -64,18 +62,17 @@ Equip or unequip a pet, even during trips:
 
 These are built-in and don't count toward your preset limit:
 
-- Graceful
-- Carpenter
-- Rogue
+- Graceful (Will equip any variant)
 - Clue_hunter
-- Angler
-- Spirit_angler
-- Pyromancer
-- Prospector
-- Lumberjack
-- Farmer
-- Runecraft
-- Smith
+- Construction (Carpenter's Outfit)
+- Thieving (Rogue Equipment)
+- Fishing (Angler's or Spirit Angler's Outfit)
+- Firemaking (Pyromancer Outfit)
+- Mining (Prospector or Golden Prospector Kit)
+- Woodcutting (Lumberjack or Forestry Outfit)
+- Farming (Farmer's Outfit)
+- Runecraft (Raiments of the Eye)
+- Smithing (Smiths' uniform)
 
 ### Wildy Setup
 

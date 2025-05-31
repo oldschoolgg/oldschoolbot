@@ -15,9 +15,11 @@ export const syncActiveUserIDs = async () => {
 FROM activity
 WHERE finish_date > now() - INTERVAL '48 hours'`);
 
-	const perkTierUsers = await roboChimpClient.$queryRawUnsafe<{ id: string }[]>(`SELECT id::text
+	const perkTierUsers = globalConfig.isProduction
+		? await roboChimpClient.$queryRawUnsafe<{ id: string }[]>(`SELECT id::text
 FROM "user"
-WHERE perk_tier > 0;`);
+WHERE perk_tier > 0;`)
+		: [];
 
 	for (const id of [...users.map(i => i.user_id), ...perkTierUsers.map(i => i.id)]) {
 		CACHED_ACTIVE_USER_IDS.add(id);

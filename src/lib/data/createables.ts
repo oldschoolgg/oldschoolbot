@@ -1544,9 +1544,6 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Clue scroll (master)')]: 1
-		},
-		cantHaveItems: {
-			[itemID('Clue scroll (master)')]: 1
 		}
 	},
 	{
