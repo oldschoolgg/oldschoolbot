@@ -15,7 +15,7 @@ import { joinGuthixianCache } from '../../lib/bso/guthixianCache';
 import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '../../lib/bso/turaelsTrials';
 import { fishingLocations } from '../../lib/fishingContest';
 import type { MaterialType } from '../../lib/invention';
-import { itemNameFromID } from '../../lib/util';
+import { Bank, type ItemBank, itemNameFromID } from '../../lib/util';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
 import {
 	fishingContestStartCommand,
@@ -31,8 +31,9 @@ import {
 } from '../lib/abstracted_commands/odsCommand';
 import { stealingCreationCommand } from '../lib/abstracted_commands/stealingCreation';
 import { tinkeringWorkshopCommand } from '../lib/abstracted_commands/tinkeringWorkshopCommand';
-import { itemOption, ownedMaterialOption } from '../lib/mahojiCommandOptions';
+import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const bsoMinigamesCommand: OSBMahojiCommand = {
 	name: 'bsominigames',
@@ -245,7 +246,24 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 					name: 'sacrifice_god_item',
 					description: 'Sacrifice godly items.',
 					options: [
-						itemOption(item => allGodlyItems.includes(item.id)),
+						{
+							name: 'item',
+							type: ApplicationCommandOptionType.String,
+							description: 'The godly item to sacrifice.',
+							required: true,
+							autocomplete: async (value, { id }) => {
+								const raw = await mahojiUsersSettingsFetch(id, { bank: true });
+								const bank = new Bank(raw.bank as ItemBank);
+
+								return bank
+									.items()
+									.filter(i => allGodlyItems.includes(i[0].id))
+									.filter(i =>
+										!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name }));
+							}
+						},
 						{
 							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',

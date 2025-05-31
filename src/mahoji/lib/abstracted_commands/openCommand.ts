@@ -170,7 +170,7 @@ async function finalizeOpening({
 		}
 		smokeyMsg =
 			bonuses.length > 0
-				? `${hasOcto ? '<:Octo:1227526833776492554>' : Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}`
+				? `${hasSmokey ? Emoji.Smokey : '<:Octo:1227526833776492554>'} Bonus Rolls: ${bonuses.join(', ')}`
 				: null;
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
