@@ -4168,6 +4168,20 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "itemCost": {
+      "28134": 75000,
+    },
+    "name": "Golden Pheasant Egg",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "28134": 75000,
+    },
+    "name": "Fox Whistle",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
       "30038": 100,
     },
     "name": "Amylase pack (Colossal Wyrm Agility)",
