@@ -1544,9 +1544,6 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Clue scroll (master)')]: 1
-		},
-		cantHaveItems: {
-			[itemID('Clue scroll (master)')]: 1
 		}
 	},
 	{
@@ -2524,6 +2521,14 @@ const Createables: Createable[] = [
 		name: 'Zombie axe',
 		inputItems: new Bank().add('broken zombie axe').freeze(),
 		outputItems: new Bank().add('Zombie axe').freeze(),
+		requiredSkills: {
+			smithing: 70
+		}
+	},
+	{
+		name: 'Zombie helmet',
+		inputItems: new Bank().add('broken zombie helmet').freeze(),
+		outputItems: new Bank().add('Zombie helmet').freeze(),
 		requiredSkills: {
 			smithing: 70
 		}

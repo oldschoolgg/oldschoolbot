@@ -2,7 +2,7 @@
 title: "Forestry"
 ---
 
-This minigame is conducted passively while completing _almost any_ woodcutting trip. Provided you have selected \*\*`forestry_events:True` in your woodcutting trip, your minion will automatically participate in all forestry events. For each event you minion does, you will obtain Anima-infused bark and various other items, as well as the usual bird nests.
+This minigame is conducted passively while completing _almost any_ woodcutting trip. Provided you have selected `forestry_events:True` in your woodcutting trip, your minion will automatically participate in all forestry events. For each event you minion does, you will obtain Anima-infused bark and various other items, as well as the usual bird nests.
 
 **You cannot get Anima-infused bark from Normal logs, Sulliusceps, or Redwoods!**
 
@@ -19,22 +19,22 @@ This minigame is conducted passively while completing _almost any_ woodcutting t
 
 There are 9 forestry events. Each one has an equal chance to spawn. The chance of a forestry event spawning is 1/20 for every minute of your trip (average of 1 event per 20 mins). Some events will give common items, bonus xp, or a unique CL item. All events will give between 250-500 Anima-infused bark.
 
-|                        |                    |                                                      |
-| ---------------------- | :----------------: | ---------------------------------------------------- |
-| **Event Name**         | **Event Bonus Xp** | **Possible Items**                                   |
-| Rising Roots           |    Woodcutting     | -                                                    |
-| Struggling Sapling     |      Farming       | Various leaves                                       |
-| Flowering Bush         |    Woodcutting     | Strange fruit & Seeds                                |
-| Woodcutting Leprechaun |    Woodcutting     | -                                                    |
-| Beehive                |    Construction    | Sturdy beehive parts                                 |
-| Friendly Ent           |     Fletching      | Various leaves & bird eggs                           |
-| Poachers               |       Hunter       | Fox whistle**\*\***                                  |
-| Enchantment Ritual     |    Woodcutting     | Petal garland**\*\***                                |
-| Pheasant Control       |      Thieving      | Pheasant tail feathers & Golden pheasant egg**\*\*** |
+|                        |                    |                                              |
+| ---------------------- | :----------------: | -------------------------------------------- |
+| **Event Name**         | **Event Bonus Xp** | **Possible Items**                           |
+| Rising Roots           |    Woodcutting     | -                                            |
+| Struggling Sapling     |      Farming       | Various leaves                               |
+| Flowering Bush         |    Woodcutting     | Strange fruit & Seeds                        |
+| Woodcutting Leprechaun |    Woodcutting     | -                                            |
+| Beehive                |    Construction    | Sturdy beehive parts                         |
+| Friendly Ent           |     Fletching      | Various leaves & bird eggs                   |
+| Poachers               |       Hunter       | Fox whistle                                  |
+| Enchantment Ritual     |    Woodcutting     | Petal garland                                |
+| Pheasant Control       |      Thieving      | Pheasant tail feathers & Golden pheasant egg |
 
 - Leaves have no purpose in the bot at this time
 
-**\*\***- Each of these CL items have a 1/45 chance per event. The Pheasant tail feathers are 1/2
+- Each of these CL items have a 1/45 chance per event. The Pheasant tail feathers are 1/2
 
 ---
 
@@ -42,16 +42,16 @@ There are 9 forestry events. Each one has an equal chance to spawn. The chance o
 
 Equipping these gloves in any setup will allow minions to receive a boost for a specific type of nest during woodcutting trips. Using one of the four flags when sending a woodcutting trip will provide a 20% extra chance to receive the nest specified in the flag. This stacks with the [Rabbit foot necklace](../hunter/#rabbit-foot-necklace). The 4 flags are:
 
-- \*\*`twitchers_gloves:egg nest`
-- \*\*`twitchers_gloves:ring nest`
-- \*\*`twitchers_gloves:seed nest`
-- \*\*`twitchers_gloves:clue nest`
+- `twitchers_gloves:egg nest`
+- `twitchers_gloves:ring nest`
+- `twitchers_gloves:seed nest`
+- `twitchers_gloves:clue nest`
 
 ---
 
 ## Forestry Shop
 
-You can buy the following with Anima-infused bark obtained from woodcutting trips. Everything here is bought with the `/buy` command.
+You can buy the following with Anima-infused bark obtained from woodcutting trips. Everything here is bought with the `[[/buy]] command.
 
 It costs 55,670 bark for all items, minus the Lumberjack outfit (60,670 bark with outfit).
 

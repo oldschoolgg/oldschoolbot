@@ -6,11 +6,11 @@ title: "King Goldemar"
 
 King Goldemar is a boss that can be done in a mass or solo. Please go to the channel #mass-king-goldemar for more info.
 
-The entrance fee to fight King Goldemar is 10m but it can be reduced to 5m if a Ring of Charos is equipped.
+The entrance fee to fight King Goldemar is 10m, but it can be reduced to 5m if a Ring of Charos is equipped.
 
-The supply cost for masses is initially 8 Saradomin brews and 2 Super restores per kill. This is reduced to 1 Super restore at 60 kc and is reduced by 1 Saradomin brew every 30 kc, capping out at 2 Saradomin brews per kill at 180 kc.
+The supply cost for masses is initially 8 Saradomin brews and 2 Super restores per kill. This is reduced to 1 Super restore at 60kc, and further reduced by 1 Saradomin brew every 30kc, capping out at 2 Saradomin brews per kill at 180kc.
 
-You can use the command : `/k name:King Goldemar (Mass)` to begin a mass, or `/k name:King Goldemar (Solo)` to solo.
+You can use the command: [[/k name\:King Goldemar (Mass)]] to begin a mass, or [[/k name\:King Goldemar (Solo)]] to solo.
 
 ## Requirements
 
@@ -20,43 +20,60 @@ You can use the command : `/k name:King Goldemar (Mass)` to begin a mass, or `/k
 
 **BiS:** Gorajan warrior top, TzKal cape, Gorajan warrior boots, Gorajan warrior gloves, Gorajan warrior helmet, Gorajan warrior legs, Brawler's hook necklace, Warrior ring (i), Axe of the high sungod
 
-**Optional ring options:** \
-**•** Ring of Luck - increases droprates for broken dwwh (Check extra information below for rates)\
-• Ring of Charos - reduces fee from 10m to 5m
-
-<div>
-
-<figure><figcaption></figcaption></figure>
-
-<figure><figcaption></figcaption></figure>
-
-</div>
+**Optional ring options:**  
+• Ring of Luck – increases droprates for Broken DWW (check extra information below for rates)  
+• Ring of Charos – reduces fee from 10m to 5m
 
 ## Boosts
 
-<table data-header-hidden><thead><tr><th width="252">Item</th><th width="76.33333333333331">%</th><th data-hidden>Approx Boost</th></tr></thead><tbody><tr><td>Axe of the high sungod</td><td>20%</td><td></td></tr><tr><td>Drygore longsword</td><td>10%</td><td>28.6%</td></tr><tr><td>Offhand drygore longsword</td><td>5%</td><td>14.3%</td></tr><tr><td>TzKal cape</td><td>6%</td><td>17.1%</td></tr><tr><td>Brawler's hook necklace</td><td>4%</td><td>11.4%</td></tr><tr><td>Gorajan warrior helmet</td><td>2%</td><td>5.7%</td></tr><tr><td>Gorajan warrior top</td><td>4%</td><td>11.4%</td></tr><tr><td>Gorajan warrior legs</td><td>2%</td><td>5.7%</td></tr><tr><td>Gorajan warrior gloves</td><td>1%</td><td>2.9%</td></tr><tr><td>Gorajan warrior boots</td><td>1%</td><td>2.9%</td></tr></tbody></table>
+| Item                      | %   | Approx Boost |
+| ------------------------- | --- | ------------ |
+| Axe of the high sungod    | 20% |              |
+| Drygore longsword         | 10% | 28.6%        |
+| Offhand drygore longsword | 5%  | 14.3%        |
+| TzKal cape                | 6%  | 17.1%        |
+| Brawler's hook necklace   | 4%  | 11.4%        |
+| Gorajan warrior helmet    | 2%  | 5.7%         |
+| Gorajan warrior top       | 4%  | 11.4%        |
+| Gorajan warrior legs      | 2%  | 5.7%         |
+| Gorajan warrior gloves    | 1%  | 2.9%         |
+| Gorajan warrior boots     | 1%  | 2.9%         |
 
 ## Loot
 
-- **Broken dwarven warhammer:** 40% speed boost to all /k PvM activities, must be repaired with 3 dwarven bars
-- **Dwarven armour pieces:** full helm, platebody, platelegs, gloves, boots, best in slot at [Ignecarus](ignecarus.md)
-- **Dwarven crate:** When opened, has a chance to drop dwarven ore
-- **Dwarven ore:** Can be smelted into dwarven bars
-- **Athelas seed:** Plant these at 99 farming to recieve athelas
-- **Blacksmith crate:** Drops pieces of the [Blacksmith outfit](/custom-items/equippables#blacksmith-equipment)
+- **Broken Dwarven warhammer:** 40% speed boost to all [[/k]] PvM activities. Must be repaired with 3 Dwarven bars.
+- **Dwarven armour pieces:** Full helm, platebody, platelegs, gloves, boots. Best in slot at [Ignecarus](ignecarus.md).
+- **Dwarven crate:** When opened, has a chance to drop Dwarven ore.
+- **Dwarven ore:** Can be smelted into Dwarven bars.
+- **Athelas seed:** Plant at 99 Farming to receive Athelas.
+- **Blacksmith crate:** Drops pieces of the [Blacksmith outfit](/custom-items/equippables#blacksmith-equipment).
 
-<table><thead><tr><th width="263">Unique Drop Table</th><th width="166">Drop Rate</th></tr></thead><tbody><tr><td>Broken dwarven warhammer</td><td>Varies, see below.</td></tr><tr><td>Dwarven armour piece (any)</td><td>1/150</td></tr><tr><td>Dwarven crate</td><td>1/100</td></tr><tr><td>Dwarven ore</td><td>1/1 (approx.)</td></tr><tr><td>Blacksmith crate</td><td>1/25</td></tr><tr><td>Clue scroll (grandmaster)</td><td>1/4</td></tr></tbody></table>
+| Unique Drop Table          | Drop Rate          |
+| -------------------------- | ------------------ |
+| Broken Dwarven warhammer   | Varies, see below. |
+| Dwarven armour piece (any) | 1/150              |
+| Dwarven crate              | 1/100              |
+| Dwarven ore                | ~1/1               |
+| Blacksmith crate           | 1/25               |
+| Clue scroll (Grandmaster)  | 1/4                |
 
 ## Extra Information
 
-The most coveted drop from King Goldemar is the Broken dwarven warhammer, which when repaired via smithing, becomes the Dwarven warhammer (DWWH). When equipped in any gear setup, it provides a 40% speed boost to all /k activities excluding those in the wilderness. (See the Hellfire Bow for the wilderness equivalent) This does not include any bosses, but does work on some Demi Bosses.
+The most coveted drop from King Goldemar is the Broken Dwarven warhammer, which when repaired via Smithing becomes the Dwarven warhammer (DWWH). When equipped in any gear setup, it provides a 40% speed boost to all [[/k]] activities excluding those in the Wilderness (see the Hellfire Bow for the Wilderness equivalent). This does not include any bosses but does work on some demi-bosses.
 
-Players can equip a Ring of Luck (obtained via [Grandmaster Clue Scrolls](/custom-items/grandmaster-clues)) in the melee setup to increase the drop rate of receiving the Broken Dwarven Warhammer drop. **Note: If participating in a mass, only 1 member of the party needs to have a Ring of Luck equipped to receive the increased drop rate.**
+Players can equip a Ring of Luck (obtained via [Grandmaster Clue Scrolls](/custom-items/grandmaster-clues)) in the melee setup to increase the drop rate of receiving the Broken Dwarven warhammer. **Note: If participating in a mass, only one member of the party needs to have a Ring of Luck equipped to receive the increased drop rate.**
 
-It is recommended to Mass for the 1st[^1] 50kc as it reduces your death chance.
+It is recommended to mass for the first 50kc, as it reduces your death chance.
 
-<table data-full-width="false"><thead><tr><th width="91">Team</th><th width="107">Drop Rate</th><th width="216">Drop Rate (Ring of Luck)</th></tr></thead><tbody><tr><td>1</td><td>454</td><td><a data-footnote-ref href="#user-content-fn-2">386</a></td></tr><tr><td>2</td><td>241</td><td>205</td></tr><tr><td>3</td><td>170</td><td>144</td></tr><tr><td>4</td><td>135</td><td>115</td></tr><tr><td>5</td><td>114</td><td>97</td></tr><tr><td>6</td><td>100</td><td>85</td></tr><tr><td>7</td><td>90</td><td>77</td></tr><tr><td>8</td><td>82</td><td>71</td></tr><tr><td>9</td><td>76</td><td>65</td></tr><tr><td>10</td><td>71</td><td>60</td></tr></tbody></table>
-
-[^1]:
-
-[^2]:
+| Team Size | Drop Rate | Drop Rate (Ring of Luck) |
+| --------- | --------- | ------------------------ |
+| 1         | 454       | 386                      |
+| 2         | 241       | 205                      |
+| 3         | 170       | 144                      |
+| 4         | 135       | 115                      |
+| 5         | 114       | 97                       |
+| 6         | 100       | 85                       |
+| 7         | 90        | 77                       |
+| 8         | 82        | 71                       |
+| 9         | 76        | 65                       |
+| 10        | 71        | 60                       |

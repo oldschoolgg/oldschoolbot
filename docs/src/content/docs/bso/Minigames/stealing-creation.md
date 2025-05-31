@@ -2,9 +2,10 @@
 title: "Stealing Creation"
 ---
 
-You can start this miningame with the command `/bsominigames stealing_creation start.`\
-Each game awards 5 stealing creation tokens (10 with [Flappy](../custom-items/pets.md#perks)).
+You can start this minigame using [[/bsominigames stealing_creation start]].
 
-### Rewards
+Each game awards 5 Stealing Creation tokens (10 with [Flappy](../custom-items/pets.md#perks)).
 
-[Fletcher's skilling outfit](../skills/fletching.md#optimal-gear-setup) - 160 stealing creation tokens
+## Rewards
+
+- [**Fletcher's Skilling Outfit**](../skills/fletching.md#optimal-gear-setup) – 160 Stealing Creation tokens
