@@ -34,6 +34,7 @@
 	--cream: #dcc4b1;
 	--medium-brown: #31231c;
 	--dark-brown: #1f1611;
+	--verydark-brown: #100e0c;
 
 	--sl-color-text-accent: light-dark(red, #c88440);
 	--sl-color-accent: light-dark(red, #c88440);
@@ -417,10 +418,6 @@ ol + ol li blockquote {
 	font-weight: bold;
 }
 
-.osrs_item {
-	margin: 3px 0px !important;
-}
-
 .osrs_item_name,
 .osrs_item_image,
 .osrs_item_name a {
@@ -484,6 +481,8 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 	align-items: center;
 	vertical-align: middle;
 	margin-top: 0px !important;
+	margin-left: 3px;
+	margin-right: 3px;
 }
 
 .osrs_item_image {
@@ -492,7 +491,7 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 }
 
 .osrs_item_name,
-.discord_command_name {
+.discord_command {
 	font-size: 0.9em;
 	text-align: center;
 	white-space: nowrap;
@@ -593,4 +592,8 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 
 .no_margin {
 	margin: 0 !important;
+}
+
+.text-xxs {
+	font-size: 10px;
 }

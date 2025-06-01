@@ -111,7 +111,6 @@ export async function runCommand({
 	continueDeltaMillis,
 	ephemeral
 }: RunCommandArgs): Promise<null | CommandResponse> {
-	await deferInteraction(interaction);
 	const channel = globalClient.channels.cache.get(channelID);
 	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
 	if (!mahojiCommand || !channelIsSendable(channel)) {
@@ -146,10 +145,12 @@ export async function runCommand({
 
 			await interactionReply(interaction, {
 				content: response,
-				ephemeral: true
+				ephemeral: inhibitedReason.silent
 			});
 			return null;
 		}
+
+		await deferInteraction(interaction, ephemeral);
 
 		const result = await runMahojiCommand({
 			options: args,

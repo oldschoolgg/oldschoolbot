@@ -2163,7 +2163,8 @@ export const miscellaneousCL = resolveItems([
 	'Elite black knight platebody',
 	'Elite black knight platelegs',
 	'Blue egg sac',
-	'Broken zombie axe'
+	'Broken zombie axe',
+	'Broken zombie helmet'
 ]);
 export const diariesCL = resolveItems([
 	'Karamja gloves 1',

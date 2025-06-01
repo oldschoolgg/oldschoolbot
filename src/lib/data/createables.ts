@@ -2553,6 +2553,14 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Zombie helmet',
+		inputItems: new Bank().add('broken zombie helmet').freeze(),
+		outputItems: new Bank().add('Zombie helmet').freeze(),
+		requiredSkills: {
+			smithing: 70
+		}
+	},
+	{
 		name: 'Strange skull',
 		inputItems: new Bank({
 			'Left skull half': 1,

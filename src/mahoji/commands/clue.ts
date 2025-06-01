@@ -352,6 +352,10 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		}
 		quantity = clamp(quantity, 1, user.bank.amount(clueTier.scrollID));
 
+		if (quantity === 0) {
+			return `You don't have any ${clueTier.name} clue scrolls.`;
+		}
+
 		let duration = timeToFinish * quantity;
 
 		if (duration > maxTripLength) {

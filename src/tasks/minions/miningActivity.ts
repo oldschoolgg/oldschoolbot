@@ -1,8 +1,8 @@
 import { Time, increaseNumByPercent, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { itemID, toKMB } from 'oldschooljs/dist/util';
+
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
