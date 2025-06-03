@@ -2537,7 +2537,9 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Polterpup',
 	'Mumpkin',
 	'Grinchling',
-	'Shrimpy'
+	'Shrimpy',
+	'Waddles',
+	'Tasty'
 ]);
 
 export const kingGoldemarCL = resolveItems([
