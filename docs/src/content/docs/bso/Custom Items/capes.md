@@ -41,9 +41,9 @@ Additionally, master capes have a perk that is related to the skill they corresp
 
 There are 4 expert capes that you can buy once you have bought all required master capes. The expert cape combines all perks of the capes required to purchase it. You can purchase an expert cape with [[/buy name\:Combatant's expert cape]], and all the required capes are consumed.
 
-| Expert Cape | Required Master Capes                                                                                                     |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Combatant's | [[attack:]] [[strength:]] [[defence:]] [[hitpoints:]] [[prayer:]] [[ranged:]] [[magic:]]                                  |
-| Gatherer's  | [[divination:]] [[farming:]] [[fishing:]] [[hunter:]] [[mining:]] [[woodcutting:]]                                        |
-| Support     | [[agility:]] [[dungeoneering:]] [[thieving:]] [[slayer:]]                                                                 |
-| Artisan's   | [[crafting:]] [[construction:]] [[cooking:]] [[firemaking:]] [[fletching:]] [[herblore:]] [[runecrafting:]] [[smithing:]] |
+| Expert Cape | Required Master Capes                                                                                          |
+| ----------- | -------------------------------------------------------------------------------------------------------------- |
+| Combatant's | [[attack]] [[strength]] [[defence]] [[hitpoints]] [[prayer]] [[ranged]] [[magic]]                              |
+| Gatherer's  | [[divination]] [[farming]] [[fishing]] [[hunter]] [[mining]] [[woodcutting]]                                   |
+| Support     | [[agility]] [[dungeoneering]] [[thieving]] [[slayer]]                                                          |
+| Artisan's   | [[crafting]] [[construction]] [[cooking]] [[firemaking]] [[fletching]] [[herblore]] [[runecraft]] [[smithing]] |

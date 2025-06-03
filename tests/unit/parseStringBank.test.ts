@@ -253,5 +253,10 @@ describe('Bank Parsers', () => {
 		expect(pQI('0.5b*2 twisted bow', testBank)).toEqual([[get('Twisted bow')], 1_000_000_000]);
 		expect(pQI('1.5m*10 twisted bow', testBank)).toEqual([[get('Twisted bow')], 10_000_000 * 1.5]);
 		expect(pQI('1.5k*10 twisted bow', testBank)).toEqual([[get('Twisted bow')], 10_000 * 1.5]);
+
+		expect(pQI('1 Infinity top', testBank)).toEqual([[get('Infinity top')], 1]);
+		expect(pQI('2 Infinity top', testBank)).toEqual([[get('Infinity top')], 2]);
+		expect(pQI('5x Infinity top', testBank)).toEqual([[get('Infinity top')], 5]);
+		expect(pQI('Infinity top', testBank)).toEqual([[get('Infinity top')], 0]);
 	});
 });

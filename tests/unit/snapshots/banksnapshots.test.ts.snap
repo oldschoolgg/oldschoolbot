@@ -4168,6 +4168,20 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "itemCost": {
+      "28134": 75000,
+    },
+    "name": "Golden Pheasant Egg",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "28134": 75000,
+    },
+    "name": "Fox Whistle",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
       "30038": 100,
     },
     "name": "Amylase pack (Colossal Wyrm Agility)",
@@ -4932,9 +4946,7 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
-    "cantHaveItems": {
-      "19835": 1,
-    },
+    "cantHaveItems": undefined,
     "inputItems": {
       "12073": 1,
       "2677": 1,
@@ -6143,6 +6155,19 @@ exports[`OSB Creatables 1`] = `
     "name": "Zombie axe",
     "outputItems": {
       "28810": 1,
+    },
+    "requiredSkills": {
+      "smithing": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30324": 1,
+    },
+    "name": "Zombie helmet",
+    "outputItems": {
+      "30321": 1,
     },
     "requiredSkills": {
       "smithing": 70,

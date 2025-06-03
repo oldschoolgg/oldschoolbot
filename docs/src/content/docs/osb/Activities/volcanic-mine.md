@@ -2,8 +2,6 @@
 title: "Volcanic Mine"
 ---
 
-# Volcanic Mine
-
 OSRS Wiki page: [https://oldschool.runescape.wiki/w/Volcanic_Mine](https://oldschool.runescape.wiki/w/Volcanic_Mine)
 
 You can do the Volcanic Mine using: [[/minigames volcanic_mine start]]

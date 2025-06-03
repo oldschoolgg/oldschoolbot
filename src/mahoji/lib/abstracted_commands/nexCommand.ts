@@ -17,9 +17,6 @@ export async function nexCommand(
 	channelID: string,
 	solo: boolean | undefined
 ) {
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channel || channel.type !== ChannelType.GuildText) return 'You need to run this in a text channel.';
-
 	const ownerCheck = checkNexUser(user);
 	if (ownerCheck[1]) {
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
@@ -32,6 +29,9 @@ export async function nexCommand(
 	if (solo) {
 		mahojiUsers = [user];
 	} else {
+		const channel = globalClient.channels.cache.get(channelID.toString());
+		if (!channel || channel.type !== ChannelType.GuildText) return 'You need to run this in a text channel.';
+
 		let usersWhoConfirmed: MUser[] = [];
 		try {
 			usersWhoConfirmed = await setupParty(channel as TextChannel, user, {
@@ -118,7 +118,7 @@ export async function nexCommand(
 
 	const str = `${user.usernameOrMention}'s party (${mahojiUsers
 		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
+		.join(', ')}${solo ? ' and 3 others' : ''}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
 		details.quantity,
 		details.fakeDuration
 	).toFixed(1)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
