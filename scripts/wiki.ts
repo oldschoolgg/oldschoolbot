@@ -364,7 +364,7 @@ function clueBoosts() {
 		}
 	}
 
-	handleMarkdownEmbed('clueboosts', 'osb/clues.md', markdown.toString());
+	handleMarkdownEmbed('clueboosts', 'osb/clues.mdx', markdown.toString());
 }
 
 function renderCombatAchievementsFile() {

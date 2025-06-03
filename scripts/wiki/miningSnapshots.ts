@@ -115,5 +115,5 @@ export function miningSnapshots() {
 		);
 	}
 
-	handleMarkdownEmbed('miningxphr', 'osb/Skills/mining.md', table.toString());
+	handleMarkdownEmbed('miningxphr', 'osb/Skills/mining.mdx', table.toString());
 }
