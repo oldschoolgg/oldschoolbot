@@ -44,8 +44,7 @@ const MaleHamMemberTable = new LootTable()
 	.add('Uncut jade', 1, 1 / 50)
 	.add('Grimy guam leaf', 1, 1 / 91.67)
 	.add('Grimy marrentill', 1, 1 / 183.3)
-	.add('Grimy tarromin', 1, 1 / 275)
-	.tertiary(257_211, 'Rocky');
+	.add('Grimy tarromin', 1, 1 / 275);
 
 export default new SimpleMonster({
 	id: 2540,

@@ -15,8 +15,7 @@ const CaveGoblinTable = new LootTable()
 	.add('Oil lantern', 1)
 	.add('Swamp tar', 1)
 	.add('Tinderbox', 1)
-	.add('Unlit torch', 1)
-	.tertiary(257_211, 'Rocky');
+	.add('Unlit torch', 1);
 
 export default new SimpleMonster({
 	id: 6434,
