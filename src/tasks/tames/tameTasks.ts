@@ -53,6 +53,13 @@ export async function handleFinish({
 	const crateRes = handleCrateSpawns(user, activity.duration);
 	if (crateRes !== null) lootToAdd.add(crateRes);
 
+	const messages: string[] = [];
+
+	await handleImplingLocator(user, tame, activity.duration, lootToAdd, messages);
+	if (messages.length > 0) {
+		results.push(`\n\n**Messages:** ${messages.join(', ')}`);
+	}
+
 	await prisma.tame.update({
 		where: {
 			id: tame.id
@@ -232,7 +239,6 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 
 			const { doubleLootMsg } = tame.doubleLootCheck(loot);
 			str += doubleLootMsg;
-			await handleImplingLocator(user, tame, activity.duration, loot, messages);
 
 			if (messages.length > 0) {
 				str += `\n\n**Messages:** ${messages.join(', ')}.`;
@@ -306,8 +312,6 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			const clueTier = ClueTiers.find(c => c.scrollID === activityData.clueID)!;
 			const messages: string[] = [];
 			const loot = new Bank();
-
-			await handleImplingLocator(user, tame, activity.duration, loot, messages);
 
 			let actualOpenQuantityWithBonus = 0;
 			for (let i = 0; i < activityData.quantity; i++) {

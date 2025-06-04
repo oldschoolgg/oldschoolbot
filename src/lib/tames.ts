@@ -85,7 +85,7 @@ export const tameFeedableItems: FeedableItem[] = [
 	{
 		item: getOSItem('Impling locator'),
 		description: 'Allows your tame to passively catch implings',
-		tameSpeciesCanBeFedThis: [TameSpeciesID.Eagle, TameSpeciesID.Igne],
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Eagle, TameSpeciesID.Igne, TameSpeciesID.Monkey],
 		announcementString: 'Your tame now has the ability to find and catch implings.'
 	},
 	{
