@@ -313,6 +313,7 @@ model User {
   botItemSell    BotItemSell[]
   pinnedTrip     PinnedTrip[]
   historicalData HistoricalData[]
+  minigame       Minigame?
 
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
@@ -560,6 +561,7 @@ model Minigame {
   colosseum               Int    @default(0)
 
   new_user NewUser?
+  user     User     @relation(fields: [user_id], references: [id])
 
   @@index([user_id])
   @@map("minigames")
