@@ -107,7 +107,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 	}
 ];
 
-export function displayCluesAndPets(user: MUser, loot: Bank | null | undefined) {
+export async function displayCluesAndPets(userID: string, loot: Bank | null | undefined) {
+	const user = await mUserFetch(userID);
 	let ret = '';
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 	if (clueReceived.length > 0) {
@@ -182,7 +183,7 @@ export async function handleTripFinish(
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	message.content += displayCluesAndPets(user, loot);
+	message.content += await displayCluesAndPets(user.id, loot);
 
 	const existingCollector = collectors.get(user.id);
 

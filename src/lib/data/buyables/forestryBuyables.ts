@@ -143,5 +143,13 @@ export const forestryBuyables: Buyable[] = [
 			.add('Yew logs', 60)
 			.add('Redwood logs', 60)
 			.add('Magic logs', 60)
+	},
+	{
+		name: 'Golden Pheasant Egg',
+		itemCost: new Bank().add('Anima-infused bark', 75000)
+	},
+	{
+		name: 'Fox Whistle',
+		itemCost: new Bank().add('Anima-infused bark', 75000)
 	}
 ];
