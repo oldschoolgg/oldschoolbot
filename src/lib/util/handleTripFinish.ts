@@ -22,7 +22,7 @@ import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { BitField, COINS_ID, PerkTier } from '../constants';
 import pets from '../data/pets.js';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
@@ -531,17 +531,9 @@ export async function handleTripFinish(
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
 
-	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
-
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
-	}
-
-	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
-		clueReceived.map(
-			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
-		);
 	}
 
 	const existingCollector = collectors.get(user.id);

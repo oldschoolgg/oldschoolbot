@@ -22,6 +22,7 @@ import {
 	anglerBoosts,
 	formatItemCosts,
 	formatItemReqs,
+	formatList,
 	hasSkillReqs,
 	itemNameFromID,
 	readableStatName
@@ -371,16 +372,12 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 				if (user.owns(consumablesCost.itemCost.filter(i => group.itemCost.has(i)))) {
 					continue;
 				}
-				if (
-					!group.alternativeConsumables?.some(alt =>
-						user.owns(consumablesCost.itemCost.filter(i => alt.itemCost.has(i)))
-					)
-				) {
-					continue;
-				}
-				messages.push(`This monster requires (per kill) ${formatItemCosts(group, timeToFinish)}.`);
+				messages.push(formatItemCosts(group, timeToFinish));
 			}
-			return [false, `You don't have the items needed to kill this monster. ${messages.join(' ')}`];
+			return [
+				false,
+				`You don't have the items needed to kill ${monster.name}. This monster requires (per kill) ${formatList(messages)}.`
+			];
 		}
 	}
 

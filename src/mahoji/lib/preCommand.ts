@@ -22,6 +22,7 @@ type PrecommandReturn = Promise<
 	| {
 			reason: InteractionReplyOptions;
 			dontRunPostCommand?: boolean;
+			silent?: boolean;
 	  }
 >;
 

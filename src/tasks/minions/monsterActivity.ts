@@ -383,6 +383,16 @@ export function doMonsterTrip(data: newOptions) {
 		if (monster.specialLoot) {
 			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
 		}
+		if (
+			monster.name.toLowerCase() === 'unicorn' &&
+			gearBank.hasEquipped('Iron dagger') &&
+			!gearBank.hasEquippedOrInBank('Clue hunter cloak') &&
+			!gearBank.hasEquippedOrInBank('Clue hunter boots')
+		) {
+			loot.add('Clue hunter boots', 1);
+			loot.add('Clue hunter cloak', 1);
+			messages.push('While killing a Unicorn, you discover some strange clothing - you pick them up');
+		}
 		if (newSuperiorCount) {
 			loot.add(superiorTable?.kill(newSuperiorCount).set('Brimstone key', 0)); //remove the rng keys, todo: remove drop from superiors in osjs?
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);

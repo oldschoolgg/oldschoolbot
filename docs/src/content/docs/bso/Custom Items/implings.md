@@ -2,8 +2,6 @@
 title: "Implings"
 ---
 
-## Implings
-
 On top of the regular implings you can get, there are 4 more you can get in BSO:
 
 **Infernal impling** (requires [[hunter:94]]): Drops TzHaar-related items, 1 in 1 million chance of Uncut onyx.

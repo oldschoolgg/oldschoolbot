@@ -7,6 +7,7 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
+import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
@@ -606,6 +607,23 @@ usables.push({
 		};
 	}
 });
+
+for (const group of dyedItems) {
+	for (const dyedVersion of group.dyedVersions) {
+		for (const dye of allDyes.filter(i => i !== dyedVersion.dye)) {
+			const resultingItem = group.dyedVersions.find(i => i.dye === dye);
+			if (!resultingItem) continue;
+			genericUsables.push({
+				items: [dyedVersion.item, dye],
+				cost: new Bank().add(dyedVersion.item.id).add(dye.id),
+				loot: new Bank().add(resultingItem.item.id),
+				response: () =>
+					`You used a ${dye.name} on your ${dyedVersion.item.name}, and received a ${resultingItem.item.name}.`,
+				addToCL: false
+			});
+		}
+	}
+}
 
 for (const genericU of genericUsables) {
 	usables.push({

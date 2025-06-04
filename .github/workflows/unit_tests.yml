@@ -18,11 +18,8 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node_version: [20.18.1]
+        node_version: [20.18.1, 22]
         os: [ubuntu-latest]
-    concurrency:
-      group: ${{ github.ref_name }}-unittests
-      cancel-in-progress: true
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4
