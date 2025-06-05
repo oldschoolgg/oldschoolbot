@@ -58,7 +58,12 @@ export const MasteringMixologyContractTask: MinionTask = {
 		let totalPoints = 0;
 		let actualDuration = 0;
 
-		const summary: string[] = [];
+		const contractSummaries = new Map<string, { count: number; xp: number }>();
+		const pasteUsage: Record<'Mox' | 'Lye' | 'Aga', number> = {
+			Mox: 0,
+			Lye: 0,
+			Aga: 0
+		};
 
 		for (let i = 0; i < data.quantity; i++) {
 			const availableContracts = mixologyContracts.filter(contract =>
@@ -71,6 +76,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			const cost = new Bank();
 			for (const paste of contract.pasteSequence) {
 				cost.add(`${paste} paste`);
+				pasteUsage[paste] += 1;
 			}
 
 			if (!user.owns(cost)) break;
@@ -80,7 +86,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 
 			const contractXP = contract.xp;
 			const contractPoints = contract.points;
-			const contractDuration = getMixologyContractDuration(Time.Minute * 3); // Match what you use in the start command
+			const contractDuration = getMixologyContractDuration(Time.Minute * 3);
 
 			actualDuration += contractDuration;
 
@@ -90,8 +96,16 @@ export const MasteringMixologyContractTask: MinionTask = {
 			totalXP += contractXP;
 			totalPoints += contractPoints;
 			completed++;
-			summary.push(`• ${contract.name} — ${contractXP} XP`);
+
+			const existing = contractSummaries.get(contract.name);
+			if (existing) {
+				existing.count++;
+				existing.xp += contractXP;
+			} else {
+				contractSummaries.set(contract.name, { count: 1, xp: contractXP });
+			}
 		}
+
 		if (completed === 0) {
 			return handleTripFinish(
 				user,
@@ -103,13 +117,24 @@ export const MasteringMixologyContractTask: MinionTask = {
 			);
 		}
 
-		return handleTripFinish(
-			user,
-			data.channelID,
-			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalXP} XP and ${totalPoints} points.\n${summary.join('\n')}`,
-			undefined,
-			{ ...data, duration: actualDuration },
-			null
-		);
+		const contractSummary = Array.from(contractSummaries.entries())
+			.sort(([a], [b]) => a.localeCompare(b))
+			.map(([name, { count, xp }]) => `• ${count}x ${name} — ${xp} XP`)
+			.join('\n');
+
+		const pasteSummary = Object.entries(pasteUsage)
+			.filter(([, count]) => count > 0)
+			.map(([paste, count]) => `• ${count}x ${paste} paste`)
+			.join('\n');
+
+		const finalMsg = [
+			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalXP} XP and ${totalPoints} points.`,
+			'**Contracts Completed:**',
+			contractSummary,
+			'**Paste Used:**',
+			pasteSummary
+		].join('\n');
+
+		return handleTripFinish(user, data.channelID, finalMsg, undefined, { ...data, duration: actualDuration }, null);
 	}
 };
