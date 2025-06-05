@@ -29,6 +29,7 @@ import type { Prisma } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
+import { usernameWithBadgesCache } from './cache';
 import { BitField, MAX_XP, globalConfig, projectiles } from './constants';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
@@ -190,7 +191,7 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	}
 
 	if (consumables.length > 1) {
-		return `${formatList(str, 'or')}`;
+		return str.join(' OR ');
 	}
 
 	return str.join('');
@@ -293,8 +294,6 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-const usernameWithBadgesCache = new LRUCache<string, string>({ max: 2000 });
-
 export async function getUsername(_id: string | bigint): Promise<string> {
 	const id = _id.toString();
 	const cached = usernameWithBadgesCache.get(id);
@@ -313,6 +312,14 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 	const badges = makeBadgeString(user.badges, user.minion_ironman);
 	const newValue = `${badges ? `${badges} ` : ''}${user.username}`;
 	usernameWithBadgesCache.set(id, newValue);
+	await prisma.user.update({
+		where: {
+			id
+		},
+		data: {
+			username_with_badges: newValue
+		}
+	});
 	return newValue;
 }
 

@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
+import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import {
 	agilityArenaBuyCommand,
 	agilityArenaBuyables,
@@ -487,7 +488,24 @@ export const minigamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a Sepulchre trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'fletching',
+							description: 'The item you wish to fletch',
+							required: false,
+							autocomplete: async (value: number) => {
+								const search = value?.toString() ?? '';
+								return zeroTimeFletchables
+									.filter(i => i.name.toLowerCase().includes(search.toLowerCase()))
+									.map(i => ({
+										name: i.name,
+										value: i.id
+									}));
+							}
+						}
+					]
 				}
 			]
 		},
@@ -1126,7 +1144,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: { difficulty: string; quantity?: number };
 			buy?: { reward: string; difficulty: string; quantity?: number };
 		};
-		sepulchre?: { start?: {} };
+		sepulchre?: { start?: { fletching?: number } };
 		gauntlet?: { start?: { corrupted?: boolean } };
 		mage_training_arena?: {
 			start?: {};
@@ -1308,7 +1326,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 * Sepulchre
 		 *
 		 */
-		if (options.sepulchre?.start) return sepulchreCommand(user, channelID);
+		if (options.sepulchre?.start) {
+			const fletchingItem = options.sepulchre.start.fletching;
+			return sepulchreCommand(user, channelID, fletchingItem);
+		}
 
 		/**
 		 *

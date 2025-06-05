@@ -1,6 +1,7 @@
 import { pick } from 'remeda';
 
 import { perkTierCache } from './cache';
+import { globalConfig } from './constants';
 import type { RobochimpUser } from './roboChimp';
 
 const robochimpCachedKeys = [
@@ -17,6 +18,10 @@ type CachedRoboChimpUser = Pick<RobochimpUser, (typeof robochimpCachedKeys)[numb
 export const roboChimpCache = new Map<string, CachedRoboChimpUser>();
 
 export async function populateRoboChimpCache() {
+	if (!globalConfig.isProduction) {
+		console.log('Skipping populating robochimp cache because not production');
+		return;
+	}
 	const users = await roboChimpClient.user.findMany({
 		select: {
 			id: true,

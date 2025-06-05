@@ -132,8 +132,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	const isBurstingOrBarraging = combatMethods.includes('burst') || combatMethods.includes('barrage');
 	if (isBurstingOrBarraging && !monster.canBarrage) {
-		if (isKillingJelly && !isInWilderness) {
-			return `${monster.name} can only be barraged or burst in the wilderness.`;
+		if (isKillingJelly) {
+			if (!isInWilderness) {
+				return `${monster.name} can only be barraged or burst in the wilderness.`;
+			}
 		} else {
 			return `${monster.name} cannot be barraged or burst.`;
 		}

@@ -16,7 +16,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	const split = str.split(' ');
 
 	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
-	if (!Number.isNaN(Number(split[1])) && split.length > 2) {
+	if (!Number.isNaN(Number(split[1])) && split[1].toLowerCase() !== 'infinity' && split.length > 2) {
 		split.splice(1, 1);
 		return parseQuantityAndItem(split.join(' '));
 	}

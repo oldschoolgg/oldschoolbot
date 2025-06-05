@@ -1,5 +1,5 @@
 import { calcWhatPercent, sumArr } from 'e';
-import { Bank, type Item, type Monster } from 'oldschooljs';
+import { Bank, type Item, type Monster, Monsters } from 'oldschooljs';
 
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -315,8 +315,9 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 		run: ({ monster, attackStyles, combatMethods, isOnTask, isInWilderness, gearBank }) => {
 			const isBarraging = combatMethods.includes('barrage');
 			const isBursting = combatMethods.includes('burst');
+			const canBarrageMonster = monster.canBarrage || (monster.id === Monsters.Jelly.id && isInWilderness);
 
-			if (!isBarraging && !isBursting) return null;
+			if (!canBarrageMonster || (!isBarraging && !isBursting)) return null;
 
 			let newAttackStyles = [...attackStyles];
 			if (!newAttackStyles.includes(SkillsEnum.Magic)) {
@@ -327,7 +328,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			}
 
 			const { virtusBoost } = calculateVirtusBoost({ isInWilderness, gearBank, isOnTask });
-			if (isBarraging && attackStyles.includes(SkillsEnum.Magic) && monster.canBarrage) {
+			if (isBarraging && attackStyles.includes(SkillsEnum.Magic)) {
 				return {
 					percentageReduction: boostIceBarrage + virtusBoost,
 					consumables: [iceBarrageConsumables],
@@ -339,7 +340,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes(SkillsEnum.Magic) && monster.canBarrage) {
+			if (isBursting && attackStyles.includes(SkillsEnum.Magic)) {
 				return {
 					percentageReduction: boostIceBurst + virtusBoost,
 					consumables: [iceBurstConsumables],

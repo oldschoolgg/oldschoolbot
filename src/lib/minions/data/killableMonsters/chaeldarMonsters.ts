@@ -276,6 +276,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			[
+				'Warped sceptre (uncharged)',
 				'Trident of the seas',
 				'Trident of the seas (full)',
 				'Uncharged trident',
@@ -288,6 +289,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Jar of sand', 'Pet kraken']),
 		itemInBankBoosts: [
 			{
+				[itemID('Warped sceptre (uncharged)')]: 3,
 				[itemID('Uncharged trident')]: 5,
 				[itemID('Trident of the seas')]: 5,
 				[itemID('Trident of the seas (full)')]: 8,
