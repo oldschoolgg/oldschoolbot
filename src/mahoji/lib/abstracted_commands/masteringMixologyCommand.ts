@@ -6,7 +6,7 @@ import { SkillsEnum } from "../../../lib/skilling/types";
 import { Bank } from "oldschooljs/dist/meta/types";
 import { updateBankSetting } from "../../../lib/util/updateBankSetting";
 import addSubTaskToActivityTask from "../../../lib/util/addSubTaskToActivityTask";
-import type { MasteringMixologyCreatingTaskOptions } from "../../../lib/types/minions";
+import type { MasteringMixologyContractActivityTaskOptions, MasteringMixologyContractCreatingTaskOptions } from "../../../lib/types/minions";
 
 export interface MixologyHerb {
 	name: string;
@@ -32,7 +32,7 @@ export const mixologyHerbs: MixologyHerb[] = [
 	{ name: 'Torstol', paste: 'Aga', quantity: 44 }
 ];
 
-export async function masteringMixologyCreateCommand(user: MUser, channelID: string, herbName: string, quantity?: number) {
+export async function MixologyPasteCreationCommand(user: MUser, channelID: string, herbName: string, quantity?: number) {
 	const herb = mixologyHerbs.find(h => h.name.toLowerCase() === herbName.toLowerCase());
 	if (!herb) {
 		return "That is not a valid herb for mixology paste.";
@@ -58,10 +58,10 @@ export async function masteringMixologyCreateCommand(user: MUser, channelID: str
     
     updateBankSetting('mastering_mixology_cost', herbsNeeded);
 
-    await addSubTaskToActivityTask<MasteringMixologyCreatingTaskOptions>({
+    await addSubTaskToActivityTask<MasteringMixologyContractCreatingTaskOptions>({
             userID: user.id,
             channelID: channelID.toString(),
-            type: 'MasteringMixologyCreate',
+            type: 'MixologyPasteCreation',
             minigameID: 'mastering_mixology',
 			herbName: herb.name,
             quantity: usedQty,
@@ -82,7 +82,7 @@ function getContractDuration(base: number): number {
 
 
 
-export async function masteringMixologyStartCommand(user: MUser, channelID: string, contracts?: number) {
+export async function MasteringMixologyContractStartCommand(user: MUser, channelID: string, contracts?: number) {
 
     const currentLevel = user.skillLevel(SkillsEnum.Herblore);
 
@@ -96,7 +96,7 @@ export async function masteringMixologyStartCommand(user: MUser, channelID: stri
             )}.`;
         }
 	const contractTime = Time.Minute * 3;
-	const maxTripLength = calcMaxTripLength(user, 'MasteringMixology');
+	const maxTripLength = calcMaxTripLength(user, 'MasteringMixologyContract');
 	const maxContracts = Math.floor(maxTripLength / contractTime);
 
 	if (!contracts) {
@@ -111,6 +111,15 @@ for (let i = 0; i < contracts; i++) {
 	totalDuration += getContractDuration(contractTime);
 }
 const duration = Math.round(totalDuration);
+
+await addSubTaskToActivityTask<MasteringMixologyContractActivityTaskOptions>({
+	userID: user.id,
+	channelID: channelID.toString(),
+	type: 'MasteringMixologyContractContract',
+	duration,
+	minigameID: 'mastering_mixology',
+	quantity: contracts,
+});
 
 
 

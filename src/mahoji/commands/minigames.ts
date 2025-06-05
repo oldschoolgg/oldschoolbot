@@ -86,7 +86,7 @@ import {
 	nightmareZoneImbueCommand,
 	nightmareZoneImbueables
 } from './../lib/abstracted_commands/nightmareZoneCommand';
-import { masteringMixologyCreateCommand, masteringMixologyStartCommand, mixologyHerbs } from '../lib/abstracted_commands/masteringMixologyCommand';
+import { MasteringMixologyContractStartCommand, mixologyHerbs, MixologyPasteCreationCommand } from '../lib/abstracted_commands/masteringMixologyCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',
@@ -1362,11 +1362,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.mastering_mixology?.create) {
-			return masteringMixologyCreateCommand(user, channelID, options.mastering_mixology.create.herb, options.mastering_mixology.create.quantity);
+			return MixologyPasteCreationCommand(user, channelID, options.mastering_mixology.create.herb, options.mastering_mixology.create.quantity);
 		}
 		
 		if (options.mastering_mixology?.start) {
-			return masteringMixologyStartCommand(user, channelID, options.mastering_mixology.start.contracts);
+			return MasteringMixologyContractStartCommand(user, channelID, options.mastering_mixology.start.contracts);
 		}
 		/**
 		 *

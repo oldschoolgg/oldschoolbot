@@ -887,7 +887,8 @@ enum activity_type_enum {
   AerialFishing
   DriftNet
   MahoganyHomes
-  MasteringMixology
+  MasteringMixologyContractContract
+  MixologyPasteCreation
   GnomeRestaurant
   SoulWars
   RoguesDenMaze

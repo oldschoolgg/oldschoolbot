@@ -1,18 +1,18 @@
 import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MasteringMixologyCreatingTaskOptions } from '../../../lib/types/minions';
+import type { MasteringMixologyContractCreatingTaskOptions } from '../../../lib/types/minions';
 import { Bank } from 'oldschooljs';
-import { mixologyHerbs } from '../../../mahoji/lib/abstracted_commands/masteringMixologyCommand';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { mixologyHerbs } from '../../../mahoji/lib/abstracted_commands/masteringMixologyCommand';
 
-export const masteringMixologyCreateTask: MinionTask = {
-	type: 'MasteringMixologyCreate',
-	async run(data: MasteringMixologyCreatingTaskOptions) {
+export const MixologyPasteCreationTask: MinionTask = {
+	type: 'MixologyPasteCreation',
+	async run(data: MasteringMixologyContractCreatingTaskOptions) {
 		const { userID, channelID, herbName, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 
 		const herb = mixologyHerbs.find(h => h.name === herbName);
 		if (!herb) {
-			throw new Error(`Invalid herb used in MasteringMixologyCreate task: ${herbName}`);
+			throw new Error(`Invalid herb used in MixologyPasteCreation task: ${herbName}`);
 		}
 
 		const totalPaste = herb.quantity * quantity;
@@ -30,11 +30,19 @@ export const masteringMixologyCreateTask: MinionTask = {
 			skillName: SkillsEnum.Herblore,
 			amount: totalXP,
 			duration,
-			source: 'MasteringMixologyCreate'
+			source: 'MixologyPasteCreation'
 		});
 
 		const str = `${user.minionName} finished creating ${totalPaste}x ${pasteItemName} using ${quantity}x ${herb.name}. You gained ${totalXP} Herblore XP.`;
 
 		handleTripFinish(user, channelID, str, undefined, data, null);
+	}
+};
+
+export const MasteringMixologyContract: MinionTask = {
+	type: 'MasteringMixologyContract',
+	run: async () => {
+		console.log('MasteringMixologyContract task ran (stub)');
+		// TODO: Implement actual logic
 	}
 };

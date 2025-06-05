@@ -381,13 +381,13 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 	tier: number;
 }
 
-export interface MasteringMixologyActivityTaskOptions extends MinigameActivityTaskOptions {
-	type: 'MasteringMixology';
+export interface MasteringMixologyContractActivityTaskOptions extends MinigameActivityTaskOptions {
+	type: 'MasteringMixologyContract';
 	quantity: number;
 }
 
-export interface MasteringMixologyCreatingTaskOptions extends MinigameActivityTaskOptions {
-	type: 'MasteringMixologyCreate';
+export interface MasteringMixologyContractCreatingTaskOptions extends MinigameActivityTaskOptions {
+	type: 'MixologyPasteCreation';
 	herbName: string;
 	quantity: number;
 }
@@ -591,8 +591,8 @@ export type ActivityTaskData =
 	| EnchantingActivityTaskOptions
 	| ConstructionActivityTaskOptions
 	| HunterActivityTaskOptions
-	| MasteringMixologyActivityTaskOptions
-	| MasteringMixologyCreatingTaskOptions
+	| MasteringMixologyContractActivityTaskOptions
+	| MasteringMixologyContractCreatingTaskOptions
 	| SawmillActivityTaskOptions
 	| ButlerActivityTaskOptions
 	| FarmingActivityTaskOptions
