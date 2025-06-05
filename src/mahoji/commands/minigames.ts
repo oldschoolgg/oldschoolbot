@@ -663,10 +663,15 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'herb',
 							description: 'The herb you want to use for paste.',
 							required: true,
-							choices: mixologyHerbs.map(h => ({
-								name: h.name,
-								value: h.name
-							}))
+							autocomplete: async value => {
+								return mixologyHerbs
+									.filter(h => (!value ? true : h.name.toLowerCase().includes(value.toLowerCase())))
+									.slice(0, 25)
+									.map(h => ({
+										name: h.name,
+										value: h.name
+									}));
+							}
 						},
 						{
 							type: ApplicationCommandOptionType.Integer,
