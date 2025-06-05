@@ -1,6 +1,6 @@
+import { Bank } from 'oldschooljs';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MasteringMixologyContractCreatingTaskOptions } from '../../../lib/types/minions';
-import { Bank } from 'oldschooljs';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { mixologyHerbs } from '../../../mahoji/lib/abstracted_commands/masteringMixologyCommand';
 
@@ -22,7 +22,7 @@ export const MixologyPasteCreationTask: MinionTask = {
 		// Add paste to bank
 		await user.addItemsToBank({
 			items: new Bank().add(pasteItemName, totalPaste),
-			collectionLog: false
+			collectionLog: true
 		});
 
 		// Add Herblore XP for creating paste

@@ -1,12 +1,15 @@
-import { Time } from "e";
-import { calcMaxTripLength } from "../../../lib/util/calcMaxTripLength";
-import { QuestID } from "../../../lib/minions/data/quests";
-import { formatDuration, mentionCommand } from "@oldschoolgg/toolkit";
-import { SkillsEnum } from "../../../lib/skilling/types";
-import { Bank } from "oldschooljs/dist/meta/types";
-import { updateBankSetting } from "../../../lib/util/updateBankSetting";
-import addSubTaskToActivityTask from "../../../lib/util/addSubTaskToActivityTask";
-import type { MasteringMixologyContractActivityTaskOptions, MasteringMixologyContractCreatingTaskOptions } from "../../../lib/types/minions";
+import { formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
+import { Time } from 'e';
+import { Bank } from 'oldschooljs/dist/meta/types';
+import { QuestID } from '../../../lib/minions/data/quests';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import type {
+	MasteringMixologyContractActivityTaskOptions,
+	MasteringMixologyContractCreatingTaskOptions
+} from '../../../lib/types/minions';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export interface MixologyHerb {
 	name: string;
@@ -32,47 +35,64 @@ export const mixologyHerbs: MixologyHerb[] = [
 	{ name: 'Torstol', paste: 'Aga', quantity: 44 }
 ];
 
-export async function MixologyPasteCreationCommand(user: MUser, channelID: string, herbName: string, quantity?: number) {
+export async function MixologyPasteCreationCommand(
+	user: MUser,
+	channelID: string,
+	herbName: string,
+	optionQuantity?: number
+) {
 	const herb = mixologyHerbs.find(h => h.name.toLowerCase() === herbName.toLowerCase());
 	if (!herb) {
-		return "That is not a valid herb for mixology paste.";
+		return 'That is not a valid herb for mixology paste.';
 	}
 
-	const userHerbQty = user.bank.amount(herb.name);
-	if (userHerbQty === 0) {
+	const bankQty = user.bank.amount(herb.name);
+	if (bankQty === 0) {
 		return `You don't have any ${herb.name} to convert into ${herb.paste} paste.`;
 	}
 
-	const usedQty = quantity ?? userHerbQty;
-	if (usedQty < 1 || usedQty > userHerbQty) {
-		return `You can only use between 1 and ${userHerbQty} ${herb.name}.`;
+	const timeToMixOne = 0.6 * 1000; // ms
+	const maxTripLength = calcMaxTripLength(user, 'MixologyPasteCreation');
+	const maxByTime = Math.floor(maxTripLength / timeToMixOne);
+	const maxByItems = bankQty;
+
+	let quantity = optionQuantity ?? Math.min(maxByTime, maxByItems);
+	if (quantity < 1) {
+		return `You don't have enough ${herb.name} or time to make any paste.`;
 	}
 
-	const pasteYield = usedQty * herb.quantity;
-	const duration = usedQty * 0.6 * 1000; // in ms
+	if (quantity > maxByItems) quantity = maxByItems;
+	if (quantity > maxByTime) {
+		return `${user.minionName} can't go on trips longer than ${formatDuration(
+			maxTripLength
+		)}. Try a lower quantity. You can make up to ${maxByTime}x.`;
+	}
 
-    const herbsNeeded = new Bank().add(herb.name, usedQty)
+	const pasteYield = quantity * herb.quantity;
+	const duration = quantity * timeToMixOne;
+	const cost = new Bank().add(herb.name, quantity);
 
-	await user.removeItemsFromBank(herbsNeeded);
-	
-    
-    await updateBankSetting('mastering_mixology_cost_bank', herbsNeeded);
+	if (!user.owns(cost)) {
+		return `You're missing items to mix ${quantity}x ${herb.name}.`;
+	}
 
-    await addSubTaskToActivityTask<MasteringMixologyContractCreatingTaskOptions>({
-            userID: user.id,
-            channelID: channelID.toString(),
-            type: 'MixologyPasteCreation',
-            minigameID: 'mastering_mixology',
-			herbName: herb.name,
-            quantity: usedQty,
-            duration,
-        });
-    
-        const str = `You are using ${usedQty}x ${herb.name} to create ${pasteYield}x ${herb.paste} paste. This will take ${formatDuration(duration)}.`;
+	await user.removeItemsFromBank(cost);
+	await updateBankSetting('mastering_mixology_cost_bank', cost);
 
-        return str
+	await addSubTaskToActivityTask<MasteringMixologyContractCreatingTaskOptions>({
+		userID: user.id,
+		channelID: channelID.toString(),
+		type: 'MixologyPasteCreation',
+		minigameID: 'mastering_mixology',
+		herbName: herb.name,
+		quantity,
+		duration
+	});
+
+	return `You are using ${quantity}x ${herb.name} to create ${pasteYield}x ${herb.paste} paste. This will take ${formatDuration(
+		duration
+	)}.`;
 }
-
 
 function getContractDuration(base: number): number {
 	const variance = 0.1;
@@ -80,21 +100,18 @@ function getContractDuration(base: number): number {
 	return base * factor;
 }
 
-
-
 export async function MasteringMixologyContractStartCommand(user: MUser, channelID: string, contracts?: number) {
+	const currentLevel = user.skillLevel(SkillsEnum.Herblore);
 
-    const currentLevel = user.skillLevel(SkillsEnum.Herblore);
+	if (currentLevel < 60) return 'You need at least 60 Herblore to participate in the mixology.';
 
-    if (currentLevel < 60) return "You need at least 60 Herblore to participate in the mixology."
-
-    if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-            return `You need to complete the "Children of the Sun" quest before you can participate in the mixology. Send your minion to do the quest using: ${mentionCommand(
-                globalClient,
-                'activities',
-                'quest'
-            )}.`;
-        }
+	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+		return `You need to complete the "Children of the Sun" quest before you can participate in the mixology. Send your minion to do the quest using: ${mentionCommand(
+			globalClient,
+			'activities',
+			'quest'
+		)}.`;
+	}
 	const contractTime = Time.Minute * 3;
 	const maxTripLength = calcMaxTripLength(user, 'MasteringMixologyContract');
 	const maxContracts = Math.floor(maxTripLength / contractTime);
@@ -103,26 +120,23 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 		contracts = maxContracts;
 	}
 
-    if (contracts < 1 || contracts > maxContracts) {
+	if (contracts < 1 || contracts > maxContracts) {
 		return `You can only complete between 1 and ${maxContracts} contracts based on your current max trip length.`;
 	}
-    let totalDuration = 0;
-for (let i = 0; i < contracts; i++) {
-	totalDuration += getContractDuration(contractTime);
-}
-const duration = Math.round(totalDuration);
+	let totalDuration = 0;
+	for (let i = 0; i < contracts; i++) {
+		totalDuration += getContractDuration(contractTime);
+	}
+	const duration = Math.round(totalDuration);
 
-await addSubTaskToActivityTask<MasteringMixologyContractActivityTaskOptions>({
-	userID: user.id,
-	channelID: channelID.toString(),
-	type: 'MasteringMixologyContract',
-	duration,
-	minigameID: 'mastering_mixology',
-	quantity: contracts,
-});
-
-
-
+	await addSubTaskToActivityTask<MasteringMixologyContractActivityTaskOptions>({
+		userID: user.id,
+		channelID: channelID.toString(),
+		type: 'MasteringMixologyContract',
+		duration,
+		minigameID: 'mastering_mixology',
+		quantity: contracts
+	});
 
 	return `${user.minionName} is now doing ${contracts} Mastering Mixology contract${contracts > 1 ? 's' : ''}. The trip will take ${formatDuration(duration)}.`;
 }

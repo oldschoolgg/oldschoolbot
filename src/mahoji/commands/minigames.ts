@@ -46,6 +46,11 @@ import {
 	mahoganyHomesPointsCommand
 } from '../lib/abstracted_commands/mahoganyHomesCommand';
 import {
+	MasteringMixologyContractStartCommand,
+	MixologyPasteCreationCommand,
+	mixologyHerbs
+} from '../lib/abstracted_commands/masteringMixologyCommand';
+import {
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
 	nightmareZoneStatsCommand
@@ -87,7 +92,6 @@ import {
 	nightmareZoneImbueCommand,
 	nightmareZoneImbueables
 } from './../lib/abstracted_commands/nightmareZoneCommand';
-import { MasteringMixologyContractStartCommand, mixologyHerbs, MixologyPasteCreationCommand } from '../lib/abstracted_commands/masteringMixologyCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',
@@ -1383,9 +1387,14 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.mastering_mixology?.create) {
-			return MixologyPasteCreationCommand(user, channelID, options.mastering_mixology.create.herb, options.mastering_mixology.create.quantity);
+			return MixologyPasteCreationCommand(
+				user,
+				channelID,
+				options.mastering_mixology.create.herb,
+				options.mastering_mixology.create.quantity
+			);
 		}
-		
+
 		if (options.mastering_mixology?.start) {
 			return MasteringMixologyContractStartCommand(user, channelID, options.mastering_mixology.start.contracts);
 		}
