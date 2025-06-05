@@ -63,7 +63,7 @@ model ClientStorage {
   sold_items_bank              Json     @default("{}") @db.Json
   herblore_cost_bank           Json     @default("{}") @db.Json
   construction_cost_bank       Json     @default("{}") @db.Json
-  mastering_mixology_cost      Json     @default("{}") @db.Json
+  mastering_mixology_cost_bank Json     @default("{}") @db.Json
   farming_cost_bank            Json     @default("{}") @db.Json
   farming_loot_bank            Json     @default("{}") @db.Json
   buy_cost_bank                Json     @default("{}") @db.Json
@@ -888,7 +888,7 @@ enum activity_type_enum {
   AerialFishing
   DriftNet
   MahoganyHomes
-  MasteringMixologyContractContract
+  MasteringMixologyContract
   MixologyPasteCreation
   GnomeRestaurant
   SoulWars

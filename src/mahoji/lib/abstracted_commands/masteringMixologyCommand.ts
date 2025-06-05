@@ -56,7 +56,7 @@ export async function MixologyPasteCreationCommand(user: MUser, channelID: strin
 	await user.removeItemsFromBank(herbsNeeded);
 	
     
-    updateBankSetting('mastering_mixology_cost', herbsNeeded);
+    await updateBankSetting('mastering_mixology_cost_bank', herbsNeeded);
 
     await addSubTaskToActivityTask<MasteringMixologyContractCreatingTaskOptions>({
             userID: user.id,
@@ -115,7 +115,7 @@ const duration = Math.round(totalDuration);
 await addSubTaskToActivityTask<MasteringMixologyContractActivityTaskOptions>({
 	userID: user.id,
 	channelID: channelID.toString(),
-	type: 'MasteringMixologyContractContract',
+	type: 'MasteringMixologyContract',
 	duration,
 	minigameID: 'mastering_mixology',
 	quantity: contracts,
