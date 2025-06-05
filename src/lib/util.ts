@@ -26,7 +26,6 @@ import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma } from '@prisma/client';
-import { LRUCache } from 'lru-cache';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { usernameWithBadgesCache } from './cache';
