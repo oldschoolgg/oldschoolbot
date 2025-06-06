@@ -64,7 +64,7 @@ export function determineMiningTime({
 
 	if (ore.name === 'Daeyalt essence rock') {
 		if (!powermining) {
-			userMaxTripTicks *= 1.5;
+			userMaxTripTicks *= 2;
 		}
 	} else if (ore.name === 'Amethyst') {
 		userMaxTripTicks *= 1.5;
