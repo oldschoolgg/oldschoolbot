@@ -81,7 +81,7 @@ export const cookCommand: OSBMahojiCommand = {
 		);
 
 		if (!cookable) {
-			return `Thats not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
+			return `That's not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
 				cookable => cookable.name
 			).join(', ')}.`;
 		}
