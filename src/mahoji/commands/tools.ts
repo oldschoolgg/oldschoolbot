@@ -28,13 +28,11 @@ import type { MinigameName } from '../../lib/settings/minigames';
 import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
+import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
 	getUsername,
 	isGroupActivity,
-	isNexActivity,
-	isRaidsActivity,
-	isTOBOrTOAActivity,
 	itemNameFromID,
 	parseStaticTimeInterval,
 	staticTimeIntervals,
@@ -54,6 +52,18 @@ import {
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
+
+function isRaidsActivity(data: any): data is RaidsOptions {
+	return 'challengeMode' in data;
+}
+
+function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
+	return 'wipedRoom' in data;
+}
+
+function isNexActivity(data: any): data is NexTaskOptions {
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
+}
 
 const skillsVals = Object.values(Skills);
 

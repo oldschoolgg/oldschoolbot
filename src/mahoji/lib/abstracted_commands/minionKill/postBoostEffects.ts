@@ -3,11 +3,11 @@ import { Time, calcPercentOfNum, objectKeys, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { BitField, PeakTier } from '../../../../lib/constants';
 import { Eatables } from '../../../../lib/data/eatables';
+import { convertAttackStyleToGearSetup } from '../../../../lib/gear/functions/convertAttackStyleToGearSetup';
 import { calculateMonsterFoodRaw } from '../../../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import { removeFoodFromUserRaw } from '../../../../lib/minions/functions/removeFoodFromUser';
 import type { Peak } from '../../../../lib/tickers';
-import { convertAttackStyleToGearSetup } from '../../../../lib/util';
 import { calcWildyPKChance } from '../../../../lib/util/calcWildyPkChance';
 import type { BoostArgs, BoostResult } from './speedBoosts';
 
