@@ -185,7 +185,7 @@ export async function giantsFoundryStartCommand(
 	) {
 		setBonus += 15;
 	} else {
-		// For each Smiths' Uniform item, check if they have it, give its' set boost and covert to 15% speed bonus later.
+               // For each Smiths' Uniform item, check if they have it, give its set boost and convert to a 15% speed bonus later.
 		for (const [itemID] of Object.entries(Smithing.smithsUniformItems)) {
 			if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
 				setBonus += 3;

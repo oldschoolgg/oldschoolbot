@@ -223,7 +223,7 @@ export async function volcanicMineShopCommand(
 		}
 	});
 
-	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Volcanic Mine points.${
+       return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Volcanic Mine points.${
 		shopItem.clOnly
 			? `\n${quantity > 1 ? 'These items were' : 'This item was'} directly added to your collection log.`
 			: ''

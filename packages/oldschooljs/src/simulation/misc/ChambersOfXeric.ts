@@ -140,8 +140,8 @@ export class ChambersOfXericClass extends Minigame {
 		return chances;
 	}
 
-	/**
-	 * Returns true if the team is elligible to receive dust based on their
+       /**
+        * Returns true if the team is eligible to receive dust based on their
 	 * completion time.
 	 *
 	 * https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Challenge_Mode#Rewards
@@ -149,7 +149,7 @@ export class ChambersOfXericClass extends Minigame {
 	 * @param teamSize How many members in the raid team.
 	 * @param completionTime The completion time of the raid, in *milliseconds*.
 	 */
-	public elligibleForDust(teamSize: number, completionTime: number): boolean {
+       public eligibleForDust(teamSize: number, completionTime: number): boolean {
 		// For every required time there is, if their team size is in that range,
 		// return true if their time is <= the required time.
 		for (const [teamSizeRange, timeRequired] of cmTeamTimes) {
@@ -200,14 +200,14 @@ export class ChambersOfXericClass extends Minigame {
 	public complete(_options: ChambersOfXericOptions): LootBank {
 		const options = JSONClone(_options);
 
-		// Will only check for elligibility for dust if timeToComplete given, and challengeMode = true.
-		const elligibleForDust =
-			typeof options.timeToComplete === 'number' &&
-			options.challengeMode &&
-			this.elligibleForDust(options.team.length, options.timeToComplete);
+               // Will only check for eligibility for dust if timeToComplete given, and challengeMode = true.
+               const eligibleForDust =
+                       typeof options.timeToComplete === 'number' &&
+                       options.challengeMode &&
+                       this.eligibleForDust(options.team.length, options.timeToComplete);
 
-		if (elligibleForDust) {
-			// If in challenge mode, and elligible for dust, 5000pts is added to
+               if (eligibleForDust) {
+                       // If in challenge mode, and eligible for dust, 5000pts is added to
 			// each team member.
 			// https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Challenge_Mode#Rewards
 			for (const member of options.team) {
@@ -230,12 +230,12 @@ export class ChambersOfXericClass extends Minigame {
 			// Give every team member a Loot.
 			lootResult[teamMember.id] = new Bank();
 
-			// If the team and team member is elligible for dust, roll for this user.
-			if (elligibleForDust && teamMember.canReceiveDust && roll(400)) {
+                       // If the team and team member is eligible for dust, roll for this user.
+                       if (eligibleForDust && teamMember.canReceiveDust && roll(400)) {
 				lootResult[teamMember.id].add('Metamorphic dust');
 			}
 
-			if (elligibleForDust && roll(75)) {
+                       if (eligibleForDust && roll(75)) {
 				lootResult[teamMember.id].add('Twisted ancestral colour kit');
 			}
 

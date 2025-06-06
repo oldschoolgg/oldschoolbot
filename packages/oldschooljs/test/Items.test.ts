@@ -53,12 +53,12 @@ const expectedIDTuple = [
 function checkItems(): void {
 	for (const [itemName, itemID] of expectedIDTuple) {
 		const item = Items.get(itemName);
-		if (!item) {
-			throw new Error(`*ERROR*: ${itemName} doesnt exist?`);
-		}
+               if (!item) {
+                       throw new Error(`*ERROR*: ${itemName} doesn't exist?`);
+               }
 		if (item.id !== itemID) {
-			throw new Error(`*ERROR*: ${itemName} has the wrong item ID! Is[${item.id}] ShouldBe[${itemID}]`);
-		}
+                       throw new Error(`*ERROR*: ${itemName} has the wrong item ID! Is[${item.id}] ShouldBe[${itemID}]`);
+               }
 	}
 }
 

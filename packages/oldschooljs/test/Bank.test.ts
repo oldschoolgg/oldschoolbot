@@ -313,7 +313,7 @@ describe('Bank', () => {
 		}
 	});
 
-	it('doesnt clear bank if frozen', () => {
+       it("doesn't clear bank if frozen", () => {
 		const bank = new Bank().add('Coal', 1).add('Trout', 100000);
 		bank.freeze();
 		expect(bank.length).toBeGreaterThan(0);

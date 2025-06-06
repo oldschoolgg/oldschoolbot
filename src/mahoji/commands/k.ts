@@ -264,7 +264,7 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
 
 	str.push(
-		`Every ${kcForOnePercent}kc you will gain a 1% (upto 10%).\nYou currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`
+                `Every ${kcForOnePercent}kc you will gain a 1% (upto 10%).\nYou currently receive a ${percentReduced}% boost with your ${userKc}kc.\n`
 	);
 
 	const min = timeToFinish * maxCanKill * 1.01;

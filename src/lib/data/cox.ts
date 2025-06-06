@@ -627,7 +627,7 @@ export async function calcCoxDuration(
 	let totalReduction = 0;
 	const reductions: Record<string, number> = {};
 
-	// Track degradeable items (fakemass works properly with this code, it wont remove 5x charges):
+       // Track degradable items (fakemass works properly with this code, it won't remove 5x charges):
 	const degradeableItems: { item: Item; user: MUser; chargesToDegrade: number }[] = [];
 	const uniqueUsers = new Map();
 

@@ -56,7 +56,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	}
 
 	if (selectedImage.bitfield && !user.bitfield.includes(selectedImage.bitfield)) {
-		return "You're not elligible to use this bank background.";
+               return "You're not eligible to use this bank background.";
 	}
 
 	// Check they have required collection log items.
@@ -103,7 +103,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		// Start building a string to show to the user.
 		let str = `${user}, please confirm that you want to buy the **${selectedImage.name}** bank background for: `;
 
-		// If theres an item cost or GP cost, add it to the string to show users the cost.
+               // If there's an item cost or GP cost, add it to the string to show users the cost.
 		if (selectedImage.itemCost) {
 			str += new Bank(selectedImage.itemCost).toString();
 			if (selectedImage.gpCost) {

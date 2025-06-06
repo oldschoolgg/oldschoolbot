@@ -23,7 +23,7 @@ export const herbloreTask: MinionTask = {
 			const [hasWildyDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
 			const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
 			let scales = 0;
-			// Having 99 herblore gives a 98% chance to recieve the max amount of shards
+                       // Having 99 herblore gives a 98% chance to receive the max amount of shards
 			const maxShardChance = currentHerbLevel >= 99 ? 98 : 0;
 			// Completion of hard wilderness diary gives 50% more lava scale shards per lava scale, rounded down
 			const diaryMultiplier = hasWildyDiary ? 1.5 : 1;

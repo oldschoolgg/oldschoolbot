@@ -383,7 +383,7 @@ async function creaturesLb(
 		)
 	);
 
-	if (!creature) return 'Thats not a valid creature.';
+       if (!creature) return "That's not a valid creature.";
 
 	const query = `SELECT user_id::text as id, ("creature_scores"->>'${creature.id}')::int as count
 				   FROM user_stats WHERE "creature_scores"->>'${creature.id}' IS NOT NULL
@@ -406,7 +406,7 @@ async function creaturesLb(
 async function lapsLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, courseName: string) {
 	const course = Agility.Courses.find(course => course.aliases.some(alias => stringMatches(alias, courseName)));
 
-	if (!course) return 'Thats not a valid agility course.';
+       if (!course) return "That's not a valid agility course.";
 
 	const data: { id: string; count: number }[] = await prisma.$queryRawUnsafe(
 		`SELECT user_id::text as id, ("laps_scores"->>'${course.id}')::int as count

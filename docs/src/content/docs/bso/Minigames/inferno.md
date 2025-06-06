@@ -25,7 +25,7 @@ Equipping an Armadyl Chestplate/Pernix Body and Armadyl Chainskirt/Pernix Chaps 
 
 _\*Having the Gorajan outfit also gives you the corresponding Nex gear boost. Effectively Gorajan Occult is -9% and Gorajan Archer is -8%_
 
-_Note: Do not mix and match Armadyl with Pernix or Ancestral with Virtus gear. You must have the corresponding top and bottom in order to recieve the boost._
+_Note: Do not mix and match Armadyl with Pernix or Ancestral with Virtus gear. You must have the corresponding top and bottom in order to receive the boost._
 
 #### Death
 

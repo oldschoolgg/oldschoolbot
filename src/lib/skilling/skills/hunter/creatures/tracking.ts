@@ -69,8 +69,8 @@ const trackingCreatures: Creature[] = [
 		id: 36,
 		aliases: ['herbiboar', 'herbi'],
 		level: 80,
-		hunterXP: 1950, // Scaleable xp depending on hunting lvl
-		table: new LootTable() /* Scaleable loot table */,
+               hunterXP: 1950, // Scalable XP depending on hunting level
+               table: new LootTable() /* Scalable loot table */,
 		qpRequired: 3,
 		huntTechnique: HunterTechniqueEnum.Tracking,
 		herbloreLvl: 31,

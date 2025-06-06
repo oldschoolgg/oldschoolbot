@@ -291,12 +291,12 @@ export const starCache = new Map<string, Star & { expiry: number }>();
 export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskData, components: ButtonBuilder[]) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillLevel(SkillsEnum.Mining);
-	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
+       const eligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
 	const minutes = data.duration / Time.Minute;
 	const baseChance = 540 / minutes;
 	if (!roll(baseChance)) return;
 	const shootingStarTable = new SimpleTable<Star>();
-	for (const star of elligibleStars) shootingStarTable.add(star, star.chance);
+       for (const star of eligibleStars) shootingStarTable.add(star, star.chance);
 	const starRoll = shootingStarTable.roll();
 	if (!starRoll) return;
 	const star = starRoll;

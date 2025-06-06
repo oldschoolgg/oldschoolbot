@@ -79,7 +79,7 @@ export const buildCommand: OSBMahojiCommand = {
 		);
 		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
 
-		if (!object) return 'Thats not a valid object to build.';
+               if (!object) return "That's not a valid object to build.";
 
 		if (user.skillLevel('construction') < object.level) {
 			return `${user.minionName} needs ${object.level} Construction to create a ${object.name}.`;

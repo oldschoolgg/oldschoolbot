@@ -39,7 +39,7 @@ export function determineMiningTrip({
 	randomVariationEnabled?: boolean;
 }) {
 	const boosts = [];
-	// Invisible mining level, dosen't help equip pickaxe etc
+       // Invisible mining level, doesn't help equip pickaxe etc
 	let miningLevel = gearBank.skillsAsLevels.mining;
 	if (ore.minerals && miningLevel >= 60) {
 		boosts.push('+7 invisible Mining lvls at the Mining guild');
@@ -210,7 +210,7 @@ export const mineCommand: OSBMahojiCommand = {
 				ore.aliases?.some(a => stringMatches(a, options.name))
 		);
 		if (!ore) {
-			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
+                       return `That's not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
 				Mining.MotherlodeMine.name
 			}.`;
 		}
