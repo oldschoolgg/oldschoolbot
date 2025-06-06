@@ -7,8 +7,9 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import type { GearSetup, GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes } from '../../lib/gear/types';
 
+import { isValidGearSetup } from '../../lib/gear/functions/isValidGearSetup';
 import { Gear, defaultGear, globalPresets } from '../../lib/structures/Gear';
-import { EquipmentSlot, isValidGearSetup, isValidNickname } from '../../lib/util';
+import { EquipmentSlot, isValidNickname } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
