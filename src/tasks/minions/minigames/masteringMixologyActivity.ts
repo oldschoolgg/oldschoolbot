@@ -71,7 +71,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			);
 			if (availableContracts.length === 0) break;
 
-			const contract = availableContracts[Math.floor(Math.random() * availableContracts.length)];
+			const contract = availableContracts[Math.floor(Math.random() * availableContracts.length)];//ensure weights get added
 
 			const cost = new Bank();
 			for (const paste of contract.pasteSequence) {
