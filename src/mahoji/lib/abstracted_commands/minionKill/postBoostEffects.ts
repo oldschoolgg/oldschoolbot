@@ -144,7 +144,7 @@ export const postBoostEffects: PostBoostEffect[] = [
 					'Your minion brought some supplies to survive potential pkers. (Handed back after trip if lucky)'
 				);
 			}
-			const { pkCount, died, chanceString } = calcWildyPKChance(
+			const { pkEncounters, died, chanceString } = calcWildyPKChance(
 				currentPeak,
 				gearBank,
 				monster,
@@ -161,9 +161,10 @@ export const postBoostEffects: PostBoostEffect[] = [
 			return {
 				message: messages.join(', '),
 				confirmation: confirmationString,
+				itemCost: antiPKSupplies,
 				changes: {
-					pkEncounters: pkCount,
-					died: died,
+					pkEncounters,
+					died,
 					hasWildySupplies
 				}
 			};
