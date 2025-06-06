@@ -236,17 +236,6 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	return setup;
 }
 
-export function convertPvmStylesToGearSetup(attackStyles: SkillsEnum[]) {
-	const usedSetups: GearSetupType[] = [];
-	if (attackStyles.includes(SkillsEnum.Ranged)) usedSetups.push('range');
-	if (attackStyles.includes(SkillsEnum.Magic)) usedSetups.push('mage');
-	if (![SkillsEnum.Magic, SkillsEnum.Ranged].some(s => attackStyles.includes(s))) {
-		usedSetups.push('melee');
-	}
-	if (usedSetups.length === 0) usedSetups.push('melee');
-	return usedSetups;
-}
-
 export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
