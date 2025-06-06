@@ -1,4 +1,4 @@
-import { deepMerge } from '@oldschoolgg/toolkit/util';
+import { deepMerge, getWrappedArrayItem } from '@oldschoolgg/toolkit/util';
 import fetch from 'node-fetch';
 
 const colors = [
@@ -30,10 +30,6 @@ const colors = [
 	'#b3d4ff',
 	'#00bfa0'
 ];
-function getWrappedArrayItem<T>(array: T[], index: number): T {
-	const wrappedIndex = ((index % array.length) + array.length) % array.length;
-	return array[wrappedIndex];
-}
 
 function randomHexColor(value: number): string {
 	return getWrappedArrayItem(colors, Math.floor(value));

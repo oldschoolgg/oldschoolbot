@@ -5,6 +5,7 @@ import { mergeDeep } from 'remeda';
 import z from 'zod';
 import type { BitField, PvMMethod } from '../../../../lib/constants';
 import { getSimilarItems } from '../../../../lib/data/similarItems';
+import { checkRangeGearWeapon } from '../../../../lib/gear/functions/checkRangeGearWeapon';
 import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import {
@@ -19,7 +20,7 @@ import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/s
 import type { GearBank } from '../../../../lib/structures/GearBank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { Peak } from '../../../../lib/tickers';
-import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, zodEnum } from '../../../../lib/util';
+import { formatDuration, isWeekend, itemNameFromID, zodEnum } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';

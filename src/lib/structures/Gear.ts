@@ -556,6 +556,16 @@ export class Gear {
 
 		return { refundBank: refundBank.length === 0 ? null : refundBank };
 	}
+
+	toBank() {
+		const bank = new Bank();
+		for (const slot of objectKeys(defaultGear)) {
+			const equipped = this[slot];
+			if (!equipped || !equipped.item || !equipped.quantity) continue;
+			bank.add(equipped.item, equipped.quantity);
+		}
+		return bank;
+	}
 }
 
 export function constructGearSetup(setup: PartialGearSetup): Gear {

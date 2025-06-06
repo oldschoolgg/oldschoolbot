@@ -1,7 +1,7 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { isObject, objectEntries, round } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
@@ -16,7 +16,6 @@ import type { GearBank } from '../lib/structures/GearBank';
 import type { ItemBank } from '../lib/types';
 import {
 	type JsonKeys,
-	anglerBoosts,
 	formatItemCosts,
 	formatItemReqs,
 	formatList,
@@ -192,6 +191,13 @@ export function userHasGracefulEquipped(user: MUser) {
 	}
 	return false;
 }
+
+const anglerBoosts = [
+	[itemID('Angler hat'), 0.4],
+	[itemID('Angler top'), 0.8],
+	[itemID('Angler waders'), 0.6],
+	[itemID('Angler boots'), 0.2]
+];
 
 export function anglerBoostPercent(user: MUser) {
 	const skillingSetup = user.gear.skilling;
