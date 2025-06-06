@@ -1,5 +1,5 @@
 import type { GearBank } from '../../../../lib/structures/GearBank';
-import { itemNameFromID, resolveItems } from '../../../../lib/util';
+import { type Monster, MonsterAttribute, itemNameFromID, resolveItems } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
 
 export const dragonHunterWeapons = [
@@ -18,20 +18,23 @@ export const dragonHunterWeapons = [
 export function calculateVirtusBoost({
 	isInWilderness,
 	gearBank,
-	isOnTask
-}: { gearBank: GearBank; isInWilderness: boolean; isOnTask: boolean }) {
+	isOnTask,
+	osjsMon
+}: { gearBank: GearBank; isInWilderness: boolean; isOnTask: boolean; osjsMon: Monster | undefined }) {
 	let virtusPiecesEquipped = 0;
-	const hasBlackMask =
-		(isOnTask && gearBank.gear.mage.hasEquipped('Black mask (i)')) ||
-		gearBank.gear.wildy.hasEquipped('Black mask (i)');
+	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
+	const hasSalve =
+		isUndead &&
+		(gearBank.hasEquippedOrInBank('Salve amulet (i)') || gearBank.hasEquippedOrInBank('Salve amulet (ei)'));
+	const hasBlackMask = isOnTask && gearBank.hasEquippedOrInBank('Black mask (i)');
+	const noMaskBoost = hasBlackMask && !hasSalve;
 
 	for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe bottom'])) {
-		if (isInWilderness) {
-			if (gearBank.gear.wildy.hasEquipped(item)) {
-				virtusPiecesEquipped += hasBlackMask && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
-			}
-		} else if (gearBank.gear.mage.hasEquipped(item)) {
-			virtusPiecesEquipped += hasBlackMask && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
+		if (isInWilderness && gearBank.gear.wildy.hasEquipped(item)) {
+			virtusPiecesEquipped += 1;
+		}
+		if (!isInWilderness && gearBank.gear.mage.hasEquipped(item)) {
+			virtusPiecesEquipped += noMaskBoost && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
 		}
 	}
 
