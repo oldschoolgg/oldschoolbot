@@ -310,7 +310,8 @@ export class MahojiClient {
 				const replyResponse = await interaction.reply(response);
 				return replyResponse;
 			} catch (err) {
-                               if (!(err instanceof Error)) console.error('Received an error that isn't an Error.');
+				if (!(err instanceof Error))
+					console.error('Received an error that isn't an Error.');
 				error = err as Error;
 				if (error) {
 					return { error };

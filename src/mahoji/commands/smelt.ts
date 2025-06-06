@@ -67,11 +67,11 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		if (!bar) {
 			if (blast_furnace) {
-                               return `That's not a valid bar to blast furnace. Valid bars are ${Smithing.BlastableBars.map(
+				return `That's not a valid bar to blast furnace. Valid bars are ${Smithing.BlastableBars.map(
 					bar => bar.name
 				).join(', ')}.`;
 			}
-                       return `That's not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(bar => bar.name).join(', ')}.`;
+			return `That's not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(bar => bar.name).join(', ')}.`;
 		}
 
 		if (user.skillLevel('smithing') < bar.level) {

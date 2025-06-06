@@ -120,8 +120,8 @@ export const lapsCommand: OSBMahojiCommand = {
 				course.aliases.some(alias => stringMatches(alias, options.name))
 		);
 
-               if (!course) {
-                       return "That's not a valid course.";
+		if (!course) {
+			return "That's not a valid course.";
 		}
 
 		if (user.skillLevel(SkillsEnum.Agility) < course.level) {

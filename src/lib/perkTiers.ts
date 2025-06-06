@@ -18,49 +18,49 @@ function getUsersPerkTierRaw(user: { bitfield: BitField[]; id: string }): PerkTi
 		return PerkTier.Four;
 	}
 
-       const eligibleTiers = [];
+	const eligibleTiers = [];
 	if (
 		user.bitfield.includes(BitField.IsPatronTier1) ||
 		user.bitfield.includes(BitField.HasPermanentTierOne) ||
 		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
 	) {
-               eligibleTiers.push(PerkTier.Two);
+		eligibleTiers.push(PerkTier.Two);
 	} else {
 		const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
 		const member = guild?.members.cache.get(user.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
-                       eligibleTiers.push(PerkTier.One);
+			eligibleTiers.push(PerkTier.One);
 		}
 	}
 
 	const roboChimpCached = roboChimpCache.get(user.id);
 	if (roboChimpCached) {
-               eligibleTiers.push(roboChimpCached.perk_tier);
+		eligibleTiers.push(roboChimpCached.perk_tier);
 	}
 
 	const bitfield = user.bitfield;
 
 	if (bitfield.includes(BitField.IsPatronTier6)) {
-               eligibleTiers.push(PerkTier.Seven);
+		eligibleTiers.push(PerkTier.Seven);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier5)) {
-               eligibleTiers.push(PerkTier.Six);
+		eligibleTiers.push(PerkTier.Six);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier4)) {
-               eligibleTiers.push(PerkTier.Five);
+		eligibleTiers.push(PerkTier.Five);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier3)) {
-               eligibleTiers.push(PerkTier.Four);
+		eligibleTiers.push(PerkTier.Four);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier2)) {
-               eligibleTiers.push(PerkTier.Three);
+		eligibleTiers.push(PerkTier.Three);
 	}
 
-       return Math.max(...eligibleTiers, 0);
+	return Math.max(...eligibleTiers, 0);
 }
 
 export function getUsersPerkTier(user: MUser): PerkTier | 0 {

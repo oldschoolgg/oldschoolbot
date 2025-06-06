@@ -35,7 +35,7 @@ export const tradeCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'receive',
-                       description: 'The items you want to receive from the other player.',
+			description: 'The items you want to receive from the other player.',
 			required: false
 		},
 		{

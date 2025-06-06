@@ -61,7 +61,7 @@ export const fishCommand: OSBMahojiCommand = {
 				stringMatches(fish.name, options.name) ||
 				fish.alias?.some(alias => stringMatches(alias, options.name))
 		);
-               if (!fish) return "That's not a valid fish to catch.";
+		if (!fish) return "That's not a valid fish to catch.";
 
 		if (user.skillLevel(SkillsEnum.Fishing) < fish.level) {
 			return `${user.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`;

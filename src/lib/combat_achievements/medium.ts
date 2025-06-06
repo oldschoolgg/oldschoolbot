@@ -43,7 +43,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 	},
 	{
 		id: 103,
-name: 'Brutal, Big, Black and Fiery',
+		name: 'Brutal, Big, Black and Fiery',
 		type: 'kill_count',
 		monster: 'Brutal Black Dragon',
 		desc: 'Kill a Brutal Black Dragon.',

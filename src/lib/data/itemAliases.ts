@@ -4,7 +4,7 @@ import { Items, allTeamCapes, getItemOrThrow, itemNameMap, resolveItems } from '
 export function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
 	if (!existingItem) {
-               throw new Error(`Tried to add item alias for a non-existent item: ${name} ${id}`);
+		throw new Error(`Tried to add item alias for a non-existent item: ${name} ${id}`);
 	}
 	let firstName: string | null = null;
 	// Add the item to the custom items array

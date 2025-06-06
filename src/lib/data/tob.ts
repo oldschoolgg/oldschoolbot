@@ -527,7 +527,7 @@ export function createTOBRaid({
 	if (!wipedRoom) deathDuration = null;
 
 	if (wipedRoom !== null && (!TOBRooms.includes(wipedRoom) || [-1].includes(TOBRooms.indexOf(wipedRoom)))) {
-               logError(new Error('Had non-existent wiped room for tob'), {
+		logError(new Error('Had non-existent wiped room for tob'), {
 			room: JSON.stringify(wipedRoom),
 			team: JSON.stringify(parsedTeam)
 		});

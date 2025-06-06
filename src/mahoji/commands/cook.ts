@@ -80,8 +80,8 @@ export const cookCommand: OSBMahojiCommand = {
 				cookable.alias?.some(alias => stringMatches(alias, options.name))
 		);
 
-               if (!cookable) {
-                       return `That's not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
+		if (!cookable) {
+			return `That's not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
 				cookable => cookable.name
 			).join(', ')}.`;
 		}

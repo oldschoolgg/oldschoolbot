@@ -40,7 +40,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 	);
 
 	if (!plank) {
-               return `That's not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`;
+		return `That's not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`;
 	}
 
 	const level = user.skillLevel(SkillsEnum.Construction);
