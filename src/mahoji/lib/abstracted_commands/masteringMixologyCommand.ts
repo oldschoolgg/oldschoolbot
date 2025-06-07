@@ -1,6 +1,6 @@
 import { formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs/dist/meta/types';
+import { Bank } from 'oldschooljs';
 import { QuestID } from '../../../lib/minions/data/quests';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type {
