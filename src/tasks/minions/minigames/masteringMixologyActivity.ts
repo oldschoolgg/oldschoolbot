@@ -13,6 +13,22 @@ import {
 	mixologyContracts,
 	mixologyHerbs
 } from '../../../mahoji/lib/abstracted_commands/masteringMixologyCommand';
+import { randFloat } from '../../../lib/util';
+
+interface WeightedItem {
+    weight: number;
+    [key: string]: any;
+}
+
+function masteringMixologyWeightedRandom<T extends WeightedItem>(items: readonly T[]): T {
+    const total = items.reduce((sum, item) => sum + item.weight, 0);
+    let roll = randFloat(0, total);
+    for (const item of items) {
+        roll -= item.weight;
+        if (roll <= 0) return item;
+    }
+    return items[items.length - 1];
+}
 
 export const MixologyPasteCreationTask: MinionTask = {
 	type: 'MixologyPasteCreation',
@@ -66,12 +82,16 @@ export const MasteringMixologyContractTask: MinionTask = {
 		};
 
 		for (let i = 0; i < data.quantity; i++) {
-			const availableContracts = mixologyContracts.filter(contract =>
-				contract.pasteSequence.every(paste => user.bank.amount(`${paste} paste`) >= 1)
-			);
+			const availableContracts = mixologyContracts.filter(contract => {
+					const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
+					for (const p of contract.pasteSequence) counts[p]++;
+					return Object.entries(counts).every(
+							([p, c]) => user.bank.amount(`${p} paste`) >= c
+					);
+			});
 			if (availableContracts.length === 0) break;
 
-			const contract = availableContracts[Math.floor(Math.random() * availableContracts.length)]; //ensure weights get added
+			const contract = masteringMixologyWeightedRandom(availableContracts);
 
 			const cost = new Bank();
 			for (const paste of contract.pasteSequence) {
@@ -79,7 +99,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 				pasteUsage[paste] += 1;
 			}
 
-			if (!user.owns(cost)) break;
+			if (!user.owns(cost)) continue;
 
 			await user.removeItemsFromBank(cost);
 			await updateBankSetting('mastering_mixology_cost_bank', cost);
