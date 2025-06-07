@@ -6,6 +6,7 @@ import type {
 	MasteringMixologyContractActivityTaskOptions,
 	MasteringMixologyContractCreatingTaskOptions
 } from '../../../lib/types/minions';
+import { randFloat } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import {
@@ -13,21 +14,19 @@ import {
 	mixologyContracts,
 	mixologyHerbs
 } from '../../../mahoji/lib/abstracted_commands/masteringMixologyCommand';
-import { randFloat } from '../../../lib/util';
 
-interface WeightedItem {
-    weight: number;
-    [key: string]: any;
+export interface WeightedItem {
+	weight: number;
 }
 
-function masteringMixologyWeightedRandom<T extends WeightedItem>(items: readonly T[]): T {
-    const total = items.reduce((sum, item) => sum + item.weight, 0);
-    let roll = randFloat(0, total);
-    for (const item of items) {
-        roll -= item.weight;
-        if (roll <= 0) return item;
-    }
-    return items[items.length - 1];
+export function masteringMixologyWeightedRandom<T extends WeightedItem>(items: readonly T[]): T {
+	const total = items.reduce((sum, item) => sum + item.weight, 0);
+	let roll = randFloat(0, total);
+	for (const item of items) {
+		roll -= item.weight;
+		if (roll <= 0) return item;
+	}
+	return items[items.length - 1];
 }
 
 export const MixologyPasteCreationTask: MinionTask = {
@@ -83,11 +82,9 @@ export const MasteringMixologyContractTask: MinionTask = {
 
 		for (let i = 0; i < data.quantity; i++) {
 			const availableContracts = mixologyContracts.filter(contract => {
-					const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
-					for (const p of contract.pasteSequence) counts[p]++;
-					return Object.entries(counts).every(
-							([p, c]) => user.bank.amount(`${p} paste`) >= c
-					);
+				const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
+				for (const p of contract.pasteSequence) counts[p]++;
+				return Object.entries(counts).every(([p, c]) => user.bank.amount(`${p} paste`) >= c);
 			});
 			if (availableContracts.length === 0) break;
 
