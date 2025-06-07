@@ -49,6 +49,10 @@ import { infernoTask } from '../tasks/minions/minigames/infernoActivity';
 import { lmsTask } from '../tasks/minions/minigames/lmsActivity';
 import { mageTrainingTask } from '../tasks/minions/minigames/mageTrainingArenaActivity';
 import { mahoganyHomesTask } from '../tasks/minions/minigames/mahoganyHomesActivity';
+import {
+	MasteringMixologyContractTask,
+	MixologyPasteCreationTask
+} from '../tasks/minions/minigames/masteringMixologyActivity';
 import { nightmareTask } from '../tasks/minions/minigames/nightmareActivity';
 import { pestControlTask } from '../tasks/minions/minigames/pestControlActivity';
 import { plunderTask } from '../tasks/minions/minigames/plunderActivity';
@@ -193,7 +197,9 @@ const tasks: MinionTask[] = [
 	camdozaalFishingTask,
 	myNotesTask,
 	colosseumTask,
-	CreateForestersRationsTask
+	CreateForestersRationsTask,
+	MixologyPasteCreationTask,
+	MasteringMixologyContractTask
 ];
 
 export async function processPendingActivities() {

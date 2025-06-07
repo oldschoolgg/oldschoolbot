@@ -46,6 +46,11 @@ import {
 	mahoganyHomesPointsCommand
 } from '../lib/abstracted_commands/mahoganyHomesCommand';
 import {
+	MasteringMixologyContractStartCommand,
+	MixologyPasteCreationCommand,
+	mixologyHerbs
+} from '../lib/abstracted_commands/masteringMixologyCommand';
+import {
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
 	nightmareZoneStatsCommand
@@ -640,6 +645,61 @@ export const minigamesCommand: OSBMahojiCommand = {
 		},
 		/**
 		 *
+		 * Mastering Mixology
+		 *
+		 */
+		{
+			name: 'mastering_mixology',
+			description: 'The Mastering Mixology minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'create',
+					description: 'Choose a herb to use for creating mixology paste.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'herb',
+							description: 'The herb you want to use for paste.',
+							required: true,
+							autocomplete: async value => {
+								return mixologyHerbs
+									.filter(h => (!value ? true : h.name.toLowerCase().includes(value.toLowerCase())))
+									.slice(0, 25)
+									.map(h => ({
+										name: h.name,
+										value: h.name
+									}));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'How many herbs to use.',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a mixology trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'contracts',
+							description: 'How many contracts to do.',
+							required: false,
+							min_value: 1
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
 		 * Tears of Guthix
 		 *
 		 */
@@ -1105,6 +1165,15 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { name: string; quantity?: number };
 			points?: {};
 		};
+		mastering_mixology?: {
+			start?: {
+				contracts?: number;
+			};
+			create?: {
+				herb: string;
+				quantity?: number;
+			};
+		};
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
@@ -1317,7 +1386,23 @@ export const minigamesCommand: OSBMahojiCommand = {
 				return mahoganyHomesPointsCommand(user);
 			}
 		}
+		/**
+		 *
+		 * Mastering Mixology
+		 *
+		 */
+		if (options.mastering_mixology?.create) {
+			return MixologyPasteCreationCommand(
+				user,
+				channelID,
+				options.mastering_mixology.create.herb,
+				options.mastering_mixology.create.quantity
+			);
+		}
 
+		if (options.mastering_mixology?.start) {
+			return MasteringMixologyContractStartCommand(user, channelID, options.mastering_mixology.start.contracts);
+		}
 		/**
 		 *
 		 * Tears of Guthix
