@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import {
 	MasteringMixologyContractStartCommand,
@@ -12,16 +12,17 @@ import {
 } from '../../../src/tasks/minions/minigames/masteringMixologyActivity';
 import { createTestUser, mockUser } from '../util';
 
-const user = await createTestUser();
+describe('Mastering Mixology', async () => {
+	const user = await createTestUser();
 
-beforeEach(async () => {
-	await user.update({
-		bank: new Bank().add('Guam leaf', 5).add('Aga paste', 10).add('Mox paste', 10).add('Lye paste', 10),
-		skills_herblore: 5_000_000,
-		QP: 1,
-		finished_quest_ids: [3]
+	beforeEach(async () => {
+		await user.update({
+			bank: new Bank().add('Guam leaf', 5).add('Aga paste', 10).add('Mox paste', 10).add('Lye paste', 10),
+			skills_herblore: 5_000_000,
+			QP: 1,
+			finished_quest_ids: [3]
+		});
 	});
-});
 
 describe('MixologyPasteCreationCommand', () => {
 	test('invalid herb', async () => {

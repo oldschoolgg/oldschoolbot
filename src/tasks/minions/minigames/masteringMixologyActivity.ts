@@ -17,7 +17,6 @@ import {
 
 export interface WeightedItem {
 	weight: number;
-	[key: string]: unknown;
 }
 
 export function masteringMixologyWeightedRandom<T extends WeightedItem>(items: readonly T[]): T {
