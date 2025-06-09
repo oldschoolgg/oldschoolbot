@@ -171,15 +171,10 @@ export const MasteringMixologyContractTask: MinionTask = {
 			);
 		}
 
-		const contractSummary = Array.from(contractSummaries.entries())
-			.sort(([a], [b]) => a.localeCompare(b))
-			.map(([name, { count, xp }]) => `• ${count}x ${name} — ${xp} XP`)
-			.join('\n');
-
 		const pasteSummary = Object.entries(pasteUsage)
 			.filter(([, count]) => count > 0)
-			.map(([paste, count]) => `• ${count}x ${paste} paste`)
-			.join('\n');
+			.map(([paste, count]) => `${count}x ${paste} paste`)
+			.join(', ');
 
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Herblore,
@@ -199,11 +194,8 @@ export const MasteringMixologyContractTask: MinionTask = {
 		const pointsInline = pointsEntries.map(([paste, val]) => `${val} ${paste} points`).join(', ');
 
 		const finalMsg = [
-			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalXP} XP and ${totalPoints} points (${pointsInline}). ${xpRes}`,
-			'**Contracts Completed:**',
-			contractSummary,
-			'**Paste Used:**',
-			pasteSummary
+			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalPoints} points (${pointsInline}). ${xpRes}`,
+			`**Paste Used:** ${pasteSummary}`
 		].join('\n');
 
 		return handleTripFinish(user, channelID, finalMsg, undefined, data, null);
