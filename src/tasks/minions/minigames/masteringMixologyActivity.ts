@@ -70,6 +70,11 @@ export const MasteringMixologyContractTask: MinionTask = {
 		const user = await mUserFetch(data.userID);
 		let completed = 0;
 		let totalXP = 0;
+		const pointsEarned: Record<'Mox' | 'Lye' | 'Aga', number> = {
+			Mox: 0,
+			Lye: 0,
+			Aga: 0
+		};
 		let totalPoints = 0;
 		let actualDuration = 0;
 
@@ -102,7 +107,34 @@ export const MasteringMixologyContractTask: MinionTask = {
 			await updateBankSetting('mastering_mixology_cost_bank', cost);
 
 			const contractXP = contract.xp;
-			const contractPoints = contract.points;
+			const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
+			for (const p of contract.pasteSequence) counts[p]++;
+
+			const unique = Object.values(counts).filter(c => c > 0).length;
+
+			const basePoints: Record<'Mox' | 'Lye' | 'Aga', number> = {
+				Mox: counts.Mox * 10,
+				Lye: counts.Lye * 10,
+				Aga: counts.Aga * 10
+			};
+
+			let contractPoints = basePoints.Mox + basePoints.Lye + basePoints.Aga;
+			if (unique === 1) {
+				const only = contract.pasteSequence[0];
+				contractPoints = Math.floor(contractPoints * (2 / 3));
+				basePoints.Mox = basePoints.Lye = basePoints.Aga = 0;
+				basePoints[only] = contractPoints;
+			} else if (unique === 3) {
+				basePoints.Mox *= 2;
+				basePoints.Lye *= 2;
+				basePoints.Aga *= 2;
+				contractPoints = basePoints.Mox + basePoints.Lye + basePoints.Aga;
+			}
+
+			pointsEarned.Mox += basePoints.Mox;
+			pointsEarned.Lye += basePoints.Lye;
+			pointsEarned.Aga += basePoints.Aga;
+
 			const contractDuration = getMixologyContractDuration(Time.Minute * 3);
 
 			actualDuration += contractDuration;
@@ -144,12 +176,25 @@ export const MasteringMixologyContractTask: MinionTask = {
 			.map(([paste, count]) => `• ${count}x ${paste} paste`)
 			.join('\n');
 
+		await user.update({
+			mixology_mox_points: { increment: pointsEarned.Mox },
+			mixology_aga_points: { increment: pointsEarned.Aga },
+			mixology_lye_points: { increment: pointsEarned.Lye }
+		});
+
+		const pointsEntries = Object.entries(pointsEarned).filter(([, val]) => val > 0);
+		const pointsSummary = pointsEntries.map(([paste, val]) => `• ${val}x ${paste} points`).join('\n');
+
+		const pointsInline = pointsEntries.map(([paste, val]) => `${val} ${paste} points`).join(', ');
+
 		const finalMsg = [
-			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalXP} XP and ${totalPoints} points.`,
+			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalXP} XP and ${totalPoints} points (${pointsInline}).`,
 			'**Contracts Completed:**',
 			contractSummary,
 			'**Paste Used:**',
-			pasteSummary
+			pasteSummary,
+			'**Points Earned:**',
+			pointsSummary
 		].join('\n');
 
 		return handleTripFinish(user, data.channelID, finalMsg, undefined, { ...data, duration: actualDuration }, null);

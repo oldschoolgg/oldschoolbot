@@ -14,4 +14,10 @@ Once you have paste, start contracts with [[/minigames mastering_mixology start]
 
 ## Rewards
 
-Completing contracts grants Herblore XP and Mixology points which can be spent on rewards in the future.
+Completing contracts grants Herblore XP and Mixology points which can be spent on rewards in the future. Each paste used in a contract normally gives **10** points of that paste type. Contracts that use three of the same paste only give **2/3** of the usual points, while contracts that use all three different pastes grant **double** points.
+
+Example point rewards:
+
+- **Alco-AugmentAtor** – awards 20 Aga points.
+- **Azure Aura Mix** – awards 20 Aga points and 10 Mox points.
+- **MixALot** – awards 20 points of each paste.
