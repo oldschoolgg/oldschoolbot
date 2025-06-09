@@ -40,3 +40,9 @@ Spend your Mixology points using [[/minigames mastering_mixology buy]]. All rewa
 | Chugging barrel (disassembled) | 17,250 | 14,000 | 18,600 |
 | Alchemist's amulet | 6,900 | 5,650 | 7,400 |
 | Aldarium | 80 | 60 | 90 |
+
+The potion packs have Herblore level requirements:
+
+- Apprentice potion pack requires **60 Herblore**.
+- Adept potion pack requires **70 Herblore**.
+- Expert potion pack requires **85 Herblore**.

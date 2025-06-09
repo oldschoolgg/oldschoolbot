@@ -86,12 +86,17 @@ export const MasteringMixologyContractTask: MinionTask = {
 			Aga: 0
 		};
 
+		const currentLevel = user.skillLevel(SkillsEnum.Herblore);
 		for (let i = 0; i < quantity; i++) {
 			const availableContracts = mixologyContracts.filter(contract => {
 				const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
 				for (const p of contract.pasteSequence) counts[p] += 10;
-				return Object.entries(counts).every(([p, c]) => user.bank.amount(`${p} paste`) >= c);
+				return (
+					currentLevel >= contract.requiredLevel &&
+					Object.entries(counts).every(([p, c]) => user.bank.amount(`${p} paste`) >= c)
+				);
 			});
+
 			if (availableContracts.length === 0) break;
 
 			const contract = masteringMixologyWeightedRandom(availableContracts);
@@ -136,7 +141,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			pointsEarned.Lye += basePoints.Lye;
 			pointsEarned.Aga += basePoints.Aga;
 
-			const contractDuration = getMixologyContractDuration(Time.Minute * 3);
+			const contractDuration = getMixologyContractDuration(Time.Hour / 260);
 
 			actualDuration += contractDuration;
 

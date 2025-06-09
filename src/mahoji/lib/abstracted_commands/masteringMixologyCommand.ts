@@ -7,6 +7,7 @@ import type {
 	MasteringMixologyContractActivityTaskOptions,
 	MasteringMixologyContractCreatingTaskOptions
 } from '../../../lib/types/minions';
+import { randFloat } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getOSItem } from '../../../lib/util/getOSItem';
@@ -47,6 +48,16 @@ export async function MixologyPasteCreationCommand(
 	herbName: string,
 	optionQuantity?: number
 ) {
+	const currentLevel = user.skillLevel(SkillsEnum.Herblore);
+	if (currentLevel < 60) return 'You need at least 60 Herblore to participate in the mixology.';
+
+	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+		return `You need to complete the "Children of the Sun" quest before you can participate in the mixology. Send your minion to do the quest using: ${mentionCommand(
+			globalClient,
+			'activities',
+			'quest'
+		)}.`;
+	}
 	const herb = mixologyHerbs.find(h => h.name.toLowerCase() === herbName.toLowerCase());
 	if (!herb) {
 		return 'That is not a valid herb for mixology paste.';
@@ -102,7 +113,7 @@ export async function MixologyPasteCreationCommand(
 
 export function getMixologyContractDuration(base: number): number {
 	const variance = 0.1;
-	const factor = 1 + (Math.random() * 2 - 1) * variance;
+	const factor = 1 + (randFloat(0, 2) - 1) * variance;
 	return base * factor;
 }
 
@@ -201,15 +212,18 @@ export const mixologyContracts: MixologyContract[] = [
 export const masteringMixologyBuyables = [
 	{
 		item: getOSItem('Apprentice potion pack'),
-		cost: { Mox: 420, Aga: 70, Lye: 30 }
+		cost: { Mox: 420, Aga: 70, Lye: 30 },
+		requiredLevel: 60
 	},
 	{
 		item: getOSItem('Adept potion pack'),
-		cost: { Mox: 180, Aga: 440, Lye: 70 }
+		cost: { Mox: 180, Aga: 440, Lye: 70 },
+		requiredLevel: 70
 	},
 	{
 		item: getOSItem('Expert potion pack'),
-		cost: { Mox: 410, Aga: 320, Lye: 480 }
+		cost: { Mox: 410, Aga: 320, Lye: 480 },
+		requiredLevel: 85
 	},
 	{
 		item: getOSItem('Prescription goggles'),
@@ -232,8 +246,16 @@ export async function MasteringMixologyBuyCommand(user: MUser, input = '', quant
 	const buyable = masteringMixologyBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
 		return `Here are the items you can buy:\n\n${masteringMixologyBuyables
-			.map(i => `**${i.item.name}:** ${i.cost.Mox} Mox, ${i.cost.Aga} Aga, ${i.cost.Lye} Lye`)
+			.map(i => {
+				const levelReq = i.requiredLevel ? ` (requires ${i.requiredLevel} Herblore)` : '';
+				return `**${i.item.name}:** ${i.cost.Mox} Mox, ${i.cost.Aga} Aga, ${i.cost.Lye} Lye${levelReq}`;
+			})
 			.join('\n')}.`;
+	}
+
+	const currentLevel = user.skillLevel(SkillsEnum.Herblore);
+	if (buyable.requiredLevel && currentLevel < buyable.requiredLevel) {
+		return `You need ${buyable.requiredLevel} Herblore to buy the ${buyable.item.name}.`;
 	}
 
 	const totalCost = {
@@ -285,7 +307,10 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 			Aga: 0
 		};
 		for (const p of c.pasteSequence) counts[p] += 10;
-		return Object.entries(counts).every(([p, c]) => user.bank.amount(`${p} paste`) >= c);
+		return (
+			currentLevel >= c.requiredLevel &&
+			Object.entries(counts).every(([p, c]) => user.bank.amount(`${p} paste`) >= c)
+		);
 	}).length;
 	if (totalAvailable === 0) {
 		return `You don't have enough paste to complete any contract. Try creating more first.`;
