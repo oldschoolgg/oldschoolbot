@@ -67,7 +67,8 @@ export const MixologyPasteCreationTask: MinionTask = {
 export const MasteringMixologyContractTask: MinionTask = {
 	type: 'MasteringMixologyContract',
 	run: async (data: MasteringMixologyContractActivityTaskOptions) => {
-		const user = await mUserFetch(data.userID);
+		const { userID, channelID, quantity } = data;
+		const user = await mUserFetch(userID);
 		let completed = 0;
 		let totalXP = 0;
 		const pointsEarned: Record<'Mox' | 'Lye' | 'Aga', number> = {
@@ -85,7 +86,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			Aga: 0
 		};
 
-		for (let i = 0; i < data.quantity; i++) {
+		for (let i = 0; i < quantity; i++) {
 			const availableContracts = mixologyContracts.filter(contract => {
 				const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
 				for (const p of contract.pasteSequence) counts[p]++;
@@ -97,8 +98,8 @@ export const MasteringMixologyContractTask: MinionTask = {
 
 			const cost = new Bank();
 			for (const paste of contract.pasteSequence) {
-				cost.add(`${paste} paste`);
-				pasteUsage[paste] += 1;
+				cost.add(`${paste} paste`, 10);
+				pasteUsage[paste] += 10;
 			}
 
 			if (!user.owns(cost)) continue;
@@ -140,7 +141,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			actualDuration += contractDuration;
 
 			await user.addXP({ skillName: SkillsEnum.Herblore, amount: contractXP });
-			await incrementMinigameScore(data.userID, 'mastering_mixology', 1);
+			await incrementMinigameScore(userID, 'mastering_mixology', 1);
 
 			totalXP += contractXP;
 			totalPoints += contractPoints;
@@ -158,7 +159,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 		if (completed === 0) {
 			return handleTripFinish(
 				user,
-				data.channelID,
+				channelID,
 				`${user.minionName} attempted to complete contracts but had insufficient paste.`,
 				undefined,
 				data,
@@ -197,6 +198,6 @@ export const MasteringMixologyContractTask: MinionTask = {
 			pointsSummary
 		].join('\n');
 
-		return handleTripFinish(user, data.channelID, finalMsg, undefined, { ...data, duration: actualDuration }, null);
+		return handleTripFinish(user, channelID, finalMsg, undefined, data, null);
 	}
 };

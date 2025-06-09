@@ -218,7 +218,7 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 		return `You don't have enough paste to complete any contract. Try creating more first.`;
 	}
 
-	const contractTime = Time.Minute * 3;
+	const contractTime = Time.Second * 288;
 	const maxTripLength = calcMaxTripLength(user, 'MasteringMixologyContract');
 	const maxContracts = Math.floor(maxTripLength / contractTime);
 
