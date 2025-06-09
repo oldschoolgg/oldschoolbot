@@ -423,7 +423,7 @@ const tripHandlers = {
 		args: (data: MahoganyHomesActivityTaskOptions) => ({ mahogany_homes: { start: { tier: data.tier } } })
 	},
 	[activity_type_enum.MixologyPasteCreation]: {
-		commandName: 'mastering_mixology',
+		commandName: 'minigames',
 		args: (data: MasteringMixologyContractCreatingTaskOptions) => ({
 			mastering_mixology: {
 				create: {
@@ -434,7 +434,7 @@ const tripHandlers = {
 		})
 	},
 	[activity_type_enum.MasteringMixologyContract]: {
-		commandName: 'mastering_mixology',
+		commandName: 'minigames',
 		args: (data: MasteringMixologyContractActivityTaskOptions) => ({
 			mastering_mixology: {
 				start: {
