@@ -24,9 +24,9 @@ const baseHerbs: { base: string; paste: 'Mox' | 'Lye' | 'Aga'; quantity: number;
 	{ base: 'Marrentill', paste: 'Mox', quantity: 13 },
 	{ base: 'Tarromin', paste: 'Mox', quantity: 15 },
 	{ base: 'Harralander', paste: 'Mox', quantity: 20 },
-	{ base: 'Ranarr weed', paste: 'Lye', quantity: 26 },
+	{ base: 'Ranarr weed', paste: 'Lye', quantity: 26, unf: 'Ranarr potion (unf)' },
 	{ base: 'Toadflax', paste: 'Lye', quantity: 32 },
-	{ base: 'Irit leaf', paste: 'Aga', quantity: 30 },
+	{ base: 'Irit leaf', paste: 'Aga', quantity: 30, unf: 'Irit potion (unf)' },
 	{ base: 'Avantoe', paste: 'Lye', quantity: 30 },
 	{ base: 'Kwuarm', paste: 'Lye', quantity: 33 },
 	{ base: 'Huasca', paste: 'Aga', quantity: 20 },
@@ -120,7 +120,6 @@ export function getMixologyContractDuration(base: number): number {
 interface MixologyContract {
 	name: string;
 	pasteSequence: ('Mox' | 'Lye' | 'Aga')[];
-	points: number;
 	requiredLevel: number;
 	xp: number;
 	weight: number;
@@ -130,7 +129,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: 'Alco-AugmentAtor',
 		pasteSequence: ['Aga', 'Aga', 'Aga'],
-		points: 10,
 		requiredLevel: 60,
 		xp: 190,
 		weight: 5
@@ -138,7 +136,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: 'Mammoth-Might Mix',
 		pasteSequence: ['Mox', 'Mox', 'Mox'],
-		points: 10,
 		requiredLevel: 60,
 		xp: 190,
 		weight: 5
@@ -146,7 +143,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: 'LipLack Liquor',
 		pasteSequence: ['Lye', 'Lye', 'Lye'],
-		points: 10,
 		requiredLevel: 60,
 		xp: 190,
 		weight: 5
@@ -154,7 +150,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: 'Mystic Mana Amalgam',
 		pasteSequence: ['Mox', 'Mox', 'Aga'],
-		points: 10,
 		requiredLevel: 63,
 		xp: 215,
 		weight: 4
@@ -162,7 +157,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: "Marley's MoonLight",
 		pasteSequence: ['Mox', 'Mox', 'Lye'],
-		points: 10,
 		requiredLevel: 66,
 		xp: 240,
 		weight: 4
@@ -170,7 +164,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: 'Azure Aura Mix',
 		pasteSequence: ['Aga', 'Aga', 'Mox'],
-		points: 10,
 		requiredLevel: 69,
 		xp: 265,
 		weight: 4
@@ -178,7 +171,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: 'AquaLux Amalgam',
 		pasteSequence: ['Aga', 'Lye', 'Aga'],
-		points: 10,
 		requiredLevel: 72,
 		xp: 290,
 		weight: 4
@@ -186,7 +178,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: 'MegaLite Liquid',
 		pasteSequence: ['Mox', 'Lye', 'Lye'],
-		points: 10,
 		requiredLevel: 75,
 		xp: 315,
 		weight: 4
@@ -194,7 +185,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: 'Anti-Leech Lotion',
 		pasteSequence: ['Aga', 'Lye', 'Lye'],
-		points: 10,
 		requiredLevel: 78,
 		xp: 340,
 		weight: 4
@@ -202,7 +192,6 @@ export const mixologyContracts: MixologyContract[] = [
 	{
 		name: 'MixALot',
 		pasteSequence: ['Mox', 'Aga', 'Lye'],
-		points: 10,
 		requiredLevel: 81,
 		xp: 365,
 		weight: 3
@@ -316,9 +305,9 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 		return `You don't have enough paste to complete any contract. Try creating more first.`;
 	}
 
-	const contractTime = Time.Hour / 260; //
+	const contractTime = Time.Hour / 260;
 	const maxTripLength = calcMaxTripLength(user, 'MasteringMixologyContract');
-	const maxContracts = Math.floor(maxTripLength / contractTime);
+	const maxContracts = Math.floor(maxTripLength / (contractTime * 1.1));
 
 	if (!contracts) {
 		contracts = maxContracts;

@@ -79,7 +79,6 @@ export const MasteringMixologyContractTask: MinionTask = {
 		let totalPoints = 0;
 		let actualDuration = 0;
 
-		const contractSummaries = new Map<string, { count: number; xp: number }>();
 		const pasteUsage: Record<'Mox' | 'Lye' | 'Aga', number> = {
 			Mox: 0,
 			Lye: 0,
@@ -150,14 +149,6 @@ export const MasteringMixologyContractTask: MinionTask = {
 			totalXP += contractXP;
 			totalPoints += contractPoints;
 			completed++;
-
-			const existing = contractSummaries.get(contract.name);
-			if (existing) {
-				existing.count++;
-				existing.xp += contractXP;
-			} else {
-				contractSummaries.set(contract.name, { count: 1, xp: contractXP });
-			}
 		}
 
 		if (completed === 0) {

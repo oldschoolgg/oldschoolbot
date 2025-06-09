@@ -72,7 +72,9 @@ describe('Mastering Mixology', async () => {
 			finished_quest_ids: { push: QuestID.ChildrenOfTheSun }
 		});
 		await user.addItemsToBank({ items: new Bank().add('Mox paste', 300) });
-		const maxContracts = Math.floor(calcMaxTripLength(user, 'MasteringMixologyContract') / (Time.Hour / 260));
+		const maxContracts = Math.floor(
+			calcMaxTripLength(user, 'MasteringMixologyContract') / ((Time.Hour / 260) * 1.1)
+		);
 		const res = await MasteringMixologyContractStartCommand(user, '1', maxContracts + 1);
 		expect(res).toContain(`${maxContracts} contracts`);
 	});
