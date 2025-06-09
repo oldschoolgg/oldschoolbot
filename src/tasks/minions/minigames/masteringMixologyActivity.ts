@@ -89,7 +89,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			const availableContracts = mixologyContracts.filter(contract => {
 				const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
-				for (const p of contract.pasteSequence) counts[p]++;
+				for (const p of contract.pasteSequence) counts[p] += 10;
 				return Object.entries(counts).every(([p, c]) => user.bank.amount(`${p} paste`) >= c);
 			});
 			if (availableContracts.length === 0) break;
@@ -184,7 +184,6 @@ export const MasteringMixologyContractTask: MinionTask = {
 		});
 
 		const pointsEntries = Object.entries(pointsEarned).filter(([, val]) => val > 0);
-		const pointsSummary = pointsEntries.map(([paste, val]) => `• ${val}x ${paste} points`).join('\n');
 
 		const pointsInline = pointsEntries.map(([paste, val]) => `${val} ${paste} points`).join(', ');
 
@@ -193,9 +192,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			'**Contracts Completed:**',
 			contractSummary,
 			'**Paste Used:**',
-			pasteSummary,
-			'**Points Earned:**',
-			pointsSummary
+			pasteSummary
 		].join('\n');
 
 		return handleTripFinish(user, channelID, finalMsg, undefined, data, null);

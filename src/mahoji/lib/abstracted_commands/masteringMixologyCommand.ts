@@ -120,7 +120,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Aga', 'Aga', 'Aga'],
 		points: 10,
 		requiredLevel: 60,
-		xp: 63,
+		xp: 190,
 		weight: 5
 	},
 	{
@@ -128,7 +128,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Mox', 'Mox', 'Mox'],
 		points: 10,
 		requiredLevel: 60,
-		xp: 63,
+		xp: 190,
 		weight: 5
 	},
 	{
@@ -136,7 +136,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Lye', 'Lye', 'Lye'],
 		points: 10,
 		requiredLevel: 60,
-		xp: 63,
+		xp: 190,
 		weight: 5
 	},
 	{
@@ -144,7 +144,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Mox', 'Mox', 'Aga'],
 		points: 10,
 		requiredLevel: 63,
-		xp: 72,
+		xp: 215,
 		weight: 4
 	},
 	{
@@ -152,7 +152,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Mox', 'Mox', 'Lye'],
 		points: 10,
 		requiredLevel: 66,
-		xp: 80,
+		xp: 240,
 		weight: 4
 	},
 	{
@@ -160,7 +160,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Aga', 'Aga', 'Mox'],
 		points: 10,
 		requiredLevel: 69,
-		xp: 88,
+		xp: 265,
 		weight: 4
 	},
 	{
@@ -168,7 +168,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Aga', 'Lye', 'Aga'],
 		points: 10,
 		requiredLevel: 72,
-		xp: 96,
+		xp: 290,
 		weight: 4
 	},
 	{
@@ -176,7 +176,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Mox', 'Lye', 'Lye'],
 		points: 10,
 		requiredLevel: 75,
-		xp: 105,
+		xp: 315,
 		weight: 4
 	},
 	{
@@ -184,7 +184,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Aga', 'Lye', 'Lye'],
 		points: 10,
 		requiredLevel: 78,
-		xp: 113,
+		xp: 340,
 		weight: 4
 	},
 	{
@@ -192,7 +192,7 @@ export const mixologyContracts: MixologyContract[] = [
 		pasteSequence: ['Mox', 'Aga', 'Lye'],
 		points: 10,
 		requiredLevel: 81,
-		xp: 122,
+		xp: 365,
 		weight: 3
 	}
 ];
@@ -210,15 +210,20 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 		)}.`;
 	}
 
-	const totalAvailable = mixologyContracts.filter(c =>
-		c.pasteSequence.every(p => user.bank.amount(`${p} paste`) >= 1)
-	).length;
-
+	const totalAvailable = mixologyContracts.filter(c => {
+		const counts: Record<'Mox' | 'Lye' | 'Aga', number> = {
+			Mox: 0,
+			Lye: 0,
+			Aga: 0
+		};
+		for (const p of c.pasteSequence) counts[p] += 10;
+		return Object.entries(counts).every(([p, c]) => user.bank.amount(`${p} paste`) >= c);
+	}).length;
 	if (totalAvailable === 0) {
 		return `You don't have enough paste to complete any contract. Try creating more first.`;
 	}
 
-	const contractTime = Time.Second * 288;
+	const contractTime = Time.Hour / 260; //
 	const maxTripLength = calcMaxTripLength(user, 'MasteringMixologyContract');
 	const maxContracts = Math.floor(maxTripLength / contractTime);
 
