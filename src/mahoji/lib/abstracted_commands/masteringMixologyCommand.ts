@@ -1,4 +1,4 @@
-import { formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
+import { formatDuration, mentionCommand, stringMatches } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { QuestID } from '../../../lib/minions/data/quests';
@@ -9,6 +9,7 @@ import type {
 } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { getOSItem } from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export interface MixologyHerb {
@@ -196,6 +197,73 @@ export const mixologyContracts: MixologyContract[] = [
 		weight: 3
 	}
 ];
+
+export const masteringMixologyBuyables = [
+	{
+		item: getOSItem('Apprentice potion pack'),
+		cost: { Mox: 420, Aga: 70, Lye: 30 }
+	},
+	{
+		item: getOSItem('Adept potion pack'),
+		cost: { Mox: 180, Aga: 440, Lye: 70 }
+	},
+	{
+		item: getOSItem('Expert potion pack'),
+		cost: { Mox: 410, Aga: 320, Lye: 480 }
+	},
+	{
+		item: getOSItem('Prescription goggles'),
+		cost: { Mox: 8600, Aga: 7000, Lye: 9350 }
+	},
+	{ item: getOSItem('Alchemist labcoat'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
+	{ item: getOSItem('Alchemist pants'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
+	{ item: getOSItem('Alchemist gloves'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
+	{ item: getOSItem('Reagent pouch'), cost: { Mox: 13800, Aga: 11200, Lye: 15100 } },
+	{ item: getOSItem('Potion storage'), cost: { Mox: 7750, Aga: 6300, Lye: 8950 } },
+	{
+		item: getOSItem('Chugging barrel (disassembled)'),
+		cost: { Mox: 17250, Aga: 14000, Lye: 18600 }
+	},
+	{ item: getOSItem("Alchemist's amulet"), cost: { Mox: 6900, Aga: 5650, Lye: 7400 } },
+	{ item: getOSItem('Aldarium'), cost: { Mox: 80, Aga: 60, Lye: 90 } }
+];
+
+export async function MasteringMixologyBuyCommand(user: MUser, input = '', quantity = 1) {
+	const buyable = masteringMixologyBuyables.find(i => stringMatches(input, i.item.name));
+	if (!buyable) {
+		return `Here are the items you can buy:\n\n${masteringMixologyBuyables
+			.map(i => `**${i.item.name}:** ${i.cost.Mox} Mox, ${i.cost.Aga} Aga, ${i.cost.Lye} Lye`)
+			.join('\n')}.`;
+	}
+
+	const totalCost = {
+		Mox: buyable.cost.Mox * quantity,
+		Aga: buyable.cost.Aga * quantity,
+		Lye: buyable.cost.Lye * quantity
+	};
+
+	if (
+		user.user.mixology_mox_points < totalCost.Mox ||
+		user.user.mixology_aga_points < totalCost.Aga ||
+		user.user.mixology_lye_points < totalCost.Lye
+	) {
+		return (
+			`You don't have enough Mixology points to buy ${quantity.toLocaleString()}x ${buyable.item.name}. ` +
+			`You need ${totalCost.Mox} Mox, ${totalCost.Aga} Aga and ${totalCost.Lye} Lye points.`
+		);
+	}
+
+	await user.update({
+		mixology_mox_points: { decrement: totalCost.Mox },
+		mixology_aga_points: { decrement: totalCost.Aga },
+		mixology_lye_points: { decrement: totalCost.Lye }
+	});
+
+	const loot = new Bank().add(buyable.item.id, quantity);
+	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
+
+	return `Successfully purchased ${loot} for ${totalCost.Mox} Mox, ${totalCost.Aga} Aga and ${totalCost.Lye} Lye points.`;
+}
 
 export async function MasteringMixologyContractStartCommand(user: MUser, channelID: string, contracts?: number) {
 	const currentLevel = user.skillLevel(SkillsEnum.Herblore);

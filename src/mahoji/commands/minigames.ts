@@ -46,8 +46,10 @@ import {
 	mahoganyHomesPointsCommand
 } from '../lib/abstracted_commands/mahoganyHomesCommand';
 import {
+	MasteringMixologyBuyCommand,
 	MasteringMixologyContractStartCommand,
 	MixologyPasteCreationCommand,
+	masteringMixologyBuyables,
 	mixologyHerbs
 } from '../lib/abstracted_commands/masteringMixologyCommand';
 import {
@@ -695,9 +697,38 @@ export const minigamesCommand: OSBMahojiCommand = {
 							min_value: 1
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'buy',
+					description: 'Buy items with mixology points.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							required: true,
+							description: 'The item to buy.',
+							autocomplete: async value => {
+								return masteringMixologyBuyables
+									.filter(i =>
+										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1,
+							max_value: 1000
+						}
+					]
 				}
 			]
 		},
+
 		/**
 		 *
 		 * Tears of Guthix
@@ -1173,6 +1204,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				herb: string;
 				quantity?: number;
 			};
+			buy?: { name: string; quantity?: number };
 		};
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
@@ -1397,6 +1429,14 @@ export const minigamesCommand: OSBMahojiCommand = {
 				channelID,
 				options.mastering_mixology.create.herb,
 				options.mastering_mixology.create.quantity
+			);
+		}
+
+		if (options.mastering_mixology?.buy) {
+			return MasteringMixologyBuyCommand(
+				user,
+				options.mastering_mixology.buy.name,
+				options.mastering_mixology.buy.quantity
 			);
 		}
 

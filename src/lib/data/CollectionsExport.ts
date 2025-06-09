@@ -1385,6 +1385,15 @@ export const mahoganyHomesCL = resolveItems([
 	'Plank sack',
 	'Hosidius blueprints'
 ]);
+export const masteringMixologyCL = resolveItems([
+	'Prescription goggles',
+	'Alchemist labcoat',
+	'Alchemist pants',
+	'Alchemist gloves',
+	"Alchemist's amulet",
+	'Reagent pouch',
+	'Chugging barrel (disassembled)'
+]);
 export const pestControlCL = resolveItems([
 	'Void knight mace',
 	'Void knight top',

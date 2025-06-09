@@ -21,3 +21,22 @@ Example point rewards:
 - **Alco-AugmentAtor** – awards 20 Aga points.
 - **Azure Aura Mix** – awards 20 Aga points and 10 Mox points.
 - **MixALot** – awards 20 points of each paste.
+
+## Buyables
+
+Spend your Mixology points using [[/minigames mastering_mixology buy]]. All rewards are added to your collection log.
+
+| Item | Mox | Aga | Lye |
+| ---- | ---:| ---:| ---:|
+| Apprentice potion pack | 420 | 70 | 30 |
+| Adept potion pack | 180 | 440 | 70 |
+| Expert potion pack | 410 | 320 | 480 |
+| Prescription goggles | 8,600 | 7,000 | 9,350 |
+| Alchemist labcoat | 2,250 | 2,800 | 3,700 |
+| Alchemist pants | 2,250 | 2,800 | 3,700 |
+| Alchemist gloves | 2,250 | 2,800 | 3,700 |
+| Reagent pouch | 13,800 | 11,200 | 15,100 |
+| Potion storage | 7,750 | 6,300 | 8,950 |
+| Chugging barrel (disassembled) | 17,250 | 14,000 | 18,600 |
+| Alchemist's amulet | 6,900 | 5,650 | 7,400 |
+| Aldarium | 80 | 60 | 90 |

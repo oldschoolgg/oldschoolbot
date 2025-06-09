@@ -140,7 +140,6 @@ export const MasteringMixologyContractTask: MinionTask = {
 
 			actualDuration += contractDuration;
 
-			await user.addXP({ skillName: SkillsEnum.Herblore, amount: contractXP });
 			await incrementMinigameScore(userID, 'mastering_mixology', 1);
 
 			totalXP += contractXP;
@@ -177,6 +176,13 @@ export const MasteringMixologyContractTask: MinionTask = {
 			.map(([paste, count]) => `• ${count}x ${paste} paste`)
 			.join('\n');
 
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Herblore,
+			amount: totalXP,
+			duration: actualDuration,
+			source: 'MasteringMixology'
+		});
+
 		await user.update({
 			mixology_mox_points: { increment: pointsEarned.Mox },
 			mixology_aga_points: { increment: pointsEarned.Aga },
@@ -188,7 +194,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 		const pointsInline = pointsEntries.map(([paste, val]) => `${val} ${paste} points`).join(', ');
 
 		const finalMsg = [
-			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalXP} XP and ${totalPoints} points (${pointsInline}).`,
+			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalXP} XP and ${totalPoints} points (${pointsInline}). ${xpRes}`,
 			'**Contracts Completed:**',
 			contractSummary,
 			'**Paste Used:**',
