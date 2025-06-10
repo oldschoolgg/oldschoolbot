@@ -659,7 +659,7 @@ export class BankImageTask {
 			let bottomItemText: string | number | null = null;
 
 			if (flags.has('sv') || mahojiFlags?.includes('show_price')) {
-				bottomItemText = item.price * quantity;
+				bottomItemText = (item.price ?? 0) * quantity;
 			} else if (flags.has('av') || mahojiFlags?.includes('show_alch')) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
 			} else if (flags.has('id') || mahojiFlags?.includes('show_id')) {
@@ -761,7 +761,7 @@ export class BankImageTask {
 			});
 		}
 
-		const totalValue = sumArr(items.map(([i, q]) => i.price * q));
+		const totalValue = sumArr(items.map(([i, q]) => (i.price ? i.price * q : 0)));
 
 		const chunkSize = compact ? 140 : 56;
 		const chunked = chunk(items, chunkSize);

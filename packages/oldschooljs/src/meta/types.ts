@@ -164,8 +164,8 @@ export interface ItemWeaponStance {
 
 export interface ItemWeapon {
 	attack_speed: number | null;
-	weapon_type: string;
-	stances: ItemWeaponStance[];
+	weapon_type?: string;
+	stances?: ItemWeaponStance[];
 }
 
 /**
@@ -216,7 +216,7 @@ export interface Item {
 	/**
 	 * The store price of an item.
 	 */
-	cost: number;
+	cost?: number;
 	/**
 	 * The low alchemy value of the item (cost * 0.4).
 	 */
@@ -238,7 +238,7 @@ export interface Item {
 	/**
 	 * The OSRS Wiki market price for this item, 0 if untradeable or has no price.
 	 */
-	price: number;
+	price?: number;
 }
 
 export interface DateYearMonth {

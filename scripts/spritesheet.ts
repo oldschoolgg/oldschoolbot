@@ -6,7 +6,7 @@ import Spritesmith from 'spritesmith';
 import '../src/lib/safeglobals';
 
 import { isFunction, uniqueArr } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, Items, resolveItems } from 'oldschooljs';
 import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
 import { BOT_TYPE } from '../src/lib/constants';
 import { allCLItems } from '../src/lib/data/Collections';
@@ -55,7 +55,27 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		return b.outputItems.items().flatMap(i => i[0].id);
 	}),
 	...manualIDs,
-	...Array.from(ALL_OBTAINABLE_ITEMS)
+	...Array.from(ALL_OBTAINABLE_ITEMS),
+	...resolveItems([
+		'Collection log (bronze)',
+		'Collection log (iron)',
+		'Collection log (steel)',
+		'Collection log (black)',
+		'Collection log (mithril)',
+		'Collection log (adamant)',
+		'Collection log (rune)',
+		'Collection log (dragon)',
+		'Collection log (gilded)',
+		'Bronze staff of collection',
+		'Iron staff of collection',
+		'Steel staff of collection',
+		'Black staff of collection',
+		'Mithril staff of collection',
+		'Adamant staff of collection',
+		'Rune staff of collection',
+		'Dragon staff of collection',
+		'Gilded staff of collection'
+	])
 ]);
 
 const getPngFiles = async (dir: string): Promise<string[]> => {
