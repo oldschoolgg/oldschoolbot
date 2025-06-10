@@ -8,6 +8,7 @@ import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatDurationWithTimestamp, stringMatches } from '../../lib/util';
+import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -162,7 +163,7 @@ export const lapsCommand: OSBMahojiCommand = {
 
                let response = `${user.minionName} is now doing ${quantity}x ${
                        course.name
-               } laps, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier())} to finish.`;
+               } laps, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish.`;
 
 		const alchResult = course.name === 'Ape Atoll Agility Course' || !options.alch ? null : alching(user, duration);
 		if (alchResult !== null) {

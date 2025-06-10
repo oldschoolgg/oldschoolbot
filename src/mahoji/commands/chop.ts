@@ -9,6 +9,7 @@ import { determineWoodcuttingTime } from '../../lib/skilling/functions/determine
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatDurationWithTimestamp, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
+import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
@@ -249,8 +250,8 @@ export const chopCommand: OSBMahojiCommand = {
 			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
                }, it'll take ${
                        quantity
-                               ? `between ${formatDurationWithTimestamp(fakeDurationMin, user.perkTier())} **and** ${formatDurationWithTimestamp(fakeDurationMax, user.perkTier())}`
-                               : formatDurationWithTimestamp(duration, user.perkTier())
+                               ? `between ${formatDurationWithTimestamp(fakeDurationMin, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} **and** ${formatDurationWithTimestamp(fakeDurationMax, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))}`
+                               : formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))
                } to finish.`;
 
 		if (boosts.length > 0) {

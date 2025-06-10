@@ -5,6 +5,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { BitField } from '../../lib/constants';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
@@ -143,6 +144,6 @@ export const mixCommand: OSBMahojiCommand = {
 
                return `${user.minionName} ${cost} making ${quantity}x ${
                        mixableItem.outputMultiple ? 'batches of' : ''
-               }${itemName}, it'll take around ${formatDurationWithTimestamp(quantity * timeToMixSingleItem, user.perkTier())} to finish.`;
+               }${itemName}, it'll take around ${formatDurationWithTimestamp(quantity * timeToMixSingleItem, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish.`;
 	}
 };

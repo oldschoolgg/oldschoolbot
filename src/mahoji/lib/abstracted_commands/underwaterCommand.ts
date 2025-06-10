@@ -2,6 +2,7 @@ import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { BitField } from '../../../lib/constants';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -90,7 +91,7 @@ export async function underwaterAgilityThievingCommand(
 
        let str = `${user.minionName} is now doing Underwater Agility and Thieving, it will take around ${formatDurationWithTimestamp(
                duration,
-               user.perkTier()
+               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
        )}.`;
 
 	if (itemsToRemove.length > 0) {

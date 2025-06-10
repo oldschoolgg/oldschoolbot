@@ -5,6 +5,7 @@ import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, formatDurationWithTimestamp, stringMatches } from '../../../lib/util';
+import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -60,5 +61,5 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 		type: 'Scattering'
 	});
 
-       return `${user.minionName} is now scattering ${cost}, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier())} to finish.`;
+       return `${user.minionName} is now scattering ${cost}, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish.`;
 }

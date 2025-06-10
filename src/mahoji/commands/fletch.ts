@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
 import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { BitField } from '../../lib/constants';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
@@ -116,6 +117,6 @@ export const fletchCommand: OSBMahojiCommand = {
 
                return `${user.minionName} is now Fletching ${quantity}${sets} ${
                        fletchable.name
-               }, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier())} to finish. Removed ${itemsNeeded} from your bank.`;
+               }, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 };

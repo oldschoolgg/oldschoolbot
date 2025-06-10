@@ -9,6 +9,7 @@ import Constructables from '../../lib/skilling/skills/construction/constructable
 import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatDurationWithTimestamp, hasSkillReqs } from '../../lib/util';
+import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -149,7 +150,7 @@ export const buildCommand: OSBMahojiCommand = {
 
                return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDurationWithTimestamp(
                        duration,
-                       user.perkTier()
+                       user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
                )} to finish. Removed ${cost} from your bank. **${xpHr}**
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.

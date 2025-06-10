@@ -5,6 +5,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { getNewUser } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, formatDurationWithTimestamp, stringMatches } from '../../../lib/util';
+import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -146,6 +147,6 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
                user.minionName
        } is now doing ${quantity} Magic Training Arena rooms. The trip will take around ${formatDurationWithTimestamp(
                duration,
-               user.perkTier()
+               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
        )}. Removed ${cost} from your bank.`;
 }

@@ -5,6 +5,7 @@ import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { CollectingOptions } from '../../../lib/types/minions';
 import { formatDuration, formatDurationWithTimestamp, stringMatches } from '../../../lib/util';
+import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -95,7 +96,7 @@ export async function collectCommand(
 
        return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
                collectable.item.name
-       }, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier())} to finish.${
+       }, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish.${
 		cost.toString().length > 0
 			? `
 Removed ${cost} from your bank.`

@@ -5,6 +5,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { BitField } from '../../lib/constants';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FiremakingActivityTaskOptions } from '../../lib/types/minions';
@@ -94,7 +95,7 @@ export const lightCommand: OSBMahojiCommand = {
 
                return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDurationWithTimestamp(
                        duration,
-                       user.perkTier()
+                       user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
                )} to finish.`;
 	}
 };

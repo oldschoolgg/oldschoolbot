@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { BitField } from '../../../lib/constants';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -70,7 +71,7 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 
        const response = `${user.minionName} is now killing ${quantity}x animated ${
                armorSet.name
-       } armour, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier())} to finish.`;
+       } armour, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish.`;
 
 	return response;
 }
@@ -122,7 +123,7 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 
        const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDurationWithTimestamp(
                duration,
-               user.perkTier()
+               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
        )} to finish. ${
 		hasAttackCape
 			? 'You used no warrior guild tokens because you have an Attack cape.'

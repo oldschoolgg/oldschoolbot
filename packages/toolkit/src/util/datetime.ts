@@ -39,9 +39,13 @@ export function formatDuration(ms: number, short = false, precise = false) {
                 .join(short ? '' : ', ');
 }
 
-export function formatDurationWithTimestamp(duration: number, perkTier: number) {
+export function formatDurationWithTimestamp(
+       duration: number,
+       perkTier: number,
+       showTimestamp = false
+) {
        const base = formatDuration(duration);
-       if (perkTier >= PerkTier.Four) {
+       if (perkTier >= PerkTier.Four && showTimestamp) {
                const finishDate = new Date(Date.now() + duration);
                return `${base} (${dateFm(finishDate)})`;
        }

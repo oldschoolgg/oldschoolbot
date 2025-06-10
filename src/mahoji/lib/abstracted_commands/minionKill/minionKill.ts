@@ -8,6 +8,7 @@ import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
 import { formatDuration, formatDurationWithTimestamp, stringMatches } from '../../../../lib/util';
+import { BitField } from '../../../../lib/constants';
 import addSubTaskToActivityTask from '../../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../../lib/util/findMonster';
@@ -144,7 +145,7 @@ export async function minionKillCommand(
 	});
        let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDurationWithTimestamp(
                result.duration,
-               user.perkTier()
+               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
        )} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
 	if (result.messages.length > 0) {
