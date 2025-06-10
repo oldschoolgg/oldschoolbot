@@ -1,4 +1,4 @@
-import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -265,9 +265,8 @@ export const offerCommand: OSBMahojiCommand = {
 		const duration = quantity * timeToBuryABone;
 
 		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-				maxTripLength,
-				user
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
+				maxTripLength
 			)}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
 				maxTripLength / timeToBuryABone
 			)}.`;

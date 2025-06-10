@@ -7,7 +7,7 @@ import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { formatDurationFromUser, stringMatches } from '../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -153,9 +153,8 @@ export const lapsCommand: OSBMahojiCommand = {
 		const duration = quantity * timePerLap;
 
 		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-				maxTripLength,
-				user
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
+				maxTripLength
 			)}, try a lower quantity. The highest amount of ${course.name} laps you can do is ${Math.floor(
 				maxTripLength / timePerLap
 			)}.`;

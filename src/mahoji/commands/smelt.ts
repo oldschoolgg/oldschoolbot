@@ -7,7 +7,7 @@ import { resolveItems } from 'oldschooljs/dist/util/util';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDurationFromUser, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
+import { formatDuration, formatDurationFromUser, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -132,9 +132,8 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-				maxTripLength,
-				user
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
+				maxTripLength
 			)}, try a lower quantity. The highest amount of ${bar.name}s you can smelt is ${Math.floor(
 				maxTripLength / timeToSmithSingleBar
 			)}.`;

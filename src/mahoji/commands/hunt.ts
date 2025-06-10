@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
@@ -187,9 +187,8 @@ export const huntCommand: OSBMahojiCommand = {
 		}
 
 		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-				maxTripLength,
-				user
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
+				maxTripLength
 			)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(
 				maxTripLength / ((catchTime * Time.Second) / traps)
 			)}.`;

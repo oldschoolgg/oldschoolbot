@@ -1051,9 +1051,8 @@ async function checkTOAUser(
 			true,
 			`${
 				user.usernameOrMention
-			} doesn't have enough Serpentine helm charges. You need at least ${serpHelmCharges} charges to do a ${formatDurationFromUser(
-				duration,
-				user
+			} doesn't have enough Serpentine helm charges. You need at least ${serpHelmCharges} charges to do a ${formatDuration(
+				duration
 			)} TOA raid.`
 		];
 	}

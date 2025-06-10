@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
@@ -120,7 +120,7 @@ export const stealCommand: OSBMahojiCommand = {
 		const duration = quantity * timeToTheft;
 
 		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength,
 				user
 			)}, try a lower quantity. The highest amount of times you can ${

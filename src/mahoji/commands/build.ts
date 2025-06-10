@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -121,9 +121,8 @@ export const buildCommand: OSBMahojiCommand = {
 		const duration = quantity * timeToBuildSingleObject;
 
 		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-				maxTripLength,
-				user
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
+				maxTripLength
 			)} minutes, try a lower quantity. The highest amount of ${object.name}s you can build is ${Math.floor(
 				maxTripLength / timeToBuildSingleObject
 			)}.`;

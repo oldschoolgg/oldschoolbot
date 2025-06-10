@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
@@ -74,9 +74,8 @@ export const lightCommand: OSBMahojiCommand = {
 		if (!user.owns(cost)) return `You dont have ${quantity}x ${log.name}.`;
 
 		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-				maxTripLength,
-				user
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
+				maxTripLength
 			)}, try a lower quantity. The highest amount of ${log.name}s you can light is ${Math.floor(
 				maxTripLength / timeToLightSingleLog
 			)}.`;

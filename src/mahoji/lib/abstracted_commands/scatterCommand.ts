@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDurationFromUser, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -42,9 +42,8 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 	const duration = quantity * timeToScatterAnAsh;
 
 	if (duration > maxTripLength) {
-		return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-			maxTripLength,
-			user
+		return `${user.minionName} can't go on trips longer than ${formatDuration(
+			maxTripLength
 		)}, try a lower quantity. The highest amount of ${ash.name}s you can scatter is ${Math.floor(
 			maxTripLength / timeToScatterAnAsh
 		)}.`;
