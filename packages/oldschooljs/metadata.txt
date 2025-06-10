@@ -9,7 +9,7 @@ Files in ./dist/cjs:
 	./dist/cjs/monsters_data-5F625L5X.json: 363.54 KB 372,262 bytes
 	./dist/cjs/monsters_data-HUCC3QJ7.json: 364.78 KB 373,536 bytes
 	./dist/cjs/structures/Hiscores.cjs: 38.99 KB 39,923 bytes
-	./dist/cjs/structures/Wiki.cjs: 3.69 KB 3,783 bytes
+	./dist/cjs/structures/Wiki.cjs: 3.8 KB 3,889 bytes
 	./dist/cjs/util/util.cjs: 36.11 KB 36,975 bytes
 
 Total size: 12.58 MB
