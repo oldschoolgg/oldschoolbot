@@ -16,7 +16,11 @@ import {
 } from '../../../../lib/minions/functions';
 import type { KillableMonster } from '../../../../lib/minions/types';
 import type { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
-import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/slayer/slayerUtil';
+import {
+	type CurrentSlayerInfo,
+	determineCombatBoosts,
+	wildySlayerOnlyMonsters
+} from '../../../../lib/slayer/slayerUtil';
 import type { GearBank } from '../../../../lib/structures/GearBank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { Peak } from '../../../../lib/tickers';
@@ -90,6 +94,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	if (!monster.wildy && isInWilderness) {
 		return `You can't kill ${monster.name} in the wilderness.`;
+	}
+
+	if (wildySlayerOnlyMonsters.some(m => m.id === monster.id) && isInWilderness && !isOnTask) {
+		return `${monster.name} can only be killed in the wilderness when on a slayer task.`;
 	}
 
 	const matchedRevenantMonster = revenantMonsters.find(m => m.id === monster.id);
