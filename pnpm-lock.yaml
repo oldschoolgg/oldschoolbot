@@ -11,6 +11,9 @@ importers:
 
   .:
     dependencies:
+      '@oldschoolgg/collectionlog':
+        specifier: workspace:*
+        version: link:packages/collectionlog
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:packages/toolkit
@@ -182,11 +185,11 @@ importers:
         specifier: ^5.5.3
         version: 5.6.3
 
-  packages/builders:
-    devDependencies:
-      fast-glob:
-        specifier: ^3.3.3
-        version: 3.3.3
+  packages/collectionlog:
+    dependencies:
+      oldschooljs:
+        specifier: workspace:*
+        version: link:../oldschooljs
 
   packages/oldschooljs:
     dependencies:
