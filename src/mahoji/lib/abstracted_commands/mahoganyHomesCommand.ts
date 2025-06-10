@@ -6,7 +6,7 @@ import { getMinigameScore } from '../../../lib/settings/minigames';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

@@ -21,7 +21,7 @@ import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MakePartyOptions } from '../../../lib/types';
 import type { RaidsOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, formatDurationFromUser, randomVariation } from '../../../lib/util';
+import { channelIsSendable, formatDurationFromUser, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

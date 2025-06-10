@@ -7,7 +7,7 @@ import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, hasSkillReqs, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

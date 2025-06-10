@@ -4,7 +4,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, randomVariation } from '../../../lib/util';
+import { formatDurationFromUser, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 

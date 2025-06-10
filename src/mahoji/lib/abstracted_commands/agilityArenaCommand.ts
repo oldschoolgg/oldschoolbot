@@ -5,7 +5,7 @@ import { Time } from 'e';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead } from '../../../lib/util/chatHeadImage';

@@ -6,7 +6,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { setupParty } from '../../../lib/party';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import type { NexTaskOptions } from '../../../lib/types/minions';
-import { calcPerHour, formatDuration, formatDurationFromUser } from '../../../lib/util';
+import { calcPerHour, formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
