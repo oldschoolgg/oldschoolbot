@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+// @ts-expect-error
 import Spritesmith from 'spritesmith';
 import '../src/lib/safeglobals';
 
@@ -64,7 +65,7 @@ const getPngFiles = async (dir: string): Promise<string[]> => {
 
 const createSpriteSheet = (files: string[], outputPath: string): Promise<Spritesmith.Result> => {
 	return new Promise((resolve, reject) => {
-		Spritesmith.run({ src: files }, async (err, result) => {
+		Spritesmith.run({ src: files }, async (err: any, result: any) => {
 			if (err) return reject(err);
 			try {
 				await fs.writeFile(outputPath, result.image);

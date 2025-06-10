@@ -1,4 +1,4 @@
-import { execAsync } from './scriptUtil.ts';
+import { execAsync } from './scriptUtil.js';
 
 async function lintScript() {
 	await Promise.all([
