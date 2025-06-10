@@ -27,7 +27,7 @@
 		"build:workers": "esbuild src/lib/workers/kill.worker.ts src/lib/workers/finish.worker.ts src/lib/workers/casket.worker.ts --sourcemap=inline --log-level=error --bundle --minify --legal-comments=none --outdir=./dist/lib/workers --platform=node --loader:.node=file --external:skia-canvas --external:@prisma/robochimp --external:@prisma/client --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
 		"============TESTING": "============",
 		"test": "pnpm concurrent \"pnpm test:lint\" \"pnpm test:unit\" \"pnpm test:types\"",
-		"test:types": "concurrently \"tsc --noEmit -p tests/unit\" \"tsc --noEmit -p tests/integration\" \"tsc --noEmit -p src\"",
+		"test:types": "concurrently \"tsc --noEmit -p tests/unit\" \"tsc --noEmit -p tests/integration\" \"tsc --noEmit -p src\" \"tsc --noEmit -p scripts\"",
 		"test:lint": "biome check --diagnostic-level=error",
 		"test:unit": "vitest run --config vitest.unit.config.mts",
 		"test:docker": "docker compose up --no-attach db --build --abort-on-container-exit && docker compose down -v",
