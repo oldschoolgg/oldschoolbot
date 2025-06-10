@@ -5,7 +5,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, Events } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
@@ -265,13 +264,14 @@ export const offerCommand: OSBMahojiCommand = {
 
 		const duration = quantity * timeToBuryABone;
 
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
-				maxTripLength / timeToBuryABone
-			)}.`;
-		}
+                if (duration > maxTripLength) {
+                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+                                maxTripLength,
+                                user
+                        )}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
+                                maxTripLength / timeToBuryABone
+                        )}.`;
+                }
 
 		await user.removeItemsFromBank(new Bank().add(bone.inputId, quantity));
 

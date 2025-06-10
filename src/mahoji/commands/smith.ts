@@ -9,7 +9,7 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, stringMatches } from '../../lib/util';
+import { formatDurationFromUser, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { pluraliseItemName } from '../../lib/util/smallUtils';
@@ -127,13 +127,14 @@ export const smithCommand: OSBMahojiCommand = {
 		cost.add(baseCost.multiply(quantity));
 
 		const duration = quantity * timeToSmithSingleBar;
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${smithedItem.name}${
-				smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
-			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
-		}
+                if (duration > maxTripLength) {
+                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+                                maxTripLength,
+                                user
+                        )}, try a lower quantity. The highest amount of ${smithedItem.name}${
+                                smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
+                        } you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
+                }
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
 		updateBankSetting('smithing_cost', cost);

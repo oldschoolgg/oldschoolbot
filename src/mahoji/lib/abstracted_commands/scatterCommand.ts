@@ -5,7 +5,7 @@ import { BitField } from '../../../lib/constants';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -42,13 +42,14 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 
 	const duration = quantity * timeToScatterAnAsh;
 
-	if (duration > maxTripLength) {
-		return `${user.minionName} can't go on trips longer than ${formatDuration(
-			maxTripLength
-		)}, try a lower quantity. The highest amount of ${ash.name}s you can scatter is ${Math.floor(
-			maxTripLength / timeToScatterAnAsh
-		)}.`;
-	}
+        if (duration > maxTripLength) {
+                return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+                        maxTripLength,
+                        user
+                )}, try a lower quantity. The highest amount of ${ash.name}s you can scatter is ${Math.floor(
+                        maxTripLength / timeToScatterAnAsh
+                )}.`;
+        }
 
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 

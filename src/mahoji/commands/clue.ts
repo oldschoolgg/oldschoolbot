@@ -11,7 +11,7 @@ import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, isWeekend, stringMatches } from '../../lib/util';
+import { formatDurationFromUser, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { getItem } from '../../lib/util/getOSItem';
@@ -433,11 +433,12 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		const duration = timePerClue * quantity;
-		if (duration > maxTripLength || quantity > maxCanDo) {
-			return `${user.minionName} can't go on Clue trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
-		}
+                if (duration > maxTripLength || quantity > maxCanDo) {
+                        return `${user.minionName} can't go on Clue trips longer than ${formatDurationFromUser(
+                                maxTripLength,
+                                user
+                        )}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
+                }
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			ci: clueTier.id,

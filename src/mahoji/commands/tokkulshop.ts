@@ -7,7 +7,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import type { TokkulShopOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, stringMatches } from '../../lib/util';
+import { formatDurationFromUser, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -163,25 +163,27 @@ export const tksCommand: OSBMahojiCommand = {
 		const maxCanTransact = shopStock ? (maxTripLength / Time.Minute) * shopStock : (maxTripLength / 1000) * 50;
 
 		// If the duration of the trip is longer than the users max allowed trip, give the reason why and the max they can buy or sell
-		if (duration > maxTripLength) {
-			return `This trip is too long. You need to ${action} less at a time, to fit your max trip length of ${formatDuration(
-				maxTripLength
-			)}. ${
-				maxCanTransact
-					? `The max ${item.name.toLowerCase()}s you can ${
-							action === 'buy' ? 'buy' : 'sell'
-						} is ${maxCanTransact}`
+                if (duration > maxTripLength) {
+                        return `This trip is too long. You need to ${action} less at a time, to fit your max trip length of ${formatDurationFromUser(
+                                maxTripLength,
+                                user
+                        )}. ${
+                                maxCanTransact
+                                        ? `The max ${item.name.toLowerCase()}s you can ${
+                                                        action === 'buy' ? 'buy' : 'sell'
+                                                } is ${maxCanTransact}`
 					: ''
 			}`;
 		}
 
 		// Confirmation the user has to accept before trip is sent
-		await handleMahojiConfirmation(
-			interaction,
-			`Are you sure you want to spend ${cost} to get ${loot}? The trip to ${action} them will take ${formatDuration(
-				duration
-			)}.`
-		);
+                await handleMahojiConfirmation(
+                        interaction,
+                        `Are you sure you want to spend ${cost} to get ${loot}? The trip to ${action} them will take ${formatDurationFromUser(
+                                duration,
+                                user
+                        )}.`
+                );
 
 		// Remove the cost, and update bank settings
 		await transactItems({ userID: user.id, itemsToRemove: cost });
