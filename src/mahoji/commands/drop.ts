@@ -62,7 +62,7 @@ export const dropCommand: OSBMahojiCommand = {
 			...ClueTiers.map(c => [c.id, c.scrollID]),
 			...user.bank
 				.items()
-				.filter(([item, quantity]) => item.price * quantity >= 100_000_000)
+				.filter(([item, quantity]) => (item.price ?? 0) * quantity >= 100_000_000)
 				.map(i => i[0].id)
 		].flat(1);
 		const doubleCheckItems = itemsToDoubleCheck.filter(f => bank.has(f));

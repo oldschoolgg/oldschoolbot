@@ -292,6 +292,7 @@ export default class Bank {
 	public value(): number {
 		let value = 0;
 		for (const [item, quantity] of this.items()) {
+			if (!item.price) continue;
 			value += item.price * quantity;
 		}
 		return value;
