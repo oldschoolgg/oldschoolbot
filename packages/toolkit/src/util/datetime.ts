@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { time } from 'discord.js';
 import { dateFm, PerkTier } from './misc';
 
 export function isAtleastThisOld(date: Date | number, expectedAgeInMS: number) {
