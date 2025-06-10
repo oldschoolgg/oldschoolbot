@@ -1,11 +1,11 @@
 import { Time, percentChance, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDurationFromUser } from '../../../lib/util';
 import { chompyHats } from '../../../lib/constants';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -93,10 +93,10 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 		minigameID: 'big_chompy_bird_hunting'
 	});
 
-       let str = `${user.minionName} is now hunting Big Chompy's! The trip will take ${formatDurationFromUser(
-               tripLength,
-               user
-       )}. Removed ${cost} from your bank.`;
+	let str = `${user.minionName} is now hunting Big Chompy's! The trip will take ${formatDurationFromUser(
+		tripLength,
+		user
+	)}. Removed ${cost} from your bank.`;
 
 	if (boosts.length > 0) {
 		str += `\n**Boosts:** ${boosts.join(', ')}.`;

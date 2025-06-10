@@ -1,10 +1,10 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util'
-import { formatDurationFromUser } from '../../../lib/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -69,9 +69,9 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 		type: 'AnimatedArmour'
 	});
 
-       const response = `${user.minionName} is now killing ${quantity}x animated ${
-               armorSet.name
-       } armour, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
+	const response = `${user.minionName} is now killing ${quantity}x animated ${
+		armorSet.name
+	} armour, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 
 	return response;
 }
@@ -121,14 +121,14 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 		type: 'Cyclops'
 	});
 
-       const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDurationFromUser(
-               duration,
-               user
-       )} to finish. ${
-                hasAttackCape
-                        ? 'You used no warrior guild tokens because you have an Attack cape.'
-                        : `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
-        }`;
+	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDurationFromUser(
+		duration,
+		user
+	)} to finish. ${
+		hasAttackCape
+			? 'You used no warrior guild tokens because you have an Attack cape.'
+			: `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
+	}`;
 
 	if (!hasAttackCape) {
 		await user.removeItemsFromBank(new Bank().add('Warrior guild token', tokensToSpend));

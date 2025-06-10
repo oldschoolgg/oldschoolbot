@@ -4,7 +4,6 @@ import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { formatDurationFromUser } from '../../../lib/util';
 import { Emoji } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
@@ -24,6 +23,7 @@ import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MakePartyOptions } from '../../../lib/types';
 import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import { channelIsSendable, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -486,11 +486,11 @@ export async function tobStartCommand(
 		solo
 	});
 
-       let str = `${partyOptions.leader.usernameOrMention}'s party (${users
-               .map(u => u.usernameOrMention)
-               .join(', ')}) is now off to do ${qty}x Theatre of Blood raid${
-               qty > 1 ? 's' : ''
-       } - the total trip will take ${formatDurationFromUser(totalFakeDuration, partyOptions.leader)}.${solo ? " You're in a team of 3." : ''}`;
+	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
+		.map(u => u.usernameOrMention)
+		.join(', ')}) is now off to do ${qty}x Theatre of Blood raid${
+		qty > 1 ? 's' : ''
+	} - the total trip will take ${formatDurationFromUser(totalFakeDuration, partyOptions.leader)}.${solo ? " You're in a team of 3." : ''}`;
 
 	str += ` \n\n${debugStr}`;
 

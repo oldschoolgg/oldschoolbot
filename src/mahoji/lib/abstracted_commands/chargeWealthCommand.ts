@@ -1,10 +1,10 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util'
-import { formatDurationFromUser } from '../../../lib/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -60,10 +60,10 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 
 	return `${
 		user.minionName
-       } is now charging ${quantityWealths} Rings of wealth, doing ${wealthInventorySize} Rings of wealth in ${quantity} trips, it'll take around ${formatDurationFromUser(
-               duration,
-               user
-       )} to finish. Removed ${quantityWealths}x Ring of wealth from your bank.${
-                hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
-       }`;
+	} is now charging ${quantityWealths} Rings of wealth, doing ${wealthInventorySize} Rings of wealth in ${quantity} trips, it'll take around ${formatDurationFromUser(
+		duration,
+		user
+	)} to finish. Removed ${quantityWealths}x Ring of wealth from your bank.${
+		hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
+	}`;
 }

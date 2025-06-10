@@ -6,7 +6,7 @@ import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/
 import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import defaultBirdhouseTrap from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
@@ -171,7 +171,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 		type: 'Birdhouse'
 	});
 
-       return `${infoStr.join(' ')}\n\nIt'll take around ${formatDurationFromUser(duration, user)} to finish.\n\n${
+	return `${infoStr.join(' ')}\n\nIt'll take around ${formatDurationFromUser(duration, user)} to finish.\n\n${
 		boostStr.length > 0 ? '**Boosts**: ' : ''
 	}${boostStr.join(', ')}`;
 }

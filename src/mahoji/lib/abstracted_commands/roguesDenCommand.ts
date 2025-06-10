@@ -1,9 +1,9 @@
 import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDurationFromUser } from '../../../lib/util';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -59,12 +59,12 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 		type: 'RoguesDenMaze'
 	});
 
-       let str = `${
-               user.minionName
-       } is now off to complete the Rogues' Den maze ${quantity}x times, their trip will take ${formatDurationFromUser(
-               duration,
-               user
-       )} (${formatDuration(baseTime)} per lap).`;
+	let str = `${
+		user.minionName
+	} is now off to complete the Rogues' Den maze ${quantity}x times, their trip will take ${formatDurationFromUser(
+		duration,
+		user
+	)} (${formatDuration(baseTime)} per lap).`;
 
 	if (staminasToRemove.length > 0) {
 		str += ` Removed ${staminasToRemove} from your bank.`;

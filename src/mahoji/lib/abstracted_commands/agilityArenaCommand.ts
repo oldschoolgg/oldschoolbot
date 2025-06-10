@@ -5,7 +5,7 @@ import { Time } from 'e';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
@@ -97,7 +97,7 @@ export async function agilityArenaCommand(
 		minigameID: 'agility_arena'
 	});
 
-       let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${formatDurationFromUser(duration, user)}.`;
+	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${formatDurationFromUser(duration, user)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

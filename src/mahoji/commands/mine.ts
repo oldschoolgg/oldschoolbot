@@ -3,6 +3,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import { BitField } from '../../lib/constants';
 import { userhasDiaryTier } from '../../lib/diaries.js';
 import { QuestID } from '../../lib/minions/data/quests';
 import { DiaryID } from '../../lib/minions/types.js';
@@ -13,8 +14,13 @@ import Mining from '../../lib/skilling/skills/mining';
 import type { Ore } from '../../lib/skilling/types';
 import type { GearBank } from '../../lib/structures/GearBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
-import { BitField } from '../../lib/constants';
+import {
+	formatDuration,
+	formatDurationFromUser,
+	formatSkillRequirements,
+	itemNameFromID,
+	randomVariation
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import itemID from '../../lib/util/itemID';
@@ -263,11 +269,11 @@ export const mineCommand: OSBMahojiCommand = {
 
 		let response = `${minionName(user)} is now mining ${ore.name} until your minion ${
 			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
-               }, it'll take ${
-                       quantity
-                               ? `between ${formatDurationFromUser(res.fakeDurationMin, user)} **and** ${formatDurationFromUser(res.fakeDurationMax, user)}`
-                               : formatDurationFromUser(res.duration, user)
-               } to finish.`;
+		}, it'll take ${
+			quantity
+				? `between ${formatDurationFromUser(res.fakeDurationMin, user)} **and** ${formatDurationFromUser(res.fakeDurationMax, user)}`
+				: formatDurationFromUser(res.duration, user)
+		} to finish.`;
 
 		if (res.boosts.length > 0) {
 			response += `\n\n**Boosts:** ${res.boosts.join(', ')}.`;

@@ -1,11 +1,11 @@
 import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { formatDurationFromUser } from '../../../lib/util';
 import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';
 import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import { hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -87,8 +87,8 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 		isMVP: percentChance(80)
 	});
 
-       return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDurationFromUser(
-               duration,
-               user
-       )}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
+	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDurationFromUser(
+		duration,
+		user
+	)}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
 }

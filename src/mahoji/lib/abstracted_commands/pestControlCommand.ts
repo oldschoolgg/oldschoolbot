@@ -7,7 +7,7 @@ import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -215,12 +215,12 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 
 	const { boatType } = getBoatType(user, user.combatLevel);
 
-       let str = `${
-               user.minionName
-       } is now doing ${quantity}x Pest Control games on the ${boatType} boat. The trip will take ${formatDurationFromUser(
-               duration,
-               user
-       )}.`;
+	let str = `${
+		user.minionName
+	} is now doing ${quantity}x Pest Control games on the ${boatType} boat. The trip will take ${formatDurationFromUser(
+		duration,
+		user
+	)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n**Boosts:** ${boosts.join(', ')}.`;

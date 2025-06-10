@@ -5,11 +5,11 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { TwitcherGloves } from '../../lib/constants';
 import { TWITCHERS_GLOVES } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
-import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
@@ -248,11 +248,11 @@ export const chopCommand: OSBMahojiCommand = {
 
 		let response = `${minionName(user)} is now chopping ${log.name} until your minion ${
 			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
-               }, it'll take ${
-                       quantity
-                               ? `between ${formatDurationFromUser(fakeDurationMin, user)} **and** ${formatDurationFromUser(fakeDurationMax, user)}`
-                               : formatDurationFromUser(duration, user)
-               } to finish.`;
+		}, it'll take ${
+			quantity
+				? `between ${formatDurationFromUser(fakeDurationMin, user)} **and** ${formatDurationFromUser(fakeDurationMax, user)}`
+				: formatDurationFromUser(duration, user)
+		} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

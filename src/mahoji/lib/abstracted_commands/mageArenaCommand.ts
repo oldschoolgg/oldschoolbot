@@ -4,7 +4,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, randomVariation } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -46,8 +46,8 @@ export async function mageArenaCommand(user: MUser, channelID: string) {
 		type: 'MageArena'
 	});
 
-       return `${user.minionName} is now doing the Mage Arena, it will take approximately ${formatDurationFromUser(
-               duration,
-               user
-       )}. Removed ${totalCost} from your bank.`;
+	return `${user.minionName} is now doing the Mage Arena, it will take approximately ${formatDurationFromUser(
+		duration,
+		user
+	)}. Removed ${totalCost} from your bank.`;
 }

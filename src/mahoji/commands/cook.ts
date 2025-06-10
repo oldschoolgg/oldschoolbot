@@ -3,13 +3,13 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../../lib/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import type { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, itemID, stringMatches } from '../../lib/util';
-import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
@@ -151,9 +151,10 @@ export const cookCommand: OSBMahojiCommand = {
 			type: 'Cooking'
 		});
 
-               return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDurationFromUser(
-                       duration,
-                       user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
-               )} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
+		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDurationFromUser(
+			duration,
+			user.perkTier(),
+			user.bitfield.includes(BitField.ShowMinionReturnTime)
+		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}
 };

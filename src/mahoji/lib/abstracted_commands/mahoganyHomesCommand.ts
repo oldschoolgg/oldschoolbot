@@ -6,7 +6,7 @@ import { getMinigameScore } from '../../../lib/settings/minigames';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -188,9 +188,9 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 		tier: tierData.tier
 	});
 
-       let str = `${user.minionName} is now doing ${quantity}x ${
-               tierData.name
-       } Mahogany homes contracts, the trip will take ${formatDurationFromUser(duration, user)}. Removed ${itemsNeeded} from your bank.`;
+	let str = `${user.minionName} is now doing ${quantity}x ${
+		tierData.name
+	} Mahogany homes contracts, the trip will take ${formatDurationFromUser(duration, user)}. Removed ${itemsNeeded} from your bank.`;
 
 	if (hasSack) {
 		str += "\nYou're getting more XP/Hr because of your Plank sack!";

@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { dateFm, PerkTier } from './misc';
+import { PerkTier, dateFm } from './misc';
 
 export function isAtleastThisOld(date: Date | number, expectedAgeInMS: number) {
 	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
@@ -33,20 +33,16 @@ export function formatDuration(ms: number, short = false, precise = false) {
 	if (nums.length === 0) {
 		return precise ? `${ms}ms` : 'less than 1 second';
 	}
-        return nums
-                .map(([key, val]) => `${val}${short ? '' : ' '}${key}${val === 1 || short ? '' : 's'}`)
-                .join(short ? '' : ', ');
+	return nums
+		.map(([key, val]) => `${val}${short ? '' : ' '}${key}${val === 1 || short ? '' : 's'}`)
+		.join(short ? '' : ', ');
 }
 
-export function formatDurationWithTimestamp(
-       duration: number,
-       perkTier: number,
-       showTimestamp = false
-) {
-       const base = formatDuration(duration);
-       if (perkTier >= PerkTier.Four && showTimestamp) {
-               const finishDate = new Date(Date.now() + duration);
-               return `${base} (${dateFm(finishDate)})`;
-       }
-       return base;
+export function formatDurationWithTimestamp(duration: number, perkTier: number, showTimestamp = false) {
+	const base = formatDuration(duration);
+	if (perkTier >= PerkTier.Four && showTimestamp) {
+		const finishDate = new Date(Date.now() + duration);
+		return `${base} (${dateFm(finishDate)})`;
+	}
+	return base;
 }

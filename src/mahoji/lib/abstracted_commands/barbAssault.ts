@@ -12,7 +12,14 @@ import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
+import {
+	formatDuration,
+	formatDurationFromUser,
+	itemID,
+	makeComponents,
+	randomVariation,
+	stringMatches
+} from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -287,11 +294,11 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 
 	boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
 
-       let str = `${
-               user.minionName
-       } is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
-               waveTime
-       )} - the total trip will take ${formatDurationFromUser(duration, user)}.`;
+	let str = `${
+		user.minionName
+	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
+		waveTime
+	)} - the total trip will take ${formatDurationFromUser(duration, user)}.`;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({

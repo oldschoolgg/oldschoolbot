@@ -87,7 +87,7 @@ export async function alchCommand(
 			interaction,
 			`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
 				alchValue
-                       )}). This will take approximately ${formatDurationFromUser(duration, user)}, and consume ${
+			)}). This will take approximately ${formatDurationFromUser(duration, user)}, and consume ${
 				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
 			} ${quantity}x Nature runes.`
 		);
@@ -106,10 +106,10 @@ export async function alchCommand(
 		type: 'Alching'
 	});
 
-       const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDurationFromUser(
-               duration,
-               user
-       )} to finish.`;
+	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDurationFromUser(
+		duration,
+		user
+	)} to finish.`;
 
 	return response;
 }

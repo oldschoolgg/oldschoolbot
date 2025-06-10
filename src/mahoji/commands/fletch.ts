@@ -3,14 +3,14 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util'
-import { formatDurationFromUser } from '../../lib/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { BitField } from '../../lib/constants';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import type { FletchingActivityTaskOptions } from '../../lib/types/minions';
+import { formatDurationFromUser } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -116,8 +116,8 @@ export const fletchCommand: OSBMahojiCommand = {
 			type: 'Fletching'
 		});
 
-               return `${user.minionName} is now Fletching ${quantity}${sets} ${
-                       fletchable.name
-               }, it'll take around ${formatDurationFromUser(duration, user)} to finish. Removed ${itemsNeeded} from your bank.`;
+		return `${user.minionName} is now Fletching ${quantity}${sets} ${
+			fletchable.name
+		}, it'll take around ${formatDurationFromUser(duration, user)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 };

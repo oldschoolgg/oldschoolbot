@@ -5,12 +5,12 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { BitField } from '../../lib/constants';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
-import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
@@ -360,10 +360,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 			response += ' Pure ';
 		}
 
-               response += `Essence into ${runeObj.name}, it'll take around ${formatDurationFromUser(
-                       duration,
-                       user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
-               )} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
+		response += `Essence into ${runeObj.name}, it'll take around ${formatDurationFromUser(
+			duration,
+			user.perkTier(),
+			user.bitfield.includes(BitField.ShowMinionReturnTime)
+		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 

@@ -1,11 +1,11 @@
 import {
-       type CommandResponse,
-       calcPerHour,
-       formatDuration,
-       formatDurationWithTimestamp,
-       isWeekend,
-       makeComponents,
-       stringMatches
+	type CommandResponse,
+	calcPerHour,
+	formatDuration,
+	formatDurationWithTimestamp,
+	isWeekend,
+	makeComponents,
+	stringMatches
 } from '@oldschoolgg/toolkit/util';
 import {
 	type BaseMessageOptions,
@@ -77,15 +77,15 @@ export function percentChance(percent: number) {
 }
 
 export function roll(max: number) {
-        return cryptoRand(1, max) === 1;
+	return cryptoRand(1, max) === 1;
 }
 
 export function formatDurationFromUser(duration: number, user: MUserClass) {
-       return formatDurationWithTimestamp(
-               duration,
-               user.perkTier(),
-               user.bitfield.includes(BitField.ShowMinionReturnTime)
-       );
+	return formatDurationWithTimestamp(
+		duration,
+		user.perkTier(),
+		user.bitfield.includes(BitField.ShowMinionReturnTime)
+	);
 }
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {

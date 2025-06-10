@@ -31,10 +31,10 @@ export async function myNotesCommand(user: MUser, channelID: string) {
 		quantity
 	});
 
-       return `${
-               user.minionName
-       } is now rummaging ${quantity} skeletons for Ancient pages, it'll take around ${formatDurationFromUser(
-               duration,
-               user
-       )} to finish. Removed ${foodRemoved}.`;
+	return `${
+		user.minionName
+	} is now rummaging ${quantity} skeletons for Ancient pages, it'll take around ${formatDurationFromUser(
+		duration,
+		user
+	)} to finish. Removed ${foodRemoved}.`;
 }

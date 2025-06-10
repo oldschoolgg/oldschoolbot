@@ -1,10 +1,10 @@
 import { Time, reduceNumByPercent } from 'e';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { formatDurationFromUser } from '../../../lib/util';
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { PlunderActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -59,14 +59,14 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 		minigameID: 'pyramid_plunder'
 	});
 
-       let str = `${
-               user.minionName
-       } is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${
-               completableRooms.length < 2 ? 1 : completableRooms[completableRooms.length - 2].number
-       } and ${completableRooms[completableRooms.length - 1].number}, the trip will take ${formatDurationFromUser(
-               tripLength,
-               user
-       )}, with each cycle taking ${formatDuration(plunderTime)}.`;
+	let str = `${
+		user.minionName
+	} is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${
+		completableRooms.length < 2 ? 1 : completableRooms[completableRooms.length - 2].number
+	} and ${completableRooms[completableRooms.length - 1].number}, the trip will take ${formatDurationFromUser(
+		tripLength,
+		user
+	)}, with each cycle taking ${formatDuration(plunderTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

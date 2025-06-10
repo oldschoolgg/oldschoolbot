@@ -37,10 +37,10 @@ import { Gear, constructGearSetup } from '../structures/Gear';
 import type { MakePartyOptions, Skills } from '../types';
 import type { TOAOptions } from '../types/minions';
 import {
-       assert,
-       channelIsSendable,
-       formatDuration,
-       formatDurationFromUser,
+	assert,
+	channelIsSendable,
+	formatDuration,
+	formatDurationFromUser,
 	formatList,
 	formatSkillRequirements,
 	itemNameFromID,
@@ -1051,10 +1051,10 @@ async function checkTOAUser(
 			true,
 			`${
 				user.usernameOrMention
-                       } doesn't have enough Serpentine helm charges. You need at least ${serpHelmCharges} charges to do a ${formatDurationFromUser(
-                               duration,
-                               user
-                       )} TOA raid.`
+			} doesn't have enough Serpentine helm charges. You need at least ${serpHelmCharges} charges to do a ${formatDurationFromUser(
+				duration,
+				user
+			)} TOA raid.`
 		];
 	}
 
@@ -1298,10 +1298,10 @@ export async function toaStartCommand(
 		users.map(u => u.usernameOrMention)
 	)}) are now off to do ${
 		quantity === 1 ? 'a' : `${quantity}x`
-       } level ${raidLevel} Tombs of Amascut raid - the total trip will take ${formatDurationFromUser(
-               fakeDuration,
-               partyOptions.leader
-       )}.`;
+	} level ${raidLevel} Tombs of Amascut raid - the total trip will take ${formatDurationFromUser(
+		fakeDuration,
+		partyOptions.leader
+	)}.`;
 
 	str += ` \n\n${debugStr}`;
 

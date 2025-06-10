@@ -70,8 +70,8 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	const xpHr = `${Math.round(((enchantable.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-       return `${user.minionName} is now enchanting ${quantity}x ${enchantable.name}, it'll take around ${formatDurationFromUser(
-               duration,
-               user
-       )} to finish. Removed ${cost} from your bank. ${xpHr}`;
+	return `${user.minionName} is now enchanting ${quantity}x ${enchantable.name}, it'll take around ${formatDurationFromUser(
+		duration,
+		user
+	)} to finish. Removed ${cost} from your bank. ${xpHr}`;
 }

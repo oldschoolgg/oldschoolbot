@@ -4,12 +4,12 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util'
-import { formatDurationFromUser } from '../../lib/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { BitField } from '../../lib/constants';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
+import { formatDurationFromUser } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -143,8 +143,8 @@ export const mixCommand: OSBMahojiCommand = {
 			type: 'Herblore'
 		});
 
-               return `${user.minionName} ${cost} making ${quantity}x ${
-                       mixableItem.outputMultiple ? 'batches of' : ''
-               }${itemName}, it'll take around ${formatDurationFromUser(quantity * timeToMixSingleItem, user)} to finish.`;
+		return `${user.minionName} ${cost} making ${quantity}x ${
+			mixableItem.outputMultiple ? 'batches of' : ''
+		}${itemName}, it'll take around ${formatDurationFromUser(quantity * timeToMixSingleItem, user)} to finish.`;
 	}
 };

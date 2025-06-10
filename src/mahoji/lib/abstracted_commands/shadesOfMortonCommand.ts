@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 
 import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, itemNameFromID, resolveItems } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, itemNameFromID, resolveItems } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -309,9 +309,9 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 		shadeID: shade.shadeName
 	});
 
-       let str = `${
-               user.minionName
-       } is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDurationFromUser(duration, user)}.`;
+	let str = `${
+		user.minionName
+	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDurationFromUser(duration, user)}.`;
 	if (messages.length > 0) {
 		str += `\n**Messages:** ${messages.join(', ')}`;
 	}

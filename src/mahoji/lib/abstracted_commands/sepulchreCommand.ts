@@ -2,7 +2,6 @@ import { Time, reduceNumByPercent, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { formatDurationFromUser } from '../../../lib/util';
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
@@ -17,6 +16,7 @@ import type { Fletchable } from '../../../lib/skilling/types';
 import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
@@ -126,12 +126,12 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});
 
-       let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
-               completableFloors[0].number
-       }-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDurationFromUser(
-               tripLength,
-               user
-       )}, with each lap taking ${formatDuration(lapLength)}.`;
+	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
+		completableFloors[0].number
+	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDurationFromUser(
+		tripLength,
+		user
+	)}, with each lap taking ${formatDuration(lapLength)}.`;
 
 	if (fletchable && itemsNeeded) {
 		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;

@@ -302,19 +302,19 @@ export async function coxCommand(
 		quantity
 	});
 
-       let str = isSolo
-               ? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
-                               quantity > 1 ? 's' : ''
-                       }. The total trip will take ${formatDurationFromUser(duration, user)}.`
-               : isFakeMass
-                       ? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
-                                       quantity > 1 ? 's' : ''
-                               } - the total trip will take ${formatDurationFromUser(duration, user)}.`
-                       : `${partyOptions.leader.usernameOrMention}'s party (${users
-                                       .map(u => u.usernameOrMention)
-                                       .join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
-                                       quantity > 1 ? 's' : ''
-                               } - the total trip will take ${formatDurationFromUser(duration, user)}.`;
+	let str = isSolo
+		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+				quantity > 1 ? 's' : ''
+			}. The total trip will take ${formatDurationFromUser(duration, user)}.`
+		: isFakeMass
+			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+					quantity > 1 ? 's' : ''
+				} - the total trip will take ${formatDurationFromUser(duration, user)}.`
+			: `${partyOptions.leader.usernameOrMention}'s party (${users
+					.map(u => u.usernameOrMention)
+					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+					quantity > 1 ? 's' : ''
+				} - the total trip will take ${formatDurationFromUser(duration, user)}.`;
 
 	str += ` \n\n${debugStr}`;
 

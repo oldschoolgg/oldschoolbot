@@ -1,9 +1,9 @@
 import { Time } from 'e';
 
+import { BitField } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, randomVariation } from '../../../lib/util';
-import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -24,5 +24,5 @@ export async function aerialFishingCommand(user: MUser, channelID: string) {
 		type: 'AerialFishing'
 	});
 
-       return `${user.minionName} is now doing Aerial fishing, it will take around ${formatDurationFromUser(duration, user)} to finish.`;
+	return `${user.minionName} is now doing Aerial fishing, it will take around ${formatDurationFromUser(duration, user)} to finish.`;
 }

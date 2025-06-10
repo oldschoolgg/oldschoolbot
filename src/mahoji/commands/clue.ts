@@ -452,7 +452,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		response.content = `${user.minionName} is now completing ${cluesDone}x ${
 			clueTier.name
-               } clues, it'll take around ${formatDurationFromUser(duration, user)} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${
+		} clues, it'll take around ${formatDurationFromUser(duration, user)} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${
 			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
 		}${implingLootString}`;
 		return response;

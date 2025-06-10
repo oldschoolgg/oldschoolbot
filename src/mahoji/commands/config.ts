@@ -145,20 +145,20 @@ const toggles: UserConfigToggle[] = [
 		name: 'Disable Names on Opens',
 		bit: BitField.DisableOpenableNames
 	},
-        {
-                name: 'Show Detailed Info',
-                bit: BitField.ShowDetailedInfo
-        },
-        {
-                name: 'Show Minion Return Time',
-                bit: BitField.ShowMinionReturnTime,
-                canToggle: async user => {
-                        if (user.perkTier() < PerkTier.Four) {
-                                return { result: false, message: patronMsg(PerkTier.Four) };
-                        }
-                        return { result: true };
-                }
-        }
+	{
+		name: 'Show Detailed Info',
+		bit: BitField.ShowDetailedInfo
+	},
+	{
+		name: 'Show Minion Return Time',
+		bit: BitField.ShowMinionReturnTime,
+		canToggle: async user => {
+			if (user.perkTier() < PerkTier.Four) {
+				return { result: false, message: patronMsg(PerkTier.Four) };
+			}
+			return { result: true };
+		}
+	}
 ];
 
 async function handleToggle(user: MUser, name: string, interaction?: ChatInputCommandInteraction) {

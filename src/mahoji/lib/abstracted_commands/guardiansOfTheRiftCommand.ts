@@ -6,7 +6,7 @@ import { pickaxes, varrockArmours } from '../../../lib/skilling/functions/mining
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GuardiansOfTheRiftActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, itemID, itemNameFromID, randomVariation } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, itemID, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -190,10 +190,10 @@ export async function guardiansOfTheRiftStartCommand(
 		combinationRunes
 	});
 
-       return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${formatDurationFromUser(
-               duration,
-               user
-       )} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}${
-               combinationRunes ? `\nYour minion also consumed ${removeRunesAndNecks}.` : ''
-       }`;
+	return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${formatDurationFromUser(
+		duration,
+		user
+	)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}${
+		combinationRunes ? `\nYour minion also consumed ${removeRunesAndNecks}.` : ''
+	}`;
 }

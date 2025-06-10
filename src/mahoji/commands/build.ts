@@ -5,11 +5,11 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, round } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../../lib/constants';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, hasSkillReqs } from '../../lib/util';
-import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -148,10 +148,10 @@ export const buildCommand: OSBMahojiCommand = {
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-               return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDurationFromUser(
-                       duration,
-                       user
-               )} to finish. Removed ${cost} from your bank. **${xpHr}**
+		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDurationFromUser(
+			duration,
+			user
+		)} to finish. Removed ${cost} from your bank. **${xpHr}**
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
 `;

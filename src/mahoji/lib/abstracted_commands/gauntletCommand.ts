@@ -5,7 +5,7 @@ import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GauntletOptions } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, formatSkillRequirements, randomVariation } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, formatSkillRequirements, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -141,7 +141,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 
 	const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : '';
 
-       return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatDurationFromUser(duration, user)}.
+	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatDurationFromUser(duration, user)}.
  ${boostsStr}
  `;
 }

@@ -3,10 +3,10 @@ import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { formatDurationFromUser } from '../../../lib/util';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import { formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -163,11 +163,11 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 
 	const duration = VolcanicMineGameTime * gameQuantity;
 
-       const str = `${
-               user.minionName
-       } is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${formatDurationFromUser(duration, user)}.${
-               boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
-       }\n**Supply Usage:** ${suppliesUsage}`;
+	const str = `${
+		user.minionName
+	} is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${formatDurationFromUser(duration, user)}.${
+		boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
+	}\n**Supply Usage:** ${suppliesUsage}`;
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,

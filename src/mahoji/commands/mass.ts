@@ -10,7 +10,7 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import type { KillableMonster } from '../../lib/minions/types';
 import { setupParty } from '../../lib/party';
 import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { channelIsSendable, formatDurationFromUser, formatDuration } from '../../lib/util';
+import { channelIsSendable, formatDuration, formatDurationFromUser } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import findMonster from '../../lib/util/findMonster';
@@ -171,14 +171,14 @@ export const massCommand: OSBMahojiCommand = {
 		if (boostMsgs.length > 0) {
 			killsPerHr += `\n\n${boostMsgs.join(', ')}.`;
 		}
-               let str = `${user.usernameOrMention}'s party (${users
-                       .map(u => u.usernameOrMention)
-                       .join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
-                       perKillTime
-               )} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDurationFromUser(
-                       duration,
-                       user
-               )}. ${killsPerHr}`;
+		let str = `${user.usernameOrMention}'s party (${users
+			.map(u => u.usernameOrMention)
+			.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
+			perKillTime
+		)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDurationFromUser(
+			duration,
+			user
+		)}. ${killsPerHr}`;
 
 		if (usersKickedForBusy.length > 0) {
 			str += `\nThe following users were removed, because their minion became busy before the mass started: ${usersKickedForBusy

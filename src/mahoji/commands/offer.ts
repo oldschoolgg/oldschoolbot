@@ -5,16 +5,16 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util'
-import { formatDurationFromUser } from '../../lib/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import { Events, BitField } from '../../lib/constants';
+import { BitField, Events } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { OfferingActivityTaskOptions } from '../../lib/types/minions';
+import { formatDurationFromUser } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem from '../../lib/util/getOSItem';
@@ -283,8 +283,8 @@ export const offerCommand: OSBMahojiCommand = {
 			duration,
 			type: 'Offering'
 		});
-               return `${user.minionName} is now offering ${quantity}x ${
-                       bone.name
-               } at the Chaos altar, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
+		return `${user.minionName} is now offering ${quantity}x ${
+			bone.name
+		} at the Chaos altar, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 	}
 };

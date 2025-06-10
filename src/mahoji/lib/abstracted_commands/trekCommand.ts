@@ -2,7 +2,6 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDurationFromUser } from '../../../lib/util';
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { GearStat } from '../../../lib/gear/types';
@@ -11,6 +10,7 @@ import type { AddXpParams, GearRequirement } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import { percentChance, readableStatName, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -131,10 +131,10 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		minigameID: 'temple_trekking'
 	});
 
-       let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will take ${formatDurationFromUser(
-               duration,
-               user
-       )}, with each trek taking ${formatDuration(tripTime)}.`;
+	let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will take ${formatDurationFromUser(
+		duration,
+		user
+	)}, with each trek taking ${formatDuration(tripTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

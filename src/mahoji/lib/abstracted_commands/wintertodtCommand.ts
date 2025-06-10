@@ -3,11 +3,11 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { formatDurationFromUser } from '../../../lib/util';
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { trackLoot } from '../../../lib/lootTrack';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -119,8 +119,8 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		type: 'Wintertodt'
 	});
 
-       return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDurationFromUser(
-               durationPerTodt * quantity,
-               user
-       )}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
+	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDurationFromUser(
+		durationPerTodt * quantity,
+		user
+	)}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
 }

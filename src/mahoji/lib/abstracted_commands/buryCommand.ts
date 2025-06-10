@@ -1,11 +1,11 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../../../lib/constants';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
-import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -61,5 +61,5 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 		type: 'Burying'
 	});
 
-       return `${user.minionName} is now burying ${cost}, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
+	return `${user.minionName} is now burying ${cost}, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 }

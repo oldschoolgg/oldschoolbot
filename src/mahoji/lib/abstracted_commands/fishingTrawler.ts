@@ -1,8 +1,8 @@
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
-import { formatDurationFromUser } from '../../../lib/util';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -30,8 +30,8 @@ export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 		duration
 	});
 
-       return `${user.minionName} is now doing ${quantity}x Fishing Trawler trips, it will take around ${formatDurationFromUser(
-               duration,
-               user
-       )} to finish.\n\n**Boosts:** ${boost}% boost for experience`;
+	return `${user.minionName} is now doing ${quantity}x Fishing Trawler trips, it will take around ${formatDurationFromUser(
+		duration,
+		user
+	)} to finish.\n\n**Boosts:** ${boost}% boost for experience`;
 }

@@ -85,10 +85,10 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 		rune
 	});
 
-       let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDurationFromUser(
-               maxTripLength,
-               user
-       )} at the Dark altar.`;
+	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDurationFromUser(
+		maxTripLength,
+		user
+	)} at the Dark altar.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

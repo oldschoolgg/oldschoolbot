@@ -12,7 +12,7 @@ import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUse
 import type { KillableMonster } from '../../../lib/minions/types';
 import { Gear } from '../../../lib/structures/Gear';
 import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDurationFromUser, formatDuration, hasSkillReqs } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -34,7 +34,7 @@ async function soloMessage(user: MUser, duration: number, quantity: number, isPh
 		str += ` They are not scared of ${name} anymore, and ready to fight!`;
 	}
 
-       return `${str} The trip will take approximately ${formatDurationFromUser(duration, user)}.`;
+	return `${str} The trip will take approximately ${formatDurationFromUser(duration, user)}.`;
 }
 
 const inquisitorItems = resolveItems([
@@ -317,7 +317,7 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 					perKillTime
 				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
-                               )} - the total trip will take ${formatDurationFromUser(duration, user)}.`;
+				)} - the total trip will take ${formatDurationFromUser(duration, user)}.`;
 
 	str += `\nRemoved ${soloFoodUsage} from your bank.${
 		isPhosani

@@ -4,7 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { HERBIBOAR_ID, RAZOR_KEBBIT_ID, BitField } from '../../lib/constants';
+import { BitField, HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../lib/lootTrack';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
@@ -280,9 +280,9 @@ export const huntCommand: OSBMahojiCommand = {
 			type: 'Hunter'
 		});
 
-               let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
-                       crystalImpling ? ' ' : ` ${quantity}x `
-               }${creature.name}, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
+		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
+			crystalImpling ? ' ' : ` ${quantity}x `
+		}${creature.name}, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
