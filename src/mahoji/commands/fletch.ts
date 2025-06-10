@@ -4,7 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util'
-import { formatDurationFromUser } from '../../../lib/util';
+import { formatDurationFromUser } from '../../lib/util';
 import { BitField } from '../../lib/constants';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';

@@ -5,7 +5,7 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util'
-import { formatDurationFromUser } from '../../../lib/util';
+import { formatDurationFromUser } from '../../lib/util';
 import { BitField } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { quests } from '../../lib/minions/data/quests';

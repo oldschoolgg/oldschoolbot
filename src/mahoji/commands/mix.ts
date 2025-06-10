@@ -5,7 +5,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util'
-import { formatDurationFromUser } from '../../../lib/util';
+import { formatDurationFromUser } from '../../lib/util';
 import { BitField } from '../../lib/constants';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';

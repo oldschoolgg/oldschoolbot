@@ -41,7 +41,7 @@ import { sendToChannelID } from './util/webhook.js';
 
 export * from 'oldschooljs';
 
-export { stringMatches, calcPerHour, formatDuration, formatDurationWithTimestamp, formatDurationFromUser, makeComponents, isWeekend };
+export { stringMatches, calcPerHour, formatDuration, formatDurationWithTimestamp, makeComponents, isWeekend };
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {

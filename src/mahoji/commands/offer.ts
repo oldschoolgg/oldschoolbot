@@ -6,7 +6,7 @@ import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util'
-import { formatDurationFromUser } from '../../../lib/util';
+import { formatDurationFromUser } from '../../lib/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { Events, BitField } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
