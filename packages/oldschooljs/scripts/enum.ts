@@ -1,5 +1,6 @@
 import { writeFileSync } from 'node:fs';
 
+import { SkillsArray } from '../../../src/lib/skilling/types';
 import { type Item, Items, Monsters } from '../src';
 
 export function safeItemName(itemName: string) {
@@ -52,10 +53,22 @@ async function main() {
 	let eItemStr = 'export enum EItem {';
 	for (const [key, value] of enumItems.sort((a, b) => a[1] - b[1])) {
 		if (itemsToIgnore.has(key) && !forcedChangedIDs.has(value)) continue;
-		const codeKey = startsWithNumber(key) ? `'${key}'` : key;
+		let codeKey = startsWithNumber(key) ? `'${key}'` : key;
+		if (codeKey.endsWith('_CAPET')) {
+			codeKey = codeKey.replace('_CAPET', '_CAPE_TRIMMED');
+		}
+
 		eItemStr += `\n\t${codeKey} = ${value},`;
 		const _item = Items.get(value)!;
-		if (_item.equipable && _item.equipment?.slot && _item.tradeable_on_ge) {
+
+		if (
+			_item.equipable &&
+			_item.equipment?.slot &&
+			(_item.tradeable_on_ge ||
+				['black mask', 'slayer', ...SkillsArray.map(n => `${n} `)].some(_str =>
+					_item.name.toLowerCase().includes(_str)
+				))
+		) {
 			eGearStr += `\n\t${codeKey} = ${value},`;
 		}
 	}
