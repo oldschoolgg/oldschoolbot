@@ -88,7 +88,7 @@ export async function alchCommand(
 			interaction,
 			`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
 				alchValue
-			)}). This will take approximately ${formatDuration(duration)}, and consume ${
+                       )}). This will take approximately ${formatDurationFromUser(duration, user)}, and consume ${
 				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
 			} ${quantity}x Nature runes.`
 		);

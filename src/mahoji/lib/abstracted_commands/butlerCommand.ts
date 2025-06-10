@@ -5,7 +5,7 @@ import { resolveItems } from 'oldschooljs/dist/util/util';
 import { Planks } from '../../../lib/minions/data/planks';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ButlerActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
+import { formatDurationFromUser, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -152,7 +152,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		response += `\nYou have used ${consumedItems} for teleports.`;
 	}
 
-	response += `\nThey'll come back in around ${formatDuration(duration)}.`;
+       response += `\nThey'll come back in around ${formatDurationFromUser(duration, user)}.`;
 
 	return response;
 }

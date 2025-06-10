@@ -12,7 +12,7 @@ import Farming from '../../../lib/skilling/skills/farming';
 import type { Plant } from '../../../lib/skilling/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { FarmingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
@@ -100,8 +100,8 @@ export async function harvestCommand({
 		boostStr.push('5% crop yield for Farming Skillcape');
 	}
 
-	returnMessageStr = `${user.minionName} is now harvesting ${patch.lastQuantity}x ${storeHarvestablePlant}.
-It'll take around ${formatDuration(duration)} to finish.
+       returnMessageStr = `${user.minionName} is now harvesting ${patch.lastQuantity}x ${storeHarvestablePlant}.
+It'll take around ${formatDurationFromUser(duration, user)} to finish.
 	
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
@@ -317,8 +317,8 @@ export async function farmingPlantCommand({
 		pid: inserted.id
 	});
 
-	return `${infoStr.join(' ')}
-It'll take around ${formatDuration(duration)} to finish.
+       return `${infoStr.join(' ')}
+It'll take around ${formatDurationFromUser(duration, user)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
