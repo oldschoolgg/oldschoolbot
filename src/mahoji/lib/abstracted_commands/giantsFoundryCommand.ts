@@ -8,7 +8,7 @@ import { getMinigameEntity } from '../../../lib/settings/minigames';
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -241,9 +241,10 @@ export async function giantsFoundryStartCommand(
 		metalScore: alloy.metalScore
 	});
 
-	return `${user.minionName} is now doing ${quantity}x Giants' Foundry! It will take ${formatDuration(
-		duration
-	)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
+       return `${user.minionName} is now doing ${quantity}x Giants' Foundry! It will take ${formatDurationFromUser(
+               duration,
+               user
+       )} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
 }
 
 export async function giantsFoundryShopCommand(

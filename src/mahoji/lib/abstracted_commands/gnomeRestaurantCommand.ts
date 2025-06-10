@@ -5,7 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { getPOHObject } from '../../../lib/poh';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, randomVariation } from '../../../lib/util';
+import { formatDurationFromUser, formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -108,9 +108,10 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 		gloriesRemoved: itemsToRemove.amount('Amulet of glory(6)')
 	});
 
-	let str = `${user.minionName} is now working at the Gnome Restaurant for ${formatDuration(
-		duration
-	)}. Removed ${itemsToRemove} from your bank.`;
+       let str = `${user.minionName} is now working at the Gnome Restaurant for ${formatDurationFromUser(
+               duration,
+               user
+       )}. Removed ${itemsToRemove} from your bank.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

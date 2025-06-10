@@ -9,7 +9,7 @@ import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { Skills } from '../../../lib/types';
-import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -397,11 +397,12 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 		strategy
 	});
 
-	return `${
-		user.minionName
-	} is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${formatDuration(
-		duration
-	)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
+       return `${
+               user.minionName
+       } is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${formatDurationFromUser(
+               duration,
+               user
+       )} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
 }
 
 export async function nightmareZoneShopCommand(
