@@ -3,7 +3,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import type { CastingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatDurationWithTimestamp, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
 import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -124,7 +124,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		((spell.xp * quantity) / (duration / Time.Minute)) * 60
 	).toLocaleString()} Magic XP/Hr`;
 
-       let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDurationWithTimestamp(
+       let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDurationFromUser(
                duration,
                user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
        )} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${magicXpHr}**`;

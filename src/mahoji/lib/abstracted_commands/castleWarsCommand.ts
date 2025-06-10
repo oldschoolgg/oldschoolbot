@@ -1,6 +1,7 @@
 import { Time } from 'e';
 
-import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util'
+import { formatDurationFromUser } from '../../../lib/util';
 import { BitField } from '../../../lib/constants';
 import { getMinigameEntity } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
@@ -24,7 +25,7 @@ export async function castleWarsStartCommand(user: MUser, channelID: string) {
 
        return `${
                user.minionName
-       } is now doing ${quantity} games of Castle Wars. The trip will take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))}.`;
+       } is now doing ${quantity} games of Castle Wars. The trip will take around ${formatDurationFromUser(duration, user)}.`;
 }
 export async function castleWarsStatsCommand(user: MUser) {
 	const { bank } = user;

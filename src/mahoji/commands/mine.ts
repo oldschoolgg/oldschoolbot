@@ -13,7 +13,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import type { Ore } from '../../lib/skilling/types';
 import type { GearBank } from '../../lib/structures/GearBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationWithTimestamp, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
+import { formatDuration, formatDurationFromUser, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
@@ -265,8 +265,8 @@ export const mineCommand: OSBMahojiCommand = {
 			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
                }, it'll take ${
                        quantity
-                               ? `between ${formatDurationWithTimestamp(res.fakeDurationMin, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} **and** ${formatDurationWithTimestamp(res.fakeDurationMax, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))}`
-                               : formatDurationWithTimestamp(res.duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))
+                               ? `between ${formatDurationFromUser(res.fakeDurationMin, user)} **and** ${formatDurationFromUser(res.fakeDurationMax, user)}`
+                               : formatDurationFromUser(res.duration, user)
                } to finish.`;
 
 		if (res.boosts.length > 0) {

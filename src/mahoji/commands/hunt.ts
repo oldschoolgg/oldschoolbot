@@ -13,7 +13,7 @@ import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import type { Peak } from '../../lib/tickers';
 import type { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationWithTimestamp, hasSkillReqs, itemID } from '../../lib/util';
+import { formatDuration, formatDurationFromUser, hasSkillReqs, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -282,7 +282,7 @@ export const huntCommand: OSBMahojiCommand = {
 
                let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
                        crystalImpling ? ' ' : ` ${quantity}x `
-               }${creature.name}, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish.`;
+               }${creature.name}, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

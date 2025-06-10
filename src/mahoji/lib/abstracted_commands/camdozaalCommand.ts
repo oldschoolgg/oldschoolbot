@@ -7,7 +7,7 @@ import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import Mining from '../../../lib/skilling/skills/mining';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, formatDurationWithTimestamp, itemNameFromID, randomVariation } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, itemNameFromID, randomVariation } from '../../../lib/util';
 import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -77,8 +77,8 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
                quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
        }, it'll take ${
                quantity
-                       ? `between ${formatDurationWithTimestamp(fakeDurationMin, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} **and** ${formatDurationWithTimestamp(fakeDurationMax, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))}`
-                       : formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))
+                       ? `between ${formatDurationFromUser(fakeDurationMin, user)} **and** ${formatDurationFromUser(fakeDurationMax, user)}`
+                       : formatDurationFromUser(duration, user)
        } to finish.`;
 
 	if (boosts.length > 0) {
@@ -127,7 +127,7 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 		type: 'CamdozaalSmithing'
 	});
 
-       return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatDurationWithTimestamp(
+       return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatDurationFromUser(
                duration,
                user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
        )} to finish.`;
@@ -165,7 +165,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 		type: 'CamdozaalFishing'
 	});
 
-       return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatDurationWithTimestamp(
+       return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatDurationFromUser(
                duration,
                user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
        )} to finish.`;

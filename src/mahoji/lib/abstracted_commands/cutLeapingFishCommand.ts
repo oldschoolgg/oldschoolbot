@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import LeapingFish from '../../../lib/skilling/skills/cooking/leapingFish';
 import type { CutLeapingFishActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatDurationWithTimestamp, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
 import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -75,5 +75,5 @@ export async function cutLeapingFishCommand({
 
        return `${user.minionName} is now cutting ${quantity}x ${
                barbarianFish.item.name
-       }, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish.`;
+       }, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 }

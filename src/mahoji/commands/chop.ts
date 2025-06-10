@@ -8,7 +8,7 @@ import { TWITCHERS_GLOVES } from '../../lib/constants';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationWithTimestamp, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
+import { formatDuration, formatDurationFromUser, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
@@ -250,8 +250,8 @@ export const chopCommand: OSBMahojiCommand = {
 			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
                }, it'll take ${
                        quantity
-                               ? `between ${formatDurationWithTimestamp(fakeDurationMin, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} **and** ${formatDurationWithTimestamp(fakeDurationMax, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))}`
-                               : formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))
+                               ? `between ${formatDurationFromUser(fakeDurationMin, user)} **and** ${formatDurationFromUser(fakeDurationMax, user)}`
+                               : formatDurationFromUser(duration, user)
                } to finish.`;
 
 		if (boosts.length > 0) {

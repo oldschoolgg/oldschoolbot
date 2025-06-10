@@ -1,7 +1,8 @@
 import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDurationFromUser } from '../../../lib/util';
 import { BitField } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -87,7 +88,7 @@ export async function driftNetCommand(
 
 	await user.removeItemsFromBank(itemsToRemove);
 
-       let str = `${user.minionName} is now doing Drift net fishing, it will take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))}.`;
+       let str = `${user.minionName} is now doing Drift net fishing, it will take around ${formatDurationFromUser(duration, user)}.`;
 
 	if (itemsToRemove.length > 0) {
 		str += ` Removed ${itemsToRemove} from your bank.`;

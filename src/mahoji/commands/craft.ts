@@ -3,7 +3,8 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
-import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util'
+import { formatDurationFromUser } from '../../../lib/util';
 import { BitField } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
@@ -127,6 +128,6 @@ export const craftCommand: OSBMahojiCommand = {
 
                return `${user.minionName} is now crafting ${quantity}${sets} ${
                        craftable.name
-               }, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish. Removed ${itemsNeeded} from your bank.`;
+               }, it'll take around ${formatDurationFromUser(duration, user)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 };

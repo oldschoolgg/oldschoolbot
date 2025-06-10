@@ -9,7 +9,7 @@ import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationWithTimestamp, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
+import { formatDuration, formatDurationFromUser, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
@@ -360,7 +360,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			response += ' Pure ';
 		}
 
-               response += `Essence into ${runeObj.name}, it'll take around ${formatDurationWithTimestamp(
+               response += `Essence into ${runeObj.name}, it'll take around ${formatDurationFromUser(
                        duration,
                        user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
                )} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${

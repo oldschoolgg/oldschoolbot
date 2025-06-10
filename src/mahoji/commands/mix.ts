@@ -4,7 +4,8 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util'
+import { formatDurationFromUser } from '../../../lib/util';
 import { BitField } from '../../lib/constants';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -144,6 +145,6 @@ export const mixCommand: OSBMahojiCommand = {
 
                return `${user.minionName} ${cost} making ${quantity}x ${
                        mixableItem.outputMultiple ? 'batches of' : ''
-               }${itemName}, it'll take around ${formatDurationWithTimestamp(quantity * timeToMixSingleItem, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish.`;
+               }${itemName}, it'll take around ${formatDurationFromUser(quantity * timeToMixSingleItem, user)} to finish.`;
 	}
 };

@@ -1,7 +1,8 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util'
+import { formatDurationFromUser } from '../../../lib/util';
 import { BitField } from '../../../lib/constants';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
@@ -71,7 +72,7 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 
        const response = `${user.minionName} is now killing ${quantity}x animated ${
                armorSet.name
-       } armour, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish.`;
+       } armour, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 
 	return response;
 }
@@ -121,7 +122,7 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 		type: 'Cyclops'
 	});
 
-       const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDurationWithTimestamp(
+       const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDurationFromUser(
                duration,
                user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
        )} to finish. ${

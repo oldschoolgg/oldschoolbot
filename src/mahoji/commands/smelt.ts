@@ -7,7 +7,7 @@ import { resolveItems } from 'oldschooljs/dist/util/util';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationWithTimestamp, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
+import { formatDuration, formatDurationFromUser, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
@@ -171,7 +171,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 
                const response = `${user.minionName} is now smelting ${quantity}x ${
                        bar.name
-               }, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime))} to finish. ${
+               }, it'll take around ${formatDurationFromUser(duration, user)} to finish. ${
 			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
 		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
 

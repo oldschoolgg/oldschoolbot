@@ -1,7 +1,8 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util'
+import { formatDurationFromUser } from '../../../lib/util';
 import { BitField } from '../../../lib/constants';
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -60,7 +61,7 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 
 	return `${
 		user.minionName
-       } is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatDurationWithTimestamp(
+       } is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatDurationFromUser(
                duration,
                user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
        )} to finish. Removed ${quantityGlories}x Amulet of glory from your bank.${
