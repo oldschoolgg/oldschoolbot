@@ -153,6 +153,10 @@ export function dateFm(date: Date) {
 	return `${time(date, 'T')} (${time(date, 'R')})`;
 }
 
+export function cleanDateFm(date: Date) {
+	return time(date, 'T');
+}
+
 export function getInterval(intervalHours: number) {
 	const currentTime = new Date();
 	const currentHour = currentTime.getHours();
