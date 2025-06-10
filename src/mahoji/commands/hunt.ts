@@ -4,7 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField, HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
+import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../lib/lootTrack';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
@@ -186,14 +186,14 @@ export const huntCommand: OSBMahojiCommand = {
 			duration = Math.floor(quantity * Time.Minute);
 		}
 
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(
-                                maxTripLength / ((catchTime * Time.Second) / traps)
-                        )}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(
+				maxTripLength / ((catchTime * Time.Second) / traps)
+			)}.`;
+		}
 
 		const removeBank = new Bank();
 

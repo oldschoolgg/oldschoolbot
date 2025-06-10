@@ -2,7 +2,6 @@ import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { BitField } from '../../../lib/constants';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
 import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

@@ -1,6 +1,5 @@
 import { Time } from 'e';
 
-import { BitField } from '../../../lib/constants';
 import { getMinigameEntity } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDurationFromUser } from '../../../lib/util';

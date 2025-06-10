@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants';
 import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -153,14 +152,14 @@ export const lapsCommand: OSBMahojiCommand = {
 		}
 		const duration = quantity * timePerLap;
 
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )}, try a lower quantity. The highest amount of ${course.name} laps you can do is ${Math.floor(
-                                maxTripLength / timePerLap
-                        )}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)}, try a lower quantity. The highest amount of ${course.name} laps you can do is ${Math.floor(
+				maxTripLength / timePerLap
+			)}.`;
+		}
 
 		let response = `${user.minionName} is now doing ${quantity}x ${
 			course.name

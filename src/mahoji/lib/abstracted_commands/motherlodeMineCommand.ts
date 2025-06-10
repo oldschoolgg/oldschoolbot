@@ -1,7 +1,6 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { randomVariation } from 'oldschooljs/dist/util';
 
-import { BitField } from '../../../lib/constants';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import Mining from '../../../lib/skilling/skills/mining';

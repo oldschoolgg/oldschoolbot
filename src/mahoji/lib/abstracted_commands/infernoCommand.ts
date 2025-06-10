@@ -15,13 +15,7 @@ import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import type { Skills } from '../../../lib/types';
 import type { InfernoOptions } from '../../../lib/types/minions';
-import {
-	formatDuration,
-	formatDurationFromUser,
-	hasSkillReqs,
-	itemNameFromID,
-	randomVariation
-} from '../../../lib/util';
+import { formatDurationFromUser, hasSkillReqs, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';

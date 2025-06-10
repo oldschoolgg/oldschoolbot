@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { BuryingActivityTaskOptions } from '../../../lib/types/minions';

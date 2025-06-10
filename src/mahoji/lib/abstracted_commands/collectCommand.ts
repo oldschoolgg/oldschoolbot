@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { CollectingOptions } from '../../../lib/types/minions';

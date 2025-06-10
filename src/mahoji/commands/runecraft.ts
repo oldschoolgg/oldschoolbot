@@ -5,7 +5,6 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { BitField } from '../../lib/constants';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
@@ -235,12 +234,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
 		let duration = numberOfInventories * tripLength;
 
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )}, try a lower quantity. The highest amount of ${runeObj.name} you can craft is ${Math.floor(maxCanDo)}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)}, try a lower quantity. The highest amount of ${runeObj.name} you can craft is ${Math.floor(maxCanDo)}.`;
+		}
 
 		if (rune === 'blood') {
 			const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
@@ -363,8 +362,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		response += `Essence into ${runeObj.name}, it'll take around ${formatDurationFromUser(
 			duration,
-			user.perkTier(),
-			user.bitfield.includes(BitField.ShowMinionReturnTime)
+			user
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;

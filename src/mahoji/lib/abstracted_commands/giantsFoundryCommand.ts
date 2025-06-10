@@ -200,14 +200,14 @@ export async function giantsFoundryStartCommand(
 		quantity = Math.floor(maxTripLength / (alloy.sections * timePerSection));
 	}
 	const duration = quantity * alloy.sections * timePerSection;
-        if (duration > maxTripLength) {
-                return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                        maxTripLength,
-                        user
-                )}, try a lower trip length. The highest amount of minutes you can send out is ${Math.floor(
-                        maxTripLength / Time.Minute
-                )}.`;
-        }
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+			maxTripLength,
+			user
+		)}, try a lower trip length. The highest amount of minutes you can send out is ${Math.floor(
+			maxTripLength / Time.Minute
+		)}.`;
+	}
 
 	const totalCost = new Bank(alloy.cost).clone().multiply(quantity);
 

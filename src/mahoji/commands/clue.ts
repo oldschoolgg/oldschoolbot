@@ -433,12 +433,12 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		const duration = timePerClue * quantity;
-                if (duration > maxTripLength || quantity > maxCanDo) {
-                        return `${user.minionName} can't go on Clue trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
-                }
+		if (duration > maxTripLength || quantity > maxCanDo) {
+			return `${user.minionName} can't go on Clue trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
+		}
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			ci: clueTier.id,

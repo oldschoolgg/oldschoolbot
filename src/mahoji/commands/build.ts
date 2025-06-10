@@ -5,7 +5,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, round } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
@@ -121,14 +120,14 @@ export const buildCommand: OSBMahojiCommand = {
 
 		const duration = quantity * timeToBuildSingleObject;
 
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )} minutes, try a lower quantity. The highest amount of ${object.name}s you can build is ${Math.floor(
-                                maxTripLength / timeToBuildSingleObject
-                        )}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)} minutes, try a lower quantity. The highest amount of ${object.name}s you can build is ${Math.floor(
+				maxTripLength / timeToBuildSingleObject
+			)}.`;
+		}
 
 		const gpNeeded = Math.floor(10_000 * (invsPerTrip / 8));
 		cost.add('Coins', gpNeeded);

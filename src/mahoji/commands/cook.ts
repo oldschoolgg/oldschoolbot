@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
@@ -132,14 +131,14 @@ export const cookCommand: OSBMahojiCommand = {
 
 		const duration = quantity * timeToCookSingleCookable;
 
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )} minutes, try a lower quantity. The highest amount of ${cookable.name}s you can cook is ${Math.floor(
-                                maxTripLength / timeToCookSingleCookable
-                        )}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)} minutes, try a lower quantity. The highest amount of ${cookable.name}s you can cook is ${Math.floor(
+				maxTripLength / timeToCookSingleCookable
+			)}.`;
+		}
 
 		await user.removeItemsFromBank(totalCost);
 
@@ -152,9 +151,9 @@ export const cookCommand: OSBMahojiCommand = {
 			type: 'Cooking'
 		});
 
-                return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDurationFromUser(
-                        duration,
-                        user
-                )} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
+		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDurationFromUser(
+			duration,
+			user
+		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}
 };

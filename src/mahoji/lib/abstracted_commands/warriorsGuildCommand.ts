@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDurationFromUser } from '../../../lib/util';
@@ -52,14 +51,14 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 
 	const duration = armorSet.timeToFinish * quantity;
 
-        if (duration > maxTripLength) {
-                return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                        maxTripLength,
-                        user
-                )}, try a lower quantity. The highest amount of animated ${armorSet.name} armour you can kill is ${Math.floor(
-                        maxTripLength / armorSet.timeToFinish
-                )}.`;
-        }
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+			maxTripLength,
+			user
+		)}, try a lower quantity. The highest amount of animated ${armorSet.name} armour you can kill is ${Math.floor(
+			maxTripLength / armorSet.timeToFinish
+		)}.`;
+	}
 
 	await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>({
 		armourID: armorSet.name,
@@ -96,25 +95,25 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 
 	const duration = Time.Second * 30 * quantity;
 
-        if (duration > maxTripLength) {
-                return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                        maxTripLength,
-                        user
-                )}, try a lower quantity. The highest amount of cyclopes that can be killed is ${Math.floor(
-                        maxTripLength / (Time.Second * 30)
-                )}.`;
-        }
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+			maxTripLength,
+			user
+		)}, try a lower quantity. The highest amount of cyclopes that can be killed is ${Math.floor(
+			maxTripLength / (Time.Second * 30)
+		)}.`;
+	}
 
 	const tokensToSpend = Math.floor((duration / Time.Minute) * 10 + 10);
 
-                if (!hasAttackCape && amountTokens < tokensToSpend) {
-                        return `You don't have enough Warrior guild tokens to kill cyclopes for ${formatDurationFromUser(
-                                duration,
-                                user
-                        )}, try a lower quantity. You need at least ${Math.floor(
-                                (duration / Time.Minute) * 10 + 10
-                        )}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
-                }
+	if (!hasAttackCape && amountTokens < tokensToSpend) {
+		return `You don't have enough Warrior guild tokens to kill cyclopes for ${formatDurationFromUser(
+			duration,
+			user
+		)}, try a lower quantity. You need at least ${Math.floor(
+			(duration / Time.Minute) * 10 + 10
+		)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
+	}
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,

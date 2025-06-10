@@ -1,6 +1,5 @@
 import { Time } from 'e';
 
-import { BitField } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDurationFromUser, randomVariation } from '../../../lib/util';

@@ -171,15 +171,15 @@ export const massCommand: OSBMahojiCommand = {
 		if (boostMsgs.length > 0) {
 			killsPerHr += `\n\n${boostMsgs.join(', ')}.`;
 		}
-                let str = `${user.usernameOrMention}'s party (${users
-                        .map(u => u.usernameOrMention)
-                        .join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDurationFromUser(
-                        perKillTime,
-                        user
-                )} instead of ${formatDurationFromUser(monster.timeToFinish, user)}- the total trip will take ${formatDurationFromUser(
-                        duration,
-                        user
-                )}. ${killsPerHr}`;
+		let str = `${user.usernameOrMention}'s party (${users
+			.map(u => u.usernameOrMention)
+			.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDurationFromUser(
+			perKillTime,
+			user
+		)} instead of ${formatDurationFromUser(monster.timeToFinish, user)}- the total trip will take ${formatDurationFromUser(
+			duration,
+			user
+		)}. ${killsPerHr}`;
 
 		if (usersKickedForBusy.length > 0) {
 			str += `\nThe following users were removed, because their minion became busy before the mass started: ${usersKickedForBusy

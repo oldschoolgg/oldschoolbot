@@ -10,7 +10,7 @@ import type { AddXpParams, GearRequirement } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDurationFromUser } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser } from '../../../lib/util';
 import { percentChance, readableStatName, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { BitField } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';

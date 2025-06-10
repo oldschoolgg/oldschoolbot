@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
 import ForestryRations from '../../../lib/skilling/skills/cooking/forestersRations';
 import type { CreateForestersRationsActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';

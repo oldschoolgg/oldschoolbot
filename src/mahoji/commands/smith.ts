@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';
@@ -127,14 +126,14 @@ export const smithCommand: OSBMahojiCommand = {
 		cost.add(baseCost.multiply(quantity));
 
 		const duration = quantity * timeToSmithSingleBar;
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )}, try a lower quantity. The highest amount of ${smithedItem.name}${
-                                smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
-                        } you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)}, try a lower quantity. The highest amount of ${smithedItem.name}${
+				smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
+			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
+		}
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
 		updateBankSetting('smithing_cost', cost);

@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
 import LeapingFish from '../../../lib/skilling/skills/cooking/leapingFish';
 import type { CutLeapingFishActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';

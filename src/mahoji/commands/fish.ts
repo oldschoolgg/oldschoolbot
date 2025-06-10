@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcPercentOfNum, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
@@ -204,8 +203,7 @@ export const fishCommand: OSBMahojiCommand = {
 
 		let response = `${user.minionName} is now fishing ${quantity}x ${fish.name}, it'll take around ${formatDurationFromUser(
 			duration,
-			user.perkTier(),
-			user.bitfield.includes(BitField.ShowMinionReturnTime)
+			user
 		)} to finish.`;
 
 		if (boosts.length > 0) {

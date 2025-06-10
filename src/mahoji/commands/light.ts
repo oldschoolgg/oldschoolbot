@@ -4,8 +4,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-
-import { BitField } from '../../lib/constants';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FiremakingActivityTaskOptions } from '../../lib/types/minions';
@@ -75,14 +73,14 @@ export const lightCommand: OSBMahojiCommand = {
 		const cost = new Bank().add(log.inputLogs, quantity);
 		if (!user.owns(cost)) return `You dont have ${quantity}x ${log.name}.`;
 
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )}, try a lower quantity. The highest amount of ${log.name}s you can light is ${Math.floor(
-                                maxTripLength / timeToLightSingleLog
-                        )}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)}, try a lower quantity. The highest amount of ${log.name}s you can light is ${Math.floor(
+				maxTripLength / timeToLightSingleLog
+			)}.`;
+		}
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
 
@@ -95,9 +93,9 @@ export const lightCommand: OSBMahojiCommand = {
 			type: 'Firemaking'
 		});
 
-                return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDurationFromUser(
-                        duration,
-                        user
-                )} to finish.`;
+		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDurationFromUser(
+			duration,
+			user
+		)} to finish.`;
 	}
 };

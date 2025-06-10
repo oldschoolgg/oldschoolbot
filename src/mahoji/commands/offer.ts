@@ -6,7 +6,7 @@ import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import { BitField, Events } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
@@ -264,14 +264,14 @@ export const offerCommand: OSBMahojiCommand = {
 
 		const duration = quantity * timeToBuryABone;
 
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
-                                maxTripLength / timeToBuryABone
-                        )}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
+				maxTripLength / timeToBuryABone
+			)}.`;
+		}
 
 		await user.removeItemsFromBank(new Bank().add(bone.inputId, quantity));
 

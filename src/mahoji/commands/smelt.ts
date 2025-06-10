@@ -4,7 +4,6 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import { BitField } from '../../lib/constants';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
@@ -132,14 +131,14 @@ export const smeltingCommand: OSBMahojiCommand = {
 		cost.add(itemsNeeded.multiply(quantity));
 
 		const duration = quantity * timeToSmithSingleBar;
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )}, try a lower quantity. The highest amount of ${bar.name}s you can smelt is ${Math.floor(
-                                maxTripLength / timeToSmithSingleBar
-                        )}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)}, try a lower quantity. The highest amount of ${bar.name}s you can smelt is ${Math.floor(
+				maxTripLength / timeToSmithSingleBar
+			)}.`;
+		}
 
 		let coinsToRemove = 0;
 		if (blast_furnace) {

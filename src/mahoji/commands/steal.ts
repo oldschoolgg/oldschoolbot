@@ -4,8 +4,6 @@ import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';
 
-
-import { BitField } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { quests } from '../../lib/minions/data/quests';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -121,14 +119,14 @@ export const stealCommand: OSBMahojiCommand = {
 
 		const duration = quantity * timeToTheft;
 
-                if (duration > maxTripLength) {
-                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
-                                maxTripLength,
-                                user
-                        )}, try a lower quantity. The highest amount of times you can ${
-                                stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-                        } a ${stealable.name} is ${Math.floor(maxTripLength / timeToTheft)}.`;
-                }
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+				maxTripLength,
+				user
+			)}, try a lower quantity. The highest amount of times you can ${
+				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
+			} a ${stealable.name} is ${Math.floor(maxTripLength / timeToTheft)}.`;
+		}
 
 		const boosts = [];
 		let successfulQuantity = 0;

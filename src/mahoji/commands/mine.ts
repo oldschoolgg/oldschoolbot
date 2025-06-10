@@ -3,7 +3,6 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
-import { BitField } from '../../lib/constants';
 import { userhasDiaryTier } from '../../lib/diaries.js';
 import { QuestID } from '../../lib/minions/data/quests';
 import { DiaryID } from '../../lib/minions/types.js';
@@ -14,13 +13,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import type { Ore } from '../../lib/skilling/types';
 import type { GearBank } from '../../lib/structures/GearBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	formatDurationFromUser,
-	formatSkillRequirements,
-	itemNameFromID,
-	randomVariation
-} from '../../lib/util';
+import { formatDurationFromUser, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import itemID from '../../lib/util/itemID';

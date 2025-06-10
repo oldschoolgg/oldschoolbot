@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { BitField } from '../../../lib/constants';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import type { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDurationFromUser } from '../../../lib/util';
