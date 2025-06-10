@@ -81,9 +81,13 @@ export function determineMiningResult({
 		}
 	}
 
-	let daeyaltQty = 0;
-
-	if (!isPowermining) {
+	if (ore.name === 'Daeyalt essence rock') {
+		let daeyaltQty = 0;
+		for (let i = 0; i < quantity; i++) {
+			daeyaltQty += randInt(2, 3);
+		}
+		updateBank.itemLootBank.add(ore.id, daeyaltQty);
+	} else if (!isPowermining) {
 		// Gem rocks roll off the GemRockTable
 		if (ore.name === 'Gem rock') {
 			for (let i = 0; i < quantity; i++) {
@@ -115,11 +119,6 @@ export function determineMiningResult({
 			for (let i = 0; i < quantity; i++) {
 				updateBank.itemLootBank.add(Mining.GraniteRockTable.roll());
 			}
-		} else if (ore.name === 'Daeyalt essence rock') {
-			for (let i = 0; i < quantity; i++) {
-				daeyaltQty += randInt(2, 3);
-			}
-			updateBank.itemLootBank.add(ore.id, daeyaltQty);
 		} else if (ore.name === 'Tainted essence chunk') {
 			updateBank.itemLootBank.add(ore.id, 5 * taintedQty);
 		} else {
