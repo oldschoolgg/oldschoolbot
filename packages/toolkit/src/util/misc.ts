@@ -153,7 +153,7 @@ export function dateFm(date: Date) {
 	return `${time(date, 'T')} (${time(date, 'R')})`;
 }
 
-export function cleanDateFm(date: Date) {
+export function timeOnly(date: Date) {
 	return time(date, 'T');
 }
 

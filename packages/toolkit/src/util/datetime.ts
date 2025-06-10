@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { PerkTier, cleanDateFm } from './misc';
+import { PerkTier, timeOnly } from './misc';
 
 export function isAtleastThisOld(date: Date | number, expectedAgeInMS: number) {
 	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
@@ -42,7 +42,7 @@ export function formatDurationWithTimestamp(duration: number, perkTier: number, 
 	const base = formatDuration(duration);
 	if (perkTier >= PerkTier.Four && showTimestamp) {
 		const finishDate = new Date(Date.now() + duration);
-		return `${base} (${cleanDateFm(finishDate)})`;
+		return `${base} (${timeOnly(finishDate)})`;
 	}
 	return base;
 }
