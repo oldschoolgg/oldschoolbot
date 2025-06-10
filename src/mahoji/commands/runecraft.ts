@@ -10,7 +10,7 @@ import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
+import { formatDurationFromUser, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
@@ -235,11 +235,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
 		let duration = numberOfInventories * tripLength;
 
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${runeObj.name} you can craft is ${Math.floor(maxCanDo)}.`;
-		}
+                if (duration > maxTripLength) {
+                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+                                maxTripLength,
+                                user
+                        )}, try a lower quantity. The highest amount of ${runeObj.name} you can craft is ${Math.floor(maxCanDo)}.`;
+                }
 
 		if (rune === 'blood') {
 			const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);

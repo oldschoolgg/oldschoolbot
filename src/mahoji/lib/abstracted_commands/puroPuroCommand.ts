@@ -3,7 +3,7 @@ import { Time } from 'e';
 import type { Item } from 'oldschooljs';
 import type { Skills } from '../../../lib/types';
 import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

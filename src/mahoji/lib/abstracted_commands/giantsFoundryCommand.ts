@@ -8,7 +8,7 @@ import { getMinigameEntity } from '../../../lib/settings/minigames';
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -200,13 +200,14 @@ export async function giantsFoundryStartCommand(
 		quantity = Math.floor(maxTripLength / (alloy.sections * timePerSection));
 	}
 	const duration = quantity * alloy.sections * timePerSection;
-	if (duration > maxTripLength) {
-		return `${user.minionName} can't go on trips longer than ${formatDuration(
-			maxTripLength
-		)}, try a lower trip length. The highest amount of minutes you can send out is ${Math.floor(
-			maxTripLength / Time.Minute
-		)}.`;
-	}
+        if (duration > maxTripLength) {
+                return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+                        maxTripLength,
+                        user
+                )}, try a lower trip length. The highest amount of minutes you can send out is ${Math.floor(
+                        maxTripLength / Time.Minute
+                )}.`;
+        }
 
 	const totalCost = new Bank(alloy.cost).clone().multiply(quantity);
 

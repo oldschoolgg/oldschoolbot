@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, randomVariation, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

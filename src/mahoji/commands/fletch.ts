@@ -3,7 +3,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+
 import { BitField } from '../../lib/constants';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
@@ -90,13 +90,14 @@ export const fletchCommand: OSBMahojiCommand = {
 		}
 
 		const duration = quantity * timeToFletchSingleItem;
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${fletchable.name}s you can fletch is ${Math.floor(
-				maxTripLength / timeToFletchSingleItem
-			)}.`;
-		}
+                if (duration > maxTripLength) {
+                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+                                maxTripLength,
+                                user
+                        )}, try a lower quantity. The highest amount of ${fletchable.name}s you can fletch is ${Math.floor(
+                                maxTripLength / timeToFletchSingleItem
+                        )}.`;
+                }
 
 		const itemsNeeded = fletchable.inputItems.clone().multiply(quantity);
 		if (!userBank.has(itemsNeeded)) {

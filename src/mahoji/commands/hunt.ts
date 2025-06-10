@@ -13,7 +13,7 @@ import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import type { Peak } from '../../lib/tickers';
 import type { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, hasSkillReqs, itemID } from '../../lib/util';
+import { formatDurationFromUser, hasSkillReqs, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -186,13 +186,14 @@ export const huntCommand: OSBMahojiCommand = {
 			duration = Math.floor(quantity * Time.Minute);
 		}
 
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(
-				maxTripLength / ((catchTime * Time.Second) / traps)
-			)}.`;
-		}
+                if (duration > maxTripLength) {
+                        return `${user.minionName} can't go on trips longer than ${formatDurationFromUser(
+                                maxTripLength,
+                                user
+                        )}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(
+                                maxTripLength / ((catchTime * Time.Second) / traps)
+                        )}.`;
+                }
 
 		const removeBank = new Bank();
 

@@ -9,7 +9,7 @@ import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { Skills } from '../../../lib/types';
-import { formatDuration, formatDurationFromUser, hasSkillReqs, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

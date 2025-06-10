@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { BitField } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, randomVariation } from '../../../lib/util';
+import { formatDurationFromUser, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 

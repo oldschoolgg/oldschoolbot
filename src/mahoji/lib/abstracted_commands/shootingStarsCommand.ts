@@ -10,7 +10,7 @@ import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import type { Ore } from '../../../lib/skilling/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskData, ShootingStarsOptions } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, itemNameFromID } from '../../../lib/util';
+import { formatDurationFromUser, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
