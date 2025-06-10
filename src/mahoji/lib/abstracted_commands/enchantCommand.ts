@@ -4,7 +4,6 @@ import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, itemNameFromID, stringMatches } from '../../../lib/util';
-import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -73,6 +72,6 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
        return `${user.minionName} is now enchanting ${quantity}x ${enchantable.name}, it'll take around ${formatDurationFromUser(
                duration,
-               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+               user
        )} to finish. Removed ${cost} from your bank. ${xpHr}`;
 }

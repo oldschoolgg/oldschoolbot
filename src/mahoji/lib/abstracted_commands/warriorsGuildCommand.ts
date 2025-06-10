@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util'
 import { formatDurationFromUser } from '../../../lib/util';
-import { BitField } from '../../../lib/constants';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -124,12 +123,12 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 
        const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDurationFromUser(
                duration,
-               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+               user
        )} to finish. ${
-		hasAttackCape
-			? 'You used no warrior guild tokens because you have an Attack cape.'
-			: `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
-	}`;
+                hasAttackCape
+                        ? 'You used no warrior guild tokens because you have an Attack cape.'
+                        : `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
+        }`;
 
 	if (!hasAttackCape) {
 		await user.removeItemsFromBank(new Bank().add('Warrior guild token', tokensToSpend));

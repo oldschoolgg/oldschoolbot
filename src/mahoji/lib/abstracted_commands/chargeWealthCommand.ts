@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util'
 import { formatDurationFromUser } from '../../../lib/util';
-import { BitField } from '../../../lib/constants';
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -63,8 +62,8 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		user.minionName
        } is now charging ${quantityWealths} Rings of wealth, doing ${wealthInventorySize} Rings of wealth in ${quantity} trips, it'll take around ${formatDurationFromUser(
                duration,
-               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+               user
        )} to finish. Removed ${quantityWealths}x Ring of wealth from your bank.${
-		hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
-	}`;
+                hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
+       }`;
 }
