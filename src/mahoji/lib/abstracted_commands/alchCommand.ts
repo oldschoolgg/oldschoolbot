@@ -5,8 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, toKMB } from '../../../lib/util';
-import { BitField } from '../../../lib/constants';
+import { formatDurationFromUser, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
@@ -109,7 +108,7 @@ export async function alchCommand(
 
        const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDurationFromUser(
                duration,
-               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+               user
        )} to finish.`;
 
 	return response;

@@ -5,7 +5,6 @@ import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { OuraniaAltarOptions } from '../../../lib/types/minions';
 import { formatDuration, formatDurationFromUser, itemID } from '../../../lib/util';
-import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -142,10 +141,10 @@ export async function ouraniaAltarStartCommand({
 
        response += `Essence at the Ourania Altar, it'll take around ${formatDurationFromUser(
                duration,
-               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+               user
        )} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.\n\n**Boosts:** ${boosts.join(
-		', '
-	)}`;
+                ', '
+        )}`;
 
 	return response;
 }

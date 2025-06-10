@@ -1,8 +1,6 @@
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util'
 import { formatDurationFromUser } from '../../../lib/util';
-import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -34,6 +32,6 @@ export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 
        return `${user.minionName} is now doing ${quantity}x Fishing Trawler trips, it will take around ${formatDurationFromUser(
                duration,
-               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+               user
        )} to finish.\n\n**Boosts:** ${boost}% boost for experience`;
 }
