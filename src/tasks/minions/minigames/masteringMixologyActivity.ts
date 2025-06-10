@@ -140,7 +140,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			pointsEarned.Lye += basePoints.Lye;
 			pointsEarned.Aga += basePoints.Aga;
 
-			const contractDuration = getMixologyContractDuration(Time.Hour / 260);
+			const contractDuration = getMixologyContractDuration(Time.Hour / 343);
 
 			actualDuration += contractDuration;
 
