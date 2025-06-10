@@ -20,7 +20,7 @@
 		"creatables": "tsx ./scripts/renderCreatablesFile.ts",
 		"generate:robochimp": "prisma generate --no-hints --schema prisma/robochimp.prisma",
 		"============BUILDING": "============",
-		"build": "pnpm --stream -r build:esbuild && pnpm build:esbuild",
+		"build": "concurrently --raw \"pnpm --stream -r build:esbuild\" \"pnpm build:esbuild\" \"pnpm test:types\"",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"pnpm generate:robochimp\" && echo \"Generated Prisma Client\"",
 		"build:esbuild": "concurrently --raw \"pnpm build:main\" \"pnpm build:workers\"",
 		"build:main": "esbuild src/index.ts src/lib/workers/index.ts --sourcemap=inline --minify --legal-comments=none --outdir=./dist --log-level=error --bundle --platform=node --loader:.node=file --external:skia-canvas --external:@prisma/robochimp --external:@prisma/client --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
