@@ -26,6 +26,7 @@ async function main() {
 	const enumItems: [string, number][] = [];
 	const exitingKeys = new Set<string>();
 	const itemsToIgnore = new Set<string>();
+
 	for (const item of Items.values()) {
 		if (shouldIgnoreItem(item)) continue;
 		const key = safeItemName(item.name);
@@ -47,16 +48,27 @@ async function main() {
 	] as [string, number][];
 	const forcedChangedIDs = new Set(forcedChanges.map(([, id]) => id));
 
-	let str = 'export enum EItem {';
+	let eGearStr = 'export enum EGear {';
+	let eItemStr = 'export enum EItem {';
 	for (const [key, value] of enumItems.sort((a, b) => a[1] - b[1])) {
 		if (itemsToIgnore.has(key) && !forcedChangedIDs.has(value)) continue;
 		const codeKey = startsWithNumber(key) ? `'${key}'` : key;
-		str += `\n\t${codeKey} = ${value},`;
+		eItemStr += `\n\t${codeKey} = ${value},`;
+		const _item = Items.get(value)!;
+		if (_item.equipable && _item.equipment?.slot && _item.tradeable_on_ge) {
+			eGearStr += `\n\t${codeKey} = ${value},`;
+		}
 	}
-	str = str.slice(0, -1); //remove last comma
-	str += '\n}';
-	str += '\n';
-	writeFileSync('./src/EItem.ts', str);
+	// Remove last comma
+	eItemStr = eItemStr.slice(0, -1);
+	eItemStr += '\n}';
+	eItemStr += '\n';
+	writeFileSync('./src/EItem.ts', eItemStr);
+
+	eGearStr = eGearStr.slice(0, -1);
+	eGearStr += '\n}';
+	eGearStr += '\n';
+	writeFileSync('./src/EGear.ts', eGearStr);
 
 	// EMonster
 	let monsterEnumStr = 'export enum EMonster {';

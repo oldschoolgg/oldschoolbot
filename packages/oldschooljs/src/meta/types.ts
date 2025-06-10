@@ -1,4 +1,4 @@
-import type { MINIGAMES, hiscoreURLs, mappedBossNames } from '../constants';
+import type { AccountType, MINIGAMES, mappedBossNames } from '../constants';
 import type Bank from '../structures/Bank';
 import type LootTable from '../structures/LootTable';
 import type { LootTableRollOptions } from '../structures/LootTable';
@@ -25,7 +25,7 @@ export interface MonsterOptions {
 export interface Player {
 	bossRecords: BossRecords;
 	username: string;
-	type: keyof typeof hiscoreURLs;
+	type: AccountType;
 	skills: SkillsScore;
 	minigames: MinigamesScore;
 	clues: CluesScore;
