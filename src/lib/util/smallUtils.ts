@@ -2,12 +2,11 @@ import { type CommandResponse, deepMerge, miniID, stripEmojis, toTitleCase } fro
 import type { Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
 import { clamp, objectEntries } from 'e';
-import { type ArrayItemsResolved, Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
+import { type ArrayItemsResolved, type Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
 import { skillEmoji } from '../data/emojis';
-import type { UserFullGearSetup } from '../gear/types';
 import type { SkillRequirements, Skills } from '../types';
 
 export function itemNameFromID(itemID: number | string) {
@@ -196,18 +195,6 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 		return [false, formatSkillRequirements(reqs)];
 	}
 	return [true, null];
-}
-
-export function fullGearToBank(gear: UserFullGearSetup) {
-	const bank = new Bank();
-	for (const setup of Object.values(gear)) {
-		for (const equipped of Object.values(setup)) {
-			if (equipped?.item) {
-				bank.add(equipped.item, equipped.quantity);
-			}
-		}
-	}
-	return bank;
 }
 
 export function objHasAnyPropInCommon(obj: object, other: object): boolean {

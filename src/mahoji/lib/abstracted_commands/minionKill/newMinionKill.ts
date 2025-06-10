@@ -5,6 +5,7 @@ import { mergeDeep } from 'remeda';
 import z from 'zod';
 import type { BitField, PvMMethod } from '../../../../lib/constants';
 import { getSimilarItems } from '../../../../lib/data/similarItems';
+import { checkRangeGearWeapon } from '../../../../lib/gear/functions/checkRangeGearWeapon';
 import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import {
@@ -15,11 +16,15 @@ import {
 } from '../../../../lib/minions/functions';
 import type { KillableMonster } from '../../../../lib/minions/types';
 import type { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
-import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/slayer/slayerUtil';
+import {
+	type CurrentSlayerInfo,
+	determineCombatBoosts,
+	wildySlayerOnlyMonsters
+} from '../../../../lib/slayer/slayerUtil';
 import type { GearBank } from '../../../../lib/structures/GearBank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { Peak } from '../../../../lib/tickers';
-import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, zodEnum } from '../../../../lib/util';
+import { formatDuration, isWeekend, itemNameFromID, zodEnum } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
@@ -89,6 +94,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	if (!monster.wildy && isInWilderness) {
 		return `You can't kill ${monster.name} in the wilderness.`;
+	}
+
+	if (wildySlayerOnlyMonsters.some(m => m.id === monster.id) && isInWilderness && !isOnTask) {
+		return `${monster.name} can only be killed in the wilderness when on a slayer task.`;
 	}
 
 	const matchedRevenantMonster = revenantMonsters.find(m => m.id === monster.id);

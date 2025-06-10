@@ -12,15 +12,15 @@ import { GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 
+import { getSimilarItems } from '../../../lib/data/similarItems';
+import { isValidGearSetup } from '../../../lib/gear/functions/isValidGearSetup';
 import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';
-import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
+import { assert, formatSkillRequirements, stringMatches } from '../../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-
-import { getSimilarItems } from '../../../lib/data/similarItems';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
