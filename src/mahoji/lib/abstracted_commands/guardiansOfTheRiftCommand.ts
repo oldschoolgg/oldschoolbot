@@ -6,7 +6,7 @@ import { pickaxes, varrockArmours } from '../../../lib/skilling/functions/mining
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GuardiansOfTheRiftActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatDurationFromUser, itemID, itemNameFromID, randomVariation } from '../../../lib/util';
+import { formatDurationFromUser, itemID, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
