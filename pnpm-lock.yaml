@@ -11,9 +11,6 @@ importers:
 
   .:
     dependencies:
-      '@oldschoolgg/builders':
-        specifier: workspace:*
-        version: link:packages/builders
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:packages/toolkit

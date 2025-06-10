@@ -42,7 +42,6 @@
 	},
 	"dependencies": {
 		"@oldschoolgg/toolkit": "workspace:*",
-		"@oldschoolgg/builders": "workspace:*",
 		"@prisma/client": "^5.22.0",
 		"@sapphire/ratelimits": "^2.4.9",
 		"@sapphire/snowflake": "^3.5.3",
