@@ -8,7 +8,7 @@ import { Bank } from 'oldschooljs';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, hasSkillReqs } from '../../lib/util';
+import { formatDuration, formatDurationWithTimestamp, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -147,9 +147,10 @@ export const buildCommand: OSBMahojiCommand = {
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish. Removed ${cost} from your bank. **${xpHr}**
+               return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDurationWithTimestamp(
+                       duration,
+                       user.perkTier()
+               )} to finish. Removed ${cost} from your bank. **${xpHr}**
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
 `;

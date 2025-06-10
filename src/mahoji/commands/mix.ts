@@ -4,7 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
@@ -141,8 +141,8 @@ export const mixCommand: OSBMahojiCommand = {
 			type: 'Herblore'
 		});
 
-		return `${user.minionName} ${cost} making ${quantity}x ${
-			mixableItem.outputMultiple ? 'batches of' : ''
-		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
+               return `${user.minionName} ${cost} making ${quantity}x ${
+                       mixableItem.outputMultiple ? 'batches of' : ''
+               }${itemName}, it'll take around ${formatDurationWithTimestamp(quantity * timeToMixSingleItem, user.perkTier())} to finish.`;
 	}
 };

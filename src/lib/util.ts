@@ -1,10 +1,11 @@
 import {
 	type CommandResponse,
-	calcPerHour,
-	formatDuration,
-	isWeekend,
-	makeComponents,
-	stringMatches
+       calcPerHour,
+       formatDuration,
+       formatDurationWithTimestamp,
+       isWeekend,
+       makeComponents,
+       stringMatches
 } from '@oldschoolgg/toolkit/util';
 import {
 	type BaseMessageOptions,
@@ -40,7 +41,7 @@ import { sendToChannelID } from './util/webhook.js';
 
 export * from 'oldschooljs';
 
-export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
+export { stringMatches, calcPerHour, formatDuration, formatDurationWithTimestamp, makeComponents, isWeekend };
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {

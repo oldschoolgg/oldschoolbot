@@ -7,7 +7,7 @@ import { resolveItems } from 'oldschooljs/dist/util/util';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
+import { formatDuration, formatDurationWithTimestamp, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -168,9 +168,9 @@ export const smeltingCommand: OSBMahojiCommand = {
 			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 
-		const response = `${user.minionName} is now smelting ${quantity}x ${
-			bar.name
-		}, it'll take around ${formatDuration(duration)} to finish. ${
+               const response = `${user.minionName} is now smelting ${quantity}x ${
+                       bar.name
+               }, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier())} to finish. ${
 			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
 		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
 

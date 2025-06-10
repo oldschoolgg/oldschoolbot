@@ -7,7 +7,7 @@ import { trackLoot } from '../../../../lib/lootTrack';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../../lib/util';
+import { formatDuration, formatDurationWithTimestamp, stringMatches } from '../../../../lib/util';
 import addSubTaskToActivityTask from '../../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../../lib/util/findMonster';
@@ -142,9 +142,10 @@ export async function minionKillCommand(
 		attackStyles: result.attackStyles,
 		onTask: slayerInfo.assignedTask !== null
 	});
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
-		result.duration
-	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
+       let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDurationWithTimestamp(
+               result.duration,
+               user.perkTier()
+       )} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;

@@ -3,7 +3,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
@@ -114,8 +114,8 @@ export const fletchCommand: OSBMahojiCommand = {
 			type: 'Fletching'
 		});
 
-		return `${user.minionName} is now Fletching ${quantity}${sets} ${
-			fletchable.name
-		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+               return `${user.minionName} is now Fletching ${quantity}${sets} ${
+                       fletchable.name
+               }, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier())} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 };

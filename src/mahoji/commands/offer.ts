@@ -5,7 +5,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, formatDurationWithTimestamp } from '@oldschoolgg/toolkit/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { Events } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
@@ -282,8 +282,8 @@ export const offerCommand: OSBMahojiCommand = {
 			duration,
 			type: 'Offering'
 		});
-		return `${user.minionName} is now offering ${quantity}x ${
-			bone.name
-		} at the Chaos altar, it'll take around ${formatDuration(duration)} to finish.`;
+               return `${user.minionName} is now offering ${quantity}x ${
+                       bone.name
+               } at the Chaos altar, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier())} to finish.`;
 	}
 };

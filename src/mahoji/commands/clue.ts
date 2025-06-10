@@ -11,7 +11,7 @@ import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
+import { formatDuration, formatDurationWithTimestamp, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { getItem } from '../../lib/util/getOSItem';
@@ -452,7 +452,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		response.content = `${user.minionName} is now completing ${cluesDone}x ${
 			clueTier.name
-		} clues, it'll take around ${formatDuration(duration)} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${
+               } clues, it'll take around ${formatDurationWithTimestamp(duration, user.perkTier())} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${
 			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
 		}${implingLootString}`;
 		return response;
