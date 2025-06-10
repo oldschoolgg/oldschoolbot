@@ -5,7 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDurationFromUser, toKMB } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
@@ -87,7 +87,7 @@ export async function alchCommand(
 			interaction,
 			`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
 				alchValue
-			)}). This will take approximately ${formatDurationFromUser(duration, user)}, and consume ${
+			)}). This will take approximately ${formatDuration(duration)}, and consume ${
 				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
 			} ${quantity}x Nature runes.`
 		);

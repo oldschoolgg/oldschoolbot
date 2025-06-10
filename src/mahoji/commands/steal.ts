@@ -121,8 +121,7 @@ export const stealCommand: OSBMahojiCommand = {
 
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength,
-				user
+				maxTripLength
 			)}, try a lower quantity. The highest amount of times you can ${
 				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 			} a ${stealable.name} is ${Math.floor(maxTripLength / timeToTheft)}.`;

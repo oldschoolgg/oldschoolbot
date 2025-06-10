@@ -105,9 +105,8 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 	const tokensToSpend = Math.floor((duration / Time.Minute) * 10 + 10);
 
 	if (!hasAttackCape && amountTokens < tokensToSpend) {
-		return `You don't have enough Warrior guild tokens to kill cyclopes for ${formatDurationFromUser(
-			duration,
-			user
+		return `You don't have enough Warrior guild tokens to kill cyclopes for ${formatDuration(
+			duration
 		)}, try a lower quantity. You need at least ${Math.floor(
 			(duration / Time.Minute) * 10 + 10
 		)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
