@@ -4,7 +4,9 @@ import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util'
+import { formatDurationFromUser } from '../../lib/util';
+import { BitField } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { quests } from '../../lib/minions/data/quests';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -132,9 +134,9 @@ export const stealCommand: OSBMahojiCommand = {
 		let xpReceived = 0;
 		let damageTaken = 0;
 
-		let str = `${user.minionName} is now going to ${
-			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
+               let str = `${user.minionName} is now going to ${
+                       stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
+               } a ${stealable.name} ${quantity}x times, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 
 		if (stealable.type === 'pickpockable') {
 			const [hasArdyHard] = await userhasDiaryTier(user, ArdougneDiary.hard);

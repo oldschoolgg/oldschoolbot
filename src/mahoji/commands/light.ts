@@ -4,7 +4,9 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util'
+import { formatDurationFromUser } from '../../lib/util';
+import { BitField } from '../../lib/constants';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FiremakingActivityTaskOptions } from '../../lib/types/minions';
@@ -92,8 +94,9 @@ export const lightCommand: OSBMahojiCommand = {
 			type: 'Firemaking'
 		});
 
-		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish.`;
+               return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDurationFromUser(
+                       duration,
+                       user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+               )} to finish.`;
 	}
 };

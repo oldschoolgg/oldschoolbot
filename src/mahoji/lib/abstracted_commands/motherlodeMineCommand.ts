@@ -5,7 +5,8 @@ import { determineMiningTime } from '../../../lib/skilling/functions/determineMi
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import Mining from '../../../lib/skilling/skills/mining';
 import type { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, itemNameFromID } from '../../../lib/util';
+import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
@@ -92,11 +93,11 @@ export async function motherlodeMineCommand({
 	});
 	let response = `${minionName(user)} is now mining at the Motherlode Mine until your minion ${
 		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
-	}, it'll take ${
-		quantity
-			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-			: formatDuration(duration)
-	} to finish.`;
+       }, it'll take ${
+               quantity
+                       ? `between ${formatDurationFromUser(fakeDurationMin, user)} **and** ${formatDurationFromUser(fakeDurationMax, user)}`
+                       : formatDurationFromUser(duration, user)
+       } to finish.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

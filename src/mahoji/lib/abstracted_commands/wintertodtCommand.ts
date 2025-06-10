@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDurationFromUser } from '../../../lib/util';
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -118,7 +119,8 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		type: 'Wintertodt'
 	});
 
-	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
-		durationPerTodt * quantity
-	)}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
+       return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDurationFromUser(
+               durationPerTodt * quantity,
+               user
+       )}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
 }

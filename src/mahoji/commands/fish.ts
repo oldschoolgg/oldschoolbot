@@ -7,7 +7,8 @@ import { Bank, Monsters } from 'oldschooljs';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID } from '../../lib/util';
+import { formatDuration, formatDurationFromUser, itemID, itemNameFromID } from '../../lib/util';
+import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -201,9 +202,10 @@ export const fishCommand: OSBMahojiCommand = {
 			flakesQuantity
 		});
 
-		let response = `${user.minionName} is now fishing ${quantity}x ${fish.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish.`;
+               let response = `${user.minionName} is now fishing ${quantity}x ${fish.name}, it'll take around ${formatDurationFromUser(
+                       duration,
+                       user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+               )} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

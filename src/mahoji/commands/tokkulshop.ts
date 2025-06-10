@@ -7,7 +7,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import type { TokkulShopOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDurationFromUser, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -198,10 +198,11 @@ export const tksCommand: OSBMahojiCommand = {
 		});
 
 		// Trip start message
-		return `${user.minionName} is now ${action}ing ${action === 'buy' ? loot : cost} ${
-			action === 'buy' ? 'from' : 'to'
-		} the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${formatDuration(
-			duration
-		)}.`;
+               return `${user.minionName} is now ${action}ing ${action === 'buy' ? loot : cost} ${
+                       action === 'buy' ? 'from' : 'to'
+               } the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${formatDurationFromUser(
+                       duration,
+                       user
+               )}.`;
 	}
 };

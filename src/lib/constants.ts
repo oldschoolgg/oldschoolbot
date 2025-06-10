@@ -263,8 +263,9 @@ export enum BitField {
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
-	DisableOpenableNames = 41,
-	ShowDetailedInfo = 42
+        DisableOpenableNames = 41,
+        ShowDetailedInfo = 42,
+        ShowMinionReturnTime = 43
 }
 
 interface BitFieldData {
@@ -363,11 +364,16 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-	[BitField.ShowDetailedInfo]: {
-		name: 'Show Detailed Info',
-		protected: false,
-		userConfigurable: true
-	}
+        [BitField.ShowDetailedInfo]: {
+                name: 'Show Detailed Info',
+                protected: false,
+                userConfigurable: true
+        },
+        [BitField.ShowMinionReturnTime]: {
+                name: 'Show Minion Return Time',
+                protected: false,
+                userConfigurable: true
+        }
 } as const;
 
 export const BadgesEnum = {

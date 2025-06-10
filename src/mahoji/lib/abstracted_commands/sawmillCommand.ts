@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Planks } from '../../../lib/minions/data/planks';
 import type { SawmillActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
+import { formatDurationFromUser, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -86,9 +86,9 @@ export async function sawmillCommand(
 		channelID: channelID.toString()
 	});
 
-	let response = `${user.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${
-		quantity > 1 ? 's' : ''
-	}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatDuration(duration)}.`;
+       let response = `${user.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${
+               quantity > 1 ? 's' : ''
+       }. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatDurationFromUser(duration, user)}.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

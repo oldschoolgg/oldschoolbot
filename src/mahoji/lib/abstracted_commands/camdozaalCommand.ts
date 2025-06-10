@@ -7,7 +7,8 @@ import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import Mining from '../../../lib/skilling/skills/mining';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, randomVariation } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, itemNameFromID, randomVariation } from '../../../lib/util';
+import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
@@ -72,13 +73,13 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		type: 'CamdozaalMining'
 	});
 
-	let response = `${minionName(user)} is now mining inside the Ruins of Camdozaal until your minion ${
-		quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
-	}, it'll take ${
-		quantity
-			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-			: formatDuration(duration)
-	} to finish.`;
+       let response = `${minionName(user)} is now mining inside the Ruins of Camdozaal until your minion ${
+               quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
+       }, it'll take ${
+               quantity
+                       ? `between ${formatDurationFromUser(fakeDurationMin, user)} **and** ${formatDurationFromUser(fakeDurationMax, user)}`
+                       : formatDurationFromUser(duration, user)
+       } to finish.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -126,9 +127,10 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 		type: 'CamdozaalSmithing'
 	});
 
-	return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatDuration(
-		duration
-	)} to finish.`;
+       return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatDurationFromUser(
+               duration,
+               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+       )} to finish.`;
 }
 
 async function fishingCommand(user: MUser, channelID: string, quantity: number | undefined) {
@@ -163,9 +165,10 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 		type: 'CamdozaalFishing'
 	});
 
-	return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatDuration(
-		duration
-	)} to finish.`;
+       return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatDurationFromUser(
+               duration,
+               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+       )} to finish.`;
 }
 export async function camdozaalCommand(user: MUser, channelID: string, choice: string, quantity: number | undefined) {
 	const qp = user.QP;

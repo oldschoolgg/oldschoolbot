@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -153,9 +153,9 @@ export async function soulWarsStartCommand(user: MUser, channelID: string) {
 		minigameID: 'soul_wars'
 	});
 
-	return `${
-		user.minionName
-	} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(duration)}.`;
+       return `${
+               user.minionName
+       } is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDurationFromUser(duration, user)}.`;
 }
 
 export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: number) {

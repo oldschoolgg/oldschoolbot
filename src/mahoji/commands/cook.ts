@@ -8,7 +8,8 @@ import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import type { CookingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches } from '../../lib/util';
+import { formatDuration, formatDurationFromUser, itemID, stringMatches } from '../../lib/util';
+import { BitField } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
@@ -150,8 +151,9 @@ export const cookCommand: OSBMahojiCommand = {
 			type: 'Cooking'
 		});
 
-		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
+               return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDurationFromUser(
+                       duration,
+                       user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+               )} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}
 };

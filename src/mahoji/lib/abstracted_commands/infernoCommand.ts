@@ -15,7 +15,7 @@ import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import type { Skills } from '../../../lib/types';
 import type { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs, itemNameFromID, randomVariation } from '../../../lib/util';
+import { formatDurationFromUser, formatDuration, hasSkillReqs, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -495,7 +495,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 **KC:** ${zukKC}
 **Attempts:** ${attempts}
 
-**Duration:** ${formatDuration(duration.value)}
+**Duration:** ${formatDurationFromUser(duration.value, user)}
 **Boosts:** ${duration.messages.join(', ')} ${
 			duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
 		}

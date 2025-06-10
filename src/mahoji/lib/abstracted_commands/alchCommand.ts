@@ -5,7 +5,8 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, toKMB } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, toKMB } from '../../../lib/util';
+import { BitField } from '../../../lib/constants';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
@@ -87,7 +88,7 @@ export async function alchCommand(
 			interaction,
 			`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
 				alchValue
-			)}). This will take approximately ${formatDuration(duration)}, and consume ${
+                       )}). This will take approximately ${formatDurationFromUser(duration, user)}, and consume ${
 				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
 			} ${quantity}x Nature runes.`
 		);
@@ -106,9 +107,10 @@ export async function alchCommand(
 		type: 'Alching'
 	});
 
-	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDuration(
-		duration
-	)} to finish.`;
+       const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDurationFromUser(
+               duration,
+               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+       )} to finish.`;
 
 	return response;
 }

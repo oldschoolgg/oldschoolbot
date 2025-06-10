@@ -2,7 +2,9 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util'
+import { formatDurationFromUser } from '../../../lib/util';
+import { BitField } from '../../../lib/constants';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import type { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minions';
 import { stringMatches } from '../../../lib/util';
@@ -106,9 +108,9 @@ export async function tiaraRunecraftCommand({
 		type: 'TiaraRunecraft'
 	});
 
-	let response = `${user.minionName} is now turning ${quantity}x Tiaras into ${
-		tiaraObj.name
-	}s, it'll take around ${formatDuration(duration)} to finish.`;
+       let response = `${user.minionName} is now turning ${quantity}x Tiaras into ${
+               tiaraObj.name
+       }s, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 
 	if (boosts.length > 0) response += `\n\n**Boosts:** ${boosts.join(', ')}`;
 

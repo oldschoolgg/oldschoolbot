@@ -1,7 +1,9 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util'
+import { formatDurationFromUser } from '../../../lib/util';
+import { BitField } from '../../../lib/constants';
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -59,9 +61,10 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 
 	return `${
 		user.minionName
-	} is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatDuration(
-		duration
-	)} to finish. Removed ${quantityGlories}x Amulet of glory from your bank.${
+       } is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatDurationFromUser(
+               duration,
+               user.perkTier(), user.bitfield.includes(BitField.ShowMinionReturnTime)
+       )} to finish. Removed ${quantityGlories}x Amulet of glory from your bank.${
 		hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
 	}`;
 }
