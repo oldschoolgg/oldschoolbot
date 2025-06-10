@@ -6,7 +6,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { setupParty } from '../../../lib/party';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import type { NexTaskOptions } from '../../../lib/types/minions';
-import { calcPerHour, formatDuration } from '../../../lib/util';
+import { calcPerHour, formatDurationFromUser, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -121,7 +121,10 @@ export async function nexCommand(
 		.join(', ')}${solo ? ' and 3 others' : ''}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
 		details.quantity,
 		details.fakeDuration
-	).toFixed(1)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
+       ).toFixed(1)}/hr) - the total trip will take ${formatDurationFromUser(
+               details.fakeDuration,
+               user
+       )}.
 
 ${effectiveTeam
 	.map(i => {
