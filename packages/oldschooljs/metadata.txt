@@ -1,24 +1,24 @@
 Files in ./dist/cjs:
 	./dist/cjs/constants.cjs: 6.42 KB 6,570 bytes
-	./dist/cjs/EGear.cjs: 116.46 KB 119,253 bytes
-	./dist/cjs/EItem.cjs: 329.09 KB 336,992 bytes
+	./dist/cjs/EGear.cjs: 117.94 KB 120,774 bytes
+	./dist/cjs/EItem.cjs: 332.26 KB 340,236 bytes
 	./dist/cjs/EMonster.cjs: 25.22 KB 25,830 bytes
-	./dist/cjs/index.cjs: 849.08 KB 869,458 bytes
+	./dist/cjs/index.cjs: 852.25 KB 872,702 bytes
 	./dist/cjs/item_data-DZ4AG27N.json: 5.25 MB 5,508,779 bytes
 	./dist/cjs/monsters_data-5F625L5X.json: 363.54 KB 372,262 bytes
 	./dist/cjs/structures/Hiscores.cjs: 39.02 KB 39,956 bytes
 	./dist/cjs/structures/Wiki.cjs: 3.8 KB 3,889 bytes
 	./dist/cjs/util/util.cjs: 36.14 KB 37,008 bytes
 
-Total size: 6.98 MB
+Total size: 6.99 MB
 
 
 Files in ./dist/esm:
 	./dist/esm/constants.mjs: 5.08 KB 5,204 bytes
-	./dist/esm/EGear.mjs: 115.48 KB 118,253 bytes
-	./dist/esm/EItem.mjs: 328.12 KB 335,992 bytes
+	./dist/esm/EGear.mjs: 116.97 KB 119,774 bytes
+	./dist/esm/EItem.mjs: 331.29 KB 339,236 bytes
 	./dist/esm/EMonster.mjs: 24.23 KB 24,815 bytes
-	./dist/esm/index.mjs: 841.55 KB 861,748 bytes
+	./dist/esm/index.mjs: 844.72 KB 864,992 bytes
 	./dist/esm/item_data-DZ4AG27N.json: 5.25 MB 5,508,779 bytes
 	./dist/esm/monsters_data-5F625L5X.json: 363.54 KB 372,262 bytes
 	./dist/esm/structures/Hiscores.mjs: 38.45 KB 39,368 bytes
