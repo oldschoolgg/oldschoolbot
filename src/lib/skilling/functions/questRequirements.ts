@@ -24,3 +24,15 @@ export const soteSkillRequirements: Skills = {
 	construction: 70,
 	hunter: 70
 };
+
+export const royalTroubleRequirements: Skills = {
+	agility: 40,
+	slayer: 40,
+	woodcutting: 45,
+	farming: 10,
+	herblore: 35,
+	cooking: 53,
+	fishing: 53,
+	mining: 50,
+	crafting: 31
+};

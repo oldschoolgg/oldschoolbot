@@ -306,6 +306,7 @@ model User {
   minion_equippedPet     Int?      @map("minion.equippedPet")
   minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
+  minion_miscellania     Json?     @map("minion.miscellania") @db.Json
   finished_quest_ids     Int[]     @default([])
 
   // Relations

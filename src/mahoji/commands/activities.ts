@@ -27,6 +27,12 @@ import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
 import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import {
+	miscellaniaApprovalCommand,
+	miscellaniaCollectCommand,
+	miscellaniaDepositCommand,
+	miscellaniaStatusCommand
+} from '../lib/abstracted_commands/miscellaniaCommand';
 import { myNotesCommand } from '../lib/abstracted_commands/myNotesCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
@@ -292,6 +298,41 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'miscellania',
+			description: 'Manage your kingdom of Miscellania.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'deposit',
+					description: 'Update your Miscellania settings.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'amount',
+							description: 'Amount of GP to deposit in your coffer',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'status',
+					description: 'View your Miscellania status.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'collect',
+					description: 'Collect your resources.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'approval',
+					description: 'Enable maintaining approval each day.'
+				}
+			]
+		},
+		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'aerial_fishing',
 			description: 'The Aerial Fishing activity.'
@@ -522,6 +563,10 @@ export const activitiesCommand: OSBMahojiCommand = {
 		fight_caves?: {};
 		inferno?: { action: string };
 		birdhouses?: { action?: string; birdhouse?: string };
+		miscellania?: {
+			subcommand: 'set' | 'status' | 'collect' | 'approval';
+			deposit?: number;
+		};
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
@@ -548,6 +593,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand(user);
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
+		if (options.miscellania?.subcommand === 'status') return miscellaniaStatusCommand(user);
 
 		// Minion must be free
 		const isBusy = user.minionIsBusy;
@@ -559,6 +605,21 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.birdhouses?.action === 'harvest') {
 			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
+		}
+		if (options.miscellania) {
+			const { subcommand, deposit } = options.miscellania;
+			if (subcommand === 'set') {
+				if (deposit === undefined || deposit <= 0) {
+					return 'Please specify a valid deposit amount.';
+				}
+				return miscellaniaDepositCommand(user, deposit);
+			}
+			if (subcommand === 'collect') {
+				return miscellaniaCollectCommand(user);
+			}
+			if (subcommand === 'approval') {
+				return miscellaniaApprovalCommand(user);
+			}
 		}
 		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
 		if (options.plank_make?.action === 'sawmill') {
