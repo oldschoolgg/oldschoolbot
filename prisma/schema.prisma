@@ -865,6 +865,7 @@ enum activity_type_enum {
   Herblore
   Hunter
   Birdhouse
+  Miscellania
   Alching
   AnimatedArmour
   Cyclops

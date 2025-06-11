@@ -4,6 +4,7 @@ import { mahojiUserSettingsUpdate } from '../../../lib/MUser';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import { royalTroubleRequirements } from '../../../lib/skilling/functions/questRequirements';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 
 export interface MiscWorkerAllocation {
 	woodcutting: number;
@@ -44,13 +45,13 @@ function approvalDecay(current: number, royalTrouble: boolean): number {
 	return Math.max(32, current - Math.ceil((decay - current) / 15));
 }
 
-async function fetchData(user: MUser): Promise<MiscellaniaData> {
+export async function fetchMiscellaniaData(user: MUser): Promise<MiscellaniaData> {
 	const data = (user.user.minion_miscellania as MiscellaniaData | null) ?? defaultData();
 	return data;
 }
 
-async function updateData(user: MUser, data: Partial<MiscellaniaData>) {
-	const current = await fetchData(user);
+export async function updateMiscellaniaData(user: MUser, data: Partial<MiscellaniaData>) {
+	const current = await fetchMiscellaniaData(user);
 	const newData = { ...current, ...data };
 	await mahojiUserSettingsUpdate(user.id, { minion_miscellania: newData as any });
 	return newData;
@@ -66,22 +67,22 @@ function simulateDay(state: MiscellaniaData, royalTrouble: boolean): number {
 }
 
 export async function miscellaniaDepositCommand(user: MUser, amount: number) {
-	const state = await fetchData(user);
+	const state = await fetchMiscellaniaData(user);
 	const maxCoffer = hasRoyalTrouble(user) ? 7_500_000 : 5_000_000;
 	const deposit = Math.max(0, amount);
 	state.coffer = Math.min(state.coffer + deposit, maxCoffer);
-	await updateData(user, state);
+	await updateMiscellaniaData(user, state);
 	return `Deposited ${deposit.toLocaleString()} GP into your coffer. New balance: ${state.coffer.toLocaleString()} GP.`;
 }
 
 export async function miscellaniaStatusCommand(user: MUser) {
-	const state = await fetchData(user);
+	const state = await fetchMiscellaniaData(user);
 	const days = Math.floor((Date.now() - state.lastCollect) / Time.Day);
 	return `Approval: ${state.approval.toFixed(1)}%\nCoffer: ${state.coffer.toLocaleString()} gp\nDays since last collect: ${days}`;
 }
 
-export async function miscellaniaApprovalCommand(user: MUser) {
-	const state = await fetchData(user);
+export async function miscellaniaApprovalCommand(user: MUser, channelID: string) {
+	const state = await fetchMiscellaniaData(user);
 
 	const missingApproval = 100 - state.approval;
 	if (missingApproval <= 0) {
@@ -90,19 +91,18 @@ export async function miscellaniaApprovalCommand(user: MUser) {
 
 	const duration = missingApproval * 20_000; 
 
-	// Simulate a trip using your minion system:
-	await addSubTaskToActivityTask<MiscellaniaActivityTaskOptions>({
+	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
 		type: 'Miscellania',
 		duration,
-		userID: user.id
-		
-	});
+		userID: user.id,
+		channelID: channelID.toString()
+});
 
 	return `${user.minionName} is working to restore your approval! It will take around ${formatDuration(duration)} to finish.`;
 }
 
 export async function miscellaniaCollectCommand(user: MUser) {
-	const state = await fetchData(user);
+	const state = await fetchMiscellaniaData(user);
 	const royalTrouble = hasRoyalTrouble(user);
 	const days = Math.floor((Date.now() - state.lastCollect) / Time.Day);
 	if (days <= 0) return 'Nothing to collect yet.';
@@ -112,7 +112,7 @@ export async function miscellaniaCollectCommand(user: MUser) {
 		totalEffective += simulateDay(state, royalTrouble);
 	}
 	state.lastCollect = Date.now();
-	await updateData(user, state);
+	await updateMiscellaniaData(user, state);
 
 	const allocation = state.allocation;
 	const totalWorkers = royalTrouble ? 15 : 10;

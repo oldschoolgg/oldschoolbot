@@ -457,6 +457,10 @@ export function minionStatus(user: MUser) {
 		case 'Birdhouse': {
 			return `${name} is currently doing a bird house run. ${formattedDuration}`;
 		}
+		
+		case 'Miscellania': {
+			return `${name} is currently gaining approval for Miscellania. ${formattedDuration}`;
+		}
 
 		case 'AerialFishing': {
 			return `${name} is currently aerial fishing. ${formattedDuration}`;

@@ -100,10 +100,12 @@ import { sql } from './postgres';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
+import { miscellaniaTask } from '../tasks/minions/miscellaniaActivity';
 
 const tasks: MinionTask[] = [
 	aerialFishingTask,
 	birdHouseTask,
+	miscellaniaTask,
 	driftNetTask,
 	hunterTask,
 	animatedArmorTask,

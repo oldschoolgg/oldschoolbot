@@ -564,7 +564,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		inferno?: { action: string };
 		birdhouses?: { action?: string; birdhouse?: string };
 		miscellania?: {
-			subcommand: 'set' | 'status' | 'collect' | 'approval';
+			subcommand: 'deposit' | 'status' | 'collect' | 'approval';
 			deposit?: number;
 		};
 		aerial_fishing?: {};
@@ -608,19 +608,19 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.miscellania) {
 			const { subcommand, deposit } = options.miscellania;
-			if (subcommand === 'set') {
-				if (deposit === undefined || deposit <= 0) {
-					return 'Please specify a valid deposit amount.';
-				}
-				return miscellaniaDepositCommand(user, deposit);
+			if (subcommand === 'deposit') {
+					if (deposit === undefined || deposit <= 0) {
+							return 'Please specify a valid deposit amount.';
+					}
+					return miscellaniaDepositCommand(user, deposit);
 			}
 			if (subcommand === 'collect') {
-				return miscellaniaCollectCommand(user);
+					return miscellaniaCollectCommand(user);
 			}
 			if (subcommand === 'approval') {
-				return miscellaniaApprovalCommand(user);
+					return miscellaniaApprovalCommand(user, channelID);
 			}
-		}
+	}
 		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
 		if (options.plank_make?.action === 'sawmill') {
 			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
