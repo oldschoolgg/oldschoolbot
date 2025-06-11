@@ -9,6 +9,14 @@ import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minion
 export interface MiscWorkerAllocation {
 	woodcutting: number;
 	mining: number;
+	fishingRaw: number;
+	fishingCooked: number;
+	herbs: number;
+	flax: number;
+	hardwoodMahogany: number;
+	hardwoodTeak: number;
+	hardwoodBoth: number;
+	farmSeeds: number;
 }
 
 export interface MiscellaniaData {
@@ -27,27 +35,24 @@ export function defaultMiscellaniaData(): MiscellaniaData {
 		lastCollect: Date.now(),
 		maintainApproval: false,
 		workers: 10,
-		allocation: { woodcutting: 5, mining: 5 }
+		allocation: {
+			woodcutting: 5,
+			mining: 5,
+			fishingRaw: 0,
+			fishingCooked: 0,
+			herbs: 0,
+			flax: 0,
+			hardwoodMahogany: 0,
+			hardwoodTeak: 0,
+			hardwoodBoth: 0,
+			farmSeeds: 0
+		}
 	};
-}
-
-function hasRoyalTrouble(user: MUser): boolean {
-	const [hasReqs] = hasSkillReqs(user, royalTroubleRequirements);
-	if (!hasReqs || user.QP < 56) {
-		return false;
-	}
-	return true;
-}
-
-function approvalDecay(current: number, royalTrouble: boolean): number {
-	if (current <= 32) return 32;
-	const decay = royalTrouble ? 131 : 160;
-	return Math.max(32, current - Math.ceil((decay - current) / 15));
 }
 
 export async function fetchMiscellaniaData(user: MUser): Promise<MiscellaniaData> {
 	const data = (user.user.minion_miscellania as MiscellaniaData | null) ?? defaultMiscellaniaData();
-	return data;
+	return { ...defaultMiscellaniaData(), ...data };
 }
 
 export async function updateMiscellaniaData(user: MUser, data: Partial<MiscellaniaData>) {
@@ -57,13 +62,71 @@ export async function updateMiscellaniaData(user: MUser, data: Partial<Miscellan
 	return newData;
 }
 
+function hasRoyalTrouble(user: MUser): boolean {
+	const [hasReqs] = hasSkillReqs(user, royalTroubleRequirements);
+	if (!hasReqs || user.QP < 56) return false;
+	return true;
+}
+
 function simulateDay(state: MiscellaniaData, royalTrouble: boolean): number {
-	const maxWithdraw = royalTrouble ? 75_000 : 50_000;
-	const withdraw = Math.min(Math.floor(state.coffer / 10), maxWithdraw);
+	const maxWithdraw = royalTrouble ? 75000 : 50000;
+	const withdraw = Math.min(5 + Math.floor(state.coffer / 10), maxWithdraw, state.coffer);
 	state.coffer -= withdraw;
-	const effective = (withdraw * state.approval) / 100;
-	state.approval = state.maintainApproval ? 100 : approvalDecay(state.approval, royalTrouble);
-	return effective;
+
+	const workerEffectiveness = Math.floor((withdraw * 100) / 8333);
+	const resourcePoints = Math.floor((workerEffectiveness * state.approval) / 100);
+
+	if (!state.maintainApproval && state.approval > 32) {
+		const decay = royalTrouble ? 131 : 160;
+		state.approval = Math.max(32, state.approval - Math.ceil((decay - state.approval) / 15));
+	}
+
+	return resourcePoints;
+}
+
+function gatherCategory(bank: Bank, category: keyof MiscWorkerAllocation, workers: number, resourcePoints: number) {
+	if (workers <= 0) return;
+	const output = Math.floor((workers * resourcePoints) / 10);
+	switch (category) {
+		case 'woodcutting':
+			bank.add('Maple logs', output);
+			bank.add('Bird nest (seed)', Math.floor(output / 100));
+			break;
+		case 'mining':
+			bank.add('Coal', output);
+			bank.add('Uncut sapphire', Math.floor(output / 200));
+			break;
+		case 'fishingRaw':
+			bank.add('Raw tuna', Math.floor(output * 0.5));
+			bank.add('Raw swordfish', Math.floor(output * 0.15));
+			break;
+		case 'fishingCooked':
+			bank.add('Tuna', Math.floor(output * 0.5));
+			bank.add('Swordfish', Math.floor(output * 0.15));
+			break;
+		case 'herbs':
+			bank.add('Grimy ranarr weed', Math.floor(output / 100));
+			bank.add('Grimy harralander', Math.floor(output / 100));
+			break;
+		case 'flax':
+			bank.add('Flax', output);
+			bank.add('Ranarr seed', Math.floor(output / 500));
+			break;
+		case 'hardwoodMahogany':
+			bank.add('Mahogany logs', output);
+			break;
+		case 'hardwoodTeak':
+			bank.add('Teak logs', output);
+			break;
+		case 'hardwoodBoth':
+			bank.add('Mahogany logs', Math.floor(output * 0.5));
+			bank.add('Teak logs', Math.floor(output * 0.5));
+			break;
+		case 'farmSeeds':
+			bank.add('Apple tree seed', Math.floor(output / 500));
+			bank.add('Ranarr seed', Math.floor(output / 300));
+			break;
+	}
 }
 
 export async function miscellaniaDepositCommand(user: MUser, amount: number) {
@@ -83,20 +146,20 @@ export async function miscellaniaStatusCommand(user: MUser) {
 
 export async function miscellaniaApprovalCommand(user: MUser, channelID: string) {
 	const state = await fetchMiscellaniaData(user);
-
 	const missingApproval = 100 - state.approval;
+
 	if (missingApproval <= 0) {
 		return 'Your approval is already at 100%.';
 	}
 
-	const duration = missingApproval * 20_000; 
+	const duration = missingApproval * 20_000;
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
 		type: 'Miscellania',
 		duration,
 		userID: user.id,
 		channelID: channelID.toString()
-});
+	});
 
 	return `${user.minionName} is working to restore your approval! It will take around ${formatDuration(duration)} to finish.`;
 }
@@ -107,23 +170,18 @@ export async function miscellaniaCollectCommand(user: MUser) {
 	const days = Math.floor((Date.now() - state.lastCollect) / Time.Day);
 	if (days <= 0) return 'Nothing to collect yet.';
 
-	let totalEffective = 0;
+	let resourcePoints = 0;
 	for (let i = 0; i < days; i++) {
-		totalEffective += simulateDay(state, royalTrouble);
+		resourcePoints += simulateDay(state, royalTrouble);
 	}
+	resourcePoints = Math.min(262143, resourcePoints);
 	state.lastCollect = Date.now();
 	await updateMiscellaniaData(user, state);
 
-	const allocation = state.allocation;
-	const totalWorkers = royalTrouble ? 15 : 10;
-
-	const woodShare = allocation.woodcutting / totalWorkers;
-	const miningShare = allocation.mining / totalWorkers;
-
-	const mapleLogs = Math.floor((woodShare * totalEffective) / 56.1);
-	const coal = Math.floor((miningShare * totalEffective) / 91.6);
-
-	const loot = new Bank().add('Maple logs', mapleLogs).add('Coal', coal);
+	const loot = new Bank();
+	for (const [category, workers] of Object.entries(state.allocation) as [keyof MiscWorkerAllocation, number][]) {
+		gatherCategory(loot, category, workers, resourcePoints);
+	}
 
 	return `You collected ${loot}.`;
 }
