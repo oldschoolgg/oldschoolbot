@@ -268,7 +268,6 @@ const MAX_WITHDRAW_BASE = 50000;
 const APPROVAL_DECAY_BASE = 160;
 const APPROVAL_DECAY_ROYAL = 131;
 
-
 export function simulateDay(state: MiscellaniaData, royalTrouble: boolean): number {
 	const maxWithdraw = royalTrouble ? MAX_WITHDRAW_ROYAL : MAX_WITHDRAW_BASE;
 	const withdraw = Math.max(0, Math.min(5 + Math.floor(state.coffer / 10), maxWithdraw, state.coffer));

@@ -193,31 +193,31 @@ export const simulateCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-                {
-                        type: ApplicationCommandOptionType.Subcommand,
-                        name: 'colosseum',
-                        description: 'Simulate colosseum.'
-                },
-                {
-                        type: ApplicationCommandOptionType.Subcommand,
-                        name: 'miscellania',
-                        description: 'Simulate collecting resources from Miscellania.',
-                        options: [
-                                {
-                                        type: ApplicationCommandOptionType.Integer,
-                                        name: 'days',
-                                        description: 'Number of days to simulate.',
-                                        required: true,
-                                        min_value: 1,
-                                        max_value: 100
-                                }
-                        ]
-                }
-        ],
-        run: async ({
-                interaction,
-                options,
-                userID
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'colosseum',
+			description: 'Simulate colosseum.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'miscellania',
+			description: 'Simulate collecting resources from Miscellania.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'days',
+					description: 'Number of days to simulate.',
+					required: true,
+					min_value: 1,
+					max_value: 100
+				}
+			]
+		}
+	],
+	run: async ({
+		interaction,
+		options,
+		userID
 	}: CommandRunOptions<{
 		cox?: {
 			quantity: number;
@@ -225,16 +225,16 @@ export const simulateCommand: OSBMahojiCommand = {
 			team_size?: number;
 			challenge_mode?: boolean;
 		};
-                petroll?: {
-                        quantity: number;
-                };
-                colosseum?: {};
-                miscellania?: { days: number };
-        }>) => {
-                await deferInteraction(interaction);
-                const user = await mUserFetch(userID.toString());
-                if (options.colosseum) {
-                        return simulateColosseumRuns();
+		petroll?: {
+			quantity: number;
+		};
+		colosseum?: {};
+		miscellania?: { days: number };
+	}>) => {
+		await deferInteraction(interaction);
+		const user = await mUserFetch(userID.toString());
+		if (options.colosseum) {
+			return simulateColosseumRuns();
 		}
 		if (options.cox) {
 			return coxCommand(
@@ -243,9 +243,9 @@ export const simulateCommand: OSBMahojiCommand = {
 				options.cox.challenge_mode,
 				options.cox.points,
 				options.cox.team_size
-                        );
-                }
-                if (options.petroll) {
+			);
+		}
+		if (options.petroll) {
 			const received = [];
 
 			for (let i = 0; i < options.petroll.quantity; i++) {
@@ -254,17 +254,17 @@ export const simulateCommand: OSBMahojiCommand = {
 				}
 			}
 
-                        if (received.length === 0) return "You didn't get any pets!";
-                        return received.join(' ');
-                }
-                if (options.miscellania) {
-                        const loot = simulateCollection(options.miscellania.days);
-                        const image = await makeBankImage({
-                                bank: loot,
-                                title: `Loot from ${options.miscellania.days} days of Miscellania`
-                        });
-                        return { files: [image.file] };
-                }
-                return 'Invalid command.';
-        }
+			if (received.length === 0) return "You didn't get any pets!";
+			return received.join(' ');
+		}
+		if (options.miscellania) {
+			const loot = simulateCollection(options.miscellania.days);
+			const image = await makeBankImage({
+				bank: loot,
+				title: `Loot from ${options.miscellania.days} days of Miscellania`
+			});
+			return { files: [image.file] };
+		}
+		return 'Invalid command.';
+	}
 };

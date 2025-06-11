@@ -15,6 +15,7 @@
 			"fight_caves",
 			"inferno",
 			"birdhouses",
+			"miscellania",
 			"aerial_fishing",
 			"enchant",
 			"bury",
@@ -471,7 +472,7 @@
 		"name": "simulate",
 		"desc": "Simulate various OSRS related things.",
 		"examples": ["/simulate cox quantity:1"],
-		"subOptions": ["cox", "petroll", "colosseum"]
+		"subOptions": ["cox", "petroll", "colosseum", "miscellania"]
 	},
 	{
 		"name": "slayer",
