@@ -20,7 +20,7 @@ export interface MiscellaniaData {
 	allocation: MiscWorkerAllocation;
 }
 
-function defaultData(): MiscellaniaData {
+export function defaultMiscellaniaData(): MiscellaniaData {
 	return {
 		approval: 100,
 		coffer: 0,
@@ -46,7 +46,7 @@ function approvalDecay(current: number, royalTrouble: boolean): number {
 }
 
 export async function fetchMiscellaniaData(user: MUser): Promise<MiscellaniaData> {
-	const data = (user.user.minion_miscellania as MiscellaniaData | null) ?? defaultData();
+	const data = (user.user.minion_miscellania as MiscellaniaData | null) ?? defaultMiscellaniaData();
 	return data;
 }
 

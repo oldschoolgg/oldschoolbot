@@ -1,6 +1,7 @@
 import { mahojiUserSettingsUpdate } from "../../lib/MUser";
+import type { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
 import { handleTripFinish } from "../../lib/util/handleTripFinish";
-import type { MiscellaniaData } from "../../mahoji/lib/abstracted_commands/miscellaniaCommand";
+import { defaultMiscellaniaData, type MiscellaniaData } from "../../mahoji/lib/abstracted_commands/miscellaniaCommand";
 
 export const miscellaniaTask: MinionTask = {
     type: 'Miscellania',
@@ -8,7 +9,7 @@ export const miscellaniaTask: MinionTask = {
         const { userID, channelID } = data;
         const user = await mUserFetch(userID);
 
-        const state: MiscellaniaData = (user.user.minion_miscellania as MiscellaniaData | null) ?? defaultData();
+        const state: MiscellaniaData = (user.user.minion_miscellania as MiscellaniaData | null) ?? defaultMiscellaniaData();
         state.approval = 100;
         await mahojiUserSettingsUpdate(user.id, { minion_miscellania: state as any });
 
