@@ -1,18 +1,17 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { mahojiUserSettingsUpdate } from '../../../lib/MUser';
-import { formatDuration, hasSkillReqs } from '../../../lib/util';
-import { royalTroubleRequirements } from '../../../lib/skilling/functions/questRequirements';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import {
-       gatherCategory,
-       simulateDay,
-       MiscWorkerAllocation,
-       MiscellaniaData,
-       defaultMiscellaniaData
+	type MiscWorkerAllocation,
+	type MiscellaniaData,
+	defaultMiscellaniaData,
+	gatherCategory,
+	simulateDay
 } from '../../../lib/miscellania';
-
+import { royalTroubleRequirements } from '../../../lib/skilling/functions/questRequirements';
+import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatDuration, hasSkillReqs } from '../../../lib/util';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function fetchMiscellaniaData(user: MUser): Promise<MiscellaniaData> {
 	const data = (user.user.minion_miscellania as MiscellaniaData | null) ?? defaultMiscellaniaData();
@@ -31,7 +30,6 @@ function hasRoyalTrouble(user: MUser): boolean {
 	if (!hasReqs || user.QP < 56) return false;
 	return true;
 }
-
 
 export async function miscellaniaDepositCommand(user: MUser, amount: number) {
 	const state = await fetchMiscellaniaData(user);
@@ -82,12 +80,12 @@ export async function miscellaniaCollectCommand(user: MUser) {
 	state.lastCollect = Date.now();
 	await updateMiscellaniaData(user, state);
 
-        const loot = new Bank();
-        for (const [category, workers] of Object.entries(state.allocation) as [keyof MiscWorkerAllocation, number][]) {
-                gatherCategory(loot, category, workers, resourcePoints);
-        }
+	const loot = new Bank();
+	for (const [category, workers] of Object.entries(state.allocation) as [keyof MiscWorkerAllocation, number][]) {
+		gatherCategory(loot, category, workers, resourcePoints);
+	}
 
-        await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
+	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 
-        return `You collected ${loot}.`;
+	return `You collected ${loot}.`;
 }

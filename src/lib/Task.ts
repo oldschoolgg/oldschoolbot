@@ -71,6 +71,7 @@ import { cyclopsTask } from '../tasks/minions/minigames/warriorsGuild/cyclopsAct
 import { wintertodtTask } from '../tasks/minions/minigames/wintertodtActivity';
 import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
+import { miscellaniaTask } from '../tasks/minions/miscellaniaActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
 import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
 import { myNotesTask } from '../tasks/minions/myNotesActivity';
@@ -100,7 +101,6 @@ import { sql } from './postgres';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
-import { miscellaniaTask } from '../tasks/minions/miscellaniaActivity';
 
 const tasks: MinionTask[] = [
 	aerialFishingTask,

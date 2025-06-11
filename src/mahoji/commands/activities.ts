@@ -609,18 +609,18 @@ export const activitiesCommand: OSBMahojiCommand = {
 		if (options.miscellania) {
 			const { subcommand, deposit } = options.miscellania;
 			if (subcommand === 'deposit') {
-					if (deposit === undefined || deposit <= 0) {
-							return 'Please specify a valid deposit amount.';
-					}
-					return miscellaniaDepositCommand(user, deposit);
+				if (deposit === undefined || deposit <= 0) {
+					return 'Please specify a valid deposit amount.';
+				}
+				return miscellaniaDepositCommand(user, deposit);
 			}
 			if (subcommand === 'collect') {
-					return miscellaniaCollectCommand(user);
+				return miscellaniaCollectCommand(user);
 			}
 			if (subcommand === 'approval') {
-					return miscellaniaApprovalCommand(user, channelID);
+				return miscellaniaApprovalCommand(user, channelID);
 			}
-	}
+		}
 		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
 		if (options.plank_make?.action === 'sawmill') {
 			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
