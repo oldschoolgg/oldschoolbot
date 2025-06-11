@@ -1,4 +1,4 @@
-import type { Bank } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import { randFloat } from './util';
 
 export interface RateTableRow {
@@ -263,17 +263,35 @@ export interface MiscellaniaData {
 	allocation: MiscWorkerAllocation;
 }
 
+const MAX_WITHDRAW_ROYAL = 75000;
+const MAX_WITHDRAW_BASE = 50000;
+const APPROVAL_DECAY_BASE = 160;
+const APPROVAL_DECAY_ROYAL = 131;
+
+
 export function simulateDay(state: MiscellaniaData, royalTrouble: boolean): number {
-	const maxWithdraw = royalTrouble ? 75000 : 50000;
-	const withdraw = Math.min(5 + Math.floor(state.coffer / 10), maxWithdraw, state.coffer);
+	const maxWithdraw = royalTrouble ? MAX_WITHDRAW_ROYAL : MAX_WITHDRAW_BASE;
+	const withdraw = Math.max(0, Math.min(5 + Math.floor(state.coffer / 10), maxWithdraw, state.coffer));
 	state.coffer -= withdraw;
 	const workerEffectiveness = Math.floor((withdraw * 100) / 8333);
 	const resourcePoints = Math.floor((workerEffectiveness * state.approval) / 100);
 	if (!state.maintainApproval && state.approval > 32) {
-		const decay = royalTrouble ? 131 : 160;
+		const decay = royalTrouble ? APPROVAL_DECAY_ROYAL : APPROVAL_DECAY_BASE;
 		state.approval = Math.max(32, state.approval - Math.ceil((decay - state.approval) / 15));
 	}
 	return resourcePoints;
+}
+
+export function simulateCollection(days: number): Bank {
+	const state = defaultMiscellaniaData();
+	const bank = new Bank();
+	for (let i = 0; i < days; i++) {
+		const rp = simulateDay(state, true);
+		for (const [cat, workers] of Object.entries(state.allocation) as [keyof MiscWorkerAllocation, number][]) {
+			gatherCategory(bank, cat, workers, rp);
+		}
+	}
+	return bank;
 }
 
 export function defaultMiscellaniaData(): MiscellaniaData {
