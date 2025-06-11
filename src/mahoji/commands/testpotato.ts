@@ -21,6 +21,10 @@ import potions from '../../lib/minions/data/potions';
 import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
+import {
+       fetchMiscellaniaData,
+       updateMiscellaniaData
+} from '../lib/abstracted_commands/miscellaniaCommand';
 
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
@@ -582,13 +586,43 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 						}
 					]
 				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'events',
-					description: 'See events',
-					options: []
-				}
-			],
+                                {
+                                        type: ApplicationCommandOptionType.Subcommand,
+                                        name: 'events',
+                                        description: 'See events',
+                                        options: []
+                                },
+                               {
+                                       type: ApplicationCommandOptionType.Subcommand,
+                                       name: 'miscellania',
+                                       description: 'Modify your Miscellania state.',
+                                       options: [
+                                               {
+                                                       type: ApplicationCommandOptionType.Integer,
+                                                       name: 'days_ago',
+                                                       description: 'Set last collected this many days ago.',
+                                                       required: false,
+                                                       min_value: 0,
+                                                       max_value: 365
+                                               },
+                                               {
+                                                       type: ApplicationCommandOptionType.Integer,
+                                                       name: 'coffer',
+                                                       description: 'Set GP in your coffer.',
+                                                       required: false,
+                                                       min_value: 0
+                                               },
+                                               {
+                                                       type: ApplicationCommandOptionType.Integer,
+                                                       name: 'approval',
+                                                       description: 'Set your approval percent.',
+                                                       required: false,
+                                                       min_value: 0,
+                                                       max_value: 100
+                                               }
+                                       ]
+                               }
+                        ],
 			run: async ({
 				options,
 				userID
@@ -599,17 +633,18 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				reset?: { thing: string };
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
-				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
-				setmonsterkc?: { monster: string; kc: string };
-				irontoggle?: {};
-				forcegrow?: { patch_name: FarmingPatchName };
-				wipe?: { thing: (typeof thingsToWipe)[number] };
-				set?: { qp?: number; all_ca_tasks?: boolean };
-				check?: { monster_droprates?: string };
-				bingo_tools?: { start_bingo: string };
-				setslayertask?: { master: string; monster: string; quantity: number };
-				events?: {};
-			}>) => {
+                                spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
+                                setmonsterkc?: { monster: string; kc: string };
+                                irontoggle?: {};
+                                forcegrow?: { patch_name: FarmingPatchName };
+                                wipe?: { thing: (typeof thingsToWipe)[number] };
+                                set?: { qp?: number; all_ca_tasks?: boolean };
+                                check?: { monster_droprates?: string };
+                                bingo_tools?: { start_bingo: string };
+                                setslayertask?: { master: string; monster: string; quantity: number };
+                                events?: {};
+                               miscellania?: { days_ago?: number; coffer?: number; approval?: number };
+                        }>) => {
 				if (globalConfig.isProduction) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
@@ -926,9 +961,9 @@ ${droprates.join('\n')}`),
 					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
 
-				if (options.setslayertask) {
-					const user = await mUserFetch(userID);
-					const usersTask = await getUsersCurrentSlayerInfo(user.id);
+                                if (options.setslayertask) {
+                                        const user = await mUserFetch(userID);
+                                        const usersTask = await getUsersCurrentSlayerInfo(user.id);
 
 					const { monster, master } = options.setslayertask;
 
@@ -978,9 +1013,23 @@ ${droprates.join('\n')}`),
 						slayer_last_task: selectedMonster.id
 					});
 
-					return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
-				}
+                                        return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
+                                }
+                               if (options.miscellania) {
+                                       const state = await fetchMiscellaniaData(user);
+                                       if (typeof options.miscellania.coffer === 'number') {
+                                               state.coffer = options.miscellania.coffer;
+                                       }
+                                       if (typeof options.miscellania.approval === 'number') {
+                                               state.approval = options.miscellania.approval;
+                                       }
+                                       if (typeof options.miscellania.days_ago === 'number') {
+                                               state.lastCollect = Date.now() - options.miscellania.days_ago * Time.Day;
+                                       }
+                                       await updateMiscellaniaData(user, state);
+                                       return `Updated Miscellania: ${state.approval.toFixed(1)}% approval, ${state.coffer.toLocaleString()} GP coffer.`;
+                               }
 
-				return 'Nothin!';
-			}
-		};
+                                return 'Nothin!';
+                        }
+                };
