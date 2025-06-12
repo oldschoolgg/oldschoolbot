@@ -275,8 +275,8 @@ export function simulateDay(state: MiscellaniaData, royalTrouble: boolean): numb
 	const workerEffectiveness = Math.floor((withdraw * 100) / 8333);
 	const resourcePoints = Math.floor((workerEffectiveness * state.approval) / 100);
 	if (!state.maintainApproval && state.approval > 32) {
-		const decay = royalTrouble ? APPROVAL_DECAY_ROYAL : APPROVAL_DECAY_BASE;
-		state.approval = Math.max(32, state.approval - Math.ceil((decay - state.approval) / 15));
+		const favourSubtraction = royalTrouble ? APPROVAL_DECAY_ROYAL : APPROVAL_DECAY_BASE;
+		state.approval = Math.max(32, state.approval - Math.ceil((favourSubtraction - state.approval) / 15));
 	}
 	return resourcePoints;
 }

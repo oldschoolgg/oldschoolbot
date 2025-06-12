@@ -28,6 +28,7 @@ import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
 import {
+	miscellaniaAllocateCommand,
 	miscellaniaApprovalCommand,
 	miscellaniaCollectCommand,
 	miscellaniaDepositCommand,
@@ -329,6 +330,93 @@ export const activitiesCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'approval',
 					description: 'Enable maintaining approval each day.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'allocate',
+					description: 'Assign your Miscellania workers.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'woodcutting',
+							description: 'Woodcutting workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'mining',
+							description: 'Mining workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'fishing_raw',
+							description: 'Raw fishing workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'fishing_cooked',
+							description: 'Cooked fishing workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'herbs',
+							description: 'Herb workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'flax',
+							description: 'Flax workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'hardwood_mahogany',
+							description: 'Mahogany workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'hardwood_teak',
+							description: 'Teak workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'hardwood_both',
+							description: 'Both hardwoods',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'farm_seeds',
+							description: 'Farming seed workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						}
+					]
 				}
 			]
 		},
@@ -564,8 +652,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		inferno?: { action: string };
 		birdhouses?: { action?: string; birdhouse?: string };
 		miscellania?: {
-			subcommand: 'deposit' | 'status' | 'collect' | 'approval';
+			subcommand: 'deposit' | 'status' | 'collect' | 'approval' | 'allocate';
 			deposit?: number;
+			allocate?: number;
 		};
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
@@ -619,6 +708,25 @@ export const activitiesCommand: OSBMahojiCommand = {
 			}
 			if (subcommand === 'approval') {
 				return miscellaniaApprovalCommand(user, channelID);
+			}
+			if (subcommand === 'allocate') {
+				const alloc: any = {};
+				for (const key of [
+					'woodcutting',
+					'mining',
+					'fishing_raw',
+					'fishing_cooked',
+					'herbs',
+					'flax',
+					'hardwood_mahogany',
+					'hardwood_teak',
+					'hardwood_both',
+					'farm_seeds'
+				]) {
+					const val = (options.miscellania as any)[key];
+					if (val !== undefined) alloc[key.replace(/_(.)/g, (_, c) => c.toUpperCase())] = val;
+				}
+				return miscellaniaAllocateCommand(user, alloc);
 			}
 		}
 		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);

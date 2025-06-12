@@ -89,3 +89,36 @@ export async function miscellaniaCollectCommand(user: MUser) {
 
 	return `You collected ${loot}.`;
 }
+
+export async function miscellaniaAllocateCommand(user: MUser, alloc: Partial<MiscWorkerAllocation>) {
+	const state = await fetchMiscellaniaData(user);
+	const royalTrouble = hasRoyalTrouble(user);
+	const maxWorkers = royalTrouble ? 15 : 10;
+	state.workers = maxWorkers;
+	const newAlloc: MiscWorkerAllocation = { ...state.allocation, ...alloc } as MiscWorkerAllocation;
+
+	const total = Object.values(newAlloc).reduce((t, v) => t + v, 0);
+	if (total > maxWorkers) {
+		return `You only have ${maxWorkers} workers to assign.`;
+	}
+	if (newAlloc.fishingRaw > 0 && newAlloc.fishingCooked > 0) {
+		return 'Choose either raw or cooked fishing, not both.';
+	}
+	if (newAlloc.herbs > 0 && newAlloc.flax > 0) {
+		return 'You can assign workers to herbs or flax, not both.';
+	}
+	if (
+		(newAlloc.hardwoodBoth > 0 && (newAlloc.hardwoodMahogany > 0 || newAlloc.hardwoodTeak > 0)) ||
+		(newAlloc.hardwoodMahogany > 0 && newAlloc.hardwoodTeak > 0)
+	) {
+		return 'Assign hardwood workers to mahogany, teak or both - only one option.';
+	}
+
+	state.allocation = newAlloc;
+	await updateMiscellaniaData(user, state);
+	const summary = Object.entries(newAlloc)
+		.filter(([, amt]) => amt > 0)
+		.map(([k, amt]) => `${amt} ${k}`)
+		.join(', ');
+	return `Updated allocation: ${summary || 'no workers assigned'}.`;
+}
