@@ -9,6 +9,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 import { PerkTier } from '@oldschoolgg/toolkit/util';
 import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
 import pets from '../../lib/data/pets';
+import { simulateCollection } from '../../lib/miscellania';
 import { assert, formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -196,6 +197,21 @@ export const simulateCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'colosseum',
 			description: 'Simulate colosseum.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'miscellania',
+			description: 'Simulate collecting resources from Miscellania.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'days',
+					description: 'Number of days to simulate.',
+					required: true,
+					min_value: 1,
+					max_value: 100
+				}
+			]
 		}
 	],
 	run: async ({
@@ -213,6 +229,7 @@ export const simulateCommand: OSBMahojiCommand = {
 			quantity: number;
 		};
 		colosseum?: {};
+		miscellania?: { days: number };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
@@ -239,6 +256,14 @@ export const simulateCommand: OSBMahojiCommand = {
 
 			if (received.length === 0) return "You didn't get any pets!";
 			return received.join(' ');
+		}
+		if (options.miscellania) {
+			const loot = simulateCollection(options.miscellania.days);
+			const image = await makeBankImage({
+				bank: loot,
+				title: `Loot from ${options.miscellania.days} days of Miscellania`
+			});
+			return { files: [image.file] };
 		}
 		return 'Invalid command.';
 	}
