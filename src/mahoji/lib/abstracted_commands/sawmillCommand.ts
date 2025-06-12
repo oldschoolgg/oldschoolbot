@@ -23,7 +23,7 @@ export async function sawmillCommand(
 	);
 
 	if (!plank) {
-		return `Thats not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`;
+		return `That's not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`;
 	}
 
 	const boosts = [];
