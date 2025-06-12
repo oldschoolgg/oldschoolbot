@@ -11,10 +11,10 @@ RUN apt-get update && apt-get install -y \
     libfontconfig1 \
     curl
 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     corepack enable && \
-    corepack prepare pnpm@latest --activate
+    corepack prepare pnpm@9.12.2 --activate
 
 ENTRYPOINT ["dumb-init", "--"]
 

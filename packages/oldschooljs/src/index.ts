@@ -8,20 +8,18 @@ import * as Misc from './simulation/misc';
 import Monsters from './simulation/monsters/index';
 import Openables from './simulation/openables/index';
 import Bank from './structures/Bank';
-import Hiscores from './structures/Hiscores';
+import { Hiscores } from './structures/Hiscores';
 import Items from './structures/Items';
 import LootTable from './structures/LootTable';
 import Player from './structures/Player';
 import SimpleMonster from './structures/SimpleMonster';
 import SimpleOpenable from './structures/SimpleOpenable';
-import Wiki from './structures/Wiki';
 import * as Util from './util';
 export * from './simulation/clues';
 
 export {
 	Bank,
 	constants,
-	Hiscores,
 	Items,
 	LootTable,
 	Misc,
@@ -30,11 +28,11 @@ export {
 	MonsterSlayerMaster,
 	Openables,
 	Player,
+	Hiscores,
 	Util,
-	Wiki,
+	SimpleMonster,
 	EItem,
 	EMonster,
-	SimpleMonster,
 	SimpleOpenable
 };
 

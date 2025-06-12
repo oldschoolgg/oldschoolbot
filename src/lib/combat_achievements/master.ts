@@ -13,8 +13,7 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from '../types/minions';
-import { anyoneDiedInTOARaid } from '../util';
-import { isCertainMonsterTrip } from './caUtils';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
 export const masterCombatAchievements: CombatAchievement[] = [
@@ -1029,7 +1028,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Theatre of Blood: Hard Mode',
 		rng: {
-			chancePerKill: 55,
+			chancePerKill: 5,
 			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).hardMode
 		}
 	},

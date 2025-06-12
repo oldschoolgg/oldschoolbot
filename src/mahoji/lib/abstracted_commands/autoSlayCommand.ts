@@ -26,7 +26,7 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.Araxyte.id,
 		efficientName: Monsters.Araxyte.name,
 		efficientMonster: Monsters.Araxyte.id,
-		efficientMethod: ['barrage', 'cannon']
+		efficientMethod: 'cannon'
 	},
 	{
 		monsterID: Monsters.Jelly.id,
@@ -153,7 +153,7 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.SmokeDevil.id,
 		efficientName: Monsters.SmokeDevil.name,
 		efficientMonster: Monsters.SmokeDevil.id,
-		efficientMethod: ['barrage', 'cannon']
+		efficientMethod: 'barrage'
 	},
 	{
 		monsterID: Monsters.DarkBeast.id,
@@ -330,7 +330,7 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.Jelly.id,
 		efficientName: Monsters.Jelly.name,
 		efficientMonster: Monsters.Jelly.id,
-		efficientMethod: ['barrage', 'cannon']
+		efficientMethod: 'barrage'
 	},
 	{
 		monsterID: Monsters.LesserDemon.id,

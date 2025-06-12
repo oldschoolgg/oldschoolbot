@@ -54,6 +54,7 @@ import type {
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
+	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -446,7 +447,8 @@ const tripHandlers = {
 				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString(),
 				quantity: data.iQty,
 				method,
-				wilderness: data.isInWilderness
+				wilderness: data.isInWilderness,
+				onTask: data.onTask
 			};
 		}
 	},
@@ -550,7 +552,10 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Sepulchre]: {
 		commandName: 'minigames',
-		args: () => ({ sepulchre: { start: {} } })
+		args: (data: SepulchreActivityTaskOptions) => {
+			const fletch = data.fletch?.id;
+			return { sepulchre: { start: { fletching: fletch } } };
+		}
 	},
 	[activity_type_enum.Smithing]: {
 		commandName: 'smith',

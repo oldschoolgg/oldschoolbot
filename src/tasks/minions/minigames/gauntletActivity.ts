@@ -53,10 +53,9 @@ export const gauntletTask: MinionTask = {
 
 		const newKc = await getMinigameScore(user.id, key);
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
+		const str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
 
 		if (loot.amount('Youngllef') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${

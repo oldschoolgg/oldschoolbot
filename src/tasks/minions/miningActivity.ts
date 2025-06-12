@@ -28,7 +28,7 @@ export function determineMiningResult({
 	hasFinishedCOTS: boolean;
 }) {
 	const miningLvl = gearBank.skillsAsLevels.mining;
-	const messages: string[] = [];
+	let bonusXP = 0;
 	let xpToReceive = quantity * ore.xp;
 
 	let taintedQty = 0; // 6xp per chunk rolled
@@ -44,7 +44,7 @@ export function determineMiningResult({
 		equippedProsItems.length === 4 ? 2.5 : sumArr(equippedProsItems.map(item => item.boostPercent));
 	if (bonusPercent > 0) {
 		const newXP = Math.floor(increaseNumByPercent(xpToReceive, bonusPercent));
-		messages.push(`${bonusPercent}% (${newXP - xpToReceive}) XP for prospector`);
+		bonusXP = newXP - xpToReceive;
 		xpToReceive = newXP;
 	}
 
@@ -65,7 +65,6 @@ export function determineMiningResult({
 		const { petDropRate } = skillingPetDropRate(gearBank, SkillsEnum.Mining, ore.petChance);
 		if (roll(petDropRate / quantity)) {
 			updateBank.itemLootBank.add('Rock golem');
-			messages.push("You have a funny feeling you're being followed...");
 		}
 	}
 
@@ -82,9 +81,13 @@ export function determineMiningResult({
 		}
 	}
 
-	let daeyaltQty = 0;
-
-	if (!isPowermining) {
+	if (ore.name === 'Daeyalt essence rock') {
+		let daeyaltQty = 0;
+		for (let i = 0; i < quantity; i++) {
+			daeyaltQty += randInt(2, 3);
+		}
+		updateBank.itemLootBank.add(ore.id, daeyaltQty);
+	} else if (!isPowermining) {
 		// Gem rocks roll off the GemRockTable
 		if (ore.name === 'Gem rock') {
 			for (let i = 0; i < quantity; i++) {
@@ -116,11 +119,6 @@ export function determineMiningResult({
 			for (let i = 0; i < quantity; i++) {
 				updateBank.itemLootBank.add(Mining.GraniteRockTable.roll());
 			}
-		} else if (ore.name === 'Daeyalt essence rock') {
-			for (let i = 0; i < quantity; i++) {
-				daeyaltQty += randInt(2, 3);
-			}
-			updateBank.itemLootBank.add(ore.id, daeyaltQty);
 		} else if (ore.name === 'Tainted essence chunk') {
 			updateBank.itemLootBank.add(ore.id, 5 * taintedQty);
 		} else {
@@ -134,7 +132,7 @@ export function determineMiningResult({
 
 	return {
 		updateBank,
-		messages,
+		bonusXP,
 		xpHr
 	};
 }
@@ -147,7 +145,7 @@ export const miningTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
-		const { updateBank, messages, xpHr } = determineMiningResult({
+		const { updateBank, bonusXP } = determineMiningResult({
 			ore,
 			quantity,
 			gearBank: user.gearBank,
@@ -158,14 +156,12 @@ export const miningTask: MinionTask = {
 
 		const updateResult = await updateBank.transact(user);
 		if (typeof updateResult === 'string') throw new Error(updateResult);
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. `;
-		if (updateResult.itemTransactionResult?.itemsAdded)
-			str += `You received ${updateResult.itemTransactionResult?.itemsAdded} and `;
+		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${updateResult.message}${
+			bonusXP > 0 ? ` **Bonus XP:** ${bonusXP.toLocaleString()}` : ''
+		}\n`;
 
-		str += `${updateBank.xpBank}. ${xpHr} XP/hr`;
-		if (messages.length > 0) {
-			str += `\n${messages.join(', ')}.`;
-		}
+		if (updateResult.itemTransactionResult?.itemsAdded)
+			str += `\nYou received ${updateResult.itemTransactionResult?.itemsAdded}.`;
 
 		if (updateBank.itemLootBank.has('Rock golem')) {
 			globalClient.emit(

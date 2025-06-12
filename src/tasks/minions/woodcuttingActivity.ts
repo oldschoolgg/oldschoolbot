@@ -27,11 +27,8 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 
 	let strForestry = '';
 	const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const chanceWcLevel = Math.min(userWcLevel, 99);
-	const eggChance = Math.ceil(2700 - ((chanceWcLevel - 1) * (2700 - 1350)) / 98);
-	const whistleChance = Math.ceil(90 - ((chanceWcLevel - 1) * (90 - 45)) / 98);
 
-	perTimeUnitChance(duration, 10, Time.Minute, async () => {
+	perTimeUnitChance(duration, 8, Time.Minute, async () => {
 		const eventIndex = randInt(0, ForestryEvents.length - 1);
 		const event = ForestryEvents[eventIndex];
 		let eventRounds = 0;
@@ -90,7 +87,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				break;
 			case 7: // Poachers
 				eventInteraction = randInt(12, 15); // traps disarmed
-				if (roll(whistleChance)) {
+				if (roll(30)) {
 					loot.add('Fox whistle');
 				}
 				eventCounts[event.id]++;
@@ -99,7 +96,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				break;
 			case 8: // Enchantment Ritual
 				eventInteraction = randInt(6, 8); // ritual circles
-				if (roll(50)) {
+				if (roll(30)) {
 					loot.add('Petal garland');
 				}
 				eventCounts[event.id]++;
@@ -111,7 +108,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 					if (percentChance(50)) {
 						loot.add('Pheasant tail feathers');
 					}
-					if (roll(eggChance)) {
+					if (roll(900)) {
 						loot.add('Golden pheasant egg');
 					}
 				}
@@ -323,7 +320,6 @@ export const woodcuttingTask: MinionTask = {
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
 			if (roll(petDropRate / quantity)) {
 				loot.add('Beaver');
-				str += "\n**You have a funny feeling you're being followed...**";
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${

@@ -6,7 +6,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { BitField } from '../../lib/constants';
+import { BitField, MAX_CLUES_DROPPED } from '../../lib/constants';
 import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -363,7 +363,8 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		const maxCanDo = Math.floor(maxTripLength / timePerClue);
-		quantity = quantity ?? maxCanDo;
+
+		quantity = quantity ? Math.min(quantity, maxCanDo) : maxCanDo;
 
 		const response: Awaited<CommandResponse> = {};
 
@@ -373,10 +374,12 @@ export const clueCommand: OSBMahojiCommand = {
 
 		let cluesDone = 0;
 		if (!clueImpling || bankedClues > 0) {
-			const cost = new Bank().add(clueTier.scrollID, bankedClues);
+			quantity = Math.min(quantity, bankedClues);
+
+			const cost = new Bank().add(clueTier.scrollID, quantity);
 			if (!user.owns(cost)) return `You don't own ${cost}.`;
-			await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, bankedClues));
-			cluesDone = bankedClues;
+			await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
+			cluesDone = quantity;
 		} else {
 			const implingJarOpenable = allOpenables.find(o => o.aliases.some(a => stringMatches(a, clueImpling.name)));
 			// If this triggers, it means OSJS probably broke / is missing an alias for an impling jar:
@@ -423,6 +426,10 @@ export const clueCommand: OSBMahojiCommand = {
 			} from ${openedImplings}x ${clueImpling.name}s.`;
 
 			cluesDone = quantity;
+		}
+
+		if (quantity === 0) {
+			return `You don't have any ${clueTier.name} clue scrolls. Remember you can only stack up to ${MAX_CLUES_DROPPED} clues total.`;
 		}
 
 		const duration = timePerClue * quantity;

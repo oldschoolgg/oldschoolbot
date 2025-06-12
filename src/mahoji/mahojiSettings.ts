@@ -1,7 +1,7 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { isObject, objectEntries, round } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
@@ -16,7 +16,7 @@ import type { GearBank } from '../lib/structures/GearBank';
 import type { ItemBank } from '../lib/types';
 import {
 	type JsonKeys,
-	anglerBoosts,
+	formatItemCosts,
 	formatItemReqs,
 	formatList,
 	hasSkillReqs,
@@ -192,6 +192,13 @@ export function userHasGracefulEquipped(user: MUser) {
 	return false;
 }
 
+const anglerBoosts = [
+	[itemID('Angler hat'), 0.4],
+	[itemID('Angler top'), 0.8],
+	[itemID('Angler waders'), 0.6],
+	[itemID('Angler boots'), 0.2]
+];
+
 export function anglerBoostPercent(user: MUser) {
 	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
@@ -326,26 +333,15 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			const messages: string[] = [];
 			for (const group of items) {
 				if (group.optional) continue;
-				if (user.owns(group.itemCost)) {
+				if (user.owns(consumablesCost.itemCost.filter(i => group.itemCost.has(i)))) {
 					continue;
 				}
-				if (group.alternativeConsumables?.some(alt => user.owns(alt.itemCost))) {
-					continue;
-				}
-				messages.push(
-					`This monster requires: ${group.itemCost.items().map(i => i[0].name)}${
-						group.alternativeConsumables
-							? `, ${formatList(
-									group.alternativeConsumables
-										?.map(alt => alt.itemCost.items().map(i => i[0].name))
-										.flat(100),
-									'or'
-								)}`
-							: '.'
-					}`
-				);
+				messages.push(formatItemCosts(group, timeToFinish));
 			}
-			return [false, `You don't have the items needed to kill this monster. ${messages.join(' ')}`];
+			return [
+				false,
+				`You don't have the items needed to kill ${monster.name}. This monster requires (per kill) ${formatList(messages)}.`
+			];
 		}
 	}
 

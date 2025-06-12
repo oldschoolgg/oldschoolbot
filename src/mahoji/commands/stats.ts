@@ -1,9 +1,8 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Hiscores } from 'oldschooljs';
-import type { hiscoreURLs } from 'oldschooljs/dist/constants';
-import { ACCOUNT_TYPES } from 'oldschooljs/dist/constants';
+import { ACCOUNT_TYPES, type AccountType } from 'oldschooljs/constants';
+import { Hiscores } from 'oldschooljs/hiscores';
 
 import { statsEmbed } from '../../lib/util/statsEmbed';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -43,9 +42,7 @@ export const statsCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options
-	}: CommandRunOptions<{ username: string; type?: keyof typeof hiscoreURLs; virtual?: boolean }>) => {
+	run: async ({ options }: CommandRunOptions<{ username: string; type?: AccountType; virtual?: boolean }>) => {
 		try {
 			if (!options.type) {
 				options.type = 'normal';

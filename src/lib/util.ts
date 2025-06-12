@@ -1,54 +1,43 @@
 import {
 	type CommandResponse,
 	calcPerHour,
+	cleanUsername,
 	formatDuration,
 	isWeekend,
 	makeComponents,
 	stringMatches
 } from '@oldschoolgg/toolkit/util';
-import type {
-	BaseMessageOptions,
-	ButtonInteraction,
-	CacheType,
-	Collection,
-	CollectorFilter,
-	Guild,
-	InteractionReplyOptions,
-	Message,
-	MessageEditOptions,
-	SelectMenuInteraction,
-	TextChannel
+import {
+	type BaseMessageOptions,
+	type ButtonInteraction,
+	type CacheType,
+	type Collection,
+	type CollectorFilter,
+	type Guild,
+	type InteractionReplyOptions,
+	type Message,
+	type MessageEditOptions,
+	type SelectMenuInteraction,
+	type TextChannel,
+	userMention
 } from 'discord.js';
 import type { ComponentType } from 'discord.js';
-import { Time, objectEntries } from 'e';
+import { Time, noOp, objectEntries } from 'e';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import type { Prisma } from '@prisma/client';
-import { LRUCache } from 'lru-cache';
+import type { Prisma, User } from '@prisma/client';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
-import { BitField, MAX_XP, globalConfig, projectiles } from './constants';
-import { getSimilarItems } from './data/similarItems';
-import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
-import { GearSetupTypes, GearStat } from './gear/types';
+import { usernameWithBadgesCache } from './cache';
+import { BitField, MAX_XP, globalConfig } from './constants';
 import type { Consumable } from './minions/types';
-import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
-import type { Gear } from './structures/Gear';
 import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
-import type {
-	GroupMonsterActivityTaskOptions,
-	NexTaskOptions,
-	RaidsOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions
-} from './types/minions';
-import { getOSItem } from './util/getOSItem';
-import itemID from './util/itemID';
+import type { GroupMonsterActivityTaskOptions } from './types/minions';
 import { makeBadgeString } from './util/makeBadgeString';
-import { itemNameFromID } from './util/smallUtils';
+import { sendToChannelID } from './util/webhook.js';
 
 export * from 'oldschooljs';
 
@@ -91,31 +80,8 @@ export function roll(max: number) {
 	return cryptoRand(1, max) === 1;
 }
 
-export const anglerBoosts = [
-	[itemID('Angler hat'), 0.4],
-	[itemID('Angler top'), 0.8],
-	[itemID('Angler waders'), 0.6],
-	[itemID('Angler boots'), 0.2]
-];
-
-export function isValidGearSetup(str: string): str is GearSetupType {
-	return GearSetupTypes.includes(str as any);
-}
-
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
-}
-
-export function isRaidsActivity(data: any): data is RaidsOptions {
-	return 'challengeMode' in data;
-}
-
-export function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
-	return 'wipedRoom' in data;
-}
-
-export function isNexActivity(data: any): data is NexTaskOptions {
-	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
 }
 
 export function getSupportGuild(): Guild | null {
@@ -188,26 +154,10 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	}
 
 	if (consumables.length > 1) {
-		return `(${formatList(str, 'or')})`;
+		return str.join(' OR ');
 	}
 
 	return str.join('');
-}
-
-export function formatPohBoosts(boosts: POHBoosts) {
-	const bonusStr = [];
-	const slotStr = [];
-
-	for (const [slot, objBoosts] of objectEntries(boosts)) {
-		if (objBoosts === undefined) continue;
-		for (const [name, boostPercent] of objectEntries(objBoosts)) {
-			bonusStr.push(`${boostPercent}% for ${name}`);
-		}
-
-		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${formatList(bonusStr, 'or')})\n`);
-	}
-
-	return formatList(slotStr);
 }
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
@@ -215,34 +165,6 @@ export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEd
 export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
-}
-
-export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
-	let setup: GearSetupType = 'melee';
-
-	switch (style) {
-		case GearStat.AttackMagic:
-			setup = 'mage';
-			break;
-		case GearStat.AttackRanged:
-			setup = 'range';
-			break;
-		default:
-			break;
-	}
-
-	return setup;
-}
-
-export function convertPvmStylesToGearSetup(attackStyles: SkillsEnum[]) {
-	const usedSetups: GearSetupType[] = [];
-	if (attackStyles.includes(SkillsEnum.Ranged)) usedSetups.push('range');
-	if (attackStyles.includes(SkillsEnum.Magic)) usedSetups.push('mage');
-	if (![SkillsEnum.Magic, SkillsEnum.Ranged].some(s => attackStyles.includes(s))) {
-		usedSetups.push('melee');
-	}
-	if (usedSetups.length === 0) usedSetups.push('melee');
-	return usedSetups;
 }
 
 export function isValidSkill(skill: string): skill is SkillsEnum {
@@ -291,13 +213,17 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-const usernameWithBadgesCache = new LRUCache<string, string>({ max: 2000 });
+export function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
+	if (!user.username) return 'Unknown';
+	const badges = makeBadgeString(user.badges, user.minion_ironman);
+	return `${badges ? `${badges} ` : ''}${user.username}`;
+}
 
 export async function getUsername(_id: string | bigint): Promise<string> {
 	const id = _id.toString();
 	const cached = usernameWithBadgesCache.get(id);
 	if (cached) return cached;
-	const user = await prisma.user.findFirst({
+	let user = await prisma.user.upsert({
 		where: {
 			id
 		},
@@ -305,12 +231,39 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 			username: true,
 			badges: true,
 			minion_ironman: true
+		},
+		create: {
+			id
+		},
+		update: {}
+	});
+
+	// If no username available, fetch it
+	if (!user?.username) {
+		const djsUser = await globalClient.users.fetch(id).catch(() => null);
+		if (djsUser) {
+			user = await prisma.user.update({
+				where: {
+					id
+				},
+				data: {
+					username: cleanUsername(djsUser.username)
+				}
+			});
+		}
+		// Now the user has a username, and we can continue to create the username with badges.
+	}
+
+	const newValue = createUsernameWithBadges(user);
+	usernameWithBadgesCache.set(id, newValue);
+	await prisma.user.update({
+		where: {
+			id
+		},
+		data: {
+			username_with_badges: newValue
 		}
 	});
-	if (!user?.username) return 'Unknown';
-	const badges = makeBadgeString(user.badges, user.minion_ironman);
-	const newValue = `${badges ? `${badges} ` : ''}${user.username}`;
-	usernameWithBadgesCache.set(id, newValue);
 	return newValue;
 }
 
@@ -369,52 +322,6 @@ export { assert } from './util/logError';
 export * from './util/smallUtils';
 export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
-export function checkRangeGearWeapon(gear: Gear) {
-	const weapon = gear.equippedWeapon();
-	const { ammo } = gear;
-	if (!weapon) return 'You have no weapon equipped.';
-	const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(weapon.id);
-	if (usingBowfa) {
-		return {
-			weapon,
-			ammo
-		};
-	}
-	if (!ammo) return 'You have no ammo equipped.';
-
-	const projectileCategory = objectEntries(projectiles).find(i =>
-		i[1].weapons.flatMap(w => getSimilarItems(w)).includes(weapon.id)
-	);
-	if (!projectileCategory) return 'You have an invalid range weapon.';
-	if (!projectileCategory[1].items.includes(ammo.item)) {
-		return `You have invalid ammo for your equipped weapon. For ${
-			projectileCategory[0]
-		}-based weapons, you can use: ${formatList(projectileCategory[1].items.map(itemNameFromID), 'or')}.`;
-	}
-
-	return {
-		weapon,
-		ammo
-	};
-}
-export function normalizeTOAUsers(data: TOAOptions) {
-	const _detailedUsers = data.detailedUsers;
-	const detailedUsers = (
-		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
-	).map(userArr =>
-		userArr.map(user => ({
-			id: user[0],
-			points: user[1],
-			deaths: user[2]
-		}))
-	);
-	return detailedUsers;
-}
-
-export function anyoneDiedInTOARaid(data: TOAOptions) {
-	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
-}
-
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
@@ -424,4 +331,16 @@ export function formatList(_itemList: (string | undefined | null)[], end?: strin
 	if (itemList.length < 2) return itemList.join(', ');
 	const lastItem = itemList.pop();
 	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
+}
+
+export async function adminPingLog(message: string) {
+	if (!globalConfig.isProduction) {
+		console.log(message);
+		return;
+	}
+
+	await sendToChannelID(globalConfig.moderatorLogsChannels, {
+		content: `${message} ${globalConfig.adminUserIDs.map(i => userMention(i)).join(', ')}`,
+		allowedMentions: { users: globalConfig.adminUserIDs }
+	}).catch(noOp);
 }

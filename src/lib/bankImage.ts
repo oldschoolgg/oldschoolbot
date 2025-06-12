@@ -89,6 +89,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Avantoe seed'), 'avan'],
 	[i('Kwuarm seed'), 'kwuarm'],
 	[i('Snapdragon seed'), 'snap'],
+	[i('Huasca seed'), 'huas'],
 	[i('Cadantine seed'), 'cadan'],
 	[i('Lantadyme seed'), 'lanta'],
 	[i('Dwarf weed seed'), 'dwarf'],
@@ -161,6 +162,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Irit leaf'), 'irit'],
 	[i('Avantoe'), 'avan'],
 	[i('Kwuarm'), 'kwuarm'],
+	[i('Huasca'), 'huas'],
 	[i('Snapdragon'), 'snap'],
 	[i('Cadantine'), 'cadan'],
 	[i('Lantadyme'), 'lanta'],
@@ -176,6 +178,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Grimy irit leaf'), 'irit'],
 	[i('Grimy avantoe'), 'avan'],
 	[i('Grimy kwuarm'), 'kwuarm'],
+	[i('Grimy huasca'), 'huas'],
 	[i('Grimy snapdragon'), 'snap'],
 	[i('Grimy cadantine'), 'cadan'],
 	[i('Grimy lantadyme'), 'lanta'],
@@ -213,6 +216,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Harralander potion (unf)'), 'harra'],
 	[i('Irit potion (unf)'), 'irit'],
 	[i('Kwuarm potion (unf)'), 'kwuarm'],
+	[i('Huasca potion (unf)'), 'huas'],
 	[i('Lantadyme potion (unf)'), 'lanta'],
 	[i('Marrentill potion (unf)'), 'marren'],
 	[i('Ranarr potion (unf)'), 'ranarr'],
@@ -655,7 +659,7 @@ export class BankImageTask {
 			let bottomItemText: string | number | null = null;
 
 			if (flags.has('sv') || mahojiFlags?.includes('show_price')) {
-				bottomItemText = item.price * quantity;
+				bottomItemText = (item.price ?? 0) * quantity;
 			} else if (flags.has('av') || mahojiFlags?.includes('show_alch')) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
 			} else if (flags.has('id') || mahojiFlags?.includes('show_id')) {
@@ -757,7 +761,7 @@ export class BankImageTask {
 			});
 		}
 
-		const totalValue = sumArr(items.map(([i, q]) => i.price * q));
+		const totalValue = sumArr(items.map(([i, q]) => (i.price ? i.price * q : 0)));
 
 		const chunkSize = compact ? 140 : 56;
 		const chunked = chunk(items, chunkSize);

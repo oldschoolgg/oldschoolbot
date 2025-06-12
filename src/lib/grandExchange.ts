@@ -121,7 +121,7 @@ class GrandExchangeSingleton {
 		maxTotalPrice: ONE_TRILLION,
 		buyLimit: {
 			interval: Time.Hour * 4,
-			fallbackBuyLimit: (item: Item) => (item.price > 1_000_000 ? 1 : 1000)
+			fallbackBuyLimit: (item: Item) => ((item.price ?? 0) > 1_000_000 ? 1 : 1000)
 		},
 		tax: {
 			// Tax per item
@@ -233,7 +233,7 @@ class GrandExchangeSingleton {
 	async lockGE(reason: string) {
 		if (this.locked) return;
 		const idsToNotify = globalConfig.adminUserIDs;
-		await sendToChannelID(globalConfig.geAdminChannelID, {
+		await sendToChannelID(globalConfig.moderatorLogsChannels, {
 			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
 				.map(i => userMention(i))
 				.join(', ')}`,

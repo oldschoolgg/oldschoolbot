@@ -5,7 +5,7 @@ title: "Nex"
 ## Requirements
 
 - Frozen Key
-- Defeat one of each [God Wars Dungeon Boss](broken-reference) and then use `/create` to create a Frozen Key
+- Defeat one of each God Wars Dungeon Boss and then use [[/create]] to create a Frozen Key
 - Level 90 Ranged, Level 90 Defence, Level 74 Prayer
 - Good range gear in range setup. Including a weapon (Armadyl Crossbow, Dragon Crossbow, Zaryte Crossbow, Twisted Bow) and ammo (Dragon/rune arrows, or Ruby Dragon Bolts (e)).
 - Supplies: `8x Saradomin Brew, 5x Super Restore, 2x Ranging Potions, 1x Sanfew Serum, 600x ammo` regardless of trip length/quantity.

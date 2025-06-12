@@ -24,8 +24,26 @@ You can try to buy them from other players, or...
 ## Rewards
 
 - Chompy chick pet (1/250 chance after completion of Western Prov elite diary)
-- Chompy hats can be claimed in bulk with [[/activities chompy_hunt action\:claim]] or you can buy them individually with `/buy` after you have unlocked them.
-  - E.g. `/buyname: ``Chompy bird hat (ogre bowman)`
+- Chompy hats can be claimed in bulk with [[/activities chompy_hunt action\:claim]] or you can buy them individually with [[/buy]] after you have unlocked them, e.g. [[/buy name\:Chompy bird hat (ogre bowman)]]
 - The following table is a list of all the purchasable chompy hats:
 
-<table><thead><tr><th width="406.03069058556395"></th><th width="150" align="center"></th><th align="center"></th></tr></thead><tbody><tr><td><strong>Chompy Hat</strong></td><td align="center"><strong>Price</strong></td><td align="center"><strong>Required Chompy KC</strong></td></tr><tr><td>Chompy bird hat (ogre bowman)</td><td align="center">1,320</td><td align="center">30</td></tr><tr><td>Chompy bird hat (bowman)</td><td align="center">1,760</td><td align="center">40</td></tr><tr><td>Chompy bird hat (ogre yeoman)</td><td align="center">2,200</td><td align="center">50</td></tr><tr><td>Chompy bird hat (yeoman)</td><td align="center">3,080</td><td align="center">70</td></tr><tr><td>Chompy bird hat (ogre marksman)</td><td align="center">4,180</td><td align="center">95</td></tr><tr><td>Chompy bird hat (marksman)</td><td align="center">5,500</td><td align="center">125</td></tr><tr><td>Chompy bird hat (ogre woodsman)</td><td align="center">7,480</td><td align="center">170</td></tr><tr><td>Chompy bird hat (woodsman)</td><td align="center">9,900</td><td align="center">225</td></tr><tr><td>Chompy bird hat (ogre forester)</td><td align="center">13,200</td><td align="center">300</td></tr><tr><td>Chompy bird hat (forester)</td><td align="center">17,600</td><td align="center">400</td></tr><tr><td>Chompy bird hat (ogre bowmaster)</td><td align="center">24,200</td><td align="center">550</td></tr><tr><td>Chompy bird hat (bowmaster)</td><td align="center">30,800</td><td align="center">700</td></tr><tr><td>Chompy bird hat (ogre expert)</td><td align="center">44,000</td><td align="center">1,000</td></tr><tr><td>Chompy bird hat (expert)</td><td align="center">57,200</td><td align="center">1,300</td></tr><tr><td>Chompy bird hat (ogre dragon archer)</td><td align="center">74,800</td><td align="center">1,700</td></tr><tr><td>Chompy bird hat (dragon archer)</td><td align="center">99,000</td><td align="center">2,250</td></tr><tr><td>Chompy bird hat (expert ogre dragon archer)</td><td align="center">132,000</td><td align="center">3,000</td></tr><tr><td>Chompy bird hat (expert dragon archer)</td><td align="center">176,000</td><td align="center">4,000</td></tr></tbody></table>
+| Chompy Hat                                  | Price   | Required Chompy KC |
+| ------------------------------------------- | ------- | ------------------ |
+| Chompy bird hat (ogre bowman)               | 1,320   | 30                 |
+| Chompy bird hat (bowman)                    | 1,760   | 40                 |
+| Chompy bird hat (ogre yeoman)               | 2,200   | 50                 |
+| Chompy bird hat (yeoman)                    | 3,080   | 70                 |
+| Chompy bird hat (ogre marksman)             | 4,180   | 95                 |
+| Chompy bird hat (marksman)                  | 5,500   | 125                |
+| Chompy bird hat (ogre woodsman)             | 7,480   | 170                |
+| Chompy bird hat (woodsman)                  | 9,900   | 225                |
+| Chompy bird hat (ogre forester)             | 13,200  | 300                |
+| Chompy bird hat (forester)                  | 17,600  | 400                |
+| Chompy bird hat (ogre bowmaster)            | 24,200  | 550                |
+| Chompy bird hat (bowmaster)                 | 30,800  | 700                |
+| Chompy bird hat (ogre expert)               | 44,000  | 1,000              |
+| Chompy bird hat (expert)                    | 57,200  | 1,300              |
+| Chompy bird hat (ogre dragon archer)        | 74,800  | 1,700              |
+| Chompy bird hat (dragon archer)             | 99,000  | 2,250              |
+| Chompy bird hat (expert ogre dragon archer) | 132,000 | 3,000              |
+| Chompy bird hat (expert dragon archer)      | 176,000 | 4,000              |

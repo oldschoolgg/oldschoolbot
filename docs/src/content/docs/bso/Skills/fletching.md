@@ -2,20 +2,28 @@
 title: "Fletching"
 ---
 
-### Custom Content and Boosts
+## Custom Content and Boosts
 
-- Hellfire bow - Crafted using 1 [Dragon's fury](herblore.md#custom-items-and-content), twisted bow, zaryte bow, [ignecarus dragonclaw ](../bso-custom-killables/bosses/ignecarus.md#loot)and 3 smouldering stones at 110 Fletching
-- Hellfire Arrows - Crafted using 1 headless and 1 Ignecarus Scale (1:1:5 ratio) at 110 Fletching
-- [Scruffy](/custom-items/pets) - 2x fletching speed
-- [Dwarven Knife](/custom-items/equippables#dwarven-equipment) - 2x fletching Speed (stacks with Scruffy)
-- Elder Longbow (u) - Fletched from Elder logs at 105 Fletching
-- Elder Longbow - Fletched with Elder Longbow (u) and bowstring at 105 Fletching
-- Fletcher's Skilling Outfit - 3% bonus xp to `/fletch`
+- **Hellfire Bow** – Crafted using 1 [Dragon's fury](herblore.md#custom-items-and-content), Twisted bow, Zaryte bow, [Ignecarus dragonclaw](../bso-custom-killables/bosses/ignecarus.md#loot), and 3 Smouldering stones at [[fletching:110]]
+- **Hellfire Arrows** – Crafted using 1 Headless arrow + 1 Ignecarus Scale (1:1:5 ratio) at [[fletching:110]]
+- [**Scruffy**](/custom-items/pets) – 2× fletching speed
+- [**Dwarven Knife**](/custom-items/equippables#dwarven-equipment) – 2× fletching speed (stacks with Scruffy)
+- **Elder Longbow (u)** – Fletched from Elder logs at [[fletching:105]]
+- **Elder Longbow** – Fletched using Elder Longbow (u) + Bowstring at [[fletching:105]]
+- **Fletcher's Skilling Outfit** – +3% bonus XP on [[/fletch]]
 
-### Optimal Gear Setup
+## Optimal Gear Setup
 
-Scruffy, Dwarven knife, Fletching master cape, Fletcher's outfit
+- Scruffy
+- Dwarven Knife
+- Fletching Master Cape
+- Fletcher's Outfit
 
-### Methods
+## Methods
 
-<table><thead><tr><th>Method</th><th>Xp / Hr</th><th data-hidden></th></tr></thead><tbody><tr><td>Hellfire Arrow</td><td>550,851,923</td><td></td></tr><tr><td>Elder Bow (u)</td><td>10,940,725</td><td></td></tr><tr><td>Elder Bow</td><td>15,467,922</td><td></td></tr><tr><td>Elder Bow (Both)</td><td>12,816,278</td><td></td></tr></tbody></table>
+| Method           | XP/hr       |
+| ---------------- | ----------- |
+| Hellfire Arrow   | 550,851,923 |
+| Elder Bow (u)    | 10,940,725  |
+| Elder Bow        | 15,467,922  |
+| Elder Bow (Both) | 12,816,278  |

@@ -278,7 +278,7 @@ class CollectionLogTask {
 				qtyText = userCollectionBank.amount(item);
 			}
 
-			totalPrice += getOSItem(item).price * qtyText;
+			totalPrice += (getOSItem(item).price ?? 0) * qtyText;
 
 			if (flags.debug) {
 				ctx.fillStyle = '#FF0000';

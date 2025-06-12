@@ -61,7 +61,6 @@ export const agilityArenaTask: MinionTask = {
 					items: new Bank().add('Giant Squirrel'),
 					collectionLog: true
 				});
-				str += "**\n\nYou have a funny feeling you're being followed...**";
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Agility} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`

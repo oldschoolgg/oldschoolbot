@@ -132,7 +132,7 @@ export interface NexContext {
 	team: { id: string; teamID: number; contribution: number; deaths: number[]; fake?: boolean }[];
 }
 
-const purpleNexItems = resolveItems([
+export const purpleNexItems = resolveItems([
 	'Nexling',
 	'Ancient hilt',
 	'Nihil horn',
@@ -146,8 +146,8 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	const teamLoot = new TeamLoot(purpleNexItems);
 
 	for (let i = 0; i < quantity; i++) {
-		// VIP logic: perturb contribution 10%, VIP is choisen randonmly with perturbed contirubtion as weight
-		// Unique loot chance also used perturbed contribution as weight
+		// VIP logic: perturb contribution by 10%, VIP is chosen randomly with perturbed contribution as weight
+		// The unique loot chance also uses the perturbed contribution as weight
 
 		const survivors = team
 			.filter(u => !u.deaths.includes(i))
@@ -173,7 +173,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 		for (const teamMember of survivors.filter(m => !m.fake)) {
 			const VIPBonus = teamMember.teamID === VIP ? 1.1 : 1;
 
-			teamLoot.add(teamMember.id, nonUniqueDrop.multiply(VIPBonus)); // VIPBonus may not be int, loot amounts rounded down in multply
+			teamLoot.add(teamMember.id, nonUniqueDrop.multiply(VIPBonus)); // VIPBonus may not be an integer, loot amounts rounded down in multiply
 
 			if (teamMember.teamID === VIP) teamLoot.add(teamMember.id, 'Big bones');
 

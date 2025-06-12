@@ -11,12 +11,9 @@ import itemID from '../../../../lib/util/itemID';
 export const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
 	const consumableCost = c.itemCost.clone();
 	if (c.qtyPerKill) {
-		consumableCost.multiply(quantity);
+		consumableCost.multiply(Math.ceil(c.qtyPerKill * quantity));
 	} else if (c.qtyPerMinute) {
-		consumableCost.multiply(duration / Time.Minute);
-	}
-	for (const [item, qty] of consumableCost.items()) {
-		consumableCost.set(item.id, Math.ceil(qty));
+		consumableCost.multiply(Math.ceil((c.qtyPerMinute * duration) / Time.Minute));
 	}
 	return consumableCost;
 };

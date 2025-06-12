@@ -1,4 +1,4 @@
-import type { MINIGAMES, hiscoreURLs, mappedBossNames } from '../constants';
+import type { AccountType, MINIGAMES, mappedBossNames } from '../constants';
 import type Bank from '../structures/Bank';
 import type LootTable from '../structures/LootTable';
 import type { LootTableRollOptions } from '../structures/LootTable';
@@ -25,7 +25,7 @@ export interface MonsterOptions {
 export interface Player {
 	bossRecords: BossRecords;
 	username: string;
-	type: keyof typeof hiscoreURLs;
+	type: AccountType;
 	skills: SkillsScore;
 	minigames: MinigamesScore;
 	clues: CluesScore;
@@ -163,9 +163,9 @@ export interface ItemWeaponStance {
 }
 
 export interface ItemWeapon {
-	attack_speed: number;
-	weapon_type: string;
-	stances: ItemWeaponStance[];
+	attack_speed: number | null;
+	weapon_type?: string;
+	stances?: ItemWeaponStance[];
 }
 
 /**
@@ -216,7 +216,7 @@ export interface Item {
 	/**
 	 * The store price of an item.
 	 */
-	cost: number;
+	cost?: number;
 	/**
 	 * The low alchemy value of the item (cost * 0.4).
 	 */
@@ -238,7 +238,7 @@ export interface Item {
 	/**
 	 * The OSRS Wiki market price for this item, 0 if untradeable or has no price.
 	 */
-	price: number;
+	price?: number;
 }
 
 export interface DateYearMonth {

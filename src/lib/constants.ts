@@ -53,8 +53,8 @@ const BSOChannelConfig: ChannelConfig = {
 	Notifications: '1042760447830536212',
 	GrandExchange: '738780181946171493',
 	EconomyLogs: '802029843712573510',
-	HelpAndSupport: '792691343284764693',
-	BotLogs: '792691343284764693',
+	HelpAndSupport: '970752140324790384',
+	BotLogs: '1051725977320964197',
 	GeneralChannel: GENERAL_CHANNEL_ID
 };
 
@@ -263,7 +263,8 @@ export enum BitField {
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
-	DisableOpenableNames = 41
+	DisableOpenableNames = 41,
+	ShowDetailedInfo = 42
 }
 
 interface BitFieldData {
@@ -359,6 +360,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableOpenableNames]: {
 		name: 'Disable Names On Open',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.ShowDetailedInfo]: {
+		name: 'Show Detailed Info',
 		protected: false,
 		userConfigurable: true
 	}
@@ -537,7 +543,7 @@ const globalConfigSchema = z.object({
 	sentryDSN: z.string().url().optional(),
 	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
-	geAdminChannelID: z.string().default(''),
+	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string()
 });
 
@@ -557,7 +563,7 @@ export const globalConfig = globalConfigSchema.parse({
 	timeZone: process.env.TZ,
 	sentryDSN: process.env.SENTRY_DSN,
 
-	geAdminChannelID: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
+	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
 	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID
 });
 

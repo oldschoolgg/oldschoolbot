@@ -2,33 +2,35 @@
 title: "Smithing"
 ---
 
-### Custom Content and Boosts
+## Custom Content and Boosts
 
-- [Blacksmith Equipment](../custom-items/equippables/#blacksmith-equipment) - 10% bonus xp to `/smith` and `/smelt`, works from bank
-- [Takon](../custom-items/pets.md#miscellaneous-pets) - 4x boost to `/smith` (does not stack with Dwarven Greathammer)
-- [Dwarven Ore](../bso-custom-killables/bosses/king-goldemar.md#loot) - Ore used to smith dwarven bars. Must have Klik to smelt and 99 smithing.
+- [**Blacksmith Equipment**](../custom-items/equippables/#blacksmith-equipment) – +10% XP to [[/smith]] and [[/smelt]], works from bank
+- [**Takon**](../custom-items/pets.md#miscellaneous-pets) – 4× boost to [[/smith]] _(does not stack with Dwarven Greathammer)_
+- [**Dwarven Ore**](../bso-custom-killables/bosses/king-goldemar.md#loot) – Used to smith dwarven bars
+  - Requires Klik and [[smithing:99]] to smelt
+  - 35% chance to fail when smelting (ore is consumed on failure)
+- **Dwarven Bar** – Used to make various [Dwarven Equipment](../custom-items/equippables/#dwarven-equipment)
+  - Must equip full Blacksmith Outfit to smith bars
+- [**Dwarven Greathammer**](../custom-items/equippables/#dwarven-tools) – 2× boost to [[/smith]] _(does not stack with Takon)_
+- [**Dwarven Gauntlets**](../custom-items/equippables/#dwarven-tools) – 2× boost to [[/smelt]] _(does not work on gold bars at blast furnace)_
+- [**Smithing Master Cape**](../custom-items/equippables/#master-capes) – Halves failure rate on smelting, 2× boost to Blast Furnace
+- [**Scroll of Efficiency**](dungeoneering-training/dg-rewards.md#buyable-boosts-utility) – Saves 15% of bars used
 
-n.b. _There is a 35% chance to fail smelting the bar. The ore is used in the attempt._
+## Optimal Gear Setup
 
-- Dwarven Bar - bars which are used to make a variety of [Dwarven Equipment](../custom-items/equippables/#dwarven-equipment). Must have the full blacksmith outfit equipped to smith the bars.
-- [Dwarven Greathammer](../custom-items/equippables/#dwarven-tools) - 2x boost to /smith (does not stack with Takon)
-- [Dwarven Gauntlets](../custom-items/equippables/#dwarven-tools) - 2x boost to /smelt (Does not work with gold bars at blast furnace)
-- [Smithing Master Cape](../custom-items/equippables/#master-capes) - halves failure rate when smelting ore, 2x boost to Blast Furnace
-- [Scroll of Efficiency](dungeoneering-training/dg-rewards.md#buyable-boosts-utility) - Saves 15% of the bars used
+- Takon
+- Smithing Master Cape
+- Blacksmith Outfit equipped in skilling
 
-### Optimal Gear Setup
+## Methods
 
-Takon, Smithing Master Cape, smiths outfit in skilling
-
-### Methods
-
-| Method            | Xp / Hr   |
+| Method            | XP/hr     |
 | ----------------- | --------- |
 | Bf Gold           | 2,010,777 |
 | Adamant Platebody | 5,048,020 |
 | 3-bar Rune items  | 4,318,729 |
 | Rune Platebody    | 6,057,624 |
 
-### Custom smithables
+## Custom Smithables
 
-Sun-metal / Sun god items [solis.md](../bso-custom-killables/demi-bosses/solis.md "mention")
+See [Solis](../bso-custom-killables/demi-bosses/solis.md) for info on Sun-metal / Sun God items.

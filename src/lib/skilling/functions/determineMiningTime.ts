@@ -16,6 +16,7 @@ interface MiningTimeOptions {
 	passedDuration?: number;
 	maxTripLength: number;
 	gearBank: GearBank;
+	hasKaramjaMedium: boolean;
 }
 
 export function determineMiningTime({
@@ -30,17 +31,28 @@ export function determineMiningTime({
 	miningLvl,
 	passedDuration,
 	maxTripLength,
-	gearBank
+	gearBank,
+	hasKaramjaMedium
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
 	if (ore.name === 'Gem rock' && gearBank.hasEquipped('Amulet of glory')) {
 		intercept *= 3;
+		if (hasKaramjaMedium) {
+			intercept *= 1.5;
+		}
 	}
 	let timeElapsed = 0;
 
 	const bankTime = goldSilverBoost ? ore.bankingTime / 3.3 : ore.bankingTime;
 	const chanceOfSuccess = ore.slope * miningLvl + intercept;
-	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
+
+	let effectiveTicksBetween = ticksBetweenRolls;
+	let respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
+	if (powermining && ore.name === 'Daeyalt essence rock') {
+		effectiveTicksBetween /= 1.7;
+		respawnTimeOrPick =
+			effectiveTicksBetween > ore.respawnTime / 1.7 ? effectiveTicksBetween : ore.respawnTime / 1.7;
+	}
 
 	let newQuantity = 0;
 
@@ -50,7 +62,11 @@ export function determineMiningTime({
 
 	let userMaxTripTicks = (maxTripLength - passedDuration) / (Time.Second * 0.6);
 
-	if (ore.name === 'Amethyst' || ore.name === 'Daeyalt essence rock') {
+	if (ore.name === 'Daeyalt essence rock') {
+		if (!powermining) {
+			userMaxTripTicks *= 2;
+		}
+	} else if (ore.name === 'Amethyst') {
 		userMaxTripTicks *= 1.5;
 	}
 
@@ -58,13 +74,13 @@ export function determineMiningTime({
 
 	while (timeElapsed < userMaxTripTicks) {
 		while (!percentChance(chanceOfSuccess)) {
-			timeElapsed += ticksBetweenRolls;
+			timeElapsed += effectiveTicksBetween;
 		}
 		if (remainingNoDeplete <= 0) {
 			timeElapsed += respawnTimeOrPick;
 			remainingNoDeplete = glovesEffect;
 		} else {
-			timeElapsed += ticksBetweenRolls;
+			timeElapsed += effectiveTicksBetween;
 			remainingNoDeplete--;
 		}
 		newQuantity++;

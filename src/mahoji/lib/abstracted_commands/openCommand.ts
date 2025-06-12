@@ -1,16 +1,18 @@
 import { PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { notEmpty, uniqueArr } from 'e';
+import { notEmpty, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField } from '../../../lib/constants';
+import { BitField, MAX_CLUES_DROPPED } from '../../../lib/constants';
 import type { UnifiedOpenable } from '../../../lib/openables';
 import { allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { displayCluesAndPets } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings';
 
@@ -28,8 +30,19 @@ export async function abstractedOpenUntilCommand(
 	interaction: ChatInputCommandInteraction,
 	userID: string,
 	name: string,
-	openUntilItem: string
+	openUntilItem: string,
+	result_quantity?: number
 ) {
+	let quantity = 1;
+
+	if (result_quantity) {
+		quantity = result_quantity;
+	}
+
+	if (quantity < 1 || !Number.isInteger(quantity)) {
+		return 'The quantity must be a positive integer.';
+	}
+
 	const user = await mUserFetch(userID);
 	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
@@ -48,23 +61,29 @@ export async function abstractedOpenUntilCommand(
 
 	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
-	if (openUntil.name.includes('Clue') && user.owns(openUntil.id)) {
+
+	const targetClue = ClueTiers.find(t => t.scrollID === openUntil.id);
+	const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
+
+	if (targetClue && clueStack >= MAX_CLUES_DROPPED) {
 		await handleMahojiConfirmation(
 			interaction,
-			`You're trying to open until you receive a ${openUntil.name}, but you already have one, and couldn't receive a second, are you sure you want to do this?`
+			`You're trying to open until you receive a ${openUntil.name}, but you already have ${MAX_CLUES_DROPPED} clues banked, which is the maximum. You won't be able to receive more. Are you sure you want to continue?`
 		);
 	}
 
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	const max = Math.min(100, amountOfThisOpenableOwned);
+	let targetCount = 0;
+	const max = Math.min(10000, amountOfThisOpenableOwned);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
 		loot.add(thisLoot.bank);
 		amountOpened++;
-		if (loot.has(openUntil.id)) break;
+		targetCount = loot.amount(openUntil.id);
+		if (targetCount >= quantity) break;
 	}
 
 	return finalizeOpening({
@@ -72,10 +91,12 @@ export async function abstractedOpenUntilCommand(
 		cost,
 		loot,
 		messages: [
-			`You opened ${amountOpened}x ${openable.openedItem.name}, ${
-				loot.has(openUntil.id)
-					? `until you got a ${openUntil.name}!`
-					: `but you didn't get a ${openUntil.name}!`
+			`You opened ${amountOpened}x ${openable.openedItem.name} ${
+				targetCount === 0
+					? `but you didn't get a ${openUntil.name}!`
+					: targetCount >= quantity
+						? `and successfully obtained ${targetCount}x ${openUntil.name}.`
+						: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
 			}`
 		],
 		openables: [openable],
@@ -144,6 +165,9 @@ ${messages.join(', ')}`.trim(),
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
+
+	response.content += await displayCluesAndPets(user.id, loot);
+
 	return response;
 }
 

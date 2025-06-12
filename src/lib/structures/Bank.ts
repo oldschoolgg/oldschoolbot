@@ -28,7 +28,7 @@ export class FloatBank extends GeneralBank<number> {
 
 	toItemBankRoundedUp() {
 		const itemBank = new Bank();
-		for (const [item, qty] of this.entries()) {
+		for (const [item, qty] of this.entries().sort((a, b) => a[0] - b[0])) {
 			itemBank.add(Number.parseInt(item as any), Math.ceil(qty));
 		}
 		return itemBank;

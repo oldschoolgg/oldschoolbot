@@ -65,14 +65,13 @@ const ouraniaAltarTask: MinionTask = {
 			source: 'OuraniaAltar'
 		})}`;
 
-		let str = `${user}, ${user.minionName} finished runecrafting at the Ourania altar, you received ${loot}.${
+		const str = `${user}, ${user.minionName} finished runecrafting at the Ourania altar, you received ${loot}.${
 			diaryQuantity > 0 ? `\n${diaryQuantity} bonus runes for completing the medium Ardougne diary.` : ''
 		}${
 			raimentQuantity > 0 ? `\n${raimentQuantity} bonus runes from the Raiments of the eye outfit.` : ''
 		} ${xpRes}`;
 
 		if (loot.amount('Rift guardian') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
