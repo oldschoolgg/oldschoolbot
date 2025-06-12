@@ -101,7 +101,7 @@ export function determineMiningTrip({
 		}
 	}
 
-	if (ore.bankingTime === 0) {
+	if (ore.bankingTime === 0 && ore.name !== 'Daeyalt essence rock') {
 		isPowermining = false;
 	}
 

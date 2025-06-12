@@ -1,6 +1,7 @@
 import {
 	type CommandResponse,
 	calcPerHour,
+	cleanUsername,
 	formatDuration,
 	isWeekend,
 	makeComponents,
@@ -222,7 +223,7 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 	const id = _id.toString();
 	const cached = usernameWithBadgesCache.get(id);
 	if (cached) return cached;
-	const user = await prisma.user.findFirst({
+	let user = await prisma.user.upsert({
 		where: {
 			id
 		},
@@ -230,9 +231,29 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 			username: true,
 			badges: true,
 			minion_ironman: true
-		}
+		},
+		create: {
+			id
+		},
+		update: {}
 	});
-	if (!user?.username) return 'Unknown';
+
+	// If no username available, fetch it
+	if (!user?.username) {
+		const djsUser = await globalClient.users.fetch(id).catch(() => null);
+		if (djsUser) {
+			user = await prisma.user.update({
+				where: {
+					id
+				},
+				data: {
+					username: cleanUsername(djsUser.username)
+				}
+			});
+		}
+		// Now the user has a username, and we can continue to create the username with badges.
+	}
+
 	const newValue = createUsernameWithBadges(user);
 	usernameWithBadgesCache.set(id, newValue);
 	await prisma.user.update({

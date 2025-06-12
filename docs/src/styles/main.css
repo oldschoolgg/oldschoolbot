@@ -509,6 +509,10 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 	align-items: center;
 	justify-content: center;
 	justify-items: center;
+
+	background: #ff803c14;
+	color: #ff7f3c;
+	padding: 5px 9px;
 }
 
 .contributor .contributor_name {
@@ -520,6 +524,34 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 	height: 29px !important;
 	border-radius: 64px;
 	margin-right: 3px;
+}
+
+.contributor_small {
+	display: inline-flex;
+	width: max-content;
+	border-radius: 10px;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+	padding: 3px 9px;
+	padding-left: 1px;
+	font-size: 13px;
+	gap: 5px;
+	font-weight: bold;
+	align-items: center;
+	vertical-align: middle;
+	margin-top: 0px !important;
+	margin-left: 3px;
+	margin-right: 3px;
+	margin: 0 !important;
+	position: relative;
+
+	background: #ff803c14;
+	color: #ff7f3c;
+
+	.contributor_avatar {
+		height: 20px !important;
+	}
 }
 
 .edit_this_page {

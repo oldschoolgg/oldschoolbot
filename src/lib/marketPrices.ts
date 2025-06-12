@@ -114,5 +114,5 @@ export function marketPriceOrBotPrice(itemID: number) {
 	if (data) {
 		return data.guidePrice;
 	}
-	return item.price;
+	return item.price ?? 0;
 }

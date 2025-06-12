@@ -3,7 +3,7 @@ import { Items } from 'oldschooljs';
 import { visitParents } from 'unist-util-visit-parents';
 import bsoItemsJson from '../../../data/bso_items.json';
 import commandsJson from '../../../data/osb.commands.json';
-import { authorsMap } from '../../../scripts/wiki/authors.js';
+import { authors, authorsMap } from '../../../scripts/wiki/authors.js';
 import { SkillsArray } from '../../../src/lib/skilling/types.js';
 import { toTitleCase } from '../docs-util.js';
 
@@ -43,6 +43,12 @@ export function remarkItems(_options: any) {
 					html = `<a class="discord_channel" href="discord://discord.com/channels/342983479501389826/${messageID}" target="_blank">${channelName}</a>`;
 				} else if (imageExtensions.some(ext => content.endsWith(ext))) {
 					html = `<img src="/images/${content}" alt="${content}" />`;
+				} else if (authors.some(author => author.gitIDs.some(_g => content.startsWith(_g)))) {
+					const author = authorsMap.get(content.includes('#') ? content.split('#')[0] : content);
+					html = `<div class="contributor ${content.includes('#small') ? 'contributor_small' : ''}">
+${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` : ''}
+<p class="contributor_name">${author!.displayName}</p>
+</div>`;
 				} else if (
 					[...SkillsArray, 'divination', 'dungeoneering', 'invention', 'qp'].some(
 						s => content.includes(`${s}`) && !content.includes('/') && !content.includes('.') // some commands contain names of skills
@@ -60,12 +66,6 @@ export function remarkItems(_options: any) {
 							: `<span class="osrs_item">${imgEl}${toTitleCase(skillName)}</span>`;
 				} else if (content.includes('embed.')) {
 					html = '';
-				} else if (authorsMap.has(content)) {
-					const author = authorsMap.get(content);
-					html = `<div class="contributor">
-${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` : ''}
-<p class="contributor_name">${author!.displayName}</p>
-</div>`;
 				} else if (content.startsWith('/')) {
 					const cmd = commandsJson.find(c => c.name === content.slice(1).split(' ')[0]);
 					if (!cmd) {

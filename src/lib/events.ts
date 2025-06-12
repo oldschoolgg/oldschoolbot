@@ -201,7 +201,7 @@ const mentionCommands: MentionCommand[] = [
 					if (user.bank.has(item.id)) icons.push(Emoji.Bank);
 					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
-					const price = toKMB(Math.floor(item.price));
+					const price = toKMB(Math.floor(item.price ?? 0));
 
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
 						item.tradeable ? 'Tradeable' : 'Untradeable'

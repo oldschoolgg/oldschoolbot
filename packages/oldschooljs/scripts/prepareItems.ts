@@ -76,26 +76,6 @@ export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
 
-const formatDateForTimezones = (date: Date): { cali: string; sydney: string } => {
-	const options: Intl.DateTimeFormatOptions = {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit',
-		timeZoneName: 'short'
-	};
-
-	const caliDate = new Intl.DateTimeFormat('en-US', { ...options, timeZone: 'America/Los_Angeles' }).format(date);
-	const sydneyDate = new Intl.DateTimeFormat('en-AU', { ...options, timeZone: 'Australia/Sydney' }).format(date);
-
-	return {
-		cali: caliDate,
-		sydney: sydneyDate
-	};
-};
-
 const manualItems: Item[] = [
 	{
 		id: 28_329,
