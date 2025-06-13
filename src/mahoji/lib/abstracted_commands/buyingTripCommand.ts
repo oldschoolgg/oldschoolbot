@@ -1,17 +1,16 @@
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import type { ChatInputCommandInteraction } from 'discord.js';
 
 import type { Buyable } from '../../../lib/data/buyables/buyables';
 import type { BuyActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import calculateShopBuyCost from '../../../lib/util/calculateShopBuyCost';
+import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { transactItems } from '../../../lib/util/TransactItems';
-import getOSItem from '../../../lib/util/getOSItem';
-import calculateShopBuyCost from '../../../lib/util/calculateShopBuyCost';
 
 export async function buyingTripCommand(
 	user: MUser,
@@ -33,9 +32,7 @@ export async function buyingTripCommand(
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on a trip longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount you can buy is ${Math.floor(
-			maxTripLength / timePerItem
-		)}.`;
+		)}, try a lower quantity. The highest amount you can buy is ${Math.floor(maxTripLength / timePerItem)}.`;
 	}
 
 	const { total: totalCost, average } = calculateShopBuyCost(

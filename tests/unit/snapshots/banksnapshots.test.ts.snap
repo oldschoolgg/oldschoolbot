@@ -4217,6 +4217,157 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
+    "changePer": 1,
+    "gpCost": 1,
+    "itemCost": {},
+    "name": "Arrow shaft",
+    "outputItems": {
+      "52": 1,
+    },
+    "quantityPerHour": 400000,
+    "shopQuantity": 1000,
+  },
+  {
+    "gpCost": 4,
+    "itemCost": {},
+    "name": "Copper ore",
+    "outputItems": {
+      "436": 1,
+    },
+    "quantityPerHour": 11000,
+  },
+  {
+    "gpCost": 4,
+    "itemCost": {},
+    "name": "Tin ore",
+    "outputItems": {
+      "438": 1,
+    },
+    "quantityPerHour": 11000,
+  },
+  {
+    "gpCost": 25,
+    "itemCost": {},
+    "name": "Iron ore",
+    "outputItems": {
+      "440": 1,
+    },
+    "quantityPerHour": 11000,
+  },
+  {
+    "gpCost": 243,
+    "itemCost": {},
+    "name": "Mithril ore",
+    "outputItems": {
+      "447": 1,
+    },
+    "quantityPerHour": 11000,
+  },
+  {
+    "gpCost": 112,
+    "itemCost": {},
+    "name": "Silver ore",
+    "outputItems": {
+      "442": 1,
+    },
+    "quantityPerHour": 11000,
+  },
+  {
+    "gpCost": 225,
+    "itemCost": {},
+    "name": "Gold ore",
+    "outputItems": {
+      "444": 1,
+    },
+    "quantityPerHour": 11000,
+  },
+  {
+    "gpCost": 67,
+    "itemCost": {},
+    "name": "Coal",
+    "outputItems": {
+      "453": 1,
+    },
+    "quantityPerHour": 11000,
+  },
+  {
+    "changePer": 0.1,
+    "gpCost": 400,
+    "itemCost": {},
+    "name": "Blood rune",
+    "outputItems": {
+      "565": 1,
+    },
+    "quantityPerHour": 100000,
+    "shopQuantity": 1000,
+  },
+  {
+    "changePer": 0.1,
+    "gpCost": 240,
+    "itemCost": {},
+    "name": "Law rune",
+    "outputItems": {
+      "563": 1,
+    },
+    "quantityPerHour": 100000,
+    "shopQuantity": 1000,
+  },
+  {
+    "changePer": 0.1,
+    "gpCost": 300,
+    "itemCost": {},
+    "name": "Soul rune",
+    "outputItems": {
+      "566": 1,
+    },
+    "quantityPerHour": 100000,
+    "shopQuantity": 1000,
+  },
+  {
+    "changePer": 0.1,
+    "gpCost": 50,
+    "itemCost": {},
+    "name": "Astral rune",
+    "outputItems": {
+      "9075": 1,
+    },
+    "quantityPerHour": 100000,
+    "shopQuantity": 1000,
+  },
+  {
+    "changePer": 0.1,
+    "gpCost": 180,
+    "itemCost": {},
+    "name": "Death rune",
+    "outputItems": {
+      "560": 1,
+    },
+    "quantityPerHour": 100000,
+    "shopQuantity": 1000,
+  },
+  {
+    "changePer": 0.1,
+    "gpCost": 180,
+    "itemCost": {},
+    "name": "Nature rune",
+    "outputItems": {
+      "561": 1,
+    },
+    "quantityPerHour": 100000,
+    "shopQuantity": 1000,
+  },
+  {
+    "changePer": 0.1,
+    "gpCost": 90,
+    "itemCost": {},
+    "name": "Chaos rune",
+    "outputItems": {
+      "562": 1,
+    },
+    "quantityPerHour": 100000,
+    "shopQuantity": 1000,
+  },
+  {
     "gpCost": 1320,
     "itemCost": {},
     "minigameScoreReq": [

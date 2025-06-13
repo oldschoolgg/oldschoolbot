@@ -27,8 +27,8 @@ describe('calculateShopBuyCost', () => {
 
 	test('quantity exactly at shopQuantity', () => {
 		const result = calculateShopBuyCost(10, 5, 5, 10);
-		expect(result.total).toBe(105);
-		expect(result.average).toBe(21);
+		expect(result.total).toBe(60);
+		expect(result.average).toBe(12);
 	});
 
 	test('no price change', () => {

@@ -4,6 +4,9 @@ export function calculateShopBuyCost(
 	shopQuantity?: number,
 	changePer?: number
 ): { total: number; average: number } {
+	if (quantity === 0) {
+		return { total: 0, average: 0 };
+	}
 	if (!shopQuantity || !changePer) {
 		const total = gpCost * quantity;
 		return { total, average: total / quantity };

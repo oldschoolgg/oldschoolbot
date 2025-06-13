@@ -1,0 +1,45 @@
+---
+title: "Buyable Items and Shop Pricing Mechanics"
+---
+
+## Overview
+Buying trips allow your minion to purchase large quantities of certain items over time.
+Most buyables are purchased instantly for a flat GP price. Others simulate shop
+mechanics where prices rise as stock is bought and the minion must world hop.
+
+## Instant Buyables
+Items without `shopQuantity` or `changePer` simply cost their listed `gpCost`.
+The GP is removed from your bank and the items are delivered immediately, like a
+virtual Grand Exchange.
+
+## Shop Buyables
+Some items come from in game shops and follow Old School RuneScape pricing rules:
+
+- **gpCost** – base price (100%).
+- **changePer** – price increase per item bought (e.g. `1` for +1%).
+- **shopQuantity** – items available before world hopping.
+
+Price increases linearly within a world and resets after each hop.
+
+Example: Arrow shafts start at 1 GP each and increase by 1% per shaft. After
+buying 1000 the average price is around 5.5 GP before hopping.
+
+```ts
+price = Math.floor(basePrice * (1 + changePer / 100 * itemsBoughtInWorld))
+```
+
+Every `shopQuantity` items the minion hops to a new world and pricing starts over.
+
+### Fields Used in Code
+- `gpCost: number`
+- `shopQuantity?: number`
+- `changePer?: number`
+- `quantityPerHour: number` – limits trip length
+
+### Current Shop-Based Buyables
+Arrow shafts, Blood runes, Law runes, Soul runes, Astral runes, Death runes,
+Nature runes and Chaos runes.
+
+Most items remain simple flat-cost purchases but these shop buyables use the
+`calculateShopBuyCost` function to determine total and average price while
+world hopping.
