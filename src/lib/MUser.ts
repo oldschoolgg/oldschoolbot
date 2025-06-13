@@ -17,7 +17,7 @@ import { partialUserCache } from './cache';
 import { ClueTiers } from './clues/clueTiers';
 import type { CATier } from './combat_achievements/combatAchievements';
 import { CombatAchievements } from './combat_achievements/combatAchievements';
-import { BitField, projectiles } from './constants';
+import { BitField, avasDevices, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { degradeableItems } from './degradeableItems';
@@ -544,7 +544,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		const gearKey = options?.isInWilderness ? 'wildy' : 'range';
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearKey];
-		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
+		const avasDevice = avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
 		const updates: Prisma.UserUpdateArgs['data'] = {};
 
 		for (const [item, quantity] of bankToRemove.items()) {
@@ -579,10 +579,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
-			if (hasAvas && projectileCategory?.savedByAvas) {
+			if (avasDevice && projectileCategory?.savedByAvas) {
 				const ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
-					if (percentChance(80)) {
+					if (percentChance(avasDevice.reduction)) {
 						ammoRemove[1]--;
 						realCost.remove(ammoRemove[0].id, 1);
 					}
@@ -601,10 +601,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		}
 
 		if (dart) {
-			if (hasAvas) {
+			if (avasDevice) {
 				const copyDarts = dart?.[1];
 				for (let i = 0; i < copyDarts; i++) {
-					if (percentChance(80)) {
+					if (percentChance(avasDevice.reduction)) {
 						realCost.remove(dart[0].id, 1);
 						dart![1]--;
 					}
