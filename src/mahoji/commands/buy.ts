@@ -15,10 +15,15 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
+import { buyingTripCommand } from '../lib/abstracted_commands/buyingTripCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
 
-const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
+const allBuyablesAutocomplete = [
+       ...Buyables,
+       { name: 'Kitten' },
+       { name: 'Fossil Island Notes' }
+];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -42,7 +47,12 @@ export const buyCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity?: string }>) => {
+	run: async ({
+		options,
+		userID,
+		interaction,
+		channelID
+	}: CommandRunOptions<{ name: string; quantity?: string }>) => {
 		const user = await mUserFetch(userID.toString());
 		const { name } = options;
 		let quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
@@ -52,12 +62,11 @@ export const buyCommand: OSBMahojiCommand = {
 		if (stringMatches(name, 'Fossil Island Notes')) {
 			return buyFossilIslandNotes(user, interaction, quantity);
 		}
+               const buyable = Buyables.find(
+                       item => stringMatches(name, item.name) || item.aliases?.some(alias => stringMatches(alias, name))
+               );
 
-		const buyable = Buyables.find(
-			item => stringMatches(name, item.name) || item.aliases?.some(alias => stringMatches(alias, name))
-		);
-
-		if (!buyable) return "That's not a valid item you can buy.";
+               if (!buyable) return "That's not a valid item you can buy.";
 
 		if (buyable.collectionLogReqs) {
 			const { cl } = user;
@@ -101,18 +110,22 @@ export const buyCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		if (buyable.minigameScoreReq) {
-			const [key, req] = buyable.minigameScoreReq;
-			let kc = await getMinigameScore(user.id, key);
-			if (key === 'tob') {
-				kc += await getMinigameScore(user.id, 'tob_hard');
-			}
-			if (kc < req) {
-				return `You need ${req} KC in ${
-					Minigames.find(i => i.column === key)?.name
-				} to buy this, you only have ${kc} KC.`;
-			}
-		}
+               if (buyable.minigameScoreReq) {
+                       const [key, req] = buyable.minigameScoreReq;
+                       let kc = await getMinigameScore(user.id, key);
+                       if (key === 'tob') {
+                               kc += await getMinigameScore(user.id, 'tob_hard');
+                       }
+                       if (kc < req) {
+                               return `You need ${req} KC in ${
+                                       Minigames.find(i => i.column === key)?.name
+                               } to buy this, you only have ${kc} KC.`;
+                       }
+               }
+
+               if (buyable.quantityPerHour) {
+                       return buyingTripCommand(user, channelID.toString(), buyable, quantity, interaction);
+               }
 
 		const gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
