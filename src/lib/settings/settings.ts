@@ -1,5 +1,4 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import type { CommandOptions, CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { Activity, NewUser, Prisma } from '@prisma/client';
 import type {
 	APIInteractionGuildMember,
@@ -8,8 +7,8 @@ import type {
 	GuildMember,
 	User
 } from 'discord.js';
+import { isEmpty } from 'remeda';
 
-import { isEmpty } from 'lodash';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
@@ -111,7 +110,6 @@ export async function runCommand({
 	continueDeltaMillis,
 	ephemeral
 }: RunCommandArgs): Promise<null | CommandResponse> {
-	await deferInteraction(interaction);
 	const channel = globalClient.channels.cache.get(channelID);
 	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
 	if (!mahojiCommand || !channelIsSendable(channel)) {
@@ -146,10 +144,12 @@ export async function runCommand({
 
 			await interactionReply(interaction, {
 				content: response,
-				ephemeral: true
+				ephemeral: inhibitedReason.silent
 			});
 			return null;
 		}
+
+		await deferInteraction(interaction, ephemeral);
 
 		const result = await runMahojiCommand({
 			options: args,

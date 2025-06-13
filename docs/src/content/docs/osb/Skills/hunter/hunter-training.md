@@ -4,32 +4,34 @@ title: "Hunter Training"
 
 ## Fastest Route to 99:
 
-Full graceful provides a 5% boost to all hunter creatures, except birdhouses where it gives a 10% boost. It can be equipped in any setup!
+Full Graceful provides a 5% boost to all hunter creatures, except birdhouses where it gives a 10% boost. It can be equipped in any setup!
 
-#### **Passive XP + seeds**
+#### **Passive XP + Seeds**
 
-You can set birdhouse traps to collect various seeds, rings, and eggs. This can be done every 50 minutes which provides excellent xp. See the [Birdhouses](https://wiki.oldschool.gg/skills/hunter/birdhouses) page for more info.
+You can set birdhouse traps to collect various seeds, rings, and eggs. This can be done every 50 minutes and provides excellent XP. See the [Birdhouses](https://wiki.oldschool.gg/skills/hunter/birdhouses) page for more info.
 
-#### **Optimal route for EHP hunter & fishing**
+#### **Optimal Route for EHP Hunter & Fishing**
 
-`/activities aerial_fishing` (from 35 hunter and 43 fishing)
+[[/activities aerial_fishing]]
 
-#### **Optimal route for active hunter XP**
+(Requires [[hunter:35]] and [[fishing:43]])
 
-_Numbers may not be accurate if you're unlucky with RNG_\
-`/hunt name:Polar kebbit quantity:23` (to 7+)\
-`/hunt name:Feldip weasel` (to 16+)\
-`/hunt name:Ruby harvest` (to 25+) (hunt 20 more if needed)\
-`/hunt name:Sapphire glacialis quantity:200` (to 29+)\
-`/hunt name:Swamp lizard` (to 43)\
-`/hunt name:Spotted kebbit` (to 57)\
-`/hunt name:Dark kebbit` (to 60)\
-`/hunt name:Red salamander` (to 67)\
-`/hunt name:Black salamander` (to 73)\
-`/hunt name:Black chinchompa` (to 99)\
+#### **Optimal Route for Active Hunter XP**
+
+_Numbers may not be accurate if you're unlucky with RNG_<br />
+[[/hunt name\:Polar kebbit quantity\:23]] (to [[hunter:7+]])<br />
+[[/hunt name\:Feldip weasel]] (to [[hunter:16+]])<br />
+[[/hunt name\:Ruby harvest]] (to [[hunter:25+]]) (hunt 20 more if needed)<br />
+[[/hunt name\:Sapphire glacialis quantity\:200]] (to [[hunter:29+]])<br />
+[[/hunt name\:Swamp lizard]] (to [[hunter:43]])<br />
+[[/hunt name\:Spotted kebbit]] (to [[hunter:57]])<br />
+[[/hunt name\:Dark kebbit]] (to [[hunter:60]])<br />
+[[/hunt name\:Red salamander]] (to [[hunter:67]])<br />
+[[/hunt name\:Black salamander]] (to [[hunter:73]])<br />
+[[/hunt name\:Black chinchompa]] (to [[hunter:99]])<br />
 
 ### Additional Information:
 
-If you wish to avoid using brews/restores/gear, you can alternatively do Red Chinchompas starting at 63.
+If you wish to avoid using brews/restores/gear, you can alternatively do Red Chinchompas starting at [[hunter:63]].
 
-Herbiboar is an option at 80 Hunter/31 Herblore, with rates up to 160k xp/hr with staminas, \~125k without.
+Herbiboar is an option at [[hunter:80]]/[[herblore:31]], with rates up to 160k XP/hr with staminas, ~125k without.

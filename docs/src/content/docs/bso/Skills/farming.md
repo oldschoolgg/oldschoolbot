@@ -17,7 +17,7 @@ title: "Farming"
 
 ## Boosts
 
-- [Scroll of Farming](dungeoneering-training/dg-rewards.md#buyable-boosts-utility) - Gives +2 patches of all types. You must `/minion use item:Scroll of farming` to receive the bonus patches.
+- [Scroll of Farming](dungeoneering-training/dg-rewards.md#buyable-boosts-utility) - Gives +2 patches of all types. You must [[/minion use item\:Scroll of farming]] to receive the bonus patches.
 - [Master Farming Outfit](../custom-items/equippables/#master-farmer-outfit) - Gives +3 patches of all types. Obtained via crafting with 110 Crafting using Ent hides dropped from [Treebeard](../bso-custom-killables/demi-bosses/treebeard.md). Works from bank
 - [Scroll of Life](dungeoneering-training/dg-rewards.md#buyable-boosts-utility) - 15% less seeds used when farming
 - [Farming Master Cape](../custom-items/equippables/#master-capes) - Save 15% seeds. (50% if you have the cape and scroll of life); 1/10 chance per seed of a mystery box. +100% harvest

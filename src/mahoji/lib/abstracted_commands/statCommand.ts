@@ -405,7 +405,7 @@ GROUP BY data->>'mi';`);
 			const dataPoints: [string, number][] = items
 				.filter(i => i[1] >= 1)
 				.slice(0, 15)
-				.map(i => [i[0].name, i[0].price * i[1]]);
+				.map(i => [i[0].name, (i[0].price ?? 0) * i[1]]);
 			const everythingElse = items.slice(20, items.length);
 			const everythingElseBank = new Bank();
 			for (const i of everythingElse) everythingElseBank.add(i[0].name, i[1]);

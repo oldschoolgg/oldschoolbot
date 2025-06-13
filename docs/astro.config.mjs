@@ -1,11 +1,9 @@
-import starlight from '@astrojs/starlight';
-// @ts-check
-import { defineConfig } from 'astro/config';
-import { remarkItems } from './src/plugins/items';
-
 import preact from '@astrojs/preact';
+import starlight from '@astrojs/starlight';
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'astro/config';
 
-import tailwind from '@astrojs/tailwind';
+import { remarkItems } from './src/plugins/items';
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,7 +12,11 @@ export default defineConfig({
 			alias: {
 				'@data': '../../../data'
 			}
-		}
+		},
+		plugins: [tailwindcss()]
+	},
+	devToolbar: {
+		enabled: false
 	},
 	experimental: {
 		clientPrerender: true
@@ -67,7 +69,6 @@ window.onload = () => document.body.classList.add('bso-theme');
 				}
 			]
 		}),
-		preact({ compat: true }),
-		tailwind()
+		preact({ compat: true })
 	]
 });

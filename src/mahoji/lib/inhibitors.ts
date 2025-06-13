@@ -90,7 +90,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'disabled',
 		run: ({ command, guild, userID }) => {
 			if (
-				globalConfig.adminUserIDs.includes(userID) &&
+				!globalConfig.adminUserIDs.includes(userID) &&
 				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
 			) {
 				return { content: 'This command is globally disabled.' };

@@ -65,7 +65,7 @@ describe('util', () => {
 	test('sellPriceOfItem', () => {
 		const item = getOSItem('Dragon pickaxe');
 		const { price } = item;
-		const expected = reduceNumByPercent(price, 20);
+		const expected = reduceNumByPercent(price!, 20);
 		expect(sellPriceOfItem(item)).toEqual({ price: expected, basePrice: price });
 		expect(sellPriceOfItem(getOSItem('Yellow square'))).toEqual({ price: 0, basePrice: 0 });
 	});
@@ -75,11 +75,11 @@ describe('util', () => {
 		const { cost } = item;
 
 		const expectedOneQty =
-			(((0.4 - 0.015 * Math.min(1 - 1, 10)) * Math.min(1, 11) + Math.max(1 - 11, 0) * 0.1) * cost) / 1;
+			(((0.4 - 0.015 * Math.min(1 - 1, 10)) * Math.min(1, 11) + Math.max(1 - 11, 0) * 0.1) * cost!) / 1;
 		const expectedTwentytwoQty =
-			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost) / 22;
-		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
-		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost });
+			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost!) / 22;
+		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost! });
+		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost! });
 		expect(sellStorePriceOfItem(getOSItem('Yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 

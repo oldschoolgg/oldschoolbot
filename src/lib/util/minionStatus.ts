@@ -18,6 +18,7 @@ import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
 import Firemaking from '../skilling/skills/firemaking';
 import Fishing from '../skilling/skills/fishing';
+import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables';
 import Herblore from '../skilling/skills/herblore/herblore';
 import Hunter from '../skilling/skills/hunter/hunter';
 import { Castables } from '../skilling/skills/magic/castables';
@@ -395,7 +396,11 @@ export function minionStatus(user: MUser) {
 		case 'Sepulchre': {
 			const data = currentTask as SepulchreActivityTaskOptions;
 
-			return `${name} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
+			const fletchable = data.fletch ? zeroTimeFletchables.find(i => i.id === data.fletch!.id) : null;
+
+			const fletchingPart = fletchable ? `They are also fletching ${data.fletch!.qty}x ${fletchable.name}. ` : '';
+
+			return `${name} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${fletchingPart}${formattedDuration}`;
 		}
 
 		case 'Plunder': {
@@ -624,7 +629,7 @@ export function minionStatus(user: MUser) {
 			const data = currentTask as NexTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 			return `${name} is currently killing Nex ${data.quantity} times with a team of ${
-				data.users.length
+				data.teamDetails.length
 			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'TroubleBrewing': {

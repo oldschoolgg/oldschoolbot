@@ -3,7 +3,10 @@
 	"compilerOptions": {
 		"outDir": "./dist",
 		"emitDeclarationOnly": true,
-		"declarationDir": "./dist"
+		"declarationDir": "./dist",
+		"module": "esnext",
+		"target": "ESNext",
+		"moduleResolution": "Node"
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["**/*.json", "node_modules"]

@@ -2,84 +2,90 @@
 title: "Gauntlet"
 ---
 
-The Gauntlet is a solo minigame which has some substantial requirements. When you start at both the normal and corrupted gauntlets, your chance of death within the minigame will be quite high. This can be reduced through minion learning (down to 6%).
+The Gauntlet is a solo minigame with high stat requirements. Both Normal and Corrupted Gauntlet start off with a high death chance, which is reduced over time through minion learning (down to 6%).
 
-To begin a trip, use the following commands:
+Start a run with:
 
-- `/minigames gauntlet start`
-- `/minigames gauntlet startcorrupted:True`
+- [[/minigames gauntlet start]]
+- [[/minigames gauntlet startcorrupted\:True]]
 
 ## Requirements
 
-- Level 80 in all combat stats (90 for Corrupted)
-- Level 77 Prayer
-- Level 70 in the following skills:
-  - Smithing
-  - Mining
-  - Farming
-  - Agility
-  - Woodcutting
-  - Fishing
-  - Cooking
-  - Herblore
-  - Construction
-  - Hunter
-- 200+ quest points
-- _Corrupted Gauntlet also requires at least 50kc in the normal Gauntlet_.
+**Normal Gauntlet:**
+
+- [[attack:80]] [[strength:80]] [[defence:80]] [[ranged:80]] [[magic:80]] [[hitpoints:80]]
+- [[prayer:77]]
+- [[smithing:70]] [[mining:70]] [[farming:70]] [[agility:70]] [[woodcutting:70]]
+- [[fishing:70]] [[cooking:70]] [[herblore:70]] [[construction:70]] [[hunter:70]]
+- [[qp:200]]
+
+**Corrupted Gauntlet also requires:**
+
+- [[attack:90]] [[strength:90]] [[defence:90]] [[ranged:90]] [[magic:90]] [[hitpoints:90]]
+- 50+ Normal Gauntlet KC
 
 ## Boosts
 
-- 5% boost for Augury **OR** 2% boost for Mystic might (45+ prayer but not unlocked Augury)
-  - `/useitem:Arcane prayer scroll`
-- 5% boost for Rigour **OR** 2% boost for Eagle eye (44+ prayer but not unlocked Rigour)
-  - `/useitem:Dexterous prayer scroll`
-- Up to 20% for preparation time (this is based on normal + cg kc)
-  - Up to 40% in normal gauntlet (prep time is halved)
-- Up to 20% for experience (0.2% for each KC. 100kc = max boost)
+- +5% for unlocking **Augury**, or +2% if using **Mystic Might** (45+ prayer)
+
+  - Use: [[/useitem item\:Arcane prayer scroll]]
+
+- +5% for unlocking **Rigour**, or +2% if using **Eagle Eye** (44+ prayer)
+
+  - Use: [[/useitem item\:Dexterous prayer scroll]]
+
+- Up to +20% prep time boost (based on total KC; 40% in Normal Gauntlet if prep is halved)
+- Up to +20% from experience (0.2% per KC, max at 100 KC)
 
 ## Rewards
 
-The standard rewards from gauntlet can be obtained here such as Crystal shards alongside runes, gems, arrows, and rune/dragon alchables. The unique rewards include:
+You can obtain standard Gauntlet loot such as:
 
-### Crystal weapon seeds
+- Crystal shards
+- Runes, gems, arrows
+- Rune and dragon alchables
 
-You can create a Crystal bow or Crystal halberd (used at ToB). Both require 78 smithing and crafting.
+### Unique Rewards
 
-`/create item:Crystal bow` - Requires 40 shards
+#### Crystal Weapon Seeds
 
-`/create item:Crystal halberd` - Requires 40 shards
+Used to create Crystal Bow or Crystal Halberd.  
+Requires [[smithing:78]] and [[crafting:78]]
 
-### Crystal armour seeds
+- [[/create item\:Crystal bow]] – 40 shards
+- [[/create item\:Crystal halberd]] – 40 shards
 
-You can create all 3 pieces of the crystal armour set. Each armour piece requires level 70/72/74 smithing and crafting respectively.
+#### Crystal Armour Seeds
 
-`/create item: ``Crystal helm` - Requires 150 shards
+Used to create 3-piece Crystal Armour set.  
+Requires [[smithing:70/72/74]] and [[crafting:70/72/74]] respectively
 
-`/create item: ``Crystal body` - Requires 300 shards
+- [[/create item\:Crystal helm]] – 150 shards
+- [[/create item\:Crystal body]] – 300 shards
+- [[/create item\:Crystal legs]] – 450 shards
 
-    `/createitem: ``Crystal legs` - Requires 450 shards
+#### Enhanced Crystal Weapon Seeds
 
-### Enhanced crystal weapon seeds
+Requires [[crafting:82]] and [[smithing:82]]  
+Charged versions boost bosses like Sara, Arma, Zulrah, CoX  
+Charged → Inactive → Seed (revert cost: 250 shards)
 
-You need 82 crafting and smithing to create both the inactive and charged versions of the blade/bow. The charged bow provides boosts to bosses such as Sara, Arma, Zulrah, and CoX. The charged blade is used at ToB. Charged weapons can be reverted back to inactive weapons, and inactive weapons can be reverted back to seeds (costs 250 crystal shards for the latter).
+- [[/create item\:Blade of saeldor (inactive)]] – 100 shards
+- [[/create item\:Bow of faerdhinen (inactive)]] – 100 shards
+- [[/create item\:Blade of saeldor (c)]] – 1000 shards
+- [[/create item\:Bow of faerdhinen (c)]] – 2000 shards
 
-- `/create item:Blade of saeldor (inactive)` - Requires 100 shards
-- `/create item:Bow of faerdhinen (inactive)` - Requires 100 shards
-- `/create item:Blade of saeldor (c)` - Requires 1000 shards
-- `/create item:Bow of faerdhinen (c)` - Requires 2000 shards
+> Note: Charged items are **untradeable**. Inactive items are **tradeable**.
 
-**Note:** The _**charged**_ blade/bow are untradeable, while the _**inactive**_ versions are tradeable.
+## Trading Crystal Seeds for Shards
 
-## Trading in Crystal Seeds
-
-You may trade in your spare crystal seeds for crystal shards through the `/create` command.
-
-- E.g. `/create item: ``Revert crystal armour seed`
+You may trade seeds using the [[/create]] command, e.g.  
+[[/create item\:Revert crystal armour seed]]
 
 | **Seed**                       | **Shards** |
-| ------------------------------ | :--------: |
-| Crystal weapon seed            |     10     |
-| Crystal tool seed              |    100     |
-| Enhanced teleport crystal seed |    150     |
-| Crystal armour seed            |    250     |
-| Enhanced crystal weapon seed   |   1,500    |
+| ------------------------------ | ---------- |
+| Crystal weapon seed            | 10         |
+| Crystal tool seed              | 100        |
+| Enhanced teleport crystal seed | 150        |
+| Crystal armour seed            | 250        |
+| Enhanced crystal weapon seed   | 1500       |

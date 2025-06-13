@@ -1,13 +1,6 @@
 import combatAchievements from '@data/combat_achievements.json';
 import { useEffect, useState } from 'preact/hooks';
-
-function toTitleCase(str: string) {
-	const splitStr = str.toLowerCase().split(' ');
-	for (let i = 0; i < splitStr.length; i++) {
-		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-	}
-	return splitStr.join(' ');
-}
+import { toTitleCase } from '../docs-util.js';
 
 const tiers = Object.keys(combatAchievements).map(t => t.toLowerCase());
 const allTasksFlat = Object.values(combatAchievements).flatMap((tier: any) =>

@@ -1,9 +1,9 @@
 import type { Bingo, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { Time, chunk, noOp } from 'e';
-import groupBy from 'lodash/groupBy';
 import { Bank, addBanks } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
+import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
 import { Emoji } from '../../../lib/constants';

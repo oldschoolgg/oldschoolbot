@@ -5,23 +5,37 @@ description: "BSO only content: Necromancer Kit, Shade Skull, Gary"
 
 [The OSB Shades of Mort'ton article](https://app.gitbook.com/s/-Mahgm23KyzkWDlt2oqz/minigames/shades-of-mortton) describes the minigame and standard content around it.
 
-| Item                                                                                                                             | Source                                                                         |
-| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Necromancer Kit                                                                                                                  | 1/375 from any Gold key open                                                   |
-| Shade Skull                                                                                                                      | 1/400 from any Gold key open                                                   |
-| [ ](../custom-items/pets.md#meme-pets-and-no-perk-pets)[Gary](../custom-items/pets.md#meme-pets-and-no-perk-pets) (perkless pet) | 1/1200(multiplied by shade tier) . Urium 1/1200, Fiyr 1/2400, Asyn 1/3600 etc. |
+| **Item**                                                                  | **Source**                                                            |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Necromancer Kit                                                           | 1/375 from any Gold key open                                          |
+| Shade Skull                                                               | 1/400 from any Gold key open                                          |
+| [Gary](../custom-items/pets.md#meme-pets-and-no-perk-pets) (perkless pet) | 1/1200 × shade tier (Urium: 1/1200, Fiyr: 1/2400, Asyn: 1/3600, etc.) |
 
-**Necromancer Kit** - used to `/create item:Necromancer outfit` requiring 50 Fine cloth, 3 Necromancer Kit, 1 Dagon'hai robes set. This cannot be reverted
+### Necromancer Kit
 
-**Shade Skull** - Used to create Necromancer's \[x] Staff and Skeletal \[x] Battlestaff. This can be reverted and you will have the skull returned. \[x] is the type of staff. Necromancer's staff require a Mystic \[x] staff, Skeletal battlestaff require a \[x] battlestaff.
+Used to [[/create item\:Necromancer outfit]], requires:
 
-Types of staffs usable: Air, Earth, Fire, Lava, Mud, Steam, Water
+- 50 Fine cloth
+- 3 Necromancer Kit
+- 1 Dagon'hai robes set
+
+This cannot be reverted.
+
+### Shade Skull
+
+Used to create:
+
+- Necromancer's [x] Staff
+- Skeletal [x] Battlestaff
+
+This can be reverted and the skull is returned. `[x]` is the type of staff (Air, Earth, Fire, Lava, Mud, Steam, Water).
+
+- **Necromancer’s Staffs** use Mystic [x] staffs.
+- **Skeletal Battlestaffs** use [x] battlestaffs.
 
 <details>
-
 <summary>List to create + revert for fast CL</summary>
 
-```
 /create item:Necromancer's air staff
 /create item:Revert Necromancer's air staff
 /create item:Necromancer's earth staff
@@ -50,6 +64,5 @@ Types of staffs usable: Air, Earth, Fire, Lava, Mud, Steam, Water
 /create item:Revert Skeletal mud battlestaff
 /create item:Skeletal steam battlestaff
 /create item:Revert Skeletal steam battlestaff
-```
 
 </details>

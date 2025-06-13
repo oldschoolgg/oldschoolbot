@@ -2,34 +2,42 @@
 title: "Zalcano"
 ---
 
-Zalcano is a skilling based boss. You can start a trip with [[/k name:Zalcano]]. Zalcano is a solo only activity, however your minion theoretically kills it with other minions.
+Zalcano is a **skilling-based boss** that you can fight solo using:  
+[[/k name\:Zalcano]]  
+Your minion will work alongside others in the background, but it is a solo activity.
+
+---
 
 ### Requirements
 
-- Level 70 in the following skills:
-  - Smithing
-  - Mining
-  - Farming
-  - Agility
-  - Woodcutting
-  - Herblore
-  - Construction
-  - Hunter
-- 150+ quest points
+- [[smithing:70]] [[mining:70]] [[farming:70]] [[agility:70]] [[woodcutting:70]]
+- [[herblore:70]] [[construction:70]] [[hunter:70]]
+- [[qp:150]]
+
+---
 
 ### Boosts
 
-- 15% time penalty for not having graceful equipped.
-- Higher KC provides a speed boost (up to 16.67%).
-- Higher Smithing/Mining levels provide speed boosts (up to 5% combined).
-- Food usage will decrease with KC.
+- –15% time penalty if **Graceful** is not equipped
+- KC-based speed boost up to **+16.67%**
+- Higher Smithing/Mining levels give up to **+5% combined**
+- Food usage reduces with higher KC
+
+---
 
 ### Rewards
 
-- Runecrafting, Smithing and Mining XP.
-- 2-3 crystal shards per kill and various resources such as runes, gems, ores and bars.
-- Crystal tool seed, used to make crystal tools which provide the highest boosts.
-  - `/create item:Crystal pickaxe/axe/harpoon` (needs 76 craft & smith + 120 crystal shards)
-- Finally, Zalcano has a pet (Smolcano) and drops a dragon pickaxe ornament kit (Zalcano shard).
-  - `/create item:Dragon pickaxe (or)`
-- See the OSRS wiki [Zalcano Page](https://oldschool.runescape.wiki/w/Zalcano) for further details.
+- **XP:** Runecrafting, Smithing, Mining
+- **Resources:** Crystal shards (2–3/kill), runes, gems, ores, bars
+- **Crystal tool seed** – Used to make crystal tools:
+
+  - [[/create item\:Crystal pickaxe]]
+  - [[/create item\:Crystal axe]]
+  - [[/create item\:Crystal harpoon]]
+  - Requires [[smithing:76]], [[crafting:76]], and 120 crystal shards
+
+- **Smolcano pet**
+- **Zalcano shard** – Dragon pickaxe ornament kit
+  - [[/create item\:Dragon pickaxe (or)]]
+
+For additional info, see: [Zalcano on OSRS Wiki](https://oldschool.runescape.wiki/w/Zalcano)

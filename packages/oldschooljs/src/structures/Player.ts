@@ -1,4 +1,4 @@
-import type { hiscoreURLs } from '../constants';
+import type { AccountType } from '../constants';
 import type { BossRecords, CluesScore, MinigamesScore, Player as PlayerType, SkillsScore } from '../meta/types';
 
 class Player {
@@ -6,7 +6,7 @@ class Player {
 	public skills: SkillsScore;
 	public minigames: MinigamesScore;
 	public bossRecords: BossRecords;
-	public type: keyof typeof hiscoreURLs;
+	public type: AccountType;
 	public clues: CluesScore;
 	public leaguePoints?: { rank: number; points: number };
 

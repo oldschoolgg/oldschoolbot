@@ -121,7 +121,7 @@ class GrandExchangeSingleton {
 		maxTotalPrice: ONE_TRILLION,
 		buyLimit: {
 			interval: Time.Hour * 4,
-			fallbackBuyLimit: (item: Item) => (item.price > 1_000_000 ? 1 : 1000)
+			fallbackBuyLimit: (item: Item) => ((item.price ?? 0) > 1_000_000 ? 1 : 1000)
 		},
 		tax: {
 			// Tax per item

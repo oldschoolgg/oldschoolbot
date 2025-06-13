@@ -3,6 +3,7 @@ import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { deepClone, increaseNumByPercent, notEmpty, objectEntries, reduceNumByPercent } from 'e';
 import fetch from 'node-fetch';
+import bsoItemsJson from '../../../data/bso_items.json';
 
 import { EquipmentSlot, type Item } from '../src/meta/types';
 import Items, { CLUE_SCROLLS, CLUE_SCROLL_NAMES, USELESS_ITEMS } from '../src/structures/Items';
@@ -64,26 +65,6 @@ export function moidLink(items: number[]) {
 	if (items.length === 0) return 'No items.';
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
-
-const formatDateForTimezones = (date: Date): { cali: string; sydney: string } => {
-	const options: Intl.DateTimeFormatOptions = {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit',
-		timeZoneName: 'short'
-	};
-
-	const caliDate = new Intl.DateTimeFormat('en-US', { ...options, timeZone: 'America/Los_Angeles' }).format(date);
-	const sydneyDate = new Intl.DateTimeFormat('en-AU', { ...options, timeZone: 'Australia/Sydney' }).format(date);
-
-	return {
-		cali: caliDate,
-		sydney: sydneyDate
-	};
-};
 
 const manualItems: Item[] = [
 	{
@@ -295,7 +276,7 @@ const keysToWarnIfRemovedOrAdded: (keyof Item)[] = ['equipable', 'equipment', 'w
 export default async function prepareItems(): Promise<void> {
 	const messages: string[] = [];
 	const allItemsRaw: RawItemCollection = await fetch(
-		'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/1ecb931981ea66a34476d614b0c863c51f2738c8/docs/items-complete.json'
+		'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/37322fed3abb2d58236c59dfc6babb37a27a50ea/docs/items-complete.json'
 	).then((res): Promise<any> => res.json());
 	const allItems = deepClone(allItemsRaw);
 
@@ -368,7 +349,13 @@ export default async function prepareItems(): Promise<void> {
 		if (item.highalch === null) item.highalch = undefined;
 
 		if (!previousItem) {
+			// if (item.wiki_name?.includes('Trailblazer') || item.name.includes('echoes')) continue;
 			newItems.push(item);
+			if (bsoItemsJson[item.id]) {
+				console.log(
+					`!!!!!!! New item added ${item.name}[${item.id}] clashes with BSO item ${bsoItemsJson[item.id]} !!!!!!!`
+				);
+			}
 		}
 
 		if (price) {
@@ -399,6 +386,14 @@ export default async function prepareItems(): Promise<void> {
 		if (dontChange || !ITEM_UPDATE_CONFIG.SHOULD_UPDATE_PRICES) {
 			item.price = previousItem?.price ?? item.price;
 		}
+
+		// Preventing possibly unwanted changes
+		// if (previousItem) {
+		// 	item.name = previousItem.name;
+		// 	item.buy_limit = previousItem?.buy_limit;
+		// 	item.weapon = previousItem?.weapon;
+		// 	item.equipment = previousItem?.equipment;
+		// }
 
 		// Dont change price if its only a <10% difference and price is less than 100k
 		if (

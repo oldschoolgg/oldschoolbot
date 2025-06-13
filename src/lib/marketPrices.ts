@@ -1,16 +1,7 @@
 import { notEmpty } from 'e';
-import groupBy from 'lodash/groupBy';
-import mapValues from 'lodash/mapValues';
-import max from 'lodash/max';
-import min from 'lodash/min';
-import orderBy from 'lodash/orderBy';
-import pickBy from 'lodash/pickBy';
-import sortBy from 'lodash/sortBy';
-import sumBy from 'lodash/sumBy';
-import uniqBy from 'lodash/uniqBy';
 import type { Bank } from 'oldschooljs';
-
-import { mean, medianSorted, quantileSorted } from 'simple-statistics';
+import { groupBy, mapValues, pickBy, sumBy, uniqueBy } from 'remeda';
+import { max, mean, medianSorted, min, quantileSorted } from 'simple-statistics';
 
 import { getItem } from './util/getOSItem';
 
@@ -59,7 +50,7 @@ export const cacheGEPrices = async () => {
 
 	// Pick items that have at least 5 transactions from 4 different buyers
 	const filtered = pickBy(groupedByItem, group => {
-		const uniqueBuyers = uniqBy(group, transaction => transaction.buy_listing.user_id);
+		const uniqueBuyers = uniqueBy(group, transaction => transaction.buy_listing.user_id);
 		return uniqueBuyers.length >= 4 && group.length >= 5;
 	});
 
@@ -68,7 +59,7 @@ export const cacheGEPrices = async () => {
 		const prices = transactions.map(t => Number(t.price_per_item_before_tax));
 
 		// Calculate percentiles and IQR
-		const sortedPrices = sortBy(prices);
+		const sortedPrices = [...prices].sort((a, b) => a - b);
 
 		const q1 = quantileSorted(sortedPrices, 0.25);
 		const q3 = quantileSorted(sortedPrices, 0.75);
@@ -82,7 +73,7 @@ export const cacheGEPrices = async () => {
 		const guidePrice = Math.round((medianSalePrice + avgSalePriceWithoutOutliers) / 2);
 
 		// Sort transactions by date (newest to oldest)
-		const sortedTransactions = orderBy(transactions, 'created_at', 'desc');
+		const sortedTransactions = transactions.sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
 		const latest100Transactions = sortedTransactions.slice(0, 100);
 		const averagePriceLast100 = mean(latest100Transactions.map(t => Number(t.price_per_item_before_tax)));
 
@@ -91,7 +82,7 @@ export const cacheGEPrices = async () => {
 		);
 
 		const data = {
-			totalSold: sumBy(transactions, 'quantity_bought'),
+			totalSold: sumBy(transactions, i => i.quantity_bought),
 			transactionCount: transactions.length,
 			avgSalePrice: mean(sortedPrices),
 			minSalePrice: min(sortedPrices),
@@ -123,5 +114,5 @@ export function marketPriceOrBotPrice(itemID: number) {
 	if (data) {
 		return data.guidePrice;
 	}
-	return item.price;
+	return item.price ?? 0;
 }

@@ -23,17 +23,16 @@ import {
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { type UnifiedOpenable, allOpenables } from '../../lib/openables';
 import type { MinigameName } from '../../lib/settings/minigames';
 import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
+import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
 	getUsername,
 	isGroupActivity,
-	isNexActivity,
-	isRaidsActivity,
-	isTOBOrTOAActivity,
 	itemNameFromID,
 	parseStaticTimeInterval,
 	staticTimeIntervals,
@@ -53,6 +52,18 @@ import {
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
+
+function isRaidsActivity(data: any): data is RaidsOptions {
+	return 'challengeMode' in data;
+}
+
+function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
+	return 'wipedRoom' in data;
+}
+
+function isNexActivity(data: any): data is NexTaskOptions {
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
+}
 
 const skillsVals = Object.values(Skills);
 
@@ -292,10 +303,6 @@ export async function kcGains(interval: string, monsterName: string, ironmanOnly
 	return { embeds: [embed] };
 }
 
-const clueItemsOnlyDroppedInOneTier = ClueTiers.flatMap(i =>
-	i.table.allItems.filter(itemID => ClueTiers.filter(i => i.table.allItems.includes(itemID)).length === 1)
-);
-
 interface DrystreakMinigame {
 	name: string;
 	key: MinigameName;
@@ -350,6 +357,27 @@ interface DrystreakEntity {
 	items: number[];
 	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<string | { id: string; val: number | string }[]>;
 	format: (num: number | string) => string;
+}
+
+function convertOpenableToDryStreakEntity(openable: UnifiedOpenable): DrystreakEntity {
+	return {
+		name: openable.name,
+		items: openable.allItems,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT id, ("openable_scores"->>'${openable.id}')::int AS val
+FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+AND "openable_scores"->>'${openable.id}' IS NOT NULL
+${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+ORDER BY ("openable_scores"->>'${openable.id}')::int DESC
+LIMIT 10;`);
+			return result;
+		},
+		format: val => `${val.toLocaleString()} ${openable.name}`
+	};
 }
 
 export const dryStreakEntities: DrystreakEntity[] = [
@@ -503,33 +531,6 @@ LIMIT 10;`);
 		format: num => `${num.toLocaleString()}`
 	},
 	{
-		name: 'Clue Scrolls',
-		items: clueItemsOnlyDroppedInOneTier,
-		run: async ({ ironmanOnly, item }) => {
-			const clueTierWithItem = ClueTiers.filter(t => t.allItems.includes(item.id));
-			if (clueTierWithItem.length !== 1) {
-				return 'You can only check items which are dropped by only 1 clue scroll tier.';
-			}
-			const clueTier = clueTierWithItem[0];
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; opens: number }[]
-			>(`SELECT id, (openable_scores->>'${clueTier.id}')::int AS opens
-FROM users
-INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
-WHERE "collectionLogBank"->>'${item.id}' IS NULL
-AND openable_scores->>'${clueTier.id}' IS NOT NULL
-AND (openable_scores->>'${clueTier.id}')::int > 100
-${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
-ORDER BY opens DESC
-LIMIT 10;`);
-			return result.map(i => ({
-				id: i.id,
-				val: `${i.opens} ${clueTierWithItem[0].name} Casket Opens`
-			}));
-		},
-		format: num => `${num.toLocaleString()}`
-	},
-	{
 		name: 'Superior Slayer Creatures',
 		items: resolveItems(['Imbued heart', 'Eternal gem']),
 		run: async ({ ironmanOnly, item }) => {
@@ -571,10 +572,23 @@ LIMIT 10;`);
 	});
 }
 
-async function dryStreakCommand(monsterName: string, itemName: string, ironmanOnly: boolean) {
+const names = new Set();
+for (const openable of allOpenables) {
+	if (openable.allItems.length > 0 && !names.has(openable.name)) {
+		dryStreakEntities.push(convertOpenableToDryStreakEntity(openable));
+		names.add(openable.name);
+	}
+}
+
+async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean) {
 	const item = getItem(itemName);
 	if (!item) return 'Invalid item.';
-	const entity = dryStreakEntities.find(i => stringMatches(i.name, monsterName));
+	const entity = dryStreakEntities.find(
+		e =>
+			stringMatches(e.name, sourceName) ||
+			allOpenables.some(o => o.name === e.name && o.aliases.some(alias => stringMatches(alias, sourceName)))
+	);
+
 	if (entity) {
 		if (!entity.items.includes(item.id)) {
 			return `That's not a valid item dropped for this thing, valid items are: ${entity.items
@@ -593,7 +607,7 @@ async function dryStreakCommand(monsterName: string, itemName: string, ironmanOn
 		).join('\n')}`;
 	}
 
-	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monsterName)));
+	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, sourceName)));
 	if (!mon) {
 		return "That's not a valid monster or minigame.";
 	}
@@ -800,8 +814,8 @@ export const toolsCommand: OSBMahojiCommand = {
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'monster',
-							description: 'The monster you want to pick.',
+							name: 'source',
+							description: 'The source of the item – a monster, minigame, clue, etc.',
 							required: true,
 							autocomplete: async value => {
 								return [
@@ -993,7 +1007,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				ironman?: boolean;
 			};
 			drystreak?: {
-				monster: string;
+				source: string;
 				item: string;
 				ironman?: boolean;
 			};
@@ -1037,7 +1051,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (patron.drystreak) {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return dryStreakCommand(
-					patron.drystreak.monster,
+					patron.drystreak.source,
 					patron.drystreak.item,
 					Boolean(patron.drystreak.ironman)
 				);

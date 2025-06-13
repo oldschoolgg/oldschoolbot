@@ -48,7 +48,7 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 	if (!cachePrice && (item.price === undefined || !item.tradeable)) {
 		return { price: 0, basePrice: 0 };
 	}
-	const basePrice = cachePrice ?? item.price;
+	const basePrice = cachePrice ?? item.price ?? 0;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	price = clamp(price, 0, MAX_INT_JAVA);

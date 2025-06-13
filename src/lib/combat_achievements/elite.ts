@@ -18,10 +18,9 @@ import type {
 	NightmareActivityTaskOptions,
 	TOAOptions
 } from '../types/minions';
-import { anyoneDiedInTOARaid } from '../util';
 import { resolveItems } from '../util';
 import { crossbows } from '../util/minionUtils';
-import { isCertainMonsterTrip } from './caUtils';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
 export const eliteCombatAchievements: CombatAchievement[] = [

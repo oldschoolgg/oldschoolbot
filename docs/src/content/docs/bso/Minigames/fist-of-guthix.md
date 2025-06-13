@@ -2,13 +2,14 @@
 title: "Fist of Guthix"
 ---
 
-You can start this miningame with the command `/bsominigames fist_of_guthix start.`
-Each game awards 15 fist of guthix tokens. (30 with flappy)
+You can start this minigame using [[/bsominigames fist_of_guthix start]].
 
-### Rewards
+Each game awards 15 Fist of Guthix tokens (30 with Flappy).
 
-- `Adamant Spikeshield - 100 fist of guthix tokens`
-- `Rune Spikeshield - 100 fist of guthix tokens`
-- `Adamant Berserker Shield - 150 fist of guthix tokens`
-- `Rune Berserker Shield - 150 fist of guthix tokens`
-- `Guthix Engram - 500 fist of guthix tokens`
+## Rewards
+
+- **Adamant Spikeshield** – 100 Fist of Guthix tokens
+- **Rune Spikeshield** – 100 Fist of Guthix tokens
+- **Adamant Berserker Shield** – 150 Fist of Guthix tokens
+- **Rune Berserker Shield** – 150 Fist of Guthix tokens
+- **Guthix Engram** – 500 Fist of Guthix tokens

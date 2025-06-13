@@ -6,7 +6,7 @@ import LootTable from '../../structures/LootTable';
 import SimpleTable from '../../structures/SimpleTable';
 import { resolveNameBank } from '../../util/bank';
 
-export interface TeamMember {
+interface TeamMember {
 	id: string;
 	/**
 	 * How well they performed as a percentage. 100% would indicate they did quite well, but not necessarily MVP or a solo kill.
@@ -15,7 +15,7 @@ export interface TeamMember {
 	isMVP: boolean;
 }
 
-export interface ZalcanoOptions {
+interface ZalcanoOptions {
 	/**
 	 * The members of the team killing the Zalcano.
 	 */

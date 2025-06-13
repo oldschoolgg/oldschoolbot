@@ -2,7 +2,7 @@
 title: "Thieving"
 ---
 
-You can train thieving using the `/steal` command. To start training Thieving, you can `/stealname: ``man` or `woman`. You will obtain the standard loot from each monster you can pickpocket, all of which can be found on the [OSRS Thieving Wiki Page](https://oldschool.runescape.wiki/w/Thieving). You can also choose to steal from stalls, which are listed at the bottom of this page.
+You can train thieving using the [[/steal]] command. To start training Thieving, you can [[/steal name\:man]]. You will obtain the standard loot from each monster you can pickpocket, all of which can be found on the [OSRS Thieving Wiki Page](https://oldschool.runescape.wiki/w/Thieving). You can also choose to steal from stalls, which are listed at the bottom of this page.
 
 ### Alternatives
 
@@ -15,13 +15,57 @@ You can also train thieving via Pyramid Plunder or obtain the Rogues outfit for 
 
 ## Pickpocketing
 
-<table data-header-hidden><thead><tr><th width="263">NPC Name</th><th align="center">Required level</th><th align="center">Experience</th><th align="center">XP/Hr. @ 99</th></tr></thead><tbody><tr><td><strong>NPC Name</strong></td><td align="center"><strong>Required level</strong></td><td align="center"><strong>Experience</strong></td><td align="center"><strong>XP/Hr @ 99</strong></td></tr><tr><td>Man/Woman</td><td align="center">1</td><td align="center">8</td><td align="center">18,300</td></tr><tr><td>Farmer</td><td align="center">10</td><td align="center">14.5</td><td align="center">33,100</td></tr><tr><td>Female H.A.M. member</td><td align="center">15</td><td align="center">18.5</td><td align="center">44,400</td></tr><tr><td>Male H.A.M. member</td><td align="center">20</td><td align="center">22.5</td><td align="center">54,000</td></tr><tr><td>Warrior woman</td><td align="center">25</td><td align="center">26</td><td align="center">64,800</td></tr><tr><td>Rogue</td><td align="center">32</td><td align="center">35.5</td><td align="center">81,200</td></tr><tr><td>Cave goblin</td><td align="center">36</td><td align="center">40</td><td align="center">91,500</td></tr><tr><td>Master farmer</td><td align="center">38</td><td align="center">43</td><td align="center">98,300</td></tr><tr><td>Guard</td><td align="center">40</td><td align="center">46.8</td><td align="center">107,000</td></tr><tr><td>Fremennik citizen</td><td align="center">45</td><td align="center">65</td><td align="center">148,700</td></tr><tr><td>Bearded Pollnivnian bandit</td><td align="center">45</td><td align="center">65</td><td align="center">156,100</td></tr><tr><td>Desert bandit</td><td align="center">53</td><td align="center">79.5</td><td align="center">181,800</td></tr><tr><td>Knight of Ardougne</td><td align="center">55</td><td align="center">84.3</td><td align="center">192,900</td></tr><tr><td>Pollnivnian bandit</td><td align="center">55</td><td align="center">84.3</td><td align="center">202,400</td></tr><tr><td>Yanille watchman</td><td align="center">65</td><td align="center">137.5</td><td align="center">104,500</td></tr><tr><td>Menaphite thug</td><td align="center">65</td><td align="center">137.5</td><td align="center">260,000</td></tr><tr><td>Paladin</td><td align="center">70</td><td align="center">151.7</td><td align="center">101,700</td></tr><tr><td>Gnome</td><td align="center">75</td><td align="center">198.5</td><td align="center">90,600</td></tr><tr><td>Hero</td><td align="center">80</td><td align="center">275</td><td align="center">80,800</td></tr><tr><td>Vyre</td><td align="center">82</td><td align="center">306.9</td><td align="center">155,700</td></tr><tr><td>Elf</td><td align="center">85</td><td align="center">353</td><td align="center">103,800</td></tr><tr><td>TzHaar-Hur</td><td align="center">90</td><td align="center">103.4</td><td align="center">131,000</td></tr></tbody></table>
+| NPC Name                   | Required level | Experience | XP/Hr. @ 99 |
+| -------------------------- | -------------- | ---------- | ----------- |
+| Man/Woman                  | 1              | 8          | 18,300      |
+| Farmer                     | 10             | 14.5       | 33,100      |
+| Female H.A.M. member       | 15             | 18.5       | 44,400      |
+| Male H.A.M. member         | 20             | 22.5       | 54,000      |
+| Warrior woman              | 25             | 26         | 64,800      |
+| Rogue                      | 32             | 35.5       | 81,200      |
+| Cave goblin                | 36             | 40         | 91,500      |
+| Master farmer              | 38             | 43         | 98,300      |
+| Guard                      | 40             | 46.8       | 107,000     |
+| Fremennik citizen          | 45             | 65         | 148,700     |
+| Bearded Pollnivnian bandit | 45             | 65         | 156,100     |
+| Desert bandit              | 53             | 79.5       | 181,800     |
+| Knight of Ardougne         | 55             | 84.3       | 192,900     |
+| Pollnivnian bandit         | 55             | 84.3       | 202,400     |
+| Yanille watchman           | 65             | 137.5      | 104,500     |
+| Menaphite thug             | 65             | 137.5      | 260,000     |
+| Paladin                    | 70             | 151.7      | 101,700     |
+| Gnome                      | 75             | 198.5      | 90,600      |
+| Hero                       | 80             | 275        | 80,800      |
+| Vyre                       | 82             | 306.9      | 155,700     |
+| Elf                        | 85             | 353        | 103,800     |
+| TzHaar-Hur                 | 90             | 103.4      | 131,000     |
 
 ## Thievable Stalls
 
 You can also steal from stalls instead of pickpocketing. For most stalls, you will only receive a % of the potential loot in exchange for faster experience rates. **This cannot be changed.** In addition, xp rates for stealing at stalls is the same, regardless of thieving level.
 
-<table><thead><tr><th width="215"></th><th width="196" align="center"></th><th align="center"></th><th align="center"></th></tr></thead><tbody><tr><td><strong>Stall Type</strong></td><td align="center"><strong>Required Level</strong></td><td align="center"><strong>Loot % Received</strong></td><td align="center"><strong>XP/Hr</strong></td></tr><tr><td>Vegetable stall</td><td align="center">2</td><td align="center">20%</td><td align="center">18,000</td></tr><tr><td>Baker's stall</td><td align="center">5</td><td align="center">20%</td><td align="center">27,000</td></tr><tr><td>Crafting stall</td><td align="center">5</td><td align="center">25%</td><td align="center">8,000</td></tr><tr><td>Monkey food stall<strong>*</strong></td><td align="center">5</td><td align="center">100%</td><td align="center">8,000</td></tr><tr><td>Monkey general stall<strong>*</strong></td><td align="center">5</td><td align="center">25%</td><td align="center">8,000</td></tr><tr><td>Tea stall</td><td align="center">5</td><td align="center">35%</td><td align="center">8,000</td></tr><tr><td>Silk stall</td><td align="center">20</td><td align="center">30%</td><td align="center">17,000</td></tr><tr><td>Wine stall</td><td align="center">22</td><td align="center">38%</td><td align="center">9,000</td></tr><tr><td>Fruit stall</td><td align="center">25</td><td align="center">25%</td><td align="center">38,000</td></tr><tr><td>Seed stall</td><td align="center">27</td><td align="center">90%</td><td align="center">3,000</td></tr><tr><td>Fur stall</td><td align="center">35</td><td align="center">80%</td><td align="center">12,000</td></tr><tr><td>Fish stall</td><td align="center">42</td><td align="center">75%</td><td align="center">14,000</td></tr><tr><td>Crossbow stall</td><td align="center">49</td><td align="center">100%</td><td align="center">17,000</td></tr><tr><td>Silver stall</td><td align="center">50</td><td align="center">80%</td><td align="center">12,000</td></tr><tr><td>Spice stall</td><td align="center">65</td><td align="center">25%</td><td align="center">8,000</td></tr><tr><td>Magic stall<strong>*</strong></td><td align="center">65</td><td align="center">100%</td><td align="center">9,000</td></tr><tr><td>Scimitar stall<strong>*</strong></td><td align="center">65</td><td align="center">25%</td><td align="center">14,000</td></tr><tr><td>Gem stall</td><td align="center">75</td><td align="center">100%</td><td align="center">55,000</td></tr><tr><td>TzHaar gem stall<strong>**</strong></td><td align="center">75</td><td align="center">100%</td><td align="center">55,000</td></tr><tr><td>Ore stall<strong>**</strong></td><td align="center">82</td><td align="center">100%</td><td align="center">42,000</td></tr></tbody></table>
+| Stall Type             | Required Level | Loot % Received | XP/Hr  |
+| ---------------------- | -------------- | --------------- | ------ |
+| Vegetable stall        | 2              | 20%             | 18,000 |
+| Baker's stall          | 5              | 20%             | 27,000 |
+| Crafting stall         | 5              | 25%             | 8,000  |
+| Monkey food stall\*    | 5              | 100%            | 8,000  |
+| Monkey general stall\* | 5              | 25%             | 8,000  |
+| Tea stall              | 5              | 35%             | 8,000  |
+| Silk stall             | 20             | 30%             | 17,000 |
+| Wine stall             | 22             | 38%             | 9,000  |
+| Fruit stall            | 25             | 25%             | 38,000 |
+| Seed stall             | 27             | 90%             | 3,000  |
+| Fur stall              | 35             | 80%             | 12,000 |
+| Fish stall             | 42             | 75%             | 14,000 |
+| Crossbow stall         | 49             | 100%            | 17,000 |
+| Silver stall           | 50             | 80%             | 12,000 |
+| Spice stall            | 65             | 25%             | 8,000  |
+| Magic stall\*          | 65             | 100%            | 9,000  |
+| Scimitar stall\*       | 65             | 25%             | 14,000 |
+| Gem stall              | 75             | 100%            | 55,000 |
+| TzHaar gem stall\*\*   | 75             | 100%            | 55,000 |
+| Ore stall\*\*          | 82             | 100%            | 42,000 |
 
 - Requires 105 Quest points
 

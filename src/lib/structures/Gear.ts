@@ -1,10 +1,10 @@
 import type { GearPreset } from '@prisma/client';
 import { notEmpty, objectKeys, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-
+import type { EGear } from 'oldschooljs/EGear';
 import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
-
 import { resolveItems } from 'oldschooljs/dist/util/util';
+
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import type {
 	DefenceGearStat,
@@ -503,8 +503,11 @@ export class Gear {
 		return new Gear({ ...this.raw() });
 	}
 
-	equip(_itemToEquip: Item | string, quantity = 1): { refundBank: Bank | null } {
-		const itemToEquip: Item = typeof _itemToEquip === 'string' ? getOSItem(_itemToEquip) : _itemToEquip;
+	equip(_itemToEquip: EGear | Item | string, quantity = 1): { refundBank: Bank | null } {
+		const itemToEquip: Item =
+			typeof _itemToEquip === 'string' || typeof _itemToEquip === 'number'
+				? getOSItem(_itemToEquip)
+				: _itemToEquip;
 		assert(quantity >= 1, 'Cannot equip less than 1 item.');
 		if (!itemToEquip.equipment) throw new Error(`${itemToEquip.name} is not equippable.`);
 		const refundBank = new Bank();
@@ -555,6 +558,16 @@ export class Gear {
 		}
 
 		return { refundBank: refundBank.length === 0 ? null : refundBank };
+	}
+
+	toBank() {
+		const bank = new Bank();
+		for (const slot of objectKeys(defaultGear)) {
+			const equipped = this[slot];
+			if (!equipped || !equipped.item || !equipped.quantity) continue;
+			bank.add(equipped.item, equipped.quantity);
+		}
+		return bank;
 	}
 }
 

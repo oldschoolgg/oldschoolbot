@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { Wiki } from '../';
+import { Wiki } from '../src/structures/Wiki.js';
 
 describe('Wiki', () => {
 	test('Searching', async () => {

@@ -2,7 +2,7 @@
 title: "Randomizer"
 ---
 
-Firstly, use `/minion buy` to buy a minion, and pick the randomization method you want to use. You cannot change your randomization method without fully resetting.
+Firstly, use [[/minion buy]] to buy a minion, and pick the randomization method you want to use. You cannot change your randomization method without fully resetting.
 
 ### Randomization Method
 

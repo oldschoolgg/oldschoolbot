@@ -2,31 +2,42 @@
 title: "Warriors Guild"
 ---
 
-You can use the Warriors Guild to get defenders, powerful offensive offhand slot items. You can use sets of black, mithril, adamant, or rune armour to earn guild tokens command. Once you have tokens, you can fight the cyclopes housed in the guild to earn bronze through dragon defenders. You are required to have at least 100 tokens before killing the cyclopes. You can also get more than one defender in one trip.
+The Warriors Guild is used to obtain **defenders**, powerful offhand items. You earn **Warrior’s Guild tokens** by using sets of black, mithril, adamant, or rune armour, then spend tokens to fight **Cyclopes**, which drop defenders from bronze to dragon.
 
-To collect warriors guild tokens:
+To collect tokens:  
+[[/activities warriors_guild action\:tokens]]
 
-- `/activities warriors_guild action:tokens`
+To fight Cyclopes:  
+[[/activities warriors_guild action\:cyclops]]
 
-To kill cyclops for defenders:
-
-- `/activities warriors_guild action:cyclops`
+---
 
 ## Requirements
 
-- A full helm, platebody, and platelegs of one of the [armours listed below](warriors-guild.md#armour-sets)
+- Full helm, platebody, and platelegs of one of the listed armour sets
+- At least 100 tokens to fight Cyclopes
+
+> You can earn multiple defenders per trip.  
+> Do **not** equip defenders until you have a Dragon Defender — the command checks your **bank**, not equipped gear.
+
+---
 
 ## Boosts
 
-- 100% Warrior's guild tokens for completion of Easy combat achievements
-- 200% Warrior's guild tokens for completion of Medium combat achievements
-- 99 Attack allows players to directly kill Cyclops' without collecting tokens
-  - Attack cape must be equipped in MELEE setup
+- +100% tokens: Easy Combat Achievements completed
+- +200% tokens: Medium Combat Achievements completed
+- [[attack:99]] + Attack cape equipped in **melee setup**: Skip tokens and go directly to Cyclopes
 
-**Don't equip your defenders until you get dragon!** The command checks your bank for current defender rather than equipped gear.
+---
 
-## Armour sets
+## Armour Sets
 
-Each armour set requires the full helm, platebody, and platelegs. You will automatically use the highest tier armour set you can. Armour sets are not consumed.
+Each set must include: **Full Helm**, **Platebody**, and **Platelegs**.  
+You will automatically use the highest tier available. Armour is **not consumed**.
 
-<table><thead><tr><th width="330.3333333333333"></th><th align="center"></th><th align="center"></th></tr></thead><tbody><tr><td><strong>Armour set</strong></td><td align="center"><strong>Tokens/Kill</strong></td><td align="center"><strong>Tokens/Hour (approx.)</strong></td></tr><tr><td>Black armour set </td><td align="center">20</td><td align="center">1,840</td></tr><tr><td>Mithril armour set </td><td align="center">25</td><td align="center">1,575</td></tr><tr><td>Adamant armour set </td><td align="center">30</td><td align="center">1,560</td></tr><tr><td>Rune armour set </td><td align="center">40</td><td align="center">2,000</td></tr></tbody></table>
+| **Armour Set**     | **Tokens per Kill** | **Tokens per Hour (approx.)** |
+| ------------------ | ------------------- | ----------------------------- |
+| Black Armour Set   | 20                  | 1,840                         |
+| Mithril Armour Set | 25                  | 1,575                         |
+| Adamant Armour Set | 30                  | 1,560                         |
+| Rune Armour Set    | 40                  | 2,000                         |

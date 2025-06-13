@@ -1,7 +1,7 @@
 import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
-import { calcWhatPercent, percentChance, sumArr, uniqueArr } from 'e';
+import { calcWhatPercent, objectValues, percentChance, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
@@ -44,7 +44,7 @@ import { Gear, defaultGear } from './structures/Gear';
 import { GearBank } from './structures/GearBank';
 import type { XPBank } from './structures/XPBank';
 import type { ItemBank, SkillRequirements, Skills } from './types';
-import { addItemToBank, convertXPtoLVL, fullGearToBank, hasSkillReqsRaw, itemNameFromID } from './util';
+import { addItemToBank, convertXPtoLVL, hasSkillReqsRaw, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -410,7 +410,9 @@ GROUP BY data->>'ci';`);
 			bank.add(this.user.minion_equippedPet);
 		}
 
-		bank.add(fullGearToBank(this.gear));
+		for (const setup of objectValues(this.gear)) {
+			bank.add(setup.toBank());
+		}
 
 		return bank;
 	}

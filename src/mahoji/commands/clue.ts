@@ -6,7 +6,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { BitField } from '../../lib/constants';
+import { BitField, MAX_CLUES_DROPPED } from '../../lib/constants';
 import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -373,8 +373,8 @@ export const clueCommand: OSBMahojiCommand = {
 		const bankedClues = user.bank.amount(clueTier.scrollID);
 
 		let cluesDone = 0;
-		if (!clueImpling || quantity > 1) {
-			quantity = Math.min(quantity, bankedClues) || 1;
+		if (!clueImpling || bankedClues > 0) {
+			quantity = Math.min(quantity, bankedClues);
 
 			const cost = new Bank().add(clueTier.scrollID, quantity);
 			if (!user.owns(cost)) return `You don't own ${cost}.`;
@@ -426,6 +426,10 @@ export const clueCommand: OSBMahojiCommand = {
 			} from ${openedImplings}x ${clueImpling.name}s.`;
 
 			cluesDone = quantity;
+		}
+
+		if (quantity === 0) {
+			return `You don't have any ${clueTier.name} clue scrolls. Remember you can only stack up to ${MAX_CLUES_DROPPED} clues total.`;
 		}
 
 		const duration = timePerClue * quantity;

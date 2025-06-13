@@ -2,9 +2,9 @@
 title: "Dyes"
 ---
 
-Dyes can be used on certain items by using the `/create` command. This process is irreversible, permanently turns items untradeable, and removes the dye.
+Dyes can be used on certain items by using the [[/create]] command. This process is irreversible, permanently turns items untradeable, and removes the dye.
 
-Ice, blood, shadow, and third age dyes can only be obtained from grandmaster caskets. Monkey dyes can be obtained from catching chimplings, encountering special monkeys during [Mad Marimbo's Monkey Rumble](../minigames/mad-marimbos-monkey-rumble/), or by buying them from the minigame's shop. Dungeoneering dyes can be purchased from the dungeoneering shop. Squid dye can be obtained from [Sea Kraken](../bso-custom-killables/demi-bosses/sea-kraken.md). Volcanic dyes can be obtained from [Moktang](../bso-custom-killables/bosses/moktang.md). Oceanic Dyes can be obtained from [Depths of Atlantis.](../bso-custom-killables/raids/depths-of-atlantis-doa.md)
+Ice, blood, shadow, and third age dyes can only be obtained from Grandmaster caskets. Monkey dyes can be obtained from catching Chimplings, encountering special monkeys during [Mad Marimbo's Monkey Rumble](../minigames/mad-marimbos-monkey-rumble/), or by buying them from the minigame's shop. Dungeoneering dyes can be purchased from the Dungeoneering shop. Squid dye can be obtained from [Sea Kraken](../bso-custom-killables/demi-bosses/sea-kraken.md). Volcanic dyes can be obtained from [Moktang](../bso-custom-killables/bosses/moktang.md). Oceanic dyes can be obtained from [Depths of Atlantis](../bso-custom-killables/raids/depths-of-atlantis-doa.md).
 
 ## Ice dye
 
@@ -74,15 +74,31 @@ Ice, blood, shadow, and third age dyes can only be obtained from grandmaster cas
 
 ## Dungeoneering dye
 
-<table><thead><tr><th width="575">Required item name</th><th>Dyed item name</th></tr></thead><tbody><tr><td>Gorajan warrior helmet</td><td>Gorajan warrior helmet (Primal)</td></tr><tr><td>Gorajan warrior top</td><td>Gorajan warrior top (Primal)</td></tr><tr><td>Gorajan warrior legs</td><td>Gorajan warrior legs (Primal)</td></tr><tr><td>Gorajan warrior gloves</td><td>Gorajan warrior gloves (Primal)</td></tr><tr><td>Gorajan warrior boots</td><td>Gorajan warrior boots (Primal)</td></tr><tr><td>Gorajan occult helmet</td><td>Gorajan occult helmet (Celestial)</td></tr><tr><td>Gorajan occult top</td><td>Gorajan occult top (Celestial)</td></tr><tr><td>Gorajan occult legs</td><td>Gorajan occult legs (Celestial)</td></tr><tr><td>Gorajan occult gloves</td><td>Gorajan occult gloves (Celestial)</td></tr><tr><td>Gorajan occult boots</td><td>Gorajan occult boots (Celestial)</td></tr><tr><td>Gorajan archer helmet</td><td>Gorajan archer helmet (Sagittarian)</td></tr><tr><td>Gorajan archer top</td><td>Gorajan archer top (Sagittarian)</td></tr><tr><td>Gorajan archer legs</td><td>Gorajan archer legs (Sagittarian)</td></tr><tr><td>Gorajan archer gloves</td><td>Gorajan archer gloves (Sagittarian)</td></tr><tr><td>Gorajan archer boots</td><td>Gorajan archer boots (Sagittarian)</td></tr></tbody></table>
+| Required item name     | Dyed item name                      |
+| ---------------------- | ----------------------------------- |
+| Gorajan warrior helmet | Gorajan warrior helmet (Primal)     |
+| Gorajan warrior top    | Gorajan warrior top (Primal)        |
+| Gorajan warrior legs   | Gorajan warrior legs (Primal)       |
+| Gorajan warrior gloves | Gorajan warrior gloves (Primal)     |
+| Gorajan warrior boots  | Gorajan warrior boots (Primal)      |
+| Gorajan occult helmet  | Gorajan occult helmet (Celestial)   |
+| Gorajan occult top     | Gorajan occult top (Celestial)      |
+| Gorajan occult legs    | Gorajan occult legs (Celestial)     |
+| Gorajan occult gloves  | Gorajan occult gloves (Celestial)   |
+| Gorajan occult boots   | Gorajan occult boots (Celestial)    |
+| Gorajan archer helmet  | Gorajan archer helmet (Sagittarian) |
+| Gorajan archer top     | Gorajan archer top (Sagittarian)    |
+| Gorajan archer legs    | Gorajan archer legs (Sagittarian)   |
+| Gorajan archer gloves  | Gorajan archer gloves (Sagittarian) |
+| Gorajan archer boots   | Gorajan archer boots (Sagittarian)  |
 
 ## Squid dye
 
-| Required item name | Dyed item name |     |
-| ------------------ | -------------- | --- |
-| Seer               | Black swan     |     |
+| Required item name | Dyed item name |
+| ------------------ | -------------- |
+| Seer               | Black swan     |
 
-## Volcanic Dye
+## Volcanic dye
 
 | Required item name | Dyed item name               |
 | ------------------ | ---------------------------- |
@@ -93,6 +109,22 @@ Ice, blood, shadow, and third age dyes can only be obtained from grandmaster cas
 | Dwarven gloves     | Dwarven gloves (Volcanic)    |
 | Dwarven boots      | Dwarven boots (Volcanic)     |
 
-## Oceanic Dye
+## Oceanic dye
 
-<table><thead><tr><th width="575">Required item name</th><th>Dyed item name</th></tr></thead><tbody><tr><td>Gorajan warrior helmet</td><td>Gorajan warrior helmet (Oceanic)</td></tr><tr><td>Gorajan warrior top</td><td>Gorajan warrior top (Oceanic)</td></tr><tr><td>Gorajan warrior legs</td><td>Gorajan warrior legs (Oceanic)</td></tr><tr><td>Gorajan warrior gloves</td><td>Gorajan warrior gloves (Oceanic)</td></tr><tr><td>Gorajan warrior boots</td><td>Gorajan warrior boots (Oceanic)</td></tr><tr><td>Gorajan occult helmet</td><td>Gorajan occult helmet (Oceanic)</td></tr><tr><td>Gorajan occult top</td><td>Gorajan occult top (Oceanic)</td></tr><tr><td>Gorajan occult legs</td><td>Gorajan occult legs (Oceanic)</td></tr><tr><td>Gorajan occult gloves</td><td>Gorajan occult gloves (Oceanic)</td></tr><tr><td>Gorajan occult boots</td><td>Gorajan occult boots (Oceanic)</td></tr><tr><td>Gorajan archer helmet</td><td>Gorajan archer helmet (Oceanic)</td></tr><tr><td>Gorajan archer top</td><td>Gorajan archer top (Oceanic)</td></tr><tr><td>Gorajan archer legs</td><td>Gorajan archer legs (Oceanic)</td></tr><tr><td>Gorajan archer gloves</td><td>Gorajan archer gloves (Oceanic)</td></tr><tr><td>Gorajan archer boots</td><td>Gorajan archer boots (Oceanic)</td></tr></tbody></table>
+| Required item name     | Dyed item name                   |
+| ---------------------- | -------------------------------- |
+| Gorajan warrior helmet | Gorajan warrior helmet (Oceanic) |
+| Gorajan warrior top    | Gorajan warrior top (Oceanic)    |
+| Gorajan warrior legs   | Gorajan warrior legs (Oceanic)   |
+| Gorajan warrior gloves | Gorajan warrior gloves (Oceanic) |
+| Gorajan warrior boots  | Gorajan warrior boots (Oceanic)  |
+| Gorajan occult helmet  | Gorajan occult helmet (Oceanic)  |
+| Gorajan occult top     | Gorajan occult top (Oceanic)     |
+| Gorajan occult legs    | Gorajan occult legs (Oceanic)    |
+| Gorajan occult gloves  | Gorajan occult gloves (Oceanic)  |
+| Gorajan occult boots   | Gorajan occult boots (Oceanic)   |
+| Gorajan archer helmet  | Gorajan archer helmet (Oceanic)  |
+| Gorajan archer top     | Gorajan archer top (Oceanic)     |
+| Gorajan archer legs    | Gorajan archer legs (Oceanic)    |
+| Gorajan archer gloves  | Gorajan archer gloves (Oceanic)  |
+| Gorajan archer boots   | Gorajan archer boots (Oceanic)   |

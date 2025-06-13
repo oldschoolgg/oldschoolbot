@@ -112,25 +112,7 @@ export const mappedBossNames = [
 
 export const bossNameMap: Map<keyof BossRecords, string> = new Map(mappedBossNames);
 
-// Hiscores
-
-function hiscoreURL(type: string): string {
-	return `${BASE_API_URL}/m=${type}/index_lite.ws?player=`;
-}
-
-export const hiscoreURLs = {
-	normal: hiscoreURL('hiscore_oldschool'),
-	ironman: hiscoreURL('hiscore_oldschool_ironman'),
-	ultimate: hiscoreURL('hiscore_oldschool_ultimate'),
-	hardcore: hiscoreURL('hiscore_oldschool_hardcore_ironman'),
-	deadman: hiscoreURL('hiscore_oldschool_deadman'),
-	seasonal: hiscoreURL('hiscore_oldschool_seasonal'),
-	tournament: hiscoreURL('hiscore_oldschool_tournament'),
-	skiller: hiscoreURL('hiscore_oldschool_skiller'),
-	skiller_defence: hiscoreURL('hiscore_oldschool_skiller_defence')
-} as const;
-
-export const ACCOUNT_TYPES: (keyof typeof hiscoreURLs)[] = [
+export const ACCOUNT_TYPES = [
 	'normal',
 	'ironman',
 	'ultimate',
@@ -140,10 +122,10 @@ export const ACCOUNT_TYPES: (keyof typeof hiscoreURLs)[] = [
 	'tournament',
 	'skiller',
 	'skiller_defence'
-];
+] as const;
+export type AccountType = (typeof ACCOUNT_TYPES)[number];
 
 // Errors
-
 export enum Errors {
 	INVALID_USERNAME = 'INVALID_USERNAME',
 	INVALID_ACCOUNT_TYPE = 'INVALID_ACCOUNT_TYPE',

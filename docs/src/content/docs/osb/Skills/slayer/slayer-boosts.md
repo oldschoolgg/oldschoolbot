@@ -4,8 +4,7 @@ title: "Slayer Boosts"
 
 You will not receive totem pieces or ancient shards if you are using a cannon as cannons cannot be placed in the catacombs.
 
-You can check the boosts for a specific monster and by how much by using the `/kshow_info:True` command.\
-The Elysian spirit shield will also reduce your food usage by 17.5%, this needs to be equipped to work. Having a full Justiciar set equipped in your melee will further increase your food reduction by 6.5% on any Melee tasks
+You can check the boosts for a specific monster and by how much by using the [[/k show_info:True]] command. The Elysian spirit shield will also reduce your food usage by 17.5%, this needs to be equipped to work. Having a full Justiciar set equipped in your melee will further increase your food reduction by 6.5% on any Melee tasks
 
 ### General boosts
 
@@ -25,7 +24,7 @@ Cannon boosts a number of bosses by a variable amount, the same applies for burs
 | Dragon hunter crossbow            | Wyrm, Drake, All dragons - must be training ranged.                                                                                                                                               |
 | Dragon hunter lance               | Wyrm, Drake, All dragons - must be training melee.                                                                                                                                                |
 | Dragonbone necklace               | Dagannoth                                                                                                                                                                                         |
-| Kodai wand                        | <p>Dust devil, Smoke devil, Ankou, Greater nechryael<br>Boosts any barrage or burst tasks, but must be equipped in mage setup. If doing wildy slayer, it must be equipped in wildy setup.</p>     |
+| Kodai wand                        | Dust devil, Smoke devil, Ankou, Greater nechryael<br>Boosts any barrage or burst tasks, but must be equipped in mage setup. If doing wildy slayer, it must be equipped in wildy setup.            |
 | Leaf-bladed battleaxe             | Kurask, Turoth                                                                                                                                                                                    |
 | Neitiznot shield                  | Ice troll                                                                                                                                                                                         |
 | Saradomin godsword                | Lesser demon, Greater demon, Black demon, Abyssal demon                                                                                                                                           |

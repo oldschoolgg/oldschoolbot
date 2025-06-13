@@ -56,10 +56,12 @@ export async function postCommand({
 					},
 					create: {
 						id: userID,
-						last_command_date: new Date()
+						last_command_date: new Date(),
+						username: globalClient.users.cache.get(userID)?.username
 					},
 					update: {
-						last_command_date: new Date()
+						last_command_date: new Date(),
+						username: globalClient.users.cache.get(userID)?.username
 					},
 					select: {
 						id: true

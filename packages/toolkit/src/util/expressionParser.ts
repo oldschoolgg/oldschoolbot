@@ -48,6 +48,26 @@ mathExpressionParser.addToken([
 		}
 	}
 ]);
+mathExpressionParser.addToken([
+	{
+		type: 2,
+		token: 'infinity',
+		show: 'infinity',
+		value(a) {
+			return a;
+		}
+	}
+]);
+mathExpressionParser.addToken([
+	{
+		type: 2,
+		token: 'Infinity',
+		show: 'Infinity',
+		value(a) {
+			return a;
+		}
+	}
+]);
 /* c8 ignore stop */
 
 export function evalMathExpression(str: string): number | null {

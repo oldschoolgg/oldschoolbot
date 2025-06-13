@@ -17,7 +17,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { petMessage } from '../../../lib/util/handleTripFinish';
+import { displayCluesAndPets } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahojiSettings';
 
@@ -204,8 +204,8 @@ export async function barbAssaultGambleCommand(
 	);
 	const loot = new Bank().add(table.roll(quantity));
 	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
+	str += await displayCluesAndPets(user.id, loot);
 	if (loot.has('Pet Penance Queen')) {
-		str += petMessage(loot);
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 
 		globalClient.emit(

@@ -20,6 +20,7 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
+import { formatList } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -106,6 +107,26 @@ const tripFinishEffects: TripFinishEffect[] = [
 	}
 ];
 
+export async function displayCluesAndPets(userID: string, loot: Bank | null | undefined) {
+	const user = await mUserFetch(userID);
+	let ret = '';
+	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
+	if (clueReceived.length > 0) {
+		const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
+		ret += `\n${Emoji.Casket} **You got a ${formatList(clueReceived.map(clue => clue.name))} clue scroll** in your loot.`;
+
+		if (clueStack >= MAX_CLUES_DROPPED) {
+			ret += `\n**You have reached the maximum clue stack of ${MAX_CLUES_DROPPED}!** (${formatList(ClueTiers.filter(tier => user.bank.amount(tier.scrollID) > 0).map(tier => `${user.bank.amount(tier.scrollID)} ${tier.name}`))}). If you receive more clues, lower tier clues will be replaced with higher tier clues.`;
+		} else {
+			ret += ` You are now stacking ${clueStack} total clues.`;
+		}
+	}
+	if (allPetsCL.some(p => loot?.has(p))) {
+		ret += petMessage(loot);
+	}
+	return ret;
+}
+
 export function petMessage(loot: Bank | null | undefined) {
 	const emoji = pets.find(p => loot?.has(p.name))?.emoji;
 	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling like you're being followed...**`;
@@ -157,28 +178,12 @@ export async function handleTripFinish(
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
 
-	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
-
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
-		clueReceived.map(
-			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
-		);
-	}
-
-	if (allPetsCL.some(p => loot?.has(p))) {
-		message.content += petMessage(loot);
-	}
-
-	if (sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID))) >= MAX_CLUES_DROPPED) {
-		messages.push(
-			`You cannot stack anymore clue scrolls (${ClueTiers.map(tier => `${user.bank.amount(tier.scrollID)} ${tier.name}`)}), you can't hold anymore than this, but lower tier clues will be replaced with higher tier clues.`
-		);
-	}
+	message.content += await displayCluesAndPets(user.id, loot);
 
 	const existingCollector = collectors.get(user.id);
 

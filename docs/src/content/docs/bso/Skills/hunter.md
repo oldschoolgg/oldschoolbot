@@ -23,4 +23,8 @@ Wildy setup - Royal d'hide body and chaps (cost effective)
 
 Xp rates without Hunter Master Cape
 
-<table><thead><tr><th>Method</th><th>Xp / Hr</th><th data-hidden></th></tr></thead><tbody><tr><td>Elder Birdhouse</td><td>3,255,309</td><td></td></tr><tr><td>Sand Gecko</td><td>562,955</td><td></td></tr><tr><td>Black Chinchompa</td><td>1,545,000</td><td></td></tr></tbody></table>
+| Method           | Xp / Hr   |
+| ---------------- | --------- |
+| Elder Birdhouse  | 3,255,309 |
+| Sand Gecko       | 562,955   |
+| Black Chinchompa | 1,545,000 |

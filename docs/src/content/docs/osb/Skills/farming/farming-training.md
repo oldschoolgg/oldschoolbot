@@ -2,72 +2,59 @@
 title: "Farming Training"
 ---
 
-**Before you start:** Decide what tier of compost you want to use. Ultracompost is definitely worth obtaining if you plan on doing any serious farming.\
-Use `/farming default_compost compost\:Ultracompost` before you start doing any farming and make sure to keep up on supply. At a bare minimum use supercompost, as it's very easy to get from wildy bosses or the `/farming compost_bin` command.
+**Before you start:** Decide what tier of compost you want to use. Ultracompost is highly recommended for serious farming.
 
-Ultra compost can be obtained by mining volcanic ash and combining with super compost.\
-`/mine name\:Volcanic ash`\
-`/create item\:Ultracompost`
+Set your default compost using:  
+[[/farming default_compost compost\:Ultracompost]]  
+Make sure to maintain your compost supply. At minimum, use supercompost (easy to get from wildy bosses or [[/farming compost_bin]]).
 
-## Optimal route to level 99
+Ultracompost is created by mining volcanic ash and combining it with supercompost:  
+[[/mine name\:Volcanic ash]]  
+[[/create item\:Ultracompost]]
 
-`/farming check_patches`
+## Optimal Route to Level 99
 
-`/farming default_compost compost\:Ultracompost`
+[[/farming check_patches]]  
+[[/farming default_compost compost\:Ultracompost]]  
+[[/farming always_pay]]
 
-`/farming always_pay`
+[[/farming plant plant_name\:Potato]] (until [[farming:5]])  
+[[/farming plant plant_name\:Onion]] (until [[farming:7]])  
+[[/farming plant plant_name\:Cabbage]] (until [[farming:12]])  
+[[/farming plant plant_name\:Tomato]] (until [[farming:15]])
 
-`/farming plant plant_name:Potato` (until level 5)
+**Now farm Tree, Hardwood, Fruit Tree, and Special seeds until 99**
 
-`/farming plant plant_name:Onion` (until level 7)
+### Tree Seeds
 
-`/farming plant plant_name:Cabbage` (until level 12)
+[[/farming plant plant_name\:Oak tree]] (until [[farming:30]])  
+[[/farming plant plant_name\:Willow tree]] (until [[farming:45]])  
+[[/farming plant plant_name\:Maple tree]] (until [[farming:60]])  
+[[/farming plant plant_name\:Yew tree]] (until [[farming:75]])  
+[[/farming plant plant_name\:Magic tree]] (repeat until 99)
 
-`/farming plant plant_name:Tomato` (until level 15)
+### Hardwood Seeds
 
-**Now farm tree seeds, Hardwood seeds, fruit tree seeds and Special seeds until 99**
+[[/farming plant plant_name\:Teak tree]] ([[farming:35]]–[[farming:55]])  
+[[/farming plant plant_name\:Mahogany tree]] (repeat until 99)
 
-**Tree seeds**
+### Fruit Tree Seeds
 
-`/farming plantplant_name:Oak tree` (until level 30)
+[[/farming plant plant_name\:Pineapple tree]] ([[farming:51]]–[[farming:57]])  
+[[/farming plant plant_name\:Papaya tree]] (until [[farming:68]])  
+[[/farming plant plant_name\:Palm tree]] (until [[farming:81]])  
+[[/farming plant plant_name\:Dragonfruit tree]] (repeat until 99)
 
-`/farming plantplant_name:Willow tree` (until level 45)
+### Special Seeds
 
-`/farming plantplant_name:Maple tree` (until level 60)
+[[/farming plant plant_name\:Calquat tree]] ([[farming:72]]–99)  
+[[/farming plant plant_name\:Spirit tree]] ([[farming:83]]–99)  
+[[/farming plant plant_name\:Celastrus tree]] ([[farming:85]]–99)  
+[[/farming plant plant_name\:Redwood tree]] ([[farming:90]]–99)
 
-`/farming plantplant_name:Yew tree` (until level 75)
+### Materials Needed
 
-`/farming plantplant_name:Magic tree` (Repeat to 99)
-
-**Hardwood seeds**
-
-`/farming plantplant_name:Teak tree` (Level 35-55)
-
-`/farming plantplant_name:Mahogany tree` (Repeat to 99)
-
-**Fruit tree seeds**
-
-`/farming plantplant_name:Pineapple tree` (Level 51-57)
-
-`/farming plantplant_name:Papaya tree` (until level 68)
-
-`/farming plantplant_name:Palm tree` (until level 81)
-
-`/farming plantplant_name:Dragonfruit tree` (Repeat to 99)
-
-**Special seeds**
-
-`/farming plantplant_name:Calquat tree` (Level 72-99)
-
-`/farming plantplant_name:Spirit tree` (Level 83-99)
-
-`/farming plantplant_name:Celastrus tree` (Level 85-99)
-
-`/farming plantplant_name:Redwood tree` (Level 90-99)
-
-### **Materials Needed:**
-
-Seeds vary depending on how active one farms, these numbers are just a guideline (The less active farming, the better xp/hour, but require more slower growing seeds)
+Seed quantities vary based on activity level. These are rough guidelines:
 
 - 100 Potato seed
 - 100 Onion seed
@@ -77,19 +64,19 @@ Seeds vary depending on how active one farms, these numbers are just a guideline
 - 100 Willow seed
 - 100 Maple seed
 - 100 Yew seed
-- 800-1000 Magic seed
+- 800–1000 Magic seed
 - 25 Teak seed
-- 50-100 Mahogany seed
+- 50–100 Mahogany seed
 - 100 Pineapple seed
 - 100 Papaya tree seed
 - 100 Palm tree seed
-- 200-300 Dragonfruit tree seed
-- 100-150 Calquat tree seed
-- 100-200 Spirit seed
-- 120-200 Celastrus seed
-- 20-30 Redwood tree seed
-- 2000-3000 Ultracompost
-- 1000-1500 Potato cactus
-- 2000-3000 Yannillian hops
-- 200-400 Limpwurt root
-- 20000-30000 Coconut
+- 200–300 Dragonfruit tree seed
+- 100–150 Calquat tree seed
+- 100–200 Spirit seed
+- 120–200 Celastrus seed
+- 20–30 Redwood tree seed
+- 2000–3000 Ultracompost
+- 1000–1500 Potato cactus
+- 2000–3000 Yanillian hops
+- 200–400 Limpwurt root
+- 20000–30000 Coconut

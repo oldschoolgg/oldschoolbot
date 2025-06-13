@@ -2,17 +2,15 @@
 title: "Woodcutting Training"
 ---
 
-# Woodcutting Training
-
 ## Fastest Route to 99:
 
-1 - 15: `/chopname:Achey Tree Logsquantity:97powerchop:True`\
-15 - 30: `/chopname:Oak Logsquantity:92powerchop:True`\
-30 - 35: `/chopname:Willow Logsquantity:134powerchop:True`\
-35 - 65: `/chopname:Teak Logspowerchop:True`\
-65 - 92: `/chopname:Sulliuscepspowerchop:True`\
-92 - 99: `/chopname:Teak Logspowerchop:True`\
+[[/chop name\:Achey Tree Logs quantity\:97 powerchop\:True]] — [[woodcutting:1]]–[[woodcutting:15]]  
+[[/chop name\:Oak Logs quantity\:92 powerchop\:True]] — [[woodcutting:15]]–[[woodcutting:30]]  
+[[/chop name\:Willow Logs quantity\:134 powerchop\:True]] — [[woodcutting:30]]–[[woodcutting:35]]  
+[[/chop name\:Teak Logs powerchop\:True]] — [[woodcutting:35]]–[[woodcutting:65]]  
+[[/chop name\:Sulliusceps powerchop\:True]] — [[woodcutting:65]]–[[woodcutting:92]]  
+[[/chop name\:Teak Logs powerchop\:True]] — [[woodcutting:92]]–[[woodcutting:99]]
 
-**If going for pet, powerchop Teak logs for best odds.**\
+**If going for pet, powerchop Teak logs for best odds.**
 
-The following table represents xp rates per hour WITHOUT powerchopping.
+The following table represents XP rates per hour **without** powerchopping.

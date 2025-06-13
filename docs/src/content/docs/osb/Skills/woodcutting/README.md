@@ -2,10 +2,10 @@
 title: "Woodcutting"
 ---
 
-You can train Woodcutting using `/chop name:[logs]`. If no quantity is specified, it will default to a full trip. Using the powerchop option will result in no logs being obtained, but provides significantly faster woodcutting xp rates.
+You can train Woodcutting using [[/chop name\:Logs]]. If no quantity is specified, it will default to a full trip. Using the powerchop option will result in no logs being obtained, but provides significantly faster woodcutting xp rates.
 
-- `/chop name:Willow logs quantity:50`
-- `/chop name:Teak logs powerchop:true`
+- [[/chop name\:Willow logs quantity\:50]]
+- [[/chop name\:Teak logs powerchop\:true]]
 
 ## Axes
 
@@ -37,6 +37,20 @@ The Lumberjack outfit can be obtained from the [Temple Trekking](https://wiki.ol
 
 This table assumes no powerchopping is active.
 
-<table data-header-hidden><thead><tr><th>Log</th><th width="182" align="center">Required level</th><th width="180" align="center">Experience</th><th align="center">XP/Hr. @ 99</th></tr></thead><tbody><tr><td><strong>Log Type</strong></td><td align="center"><strong>Required level</strong></td><td align="center"><strong>Experience</strong></td><td align="center"><strong>XP/Hr. @ 99</strong></td></tr><tr><td>Logs</td><td align="center">1</td><td align="center">25</td><td align="center">15,789</td></tr><tr><td>Achey logs</td><td align="center">1</td><td align="center">25</td><td align="center">17,647</td></tr><tr><td>Oak</td><td align="center">15</td><td align="center">37.5</td><td align="center">40,981</td></tr><tr><td>Willow</td><td align="center">30</td><td align="center">67.5</td><td align="center">63,614</td></tr><tr><td>Teak</td><td align="center">35</td><td align="center">85</td><td align="center">81,565</td></tr><tr><td>Maple</td><td align="center">45</td><td align="center">100</td><td align="center">54,841</td></tr><tr><td>Bark</td><td align="center">45</td><td align="center">82.5</td><td align="center">61,455</td></tr><tr><td>Mahogany</td><td align="center">50</td><td align="center">125</td><td align="center">48,635</td></tr><tr><td>Arctic pine logs</td><td align="center">42</td><td align="center">40</td><td align="center">17,533</td></tr><tr><td>Yew</td><td align="center">60</td><td align="center">175</td><td align="center">41,369</td></tr><tr><td>Sulliusceps*</td><td align="center">65</td><td align="center">127</td><td align="center">100,536</td></tr><tr><td>Magic</td><td align="center">75</td><td align="center">250</td><td align="center">29,227</td></tr><tr><td>Redwood</td><td align="center">90</td><td align="center">380</td><td align="center">65,860</td></tr></tbody></table>
+| Log              | Required level | Experience | XP/Hr. @ 99 |
+| ---------------- | -------------- | ---------- | ----------- |
+| Logs             | 1              | 25         | 15,789      |
+| Achey logs       | 1              | 25         | 17,647      |
+| Oak              | 15             | 37.5       | 40,981      |
+| Willow           | 30             | 67.5       | 63,614      |
+| Teak             | 35             | 85         | 81,565      |
+| Maple            | 45             | 100        | 54,841      |
+| Bark             | 45             | 82.5       | 61,455      |
+| Mahogany         | 50             | 125        | 48,635      |
+| Arctic pine logs | 42             | 40         | 17,533      |
+| Yew              | 60             | 175        | 41,369      |
+| Sulliusceps\*    | 65             | 127        | 100,536     |
+| Magic            | 75             | 250        | 29,227      |
+| Redwood          | 90             | 380        | 65,860      |
 
 _\* Sulliusceps require 25qp to chop._

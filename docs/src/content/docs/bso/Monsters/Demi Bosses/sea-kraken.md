@@ -2,13 +2,12 @@
 title: "Sea Kraken"
 ---
 
-Use command `/k`\*\*`name:sea kraken`
+Use the command: [[/k name\:sea kraken]]
 
-Requires 101 Slayer and good mage defense bonus in range setup.
-
+Requires [[slayer:101]] and high mage defence bonus in your range setup.  
 [Global boosts apply](../../skills/combat-skills.md#boosts)
 
-### Loot
+## Loot
 
 | **Unique Drop Table**     | **Drop Rate** |
 | ------------------------- | ------------- |

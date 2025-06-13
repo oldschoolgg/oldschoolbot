@@ -1,11 +1,12 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+// @ts-expect-error
 import Spritesmith from 'spritesmith';
 import '../src/lib/safeglobals';
 
 import { isFunction, uniqueArr } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, Items, resolveItems } from 'oldschooljs';
 import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
 import { BOT_TYPE } from '../src/lib/constants';
 import { allCLItems } from '../src/lib/data/Collections';
@@ -54,7 +55,27 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		return b.outputItems.items().flatMap(i => i[0].id);
 	}),
 	...manualIDs,
-	...Array.from(ALL_OBTAINABLE_ITEMS)
+	...Array.from(ALL_OBTAINABLE_ITEMS),
+	...resolveItems([
+		'Collection log (bronze)',
+		'Collection log (iron)',
+		'Collection log (steel)',
+		'Collection log (black)',
+		'Collection log (mithril)',
+		'Collection log (adamant)',
+		'Collection log (rune)',
+		'Collection log (dragon)',
+		'Collection log (gilded)',
+		'Bronze staff of collection',
+		'Iron staff of collection',
+		'Steel staff of collection',
+		'Black staff of collection',
+		'Mithril staff of collection',
+		'Adamant staff of collection',
+		'Rune staff of collection',
+		'Dragon staff of collection',
+		'Gilded staff of collection'
+	])
 ]);
 
 const getPngFiles = async (dir: string): Promise<string[]> => {
@@ -64,7 +85,7 @@ const getPngFiles = async (dir: string): Promise<string[]> => {
 
 const createSpriteSheet = (files: string[], outputPath: string): Promise<Spritesmith.Result> => {
 	return new Promise((resolve, reject) => {
-		Spritesmith.run({ src: files }, async (err, result) => {
+		Spritesmith.run({ src: files }, async (err: any, result: any) => {
 			if (err) return reject(err);
 			try {
 				await fs.writeFile(outputPath, result.image);

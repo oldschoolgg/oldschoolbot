@@ -2,31 +2,35 @@
 title: "Fishing Training"
 ---
 
-## Fastest route to 99:
+## Fastest Route to 99
 
-`/fish name:Shrimps` from 1-5\
-`/fish name:Sardine` from 5-10 (requires fishing bait)\
-`/fish name:Herring` from 10-20 (requires fishing bait)\
-**OPTIONAL**: Fishing Trawler for Angler outfit\
-`/fish name:Trout` from 20-30 (requires feathers)\
-`/fish name:Salmon` from 30-58 (requires feathers)\
-**OPTIONAL**: Aerial Fishing (reqs minimum 35 hunter) for Pearl barbarian rod\
-`/fish name:Barbarian fishing` from 58-71 (requires feathers)
+[[/fish name\:Shrimps]] from [[fishing:1]]–[[fishing:5]]  
+[[/fish name\:Sardine]] from [[fishing:5]]–[[fishing:10]] (requires fishing bait)  
+[[/fish name\:Herring]] from [[fishing:10]]–[[fishing:20]] (requires fishing bait)  
+**OPTIONAL:** Fishing Trawler for Angler outfit  
+[[/fish name\:Trout]] from [[fishing:20]]–[[fishing:30]] (requires feathers)  
+[[/fish name\:Salmon]] from [[fishing:30]]–[[fishing:58]] (requires feathers)  
+**OPTIONAL:** Aerial Fishing (requires minimum [[hunter:35]]) for Pearl barbarian rod  
+[[/fish name\:Barbarian fishing]] from [[fishing:58]]–[[fishing:71]] (requires feathers)
 
-`/k name: tempoross` from 71-99 using a crystal harpoon
+[[/k name\:tempoross]] from [[fishing:71]]–[[fishing:99]] using a crystal harpoon
 
-[Tempoross](tempoross.md) is a faster option instead of Barbarian Fishing once you have obtained a crystal tool seed from Zalcano and a Dragon harpoon from Wyrms or Tempoross to create a crystal harpoon. Requires 35 fishing. It also provides lots of raw food for ironmen.
+[Tempoross](tempoross.md) is a faster option than Barbarian Fishing once you have a crystal tool seed (from Zalcano) and a Dragon harpoon (from Wyrms or Tempoross) to create a crystal harpoon. Requires [[fishing:35]]. Tempoross also provides large amounts of raw food for ironmen.
 
-Alternatively, the cheaper and next best way to reach 99 is to continue Barbarian Fishing.
+Alternatively, continuing Barbarian Fishing is the cheaper and next-best method to reach 99.
 
 ### Best Pet Chance
 
-Currently, the fastest method is fishing karambwans.
+Currently, the fastest pet method is fishing Karambwans.
 
-### Additional Information:
+### Additional Information
 
-[Aerial Fishing](aerial-fishing.md) when at least 43 fishing/35 hunter, this is much better than doing Hunting or Fishing on their own for training if you're looking to get 99 in both.
+[Aerial Fishing](aerial-fishing.md) at [[fishing:43]]/[[hunter:35]] is more efficient than training Hunting or Fishing separately if your goal is 99 in both.
 
-### **Collection Log Slots obtainable by Fishing**
+### **Collection Log Slots Obtainable by Fishing**
 
-Bass (Big Bass), Swordfish (Big Swordfish), Shark (Big Shark), [Fishing Trawler](fishing-trawler.md) (Angler outfit), [Aerial Fishing](aerial-fishing.md) (3 Rods+Golden Tench+Fish Sack).
+- Bass (Big Bass)
+- Swordfish (Big Swordfish)
+- Shark (Big Shark)
+- [Fishing Trawler](fishing-trawler.md): Angler outfit
+- [Aerial Fishing](aerial-fishing.md): 3 Rods, Golden Tench, Fish Sack
