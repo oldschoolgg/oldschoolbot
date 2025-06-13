@@ -11,7 +11,7 @@ import { createTestUser, mockClient } from './util';
 
 describe('Integration Misc', () => {
 	test('minionStatsEmbed', async () => {
-		await minionStatsEmbed(await mUserFetch('1111'));
+		await minionStatsEmbed(await mUserFetch('1111'), { otherOnly: true });
 	});
 	test('Analytics', async () => {
 		await mockClient();
