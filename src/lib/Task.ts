@@ -87,6 +87,7 @@ import { specificQuestTask } from '../tasks/minions/specificQuestActivity';
 import { strongholdTask } from '../tasks/minions/strongholdOfSecurityActivity';
 import { tiaraRunecraftTask } from '../tasks/minions/tiaraRunecraftActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
+import { buyTask } from '../tasks/minions/buyActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
@@ -193,7 +194,8 @@ const tasks: MinionTask[] = [
 	camdozaalFishingTask,
 	myNotesTask,
 	colosseumTask,
-	CreateForestersRationsTask
+	CreateForestersRationsTask,
+	buyTask
 ];
 
 export async function processPendingActivities() {
