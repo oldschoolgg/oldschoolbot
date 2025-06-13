@@ -8,16 +8,15 @@ export function calculateShopBuyCost(
     const total = gpCost * quantity;
     return { total, average: total / quantity };
   }
+
   let total = 0;
-  let price = gpCost;
-  const multiplier = 1 + changePer / 100;
   for (let i = 0; i < quantity; i++) {
-    total += Math.floor(price);
-    price *= multiplier;
-    if ((i + 1) % shopQuantity === 0) {
-      price = gpCost;
-    }
+    const itemsBoughtThisWorld = i % shopQuantity;
+    const price = Math.floor(gpCost * (1 + (changePer / 100) * itemsBoughtThisWorld));
+    total += price;
   }
+
   return { total, average: total / quantity };
 }
+
 export default calculateShopBuyCost;

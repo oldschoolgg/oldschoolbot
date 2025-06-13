@@ -63,6 +63,8 @@ export async function buyingTripCommand(
     type: 'Buy',
     itemID: osItem.id,
     quantity,
+    totalCost,
+    average,
     userID: user.id,
     channelID: channelID.toString(),
     duration
