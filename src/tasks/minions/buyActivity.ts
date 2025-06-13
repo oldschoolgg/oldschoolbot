@@ -7,30 +7,30 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 export const buyTask: MinionTask = {
 	type: 'Buy',
-       async run(data: BuyActivityTaskOptions) {
-               const { userID, channelID, itemID, quantity, totalCost, average } = data;
-               const user = await mUserFetch(userID);
+	async run(data: BuyActivityTaskOptions) {
+	const { userID, channelID, itemID, quantity, totalCost, average } = data;
+	const user = await mUserFetch(userID);
 
-               const loot = new Bank().add(itemID, quantity);
-               await transactItems({
-                       userID: user.id,
-                       itemsToAdd: loot,
-                       collectionLog: false
-               });
+	const loot = new Bank().add(itemID, quantity);
+	await transactItems({
+	userID: user.id,
+	itemsToAdd: loot,
+	collectionLog: false
+	});
 
-               await updateBankSetting('buy_loot_bank', loot);
+	await updateBankSetting('buy_loot_bank', loot);
 
 
 
-               handleTripFinish(
-                       user,
-                       channelID,
-                       `${user.minionName} finished buying ${quantity}x ${itemNameFromID(itemID)}. This cost ${totalCost.toLocaleString()} GP (avg ${Math.floor(
-                               average
-                       ).toLocaleString()} ea).`,
-                       undefined,
-                       data,
-                       loot
-               );
-       }
+	handleTripFinish(
+	user,
+	channelID,
+	`${user.minionName} finished buying ${quantity}x ${itemNameFromID(itemID)}. This cost ${totalCost.toLocaleString()} GP (avg ${Math.floor(
+	average
+	).toLocaleString()} ea).`,
+	undefined,
+	data,
+	loot
+	);
+	}
 };
