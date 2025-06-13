@@ -35,6 +35,7 @@ import type {
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -66,12 +67,11 @@ import type {
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
-       RaidsOptions,
-       RunecraftActivityTaskOptions,
-       SawmillActivityTaskOptions,
-       ScatteringActivityTaskOptions,
-       BuyActivityTaskOptions,
-       SepulchreActivityTaskOptions,
+	RaidsOptions,
+	RunecraftActivityTaskOptions,
+	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
+	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -626,10 +626,10 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
-               case 'Buy': {
-                       const data = currentTask as BuyActivityTaskOptions;
-                       return `${name} is currently buying ${data.quantity}x ${itemNameFromID(data.itemID)}. The trip should take ${formatDuration(durationRemaining)}.`;
-               }
+		case 'Buy': {
+			const data = currentTask as BuyActivityTaskOptions;
+			return `${name} is currently buying ${data.quantity}x ${itemNameFromID(data.itemID)}. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
 		case 'Nex': {
 			const data = currentTask as NexTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();

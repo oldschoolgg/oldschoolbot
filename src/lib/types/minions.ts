@@ -530,10 +530,10 @@ export interface TokkulShopOptions extends ActivityTaskOptions {
 }
 
 export interface BuyActivityTaskOptions extends ActivityTaskOptions {
-       type: 'Buy';
-       itemID: number;
-       quantity: number;
-       totalCost: number;
+	type: 'Buy';
+	itemID: number;
+	quantity: number;
+	totalCost: number;
 }
 
 export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOptions {

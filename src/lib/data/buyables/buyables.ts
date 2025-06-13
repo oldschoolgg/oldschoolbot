@@ -23,8 +23,8 @@ import { runeBuyables } from './runes';
 import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
-import { troubleBrewingBuyables } from './troubleBrewingShop';
 import { tripBuyables } from './tripBuyables';
+import { troubleBrewingBuyables } from './troubleBrewingShop';
 
 export interface Buyable {
 	name: string;
@@ -39,11 +39,11 @@ export interface Buyable {
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
-        customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
-        maxQuantity?: number;
-       quantityPerHour?: number;
-       shopQuantity?: number;
-       changePer?: number;
+	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
+	maxQuantity?: number;
+	quantityPerHour?: number;
+	shopQuantity?: number;
+	changePer?: number;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -1153,10 +1153,10 @@ const Buyables: Buyable[] = [
 	...shootingStarsBuyables,
 	...guardiansOfTheRiftBuyables,
 	...toaCapes,
-        ...mairinsMarketBuyables,
-        ...forestryBuyables,
-        ...colossalWyrmAgilityBuyables,
-        ...tripBuyables
+	...mairinsMarketBuyables,
+	...forestryBuyables,
+	...colossalWyrmAgilityBuyables,
+	...tripBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
@@ -1169,12 +1169,11 @@ for (const [chompyHat, qty] of chompyHats) {
 }
 
 for (const cape of allTeamCapes) {
-        Buyables.push({
-                name: cape.name,
-                outputItems: new Bank().add(cape.id),
-                gpCost: 15_000
-        });
+	Buyables.push({
+		name: cape.name,
+		outputItems: new Bank().add(cape.id),
+		gpCost: 15_000
+	});
 }
-
 
 export default Buyables;
