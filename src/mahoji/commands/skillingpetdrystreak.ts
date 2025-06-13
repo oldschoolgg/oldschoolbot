@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { getUsername } from '../../lib/util';
+import Farming from '../../lib/skilling/skills/farming';
 import type { OSBMahojiCommand } from '../lib/util';
 
 interface DryResult {
@@ -51,6 +52,48 @@ async function squirrelDry(ironman: boolean): Promise<string> {
   return `**Dry Streaks for Giant squirrel:**\n${lines.join('\n')}`;
 }
 
+async function tanglerootDry(ironman: boolean): Promise<string> {
+  const ironFilter = ironman ? 'AND "minion.ironman" = true' : '';
+  const rows = await prisma.$queryRawUnsafe<{ id: string; item_id: number; qty: number }[]>(
+    `SELECT fc.user_id::text AS id, fc.item_id, COUNT(*)::int AS qty
+     FROM farmed_crop fc
+     JOIN users u ON u.id = fc.user_id
+     WHERE fc.date_harvested IS NOT NULL
+       AND u."collectionLogBank"->>'20661' IS NULL
+       ${ironFilter}
+     GROUP BY fc.user_id, fc.item_id`
+  );
+
+  if (rows.length === 0) return 'No results found.';
+
+  const plantMap = new Map<number, string>();
+  for (const plant of Farming.Plants) {
+    plantMap.set(plant.id, plant.name);
+  }
+
+  const users: Record<string, { total: number; crops: [string, number][] }> = {};
+  for (const row of rows) {
+    const name = plantMap.get(row.item_id);
+    if (!name) continue;
+    if (!users[row.id]) users[row.id] = { total: 0, crops: [] };
+    users[row.id].crops.push([name, row.qty]);
+    users[row.id].total += row.qty;
+  }
+
+  const sorted = Object.entries(users)
+    .sort((a, b) => b[1].total - a[1].total)
+    .slice(0, 10);
+
+  const lines = await Promise.all(
+    sorted.map(async ([id, data]) => {
+      const parts = data.crops.map(([name, qty]) => `${qty} ${name}`).join(', ');
+      return `${await getUsername(id)}: ${parts} (${data.total.toLocaleString()} total)`;
+    })
+  );
+
+  return `**Dry Streaks for Tangleroot:**\n${lines.join('\n')}`;
+}
+
 export const skillingPetDryStreakCommand: OSBMahojiCommand = {
   name: 'skillingpetdrystreak',
   description: 'Show dry streaks for skilling pets.',
@@ -91,7 +134,7 @@ export const skillingPetDryStreakCommand: OSBMahojiCommand = {
       case 'Rift guardian':
         return xpDry('Rift guardian', 20665, 'skills_runecraft', ironman);
       case 'Tangleroot':
-        return xpDry('Tangleroot', 20661, 'skills_farming', ironman);
+        return tanglerootDry(ironman);
       case 'Rocky':
         return xpDry('Rocky', 20663, 'skills_thieving', ironman);
       case 'Rock golem':
