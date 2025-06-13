@@ -1,17 +1,33 @@
 import { Bank } from 'oldschooljs';
 
 import type { BuyActivityTaskOptions } from '../../lib/types/minions';
+import Buyables from '../../lib/data/buyables/buyables';
 import { itemNameFromID } from '../../lib/util';
+import calculateShopBuyCost from '../../lib/util/calculateShopBuyCost';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 export const buyTask: MinionTask = {
-	type: 'Buy',
-	async run(data: BuyActivityTaskOptions) {
-	const { userID, channelID, itemID, quantity, totalCost, average } = data;
-	const user = await mUserFetch(userID);
+        type: 'Buy',
+       async run(data: BuyActivityTaskOptions) {
+       const { userID, channelID, itemID, quantity } = data;
+       const user = await mUserFetch(userID);
 
-	const loot = new Bank().add(itemID, quantity);
+       const buyable = Buyables.find(
+               b => b.quantityPerHour && b.outputItems && b.outputItems.has(itemID)
+       );
+       if (!buyable) {
+               throw new Error(`No buyable found for item ${itemID}`);
+       }
+
+       const { total: totalCost, average } = calculateShopBuyCost(
+               buyable.gpCost ?? 0,
+               quantity,
+               buyable.shopQuantity,
+               buyable.changePer
+       );
+
+       const loot = new Bank().add(itemID, quantity);
 	await transactItems({
 	userID: user.id,
 	itemsToAdd: loot,

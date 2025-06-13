@@ -56,16 +56,14 @@ export async function buyingTripCommand(
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 	await updateBankSetting('buy_cost_bank', cost);
 
-	await addSubTaskToActivityTask<BuyActivityTaskOptions>({
-		type: 'Buy',
-		itemID: osItem.id,
-		quantity,
-		totalCost,
-		average,
-		userID: user.id,
-		channelID: channelID.toString(),
-		duration
-	});
+       await addSubTaskToActivityTask<BuyActivityTaskOptions>({
+               type: 'Buy',
+               itemID: osItem.id,
+               quantity,
+               userID: user.id,
+               channelID: channelID.toString(),
+               duration
+       });
 
 	return `${user.minionName} is now buying ${quantity}x ${itemNameFromID(
 		osItem.id
