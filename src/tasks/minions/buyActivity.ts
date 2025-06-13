@@ -19,7 +19,8 @@ export const buyTask: MinionTask = {
                throw new Error(`No buyable found for item ${itemID}`);
        }
 
-       const { totalCost, average } = data;
+       const { totalCost } = data;
+       const average = Math.floor(totalCost / quantity);
 
        const loot = new Bank().add(itemID, quantity);
 	await transactItems({
@@ -35,9 +36,7 @@ export const buyTask: MinionTask = {
 	handleTripFinish(
 	user,
 	channelID,
-	`${user.minionName} finished buying ${quantity}x ${itemNameFromID(itemID)}. This cost ${totalCost.toLocaleString()} GP (avg ${Math.floor(
-	average
-	).toLocaleString()} ea).`,
+       `${user.minionName} finished buying ${quantity}x ${itemNameFromID(itemID)}. This cost ${totalCost.toLocaleString()} GP (avg ${average.toLocaleString()} ea).`,
 	undefined,
 	data,
 	loot

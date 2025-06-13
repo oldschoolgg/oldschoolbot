@@ -35,12 +35,12 @@ export async function buyingTripCommand(
 		)}, try a lower quantity. The highest amount you can buy is ${Math.floor(maxTripLength / timePerItem)}.`;
 	}
 
-	const { total: totalCost, average } = calculateShopBuyCost(
-		gpCost,
-		quantity,
-		buyable.shopQuantity,
-		buyable.changePer
-	);
+       const { total: totalCost, average } = calculateShopBuyCost(
+               gpCost,
+               quantity,
+               buyable.shopQuantity,
+               buyable.changePer
+       );
 	const cost = new Bank().add('Coins', totalCost);
 	if (!user.owns(cost)) {
 		return `You need ${cost} to buy ${quantity}x ${osItem.name}.`;
@@ -63,8 +63,7 @@ export async function buyingTripCommand(
                userID: user.id,
                channelID: channelID.toString(),
                duration,
-               totalCost,
-               average
+               totalCost
        });
 
 	return `${user.minionName} is now buying ${quantity}x ${itemNameFromID(
