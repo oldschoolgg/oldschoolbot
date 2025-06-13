@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import type { BuyActivityTaskOptions } from '../../lib/types/minions';
 import Buyables from '../../lib/data/buyables/buyables';
 import { itemNameFromID } from '../../lib/util';
-import calculateShopBuyCost from '../../lib/util/calculateShopBuyCost';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
@@ -20,12 +19,7 @@ export const buyTask: MinionTask = {
                throw new Error(`No buyable found for item ${itemID}`);
        }
 
-       const { total: totalCost, average } = calculateShopBuyCost(
-               buyable.gpCost ?? 0,
-               quantity,
-               buyable.shopQuantity,
-               buyable.changePer
-       );
+       const { totalCost, average } = data;
 
        const loot = new Bank().add(itemID, quantity);
 	await transactItems({

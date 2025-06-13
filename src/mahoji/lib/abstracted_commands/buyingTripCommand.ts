@@ -62,7 +62,9 @@ export async function buyingTripCommand(
                quantity,
                userID: user.id,
                channelID: channelID.toString(),
-               duration
+               duration,
+               totalCost,
+               average
        });
 
 	return `${user.minionName} is now buying ${quantity}x ${itemNameFromID(

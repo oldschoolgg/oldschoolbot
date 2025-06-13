@@ -533,6 +533,8 @@ export interface BuyActivityTaskOptions extends ActivityTaskOptions {
        type: 'Buy';
        itemID: number;
        quantity: number;
+       totalCost: number;
+       average: number;
 }
 
 export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOptions {
