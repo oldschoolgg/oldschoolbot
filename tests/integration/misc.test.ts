@@ -10,9 +10,9 @@ import { minionStatsEmbed } from '../../src/lib/util/minionStatsEmbed';
 import { createTestUser, mockClient } from './util';
 
 describe('Integration Misc', () => {
-	test('minionStatsEmbed', async () => {
-		await minionStatsEmbed(await mUserFetch('1111'));
-	});
+       test('minionStatsEmbed', async () => {
+               await minionStatsEmbed(await mUserFetch('1111'), { otherOnly: true });
+       });
 	test('Analytics', async () => {
 		await mockClient();
 		await analyticsTick();

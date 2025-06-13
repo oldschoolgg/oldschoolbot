@@ -16,7 +16,10 @@ import creatures from '../skilling/skills/hunter/creatures';
 import type { ItemBank, Skills } from '../types';
 import { logError } from './logError';
 
-export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
+export async function minionStatsEmbed(
+       user: MUser,
+       options: { showAllOtherStats?: boolean; otherOnly?: boolean } = {}
+): Promise<EmbedBuilder> {
 	const { QP } = user;
 
 	const xp = sumArr(Object.values(user.skillsAsXP) as number[]);
@@ -54,11 +57,16 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		.sort((a, b) => b.score - a.score);
 
 	const rawBadges = user.user.badges;
-	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
+       const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 
-	const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(0, 255)).addFields(
-		{
-			name: '\u200b',
+       const otherOnly = options.otherOnly ?? false;
+
+       const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(0, 255));
+
+       if (!otherOnly) {
+               embed.addFields(
+               {
+                       name: '\u200b',
 			value: ['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
 				.map(skillCell)
 				.join('\n'),
@@ -124,6 +132,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 				.join('\n'),
 			inline: true
 		});
+}
 	}
 
 	const otherStats: [string, number | string][] = [
@@ -166,16 +175,17 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		}
 	}
 
-	embed.addFields({
-		name: 'Other',
-		value: shuffleArr(otherStats)
-			.slice(0, 4)
-			.map(([name, text]) => {
-				return `**${name}:** ${text}`;
-			})
-			.join('\n'),
-		inline: true
-	});
+       const showAll = otherOnly || options.showAllOtherStats ?? false;
+       const otherStatsToShow = showAll ? otherStats : shuffleArr(otherStats).slice(0, 4);
+       embed.addFields({
+               name: 'Other',
+               value: otherStatsToShow
+                       .map(([name, text]) => {
+                               return `**${name}:** ${text}`;
+                       })
+                       .join('\n'),
+               inline: true
+       });
 
 	return embed;
 }
