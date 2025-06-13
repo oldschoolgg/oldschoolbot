@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { getUsername } from '../../lib/util';
+import { Prisma } from '@prisma/client';
 import Farming from '../../lib/skilling/skills/farming';
+import { getUsername } from '../../lib/util';
 import type { OSBMahojiCommand } from '../lib/util';
 
 interface DryResult {
@@ -12,19 +13,20 @@ interface DryResult {
 }
 
 async function babyChinchompaDry(ironman: boolean): Promise<string> {
-  const ironFilter = ironman ? 'AND "minion.ironman" = true' : '';
-  const query = `SELECT users.id,
-    COALESCE(("creature_scores"->>'7')::int,0) AS grey,
-    COALESCE(("creature_scores"->>'8')::int,0) AS red,
-    COALESCE(("creature_scores"->>'9')::int,0) AS black,
-    COALESCE(("creature_scores"->>'7')::int,0)+COALESCE(("creature_scores"->>'8')::int,0)+COALESCE(("creature_scores"->>'9')::int,0) AS total
-  FROM users
-  INNER JOIN "user_stats" ON "user_stats"."user_id"::text = users.id
-  WHERE "collectionLogBank"->>'13323' IS NULL
-  ${ironFilter}
-  ORDER BY total DESC
-  LIMIT 10;`;
-  const res = await prisma.$queryRawUnsafe<DryResult[]>(query);
+  const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
+  const res = await prisma.$queryRaw<DryResult[]>(Prisma.sql`
+    SELECT users.id,
+      COALESCE(("creature_scores"->>'7')::int,0) AS grey,
+      COALESCE(("creature_scores"->>'8')::int,0) AS red,
+      COALESCE(("creature_scores"->>'9')::int,0) AS black,
+      COALESCE(("creature_scores"->>'7')::int,0)+COALESCE(("creature_scores"->>'8')::int,0)+COALESCE(("creature_scores"->>'9')::int,0) AS total
+    FROM users
+    INNER JOIN "user_stats" ON "user_stats"."user_id"::text = users.id
+    WHERE "collectionLogBank"->>'13323' IS NULL
+    ${ironSQL}
+    ORDER BY total DESC
+    LIMIT 10;
+  `);
   if (res.length === 0) return 'No results found.';
   const lines = await Promise.all(
     res.map(async r => `${await getUsername(r.id)}: ${r.total.toLocaleString()} caught (${r.grey.toLocaleString()} grey, ${r.red.toLocaleString()} red, ${r.black.toLocaleString()} black)`)
@@ -33,36 +35,49 @@ async function babyChinchompaDry(ironman: boolean): Promise<string> {
 }
 
 async function xpDry(pet: string, itemID: number, column: string, ironman: boolean): Promise<string> {
-  const ironFilter = ironman ? 'AND "minion.ironman" = true' : '';
-  const query = `SELECT id, ${column}::bigint AS val FROM users WHERE "collectionLogBank"->>'${itemID}' IS NULL ${ironFilter} ORDER BY ${column}::bigint DESC LIMIT 10;`;
-  const res = await prisma.$queryRawUnsafe<DryResult[]>(query);
+  const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
+  const res = await prisma.$queryRaw<DryResult[]>(Prisma.sql`
+    SELECT id, ${Prisma.raw(column)}::bigint AS val
+    FROM users
+    WHERE "collectionLogBank"->>'${itemID}' IS NULL
+    ${ironSQL}
+    ORDER BY ${Prisma.raw(column)}::bigint DESC
+    LIMIT 10;
+  `);
   if (res.length === 0) return 'No results found.';
   const lines = await Promise.all(res.map(async r => `${await getUsername(r.id)}: ${Number(r.val).toLocaleString()} XP`));
   return `**Dry Streaks for ${pet}:**\n${lines.join('\n')}`;
 }
 
 async function squirrelDry(ironman: boolean): Promise<string> {
-  const ironFilter = ironman ? 'AND "minion.ironman" = true' : '';
-  const ids = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+  const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
+  const ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
   const sum = ids.map(id => `COALESCE(("laps_scores"->>'${id}')::int,0)`).join(' + ');
-  const query = `SELECT users.id, ${sum} AS val FROM users INNER JOIN "user_stats" ON "user_stats"."user_id"::text = users.id WHERE "collectionLogBank"->>'20659' IS NULL ${ironFilter} ORDER BY val DESC LIMIT 10;`;
-  const res = await prisma.$queryRawUnsafe<DryResult[]>(query);
+  const res = await prisma.$queryRaw<DryResult[]>(Prisma.sql`
+    SELECT users.id, ${Prisma.raw(sum)} AS val
+    FROM users
+    INNER JOIN "user_stats" ON "user_stats"."user_id"::text = users.id
+    WHERE "collectionLogBank"->>'20659' IS NULL
+    ${ironSQL}
+    ORDER BY val DESC
+    LIMIT 10;
+  `);
   if (res.length === 0) return 'No results found.';
   const lines = await Promise.all(res.map(async r => `${await getUsername(r.id)}: ${r.val.toLocaleString()} laps`));
   return `**Dry Streaks for Giant squirrel:**\n${lines.join('\n')}`;
 }
 
 async function tanglerootDry(ironman: boolean): Promise<string> {
-  const ironFilter = ironman ? 'AND "minion.ironman" = true' : '';
-  const rows = await prisma.$queryRawUnsafe<{ id: string; item_id: number; qty: number }[]>(
-    `SELECT fc.user_id::text AS id, fc.item_id, COUNT(*)::int AS qty
-     FROM farmed_crop fc
-     JOIN users u ON u.id = fc.user_id
-     WHERE fc.date_harvested IS NOT NULL
-       AND u."collectionLogBank"->>'20661' IS NULL
-       ${ironFilter}
-     GROUP BY fc.user_id, fc.item_id`
-  );
+  const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
+  const rows = await prisma.$queryRaw<{ id: string; item_id: number; qty: number }[]>(Prisma.sql`
+    SELECT fc.user_id::text AS id, fc.item_id, COUNT(*)::int AS qty
+    FROM farmed_crop fc
+    JOIN users u ON u.id = fc.user_id
+    WHERE fc.date_harvested IS NOT NULL
+      AND u."collectionLogBank"->>'20661' IS NULL
+      ${ironSQL}
+    GROUP BY fc.user_id, fc.item_id
+  `);
 
   if (rows.length === 0) return 'No results found.';
 
