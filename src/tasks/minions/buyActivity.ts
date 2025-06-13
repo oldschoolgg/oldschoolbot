@@ -5,6 +5,7 @@ import Buyables from '../../lib/data/buyables/buyables';
 import { itemNameFromID } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import calculateShopBuyCost from '../../lib/util/calculateShopBuyCost';
 
 export const buyTask: MinionTask = {
 	type: 'Buy',
@@ -22,12 +23,20 @@ export const buyTask: MinionTask = {
                await updateBankSetting('buy_loot_bank', loot);
 
                const buyable = Buyables.find(b => itemNameFromID(itemID).toLowerCase() === b.name.toLowerCase());
-               const totalCost = buyable?.gpCost ? buyable.gpCost * quantity : 0;
+               const gpCost = buyable?.gpCost ?? 0;
+               const { total: totalCost, average } = calculateShopBuyCost(
+                       gpCost,
+                       quantity,
+                       buyable?.shopQuantity,
+                       buyable?.changePer
+               );
 
                handleTripFinish(
                        user,
                        channelID,
-                       `${user.minionName} finished buying ${quantity}x ${itemNameFromID(itemID)}. This cost ${totalCost.toLocaleString()} GP.`,
+                       `${user.minionName} finished buying ${quantity}x ${itemNameFromID(itemID)}. This cost ${totalCost.toLocaleString()} GP (avg ${Math.floor(
+                               average
+                       ).toLocaleString()} ea).`,
                        undefined,
                        data,
                        loot

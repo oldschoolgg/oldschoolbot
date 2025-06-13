@@ -11,6 +11,7 @@ import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirma
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { transactItems } from '../../../lib/util/TransactItems';
 import getOSItem from '../../../lib/util/getOSItem';
+import calculateShopBuyCost from '../../../lib/util/calculateShopBuyCost';
 
 export async function buyingTripCommand(
   user: MUser,
@@ -37,16 +38,22 @@ export async function buyingTripCommand(
     )}.`;
   }
 
-  const cost = new Bank().add('Coins', gpCost * quantity);
+  const { total: totalCost, average } = calculateShopBuyCost(
+    gpCost,
+    quantity,
+    buyable.shopQuantity,
+    buyable.changePer
+  );
+  const cost = new Bank().add('Coins', totalCost);
   if (!user.owns(cost)) {
     return `You need ${cost} to buy ${quantity}x ${osItem.name}.`;
   }
 
   await handleMahojiConfirmation(
     interaction,
-    `Buying ${quantity}x ${osItem.name} will cost ${cost
-      .amount('Coins')
-      .toLocaleString()} GP and take ${formatDuration(duration)}. Please confirm.`
+    `Buying ${quantity}x ${osItem.name} will cost ${totalCost.toLocaleString()} GP (avg ${Math.floor(
+      average
+    ).toLocaleString()} ea) and take ${formatDuration(duration)}. Please confirm.`
   );
 
   await transactItems({ userID: user.id, itemsToRemove: cost });

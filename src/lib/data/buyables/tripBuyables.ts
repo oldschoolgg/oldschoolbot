@@ -4,6 +4,14 @@ import type { Buyable } from './buyables';
 
 export const tripBuyables: Buyable[] = [
   {
+    name: 'Arrow shaft',
+    outputItems: new Bank().add('Arrow shaft'),
+    gpCost: 1,
+    quantityPerHour: 400_000,
+    shopQuantity: 1000,
+    changePer: 1
+  },
+  {
     name: 'Copper ore',
     outputItems: new Bank().add('Copper ore'),
     gpCost: 4,
