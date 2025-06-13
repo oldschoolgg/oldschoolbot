@@ -25,6 +25,7 @@ import { createCommand } from './create';
 import { dataCommand } from './data';
 import { dropCommand } from './drop';
 import { dryCalcCommand } from './drycalc';
+import { skillingPetDryStreakCommand } from './skillingpetdrystreak';
 import { fakeCommand } from './fake';
 import { fakepmCommand } from './fakepm';
 import { farmingCommand } from './farming';
@@ -104,10 +105,11 @@ export const allCommands: OSBMahojiCommand[] = [
 	payCommand,
 	craftCommand,
 	fishCommand,
-	farmingCommand,
-	dropCommand,
-	dryCalcCommand,
-	createCommand,
+        farmingCommand,
+        dropCommand,
+        dryCalcCommand,
+        skillingPetDryStreakCommand,
+        createCommand,
 	activitiesCommand,
 	dataCommand,
 	fakeCommand,
