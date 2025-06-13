@@ -27,6 +27,10 @@ export const buyTask: MinionTask = {
 		const { totalCost } = data;
 		const average = Math.floor(totalCost / quantity);
 
+		const itemsPerHour = buyable.quantityPerHour;
+		const itemName = itemNameFromID(itemID);
+		const itemNameWithRate = `${itemName} (${itemsPerHour}/hr)`;
+
 		const loot = new Bank().add(itemID, quantity);
 		await transactItems({
 			userID: user.id,
@@ -39,7 +43,7 @@ export const buyTask: MinionTask = {
 		handleTripFinish(
 			user,
 			channelID,
-			`${user.minionName} finished buying ${quantity}x ${itemNameFromID(itemID)}. This cost ${totalCost.toLocaleString()} GP (avg ${average.toLocaleString()} ea).`,
+			`${user.minionName} finished buying ${quantity}x ${itemNameWithRate}. This cost ${totalCost.toLocaleString()} GP (avg ${average.toLocaleString()} ea).`,
 			undefined,
 			data,
 			loot
