@@ -3,6 +3,7 @@ import {
 	calcPerHour,
 	cleanUsername,
 	formatDuration,
+	formatDurationWithTimestamp,
 	isWeekend,
 	makeComponents,
 	stringMatches
@@ -41,7 +42,7 @@ import { sendToChannelID } from './util/webhook.js';
 
 export * from 'oldschooljs';
 
-export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
+export { stringMatches, calcPerHour, formatDuration, formatDurationWithTimestamp, makeComponents, isWeekend };
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
@@ -78,6 +79,14 @@ export function percentChance(percent: number) {
 
 export function roll(max: number) {
 	return cryptoRand(1, max) === 1;
+}
+
+export function formatDurationFromUser(duration: number, user: MUserClass) {
+	return formatDurationWithTimestamp(
+		duration,
+		user.perkTier(),
+		user.bitfield.includes(BitField.ShowMinionReturnTime)
+	);
 }
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {

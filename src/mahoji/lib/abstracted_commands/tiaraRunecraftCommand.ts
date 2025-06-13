@@ -5,6 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import type { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -108,7 +109,7 @@ export async function tiaraRunecraftCommand({
 
 	let response = `${user.minionName} is now turning ${quantity}x Tiaras into ${
 		tiaraObj.name
-	}s, it'll take around ${formatDuration(duration)} to finish.`;
+	}s, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 
 	if (boosts.length > 0) response += `\n\n**Boosts:** ${boosts.join(', ')}`;
 

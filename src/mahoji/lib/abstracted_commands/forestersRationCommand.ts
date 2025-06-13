@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import ForestryRations from '../../../lib/skilling/skills/cooking/forestersRations';
 import type { CreateForestersRationsActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -73,5 +73,5 @@ export async function forestersRationCommand({
 
 	return `${user.minionName} is now creating ${quantity}x ${
 		forestryFood.name
-	}, it'll take around ${formatDuration(duration)} to finish.`;
+	}, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 }

@@ -1,9 +1,9 @@
 import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatDuration, formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -61,8 +61,9 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 
 	let str = `${
 		user.minionName
-	} is now off to complete the Rogues' Den maze ${quantity}x times, their trip will take ${formatDuration(
-		duration
+	} is now off to complete the Rogues' Den maze ${quantity}x times, their trip will take ${formatDurationFromUser(
+		duration,
+		user
 	)} (${formatDuration(baseTime)} per lap).`;
 
 	if (staminasToRemove.length > 0) {

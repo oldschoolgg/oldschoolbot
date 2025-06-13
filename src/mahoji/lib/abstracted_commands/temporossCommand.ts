@@ -3,6 +3,7 @@ import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -70,7 +71,8 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 		rewardBoost
 	});
 
-	return `${user.minionName} is now off to kill Tempoross ${quantity}x times, their trip will take ${formatDuration(
-		duration
+	return `${user.minionName} is now off to kill Tempoross ${quantity}x times, their trip will take ${formatDurationFromUser(
+		duration,
+		user
 	)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.`;
 }

@@ -3,7 +3,7 @@ import { Time } from 'e';
 import type { Item } from 'oldschooljs';
 import type { Skills } from '../../../lib/types';
 import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -95,8 +95,9 @@ export async function puroPuroStartCommand(
 		minigameID: 'puro_puro'
 	});
 
-	let str = `${user.minionName} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${formatDuration(
-		duration
+	let str = `${user.minionName} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${formatDurationFromUser(
+		duration,
+		user
 	)} to finish.`;
 
 	if (!userHasGracefulEquipped(user) && impToHunt.name !== 'Dragon Implings')

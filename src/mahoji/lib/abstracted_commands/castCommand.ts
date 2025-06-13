@@ -3,7 +3,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import type { CastingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -123,8 +123,9 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		((spell.xp * quantity) / (duration / Time.Minute)) * 60
 	).toLocaleString()} Magic XP/Hr`;
 
-	let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
-		duration
+	let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDurationFromUser(
+		duration,
+		user
 	)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${magicXpHr}**`;
 
 	if (spell.craftXp) {

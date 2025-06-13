@@ -8,6 +8,7 @@ import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
+import { formatDurationFromUser } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -126,6 +127,6 @@ export const craftCommand: OSBMahojiCommand = {
 
 		return `${user.minionName} is now crafting ${quantity}${sets} ${
 			craftable.name
-		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		}, it'll take around ${formatDurationFromUser(duration, user)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 };

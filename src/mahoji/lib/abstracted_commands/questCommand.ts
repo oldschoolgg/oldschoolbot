@@ -1,8 +1,8 @@
 import { Time, sumArr } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '../../../lib/minions/data/quests';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import { hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -66,8 +66,9 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 			questID: quest.id
 		});
 
-		return `${user.minionName} is now completing ${quest.name}, they'll finish in around ${formatDuration(
-			duration
+		return `${user.minionName} is now completing ${quest.name}, they'll finish in around ${formatDurationFromUser(
+			duration,
+			user
 		)}.`;
 	}
 
@@ -99,8 +100,9 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 		userID: user.id,
 		channelID: channelID.toString()
 	});
-	let response = `${user.minionName} is now completing quests, they'll come back in around ${formatDuration(
-		duration
+	let response = `${user.minionName} is now completing quests, they'll come back in around ${formatDurationFromUser(
+		duration,
+		user
 	)}.`;
 
 	if (boosts.length > 0) {

@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { CollectingOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -95,7 +95,7 @@ export async function collectCommand(
 
 	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
 		collectable.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.${
+	}, it'll take around ${formatDurationFromUser(duration, user)} to finish.${
 		cost.toString().length > 0
 			? `
 Removed ${cost} from your bank.`

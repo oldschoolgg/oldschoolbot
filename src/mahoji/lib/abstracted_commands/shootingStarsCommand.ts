@@ -10,7 +10,7 @@ import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import type { Ore } from '../../../lib/skilling/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskData, ShootingStarsOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
+import { formatDurationFromUser, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
@@ -257,7 +257,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 
 	let str = `${minionName(user)} is now mining a size ${star.size} Crashed Star with ${
 		usersWith - 1 || 'no'
-	} other players! The trip will take ${formatDuration(duration)}.`;
+	} other players! The trip will take ${formatDurationFromUser(duration, user)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

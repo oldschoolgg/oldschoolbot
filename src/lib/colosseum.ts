@@ -1,5 +1,5 @@
 import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
-import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,
@@ -15,6 +15,7 @@ import {
 } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { formatDurationFromUser } from './util';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
@@ -683,7 +684,8 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		bloodFuryCharges: res.bloodFuryCharges
 	});
 
-	return `${user.minionName} is now attempting the Colosseum. They will finish in around ${formatDuration(
-		res.fakeDuration
+	return `${user.minionName} is now attempting the Colosseum. They will finish in around ${formatDurationFromUser(
+		res.fakeDuration,
+		user
 	)}, unless they die early. ${messages.join(', ')}`;
 }

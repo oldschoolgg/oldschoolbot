@@ -1,10 +1,9 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { quests } from '../../lib/minions/data/quests';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -12,6 +11,7 @@ import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
 import { stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
+import { formatDurationFromUser } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { logError } from '../../lib/util/logError';
@@ -134,7 +134,7 @@ export const stealCommand: OSBMahojiCommand = {
 
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
+		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDurationFromUser(duration, user)} to finish.`;
 
 		if (stealable.type === 'pickpockable') {
 			const [hasArdyHard] = await userhasDiaryTier(user, ArdougneDiary.hard);

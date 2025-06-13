@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { OuraniaAltarOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, itemID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -139,8 +139,9 @@ export async function ouraniaAltarStartCommand({
 		response += ' Pure ';
 	}
 
-	response += `Essence at the Ourania Altar, it'll take around ${formatDuration(
-		duration
+	response += `Essence at the Ourania Altar, it'll take around ${formatDurationFromUser(
+		duration,
+		user
 	)} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.\n\n**Boosts:** ${boosts.join(
 		', '
 	)}`;
