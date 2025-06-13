@@ -20,11 +20,11 @@ export async function buyingTripCommand(
 	interaction: ChatInputCommandInteraction
 ) {
 	let quantityPerHour = buyable.quantityPerHour!;
-if (buyable.name === 'Coal') {
-	if (user.owns('Coal bag')) {
-		quantityPerHour *= 1.6;
+	if (buyable.name === 'Coal') {
+		if (user.owns('Coal bag')) {
+			quantityPerHour *= 1.6;
+		}
 	}
-}
 	const timePerItem = Time.Hour / quantityPerHour;
 	const osItem = getOSItem(buyable.name);
 	const gpCost = buyable.gpCost ?? 0;

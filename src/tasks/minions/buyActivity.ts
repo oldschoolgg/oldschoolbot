@@ -1,5 +1,6 @@
-import { Bank } from 'oldschooljs';
+import { Bank, toKMB } from 'oldschooljs';
 
+import { Time } from 'e';
 import Buyables from '../../lib/data/buyables/buyables';
 import type { BuyActivityTaskOptions } from '../../lib/types/minions';
 import { itemNameFromID } from '../../lib/util';
@@ -27,9 +28,9 @@ export const buyTask: MinionTask = {
 		const { totalCost } = data;
 		const average = Math.floor(totalCost / quantity);
 
-		const itemsPerHour = buyable.quantityPerHour;
+		const itemsPerHour = (quantity / (data.duration / Time.Minute)) * 60;
 		const itemName = itemNameFromID(itemID);
-		const itemNameWithRate = `${itemName} (${itemsPerHour}/hr)`;
+		const itemNameWithRate = `${itemName} (${toKMB(itemsPerHour)}/hr)`;
 
 		const loot = new Bank().add(itemID, quantity);
 		await transactItems({
@@ -43,7 +44,7 @@ export const buyTask: MinionTask = {
 		handleTripFinish(
 			user,
 			channelID,
-			`${user.minionName} finished buying ${quantity}x ${itemNameWithRate}. This cost ${totalCost.toLocaleString()} GP (avg ${average.toLocaleString()} ea).`,
+			`${user}, ${user.minionName} finished buying ${toKMB(quantity)} ${itemNameWithRate}. This cost ${toKMB(totalCost)} GP (avg ${average.toLocaleString()} GP ea).`,
 			undefined,
 			data,
 			loot
