@@ -16,10 +16,7 @@ import creatures from '../skilling/skills/hunter/creatures';
 import type { ItemBank, Skills } from '../types';
 import { logError } from './logError';
 
-export async function minionStatsEmbed(
-       user: MUser,
-       options: { showAllOtherStats?: boolean; otherOnly?: boolean } = {}
-): Promise<EmbedBuilder> {
+export async function minionStatsEmbed(user: MUser, options: { otherOnly?: boolean } = {}): Promise<EmbedBuilder> {
 	const { QP } = user;
 
 	const xp = sumArr(Object.values(user.skillsAsXP) as number[]);
@@ -57,82 +54,82 @@ export async function minionStatsEmbed(
 		.sort((a, b) => b.score - a.score);
 
 	const rawBadges = user.user.badges;
-       const badgesStr = rawBadges.map(num => badges[num]).join(' ');
+	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 
-       const otherOnly = options.otherOnly ?? false;
+	const otherOnly = options.otherOnly ?? false;
 
-       const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(0, 255));
+	const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(0, 255));
 
-       if (!otherOnly) {
-               embed.addFields(
-               {
-                       name: '\u200b',
-			value: ['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
-				.map(skillCell)
-				.join('\n'),
-			inline: true
-		},
-		{
-			name: '\u200b',
-			value: ['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
-				.map(skillCell)
-				.join('\n'),
-			inline: true
-		},
-		{
-			name: '\u200b',
-			value: ['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
-				.map(skillCell)
-				.join('\n'),
-			inline: true
+	if (!otherOnly) {
+		embed.addFields(
+			{
+				name: '\u200b',
+				value: ['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
+					.map(skillCell)
+					.join('\n'),
+				inline: true
+			},
+			{
+				name: '\u200b',
+				value: ['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
+					.map(skillCell)
+					.join('\n'),
+				inline: true
+			},
+			{
+				name: '\u200b',
+				value: ['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
+					.map(skillCell)
+					.join('\n'),
+				inline: true
+			}
+		);
+
+		if (user.isIronman) {
+			embed.setColor('#535353');
 		}
-	);
 
-	if (user.isIronman) {
-		embed.setColor('#535353');
-	}
-
-	const { percent } = calcCLDetails(user);
-	embed.addFields({
-		name: `${skillEmoji.total} Overall`,
-		value: `**Level:** ${totalLevel}
+		const { percent } = calcCLDetails(user);
+		embed.addFields({
+			name: `${skillEmoji.total} Overall`,
+			value: `**Level:** ${totalLevel}
 **XP:** ${xp.toLocaleString()}
 **QP** ${QP}
 **CL Completion:** ${percent.toFixed(1)}%`,
-		inline: true
-	});
-
-	const openableScores = getClueScoresFromOpenables(new Bank(userStats.openable_scores as ItemBank));
-	const clueEntries = openableScores.items();
-	if (clueEntries.length > 0) {
-		embed.addFields({
-			name: '<:Clue_scroll:365003979840552960> Clue Scores',
-			value: clueEntries
-				.map(([item, qty]) => {
-					const clueTier = ClueTiers.find(t => t.id === item.id);
-					if (!clueTier) {
-						logError(`No clueTier: ${item.id}`);
-						return;
-					}
-					return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
-				})
-				.join('\n'),
 			inline: true
 		});
-	}
 
-	if (minigameScores.length > 0) {
-		embed.addFields({
-			name: '<:minigameIcon:630400565070921761> Minigames',
-			value: minigameScores
-				.slice(0, 4)
-				.map(minigame => {
-					return `**${toTitleCase(minigame.minigame.name)}:** ${minigame.score.toLocaleString()}`;
-				})
-				.join('\n'),
-			inline: true
-		});
-}
+		const openableScores = getClueScoresFromOpenables(new Bank(userStats.openable_scores as ItemBank));
+		const clueEntries = openableScores.items();
+		if (clueEntries.length > 0) {
+			embed.addFields({
+				name: '<:Clue_scroll:365003979840552960> Clue Scores',
+				value: clueEntries
+					.map(([item, qty]) => {
+						const clueTier = ClueTiers.find(t => t.id === item.id);
+						if (!clueTier) {
+							logError(`No clueTier: ${item.id}`);
+							return;
+						}
+						return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
+					})
+					.join('\n'),
+				inline: true
+			});
+		}
+
+		if (minigameScores.length > 0) {
+			embed.addFields({
+				name: '<:minigameIcon:630400565070921761> Minigames',
+				value: minigameScores
+					.slice(0, 4)
+					.map(minigame => {
+						return `**${toTitleCase(minigame.minigame.name)}:** ${minigame.score.toLocaleString()}`;
+					})
+					.join('\n'),
+				inline: true
+			});
+		}
 	}
 
 	const otherStats: [string, number | string][] = [
@@ -175,17 +172,16 @@ export async function minionStatsEmbed(
 		}
 	}
 
-       const showAll = otherOnly || options.showAllOtherStats ?? false;
-       const otherStatsToShow = showAll ? otherStats : shuffleArr(otherStats).slice(0, 4);
-       embed.addFields({
-               name: 'Other',
-               value: otherStatsToShow
-                       .map(([name, text]) => {
-                               return `**${name}:** ${text}`;
-                       })
-                       .join('\n'),
-               inline: true
-       });
+	const otherStatsToShow = otherOnly ? otherStats : shuffleArr(otherStats).slice(0, 4);
+	embed.addFields({
+		name: 'Other',
+		value: otherStatsToShow
+			.map(([name, text]) => {
+				return `**${name}:** ${text}`;
+			})
+			.join('\n'),
+		inline: true
+	});
 
 	return embed;
 }
