@@ -688,27 +688,21 @@ async function riftGuardianDry(ironman: boolean): Promise<{ id: string; val: str
 	}));
 }
 
-async function skillingPetDry(item: Item, ironman: boolean) {
-	switch (item.name) {
-		case 'Baby chinchompa':
-			return babyChinchompaDry(ironman);
-		case 'Beaver':
-			return beaverDry(ironman);
-		case 'Giant squirrel':
-			return squirrelDry(ironman);
-		case 'Rift guardian':
-			return riftGuardianDry(ironman);
-		case 'Tangleroot':
-			return tanglerootDry(ironman);
-		case 'Rocky':
-			return xpDry(20663, 'skills_thieving', ironman);
-		case 'Rock golem':
-			return xpDry(13321, 'skills_mining', ironman);
-		case 'Heron':
-			return xpDry(13320, 'skills_fishing', ironman);
-		default:
-			return [];
-	}
+const skillingPetHandlers: Record<string, (ironman: boolean) => Promise<{ id: string; val: string }[]>> = {
+	'Baby chinchompa': babyChinchompaDry,
+	Beaver: beaverDry,
+	'Giant squirrel': squirrelDry,
+	'Rift guardian': riftGuardianDry,
+	Tangleroot: tanglerootDry,
+	Rocky: (iron: boolean) => xpDry(20663, 'skills_thieving', iron),
+	'Rock golem': (iron: boolean) => xpDry(13321, 'skills_mining', iron),
+	Heron: (iron: boolean) => xpDry(13320, 'skills_fishing', iron)
+};
+
+async function skillingPetDry(item: Item, ironman: boolean): Promise<{ id: string; val: string }[]> {
+	const handler = skillingPetHandlers[item.name];
+	if (!handler) return [];
+	return handler(ironman);
 }
 
 function convertOpenableToDryStreakEntity(openable: UnifiedOpenable): DrystreakEntity {
