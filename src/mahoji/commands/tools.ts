@@ -1,6 +1,7 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { ChannelType, EmbedBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
@@ -28,6 +29,7 @@ import type { MinigameName } from '../../lib/settings/minigames';
 import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
+import Farming from '../../lib/skilling/skills/farming';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
@@ -353,10 +355,127 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 ];
 
 interface DrystreakEntity {
-	name: string;
-	items: number[];
-	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<string | { id: string; val: number | string }[]>;
-	format: (num: number | string) => string;
+        name: string;
+        items: number[];
+        run: (args: { item: Item; ironmanOnly: boolean }) => Promise<string | { id: string; val: number | string }[]>;
+        format: (num: number | string) => string;
+}
+
+interface DryResult {
+       id: string;
+       val: number;
+       grey?: number;
+       red?: number;
+       black?: number;
+}
+
+async function babyChinchompaDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
+       const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+       const res = await prisma.$queryRaw<DryResult[]>(Prisma.sql`
+               SELECT users.id,
+                       COALESCE(("creature_scores"->>'7')::int,0) AS grey,
+                       COALESCE(("creature_scores"->>'8')::int,0) AS red,
+                       COALESCE(("creature_scores"->>'9')::int,0) AS black,
+                       COALESCE(("creature_scores"->>'7')::int,0)+COALESCE(("creature_scores"->>'8')::int,0)+COALESCE(("creature_scores"->>'9')::int,0) AS total
+               FROM users
+               INNER JOIN "user_stats" ON "user_stats"."user_id"::text = users.id
+               WHERE "collectionLogBank"->>'13323' IS NULL
+               ${ironSQL}
+               ORDER BY total DESC
+               LIMIT 10;
+       `);
+       return res.map(r => ({
+               id: r.id,
+               val: `${r.total.toLocaleString()} caught (${r.grey!.toLocaleString()} grey, ${r.red!.toLocaleString()} red, ${r.black!.toLocaleString()} black)`
+       }));
+}
+
+async function xpDry(itemID: number, column: string, ironman: boolean): Promise<{ id: string; val: string }[]> {
+       const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+       const res = await prisma.$queryRaw<{ id: string; val: bigint }[]>(Prisma.sql`
+               SELECT id, ${Prisma.raw(column)}::bigint AS val
+               FROM users
+               WHERE "collectionLogBank"->>'${itemID}' IS NULL
+               ${ironSQL}
+               ORDER BY ${Prisma.raw(column)}::bigint DESC
+               LIMIT 10;
+       `);
+       return res.map(r => ({ id: r.id, val: `${Number(r.val).toLocaleString()} XP` }));
+}
+
+async function squirrelDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
+       const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+       const ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+       const sum = ids.map(id => `COALESCE(("laps_scores"->>'${id}')::int,0)`).join(' + ');
+       const res = await prisma.$queryRaw<{ id: string; val: number }[]>(Prisma.sql`
+               SELECT users.id, ${Prisma.raw(sum)} AS val
+               FROM users
+               INNER JOIN "user_stats" ON "user_stats"."user_id"::text = users.id
+               WHERE "collectionLogBank"->>'20659' IS NULL
+               ${ironSQL}
+               ORDER BY val DESC
+               LIMIT 10;
+       `);
+       return res.map(r => ({ id: r.id, val: `${r.val.toLocaleString()} laps` }));
+}
+
+async function tanglerootDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
+       const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+       const rows = await prisma.$queryRaw<{ id: string; item_id: number; qty: number }[]>(Prisma.sql`
+               SELECT fc.user_id::text AS id, fc.item_id, COUNT(*)::int AS qty
+               FROM farmed_crop fc
+               JOIN users u ON u.id = fc.user_id
+               WHERE fc.date_harvested IS NOT NULL
+                       AND u."collectionLogBank"->>'20661' IS NULL
+                       ${ironSQL}
+               GROUP BY fc.user_id, fc.item_id
+       `);
+
+       const plantMap = new Map<number, string>();
+       for (const plant of Farming.Plants) {
+               plantMap.set(plant.id, plant.name);
+       }
+
+       const users: Record<string, { total: number; crops: [string, number][] }> = {};
+       for (const row of rows) {
+               const name = plantMap.get(row.item_id);
+               if (!name) continue;
+               if (!users[row.id]) users[row.id] = { total: 0, crops: [] };
+               users[row.id].crops.push([name, row.qty]);
+               users[row.id].total += row.qty;
+       }
+
+       const sorted = Object.entries(users)
+               .sort((a, b) => b[1].total - a[1].total)
+               .slice(0, 10);
+
+       return sorted.map(([id, data]) => ({
+               id,
+               val: `${data.crops.map(([name, qty]) => `${qty} ${name}`).join(', ')} (${data.total.toLocaleString()} total)`
+       }));
+}
+
+async function skillingPetDry(item: Item, ironman: boolean) {
+       switch (item.name) {
+               case 'Baby chinchompa':
+                       return babyChinchompaDry(ironman);
+               case 'Beaver':
+                       return xpDry(13322, 'skills_woodcutting', ironman);
+               case 'Giant squirrel':
+                       return squirrelDry(ironman);
+               case 'Rift guardian':
+                       return xpDry(20665, 'skills_runecraft', ironman);
+               case 'Tangleroot':
+                       return tanglerootDry(ironman);
+               case 'Rocky':
+                       return xpDry(20663, 'skills_thieving', ironman);
+               case 'Rock golem':
+                       return xpDry(13321, 'skills_mining', ironman);
+               case 'Heron':
+                       return xpDry(13320, 'skills_fishing', ironman);
+               default:
+                       return [];
+       }
 }
 
 function convertOpenableToDryStreakEntity(openable: UnifiedOpenable): DrystreakEntity {
@@ -381,8 +500,23 @@ LIMIT 10;`);
 }
 
 export const dryStreakEntities: DrystreakEntity[] = [
-	{
-		name: 'Chambers of Xeric (CoX)',
+       {
+               name: 'Skilling pets',
+               items: resolveItems([
+                       'Baby chinchompa',
+                       'Beaver',
+                       'Giant squirrel',
+                       'Rift guardian',
+                       'Tangleroot',
+                       'Rocky',
+                       'Rock golem',
+                       'Heron'
+               ]),
+               run: async ({ item, ironmanOnly }) => skillingPetDry(item, ironmanOnly),
+               format: val => String(val)
+       },
+       {
+               name: 'Chambers of Xeric (CoX)',
 		items: resolveItems([
 			'Dexterous prayer scroll',
 			'Arcane prayer scroll',
