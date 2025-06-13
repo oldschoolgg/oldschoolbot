@@ -4299,7 +4299,7 @@ exports[`OSB Buyables 1`] = `
       "565": 1,
     },
     "quantityPerHour": 100000,
-    "shopQuantity": 1000,
+    "shopQuantity": 250,
   },
   {
     "changePer": 0.1,
@@ -4310,7 +4310,7 @@ exports[`OSB Buyables 1`] = `
       "563": 1,
     },
     "quantityPerHour": 100000,
-    "shopQuantity": 1000,
+    "shopQuantity": 250,
   },
   {
     "changePer": 0.1,
@@ -4321,7 +4321,7 @@ exports[`OSB Buyables 1`] = `
       "566": 1,
     },
     "quantityPerHour": 100000,
-    "shopQuantity": 1000,
+    "shopQuantity": 250,
   },
   {
     "changePer": 0.1,
@@ -4332,7 +4332,7 @@ exports[`OSB Buyables 1`] = `
       "9075": 1,
     },
     "quantityPerHour": 100000,
-    "shopQuantity": 1000,
+    "shopQuantity": 250,
   },
   {
     "changePer": 0.1,
@@ -4343,7 +4343,7 @@ exports[`OSB Buyables 1`] = `
       "560": 1,
     },
     "quantityPerHour": 100000,
-    "shopQuantity": 1000,
+    "shopQuantity": 250,
   },
   {
     "changePer": 0.1,
@@ -4354,7 +4354,7 @@ exports[`OSB Buyables 1`] = `
       "561": 1,
     },
     "quantityPerHour": 100000,
-    "shopQuantity": 1000,
+    "shopQuantity": 250,
   },
   {
     "changePer": 0.1,
@@ -4365,7 +4365,18 @@ exports[`OSB Buyables 1`] = `
       "562": 1,
     },
     "quantityPerHour": 100000,
-    "shopQuantity": 1000,
+    "shopQuantity": 250,
+  },
+  {
+    "changePer": 0.1,
+    "gpCost": 9950,
+    "itemCost": {},
+    "name": "Chaos rune (pack)",
+    "outputItems": {
+      "562": 100,
+    },
+    "quantityPerHour": 10000,
+    "shopQuantity": 35,
   },
   {
     "gpCost": 1320,
