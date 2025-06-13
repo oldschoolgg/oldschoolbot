@@ -58,7 +58,7 @@ export const tripBuyables: Buyable[] = [
 		outputItems: new Bank().add('Blood rune'),
 		gpCost: 400,
 		quantityPerHour: 100_000,
-		shopQuantity: 1000,
+		shopQuantity: 250,
 		changePer: 0.1
 	},
 	{
@@ -66,7 +66,7 @@ export const tripBuyables: Buyable[] = [
 		outputItems: new Bank().add('Law rune'),
 		gpCost: 240,
 		quantityPerHour: 100_000,
-		shopQuantity: 1000,
+		shopQuantity: 250,
 		changePer: 0.1
 	},
 	{
@@ -74,7 +74,7 @@ export const tripBuyables: Buyable[] = [
 		outputItems: new Bank().add('Soul rune'),
 		gpCost: 300,
 		quantityPerHour: 100_000,
-		shopQuantity: 1000,
+		shopQuantity: 250,
 		changePer: 0.1
 	},
 	{
@@ -82,7 +82,7 @@ export const tripBuyables: Buyable[] = [
 		outputItems: new Bank().add('Astral rune'),
 		gpCost: 50,
 		quantityPerHour: 100_000,
-		shopQuantity: 1000,
+		shopQuantity: 250,
 		changePer: 0.1
 	},
 	{
@@ -90,7 +90,7 @@ export const tripBuyables: Buyable[] = [
 		outputItems: new Bank().add('Death rune'),
 		gpCost: 180,
 		quantityPerHour: 100_000,
-		shopQuantity: 1000,
+		shopQuantity: 250,
 		changePer: 0.1
 	},
 	{
@@ -98,7 +98,7 @@ export const tripBuyables: Buyable[] = [
 		outputItems: new Bank().add('Nature rune'),
 		gpCost: 180,
 		quantityPerHour: 100_000,
-		shopQuantity: 1000,
+		shopQuantity: 250,
 		changePer: 0.1
 	},
 	{
@@ -106,7 +106,15 @@ export const tripBuyables: Buyable[] = [
 		outputItems: new Bank().add('Chaos rune'),
 		gpCost: 90,
 		quantityPerHour: 100_000,
-		shopQuantity: 1000,
+		shopQuantity: 250,
+		changePer: 0.1
+	},
+	{
+		name: 'Chaos rune (pack)',
+		outputItems: new Bank().add('Chaos rune', 100),
+		gpCost: 9950,
+		quantityPerHour: 10_000,
+		shopQuantity: 35,
 		changePer: 0.1
 	}
 ];

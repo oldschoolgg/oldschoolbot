@@ -86,10 +86,6 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (quantity === null && buyable.quantityPerHour === undefined) {
-			quantity = 1;
-		}
-
 		if (quantity !== null && buyable.maxQuantity) {
 			quantity = quantity > buyable.maxQuantity ? buyable.maxQuantity : quantity;
 		}
