@@ -258,17 +258,14 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 		default: 1_795_758
 	};
 
-	const runeTotalsPerUser: Record<
-		string,
-		{ bloodRunecraft: number; bloodDarkAltar: number; soul: number; ourania: number; other: number }
-	> = {};
+	const runeTotalsPerUser: Record<string, { bloodDarkAltar: number; soul: number; ourania: number; other: number }> =
+		{};
 
 	for (const row of allLootTracks) {
 		if (!row.user_id || !row.loot) continue;
 		const userID = row.user_id.toString();
 		if (!runeTotalsPerUser[userID]) {
 			runeTotalsPerUser[userID] = {
-				bloodRunecraft: 0, // still track it internally
 				bloodDarkAltar: 0,
 				soul: 0,
 				ourania: 0,
@@ -303,7 +300,6 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 
 		const level = u.runecraft;
 		const expected =
-			totals.bloodRunecraft / (altarChances.default - level * 25) +
 			totals.bloodDarkAltar / (altarChances.blood - level * 25) +
 			totals.soul / (altarChances.soul - level * 25) +
 			totals.ourania / (altarChances.ourania - level * 25) +
@@ -321,7 +317,7 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 		results.push({
 			id: u.id,
 			expected,
-			total: totals.bloodDarkAltar + totals.soul + totals.ourania + totals.other + totals.bloodRunecraft,
+			total: totals.bloodDarkAltar + totals.soul + totals.ourania + totals.other,
 			top: breakdown[0]
 		});
 	}
