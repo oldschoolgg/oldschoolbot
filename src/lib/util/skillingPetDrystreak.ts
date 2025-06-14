@@ -356,7 +356,7 @@ export async function rockyDry(ironman: boolean): Promise<{ id: string; val: str
 
 	for (const row of allLootTracks) {
 		if (!row.user_id || !row.loot || !row.key) continue;
-		if (typeof row.loot !== 'object' || row.loot === null || Array.isArray(row.loot)) continue;
+		if (typeof row.loot !== 'object' || Array.isArray(row.loot)) continue;
 
 		const userID = row.user_id.toString();
 		if (!userTotals[userID]) {
@@ -456,7 +456,7 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 
 	for (const row of allLootTracks) {
 		if (!row.user_id || !row.loot || !row.key) continue;
-		if (typeof row.loot !== 'object' || row.loot === null || Array.isArray(row.loot)) continue;
+		if (typeof row.loot !== 'object' || Array.isArray(row.loot)) continue;
 
 		const userID = row.user_id.toString();
 		const lootBank = new Bank(row.loot as ItemBank);
