@@ -51,6 +51,7 @@ function itemShouldntBeAdded(item: any) {
 		(CLUE_SCROLL_NAMES.includes(item.name) && !CLUE_SCROLLS.includes(item.id)) ||
 		USELESS_ITEMS.includes(item.id) ||
 		Object.keys(itemChanges).includes(item.id) ||
+		itemsToDuplicate.some(i => i.id === item.id) ||
 		item.duplicate === true ||
 		item.noted ||
 		item.linked_id_item ||
@@ -374,7 +375,7 @@ export default async function prepareItems(): Promise<void> {
 		}
 
 		let dontChange = false;
-		if (previousItem && item.tradeable) {
+		if (previousItem && item.tradeable && previousItem.price) {
 			// If major price increase, just dont fucking change it.
 			if (previousItem.price < item.price / 20 && previousItem.price !== 0) dontChange = true;
 			// Prevent weird bug with expensive items: (An item with 2b val on GE had high = 1 & low = 100k)
@@ -397,17 +398,17 @@ export default async function prepareItems(): Promise<void> {
 
 		// Dont change price if its only a <10% difference and price is less than 100k
 		if (
-			previousItem &&
-			item.price > reduceNumByPercent(previousItem?.price, 10) &&
-			item.price < increaseNumByPercent(previousItem?.price, 10) &&
+			previousItem?.price &&
+			item.price > reduceNumByPercent(previousItem.price, 10) &&
+			item.price < increaseNumByPercent(previousItem.price, 10) &&
 			item.price < 100_000
 		) {
 			item.price = previousItem.price;
 		} else if (
 			// Ignore <3% changes in any way
-			previousItem &&
-			item.price > reduceNumByPercent(previousItem?.price, 3) &&
-			item.price < increaseNumByPercent(previousItem?.price, 3)
+			previousItem?.price &&
+			item.price > reduceNumByPercent(previousItem.price, 3) &&
+			item.price < increaseNumByPercent(previousItem.price, 3)
 		) {
 			item.price = previousItem.price;
 		}
@@ -485,10 +486,9 @@ export default async function prepareItems(): Promise<void> {
 	newItemJSON[0] = undefined;
 
 	for (const item of itemsToDuplicate) {
-		// DT2 Rings have been moved to OSB IDs, create a second copy of them to preserve old item_data
 		const itemToDuplicate = newItemJSON[item.idToDuplicate];
 		if (!itemToDuplicate) continue;
-		newItemJSON[item.id] = itemToDuplicate;
+		newItemJSON[item.id] = deepClone(itemToDuplicate);
 		newItemJSON[item.id]!.id = item.id;
 	}
 

@@ -77,7 +77,7 @@ export interface IBgSprite {
 	oddListColor: string;
 }
 
-// use correct IDs when generarting DT2 rings
+// use correct IDs when generating DT2 rings
 export const manualSpriteIDs = [
 	[EItem.ULTOR_RING, 28_307],
 	[EItem.MAGUS_RING, 28_313],
