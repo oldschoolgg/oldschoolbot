@@ -43,6 +43,16 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import {
+	babyChinchompaDry,
+	beaverDry,
+	heronDry,
+	riftGuardianDry,
+	rockGolemDry,
+	rockyDry,
+	squirrelDry,
+	tanglerootDry
+} from '../../lib/util/skillingPetDrystreak';
+import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
@@ -359,6 +369,23 @@ interface DrystreakEntity {
 	format: (num: number | string) => string;
 }
 
+const skillingPetHandlers: Record<string, (ironman: boolean) => Promise<{ id: string; val: string }[]>> = {
+	'Baby chinchompa': babyChinchompaDry,
+	Beaver: beaverDry,
+	'Giant squirrel': squirrelDry,
+	'Rift guardian': riftGuardianDry,
+	Tangleroot: tanglerootDry,
+	Rocky: rockyDry,
+	'Rock golem': rockGolemDry,
+	Heron: heronDry
+};
+
+async function skillingPetDry(item: Item, ironman: boolean): Promise<{ id: string; val: string }[]> {
+	const handler = skillingPetHandlers[item.name];
+	if (!handler) return [];
+	return handler(ironman);
+}
+
 function convertOpenableToDryStreakEntity(openable: UnifiedOpenable): DrystreakEntity {
 	return {
 		name: openable.name,
@@ -381,6 +408,21 @@ LIMIT 10;`);
 }
 
 export const dryStreakEntities: DrystreakEntity[] = [
+	{
+		name: 'Skilling pets',
+		items: resolveItems([
+			'Baby chinchompa',
+			'Beaver',
+			'Giant squirrel',
+			'Rift guardian',
+			'Tangleroot',
+			'Rocky',
+			'Rock golem',
+			'Heron'
+		]),
+		run: async ({ item, ironmanOnly }) => skillingPetDry(item, ironmanOnly),
+		format: val => String(val)
+	},
 	{
 		name: 'Chambers of Xeric (CoX)',
 		items: resolveItems([

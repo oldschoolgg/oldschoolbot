@@ -3,7 +3,7 @@ import itemID from '../../util/itemID';
 import type { Fish } from '../types';
 import { SkillsEnum } from '../types';
 
-const fishes: Fish[] = [
+export const fishes: Fish[] = [
 	{
 		level: 1,
 		xp: 10,
@@ -238,7 +238,7 @@ const fishes: Fish[] = [
 ];
 
 // Types of fish in camdozaal
-const camdozaalFishes: Fish[] = [
+export const camdozaalFishes: Fish[] = [
 	{
 		level: 7,
 		xp: 8,

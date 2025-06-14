@@ -22,7 +22,7 @@ const SandstoneRockTable = new LootTable()
 	.add('Sandstone (5kg)')
 	.add('Sandstone (10kg)');
 
-const ores: Ore[] = [
+export const ores: Ore[] = [
 	{
 		level: 1,
 		xp: 5,
@@ -273,7 +273,7 @@ const ores: Ore[] = [
 ];
 
 // Uses determineMiningTime function, therefore Ore object and id -1
-const MotherlodeMine: Ore = {
+export const MotherlodeMine: Ore = {
 	level: 30,
 	xp: 60,
 	id: -1,
@@ -287,7 +287,7 @@ const MotherlodeMine: Ore = {
 };
 
 // Uses determineMiningTime function, therefore Ore object and id -1
-const CamdozaalMine: Ore = {
+export const CamdozaalMine: Ore = {
 	level: 14,
 	xp: 16,
 	id: -1,
