@@ -45,11 +45,12 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import {
 	babyChinchompaDry,
 	beaverDry,
+	heronDry,
 	riftGuardianDry,
+	rockGolemDry,
 	rockyDry,
 	squirrelDry,
-	tanglerootDry,
-	xpDry
+	tanglerootDry
 } from '../../lib/util/skillingPetDrystreak';
 import {
 	getParsedStashUnits,
@@ -375,8 +376,8 @@ const skillingPetHandlers: Record<string, (ironman: boolean) => Promise<{ id: st
 	'Rift guardian': riftGuardianDry,
 	Tangleroot: tanglerootDry,
 	Rocky: rockyDry,
-	'Rock golem': (iron: boolean) => xpDry(13321, 'skills_mining', iron),
-	Heron: (iron: boolean) => xpDry(13320, 'skills_fishing', iron)
+	'Rock golem': rockGolemDry,
+	Heron: heronDry
 };
 
 async function skillingPetDry(item: Item, ironman: boolean): Promise<{ id: string; val: string }[]> {

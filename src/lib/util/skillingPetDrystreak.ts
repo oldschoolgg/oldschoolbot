@@ -1,25 +1,15 @@
 import { Prisma } from '@prisma/client';
+import { starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { plunderRooms } from '../minions/data/plunder';
 import { courses } from '../skilling/skills/agility';
 import Farming from '../skilling/skills/farming';
+import Fishing from '../skilling/skills/fishing';
+import { CamdozaalMine, MotherlodeMine, ores } from '../skilling/skills/mining';
 import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
 import type { Plant } from '../skilling/types';
 import { Bank, type ItemBank } from '../util';
 import itemID from './itemID';
-
-export async function xpDry(itemID: number, column: string, ironman: boolean): Promise<{ id: string; val: string }[]> {
-	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
-	const res = await prisma.$queryRaw<{ id: string; val: bigint }[]>(Prisma.sql`
-               SELECT id, ${Prisma.raw(column)}::bigint AS val
-               FROM users
-               WHERE "collectionLogBank"->>'${itemID}' IS NULL
-               ${ironSQL}
-               ORDER BY ${Prisma.raw(column)}::bigint DESC
-               LIMIT 10;
-       `);
-	return res.map(r => ({ id: r.id, val: `${Number(r.val).toLocaleString()} XP` }));
-}
 
 export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
@@ -418,5 +408,199 @@ export async function rockyDry(ironman: boolean): Promise<{ id: string; val: str
 		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(
 			2
 		)}x expected)`
+	}));
+}
+
+export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
+	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+
+	const users = await prisma.$queryRaw<{ id: string; mining: number }[]>(Prisma.sql`
+		SELECT u.id::text, s.skills_mining AS mining
+		FROM users u
+		JOIN user_stats s ON s.user_id::text = u.id
+		WHERE u."collectionLogBank"->>'13321' IS NULL
+		${ironSQL}
+	`);
+
+	const allLootTracks = await prisma.lootTrack.findMany({
+		where: {
+			type: 'Skilling',
+			user_id: { in: users.map(u => BigInt(u.id)) }
+		}
+	});
+
+	const rockGolemSources = new Map<string, { base: number; level: number }>();
+
+	// Populate sources from generic ores
+	for (const ore of ores) {
+		if (!ore.petChance) continue;
+		rockGolemSources.set(ore.name.toLowerCase(), { base: ore.petChance, level: ore.level });
+	}
+
+	// Include motherlode, camdozaal
+	rockGolemSources.set(MotherlodeMine.name.toLowerCase(), {
+		base: MotherlodeMine.petChance!,
+		level: MotherlodeMine.level
+	});
+	rockGolemSources.set(CamdozaalMine.name.toLowerCase(), {
+		base: CamdozaalMine.petChance!,
+		level: CamdozaalMine.level
+	});
+
+	// Include shooting stars by name
+	for (const star of starSizes) {
+		rockGolemSources.set(star.name.toLowerCase(), { base: star.petChance!, level: star.level });
+	}
+
+	const userData: Record<string, { total: number; expected: number; sources: [string, number, number][] }> = {};
+
+	for (const row of allLootTracks) {
+		if (!row.user_id || !row.loot || !row.key) continue;
+		if (typeof row.loot !== 'object' || row.loot === null || Array.isArray(row.loot)) continue;
+
+		const userID = row.user_id.toString();
+		const lootBank = new Bank(row.loot as ItemBank);
+		const rockyQty = lootBank.amount('Rock golem');
+		if (rockyQty === 0) continue;
+
+		const sourceKey = row.key.toLowerCase();
+		const source = rockGolemSources.get(sourceKey);
+		if (!source) continue;
+
+		const user = users.find(u => u.id === userID);
+		if (!user) continue;
+
+		const expectedRolls = rockyQty * (1 / (source.base - user.mining * 25));
+
+		if (!userData[userID]) {
+			userData[userID] = { total: 0, expected: 0, sources: [] };
+		}
+
+		userData[userID].total += rockyQty;
+		userData[userID].expected += expectedRolls;
+		userData[userID].sources.push([row.key, rockyQty, expectedRolls]);
+	}
+
+	const sorted = Object.entries(userData)
+		.map(([id, data]) => {
+			const top = data.sources.sort((a, b) => b[1] - a[1])[0];
+			return {
+				id,
+				total: data.total,
+				expected: data.expected,
+				top
+			};
+		})
+		.sort((a, b) => b.expected - a.expected)
+		.slice(0, 10);
+
+	return sorted.map(r => ({
+		id: r.id,
+		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
+	}));
+}
+
+export async function heronDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
+	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+
+	const users: Record<string, { total: number; expected: number; fish: [string, number, number][] }> = {};
+
+	const allFish = [...Fishing.Fishes, ...Fishing.camdozaalFishes].filter(f => f.petChance !== undefined);
+
+	const fishingKeys = allFish.map(f => f.name.toLowerCase());
+
+	const lootTrackRes = await prisma.lootTrack.findMany({
+		where: {
+			type: 'Skilling',
+			key: { in: fishingKeys }
+		}
+	});
+
+	const fishingUsers = await prisma.$queryRaw<{ id: string; fishing: number }[]>(Prisma.sql`
+		SELECT u.id::text, s.skills_fishing AS fishing
+		FROM users u
+		JOIN user_stats s ON s.user_id::text = u.id
+		WHERE u."collectionLogBank"->>'13320' IS NULL
+		${ironSQL}
+	`);
+
+	const levelMap = new Map(fishingUsers.map(u => [u.id, u.fishing]));
+
+	for (const row of lootTrackRes) {
+		if (!row.user_id || !row.loot || !row.key) continue;
+		const id = row.user_id.toString();
+		const level = levelMap.get(id);
+		if (!level) continue;
+
+		const fish = allFish.find(f => f.name.toLowerCase() === row.key.toLowerCase());
+		if (!fish || !fish.petChance) continue;
+
+		const qty = new Bank(row.loot as ItemBank).amount(fish.id);
+		if (qty === 0) continue;
+
+		const expected = qty / (fish.petChance - level * 25);
+
+		if (!users[id]) users[id] = { total: 0, expected: 0, fish: [] };
+		users[id].total += qty;
+		users[id].expected += expected;
+		users[id].fish.push([fish.name, qty, expected]);
+	}
+
+	const aerialPetChance = 636_833;
+	const aerialCreatures = [
+		['Bluegill', 37],
+		['Common tench', 38],
+		['Mottled eel', 39],
+		['Greater siren', 40]
+	] as const;
+
+	type AerialResult = Record<string, number> & { id: string };
+
+	const aerialRes = await prisma.$queryRaw<AerialResult[]>(
+		Prisma.sql`
+			SELECT u.id::text,
+				${Prisma.raw(
+					aerialCreatures
+						.map(([_, id]) => `COALESCE(("creature_scores"->>'${id}')::int, 0) AS creature_${id}`)
+						.join(', ')
+				)}
+			FROM users u
+			WHERE u."collectionLogBank"->>'13320' IS NULL
+			${ironSQL}
+		`
+	);
+
+	for (const row of aerialRes) {
+		let total = 0;
+		for (const [_, id] of aerialCreatures) {
+			total += Number(row[`creature_${id}`] ?? 0);
+		}
+		if (total === 0) continue;
+
+		if (!users[row.id]) {
+			users[row.id] = { total: 0, expected: 0, fish: [] };
+		}
+		const expected = total / aerialPetChance;
+		users[row.id].total += total;
+		users[row.id].expected += expected;
+		users[row.id].fish.push(['Aerial fishing', total, expected]);
+	}
+
+	const sorted = Object.entries(users)
+		.map(([id, data]) => {
+			const top = data.fish.sort((a, b) => b[1] - a[1])[0];
+			return {
+				id,
+				total: data.total,
+				expected: data.expected,
+				top
+			};
+		})
+		.sort((a, b) => b.expected - a.expected)
+		.slice(0, 10);
+
+	return sorted.map(r => ({
+		id: r.id,
+		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
 	}));
 }
