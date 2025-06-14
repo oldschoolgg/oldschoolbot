@@ -46,6 +46,7 @@ import {
 	babyChinchompaDry,
 	beaverDry,
 	riftGuardianDry,
+	rockyDry,
 	squirrelDry,
 	tanglerootDry,
 	xpDry
@@ -373,7 +374,7 @@ const skillingPetHandlers: Record<string, (ironman: boolean) => Promise<{ id: st
 	'Giant squirrel': squirrelDry,
 	'Rift guardian': riftGuardianDry,
 	Tangleroot: tanglerootDry,
-	Rocky: (iron: boolean) => xpDry(20663, 'skills_thieving', iron),
+	Rocky: rockyDry,
 	'Rock golem': (iron: boolean) => xpDry(13321, 'skills_mining', iron),
 	Heron: (iron: boolean) => xpDry(13320, 'skills_fishing', iron)
 };

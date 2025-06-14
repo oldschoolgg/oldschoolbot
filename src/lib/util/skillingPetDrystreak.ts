@@ -1,6 +1,8 @@
 import { Prisma } from '@prisma/client';
+import { plunderRooms } from '../minions/data/plunder';
 import { courses } from '../skilling/skills/agility';
 import Farming from '../skilling/skills/farming';
+import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
 import type { Plant } from '../skilling/types';
 import { Bank, type ItemBank } from '../util';
@@ -266,20 +268,33 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 		default: 1_795_758
 	};
 
-	const runeTotalsPerUser: Record<string, { blood: number; soul: number; ourania: number; other: number }> = {};
+	const runeTotalsPerUser: Record<
+		string,
+		{ bloodRunecraft: number; bloodDarkAltar: number; soul: number; ourania: number; other: number }
+	> = {};
 
 	for (const row of allLootTracks) {
 		if (!row.user_id || !row.loot) continue;
 		const userID = row.user_id.toString();
 		if (!runeTotalsPerUser[userID]) {
-			runeTotalsPerUser[userID] = { blood: 0, soul: 0, ourania: 0, other: 0 };
+			runeTotalsPerUser[userID] = {
+				bloodRunecraft: 0, // still track it internally
+				bloodDarkAltar: 0,
+				soul: 0,
+				ourania: 0,
+				other: 0
+			};
 		}
 
 		const lootBank = new Bank(row.loot as ItemBank);
 		for (const [item, qty] of lootBank.items()) {
 			const id = typeof item === 'number' ? item : item.id;
 			if (id === bloodRuneID) {
-				runeTotalsPerUser[userID].blood += qty;
+				if (row.key === 'darkaltar') {
+					runeTotalsPerUser[userID].bloodDarkAltar += qty;
+				} else {
+					runeTotalsPerUser[userID].other += qty;
+				}
 			} else if (id === soulRuneID) {
 				runeTotalsPerUser[userID].soul += qty;
 			} else if (row.key === 'ourania_altar') {
@@ -290,7 +305,6 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 		}
 	}
 
-	// Build result set with expected pet rolls
 	const results: { id: string; expected: number; total: number; top: [string, number] }[] = [];
 
 	for (const u of users) {
@@ -299,14 +313,15 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 
 		const level = u.runecraft;
 		const expected =
-			totals.blood / (altarChances.blood - level * 25) +
+			totals.bloodRunecraft / (altarChances.default - level * 25) +
+			totals.bloodDarkAltar / (altarChances.blood - level * 25) +
 			totals.soul / (altarChances.soul - level * 25) +
 			totals.ourania / (altarChances.ourania - level * 25) +
 			totals.other / (altarChances.default - level * 25);
 
 		const breakdown = (
 			[
-				['Blood runes', totals.blood],
+				['Blood runes (Zeah)', totals.bloodDarkAltar],
 				['Soul runes', totals.soul],
 				['Ourania runes', totals.ourania],
 				['Other runes', totals.other]
@@ -316,16 +331,92 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 		results.push({
 			id: u.id,
 			expected,
-			total: totals.blood + totals.soul + totals.ourania + totals.other,
+			total: totals.bloodDarkAltar + totals.soul + totals.ourania + totals.other + totals.bloodRunecraft,
 			top: breakdown[0]
 		});
 	}
 
-	// Sort driest first
 	const sorted = results.sort((a, b) => b.expected - a.expected).slice(0, 10);
 
 	return sorted.map(r => ({
 		id: r.id,
 		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
+	}));
+}
+
+export async function rockyDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
+	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+
+	const users = await prisma.$queryRaw<{ id: string; thieving: number }[]>(Prisma.sql`
+		SELECT u.id::text, s.skills_thieving
+		FROM users u
+		JOIN user_stats s ON s.user_id::text = u.id
+		WHERE u."collectionLogBank"->>'20663' IS NULL
+		${ironSQL}
+	`);
+
+	const allLootTracks = await prisma.lootTrack.findMany({
+		where: {
+			type: 'Skilling',
+			user_id: { in: users.map(u => BigInt(u.id)) }
+		}
+	});
+
+	const userTotals: Record<string, { pickpocket: number; stall: number; plunder: number }> = {};
+
+	for (const row of allLootTracks) {
+		if (!row.user_id || !row.loot || !row.key) continue;
+		if (typeof row.loot !== 'object' || row.loot === null || Array.isArray(row.loot)) continue;
+
+		const userID = row.user_id.toString();
+		if (!userTotals[userID]) {
+			userTotals[userID] = { pickpocket: 0, stall: 0, plunder: 0 };
+		}
+
+		const lootBank = new Bank(row.loot as ItemBank);
+
+		if (row.key.startsWith('Pyramid Plunder (Room')) {
+			const roomNumber = Number.parseInt(row.key.match(/Room (\d)/)?.[1] ?? '0');
+			const room = plunderRooms.find(r => r.number === roomNumber);
+			if (!room) continue;
+			userTotals[userID].plunder += lootBank.amount('Rocky') * room.rockyChance;
+		} else {
+			const stealable = stealables.find(s => s.name.toLowerCase() === row.key.toLowerCase());
+			if (!stealable) continue;
+			if (stealable.type === 'stall') {
+				userTotals[userID].stall += lootBank.amount('Rocky') * stealable.petChance;
+			} else {
+				userTotals[userID].pickpocket += lootBank.amount('Rocky') * stealable.petChance;
+			}
+		}
+	}
+
+	const results = users.map(u => {
+		const totals = userTotals[u.id] ?? { pickpocket: 0, stall: 0, plunder: 0 };
+		const expected = totals.pickpocket + totals.stall + totals.plunder;
+
+		const breakdown = [
+			['Pickpocket', totals.pickpocket],
+			['Stall', totals.stall],
+			['Plunder', totals.plunder]
+		] as [string, number][];
+
+		breakdown.sort((a, b) => b[1] - a[1]);
+
+		return {
+			id: u.id,
+			expected,
+			total: totals.pickpocket + totals.stall + totals.plunder,
+			top: breakdown[0]
+		};
+	});
+
+	const sorted = results.sort((a, b) => b.expected - a.expected).slice(0, 10);
+
+	return sorted.map(r => ({
+		id: r.id,
+		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(
+			2
+		)}x expected)`
 	}));
 }
