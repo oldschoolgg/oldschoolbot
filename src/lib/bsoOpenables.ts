@@ -63,7 +63,7 @@ for (const pet of allPetsCL) {
 	PMBTable.add(pet);
 }
 
-const ironmanDCPetsTable = new LootTable()
+const IronmanDCPetsTable = new LootTable()
 	.add('Hoppy')
 	.add('Craig')
 	.add('Smokey')
@@ -72,7 +72,7 @@ const ironmanDCPetsTable = new LootTable()
 	.add('Gregoyle')
 	.add('Kuro');
 
-export const IronmanPMBTable = new LootTable().oneIn(10, ironmanDCPetsTable).add(PMBTable);
+export const IronmanPMBTable = new LootTable().oneIn(10, IronmanDCPetsTable).add(PMBTable);
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
