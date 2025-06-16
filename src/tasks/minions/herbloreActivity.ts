@@ -87,12 +87,11 @@ export const herbloreTask: MinionTask = {
 		const hasGoggles = user.gear.skilling.hasEquipped('Prescription goggles');
 		if (hasGoggles) {
 			for (let i = 0; i < quantity; i++) {
-				for (const [id, qty] of mixableItem.inputItems.items()) {
-					const item = getOSItem(id);
+				for (const [item, qty] of mixableItem.inputItems.items()) {
 					if (!isSecondary(item, mixableItem.item.name)) continue;
 					for (let q = 0; q < qty; q++) {
 						if (percentChance(10)) {
-							savedItems.add(id, 1);
+							savedItems.add(item, 1);
 						}
 					}
 				}
