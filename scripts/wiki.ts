@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { Markdown, Tab, Tabs, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import '../src/lib/safeglobals';
@@ -13,8 +13,7 @@ import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
 import { itemNameFromID } from '../src/lib/util';
 import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
-import { Markdown, Tab, Tabs } from './markdown/markdown';
-import { miningSnapshots } from './wiki/miningSnapshots.ts';
+import { miningSnapshots } from './wiki/miningSnapshots.js';
 import { updateAuthors } from './wiki/updateAuthors';
 
 export function handleMarkdownEmbed(identifier: string, filePath: string, contentToInject: string) {
@@ -327,7 +326,7 @@ function rendeCoxMarkdown() {
 		markdown.addLine(
 			`- ${boostSet
 				.map(boost => {
-					const messages = [];
+					const messages: string[] = [];
 					if (!boost.mustBeEquipped) {
 						messages.push('Works from bank');
 					}

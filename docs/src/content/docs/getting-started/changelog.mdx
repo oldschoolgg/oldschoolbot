@@ -8,10 +8,134 @@ tableOfContents: false
 import Update from "../../../components/Update.astro";
 
 <Update
+	date="12/6/2025"
+	firstHash="92b3b66d8af3fda390fbdf875fdf17dd62ecaef6"
+	secondHash="4b92aa950106849dfc02fbe25609d9fa67dcf098"
+	isNew
+/>
+
+## Highlights
+
+- **Collection Log Ranks**: You can now claim the  books and staves using [[/claim]], the requirements are the same as ingame, claiming it will give you both the staff and book, and you can claim a second set of each tier. 
+- Usernames are now better stored/updated, so they don't appear as 'Unknown' in leaderboards.
+- Made giveaways much more optimized, to prevent lag in big giveaways.
+- [[TastyPumPum#small]] has added fletching at Sepulchre, and 1.5tick Daeyalt essence powermining!
+- [[DayV-git#small]] has fixed many bugs, and made many QOL changes
+
+### [[gc]]
+
+- A wide variety of wiki updates/fixes, 'engine' changes, fixes and cleanup
+- [Added CL rank items to /claim](https://github.com/oldschoolgg/oldschoolbot/commit/4b92aa950)
+- [Removed duplicate CL items](https://github.com/oldschoolgg/oldschoolbot/commit/999022610)
+- [Fake-duration rounding down](https://github.com/oldschoolgg/oldschoolbot/commit/810cb6a58)
+- [Fixed an Agility bug](https://github.com/oldschoolgg/oldschoolbot/commit/eefa88646)
+- [Scar essence mine added](https://github.com/oldschoolgg/oldschoolbot/commit/babf6d189)
+- [Gemrocks buff](https://github.com/oldschoolgg/oldschoolbot/commit/290968c2e)
+- [Added [[Zombie helmet]] (normal/broken) items](https://github.com/oldschoolgg/oldschoolbot/commit/3e3ea22b1)
+- [Updated item database to prepare for new osrs content](https://github.com/oldschoolgg/oldschoolbot/commit/f21efa21f)
+
+### [[TastyPumPum]]
+
+- [Fix BSO help/support & bot-log channel IDs](https://github.com/oldschoolgg/oldschoolbot/commit/22a125a76)
+- [Bank names added for Huasca items](https://github.com/oldschoolgg/oldschoolbot/commit/082609729)
+- [Changed ToB Hard-Mode CA completion rate from 1/55 to 1/5](https://github.com/oldschoolgg/oldschoolbot/commit/a80f4114e)
+- [Fixed CTC unicorn step](https://github.com/oldschoolgg/oldschoolbot/commit/28ed5ab46)
+- [Drystreak command now tracks every openable & casket](https://github.com/oldschoolgg/oldschoolbot/commit/0574faa7c)
+- [Master-clue creation no longer blocked by existing clue](https://github.com/oldschoolgg/oldschoolbot/commit/92303a93b)
+- [`open_until` uses max-drop limit constant + returns `result_quantity`](https://github.com/oldschoolgg/oldschoolbot/commit/19e11e851)
+- [/clue rejects quantity 0 and reminds 100-stack cap](https://github.com/oldschoolgg/oldschoolbot/commit/71b49bd77)
+- [Sepulchre allows dart/arrow/bolt Fletching](https://github.com/oldschoolgg/oldschoolbot/commit/4ef2ab6b2)
+- [Igne boss wiki page restored (was overwritten by tame page)](https://github.com/oldschoolgg/oldschoolbot/commit/80d7346b0)
+- [Daeyalt powermine: 1.5-tick mode + adjusted non-powermine XP](https://github.com/oldschoolgg/oldschoolbot/commit/6a4bb5976)
+
+### [[DayV-git]]
+
+- [You can now cannon Warped creatures](https://github.com/oldschoolgg/oldschoolbot/commit/03ce71484)
+- [Powermining now shows tertiary loot (clues, minerals, etc.)](https://github.com/oldschoolgg/oldschoolbot/commit/83c8ea374)
+- [Message formatting improvements → smarter "X, Y or Z" lists](https://github.com/oldschoolgg/oldschoolbot/commit/6994eeeea)
+- [Stop auto-repeating kills once the Slayer task is finished](https://github.com/oldschoolgg/oldschoolbot/commit/1cc856e76)
+- [Nex rework: VIP weighting, solo KC in loot, unique roll per player, bug fixes](https://github.com/oldschoolgg/oldschoolbot/commit/6a3dceda8)
+- [2024 content tweaks: Bandits, Fever spiders, revenant scrolls, etc.](https://github.com/oldschoolgg/oldschoolbot/commit/83c4ba06f)
+- [Unified "funny feeling" pet message across all activities, openables & gambles](https://github.com/oldschoolgg/oldschoolbot/commit/76b9826a7)
+- [Revenant `/show_info` display fixed](https://github.com/oldschoolgg/oldschoolbot/commit/33f538c93)
+- [CA wiki table: added chance % column, padding aligned](https://github.com/oldschoolgg/oldschoolbot/commit/5b0d773f6)
+- [[[/clue]] now caps quantity to trip max](https://github.com/oldschoolgg/oldschoolbot/commit/85f9a493e)
+- [Fix bug with repeating trips when on a slayer task](https://github.com/oldschoolgg/oldschoolbot/commit/6a31958f1)
+- [Solo Nex purple announcements + CL highlight](https://github.com/oldschoolgg/oldschoolbot/commit/8d63b8f99)
+- [Loot announcement bold-formatting cleaned](https://github.com/oldschoolgg/oldschoolbot/commit/363626bb7)
+- [EHP: removed barrage (Araxyte) & cannon (Smoke devil)](https://github.com/oldschoolgg/oldschoolbot/commit/bac81f9d1)
+- [Per-kill consumable calc fixed](https://github.com/oldschoolgg/oldschoolbot/commit/c306206fb)
+- [/gear now supports `quantity` option properly](https://github.com/oldschoolgg/oldschoolbot/commit/95563b045)
+- [Skotizo integration test stabilised (totem drop edge-case)](https://github.com/oldschoolgg/oldschoolbot/commit/3d9808294)
+- [Clue-stack messages now fire & show current stack count](https://github.com/oldschoolgg/oldschoolbot/commit/18b5ca193)
+- [Mining level-up & bonus-XP messages restored](https://github.com/oldschoolgg/oldschoolbot/commit/67dc3832a)
+- [Interaction inhibitors respect `silent` flag / defer timing fixed](https://github.com/oldschoolgg/oldschoolbot/commit/61933f31e)
+- [Solo Nex: proper team size wording, DM channel allowed](https://github.com/oldschoolgg/oldschoolbot/commit/fb8523935)
+- [CA clue boosts now apply in all sub-tables; rounding fixed](https://github.com/oldschoolgg/oldschoolbot/commit/fc1ae2b0b)
+- [/open now refreshes user before showing clues/pets](https://github.com/oldschoolgg/oldschoolbot/commit/75d8276bd)
+- [Wiki gear preset rename + command parse fix (strength→melee\_strength confusion)](https://github.com/oldschoolgg/oldschoolbot/commit/c9e1922d0)
+- [Update Barrows elite clue rate and allow elite CA to boost odds](https://github.com/oldschoolgg/oldschoolbot/commit/4dcfe2c2c)
+- [[[/k show_info]] cleanup: regex, custom wiki links, alias swap](https://github.com/oldschoolgg/oldschoolbot/commit/28abd0d86)
+- [Consumable-requirement text simplified](https://github.com/oldschoolgg/oldschoolbot/commit/507b9cc45)
+- [Warped Sceptre boosts added to Kraken, Zulrah, Rex, Barrows (+ requirement for Kraken)](https://github.com/oldschoolgg/oldschoolbot/commit/7ff37f952)
+- [Fixed bug with equipping Infinity robes](https://github.com/oldschoolgg/oldschoolbot/commit/cbee283c3)
+- [Wildy jellies: barrage allowed, cannon removed from EHP](https://github.com/oldschoolgg/oldschoolbot/commit/9e9a9eea2)
+- [Certain Wildy Slayer mobs now correctly require a task](https://github.com/oldschoolgg/oldschoolbot/commit/202557c93)
+- [Bugfix with being PKed in wildy](https://github.com/oldschoolgg/oldschoolbot/commit/01dc17213)
+
+### [[Porfet]]
+
+- [Farming wiki page: ring of endurance harvesting note fixed](https://github.com/oldschoolgg/oldschoolbot/commit/d4557918f)
+- [Sepulchre wiki page: made consistent with farming docs](https://github.com/oldschoolgg/oldschoolbot/commit/dc23e1a10)
+- [Farming wiki page: bank-works items note added](https://github.com/oldschoolgg/oldschoolbot/commit/e6a138971)
+
+### [[Arodab]]
+
+- [Boss boost rebalance: Vardorvis, Leviathan, KQ, Zulrah, Muspah](https://github.com/oldschoolgg/oldschoolbot/commit/948b7fe98)
+- [Forestry events now 2× as frequent](https://github.com/oldschoolgg/oldschoolbot/commit/f660cc535)
+- [/clue supports quantity parameter](https://github.com/oldschoolgg/oldschoolbot/commit/a9a753f85)
+- [DHCB global boost typo fixed](https://github.com/oldschoolgg/oldschoolbot/commit/ab264797a)
+- [/clue cost & qty bug-fixes](https://github.com/oldschoolgg/oldschoolbot/commit/d929934c7)
+- [Implings clue handling restored](https://github.com/oldschoolgg/oldschoolbot/commit/2f5549519)
+- [Forestry Feb 5 2025 update applied (spawn chance, drop rates, shop)](https://github.com/oldschoolgg/oldschoolbot/commit/5aa944430)
+
+### [[code1100]]
+
+- [Guardians of the Rift wiki: fix abyssal lantern pearl cost](https://github.com/oldschoolgg/oldschoolbot/commit/44e9c4feb)
+
+### [[NotShin]]
+
+- [Minor wiki typo fix](https://github.com/oldschoolgg/oldschoolbot/commit/9624ca149)
+
+### [[badgehunter]]
+
+- [Woodcutting wiki: Sulliuscep bullet-point formatting fixed](https://github.com/oldschoolgg/oldschoolbot/commit/77e9797ce)
+
+### [[nwjgit]]
+
+- [Armoured zombies updated to Zemouregal version; broken items handled](https://github.com/oldschoolgg/oldschoolbot/commit/362e39be2)
+
+### [[JustDavyy]]
+
+- [Temple Trekking wiki fix: lumberjack outfit URL fixed](https://github.com/oldschoolgg/oldschoolbot/commit/04baa4d0a)
+
+### [[themrrobert]]
+
+- [Ring of Wealth (i) clue drop logic fixed](https://github.com/oldschoolgg/oldschoolbot/commit/3a4d4cf61)
+
+### [[chrisjeng]]
+
+- [BSO CoX wiki: boosts, supplies, charge table overhaul](https://github.com/oldschoolgg/oldschoolbot/commit/60ab2850e)
+- [BSO ToA wiki: death chance, gear score, consumables, BiS chart](https://github.com/oldschoolgg/oldschoolbot/commit/7e334e996)
+
+### [[wontonstrips]]
+
+- [Wiki typos fixed (ToA pet transmog, item names, command examples)](https://github.com/oldschoolgg/oldschoolbot/commit/2499ae672)
+
+<Update
 	date="6/12/2024"
 	firstHash="bc2e2ce8065c2edd5ca9966c9802a7df6c9da596"
 	secondHash="92b3b66d8af3fda390fbdf875fdf17dd62ecaef6"
-	isNew
 />
 
 ### [[gc]]
