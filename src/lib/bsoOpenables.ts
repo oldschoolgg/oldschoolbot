@@ -72,9 +72,7 @@ const ironmanDCPetsTable = new LootTable()
 	.add('Gregoyle')
 	.add('Kuro');
 
-export const IronmanPMBTable = new LootTable()
-	.oneIn(50, ironmanDCPetsTable)
-	.add(PMBTable, 1, PMBTable.length)
+export const IronmanPMBTable = new LootTable().oneIn(10, ironmanDCPetsTable).add(PMBTable);
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
