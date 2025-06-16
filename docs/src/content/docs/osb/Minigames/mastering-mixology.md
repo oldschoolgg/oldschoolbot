@@ -41,6 +41,8 @@ Spend your Mixology points using [[/minigames mastering_mixology buy]]. All rewa
 | Alchemist's amulet | 6,900 | 5,650 | 7,400 |
 | Aldarium | 80 | 60 | 90 |
 
+Prescription goggles provide a 10% chance to save a secondary ingredient while mixing potions. This also works on Torstols for Super combat potions and Anti-venom+, and on Irit when mixing Antidote++ (unf). They will not save Ashes when creating Serum 207.
+
 The potion packs have Herblore level requirements:
 
 - Apprentice potion pack requires **60 Herblore**.
