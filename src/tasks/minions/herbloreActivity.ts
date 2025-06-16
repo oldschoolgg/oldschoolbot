@@ -1,5 +1,5 @@
 import { randInt } from 'e';
-import { Bank, Item } from 'oldschooljs';
+import { Bank, type Item } from 'oldschooljs';
 
 import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
