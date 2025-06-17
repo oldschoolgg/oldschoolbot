@@ -130,7 +130,7 @@ export const sepulchreTask: MinionTask = {
 				const fletchableName = `${fletchable.name}s`;
 				str += `\nYou also fletched ${fletchQuantity} sets of ${fletchableName} and received ${fletchingLoot}. ${fletchXpRes}.`;
 			} else {
-				str += `\nYou also fletched ${fletchQuantity} ${fletchable.name} and received ${fletchXpRes}.`;
+				str += `\nYou also fletched ${fletchQuantity} ${fletchable.name}. ${fletchXpRes}.`;
 			}
 		}
 
