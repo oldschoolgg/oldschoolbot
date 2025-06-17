@@ -117,9 +117,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 			return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence });
 		}
 
-		if (rune.includes('(zeah)')) {
-			return darkAltarCommand({ user, channelID, name: rune });
-		}
+               if (rune.includes('(zeah)')) {
+                       return darkAltarCommand({ user, channelID, name: rune, extracts });
+               }
 
 		const runeObj = Runecraft.Runes.find(
 			_rune => stringMatches(_rune.name, rune) || stringMatches(_rune.name.split(' ')[0], rune)
