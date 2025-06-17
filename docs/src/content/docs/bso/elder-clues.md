@@ -23,7 +23,7 @@ sidebar:
   - **HasPlantedIvy**
   - **HasArcaneScroll**
 
-**Elder clue scrolls** are created by combining 3 [[Elder scroll piece]]s with [[/create]]. These pieces come from many high level activities and skilling clues.
+**Elder clue scrolls**  are created by combining 3 [[Elder scroll piece]]s with [[/create]]. These pieces come from many high level activities and skilling clues.
 
 ## Boosts
 
