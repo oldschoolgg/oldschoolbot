@@ -275,13 +275,13 @@ const tripHandlers = {
 			warriors_guild: { action: 'cyclops', quantity: data.quantity }
 		})
 	},
-       [activity_type_enum.DarkAltar]: {
-               commandName: 'runecraft',
-               args: (data: DarkAltarOptions) => ({
-                       rune: `${darkAltarRunes[data.rune].item.name} (zeah)`,
-                       extracts: data.useExtracts
-               })
-       },
+	[activity_type_enum.DarkAltar]: {
+		commandName: 'runecraft',
+		args: (data: DarkAltarOptions) => ({
+			rune: `${darkAltarRunes[data.rune].item.name} (zeah)`,
+			extracts: data.useExtracts
+		})
+	},
 	[activity_type_enum.OuraniaAltar]: {
 		commandName: 'runecraft',
 		args: (data: OuraniaAltarOptions) => ({

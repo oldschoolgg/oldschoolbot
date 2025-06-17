@@ -99,11 +99,11 @@ export interface TiaraRunecraftActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface DarkAltarOptions extends ActivityTaskOptions {
-        type: 'DarkAltar';
-        quantity: number;
-        hasElite: boolean;
-       rune: 'blood' | 'soul';
-       useExtracts?: boolean;
+	type: 'DarkAltar';
+	quantity: number;
+	hasElite: boolean;
+	rune: 'blood' | 'soul';
+	useExtracts?: boolean;
 }
 
 export interface OuraniaAltarOptions extends ActivityTaskOptions {
