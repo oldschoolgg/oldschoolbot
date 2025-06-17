@@ -121,7 +121,7 @@ export const lapsCommand: OSBMahojiCommand = {
 		);
 
 		if (!course) {
-			return 'Thats not a valid course.';
+			return "That's not a valid course.";
 		}
 
 		if (user.skillLevel(SkillsEnum.Agility) < course.level) {
