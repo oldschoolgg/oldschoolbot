@@ -615,6 +615,9 @@ export async function interactionHook(interaction: Interaction) {
 	if (id === 'OPEN_GRANDMASTER_CASKET') {
 		return openCasket('Grandmaster');
 	}
+	if (id === 'OPEN_ELDER_CASKET') {
+		return openCasket('Elder');
+	}
 
 	if (minionIsBusy(user.id)) {
 		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
@@ -635,6 +638,8 @@ export async function interactionHook(interaction: Interaction) {
 			return doClue('Master');
 		case 'DO_GRANDMASTER_CLUE':
 			return doClue('Grandmaster');
+		case 'DO_ELDER_CLUE':
+			return doClue('Elder');
 
 		case 'DO_BIRDHOUSE_RUN':
 			return runCommand({
