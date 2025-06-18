@@ -39,7 +39,7 @@ const otherMonsters = [
 		aliases: ['zalcano'],
 		id: ZALCANO_ID,
 		emoji: '<:Smolcano:604670895113633802>',
-		link: '/miscelleanous/zalcano/'
+		link: '/miscellaneous/zalcano/'
 	},
 	{
 		name: 'Wintertodt',

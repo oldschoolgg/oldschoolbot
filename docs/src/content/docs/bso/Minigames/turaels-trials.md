@@ -13,7 +13,7 @@ Each wave lasts about 2.9 minutes per kill.
 
 ## Costs per trip
 
-- Melee: [[Super combat potion(4)]] and Scythe of vitur charges
+- Melee: [[Super combat potion(4)]] and Scythe of Vitur charges
 - Mage: [[Magic potion(4)]] plus Chaos, Death and Water runes
 - Range: [[Ranging potion(4)]] and Black chinchompas
 - All methods: 3 [[Saradomin brew (4)]] and [[Super restore (4)]]
@@ -23,6 +23,6 @@ Each wave lasts about 2.9 minutes per kill.
 ## Experience
 
 Each kill gives 36k Slayer XP and about 89k XP split between your combat stats.
-Melee uses Scythe of vitur charges, mage consumes runes and range expends black chinchompas.
+Melee uses Scythe of Vitur charges, mage consumes runes and range expends black chinchompas.
 
 This minigame offers no loot but very fast combat and Slayer experience.
