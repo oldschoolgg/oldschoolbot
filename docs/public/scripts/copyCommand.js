@@ -1,4 +1,3 @@
-let copyTimeout;
 document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', function (e) {
         const btn = e.target.closest('.discord_command_copy');
