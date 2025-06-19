@@ -21,6 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.textContent = original;
                 btn.copyTimeout = null;
             }, 1200);
+        }).catch(() => {
+            btn.classList.add('copied');
+            btn.textContent = 'Failed to copy!';
+            if (btn.copyTimeout) clearTimeout(btn.copyTimeout);
+            btn.copyTimeout = setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.textContent = original;
+                btn.copyTimeout = null;
+            }, 2000);
         });
     });
 });
