@@ -43,12 +43,12 @@ To set/remove prioritized food:
 
 Some foods boost trip speed. Jug of wine is the only food that gives a **penalty**.
 
-| Food        | Boost |
-| ----------- | ----- |
-| Jug of wine | -10%  |
-| Monkfish    | +1%   |
-| Shark       | +2%   |
-| Sea turtle  | +2%   |
-| Manta ray   | +3%   |
-| Dark crab   | +3%   |
-| Anglerfish  | +4%   |
+| Food            | Boost |
+| --------------- | ----- |
+| [[Jug of wine]] | -10%  |
+| [[Monkfish]]    | +1%   |
+| [[Shark]]       | +2%   |
+| [[Sea turtle]]  | +2%   |
+| [[Manta ray]]   | +3%   |
+| [[Dark crab]]   | +3%   |
+| [[Anglerfish]]  | +4%   |

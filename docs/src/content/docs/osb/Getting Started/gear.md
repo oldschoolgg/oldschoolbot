@@ -38,7 +38,7 @@ Simulate gear to see stats. You don't need to own the items — just use the ful
 
 Equip or unequip a pet, even during trips:
 
-- [[/gear pet equip\:[petName]]]
+- [[/gear pet equip\:petName]]
 - [[/gear pet unequip\:true]]
 
 ## Gear Presets

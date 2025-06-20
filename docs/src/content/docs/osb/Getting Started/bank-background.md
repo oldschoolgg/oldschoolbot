@@ -10,10 +10,10 @@ In order to change your bank background one of the first things you will need to
 - Bandos (Requires completion of Bandos/Armadyl/Saradomin/Zamorak/Nex CLs and costs 100m + all 5 Godswords)
 - Corporeal Beast (Requires completion of Corporeal beast CL and costs 100m + 1 of each completed spirit shield)
 - Casket (Requires in your collection log)
-  - 1x Large spade (500 Easy clues completed)
-  - 1x Clueless scroll (400 Medium clues completed)
-  - 1x Heavy casket (200 Elite clues completed)
-  - 1x Scroll sack (100 Master clues completed)
+  - [[Large spade]] (500 Easy clues completed)
+  - [[Clueless scroll]] (400 Medium clues completed)
+  - [[Heavy casket]] (200 Elite clues completed)
+  - [[Scroll sack]] (100 Master clues completed)
 - Nightmare (Requires completion of Nightmare CL (including Phosani items) and costs 100m + 1 of each orb)
 
 ## Available to Patrons
