@@ -52,6 +52,8 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 
 `pnpm test`: Run this if you only want to test your code, and nothing else (pnpm dev runs this).
 
+`pnpm test:unit -u`: Updates all Vitest snapshot files. Run this if your changes intentionally update snapshot output.
+
 `pnpm monorepo:build`: Run this if you have made changes to either monorepo (oldschooljs or toolkit) to update the dependency in the bot.
 
 `pnpm monorepo:test`: Run this if you want to either monorepo (oldschooljs or toolkit).
