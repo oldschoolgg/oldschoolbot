@@ -8,7 +8,7 @@ This guide is meant for players just starting with OSB. It does not include opti
 
 ### Part 1: Pre-PvM
 
-Do [agility](https://wiki.oldschool.gg/skills/agility) until you have full Graceful (can be obtained by using [[/create item\:graceful]], and costs 260 marks of grace). You can do agility by using the [[/laps name\:courseName]] command. After getting full Graceful, you can do the [Hallowed Sepulchre](https://wiki.oldschool.gg/skills/agility/hallowed-sepulchre) to get a [[Strange old lockpick]]. This item is rarer than in OSRS, but has unlimited charges and provides a boost to Barrows.
+Do [agility](/osb/skills/agility) until you have full Graceful (can be obtained by using [[/create item\:graceful]], and costs 260 marks of grace). You can do agility by using the [[/laps name\:courseName]] command. After getting full Graceful, you can do the [Hallowed Sepulchre](/osb/activities/hallowed-sepulchre/) to get a [[Strange old lockpick]]. This item is rarer than in OSRS, but has unlimited charges and provides a boost to Barrows.
 
 Don't forget to do your daily every 12 hours: [[/minion daily]] for some starter GP.
 
@@ -36,11 +36,11 @@ Main accounts can sell duplicates in #grand-exchange or use [[/sell]] for early 
 
 With some basic gear, easy access to food, and mid-high combat stats, you can now do most activities on the bot. 
 
-Some monsters have item/stat requirements, shown on the [Boosts & Requirements](https://wiki.oldschool.gg/bosses/boosts-and-requirements) page. This page also lists boosts for bosses. You can check out what attack style gear you should be using for monsters with [[/k show_info\:true]].
+Some monsters have item/stat requirements, shown on the [Boosts & Requirements](/osb/monsters) page. This page also lists boosts for bosses. You can check out what attack style gear you should be using for monsters with [[/k show_info\:true]].
 
-You can view BiS gear for bossing/PvM [here](https://wiki.oldschool.gg/skills/slayer/slayer-misc#best-gear-for-slayer).
+You can view BiS gear for bossing/PvM [here](/osb/skills/slayer/slayer-misc#best-gear-for-slayer).
 
-For specific activities like [CoX](https://wiki.oldschool.gg/bosses/cox-raids/cox-gear-setups) and [The Nightmare](https://wiki.oldschool.gg/bosses/nightmare-of-ashihama), check their pages for stat/gear advice.
+For specific activities like [CoX](/osb/raids/cox/) and [The Nightmare](/osb/bosses/the-nightmare/), check their pages for stat/gear advice.
 
 For skilling methods, visit the respective pages in this wiki.
 
