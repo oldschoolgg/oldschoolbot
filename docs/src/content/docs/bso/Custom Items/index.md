@@ -131,3 +131,60 @@ Causes any [[/k]] trip to return instantly.
 ### Divine Water
 
 Created using 888 bones and 1 vial of water.
+
+---
+
+### Ring of Luck
+
+The Ring of Luck is a rare reward from [Grandmaster Caskets](/custom-items/grandmaster-clues) with a 1/8000 drop rate.
+
+**Effects**
+- Grants a 5% improved drop rate for Broken Dwarven Warhammer when fighting [King Goldemar](../../bso-custom-killables/bosses/king-goldemar.md).
+- Provides a 5% increased chance at receiving Gorajan shards in [Dungeoneering](../../skills/dungeoneering.md).
+- Increases shiny hatch chance for tames by 3% and slightly boosts purple monkey chance in [Mad Marimbo's Monkey Rumble](../../minigames/mad-marimbos-monkey-rumble/).
+
+Simply keep the ring equipped or in your bank to gain its benefits.
+
+---
+
+### Royal Dragon Equipment
+
+- **Royal Dragonhide**: Dropped by [Queen Black Dragon](../../bso-custom-killables/demi-bosses/queen-black-dragon.md). Used to craft royal gear for the best Crafting XP.
+- **Royal Dragon Bones**: Grants the same Prayer XP as Abyssal Dragon Bones.
+- **Royal Crossbow**: Assembled from four pieces dropped by the Queen Black Dragon and a Chaotic Crossbow.
+
+---
+
+### Hellfire Bow & Arrows
+
+The **Hellfire Bow** is created at [[fletching:110]] using a Twisted bow, Zaryte
+bow, [Ignecarus dragonclaw](../../bso-custom-killables/bosses/ignecarus.md), 3 
+Smouldering stones and a [Dragon's fury](../../skills/herblore.md#custom-items-a
+nd-content). **Hellfire Arrows** are made with Ignecarus scales and headless arr
+ows. Together they provide a **3×** boost to Wilderness [[/k]] activities.
+
+---
+
+### TzKal Cape
+
+Created with 1 TzKal-Zuk's skin, 20 onyx, an Infernal cape and an Abyssal cape. 
+This cape is best-in-slot for melee and gives various combat boosts.
+
+---
+
+### Runecrafting Pouches
+
+- **Abyssal Pouch** – Holds 64 essence (created with an Abyssal Thread and Giant
+  Pouch). Requires [[runecraft:90]].
+- **Elder Pouch** – Holds 128 essence (created with an Elder Thread and Abyssal
+  Pouch). Requires [[runecraft:105]].
+
+---
+
+### Miscellaneous Items
+
+- **Fish Sack**: Dropped by the [Sea Kraken](../../bso-custom-killables/demi-bosses/sea-kraken.md) at a rate of 1/400. When equipped, it extends Fishing trips by **9 minutes**.
+- **Thieves' Armband**: Received while thieving with the [[Wilvus]] pet equipped. Each 6 minutes of thieving has a 1/5,000 chance to obtain one. When equipped, it gives **50%** increased pickpocket success and **3×** loot, but it breaks after extended use.
+- **Divine Sigil**: Rare drop from Corporeal Beast, provides the stats of an Elysian spirit shield.
+- **Rocktail**: Heals 26 HP. Obtained from Fishing Trawler or by fishing at level 120 and cooking at level 120.
+- **Dragon's Fury**: Potion made at [[herblore:120]] using 3 Ignecarus Scales and 1 Abyssal Dragon Bones. Used to create the Hellfire Bow.
