@@ -68,7 +68,6 @@
 		"simple-statistics": "^7.8.3",
 		"skia-canvas": "^1.0.2",
 		"sonic-boom": "^4.2.0",
-		"unist-util-visit": "^5.0.0",
 		"zod": "^3.24.3"
 	},
 	"devDependencies": {
