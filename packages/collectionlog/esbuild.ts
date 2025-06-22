@@ -3,7 +3,7 @@ import * as esbuild from 'esbuild';
 const baseOptions: esbuild.BuildOptions = {
 	keepNames: true,
 	minify: false,
-	external: [],
+	external: ['oldschooljs'],
 	entryPoints: ['./src/index.ts'],
 	bundle: true,
 	sourcemap: true,

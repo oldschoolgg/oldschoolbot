@@ -425,18 +425,29 @@ ol + ol li blockquote {
 	text-decoration: none !important;
 }
 
-.discord_command {
+.discord_command_copy {
 	background-color: #4e538f;
 	width: max-content;
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	align-content: center;
 	padding: 0px 5px;
 	font-size: 13px;
 	color: white;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background 0.2s;
+	margin: 0 2px;
 }
 
+.discord_command_copy:hover {
+	background: #6a6fcf;
+}
+
+.discord_command_copy.copied {
+	background: #3cb371;
+}
 sl-sidebar-state-persist > ul > li:nth-child(2) > details > summary,
 sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary {
 	text-align: center;
@@ -476,7 +487,7 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 }
 
 .osrs_item,
-.discord_command {
+.discord_command_copy {
 	display: inline-flex;
 	align-items: center;
 	vertical-align: middle;
@@ -491,7 +502,7 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 }
 
 .osrs_item_name,
-.discord_command {
+.discord_command_copy {
 	font-size: 0.9em;
 	text-align: center;
 	white-space: nowrap;
@@ -509,6 +520,10 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 	align-items: center;
 	justify-content: center;
 	justify-items: center;
+
+	background: #ff803c14;
+	color: #ff7f3c;
+	padding: 5px 9px;
 }
 
 .contributor .contributor_name {
@@ -520,6 +535,34 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 	height: 29px !important;
 	border-radius: 64px;
 	margin-right: 3px;
+}
+
+.contributor_small {
+	display: inline-flex;
+	width: max-content;
+	border-radius: 10px;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+	padding: 3px 9px;
+	padding-left: 1px;
+	font-size: 13px;
+	gap: 5px;
+	font-weight: bold;
+	align-items: center;
+	vertical-align: middle;
+	margin-top: 0px !important;
+	margin-left: 3px;
+	margin-right: 3px;
+	margin: 0 !important;
+	position: relative;
+
+	background: #ff803c14;
+	color: #ff7f3c;
+
+	.contributor_avatar {
+		height: 20px !important;
+	}
 }
 
 .edit_this_page {
