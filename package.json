@@ -84,7 +84,7 @@
 		"spritesmith": "^3.5.1",
 		"tsx": "^4.19.3",
 		"typescript": "^5.8.3",
-		"vitest": "^2.1.9"
+		"vitest": "^3.2.4"
 	},
 	"resolutions": {
 		"esbuild": "0.25.3"
