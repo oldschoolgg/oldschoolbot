@@ -58,3 +58,5 @@ Tame spells are cast with [[/tames cast]]
 | Plank Make      | Per 1 cast: 15× Earth rune, 1× Nature rune, 2× Astral rune, Coins (Regular: 70 \| Oak: 175 \| Teak: 350 \| Mahogany: 1,050 \| Elder: 5,950) |
 | Spin Flax       | Per 5 casts: 5× Flax, 5× Air rune, 1× Nature rune, 2× Astral rune                                                                           |
 | Superglass Make | Per 3 casts: 3× Giant seaweed, 18× Bucket of sand, 10× Air rune, 6× Fire rune, 2× Astral rune                                               |
+
+Base cast times are: Tan Leather 0.5s, Spin Flax 0.8s, Superglass Make 3s and Plank Make 4s. Tier 3 staff and a fed Klik reduce these times further.

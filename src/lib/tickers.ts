@@ -396,6 +396,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		interval: Time.Minute * 7.33,
 		cb: async () => {
 			const users = await fetchUsersWithoutUsernames();
+			if (process.env.TEST) return;
 			debugLog(`username_filling: Found ${users.length} users without usernames.`);
 			for (const { id } of users) {
 				const djsUser = await globalClient.users.fetch(id).catch(() => null);

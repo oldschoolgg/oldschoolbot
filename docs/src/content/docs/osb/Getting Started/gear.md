@@ -2,13 +2,9 @@
 title: "Gear"
 ---
 
-Your minion has 8 gear setups: Melee, Mage, Range, Skilling, Misc, Wildy, Fashion, and Other. You can equip items in each setup depending on the activity you're doing.
+Your minion has 8 gear setups: Melee, Mage, Range, Skilling, Misc, Wildy, Fashion, and Other. You can equip items in each setup depending on the activity you're doing. For example, after questing, to equip [[Barrows gloves]] into your Range setup, use [[/gear equip gear_setup\:Range item\:Barrows gloves]]. If you already had [[Mithril gloves]] equipped, they will be automatically unequipped.
 
-For example, after questing, to equip Barrows gloves into your Range setup, use: [[/gear equip gear_setup\:Range item\:Barrows gloves]]
-
-If you already had Mithril gloves equipped, they will be automatically unequipped.
-
-You can also save entire setups with gearpresets for quick re-equipping. (Some gear setups are locked to Tier 3 Patron or higher.)
+You can also save entire setups with [[/gearpresets]] for quick re-equipping. Some gear setups are locked to Tier 3 Patron or higher.
 
 ## Commands
 
@@ -38,7 +34,7 @@ Simulate gear to see stats. You don't need to own the items — just use the ful
 
 Equip or unequip a pet, even during trips:
 
-- [[/gear pet equip\:[petName]]]
+- [[/gear pet equip\:petName]]
 - [[/gear pet unequip\:true]]
 
 ## Gear Presets
@@ -74,7 +70,7 @@ These are built-in and don't count toward your preset limit:
 - Runecraft (Raiments of the Eye)
 - Smithing (Smiths' uniform)
 
-### Wildy Setup
+## Wildy Setup
 
 The Wilderness setup is used for Wilderness Bosses, Revenants, Hunter, and Slayer.
 
