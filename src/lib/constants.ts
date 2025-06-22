@@ -782,6 +782,18 @@ export const doaPurples = resolveItems([
 	'Bluey'
 ]);
 
+export const ORI_DISABLED_MONSTERS = [
+	'The Nightmare',
+	"Phosani's Nightmare",
+	'Ignecarus',
+	'King Goldemar',
+	'Kalphite King',
+	'Nex',
+	'Moktang',
+	'Naxxus',
+	'Vasa Magus'
+] as const;
+
 export enum PeakTier {
 	High = 'high',
 	Medium = 'medium',
