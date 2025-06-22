@@ -43,7 +43,7 @@ Use the best possible mage gear. Virtus is the best option besides Gorajan Occul
 
 - **Voidling:** Pet that alchs items from your favorite alchs list while on trips. Works faster with a Magic Master Cape.
 - **Tattered Robes of Vasa:** Used to craft a Vasa Cloak, the BiS mage cape
-  - Requires [[runecrafting:105]], [[crafting:105]], 1 Imbued Mage Arena Cape, 1 Abyssal Cape, and 1 Tattered Robes of Vasa  
+  - Requires [[runecraft:105]], [[crafting:105]], 1 Imbued Mage Arena Cape, 1 Abyssal Cape, and 1 Tattered Robes of Vasa  
     → [[/create item\:vasa cloak]]
 - **Magical Artifact:** Alchs for 50M
 - **Jar of Magic:** Has no use

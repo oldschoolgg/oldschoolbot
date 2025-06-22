@@ -425,18 +425,29 @@ ol + ol li blockquote {
 	text-decoration: none !important;
 }
 
-.discord_command {
+.discord_command_copy {
 	background-color: #4e538f;
 	width: max-content;
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	align-content: center;
 	padding: 0px 5px;
 	font-size: 13px;
 	color: white;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background 0.2s;
+	margin: 0 2px;
 }
 
+.discord_command_copy:hover {
+	background: #6a6fcf;
+}
+
+.discord_command_copy.copied {
+	background: #3cb371;
+}
 sl-sidebar-state-persist > ul > li:nth-child(2) > details > summary,
 sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary {
 	text-align: center;
@@ -476,7 +487,7 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 }
 
 .osrs_item,
-.discord_command {
+.discord_command_copy {
 	display: inline-flex;
 	align-items: center;
 	vertical-align: middle;
@@ -491,7 +502,7 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 }
 
 .osrs_item_name,
-.discord_command {
+.discord_command_copy {
 	font-size: 0.9em;
 	text-align: center;
 	white-space: nowrap;
