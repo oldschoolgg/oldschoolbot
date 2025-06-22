@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
 import { remarkItems } from './src/plugins/items';
+import rehypeFixInlineSpacing from './src/plugins/rehypeFixInlineSpacing';
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,6 +24,7 @@ export default defineConfig({
 	},
 	markdown: {
 		remarkPlugins: [remarkItems],
+		rehypePlugins: [rehypeFixInlineSpacing],
 		smartypants: false,
 		syntaxHighlight: false
 	},
@@ -46,6 +48,10 @@ export default defineConfig({
 					content: `if (window.location.href.includes('/bso/')) {
 window.onload = () => document.body.classList.add('bso-theme');
 }`
+				},
+				{
+					tag: 'script',
+					attrs: { src: '/scripts/copyCommand.js', defer: true }
 				}
 			],
 			editLink: {

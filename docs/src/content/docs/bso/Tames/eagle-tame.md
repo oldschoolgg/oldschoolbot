@@ -2,6 +2,8 @@
 title: "Eagle Tame"
 ---
 
+The eagle tame focuses on clue scrolls. After incubating an [[Eagle egg]] for 4.5 hours it hatches and grows just like the other tames.
+
 ## Boosts
 
 You can feed the eagle tame certain items with [[/tames feed item\:[item]]]<br />
@@ -17,3 +19,5 @@ You can feed the eagle tame certain items with [[/tames feed item\:[item]]]<br /
 | **Equip, do not feed:** Demonic Jibwings e   | +30 minutes max trip length                                              |
 | **Equip, do not feed:** Third Age Jibwings   | Doubles all GP received                                                  |
 | **Equip, do not feed:** Third Age Jibwings e | +30 minutes max trip length                                              |
+
+Send your eagle on clue trips with [[/tames collect clue_tier:master]]. It completes clues by itself and benefits from the items above.
