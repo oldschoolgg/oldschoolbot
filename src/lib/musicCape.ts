@@ -147,6 +147,7 @@ export const musicCapeRequirements = new Requirements()
 				activity_type_enum.BossEvent,
 				activity_type_enum.TrickOrTreat,
 				activity_type_enum.Revenants, // This is now under monsterActivity,
+				activity_type_enum.KourendFavour, // This was removed
 				activity_type_enum.HalloweenMiniMinigame,
 				activity_type_enum.Mortimer,
 				activity_type_enum.BirthdayCollectIngredients,
