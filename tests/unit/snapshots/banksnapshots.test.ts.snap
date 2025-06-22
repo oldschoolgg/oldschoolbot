@@ -4298,7 +4298,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "565": 1,
     },
-    "quantityPerHour": 100000,
+    "quantityPerHour": 150000,
     "shopQuantity": 250,
   },
   {
@@ -4309,7 +4309,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "563": 1,
     },
-    "quantityPerHour": 100000,
+    "quantityPerHour": 150000,
     "shopQuantity": 250,
   },
   {
@@ -4320,7 +4320,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "566": 1,
     },
-    "quantityPerHour": 100000,
+    "quantityPerHour": 150000,
     "shopQuantity": 250,
   },
   {
@@ -4331,7 +4331,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "9075": 1,
     },
-    "quantityPerHour": 100000,
+    "quantityPerHour": 150000,
     "shopQuantity": 250,
   },
   {
@@ -4342,7 +4342,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "560": 1,
     },
-    "quantityPerHour": 100000,
+    "quantityPerHour": 150000,
     "shopQuantity": 250,
   },
   {
@@ -4353,7 +4353,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "561": 1,
     },
-    "quantityPerHour": 100000,
+    "quantityPerHour": 150000,
     "shopQuantity": 250,
   },
   {
@@ -4364,7 +4364,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "562": 1,
     },
-    "quantityPerHour": 100000,
+    "quantityPerHour": 150000,
     "shopQuantity": 250,
   },
   {
@@ -4375,7 +4375,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "562": 100,
     },
-    "quantityPerHour": 10000,
+    "quantityPerHour": 15000,
     "shopQuantity": 35,
   },
   {
