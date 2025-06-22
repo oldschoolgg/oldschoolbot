@@ -46,6 +46,10 @@ export default defineConfig({
 					content: `if (window.location.href.includes('/bso/')) {
 window.onload = () => document.body.classList.add('bso-theme');
 }`
+				},
+				{
+					tag: 'script',
+					attrs: { src: '/scripts/copyCommand.js', defer: true }
 				}
 			],
 			editLink: {
