@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Store original text if not already stored - else double clicking will override original text
         if (!btn.hasAttribute('data-original-text')) {
             btn.setAttribute('data-original-text', btn.textContent);
+            btn.style.width = btn.offsetWidth + 'px';
         }
         const original = btn.getAttribute('data-original-text');
 
