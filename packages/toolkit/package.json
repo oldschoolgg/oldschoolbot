@@ -36,11 +36,11 @@
 		"zod": "^3.25.67"
 	},
 	"peerDependencies": {
-		"discord.js": "^14.16.3"
+		"discord.js": "^14.20.0"
 	},
 	"devDependencies": {
 		"@oldschoolgg/ts-config": "^0.0.1",
 		"@types/math-expression-evaluator": "^1.2.2",
-		"discord.js": "^14.16.3"
+		"discord.js": "^14.20.0"
 	}
 }
