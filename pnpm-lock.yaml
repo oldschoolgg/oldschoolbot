@@ -42,8 +42,8 @@ importers:
         specifier: ^14.16.3
         version: 14.16.3(bufferutil@4.0.9)
       dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
+        specifier: ^16.5.0
+        version: 16.5.0
       e:
         specifier: 0.2.33
         version: 0.2.33
@@ -81,8 +81,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0
       remeda:
-        specifier: ^2.21.3
-        version: 2.21.3
+        specifier: ^2.23.0
+        version: 2.23.0
       simple-statistics:
         specifier: ^7.8.3
         version: 7.8.7
@@ -93,8 +93,8 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
       zod:
-        specifier: ^3.24.3
-        version: 3.24.3
+        specifier: ^3.25.67
+        version: 3.25.67
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -143,19 +143,19 @@ importers:
     dependencies:
       '@astrojs/check':
         specifier: ^0.9.4
-        version: 0.9.4(prettier@3.5.3)(typescript@5.6.3)
+        version: 0.9.4(prettier@3.5.3)(typescript@5.8.3)
       '@astrojs/preact':
         specifier: ^3.5.4
         version: 3.5.4(@babel/core@7.26.0)(@types/node@20.17.6)(lightningcss@1.29.2)(preact@10.26.6)
       '@astrojs/starlight':
         specifier: ^0.28.2
-        version: 0.28.6(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3))
+        version: 0.28.6(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3))
       '@tailwindcss/vite':
         specifier: ^4.1.5
         version: 4.1.5(vite@5.4.14(@types/node@20.17.6)(lightningcss@1.29.2))
       astro:
         specifier: ^4.16.18
-        version: 4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3)
+        version: 4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3)
       collapse-white-space:
         specifier: ^2.1.0
         version: 2.1.0
@@ -182,8 +182,8 @@ importers:
         specifier: ^14.1.2
         version: 14.1.2
       typescript:
-        specifier: ^5.5.3
-        version: 5.6.3
+        specifier: ^5.8.3
+        version: 5.8.3
 
   packages/collectionlog:
     dependencies:
@@ -231,8 +231,8 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0
       zod:
-        specifier: ^3.23.8
-        version: 3.23.8
+        specifier: ^3.25.67
+        version: 3.25.67
     devDependencies:
       '@oldschoolgg/ts-config':
         specifier: ^0.0.1
@@ -2199,8 +2199,8 @@ packages:
   domutils@3.1.0:
     resolution: {integrity: sha512-H78uMmQtI2AhgDJjWeQmHwJJ2bLPD3GMmO7Zja/ZZh84wkm+4ut+IUnUdRa8uCGX88DiVx1j6FRe1XfxEgjEZA==}
 
-  dotenv@16.4.5:
-    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+  dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
     engines: {node: '>=12'}
 
   dset@3.1.4:
@@ -3710,8 +3710,8 @@ packages:
   remark-stringify@11.0.0:
     resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
 
-  remeda@2.21.3:
-    resolution: {integrity: sha512-XXrZdLA10oEOQhLLzEJEiFFSKi21REGAkHdImIb4rt/XXy8ORGXh5HCcpUOsElfPNDb+X6TA/+wkh+p2KffYmg==}
+  remeda@2.23.0:
+    resolution: {integrity: sha512-0mPy6q4ZMkAyrmucV6U6RaQ4GaJ7PLy9kTCNzC4k99DY6kQZXQIU8lxUVV4ocCWcjPvl7PSpOa42oPJWQiGouA==}
 
   replace-ext@0.0.1:
     resolution: {integrity: sha512-AFBWBy9EVRTa/LhEcG8QDP3FvpwZqmvN2QFDuJswFeaVhWnZMp8q3E6Zd90SR04PlIwfGdyVjNyLPyen/ek5CQ==}
@@ -4124,6 +4124,10 @@ packages:
     resolution: {integrity: sha512-ABHZ2/tS2JkvH1PEjxFDTUWC8dB5OsIGZP4IFLhR293GqT5Y5qB1WwL2kMPYhQW9DVgVD8Hd7I8gjwPIf5GFkw==}
     engines: {node: '>=16'}
 
+  type-fest@4.41.0:
+    resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
+    engines: {node: '>=16'}
+
   typedarray@0.0.7:
     resolution: {integrity: sha512-ueeb9YybpjhivjbHP2LdFDAjbS948fGEPj+ACAMs4xCMmh72OCOMQWBQKlaN4ZNQ04yfLSDLSx1tGRIoWimObQ==}
 
@@ -4132,11 +4136,6 @@ packages:
 
   typescript-auto-import-cache@0.3.5:
     resolution: {integrity: sha512-fAIveQKsoYj55CozUiBoj4b/7WpN0i4o74wiGY5JVUEoD0XiqDk1tJqTEjgzL2/AizKQrXxyRosSebyDzBZKjw==}
-
-  typescript@5.6.3:
-    resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
-    engines: {node: '>=14.17'}
-    hasBin: true
 
   typescript@5.8.3:
     resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
@@ -4545,11 +4544,11 @@ packages:
       typescript: ^4.9.4 || ^5.0.2
       zod: ^3
 
-  zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
-
   zod@3.24.3:
     resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
+
+  zod@3.25.67:
+    resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -4561,12 +4560,12 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@astrojs/check@0.9.4(prettier@3.5.3)(typescript@5.6.3)':
+  '@astrojs/check@0.9.4(prettier@3.5.3)(typescript@5.8.3)':
     dependencies:
-      '@astrojs/language-server': 2.15.4(prettier@3.5.3)(typescript@5.6.3)
+      '@astrojs/language-server': 2.15.4(prettier@3.5.3)(typescript@5.8.3)
       chokidar: 4.0.3
       kleur: 4.1.5
-      typescript: 5.6.3
+      typescript: 5.8.3
       yargs: 17.7.2
     transitivePeerDependencies:
       - prettier
@@ -4576,12 +4575,12 @@ snapshots:
 
   '@astrojs/internal-helpers@0.4.1': {}
 
-  '@astrojs/language-server@2.15.4(prettier@3.5.3)(typescript@5.6.3)':
+  '@astrojs/language-server@2.15.4(prettier@3.5.3)(typescript@5.8.3)':
     dependencies:
       '@astrojs/compiler': 2.12.0
       '@astrojs/yaml2ts': 0.2.2
       '@jridgewell/sourcemap-codec': 1.5.0
-      '@volar/kit': 2.4.10(typescript@5.6.3)
+      '@volar/kit': 2.4.10(typescript@5.8.3)
       '@volar/language-core': 2.4.10
       '@volar/language-server': 2.4.10
       '@volar/language-service': 2.4.10
@@ -4624,12 +4623,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@3.1.9(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3))':
+  '@astrojs/mdx@3.1.9(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3))':
     dependencies:
       '@astrojs/markdown-remark': 5.3.0
       '@mdx-js/mdx': 3.1.0(acorn@8.14.1)
       acorn: 8.14.1
-      astro: 4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3)
+      astro: 4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3)
       es-module-lexer: 1.6.0
       estree-util-visit: 2.0.0
       gray-matter: 4.0.3
@@ -4674,17 +4673,17 @@ snapshots:
     dependencies:
       sitemap: 8.0.0
       stream-replace-string: 2.0.0
-      zod: 3.24.3
+      zod: 3.25.67
 
-  '@astrojs/starlight@0.28.6(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3))':
+  '@astrojs/starlight@0.28.6(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3))':
     dependencies:
-      '@astrojs/mdx': 3.1.9(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3))
+      '@astrojs/mdx': 3.1.9(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3))
       '@astrojs/sitemap': 3.3.1
       '@pagefind/default-ui': 1.3.0
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
-      astro: 4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3)
-      astro-expressive-code: 0.35.6(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3))
+      astro: 4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3)
+      astro-expressive-code: 0.35.6(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.3
@@ -6122,12 +6121,12 @@ snapshots:
 
   '@vladfrangu/async_event_emitter@2.4.6': {}
 
-  '@volar/kit@2.4.10(typescript@5.6.3)':
+  '@volar/kit@2.4.10(typescript@5.8.3)':
     dependencies:
       '@volar/language-service': 2.4.10
       '@volar/typescript': 2.4.10
       typesafe-path: 0.2.2
-      typescript: 5.6.3
+      typescript: 5.8.3
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.0.8
 
@@ -6262,12 +6261,12 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-expressive-code@0.35.6(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3)):
+  astro-expressive-code@0.35.6(astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3)):
     dependencies:
-      astro: 4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3)
+      astro: 4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3)
       rehype-expressive-code: 0.35.6
 
-  astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.6.3):
+  astro@4.16.18(@types/node@20.17.6)(lightningcss@1.29.2)(rollup@4.40.2)(typescript@5.8.3):
     dependencies:
       '@astrojs/compiler': 2.12.0
       '@astrojs/internal-helpers': 0.4.1
@@ -6320,7 +6319,7 @@ snapshots:
       semver: 7.7.1
       shiki: 1.29.2
       tinyexec: 0.3.2
-      tsconfck: 3.1.5(typescript@5.6.3)
+      tsconfck: 3.1.5(typescript@5.8.3)
       unist-util-visit: 5.0.0
       vfile: 6.0.3
       vite: 5.4.14(@types/node@20.17.6)(lightningcss@1.29.2)
@@ -6330,7 +6329,7 @@ snapshots:
       yargs-parser: 21.1.1
       zod: 3.24.3
       zod-to-json-schema: 3.24.5(zod@3.24.3)
-      zod-to-ts: 1.2.0(typescript@5.6.3)(zod@3.24.3)
+      zod-to-ts: 1.2.0(typescript@5.8.3)(zod@3.24.3)
     optionalDependencies:
       sharp: 0.33.5
     transitivePeerDependencies:
@@ -6702,7 +6701,7 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 5.0.3
 
-  dotenv@16.4.5: {}
+  dotenv@16.5.0: {}
 
   dset@3.1.4: {}
 
@@ -8696,9 +8695,9 @@ snapshots:
       mdast-util-to-markdown: 2.1.2
       unified: 11.0.5
 
-  remeda@2.21.3:
+  remeda@2.23.0:
     dependencies:
-      type-fest: 4.40.0
+      type-fest: 4.41.0
 
   replace-ext@0.0.1: {}
 
@@ -9154,9 +9153,9 @@ snapshots:
 
   ts-mixer@6.0.4: {}
 
-  tsconfck@3.1.5(typescript@5.6.3):
+  tsconfck@3.1.5(typescript@5.8.3):
     optionalDependencies:
-      typescript: 5.6.3
+      typescript: 5.8.3
 
   tslib@2.8.1: {}
 
@@ -9177,6 +9176,8 @@ snapshots:
 
   type-fest@4.40.0: {}
 
+  type-fest@4.41.0: {}
+
   typedarray@0.0.7: {}
 
   typesafe-path@0.2.2: {}
@@ -9184,8 +9185,6 @@ snapshots:
   typescript-auto-import-cache@0.3.5:
     dependencies:
       semver: 7.7.1
-
-  typescript@5.6.3: {}
 
   typescript@5.8.3: {}
 
@@ -9607,13 +9606,13 @@ snapshots:
     dependencies:
       zod: 3.24.3
 
-  zod-to-ts@1.2.0(typescript@5.6.3)(zod@3.24.3):
+  zod-to-ts@1.2.0(typescript@5.8.3)(zod@3.24.3):
     dependencies:
-      typescript: 5.6.3
+      typescript: 5.8.3
       zod: 3.24.3
 
-  zod@3.23.8: {}
-
   zod@3.24.3: {}
+
+  zod@3.25.67: {}
 
   zwitch@2.0.4: {}
