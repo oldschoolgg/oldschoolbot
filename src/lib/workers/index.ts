@@ -17,6 +17,7 @@ export interface KillWorkerArgs {
 	onTask: boolean;
 	catacombs?: boolean;
 	slayerMaster?: MonsterSlayerMaster;
+	ori?: boolean;
 	lootTableTertiaryChanges: [string, number][];
 }
 
