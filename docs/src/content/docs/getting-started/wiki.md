@@ -129,4 +129,6 @@ To upload an image to the wiki, follow these steps:
 
 These are here for debugging/testing purposes.
 
-[[/gear equip gear_setup\:Melee auto\:melee_strength]]
+A command mention [[/gear equip gear_setup\:Melee auto\:melee_strength]] in the middle of some text
+
+This is [Testing](/) [links](/) in the [middle](/) of some [text](/) test
