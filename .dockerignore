@@ -10,3 +10,4 @@ coverage
 .env.local
 docs
 data
+**/node_modules/**

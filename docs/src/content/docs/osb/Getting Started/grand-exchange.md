@@ -48,6 +48,6 @@ Currently, all users will have 3 base slots for buying or selling items. More sl
 
 - 1 for each of 100/250/1,000/2,000 total levels
 - 1 for each of 30%/60%/90%/95% total CL completion
-- 1 for each of 10k/20k/30k [BSO leagues points](https://bso-wiki.oldschool.gg/leagues)
+- 1 for each of 10k/20k/30k [BSO leagues points](/bso/leagues/)
 
 In addition to this, players with T3 patron automatically have 10 extra GE slots (for a total of 24).
