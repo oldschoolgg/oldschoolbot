@@ -239,7 +239,7 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 	});
 
 	// If no username available, fetch it
-	if (!user?.username) {
+	if (!user?.username && !process.env.TEST) {
 		const djsUser = await globalClient.users.fetch(id).catch(() => null);
 		if (djsUser) {
 			user = await prisma.user.update({
