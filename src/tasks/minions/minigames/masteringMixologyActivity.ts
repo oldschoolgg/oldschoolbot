@@ -23,10 +23,10 @@ export function masteringMixologyWeightedRandom<T extends WeightedItem>(items: r
 	const total = items.reduce((sum, item) => sum + item.weight, 0);
 	let roll = randFloat(0, total);
 	for (const item of items) {
+		if (roll < item.weight) return item;
 		roll -= item.weight;
-		if (roll <= 0) return item;
 	}
-	return items[items.length - 1];
+	return items[0];
 }
 
 export const MixologyPasteCreationTask: MinionTask = {

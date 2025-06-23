@@ -2,6 +2,7 @@ import { formatDuration, mentionCommand, stringMatches } from '@oldschoolgg/tool
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { QuestID } from '../../../lib/minions/data/quests';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type {
 	MasteringMixologyContractActivityTaskOptions,
@@ -302,7 +303,12 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 		);
 	}).length;
 	if (totalAvailable === 0) {
-		return `You don't have enough paste to complete any contract. Try creating more first.`;
+		return `You're out of paste! Each contract requires 30 paste (3 batches of 10). \nCreate more using ${mentionCommand(
+			globalClient,
+			'minigames',
+			'mastering_mixology',
+			'create'
+		)} before starting any contracts.`;
 	}
 
 	const contractTime = Time.Hour / 343;
@@ -332,4 +338,16 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 	});
 
 	return `${user.minionName} is now attempting ${contracts} Mastering Mixology contract${contracts > 1 ? 's' : ''}. If enough paste is available, the trip will take ${formatDuration(duration)}.`;
+}
+
+export async function MasteringMixologyStatusCommand(user: MUser) {
+	const { mixology_mox_points, mixology_aga_points, mixology_lye_points } = user.user;
+	const moxPaste = user.bank.amount('Mox paste');
+	const agaPaste = user.bank.amount('Aga paste');
+	const lyePaste = user.bank.amount('Lye paste');
+	const kc = await getMinigameScore(user.id, 'mastering_mixology');
+
+	return `You have ${mixology_mox_points.toLocaleString()} Mox points, ${mixology_aga_points.toLocaleString()} Aga points and ${mixology_lye_points.toLocaleString()} Lye points.
+You have ${moxPaste.toLocaleString()}x Mox paste, ${agaPaste.toLocaleString()}x Aga paste and ${lyePaste.toLocaleString()}x Lye paste.
+You have completed ${kc} Mastering Mixology contracts.`;
 }

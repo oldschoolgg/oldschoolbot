@@ -1,6 +1,7 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
+import { Bank, type ItemBank } from 'oldschooljs/dist/meta/types';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
@@ -48,6 +49,7 @@ import {
 import {
 	MasteringMixologyBuyCommand,
 	MasteringMixologyContractStartCommand,
+	MasteringMixologyStatusCommand,
 	MixologyPasteCreationCommand,
 	masteringMixologyBuyables,
 	mixologyHerbs
@@ -86,6 +88,7 @@ import {
 	volcanicMineStatsCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import type { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import type { NMZStrategy } from './../../lib/constants';
 import { NMZ_STRATEGY } from './../../lib/constants';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
@@ -665,14 +668,20 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'herb',
 							description: 'The herb you want to use for paste.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async (value, { id }) => {
+								const raw = await mahojiUsersSettingsFetch(id, { bank: true });
+								const bank = new Bank(raw.bank as ItemBank);
+
 								return mixologyHerbs
 									.filter(h => (!value ? true : h.name.toLowerCase().includes(value.toLowerCase())))
-									.slice(0, 25)
-									.map(h => ({
-										name: h.name,
-										value: h.name
-									}));
+									.map(h => {
+										const qty = bank.amount(h.name);
+										return {
+											name: `${h.name}${qty > 0 ? ` (${qty}x Owned)` : ''}`,
+											value: h.name
+										};
+									})
+									.slice(0, 25);
 							}
 						},
 						{
@@ -725,6 +734,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 							max_value: 1000
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'status',
+					description: 'Show your mixology status.'
 				}
 			]
 		},
@@ -1205,6 +1219,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				quantity?: number;
 			};
 			buy?: { name: string; quantity?: number };
+			status?: {};
 		};
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
@@ -1443,6 +1458,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.mastering_mixology?.start) {
 			return MasteringMixologyContractStartCommand(user, channelID, options.mastering_mixology.start.contracts);
 		}
+
+		if (options.mastering_mixology?.status) {
+			return MasteringMixologyStatusCommand(user);
+		}
+
 		/**
 		 *
 		 * Tears of Guthix
