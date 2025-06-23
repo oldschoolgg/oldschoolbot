@@ -9,7 +9,7 @@ import type {
 	RepliableInteraction,
 	StringSelectMenuInteraction
 } from 'discord.js';
-import { DiscordAPIError } from 'discord.js';
+import { DiscordAPIError, MessageFlags } from 'discord.js';
 
 import { SILENT_ERROR } from '../constants';
 import { logErrorForInteraction } from './logError';
@@ -51,7 +51,9 @@ export async function deferInteraction(
 	if (!interaction.deferred && !wasDeferred.has(interaction.id)) {
 		wasDeferred.add(interaction.id);
 		try {
-			await interaction.deferReply({ ephemeral });
+			const options: { flags?: number } = {};
+			if (ephemeral) options.flags = MessageFlags.Ephemeral;
+			await interaction.deferReply(options);
 		} catch (err) {
 			logErrorForInteraction(err, interaction);
 		}
