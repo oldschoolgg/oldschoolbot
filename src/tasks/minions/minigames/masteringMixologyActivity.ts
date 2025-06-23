@@ -78,6 +78,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 		};
 		let totalPoints = 0;
 		let actualDuration = 0;
+		const contractBaseRate = Time.Hour / 343;
 
 		const pasteUsage: Record<'Mox' | 'Lye' | 'Aga', number> = {
 			Mox: 0,
@@ -142,7 +143,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			pointsEarned.Lye += basePoints.Lye;
 			pointsEarned.Aga += basePoints.Aga;
 
-			const contractDuration = getMixologyContractDuration(Time.Hour / 343);
+			const contractDuration = getMixologyContractDuration(contractBaseRate);
 
 			actualDuration += contractDuration;
 
