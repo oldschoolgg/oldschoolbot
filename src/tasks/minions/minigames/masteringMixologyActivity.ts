@@ -87,12 +87,14 @@ export const MasteringMixologyContractTask: MinionTask = {
 
 		const currentLevel = user.skillLevel(SkillsEnum.Herblore);
 		for (let i = 0; i < quantity; i++) {
+			const currentBank = user.bank.clone();
+
 			const availableContracts = mixologyContracts.filter(contract => {
 				const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
 				for (const p of contract.pasteSequence) counts[p] += 10;
 				return (
 					currentLevel >= contract.requiredLevel &&
-					Object.entries(counts).every(([p, c]) => user.bank.amount(`${p} paste`) >= c)
+					Object.entries(counts).every(([p, c]) => currentBank.amount(`${p} paste`) >= c)
 				);
 			});
 
