@@ -901,6 +901,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		if (options.sync_commands) {
 			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: Array.from(globalClient.mahojiClient.commands.values()),
 					guildID: globalConfig.supportServerID
@@ -914,17 +915,20 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
 			if (global) {
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: globalCommands,
 					guildID: null
 				});
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: guildCommands,
 					guildID: guildID.toString()
 				});
 			} else {
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: totalCommands,
 					guildID: guildID.toString()
@@ -934,6 +938,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			// If not in production, remove all global commands.
 			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: [],
 					guildID: null
