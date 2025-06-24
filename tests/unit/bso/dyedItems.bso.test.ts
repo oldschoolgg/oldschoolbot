@@ -1,9 +1,9 @@
 import { uniqueArr } from 'e';
 import { expect, test } from 'vitest';
 
+import { isSuperUntradeable } from '../../../src/lib/bso/bsoUtil';
 import { combinedTmbUmbEmbTables } from '../../../src/lib/bsoOpenables';
 import { dyedItems } from '../../../src/lib/dyedItems';
-import { isSuperUntradeable } from '../../../src/lib/util';
 import itemIsTradeable from '../../../src/lib/util/itemIsTradeable';
 
 test('No duplicate dyed items', () => {

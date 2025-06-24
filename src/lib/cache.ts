@@ -17,3 +17,5 @@ export const giveawayCache = new LRUCache<number, Giveaway>({
 	ttlAutopurge: true,
 	ttlResolution: Time.Second
 });
+
+export const usernameWithBadgesCache = new Map<string, string>();

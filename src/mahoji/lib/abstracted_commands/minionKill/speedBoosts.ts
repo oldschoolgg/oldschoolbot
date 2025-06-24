@@ -348,11 +348,12 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 	cannonBoost,
 	{
 		description: 'Barrage/Bursting',
-		run: ({ monster, attackStyles, combatMethods }) => {
+		run: ({ monster, attackStyles, combatMethods, isInWilderness }) => {
 			const isBarraging = combatMethods.includes('barrage');
 			const isBursting = combatMethods.includes('burst');
+			const canBarrageMonster = monster.canBarrage || (monster.id === Monsters.Jelly.id && isInWilderness);
 
-			if (!isBarraging && !isBursting) return null;
+			if (!canBarrageMonster || (!isBarraging && !isBursting)) return null;
 
 			let newAttackStyles = [...attackStyles];
 			if (!newAttackStyles.includes(SkillsEnum.Magic)) {
@@ -374,7 +375,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes(SkillsEnum.Magic) && monster.canBarrage) {
+			if (isBursting && attackStyles.includes(SkillsEnum.Magic)) {
 				return {
 					percentageReduction: boostIceBurst,
 					consumables: [iceBurstConsumables],

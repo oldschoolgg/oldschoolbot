@@ -780,7 +780,7 @@ setCustomItem(
 			}
 		}
 	},
-	(getOSItem('Twisted bow').price + getOSItem('Zaryte bow').price) * 1.1
+	(getOSItem('Twisted bow').price! + getOSItem('Zaryte bow').price!) * 1.1
 );
 // ----------
 // MMMR

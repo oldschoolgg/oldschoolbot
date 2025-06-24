@@ -508,7 +508,8 @@ model User {
 
   cached_networth_value BigInt?
 
-  username String? @db.VarChar(32)
+  username             String? @db.VarChar(32)
+  username_with_badges String? @db.VarChar()
 
   geListings        GEListing[]
   bingo_participant BingoParticipant[]

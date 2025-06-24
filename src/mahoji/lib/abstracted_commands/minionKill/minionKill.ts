@@ -158,7 +158,7 @@ export async function minionKillCommand(
 		});
 	}
 
-	const { bob, usingCannon, cannonMulti, chinning, hasWildySupplies } = result.currentTaskOptions;
+	const { bob, usingCannon, cannonMulti, chinning, died, pkEncounters, hasWildySupplies } = result.currentTaskOptions;
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 		mi: monster.id,
 		userID: user.id,
@@ -171,6 +171,8 @@ export async function minionKillCommand(
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
 		chinning: !chinning ? undefined : chinning,
 		bob: !bob ? undefined : bob,
+		died,
+		pkEncounters,
 		hasWildySupplies,
 		isInWilderness: result.isInWilderness === true ? true : undefined,
 		attackStyles: result.attackStyles,

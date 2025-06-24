@@ -4,11 +4,11 @@ import { Bank } from 'oldschooljs';
 import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { BitField, PeakTier } from '../../../../lib/constants';
 import { Eatables } from '../../../../lib/data/eatables';
+import { convertAttackStyleToGearSetup } from '../../../../lib/gear/functions/convertAttackStyleToGearSetup';
 import { calculateMonsterFoodRaw } from '../../../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import { removeFoodFromUserRaw } from '../../../../lib/minions/functions/removeFoodFromUser';
 import type { Peak } from '../../../../lib/tickers';
-import { convertAttackStyleToGearSetup } from '../../../../lib/util';
 import { calcWildyPKChance } from '../../../../lib/util/calcWildyPkChance';
 import type { BoostArgs, BoostResult } from './speedBoosts';
 
@@ -145,7 +145,7 @@ export const postBoostEffects: PostBoostEffect[] = [
 					'Your minion brought some supplies to survive potential pkers. (Handed back after trip if lucky)'
 				);
 			}
-			const { pkCount, died, chanceString } = calcWildyPKChance(
+			const { pkEncounters, died, chanceString } = calcWildyPKChance(
 				currentPeak,
 				gearBank,
 				monster,
@@ -162,9 +162,10 @@ export const postBoostEffects: PostBoostEffect[] = [
 			return {
 				message: messages.join(', '),
 				confirmation: confirmationString,
+				itemCost: antiPKSupplies,
 				changes: {
-					pkEncounters: pkCount,
-					died: died,
+					pkEncounters,
+					died,
 					hasWildySupplies
 				}
 			};

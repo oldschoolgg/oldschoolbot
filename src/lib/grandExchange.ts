@@ -14,8 +14,9 @@ import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
 
+import { isGEUntradeable } from './bso/bsoUtil';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { assert, generateGrandExchangeID, isGEUntradeable, itemNameFromID, makeComponents, toKMB } from './util';
+import { assert, generateGrandExchangeID, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -123,7 +124,7 @@ class GrandExchangeSingleton {
 		maxTotalPrice: ONE_TRILLION,
 		buyLimit: {
 			interval: Time.Hour * 4,
-			fallbackBuyLimit: (item: Item) => (item.price > 1_000_000 ? 1 : 1000)
+			fallbackBuyLimit: (item: Item) => ((item.price ?? 0) > 1_000_000 ? 1 : 1000)
 		},
 		tax: {
 			// Tax per item

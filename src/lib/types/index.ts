@@ -1,4 +1,5 @@
 import type { BaseMessageOptions } from 'discord.js';
+
 import type { SkillsEnum } from '../skilling/types';
 
 export interface ItemBank {
@@ -38,11 +39,3 @@ export type CategoryFlag =
 	| 'utility'
 	| 'fun'
 	| 'simulation';
-
-export interface IDiscordSettings {
-	Roles: Record<string, string>;
-	Channels: Record<string, string>;
-	Emojis: Record<string, string>;
-	SupportServer: string;
-	BotID: string;
-}
