@@ -4,7 +4,7 @@ import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateO
 import { Bank } from 'oldschooljs';
 
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { sumArr } from 'e';
+import { sumArr, Time } from 'e';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
@@ -27,8 +27,9 @@ import {
 	makeBirdHouseTripButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
-	makeOpenSeedPackButton,
-	makeRepeatTripButton
+       makeOpenSeedPackButton,
+       makeRepeatTripButton,
+       makeTearsOfGuthixButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
 
@@ -222,9 +223,21 @@ export async function handleTripFinish(
 		}
 	}
 
-	if (_components) {
-		components.push(..._components);
-	}
+        if (_components) {
+                components.push(..._components);
+        }
+
+       // Tears of Guthix start button if ready
+       if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
+               const stats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
+               const last = Number(stats.last_tears_of_guthix_timestamp);
+               const ready =
+                       user.QP >= 43 &&
+                       (last === -1 || last === 0 || Date.now() - last >= Time.Day * 7);
+               if (ready) {
+                       components.push(makeTearsOfGuthixButton());
+               }
+       }
 
 	handleTriggerShootingStar(user, data, components);
 
