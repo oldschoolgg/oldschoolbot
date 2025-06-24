@@ -2,7 +2,13 @@ import { writeFileSync } from 'node:fs';
 import fetch from 'node-fetch';
 
 import { Monsters } from '../src';
-import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '../src/meta/monsterData';
+import {
+	Element,
+	type MonsterAttackType,
+	type MonsterAttribute,
+	type MonsterData,
+	type MonsterSlayerMaster
+} from '../src/meta/monsterData';
 
 import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
@@ -51,6 +57,8 @@ interface Monster {
 	defence_crush: number;
 	defence_magic: number;
 	defence_ranged: number;
+	elemental_weakness_type: number;
+	elemental_weakness_percent: number;
 	attack_accuracy: number;
 	melee_strength: number;
 	ranged_strength: number;
@@ -85,6 +93,8 @@ const transformData = (data: any): MonsterData => {
 		dcrush,
 		dmagic,
 		drange,
+		elementalweaknesstype,
+		elementalweaknesspercent,
 		attributes
 	} = data;
 	attributes ??= [];
@@ -127,6 +137,10 @@ const transformData = (data: any): MonsterData => {
 		defenceCrush: Number(dcrush ?? 0),
 		defenceMagic: Number(dmagic ?? 0),
 		defenceRanged: Number(drange ?? 0),
+		elementalWeakness: Element[elementalweaknesstype as keyof typeof Element]
+			? Element[elementalweaknesstype as keyof typeof Element]
+			: undefined,
+		elementalPercent: elementalweaknesspercent ? Number(elementalweaknesspercent) : undefined,
 		attackAccuracy: 0,
 		meleeStrength: 0,
 		rangedStrength: 0,
@@ -142,7 +156,7 @@ export default async function prepareMonsters(): Promise<void> {
 	const allMonsters: { [key: string]: Monster } = await (async () => {
 		try {
 			const response = await fetch(
-				'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/d760e5eada60cec1a4e62d4e6f8c62462fb86b0c/docs/monsters-complete.json'
+				'https://raw.githubusercontent.com/DayV-git/osrsreboxed-db/4c34c0e65f1fb463816b0f827ef4fad2bea3ad16/docs/monsters-complete.json'
 			);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch data: ${response.statusText}`);
@@ -196,7 +210,8 @@ export default async function prepareMonsters(): Promise<void> {
 			meleeStrength: mon.melee_strength ?? 0,
 			rangedStrength: mon.ranged_strength ?? 0,
 			magicDamage: mon.magic_damage ?? 0,
-
+			elementalWeakness: mon.elemental_weakness_type > 0 ? mon.elemental_weakness_type : undefined,
+			elementalPercent: mon.elemental_weakness_percent > 0 ? mon.elemental_weakness_percent : undefined,
 			isSlayerMonster: mon.slayer_monster,
 			slayerLevelRequired: mon.slayer_level ?? 0,
 			slayerXP: mon.slayer_xp ?? 0,
