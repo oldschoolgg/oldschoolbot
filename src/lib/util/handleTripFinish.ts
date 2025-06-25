@@ -8,6 +8,10 @@ import { Time, sumArr } from 'e';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import {
+	tearsOfGuthixSkillReqs,
+	tearsofGuthixIronmanReqs
+} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
@@ -20,11 +24,12 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { formatList } from '../util';
+import { formatList, hasSkillReqs } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
+	makeClaimDailyButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
@@ -207,9 +212,23 @@ export async function handleTripFinish(
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
 			const stats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
 			const last = Number(stats.last_tears_of_guthix_timestamp);
-			const ready = user.QP >= 43 && (last === -1 || last === 0 || Date.now() - last >= Time.Day * 7);
-			if (ready) {
+			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
+			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
+			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsofGuthixIronmanReqs)[0] : true;
+
+			if (user.QP >= 43 && ready && meetsSkillReqs && meetsIronmanReqs) {
 				components.push(makeTearsOfGuthixButton());
+			}
+		}
+
+		// Minion daily button if ready
+		if (!user.bitfield.includes(BitField.DisableDailyButton)) {
+			const stats = await user.fetchStats({ last_daily_timestamp: true });
+			const last = Number(stats.last_daily_timestamp);
+			const ready = last <= 0 || Date.now() - last >= Time.Hour * 12;
+
+			if (ready) {
+				components.push(makeClaimDailyButton());
 			}
 		}
 

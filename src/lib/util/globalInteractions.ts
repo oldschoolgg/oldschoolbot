@@ -118,6 +118,14 @@ export function makeAutoSlayButton() {
 		.setStyle(ButtonStyle.Secondary);
 }
 
+export function makeClaimDailyButton() {
+	return new ButtonBuilder()
+		.setCustomId('CLAIM_DAILY')
+		.setLabel('Minion Daily')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('493286312854683654');
+}
+
 const reactionTimeLimits = {
 	0: Time.Hour * 12,
 	[PerkTier.One]: Time.Hour * 12,
