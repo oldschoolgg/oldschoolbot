@@ -12,7 +12,8 @@ import { makeComponents } from '../../../lib/util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
-	makeBirdHouseTripButton
+	makeBirdHouseTripButton,
+	makeClaimDailyButton
 } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
@@ -88,13 +89,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 	const buttons: ButtonBuilder[] = [];
 
 	if (dailyIsReady.isReady && !user.bitfield.includes(BitField.DisableDailyButton)) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('CLAIM_DAILY')
-				.setLabel('Claim Daily')
-				.setEmoji('493286312854683654')
-				.setStyle(ButtonStyle.Secondary)
-		);
+		buttons.push(makeClaimDailyButton());
 	}
 
 	if (minionIsBusy) {
