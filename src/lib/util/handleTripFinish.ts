@@ -9,8 +9,8 @@ import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import {
-	tearsOfGuthixSkillReqs,
-	tearsofGuthixIronmanReqs
+	tearsOfGuthixIronmanReqs,
+	tearsOfGuthixSkillReqs
 } from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
@@ -208,13 +208,17 @@ export async function handleTripFinish(
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
 
+		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats({
+			last_tears_of_guthix_timestamp: true,
+			last_daily_timestamp: true
+		});
+
 		// Tears of Guthix start button if ready
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
-			const stats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
-			const last = Number(stats.last_tears_of_guthix_timestamp);
+			const last = Number(last_tears_of_guthix_timestamp);
 			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
 			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
-			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsofGuthixIronmanReqs)[0] : true;
+			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
 
 			if (user.QP >= 43 && ready && meetsSkillReqs && meetsIronmanReqs) {
 				components.push(makeTearsOfGuthixButton());
@@ -223,8 +227,7 @@ export async function handleTripFinish(
 
 		// Minion daily button if ready
 		if (!user.bitfield.includes(BitField.DisableDailyButton)) {
-			const stats = await user.fetchStats({ last_daily_timestamp: true });
-			const last = Number(stats.last_daily_timestamp);
+			const last = Number(last_daily_timestamp);
 			const ready = last <= 0 || Date.now() - last >= Time.Hour * 12;
 
 			if (ready) {

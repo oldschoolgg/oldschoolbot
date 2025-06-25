@@ -13,7 +13,7 @@ export const tearsOfGuthixSkillReqs = {
 	[SkillsEnum.Crafting]: 20,
 	[SkillsEnum.Mining]: 20
 };
-export const tearsofGuthixIronmanReqs = {
+export const tearsOfGuthixIronmanReqs = {
 	[SkillsEnum.Smithing]: 49,
 	[SkillsEnum.Thieving]: 36,
 	[SkillsEnum.Slayer]: 35
@@ -24,13 +24,13 @@ function getTearsOfGuthixMissingIronmanMessage(user: MUser): string | null {
 
 	const skills = user.skillsAsLevels;
 	let skillsMatch = 0;
-	for (const [skill, level] of Object.entries(tearsofGuthixIronmanReqs)) {
+	for (const [skill, level] of Object.entries(tearsOfGuthixIronmanReqs)) {
 		if (skills[skill as SkillsEnum] >= level) skillsMatch++;
 	}
 
 	if (skillsMatch === 0) {
 		return `As an Ironman, you also need one of the following requirements:${formatSkillRequirements(
-			tearsofGuthixIronmanReqs,
+			tearsOfGuthixIronmanReqs,
 			true
 		)}`;
 	}
@@ -79,9 +79,7 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 		} ${missingIronmanSkillMessage ?? ''}`.trim();
 	}
 
-	let duration = Math.min(Time.Minute * 2 + Time.Second * 0.6 * userQP, Time.Minute * 30);
-
-	if (duration > Time.Minute * 30) duration = Time.Minute * 30;
+	const duration = Math.min(Time.Minute * 2 + Time.Second * 0.6 * userQP, Time.Minute * 30);
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'tears_of_guthix',

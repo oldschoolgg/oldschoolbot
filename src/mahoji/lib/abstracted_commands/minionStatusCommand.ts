@@ -87,7 +87,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 	const status = minionStatus(user);
 	const buttons: ButtonBuilder[] = [];
 
-	if (dailyIsReady.isReady) {
+	if (dailyIsReady.isReady && !user.bitfield.includes(BitField.DisableDailyButton)) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('CLAIM_DAILY')

@@ -17,7 +17,7 @@ export async function isUsersDailyReady(
 	user: MUser
 ): Promise<{ isReady: true } | { isReady: false; durationUntilReady: number }> {
 	const stats = await user.fetchStats({ last_daily_timestamp: true });
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
 
@@ -135,7 +135,7 @@ export async function dailyCommand(
 	await userStatsUpdate(
 		user.id,
 		{
-			last_daily_timestamp: new Date().getTime()
+			last_daily_timestamp: Date.now()
 		},
 		{}
 	);
