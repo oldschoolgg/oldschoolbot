@@ -46,11 +46,11 @@ const globalInteractionActions = [
 	'FARMING_CONTRACT_EASIER',
 	'OPEN_SEED_PACK',
 	'BUY_MINION',
-        'BUY_BINGO_TICKET',
-        'NEW_SLAYER_TASK',
-        'DO_SHOOTING_STAR',
-        'CHECK_TOA',
-        'START_TOG'
+	'BUY_BINGO_TICKET',
+	'NEW_SLAYER_TASK',
+	'DO_SHOOTING_STAR',
+	'CHECK_TOA',
+	'START_TOG'
 ] as const;
 
 type GlobalInteractionAction = (typeof globalInteractionActions)[number];
@@ -87,19 +87,19 @@ export function makeAutoContractButton() {
 }
 
 export function makeRepeatTripButton() {
-        return new ButtonBuilder()
-                .setCustomId('REPEAT_TRIP')
-                .setLabel('Repeat Trip')
-                .setStyle(ButtonStyle.Secondary)
-                .setEmoji('🔁');
+	return new ButtonBuilder()
+		.setCustomId('REPEAT_TRIP')
+		.setLabel('Repeat Trip')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('🔁');
 }
 
 export function makeTearsOfGuthixButton() {
-        return new ButtonBuilder()
-                .setCustomId('START_TOG')
-                .setLabel('Start Tears of Guthix')
-                .setStyle(ButtonStyle.Secondary)
-                .setEmoji('🐍');
+	return new ButtonBuilder()
+		.setCustomId('START_TOG')
+		.setLabel('Start Tears of Guthix')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('🐍');
 }
 
 export function makeBirdHouseTripButton() {
@@ -569,31 +569,31 @@ export async function interactionHook(interaction: Interaction) {
 				...options
 			});
 		}
-                case 'DO_SHOOTING_STAR': {
-                        const star = starCache.get(user.id);
-                        starCache.delete(user.id);
-                        if (star && star.expiry > Date.now()) {
-                                const str = await shootingStarsCommand(interaction.channelId, user, star);
-                                return interactionReply(interaction, str);
-                        }
-                        return interactionReply(interaction, {
-                                content: `${
-                                        star && star.expiry < Date.now()
-                                                ? 'The Crashed Star has expired!'
-                                                : `That Crashed Star was not discovered by ${user.minionName}.`
-                                }`,
-                                ephemeral: true
-                        });
-                }
-                case 'START_TOG': {
-                        return runCommand({
-                                commandName: 'minigames',
-                                args: { tears_of_guthix: { start: {} } },
-                                bypassInhibitors: true,
-                                ...options
-                        });
-                }
-                default: {
-                }
-        }
+		case 'DO_SHOOTING_STAR': {
+			const star = starCache.get(user.id);
+			starCache.delete(user.id);
+			if (star && star.expiry > Date.now()) {
+				const str = await shootingStarsCommand(interaction.channelId, user, star);
+				return interactionReply(interaction, str);
+			}
+			return interactionReply(interaction, {
+				content: `${
+					star && star.expiry < Date.now()
+						? 'The Crashed Star has expired!'
+						: `That Crashed Star was not discovered by ${user.minionName}.`
+				}`,
+				ephemeral: true
+			});
+		}
+		case 'START_TOG': {
+			return runCommand({
+				commandName: 'minigames',
+				args: { tears_of_guthix: { start: {} } },
+				bypassInhibitors: true,
+				...options
+			});
+		}
+		default: {
+		}
+	}
 }

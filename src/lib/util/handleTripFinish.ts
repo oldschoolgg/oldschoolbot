@@ -4,7 +4,7 @@ import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateO
 import { Bank } from 'oldschooljs';
 
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { sumArr, Time } from 'e';
+import { Time, sumArr } from 'e';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
@@ -27,9 +27,9 @@ import {
 	makeBirdHouseTripButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
-       makeOpenSeedPackButton,
-       makeRepeatTripButton,
-       makeTearsOfGuthixButton
+	makeOpenSeedPackButton,
+	makeRepeatTripButton,
+	makeTearsOfGuthixButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
 
@@ -202,6 +202,17 @@ export async function handleTripFinish(
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
+
+		// Tears of Guthix start button if ready
+		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
+			const stats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
+			const last = Number(stats.last_tears_of_guthix_timestamp);
+			const ready = user.QP >= 43 && (last === -1 || last === 0 || Date.now() - last >= Time.Day * 7);
+			if (ready) {
+				components.push(makeTearsOfGuthixButton());
+			}
+		}
+
 		const birdHousedetails = await calculateBirdhouseDetails(user);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
@@ -223,21 +234,9 @@ export async function handleTripFinish(
 		}
 	}
 
-        if (_components) {
-                components.push(..._components);
-        }
-
-       // Tears of Guthix start button if ready
-       if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
-               const stats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
-               const last = Number(stats.last_tears_of_guthix_timestamp);
-               const ready =
-                       user.QP >= 43 &&
-                       (last === -1 || last === 0 || Date.now() - last >= Time.Day * 7);
-               if (ready) {
-                       components.push(makeTearsOfGuthixButton());
-               }
-       }
+	if (_components) {
+		components.push(..._components);
+	}
 
 	handleTriggerShootingStar(user, data, components);
 

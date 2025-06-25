@@ -263,11 +263,11 @@ export enum BitField {
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
-        DisableOpenableNames = 41,
-       ShowDetailedInfo = 42,
-       DisableDailyReminderDMs = 43,
-       DisableTearsOfGuthixReminderDMs = 44,
-       DisableTearsOfGuthixButton = 45
+	DisableOpenableNames = 41,
+	ShowDetailedInfo = 42,
+	DisableDailyReminderDMs = 43,
+	DisableTearsOfGuthixReminderDMs = 44,
+	DisableTearsOfGuthixButton = 45
 }
 
 interface BitFieldData {
@@ -366,26 +366,26 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-        [BitField.ShowDetailedInfo]: {
-                name: 'Show Detailed Info',
-                protected: false,
-                userConfigurable: true
-        },
-        [BitField.DisableDailyReminderDMs]: {
-                name: 'Disable Daily Reminder DMs',
-                protected: false,
-                userConfigurable: true
-        },
-       [BitField.DisableTearsOfGuthixReminderDMs]: {
-               name: 'Disable Tears of Guthix Reminder DMs',
-               protected: false,
-               userConfigurable: true
-       },
-       [BitField.DisableTearsOfGuthixButton]: {
-               name: 'Disable Tears of Guthix Trip Button',
-               protected: false,
-               userConfigurable: true
-       }
+	[BitField.ShowDetailedInfo]: {
+		name: 'Show Detailed Info',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableDailyReminderDMs]: {
+		name: 'Disable Daily Reminder DMs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableTearsOfGuthixReminderDMs]: {
+		name: 'Disable Tears of Guthix Reminder DMs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableTearsOfGuthixButton]: {
+		name: 'Disable Tears of Guthix Trip Button',
+		protected: false,
+		userConfigurable: true
+	}
 } as const;
 
 export const BadgesEnum = {

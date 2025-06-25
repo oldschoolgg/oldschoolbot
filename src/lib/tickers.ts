@@ -122,9 +122,9 @@ export const tickers: {
 		cb: async () => {
 			await processPendingActivities();
 		}
-        },
-        {
-                name: 'daily_reminders',
+	},
+	{
+		name: 'daily_reminders',
 		interval: Time.Minute * 3,
 		startupWait: Time.Minute,
 		timer: null,
@@ -157,50 +157,50 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 					{}
 				);
 				const user = await globalClient.fetchUser(row.id);
-                        await user.send({ content: str, components: makeComponents(components) }).catch(noOp);
-                        }
-                }
-        },
-        {
-                name: 'tears_of_guthix_reminders',
-                interval: Time.Hour,
-                startupWait: Time.Minute * 2,
-                timer: null,
-                cb: async () => {
-                        const result = await prisma.$queryRawUnsafe<{ id: string; last_tears_of_guthix_timestamp: bigint }[]>(
-                                `
+				await user.send({ content: str, components: makeComponents(components) }).catch(noOp);
+			}
+		}
+	},
+	{
+		name: 'tears_of_guthix_reminders',
+		interval: Time.Hour,
+		startupWait: Time.Minute * 2,
+		timer: null,
+		cb: async () => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; last_tears_of_guthix_timestamp: bigint }[]>(
+				`
 SELECT users.id, user_stats.last_tears_of_guthix_timestamp
 FROM users
 JOIN user_stats ON users.id::bigint = user_stats.user_id
 WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_tears_of_guthix_timestamp" != -1 AND user_stats."last_tears_of_guthix_timestamp" != 0 AND NOT bitfield @> '{44}'::int[] AND to_timestamp(user_stats."last_tears_of_guthix_timestamp" / 1000) < now() - INTERVAL '7 days';
 `
-                        );
-                        const togButton = new ButtonBuilder()
-                                .setCustomId('START_TOG')
-                                .setLabel('Start Tears of Guthix')
-                                .setEmoji('🐍')
-                                .setStyle(ButtonStyle.Secondary);
-                        const components = [togButton];
-                        const str = 'Your Tears of Guthix is ready!';
+			);
+			const togButton = new ButtonBuilder()
+				.setCustomId('START_TOG')
+				.setLabel('Start Tears of Guthix')
+				.setEmoji('🐍')
+				.setStyle(ButtonStyle.Secondary);
+			const components = [togButton];
+			const str = 'Your Tears of Guthix is ready!';
 
-                        for (const row of result.values()) {
-                                if (!globalConfig.isProduction) continue;
-                                if (Number(row.last_tears_of_guthix_timestamp) === -1) continue;
+			for (const row of result.values()) {
+				if (!globalConfig.isProduction) continue;
+				if (Number(row.last_tears_of_guthix_timestamp) === -1) continue;
 
-                                await userStatsUpdate(
-                                        row.id,
-                                        {
-                                                last_tears_of_guthix_timestamp: -1
-                                        },
-                                        {}
-                                );
-                                const user = await globalClient.fetchUser(row.id);
-                                await user.send({ content: str, components: makeComponents(components) }).catch(noOp);
-                        }
-                }
-        },
-        {
-                name: 'wilderness_peak_times',
+				await userStatsUpdate(
+					row.id,
+					{
+						last_tears_of_guthix_timestamp: -1
+					},
+					{}
+				);
+				const user = await globalClient.fetchUser(row.id);
+				await user.send({ content: str, components: makeComponents(components) }).catch(noOp);
+			}
+		}
+	},
+	{
+		name: 'wilderness_peak_times',
 		timer: null,
 		interval: Time.Hour * 24,
 		cb: async () => {
