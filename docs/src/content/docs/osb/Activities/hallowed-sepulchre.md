@@ -6,6 +6,17 @@ The Hallowed Sepulchre is an agility minigame where you can unlock the Dark Grac
 
 To start the Sepulchre, use [[/minigames sepulchre start]].
 
+### Fletching while Running
+
+You can fletch specific "zero-time" items during each lap by specifying the
+`fletching:` option when starting a run:
+
+- `[[/minigames sepulchre start fletching\:Rune dart]]`
+
+This works with darts, arrows, bolts, broad arrows, broad bolts, amethyst broad
+bolts, tipped bolts, tipped dragon bolts and javelins. The necessary materials
+are removed from your bank and do not extend the trip duration.
+
 ## Requirements
 
 - Any set of Graceful - **MUST BE EQUIPPED IN THE SKILLING SETUP**
