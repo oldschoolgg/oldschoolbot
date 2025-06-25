@@ -126,8 +126,7 @@ export const mahojiClient = new MahojiClient({
 				inhibited,
 				continueDeltaMillis: null
 			})
-	},
-	djsClient: client
+	}
 });
 
 declare global {

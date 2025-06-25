@@ -24,7 +24,7 @@ import {
 	createCanvas,
 	drawImageWithOutline,
 	fillTextXTimesInCtx,
-	getClippedRegionImage,
+	getClippedRegion,
 	loadImage,
 	registerFont
 } from '../lib/util/canvasUtil';
@@ -68,12 +68,12 @@ const { floor, ceil } = Math;
 type BGSpriteName = 'dark' | 'default' | 'transparent';
 export interface IBgSprite {
 	name: BGSpriteName;
-	border: CanvasImage;
-	borderCorner: CanvasImage;
-	borderTitle: CanvasImage;
-	repeatableBg: CanvasImage;
-	tabBorderInactive: CanvasImage;
-	tabBorderActive: CanvasImage;
+	border: Canvas;
+	borderCorner: Canvas;
+	borderTitle: Canvas;
+	repeatableBg: Canvas;
+	tabBorderInactive: Canvas;
+	tabBorderActive: Canvas;
 	oddListColor: string;
 }
 
@@ -315,12 +315,12 @@ export class BankImageTask {
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {
 				name: bgName,
-				border: await getClippedRegionImage(d, 0, 0, 18, 6),
-				borderCorner: await getClippedRegionImage(d, 19, 0, 6, 6),
-				borderTitle: await getClippedRegionImage(d, 26, 0, 18, 6),
-				tabBorderInactive: await getClippedRegionImage(d, 0, 7, 75, 20),
-				tabBorderActive: await getClippedRegionImage(d, 0, 45, 75, 20),
-				repeatableBg: await getClippedRegionImage(d, 93, 0, 96, 65),
+				border: getClippedRegion(d, 0, 0, 18, 6),
+				borderCorner: getClippedRegion(d, 19, 0, 6, 6),
+				borderTitle: getClippedRegion(d, 26, 0, 18, 6),
+				tabBorderInactive: getClippedRegion(d, 0, 7, 75, 20),
+				tabBorderActive: getClippedRegion(d, 0, 45, 75, 20),
+				repeatableBg: getClippedRegion(d, 93, 0, 96, 65),
 				oddListColor: colors[bgName]
 			};
 		}
@@ -399,7 +399,7 @@ export class BankImageTask {
 		}
 	}
 
-	async getItemImage(itemID: number, user?: MUser): Promise<CanvasImage> {
+	async getItemImage(itemID: number, user?: MUser): Promise<Canvas | CanvasImage> {
 		if (user && user.user.icon_pack_id !== null) {
 			for (const pack of ItemIconPacks) {
 				if (pack.id === user.user.icon_pack_id) {
@@ -411,7 +411,7 @@ export class BankImageTask {
 		const data = this.spriteSheetData[itemID];
 		if (data) {
 			const [sX, sY, width, height] = data;
-			const image = await getClippedRegionImage(this.spriteSheetImage, sX, sY, width, height);
+			const image = getClippedRegion(this.spriteSheetImage, sX, sY, width, height);
 			return image;
 		}
 
@@ -449,7 +449,15 @@ export class BankImageTask {
 		outline?: { outlineColor: string; alpha: number };
 	}) {
 		const data = this.spriteSheetData[itemID];
-		const drawOptions = {
+		const drawOptions: {
+			image: CanvasImage | Canvas;
+			sourceX: number;
+			sourceY: number;
+			sourceWidth: number;
+			sourceHeight: number;
+			destX: number;
+			destY: number;
+		} = {
 			image: this.spriteSheetImage,
 			sourceX: -1,
 			sourceY: -1,
