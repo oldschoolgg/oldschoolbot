@@ -146,32 +146,16 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableOpenableNames
 	},
 	{
-		name: 'Disable daily reminder DMs',
-		bit: BitField.DisableDailyReminderDMs,
-		canToggle: async user => {
-			if (user.perkTier() < PerkTier.Two) {
-				return { result: false, message: patronMsg(PerkTier.Two) };
-			}
-			return { result: true };
-		}
-	},
-	{
-		name: 'Disable Tears of Guthix reminder DMs',
-		bit: BitField.DisableTearsOfGuthixReminderDMs,
-		canToggle: async user => {
-			if (user.perkTier() < PerkTier.Two) {
-				return { result: false, message: patronMsg(PerkTier.Two) };
-			}
-			return { result: true };
-		}
-	},
-	{
 		name: 'Disable Tears of Guthix Trip Button',
 		bit: BitField.DisableTearsOfGuthixButton
 	},
 	{
 		name: 'Show Detailed Info',
 		bit: BitField.ShowDetailedInfo
+	},
+	{
+		name: 'Disable Minion Daily Button',
+		bit: BitField.DisableDailyButton
 	}
 ];
 
