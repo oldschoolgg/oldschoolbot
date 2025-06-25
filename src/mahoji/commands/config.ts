@@ -141,14 +141,38 @@ const toggles: UserConfigToggle[] = [
 		name: 'Disable wilderness high peak time warning',
 		bit: BitField.DisableHighPeakTimeWarning
 	},
-	{
-		name: 'Disable Names on Opens',
-		bit: BitField.DisableOpenableNames
-	},
-	{
-		name: 'Show Detailed Info',
-		bit: BitField.ShowDetailedInfo
-	}
+        {
+                name: 'Disable Names on Opens',
+                bit: BitField.DisableOpenableNames
+        },
+        {
+                name: 'Disable daily reminder DMs',
+                bit: BitField.DisableDailyReminderDMs,
+                canToggle: async user => {
+                        if (user.perkTier() < PerkTier.Two) {
+                                return { result: false, message: patronMsg(PerkTier.Two) };
+                        }
+                        return { result: true };
+                }
+        },
+       {
+               name: 'Disable Tears of Guthix reminder DMs',
+               bit: BitField.DisableTearsOfGuthixReminderDMs,
+               canToggle: async user => {
+                       if (user.perkTier() < PerkTier.Two) {
+                               return { result: false, message: patronMsg(PerkTier.Two) };
+                       }
+                       return { result: true };
+               }
+       },
+       {
+               name: 'Disable Tears of Guthix Trip Button',
+               bit: BitField.DisableTearsOfGuthixButton
+       },
+       {
+               name: 'Show Detailed Info',
+               bit: BitField.ShowDetailedInfo
+       }
 ];
 
 async function handleToggle(user: MUser, name: string, interaction?: ChatInputCommandInteraction) {
