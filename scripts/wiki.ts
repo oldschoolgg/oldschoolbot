@@ -91,12 +91,26 @@ async function renderMonstersMarkdown() {
 				`- ${monster.healAmountNeeded ? `Requires food in your bank to kill, the amount needed is heavily reduced based on your gear/experience. ${monster.minimumHealAmount ? `You must have/use food that heals atleast ${monster.healAmountNeeded}HP` : ''}` : 'No Food Needed'}`
 			);
 			if (monster.itemCost) {
-				md.addLine('**Item Cost**');
-				for (const consumable of Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost]) {
-					const allConsumables = [consumable, ...[consumable.alternativeConsumables ?? []]].flat();
-					md.addLine(
-						`- ${allConsumables.map(c => `${c.itemCost.itemIDs.map(id => `[[${name(id)}]]`).join(' ')}`).join(' or ')}`
-					);
+				const itemCostArray = Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost];
+				const requiredItems = itemCostArray.filter(ic => !ic.optional);
+				const optionalItems = itemCostArray.filter(ic => ic.optional);
+				if (requiredItems.length > 0) {
+					md.addLine('**Required Items**');
+					for (const consumable of requiredItems) {
+						const allConsumables = [consumable, ...[consumable.alternativeConsumables ?? []]].flat();
+						md.addLine(
+							`- ${allConsumables.map(c => `${c.itemCost.itemIDs.map(id => `[[${name(id)}]]`).join(' ')}`).join(' or ')}`
+						);
+					}
+				}
+				if (optionalItems.length > 0) {
+					md.addLine('**Optional Items**');
+					for (const consumable of optionalItems) {
+						const allConsumables = [consumable, ...[consumable.alternativeConsumables ?? []]].flat();
+						md.addLine(
+							`- ${allConsumables.map(c => `${c.itemCost.itemIDs.map(id => `[[${name(id)}]]`).join(' ')}`).join(' or ')} (${consumable.boostPercent ?? 0}% boost)`
+						);
+					}
 				}
 			}
 

@@ -1,6 +1,5 @@
 import { calcPercentOfNum, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import { z } from 'zod';
 
 import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
@@ -28,17 +27,8 @@ function radasBlessing(user: MUser) {
 	return { blessingEquipped: false, blessingChance: 0 };
 }
 
-const allFishIDs = Fishing.Fishes.map(fish => fish.id);
-
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
-	dataSchema: z.object({
-		type: z.literal('Fishing'),
-		fishID: z.number().refine(fishID => allFishIDs.includes(fishID), {
-			message: 'Invalid fish ID'
-		}),
-		quantity: z.number().min(1)
-	}),
 	async run(data: FishingActivityTaskOptions) {
 		const { fishID, quantity, userID, channelID, duration } = data;
 		let { flakesQuantity } = data;

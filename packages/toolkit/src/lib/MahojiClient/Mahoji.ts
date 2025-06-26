@@ -51,10 +51,12 @@ export function convertCommandToAPICommand(
 }
 
 export async function bulkUpdateCommands({
+	djsClient,
 	client,
 	commands,
 	guildID
 }: {
+	djsClient: Client;
 	client: MahojiClient;
 	commands: ICommand[];
 	guildID: Snowflake | null;
@@ -66,16 +68,18 @@ export async function bulkUpdateCommands({
 			? Routes.applicationCommands(client.applicationID)
 			: Routes.applicationGuildCommands(client.applicationID, guildID);
 
-	return client.djsClient.rest.put(route, {
+	return djsClient.rest.put(route, {
 		body: apiCommands
 	});
 }
 
 export async function updateCommand({
+	djsClient,
 	client,
 	command,
 	guildID
 }: {
+	djsClient: Client;
 	client: MahojiClient;
 	command: ICommand;
 	guildID: Snowflake | null;
@@ -85,7 +89,7 @@ export async function updateCommand({
 		guildID === null
 			? Routes.applicationCommands(client.applicationID)
 			: Routes.applicationGuildCommands(client.applicationID, guildID ?? command.guildID);
-	return client.djsClient.rest.post(route, {
+	return djsClient.rest.post(route, {
 		body: apiCommand
 	});
 }
@@ -204,7 +208,6 @@ export type ICommand = Readonly<{
 interface MahojiOptions {
 	applicationID: string;
 	handlers?: Handlers;
-	djsClient: Client;
 	commands: ICommand[];
 }
 
@@ -227,12 +230,10 @@ export class MahojiClient {
 	commands: Map<string, ICommand> = new Map();
 	applicationID: string;
 	handlers: Handlers;
-	djsClient: Client;
 
 	constructor(options: MahojiOptions) {
 		this.applicationID = options.applicationID;
 		this.handlers = options.handlers ?? {};
-		this.djsClient = options.djsClient;
 
 		for (const command of options.commands) {
 			this.commands.set(command.name, command);
@@ -297,14 +298,14 @@ export class MahojiClient {
 					member: interaction.member,
 					channelID: interaction.channelId,
 					guildID: interaction.guild?.id,
-					userID: interaction.user.id,
-					djsClient: this.djsClient
+					userID: interaction.user.id
 				});
 				if (!response) return;
 				if (interaction.replied) {
 					return interaction.followUp(response);
 				}
 				if (interaction.deferred) {
+					// @ts-expect-error
 					return interaction.editReply(response);
 				}
 				const replyResponse = await interaction.reply(response);

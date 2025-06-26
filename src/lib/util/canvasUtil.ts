@@ -150,19 +150,6 @@ export async function canvasToBuffer(canvas: Canvas): Promise<Buffer> {
 	return canvas.png;
 }
 
-export async function getClippedRegionImage(
-	image: Image | Canvas,
-	x: number,
-	y: number,
-	width: number,
-	height: number
-) {
-	const canvas = createCanvas(width, height);
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
-	return loadImage(await canvasToBuffer(canvas));
-}
-
 export function measureTextWidth(ctx: CanvasContext, text: string) {
 	const num = ctx.measureText(text).width as number;
 	assert(typeof num === 'number');
