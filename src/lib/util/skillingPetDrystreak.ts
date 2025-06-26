@@ -3,12 +3,10 @@ import { starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCom
 import { MAX_XP } from '../constants';
 import { plunderRooms } from '../minions/data/plunder';
 import { courses } from '../skilling/skills/agility';
-import Farming from '../skilling/skills/farming';
 import Fishing from '../skilling/skills/fishing';
 import { CamdozaalMine, MotherlodeMine, ores } from '../skilling/skills/mining';
 import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
-import type { Plant } from '../skilling/types';
 import { Bank, type ItemBank, convertLVLtoXP, convertXPtoLVL } from '../util';
 import itemID from './itemID';
 
@@ -84,116 +82,91 @@ export async function squirrelDry(ironman: boolean): Promise<{ id: string; val: 
 	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
 
 	const courseMap = new Map<number, number>();
-	const courseNameMap = new Map<number, string>();
 	for (const course of courses) {
 		if (typeof course.petChance === 'number') {
 			courseMap.set(course.id, course.petChance);
-			courseNameMap.set(course.id, course.name);
 		}
 	}
 
-	const courseIDs = [...courseMap.keys()];
+	const ids = [...courseMap.keys()];
 
-	const users = await prisma.$queryRaw<
+	const res = await prisma.$queryRaw<
 		Array<{ id: string; skills_agility: number } & Record<`lap_${number}`, string>>
 	>(Prisma.sql`
 		SELECT u.id, u."skills.agility" AS skills_agility,
-		${Prisma.raw(courseIDs.map(id => `COALESCE((s."laps_scores"->>'${id}')::int, 0) AS "lap_${id}"`).join(', '))}
+			${Prisma.raw(ids.map(id => `COALESCE((s."laps_scores"->>'${id}')::int, 0) AS "lap_${id}"`).join(', '))}
 		FROM users u
 		JOIN user_stats s ON s.user_id::text = u.id
 		WHERE u."collectionLogBank"->>'20659' IS NULL
 		${ironSQL}
 	`);
 
-	const userDryData = users.map(user => {
-		const agilityXP = Number(user.skills_agility);
-		const divisor = agilityXP >= MAX_XP ? 15 : 1;
-
+	const results = res.map(row => {
+		const xp = Number(row.skills_agility);
+		const divisor = xp >= MAX_XP ? 15 : 1;
 		let totalLaps = 0;
-		let expected = 0;
+		let expectedPets = 0;
 
-		let topCourse: { id: number; qty: number } | null = null;
+		const courseExpected: [string, number, number][] = [];
 
-		for (const id of courseIDs) {
-			const laps = Number(user[`lap_${id}`] ?? 0);
+		for (const id of ids) {
+			const laps = Number(row[`lap_${id}`] ?? 0);
+			if (laps === 0) continue;
 			totalLaps += laps;
 			const rate = courseMap.get(id)! / divisor;
-			expected += laps / rate;
-
-			if (!topCourse || laps > topCourse.qty) {
-				topCourse = { id, qty: laps };
-			}
+			const expected = laps / rate;
+			const courseName = courses.find(c => c.id === id)?.name ?? `Course ${id}`;
+			courseExpected.push([courseName, laps, expected]);
+			expectedPets += expected;
 		}
 
+		// Sort to find top course by expected pet rolls
+		const topCourse = courseExpected.sort((a, b) => b[2] - a[2])[0];
+
 		return {
-			id: user.id,
-			laps: totalLaps,
-			expected,
-			topCourseName: courseNameMap.get(topCourse?.id ?? -1) ?? 'Unknown',
-			topCourseQty: topCourse?.qty ?? 0
+			id: row.id,
+			totalLaps,
+			expected: expectedPets,
+			topCourse
 		};
 	});
 
-	const top = userDryData.sort((a, b) => b.expected - a.expected).slice(0, 10);
+	const sorted = results
+		.filter(r => r.topCourse)
+		.sort((a, b) => b.expected - a.expected)
+		.slice(0, 10);
 
-	return top.map(u => ({
-		id: u.id,
-		val: `${u.laps.toLocaleString()} laps (${u.topCourseQty.toLocaleString()} from ${u.topCourseName}) – ${u.expected.toFixed(2)}x expected`
-	}));
+	return sorted.map(r => {
+		const [courseName, laps, expectedFromCourse] = r.topCourse!;
+		return {
+			id: r.id,
+			val: `${laps.toLocaleString()} laps at ${courseName} (${expectedFromCourse.toFixed(2)}x from ${courseName}) – ${r.totalLaps.toLocaleString()} total laps – ${r.expected.toFixed(2)}x expected`
+		};
+	});
 }
 
 export async function tanglerootDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
 
-	const rows = await prisma.$queryRaw<{ id: string; item_id: number; qty: number; farming_xp: bigint }[]>(Prisma.sql`
-		SELECT fc.user_id::text AS id, fc.item_id, COUNT(*)::int AS qty, u."skills.farming" AS farming_xp
-		FROM farmed_crop fc
-		JOIN users u ON fc.user_id::text = u.id
-		WHERE fc.date_harvested IS NOT NULL
-				AND u."collectionLogBank"->>'20661' IS NULL
-				${ironSQL}
-		GROUP BY fc.user_id, fc.item_id, u."skills.farming"
-`);
+	const users = await prisma.$queryRaw<{ id: string; farming_xp: bigint }[]>(Prisma.sql`
+		SELECT u.id, u."skills.farming" AS farming_xp
+		FROM users u
+		WHERE u."collectionLogBank"->>'20661' IS NULL
+		${ironSQL}
+	`);
 
-	const plantMap = new Map<number, Plant>();
-	for (const plant of Farming.Plants) {
-		if (plant.givesCrops && plant.petChance > 0) {
-			plantMap.set(plant.id, plant);
-		}
-	}
-
-	const userData: Record<string, { total: number; expected: number; crops: [string, number, number][] }> = {};
-
-	for (const row of rows) {
-		const plant = plantMap.get(row.item_id);
-		if (!plant) continue;
-
-		if (!userData[row.id]) {
-			userData[row.id] = { total: 0, expected: 0, crops: [] };
-		}
-
-		const xp = Number(row.farming_xp);
-		const chance = computeChance(plant.petChance, xp);
-		const expectedFromThisCrop = row.qty / chance;
-		userData[row.id].crops.push([plant.name, row.qty, expectedFromThisCrop]);
-		userData[row.id].total += row.qty;
-		userData[row.id].expected += expectedFromThisCrop;
-	}
-
-	const sorted = Object.entries(userData)
-		.sort((a, b) => b[1].expected - a[1].expected)
+	const sorted = users
+		.map(u => ({
+			id: u.id,
+			xp: Number(u.farming_xp)
+		}))
+		.sort((a, b) => b.xp - a.xp)
 		.slice(0, 10);
 
-	return sorted.map(([id, data]) => {
-		// Sort crops by quantity descending
-		const topCrop = data.crops.sort((a, b) => b[1] - a[1])[0];
-		const topCropStr = topCrop ? `${topCrop[1]} ${topCrop[0]}` : 'No data';
-
-		return {
-			id,
-			val: `${topCropStr} (${data.total.toLocaleString()} total – ${data.expected.toFixed(2)}x expected)`
-		};
-	});
+	return sorted.map(u => ({
+		id: u.id,
+		val: `${(u.xp / 1_000_000).toFixed(1)}m`
+	}));
 }
 
 export async function beaverDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
