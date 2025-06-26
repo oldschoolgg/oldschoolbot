@@ -12,6 +12,13 @@ import type { Plant } from '../skilling/types';
 import { Bank, type ItemBank, convertLVLtoXP, convertXPtoLVL } from '../util';
 import itemID from './itemID';
 
+function computeChance(base: number, xp: number): number {
+	const level = convertXPtoLVL(xp);
+	let chance = Math.max(base - level * 25, 1);
+	if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+	return chance;
+}
+
 export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
 
@@ -41,13 +48,10 @@ export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string;
 		${ironSQL}
 	`);
 
-	function calcExpected(count: number, base: number, reduction: number, xp: number): number {
-		const level = convertXPtoLVL(xp);
-		let chance = Math.max(base - level * reduction, 1);
-		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+	function calcExpected(count: number, base: number, xp: number): number {
+		const chance = computeChance(base, xp);
 		return count / chance;
 	}
-
 	const withExpected = res
 		.map(user => {
 			const xp = Number(user.hunter_level);
@@ -56,9 +60,9 @@ export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string;
 			const black = Number(user.black);
 
 			const expected =
-				calcExpected(grey, chinRates.grey.base, chinRates.grey.reduction, xp) +
-				calcExpected(red, chinRates.red.base, chinRates.red.reduction, xp) +
-				calcExpected(black, chinRates.black.base, chinRates.black.reduction, xp);
+				calcExpected(grey, chinRates.grey.base, xp) +
+				calcExpected(red, chinRates.red.base, xp) +
+				calcExpected(black, chinRates.black.base, xp);
 
 			const total = grey + red + black;
 			const actual = 0; // has no pet
@@ -158,9 +162,7 @@ export async function tanglerootDry(ironman: boolean): Promise<{ id: string; val
 		}
 
 		const xp = Number(row.farming_xp);
-		const level = convertXPtoLVL(xp);
-		let chance = Math.max(plant.petChance - level * 25, 1);
-		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+		const chance = computeChance(plant.petChance, xp);
 		const expectedFromThisCrop = row.qty / chance;
 		userData[row.id].crops.push([plant.name, row.qty, expectedFromThisCrop]);
 		userData[row.id].total += row.qty;
@@ -216,9 +218,8 @@ export async function beaverDry(ironman: boolean): Promise<{ id: string; val: st
 		if (!users[row.id]) users[row.id] = { total: 0, expected: 0, logs: [] };
 
 		const xp = Number(row.woodcutting_xp);
-		const level = convertXPtoLVL(xp);
-		let chance = Math.max(logInfo.petChance - level * 25, 1);
-		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+		const chance = computeChance(logInfo.petChance, xp);
+
 		const expected = row.qty / chance;
 		users[row.id].total += row.qty;
 		users[row.id].expected += expected;
@@ -314,13 +315,11 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 		if (!totals) continue;
 
 		const xp = Number(u.runecraft);
-		const level = convertXPtoLVL(xp);
-		const divisor = xp >= MAX_XP ? 15 : 1;
 		const expected =
-			totals.bloodDarkAltar / ((altarChances.blood - level * 25) / divisor) +
-			totals.soul / ((altarChances.soul - level * 25) / divisor) +
-			totals.ourania / ((altarChances.ourania - level * 25) / divisor) +
-			totals.other / ((altarChances.default - level * 25) / divisor);
+			totals.bloodDarkAltar / computeChance(altarChances.blood, xp) +
+			totals.soul / computeChance(altarChances.soul, xp) +
+			totals.ourania / computeChance(altarChances.ourania, xp) +
+			totals.other / computeChance(altarChances.default, xp);
 
 		const breakdown = (
 			[
@@ -369,9 +368,7 @@ export async function rockyDry(ironman: boolean): Promise<{ id: string; val: str
 	const userData: Record<string, { total: number; expected: number; sources: Record<string, number> }> = {};
 
 	function addData(id: string, xp: number, name: string, qty: number, base: number) {
-		const level = convertXPtoLVL(xp);
-		let chance = Math.max(base - level * 25, 1);
-		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+		const chance = computeChance(base, xp);
 		const expected = qty / chance;
 		if (!userData[id]) userData[id] = { total: 0, expected: 0, sources: {} };
 		userData[id].total += qty;
@@ -475,15 +472,12 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 
 	function addData(id: string, xp: number, name: string, qty: number, base: number) {
 		if (!userData[id]) userData[id] = { total: 0, expected: 0, sources: [] };
-		const level = convertXPtoLVL(xp);
-		let chance = Math.max(base - level * 25, 1);
-		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+		const chance = computeChance(base, xp);
 		const expected = qty / chance;
 		userData[id].total += qty;
 		userData[id].expected += expected;
 		userData[id].sources.push([name, qty, expected]);
 	}
-
 	for (const row of miningRows) {
 		const ore = ores.find(o => o.id === row.ore_id);
 		if (!ore || !ore.petChance) continue;
@@ -557,8 +551,6 @@ export async function heronDry(ironman: boolean): Promise<{ id: string; val: str
 		const id = row.user_id.toString();
 		const xp = levelMap.get(id);
 		if (xp === undefined) continue;
-		const level = convertXPtoLVL(xp);
-		const divisor = xp >= MAX_XP ? 15 : 1;
 
 		const fish = allFish.find(f => f.name.toLowerCase() === row.key.toLowerCase());
 		if (!fish || !fish.petChance) continue;
@@ -566,7 +558,7 @@ export async function heronDry(ironman: boolean): Promise<{ id: string; val: str
 		const qty = new Bank(row.loot as ItemBank).amount(fish.id);
 		if (qty === 0) continue;
 
-		const expected = qty / ((fish.petChance - level * 25) / divisor);
+		const expected = qty / computeChance(fish.petChance, xp);
 
 		if (!users[id]) users[id] = { total: 0, expected: 0, fish: [] };
 		users[id].total += qty;
@@ -609,8 +601,9 @@ export async function heronDry(ironman: boolean): Promise<{ id: string; val: str
 			users[row.id] = { total: 0, expected: 0, fish: [] };
 		}
 		const xp = levelMap.get(row.id) ?? 0;
-		const chance = xp >= MAX_XP ? Math.floor(aerialPetChance / 15) : aerialPetChance;
+		const chance = computeChance(aerialPetChance, xp);
 		const expected = total / chance;
+
 		users[row.id].total += total;
 		users[row.id].expected += expected;
 		users[row.id].fish.push(['Aerial fishing', total, expected]);
