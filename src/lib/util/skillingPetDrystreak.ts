@@ -84,50 +84,61 @@ export async function squirrelDry(ironman: boolean): Promise<{ id: string; val: 
 	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
 
 	const courseMap = new Map<number, number>();
+	const courseNameMap = new Map<number, string>();
 	for (const course of courses) {
 		if (typeof course.petChance === 'number') {
 			courseMap.set(course.id, course.petChance);
+			courseNameMap.set(course.id, course.name);
 		}
 	}
 
-	const ids = [...courseMap.keys()];
+	const courseIDs = [...courseMap.keys()];
 
-	const res = await prisma.$queryRaw<
+	const users = await prisma.$queryRaw<
 		Array<{ id: string; skills_agility: number } & Record<`lap_${number}`, string>>
 	>(Prisma.sql`
-   SELECT u.id, u."skills.agility" AS skills_agility,
-			${Prisma.raw(ids.map(id => `COALESCE((s."laps_scores"->>'${id}')::int, 0) AS "lap_${id}"`).join(', '))}
-	FROM users u
-	JOIN user_stats s ON s.user_id::text = u.id
-	WHERE u."collectionLogBank"->>'20659' IS NULL
-	${ironSQL}
-`);
+		SELECT u.id, u."skills.agility" AS skills_agility,
+		${Prisma.raw(courseIDs.map(id => `COALESCE((s."laps_scores"->>'${id}')::int, 0) AS "lap_${id}"`).join(', '))}
+		FROM users u
+		JOIN user_stats s ON s.user_id::text = u.id
+		WHERE u."collectionLogBank"->>'20659' IS NULL
+		${ironSQL}
+	`);
 
-	const results = res.map(row => {
-		const xp = Number(row.skills_agility);
-		const divisor = xp >= MAX_XP ? 15 : 1;
+	const userDryData = users.map(user => {
+		const agilityXP = Number(user.skills_agility);
+		const divisor = agilityXP >= MAX_XP ? 15 : 1;
+
 		let totalLaps = 0;
-		let expectedPets = 0;
+		let expected = 0;
 
-		for (const id of ids) {
-			const laps = Number(row[`lap_${id}`] ?? 0);
+		let topCourse: { id: number; qty: number } | null = null;
+
+		for (const id of courseIDs) {
+			const laps = Number(user[`lap_${id}`] ?? 0);
 			totalLaps += laps;
 			const rate = courseMap.get(id)! / divisor;
-			expectedPets += laps / rate;
+			expected += laps / rate;
+
+			if (!topCourse || laps > topCourse.qty) {
+				topCourse = { id, qty: laps };
+			}
 		}
 
 		return {
-			id: row.id,
-			expected: expectedPets,
-			laps: totalLaps
+			id: user.id,
+			laps: totalLaps,
+			expected,
+			topCourseName: courseNameMap.get(topCourse?.id ?? -1) ?? 'Unknown',
+			topCourseQty: topCourse?.qty ?? 0
 		};
 	});
 
-	const sorted = results.sort((a, b) => b.expected - a.expected).slice(0, 10);
+	const top = userDryData.sort((a, b) => b.expected - a.expected).slice(0, 10);
 
-	return sorted.map(r => ({
-		id: r.id,
-		val: `${r.laps.toLocaleString()} laps - ${r.expected.toFixed(2)}x expected`
+	return top.map(u => ({
+		id: u.id,
+		val: `${u.laps.toLocaleString()} laps (${u.topCourseQty.toLocaleString()} from ${u.topCourseName}) – ${u.expected.toFixed(2)}x expected`
 	}));
 }
 
