@@ -435,6 +435,18 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 			GROUP BY u.id, ore_id
 	`);
 
+	const volcanicMineRows = await prisma.$queryRaw<{ id: string; qty: number }[]>(Prisma.sql`
+	SELECT u.id::text, SUM((a.data->>'quantity')::int) AS qty
+	FROM activity a
+	JOIN users u ON a.user_id::text = u.id
+	WHERE a.type = 'VolcanicMine'
+		AND a.completed = true
+		AND a.data->>'quantity' IS NOT NULL
+		AND u."collectionLogBank"->>'13321' IS NULL
+		${ironSQL}
+	GROUP BY u.id
+`);
+
 	const motherlodeRows = await prisma.$queryRaw<{ id: string; qty: number }[]>(Prisma.sql`
 			SELECT u.id::text, SUM((a.data->>'quantity')::int) AS qty
 			FROM activity a
@@ -468,48 +480,68 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 			GROUP BY u.id, size
 	`);
 
-	const userData: Record<string, { total: number; expected: number; sources: [string, number, number][] }> = {};
+	const userData: Record<string, { total: number; expected: number; sources: Record<string, number> }> = {};
 
-	function addData(id: string, xp: number, name: string, qty: number, base: number) {
-		if (!userData[id]) userData[id] = { total: 0, expected: 0, sources: [] };
+	function addData(id: string, xp: number, qty: number | bigint, base: number, sourceType: string) {
+		if (!userData[id]) userData[id] = { total: 0, expected: 0, sources: {} };
+		const safeQty = Number(qty);
 		const chance = computeChance(base, xp);
-		const expected = qty / chance;
-		userData[id].total += qty;
+		const expected = safeQty / chance;
+		userData[id].total += safeQty;
 		userData[id].expected += expected;
-		userData[id].sources.push([name, qty, expected]);
+		userData[id].sources[sourceType] = (userData[id].sources[sourceType] ?? 0) + safeQty;
 	}
+
 	for (const row of miningRows) {
 		const ore = ores.find(o => o.id === row.ore_id);
 		if (!ore || !ore.petChance) continue;
 		const xp = levelMap.get(row.id) ?? convertLVLtoXP(ore.level);
-		addData(row.id, xp, ore.name, row.qty, ore.petChance);
+		addData(row.id, xp, Number(row.qty), ore.petChance, 'Mining');
+	}
+
+	for (const row of volcanicMineRows) {
+		const xp = levelMap.get(row.id) ?? 0;
+		addData(row.id, xp, Number(row.qty), 60_000, 'Volcanic Mine');
 	}
 
 	for (const row of motherlodeRows) {
 		const xp = levelMap.get(row.id) ?? convertLVLtoXP(MotherlodeMine.level);
-		addData(row.id, xp, MotherlodeMine.name, row.qty, MotherlodeMine.petChance!);
+		addData(row.id, xp, Number(row.qty), MotherlodeMine.petChance!, 'Mining');
 	}
 
 	for (const row of camdozaalRows) {
 		const xp = levelMap.get(row.id) ?? convertLVLtoXP(CamdozaalMine.level);
-		addData(row.id, xp, CamdozaalMine.name, row.qty, CamdozaalMine.petChance!);
+		addData(row.id, xp, Number(row.qty), CamdozaalMine.petChance!, 'Mining');
 	}
 
 	for (const row of starRows) {
 		const star = starSizes.find(s => s.size === row.size);
 		if (!star || !star.petChance) continue;
 		const xp = levelMap.get(row.id) ?? convertLVLtoXP(star.level);
-		addData(row.id, xp, `Star ${row.size}`, row.qty, star.petChance);
+		addData(row.id, xp, Number(row.qty), star.petChance, 'Shooting Stars');
 	}
 
 	const sorted = Object.entries(userData)
 		.map(([id, data]) => {
-			const top = data.sources.sort((a, b) => b[1] - a[1])[0];
+			const topSources = Object.entries(data.sources)
+				.sort((a, b) => b[1] - a[1])
+				.slice(0, 3)
+				.map(([source, qty]) => {
+					const unit = source === 'Volcanic Mine' ? 'game' : source === 'Shooting Stars' ? 'star' : 'ore';
+
+					const label = qty === 1 ? unit : `${unit}s`;
+
+					return source === 'Volcanic Mine' || source === 'Shooting Stars'
+						? `${qty.toLocaleString()} ${label} of ${source}`
+						: `${qty.toLocaleString()} ${label}`;
+				})
+				.join(', ');
+
 			return {
 				id,
 				total: data.total,
 				expected: data.expected,
-				top
+				topSources
 			};
 		})
 		.sort((a, b) => b.expected - a.expected)
@@ -517,7 +549,7 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 
 	return sorted.map(r => ({
 		id: r.id,
-		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
+		val: `${r.topSources} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
 	}));
 }
 
