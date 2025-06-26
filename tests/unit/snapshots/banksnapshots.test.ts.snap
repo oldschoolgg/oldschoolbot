@@ -2931,7 +2931,7 @@ exports[`BSO Buyables 1`] = `
     "customReq": [Function],
     "gpCost": 1000000,
     "itemCost": {},
-    "name": "Veteran cape (1 year)",
+    "name": "1 Year Veteran Items",
     "outputItems": {
       "71450": 1,
       "71456": 1,
@@ -2941,7 +2941,7 @@ exports[`BSO Buyables 1`] = `
     "customReq": [Function],
     "gpCost": 2000000,
     "itemCost": {},
-    "name": "Veteran cape (2 year)",
+    "name": "2 Year Veteran Items",
     "outputItems": {
       "71451": 1,
       "71457": 1,
@@ -2951,7 +2951,7 @@ exports[`BSO Buyables 1`] = `
     "customReq": [Function],
     "gpCost": 3000000,
     "itemCost": {},
-    "name": "Veteran cape (3 year)",
+    "name": "3 Year Veteran Items",
     "outputItems": {
       "71452": 1,
       "71458": 1,
@@ -2961,10 +2961,21 @@ exports[`BSO Buyables 1`] = `
     "customReq": [Function],
     "gpCost": 4000000,
     "itemCost": {},
-    "name": "Veteran cape (4 year)",
+    "name": "4 Year Veteran Items",
     "outputItems": {
       "71453": 1,
       "71459": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 5000000,
+    "itemCost": {},
+    "name": "5 Year Veteran Items",
+    "outputItems": {
+      "73412": 1,
+      "73413": 1,
+      "73414": 1,
     },
   },
   {

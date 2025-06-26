@@ -14244,3 +14244,24 @@ setCustomItem(73_411, 'Shrimpling', 'Coal', {
 		cantDropFromMysteryBoxes: true
 	}
 });
+
+setCustomItem(73412, 'Veteran cape (5 year)', 'Red cape', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73413, 'Veteran hood (5 year)', 'Bronze full helm', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73414, 'Veteran staff (5 year)', 'Staff of fire', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
