@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import { MAX_XP } from '../constants';
 import { plunderRooms } from '../minions/data/plunder';
 import { courses } from '../skilling/skills/agility';
 import Farming from '../skilling/skills/farming';
@@ -8,7 +9,7 @@ import { CamdozaalMine, MotherlodeMine, ores } from '../skilling/skills/mining';
 import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
 import type { Plant } from '../skilling/types';
-import { Bank, type ItemBank, convertXPtoLVL } from '../util';
+import { Bank, type ItemBank, convertLVLtoXP, convertXPtoLVL } from '../util';
 import itemID from './itemID';
 
 export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
@@ -40,23 +41,24 @@ export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string;
 		${ironSQL}
 	`);
 
-	function calcExpected(count: number, base: number, reduction: number, level: number): number {
-		const chance = Math.max(base - level * reduction, 1);
-		const perRollChance = 1 / chance;
-		return count * perRollChance;
+	function calcExpected(count: number, base: number, reduction: number, xp: number): number {
+		const level = convertXPtoLVL(xp);
+		let chance = Math.max(base - level * reduction, 1);
+		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+		return count / chance;
 	}
 
 	const withExpected = res
 		.map(user => {
-			const level = convertXPtoLVL(Number(user.hunter_level));
+			const xp = Number(user.hunter_level);
 			const grey = Number(user.grey);
 			const red = Number(user.red);
 			const black = Number(user.black);
 
 			const expected =
-				calcExpected(grey, chinRates.grey.base, chinRates.grey.reduction, level) +
-				calcExpected(red, chinRates.red.base, chinRates.red.reduction, level) +
-				calcExpected(black, chinRates.black.base, chinRates.black.reduction, level);
+				calcExpected(grey, chinRates.grey.base, chinRates.grey.reduction, xp) +
+				calcExpected(red, chinRates.red.base, chinRates.red.reduction, xp) +
+				calcExpected(black, chinRates.black.base, chinRates.black.reduction, xp);
 
 			const total = grey + red + black;
 			const actual = 0; // has no pet
@@ -89,21 +91,24 @@ export async function squirrelDry(ironman: boolean): Promise<{ id: string; val: 
 	const res = await prisma.$queryRaw<
 		Array<{ id: string; skills_agility: number } & Record<`lap_${number}`, string>>
 	>(Prisma.sql`
-               SELECT users.id, users."skills.agility" AS skills_agility,
-                        ${Prisma.raw(ids.map(id => `COALESCE(("laps_scores"->>'${id}')::int, 0) AS "lap_${id}"`).join(', '))}
-                FROM users
-                WHERE "collectionLogBank"->>'20659' IS NULL
-                ${ironSQL}
-        `);
+   SELECT u.id, u."skills.agility" AS skills_agility,
+			${Prisma.raw(ids.map(id => `COALESCE((s."laps_scores"->>'${id}')::int, 0) AS "lap_${id}"`).join(', '))}
+	FROM users u
+	JOIN user_stats s ON s.user_id::text = u.id
+	WHERE u."collectionLogBank"->>'20659' IS NULL
+	${ironSQL}
+`);
 
 	const results = res.map(row => {
+		const xp = Number(row.skills_agility);
+		const divisor = xp >= MAX_XP ? 15 : 1;
 		let totalLaps = 0;
 		let expectedPets = 0;
 
 		for (const id of ids) {
 			const laps = Number(row[`lap_${id}`] ?? 0);
 			totalLaps += laps;
-			const rate = courseMap.get(id)!;
+			const rate = courseMap.get(id)! / divisor;
 			expectedPets += laps / rate;
 		}
 
@@ -125,15 +130,15 @@ export async function squirrelDry(ironman: boolean): Promise<{ id: string; val: 
 export async function tanglerootDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
 
-	const rows = await prisma.$queryRaw<{ id: string; item_id: number; qty: number }[]>(Prisma.sql`
-		SELECT fc.user_id::text AS id, fc.item_id, COUNT(*)::int AS qty
+	const rows = await prisma.$queryRaw<{ id: string; item_id: number; qty: number; farming_xp: bigint }[]>(Prisma.sql`
+		SELECT fc.user_id::text AS id, fc.item_id, COUNT(*)::int AS qty, u."skills.farming" AS farming_xp
 		FROM farmed_crop fc
 		JOIN users u ON fc.user_id::text = u.id
 		WHERE fc.date_harvested IS NOT NULL
-			AND u."collectionLogBank"->>'20661' IS NULL
-			${ironSQL}
-		GROUP BY fc.user_id, fc.item_id
-	`);
+				AND u."collectionLogBank"->>'20661' IS NULL
+				${ironSQL}
+		GROUP BY fc.user_id, fc.item_id, u."skills.farming"
+`);
 
 	const plantMap = new Map<number, Plant>();
 	for (const plant of Farming.Plants) {
@@ -152,7 +157,11 @@ export async function tanglerootDry(ironman: boolean): Promise<{ id: string; val
 			userData[row.id] = { total: 0, expected: 0, crops: [] };
 		}
 
-		const expectedFromThisCrop = row.qty / plant.petChance;
+		const xp = Number(row.farming_xp);
+		const level = convertXPtoLVL(xp);
+		let chance = Math.max(plant.petChance - level * 25, 1);
+		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+		const expectedFromThisCrop = row.qty / chance;
 		userData[row.id].crops.push([plant.name, row.qty, expectedFromThisCrop]);
 		userData[row.id].total += row.qty;
 		userData[row.id].expected += expectedFromThisCrop;
@@ -177,17 +186,19 @@ export async function tanglerootDry(ironman: boolean): Promise<{ id: string; val
 export async function beaverDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
 
-	const rows = await prisma.$queryRaw<{ id: string; log_id: number; qty: number }[]>(Prisma.sql`
-		SELECT u.id::text, (a.data->>'logID')::int AS log_id, SUM((a.data->>'quantity')::int) AS qty
+	const rows = await prisma.$queryRaw<
+		{ id: string; log_id: number; qty: number; woodcutting_xp: bigint }[]
+	>(Prisma.sql`
+		SELECT u.id::text, (a.data->>'logID')::int AS log_id, SUM((a.data->>'quantity')::int) AS qty, u."skills.woodcutting" AS woodcutting_xp
 		FROM activity a
 		JOIN users u ON a.user_id::text = u.id
 		WHERE a.type = 'Woodcutting'
-			AND a.completed = true
-			AND a.data->>'logID' IS NOT NULL
-			AND u."collectionLogBank"->>'13322' IS NULL
-			${ironSQL}
-		GROUP BY u.id, log_id
-	`);
+				AND a.completed = true
+				AND a.data->>'logID' IS NOT NULL
+				AND u."collectionLogBank"->>'13322' IS NULL
+				${ironSQL}
+		GROUP BY u.id, log_id, u."skills.woodcutting"
+`);
 
 	const logMap = new Map<number, { name: string; petChance: number }>();
 	for (const log of Woodcutting.Logs) {
@@ -204,7 +215,11 @@ export async function beaverDry(ironman: boolean): Promise<{ id: string; val: st
 
 		if (!users[row.id]) users[row.id] = { total: 0, expected: 0, logs: [] };
 
-		const expected = row.qty / logInfo.petChance;
+		const xp = Number(row.woodcutting_xp);
+		const level = convertXPtoLVL(xp);
+		let chance = Math.max(logInfo.petChance - level * 25, 1);
+		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+		const expected = row.qty / chance;
 		users[row.id].total += row.qty;
 		users[row.id].expected += expected;
 		users[row.id].logs.push([logInfo.name, row.qty, expected]);
@@ -229,7 +244,7 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
 
 	// Get users with no Rift guardian pet
-	const users = await prisma.$queryRaw<{ id: string; runecraft: number }[]>(Prisma.sql`
+	const users = await prisma.$queryRaw<{ id: string; runecraft: bigint }[]>(Prisma.sql`
 		SELECT u.id::text, u."skills.runecraft" AS runecraft
 		 FROM users u
 		 WHERE u."collectionLogBank"->>'20667' IS NULL
@@ -298,12 +313,14 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 		const totals = runeTotalsPerUser[u.id];
 		if (!totals) continue;
 
-		const level = u.runecraft;
+		const xp = Number(u.runecraft);
+		const level = convertXPtoLVL(xp);
+		const divisor = xp >= MAX_XP ? 15 : 1;
 		const expected =
-			totals.bloodDarkAltar / (altarChances.blood - level * 25) +
-			totals.soul / (altarChances.soul - level * 25) +
-			totals.ourania / (altarChances.ourania - level * 25) +
-			totals.other / (altarChances.default - level * 25);
+			totals.bloodDarkAltar / ((altarChances.blood - level * 25) / divisor) +
+			totals.soul / ((altarChances.soul - level * 25) / divisor) +
+			totals.ourania / ((altarChances.ourania - level * 25) / divisor) +
+			totals.other / ((altarChances.default - level * 25) / divisor);
 
 		const breakdown = (
 			[
@@ -333,76 +350,67 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 export async function rockyDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
 
-	const users = await prisma.$queryRaw<{ id: string; thieving: number }[]>(Prisma.sql`
-		SELECT u.id::text, u."skills.thieving" AS thieving
-		 FROM users u
-		 WHERE u."collectionLogBank"->>'20663' IS NULL
-		 ${ironSQL}
- `);
-
-	const allLootTracks = await prisma.lootTrack.findMany({
+	const users = await prisma.$queryRaw<{ id: string; xp: bigint }[]>(Prisma.sql`
+		SELECT u.id::text, u."skills.thieving" AS xp
+		FROM users u
+		WHERE u."collectionLogBank"->>'20663' IS NULL
+		${ironSQL}
+`);
+	const activities = await prisma.activity.findMany({
 		where: {
-			type: 'Skilling',
+			completed: true,
+			type: { in: ['Pickpocket', 'Plunder'] },
 			user_id: { in: users.map(u => BigInt(u.id)) }
-		}
+		},
+		select: { user_id: true, type: true, data: true }
 	});
 
-	const userTotals: Record<string, { pickpocket: number; stall: number; plunder: number }> = {};
+	const xpMap = new Map(users.map(u => [u.id, Number(u.xp)]));
+	const userData: Record<string, { total: number; expected: number; sources: Record<string, number> }> = {};
 
-	for (const row of allLootTracks) {
-		if (!row.user_id || !row.loot || !row.key) continue;
-		if (typeof row.loot !== 'object' || Array.isArray(row.loot)) continue;
+	function addData(id: string, xp: number, name: string, qty: number, base: number) {
+		const level = convertXPtoLVL(xp);
+		let chance = Math.max(base - level * 25, 1);
+		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+		const expected = qty / chance;
+		if (!userData[id]) userData[id] = { total: 0, expected: 0, sources: {} };
+		userData[id].total += qty;
+		userData[id].expected += expected;
+		userData[id].sources[name] = (userData[id].sources[name] ?? 0) + qty;
+	}
 
-		const userID = row.user_id.toString();
-		if (!userTotals[userID]) {
-			userTotals[userID] = { pickpocket: 0, stall: 0, plunder: 0 };
-		}
+	for (const act of activities) {
+		const id = act.user_id.toString();
+		const xp = xpMap.get(id);
+		if (!xp) continue;
+		const data = (act.data as Partial<Record<string, unknown>>) ?? {};
 
-		const lootBank = new Bank(row.loot as ItemBank);
-
-		if (row.key.startsWith('Pyramid Plunder (Room')) {
-			const roomNumber = Number.parseInt(row.key.match(/Room (\d)/)?.[1] ?? '0');
-			const room = plunderRooms.find(r => r.number === roomNumber);
-			if (!room) continue;
-			userTotals[userID].plunder += lootBank.amount('Rocky') * room.rockyChance;
-		} else {
-			const stealable = stealables.find(s => s.name.toLowerCase() === row.key.toLowerCase());
-			if (!stealable) continue;
-			if (stealable.type === 'stall') {
-				userTotals[userID].stall += lootBank.amount('Rocky') * stealable.petChance;
-			} else {
-				userTotals[userID].pickpocket += lootBank.amount('Rocky') * stealable.petChance;
+		if (act.type === 'Pickpocket') {
+			const qty = Number(data.successfulQuantity ?? 0);
+			const monsterID = data.monsterID as number | undefined;
+			const stealable = stealables.find(s => s.id === monsterID);
+			if (stealable && qty > 0) addData(id, xp, stealable.name, qty, stealable.petChance);
+		} else if (act.type === 'Plunder') {
+			const quantity = Number(data.quantity ?? 0);
+			const rooms: number[] = Array.isArray(data.rooms) ? data.rooms : [];
+			for (const roomNum of rooms) {
+				const room = plunderRooms.find(r => r.number === roomNum);
+				if (room) addData(id, xp, `Room ${room.number}`, quantity, room.rockyChance);
 			}
 		}
 	}
 
-	const results = users.map(u => {
-		const totals = userTotals[u.id] ?? { pickpocket: 0, stall: 0, plunder: 0 };
-		const expected = totals.pickpocket + totals.stall + totals.plunder;
+	const results = Object.entries(userData)
+		.map(([id, data]) => {
+			const top = Object.entries(data.sources).sort((a, b) => b[1] - a[1])[0];
+			return { id, expected: data.expected, total: data.total, top };
+		})
+		.sort((a, b) => b.expected - a.expected)
+		.slice(0, 10);
 
-		const breakdown = [
-			['Pickpocket', totals.pickpocket],
-			['Stall', totals.stall],
-			['Plunder', totals.plunder]
-		] as [string, number][];
-
-		breakdown.sort((a, b) => b[1] - a[1]);
-
-		return {
-			id: u.id,
-			expected,
-			total: totals.pickpocket + totals.stall + totals.plunder,
-			top: breakdown[0]
-		};
-	});
-
-	const sorted = results.sort((a, b) => b.expected - a.expected).slice(0, 10);
-
-	return sorted.map(r => ({
+	return results.map(r => ({
 		id: r.id,
-		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(
-			2
-		)}x expected)`
+		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
 	}));
 }
 
@@ -416,7 +424,7 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 			${ironSQL}
 	`);
 
-	const levelMap = new Map(users.map(u => [u.id, u.mining]));
+	const levelMap = new Map(users.map(u => [u.id, Number(u.mining)]));
 
 	const miningRows = await prisma.$queryRaw<{ id: string; ore_id: number; qty: number }[]>(Prisma.sql`
 			SELECT u.id::text, (a.data->>'oreID')::int AS ore_id, SUM((a.data->>'quantity')::int) AS qty
@@ -465,9 +473,12 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 
 	const userData: Record<string, { total: number; expected: number; sources: [string, number, number][] }> = {};
 
-	function addData(id: string, name: string, qty: number, base: number, level: number) {
+	function addData(id: string, xp: number, name: string, qty: number, base: number) {
 		if (!userData[id]) userData[id] = { total: 0, expected: 0, sources: [] };
-		const expected = qty / (base - level * 25);
+		const level = convertXPtoLVL(xp);
+		let chance = Math.max(base - level * 25, 1);
+		if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+		const expected = qty / chance;
 		userData[id].total += qty;
 		userData[id].expected += expected;
 		userData[id].sources.push([name, qty, expected]);
@@ -476,25 +487,25 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 	for (const row of miningRows) {
 		const ore = ores.find(o => o.id === row.ore_id);
 		if (!ore || !ore.petChance) continue;
-		const level = levelMap.get(row.id) ?? ore.level;
-		addData(row.id, ore.name, row.qty, ore.petChance, level);
+		const xp = levelMap.get(row.id) ?? convertLVLtoXP(ore.level);
+		addData(row.id, xp, ore.name, row.qty, ore.petChance);
 	}
 
 	for (const row of motherlodeRows) {
-		const level = levelMap.get(row.id) ?? MotherlodeMine.level;
-		addData(row.id, MotherlodeMine.name, row.qty, MotherlodeMine.petChance!, level);
+		const xp = levelMap.get(row.id) ?? convertLVLtoXP(MotherlodeMine.level);
+		addData(row.id, xp, MotherlodeMine.name, row.qty, MotherlodeMine.petChance!);
 	}
 
 	for (const row of camdozaalRows) {
-		const level = levelMap.get(row.id) ?? CamdozaalMine.level;
-		addData(row.id, CamdozaalMine.name, row.qty, CamdozaalMine.petChance!, level);
+		const xp = levelMap.get(row.id) ?? convertLVLtoXP(CamdozaalMine.level);
+		addData(row.id, xp, CamdozaalMine.name, row.qty, CamdozaalMine.petChance!);
 	}
 
 	for (const row of starRows) {
 		const star = starSizes.find(s => s.size === row.size);
 		if (!star || !star.petChance) continue;
-		const level = levelMap.get(row.id) ?? star.level;
-		addData(row.id, `Star ${row.size}`, row.qty, star.petChance, level);
+		const xp = levelMap.get(row.id) ?? convertLVLtoXP(star.level);
+		addData(row.id, xp, `Star ${row.size}`, row.qty, star.petChance);
 	}
 
 	const sorted = Object.entries(userData)
@@ -539,13 +550,15 @@ export async function heronDry(ironman: boolean): Promise<{ id: string; val: str
 		 ${ironSQL}
  `);
 
-	const levelMap = new Map(fishingUsers.map(u => [u.id, u.fishing]));
+	const levelMap = new Map(fishingUsers.map(u => [u.id, Number(u.fishing)]));
 
 	for (const row of lootTrackRes) {
 		if (!row.user_id || !row.loot || !row.key) continue;
 		const id = row.user_id.toString();
-		const level = levelMap.get(id);
-		if (!level) continue;
+		const xp = levelMap.get(id);
+		if (xp === undefined) continue;
+		const level = convertXPtoLVL(xp);
+		const divisor = xp >= MAX_XP ? 15 : 1;
 
 		const fish = allFish.find(f => f.name.toLowerCase() === row.key.toLowerCase());
 		if (!fish || !fish.petChance) continue;
@@ -553,7 +566,7 @@ export async function heronDry(ironman: boolean): Promise<{ id: string; val: str
 		const qty = new Bank(row.loot as ItemBank).amount(fish.id);
 		if (qty === 0) continue;
 
-		const expected = qty / (fish.petChance - level * 25);
+		const expected = qty / ((fish.petChance - level * 25) / divisor);
 
 		if (!users[id]) users[id] = { total: 0, expected: 0, fish: [] };
 		users[id].total += qty;
@@ -595,7 +608,9 @@ export async function heronDry(ironman: boolean): Promise<{ id: string; val: str
 		if (!users[row.id]) {
 			users[row.id] = { total: 0, expected: 0, fish: [] };
 		}
-		const expected = total / aerialPetChance;
+		const xp = levelMap.get(row.id) ?? 0;
+		const chance = xp >= MAX_XP ? Math.floor(aerialPetChance / 15) : aerialPetChance;
+		const expected = total / chance;
 		users[row.id].total += total;
 		users[row.id].expected += expected;
 		users[row.id].fish.push(['Aerial fishing', total, expected]);
