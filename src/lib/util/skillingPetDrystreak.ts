@@ -70,7 +70,7 @@ export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string;
 
 	return sorted.map(u => ({
 		id: u.id,
-		val: `${u.total.toLocaleString()} caught (${u.grey.toLocaleString()} grey, ${u.red.toLocaleString()} red, ${u.black.toLocaleString()} black) - ${u.expected.toFixed(2)} expected`
+		val: `${u.total.toLocaleString()} caught (${u.grey.toLocaleString()} grey, ${u.red.toLocaleString()} red, ${u.black.toLocaleString()} black) - ${u.expected.toFixed(2)}x expected`
 	}));
 }
 
