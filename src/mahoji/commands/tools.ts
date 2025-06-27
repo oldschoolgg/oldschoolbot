@@ -43,6 +43,7 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import {
+	type DryResult,
 	babyChinchompaDry,
 	beaverDry,
 	heronDry,
@@ -369,10 +370,7 @@ interface DrystreakEntity {
 	format: (num: number | string) => string;
 }
 
-const skillingPetHandlers: Record<
-	string,
-	(ironman: boolean) => Promise<{ id: string; val: string; expected: number }[]>
-> = {
+const skillingPetHandlers: Record<string, (ironman: boolean) => Promise<DryResult[]>> = {
 	'Baby chinchompa': babyChinchompaDry,
 	Beaver: beaverDry,
 	'Giant squirrel': squirrelDry,
@@ -383,7 +381,7 @@ const skillingPetHandlers: Record<
 	Heron: heronDry
 };
 
-async function skillingPetDry(item: Item, ironman: boolean): Promise<{ id: string; val: string; expected: number }[]> {
+async function skillingPetDry(item: Item, ironman: boolean): Promise<DryResult[]> {
 	const handler = skillingPetHandlers[item.name];
 	if (!handler) return [];
 	return handler(ironman);

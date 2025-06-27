@@ -612,10 +612,7 @@ const pets: Pet[] = [
 	}
 ];
 
-export const PetEmojis: Record<string, string> = {};
-for (const pet of pets) {
-	PetEmojis[pet.name.toLowerCase()] = pet.emoji;
-}
+export const PetEmojis: Record<string, string> = Object.fromEntries(pets.map(p => [p.name.toLowerCase(), p.emoji]));
 
 for (const pet of pets) {
 	getOSItem(pet.name);

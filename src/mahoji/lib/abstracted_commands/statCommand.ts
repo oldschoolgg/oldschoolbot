@@ -31,6 +31,7 @@ import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import {
+	type DryResult,
 	babyChinchompaDry,
 	beaverDry,
 	heronDry,
@@ -1369,38 +1370,29 @@ ${(
 		name: 'Expected Skilling Pets',
 		perkTierNeeded: null,
 		run: async user => {
-			const [beaver, tangleroot, rocky, heron, riftGuardian, rockGolem, babyChinchompa, squirrel] =
-				await Promise.all([
-					beaverDry(false, user.id, true),
-					tanglerootDry(false, user.id, true),
-					rockyDry(false, user.id, true),
-					heronDry(false, user.id, true),
-					riftGuardianDry(false, user.id, true),
-					rockGolemDry(false, user.id, true),
-					babyChinchompaDry(false, user.id, true),
-					squirrelDry(false, user.id, true)
-				]);
-			const exp = {
-				Beaver: beaver[0]?.expected ?? 0,
-				Tangleroot: tangleroot[0]?.expected ?? 0,
-				Rocky: rocky[0]?.expected ?? 0,
-				Heron: heron[0]?.expected ?? 0,
-				'Rift guardian': riftGuardian[0]?.expected ?? 0,
-				'Rock golem': rockGolem[0]?.expected ?? 0,
-				'Baby chinchompa': babyChinchompa[0]?.expected ?? 0,
-				'Giant squirrel': squirrel[0]?.expected ?? 0
+			const petFns: Record<string, (iron: boolean, id: string, include?: boolean) => Promise<DryResult[]>> = {
+				Beaver: beaverDry,
+				Tangleroot: tanglerootDry,
+				Rocky: rockyDry,
+				Heron: heronDry,
+				'Rift guardian': riftGuardianDry,
+				'Rock golem': rockGolemDry,
+				'Baby chinchompa': babyChinchompaDry,
+				'Giant squirrel': squirrelDry
 			};
-			const getPetEmoji = (name: string) => PetEmojis[name.toLowerCase()] ?? '❓'; // fallback if not found
+
+			const results = await Promise.all(
+				Object.entries(petFns).map(async ([name, fn]) => {
+					const expected = (await fn(false, user.id, true))[0]?.expected ?? 0;
+					return { name, expected };
+				})
+			);
+
+			const getPetEmoji = (name: string) => PetEmojis[name.toLowerCase()] ?? '❓';
+
 			return [
 				'Expected Skilling Pets:',
-				`• ${getPetEmoji('Beaver')} Beaver: ${exp.Beaver.toFixed(1)}`,
-				`• ${getPetEmoji('Tangleroot')} Tangleroot: ${exp.Tangleroot.toFixed(1)}`,
-				`• ${getPetEmoji('Rocky')} Rocky: ${exp.Rocky.toFixed(1)}`,
-				`• ${getPetEmoji('Heron')} Heron: ${exp.Heron.toFixed(1)}`,
-				`• ${getPetEmoji('Rift Guardian')} Rift guardian: ${exp['Rift guardian'].toFixed(1)}`,
-				`• ${getPetEmoji('Rock Golem')} Rock golem: ${exp['Rock golem'].toFixed(1)}`,
-				`• ${getPetEmoji('Baby Chinchompa')} Baby chinchompa: ${exp['Baby chinchompa'].toFixed(1)}`,
-				`• ${getPetEmoji('Giant Squirrel')} Giant squirrel: ${exp['Giant squirrel'].toFixed(1)}`
+				...results.map(r => `• ${getPetEmoji(r.name)} ${r.name}: ${r.expected.toFixed(2)}x`)
 			].join('\n');
 		}
 	}

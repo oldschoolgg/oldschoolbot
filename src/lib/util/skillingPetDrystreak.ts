@@ -10,18 +10,25 @@ import { CamdozaalMine, MotherlodeMine, ores } from '../skilling/skills/mining';
 import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
 
+export interface DryResult {
+	id: string;
+	val: string;
+	expected: number;
+}
+
+export interface SourceInfo {
+	qty: number;
+	expected: number;
+}
+
 export function computeChance(base: number, xp: number): number {
 	const level = convertXPtoLVL(xp);
 	let chance = Math.max(base - level * 25, 1);
-	if (xp >= MAX_XP) chance = Math.floor(chance / 15);
+	if (xp >= MAX_XP) chance = Math.max(Math.floor(chance / 15), 1);
 	return chance;
 }
 
-export async function babyChinchompaDry(
-	ironman: boolean,
-	userID?: string,
-	includeCL = false
-): Promise<{ id: string; val: string; expected: number }[]> {
+export async function babyChinchompaDry(ironman: boolean, userID?: string, includeCL = false): Promise<DryResult[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'13323' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
@@ -89,11 +96,7 @@ export async function babyChinchompaDry(
 	}));
 }
 
-export async function squirrelDry(
-	ironman: boolean,
-	userID?: string,
-	includeCL = false
-): Promise<{ id: string; val: string; expected: number }[]> {
+export async function squirrelDry(ironman: boolean, userID?: string, includeCL = false): Promise<DryResult[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20659' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
@@ -164,11 +167,7 @@ export async function squirrelDry(
 	});
 }
 
-export async function tanglerootDry(
-	ironman: boolean,
-	userID?: string,
-	includeCL = false
-): Promise<{ id: string; val: string; expected: number }[]> {
+export async function tanglerootDry(ironman: boolean, userID?: string, includeCL = false): Promise<DryResult[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20661' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
@@ -214,11 +213,7 @@ export async function tanglerootDry(
 	});
 }
 
-export async function beaverDry(
-	ironman: boolean,
-	userID?: string,
-	includeCL = false
-): Promise<{ id: string; val: string; expected: number }[]> {
+export async function beaverDry(ironman: boolean, userID?: string, includeCL = false): Promise<DryResult[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'13322' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
@@ -279,11 +274,7 @@ export async function beaverDry(
 	});
 }
 
-export async function riftGuardianDry(
-	ironman: boolean,
-	userID?: string,
-	includeCL = false
-): Promise<{ id: string; val: string; expected: number }[]> {
+export async function riftGuardianDry(ironman: boolean, userID?: string, includeCL = false): Promise<DryResult[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20667' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
@@ -307,7 +298,6 @@ export async function riftGuardianDry(
 	});
 
 	const xpMap = new Map(users.map(u => [u.id, Number(u.xp)]));
-	type SourceInfo = { qty: number; expected: number };
 	const userData: Record<string, { total: number; expected: number; sources: Record<string, SourceInfo> }> = {};
 
 	function addData(id: string, xp: number, name: string, qty: number, base: number) {
@@ -390,11 +380,7 @@ export async function riftGuardianDry(
 	}));
 }
 
-export async function rockyDry(
-	ironman: boolean,
-	userID?: string,
-	includeCL = false
-): Promise<{ id: string; val: string; expected: number }[]> {
+export async function rockyDry(ironman: boolean, userID?: string, includeCL = false): Promise<DryResult[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20663' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
@@ -417,7 +403,6 @@ export async function rockyDry(
 	});
 
 	const xpMap = new Map(users.map(u => [u.id, Number(u.xp)]));
-	type SourceInfo = { qty: number; expected: number };
 	const userData: Record<string, { total: number; expected: number; sources: Record<string, SourceInfo> }> = {};
 
 	function addData(id: string, xp: number, name: string, qty: number, base: number) {
@@ -470,11 +455,7 @@ export async function rockyDry(
 	}));
 }
 
-export async function rockGolemDry(
-	ironman: boolean,
-	userID?: string,
-	includeCL = false
-): Promise<{ id: string; val: string; expected: number }[]> {
+export async function rockGolemDry(ironman: boolean, userID?: string, includeCL = false): Promise<DryResult[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'13321' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
@@ -627,11 +608,7 @@ export async function rockGolemDry(
 	}));
 }
 
-export async function heronDry(
-	ironman: boolean,
-	userID?: string,
-	includeCL = false
-): Promise<{ id: string; val: string; expected: number }[]> {
+export async function heronDry(ironman: boolean, userID?: string, includeCL = false): Promise<DryResult[]> {
 	const ironSQL = ironman ? Prisma.sql` AND "minion.ironman" = true` : Prisma.sql``;
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'13320' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
@@ -660,7 +637,6 @@ export async function heronDry(
 	}
 
 	const xpMap = new Map(users.map(u => [u.id, Number(u.xp)]));
-	type SourceInfo = { qty: number; expected: number };
 	const userData: Record<string, { total: number; expected: number; sources: Record<string, SourceInfo> }> = {};
 
 	function addData(id: string, xp: number, name: string, qty: number, base: number) {
