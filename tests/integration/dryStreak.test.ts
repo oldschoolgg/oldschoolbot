@@ -5,15 +5,16 @@ import { dryStreakEntities } from '../../src/mahoji/commands/tools';
 
 describe('Drystreak', async () => {
 	test('Data points', async () => {
-		const promises = [];
 		for (const a of dryStreakEntities) {
-			try {
-				promises.push(a.run({ item: getOSItem(a.items[0]), ironmanOnly: false }));
-				promises.push(a.run({ item: getOSItem(a.items[0]), ironmanOnly: true }));
-			} catch (err) {
-				throw new Error(`Error running ${a.name}: ${err}`);
+			const normal = await a.run({ item: getOSItem(a.items[0]), ironmanOnly: false });
+			const iron = await a.run({ item: getOSItem(a.items[0]), ironmanOnly: true });
+
+			const checks = [normal, iron];
+			for (const result of checks) {
+				if (Array.isArray(result) && result.length > 0 && 'expected' in result[0]) {
+					expect(typeof (result[0] as any).expected).toBe('number');
+				}
 			}
 		}
-		await Promise.all(promises);
 	});
 });

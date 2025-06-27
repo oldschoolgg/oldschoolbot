@@ -369,7 +369,10 @@ interface DrystreakEntity {
 	format: (num: number | string) => string;
 }
 
-const skillingPetHandlers: Record<string, (ironman: boolean) => Promise<{ id: string; val: string }[]>> = {
+const skillingPetHandlers: Record<
+	string,
+	(ironman: boolean) => Promise<{ id: string; val: string; expected: number }[]>
+> = {
 	'Baby chinchompa': babyChinchompaDry,
 	Beaver: beaverDry,
 	'Giant squirrel': squirrelDry,
@@ -380,7 +383,7 @@ const skillingPetHandlers: Record<string, (ironman: boolean) => Promise<{ id: st
 	Heron: heronDry
 };
 
-async function skillingPetDry(item: Item, ironman: boolean): Promise<{ id: string; val: string }[]> {
+async function skillingPetDry(item: Item, ironman: boolean): Promise<{ id: string; val: string; expected: number }[]> {
 	const handler = skillingPetHandlers[item.name];
 	if (!handler) return [];
 	return handler(ironman);

@@ -15,7 +15,11 @@ describe('Datapoints', async () => {
 		});
 		for (const a of dataPoints) {
 			try {
-				await a.run(user, stats!);
+				const res = await a.run(user, stats!);
+				if (a.name === 'Expected Skilling Pets') {
+					expect(typeof res).toBe('string');
+					expect(res).toContain('Expected Skilling Pets');
+				}
 			} catch (err) {
 				throw new Error(`Error running ${a.name}: ${err}`);
 			}
