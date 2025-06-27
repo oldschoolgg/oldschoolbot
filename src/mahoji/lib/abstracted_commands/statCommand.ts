@@ -1390,7 +1390,7 @@ ${(
 				'Giant squirrel': squirrel[0]?.expected ?? 0
 			};
 			return [
-				'🧮 Expected Skilling Pets:',
+				'Expected Skilling Pets:',
 				`• 🪵 Beaver: ${exp.Beaver.toFixed(1)}`,
 				`• 🌱 Tangleroot: ${exp.Tangleroot.toFixed(1)}`,
 				`• 🦝 Rocky: ${exp.Rocky.toFixed(1)}`,

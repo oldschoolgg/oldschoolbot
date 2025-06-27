@@ -4,6 +4,7 @@ import { starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCom
 import { MAX_XP } from '../constants';
 import { plunderRooms } from '../minions/data/plunder';
 import { courses } from '../skilling/skills/agility';
+import Farming from '../skilling/skills/farming';
 import { CamdozaalMine, MotherlodeMine, ores } from '../skilling/skills/mining';
 import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
@@ -171,30 +172,43 @@ export async function tanglerootDry(
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20661' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
-	const users = await prisma.$queryRaw<{ id: string; farming_xp: bigint }[]>(Prisma.sql`
-                SELECT u.id, u."skills.farming" AS farming_xp
-                FROM users u
+	const rows = await prisma.$queryRaw<{ id: string; item_id: number; qty: number; xp: bigint }[]>(Prisma.sql`
+                SELECT fc.user_id::text AS id, fc.item_id, SUM(fc.quantity_planted) AS qty, u."skills.farming" AS xp
+                FROM farmed_crop fc
+                JOIN users u ON u.id::text = fc.user_id::text
                 WHERE 1=1
                 ${clFilter}
                 ${userFilter}
                 ${ironSQL}
+                GROUP BY fc.user_id, fc.item_id, u."skills.farming"
         `);
 
-	const sorted = users
-		.map(u => ({
-			id: u.id,
-			xp: Number(u.farming_xp)
-		}))
-		.sort((a, b) => b.xp - a.xp);
+	const plantMap = new Map(Farming.Plants.map(p => [p.id, p]));
+	const users: Record<string, { total: number; expected: number; plants: [string, number, number][] }> = {};
 
-	const toMap = userID ? sorted.filter(i => i.id === userID) : sorted.slice(0, 10);
+	for (const row of rows) {
+		const plant = plantMap.get(row.item_id);
+		if (!plant || !plant.petChance) continue;
+		const xp = Number(row.xp);
+		const qty = Number(row.qty);
+		const chance = computeChance(plant.petChance, xp);
+		const expected = qty / chance;
+		if (!users[row.id]) users[row.id] = { total: 0, expected: 0, plants: [] };
+		users[row.id].total += qty;
+		users[row.id].expected += expected;
+		users[row.id].plants.push([plant.name, qty, expected]);
+	}
 
-	return toMap.map(u => {
-		const expected = u.xp / 43_000_000;
+	const sorted = Object.entries(users).sort((a, b) => b[1].expected - a[1].expected);
+	const toMap = userID ? sorted.filter(([id]) => id === userID) : sorted.slice(0, 10);
+
+	return toMap.map(([id, data]) => {
+		const top = data.plants.sort((a, b) => b[2] - a[2])[0];
+		const topStr = top ? `${top[1].toLocaleString()} ${top[0]} (${top[2].toFixed(2)}x)` : 'No data';
 		return {
-			id: u.id,
-			val: `${(u.xp / 1_000_000).toFixed(1)}m (${expected.toFixed(2)}x expected)`,
-			expected
+			id,
+			val: `${topStr} (${data.total.toLocaleString()} total – ${data.expected.toFixed(2)}x expected)`,
+			expected: data.expected
 		};
 	});
 }
