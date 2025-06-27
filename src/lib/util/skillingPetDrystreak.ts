@@ -5,6 +5,7 @@ import { MAX_XP } from '../constants';
 import { plunderRooms } from '../minions/data/plunder';
 import { courses } from '../skilling/skills/agility';
 import Farming from '../skilling/skills/farming';
+import Fishing from '../skilling/skills/fishing';
 import { CamdozaalMine, MotherlodeMine, ores } from '../skilling/skills/mining';
 import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
@@ -287,32 +288,75 @@ export async function riftGuardianDry(
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20667' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
-	const users = await prisma.$queryRaw<{ id: string; runecraft_xp: bigint }[]>(Prisma.sql`
-		SELECT u.id::text, u."skills.runecraft" AS runecraft_xp
-		FROM users u
-		WHERE 1=1
-		${clFilter}
-		${userFilter}
-		${ironSQL}
+	const users = await prisma.$queryRaw<{ id: string; xp: bigint }[]>(Prisma.sql`
+			SELECT u.id::text, u."skills.runecraft" AS xp
+			FROM users u
+			WHERE 1=1
+			${clFilter}
+			${userFilter}
+			${ironSQL}
 	`);
 
-	const sorted = users
-		.map(u => ({
-			id: u.id,
-			xp: Number(u.runecraft_xp)
-		}))
-		.sort((a, b) => b.xp - a.xp);
-
-	const toMap = userID ? sorted.filter(i => i.id === userID) : sorted.slice(0, 10);
-
-	return toMap.map(u => {
-		const expected = u.xp / 40_000_000;
-		return {
-			id: u.id,
-			val: `${(u.xp / 1_000_000).toFixed(1)}m (${expected.toFixed(2)}x expected)`,
-			expected
-		};
+	const activities = await prisma.activity.findMany({
+		where: {
+			completed: true,
+			type: { in: ['Runecraft', 'OuraniaAltar', 'DarkAltar'] },
+			user_id: { in: users.map(u => BigInt(u.id)) }
+		},
+		select: { user_id: true, type: true, data: true }
 	});
+
+	const xpMap = new Map(users.map(u => [u.id, Number(u.xp)]));
+	type SourceInfo = { qty: number; expected: number };
+	const userData: Record<string, { total: number; expected: number; sources: Record<string, SourceInfo> }> = {};
+
+	function addData(id: string, xp: number, name: string, qty: number, base: number) {
+		const chance = computeChance(base, xp);
+		const expected = qty / chance;
+		if (!userData[id]) userData[id] = { total: 0, expected: 0, sources: {} };
+		userData[id].total += qty;
+		userData[id].expected += expected;
+		if (!userData[id].sources[name]) {
+			userData[id].sources[name] = { qty: 0, expected: 0 };
+		}
+		userData[id].sources[name].qty += qty;
+		userData[id].sources[name].expected += expected;
+	}
+
+	for (const act of activities) {
+		const id = act.user_id.toString();
+		const xp = xpMap.get(id);
+		if (!xp) continue;
+		const data = (act.data as Record<string, any>) ?? {};
+
+		if (act.type === 'Runecraft') {
+			const qty = Number(data.essenceQuantity ?? 0);
+			if (qty > 0) addData(id, xp, 'Runecraft', qty, 1_795_758);
+		} else if (act.type === 'OuraniaAltar') {
+			const qty = Number(data.quantity ?? 0);
+			if (qty > 0) addData(id, xp, 'Ourania Altar', qty, 1_487_213);
+		} else if (act.type === 'DarkAltar') {
+			const qty = Number(data.quantity ?? 0);
+			const rune = (data.rune as string | undefined) ?? 'blood';
+			const base = rune === 'soul' ? 782_999 : 804_984;
+			if (qty > 0) addData(id, xp, 'Dark Altar', qty, base);
+		}
+	}
+
+	const results = Object.entries(userData)
+		.map(([id, data]) => {
+			const topEntry = Object.entries(data.sources).sort((a, b) => b[1].expected - a[1].expected)[0];
+			return { id, expected: data.expected, total: data.total, top: [topEntry[0], topEntry[1].qty] };
+		})
+		.sort((a, b) => b.expected - a.expected);
+
+	const toMap = userID ? results.filter(r => r.id === userID) : results.slice(0, 10);
+
+	return toMap.map(r => ({
+		id: r.id,
+		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`,
+		expected: r.expected
+	}));
 }
 
 export async function rockyDry(
@@ -561,30 +605,75 @@ export async function heronDry(
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'13320' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
-	const users = await prisma.$queryRaw<{ id: string; fishing: bigint }[]>(Prisma.sql`
-		SELECT u.id::text, u."skills.fishing" AS fishing
-		FROM users u
-		WHERE 1=1
-		${clFilter}
-		${userFilter}
-		${ironSQL}
+	const users = await prisma.$queryRaw<{ id: string; xp: bigint }[]>(Prisma.sql`
+			SELECT u.id::text, u."skills.fishing" AS xp
+			FROM users u
+			WHERE 1=1
+			${clFilter}
+			${userFilter}
+			${ironSQL}
 	`);
 
-	const sorted = users
-		.map(u => ({
-			id: u.id,
-			xp: Number(u.fishing)
-		}))
-		.sort((a, b) => b.xp - a.xp);
-
-	const toMap = userID ? sorted.filter(i => i.id === userID) : sorted.slice(0, 10);
-
-	return toMap.map(u => {
-		const expected = u.xp / 22_000_000;
-		return {
-			id: u.id,
-			val: `${(u.xp / 1_000_000).toFixed(1)}m (${expected.toFixed(2)}x expected)`,
-			expected
-		};
+	const activities = await prisma.activity.findMany({
+		where: {
+			completed: true,
+			type: { in: ['Fishing', 'AerialFishing'] },
+			user_id: { in: users.map(u => BigInt(u.id)) }
+		},
+		select: { user_id: true, type: true, data: true }
 	});
+
+	const fishMap = new Map<number, { name: string; petChance: number }>();
+	for (const fish of Fishing.Fishes) {
+		if (fish.petChance) fishMap.set(fish.id, { name: fish.name, petChance: fish.petChance });
+	}
+
+	const xpMap = new Map(users.map(u => [u.id, Number(u.xp)]));
+	type SourceInfo = { qty: number; expected: number };
+	const userData: Record<string, { total: number; expected: number; sources: Record<string, SourceInfo> }> = {};
+
+	function addData(id: string, xp: number, name: string, qty: number, base: number) {
+		const chance = computeChance(base, xp);
+		const expected = qty / chance;
+		if (!userData[id]) userData[id] = { total: 0, expected: 0, sources: {} };
+		userData[id].total += qty;
+		userData[id].expected += expected;
+		if (!userData[id].sources[name]) {
+			userData[id].sources[name] = { qty: 0, expected: 0 };
+		}
+		userData[id].sources[name].qty += qty;
+		userData[id].sources[name].expected += expected;
+	}
+
+	for (const act of activities) {
+		const id = act.user_id.toString();
+		const xp = xpMap.get(id);
+		if (!xp) continue;
+		const data = (act.data as Record<string, any>) ?? {};
+
+		if (act.type === 'Fishing') {
+			const fishID = Number(data.fishID ?? 0);
+			const qty = Number(data.quantity ?? 0);
+			const info = fishMap.get(fishID);
+			if (info && qty > 0) addData(id, xp, info.name, qty, info.petChance);
+		} else if (act.type === 'AerialFishing') {
+			const qty = Number(data.quantity ?? 0);
+			if (qty > 0) addData(id, xp, 'Aerial Fishing', qty, 636_833);
+		}
+	}
+
+	const results = Object.entries(userData)
+		.map(([id, data]) => {
+			const topEntry = Object.entries(data.sources).sort((a, b) => b[1].expected - a[1].expected)[0];
+			return { id, expected: data.expected, total: data.total, top: [topEntry[0], topEntry[1].qty] };
+		})
+		.sort((a, b) => b.expected - a.expected);
+
+	const toMap = userID ? results.filter(r => r.id === userID) : results.slice(0, 10);
+
+	return toMap.map(r => ({
+		id: r.id,
+		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`,
+		expected: r.expected
+	}));
 }
