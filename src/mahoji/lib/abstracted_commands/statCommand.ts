@@ -19,6 +19,7 @@ import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 
+import { PetEmojis } from '../../../lib/data/pets';
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
@@ -1389,16 +1390,17 @@ ${(
 				'Baby chinchompa': babyChinchompa[0]?.expected ?? 0,
 				'Giant squirrel': squirrel[0]?.expected ?? 0
 			};
+			const getPetEmoji = (name: string) => PetEmojis[name.toLowerCase()] ?? '❓'; // fallback if not found
 			return [
 				'Expected Skilling Pets:',
-				`• 🪵 Beaver: ${exp.Beaver.toFixed(1)}`,
-				`• 🌱 Tangleroot: ${exp.Tangleroot.toFixed(1)}`,
-				`• 🦝 Rocky: ${exp.Rocky.toFixed(1)}`,
-				`• 🎣 Heron: ${exp.Heron.toFixed(1)}`,
-				`• 🜞 Rift guardian: ${exp['Rift guardian'].toFixed(1)}`,
-				`• 🪨 Rock golem: ${exp['Rock golem'].toFixed(1)}`,
-				`• 🍼 Baby chinchompa: ${exp['Baby chinchompa'].toFixed(1)}`,
-				`• 🐿️ Giant squirrel: ${exp['Giant squirrel'].toFixed(1)}`
+				`• ${getPetEmoji('Beaver')} Beaver: ${exp.Beaver.toFixed(1)}`,
+				`• ${getPetEmoji('Tangleroot')} Tangleroot: ${exp.Tangleroot.toFixed(1)}`,
+				`• ${getPetEmoji('Rocky')} Rocky: ${exp.Rocky.toFixed(1)}`,
+				`• ${getPetEmoji('Heron')} Heron: ${exp.Heron.toFixed(1)}`,
+				`• ${getPetEmoji('Rift Guardian')} Rift guardian: ${exp['Rift guardian'].toFixed(1)}`,
+				`• ${getPetEmoji('Rock Golem')} Rock golem: ${exp['Rock golem'].toFixed(1)}`,
+				`• ${getPetEmoji('Baby Chinchompa')} Baby chinchompa: ${exp['Baby chinchompa'].toFixed(1)}`,
+				`• ${getPetEmoji('Giant Squirrel')} Giant squirrel: ${exp['Giant squirrel'].toFixed(1)}`
 			].join('\n');
 		}
 	}

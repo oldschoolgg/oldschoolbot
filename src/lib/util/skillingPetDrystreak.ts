@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { convertLVLtoXP, convertXPtoLVL } from 'oldschooljs/dist/util';
+import { convertLVLtoXP, convertXPtoLVL, getItem } from 'oldschooljs/dist/util';
 import { starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { MAX_XP } from '../constants';
 import { plunderRooms } from '../minions/data/plunder';
@@ -333,25 +333,42 @@ export async function riftGuardianDry(
 			const qty = Number(data.essenceQuantity ?? 0);
 			if (qty > 0) {
 				let runeName = 'Runecraft';
-				if (data.runes && typeof data.runes === 'object') {
-					const runeEntries = Object.entries(data.runes) as [string, number][];
-					if (runeEntries.length > 0) {
-						runeEntries.sort((a, b) => b[1] - a[1]);
-						runeName = runeEntries[0][0];
-						runeName = runeName[0].toUpperCase() + runeName.slice(1); // Normalize
+
+				if (data.runes && typeof data.runes === 'object' && !Array.isArray(data.runes)) {
+					const entries = Object.entries(data.runes).filter(
+						([, val]) => typeof val === 'number' && val > 0
+					) as [string, number][];
+					if (entries.length > 0) {
+						entries.sort((a, b) => b[1] - a[1]);
+						runeName = `${entries[0][0][0].toUpperCase()}${entries[0][0].slice(1)}`;
 					}
+				} else if (typeof data.runeID === 'number') {
+					const rune = getItem(data.runeID);
+					if (rune) runeName = rune.name;
 				}
-				addData(id, xp, `${runeName}`, qty, 1_795_758);
+
+				addData(id, xp, runeName, qty, 1_795_758);
 			}
 		} else if (act.type === 'OuraniaAltar') {
 			const qty = Number(data.quantity ?? 0);
 			if (qty > 0) addData(id, xp, 'Ourania Altar', qty, 1_487_213);
 		} else if (act.type === 'DarkAltar') {
 			const qty = Number(data.quantity ?? 0);
-			const rune = (data.rune as string | undefined) ?? 'blood';
+			let rune = (data.rune as string | undefined) ?? null;
+
+			// Try to derive rune name from ID if not provided
+			if (!rune && typeof data.runeID === 'number') {
+				const item = getItem(data.runeID);
+				if (item?.name?.toLowerCase().includes('soul')) rune = 'soul';
+				else if (item?.name?.toLowerCase().includes('blood')) rune = 'blood';
+			}
+
+			// Default to blood if unknown
+			rune = rune ?? 'blood';
+
 			const base = rune === 'soul' ? 782_999 : 804_984;
 			if (qty > 0) {
-				const runeName = `${rune[0].toUpperCase()}${rune.slice(1)} rune`; // Normalize to match Runecraft
+				const runeName = `${rune[0].toUpperCase()}${rune.slice(1)} rune`;
 				addData(id, xp, runeName, qty, base);
 			}
 		}
