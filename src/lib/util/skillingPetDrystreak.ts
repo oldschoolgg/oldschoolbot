@@ -17,8 +17,16 @@ function computeChance(base: number, xp: number): number {
 	return chance;
 }
 
-export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
-	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+export async function babyChinchompaDry(
+        ironman: boolean,
+        userID?: string,
+        includeCL = false
+): Promise<{ id: string; val: string; expected: number }[]> {
+        const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+        const clFilter = includeCL
+                ? Prisma.sql``
+                : Prisma.sql` AND u."collectionLogBank"->>'13323' IS NULL`;
+        const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
 	const chinRates = {
 		grey: { base: 131_395, reduction: 25 },
@@ -26,25 +34,27 @@ export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string;
 		black: { base: 82_758, reduction: 75 }
 	};
 
-	const res = await prisma.$queryRaw<
-		{
-			id: string;
-			hunter_level: bigint;
-			grey: bigint;
-			red: bigint;
-			black: bigint;
-		}[]
-	>(Prisma.sql`
-		SELECT u.id,
-			   u."skills.hunter" AS hunter_level,
-			   COALESCE((s.creature_scores->>'7')::int, 0) AS grey,
-			   COALESCE((s.creature_scores->>'8')::int, 0) AS red,
-			   COALESCE((s.creature_scores->>'9')::int, 0) AS black
-		FROM users u
-		JOIN user_stats s ON s.user_id::text = u.id
-		WHERE u."collectionLogBank"->>'13323' IS NULL
-		${ironSQL}
-	`);
+        const res = await prisma.$queryRaw<
+                {
+                        id: string;
+                        hunter_level: bigint;
+                        grey: bigint;
+                        red: bigint;
+                        black: bigint;
+                }[]
+        >(Prisma.sql`
+                SELECT u.id,
+                           u."skills.hunter" AS hunter_level,
+                           COALESCE((s.creature_scores->>'7')::int, 0) AS grey,
+                           COALESCE((s.creature_scores->>'8')::int, 0) AS red,
+                           COALESCE((s.creature_scores->>'9')::int, 0) AS black
+                FROM users u
+                JOIN user_stats s ON s.user_id::text = u.id
+                WHERE 1=1
+                ${clFilter}
+                ${userFilter}
+                ${ironSQL}
+        `);
 
 	function calcExpected(count: number, base: number, xp: number): number {
 		const chance = computeChance(base, xp);
@@ -70,16 +80,25 @@ export async function babyChinchompaDry(ironman: boolean): Promise<{ id: string;
 		})
 		.filter(u => u.total > 0 && u.expected > 0);
 
-	const sorted = withExpected.sort((a, b) => b.dryPercent - a.dryPercent).slice(0, 10);
+        const sorted = withExpected.sort((a, b) => b.dryPercent - a.dryPercent);
 
-	return sorted.map(u => ({
-		id: u.id,
-		val: `${u.total.toLocaleString()} caught (${u.grey.toLocaleString()} grey, ${u.red.toLocaleString()} red, ${u.black.toLocaleString()} black) - ${u.expected.toFixed(2)}x expected`
-	}));
+        const toMap = userID ? sorted.filter(i => i.id === userID) : sorted.slice(0, 10);
+
+        return toMap.map(u => ({
+                id: u.id,
+                val: `${u.total.toLocaleString()} caught (${u.grey.toLocaleString()} grey, ${u.red.toLocaleString()} red, ${u.black.toLocaleString()} black) - ${u.expected.toFixed(2)}x expected`,
+                expected: u.expected
+        }));
 }
 
-export async function squirrelDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
-	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+export async function squirrelDry(
+        ironman: boolean,
+        userID?: string,
+        includeCL = false
+): Promise<{ id: string; val: string; expected: number }[]> {
+        const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+        const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20659' IS NULL`;
+        const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
 	const courseMap = new Map<number, number>();
 	for (const course of courses) {
@@ -90,16 +109,18 @@ export async function squirrelDry(ironman: boolean): Promise<{ id: string; val: 
 
 	const ids = [...courseMap.keys()];
 
-	const res = await prisma.$queryRaw<
-		Array<{ id: string; skills_agility: number } & Record<`lap_${number}`, string>>
-	>(Prisma.sql`
-		SELECT u.id, u."skills.agility" AS skills_agility,
-			${Prisma.raw(ids.map(id => `COALESCE((s."laps_scores"->>'${id}')::int, 0) AS "lap_${id}"`).join(', '))}
-		FROM users u
-		JOIN user_stats s ON s.user_id::text = u.id
-		WHERE u."collectionLogBank"->>'20659' IS NULL
-		${ironSQL}
-	`);
+        const res = await prisma.$queryRaw<
+                Array<{ id: string; skills_agility: number } & Record<`lap_${number}`, string>>
+        >(Prisma.sql`
+                SELECT u.id, u."skills.agility" AS skills_agility,
+                        ${Prisma.raw(ids.map(id => `COALESCE((s."laps_scores"->>'${id}')::int, 0) AS "lap_${id}"`).join(', '))}
+                FROM users u
+                JOIN user_stats s ON s.user_id::text = u.id
+                WHERE 1=1
+                ${clFilter}
+                ${userFilter}
+                ${ironSQL}
+        `);
 
 	const results = res.map(row => {
 		const xp = Number(row.skills_agility);
@@ -131,59 +152,78 @@ export async function squirrelDry(ironman: boolean): Promise<{ id: string; val: 
 		};
 	});
 
-	const sorted = results
-		.filter(r => r.topCourse)
-		.sort((a, b) => b.expected - a.expected)
-		.slice(0, 10);
+        const sorted = results
+                .filter(r => r.topCourse)
+                .sort((a, b) => b.expected - a.expected);
 
-	return sorted.map(r => {
-		const [courseName, laps, expectedFromCourse] = r.topCourse!;
-		return {
-			id: r.id,
-			val: `${laps.toLocaleString()} laps at ${courseName} (${expectedFromCourse.toFixed(2)}x from ${courseName}) – ${r.totalLaps.toLocaleString()} total laps – ${r.expected.toFixed(2)}x expected`
-		};
-	});
+        const toMap = userID ? sorted.filter(r => r.id === userID) : sorted.slice(0, 10);
+
+        return toMap.map(r => {
+                const [courseName, laps, expectedFromCourse] = r.topCourse!;
+                return {
+                        id: r.id,
+                        val: `${laps.toLocaleString()} laps at ${courseName} (${expectedFromCourse.toFixed(2)}x from ${courseName}) – ${r.totalLaps.toLocaleString()} total laps – ${r.expected.toFixed(2)}x expected`,
+                        expected: r.expected
+                };
+        });
 }
 
-export async function tanglerootDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
-	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+export async function tanglerootDry(
+        ironman: boolean,
+        userID?: string,
+        includeCL = false
+): Promise<{ id: string; val: string; expected: number }[]> {
+        const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+        const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20661' IS NULL`;
+        const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
-	const users = await prisma.$queryRaw<{ id: string; farming_xp: bigint }[]>(Prisma.sql`
-		SELECT u.id, u."skills.farming" AS farming_xp
-		FROM users u
-		WHERE u."collectionLogBank"->>'20661' IS NULL
-		${ironSQL}
-	`);
+        const users = await prisma.$queryRaw<{ id: string; farming_xp: bigint }[]>(Prisma.sql`
+                SELECT u.id, u."skills.farming" AS farming_xp
+                FROM users u
+                WHERE 1=1
+                ${clFilter}
+                ${userFilter}
+                ${ironSQL}
+        `);
 
-	const sorted = users
-		.map(u => ({
-			id: u.id,
-			xp: Number(u.farming_xp)
-		}))
-		.sort((a, b) => b.xp - a.xp)
-		.slice(0, 10);
+        const sorted = users
+                .map(u => ({
+                        id: u.id,
+                        xp: Number(u.farming_xp)
+                }))
+                .sort((a, b) => b.xp - a.xp);
 
-	return sorted.map(u => ({
-		id: u.id,
-		val: `${(u.xp / 1_000_000).toFixed(1)}m`
-	}));
+        const toMap = userID ? sorted.filter(i => i.id === userID) : sorted.slice(0, 10);
+
+        return toMap.map(u => ({
+                id: u.id,
+                val: `${(u.xp / 1_000_000).toFixed(1)}m`,
+                expected: 0
+        }));
 }
 
-export async function beaverDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
-	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+export async function beaverDry(
+        ironman: boolean,
+        userID?: string,
+        includeCL = false
+): Promise<{ id: string; val: string; expected: number }[]> {
+        const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+        const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'13322' IS NULL`;
+        const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
 	const rows = await prisma.$queryRaw<
 		{ id: string; log_id: number; qty: number; woodcutting_xp: bigint }[]
-	>(Prisma.sql`
-		SELECT u.id::text, (a.data->>'logID')::int AS log_id, SUM((a.data->>'quantity')::int) AS qty, u."skills.woodcutting" AS woodcutting_xp
-		FROM activity a
-		JOIN users u ON a.user_id::text = u.id
-		WHERE a.type = 'Woodcutting'
-				AND a.completed = true
-				AND a.data->>'logID' IS NOT NULL
-				AND u."collectionLogBank"->>'13322' IS NULL
-				${ironSQL}
-		GROUP BY u.id, log_id, u."skills.woodcutting"
+        >(Prisma.sql`
+                SELECT u.id::text, (a.data->>'logID')::int AS log_id, SUM((a.data->>'quantity')::int) AS qty, u."skills.woodcutting" AS woodcutting_xp
+                FROM activity a
+                JOIN users u ON a.user_id::text = u.id
+                WHERE a.type = 'Woodcutting'
+                                AND a.completed = true
+                                AND a.data->>'logID' IS NOT NULL
+                                ${clFilter}
+                                ${userFilter}
+                                ${ironSQL}
+                GROUP BY u.id, log_id, u."skills.woodcutting"
 `);
 
 	const logMap = new Map<number, { name: string; petChance: number }>();
@@ -210,30 +250,39 @@ export async function beaverDry(ironman: boolean): Promise<{ id: string; val: st
 		users[row.id].logs.push([logInfo.name, row.qty, expected]);
 	}
 
-	const sorted = Object.entries(users)
-		.sort((a, b) => b[1].expected - a[1].expected)
-		.slice(0, 10);
+        const sorted = Object.entries(users).sort((a, b) => b[1].expected - a[1].expected);
 
-	return sorted.map(([id, data]) => {
-		const topLog = data.logs.sort((a, b) => b[1] - a[1])[0];
-		const topLogStr = topLog ? `${topLog[1].toLocaleString()} ${topLog[0]}` : 'No data';
+        const toMap = userID ? sorted.filter(([id]) => id === userID) : sorted.slice(0, 10);
 
-		return {
-			id,
-			val: `${topLogStr} (${data.total.toLocaleString()} total – ${data.expected.toFixed(2)}x expected)`
-		};
-	});
+        return toMap.map(([id, data]) => {
+                const topLog = data.logs.sort((a, b) => b[1] - a[1])[0];
+                const topLogStr = topLog ? `${topLog[1].toLocaleString()} ${topLog[0]}` : 'No data';
+
+                return {
+                        id,
+                        val: `${topLogStr} (${data.total.toLocaleString()} total – ${data.expected.toFixed(2)}x expected)`,
+                        expected: data.expected
+                };
+        });
 }
 
-export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
-	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+export async function riftGuardianDry(
+        ironman: boolean,
+        userID?: string,
+        includeCL = false
+): Promise<{ id: string; val: string; expected: number }[]> {
+        const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+        const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20667' IS NULL`;
+        const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
 	// Get users with no Rift guardian pet
-	const users = await prisma.$queryRaw<{ id: string; runecraft: bigint }[]>(Prisma.sql`
-		SELECT u.id::text, u."skills.runecraft" AS runecraft
-		 FROM users u
-		 WHERE u."collectionLogBank"->>'20667' IS NULL
-		 ${ironSQL}
+        const users = await prisma.$queryRaw<{ id: string; runecraft: bigint }[]>(Prisma.sql`
+                SELECT u.id::text, u."skills.runecraft" AS runecraft
+                 FROM users u
+                 WHERE 1=1
+                 ${clFilter}
+                 ${userFilter}
+                 ${ironSQL}
  `);
 	// Load lootTrack rows for relevant RC activity types
 	const allLootTracks = await prisma.lootTrack.findMany({
@@ -322,22 +371,33 @@ export async function riftGuardianDry(ironman: boolean): Promise<{ id: string; v
 		});
 	}
 
-	const sorted = results.sort((a, b) => b.expected - a.expected).slice(0, 10);
+        const sorted = results.sort((a, b) => b.expected - a.expected);
 
-	return sorted.map(r => ({
-		id: r.id,
-		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
-	}));
+        const toMap = userID ? sorted.filter(r => r.id === userID) : sorted.slice(0, 10);
+
+        return toMap.map(r => ({
+                id: r.id,
+                val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`,
+                expected: r.expected
+        }));
 }
 
-export async function rockyDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
-	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+export async function rockyDry(
+        ironman: boolean,
+        userID?: string,
+        includeCL = false
+): Promise<{ id: string; val: string; expected: number }[]> {
+        const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+        const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20663' IS NULL`;
+        const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
-	const users = await prisma.$queryRaw<{ id: string; xp: bigint }[]>(Prisma.sql`
-		SELECT u.id::text, u."skills.thieving" AS xp
-		FROM users u
-		WHERE u."collectionLogBank"->>'20663' IS NULL
-		${ironSQL}
+        const users = await prisma.$queryRaw<{ id: string; xp: bigint }[]>(Prisma.sql`
+                SELECT u.id::text, u."skills.thieving" AS xp
+                FROM users u
+                WHERE 1=1
+                ${clFilter}
+                ${userFilter}
+                ${ironSQL}
 `);
 	const activities = await prisma.activity.findMany({
 		where: {
@@ -381,88 +441,103 @@ export async function rockyDry(ironman: boolean): Promise<{ id: string; val: str
 		}
 	}
 
-	const results = Object.entries(userData)
-		.map(([id, data]) => {
-			const top = Object.entries(data.sources).sort((a, b) => b[1] - a[1])[0];
-			return { id, expected: data.expected, total: data.total, top };
-		})
-		.sort((a, b) => b.expected - a.expected)
-		.slice(0, 10);
+        const results = Object.entries(userData)
+                .map(([id, data]) => {
+                        const top = Object.entries(data.sources).sort((a, b) => b[1] - a[1])[0];
+                        return { id, expected: data.expected, total: data.total, top };
+                })
+                .sort((a, b) => b.expected - a.expected);
 
-	return results.map(r => ({
-		id: r.id,
-		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
-	}));
+        const toMap = userID ? results.filter(r => r.id === userID) : results.slice(0, 10);
+
+        return toMap.map(r => ({
+                id: r.id,
+                val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`,
+                expected: r.expected
+        }));
 }
 
-export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
-	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+export async function rockGolemDry(
+        ironman: boolean,
+        userID?: string,
+        includeCL = false
+): Promise<{ id: string; val: string; expected: number }[]> {
+        const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+        const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'13321' IS NULL`;
+        const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
-	const users = await prisma.$queryRaw<{ id: string; mining: number }[]>(Prisma.sql`
-			SELECT u.id::text, u."skills.mining" AS mining
-			FROM users u
-			WHERE u."collectionLogBank"->>'13321' IS NULL
-			${ironSQL}
-	`);
+        const users = await prisma.$queryRaw<{ id: string; mining: number }[]>(Prisma.sql`
+                        SELECT u.id::text, u."skills.mining" AS mining
+                        FROM users u
+                        WHERE 1=1
+                        ${clFilter}
+                        ${userFilter}
+                        ${ironSQL}
+        `);
 
 	const levelMap = new Map(users.map(u => [u.id, Number(u.mining)]));
 
-	const miningRows = await prisma.$queryRaw<{ id: string; ore_id: number; qty: number }[]>(Prisma.sql`
-			SELECT u.id::text, (a.data->>'oreID')::int AS ore_id, SUM((a.data->>'quantity')::int) AS qty
-			FROM activity a
-			JOIN users u ON a.user_id::text = u.id
-			WHERE a.type = 'Mining'
-					AND a.completed = true
-					AND a.data->>'oreID' IS NOT NULL
-					AND u."collectionLogBank"->>'13321' IS NULL
-					${ironSQL}
-			GROUP BY u.id, ore_id
-	`);
+        const miningRows = await prisma.$queryRaw<{ id: string; ore_id: number; qty: number }[]>(Prisma.sql`
+                        SELECT u.id::text, (a.data->>'oreID')::int AS ore_id, SUM((a.data->>'quantity')::int) AS qty
+                        FROM activity a
+                        JOIN users u ON a.user_id::text = u.id
+                        WHERE a.type = 'Mining'
+                                        AND a.completed = true
+                                        AND a.data->>'oreID' IS NOT NULL
+                                        ${clFilter}
+                                        ${userFilter}
+                                        ${ironSQL}
+                        GROUP BY u.id, ore_id
+        `);
 
-	const volcanicMineRows = await prisma.$queryRaw<{ id: string; qty: number }[]>(Prisma.sql`
-	SELECT u.id::text, SUM((a.data->>'quantity')::int) AS qty
-	FROM activity a
-	JOIN users u ON a.user_id::text = u.id
-	WHERE a.type = 'VolcanicMine'
-		AND a.completed = true
-		AND a.data->>'quantity' IS NOT NULL
-		AND u."collectionLogBank"->>'13321' IS NULL
-		${ironSQL}
-	GROUP BY u.id
+        const volcanicMineRows = await prisma.$queryRaw<{ id: string; qty: number }[]>(Prisma.sql`
+        SELECT u.id::text, SUM((a.data->>'quantity')::int) AS qty
+        FROM activity a
+        JOIN users u ON a.user_id::text = u.id
+        WHERE a.type = 'VolcanicMine'
+                AND a.completed = true
+                AND a.data->>'quantity' IS NOT NULL
+                ${clFilter}
+                ${userFilter}
+                ${ironSQL}
+        GROUP BY u.id
 `);
 
-	const motherlodeRows = await prisma.$queryRaw<{ id: string; qty: number }[]>(Prisma.sql`
-			SELECT u.id::text, SUM((a.data->>'quantity')::int) AS qty
-			FROM activity a
-			JOIN users u ON a.user_id::text = u.id
-			WHERE a.type = 'MotherlodeMining'
-					AND a.completed = true
-					AND u."collectionLogBank"->>'13321' IS NULL
-					${ironSQL}
-			GROUP BY u.id
-	`);
+        const motherlodeRows = await prisma.$queryRaw<{ id: string; qty: number }[]>(Prisma.sql`
+                        SELECT u.id::text, SUM((a.data->>'quantity')::int) AS qty
+                        FROM activity a
+                        JOIN users u ON a.user_id::text = u.id
+                        WHERE a.type = 'MotherlodeMining'
+                                        AND a.completed = true
+                                        ${clFilter}
+                                        ${userFilter}
+                                        ${ironSQL}
+                        GROUP BY u.id
+        `);
 
-	const camdozaalRows = await prisma.$queryRaw<{ id: string; qty: number }[]>(Prisma.sql`
-			SELECT u.id::text, SUM((a.data->>'quantity')::int) AS qty
-			FROM activity a
-			JOIN users u ON a.user_id::text = u.id
-			WHERE a.type = 'CamdozaalMining'
-					AND a.completed = true
-					AND u."collectionLogBank"->>'13321' IS NULL
-					${ironSQL}
-			GROUP BY u.id
-	`);
+        const camdozaalRows = await prisma.$queryRaw<{ id: string; qty: number }[]>(Prisma.sql`
+                        SELECT u.id::text, SUM((a.data->>'quantity')::int) AS qty
+                        FROM activity a
+                        JOIN users u ON a.user_id::text = u.id
+                        WHERE a.type = 'CamdozaalMining'
+                                        AND a.completed = true
+                                        ${clFilter}
+                                        ${userFilter}
+                                        ${ironSQL}
+                        GROUP BY u.id
+        `);
 
-	const starRows = await prisma.$queryRaw<{ id: string; size: number; qty: number }[]>(Prisma.sql`
-			SELECT u.id::text, (a.data->>'size')::int AS size, COUNT(*)::int AS qty
-			FROM activity a
-			JOIN users u ON a.user_id::text = u.id
-			WHERE a.type = 'ShootingStars'
-					AND a.completed = true
-					AND u."collectionLogBank"->>'13321' IS NULL
-					${ironSQL}
-			GROUP BY u.id, size
-	`);
+        const starRows = await prisma.$queryRaw<{ id: string; size: number; qty: number }[]>(Prisma.sql`
+                        SELECT u.id::text, (a.data->>'size')::int AS size, COUNT(*)::int AS qty
+                        FROM activity a
+                        JOIN users u ON a.user_id::text = u.id
+                        WHERE a.type = 'ShootingStars'
+                                        AND a.completed = true
+                                        ${clFilter}
+                                        ${userFilter}
+                                        ${ironSQL}
+                        GROUP BY u.id, size
+        `);
 
 	const userData: Record<string, { total: number; expected: number; sources: Record<string, number> }> = {};
 
@@ -505,13 +580,13 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 		addData(row.id, xp, Number(row.qty), star.petChance, 'Shooting Stars');
 	}
 
-	const sorted = Object.entries(userData)
-		.map(([id, data]) => {
-			const topSources = Object.entries(data.sources)
-				.sort((a, b) => b[1] - a[1])
-				.slice(0, 3)
-				.map(([source, qty]) => {
-					const unit = source === 'Volcanic Mine' ? 'game' : source === 'Shooting Stars' ? 'star' : 'ore';
+        const sorted = Object.entries(userData)
+                .map(([id, data]) => {
+                        const topSources = Object.entries(data.sources)
+                                .sort((a, b) => b[1] - a[1])
+                                .slice(0, 3)
+                                .map(([source, qty]) => {
+                                        const unit = source === 'Volcanic Mine' ? 'game' : source === 'Shooting Stars' ? 'star' : 'ore';
 
 					const label = qty === 1 ? unit : `${unit}s`;
 
@@ -521,24 +596,32 @@ export async function rockGolemDry(ironman: boolean): Promise<{ id: string; val:
 				})
 				.join(', ');
 
-			return {
-				id,
-				total: data.total,
-				expected: data.expected,
-				topSources
-			};
-		})
-		.sort((a, b) => b.expected - a.expected)
-		.slice(0, 10);
+                        return {
+                                id,
+                                total: data.total,
+                                expected: data.expected,
+                                topSources
+                        };
+                })
+                .sort((a, b) => b.expected - a.expected);
 
-	return sorted.map(r => ({
-		id: r.id,
-		val: `${r.topSources} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
-	}));
+        const toMap = userID ? sorted.filter(r => r.id === userID) : sorted.slice(0, 10);
+
+        return toMap.map(r => ({
+                id: r.id,
+                val: `${r.topSources} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`,
+                expected: r.expected
+        }));
 }
 
-export async function heronDry(ironman: boolean): Promise<{ id: string; val: string }[]> {
-	const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+export async function heronDry(
+        ironman: boolean,
+        userID?: string,
+        includeCL = false
+): Promise<{ id: string; val: string; expected: number }[]> {
+        const ironSQL = ironman ? Prisma.sql` AND "minion"."ironman" = true` : Prisma.sql``;
+        const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'13320' IS NULL`;
+        const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
 	const users: Record<string, { total: number; expected: number; fish: [string, number, number][] }> = {};
 
@@ -546,18 +629,21 @@ export async function heronDry(ironman: boolean): Promise<{ id: string; val: str
 
 	const fishingKeys = allFish.map(f => f.name.toLowerCase());
 
-	const lootTrackRes = await prisma.lootTrack.findMany({
-		where: {
-			type: 'Skilling',
-			key: { in: fishingKeys }
-		}
-	});
+        const lootTrackRes = await prisma.lootTrack.findMany({
+                where: {
+                        type: 'Skilling',
+                        key: { in: fishingKeys },
+                        ...(userID ? { user_id: BigInt(userID) } : {})
+                }
+        });
 
-	const fishingUsers = await prisma.$queryRaw<{ id: string; fishing: number }[]>(Prisma.sql`
-		SELECT u.id::text, u."skills.fishing" AS fishing
-		 FROM users u
-		 WHERE u."collectionLogBank"->>'13320' IS NULL
-		 ${ironSQL}
+        const fishingUsers = await prisma.$queryRaw<{ id: string; fishing: number }[]>(Prisma.sql`
+                SELECT u.id::text, u."skills.fishing" AS fishing
+                 FROM users u
+                 WHERE 1=1
+                 ${clFilter}
+                 ${userFilter}
+                 ${ironSQL}
  `);
 
 	const levelMap = new Map(fishingUsers.map(u => [u.id, Number(u.fishing)]));
@@ -592,19 +678,21 @@ export async function heronDry(ironman: boolean): Promise<{ id: string; val: str
 
 	type AerialResult = Record<string, number> & { id: string };
 
-	const aerialRes = await prisma.$queryRaw<AerialResult[]>(
-		Prisma.sql`
-			SELECT u.id::text,
-				${Prisma.raw(
-					aerialCreatures
-						.map(([_, id]) => `COALESCE(("creature_scores"->>'${id}')::int, 0) AS creature_${id}`)
-						.join(', ')
-				)}
-			FROM users u
-			WHERE u."collectionLogBank"->>'13320' IS NULL
-			${ironSQL}
-		`
-	);
+        const aerialRes = await prisma.$queryRaw<AerialResult[]>(
+                Prisma.sql`
+                        SELECT u.id::text,
+                                ${Prisma.raw(
+                                        aerialCreatures
+                                                .map(([_, id]) => `COALESCE(("creature_scores"->>'${id}')::int, 0) AS creature_${id}`)
+                                                .join(', ')
+                                )}
+                        FROM users u
+                        WHERE 1=1
+                        ${clFilter}
+                        ${userFilter}
+                        ${ironSQL}
+                `
+        );
 
 	for (const row of aerialRes) {
 		let total = 0;
@@ -625,21 +713,23 @@ export async function heronDry(ironman: boolean): Promise<{ id: string; val: str
 		users[row.id].fish.push(['Aerial fishing', total, expected]);
 	}
 
-	const sorted = Object.entries(users)
-		.map(([id, data]) => {
-			const top = data.fish.sort((a, b) => b[1] - a[1])[0];
-			return {
-				id,
-				total: data.total,
-				expected: data.expected,
-				top
-			};
-		})
-		.sort((a, b) => b.expected - a.expected)
-		.slice(0, 10);
+        const sorted = Object.entries(users)
+                .map(([id, data]) => {
+                        const top = data.fish.sort((a, b) => b[1] - a[1])[0];
+                        return {
+                                id,
+                                total: data.total,
+                                expected: data.expected,
+                                top
+                        };
+                })
+                .sort((a, b) => b.expected - a.expected);
 
-	return sorted.map(r => ({
-		id: r.id,
-		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`
-	}));
+        const toMap = userID ? sorted.filter(r => r.id === userID) : sorted.slice(0, 10);
+
+        return toMap.map(r => ({
+                id: r.id,
+                val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`,
+                expected: r.expected
+        }));
 }

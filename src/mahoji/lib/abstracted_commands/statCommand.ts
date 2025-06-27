@@ -29,6 +29,16 @@ import { SQL_sumOfAllCLItems, formatDuration, getUsername, stringMatches } from 
 import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import {
+        babyChinchompaDry,
+        beaverDry,
+        heronDry,
+        riftGuardianDry,
+        rockGolemDry,
+        rockyDry,
+        squirrelDry,
+        tanglerootDry
+} from '../../../lib/util/skillingPetDrystreak';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from '../collectables';
 
@@ -1338,11 +1348,11 @@ ${(
 			);
 		}
 	},
-	{
-		name: 'Weekly GP gains',
-		perkTierNeeded: PerkTier.Four,
-		run: async user => {
-			const result = await fetchHistoricalDataDifferences(user);
+        {
+                name: 'Weekly GP gains',
+                perkTierNeeded: PerkTier.Four,
+                run: async user => {
+                        const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_GP]);
 			return makeResponseForBuffer(
 				await createChart({
@@ -1350,10 +1360,56 @@ ${(
 					format: 'delta',
 					values: dataPoints,
 					type: 'bar'
-				})
-			);
-		}
-	}
+                                })
+                        );
+                }
+        },
+        {
+                name: 'Expected Skilling Pets',
+                perkTierNeeded: null,
+                run: async user => {
+                        const [
+                                beaver,
+                                tangleroot,
+                                rocky,
+                                heron,
+                                riftGuardian,
+                                rockGolem,
+                                babyChinchompa,
+                                squirrel
+                        ] = await Promise.all([
+                                beaverDry(false, user.id, true),
+                                tanglerootDry(false, user.id, true),
+                                rockyDry(false, user.id, true),
+                                heronDry(false, user.id, true),
+                                riftGuardianDry(false, user.id, true),
+                                rockGolemDry(false, user.id, true),
+                                babyChinchompaDry(false, user.id, true),
+                                squirrelDry(false, user.id, true)
+                        ]);
+                        const exp = {
+                                Beaver: beaver[0]?.expected ?? 0,
+                                Tangleroot: tangleroot[0]?.expected ?? 0,
+                                Rocky: rocky[0]?.expected ?? 0,
+                                Heron: heron[0]?.expected ?? 0,
+                                'Rift guardian': riftGuardian[0]?.expected ?? 0,
+                                'Rock golem': rockGolem[0]?.expected ?? 0,
+                                'Baby chinchompa': babyChinchompa[0]?.expected ?? 0,
+                                'Giant squirrel': squirrel[0]?.expected ?? 0
+                        };
+                        return [
+                                '🧮 Expected Skilling Pets:',
+                                `• 🪵 Beaver: ${exp.Beaver.toFixed(1)}`,
+                                `• 🌱 Tangleroot: ${exp.Tangleroot.toFixed(1)}`,
+                                `• 🦝 Rocky: ${exp.Rocky.toFixed(1)}`,
+                                `• 🎣 Heron: ${exp.Heron.toFixed(1)}`,
+                                `• 🜞 Rift guardian: ${exp['Rift guardian'].toFixed(1)}`,
+                                `• 🪨 Rock golem: ${exp['Rock golem'].toFixed(1)}`,
+                                `• 🍼 Baby chinchompa: ${exp['Baby chinchompa'].toFixed(1)}`,
+                                `• 🐿️ Giant squirrel: ${exp['Giant squirrel'].toFixed(1)}`
+                        ].join('\n');
+                }
+        }
 ] as const;
 
 export async function statsCommand(user: MUser, type: string): CommandResponse {
