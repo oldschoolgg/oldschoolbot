@@ -289,12 +289,12 @@ export async function riftGuardianDry(
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
 	const users = await prisma.$queryRaw<{ id: string; xp: bigint }[]>(Prisma.sql`
-			SELECT u.id::text, u."skills.runecraft" AS xp
-			FROM users u
-			WHERE 1=1
-			${clFilter}
-			${userFilter}
-			${ironSQL}
+		SELECT u.id::text, u."skills.runecraft" AS xp
+		FROM users u
+		WHERE 1=1
+		${clFilter}
+		${userFilter}
+		${ironSQL}
 	`);
 
 	const activities = await prisma.activity.findMany({
@@ -331,7 +331,18 @@ export async function riftGuardianDry(
 
 		if (act.type === 'Runecraft') {
 			const qty = Number(data.essenceQuantity ?? 0);
-			if (qty > 0) addData(id, xp, 'Runecraft', qty, 1_795_758);
+			if (qty > 0) {
+				let runeName = 'Runecraft';
+				if (data.runes && typeof data.runes === 'object') {
+					const runeEntries = Object.entries(data.runes) as [string, number][];
+					if (runeEntries.length > 0) {
+						runeEntries.sort((a, b) => b[1] - a[1]);
+						runeName = runeEntries[0][0];
+						runeName = runeName[0].toUpperCase() + runeName.slice(1); // Normalize
+					}
+				}
+				addData(id, xp, `${runeName}`, qty, 1_795_758);
+			}
 		} else if (act.type === 'OuraniaAltar') {
 			const qty = Number(data.quantity ?? 0);
 			if (qty > 0) addData(id, xp, 'Ourania Altar', qty, 1_487_213);
@@ -339,7 +350,10 @@ export async function riftGuardianDry(
 			const qty = Number(data.quantity ?? 0);
 			const rune = (data.rune as string | undefined) ?? 'blood';
 			const base = rune === 'soul' ? 782_999 : 804_984;
-			if (qty > 0) addData(id, xp, 'Dark Altar', qty, base);
+			if (qty > 0) {
+				const runeName = `${rune[0].toUpperCase()}${rune.slice(1)} rune`; // Normalize to match Runecraft
+				addData(id, xp, runeName, qty, base);
+			}
 		}
 	}
 
