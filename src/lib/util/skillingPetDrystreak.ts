@@ -1,15 +1,12 @@
 import { Prisma } from '@prisma/client';
-import { type ItemBank, convertLVLtoXP, convertXPtoLVL } from 'oldschooljs/dist/util';
+import { convertLVLtoXP, convertXPtoLVL } from 'oldschooljs/dist/util';
 import { starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { MAX_XP } from '../constants';
 import { plunderRooms } from '../minions/data/plunder';
 import { courses } from '../skilling/skills/agility';
-import Fishing from '../skilling/skills/fishing';
 import { CamdozaalMine, MotherlodeMine, ores } from '../skilling/skills/mining';
 import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
-import { Bank } from '../util';
-import itemID from './itemID';
 
 export function computeChance(base: number, xp: number): number {
 	const level = convertXPtoLVL(xp);
@@ -48,7 +45,7 @@ export async function babyChinchompaDry(
                            COALESCE((s.creature_scores->>'8')::int, 0) AS red,
                            COALESCE((s.creature_scores->>'9')::int, 0) AS black
                 FROM users u
-                JOIN user_stats s ON s.user_id::text = u.id
+				JOIN user_stats s ON s.user_id::text = u.id::text
                 WHERE 1=1
                 ${clFilter}
                 ${userFilter}
@@ -192,11 +189,14 @@ export async function tanglerootDry(
 
 	const toMap = userID ? sorted.filter(i => i.id === userID) : sorted.slice(0, 10);
 
-	return toMap.map(u => ({
-		id: u.id,
-		val: `${(u.xp / 1_000_000).toFixed(1)}m`,
-		expected: 0
-	}));
+	return toMap.map(u => {
+		const expected = u.xp / 43_000_000;
+		return {
+			id: u.id,
+			val: `${(u.xp / 1_000_000).toFixed(1)}m (${expected.toFixed(2)}x expected)`,
+			expected
+		};
+	});
 }
 
 export async function beaverDry(
@@ -213,7 +213,7 @@ export async function beaverDry(
 	>(Prisma.sql`
                 SELECT u.id::text, (a.data->>'logID')::int AS log_id, SUM((a.data->>'quantity')::int) AS qty, u."skills.woodcutting" AS woodcutting_xp
                 FROM activity a
-                JOIN users u ON a.user_id::text = u.id
+                JOIN users u ON u.id::text = a.user_id::text
                 WHERE a.type = 'Woodcutting'
                                 AND a.completed = true
                                 AND a.data->>'logID' IS NOT NULL
@@ -241,10 +241,11 @@ export async function beaverDry(
 		const xp = Number(row.woodcutting_xp);
 		const chance = computeChance(logInfo.petChance, xp);
 
-		const expected = row.qty / chance;
-		users[row.id].total += row.qty;
+		const qty = Number(row.qty);
+		const expected = qty / chance;
+		users[row.id].total += qty;
 		users[row.id].expected += expected;
-		users[row.id].logs.push([logInfo.name, row.qty, expected]);
+		users[row.id].logs.push([logInfo.name, qty, expected]);
 	}
 
 	const sorted = Object.entries(users).sort((a, b) => b[1].expected - a[1].expected);
@@ -252,12 +253,12 @@ export async function beaverDry(
 	const toMap = userID ? sorted.filter(([id]) => id === userID) : sorted.slice(0, 10);
 
 	return toMap.map(([id, data]) => {
-		const topLog = data.logs.sort((a, b) => b[1] - a[1])[0];
-		const topLogStr = topLog ? `${topLog[1].toLocaleString()} ${topLog[0]}` : 'No data';
+		const topLog = data.logs.sort((a, b) => b[2] - a[2])[0];
+		const topLogStr = topLog ? `${topLog[1].toLocaleString()} ${topLog[0]} (${topLog[2].toFixed(2)}x)` : 'No data';
 
 		return {
 			id,
-			val: `${topLogStr} (${data.total.toLocaleString()} total – ${data.expected.toFixed(2)}x expected)`,
+			val: `${topLogStr} (${data.total.toLocaleString()} total logs – ${data.expected.toFixed(2)}x expected)`,
 			expected: data.expected
 		};
 	});
@@ -272,111 +273,32 @@ export async function riftGuardianDry(
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'20667' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
-	// Get users with no Rift guardian pet
-	const users = await prisma.$queryRaw<{ id: string; runecraft: bigint }[]>(Prisma.sql`
-                SELECT u.id::text, u."skills.runecraft" AS runecraft
-                 FROM users u
-                 WHERE 1=1
-                 ${clFilter}
-                 ${userFilter}
-                 ${ironSQL}
- `);
-	// Load lootTrack rows for relevant RC activity types
-	const allLootTracks = await prisma.lootTrack.findMany({
-		where: {
-			type: 'Skilling',
-			user_id: {
-				in: users.map(u => BigInt(u.id))
-			},
-			key: {
-				in: ['ourania_altar', 'darkaltar', 'runecraft']
-			}
-		}
-	});
+	const users = await prisma.$queryRaw<{ id: string; runecraft_xp: bigint }[]>(Prisma.sql`
+		SELECT u.id::text, u."skills.runecraft" AS runecraft_xp
+		FROM users u
+		WHERE 1=1
+		${clFilter}
+		${userFilter}
+		${ironSQL}
+	`);
 
-	const bloodRuneID = itemID('Blood rune');
-	const soulRuneID = itemID('Soul rune');
-
-	const altarChances = {
-		blood: 804_984,
-		soul: 782_999,
-		ourania: 1_487_213,
-		default: 1_795_758
-	};
-
-	const runeTotalsPerUser: Record<string, { bloodDarkAltar: number; soul: number; ourania: number; other: number }> =
-		{};
-
-	for (const row of allLootTracks) {
-		if (!row.user_id || !row.loot) continue;
-		const userID = row.user_id.toString();
-		if (!runeTotalsPerUser[userID]) {
-			runeTotalsPerUser[userID] = {
-				bloodDarkAltar: 0,
-				soul: 0,
-				ourania: 0,
-				other: 0
-			};
-		}
-
-		const lootBank = new Bank(row.loot as ItemBank);
-		for (const [item, qty] of lootBank.items()) {
-			const id = typeof item === 'number' ? item : item.id;
-			if (id === bloodRuneID) {
-				if (row.key === 'darkaltar') {
-					runeTotalsPerUser[userID].bloodDarkAltar += qty;
-				} else {
-					runeTotalsPerUser[userID].other += qty;
-				}
-			} else if (id === soulRuneID) {
-				runeTotalsPerUser[userID].soul += qty;
-			} else if (row.key === 'ourania_altar') {
-				runeTotalsPerUser[userID].ourania += qty;
-			} else {
-				runeTotalsPerUser[userID].other += qty;
-			}
-		}
-	}
-
-	const results: { id: string; expected: number; total: number; top: [string, number] }[] = [];
-
-	for (const u of users) {
-		const totals = runeTotalsPerUser[u.id];
-		if (!totals) continue;
-
-		const xp = Number(u.runecraft);
-		const expected =
-			totals.bloodDarkAltar / computeChance(altarChances.blood, xp) +
-			totals.soul / computeChance(altarChances.soul, xp) +
-			totals.ourania / computeChance(altarChances.ourania, xp) +
-			totals.other / computeChance(altarChances.default, xp);
-
-		const breakdown = (
-			[
-				['Blood runes (Zeah)', totals.bloodDarkAltar],
-				['Soul runes', totals.soul],
-				['Ourania runes', totals.ourania],
-				['Other runes', totals.other]
-			] as [string, number][]
-		).sort((a, b) => b[1] - a[1]);
-
-		results.push({
+	const sorted = users
+		.map(u => ({
 			id: u.id,
-			expected,
-			total: totals.bloodDarkAltar + totals.soul + totals.ourania + totals.other,
-			top: breakdown[0]
-		});
-	}
+			xp: Number(u.runecraft_xp)
+		}))
+		.sort((a, b) => b.xp - a.xp);
 
-	const sorted = results.sort((a, b) => b.expected - a.expected);
+	const toMap = userID ? sorted.filter(i => i.id === userID) : sorted.slice(0, 10);
 
-	const toMap = userID ? sorted.filter(r => r.id === userID) : sorted.slice(0, 10);
-
-	return toMap.map(r => ({
-		id: r.id,
-		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`,
-		expected: r.expected
-	}));
+	return toMap.map(u => {
+		const expected = u.xp / 40_000_000;
+		return {
+			id: u.id,
+			val: `${(u.xp / 1_000_000).toFixed(1)}m (${expected.toFixed(2)}x expected)`,
+			expected
+		};
+	});
 }
 
 export async function rockyDry(
@@ -406,7 +328,8 @@ export async function rockyDry(
 	});
 
 	const xpMap = new Map(users.map(u => [u.id, Number(u.xp)]));
-	const userData: Record<string, { total: number; expected: number; sources: Record<string, number> }> = {};
+	type SourceInfo = { qty: number; expected: number };
+	const userData: Record<string, { total: number; expected: number; sources: Record<string, SourceInfo> }> = {};
 
 	function addData(id: string, xp: number, name: string, qty: number, base: number) {
 		const chance = computeChance(base, xp);
@@ -414,7 +337,11 @@ export async function rockyDry(
 		if (!userData[id]) userData[id] = { total: 0, expected: 0, sources: {} };
 		userData[id].total += qty;
 		userData[id].expected += expected;
-		userData[id].sources[name] = (userData[id].sources[name] ?? 0) + qty;
+		if (!userData[id].sources[name]) {
+			userData[id].sources[name] = { qty: 0, expected: 0 };
+		}
+		userData[id].sources[name].qty += qty;
+		userData[id].sources[name].expected += expected;
 	}
 
 	for (const act of activities) {
@@ -440,8 +367,8 @@ export async function rockyDry(
 
 	const results = Object.entries(userData)
 		.map(([id, data]) => {
-			const top = Object.entries(data.sources).sort((a, b) => b[1] - a[1])[0];
-			return { id, expected: data.expected, total: data.total, top };
+			const topEntry = Object.entries(data.sources).sort((a, b) => b[1].expected - a[1].expected)[0];
+			return { id, expected: data.expected, total: data.total, top: [topEntry[0], topEntry[1].qty] };
 		})
 		.sort((a, b) => b.expected - a.expected);
 
@@ -620,116 +547,30 @@ export async function heronDry(
 	const clFilter = includeCL ? Prisma.sql`` : Prisma.sql` AND u."collectionLogBank"->>'13320' IS NULL`;
 	const userFilter = userID ? Prisma.sql` AND u.id::text = ${userID}` : Prisma.sql``;
 
-	const users: Record<string, { total: number; expected: number; fish: [string, number, number][] }> = {};
+	const users = await prisma.$queryRaw<{ id: string; fishing: bigint }[]>(Prisma.sql`
+		SELECT u.id::text, u."skills.fishing" AS fishing
+		FROM users u
+		WHERE 1=1
+		${clFilter}
+		${userFilter}
+		${ironSQL}
+	`);
 
-	const allFish = [...Fishing.Fishes, ...Fishing.camdozaalFishes].filter(f => f.petChance !== undefined);
+	const sorted = users
+		.map(u => ({
+			id: u.id,
+			xp: Number(u.fishing)
+		}))
+		.sort((a, b) => b.xp - a.xp);
 
-	const fishingKeys = allFish.map(f => f.name.toLowerCase());
+	const toMap = userID ? sorted.filter(i => i.id === userID) : sorted.slice(0, 10);
 
-	const lootTrackRes = await prisma.lootTrack.findMany({
-		where: {
-			type: 'Skilling',
-			key: { in: fishingKeys },
-			...(userID ? { user_id: BigInt(userID) } : {})
-		}
+	return toMap.map(u => {
+		const expected = u.xp / 22_000_000;
+		return {
+			id: u.id,
+			val: `${(u.xp / 1_000_000).toFixed(1)}m (${expected.toFixed(2)}x expected)`,
+			expected
+		};
 	});
-
-	const fishingUsers = await prisma.$queryRaw<{ id: string; fishing: number }[]>(Prisma.sql`
-                SELECT u.id::text, u."skills.fishing" AS fishing
-                 FROM users u
-                 WHERE 1=1
-                 ${clFilter}
-                 ${userFilter}
-                 ${ironSQL}
- `);
-
-	const levelMap = new Map(fishingUsers.map(u => [u.id, Number(u.fishing)]));
-
-	for (const row of lootTrackRes) {
-		if (!row.user_id || !row.loot || !row.key) continue;
-		const id = row.user_id.toString();
-		const xp = levelMap.get(id);
-		if (xp === undefined) continue;
-
-		const fish = allFish.find(f => f.name.toLowerCase() === row.key.toLowerCase());
-		if (!fish || !fish.petChance) continue;
-
-		const qty = new Bank(row.loot as ItemBank).amount(fish.id);
-		if (qty === 0) continue;
-
-		const expected = qty / computeChance(fish.petChance, xp);
-
-		if (!users[id]) users[id] = { total: 0, expected: 0, fish: [] };
-		users[id].total += qty;
-		users[id].expected += expected;
-		users[id].fish.push([fish.name, qty, expected]);
-	}
-
-	const aerialPetChance = 636_833;
-	const aerialCreatures = [
-		['Bluegill', 37],
-		['Common tench', 38],
-		['Mottled eel', 39],
-		['Greater siren', 40]
-	] as const;
-
-	type AerialResult = Record<string, number> & { id: string };
-
-	const aerialRes = await prisma.$queryRaw<AerialResult[]>(
-		Prisma.sql`
-                        SELECT u.id::text,
-                                ${Prisma.raw(
-									aerialCreatures
-										.map(
-											([_, id]) =>
-												`COALESCE(("creature_scores"->>'${id}')::int, 0) AS creature_${id}`
-										)
-										.join(', ')
-								)}
-                        FROM users u
-                        WHERE 1=1
-                        ${clFilter}
-                        ${userFilter}
-                        ${ironSQL}
-                `
-	);
-
-	for (const row of aerialRes) {
-		let total = 0;
-		for (const [_, id] of aerialCreatures) {
-			total += Number(row[`creature_${id}`] ?? 0);
-		}
-		if (total === 0) continue;
-
-		if (!users[row.id]) {
-			users[row.id] = { total: 0, expected: 0, fish: [] };
-		}
-		const xp = levelMap.get(row.id) ?? 0;
-		const chance = computeChance(aerialPetChance, xp);
-		const expected = total / chance;
-
-		users[row.id].total += total;
-		users[row.id].expected += expected;
-		users[row.id].fish.push(['Aerial fishing', total, expected]);
-	}
-
-	const sorted = Object.entries(users)
-		.map(([id, data]) => {
-			const top = data.fish.sort((a, b) => b[1] - a[1])[0];
-			return {
-				id,
-				total: data.total,
-				expected: data.expected,
-				top
-			};
-		})
-		.sort((a, b) => b.expected - a.expected);
-
-	const toMap = userID ? sorted.filter(r => r.id === userID) : sorted.slice(0, 10);
-
-	return toMap.map(r => ({
-		id: r.id,
-		val: `${r.top[1].toLocaleString()} ${r.top[0]} (${r.total.toLocaleString()} total – ${r.expected.toFixed(2)}x expected)`,
-		expected: r.expected
-	}));
 }
