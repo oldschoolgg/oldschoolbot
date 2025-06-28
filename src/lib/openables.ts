@@ -384,6 +384,30 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: Openables.VolcanicMineOrePack.table.allItems
 	},
 	{
+		name: 'Apprentice potion pack',
+		id: 29_971,
+		openedItem: getOSItem(29_971),
+		aliases: ['apprentice potion pack'],
+		output: Openables.ApprenticePotionPack.table,
+		allItems: Openables.ApprenticePotionPack.table.allItems
+	},
+	{
+		name: 'Adept potion pack',
+		id: 29_972,
+		openedItem: getOSItem(29_972),
+		aliases: ['adept potion pack'],
+		output: Openables.AdeptPotionPack.table,
+		allItems: Openables.AdeptPotionPack.table.allItems
+	},
+	{
+		name: 'Expert potion pack',
+		id: 29_973,
+		openedItem: getOSItem(29_973),
+		aliases: ['expert potion pack'],
+		output: Openables.ExpertPotionPack.table,
+		allItems: Openables.ExpertPotionPack.table.allItems
+	},
+	{
 		name: 'Intricate pouch',
 		id: 26_908,
 		openedItem: getOSItem(26_908),
