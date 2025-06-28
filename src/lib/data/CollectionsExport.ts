@@ -2,7 +2,7 @@ import type { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
 import type { Bank, Item } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { ItemGroups, resolveItems } from 'oldschooljs';
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import type { MinigameScore } from '../settings/minigames';
@@ -72,88 +72,6 @@ export interface ICollection {
 		activities: ICollectionActivity;
 	};
 }
-
-export const boaters = resolveItems([
-	'Red boater',
-	'Green boater',
-	'Orange boater',
-	'Black boater',
-	'Blue boater',
-	'Pink boater',
-	'Purple boater',
-	'White boater'
-]);
-
-export const godBooks = resolveItems([
-	'Holy book',
-	'Unholy book',
-	'Book of balance',
-	'Book of war',
-	'Book of law',
-	'Book of darkness'
-]);
-
-export const mitres = resolveItems([
-	'Saradomin mitre',
-	'Guthix mitre',
-	'Zamorak mitre',
-	'Armadyl mitre',
-	'Bandos mitre',
-	'Ancient mitre'
-]);
-
-export const bobShirts = resolveItems([
-	"Bob's black shirt",
-	"Bob's blue shirt",
-	"Bob's green shirt",
-	"Bob's purple shirt",
-	"Bob's red shirt"
-]);
-
-export const croziers = resolveItems([
-	'Saradomin crozier',
-	'Guthix crozier',
-	'Zamorak crozier',
-	'Armadyl crozier',
-	'Bandos crozier',
-	'Ancient crozier'
-]);
-
-export const headbands = resolveItems([
-	'Red headband',
-	'Black headband',
-	'Brown headband',
-	'White headband',
-	'Blue headband',
-	'Gold headband',
-	'Pink headband',
-	'Green headband'
-]);
-
-export const stoles = resolveItems([
-	'Saradomin stole',
-	'Guthix stole',
-	'Zamorak stole',
-	'Armadyl stole',
-	'Bandos stole',
-	'Ancient stole'
-]);
-
-export const runeHeraldicShields = resolveItems([
-	'Rune shield (h1)',
-	'Rune shield (h2)',
-	'Rune shield (h3)',
-	'Rune shield (h4)',
-	'Rune shield (h5)'
-]);
-
-export const runeHeraldicHelms = resolveItems([
-	'Rune helm (h1)',
-	'Rune helm (h2)',
-	'Rune helm (h3)',
-	'Rune helm (h4)',
-	'Rune helm (h5)'
-]);
 
 export const abyssalSireCL = resolveItems([
 	'Abyssal orphan',
@@ -746,7 +664,7 @@ export const cluesMediumCL = resolveItems([
 	'Bandos cloak',
 	'Bandos stole',
 	'Bandos crozier',
-	...boaters,
+	...ItemGroups.boaters,
 	'Red headband',
 	'Black headband',
 	'Brown headband',
