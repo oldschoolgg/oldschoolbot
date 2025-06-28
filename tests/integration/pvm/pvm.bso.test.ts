@@ -215,6 +215,7 @@ describe('BSO PVM', async () => {
 				.add('Dragon hunter lance')
 				.add('Anti-dragon shield')
 				.add('Elder rune', 5000)
+				.add('Cooked karambwan', 5000)
 				.add('Saradomin brew(4)', 1000)
 				.add('Super restore(4)', 1000)
 				.add('Saradomin godsword')
