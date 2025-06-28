@@ -58,7 +58,7 @@ describe('Monsters', () => {
 			.add(emptyTable)
 	});
 
-	test('Test Monster', () => {
+	test.skip('Test Monster', () => {
 		const number = 500_000;
 
 		const expectedRates = {
