@@ -1,6 +1,5 @@
-import { Bank } from 'oldschooljs';
+import { Bank, ItemGroups } from 'oldschooljs';
 
-import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { QuestID } from '../../minions/data/quests';
@@ -8,6 +7,7 @@ import type { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import type { MUserStats } from '../../structures/MUserStats';
 import type { Skills } from '../../types';
+import { itemNameFromID } from '../../util';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';
@@ -1163,10 +1163,10 @@ for (const [chompyHat, qty] of chompyHats) {
 	});
 }
 
-for (const cape of allTeamCapes) {
+for (const id of ItemGroups.teamCapes) {
 	Buyables.push({
-		name: cape.name,
-		outputItems: new Bank().add(cape.id),
+		name: itemNameFromID(id)!,
+		outputItems: new Bank().add(id),
 		gpCost: 15_000
 	});
 }

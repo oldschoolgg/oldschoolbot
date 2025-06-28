@@ -28,6 +28,7 @@ export default defineConfig({
 		smartypants: false,
 		syntaxHighlight: false
 	},
+	site: 'https://wiki.oldschool.gg',
 	integrations: [
 		starlight({
 			components: {

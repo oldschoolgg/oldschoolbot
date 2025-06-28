@@ -22,6 +22,7 @@ If you have at least 60 Woodcutting, and the tree you are attempting to chop is 
 Using this filter when chopping logs allows your minion to reach much higher xp rates, at the expense of not receiving any logs from your trip. For ironmen, it may be beneficial to chop normally so they can use the logs for early firemaking or construction levels. You will still receive bird nests and their contents when powerchopping.
 
 After level 92, your minion magically learns how to tick manipulate, allowing rates of up to 200k xp/h powerchopping Teak logs.
+To use the 1.5 tick method you must chop the trees planted in Farming patches. Teak trees require [[woodcutting:92]] and [[farming:35]], while Mahogany trees require [[woodcutting:92]] and [[farming:55]]. Forestry events must be disabled for this method.
 
 ## Lumberjack Outfit
 
