@@ -39,7 +39,6 @@ export {
 export * from './simulation/monsters';
 export * from './constants';
 export * from './util';
-export * from './data/itemConstants';
 export * from './structures/Items';
 export * from './meta/types';
 export type { default as Monster } from './structures/Monster';
@@ -49,3 +48,4 @@ export * from './simulation/misc';
 export * from './simulation/openables/Implings';
 export * from './meta/monsterData';
 export * from './simulation/subtables/index';
+export * as ItemGroups from './itemGroups';
