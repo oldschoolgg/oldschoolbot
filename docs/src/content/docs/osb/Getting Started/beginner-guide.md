@@ -8,20 +8,19 @@ This guide is meant for players just starting with OSB. It does not include opti
 
 ### Part 1: Pre-PvM
 
-Do [agility](https://wiki.oldschool.gg/skills/agility) until you have full Graceful (can be obtained by using [[/create item\:graceful]], and costs 260 marks of grace). You can do agility by using the [[/laps name\:[courseName]]] command. After getting full Graceful, you can do the [Hallowed Sepulchre](https://wiki.oldschool.gg/skills/agility/hallowed-sepulchre) to get a Strange Old Lockpick. This item is rarer than OSRS, but has unlimited charges and provides a boost to Barrows.
+Do [agility](/osb/skills/agility) until you have full Graceful (can be obtained by using [[/create item\:graceful]], and costs 260 marks of grace). You can do agility by using the [[/laps name\:courseName]] command. After getting full Graceful, you can do the [Hallowed Sepulchre](/osb/activities/hallowed-sepulchre/) to get a [[Strange old lockpick]]. This item is rarer than in OSRS, but has unlimited charges and provides a boost to Barrows.
 
 Don't forget to do your daily every 12 hours: [[/minion daily]] for some starter GP.
 
-Once you have full Graceful, quest to at least **205 QP**. You can quest with the [[/activities quest]] command. Since you will already have the maximum bonus for questing, consider going all the way to 290 QP.
+Once you have full Graceful, quest to at least **205 QP**. You can quest with the [[/activities quest]] command. Since you will already have the maximum bonus for questing, consider going all the way to maximum QP.
 
 After getting at least 175 QP, purchase at least one set of Barrows gloves (ideally 3 sets). With 205 QP you can access all bosses that the bot has to offer.
 
-If your minion is an ironman, do a small amount of fishing/cooking for early game food. You won't need much, as better food sources will unlock soon.\
-Main accounts should purchase food from other players using the #grand-exchange channel for now.
+If your minion is an ironman, do a small amount of fishing/cooking for early game food. You won't need much, as better food sources will unlock soon. Main accounts can purchase food from other players using the #grand-exchange channel or [[/ge]].
 
 ### Part 2: Early Upgrades
 
-Equip the best slash attack gear you have in your melee setup. Use: [[/gear equip gear_setup\:Melee auto\:attack_slash]]
+Equip the best slash attack gear you have in your melee setup. Use: [[/gear equip gear_setup\:Melee auto\:attack_slash]].
 
 Kill baby dragons (black/blue) with [[/k name\:baby blue dragon]] until you have the bones for [[prayer:43]]. Then use [[/offer name\:Dragon bone]] to train to 43.
 
@@ -29,25 +28,19 @@ Once you have [[prayer:43]], do [[/minion train style\:magic]] to begin gaining 
 
 If you have 300k GP, consider buying an Iban's staff with [[/buy name\:Iban's staff]] as it boosts Barrows.
 
-Train magic until at least [[magic:55]], then switch to any other style.
+Train magic until at least [[magic:55]], or [[magic:70]] for equipping [[Ahrim's robetop]], then switch to any other style.
 
-Main accounts can sell duplicates in #grand-exchange or use [[/sell]] for early GP. Spend it on Potatoes with cheese, a Bandos godsword, and other upgrades.
-
-#### Post-Barrows Gear
-
-This is the gear you should equip after finishing Barrows. If you have items like DKS rings, Amulets of glory/fury, god books, Ava's accumulator, Mage arena cape, Fire cape, etc., equip those too. This setup is good for monsters that require food without using too much of it.
-
-(If you bought a Bandos godsword earlier, equip it in melee instead of a Dharok's greataxe.)
+Main accounts can sell duplicates in #grand-exchange or use [[/sell]] for early GP. Spend it on [[Potato with cheese]], a [[Bandos godsword]], and other upgrades.
 
 ### Part 3: The Rest of the Game
 
-With some basic gear, easy access to food, and mid-high combat stats, you can now do most activities on the bot.
+With some basic gear, easy access to food, and mid-high combat stats, you can now do most activities on the bot. 
 
-Some monsters have item/stat requirements, shown on the [Boosts & Requirements](https://wiki.oldschool.gg/bosses/boosts-and-requirements) page. This page also lists boosts for bosses.
+Some monsters have item/stat requirements, shown on the [Boosts & Requirements](/osb/monsters) page. This page also lists boosts for bosses. You can check out what attack style gear you should be using for monsters with [[/k show_info\:true]].
 
-You can view BiS gear for bossing/PvM [here](https://wiki.oldschool.gg/skills/slayer/slayer-misc#best-gear-for-slayer).
+You can view BiS gear for bossing/PvM [here](/osb/skills/slayer/slayer-misc#best-gear-for-slayer).
 
-For specific activities like [CoX](https://wiki.oldschool.gg/bosses/cox-raids/cox-gear-setups) and [The Nightmare](https://wiki.oldschool.gg/bosses/nightmare-of-ashihama), check their pages for stat/gear advice.
+For specific activities like [CoX](/osb/raids/cox/) and [The Nightmare](/osb/bosses/the-nightmare/), check their pages for stat/gear advice.
 
 For skilling methods, visit the respective pages in this wiki.
 

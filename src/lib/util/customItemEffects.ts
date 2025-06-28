@@ -1,4 +1,5 @@
 import { LRUCache } from 'lru-cache';
+import type { Canvas } from 'skia-canvas';
 
 import { getPaintedItemImage, paintColorsMap } from '../paintColors';
 import { type CanvasImage, canvasToBuffer, createCanvas, loadImage } from './canvasUtil';
@@ -7,7 +8,7 @@ import itemID from './itemID';
 export const customItemEffect = new Map([
 	[
 		itemID('Eggy'),
-		(img: CanvasImage, userID: string | undefined) => {
+		(img: CanvasImage | Canvas, userID: string | undefined) => {
 			const userIDEffective = userID ?? '11111';
 			const canvas = createCanvas(img.width, img.height);
 			const ctx = canvas.getContext('2d');

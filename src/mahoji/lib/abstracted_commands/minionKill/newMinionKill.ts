@@ -6,6 +6,7 @@ import z from 'zod';
 
 import { BitField, type PvMMethod, YETI_ID } from '../../../../lib/constants';
 import { getSimilarItems } from '../../../../lib/data/similarItems';
+import { checkRangeGearWeapon } from '../../../../lib/gear/functions/checkRangeGearWeapon';
 import type { InventionID } from '../../../../lib/invention/inventions';
 import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
@@ -17,13 +18,16 @@ import {
 } from '../../../../lib/minions/functions';
 import type { KillableMonster } from '../../../../lib/minions/types';
 import type { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
-import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/slayer/slayerUtil';
+import {
+	type CurrentSlayerInfo,
+	determineCombatBoosts,
+	wildySlayerOnlyMonsters
+} from '../../../../lib/slayer/slayerUtil';
 import type { GearBank } from '../../../../lib/structures/GearBank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { Peak } from '../../../../lib/tickers';
 import {
 	calculateSimpleMonsterDeathChance,
-	checkRangeGearWeapon,
 	formatDuration,
 	isWeekend,
 	itemID,
@@ -102,6 +106,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		return `You can't kill ${monster.name} in the wilderness.`;
 	}
 
+	if (wildySlayerOnlyMonsters.some(m => m.id === monster.id) && isInWilderness && !isOnTask) {
+		return `${monster.name} can only be killed in the wilderness when on a slayer task.`;
+	}
+
 	const matchedRevenantMonster = revenantMonsters.find(m => m.id === monster.id);
 	if (matchedRevenantMonster) {
 		const weapon = gearBank.gear.wildy.equippedWeapon();
@@ -143,8 +151,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	const isBurstingOrBarraging = combatMethods.includes('burst') || combatMethods.includes('barrage');
 	if (isBurstingOrBarraging && !monster.canBarrage) {
-		if (isKillingJelly && !isInWilderness) {
-			return `${monster.name} can only be barraged or burst in the wilderness.`;
+		if (isKillingJelly) {
+			if (!isInWilderness) {
+				return `${monster.name} can only be barraged or burst in the wilderness.`;
+			}
 		} else {
 			return `${monster.name} cannot be barraged or burst.`;
 		}

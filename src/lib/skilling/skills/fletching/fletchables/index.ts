@@ -7,7 +7,7 @@ import Darts from './darts';
 import Javelins from './javelins';
 import Shafts from './shafts';
 import Shields from './shields';
-import Slayer from './slayer';
+import { AmethystBroadBolts, BroadArrows, BroadBolts, Slayer } from './slayer';
 import TippedBolts from './tippedBolts';
 import TippedDragonBolts from './tippedDragonBolts';
 import Tips from './tips';
@@ -28,3 +28,14 @@ export const Fletchables: Fletchable[] = [
 ];
 
 export const fletchingCL = Fletchables.map(i => i.id);
+export const zeroTimeFletchables: Fletchable[] = [
+	BroadArrows,
+	BroadBolts,
+	...Darts,
+	...Arrows,
+	...Bolts,
+	AmethystBroadBolts,
+	...TippedBolts,
+	...TippedDragonBolts,
+	...Javelins
+];

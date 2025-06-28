@@ -25,6 +25,6 @@
 	},
 	"devDependencies": {
 		"@types/markdown-it": "^14.1.2",
-		"typescript": "^5.5.3"
+		"typescript": "^5.8.3"
 	}
 }

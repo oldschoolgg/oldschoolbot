@@ -1,3 +1,4 @@
+import { TSVWriter } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
@@ -27,7 +28,6 @@ import {
 	newMinionKillCommand
 } from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill';
 import { doMonsterTrip } from '../src/tasks/minions/monsterActivity';
-import { TSVWriter } from './TSVWriter';
 
 const MAX_TRIP_LENGTH = Time.Hour * 600;
 const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints', 'slayer'];
@@ -52,9 +52,11 @@ const attackStyleSets: AttackStyles[][] = [
 	[SkillsEnum.Magic, SkillsEnum.Defence]
 ];
 
+const skillsAsXP: any = {};
 const skillsAsLevels: any = {};
 for (const skill of SkillsArray) {
 	skillsAsLevels[skill] = 99;
+	skillsAsXP[skill] = 15_000_000;
 }
 const materials = new MaterialBank();
 for (const t of materialTypes) materials.add(t, 100000000);
@@ -95,7 +97,8 @@ for (const monster of killableMonsters) {
 		bank,
 		skillsAsLevels,
 		materials,
-		pet: itemID('Ori')
+		pet: itemID('Ori'),
+		skillsAsXP
 	});
 
 	const pkEvasionExperience = 100000000;
@@ -177,6 +180,7 @@ for (const monster of killableMonsters) {
 					type: 'MonsterKilling',
 					monster,
 					q: commandResult.quantity,
+					cl: new Bank(),
 					usingCannon,
 					cannonMulti,
 					bob,
@@ -197,8 +201,7 @@ for (const monster of killableMonsters) {
 					duration: commandResult.duration,
 					bitfield,
 					chinning,
-					disabledInventions: [],
-					cl: new Bank()
+					disabledInventions: []
 				});
 
 				results.push({ tripResult, commandResult });

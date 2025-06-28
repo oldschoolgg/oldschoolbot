@@ -20,6 +20,13 @@ import { allSlayerTasks } from './tasks';
 import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
 import type { AssignableSlayerTask, SlayerMaster } from './types';
 
+export const wildySlayerOnlyMonsters = [
+	Monsters.DustDevil,
+	Monsters.GreaterNechryael,
+	Monsters.AbyssalDemon,
+	Monsters.Jelly
+];
+
 export enum SlayerMasterEnum {
 	Reserved = 0,
 	Turael = 1,
@@ -186,7 +193,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	)
 		return false;
 	if (
-		(lmon === 'dust devil' || lmon === 'greater nechryael' || lmon === 'abyssal demon' || lmon === 'jelly') &&
+		wildySlayerOnlyMonsters.some(m => m.id === task.monster.id) &&
 		lmast === 'krystilia' &&
 		!myUnlocks.includes(SlayerTaskUnlocksEnum.IWildyMoreSlayer)
 	)

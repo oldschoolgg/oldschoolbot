@@ -60,6 +60,7 @@ const killableMonsters: KillableMonster[] = [
 			{ [itemID('Barrows gloves')]: 2 },
 			{
 				[itemID("Iban's staff")]: 5,
+				[itemID('Warped sceptre (uncharged)')]: 6,
 				[itemID('Harmonised nightmare staff')]: 7,
 				[itemID("Tumeken's shadow")]: 10
 			},
@@ -143,6 +144,7 @@ const killableMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID("Iban's staff")]: 3,
+				[itemID('Warped sceptre (uncharged)')]: 4,
 				[itemID('Harmonised nightmare staff')]: 5
 			},
 			{

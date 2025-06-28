@@ -1,5 +1,6 @@
 import { LootTable } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Canvas } from 'skia-canvas';
 
 import { paintColors } from './customItems/paintCans';
 import { type CanvasImage, createCanvas } from './util/canvasUtil';
@@ -14,7 +15,7 @@ export interface PaintColor {
 export const paintColorsMap = new Map(paintColors.map(i => [i.itemId, i]));
 
 export const applyPaintToItemIcon = async (
-	img: CanvasImage,
+	img: CanvasImage | Canvas,
 	tintColor: [number, number, number],
 	blackTolerance = 4
 ) => {

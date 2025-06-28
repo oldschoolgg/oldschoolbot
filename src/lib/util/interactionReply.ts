@@ -23,6 +23,7 @@ export async function interactionReply(interaction: RepliableInteraction, respon
 		i = interaction.followUp(response);
 	} else if (interaction.deferred) {
 		method = 'editReply';
+		// @ts-expect-error
 		i = interaction.editReply(response);
 	} else {
 		method = 'reply';

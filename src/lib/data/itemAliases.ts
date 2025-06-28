@@ -1,5 +1,5 @@
 import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/util';
-import { Items, allTeamCapes, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
+import { ItemGroups, Items, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
@@ -455,12 +455,12 @@ declare module 'oldschooljs/dist/meta/types' {
 	}
 }
 
-for (const item of allTeamCapes) {
-	Items.modifyItem(item.id, {
+for (const id of ItemGroups.teamCapes) {
+	Items.modifyItem(id, {
 		price: 100
 	});
-	if (getItemOrThrow(item.id).price !== 100) {
-		throw new Error(`Failed to modify price of item ${item.id}`);
+	if (getItemOrThrow(id).price !== 100) {
+		throw new Error(`Failed to modify price of item ${id}`);
 	}
 }
 

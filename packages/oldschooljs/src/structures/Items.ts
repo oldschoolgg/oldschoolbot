@@ -1,6 +1,6 @@
 import deepMerge from 'deepmerge';
 
-import _items from '../data/items/item_data.json';
+import _items from '../data/items/item_data.json' with { type: 'json' };
 import type { Item, ItemID } from '../meta/types';
 import { cleanString } from '../util/cleanString';
 import { Collection } from './Collection';

@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 import type { WikiPage } from '../meta/types';
 
-class Wiki {
+class WikiSingleton {
 	private URL = 'https://oldschool.runescape.wiki/api.php';
 	private searchOptions: { [index: string]: string } = {
 		'-incategory': ['Slang_dictionary', 'Disambiguation'].join('|')
@@ -78,4 +78,4 @@ class Wiki {
 	}
 }
 
-export default new Wiki();
+export const Wiki = new WikiSingleton();
