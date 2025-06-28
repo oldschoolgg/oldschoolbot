@@ -40,6 +40,7 @@ import {
 	assert,
 	channelIsSendable,
 	formatDuration,
+	formatDurationFromUser,
 	formatList,
 	formatSkillRequirements,
 	itemNameFromID,
@@ -1296,7 +1297,10 @@ export async function toaStartCommand(
 		users.map(u => u.usernameOrMention)
 	)}) are now off to do ${
 		quantity === 1 ? 'a' : `${quantity}x`
-	} level ${raidLevel} Tombs of Amascut raid - the total trip will take ${formatDuration(fakeDuration)}.`;
+	} level ${raidLevel} Tombs of Amascut raid - the total trip will take ${formatDurationFromUser(
+		fakeDuration,
+		partyOptions.leader
+	)}.`;
 
 	str += ` \n\n${debugStr}`;
 

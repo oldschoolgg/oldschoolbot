@@ -13,7 +13,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import type { Ore } from '../../lib/skilling/types';
 import type { GearBank } from '../../lib/structures/GearBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
+import { formatDurationFromUser, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import itemID from '../../lib/util/itemID';
@@ -264,8 +264,8 @@ export const mineCommand: OSBMahojiCommand = {
 			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
-				? `between ${formatDuration(res.fakeDurationMin)} **and** ${formatDuration(res.fakeDurationMax)}`
-				: formatDuration(res.duration)
+				? `between ${formatDurationFromUser(res.fakeDurationMin, user)} **and** ${formatDurationFromUser(res.fakeDurationMax, user)}`
+				: formatDurationFromUser(res.duration, user)
 		} to finish.`;
 
 		if (res.boosts.length > 0) {

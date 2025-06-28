@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { LMSBuyables } from '../../../lib/data/CollectionsExport';
 import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
+import { formatDurationFromUser, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -101,7 +101,8 @@ export async function lmsCommand(
 
 	return `${
 		user.minionName
-	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatDuration(
-		duration
+	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatDurationFromUser(
+		duration,
+		user
 	)}.`;
 }

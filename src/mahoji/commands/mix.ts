@@ -8,6 +8,7 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
+import { formatDurationFromUser } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -143,6 +144,6 @@ export const mixCommand: OSBMahojiCommand = {
 
 		return `${user.minionName} ${cost} making ${quantity}x ${
 			mixableItem.outputMultiple ? 'batches of' : ''
-		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
+		}${itemName}, it'll take around ${formatDurationFromUser(quantity * timeToMixSingleItem, user)} to finish.`;
 	}
 };

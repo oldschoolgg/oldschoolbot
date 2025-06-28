@@ -4,7 +4,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
 import type { DarkAltarOptions } from '../../types/minions';
-import { formatDuration, hasSkillReqs } from '../../util';
+import { formatDurationFromUser, hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
@@ -85,8 +85,9 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 		rune
 	});
 
-	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDuration(
-		maxTripLength
+	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDurationFromUser(
+		maxTripLength,
+		user
 	)} at the Dark altar.`;
 
 	if (boosts.length > 0) {

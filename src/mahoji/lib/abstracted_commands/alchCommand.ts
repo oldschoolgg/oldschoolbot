@@ -5,7 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, toKMB } from '../../../lib/util';
+import { formatDuration, formatDurationFromUser, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
@@ -106,8 +106,9 @@ export async function alchCommand(
 		type: 'Alching'
 	});
 
-	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDuration(
-		duration
+	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDurationFromUser(
+		duration,
+		user
 	)} to finish.`;
 
 	return response;

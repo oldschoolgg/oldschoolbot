@@ -148,6 +148,16 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Show Detailed Info',
 		bit: BitField.ShowDetailedInfo
+	},
+	{
+		name: 'Show Minion Return Time',
+		bit: BitField.ShowMinionReturnTime,
+		canToggle: async user => {
+			if (user.perkTier() < PerkTier.Four) {
+				return { result: false, message: patronMsg(PerkTier.Four) };
+			}
+			return { result: true };
+		}
 	}
 ];
 

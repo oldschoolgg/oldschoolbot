@@ -1,13 +1,13 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FiremakingActivityTaskOptions } from '../../lib/types/minions';
+import { formatDurationFromUser } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -92,8 +92,9 @@ export const lightCommand: OSBMahojiCommand = {
 			type: 'Firemaking'
 		});
 
-		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDuration(
-			duration
+		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDurationFromUser(
+			duration,
+			user
 		)} to finish.`;
 	}
 };

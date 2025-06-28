@@ -2,7 +2,7 @@ import { Time } from 'e';
 
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -33,7 +33,8 @@ export async function myNotesCommand(user: MUser, channelID: string) {
 
 	return `${
 		user.minionName
-	} is now rummaging ${quantity} skeletons for Ancient pages, it'll take around ${formatDuration(
-		duration
+	} is now rummaging ${quantity} skeletons for Ancient pages, it'll take around ${formatDurationFromUser(
+		duration,
+		user
 	)} to finish. Removed ${foodRemoved}.`;
 }

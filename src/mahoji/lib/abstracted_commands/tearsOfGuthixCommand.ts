@@ -4,6 +4,7 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Emoji } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import { formatSkillRequirements, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -88,5 +89,5 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 
 	return `${
 		user.minionName
-	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatDuration(duration)}.`;
+	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatDurationFromUser(duration, user)}.`;
 }

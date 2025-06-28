@@ -5,7 +5,7 @@ import { determineMiningTime } from '../../../lib/skilling/functions/determineMi
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import Mining from '../../../lib/skilling/skills/mining';
 import type { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
+import { formatDurationFromUser, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
@@ -94,8 +94,8 @@ export async function motherlodeMineCommand({
 		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity
-			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-			: formatDuration(duration)
+			? `between ${formatDurationFromUser(fakeDurationMin, user)} **and** ${formatDurationFromUser(fakeDurationMax, user)}`
+			: formatDurationFromUser(duration, user)
 	} to finish.`;
 
 	if (boosts.length > 0) {

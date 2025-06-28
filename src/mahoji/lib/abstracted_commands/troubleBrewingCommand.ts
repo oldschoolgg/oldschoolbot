@@ -1,7 +1,7 @@
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -20,7 +20,8 @@ export async function troubleBrewingStartCommand(user: MUser, channelID: string)
 		minigameID: 'trouble_brewing'
 	});
 
-	return `${user.minionName} is now doing ${quantity}x games of Trouble Brewing! It will take ${formatDuration(
-		duration
+	return `${user.minionName} is now doing ${quantity}x games of Trouble Brewing! It will take ${formatDurationFromUser(
+		duration,
+		user
 	)} to finish.`;
 }

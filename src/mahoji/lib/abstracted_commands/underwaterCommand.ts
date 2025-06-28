@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import type { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
@@ -88,8 +89,9 @@ export async function underwaterAgilityThievingCommand(
 
 	await user.removeItemsFromBank(itemsToRemove);
 
-	let str = `${user.minionName} is now doing Underwater Agility and Thieving, it will take around ${formatDuration(
-		duration
+	let str = `${user.minionName} is now doing Underwater Agility and Thieving, it will take around ${formatDurationFromUser(
+		duration,
+		user
 	)}.`;
 
 	if (itemsToRemove.length > 0) {

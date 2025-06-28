@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
@@ -9,7 +9,7 @@ import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
+import { formatDurationFromUser, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
@@ -359,8 +359,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 			response += ' Pure ';
 		}
 
-		response += `Essence into ${runeObj.name}, it'll take around ${formatDuration(
-			duration
+		response += `Essence into ${runeObj.name}, it'll take around ${formatDurationFromUser(
+			duration,
+			user
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;

@@ -264,7 +264,8 @@ export enum BitField {
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
 	DisableOpenableNames = 41,
-	ShowDetailedInfo = 42
+	ShowDetailedInfo = 42,
+	ShowMinionReturnTime = 43
 }
 
 interface BitFieldData {
@@ -365,6 +366,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.ShowDetailedInfo]: {
 		name: 'Show Detailed Info',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.ShowMinionReturnTime]: {
+		name: 'Show Minion Return Time',
 		protected: false,
 		userConfigurable: true
 	}

@@ -16,6 +16,7 @@ import type { Fletchable } from '../../../lib/skilling/types';
 import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDurationFromUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
@@ -127,8 +128,9 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 
 	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
 		completableFloors[0].number
-	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
-		tripLength
+	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDurationFromUser(
+		tripLength,
+		user
 	)}, with each lap taking ${formatDuration(lapLength)}.`;
 
 	if (fletchable && itemsNeeded) {
