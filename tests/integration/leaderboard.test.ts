@@ -19,4 +19,24 @@ describe('Leaderboard', async () => {
 			await kcGains('week', 'zulrah', bool);
 		}
 	});
+
+	test('Minigames Leaderboard (ironmen_only true)', async () => {
+		const user = await createTestUser();
+		await user.runCommand(leaderboardCommand, {
+			minigames: {
+				minigame: 'Tithe farm',
+				ironmen_only: true
+			}
+		});
+	});
+
+	test('Minigames Leaderboard (ironmen_only false)', async () => {
+		const user = await createTestUser();
+		await user.runCommand(leaderboardCommand, {
+			minigames: {
+				minigame: 'Tithe farm',
+				ironmen_only: false
+			}
+		});
+	});
 });
