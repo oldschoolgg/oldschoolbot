@@ -1,15 +1,8 @@
 import { activity_type_enum } from '@prisma/client';
 import { Time, randArrItem, roll } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Bank } from 'oldschooljs';
+import { Bank, ItemGroups } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
-import {
-	beekeeperOutfit,
-	camoOutfit,
-	lederhosenOutfit,
-	mimeOutfit,
-	zombieOutfit
-} from 'oldschooljs/dist/data/itemConstants';
 
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { BitField } from './constants';
@@ -46,14 +39,14 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 1,
 		name: 'Bee keeper',
-		outfit: beekeeperOutfit,
+		outfit: ItemGroups.beekeeperOutfit,
 		uniqueMusic: true,
 		loot: new LootTable().add('Coins', [16, 36]).add('Flax', [1, 27]).every('Genie lamp')
 	},
 	{
 		id: 2,
 		name: 'Drill Demon',
-		outfit: camoOutfit,
+		outfit: ItemGroups.camoOutfit,
 		uniqueMusic: true,
 		loot: new LootTable().every('Genie lamp')
 	},
@@ -65,7 +58,7 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 4,
 		name: 'Freaky Forester',
-		outfit: lederhosenOutfit,
+		outfit: ItemGroups.lederhosenOutfit,
 		uniqueMusic: true,
 		loot: new LootTable().every('Genie lamp')
 	},
@@ -77,7 +70,7 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 6,
 		name: 'Gravedigger',
-		outfit: zombieOutfit,
+		outfit: ItemGroups.zombieOutfit,
 		loot: new LootTable().every('Genie lamp')
 	},
 	{
@@ -88,7 +81,7 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 8,
 		name: 'Mime',
-		outfit: mimeOutfit,
+		outfit: ItemGroups.mimeOutfit,
 		uniqueMusic: true,
 		loot: new LootTable().every('Genie lamp')
 	},
