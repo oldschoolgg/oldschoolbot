@@ -11,14 +11,8 @@ import { marketPricemap } from '../../lib/marketPrices';
 
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import {
-	formatDuration,
-	isGEUntradeable,
-	itemNameFromID,
-	makeComponents,
-	returnStringOrFile,
-	toKMB
-} from '../../lib/util';
+import { isGEUntradeable } from '../../lib/bso/bsoUtil';
+import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
 import { createChart } from '../../lib/util/chart';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';

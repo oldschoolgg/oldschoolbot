@@ -1,8 +1,9 @@
 import { randInt } from 'e';
+
 import { userHasMasterFarmerOutfit } from '../../../mahoji/mahojiSettings';
+import { hasUnlockedAtlantis } from '../../bso/bsoUtil';
 import { BitField } from '../../constants';
 import { QuestID } from '../../minions/data/quests';
-import { hasUnlockedAtlantis } from '../../util';
 import type { FarmingPatchName } from '../../util/farmingHelpers';
 import { type Plant, SkillsEnum } from '../types';
 

@@ -3,9 +3,9 @@ import { Bank, LootTable } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../constants';
-import { hasUnlockedAtlantis } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
+import { hasUnlockedAtlantis } from './bsoUtil';
 
 export function calcEnergyPerMemory(energy: DivinationEnergy) {
 	return (120 - energy.level) / 150;

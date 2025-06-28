@@ -21,7 +21,8 @@ import { giveawayCache } from '../../lib/cache.js';
 import { Emoji, patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
 
-import { channelIsSendable, isModOrAdmin, isSuperUntradeable, makeComponents, toKMB } from '../../lib/util';
+import { isSuperUntradeable } from '../../lib/bso/bsoUtil.js';
+import { channelIsSendable, isModOrAdmin, makeComponents, toKMB } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';

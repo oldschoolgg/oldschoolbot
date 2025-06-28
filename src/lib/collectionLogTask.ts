@@ -299,7 +299,7 @@ class CollectionLogTask {
 				qtyText = userCollectionBank.amount(item);
 			}
 
-			totalPrice += getOSItem(item).price * qtyText;
+			totalPrice += (getOSItem(item).price ?? 0) * qtyText;
 
 			// ctx.drawImage(
 			// 	itemImage,

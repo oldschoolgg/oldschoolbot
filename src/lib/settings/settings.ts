@@ -80,8 +80,7 @@ async function runMahojiCommand({
 		user: globalClient.users.cache.get(user.id)!,
 		member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
 		client: globalClient.mahojiClient,
-		interaction: interaction as ChatInputCommandInteraction,
-		djsClient: globalClient
+		interaction: interaction as ChatInputCommandInteraction
 	});
 }
 

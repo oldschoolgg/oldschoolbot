@@ -76,7 +76,12 @@ function checkGear(user: MUser): string | undefined {
 
 	const usersRangeStats = gear.stats;
 
-	if (!equippedWeapon || !equippedWeapon.weapon || !['crossbow', 'bow'].includes(equippedWeapon.weapon.weapon_type)) {
+	if (
+		!equippedWeapon ||
+		!equippedWeapon.weapon ||
+		!equippedWeapon.weapon.weapon_type ||
+		!['crossbow', 'bow'].includes(equippedWeapon.weapon.weapon_type)
+	) {
 		return 'JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with a bow or a crossbow.';
 	}
 

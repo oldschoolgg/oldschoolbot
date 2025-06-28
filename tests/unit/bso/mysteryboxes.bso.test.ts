@@ -38,6 +38,9 @@ test("Items that shouldn't be dropped in mystery boxes", () => {
 		'Justiciar faceguard',
 		'Accursed sceptre',
 		'Masori assembler max cape',
+		26245,
+		26241,
+		26243,
 		...toaCL
 	]);
 	for (const i of shouldntBeIn) {

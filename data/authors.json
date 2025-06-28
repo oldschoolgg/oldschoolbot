@@ -18,11 +18,11 @@
 	"osb/Activities/wintertodt.md": ["wontonstrips", "Magnaboy"],
 	"osb/Bosses/the-nightmare.md": ["DayV"],
 	"osb/combat-achievements.mdx": ["Magnaboy", "DayV", "Jonesey", "Keres"],
-	"osb/Miscelleanous/charging-items.md": ["wontonstrips", "Magnaboy"],
-	"osb/Miscelleanous/minion-icons.md": ["wontonstrips"],
+	"osb/miscellaneous/charging-items.md": ["wontonstrips", "Magnaboy"],
+	"osb/miscellaneous/minion-icons.md": ["wontonstrips"],
 	"osb/monsters.mdx": ["Magnaboy", "Keres"],
 	"osb/quests.mdx": ["Magnaboy", "Keres"],
 	"osb/Raids/toa.mdx": ["wontonstrips", "gamrbing", "Magnaboy"],
 	"osb/Raids/tob.mdx": ["wontonstrips", "Magnaboy"],
-	"osb/Skills/mining.md": ["Magnaboy", "dark", "lajnux"]
+	"osb/Skills/mining.mdx": ["Magnaboy", "dark", "lajnux"]
 }

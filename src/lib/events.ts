@@ -152,7 +152,7 @@ const mentionCommands: MentionCommand[] = [
 					if (isCustom) icons.push(Emoji.BSO);
 					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
-					const price = toKMB(Math.floor(item.price));
+					const price = toKMB(Math.floor(item.price ?? 0));
 					const searchMbTable = user.isIronman ? allIronmanMbTables : allMbTables;
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
 						searchMbTable.includes(item.id) ? Emoji.MysteryBox : ''

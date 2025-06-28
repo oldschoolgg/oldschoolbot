@@ -18,30 +18,30 @@ Make feature requests on [GitHub](https://github.com/oldschoolgg/oldschoolbot/is
 
 ### How do I sell/buy items to someone?
 
-Use the Grand Exchange: [[/ge]]
+Use the Grand Exchange: [[/ge]].
 
 ### How do I equip gear on my minion?
 
-There are 5 setups: Melee, Range, Mage, Skilling, and Misc.  
-Example: [[/gear equip gear_setup\:Melee item\:Bandos chestplate]]  
-Skilling gear (e.g. Graceful) goes in your Skilling setup.  
-Equip pets using: [[/gear pet equip\:Zilyana]]
+There are 8 setups: Melee, Range, Mage, Misc, Skilling, Wildy, Fashion and Other.  
+Example: [[/gear equip gear_setup\:Melee item\:Bandos chestplate]].
+Skilling gear (e.g. Pyromancer) goes in your Skilling setup.  
+Equip pets using: [[/gear pet equip\:Zilyana]].
 
 ### Can I stop my minion from going on a trip I started by accident?
 
-Yes. Use `+cancel`. You'll lose all progress, loot, XP, and used items.
+Yes. Use [[/minion cancel]]. You'll lose all progress, loot, XP, and used items.
 
 ### How do I get money for a minion?
 
-Use [[/daily]] and [[/dice]]. Or get gifted money from others.
+Use [[/minion daily]] and [[/gamble dice]]. Or get gifted money from others.
 
 ### Why can't I use minion commands?
 
 Possible reasons:
 
-- Your account looks like an alt
-- Your Discord account is too new (must be 30+ days old)
-- You're banned
+- Your account looks like an alt.
+- Your Discord account is too new (must be 30+ days old).
+- You're banned.
 
 ### Is RWT or autotyping allowed?
 
@@ -55,22 +55,20 @@ Possible reasons:
 
 Same as in OSRS. Monsters drop the same loot.  
 Use [[/buy]] or [[/create]] for quest/shop items.  
-Example: `+create graceful`, `+create odium ward`.
+Example: [[/create item\:Graceful]], [[/create item\:Odium ward]].
 
 ### How do I create a godsword?
 
-Example: `+create Bandos godsword` (requires Smithing level).  
+Example: [[/create item\:Godsword blade]] and [[/create item\:Bandos godsword]], requires [[smithing:80]].  
 You can pay someone else to create it in the [support server](https://discord.gg/ob).
 
 ### How do I get Barrows gloves?
 
-Requires [[qp:175]] and 1m GP.  
-See the full list [here](https://www.oldschool.gg/oldschoolbot/minions?Buyable%20items).
+Use [[/buy name\:Barrows gloves]]. Requires [[qp:175]] and 1m GP. 
 
 ### How do I get Runecrafting pouches?
 
-Use `+create medium pouch`.  
-Each requires leather and Crafting levels: 1, 10, 20, 30.
+Use [[/create item\:Medium pouch]] etc.
 
 ### Can I pay the bot to make shields (DFW/DFS) or spirit shields?
 
@@ -78,17 +76,16 @@ No. Pay another player with the required levels in the [support server](https://
 
 ### Can you stack clues?
 
-No. Same as OSRS.
+Yes. Clues can be juggled/stacked up to a combined limit of 100 in your bank.
 
 ### Why is the bot not responding?
 
-Mention it (`@Old School Bot`) to see the prefix.  
-Check bot permissions. Ask in the [support server](https://discord.gg/ob) if unsure.
+Try mentioning the bot (`@Old School Bot`), and check bot permissions. Ask in the [support server](https://discord.gg/ob) if unsure.
 
 ### How do I create/deconstruct a Barrows set?
 
-To create: [[/create dharoks armour set]]  
-To unpack: [[/unpack dharoks armour set]]
+To create: [[/create item\:Dharok's armour set]]  
+To unpack: [[/create item\:Unpack dharok's armour set]]
 
 ### The bot says it needs “Manage Messages” permission. How?
 

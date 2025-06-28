@@ -1,12 +1,12 @@
 import { PerkTier, cleanUsername, mentionCommand, seedShuffle } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
-import { Time, calcWhatPercent, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
+import { Time, calcWhatPercent, objectValues, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
 import { Bank, EquipmentSlot, type Item, type ItemBank } from 'oldschooljs';
-
-import { UserError } from '@oldschoolgg/toolkit/structures';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { pick } from 'remeda';
+
 import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
@@ -48,7 +48,7 @@ import { GearBank } from './structures/GearBank';
 import { MTame } from './structures/MTame';
 import type { Skills } from './types';
 import type { SkillRequirements } from './types';
-import { addItemToBank, convertXPtoLVL, fullGearToBank, hasSkillReqsRaw, itemNameFromID } from './util';
+import { addItemToBank, convertXPtoLVL, hasSkillReqsRaw, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { findGroupOfUser } from './util/findGroupOfUser';
 import { getKCByName } from './util/getKCByName';
@@ -424,7 +424,9 @@ export class MUserClass {
 			bank.add(this.user.minion_equippedPet);
 		}
 
-		bank.add(fullGearToBank(this.gear));
+		for (const setup of objectValues(this.gear)) {
+			bank.add(setup.toBank());
+		}
 
 		return bank;
 	}

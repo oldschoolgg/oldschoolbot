@@ -7,8 +7,8 @@ import {
 } from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
-import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Time, randArrItem, randInt, shuffleArr } from 'e';
+import { Bank, convertLVLtoXP } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
@@ -35,15 +35,12 @@ import type { MinigameName } from '../../lib/settings/minigames';
 import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
+import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
-	generateXPLevelQuestion,
 	getUsername,
 	isGroupActivity,
 	isInSupportServer,
-	isNexActivity,
-	isRaidsActivity,
-	isTOBOrTOAActivity,
 	itemID,
 	itemNameFromID,
 	parseStaticTimeInterval,
@@ -72,6 +69,18 @@ import { buttonUserPicker } from '../lib/buttonUserPicker';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
+
+function isRaidsActivity(data: any): data is RaidsOptions {
+	return 'challengeMode' in data;
+}
+
+function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
+	return 'wipedRoom' in data;
+}
+
+function isNexActivity(data: any): data is NexTaskOptions {
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
+}
 
 const skillsVals = Object.values(Skills);
 
@@ -365,6 +374,34 @@ export function spawnLampIsReady(user: MUser, channelID: string): [true] | [fals
 	}
 	return [true];
 }
+
+export function generateXPLevelQuestion() {
+	const level = randInt(1, 120);
+	const xp = randInt(convertLVLtoXP(level), convertLVLtoXP(level + 1) - 1);
+
+	const chanceOfSwitching = randInt(1, 4);
+
+	const answers: string[] = [level.toString()];
+	const arr = shuffleArr(['plus', 'minus'] as const);
+
+	while (answers.length < 4) {
+		const modifier = randArrItem([1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10]);
+		const action = roll(chanceOfSwitching) ? arr[0] : arr[1];
+		let potentialAnswer = action === 'plus' ? level + modifier : level - modifier;
+		if (potentialAnswer < 1) potentialAnswer = level + modifier;
+		else if (potentialAnswer > 120) potentialAnswer = level - modifier;
+
+		if (answers.includes(potentialAnswer.toString())) continue;
+		answers.push(potentialAnswer.toString());
+	}
+
+	return {
+		question: `What level would you be at with **${xp.toLocaleString()}** XP?`,
+		answers,
+		explainAnswer: `${xp.toLocaleString()} is level ${level}!`
+	};
+}
+
 async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
 	if (!isInSupportServer(channelID)) {
 		return 'You can only use this command in the support server.';

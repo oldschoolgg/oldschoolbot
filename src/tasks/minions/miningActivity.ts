@@ -136,10 +136,14 @@ export function calculateMiningResult({
 	const hasAdze = Object.values(allGear).some(g => g.hasEquipped(['Superior inferno adze']));
 	const adzeIsDisabled = disabledInventions.includes(InventionID.SuperiorInfernoAdze);
 	if (!isPowermining && !isDestroyed) {
-		let daeyaltQty = 0;
-
 		// Gem rocks roll off the GemRockTable
-		if (ore.name === 'Gem rock') {
+		if (ore.name === 'Daeyalt essence rock') {
+			let daeyaltQty = 0;
+			for (let i = 0; i < quantity; i++) {
+				daeyaltQty += randInt(2, 3);
+			}
+			loot.add(ore.id, daeyaltQty);
+		} else if (ore.name === 'Gem rock') {
 			let effectiveQty = quantity;
 			if (Object.values(allGear).some(g => g.hasEquipped(upgradedDragonstoneOutfit, true))) {
 				effectiveQty = Math.ceil(increaseNumByPercent(quantity, 10));
@@ -176,11 +180,6 @@ export function calculateMiningResult({
 			for (let i = 0; i < quantity; i++) {
 				loot.add(Mining.GraniteRockTable.roll());
 			}
-		} else if (ore.name === 'Daeyalt essence rock') {
-			for (let i = 0; i < quantity; i++) {
-				daeyaltQty += randInt(2, 3);
-			}
-			loot.add(ore.id, daeyaltQty);
 		} else if (ore.name === 'Tainted essence chunk') {
 			loot.add(ore.id, 5 * taintedQty);
 		} else {
