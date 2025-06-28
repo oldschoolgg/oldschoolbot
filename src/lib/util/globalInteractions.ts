@@ -49,7 +49,8 @@ const globalInteractionActions = [
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
 	'DO_SHOOTING_STAR',
-	'CHECK_TOA'
+	'CHECK_TOA',
+	'START_TOG'
 ] as const;
 
 type GlobalInteractionAction = (typeof globalInteractionActions)[number];
@@ -93,6 +94,14 @@ export function makeRepeatTripButton() {
 		.setEmoji('🔁');
 }
 
+export function makeTearsOfGuthixButton() {
+	return new ButtonBuilder()
+		.setCustomId('START_TOG')
+		.setLabel('Start Tears of Guthix')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('🐍');
+}
+
 export function makeBirdHouseTripButton() {
 	return new ButtonBuilder()
 		.setCustomId('DO_BIRDHOUSE_RUN')
@@ -107,6 +116,14 @@ export function makeAutoSlayButton() {
 		.setLabel('Auto Slay')
 		.setEmoji('630911040560824330')
 		.setStyle(ButtonStyle.Secondary);
+}
+
+export function makeClaimDailyButton() {
+	return new ButtonBuilder()
+		.setCustomId('CLAIM_DAILY')
+		.setLabel('Minion Daily')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('493286312854683654');
 }
 
 const reactionTimeLimits = {
@@ -574,6 +591,14 @@ export async function interactionHook(interaction: Interaction) {
 						: `That Crashed Star was not discovered by ${user.minionName}.`
 				}`,
 				ephemeral: true
+			});
+		}
+		case 'START_TOG': {
+			return runCommand({
+				commandName: 'minigames',
+				args: { tears_of_guthix: { start: {} } },
+				bypassInhibitors: true,
+				...options
 			});
 		}
 		default: {

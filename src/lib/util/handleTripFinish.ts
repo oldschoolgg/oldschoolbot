@@ -4,10 +4,14 @@ import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateO
 import { Bank } from 'oldschooljs';
 
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { sumArr } from 'e';
+import { Time, sumArr } from 'e';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import {
+	tearsOfGuthixIronmanReqs,
+	tearsOfGuthixSkillReqs
+} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
@@ -20,15 +24,17 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { formatList } from '../util';
+import { formatList, hasSkillReqs } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
+	makeClaimDailyButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
-	makeRepeatTripButton
+	makeRepeatTripButton,
+	makeTearsOfGuthixButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
 
@@ -201,6 +207,34 @@ export async function handleTripFinish(
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
+
+		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats({
+			last_tears_of_guthix_timestamp: true,
+			last_daily_timestamp: true
+		});
+
+		// Tears of Guthix start button if ready
+		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
+			const last = Number(last_tears_of_guthix_timestamp);
+			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
+			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
+			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
+
+			if (user.QP >= 43 && ready && meetsSkillReqs && meetsIronmanReqs) {
+				components.push(makeTearsOfGuthixButton());
+			}
+		}
+
+		// Minion daily button if ready
+		if (!user.bitfield.includes(BitField.DisableDailyButton)) {
+			const last = Number(last_daily_timestamp);
+			const ready = last <= 0 || Date.now() - last >= Time.Hour * 12;
+
+			if (ready) {
+				components.push(makeClaimDailyButton());
+			}
+		}
+
 		const birdHousedetails = await calculateBirdhouseDetails(user);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());

@@ -146,8 +146,16 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableOpenableNames
 	},
 	{
+		name: 'Disable Tears of Guthix Trip Button',
+		bit: BitField.DisableTearsOfGuthixButton
+	},
+	{
 		name: 'Show Detailed Info',
 		bit: BitField.ShowDetailedInfo
+	},
+	{
+		name: 'Disable Minion Daily Button',
+		bit: BitField.DisableDailyButton
 	}
 ];
 

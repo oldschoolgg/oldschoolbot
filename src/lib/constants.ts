@@ -264,7 +264,9 @@ export enum BitField {
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
 	DisableOpenableNames = 41,
-	ShowDetailedInfo = 42
+	ShowDetailedInfo = 42,
+	DisableTearsOfGuthixButton = 43,
+	DisableDailyButton = 44
 }
 
 interface BitFieldData {
@@ -365,6 +367,16 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.ShowDetailedInfo]: {
 		name: 'Show Detailed Info',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableTearsOfGuthixButton]: {
+		name: 'Disable Tears of Guthix Trip Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableDailyButton]: {
+		name: 'Disable Minion Daily Button',
 		protected: false,
 		userConfigurable: true
 	}
