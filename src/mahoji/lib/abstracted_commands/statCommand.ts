@@ -19,6 +19,7 @@ import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 
+import { PetEmojis } from '../../../lib/data/pets';
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
@@ -29,6 +30,17 @@ import { SQL_sumOfAllCLItems, formatDuration, getUsername, stringMatches } from 
 import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import {
+	type DryResult,
+	babyChinchompaDry,
+	beaverDry,
+	heronDry,
+	riftGuardianDry,
+	rockGolemDry,
+	rockyDry,
+	squirrelDry,
+	tanglerootDry
+} from '../../../lib/util/skillingPetDrystreak';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from '../collectables';
 
@@ -1352,6 +1364,36 @@ ${(
 					type: 'bar'
 				})
 			);
+		}
+	},
+	{
+		name: 'Expected Skilling Pets',
+		perkTierNeeded: null,
+		run: async user => {
+			const petFns: Record<string, (iron: boolean, id: string, include?: boolean) => Promise<DryResult[]>> = {
+				Beaver: beaverDry,
+				Tangleroot: tanglerootDry,
+				Rocky: rockyDry,
+				Heron: heronDry,
+				'Rift guardian': riftGuardianDry,
+				'Rock golem': rockGolemDry,
+				'Baby chinchompa': babyChinchompaDry,
+				'Giant squirrel': squirrelDry
+			};
+
+			const results = await Promise.all(
+				Object.entries(petFns).map(async ([name, fn]) => {
+					const expected = (await fn(false, user.id, true))[0]?.expected ?? 0;
+					return { name, expected };
+				})
+			);
+
+			const getPetEmoji = (name: string) => PetEmojis[name.toLowerCase()] ?? '❓';
+
+			return [
+				'Expected Skilling Pets:',
+				...results.map(r => `• ${getPetEmoji(r.name)} ${r.name}: ${r.expected.toFixed(2)}x`)
+			].join('\n');
 		}
 	}
 ] as const;
