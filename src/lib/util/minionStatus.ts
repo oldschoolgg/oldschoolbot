@@ -35,6 +35,7 @@ import type {
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -624,6 +625,10 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'Buy': {
+			const data = currentTask as BuyActivityTaskOptions;
+			return `${name} is currently buying ${data.quantity}x ${itemNameFromID(data.itemID)}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Nex': {
 			const data = currentTask as NexTaskOptions;

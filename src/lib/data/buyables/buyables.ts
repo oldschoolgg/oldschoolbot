@@ -23,6 +23,7 @@ import { runeBuyables } from './runes';
 import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
+import { tripBuyables } from './tripBuyables';
 import { troubleBrewingBuyables } from './troubleBrewingShop';
 
 export interface Buyable {
@@ -40,6 +41,9 @@ export interface Buyable {
 	collectionLogReqs?: number[];
 	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
 	maxQuantity?: number;
+	quantityPerHour?: number;
+	shopQuantity?: number;
+	changePer?: number;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -1151,7 +1155,8 @@ const Buyables: Buyable[] = [
 	...toaCapes,
 	...mairinsMarketBuyables,
 	...forestryBuyables,
-	...colossalWyrmAgilityBuyables
+	...colossalWyrmAgilityBuyables,
+	...tripBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
