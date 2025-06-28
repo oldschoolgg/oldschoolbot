@@ -1,4 +1,5 @@
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
+import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
@@ -8,6 +9,7 @@ import { formatDuration, hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
+import { updateBankSetting } from '../../util/updateBankSetting';
 
 export const darkAltarRunes = {
 	soul: {
@@ -30,7 +32,12 @@ const gracefulPenalty = 20;
 const agilityPenalty = 35;
 const mediumDiaryBoost = 20;
 
-export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: string; name: string }) {
+export async function darkAltarCommand({
+	user,
+	channelID,
+	name,
+	extracts
+}: { user: MUser; channelID: string; name: string; extracts?: boolean }) {
 	const stats = user.skillsAsLevels;
 	if (!['blood', 'soul'].includes(name.split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {
@@ -73,21 +80,43 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
-	const quantity = Math.floor(maxTripLength / timePerRune);
+	let quantity = Math.floor(maxTripLength / timePerRune);
+	let duration = maxTripLength;
+	const totalCost = new Bank();
+	if (extracts) {
+		const extractsOwned = user.bank.amount('Scarred extract');
+		quantity = Math.min(quantity, extractsOwned);
+		if (extractsOwned === 0 || quantity === 0) {
+			return "You don't have enough Scarred extracts to craft these runes.";
+		}
+		duration = quantity * timePerRune;
+		totalCost.add('Scarred extract', quantity);
+		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+	}
+
+	if (totalCost.length > 0) {
+		await user.removeItemsFromBank(totalCost);
+		updateBankSetting('runecraft_cost', totalCost);
+	}
 
 	await addSubTaskToActivityTask<DarkAltarOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
-		duration: maxTripLength,
+		duration,
 		type: 'DarkAltar',
 		hasElite: hasEliteDiary,
-		rune
+		rune,
+		useExtracts: extracts
 	});
 
 	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDuration(
-		maxTripLength
+		duration
 	)} at the Dark altar.`;
+
+	if (extracts) {
+		response += `\nYou will use ${quantity}x Scarred extract during this trip.`;
+	}
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
