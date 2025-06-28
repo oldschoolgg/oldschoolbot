@@ -3,13 +3,14 @@ import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { type CommandOptions, PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit/util';
 import * as dotenv from 'dotenv';
-import { getItemOrThrow, resolveItems } from 'oldschooljs';
+import { type Item, getItemOrThrow, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
 import type { CanvasImage } from './util/canvasUtil';
+import getOSItem from './util/getOSItem';
 
 export { PerkTier };
 
@@ -438,6 +439,11 @@ export const projectiles = {
 		savedByAvas: true,
 		weapons: resolveItems(['Twisted bow'])
 	},
+	ogreArrow: {
+		items: resolveItems(['Ogre Arrow']),
+		savedByAvas: true,
+		weapons: resolveItems(['Ogre bow'])
+	},
 	bolt: {
 		items: resolveItems([
 			'Runite bolts',
@@ -512,6 +518,12 @@ export const chompyHats = [
 	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
+
+export const avasDevices: { item: Item; reduction: number }[] = [
+	{ item: getOSItem("Ava's attractor"), reduction: 60 },
+	{ item: getOSItem("Ava's accumulator"), reduction: 72 },
+	{ item: getOSItem("Ava's assembler"), reduction: 80 }
+];
 
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",
