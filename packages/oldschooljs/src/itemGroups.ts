@@ -1,0 +1,167 @@
+import { EItem } from './EItem';
+
+export const stoles = [
+	EItem.SARADOMIN_STOLE,
+	EItem.GUTHIX_STOLE,
+	EItem.ZAMORAK_STOLE,
+	EItem.ARMADYL_STOLE,
+	EItem.BANDOS_STOLE,
+	EItem.ANCIENT_STOLE
+];
+
+export const runeHeraldicShields = [
+	EItem.RUNE_SHIELD_H1,
+	EItem.RUNE_SHIELD_H2,
+	EItem.RUNE_SHIELD_H3,
+	EItem.RUNE_SHIELD_H4,
+	EItem.RUNE_SHIELD_H5
+];
+
+const karilsItems = [EItem.KARILS_COIF, EItem.KARILS_LEATHERTOP, EItem.KARILS_LEATHERSKIRT, EItem.KARILS_CROSSBOW];
+const dharokItems = [EItem.DHAROKS_HELM, EItem.DHAROKS_PLATEBODY, EItem.DHAROKS_PLATELEGS, EItem.DHAROKS_GREATAXE];
+const guthansItems = [EItem.GUTHANS_HELM, EItem.GUTHANS_PLATEBODY, EItem.GUTHANS_CHAINSKIRT, EItem.GUTHANS_WARSPEAR];
+const toragsItems = [EItem.TORAGS_HELM, EItem.TORAGS_PLATEBODY, EItem.TORAGS_PLATELEGS, EItem.TORAGS_HAMMERS];
+const veracsItems = [EItem.VERACS_HELM, EItem.VERACS_BRASSARD, EItem.VERACS_PLATESKIRT, EItem.VERACS_FLAIL];
+const ahrimsItems = [EItem.AHRIMS_HOOD, EItem.AHRIMS_ROBETOP, EItem.AHRIMS_ROBESKIRT, EItem.AHRIMS_STAFF];
+
+export const barrowsItemArr = [karilsItems, ahrimsItems, guthansItems, toragsItems, veracsItems, dharokItems];
+
+export const boaters = [
+	EItem.RED_BOATER,
+	EItem.GREEN_BOATER,
+	EItem.ORANGE_BOATER,
+	EItem.BLACK_BOATER,
+	EItem.BLUE_BOATER,
+	EItem.PINK_BOATER,
+	EItem.PURPLE_BOATER,
+	EItem.WHITE_BOATER
+];
+
+export const mitres = [
+	EItem.SARADOMIN_MITRE,
+	EItem.GUTHIX_MITRE,
+	EItem.ZAMORAK_MITRE,
+	EItem.ARMADYL_MITRE,
+	EItem.BANDOS_MITRE,
+	EItem.ANCIENT_MITRE
+];
+
+export const bobShirts = [
+	EItem.BOBS_BLACK_SHIRT,
+	EItem.BOBS_BLUE_SHIRT,
+	EItem.BOBS_GREEN_SHIRT,
+	EItem.BOBS_PURPLE_SHIRT,
+	EItem.BOBS_RED_SHIRT
+];
+
+export const croziers = [
+	EItem.SARADOMIN_CROZIER,
+	EItem.GUTHIX_CROZIER,
+	EItem.ZAMORAK_CROZIER,
+	EItem.ARMADYL_CROZIER,
+	EItem.BANDOS_CROZIER,
+	EItem.ANCIENT_CROZIER
+];
+
+export const headbands = [
+	EItem.RED_HEADBAND,
+	EItem.BLACK_HEADBAND,
+	EItem.BROWN_HEADBAND,
+	EItem.WHITE_HEADBAND,
+	EItem.BLUE_HEADBAND,
+	EItem.GOLD_HEADBAND,
+	EItem.PINK_HEADBAND,
+	EItem.GREEN_HEADBAND
+];
+
+export const godBooks = [
+	EItem.HOLY_BOOK,
+	EItem.UNHOLY_BOOK,
+	EItem.BOOK_OF_BALANCE,
+	EItem.BOOK_OF_WAR,
+	EItem.BOOK_OF_LAW,
+	EItem.BOOK_OF_DARKNESS
+];
+
+export const runeHeraldicHelms = [
+	EItem.RUNE_HELM_H1,
+	EItem.RUNE_HELM_H2,
+	EItem.RUNE_HELM_H3,
+	EItem.RUNE_HELM_H4,
+	EItem.RUNE_HELM_H5
+];
+
+export const teamCapes = [
+	EItem.TEAM1_CAPE,
+	EItem.TEAM2_CAPE,
+	EItem.TEAM3_CAPE,
+	EItem.TEAM4_CAPE,
+	EItem.TEAM5_CAPE,
+	EItem.TEAM6_CAPE,
+	EItem.TEAM7_CAPE,
+	EItem.TEAM8_CAPE,
+	EItem.TEAM9_CAPE,
+	EItem.TEAM10_CAPE,
+	EItem.TEAM11_CAPE,
+	EItem.TEAM12_CAPE,
+	EItem.TEAM13_CAPE,
+	EItem.TEAM14_CAPE,
+	EItem.TEAM15_CAPE,
+	EItem.TEAM16_CAPE,
+	EItem.TEAM17_CAPE,
+	EItem.TEAM18_CAPE,
+	EItem.TEAM19_CAPE,
+	EItem.TEAM20_CAPE,
+	EItem.TEAM21_CAPE,
+	EItem.TEAM22_CAPE,
+	EItem.TEAM23_CAPE,
+	EItem.TEAM24_CAPE,
+	EItem.TEAM25_CAPE,
+	EItem.TEAM26_CAPE,
+	EItem.TEAM27_CAPE,
+	EItem.TEAM28_CAPE,
+	EItem.TEAM29_CAPE,
+	EItem.TEAM30_CAPE,
+	EItem.TEAM31_CAPE,
+	EItem.TEAM32_CAPE,
+	EItem.TEAM33_CAPE,
+	EItem.TEAM34_CAPE,
+	EItem.TEAM35_CAPE,
+	EItem.TEAM36_CAPE,
+	EItem.TEAM37_CAPE,
+	EItem.TEAM38_CAPE,
+	EItem.TEAM39_CAPE,
+	EItem.TEAM40_CAPE,
+	EItem.TEAM41_CAPE,
+	EItem.TEAM42_CAPE,
+	EItem.TEAM43_CAPE,
+	EItem.TEAM44_CAPE,
+	EItem.TEAM45_CAPE,
+	EItem.TEAM46_CAPE,
+	EItem.TEAM47_CAPE,
+	EItem.TEAM48_CAPE,
+	EItem.TEAM49_CAPE,
+	EItem.TEAM50_CAPE
+];
+
+export const beekeeperOutfit = [
+	EItem.BEEKEEPERS_HAT,
+	EItem.BEEKEEPERS_TOP,
+	EItem.BEEKEEPERS_LEGS,
+	EItem.BEEKEEPERS_GLOVES,
+	EItem.BEEKEEPERS_BOOTS
+];
+
+export const camoOutfit = [EItem.CAMO_HELMET, EItem.CAMO_TOP, EItem.CAMO_BOTTOMS];
+
+export const lederhosenOutfit = [EItem.LEDERHOSEN_HAT, EItem.LEDERHOSEN_TOP, EItem.LEDERHOSEN_SHORTS];
+
+export const zombieOutfit = [
+	EItem.ZOMBIE_MASK,
+	EItem.ZOMBIE_SHIRT,
+	EItem.ZOMBIE_TROUSERS,
+	EItem.ZOMBIE_GLOVES,
+	EItem.ZOMBIE_BOOTS
+];
+
+export const mimeOutfit = [EItem.MIME_MASK, EItem.MIME_TOP, EItem.MIME_LEGS, EItem.MIME_GLOVES, EItem.MIME_BOOTS];

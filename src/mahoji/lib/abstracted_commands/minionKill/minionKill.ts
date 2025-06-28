@@ -94,7 +94,7 @@ export async function minionKillCommand(
 	}
 
 	if (!user.allItemsOwned.has(result.updateBank.itemCostBank)) {
-		return `You don't have the items needed to kill this monster. You need: ${result.updateBank.itemCostBank}`;
+		return `You don't have the items needed to kill this monster. You're missing: ${result.updateBank.itemCostBank.clone().remove(user.allItemsOwned)}`;
 	}
 
 	const updateResult = await result.updateBank.transact(user);
