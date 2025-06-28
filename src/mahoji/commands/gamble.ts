@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../lib/constants';
 
-import { isSuperUntradeable } from '../../lib/util';
+import { isSuperUntradeable } from '../../lib/bso/bsoUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';

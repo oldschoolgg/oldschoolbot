@@ -1,9 +1,9 @@
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
+import type { UserStats } from '@prisma/client';
 import type { ChatInputCommandInteraction, MessageEditOptions } from 'discord.js';
 import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
-import { calcWhatPercent, chunk, isFunction } from 'e';
+import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
 
-import type { UserStats } from '@prisma/client';
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { masteryKey } from '../../lib/constants';
@@ -43,6 +43,10 @@ function lbMsg(str: string, ironmanOnly?: boolean) {
 	};
 }
 
+async function bulkGetUsernames(userIDs: string[]) {
+	await Promise.all(uniqueArr(userIDs).map(id => getUsername(id)));
+}
+
 export function getPos(page: number, record: number) {
 	return `${page * LB_PAGE_SIZE + 1 + record}. `;
 }
@@ -74,7 +78,7 @@ export async function doMenu(
 	);
 }
 
-function doMenuWrapper({
+async function doMenuWrapper({
 	user,
 	channelID,
 	users,
@@ -90,6 +94,7 @@ function doMenuWrapper({
 	channelID: string;
 	formatter?: (val: number) => string;
 }) {
+	await bulkGetUsernames(users.map(u => u.id).slice(0, 100));
 	const chunked = chunk(users, LB_PAGE_SIZE);
 	const pages: (() => Promise<MessageEditOptions>)[] = [];
 	for (let c = 0; c < chunked.length; c++) {
@@ -667,6 +672,8 @@ async function skillsLb(
 		});
 	}
 
+	await bulkGetUsernames(overallUsers.map(u => u.id).slice(0, 100));
+
 	if (inputSkill === 'overall') {
 		doMenu(
 			interaction,
@@ -729,6 +736,8 @@ ORDER BY ("collectionLogBank"->>'${id}')::int DESC
 LIMIT 50;`
 		)
 	).map(res => ({ ...res, score: Number(res.score) }));
+
+	await bulkGetUsernames(users.map(u => u.id).slice(0, 100));
 
 	doMenu(
 		interaction,

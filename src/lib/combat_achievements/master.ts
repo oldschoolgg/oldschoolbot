@@ -13,8 +13,7 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from '../types/minions';
-import { anyoneDiedInTOARaid } from '../util';
-import { isCertainMonsterTrip } from './caUtils';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
 export const masterCombatAchievements: CombatAchievement[] = [

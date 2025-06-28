@@ -2,6 +2,7 @@ import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
+import { cleanUsername } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { runTameTask } from '../tasks/tames/tameTasks';
@@ -11,6 +12,7 @@ import { BitField, Channel, PeakTier, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
 import { populateRoboChimpCache } from './perkTier';
+import { fetchUsersWithoutUsernames } from './rawSql';
 import { runCommand } from './settings/settings';
 import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
@@ -20,6 +22,7 @@ import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stri
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
+import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
 
 let lastMessageID: string | null = null;
@@ -380,6 +383,54 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		interval: Time.Minute * 5,
 		cb: async () => {
 			await populateRoboChimpCache();
+		}
+	},
+	{
+		// Fetch users without usernames, and put in their usernames.
+		name: 'username_filling',
+		startupWait: Time.Minute * 10,
+		timer: null,
+		interval: Time.Minute * 7.33,
+		cb: async () => {
+			const users = await fetchUsersWithoutUsernames();
+			if (process.env.TEST) return;
+			debugLog(`username_filling: Found ${users.length} users without usernames.`);
+			for (const { id } of users) {
+				const djsUser = await globalClient.users.fetch(id).catch(() => null);
+				if (!djsUser) {
+					debugLog(`username_filling: Could not fetch user with ID ${id}, skipping...`);
+					continue;
+				}
+				const user = await prisma.user.upsert({
+					where: {
+						id
+					},
+					select: {
+						username: true,
+						badges: true,
+						minion_ironman: true
+					},
+					create: {
+						id
+					},
+					update: {}
+				});
+				const badges = makeBadgeString(user.badges, user.minion_ironman);
+				const username = cleanUsername(djsUser.username);
+				const usernameWithBadges = `${badges ? `${badges} ` : ''}${username}`;
+				await prisma.user.update({
+					where: {
+						id
+					},
+					data: {
+						username_with_badges: usernameWithBadges,
+						username
+					}
+				});
+				debugLog(
+					`username_filling: Updated user[${id}] to username[${username}] withbadges[${usernameWithBadges}]`
+				);
+			}
 		}
 	}
 ];
