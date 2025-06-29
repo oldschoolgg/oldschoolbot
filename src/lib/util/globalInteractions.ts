@@ -573,6 +573,7 @@ export async function interactionHook(interaction: Interaction) {
 				commandName: 'slayer',
 				args: { new_task: {} },
 				bypassInhibitors: true,
+				ephemeral: true,
 				...options
 			});
 		}

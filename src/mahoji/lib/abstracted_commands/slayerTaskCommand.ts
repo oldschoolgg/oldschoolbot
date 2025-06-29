@@ -188,6 +188,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 					args: { manage: { command: 'skip', new: true } },
 					bypassInhibitors: true,
 					interaction: selection,
+					ephemeral: true,
 					...options
 				});
 				return;
@@ -198,6 +199,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 					args: { manage: { command: 'block', new: true } },
 					bypassInhibitors: true,
 					interaction: selection,
+					ephemeral: true,
 					...options
 				});
 			}
