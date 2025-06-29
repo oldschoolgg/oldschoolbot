@@ -1,0 +1,12 @@
+{
+	"name": "@oldschoolgg/server",
+	"type": "module",
+	"scripts": {
+		"build": "tsc -p src"
+	},
+	"dependencies": {
+		"hono": "^4.7.1",
+		"@hono/node-server": "^1.13.8",
+		"hono-rate-limiter": "^0.4.2"
+	}
+}

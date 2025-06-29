@@ -207,6 +207,18 @@ importers:
         specifier: ^10.3.2
         version: 10.3.2(encoding@0.1.13)
 
+  packages/server:
+    dependencies:
+      '@hono/node-server':
+        specifier: ^1.13.8
+        version: 1.14.4(hono@4.8.3)
+      hono:
+        specifier: ^4.7.1
+        version: 4.8.3
+      hono-rate-limiter:
+        specifier: ^0.4.2
+        version: 0.4.2(hono@4.8.3)
+
   packages/toolkit:
     dependencies:
       decimal.js:
@@ -675,6 +687,12 @@ packages:
 
   '@expressive-code/plugin-text-markers@0.35.6':
     resolution: {integrity: sha512-/k9eWVZSCs+uEKHR++22Uu6eIbHWEciVHbIuD8frT8DlqTtHYaaiwHPncO6KFWnGDz5i/gL7oyl6XmOi/E6GVg==}
+
+  '@hono/node-server@1.14.4':
+    resolution: {integrity: sha512-DnxpshhYewr2q9ZN8ez/M5mmc3sucr8CT1sIgIy1bkeUXut9XWDkqHoFHRhWIQgkYnKpVRxunyhK7WzpJeJ6qQ==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==}
@@ -2571,6 +2589,15 @@ packages:
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
+
+  hono-rate-limiter@0.4.2:
+    resolution: {integrity: sha512-AAtFqgADyrmbDijcRTT/HJfwqfvhalya2Zo+MgfdrMPas3zSMD8SU03cv+ZsYwRU1swv7zgVt0shwN059yzhjw==}
+    peerDependencies:
+      hono: ^4.1.1
+
+  hono@4.8.3:
+    resolution: {integrity: sha512-jYZ6ZtfWjzBdh8H/0CIFfCBHaFL75k+KMzaM177hrWWm2TWL39YMYaJgB74uK/niRc866NMlH9B8uCvIo284WQ==}
+    engines: {node: '>=16.9.0'}
 
   hosted-git-info@4.1.0:
     resolution: {integrity: sha512-kyCuEOWjJqZuDbRHzL8V93NzQhwIB71oFWSyzVo+KPZI+pnQPPxucdkrOZvkLRnrf5URsQM+IJ09Dw29cRALIA==}
@@ -5070,6 +5097,10 @@ snapshots:
     dependencies:
       '@expressive-code/core': 0.35.6
 
+  '@hono/node-server@1.14.4(hono@4.8.3)':
+    dependencies:
+      hono: 4.8.3
+
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:
       '@img/sharp-libvips-darwin-arm64': 1.0.4
@@ -7245,6 +7276,12 @@ snapshots:
       space-separated-tokens: 2.0.2
 
   he@1.2.0: {}
+
+  hono-rate-limiter@0.4.2(hono@4.8.3):
+    dependencies:
+      hono: 4.8.3
+
+  hono@4.8.3: {}
 
   hosted-git-info@4.1.0:
     dependencies:
