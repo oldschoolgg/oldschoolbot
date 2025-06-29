@@ -1,8 +1,6 @@
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import type { KillableMonster } from '../../types';
@@ -277,6 +275,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			[
 				'Virtus wand',
+				'Warped sceptre (uncharged)',
 				'Trident of the seas',
 				'Trident of the seas (full)',
 				'Uncharged trident',
@@ -289,6 +288,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Jar of sand', 'Pet kraken']),
 		itemInBankBoosts: [
 			{
+				[itemID('Warped sceptre (uncharged)')]: 3,
 				[itemID('Uncharged trident')]: 5,
 				[itemID('Trident of the seas')]: 5,
 				[itemID('Trident of the seas (full)')]: 8,

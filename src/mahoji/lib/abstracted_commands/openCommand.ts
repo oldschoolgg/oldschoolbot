@@ -1,21 +1,19 @@
-import { PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { type CommandResponse, PerkTier, makeComponents, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField, Emoji } from '../../../lib/constants';
+import { BitField } from '../../../lib/constants';
 import { type UnifiedOpenable, allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { assert, itemNameFromID, makeComponents } from '../../../lib/util';
 import { checkElderClueRequirements } from '../../../lib/util/elderClueRequirements';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import itemID from '../../../lib/util/itemID';
+import { assert } from '../../../lib/util/logError';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import resolveItems from '../../../lib/util/resolveItems';
 import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
@@ -28,7 +26,12 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 		return 0;
 	});
 
-export async function abstractedOpenUntilCommand(userID: string, name: string, openUntilItem: string) {
+export async function abstractedOpenUntilCommand(
+	userID: string,
+	name: string,
+	openUntilItem: string,
+	disable_pets: boolean | undefined
+) {
 	const user = await mUserFetch(userID);
 	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
@@ -90,7 +93,8 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 			}`
 		],
 		openables: [openable],
-		kcBank: new Bank().add(openable.openedItem.id, amountOpened)
+		kcBank: new Bank().add(openable.openedItem.id, amountOpened),
+		disable_pets: Boolean(disable_pets)
 	});
 }
 
@@ -114,7 +118,8 @@ async function finalizeOpening({
 	loot,
 	messages,
 	openables,
-	kcBank
+	kcBank,
+	disable_pets
 }: {
 	kcBank: Bank;
 	user: MUser;
@@ -122,12 +127,13 @@ async function finalizeOpening({
 	loot: Bank;
 	messages: string[];
 	openables: UnifiedOpenable[];
+	disable_pets: boolean;
 }) {
 	if (!user.bank.has(cost)) return `You don't have ${cost}.`;
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 
-	const hasSmokey = user.allItemsOwned.has('Smokey');
-	const hasOcto = user.allItemsOwned.has('Octo');
+	const hasSmokey = !disable_pets && user.allItemsOwned.has('Smokey');
+	const hasOcto = !disable_pets && user.allItemsOwned.has('Octo');
 	let smokeyMsg: string | null = null;
 
 	if (hasSmokey || hasOcto) {
@@ -162,7 +168,7 @@ async function finalizeOpening({
 		}
 		smokeyMsg =
 			bonuses.length > 0
-				? `${hasOcto ? '<:Octo:1227526833776492554>' : Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}`
+				? `${hasSmokey ? Emoji.Smokey : '<:Octo:1227526833776492554>'} Bonus Rolls: ${bonuses.join(', ')}`
 				: null;
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
@@ -200,7 +206,9 @@ async function finalizeOpening({
 			fakeTrickedLoot.add(trickedItem);
 			const trickster = await globalClient.users.fetch(activeTrick.trickster_id).catch(noOp);
 			trickster
-				?.send(`You just tricked ${user.rawUsername} into thinking they got a ${itemNameFromID(trickedItem)}!`)
+				?.send(
+					`You just tricked ${user.rawUsername} into thinking they got a ${Items.itemNameFromId(trickedItem)}!`
+				)
 				.catch(noOp);
 			await prisma.mortimerTricks.update({
 				where: {
@@ -255,7 +263,8 @@ export async function abstractedOpenCommand(
 	interaction: ChatInputCommandInteraction | null,
 	userID: string,
 	_names: string[],
-	_quantity: number | 'auto' = 1
+	_quantity: number | 'auto',
+	disable_pets: boolean | undefined
 ) {
 	const user = await mUserFetch(userID);
 	const favorites = user.user.favoriteItems;
@@ -319,5 +328,5 @@ export async function abstractedOpenCommand(
 		if (thisLoot.message) messages.push(thisLoot.message);
 	}
 
-	return finalizeOpening({ user, cost, loot, messages, openables, kcBank });
+	return finalizeOpening({ user, cost, loot, messages, openables, kcBank, disable_pets: Boolean(disable_pets) });
 }

@@ -1,18 +1,11 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { type Item, convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs';
 
-import {
-	Channel,
-	Events,
-	GLOBAL_BSO_XP_MULTIPLIER,
-	LEVEL_120_XP,
-	MAX_TOTAL_LEVEL,
-	MAX_XP,
-	globalConfig
-} from './constants';
+import { Channel, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
 import {
 	divinersOutfit,
 	gorajanArcherOutfit,
@@ -24,13 +17,14 @@ import { skillEmoji } from './data/emojis';
 import { getSimilarItems } from './data/similarItems';
 import type { AddXpParams } from './minions/types';
 
+import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
 import { sql } from './postgres';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
-import { convertLVLtoXP, convertXPtoLVL, itemNameFromID, toKMB } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
+import { itemNameFromID } from './util/smallUtils';
 import { insertUserEvent } from './util/userEvents';
 import { sendToChannelID } from './util/webhook';
 

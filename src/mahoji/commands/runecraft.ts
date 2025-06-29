@@ -1,19 +1,19 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
-import { Bank, SkillsEnum } from 'oldschooljs';
-
+import { type CommandRunOptions, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
-import { Emoji } from '../../lib/constants';
+import { Bank, SkillsEnum, itemID } from 'oldschooljs';
+
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { getOSItem } from '../../lib/util/getOSItem';
+import { formatSkillRequirements } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';

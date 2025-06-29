@@ -13,11 +13,11 @@ import { Bank, type EMonster, Monsters } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { expect, vi } from 'vitest';
 
-import { clone } from 'lodash';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { clone } from 'remeda';
 import { MUserClass } from '../../src/lib/MUser';
 import { completeActivity } from '../../src/lib/Task';
-import { type PvMMethod, globalConfig } from '../../src/lib/constants';
+import { globalConfig } from '../../src/lib/constants';
 import { materialTypes } from '../../src/lib/invention';
 import { MaterialBank } from '../../src/lib/invention/MaterialBank';
 import { sql } from '../../src/lib/postgres';
@@ -30,7 +30,7 @@ import { TameSpeciesID } from '../../src/lib/tames';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { getOSItem } from '../../src/lib/util/getOSItem';
-import { minionKCommand } from '../../src/mahoji/commands/k';
+import { type PvMMethod, minionKCommand } from '../../src/mahoji/commands/k';
 import { stealCommand } from '../../src/mahoji/commands/steal';
 import { tamesCommand } from '../../src/mahoji/commands/tames';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
@@ -50,8 +50,7 @@ const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> =
 		editReply: () => Promise.resolve(),
 		followUp: () => Promise.resolve()
 	} as any,
-	client: {} as any,
-	djsClient: {} as any
+	client: {} as any
 });
 
 export class TestUser extends MUserClass {
@@ -231,6 +230,7 @@ export class TestUser extends MUserClass {
 		if (shouldFail) {
 			expect(commandResult).not.toContain('is now killing');
 		}
+		const tripStartBank = this.bank.clone();
 		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
 		const newKC = await this.getKC(monster);
 		const newXP = clone(this.skillsAsXP);
@@ -240,7 +240,7 @@ export class TestUser extends MUserClass {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
 
-		return { commandResult, newKC, xpGained, previousBank, activityResult };
+		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
 
 	async pickpocket(

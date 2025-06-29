@@ -2,14 +2,16 @@ import {
 	type CommandRunOptions,
 	type MahojiUserOption,
 	bulkUpdateCommands,
+	calcPerHour,
 	cleanString,
-	dateFm
+	dateFm,
+	formatDuration,
+	stringMatches
 } from '@oldschoolgg/toolkit/util';
-import type { ClientStorage } from '@prisma/client';
-import { economy_transaction_type } from '@prisma/client';
+import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, convertBankToPerHourStats, toKMB } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
@@ -29,7 +31,6 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
-import { calcPerHour, convertBankToPerHourStats, formatDuration, stringMatches, toKMB } from '../../lib/util';
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
@@ -47,7 +48,7 @@ import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
-	'https://gfycat.com/serenegleamingfruitbat',
+	'https://tenor.com/view/bat-fruit-bat-eating-gif-26036539',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
 
@@ -901,6 +902,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		if (options.sync_commands) {
 			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: Array.from(globalClient.mahojiClient.commands.values()),
 					guildID: globalConfig.supportServerID
@@ -914,17 +916,20 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
 			if (global) {
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: globalCommands,
 					guildID: null
 				});
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: guildCommands,
 					guildID: guildID.toString()
 				});
 			} else {
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: totalCommands,
 					guildID: guildID.toString()
@@ -934,6 +939,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			// If not in production, remove all global commands.
 			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
+					djsClient: globalClient,
 					client: globalClient.mahojiClient,
 					commands: [],
 					guildID: null

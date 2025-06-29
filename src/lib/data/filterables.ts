@@ -7,6 +7,7 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { uniqueArr } from 'e';
 import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
+import { gods } from '../bso/divineDominion';
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
 import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
@@ -1067,5 +1068,14 @@ for (const type of materialTypes) {
 		name: `${type}-material`,
 		aliases: [type],
 		items: () => items
+	});
+}
+
+for (const god of gods) {
+	const name = `${god.name} Divine Dominion God Items`;
+	filterableTypes.push({
+		name,
+		aliases: [name.toLowerCase()],
+		items: () => god.godItems
 	});
 }

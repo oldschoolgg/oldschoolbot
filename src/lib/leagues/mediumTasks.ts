@@ -1,5 +1,5 @@
 import { sumArr } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, ItemGroups, Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { BitField } from '../constants';
@@ -10,7 +10,6 @@ import {
 	cyclopsCL,
 	inventorOutfit,
 	theatreOfBLoodCL,
-	toaCL,
 	treeBeardCL
 } from '../data/CollectionsExport';
 import {
@@ -1100,7 +1099,7 @@ export const mediumTasks: Task[] = [
 		name: 'Have 3 unique items destroyed by the Chincannon',
 		has: async ({ userStats }) => {
 			const bank = new Bank(userStats.chincannon_destroyed_loot_bank as ItemBank);
-			const uniques = [...chambersOfXericCL, ...theatreOfBLoodCL, ...toaCL];
+			const uniques = [...chambersOfXericCL, ...theatreOfBLoodCL, ...ItemGroups.toaCL];
 			const destroyedUniques = bank.items().filter(i => uniques.includes(i[0].id));
 			return destroyedUniques.length >= 5;
 		}

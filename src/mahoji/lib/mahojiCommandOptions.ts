@@ -9,7 +9,6 @@ import { GearSetupTypes } from '../../lib/gear/types';
 import { type IMaterialBank, materialTypes } from '../../lib/invention';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-
 import { SkillsEnum } from '../../lib/skilling/types';
 import { globalPresets } from '../../lib/structures/Gear';
 import getOSItem from '../../lib/util/getOSItem';

@@ -1,6 +1,8 @@
-import { cleanUsername, dateFm, mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { ButtonInteraction, Interaction } from 'discord.js';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { cleanUsername, dateFm, formatDuration, mentionCommand, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { Giveaway } from '@prisma/client';
+import { RateLimitManager } from '@sapphire/ratelimits';
+import { ButtonBuilder, type ButtonInteraction, ButtonStyle, type Interaction } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -10,19 +12,15 @@ import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContra
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { repeatTameTrip } from '../../tasks/tames/tameTasks';
-import { modifyBusyCounter } from '../busyCounterCache';
-import type { ClueTier } from '../clues/clueTiers';
-import { BitField, Emoji, PerkTier } from '../constants';
-
-import type { Giveaway } from '@prisma/client';
-import { RateLimitManager } from '@sapphire/ratelimits';
 import { InteractionID } from '../InteractionID';
 import { itemContractResetTime } from '../MUser.js';
+import { modifyBusyCounter } from '../busyCounterCache';
 import { giveawayCache } from '../cache.js';
+import type { ClueTier } from '../clues/clueTiers';
+import { BitField, PerkTier } from '../constants';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import type { ItemBank } from '../types';
-import { formatDuration, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
 import { handleMahojiConfirmation } from './handleMahojiConfirmation';
 import { interactionReply } from './interactionReply';
@@ -65,7 +63,8 @@ const globalInteractionActions = [
 	'ITEM_CONTRACT_SEND',
 	'DO_FISHING_CONTEST',
 	'DO_SHOOTING_STAR',
-	'CHECK_TOA'
+	'CHECK_TOA',
+	'START_TOG'
 ] as const;
 
 type GlobalInteractionAction = (typeof globalInteractionActions)[number];
@@ -109,6 +108,14 @@ export function makeRepeatTripButton() {
 		.setEmoji('🔁');
 }
 
+export function makeTearsOfGuthixButton() {
+	return new ButtonBuilder()
+		.setCustomId('START_TOG')
+		.setLabel('Start Tears of Guthix')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('🐍');
+}
+
 export function makeBirdHouseTripButton() {
 	return new ButtonBuilder()
 		.setCustomId('DO_BIRDHOUSE_RUN')
@@ -123,6 +130,14 @@ export function makeAutoSlayButton() {
 		.setLabel('Auto Slay')
 		.setEmoji('630911040560824330')
 		.setStyle(ButtonStyle.Secondary);
+}
+
+export function makeClaimDailyButton() {
+	return new ButtonBuilder()
+		.setCustomId('CLAIM_DAILY')
+		.setLabel('Minion Daily')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('493286312854683654');
 }
 
 const reactionTimeLimits = {
@@ -615,6 +630,9 @@ export async function interactionHook(interaction: Interaction) {
 	if (id === 'OPEN_GRANDMASTER_CASKET') {
 		return openCasket('Grandmaster');
 	}
+	if (id === 'OPEN_ELDER_CASKET') {
+		return openCasket('Elder');
+	}
 
 	if (minionIsBusy(user.id)) {
 		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
@@ -635,6 +653,8 @@ export async function interactionHook(interaction: Interaction) {
 			return doClue('Master');
 		case 'DO_GRANDMASTER_CLUE':
 			return doClue('Grandmaster');
+		case 'DO_ELDER_CLUE':
+			return doClue('Elder');
 
 		case 'DO_BIRDHOUSE_RUN':
 			return runCommand({
@@ -712,6 +732,14 @@ export async function interactionHook(interaction: Interaction) {
 						: `That Crashed Star was not discovered by ${user.minionName}.`
 				}`,
 				ephemeral: true
+			});
+		}
+		case 'START_TOG': {
+			return runCommand({
+				commandName: 'minigames',
+				args: { tears_of_guthix: { start: {} } },
+				bypassInhibitors: true,
+				...options
 			});
 		}
 		default: {

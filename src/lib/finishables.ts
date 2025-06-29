@@ -8,6 +8,7 @@ import {
 	EliteCasket,
 	EliteMimicTable,
 	HardCasket,
+	ItemGroups,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
@@ -27,7 +28,7 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
-	evilChickenOutfit,
+	kalphiteKingCL,
 	moktangCL,
 	naxxusCL,
 	nexCL,
@@ -43,6 +44,7 @@ import {
 } from './data/CollectionsExport';
 import pets from './data/pets';
 import killableMonsters from './minions/data/killableMonsters';
+import { KalphiteKingMonster, kalphiteKingLootTable } from './minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
@@ -196,6 +198,23 @@ export const finishables: Finishable[] = [
 		kill: () => MoktangLootTable.roll()
 	},
 	{
+		name: 'Kalphite King',
+		cl: kalphiteKingCL,
+		kill: ({ accumulatedLoot }) => {
+			const loot = new Bank();
+
+			KalphiteKingMonster.specialLoot?.({
+				loot: accumulatedLoot,
+				ownedItems: new Bank(),
+				quantity: 1,
+				cl: accumulatedLoot
+			});
+
+			loot.add(kalphiteKingLootTable.roll());
+			return loot;
+		}
+	},
+	{
 		name: 'Tempoross',
 		cl: temporossCL,
 		aliases: ['temp', 'ross', 'tempo', 'watertodt'],
@@ -255,12 +274,12 @@ export const finishables: Finishable[] = [
 	},
 	{
 		name: 'Evil Chicken Outfit',
-		cl: evilChickenOutfit,
+		cl: ItemGroups.evilChickenOutfit,
 		aliases: ['evil chicken outfit'],
 		kill: () => {
 			const loot = new Bank();
 			if (roll(300)) {
-				loot.add(randArrItem(evilChickenOutfit));
+				loot.add(randArrItem(ItemGroups.evilChickenOutfit));
 			} else {
 				loot.add(birdsNestID);
 				loot.add(treeSeedsNest.roll());

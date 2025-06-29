@@ -1,4 +1,4 @@
-import { Emoji } from '../../constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import itemID from '../../util/itemID';
 import type { Ash, Bone } from '../types';
 import { SkillsEnum } from '../types';

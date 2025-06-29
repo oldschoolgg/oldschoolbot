@@ -2,7 +2,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { calcPercentOfNum, clamp, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID, toKMB } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
@@ -10,9 +10,9 @@ import { customPrices } from '../../lib/customItems/util';
 
 import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -50,7 +50,7 @@ export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; base
 	if (!cachePrice && (item.price === undefined || !item.tradeable)) {
 		return { price: 0, basePrice: 0 };
 	}
-	const basePrice = cachePrice ?? item.price;
+	const basePrice = cachePrice ?? item.price ?? 0;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	if (!(item.id in customPrices) && price < (item.highalch ?? 0) * 3) {

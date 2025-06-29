@@ -1,10 +1,10 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 

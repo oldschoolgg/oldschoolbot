@@ -1,10 +1,12 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { type CommandRunOptions, channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
-import type { BaseMessageOptions } from 'discord.js';
 import {
 	ActionRowBuilder,
+	ApplicationCommandOptionType,
 	AttachmentBuilder,
+	type BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
@@ -12,16 +14,14 @@ import {
 	messageLink,
 	time
 } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import { isSuperUntradeable } from '../../lib/bso/bsoUtil.js';
 import { giveawayCache } from '../../lib/cache.js';
-import { Emoji, patronFeatures } from '../../lib/constants';
+import { patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
-
-import { channelIsSendable, isModOrAdmin, isSuperUntradeable, makeComponents, toKMB } from '../../lib/util';
+import { isModOrAdmin } from '../../lib/util.js';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';

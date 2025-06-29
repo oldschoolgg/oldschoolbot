@@ -1,8 +1,9 @@
 import { uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import { championScrolls, skillingPetsCL } from '../../../lib/data/CollectionsExport';
+import { Bank, ItemGroups } from 'oldschooljs';
+
+import { skillingPetsCL } from '../../../lib/data/CollectionsExport';
 import { TanglerootTable } from '../../../lib/minions/data/killableMonsters/custom/Treebeard';
-import { assert } from '../../../lib/util';
+import { assert } from '../../../lib/util/logError';
 import resolveItems from '../../../lib/util/resolveItems';
 import type { GlobalBingoTile } from './bingoUtil';
 
@@ -163,7 +164,7 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 	{
 		id: 18,
 		name: 'Receive any Champion scroll',
-		oneOf: resolveItems(championScrolls)
+		oneOf: ItemGroups.championScrolls
 	},
 	{
 		id: 19,

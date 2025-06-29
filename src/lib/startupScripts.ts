@@ -1,6 +1,8 @@
 import { Items } from 'oldschooljs';
+
 import { globalConfig } from './constants';
 import { sql } from './postgres';
+import { adminPingLog } from './util.js';
 
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
@@ -162,6 +164,7 @@ startupScripts.push({
 	sql: `CREATE INDEX IF NOT EXISTS ge_transaction_sell_listing_id_created_at_idx 
 ON ge_transaction (sell_listing_id, created_at DESC);`
 });
+
 const itemMetaDataNames = Items.map(item => `(${item.id}, '${item.name.replace(/'/g, "''")}')`).join(', ');
 const itemMetaDataQuery = `
 INSERT INTO item_metadata (id, name)
@@ -177,4 +180,16 @@ if (globalConfig.isProduction) {
 
 export async function runStartupScripts() {
 	await sql.begin(sql => startupScripts.map(query => sql.unsafe(query.sql)));
+
+	const usersWithFractionalItemQuantities =
+		await sql`SELECT u.id AS user_id, item.key AS item_id, item.value::numeric AS quantity
+FROM users u
+CROSS JOIN LATERAL jsonb_each_text(u.bank::jsonb) AS item
+WHERE u.bank::text LIKE '%.%'
+  AND item.value LIKE '%.%';`;
+	if (usersWithFractionalItemQuantities.length > 0) {
+		adminPingLog(
+			`Found ${usersWithFractionalItemQuantities.length} users with fractional item quantities: ${JSON.stringify(usersWithFractionalItemQuantities).slice(0, 500)}`
+		);
+	}
 }

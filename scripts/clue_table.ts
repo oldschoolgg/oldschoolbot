@@ -1,8 +1,8 @@
 import '../src/lib/safeglobals';
+import { TSVWriter } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../src/lib/clues/clueTiers';
-import { TSVWriter } from './TSVWriter';
 
 const qty = 100_000_000;
 
@@ -10,7 +10,10 @@ const writer = new TSVWriter('data/clue_data.tsv');
 writer.writeRow(['Tier', 'Loot']);
 
 for (const clue of ClueTiers) {
-	const _loot = clue.table.open(qty, undefined, new Bank());
+	const _loot = clue.table.roll(qty, {
+		targetBank: undefined,
+		cl: new Bank()
+	});
 	const uniques = new Bank();
 	for (const item of clue.cl) {
 		const amnt = _loot.amount(item);

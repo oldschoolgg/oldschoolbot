@@ -1,8 +1,9 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll } from 'e';
-import { Bank, Items, LootTable, TreeHerbSeedTable } from 'oldschooljs';
+import { Bank, ItemGroups, Items, LootTable, TreeHerbSeedTable } from 'oldschooljs';
 
+import { OSB_VIRTUS_IDS } from './bso/bsoConstants';
 import { divinationEnergies } from './bso/divination';
-import { Emoji, OSB_VIRTUS_IDS } from './constants';
 import {
 	allPetIDs,
 	allPetsCL,
@@ -10,8 +11,7 @@ import {
 	cmbClothes,
 	customBossesDropsThatCantBeDroppedInMBs,
 	theatreOfBloodHardUniques,
-	theatreOfBloodNormalUniques,
-	toaCL
+	theatreOfBloodNormalUniques
 } from './data/CollectionsExport';
 import { PartyhatTable, baseHolidayItems } from './data/holidayItems';
 import { allTrophyItems } from './data/itemAliases';
@@ -19,7 +19,13 @@ import { keyCrates } from './keyCrates';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import type { UnifiedOpenable } from './openables';
 import { PaintBoxTable } from './paintColors';
-import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
+import {
+	ChimplingImpling,
+	EternalImpling,
+	InfernalImpling,
+	MysteryImpling,
+	ShrimplingImpling
+} from './simulation/customImplings';
 import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
 import { clAdjustedDroprate } from './util';
@@ -57,14 +63,16 @@ for (const pet of allPetsCL) {
 	PMBTable.add(pet);
 }
 
-export const IronmanPMBTable = new LootTable()
-	.add(PMBTable, 1, PMBTable.length)
-	.add('Smokey')
-	.add('Craig')
+const IronmanDCPetsTable = new LootTable()
 	.add('Hoppy')
+	.add('Craig')
+	.add('Smokey')
 	.add('Flappy')
 	.add('Cob')
-	.add('Gregoyle');
+	.add('Gregoyle')
+	.add('Kuro');
+
+export const IronmanPMBTable = new LootTable().oneIn(10, IronmanDCPetsTable).add(PMBTable);
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
@@ -453,7 +461,7 @@ const cantBeDropped = resolveItems([
 	...cmbClothes,
 	...theatreOfBloodHardUniques,
 	...theatreOfBloodNormalUniques,
-	...toaCL,
+	...ItemGroups.toaCL,
 	'Heavy ballista',
 	'Unstrung heavy ballista',
 	'Monkey tail',
@@ -922,6 +930,14 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: InfernalImpling.aliases,
 		output: InfernalImpling.table,
 		allItems: InfernalImpling.table.allItems
+	},
+	{
+		name: 'Shrimpling',
+		id: itemID('Shrimpling'),
+		openedItem: getOSItem('Shrimpling'),
+		aliases: ShrimplingImpling.aliases,
+		output: ShrimplingImpling.table,
+		allItems: ShrimplingImpling.table.allItems
 	},
 	{
 		name: 'Spooky box',

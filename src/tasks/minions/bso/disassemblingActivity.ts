@@ -3,7 +3,7 @@ import { Time, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
 import { inventionBoosts, transactMaterialsFromUser } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';

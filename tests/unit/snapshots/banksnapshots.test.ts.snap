@@ -2931,7 +2931,7 @@ exports[`BSO Buyables 1`] = `
     "customReq": [Function],
     "gpCost": 1000000,
     "itemCost": {},
-    "name": "Veteran cape (1 year)",
+    "name": "1 Year Veteran Items",
     "outputItems": {
       "71450": 1,
       "71456": 1,
@@ -2941,7 +2941,7 @@ exports[`BSO Buyables 1`] = `
     "customReq": [Function],
     "gpCost": 2000000,
     "itemCost": {},
-    "name": "Veteran cape (2 year)",
+    "name": "2 Year Veteran Items",
     "outputItems": {
       "71451": 1,
       "71457": 1,
@@ -2951,7 +2951,7 @@ exports[`BSO Buyables 1`] = `
     "customReq": [Function],
     "gpCost": 3000000,
     "itemCost": {},
-    "name": "Veteran cape (3 year)",
+    "name": "3 Year Veteran Items",
     "outputItems": {
       "71452": 1,
       "71458": 1,
@@ -2961,10 +2961,21 @@ exports[`BSO Buyables 1`] = `
     "customReq": [Function],
     "gpCost": 4000000,
     "itemCost": {},
-    "name": "Veteran cape (4 year)",
+    "name": "4 Year Veteran Items",
     "outputItems": {
       "71453": 1,
       "71459": 1,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 5000000,
+    "itemCost": {},
+    "name": "5 Year Veteran Items",
+    "outputItems": {
+      "73412": 1,
+      "73413": 1,
+      "73414": 1,
     },
   },
   {
@@ -5130,6 +5141,20 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "itemCost": {
+      "28134": 75000,
+    },
+    "name": "Golden Pheasant Egg",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
+      "28134": 75000,
+    },
+    "name": "Fox Whistle",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": {
       "30038": 100,
     },
     "name": "Amylase pack (Colossal Wyrm Agility)",
@@ -5381,7 +5406,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-1 cape",
     "outputItems": {
@@ -5389,7 +5414,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-2 cape",
     "outputItems": {
@@ -5397,7 +5422,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-3 cape",
     "outputItems": {
@@ -5405,7 +5430,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-4 cape",
     "outputItems": {
@@ -5413,7 +5438,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-5 cape",
     "outputItems": {
@@ -5421,7 +5446,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-6 cape",
     "outputItems": {
@@ -5429,7 +5454,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-7 cape",
     "outputItems": {
@@ -5437,7 +5462,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-8 cape",
     "outputItems": {
@@ -5445,7 +5470,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-9 cape",
     "outputItems": {
@@ -5453,7 +5478,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-10 cape",
     "outputItems": {
@@ -5461,7 +5486,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-11 cape",
     "outputItems": {
@@ -5469,7 +5494,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-12 cape",
     "outputItems": {
@@ -5477,7 +5502,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-13 cape",
     "outputItems": {
@@ -5485,7 +5510,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-14 cape",
     "outputItems": {
@@ -5493,7 +5518,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-15 cape",
     "outputItems": {
@@ -5501,7 +5526,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-16 cape",
     "outputItems": {
@@ -5509,7 +5534,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-17 cape",
     "outputItems": {
@@ -5517,7 +5542,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-18 cape",
     "outputItems": {
@@ -5525,7 +5550,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-19 cape",
     "outputItems": {
@@ -5533,7 +5558,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-20 cape",
     "outputItems": {
@@ -5541,7 +5566,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-21 cape",
     "outputItems": {
@@ -5549,7 +5574,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-22 cape",
     "outputItems": {
@@ -5557,7 +5582,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-23 cape",
     "outputItems": {
@@ -5565,7 +5590,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-24 cape",
     "outputItems": {
@@ -5573,7 +5598,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-25 cape",
     "outputItems": {
@@ -5581,7 +5606,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-26 cape",
     "outputItems": {
@@ -5589,7 +5614,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-27 cape",
     "outputItems": {
@@ -5597,7 +5622,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-28 cape",
     "outputItems": {
@@ -5605,7 +5630,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-29 cape",
     "outputItems": {
@@ -5613,7 +5638,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-30 cape",
     "outputItems": {
@@ -5621,7 +5646,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-31 cape",
     "outputItems": {
@@ -5629,7 +5654,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-32 cape",
     "outputItems": {
@@ -5637,7 +5662,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-33 cape",
     "outputItems": {
@@ -5645,7 +5670,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-34 cape",
     "outputItems": {
@@ -5653,7 +5678,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-35 cape",
     "outputItems": {
@@ -5661,7 +5686,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-36 cape",
     "outputItems": {
@@ -5669,7 +5694,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-37 cape",
     "outputItems": {
@@ -5677,7 +5702,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-38 cape",
     "outputItems": {
@@ -5685,7 +5710,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-39 cape",
     "outputItems": {
@@ -5693,7 +5718,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-40 cape",
     "outputItems": {
@@ -5701,7 +5726,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-41 cape",
     "outputItems": {
@@ -5709,7 +5734,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-42 cape",
     "outputItems": {
@@ -5717,7 +5742,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-43 cape",
     "outputItems": {
@@ -5725,7 +5750,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-44 cape",
     "outputItems": {
@@ -5733,7 +5758,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-45 cape",
     "outputItems": {
@@ -5741,7 +5766,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-46 cape",
     "outputItems": {
@@ -5749,7 +5774,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-47 cape",
     "outputItems": {
@@ -5757,7 +5782,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-48 cape",
     "outputItems": {
@@ -5765,7 +5790,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-49 cape",
     "outputItems": {
@@ -5773,7 +5798,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 20000,
+    "gpCost": 50000,
     "itemCost": {},
     "name": "Team-50 cape",
     "outputItems": {
@@ -7125,6 +7150,19 @@ exports[`BSO Creatables 1`] = `
     "name": "Zombie axe",
     "outputItems": {
       "28810": 1,
+    },
+    "requiredSkills": {
+      "smithing": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30324": 1,
+    },
+    "name": "Zombie helmet",
+    "outputItems": {
+      "30321": 1,
     },
     "requiredSkills": {
       "smithing": 70,

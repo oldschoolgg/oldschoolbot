@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { MysteryBoxes } from '../bsoOpenables';
 

@@ -4,7 +4,7 @@ import { UserEventType } from '@prisma/client';
 import { roll, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { Events } from './constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
 import { calculateMastery } from './mastery';
 import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';

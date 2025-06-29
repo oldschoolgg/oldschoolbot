@@ -1,14 +1,14 @@
-import { Bank } from 'oldschooljs';
-
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { Bank } from 'oldschooljs';
+
 import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';

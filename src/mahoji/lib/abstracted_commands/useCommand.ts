@@ -1,8 +1,7 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
 import { Time, notEmpty, objectEntries, randArrItem, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
@@ -11,9 +10,8 @@ import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
-import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import resolveItems from '../../../lib/util/resolveItems';
+import { assert } from '../../../lib/util/logError';
 import { flowerTable } from './hotColdCommand';
 
 const messageInABottleMessages = [
@@ -488,21 +486,21 @@ const genericUsables: {
 		cost: new Bank().add('Ensouled demon head').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (demonic)'),
 		response: () => 'Your mumpkin is now demonic.',
-		addToCL: false
+		addToCL: true
 	},
 	{
 		items: [getOSItem('Pumpkin'), getOSItem('Mumpkin')],
 		cost: new Bank().add('Pumpkin').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (pumpkin)'),
 		response: () => 'Your mumpkin is now wearing a Pumpkin on his head.',
-		addToCL: false
+		addToCL: true
 	},
 	{
 		items: [getOSItem('Bones'), getOSItem('Mumpkin')],
 		cost: new Bank().add('Bones').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (dead)'),
 		response: () => 'You have turned your mumpkin into a dead mumpkin.',
-		addToCL: false
+		addToCL: true
 	}
 ];
 usables.push({

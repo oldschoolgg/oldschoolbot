@@ -6,8 +6,8 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 
-import { assert } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 
 export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction | null) {
@@ -70,8 +70,8 @@ export async function ironmanCommand(user: MUser, interaction: ChatInputCommandI
 :warning: **Read the following text before confirming. This is your only warning. ** :warning:
 The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.
 After becoming an ironman:
-	- You will no longer be able to receive GP from  \`=daily\`
-	- You will no longer be able to use \`=pay\`, \`=duel\`, \`=sellto\`, \`=sell\`, \`=dice\`, \`=gri\`
+	- You will no longer be able to receive GP from  \`/daily\`
+	- You will no longer be able to use \`/pay\`, \`/duel\`, \`/sellto\`, \`/sell\`, \`/dice\`, \`/gamble give_random_item\`
 	- You **cannot** de-iron, it is PERMANENT.
     - Your entire BSO account, EVERYTHING, will be reset.
 Type \`confirm permanent ironman\` if you understand the above information, and want to become an ironman now.`

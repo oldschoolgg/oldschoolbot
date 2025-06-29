@@ -1,9 +1,10 @@
 import type { CommandOptions } from '@oldschoolgg/toolkit/util';
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
+import { roll } from 'e';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
-import { busyImmuneCommands, gearValidationChecks } from '../../lib/constants';
-import { roll } from '../../lib/util';
+import { busyImmuneCommands } from '../../lib/constants';
+import { gearValidationChecks } from '../commands/gear';
 import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
 
@@ -22,6 +23,7 @@ type PrecommandReturn = Promise<
 	| {
 			reason: InteractionReplyOptions;
 			dontRunPostCommand?: boolean;
+			silent?: boolean;
 	  }
 >;
 

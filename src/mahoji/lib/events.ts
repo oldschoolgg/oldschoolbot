@@ -1,6 +1,7 @@
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { startBlacklistSyncing } from '../../lib/blacklists';
+import { usernameWithBadgesCache } from '../../lib/cache';
 import { Channel, META_CONSTANTS, badges, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
@@ -34,6 +35,24 @@ async function updateBadgeTable() {
 	}
 }
 
+async function populateUsernameCache() {
+	const users = await prisma.user.findMany({
+		where: {
+			username_with_badges: {
+				not: null
+			}
+		},
+		select: {
+			id: true,
+			username_with_badges: true
+		}
+	});
+	for (const user of users) {
+		if (!user.username_with_badges) continue;
+		usernameWithBadgesCache.set(user.id, user.username_with_badges);
+	}
+}
+
 export const onStartup = logWrapFn('onStartup', async () => {
 	await syncDoubleLoot();
 	initCrons();
@@ -51,4 +70,6 @@ export const onStartup = logWrapFn('onStartup', async () => {
 	});
 	updateBadgeTable();
 	startBlacklistSyncing();
+
+	populateUsernameCache();
 });

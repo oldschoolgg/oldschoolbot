@@ -1,14 +1,17 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import {
 	Bank,
 	BrimstoneChest,
 	EItem,
+	EMonster,
 	EliteMimicTable,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
 	Openables,
-	ZombiePiratesLocker
+	ZombiePiratesLocker,
+	resolveItems
 } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { Item, ItemBank, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
@@ -18,7 +21,6 @@ import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 import { randInt } from 'e';
 import { bsoOpenables } from './bsoOpenables';
 import { ClueTiers } from './clues/clueTiers';
-import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { clueHunterOutfit } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import type { FarmingContract } from './minions/farming/types';
@@ -34,7 +36,6 @@ import {
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import { itemID, percentChance, roll } from './util';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -225,7 +226,7 @@ for (const clueTier of ClueTiers) {
 			}
 
 			if (mimicNumber > 0) {
-				await user.incrementKC(MIMIC_MONSTER_ID, mimicNumber);
+				await user.incrementKC(EMonster.MIMIC, mimicNumber);
 			}
 
 			return { bank: loot, message };

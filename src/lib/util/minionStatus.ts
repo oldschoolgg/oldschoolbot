@@ -1,13 +1,13 @@
 import { formatDuration, formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Items, SkillsEnum } from 'oldschooljs';
 
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { collectables } from '../../mahoji/lib/collectables';
 import { bossEvents } from '../bossEvents';
 import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
 import { ClueTiers } from '../clues/clueTiers';
-import { Emoji } from '../constants';
 import { fishingLocations } from '../fishingContest';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
@@ -21,6 +21,7 @@ import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
 import Firemaking from '../skilling/skills/firemaking';
 import Fishing from '../skilling/skills/fishing';
+import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables';
 import Herblore from '../skilling/skills/herblore/herblore';
 import Hunter from '../skilling/skills/hunter/hunter';
 import { Castables } from '../skilling/skills/magic/castables';
@@ -355,7 +356,7 @@ export function minionStatus(user: MUser) {
 		case 'Alching': {
 			const data = currentTask as AlchingActivityTaskOptions;
 
-			return `${name} is currently alching ${data.quantity}x ${itemNameFromID(
+			return `${name} is currently alching ${data.quantity}x ${Items.itemNameFromId(
 				data.itemID
 			)}. ${formattedDuration}`;
 		}
@@ -373,7 +374,7 @@ export function minionStatus(user: MUser) {
 		case 'Sawmill': {
 			const data = currentTask as SawmillActivityTaskOptions;
 			const plank = Planks.find(_plank => _plank.outputItem === data.plankID)!;
-			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+			return `${name} is currently creating ${data.plankQuantity}x ${Items.itemNameFromId(
 				plank.outputItem
 			)}s. ${formattedDuration}`;
 		}
@@ -408,7 +409,11 @@ export function minionStatus(user: MUser) {
 		case 'Sepulchre': {
 			const data = currentTask as SepulchreActivityTaskOptions;
 
-			return `${name} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
+			const fletchable = data.fletch ? zeroTimeFletchables.find(i => i.id === data.fletch!.id) : null;
+
+			const fletchingPart = fletchable ? `They are also fletching ${data.fletch!.qty}x ${fletchable.name}. ` : '';
+
+			return `${name} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${fletchingPart}${formattedDuration}`;
 		}
 
 		case 'Plunder': {
@@ -484,7 +489,7 @@ export function minionStatus(user: MUser) {
 		case 'Butler': {
 			const data = currentTask as ButlerActivityTaskOptions;
 			const plank = Planks.find(_plank => _plank.outputItem === data.plankID)!;
-			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+			return `${name} is currently creating ${data.plankQuantity}x ${Items.itemNameFromId(
 				plank.outputItem
 			)}s. ${formattedDuration}`;
 		}

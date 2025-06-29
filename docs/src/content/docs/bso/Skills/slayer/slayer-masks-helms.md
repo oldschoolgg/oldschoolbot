@@ -19,17 +19,56 @@ Slayer rewards:
 
 The Mask drop rate and kills to upgrade into a slayer helmet are as followed:
 
-<table><thead><tr><th width="197">Mask/Helm</th><th width="141">Droprate (1/X)</th><th width="131">Kills/upgrade</th><th>Monsters</th></tr></thead><tbody><tr><td>Aberrant</td><td>340</td><td>3400</td><td>Aberrant Spectre</td></tr><tr><td>Abyssal</td><td>340</td><td>3400</td><td>Abyssal Demon, Abyssal Sire</td></tr><tr><td>Banshee's</td><td>340</td><td>3400</td><td>Banshee, Twisted Banshee</td></tr><tr><td>Basilisk</td><td>340</td><td>3400</td><td>Basilisk, Basilisk Knight</td></tr><tr><td>Black demononical</td><td>340</td><td>3400</td><td>Black Demon</td></tr><tr><td>Bloodveld</td><td>340</td><td>3400</td><td>Bloodveld, Mutated bloodveld</td></tr><tr><td>Cockatrice</td><td>340</td><td>3400</td><td>Cockatrice</td></tr><tr><td>Crawling hand</td><td>140</td><td>1400</td><td>Crawling Hand</td></tr><tr><td>Dagannoth</td><td>340</td><td>3400</td><td>Dagannoth, Dagannoth Prime, Dagannoth Rex, Dagannoth Supreme</td></tr><tr><td>Dark beast</td><td>300</td><td>3000</td><td>Dark Beast</td></tr><tr><td>Dust Devil</td><td>340</td><td>3400</td><td>Dust Devil</td></tr><tr><td>Ganodermic</td><td>340</td><td>3400</td><td>Ganodermic Beast, Ganodermic Runt</td></tr><tr><td>Gargoyle</td><td>340</td><td>3400</td><td>Gargoyle, Grotesque Guardians</td></tr><tr><td>Jelly</td><td>340</td><td>3400</td><td>Jelly, Warped Jelly</td></tr><tr><td>Kurask</td><td>340</td><td>3400</td><td>Kurask</td></tr><tr><td>Troll</td><td>340</td><td>3400</td><td>Mountain Troll, Ice Troll, Reanimated Troll</td></tr></tbody></table>
+| Mask/Helm         | Droprate (1/X) | Kills/upgrade | Monsters                                                     |
+| ----------------- | -------------- | ------------- | ------------------------------------------------------------ |
+| Aberrant          | 340            | 3400          | Aberrant Spectre                                             |
+| Abyssal           | 340            | 3400          | Abyssal Demon, Abyssal Sire                                  |
+| Banshee's         | 340            | 3400          | Banshee, Twisted Banshee                                     |
+| Basilisk          | 340            | 3400          | Basilisk, Basilisk Knight                                    |
+| Black demononical | 340            | 3400          | Black Demon                                                  |
+| Bloodveld         | 340            | 3400          | Bloodveld, Mutated bloodveld                                 |
+| Cockatrice        | 340            | 3400          | Cockatrice                                                   |
+| Crawling hand     | 140            | 1400          | Crawling Hand                                                |
+| Dagannoth         | 340            | 3400          | Dagannoth, Dagannoth Prime, Dagannoth Rex, Dagannoth Supreme |
+| Dark beast        | 300            | 3000          | Dark Beast                                                   |
+| Dust Devil        | 340            | 3400          | Dust Devil                                                   |
+| Ganodermic        | 340            | 3400          | Ganodermic Beast, Ganodermic Runt                            |
+| Gargoyle          | 340            | 3400          | Gargoyle, Grotesque Guardians                                |
+| Jelly             | 340            | 3400          | Jelly, Warped Jelly                                          |
+| Kurask            | 340            | 3400          | Kurask                                                       |
+| Troll             | 340            | 3400          | Mountain Troll, Ice Troll, Reanimated Troll                  |
 
 ### Efficient Slayer Rewards
 
 Basilocked and Pore Decisions need to be unlocked in order to be assigned the monsters. Other rewards can be locked/unlocked in order to increase your chance of getting a mask dropping task.
 
-<table><thead><tr><th>Reward</th><th data-type="checkbox">Unlocked?</th></tr></thead><tbody><tr><td>Seeing Red</td><td>false</td></tr><tr><td>I hope you mith me</td><td>false</td></tr><tr><td>Watch the birdie</td><td>false</td></tr><tr><td>Hot Stuff</td><td>false</td></tr><tr><td>Reptile got ripped</td><td>false</td></tr><tr><td>Like a boss</td><td>false</td></tr><tr><td>Basilocked</td><td>false</td></tr><tr><td>Actual Vampyre Slayer</td><td>false</td></tr><tr><td>Pore Decisions</td><td>true</td></tr><tr><td>Stop the Wyvern</td><td>true</td></tr></tbody></table>
+| Reward                | Unlocked? |
+| --------------------- | --------- |
+| Seeing Red            | false     |
+| I hope you mith me    | false     |
+| Watch the birdie      | false     |
+| Hot Stuff             | false     |
+| Reptile got ripped    | false     |
+| Like a boss           | false     |
+| Basilocked            | false     |
+| Actual Vampyre Slayer | false     |
+| Pore Decisions        | true      |
+| Stop the Wyvern       | true      |
 
 Other rewards can be active in order to increase the task length of mask dropping monsters. This doesn't necessarily make it faster to get all slayer helmets, as some masks take considerably more time. It might make more sense to unlock others to increase Slayer xp/h.
 
-<table><thead><tr><th width="234.5">Monster</th><th width="329">Extension reward</th><th data-type="checkbox">Unlocked?</th></tr></thead><tbody><tr><td>Aberrant</td><td>Smell ya later</td><td>false</td></tr><tr><td>Abyssal</td><td>Augment my abbies</td><td>true</td></tr><tr><td>Basilisk</td><td>Basilonger</td><td>false</td></tr><tr><td>Black demon</td><td>Its Dark In Here</td><td>false</td></tr><tr><td>Bloodveld</td><td>Bleed me dry</td><td>true</td></tr><tr><td>Dark beast</td><td>Need more darkness</td><td>true</td></tr><tr><td>Dust Devil</td><td>To dust you shall return</td><td>true</td></tr><tr><td>Gargoyle</td><td>Get Smashed</td><td>false</td></tr><tr><td>2x all tasks</td><td>Size Matters</td><td>true</td></tr><tr><td>2x all tasks</td><td><strong>(Dungeoneering scroll)</strong> Scroll of longevity</td><td>true</td></tr></tbody></table>
+| Monster      | Extension reward                               | Unlocked? |
+| ------------ | ---------------------------------------------- | --------- |
+| Aberrant     | Smell ya later                                 | false     |
+| Abyssal      | Augment my abbies                              | true      |
+| Basilisk     | Basilonger                                     | false     |
+| Black demon  | Its Dark In Here                               | false     |
+| Bloodveld    | Bleed me dry                                   | true      |
+| Dark beast   | Need more darkness                             | true      |
+| Dust Devil   | To dust you shall return                       | true      |
+| Gargoyle     | Get Smashed                                    | false     |
+| 2x all tasks | Size Matters                                   | true      |
+| 2x all tasks | **(Dungeoneering scroll)** Scroll of longevity | true      |
 
 ### Slayer Masters
 

@@ -1,26 +1,25 @@
-import { PerkTier, toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
+import { getSimilarItems } from '../../../lib/data/similarItems';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
+import { isValidGearSetup } from '../../../lib/gear/functions/isValidGearSetup';
 import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
 import { GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
-
 import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';
-import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-
-import { getSimilarItems } from '../../../lib/data/similarItems';
+import { formatSkillRequirements } from '../../../lib/util/smallUtils';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
@@ -172,7 +171,7 @@ export async function gearEquipCommand(args: {
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { userID, setup, item, items, preset, quantity: _quantity, auto } = args;
+	const { userID, setup, item, items, preset, quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	const user = await mUserFetch(userID);
 	if (minionIsBusy(user.id)) {
@@ -197,7 +196,7 @@ export async function gearEquipCommand(args: {
 	}
 
 	// They are trying to equip 1 item
-	return gearEquipMultiCommand(user, setup, item);
+	return gearEquipMultiCommand(user, setup, `${quantity ? quantity : 1} ${item}`);
 }
 
 export async function gearUnequipCommand(

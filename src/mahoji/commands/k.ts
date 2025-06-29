@@ -1,8 +1,8 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
-
 import { Time, reduceNumByPercent } from 'e';
-import { PVM_METHODS, type PvMMethod, ZALCANO_ID } from '../../lib/constants';
+import { EMonster } from 'oldschooljs/EMonster';
+
 import { Eatables } from '../../lib/data/eatables.js';
 import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -19,78 +19,102 @@ import findMonster from '../../lib/util/findMonster.js';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
 
-export const autocompleteMonsters = [
-	...killableMonsters,
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
+export type PvMMethod = (typeof PVM_METHODS)[number];
+
+const otherMonsters = [
 	{
 		id: -1,
 		name: 'Tempoross',
-		aliases: ['temp', 'tempoross']
+		aliases: ['temp', 'tempoross'],
+		link: '/skills/fishing/tempoross/'
 	},
 	...["Phosani's Nightmare", 'Mass Nightmare', 'Solo Nightmare'].map(s => ({
 		id: -1,
 		name: s,
-		aliases: [s.toLowerCase()]
+		aliases: [s.toLowerCase()],
+		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
 	})),
 	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
-		id: ZALCANO_ID,
-		emoji: '<:Smolcano:604670895113633802>'
-	},
-	VasaMagus,
-	{
-		...Ignecarus,
-		name: 'Ignecarus (Solo)'
+		id: EMonster.ZALCANO,
+		emoji: '<:Smolcano:604670895113633802>',
+		link: '/miscellaneous/zalcano/'
 	},
 	{
+		...VasaMagus,
+		link: '/bso/monsters/bosses/vasa-magus/'
+	},
+	{
 		...Ignecarus,
-		name: 'Ignecarus (Mass)'
+		name: 'Ignecarus (Solo)',
+		link: '/bso/monsters/bosses/ignecarus/'
+	},
+	{
+		...Ignecarus,
+		name: 'Ignecarus (Mass)',
+		link: '/bso/monsters/bosses/ignecarus/'
 	},
 	{
 		...KingGoldemar,
-		name: 'King Goldemar (Solo)'
+		name: 'King Goldemar (Solo)',
+		link: '/bso/monsters/bosses/king-goldemar/'
 	},
 	{
 		...KingGoldemar,
-		name: 'King Goldemar (Mass)'
+		name: 'King Goldemar (Mass)',
+		link: '/bso/monsters/bosses/king-goldemar/'
 	},
 	{
 		...NexMonster,
-		name: 'Nex (Solo)'
+		name: 'Nex (Solo)',
+		link: '/bso/monsters/bosses/nex/'
 	},
 	{
 		...NexMonster,
-		name: 'Nex (Mass)'
+		name: 'Nex (Mass)',
+		link: '/bso/monsters/bosses/nex/'
 	},
 	{
 		...KalphiteKingMonster,
-		name: 'Kalphite King (Solo)'
+		name: 'Kalphite King (Solo)',
+		link: '/bso/monsters/bosses/kalphite-king/'
 	},
 	{
 		...KalphiteKingMonster,
-		name: 'Kalphite King (Mass)'
+		name: 'Kalphite King (Mass)',
+		link: '/bso/monsters/bosses/kalphite-king/'
 	},
 	{
 		...Naxxus,
-		name: 'Naxxus'
+		name: 'Naxxus',
+		link: '/bso/monsters/bosses/naxxus/'
 	},
 	{
 		name: 'Wintertodt',
 		aliases: ['wt', 'wintertodt', 'todt'],
 		id: -1,
-		emoji: '<:Phoenix:324127378223792129>'
+		emoji: '<:Phoenix:324127378223792129>',
+		link: '/activities/wintertodt/'
 	},
 	{
 		name: 'Moktang',
 		aliases: ['moktang'],
-		id: MOKTANG_ID
+		id: MOKTANG_ID,
+		link: '/bso/monsters/bosses/moktang/'
 	},
 	{
 		name: 'Colosseum',
 		aliases: ['colo', 'colosseum'],
-		id: -1
+		id: -1,
+		link: '/bosses/colosseum/'
 	}
 ];
+
+export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];
+
+const wikiPrefix = 'https://wiki.oldschool.gg/osb';
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
 	const res = await prisma.$queryRawUnsafe<{ mon_id: string; last_killed: Date }[]>(
@@ -201,35 +225,12 @@ export const minionKCommand: OSBMahojiCommand = {
 };
 
 export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
+	const otherMon = otherMonsters.find(m => m.name === name || m.aliases.includes(name));
+	if (otherMon) {
+		return `View information, item costs, boosts and requirements for ${otherMon.name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;
+	}
+
 	const monster = findMonster(name);
-
-	const prefix = 'https://wiki.oldschool.gg/osb';
-
-	if (stringMatches(name, 'nex')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/nex/>).\n`;
-	}
-
-	if (stringMatches(name, 'colosseum')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/colosseum/>).\n`;
-	}
-
-	if (stringMatches(name, 'wintertodt')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/activities/wintertodt/>).\n`;
-	}
-
-	if (stringMatches(name, 'tempoross')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/skills/fishing/tempoross/>).\n`;
-	}
-
-	if (stringMatches(name, 'zalcano')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/miscelleanous/zalcano/>).\n`;
-	}
-
-	if (stringMatches(name.split(' ').pop(), 'nightmare')) {
-		const link = stringMatches(name.split(' ')[0], 'phosanis') ? '#phosanis-nightmare' : '';
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/the-nightmare/${link}>).\n`;
-	}
-
 	if (!monster) {
 		return "That's not a valid monster";
 	}
@@ -238,13 +239,13 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 
 	if (wikiMonsters.includes(monster)) {
 		str.push(
-			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/monsters/#${monster.name.toLowerCase().replace(' ', '-')}>).\n`
+			`View information, item costs, boosts and requirements for ${monster.name} on the [wiki](<${wikiPrefix}/monsters/#${monster.name.toLowerCase().replace(/\s/g, '-')}>).\n`
 		);
 	}
 
 	if (monster.name.includes('Revenant')) {
 		str.push(
-			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/wildy/#revenants>).\n`
+			`View information, item costs, boosts and requirements for ${monster.name} on the [wiki](<${wikiPrefix}/bosses/wildy/#revenants>).\n`
 		);
 	}
 

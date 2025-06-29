@@ -2,7 +2,7 @@ import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { Time, randArrItem, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
 	type Monkey,
 	TOTAL_MONKEYS,

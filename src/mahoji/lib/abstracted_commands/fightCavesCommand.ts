@@ -1,8 +1,6 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, percentChance, randInt, reduceNumByPercent } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, Monsters, itemID } from 'oldschooljs';
 
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -76,7 +74,12 @@ function checkGear(user: MUser): string | undefined {
 
 	const usersRangeStats = gear.stats;
 
-	if (!equippedWeapon || !equippedWeapon.weapon || !['crossbow', 'bow'].includes(equippedWeapon.weapon.weapon_type)) {
+	if (
+		!equippedWeapon ||
+		!equippedWeapon.weapon ||
+		!equippedWeapon.weapon.weapon_type ||
+		!['crossbow', 'bow'].includes(equippedWeapon.weapon.weapon_type)
+	) {
 		return 'JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with a bow or a crossbow.';
 	}
 

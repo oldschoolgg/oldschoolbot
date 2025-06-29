@@ -34,6 +34,7 @@ ORDER BY u.uniques DESC LIMIT 300;`)
 };
 
 export const RawSQL = {
+	fetchUsersWithoutUsernames,
 	updateAllUsersCLArrays: () => `UPDATE users
 SET ${u.cl_array} = (
     SELECT (ARRAY(SELECT jsonb_object_keys("${u.collectionLogBank}")::int))
@@ -56,6 +57,31 @@ export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> 
 	}
 
 	return null;
+}
+
+export async function fetchUsersWithoutUsernames() {
+	const res = await loggedRawPrismaQuery<{ id: string }[]>(`
+SELECT id
+FROM (
+    SELECT id,
+           username,
+           username_with_badges,
+           ("skills.agility"  + "skills.cooking"  + "skills.fishing" +
+            "skills.mining"   + "skills.smithing" + "skills.woodcutting" +
+            "skills.firemaking" + "skills.runecraft" + "skills.crafting" +
+            "skills.prayer"   + "skills.fletching" + "skills.thieving" +
+            "skills.farming"  + "skills.herblore" + "skills.hunter" +
+            "skills.construction" + "skills.magic" + "skills.ranged" +
+            "skills.attack"   + "skills.strength" + "skills.defence" +
+            "skills.slayer") AS total_xp
+    FROM users
+    WHERE username IS NULL
+) AS t
+WHERE total_xp > 100000000
+ORDER BY total_xp DESC
+LIMIT 60;
+`);
+	return res!;
 }
 
 export const SQL = {

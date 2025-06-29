@@ -1,6 +1,7 @@
 import { calcWhatPercent } from 'e';
+import { EMonster } from 'oldschooljs';
 
-import { NIGHTMARES_HP, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../constants';
+import { NIGHTMARES_HP, ZAM_HASTA_CRUSH } from '../constants';
 import { NightmareMonster } from '../minions/data/killableMonsters';
 import { maxOtherStats } from '../structures/Gear';
 
@@ -22,7 +23,7 @@ export async function getNightmareGearStats(
 		string
 	]
 > {
-	const kc = (await user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id)) || 1;
+	const kc = (await user.getKC(isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id)) || 1;
 	const gear = user.gear.melee;
 	const weapon = gear.equippedWeapon();
 	const gearStats = gear.stats;

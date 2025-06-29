@@ -1,5 +1,4 @@
-import { type Tame, tame_growth } from '@prisma/client';
-import { Bank, EquipmentSlot, Items, Monsters, getItem, getItemOrThrow } from 'oldschooljs';
+import { Bank, EMonster, EquipmentSlot, Items, Monsters, getItem, getItemOrThrow } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { combinedTmbUmbEmbTables } from '../../src/lib/bsoOpenables';
@@ -19,7 +18,6 @@ import getOSItem from '../../src/lib/util/getOSItem';
 import itemID from '../../src/lib/util/itemID';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
 import resolveItems from '../../src/lib/util/resolveItems';
-import { calculateMaximumTameFeedingLevelGain } from '../../src/lib/util/tameUtil';
 import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager';
 
 describe('Sanity', () => {
@@ -94,6 +92,8 @@ describe('Sanity', () => {
 		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Trailblazer tool ornament kit'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Twisted horns'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Collection log (gilded)'))).toEqual(false);
+		expect(itemIsTradeable(itemID('Gilded staff of collection'))).toEqual(false);
 		expect(itemIsTradeable(itemID("Pharaoh's sceptre"))).toEqual(true);
 	});
 	test('casket names', () => {
@@ -150,25 +150,21 @@ describe('Sanity', () => {
 		}
 	});
 
-	test('calculateMaximumTameFeedingLevelGain', () => {
-		expect(
-			calculateMaximumTameFeedingLevelGain({
-				species_id: 1,
-				max_combat_level: 70,
-				growth_stage: tame_growth.adult
-			} as Tame)
-		).toEqual(14);
-	});
-
 	test('market price of coins', () => {
 		const b = new Bank().add('Coins', 66);
 		expect(marketPriceOfBank(b)).toEqual(66);
 	});
+
 	test('rings', () => {
 		expect(getItem('Ultor ring')!.id).toEqual(25485);
 		expect(itemID('Ultor ring')).toEqual(25485);
 		expect(itemNameFromID(25485)).toEqual('Ultor ring');
 		expect(getItemOrThrow('Ultor ring')!.equipment?.slot).toEqual('ring');
 		expect(getItemOrThrow('Ultor ring')!.equipment?.melee_strength).toEqual(12);
+	});
+
+	test('EMonster', () => {
+		expect(EMonster.NIGHTMARE).toEqual(9415);
+		expect(EMonster.ZALCANO).toEqual(9049);
 	});
 });

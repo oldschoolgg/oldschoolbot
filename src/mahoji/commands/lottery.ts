@@ -9,12 +9,13 @@ import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { ores, secondaries, seedsFilter } from '../../lib/data/filterables';
 import { Herb } from '../../lib/invention/groups/Herb';
 
+import { isSuperUntradeable } from '../../lib/bso/bsoUtil';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Runecraft from '../../lib/skilling/skills/runecraft';
-import { assert, isSuperUntradeable } from '../../lib/util';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
@@ -161,29 +162,29 @@ for (const herb of Herb.items.flatMap(i => i.item)) {
 
 for (const seed of seedsFilter.map(getOSItem)) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
-		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
 }
 
 for (const seed of secondaries.map(getOSItem)) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
-		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
 }
 
 for (const seed of ores.map(getOSItem)) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
-		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
 }
 for (const seed of Runecraft.Runes.map(i => getOSItem(i.id))) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
-		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
 }
 for (const seed of Firemaking.Burnables.map(i => getOSItem(i.inputLogs))) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
-		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
 }
 
@@ -207,7 +208,7 @@ function getPriceOfItem(item: Item) {
 	if (parsedPriceBank.has(item.id)) {
 		return Math.floor(parsedPriceBank.amount(item.id));
 	}
-	return item.price;
+	return item.price ?? 0;
 }
 
 const LOTTERY_TICKET_ITEM = getOSItem('Bank lottery ticket');

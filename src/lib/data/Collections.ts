@@ -1,12 +1,22 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import {
+	Bank,
+	ChambersOfXeric,
+	Clues,
+	EMonster,
+	type Item,
+	ItemGroups,
+	type Monster,
+	Monsters,
+	resolveItems
+} from 'oldschooljs';
+
+import { OSB_VIRTUS_IDS } from '../bso/bsoConstants';
 import { divinationEnergies, portents } from '../bso/divination';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
 import type { CollectionLogType } from '../collectionLogTask';
-import { OSB_VIRTUS_IDS, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { discontinuedDyes, dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
 import { implingsCL } from '../implings';
@@ -122,7 +132,6 @@ import {
 	giantMoleCL,
 	giantsFoundryCL,
 	gnomeRestaurantCL,
-	godWarsDungeonGodswordShards,
 	gracefulCL,
 	grotesqueGuardiansCL,
 	guardiansOfTheRiftCL,
@@ -188,7 +197,6 @@ import {
 	thermonuclearSmokeDevilCL,
 	tinkeringWorshopCL,
 	titheFarmCL,
-	toaCL,
 	tormentedDemonCL,
 	treeBeardCL,
 	troubleBrewingCL,
@@ -337,7 +345,7 @@ export const allCollectionLogs: ICollection = {
 					];
 				})(),
 				items: [
-					...godWarsDungeonGodswordShards,
+					...ItemGroups.godWarsDungeonGodswordShards,
 					...commanderZilyanaCL,
 					...generalGraardorCL,
 					...kreeArraCL,
@@ -560,7 +568,7 @@ export const allCollectionLogs: ICollection = {
 				items: theNightmareCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[NightmareMonster.id] ?? 0} KC`,
-					`${stats.kcBank[PHOSANI_NIGHTMARE_ID] ?? 0} Phosani KC`
+					`${stats.kcBank[EMonster.PHOSANI_NIGHTMARE] ?? 0} Phosani KC`
 				]
 			},
 			Obor: {
@@ -656,7 +664,7 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[ZALCANO_ID] ?? 0} KC` },
+			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
 				allItems: Monsters.Zulrah.allItems,
@@ -776,7 +784,7 @@ export const allCollectionLogs: ICollection = {
 					Normal: async (_, __, stats) => stats.getToaKCs().normalKC,
 					Expert: async (_, __, stats) => stats.getToaKCs().expertKC
 				},
-				items: toaCL,
+				items: ItemGroups.toaCL,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tombs_of_amascut} KC`];
@@ -798,7 +806,14 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Superior Tormented Demons': {
 				items: superiorTormentedDemonCL,
-				alias: ['td', 'tormented demon', 'tormented demons'],
+				alias: [
+					'superior tormented demon',
+					'std',
+					'stds',
+					'sup torm',
+					'sup torm demon',
+					'superior tormented demons'
+				],
 				fmtProg: kcProg(BSOMonsters.SuperiorTormentedDemon.id)
 			},
 			"Champion's Challenge": {
@@ -1619,6 +1634,42 @@ export const allCollectionLogs: ICollection = {
 					'Floppy bunny ears',
 					'Egg coating',
 					'Chocolate pot'
+				]),
+				counts: false
+			},
+			'Easter 2025': {
+				items: resolveItems([
+					'Easter egg (1)',
+					'Easter egg (2)',
+					'Easter egg (3)',
+					'Easter egg (4)',
+					'Easter egg (5)',
+					'Easter egg (6)',
+					'Easter egg (7)',
+					'Easter egg (8)',
+					'Easter egg (9)',
+					'Easter egg (10)',
+					'Easter egg (11)',
+					'Easter egg (12)',
+					'Easter egg (13)',
+					'Easter egg (14)',
+					'Easter cape (1)',
+					'Easter cape (2)',
+					'Monkey egg (Edible)',
+					'Easter Bunny hat',
+					'Easter Bunny top',
+					'Easter Bunny legs',
+					'Easter Bunny gloves',
+					'Easter Bunny boots',
+					'Easter Bunny tail',
+					'Elven bunny ears',
+					'Dragon bunny ears',
+					'Tzhaar bunny ears',
+					'Rune bunny ears',
+					'Vyrewatch bunny ears',
+					'Arceuus bunny ears',
+					'Waddles',
+					'Tasty'
 				]),
 				counts: false
 			},

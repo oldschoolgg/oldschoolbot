@@ -14,10 +14,10 @@ import './moktang';
 import './leagues';
 import './paintCans';
 
-import { EquipmentSlot, type ItemRequirements } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../util/getOSItem';
-import { UN_EQUIPPABLE, maxedRequirements, setCustomItem } from './util';
+import { UN_EQUIPPABLE, customItems, maxedRequirements, setCustomItem } from './util';
 
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
 setCustomItem(
@@ -780,7 +780,7 @@ setCustomItem(
 			}
 		}
 	},
-	(getOSItem('Twisted bow').price + getOSItem('Zaryte bow').price) * 1.1
+	(getOSItem('Twisted bow').price! + getOSItem('Zaryte bow').price!) * 1.1
 );
 // ----------
 // MMMR
@@ -4845,8 +4845,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -8386,18 +8385,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	71_700,
-	'Torva armour set',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000
-);
-
-setCustomItem(
 	71_572,
 	'Skip',
 	'Coal',
@@ -8407,18 +8394,6 @@ setCustomItem(
 		}
 	},
 	1_000_000
-);
-
-setCustomItem(
-	71_701,
-	'Pernix armour set',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000
 );
 
 setCustomItem(
@@ -8443,18 +8418,6 @@ setCustomItem(
 		}
 	},
 	1_000_000
-);
-
-setCustomItem(
-	71_702,
-	'Virtus armour set',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000
 );
 
 setCustomItem(
@@ -14077,3 +14040,242 @@ setCustomItem(
 	},
 	200_000_000
 );
+
+setCustomItem(73_377, 'Easter Bunny hat', 'Bronze full helm', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_378, 'Easter Bunny top', 'Bronze platebody', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_379, 'Easter Bunny legs', 'Bronze platelegs', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_380, 'Easter Bunny gloves', 'Bronze gloves', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_381, 'Easter Bunny boots', 'Bronze boots', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_382, 'Easter Bunny tail', 'Red cape', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_383, 'Elven bunny ears', 'Bronze full helm', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_384, 'Dragon bunny ears', 'Bronze full helm', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_385, 'Tzhaar bunny ears', 'Bronze full helm', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_387, 'Rune bunny ears', 'Bronze full helm', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_388, 'Vyrewatch bunny ears', 'Bronze full helm', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_389, 'Arceuus bunny ears', 'Bronze full helm', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_390, 'Waddles', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_391, 'Easter egg (1)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_392, 'Easter egg (2)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_393, 'Easter egg (3)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_394, 'Easter egg (4)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_395, 'Easter egg (5)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_396, 'Easter egg (6)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_397, 'Easter egg (7)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_398, 'Easter egg (8)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_399, 'Easter egg (9)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_400, 'Easter egg (10)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_401, 'Easter egg (11)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_402, 'Easter egg (12)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_403, 'Easter egg (13)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_404, 'Easter egg (14)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_405, 'Easter cape (1)', 'Red cape', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_406, 'Easter cape (2)', 'Red cape', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_407, 'Tasty', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_408, 'Monkey egg (Edible)', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_409, 'Tuah', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_410, 'Burnie', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_411, 'Shrimpling', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73412, 'Veteran cape (5 year)', 'Red cape', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73413, 'Veteran hood (5 year)', 'Bronze full helm', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73414, 'Veteran staff (5 year)', 'Staff of fire', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+export const discontinuedItems = resolveItems([
+	'Turkey',
+	'Raw turkey',
+	'Burnt turkey',
+	'Turkey drumstick',
+	'Golden partyhat',
+	'Black swan',
+	...customItems.filter(i => Items.get(i)?.customItemData?.isDiscontinued)
+]);
+
+export function removeDiscontinuedItems(arr: number[]) {
+	return arr.filter(i => !discontinuedItems.includes(i));
+}

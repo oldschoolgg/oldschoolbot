@@ -1,7 +1,7 @@
 import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { Emoji, Events } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import type { ItemBank } from '../../lib/types';

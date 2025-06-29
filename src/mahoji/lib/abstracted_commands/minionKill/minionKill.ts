@@ -1,19 +1,20 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 
+import { Time } from 'e';
 import { handleDTD } from '../../../../lib/bso/handleDTD';
 import { colosseumCommand } from '../../../../lib/colosseum';
-import type { PvMMethod } from '../../../../lib/constants';
 import { getCurrentPeak } from '../../../../lib/getCurrentPeak';
 import { trackLoot } from '../../../../lib/lootTrack';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../../lib/util';
 import addSubTaskToActivityTask from '../../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../../lib/util/findMonster';
 import { updateBankSetting } from '../../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../../lib/util/webhook';
+import type { PvMMethod } from '../../../commands/k';
 import { hasMonsterRequirements } from '../../../mahojiSettings';
 import { igneCommand } from '../igneCommand';
 import { kgCommand } from '../kgCommand';
@@ -91,10 +92,6 @@ export async function minionKillCommand(
 		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
 	}
 
-	const dtdResult = await handleDTD(monster, user);
-	if (typeof dtdResult === 'string') {
-		return dtdResult;
-	}
 	const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
 
 	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
@@ -126,12 +123,17 @@ export async function minionKillCommand(
 	}
 
 	if (!user.allItemsOwned.has(result.updateBank.itemCostBank)) {
-		return `You don't have the items needed to kill this monster. You need: ${result.updateBank.itemCostBank}`;
+		return `You don't have the items needed to kill this monster. You're missing: ${result.updateBank.itemCostBank.clone().remove(user.allItemsOwned)}`;
 	}
 
 	const updateResult = await result.updateBank.transact(user, { isInWilderness: result.isInWilderness });
 	if (typeof updateResult === 'string') {
 		return updateResult;
+	}
+
+	const dtdResult = await handleDTD(monster, user);
+	if (typeof dtdResult === 'string') {
+		return dtdResult;
 	}
 
 	if (updateResult.message.length > 0) result.messages.push(updateResult.message);
@@ -156,32 +158,28 @@ export async function minionKillCommand(
 		});
 	}
 
-	const { bob, usingCannon, cannonMulti, chinning, hasWildySupplies } = result.currentTaskOptions;
+	const { bob, usingCannon, cannonMulti, chinning, died, pkEncounters, hasWildySupplies } = result.currentTaskOptions;
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 		mi: monster.id,
 		userID: user.id,
 		channelID,
 		q: result.quantity,
 		iQty: inputQuantity,
-		duration: result.duration,
+		duration: dtdResult ? Time.Second * 5 : result.duration,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
 		chinning: !chinning ? undefined : chinning,
 		bob: !bob ? undefined : bob,
+		died,
+		pkEncounters,
 		hasWildySupplies,
 		isInWilderness: result.isInWilderness === true ? true : undefined,
 		attackStyles: result.attackStyles,
 		onTask: slayerInfo.assignedTask !== null
 	});
 
-	if (dtdResult) {
-		return `<:deathtouched_dart:822674661967265843> ${user.minionName} used a **Deathtouched dart**.`;
-	}
-
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
-		result.duration
-	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, ${dtdResult ? `using a <:deathtouched_dart:822674661967265843> **Deathtouched dart**, it'll take around ${formatDuration(Time.Second * 5)}` : `It'll take around ${formatDuration(result.duration)} to finish`}. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;

@@ -1,10 +1,12 @@
-import { Time, calcWhatPercent, deepClone, percentChance, reduceNumByPercent } from 'e';
+import { calcPerHour } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Time, calcWhatPercent, deepClone, percentChance, reduceNumByPercent, roll } from 'e';
 import type { MonsterKillOptions } from 'oldschooljs';
 import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
 import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '../../lib/bso/pvmEffects';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
-import { type BitField, Emoji } from '../../lib/constants';
+import type { BitField } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { trackLoot } from '../../lib/lootTrack';
@@ -21,7 +23,7 @@ import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { calcPerHour, calculateSimpleMonsterDeathChance, roll } from '../../lib/util';
+import { calculateSimpleMonsterDeathChance } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
@@ -382,6 +384,16 @@ export function doMonsterTrip(data: newOptions) {
 	if (!wiped) {
 		if (monster.specialLoot) {
 			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
+		}
+		if (
+			monster.name.toLowerCase() === 'unicorn' &&
+			gearBank.hasEquipped('Iron dagger') &&
+			!gearBank.hasEquippedOrInBank('Clue hunter cloak') &&
+			!gearBank.hasEquippedOrInBank('Clue hunter boots')
+		) {
+			loot.add('Clue hunter boots', 1);
+			loot.add('Clue hunter cloak', 1);
+			messages.push('While killing a Unicorn, you discover some strange clothing - you pick them up');
 		}
 		if (newSuperiorCount) {
 			loot.add(superiorTable?.kill(newSuperiorCount).set('Brimstone key', 0)); //remove the rng keys, todo: remove drop from superiors in osjs?

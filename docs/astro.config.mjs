@@ -1,11 +1,10 @@
-import starlight from '@astrojs/starlight';
-// @ts-check
-import { defineConfig } from 'astro/config';
-import { remarkItems } from './src/plugins/items';
-
 import preact from '@astrojs/preact';
+import starlight from '@astrojs/starlight';
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'astro/config';
 
-import tailwind from '@astrojs/tailwind';
+import { remarkItems } from './src/plugins/items';
+import rehypeFixInlineSpacing from './src/plugins/rehypeFixInlineSpacing';
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,16 +13,22 @@ export default defineConfig({
 			alias: {
 				'@data': '../../../data'
 			}
-		}
+		},
+		plugins: [tailwindcss()]
+	},
+	devToolbar: {
+		enabled: false
 	},
 	experimental: {
 		clientPrerender: true
 	},
 	markdown: {
 		remarkPlugins: [remarkItems],
+		rehypePlugins: [rehypeFixInlineSpacing],
 		smartypants: false,
 		syntaxHighlight: false
 	},
+	site: 'https://wiki.oldschool.gg',
 	integrations: [
 		starlight({
 			components: {
@@ -44,6 +49,10 @@ export default defineConfig({
 					content: `if (window.location.href.includes('/bso/')) {
 window.onload = () => document.body.classList.add('bso-theme');
 }`
+				},
+				{
+					tag: 'script',
+					attrs: { src: '/scripts/copyCommand.js', defer: true }
 				}
 			],
 			editLink: {
@@ -67,7 +76,6 @@ window.onload = () => document.body.classList.add('bso-theme');
 				}
 			]
 		}),
-		preact({ compat: true }),
-		tailwind()
+		preact({ compat: true })
 	]
 });

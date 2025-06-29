@@ -1,8 +1,8 @@
 import { Time, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';

@@ -4,6 +4,7 @@ import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/geImage';
 
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { MahojiClient } from '@oldschoolgg/toolkit/util';
 import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
@@ -11,7 +12,7 @@ import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, gitHash, globalConfig } from './lib/constants';
+import { Channel, gitHash, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';
@@ -126,8 +127,7 @@ export const mahojiClient = new MahojiClient({
 				inhibited,
 				continueDeltaMillis: null
 			})
-	},
-	djsClient: client
+	}
 });
 
 declare global {
@@ -140,6 +140,9 @@ client.on('messageCreate', msg => {
 	onMessage(msg);
 });
 client.on('error', console.error);
+
+const usernameInsertedCache = new Set<string>();
+
 client.on('interactionCreate', async interaction => {
 	if (globalClient.isShuttingDown) {
 		if (interaction.isRepliable()) {
@@ -150,6 +153,29 @@ client.on('interactionCreate', async interaction => {
 			});
 		}
 		return;
+	}
+
+	if (!usernameInsertedCache.has(interaction.user.id)) {
+		usernameInsertedCache.add(interaction.user.id);
+		await prisma.user
+			.upsert({
+				where: {
+					id: interaction.user.id
+				},
+				create: {
+					id: interaction.user.id,
+					last_command_date: new Date(),
+					username: interaction.user.username
+				},
+				update: {
+					last_command_date: new Date(),
+					username: interaction.user.username
+				},
+				select: {
+					id: true
+				}
+			})
+			.catch(console.error);
 	}
 
 	if (

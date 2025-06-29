@@ -1,14 +1,14 @@
 import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, type ItemBank, Monsters, itemID, randomVariation } from 'oldschooljs';
 
-import { BitField, Emoji, projectiles } from '../../../lib/constants';
+import { BitField, projectiles } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import type { BlowpipeData } from '../../../lib/minions/types';
 import { getMinigameEntity, getMinigameScore } from '../../../lib/settings/minigames';
-
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { Gear } from '../../../lib/structures/Gear';

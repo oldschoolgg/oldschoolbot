@@ -2,54 +2,55 @@
 title: "Wildy Slayer"
 ---
 
-To start wildy slayer and set Krystilia as your slayer master, use:
+To start Wildy Slayer and set Krystilia as your Slayer master, use:
 
 [[/slayer new_task master\:Krystilia save\:True]]
 
-You can select Krystilia for your slayer task for wildy specific tasks. These tasks can only be completed in the wildy, and they run on a seperate streak to your normal slayer tasks (i.e. you can reset your wildy slayer task streak without resetting your normal one).
+Krystilia assigns Wilderness-specific tasks. These tasks can only be completed in the Wilderness and run on a separate streak from normal Slayer tasks (i.e., you can reset your Wildy Slayer task streak without affecting your normal one).
 
 ## Wilderness & Death Chance
 
-Since you will be in wildy, there is always the chance to encounter pkers and lose some gear. All information regarding pker encounters and death chance can be read on the [Wilderness page](../../bosses/wilderness/#pk-and-death-chance), as it uses the same mechanics and PK supplies listed there. Be aware that all tasks are completed unskulled, except for revenents. You can only do revenents skulled. There is no way to remove this.
+Since you will be in the Wilderness, there is always a chance to encounter PKers and lose gear. All information regarding PK encounters and death chance can be found on the [Wilderness page](../../bosses/wilderness/#pk-and-death-chance). These tasks use the same mechanics and PK supplies listed there.
+
+All tasks are completed **unskulled**, **except for Revenants**, which must be done **skulled**. There is no way to avoid this.
 
 ---
 
 ## Wildy Slayer Task Unlocks
 
-**Currently, extended task unlocks don't apply to Greater Nechryael tasks.**
+**Note:** Extended task unlocks currently don't apply to Greater Nechryael tasks.
 
-`/slayer rewards unlock unlockable:I Wildy More Slayer`
+[[/slayer rewards unlock unlockable\:I Wildy More Slayer]]
 
-- Allows Krystilia to to assign Jellies, Dust Devils, Nechryaels and Abyssal Demons
+- Allows Krystilia to assign Jellies, Dust Devils, Nechryaels, and Abyssal Demons
 
-`/slayer rewards unlock unlockable:Revenenenenenants`
+[[/slayer rewards unlock unlockable\:Revenenenenenants]]
 
-- Extends Revenants tasks (between 100-150)
+- Extends Revenants tasks (between 100–150)
 
 ---
 
 ## Larran's Chest
 
-There are 3 sought after items from this chest, which are the Dagon'hai robes. Each piece has a 1/256 chance to be given. They are given in any order and duplicates can be obtained before finishing the full set.
+There are 3 highly sought-after items from this chest — the Dagon'hai robes. Each piece has a 1/256 chance and can be obtained in any order, including duplicates.
 
-Aside from the robes, the chest also gives high level seeds, coal/iron/gold ores, rune armour, dragon arrow/dart tips, and a few other decent drops. To see all possible drops, check the [OSRS page](https://oldschool.runescape.wiki/w/Larran's_big_chest).
+The chest also rewards high-level seeds, coal/iron/gold ores, rune armour, dragon arrow/dart tips, and other valuable drops. For full loot info, check the [OSRS Wiki](https://oldschool.runescape.wiki/w/Larran's_big_chest).
 
 ---
 
 ## Ring of Wealth(i)
 
-You can create and equip the Ring of wealth(i) to give you clue drop rates a massive 50% boost. This applies across any wildy content, as long as the ring is equipped in your wildy setup.
+You can create and equip a Ring of wealth(i) to gain a 50% boost to clue scroll drop rates. This applies to any Wilderness content, **as long as the ring is equipped in your wildy setup**.
 
-To create a Ring of wealth(i), you first need a Ring of wealth without charges. Charged rings cannot be inbued. You will also need a Ring of wealth scroll which can be obtained through wildy slayer, or buy purchasing from other players. Complete the following steps to make a ring.
+To create it:
 
-Create the dragontone ring
+1. **Craft the Dragonstone ring**  
+   [[/craft name\:Dragonstone ring quantity\:1]]
 
-- `/craftname:Dragonstone ringquantity:1`
+2. **Enchant the ring**  
+   [[/activities enchant name\:Dragonstone ring quantity\:1]]
 
-Create the Ring of wealth
+3. **Imbue the Ring of wealth**  
+   [[/create item\:Ring of wealth (i) quantity\:1]]
 
-- `/activities enchantname:Dragonstone ringquantity:1`
-
-Imbue the Ring of wealth
-
-- `/createitem:Ring of wealth (i)quantity:1`
+Only uncharged rings can be imbued. You will also need a **Ring of wealth scroll**, which can be obtained through Wildy Slayer or purchased from other players.

@@ -1,8 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { shuffleArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
 import { partyHatTableRoll } from '../../../lib/data/holidayItems';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { addToOpenablesScores } from '../../mahojiSettings';

@@ -28,6 +28,7 @@ import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { getUsersPerkTier } from '../../lib/perkTiers';
 
+import type { Canvas } from 'skia-canvas';
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import Bars from '../../lib/skilling/skills/smithing/smeltables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -46,7 +47,6 @@ import {
 	tameSpecies
 } from '../../lib/tames';
 import {
-	assert,
 	formatDuration,
 	formatSkillRequirements,
 	isWeekend,
@@ -61,11 +61,12 @@ import {
 	canvasToBuffer,
 	createCanvas,
 	fillTextXTimesInCtx,
-	getClippedRegionImage,
+	getClippedRegion,
 	loadImage
 } from '../../lib/util/canvasUtil';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
@@ -273,18 +274,18 @@ const tameImageReplacementEasterEggs = [
 
 let sprites: {
 	base: {
-		image: CanvasImage;
-		slot: CanvasImage;
-		selectedSlot: CanvasImage;
-		shinyIcon: CanvasImage;
+		image: Canvas | CanvasImage;
+		slot: Canvas;
+		selectedSlot: Canvas;
+		shinyIcon: Canvas;
 	};
 	tames: {
 		id: number;
 		name: string;
-		image: CanvasImage;
-		sprites: { type: number; growthStage: Record<tame_growth, CanvasImage> }[];
+		image: Canvas | CanvasImage;
+		sprites: { type: number; growthStage: Record<tame_growth, Canvas | CanvasImage> }[];
 	}[];
-	gearIconBg: CanvasImage;
+	gearIconBg: Canvas | CanvasImage;
 };
 async function initSprites() {
 	const tameSpriteBase = await loadImage(await readFile('./src/lib/resources/images/tames/tame_sprite.png'));
@@ -292,9 +293,9 @@ async function initSprites() {
 		gearIconBg: await loadImage(await readFile('./src/lib/resources/images/gear_icon_bg.png')),
 		base: {
 			image: tameSpriteBase,
-			slot: await getClippedRegionImage(tameSpriteBase, 0, 0, 256, 128),
-			selectedSlot: await getClippedRegionImage(tameSpriteBase, 0, 128, 256, 128),
-			shinyIcon: await getClippedRegionImage(tameSpriteBase, 256, 0, 24, 24)
+			slot: getClippedRegion(tameSpriteBase, 0, 0, 256, 128),
+			selectedSlot: getClippedRegion(tameSpriteBase, 0, 128, 256, 128),
+			shinyIcon: getClippedRegion(tameSpriteBase, 256, 0, 24, 24)
 		},
 		tames: await Promise.all(
 			tameSpecies.map(async value => {
@@ -312,21 +313,21 @@ async function initSprites() {
 							return {
 								type: v,
 								growthStage: {
-									[tame_growth.baby]: await getClippedRegionImage(
+									[tame_growth.baby]: getClippedRegion(
 										tameImage,
 										(v - 1) * tameImageSize,
 										0,
 										tameImageSize,
 										tameImageSize
 									),
-									[tame_growth.juvenile]: await getClippedRegionImage(
+									[tame_growth.juvenile]: getClippedRegion(
 										tameImage,
 										(v - 1) * tameImageSize,
 										tameImageSize,
 										tameImageSize,
 										tameImageSize
 									),
-									[tame_growth.adult]: await getClippedRegionImage(
+									[tame_growth.adult]: getClippedRegion(
 										tameImage,
 										(v - 1) * tameImageSize,
 										tameImageSize * 2,

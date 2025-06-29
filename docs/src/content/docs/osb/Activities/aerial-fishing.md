@@ -2,23 +2,19 @@
 title: "Aerial Fishing"
 ---
 
-Requirements: 35 Hunter, 43 fishing.
+Aerial fishing is a fishing and hunter activity requiring [[hunter: 35 ]] and [[fishing: 43]]. You can purchase buyables via [[/buy]], and can sell any [[Golden Tench]] for 100 [[Molch pearl]] via [[/sell items\:golden tench]].
 
-You can start aerial fishing with either [[/activities aerial_fishing]]
-
-You can purchase buyables via [[/buy name\:[itemName]]]
-
-You can sell Golden Tenches for 100 Molch pearls via [[/sell items\:golden tench]]
+You can start aerial fishing with [[/activities aerial_fishing]].
 
 ## Aerial Fishing Buyables
 
-| **Item**              | **Molch pearl cost** |
-| --------------------- | :------------------: |
-| Angler hat            |         100          |
-| Angler top            |         100          |
-| Angler waders         |         100          |
-| Angler boots          |         100          |
-| Pearl fishing rod     |         100          |
-| Pearl fly fishing rod |         120          |
-| Pearl barbarian rod   |         150          |
-| Fish sack             |         1000         |
+| **Item**                  | **Pearl cost**           |
+| ------------------------- | :----------------------: |
+| [[Angler hat]]            |         100              |
+| [[Angler top]]            |         100              |
+| [[Angler waders]]         |         100              |
+| [[Angler boots]]          |         100              |
+| [[Pearl Fishing rod]]     |         100              | 
+| [[Pearl fly Fishing rod]] |         120              |
+| [[Pearl barbarian rod]]   |         150              |
+| [[Fish sack]]             |         1000             |

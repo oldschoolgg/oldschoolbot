@@ -1,11 +1,12 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { Time, clamp } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { Planks } from '../../../lib/minions/data/planks';
 import type { SawmillActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { itemNameFromID } from '../../../lib/util/smallUtils';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 

@@ -7,7 +7,6 @@ import type {
 	BaseInteraction,
 	Channel,
 	ChatInputCommandInteraction,
-	Client,
 	GuildMember,
 	Role,
 	User
@@ -81,5 +80,4 @@ export interface CommandRunOptions<T extends CommandOptions = {}> {
 	channelID: string;
 	guildID?: string;
 	userID: string;
-	djsClient: Client;
 }

@@ -1,12 +1,9 @@
-import type { Activity, Prisma } from '@prisma/client';
-import { activity_type_enum } from '@prisma/client';
-import type { ButtonInteraction } from 'discord.js';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
+import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
-import { autocompleteMonsters } from '../../mahoji/commands/k';
+import { type PvMMethod, autocompleteMonsters } from '../../mahoji/commands/k';
 import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
-import type { PvMMethod } from '../constants';
 import { kibbles } from '../data/kibble';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
@@ -65,6 +62,7 @@ import type {
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
+	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -78,10 +76,10 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 import { interactionReply } from './interactionReply';
+import { itemNameFromID } from './smallUtils';
 
 export const taskCanBeRepeated = (activity: Activity) => {
 	return !(
@@ -479,7 +477,8 @@ export const tripHandlers = {
 				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi?.toString(),
 				quantity: data.iQty,
 				method,
-				wilderness: data.isInWilderness
+				wilderness: data.isInWilderness,
+				onTask: data.onTask
 			};
 		}
 	},
@@ -581,7 +580,10 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Sepulchre]: {
 		commandName: 'minigames',
-		args: () => ({ sepulchre: { start: {} } })
+		args: (data: SepulchreActivityTaskOptions) => {
+			const fletch = data.fletch?.id;
+			return { sepulchre: { start: { fletching: fletch } } };
+		}
 	},
 	[activity_type_enum.Smithing]: {
 		commandName: 'smith',

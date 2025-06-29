@@ -1,16 +1,16 @@
 import { type CommandResponse, deepMerge, md5sum, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
-import { clamp, objectEntries, roll } from 'e';
-import { type ArrayItemsResolved, Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
+import { Time, clamp, objectEntries, roll } from 'e';
+import { type ArrayItemsResolved, type Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
 import { skillEmoji } from '../data/emojis';
-import type { UserFullGearSetup } from '../gear/types';
+import type { Consumable } from '../minions/types';
 import type { SkillRequirements, Skills } from '../types';
 
-export function itemNameFromID(itemID: number | string) {
+export function itemNameFromID(itemID: number) {
 	return Items.get(itemID)?.name;
 }
 
@@ -225,18 +225,6 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 	return [true, null];
 }
 
-export function fullGearToBank(gear: UserFullGearSetup) {
-	const bank = new Bank();
-	for (const setup of Object.values(gear)) {
-		for (const equipped of Object.values(setup)) {
-			if (equipped?.item) {
-				bank.add(equipped.item, equipped.quantity);
-			}
-		}
-	}
-	return bank;
-}
-
 export function objHasAnyPropInCommon(obj: object, other: object): boolean {
 	for (const key of Object.keys(obj)) {
 		if (key in other) return true;
@@ -269,4 +257,52 @@ export function isValidNickname(str?: string) {
 			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
 			stripEmojis(str).length === str.length
 	);
+}
+
+export function formatList(_itemList: (string | undefined | null)[], end?: string) {
+	const itemList = _itemList.filter(i => i !== undefined && i !== null) as string[];
+	if (itemList.length < 2) return itemList.join(', ');
+	const lastItem = itemList.pop();
+	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
+}
+
+export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
+	const str = [];
+
+	const consumables = [consumable];
+
+	if (consumable.alternativeConsumables) {
+		for (const c of consumable.alternativeConsumables) {
+			consumables.push(c);
+		}
+	}
+
+	for (const c of consumables) {
+		const itemEntries = c.itemCost.items();
+		const multiple = itemEntries.length > 1;
+		const subStr = [];
+
+		let multiply = 1;
+		if (c.qtyPerKill) {
+			multiply = c.qtyPerKill;
+		} else if (c.qtyPerMinute) {
+			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
+		}
+
+		for (const [item, quantity] of itemEntries) {
+			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
+		}
+
+		if (multiple) {
+			str.push(formatList(subStr));
+		} else {
+			str.push(subStr.join(''));
+		}
+	}
+
+	if (consumables.length > 1) {
+		return str.join(' OR ');
+	}
+
+	return str.join('');
 }

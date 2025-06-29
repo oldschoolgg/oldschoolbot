@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 
+import { activity_type_enum } from '@prisma/client';
 import { soteSkillRequirements } from '../skilling/functions/questRequirements';
 import { courses } from '../skilling/skills/agility';
 import butterflyNettingCreatures from '../skilling/skills/hunter/creatures/butterflyNetting';
@@ -15,7 +16,8 @@ import type {
 
 export enum WorldLocations {
 	Priffdinas = 0,
-	World = 1
+	World = 1,
+	Underwater = 2
 }
 
 const WorldLocationsChecker = [
@@ -64,6 +66,22 @@ const WorldLocationsChecker = [
 			}
 
 			return false;
+		}
+	},
+	{
+		area: WorldLocations.Underwater,
+		checker: (_user: MUser, activity: ActivityTaskData) => {
+			const underWaterLocations: activity_type_enum[] = [
+				activity_type_enum.DriftNet,
+				activity_type_enum.UnderwaterAgilityThieving,
+				activity_type_enum.DepthsOfAtlantis,
+				activity_type_enum.FishingTrawler,
+				activity_type_enum.AerialFishing,
+				activity_type_enum.Fishing,
+				activity_type_enum.CamdozaalFishing,
+				activity_type_enum.FishingContest
+			];
+			return underWaterLocations.includes(activity.type);
 		}
 	}
 ];

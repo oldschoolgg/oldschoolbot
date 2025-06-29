@@ -4,13 +4,64 @@ sidebar:
   order: 1
 tableOfContents: false
 ---
-import Update from '../../../components/Update.astro';
+
+import Update from "../../../components/Update.astro";
 
 Generally only changes that are specific to BSO are included here, for a full list of OSB changes see the [OSB Changelog](/changelog).
 
-<Update date="29/12/2024" firstHash="837e89eacb67e6f187c5ac1d851bdf010c8c940c" secondHash="75ddf64d7e28b473e937426dbe058af72f619421" isNew />
+<Update
+	date="11/05/2025"
+	firstHash="75ddf64d7e28b473e937426dbe058af72f619421"
+	secondHash="368cf0543179ebdffa4e46a3301be26c2f9df999"
+	isNew
+/>
 
 ### [[gc]]
+
+- Ended the easter event
+- Improved the icon for [[BSO Santa hat]]
+- [Added Shrimplings.](https://github.com/oldschoolgg/oldschoolbot/commit/837953ec4) [[Shrimpling]]'s are a new impling that drop from activities
+in underwater/oceanic locations, which are: Drift net, underwater agility/thieving, DOA, fishing trawler, aerial fishing, ANY [[/fish]]
+fishing trip, camdozaal fishing, fishing contest. Shrimplings always drop raw food, and a chance of: [[Clue scroll (grandmaster)]], and [[Elder scroll piece]].
+- [Added [[Elder scroll piece]] to skilling clues table](https://github.com/oldschoolgg/oldschoolbot/commit/110614417), you can now get them from regular skilling activities that give clues.
+- [Buffed Elder scroll droprate at Akumu and Venatrix](https://github.com/oldschoolgg/oldschoolbot/commit/97421eba3)
+- [Added key crates to drystreaks](https://github.com/oldschoolgg/oldschoolbot/commit/9b96ff1d8) 
+- [Added inverted master capes](https://github.com/oldschoolgg/oldschoolbot/commit/89fba5214) [[Attack master cape (inverted)]]
+- [Made inverted capes creatable/revertable](https://github.com/oldschoolgg/oldschoolbot/commit/339a11486)
+- [Drygore items now drop in order, and chitin is twice as common](https://github.com/oldschoolgg/oldschoolbot/commit/d7b260448) 
+- [Made [[Baby yaga house]] tradeable](https://github.com/oldschoolgg/oldschoolbot/commit/b91b93835) 
+- [Added Elder scrolls to Elder birdhouses](https://github.com/oldschoolgg/oldschoolbot/commit/5a194e252)
+- [Buffed the droprate of GMC's from Elder birdhouses](https://github.com/oldschoolgg/oldschoolbot/commit/5a194e252)
+- [The following implings now drop Elder scrolls at a rate of 1 in 100: Mystery, Shrimpling, Chimpling, Eternal.](https://github.com/oldschoolgg/oldschoolbot/commit/25c105cbf) 
+- [Removed easter crates](https://github.com/oldschoolgg/oldschoolbot/commit/5688db4ad) 
+- [Renamed Demonic hween to Bloody halloween mask](https://github.com/oldschoolgg/oldschoolbot/commit/5b18ec259) 
+- [Fix image issue, tries to draw bso items from osb spritesheet](https://github.com/oldschoolgg/oldschoolbot/commit/49c163caa)
+- [Fix broken emoji](https://github.com/oldschoolgg/oldschoolbot/commit/425a5c93d) 
+- [Add missing easter pets to easter event buff](https://github.com/oldschoolgg/oldschoolbot/commit/03d98075f) 
+- [Fix custom monster killing not including special loot](https://github.com/oldschoolgg/oldschoolbot/commit/5ea6a2b19) 
+
+### [[themrrobert]]
+
+- [Add shrimplings to openables (#6366)](https://github.com/oldschoolgg/oldschoolbot/commit/658f86302) 
+- [Fix Easter giving multiple identical drops when CL complete (#6373)](https://github.com/oldschoolgg/oldschoolbot/commit/0c7e9c906)
+- [Extended the easter event, and adjust drop rates based on CL (#6375)](https://github.com/oldschoolgg/oldschoolbot/commit/df2cac9c9)
+
+### [[nwjgit]]
+
+- [Allow disabling tame jar opening (#6313)](https://github.com/oldschoolgg/oldschoolbot/commit/5ff26a3c5)
+- [Deathtouched dart bugfix (#6342)](https://github.com/oldschoolgg/oldschoolbot/commit/d293c3f8e) 
+- [Allow adding metamorphed mumpkins to cl (#6352)](https://github.com/oldschoolgg/oldschoolbot/commit/a5e4da866)
+- [Toggle to disable pets when opening items (#6353)](https://github.com/oldschoolgg/oldschoolbot/commit/57a920c6b)
+- [Remove snooze spell activity from music cape requirments (#6346)](https://github.com/oldschoolgg/oldschoolbot/commit/5f2ef5569) 
+
+<Update
+	date="29/12/2024"
+	firstHash="837e89eacb67e6f187c5ac1d851bdf010c8c940c"
+	secondHash="75ddf64d7e28b473e937426dbe058af72f619421"
+/>
+
+### [[gc]]
+
 - Made improvements to giveaways, so that huge giveaways dont cause problems anymore.
 - Added aliases for supply crates and their keys. An alias is an alternate name, e.g. how you can use "tmb" instead of writing "Tradeables mystery box". You can now write "s1" for a s1 crate, and "s1 key" for the key (and so on for the others).
 - Added christmas cracker to christmas cracker cl
@@ -20,7 +71,11 @@ Generally only changes that are specific to BSO are included here, for a full li
 - Improved IC donation message, so the person sees their next IC.
 - Removed some duplicate collection logs that were mistakenly there.
 
-<Update date="18/12/2024" firstHash="dd98c03c941d4a45e544390d2833c4cfc0e9c843" secondHash="837e89eacb67e6f187c5ac1d851bdf010c8c940c" />
+<Update
+	date="18/12/2024"
+	firstHash="dd98c03c941d4a45e544390d2833c4cfc0e9c843"
+	secondHash="837e89eacb67e6f187c5ac1d851bdf010c8c940c"
+/>
 
 ### [[gc]]
 
@@ -29,7 +84,7 @@ Generally only changes that are specific to BSO are included here, for a full li
 
   First, chop 8 [[Snowdream logs]], and create a [[Snowdream staff]] from them. Then, runecraft some [[Snowdream rune]] runes. Equip the staff anywhere, and your minion will automatically begin using the runes passively on trips, and give you chances at getting the reward items. When you run out of runes, you will need to buy/runecraft more. If you want to get a faster/higher chance of receiving reward items, you can do the "active" version, of actively casting the spell (on a minion trip keeping your minion busy), which will grant you 2.5x higher droprates than the passive version.
 
-  - Check your info with [[/christmas check]] 
+  - Check your info with [[/christmas check]]
   - To do the 'active casting', use [[/christmas active_cast]]. Note that you can pick your trip length of 1, 2 or 3 hours for this.
   - View the droprates with [[/christmas drop_rates]]
   - Your minion is casting a spell to help children fall asleep on christmas eve, or something like that.
@@ -63,7 +118,7 @@ Generally only changes that are specific to BSO are included here, for a full li
 - The new items have been desecretted, so they no longer are hidden from places, and the collection logs show.
 - You can now buy pumpkin seeds.
 
-[Added wiki page for the halloween event, click here to see](/bso/miscelleanous/events/#halloween-2024)
+[Added wiki page for the halloween event, click here to see](/bso/miscellaneous/events/#halloween-2024)
 
 ### Turbo
 

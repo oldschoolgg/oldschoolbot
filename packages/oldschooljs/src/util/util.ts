@@ -1,84 +1,9 @@
 import { randFloat, randInt, roll } from 'e';
 
-import { CLUES, MINIGAMES, SKILLS, type hiscoreURLs, mappedBossNames } from '../constants';
 import type { CustomKillLogic, Item, MonsterKillOptions } from '../meta/types';
 import type Bank from '../structures/Bank';
 import Items from '../structures/Items';
 import LootTable from '../structures/LootTable';
-import type Player from '../structures/Player';
-
-export function resolvePlayerFromHiscores(csvData: string, accountType: keyof typeof hiscoreURLs): Player {
-	const data: string[][] = csvData
-		.trim()
-		.split('\n')
-		.map((str): string[] => str.split(','));
-
-	const resolvedPlayer: any = {
-		skills: {},
-		minigames: {},
-		clues: {},
-		bossRecords: {}
-	};
-
-	let accumulativeIndex = 0;
-
-	for (let i = 0; i < SKILLS.length; i++) {
-		resolvedPlayer.skills[SKILLS[i]] = {
-			rank: Number(data[i][0]),
-			level: Number(data[i][1]),
-			xp: Number(data[i][2])
-		};
-	}
-
-	if (accountType === 'seasonal') {
-		resolvedPlayer.leaguePoints = {
-			rank: Number(data[accumulativeIndex + SKILLS.length][0]),
-			points: Number(data[accumulativeIndex + SKILLS.length][1])
-		};
-	}
-
-	accumulativeIndex += SKILLS.length + 2;
-
-	for (let i = 0; i < 4; i++) {
-		resolvedPlayer.minigames[MINIGAMES[i]] = {
-			rank: Number(data[i + accumulativeIndex][0]),
-			score: Number(data[i + accumulativeIndex][1])
-		};
-	}
-
-	accumulativeIndex += 4;
-
-	for (let i = 0; i < CLUES.length; i++) {
-		resolvedPlayer.clues[CLUES[i]] = {
-			rank: Number(data[i + accumulativeIndex][0]),
-			score: Number(data[i + accumulativeIndex][1])
-		};
-	}
-
-	accumulativeIndex += CLUES.length;
-
-	for (let i = 0; i < 5; i++) {
-		const minigameKey = MINIGAMES[i + 4];
-		const minigameData = {
-			rank: Number(data[i + accumulativeIndex][0]),
-			score: Number(data[i + accumulativeIndex][1])
-		};
-		resolvedPlayer.minigames[minigameKey] = minigameData;
-	}
-
-	accumulativeIndex += 5;
-
-	for (let i = 0; i < mappedBossNames.length; i++) {
-		if (!data[i + accumulativeIndex]) continue;
-		const bossName = mappedBossNames[i][0];
-		resolvedPlayer.bossRecords[bossName] = {
-			rank: Number(data[i + accumulativeIndex][0]),
-			score: Number(data[i + accumulativeIndex][1])
-		};
-	}
-
-	return resolvedPlayer;
-}
 
 /**
  * Determines whether a string is a valid RuneScape username.

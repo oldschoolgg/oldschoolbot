@@ -1,10 +1,9 @@
 import { bold } from '@discordjs/builders';
 import { type CommandRunOptions, calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { Time, increaseNumByPercent, sumArr } from 'e';
-import { uniq } from 'lodash';
 import { Bank, convertBankToPerHourStats } from 'oldschooljs';
+import { unique } from 'remeda';
 
 import {
 	BathhouseOres,
@@ -13,10 +12,10 @@ import {
 	calculateBathouseResult,
 	durationPerBaxBath
 } from '../../lib/baxtorianBathhouses';
+import { GLOBAL_BSO_XP_MULTIPLIER } from '../../lib/bso/bsoConstants';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
 import { TuraelsTrialsMethods, calculateTuraelsTrialsInput } from '../../lib/bso/turaelsTrials';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
 import { inventionBoosts } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import Agility from '../../lib/skilling/skills/agility';
@@ -38,6 +37,7 @@ import { Gear } from '../../lib/structures/Gear';
 import type { BathhouseTaskOptions } from '../../lib/types/minions';
 import { toKMB } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { PeakTier } from '../../lib/util/calcWildyPkChance';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemID from '../../lib/util/itemID';
 import { itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
@@ -202,7 +202,7 @@ export const ratesCommand: OSBMahojiCommand = {
 		if (options.misc?.zygomite_seeds) {
 			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
 
-			const validZygomiteList = uniq(mutatedSourceItems.map(m => m.zygomite));
+			const validZygomiteList = unique(mutatedSourceItems.map(m => m.zygomite));
 			// Returns an array containing [totalWeight, totalWeightedChance] for each Zygomite
 			const survivalChanceData = validZygomiteList.map(z =>
 				mutatedSourceItems

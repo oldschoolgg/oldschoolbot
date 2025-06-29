@@ -1,14 +1,13 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import type { CookingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
@@ -100,14 +99,21 @@ export const cookCommand: OSBMahojiCommand = {
 		const hasGaunts = user.hasEquipped('Cooking gauntlets');
 		if (hasGaunts) boosts.push('Cooking gauntlets equipped');
 
+		const skills = user.skillsAsLevels;
 		let timeToCookSingleCookable = Time.Second * 2.4 + Time.Second * 0.45;
 
+		let cookingBoost = 1;
+		const cookingBoostItems: string[] = [];
+		if (hasRemy) {
+			cookingBoostItems.push('Remy');
+			cookingBoost += 1;
+		}
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
-			timeToCookSingleCookable /= 1.6;
-			if (hasRemy) timeToCookSingleCookable /= 1.5;
+			timeToCookSingleCookable /= 1.9;
+		} else if (skills.cooking >= 92 && cookable.id === itemID('Cooked karambwan')) {
+			timeToCookSingleCookable /= 3.8;
+			boosts.push('1t karambwans cooking with 92+ cooking');
 		} else {
-			let cookingBoost = 1;
-			const cookingBoostItems: string[] = [];
 			if (user.hasEquippedOrInBank('Cooking master cape')) {
 				cookingBoostItems.push('Cooking master cape');
 				cookingBoost += 2.5;
@@ -116,14 +122,10 @@ export const cookCommand: OSBMahojiCommand = {
 				cookingBoostItems.push('Dwarven gauntlets');
 				cookingBoost += 1.5;
 			}
-			if (hasRemy) {
-				cookingBoostItems.push('Remy');
-				cookingBoost += 1;
-			}
-			timeToCookSingleCookable /= cookingBoost;
-			if (cookingBoost !== 1) {
-				boosts.push(`+${(cookingBoost - 1) * 100}% for ${cookingBoostItems.join(', ')}.`);
-			}
+		}
+		timeToCookSingleCookable /= cookingBoost;
+		if (cookingBoost !== 1) {
+			boosts.push(`+${(cookingBoost - 1) * 100}% for ${cookingBoostItems.join(', ')}.`);
 		}
 
 		const userBank = user.bank;

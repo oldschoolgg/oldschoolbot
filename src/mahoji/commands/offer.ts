@@ -1,12 +1,9 @@
 import { type CommandRunOptions, formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-
-import { Events } from '../../lib/constants';
-import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
@@ -168,7 +165,7 @@ export const offerCommand: OSBMahojiCommand = {
 			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(300)) {
-					loot.add(randArrItem(evilChickenOutfit));
+					loot.add(randArrItem(ItemGroups.evilChickenOutfit));
 				} else {
 					loot.add(birdsNestID);
 					loot.add(treeSeedsNest.roll());
@@ -187,7 +184,7 @@ export const offerCommand: OSBMahojiCommand = {
 			});
 			await userStatsBankUpdate(user, 'bird_eggs_offered_bank', cost);
 
-			notifyUniques(user, egg.name, evilChickenOutfit, loot, quantity);
+			notifyUniques(user, egg.name, ItemGroups.evilChickenOutfit, loot, quantity);
 
 			const { file } = await makeBankImage({
 				bank: itemsAdded,

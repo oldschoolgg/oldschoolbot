@@ -1,16 +1,16 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit';
+import { channelIsSendable } from '@oldschoolgg/toolkit/util';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
+	type Channel,
 	type ChatInputCommandInteraction,
 	type ComponentType,
 	InteractionResponseType,
 	type MessageCreateOptions,
 	Routes
 } from 'discord.js';
-import type { Channel } from 'discord.js';
 import { Time, noOp } from 'e';
 
 import { SILENT_ERROR } from '../constants';

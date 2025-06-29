@@ -1,7 +1,7 @@
 import { Time, roll } from 'e';
 import { Bank, Monsters, deepResolveItems, resolveItems } from 'oldschooljs';
 
-import { OSB_VIRTUS_IDS } from '../../../../constants';
+import { OSB_VIRTUS_IDS } from '../../../../bso/bsoConstants';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';

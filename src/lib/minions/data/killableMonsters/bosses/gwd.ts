@@ -1,7 +1,6 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Monsters, deepResolveItems, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import {
 	commanderZilyanaCL,
 	generalGraardorCL,

@@ -1,12 +1,10 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, SkillsEnum } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { DOANonUniqueTable } from '../../../lib/bso/doa/doaLootTable';
-import { Emoji, Events } from '../../../lib/constants';
 import { doaCL, doaMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { DOARooms, chanceOfDOAUnique, pickUniqueToGiveUser } from '../../../lib/depthsOfAtlantis';

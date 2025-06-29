@@ -1,7 +1,8 @@
 import { isFunction, uniqueArr } from 'e';
 import { Bank, EItem, deepResolveItems } from 'oldschooljs';
 
-import { BitField, discontinuedItems } from '../constants';
+import { BitField } from '../constants';
+import { discontinuedItems } from '../customItems/customItems';
 import { allDyedItems } from '../dyedItems';
 import type { MaterialBank } from '../invention/MaterialBank';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
@@ -2548,6 +2549,14 @@ const Createables: Createable[] = [
 		name: 'Zombie axe',
 		inputItems: new Bank().add('broken zombie axe').freeze(),
 		outputItems: new Bank().add('Zombie axe').freeze(),
+		requiredSkills: {
+			smithing: 70
+		}
+	},
+	{
+		name: 'Zombie helmet',
+		inputItems: new Bank().add('broken zombie helmet').freeze(),
+		outputItems: new Bank().add('Zombie helmet').freeze(),
 		requiredSkills: {
 			smithing: 70
 		}

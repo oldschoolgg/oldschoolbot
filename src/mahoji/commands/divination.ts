@@ -13,12 +13,11 @@ import {
 	portents
 } from '../../lib/bso/divination';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-
 import type { MemoryHarvestOptions } from '../../lib/types/minions';
-import { assert } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../lib/util/logError';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
 import type { OSBMahojiCommand } from '../lib/util';
 

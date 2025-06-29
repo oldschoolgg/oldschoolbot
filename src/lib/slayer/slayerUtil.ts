@@ -1,24 +1,32 @@
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
-import { Bank, type Monster, Monsters } from 'oldschooljs';
+import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import { BitField, type PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import type { KillableMonster } from '../minions/types';
 
+import type { PvMMethod } from '../../mahoji/commands/k';
+import { BitField } from '../constants';
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
-import { roll, stringMatches } from '../util';
 import { logError } from '../util/logError';
-import resolveItems from '../util/resolveItems';
+import { roll } from '../util/rng';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { allSlayerTasks } from './tasks';
 import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
 import type { AssignableSlayerTask, SlayerMaster } from './types';
+
+export const wildySlayerOnlyMonsters = [
+	Monsters.DustDevil,
+	Monsters.GreaterNechryael,
+	Monsters.AbyssalDemon,
+	Monsters.Jelly
+];
 
 export enum SlayerMasterEnum {
 	Reserved = 0,
@@ -186,7 +194,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	)
 		return false;
 	if (
-		(lmon === 'dust devil' || lmon === 'greater nechryael' || lmon === 'abyssal demon' || lmon === 'jelly') &&
+		wildySlayerOnlyMonsters.some(m => m.id === task.monster.id) &&
 		lmast === 'krystilia' &&
 		!myUnlocks.includes(SlayerTaskUnlocksEnum.IWildyMoreSlayer)
 	)

@@ -8,13 +8,17 @@ import {
 	type MessageCreateOptions,
 	bold
 } from 'discord.js';
-import { Time, notEmpty, randArrItem, randInt } from 'e';
-import { Bank } from 'oldschooljs';
+import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import {
+	tearsOfGuthixIronmanReqs,
+	tearsOfGuthixSkillReqs
+} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { PortentID, chargePortentIfHasCharges, getAllPortentCharges } from '../bso/divination';
 import { gods } from '../bso/divineDominion';
@@ -22,7 +26,7 @@ import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { BitField, COINS_ID, PerkTier } from '../constants';
 import pets from '../data/pets.js';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
@@ -35,21 +39,22 @@ import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { roll, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
+	makeClaimDailyButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
-	makeRepeatTripButton
+	makeRepeatTripButton,
+	makeTearsOfGuthixButton
 } from './globalInteractions';
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
 import { logError } from './logError';
-import { perHourChance } from './smallUtils';
+import { hasSkillReqs, perHourChance } from './smallUtils';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
@@ -99,8 +104,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ data, messages, user }) => {
 			const imp = await handlePassiveImplings(user, data, messages);
 			if (imp && imp.bank.length > 0) {
-				const many = imp.bank.length > 1;
-				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
+				messages.push(`Caught ${imp.bank}`);
 				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
 				return {
 					itemsToAddWithCL: imp.bank
@@ -527,21 +531,14 @@ export async function handleTripFinish(
 			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
 	}
+
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
 
-	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
-
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
-	}
-
-	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
-		clueReceived.map(
-			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
-		);
 	}
 
 	const existingCollector = collectors.get(user.id);
@@ -560,7 +557,35 @@ export async function handleTripFinish(
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
-		const birdHousedetails = await calculateBirdhouseDetails(user);
+
+		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats({
+			last_tears_of_guthix_timestamp: true,
+			last_daily_timestamp: true
+		});
+
+		// Tears of Guthix start button if ready
+		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
+			const last = Number(last_tears_of_guthix_timestamp);
+			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
+			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
+			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
+
+			if (user.QP >= 43 && ready && meetsSkillReqs && meetsIronmanReqs) {
+				components.push(makeTearsOfGuthixButton());
+			}
+		}
+
+		// Minion daily button if ready
+		if (!user.bitfield.includes(BitField.DisableDailyButton)) {
+			const last = Number(last_daily_timestamp);
+			const ready = last <= 0 || Date.now() - last >= Time.Hour * 12;
+
+			if (ready) {
+				components.push(makeClaimDailyButton());
+			}
+		}
+
+		const birdHousedetails = calculateBirdhouseDetails(user);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 

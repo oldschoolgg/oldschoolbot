@@ -2,14 +2,15 @@ import { perTimeUnitChance } from '@oldschoolgg/toolkit';
 import { Time, objectEntries, percentChance, randInt, roll } from 'e';
 import { Bank, EItem, itemID } from 'oldschooljs';
 
-import { Emoji, Events, MAX_LEVEL, MIN_LENGTH_FOR_PET, type TwitcherGloves } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
+import { MAX_LEVEL } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
-import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
+import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
@@ -28,14 +29,8 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 
 	let strForestry = '';
 	const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const chanceWcLevel = Math.min(userWcLevel, 99);
 
-	const pekyBoost = user.usingPet('Peky') ? 5 : 1;
-	const eggChance = Math.ceil((2700 - ((chanceWcLevel - 1) * (2700 - 1350)) / 98) / pekyBoost);
-	const whistleChance = Math.ceil((90 - ((chanceWcLevel - 1) * (90 - 45)) / 98) / pekyBoost);
-	const garlandChance = Math.ceil(50 / pekyBoost);
-
-	perTimeUnitChance(duration, 10, Time.Minute, async () => {
+	perTimeUnitChance(duration, 8, Time.Minute, async () => {
 		const eventIndex = randInt(0, ForestryEvents.length - 1);
 		const event = ForestryEvents[eventIndex];
 		let eventRounds = 0;
@@ -94,7 +89,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				break;
 			case 7: // Poachers
 				eventInteraction = randInt(12, 15); // traps disarmed
-				if (roll(whistleChance)) {
+				if (roll(30)) {
 					loot.add('Fox whistle');
 				}
 				eventCounts[event.id]++;
@@ -103,7 +98,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				break;
 			case 8: // Enchantment Ritual
 				eventInteraction = randInt(6, 8); // ritual circles
-				if (roll(garlandChance)) {
+				if (roll(30)) {
 					loot.add('Petal garland');
 				}
 				eventCounts[event.id]++;
@@ -115,7 +110,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 					if (percentChance(50)) {
 						loot.add('Pheasant tail feathers');
 					}
-					if (roll(eggChance)) {
+					if (roll(900)) {
 						loot.add('Golden pheasant egg');
 					}
 				}
@@ -361,14 +356,6 @@ export const woodcuttingTask: MinionTask = {
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
 			if (roll(petDropRate / quantity)) {
 				loot.add('Beaver');
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
-						user.minionName
-					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-						'woodcutting'
-					)} Woodcutting!`
-				);
 			}
 		}
 

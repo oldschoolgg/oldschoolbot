@@ -1,10 +1,8 @@
 import { Time, increaseNumByPercent, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, SkillsEnum, itemID, toKMB } from 'oldschooljs';
 
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { itemID, toKMB } from 'oldschooljs/dist/util';
+import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import type { UserFullGearSetup } from '../../lib/gear';
@@ -136,10 +134,14 @@ export function calculateMiningResult({
 	const hasAdze = Object.values(allGear).some(g => g.hasEquipped(['Superior inferno adze']));
 	const adzeIsDisabled = disabledInventions.includes(InventionID.SuperiorInfernoAdze);
 	if (!isPowermining && !isDestroyed) {
-		let daeyaltQty = 0;
-
 		// Gem rocks roll off the GemRockTable
-		if (ore.name === 'Gem rock') {
+		if (ore.name === 'Daeyalt essence rock') {
+			let daeyaltQty = 0;
+			for (let i = 0; i < quantity; i++) {
+				daeyaltQty += randInt(2, 3);
+			}
+			loot.add(ore.id, daeyaltQty);
+		} else if (ore.name === 'Gem rock') {
 			let effectiveQty = quantity;
 			if (Object.values(allGear).some(g => g.hasEquipped(upgradedDragonstoneOutfit, true))) {
 				effectiveQty = Math.ceil(increaseNumByPercent(quantity, 10));
@@ -176,11 +178,6 @@ export function calculateMiningResult({
 			for (let i = 0; i < quantity; i++) {
 				loot.add(Mining.GraniteRockTable.roll());
 			}
-		} else if (ore.name === 'Daeyalt essence rock') {
-			for (let i = 0; i < quantity; i++) {
-				daeyaltQty += randInt(2, 3);
-			}
-			loot.add(ore.id, daeyaltQty);
 		} else if (ore.name === 'Tainted essence chunk') {
 			loot.add(ore.id, 5 * taintedQty);
 		} else {

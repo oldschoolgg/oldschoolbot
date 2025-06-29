@@ -2,13 +2,13 @@
 title: "Tinkering Workshop"
 ---
 
-You can start this miningame with the command `/bsominigames tinkering_workshop start`.
+You can start this minigame with the command: [[/bsominigames tinkering_workshop start]]
 
-Tinkering Workshop is an invention minigame, where you can tinker with materials. You get XP and the invention skilling outfit and materials bag.
+Tinkering Workshop is an invention minigame where you tinker with materials to gain XP and acquire the invention skilling outfit and a materials bag.
 
-The full outfit gives 4% bonus invention XP.
+The full outfit grants a 4% bonus to invention XP.
 
-All materials have the same reward drop rate, however the Junk material will halve the XP you receive. All other materials provide the same amount of XP.
+All materials have the same reward drop rate, but **Junk** materials will halve the XP received. All other materials provide the same XP.
 
 ### Rewards
 
@@ -18,4 +18,4 @@ All materials have the same reward drop rate, however the Junk material will hal
 - Inventors' gloves
 - Inventors' boots
 - Inventors' backpack
-- Materials Bag - +7 minutes to Invention max trip length
+- Materials Bag – Adds +7 minutes to Invention max trip length

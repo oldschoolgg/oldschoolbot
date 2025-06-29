@@ -13,10 +13,11 @@ import type { handleFinish } from '../tasks/tames/tameTasks';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
 import Bars from './skilling/skills/smithing/smeltables';
 import type { MTame } from './structures/MTame';
-import { assert, calculateSimpleMonsterDeathChance } from './util';
+import { calculateSimpleMonsterDeathChance } from './util';
 import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import itemID from './util/itemID';
+import { assert } from './util/logError';
 import resolveItems from './util/resolveItems';
 
 export enum TameSpeciesID {
