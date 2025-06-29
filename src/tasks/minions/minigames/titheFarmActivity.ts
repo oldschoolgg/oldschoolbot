@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';

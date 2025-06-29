@@ -5,8 +5,8 @@ import { Time } from 'e';
 import { type Bank, convertXPtoLVL } from 'oldschooljs/dist/util/util';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { MUserClass } from '../MUser';
-import { Emoji } from '../constants';
 import { QuestID } from '../minions/data/quests';
 import type { SkillsEnum } from '../skilling/types';
 import type { Peak } from './../tickers';

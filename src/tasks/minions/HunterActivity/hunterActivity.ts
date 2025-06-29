@@ -1,9 +1,10 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
 import type { Prisma } from '@prisma/client';
 import { Time, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { Events, MAX_LEVEL } from '../../../lib/constants';
+import { MAX_LEVEL } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';

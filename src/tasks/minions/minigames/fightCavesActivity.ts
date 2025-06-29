@@ -2,7 +2,8 @@ import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';

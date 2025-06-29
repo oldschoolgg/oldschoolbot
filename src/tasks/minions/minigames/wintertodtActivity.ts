@@ -2,7 +2,8 @@ import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calcPerHour } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { winterTodtPointsTable } from '../../../lib/simulation/simulatedKillables';

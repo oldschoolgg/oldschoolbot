@@ -2,7 +2,7 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { randArrItem, randInt } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/minigames';
 import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';

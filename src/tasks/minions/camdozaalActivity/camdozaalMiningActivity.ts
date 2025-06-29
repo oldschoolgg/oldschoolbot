@@ -1,6 +1,7 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../../lib/skilling/types';

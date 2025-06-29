@@ -1,3 +1,4 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
@@ -18,7 +19,7 @@ import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { giveawayCache } from '../../lib/cache.js';
-import { Emoji, patronFeatures } from '../../lib/constants';
+import { patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
 import { channelIsSendable, isModOrAdmin, makeComponents, toKMB } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';

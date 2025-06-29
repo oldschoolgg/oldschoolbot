@@ -1,8 +1,9 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
-import { BitField, Emoji, Events } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import type { PatchTypes } from '../../lib/minions/farming';
 import type { FarmingContract } from '../../lib/minions/farming/types';
 

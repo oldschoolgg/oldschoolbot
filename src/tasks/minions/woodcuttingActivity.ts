@@ -2,7 +2,8 @@ import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
 import { Time, objectEntries, percentChance, randInt } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';

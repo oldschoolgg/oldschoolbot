@@ -4,8 +4,8 @@ import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { Events } from '../../../lib/constants';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';

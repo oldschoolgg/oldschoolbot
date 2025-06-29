@@ -1,3 +1,4 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
@@ -16,7 +17,7 @@ import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/ma
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, Emoji, MAX_CLUES_DROPPED, PerkTier } from '../constants';
+import { BitField, COINS_ID, MAX_CLUES_DROPPED, PerkTier } from '../constants';
 import { allPetsCL } from '../data/CollectionsExport';
 import pets from '../data/pets';
 import { handleGrowablePetGrowth } from '../growablePets';

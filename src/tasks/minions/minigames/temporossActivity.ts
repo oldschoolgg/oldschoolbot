@@ -1,7 +1,8 @@
 import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, randInt } from 'e';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';

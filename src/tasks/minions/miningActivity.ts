@@ -1,6 +1,7 @@
 import { Time, increaseNumByPercent, randInt, roll, sumArr } from 'e';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { QuestID } from '../../lib/minions/data/quests';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining, { prospectorItemsArr } from '../../lib/skilling/skills/mining';

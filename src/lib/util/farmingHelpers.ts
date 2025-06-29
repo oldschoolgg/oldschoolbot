@@ -2,7 +2,7 @@ import { dateFm, makeComponents, stringMatches } from '@oldschoolgg/toolkit/util
 import type { User } from '@prisma/client';
 import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
-import { Emoji } from '../constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
 import Farming from '../skilling/skills/farming';
 import { formatList } from '../util';

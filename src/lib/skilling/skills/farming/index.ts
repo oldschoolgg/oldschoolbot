@@ -1,6 +1,6 @@
 import { CropUpgradeType } from '@prisma/client';
 
-import { Emoji } from '../../../constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import getOSItem from '../../../util/getOSItem';
 import itemID from '../../../util/itemID';
 import type { Plant } from '../../types';

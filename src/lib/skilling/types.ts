@@ -1,6 +1,6 @@
+import type { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Bank, Item, LootTable } from 'oldschooljs';
 
-import type { Emoji } from '../constants';
 import type { QuestID } from '../minions/data/quests';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank } from '../types';

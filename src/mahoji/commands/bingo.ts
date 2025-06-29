@@ -1,3 +1,4 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
 	dateFm,
 	formatOrdinal,
@@ -20,7 +21,7 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { clImageGenerator } from '../../lib/collectionLogTask';
-import { BOT_TYPE, Emoji, globalConfig } from '../../lib/constants';
+import { BOT_TYPE, globalConfig } from '../../lib/constants';
 
 import { channelIsSendable, getUsername, getUsernameSync, isValidNickname, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';

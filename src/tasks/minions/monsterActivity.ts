@@ -1,8 +1,9 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, deepClone, percentChance } from 'e';
 import type { MonsterKillOptions } from 'oldschooljs';
 import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
-import { type BitField, Emoji } from '../../lib/constants';
+import type { BitField } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';

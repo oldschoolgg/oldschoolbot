@@ -1,7 +1,7 @@
 import { randInt } from 'e';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { UpdateBank } from '../../../lib/structures/UpdateBank';

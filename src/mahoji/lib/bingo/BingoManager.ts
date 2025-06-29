@@ -6,7 +6,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { ItemBank } from '../../../lib/types';
 import getOSItem from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';

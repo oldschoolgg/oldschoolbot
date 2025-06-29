@@ -1,3 +1,4 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, EmbedBuilder, codeBlock } from 'discord.js';
 import { chunk } from 'e';
@@ -6,7 +7,7 @@ import type { Bank } from 'oldschooljs';
 import { PaginatedMessage } from '../../lib/PaginatedMessage';
 import type { BankFlag } from '../../lib/bankImage';
 import { bankFlags } from '../../lib/bankImage';
-import { Emoji, PerkTier } from '../../lib/constants';
+import { PerkTier } from '../../lib/constants';
 import type { Flags } from '../../lib/minions/types';
 import type { BankSortMethod } from '../../lib/sorts';
 import { BankSortMethods } from '../../lib/sorts';

@@ -22,10 +22,10 @@ import {
 } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
 import type { GearStats, UserFullGearSetup } from '../gear/types';

@@ -1,10 +1,11 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Time, roll, shuffleArr, uniqueArr } from 'e';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { DynamicButtons } from '../../../lib/DynamicButtons';
-import { Emoji, globalConfig } from '../../../lib/constants';
+import { globalConfig } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';

@@ -18,6 +18,11 @@
 			"types": "./dist/structures.d.ts",
 			"require": "./dist/cjs/structures.cjs",
 			"import": "./dist/esm/structures.mjs"
+		},
+		"./constants": {
+			"types": "./dist/constants.d.ts",
+			"require": "./dist/cjs/constants.cjs",
+			"import": "./dist/esm/constants.mjs"
 		}
 	},
 	"scripts": {
