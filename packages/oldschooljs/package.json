@@ -56,7 +56,7 @@
 		"test": "concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
 		"test:unit": "vitest run --coverage",
 		"generate": "tsx scripts/prepare",
-		"dev": "pnpm generate && concurrently \"pnpm build:esbuild\" \"pnpm build:esbuild\" && pnpm test",
+		"build": "concurrently \"pnpm build:types\" \"pnpm build:esbuild\"",
 		"build:esbuild": "tsx esbuild.ts",
 		"build:types": "tsc -p src"
 	},
