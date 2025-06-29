@@ -16,7 +16,7 @@ honoApp.use('*', async (c, next) => {
 	if (blacklistedPathSegments.some(str => c.req.path.includes(str))) {
 		return new Response(undefined, { status: 403 });
 	}
-	if (!ignoredPaths.has(c.req.path) && !(c.req.path.startsWith('/overlay/') && c.req.method === 'GET')) {
+	if (!ignoredPaths.has(c.req.path)) {
 		const ip = c.req.header('Cf-Connecting-Ip') ?? getConnInfo(c)?.remote?.address ?? c.req.header('User-Agent')!;
 		console.log(`[${c.req.method}] [${c.req.header('Origin')}] ${c.req.path} [${ip}]`);
 	}
