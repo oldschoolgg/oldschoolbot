@@ -210,13 +210,13 @@ importers:
   packages/server:
     dependencies:
       '@hono/node-server':
-        specifier: ^1.13.8
+        specifier: ^1.14.4
         version: 1.14.4(hono@4.8.3)
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:../toolkit
       hono:
-        specifier: ^4.7.1
+        specifier: ^4.8.3
         version: 4.8.3
 
   packages/toolkit:
