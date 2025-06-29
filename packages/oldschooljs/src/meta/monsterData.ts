@@ -28,6 +28,13 @@ export enum MonsterAttackType {
 	Range = 'range'
 }
 
+export enum Element {
+	Air = 1,
+	Water = 2,
+	Earth = 3,
+	Fire = 4
+}
+
 export interface MonsterData {
 	members: boolean;
 	combatLevel: number;
@@ -59,6 +66,8 @@ export interface MonsterData {
 	defenceCrush: number;
 	defenceMagic: number;
 	defenceRanged: number;
+	elementalWeakness?: Element;
+	elementalPercent?: number;
 	attackAccuracy: number;
 	meleeStrength: number;
 	rangedStrength: number;
