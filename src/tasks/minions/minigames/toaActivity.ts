@@ -1,11 +1,9 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
 import { Time, isObject, uniqueArr } from 'e';
-import { Bank, ItemGroups } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';

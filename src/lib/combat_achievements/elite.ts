@@ -1,6 +1,5 @@
 import { Time } from 'e';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
-
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import type {

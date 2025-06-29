@@ -1,8 +1,7 @@
 import { type CommandResponse, type CommandRunOptions, asyncGzip } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
-import { Bank, type Item, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
-import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
+import { Bank, type Item, type ItemBank, ItemGroups, ToBUniqueTable, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';

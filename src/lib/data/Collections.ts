@@ -1,7 +1,17 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, ChambersOfXeric, Clues, EMonster, type Item, ItemGroups, type Monster, Monsters } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import {
+	Bank,
+	ChambersOfXeric,
+	Clues,
+	EMonster,
+	type Item,
+	ItemGroups,
+	type Monster,
+	Monsters,
+	resolveItems
+} from 'oldschooljs';
+
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
 import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
