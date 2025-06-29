@@ -1,7 +1,6 @@
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 
 import { colosseumCommand } from '../../../../lib/colosseum';
-import type { PvMMethod } from '../../../../lib/constants';
 import { getCurrentPeak } from '../../../../lib/getCurrentPeak';
 import { trackLoot } from '../../../../lib/lootTrack';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
@@ -12,6 +11,7 @@ import addSubTaskToActivityTask from '../../../../lib/util/addSubTaskToActivityT
 import { calcMaxTripLength } from '../../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../../lib/util/findMonster';
 import { updateBankSetting } from '../../../../lib/util/updateBankSetting';
+import type { PvMMethod } from '../../../commands/k';
 import { hasMonsterRequirements } from '../../../mahojiSettings';
 import { nexCommand } from '../nexCommand';
 import { nightmareCommand } from '../nightmareCommand';

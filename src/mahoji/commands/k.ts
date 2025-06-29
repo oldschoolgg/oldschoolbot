@@ -1,8 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 
-import type { PvMMethod } from '../../lib/constants';
-import { PVM_METHODS } from '../../lib/constants';
 import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
 
 import { Time, reduceNumByPercent } from 'e';
@@ -14,6 +12,9 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import findMonster from '../../lib/util/findMonster';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
+
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
+export type PvMMethod = (typeof PVM_METHODS)[number];
 
 const otherMonsters = [
 	{

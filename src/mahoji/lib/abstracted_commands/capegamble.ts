@@ -3,11 +3,11 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
-import { roll } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { petMessage } from '../../../lib/util/handleTripFinish';
+import { roll } from '../../../lib/util/rng';
 import { userStatsUpdate } from '../../mahojiSettings';
 
 export async function capeGambleStatsCommand(user: MUser) {

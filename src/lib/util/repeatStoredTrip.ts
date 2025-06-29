@@ -4,9 +4,8 @@ import type { ButtonInteraction } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
-import { autocompleteMonsters } from '../../mahoji/commands/k';
+import { type PvMMethod, autocompleteMonsters } from '../../mahoji/commands/k';
 import { ClueTiers } from '../clues/clueTiers';
-import type { PvMMethod } from '../constants';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { convertStoredActivityToFlatActivity } from '../settings/prisma';

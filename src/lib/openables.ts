@@ -33,8 +33,9 @@ import {
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import type { ItemBank } from './types';
-import { itemID, roll } from './util';
 import getOSItem from './util/getOSItem';
+import itemID from './util/itemID';
+import { roll } from './util/rng';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
