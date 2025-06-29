@@ -2,7 +2,6 @@ import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { gearValidationChecks } from '../../lib/constants';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
 import type { GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes, GearStat } from '../../lib/gear/types';
@@ -19,6 +18,8 @@ import {
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+
+const gearValidationChecks = new Set();
 
 export const gearCommand: OSBMahojiCommand = {
 	name: 'gear',

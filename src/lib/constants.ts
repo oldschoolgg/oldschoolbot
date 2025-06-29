@@ -606,8 +606,6 @@ export const patronFeatures = {
 	}
 };
 
-export const gearValidationChecks = new Set();
-
 export const BSO_MAX_TOTAL_LEVEL = 3120;
 
 if (!process.env.TEST && isMainThread) {
