@@ -2,7 +2,6 @@ import { cleanString, evalMathExpression, stringMatches } from '@oldschoolgg/too
 import { notEmpty } from 'e';
 import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
-import { ONE_TRILLION } from '../constants';
 import { filterableTypes } from '../data/filterables';
 import itemIsTradeable from './itemIsTradeable';
 

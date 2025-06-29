@@ -572,8 +572,6 @@ if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 	throw new Error('The NODE_ENV and isProduction variables must match');
 }
 
-export const ONE_TRILLION = 1_000_000_000_000;
-
 export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
 const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
 
