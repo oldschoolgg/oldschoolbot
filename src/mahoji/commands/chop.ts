@@ -3,10 +3,8 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
-import type { TwitcherGloves } from '../../lib/constants';
-import { TWITCHERS_GLOVES } from '../../lib/constants';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
-import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
+import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -114,7 +112,7 @@ export const chopCommand: OSBMahojiCommand = {
 			name: 'twitchers_gloves',
 			description: "Change the settings of your Twitcher's gloves. (default egg, optional)",
 			required: false,
-			choices: TWITCHERS_GLOVES.map(i => ({ name: `${i} nest`, value: i }))
+			choices: Woodcutting.twitchersGloves.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
 	run: async ({

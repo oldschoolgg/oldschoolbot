@@ -3,6 +3,7 @@ import {
 	Bank,
 	BrimstoneChest,
 	EItem,
+	EMonster,
 	EliteMimicTable,
 	LarransChest,
 	LootTable,
@@ -17,7 +18,7 @@ import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from './clues/clueTiers';
-import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
+import { Emoji, Events } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import type { FarmingContract } from './minions/farming/types';
@@ -158,7 +159,7 @@ for (const clueTier of ClueTiers) {
 			}
 
 			if (mimicNumber > 0) {
-				await user.incrementKC(MIMIC_MONSTER_ID, mimicNumber);
+				await user.incrementKC(EMonster.MIMIC, mimicNumber);
 			}
 
 			return { bank: loot, message };

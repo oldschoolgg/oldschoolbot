@@ -1,8 +1,7 @@
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, EMonster, Monsters } from 'oldschooljs';
 
 import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
@@ -380,7 +379,7 @@ export const effectiveMonsters = [
 	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
-		id: ZALCANO_ID,
+		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>'
 	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
@@ -389,12 +388,12 @@ export const effectiveMonsters = [
 	{
 		name: "Phosani's Nightmare",
 		aliases: ['phosani', 'phosanis nightmare'],
-		id: PHOSANI_NIGHTMARE_ID
+		id: EMonster.PHOSANI_NIGHTMARE
 	},
 	{
 		name: 'Nex',
 		aliases: ['nex'],
-		id: NEX_ID
+		id: EMonster.NEX
 	}
 ];
 

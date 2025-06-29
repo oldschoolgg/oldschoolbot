@@ -1,6 +1,5 @@
-import { ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
 import type { TOAOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
@@ -609,7 +608,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill The Nightmare once.',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NIGHTMARE_ID]: 1
+				[EMonster.NIGHTMARE]: 1
 			}
 		})
 	},

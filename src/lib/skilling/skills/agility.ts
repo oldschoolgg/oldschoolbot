@@ -231,13 +231,17 @@ const MonkeyBackpacks = [
 	}
 ];
 
+const underwaterAgilityThievingTrainingSkill = ['agility', 'thieving', 'agility+thieving'] as const;
+export type UnderwaterAgilityThievingTrainingSkill = (typeof underwaterAgilityThievingTrainingSkill)[number];
+
 const Agility = {
 	aliases: ['agility'],
 	Courses: courses,
 	MonkeyBackpacks,
 	id: SkillsEnum.Agility,
 	emoji: Emoji.Agility,
-	name: 'Agility'
+	name: 'Agility',
+	underwaterAgilityThievingTrainingSkill
 };
 
 export default Agility;

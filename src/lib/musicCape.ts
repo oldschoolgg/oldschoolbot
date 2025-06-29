@@ -1,9 +1,7 @@
 import { activity_type_enum } from '@prisma/client';
 import { objectEntries, partition } from 'e';
-import { Bank, ItemGroups, Monsters } from 'oldschooljs';
+import { Bank, EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
 import { RandomEvents } from './randomEvents';
 import type { MinigameName } from './settings/minigames';
 import { Minigames } from './settings/minigames';
@@ -55,7 +53,7 @@ export const musicCapeRequirements = new Requirements()
 	})
 	.add({
 		kcRequirement: {
-			[MIMIC_MONSTER_ID]: 1,
+			[EMonster.MIMIC]: 1,
 			[Monsters.Hespori.id]: 1,
 			[Monsters.Bryophyta.id]: 1,
 			[Monsters.TzTokJad.id]: 1,
@@ -64,7 +62,7 @@ export const musicCapeRequirements = new Requirements()
 			[Monsters.CommanderZilyana.id]: 1,
 			[Monsters.Kreearra.id]: 1,
 			[Monsters.KrilTsutsaroth.id]: 1,
-			[NEX_ID]: 1,
+			[EMonster.NEX]: 1,
 			[Monsters.Cerberus.id]: 1,
 			[Monsters.GiantMole.id]: 1,
 			[Monsters.Jogre.id]: 1,
@@ -74,7 +72,7 @@ export const musicCapeRequirements = new Requirements()
 			[Monsters.CorporealBeast.id]: 1,
 			[Monsters.Vorkath.id]: 1,
 			[Monsters.Scorpia.id]: 1,
-			[ZALCANO_ID]: 1,
+			[EMonster.ZALCANO]: 1,
 			[Monsters.Kraken.id]: 1,
 			[Monsters.DagannothPrime.id]: 1,
 			[Monsters.BlackDemon.id]: 1,

@@ -1,3 +1,4 @@
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import {
 	type CommandResponse,
 	calcPerHour,
@@ -7,6 +8,7 @@ import {
 	makeComponents,
 	stringMatches
 } from '@oldschoolgg/toolkit/util';
+import type { Prisma, User } from '@prisma/client';
 import {
 	type BaseMessageOptions,
 	type ButtonInteraction,
@@ -23,10 +25,7 @@ import {
 } from 'discord.js';
 import type { ComponentType } from 'discord.js';
 import { Time, noOp, objectEntries } from 'e';
-import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import type { Prisma, User } from '@prisma/client';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { usernameWithBadgesCache } from './cache';
@@ -40,6 +39,7 @@ import { makeBadgeString } from './util/makeBadgeString';
 import { sendToChannelID } from './util/webhook.js';
 
 export * from 'oldschooljs';
+export * from './util/rng';
 
 export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
 
@@ -60,24 +60,6 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	}
 
 	return cap;
-}
-
-const randEngine = process.env.TEST ? nativeMath : nodeCrypto;
-
-export function cryptoRand(min: number, max: number) {
-	return integer(min, max)(randEngine);
-}
-
-export function randFloat(min: number, max: number) {
-	return real(min, max)(randEngine);
-}
-
-export function percentChance(percent: number) {
-	return bool(percent / 100)(randEngine);
-}
-
-export function roll(max: number) {
-	return cryptoRand(1, max) === 1;
 }
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {

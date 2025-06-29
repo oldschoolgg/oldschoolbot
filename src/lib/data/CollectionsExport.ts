@@ -2,7 +2,7 @@ import type { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
 import type { Bank, Item } from 'oldschooljs';
 
-import { ItemGroups, resolveItems } from 'oldschooljs';
+import { ItemGroups, getItemOrThrow, resolveItems } from 'oldschooljs';
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import type { MinigameScore } from '../settings/minigames';
@@ -2245,3 +2245,24 @@ export const araxxorCL = resolveItems([
 ]);
 
 export const amoxliatlCL = resolveItems(['Moxi', 'Glacial temotli', 'Pendant of ates (inert)', 'Frozen tear']);
+
+export const chompyHats = [
+	[getItemOrThrow('Chompy bird hat (ogre bowman)'), 30],
+	[getItemOrThrow('Chompy bird hat (bowman)'), 40],
+	[getItemOrThrow('Chompy bird hat (ogre yeoman)'), 50],
+	[getItemOrThrow('Chompy bird hat (yeoman)'), 70],
+	[getItemOrThrow('Chompy bird hat (ogre marksman)'), 95],
+	[getItemOrThrow('Chompy bird hat (marksman)'), 125],
+	[getItemOrThrow('Chompy bird hat (ogre woodsman)'), 170],
+	[getItemOrThrow('Chompy bird hat (woodsman)'), 225],
+	[getItemOrThrow('Chompy bird hat (ogre forester)'), 300],
+	[getItemOrThrow('Chompy bird hat (forester)'), 400],
+	[getItemOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
+	[getItemOrThrow('Chompy bird hat (bowmaster)'), 700],
+	[getItemOrThrow('Chompy bird hat (ogre expert)'), 1000],
+	[getItemOrThrow('Chompy bird hat (expert)'), 1300],
+	[getItemOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
+	[getItemOrThrow('Chompy bird hat (dragon archer)'), 2250],
+	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
+] as const;

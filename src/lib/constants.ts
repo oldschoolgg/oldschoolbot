@@ -3,7 +3,7 @@ import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { type CommandOptions, PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit/util';
 import * as dotenv from 'dotenv';
-import { getItemOrThrow, resolveItems } from 'oldschooljs';
+import { resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
@@ -424,17 +424,12 @@ export const badges: { [key: number]: string } = {
 
 export const MAX_XP = 200_000_000;
 
-export const MIMIC_MONSTER_ID = 23_184;
-
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
-export const ZALCANO_ID = 9049;
-export const NIGHTMARE_ID = 9415;
-export const NEX_ID = 11_278;
 
 export const LEVEL_99_XP = 13_034_431;
 export const MAX_LEVEL = 99;
@@ -475,7 +470,6 @@ export const projectiles = {
 } as const;
 export type ProjectileType = keyof typeof projectiles;
 
-export const PHOSANI_NIGHTMARE_ID = 9416;
 const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
 	if (!Array.isArray(args)) return true;
@@ -494,42 +488,9 @@ export type PvMMethod = (typeof PVM_METHODS)[number];
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
 export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
-export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
-export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
-
-export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
-export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
-
 export const busyImmuneCommands = ['admin', 'rp'];
 
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
-
-export const chompyHats = [
-	[getItemOrThrow('Chompy bird hat (ogre bowman)'), 30],
-	[getItemOrThrow('Chompy bird hat (bowman)'), 40],
-	[getItemOrThrow('Chompy bird hat (ogre yeoman)'), 50],
-	[getItemOrThrow('Chompy bird hat (yeoman)'), 70],
-	[getItemOrThrow('Chompy bird hat (ogre marksman)'), 95],
-	[getItemOrThrow('Chompy bird hat (marksman)'), 125],
-	[getItemOrThrow('Chompy bird hat (ogre woodsman)'), 170],
-	[getItemOrThrow('Chompy bird hat (woodsman)'), 225],
-	[getItemOrThrow('Chompy bird hat (ogre forester)'), 300],
-	[getItemOrThrow('Chompy bird hat (forester)'), 400],
-	[getItemOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
-	[getItemOrThrow('Chompy bird hat (bowmaster)'), 700],
-	[getItemOrThrow('Chompy bird hat (ogre expert)'), 1000],
-	[getItemOrThrow('Chompy bird hat (expert)'), 1300],
-	[getItemOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
-	[getItemOrThrow('Chompy bird hat (dragon archer)'), 2250],
-	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
-	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
-] as const;
-
-export enum PeakTier {
-	High = 'high',
-	Medium = 'medium',
-	Low = 'low'
-}
 
 export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
 

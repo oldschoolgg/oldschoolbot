@@ -3,7 +3,7 @@ import { Time, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
+import { Events, MAX_LEVEL } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
@@ -11,6 +11,7 @@ import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
+import { PeakTier } from '../../../lib/util/calcWildyPkChance';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { logError } from '../../../lib/util/logError.js';

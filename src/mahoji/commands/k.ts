@@ -2,14 +2,14 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 
 import type { PvMMethod } from '../../lib/constants';
-import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';
+import { PVM_METHODS } from '../../lib/constants';
 import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
 
 import { Time, reduceNumByPercent } from 'e';
 import { Eatables } from '../../lib/data/eatables';
 import { calculateMonsterFood } from '../../lib/minions/functions';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { formatDuration, returnStringOrFile, stringMatches } from '../../lib/util';
+import { EMonster, formatDuration, returnStringOrFile, stringMatches } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import findMonster from '../../lib/util/findMonster';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
@@ -31,13 +31,13 @@ const otherMonsters = [
 	{
 		name: 'Nex',
 		aliases: ['nex'],
-		id: NEX_ID,
+		id: EMonster.NEX,
 		link: '/bosses/nex/'
 	},
 	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
-		id: ZALCANO_ID,
+		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>',
 		link: '/miscellaneous/zalcano/'
 	},
