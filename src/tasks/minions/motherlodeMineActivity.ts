@@ -1,8 +1,7 @@
 import { roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';

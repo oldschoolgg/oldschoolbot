@@ -4,8 +4,7 @@ import { Time, isObject, uniqueArr } from 'e';
 import { Bank, ItemGroups } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { trackLoot } from '../../../lib/lootTrack';

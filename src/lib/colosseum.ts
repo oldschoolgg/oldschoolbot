@@ -13,10 +13,8 @@ import {
 	reduceNumByPercent,
 	sumArr
 } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
-import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Bank, type EquipmentSlot, LootTable, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { degradeChargeBank } from './degradeableItems';
 import type { GearSetupType } from './gear/types';

@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { objectValues, randInt } from 'e';
 import { Bank, ItemGroups } from 'oldschooljs';
 

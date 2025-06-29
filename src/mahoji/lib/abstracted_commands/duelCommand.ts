@@ -1,7 +1,6 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Time, noOp, sleep } from 'e';
 import { Bank, Util } from 'oldschooljs';
 

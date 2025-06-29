@@ -7,7 +7,7 @@ import type { MinigameName } from './settings/minigames';
 import { Minigames } from './settings/minigames';
 import type { RequirementFailure } from './structures/Requirements';
 import { Requirements } from './structures/Requirements';
-import { formatList, itemNameFromID } from './util';
+import { formatList, itemNameFromID } from './util/smallUtils';
 
 export const musicCapeRequirements = new Requirements()
 	.add({

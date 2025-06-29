@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 import type { IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../../lib/clues/stashUnits';
 
-import { assert } from '../../../lib/util';
+import { assert } from '../../../lib/util/logError';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { itemNameFromID } from '../../../lib/util/smallUtils';
 import { getMahojiBank } from '../../mahojiSettings';

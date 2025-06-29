@@ -1,6 +1,6 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
@@ -81,8 +81,8 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { getActivityOfUser } from './minionIsBusy';
+import { itemNameFromID } from './smallUtils';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);

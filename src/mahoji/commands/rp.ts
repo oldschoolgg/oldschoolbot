@@ -20,9 +20,8 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { premiumPatronTime } from '../../lib/premiumPatronTime';
-
 import { sql } from '../../lib/postgres';
+import { premiumPatronTime } from '../../lib/premiumPatronTime';
 import { runRolesTask } from '../../lib/rolesTask';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import type { ItemBank } from '../../lib/types';

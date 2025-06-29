@@ -1,4 +1,5 @@
 import { Monsters } from 'oldschooljs';
+
 import { cannonBanks } from '../../../../lib/minions/data/combatConstants';
 import { wildyKillableMonsters } from '../../../../lib/minions/data/killableMonsters/bosses/wildy';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';

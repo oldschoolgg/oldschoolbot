@@ -1,3 +1,4 @@
+import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit/util';
 import { userMention } from 'discord.js';
 import {
 	Time,
@@ -11,11 +12,8 @@ import {
 	roll,
 	sumArr
 } from 'e';
-import { Bank, EMonster } from 'oldschooljs';
-import { randomVariation } from 'oldschooljs/dist/util/util';
+import { Bank, EMonster, randomVariation, resolveItems } from 'oldschooljs';
 
-import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit/util';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField } from '../constants';
 import type { Skills } from '../types';
 import { formatList } from '../util';

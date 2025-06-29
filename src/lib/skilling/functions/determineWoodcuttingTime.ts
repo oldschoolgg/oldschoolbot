@@ -1,6 +1,6 @@
 import { Time, percentChance } from 'e';
+import { EItem } from 'oldschooljs/EItem';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import type { MUserClass } from './../../MUser';
 import type { Log } from './../types';
@@ -33,10 +33,10 @@ export function determineWoodcuttingTime({
 
 	let teakTick = false;
 	if (!forestry && woodcuttingLvl >= 92) {
-		if (resolveItems('Teak logs').includes(log.id) && farmingLvl >= 35) {
+		if (log.id === EItem.TEAK_LOGS && farmingLvl >= 35) {
 			teakTick = true;
 		}
-		if (resolveItems('Mahogany logs').includes(log.id) && farmingLvl >= 55) {
+		if (log.id === EItem.MAHOGANY_LOGS && farmingLvl >= 55) {
 			teakTick = true;
 		}
 	}

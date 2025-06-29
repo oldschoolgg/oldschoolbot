@@ -1,11 +1,11 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randInt } from 'e';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { MAX_QP } from '../../lib/minions/data/quests';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { roll } from '../../lib/util/rng';
 
 export const questingTask: MinionTask = {
 	type: 'Questing',

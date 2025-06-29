@@ -1,9 +1,9 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, randomVariation } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

@@ -1,29 +1,41 @@
-import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import {
+	type CommandResponse,
+	type CommandRunOptions,
+	channelIsSendable,
+	formatDuration,
+	hasBanMemberPerms,
+	miniID,
+	stringMatches
+} from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
-import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
-import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import {
+	ApplicationCommandOptionType,
+	type ChatInputCommandInteraction,
+	EmbedBuilder,
+	type Guild,
+	type HexColorString,
+	type User,
+	bold,
+	inlineCode,
+	resolveColor
+} from 'discord.js';
 import { Time, clamp, removeFromArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 
+import { DynamicButtons } from '../../lib/DynamicButtons';
 import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-
-import { DynamicButtons } from '../../lib/DynamicButtons';
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
-import { formatDuration, isValidNickname, itemNameFromID, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { isValidNickname, itemNameFromID } from '../../lib/util/smallUtils';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';

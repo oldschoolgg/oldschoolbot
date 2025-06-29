@@ -1,15 +1,15 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
-
-import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
-
 import { Time, reduceNumByPercent } from 'e';
+import { EMonster } from 'oldschooljs';
+
 import { Eatables } from '../../lib/data/eatables';
+import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../lib/minions/functions';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { EMonster, formatDuration, returnStringOrFile, stringMatches } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import findMonster from '../../lib/util/findMonster';
+import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
 

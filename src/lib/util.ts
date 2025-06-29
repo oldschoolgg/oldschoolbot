@@ -24,13 +24,12 @@ import {
 	userMention
 } from 'discord.js';
 import type { ComponentType } from 'discord.js';
-import { Time, noOp, objectEntries } from 'e';
+import { noOp, objectEntries } from 'e';
 
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { usernameWithBadgesCache } from './cache';
 import { BitField, MAX_XP, globalConfig } from './constants';
-import type { Consumable } from './minions/types';
 import { SkillsEnum } from './skilling/types';
 import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
@@ -99,47 +98,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		}
 	}
 	return true;
-}
-
-export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
-	const str = [];
-
-	const consumables = [consumable];
-
-	if (consumable.alternativeConsumables) {
-		for (const c of consumable.alternativeConsumables) {
-			consumables.push(c);
-		}
-	}
-
-	for (const c of consumables) {
-		const itemEntries = c.itemCost.items();
-		const multiple = itemEntries.length > 1;
-		const subStr = [];
-
-		let multiply = 1;
-		if (c.qtyPerKill) {
-			multiply = c.qtyPerKill;
-		} else if (c.qtyPerMinute) {
-			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
-		}
-
-		for (const [item, quantity] of itemEntries) {
-			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
-		}
-
-		if (multiple) {
-			str.push(formatList(subStr));
-		} else {
-			str.push(subStr.join(''));
-		}
-	}
-
-	if (consumables.length > 1) {
-		return str.join(' OR ');
-	}
-
-	return str.join('');
 }
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
@@ -300,20 +258,12 @@ export function isModOrAdmin(user: MUser) {
 	return globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
-export { assert } from './util/logError';
 export * from './util/smallUtils';
 export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
-
-export function formatList(_itemList: (string | undefined | null)[], end?: string) {
-	const itemList = _itemList.filter(i => i !== undefined && i !== null) as string[];
-	if (itemList.length < 2) return itemList.join(', ');
-	const lastItem = itemList.pop();
-	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
-}
 
 export async function adminPingLog(message: string) {
 	if (!globalConfig.isProduction) {

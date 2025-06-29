@@ -4,8 +4,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { coxCMUniques, coxUniques, createTeam } from '../../../lib/data/cox';

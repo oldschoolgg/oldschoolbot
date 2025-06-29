@@ -1,5 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { allPetIDs } from '../../lib/data/CollectionsExport';
@@ -7,7 +6,7 @@ import type { GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes, GearStat } from '../../lib/gear/types';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { itemNameFromID } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util/smallUtils';
 import {
 	gearEquipCommand,
 	gearStatsCommand,

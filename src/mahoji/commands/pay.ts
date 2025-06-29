@@ -1,12 +1,9 @@
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
-
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
+import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Bank, toKMB } from 'oldschooljs';
 
-import { toKMB } from '../../lib/util';
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { tradePlayerItems } from '../../lib/util/tradePlayerItems';

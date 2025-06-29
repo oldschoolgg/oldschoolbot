@@ -1,10 +1,9 @@
-import { getInterval } from '@oldschoolgg/toolkit/util';
-import type { GEListing, GETransaction } from '@prisma/client';
-import { GEListingType } from '@prisma/client';
+import { getInterval, makeComponents } from '@oldschoolgg/toolkit/util';
+import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Bank, type Item, type ItemBank } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 
 import { BLACKLISTED_USERS } from './blacklists';
@@ -13,10 +12,10 @@ import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { assert, generateGrandExchangeID, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
-import { logError } from './util/logError';
+import { assert, logError } from './util/logError';
+import { generateGrandExchangeID, itemNameFromID } from './util/smallUtils';
 import { sendToChannelID } from './util/webhook';
 
 interface CreateListingArgs {

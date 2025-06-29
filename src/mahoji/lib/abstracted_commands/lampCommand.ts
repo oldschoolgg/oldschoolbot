@@ -1,11 +1,11 @@
 import { clamp, objectValues } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { Bank, type Item, itemID, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { Skills } from '../../../lib/types';
-import { assert, isValidSkill, itemID } from '../../../lib/util';
+import { isValidSkill } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
+import { assert } from '../../../lib/util/logError';
 
 interface IXPLamp {
 	itemID: number;

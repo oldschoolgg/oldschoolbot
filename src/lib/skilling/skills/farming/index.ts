@@ -1,8 +1,8 @@
-import { CropUpgradeType } from '@prisma/client';
-
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { CropUpgradeType } from '@prisma/client';
+import { itemID } from 'oldschooljs';
+
 import getOSItem from '../../../util/getOSItem';
-import itemID from '../../../util/itemID';
 import type { Plant } from '../../types';
 import { SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';

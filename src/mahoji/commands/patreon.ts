@@ -1,4 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const patreonCommand: OSBMahojiCommand = {

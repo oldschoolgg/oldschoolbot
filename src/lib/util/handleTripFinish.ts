@@ -1,11 +1,11 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
+import { Time, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { Time, sumArr } from 'e';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
@@ -25,7 +25,6 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { formatList, hasSkillReqs } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -37,6 +36,7 @@ import {
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
 } from './globalInteractions';
+import { formatList, hasSkillReqs } from './smallUtils';
 import { sendToChannelID } from './webhook';
 
 const collectors = new Map<string, MessageCollector>();
@@ -236,7 +236,7 @@ export async function handleTripFinish(
 			}
 		}
 
-		const birdHousedetails = await calculateBirdhouseDetails(user);
+		const birdHousedetails = calculateBirdhouseDetails(user);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 

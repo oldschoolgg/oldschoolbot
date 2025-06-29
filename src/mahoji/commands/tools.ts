@@ -1,17 +1,12 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, type CommandRunOptions, asyncGzip } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
-import { ChannelType, EmbedBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, ItemGroups } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
+import { Bank, type Item, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
-import { PerkTier, asyncGzip } from '@oldschoolgg/toolkit/util';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField } from '../../lib/constants';
+import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';

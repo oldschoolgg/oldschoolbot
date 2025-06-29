@@ -1,14 +1,11 @@
-import type { CommandOption } from '@oldschoolgg/toolkit/util';
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { APIApplicationCommandOptionChoice } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { type CommandOption, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes } from '../../lib/gear/types';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-
 import { SkillsEnum } from '../../lib/skilling/types';
 import { globalPresets } from '../../lib/structures/Gear';
 import getOSItem from '../../lib/util/getOSItem';

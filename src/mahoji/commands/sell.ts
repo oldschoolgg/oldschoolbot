@@ -2,15 +2,14 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { clamp, reduceNumByPercent } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { Bank, type Item, itemID, toKMB } from 'oldschooljs';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
-
 import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';

@@ -1,4 +1,5 @@
 import { Monsters } from 'oldschooljs';
+
 import type { KillableMonster } from '../../../../lib/minions/types';
 import { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
 import type { CurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';

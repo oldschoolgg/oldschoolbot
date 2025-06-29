@@ -1,8 +1,8 @@
+import { randomVariation } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank, ItemGroups } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function championsChallengeCommand(user: MUser, channelID: string) {

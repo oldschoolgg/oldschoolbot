@@ -7,10 +7,10 @@ import {
 	HardCasket,
 	type LootTable,
 	MasterCasket,
-	MediumCasket
+	MediumCasket,
+	resolveItems
 } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import {
 	cluesBeginnerCL,
 	cluesEasyCL,

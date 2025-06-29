@@ -1,4 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+
 import { SkillsEnum } from '../../types';
 
 const Construction = {
