@@ -19,6 +19,10 @@ import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldsc
 import getOSItem from '../util/getOSItem';
 import { UN_EQUIPPABLE, customItems, maxedRequirements, setCustomItem } from './util';
 
+/**
+ * 74,000-76,000 are reserved for Necromancy items
+ */
+
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
 setCustomItem(
 	19_939,
