@@ -1,3 +1,4 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
@@ -5,7 +6,7 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { itemID } from 'oldschooljs/dist/util';
 
 import type { ProjectileType } from '../../../lib/constants';
-import { BitField, Emoji, projectiles } from '../../../lib/constants';
+import { BitField, projectiles } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import type { BlowpipeData } from '../../../lib/minions/types';

@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';

@@ -1,9 +1,8 @@
 import { mentionCommand } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EMonster, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { BitField, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../../lib/constants';
+import { BitField, ZAM_HASTA_CRUSH } from '../../../lib/constants';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
@@ -22,7 +21,7 @@ import { hasMonsterRequirements } from '../../mahojiSettings';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
-	const kc = await user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id);
+	const kc = await user.getKC(isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id);
 	let str = `${user.minionName} is now off to kill ${name} ${quantity} times.`;
 	if (kc < 5) {
 		str += ` They are terrified to face ${name}, and set off to fight it with great fear.`;

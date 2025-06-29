@@ -3,7 +3,6 @@ import { Bank, type Item, type Monster, Monsters } from 'oldschooljs';
 
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import type { PvMMethod } from '../../../../lib/constants';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
 import type { OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
 import {
@@ -26,6 +25,7 @@ import { maxOffenceStats } from '../../../../lib/structures/Gear';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
 import { itemNameFromID } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
+import type { PvMMethod } from '../../../commands/k';
 import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
 import { determineIfUsingCannon } from './determineIfUsingCannon';
 import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData';

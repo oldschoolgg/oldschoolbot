@@ -1,5 +1,6 @@
-import { Emoji } from '../../constants';
-import itemID from '../../util/itemID';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { itemID } from 'oldschooljs';
+
 import type { Burnable } from '../types';
 import { SkillsEnum } from '../types';
 

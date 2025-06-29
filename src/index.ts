@@ -4,6 +4,7 @@ import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/geImage';
 
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { MahojiClient } from '@oldschoolgg/toolkit/util';
 import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
@@ -11,7 +12,7 @@ import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, gitHash, globalConfig } from './lib/constants';
+import { Channel, gitHash, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';

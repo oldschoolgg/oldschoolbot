@@ -1,8 +1,6 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { CropUpgradeType } from '@prisma/client';
-import { AutoFarmFilterEnum } from '@prisma/client';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
 
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';
@@ -11,7 +9,6 @@ import { ContractOptions } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostTiers } from '../../lib/skilling/skills/farming';
-import { stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';

@@ -1,6 +1,6 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

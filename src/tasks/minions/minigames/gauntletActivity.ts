@@ -2,7 +2,7 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import type { MinigameName } from '../../../lib/settings/settings';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';

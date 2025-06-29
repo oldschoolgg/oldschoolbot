@@ -1,15 +1,14 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User, UserStats } from '@prisma/client';
+import { bold } from 'discord.js';
 import { isObject, objectEntries, round } from 'e';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, ItemGroups, itemID } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
-import type { KillableMonster } from '../lib/minions/types';
-
-import { bold } from 'discord.js';
 import { userhasDiaryTier } from '../lib/diaries';
 import { quests } from '../lib/minions/data/quests';
+import type { KillableMonster } from '../lib/minions/types';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { GearBank } from '../lib/structures/GearBank';
@@ -21,8 +20,7 @@ import {
 	formatList,
 	hasSkillReqs,
 	itemNameFromID,
-	readableStatName,
-	resolveItems
+	readableStatName
 } from '../lib/util';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
 
@@ -215,12 +213,10 @@ export function anglerBoostPercent(user: MUser) {
 	return round(boostPercent, 1);
 }
 
-const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
-
 export function rogueOutfitPercentBonus(user: MUser): number {
 	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
-	for (const id of rogueOutfit) {
+	for (const id of ItemGroups.rogueOutfit) {
 		if (skillingSetup.hasEquipped([id])) {
 			amountEquipped++;
 		}

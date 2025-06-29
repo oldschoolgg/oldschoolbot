@@ -1,7 +1,7 @@
 import { Time, notEmpty, objectEntries } from 'e';
 
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Emoji } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatSkillRequirements } from '../../../lib/util';

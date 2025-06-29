@@ -1,15 +1,16 @@
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import type {
-	ButtonInteraction,
-	ChatInputCommandInteraction,
-	Interaction,
-	InteractionReplyOptions,
-	InteractionResponse,
-	Message,
-	RepliableInteraction,
-	StringSelectMenuInteraction
+import {
+	type ButtonInteraction,
+	type ChatInputCommandInteraction,
+	DiscordAPIError,
+	type Interaction,
+	type InteractionReplyOptions,
+	type InteractionResponse,
+	type Message,
+	MessageFlags,
+	type RepliableInteraction,
+	type StringSelectMenuInteraction
 } from 'discord.js';
-import { DiscordAPIError, MessageFlags } from 'discord.js';
 
 import { SILENT_ERROR } from '../constants';
 import { logErrorForInteraction } from './logError';

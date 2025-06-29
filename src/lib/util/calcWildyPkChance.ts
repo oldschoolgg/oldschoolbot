@@ -1,13 +1,18 @@
+import { randomVariation } from '@oldschoolgg/toolkit';
 import { Time, calcPercentOfNum, calcWhatPercent, reduceNumByPercent } from 'e';
-import { randomVariation } from 'oldschooljs/dist/util';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { PeakTier } from '../constants';
 import type { KillableMonster } from '../minions/types';
 import { maxDefenceStats } from '../structures/Gear';
 import type { GearBank } from '../structures/GearBank';
 import type { Peak } from '../tickers';
-import { percentChance } from '../util';
+import { percentChance } from './rng';
+
+export enum PeakTier {
+	High = 'high',
+	Medium = 'medium',
+	Low = 'low'
+}
 
 const peakFactor = [
 	{

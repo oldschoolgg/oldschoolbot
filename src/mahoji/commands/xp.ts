@@ -1,7 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Hiscores } from 'oldschooljs';
-import type { SkillsScore } from 'oldschooljs/dist/meta/types';
+import { Hiscores, type SkillsScore } from 'oldschooljs';
 
 import { statsEmbed } from '../../lib/util/statsEmbed';
 import type { OSBMahojiCommand } from '../lib/util';

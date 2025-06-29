@@ -1,6 +1,5 @@
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
-import type { ItemBank } from '../types';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './clientSettings';
 
 type ClientBankKey =

@@ -1,8 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
 
-import { Emoji } from '../../../src/lib/constants';
 import { mahojiClientSettingsFetch } from '../../../src/lib/util/clientSettings';
 import { sacrificeCommand } from '../../../src/mahoji/commands/sacrifice';
 import { createTestUser, mockClient } from '../util';

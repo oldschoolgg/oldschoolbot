@@ -1,12 +1,12 @@
+import { cleanUsername, stringMatches } from '@oldschoolgg/toolkit';
+import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
-import { cleanUsername } from '@oldschoolgg/toolkit';
-import { TimerManager } from '@sapphire/timer-manager';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
-import { BitField, Channel, PeakTier, globalConfig } from './constants';
+import { BitField, Channel, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
 import { populateRoboChimpCache } from './perkTier';
@@ -15,7 +15,8 @@ import { runCommand } from './settings/settings';
 import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
-import { awaitMessageComponentInteraction, getSupportGuild, stringMatches } from './util';
+import { awaitMessageComponentInteraction, getSupportGuild } from './util';
+import { PeakTier } from './util/calcWildyPkChance';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';

@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, itemID } from 'oldschooljs';
 
 interface Enchantable {
 	name: string;

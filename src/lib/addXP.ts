@@ -1,10 +1,11 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, noOp } from 'e';
 import { convertXPtoLVL, toKMB } from './util';
 
-import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
+import { LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
 import { skillEmoji } from './data/emojis';
 import type { AddXpParams } from './minions/types';
 import { sql } from './postgres';

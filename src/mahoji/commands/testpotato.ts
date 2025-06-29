@@ -1,18 +1,23 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { Prisma } from '@prisma/client';
-import { xp_gains_skill_enum } from '@prisma/client';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { type CommandRunOptions, mentionCommand, stringMatches } from '@oldschoolgg/toolkit/util';
+import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, noOp } from 'e';
-import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
-import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
+import {
+	Bank,
+	Items,
+	calcDropRatesFromBankWithoutUniques,
+	convertLVLtoXP,
+	getItem,
+	itemID,
+	resolveItems,
+	toKMB
+} from 'oldschooljs';
 
-import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
 import { MAX_INT_JAVA, globalConfig } from '../../lib/constants';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -21,8 +26,6 @@ import potions from '../../lib/minions/data/potions';
 import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
-
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -31,7 +34,6 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { Gear } from '../../lib/structures/Gear';
-import { stringMatches } from '../../lib/util';
 import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';

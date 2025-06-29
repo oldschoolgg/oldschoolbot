@@ -1,9 +1,12 @@
-import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { bold } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import {
+	type CommandRunOptions,
+	type MahojiUserOption,
+	formatOrdinal,
+	roboChimpCLRankQuery
+} from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
+import { convertLVLtoXP } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import {
@@ -28,12 +31,12 @@ import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { MUserStats } from '../../lib/structures/MUserStats';
-import { convertLVLtoXP, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import { checkPeakTimes } from '../../lib/util/minionUtils';
+import { isValidNickname } from '../../lib/util/smallUtils';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand

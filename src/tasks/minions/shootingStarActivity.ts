@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import type { ShootingStarsOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
