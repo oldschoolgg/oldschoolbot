@@ -2,7 +2,6 @@ import { cleanString, evalMathExpression, stringMatches } from '@oldschoolgg/too
 import { notEmpty } from 'e';
 import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
-import { ONE_TRILLION } from '../constants';
 import { isDeletedItemName } from '../customItems/util';
 import { filterableTypes } from '../data/filterables';
 
@@ -51,7 +50,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	}
 	if (osItems.length === 0) return [];
 
-	const quantity = floor(min(ONE_TRILLION, max(0, parsedQty ?? 0)));
+	const quantity = floor(min(1_000_000_000_000, max(0, parsedQty ?? 0)));
 
 	return [osItems, quantity];
 }

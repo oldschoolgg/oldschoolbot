@@ -3,8 +3,9 @@ import { Time, randInt } from 'e';
 import { Bank, increaseBankQuantitesByPercent } from 'oldschooljs';
 import { EquipmentSlot, type ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { GLOBAL_BSO_XP_MULTIPLIER } from '../../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
-import { GLOBAL_BSO_XP_MULTIPLIER, MAX_LEVEL, PeakTier } from '../../../lib/constants';
+import { MAX_LEVEL } from '../../../lib/constants';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import type { UserFullGearSetup } from '../../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
@@ -17,6 +18,7 @@ import type { Gear } from '../../../lib/structures/Gear';
 import type { Skills } from '../../../lib/types';
 import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { clAdjustedDroprate, roll, skillingPetDropRate, toKMB } from '../../../lib/util';
+import { PeakTier } from '../../../lib/util/calcWildyPkChance';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { logError } from '../../../lib/util/logError.js';

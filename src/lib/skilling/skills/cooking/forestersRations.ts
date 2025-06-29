@@ -1,4 +1,5 @@
-import { Bank } from 'oldschooljs/dist/util';
+import { Bank } from 'oldschooljs';
+
 import type { ForesterRation } from '../../types';
 import { Cookables } from './cooking';
 

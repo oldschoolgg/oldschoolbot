@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
 import { getUsernameSync } from '../../lib/util';
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '../../lib/util/canvasUtil';

@@ -1,8 +1,8 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
-import { Emoji } from '../../../lib/constants';
 import { divinersOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';

@@ -1,8 +1,7 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
 import { Time, notEmpty, objectEntries, randArrItem, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
@@ -11,9 +10,8 @@ import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
-import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import resolveItems from '../../../lib/util/resolveItems';
+import { assert } from '../../../lib/util/logError';
 import { flowerTable } from './hotColdCommand';
 
 const messageInABottleMessages = [

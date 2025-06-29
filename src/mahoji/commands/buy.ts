@@ -1,21 +1,19 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { Events } from '@oldschoolgg/toolkit/constants';
+import { type CommandRunOptions, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, itemID } from 'oldschooljs';
 
-import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { Events } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
 import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { isElligibleForPresent } from '../../lib/settings/settings';
 import { MUserStats } from '../../lib/structures/MUserStats';
-import { formatSkillRequirements, itemID, itemNameFromID, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';

@@ -1,7 +1,8 @@
 import { Time } from 'e';
 import { GemTable, HerbDropTable, LootTable, Monsters, UncommonSeedDropTable } from 'oldschooljs';
 
-import { BitField, YETI_ID } from '../../../../constants';
+import { YETI_ID } from '../../../../bso/bsoConstants';
+import { BitField } from '../../../../constants';
 import { GearStat } from '../../../../gear';
 import type { CustomMonster } from './customMonsters';
 

@@ -14,10 +14,10 @@ import './moktang';
 import './leagues';
 import './paintCans';
 
-import { EquipmentSlot, type ItemRequirements } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../util/getOSItem';
-import { UN_EQUIPPABLE, maxedRequirements, setCustomItem } from './util';
+import { UN_EQUIPPABLE, customItems, maxedRequirements, setCustomItem } from './util';
 
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
 setCustomItem(
@@ -14265,3 +14265,17 @@ setCustomItem(73414, 'Veteran staff (5 year)', 'Staff of fire', {
 		isSuperUntradeable: true
 	}
 });
+
+export const discontinuedItems = resolveItems([
+	'Turkey',
+	'Raw turkey',
+	'Burnt turkey',
+	'Turkey drumstick',
+	'Golden partyhat',
+	'Black swan',
+	...customItems.filter(i => Items.get(i)?.customItemData?.isDiscontinued)
+]);
+
+export function removeDiscontinuedItems(arr: number[]) {
+	return arr.filter(i => !discontinuedItems.includes(i));
+}

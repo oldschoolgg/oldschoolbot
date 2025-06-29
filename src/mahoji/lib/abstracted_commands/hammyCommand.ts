@@ -2,7 +2,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { roll } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';

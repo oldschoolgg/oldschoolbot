@@ -1,7 +1,7 @@
 import { objectValues, percentChance, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
 import {

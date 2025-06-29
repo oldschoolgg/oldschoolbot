@@ -1,4 +1,5 @@
-import { Emoji } from '../constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+
 import getOSItem from '../util/getOSItem';
 
 const xpEmoji = Emoji.XP;

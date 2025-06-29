@@ -1,9 +1,10 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField, Emoji, PerkTier } from '../../../lib/constants';
+import { BitField, PerkTier } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 
@@ -106,7 +107,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 		);
 	}
 
-	if (dailyIsReady.isReady) {
+	if (dailyIsReady.isReady && !user.bitfield.includes(BitField.DisableDailyButton)) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('CLAIM_DAILY')

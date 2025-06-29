@@ -1,17 +1,17 @@
 import { type CommandOption, type CommandRunOptions, cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { EquipmentSlot } from 'oldschooljs';
 
 import { ParsedCustomEmojiWithGroups } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { isValidGearSetup } from '../../lib/gear/functions/isValidGearSetup';
 import type { GearSetup, GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes } from '../../lib/gear/types';
-
-import { isValidGearSetup } from '../../lib/gear/functions/isValidGearSetup';
 import { Gear, defaultGear, globalPresets } from '../../lib/structures/Gear';
-import { EquipmentSlot, isValidNickname } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
+import { isValidNickname } from '../../lib/util/smallUtils';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
 import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';

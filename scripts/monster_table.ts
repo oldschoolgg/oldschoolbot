@@ -7,7 +7,7 @@ import { Bank, Items, SkillsEnum, convertBankToPerHourStats, itemID, resolveItem
 import '../src/lib/safeglobals';
 
 import { omit } from 'remeda';
-import { type BitField, PVM_METHODS } from '../src/lib/constants';
+import type { BitField } from '../src/lib/constants';
 import { degradeableItems } from '../src/lib/degradeableItems';
 import { maxMage, maxMelee, maxRange } from '../src/lib/depthsOfAtlantis';
 import { materialTypes } from '../src/lib/invention';
@@ -23,6 +23,7 @@ import { Gear } from '../src/lib/structures/Gear';
 import { GearBank } from '../src/lib/structures/GearBank';
 import { KCBank } from '../src/lib/structures/KCBank';
 import { MUserStats } from '../src/lib/structures/MUserStats';
+import { PVM_METHODS } from '../src/mahoji/commands/k';
 import {
 	type MinionKillReturn,
 	newMinionKillCommand

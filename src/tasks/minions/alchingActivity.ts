@@ -1,10 +1,9 @@
-import { Time } from 'e';
+import { Time, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';

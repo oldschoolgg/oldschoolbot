@@ -5,9 +5,9 @@ import type { GearSetupType, PrimaryGearSetupType } from './gear/types';
 import type { KillableMonster } from './minions/types';
 import type { ChargeBank } from './structures/Banks';
 import type { GearBank } from './structures/GearBank';
-import { assert } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
+import { assert } from './util/logError';
 import { updateBankSetting } from './util/updateBankSetting';
 
 export interface DegradeableItem {

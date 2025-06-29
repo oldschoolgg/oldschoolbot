@@ -8,17 +8,15 @@ import {
 	reduceNumByPercent,
 	shuffleArr
 } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { Bank, type Item, randomVariation } from 'oldschooljs';
 
 import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
-
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import type { GearStats } from '../gear';
 import { inventionBoosts } from '../invention/inventions';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { Skills } from '../types';
-import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 

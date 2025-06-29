@@ -1,6 +1,6 @@
 const esbuild = require('esbuild');
 
-const entryPoints = ['src/util.ts', 'src/structures.ts'];
+const entryPoints = ['src/util.ts', 'src/structures.ts', 'src/constants.ts'];
 
 const baseConfig = {
 	keepNames: true,

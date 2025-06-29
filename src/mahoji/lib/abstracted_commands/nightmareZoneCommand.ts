@@ -1,3 +1,4 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -9,7 +10,7 @@ import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { Skills } from '../../../lib/types';
-import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
+import { hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

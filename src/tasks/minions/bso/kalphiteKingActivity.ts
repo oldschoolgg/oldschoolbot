@@ -2,7 +2,7 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcWhatPercent, noOp, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { kalphiteKingCL } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';

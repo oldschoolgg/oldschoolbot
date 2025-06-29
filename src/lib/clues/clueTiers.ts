@@ -7,7 +7,8 @@ import {
 	HardCasket,
 	type LootTable,
 	MasterCasket,
-	MediumCasket
+	MediumCasket,
+	resolveItems
 } from 'oldschooljs';
 
 import {
@@ -23,7 +24,6 @@ import {
 import { type ElderClue, ElderClueTable } from '../simulation/elderClue';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
 import type { ClueReqs } from './clueReqs';
 import { beginnerReqs } from './clueReqs';
 import type { StashUnitTier } from './stashUnits';

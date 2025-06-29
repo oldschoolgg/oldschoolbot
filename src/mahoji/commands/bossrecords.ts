@@ -1,15 +1,10 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { MessageEditOptions } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { type CommandRunOptions, channelIsSendable, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, EmbedBuilder, type MessageEditOptions } from 'discord.js';
 import { chunk } from 'e';
-import { Hiscores } from 'oldschooljs';
-import { bossNameMap } from 'oldschooljs/dist/constants';
-import type { BossRecords } from 'oldschooljs/dist/meta/types';
+import { type BossRecords, Hiscores, bossNameMap } from 'oldschooljs';
 
 import pets from '../../lib/data/pets';
-import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
+import { makePaginatedMessage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import type { OSBMahojiCommand } from '../lib/util';
 

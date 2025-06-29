@@ -1,7 +1,7 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';

@@ -5,7 +5,7 @@ import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Monsters } from 'oldschooljs';
 
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
-import { ORI_DISABLED_MONSTERS, YETI_ID } from '../constants';
+import { ORI_DISABLED_MONSTERS, YETI_ID } from '../bso/bsoConstants';
 import { customKillableMonsters } from '../minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '../minions/data/killableMonsters/index';
 import { simulatedKillables } from '../simulation/simulatedKillables';

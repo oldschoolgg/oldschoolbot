@@ -6,8 +6,8 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 
-import { assert } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 
 export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction | null) {

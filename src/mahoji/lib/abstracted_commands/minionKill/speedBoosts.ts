@@ -1,12 +1,9 @@
 import { Time, calcWhatPercent, sumArr } from 'e';
-import { Bank, type Item, type Monster, Monsters } from 'oldschooljs';
-
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { Bank, type Item, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
 import { omit } from 'remeda';
+
 import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { gearstatToSetup, gorajanBoosts } from '../../../../lib/bso/gorajanGearBoost';
-import type { PvMMethod } from '../../../../lib/constants';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
 import type { OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
 import { InventionID } from '../../../../lib/invention/inventions';
@@ -32,6 +29,7 @@ import { maxOffenceStats } from '../../../../lib/structures/Gear';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
 import { itemNameFromID } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
+import type { PvMMethod } from '../../../commands/k';
 import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
 import { determineIfUsingCannon } from './determineIfUsingCannon';
 import { dragonHunterWeapons } from './minionKillData';

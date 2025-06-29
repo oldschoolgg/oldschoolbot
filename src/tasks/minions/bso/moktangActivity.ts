@@ -1,10 +1,10 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
 import { randInt } from 'e';
 import { Bank, increaseBankQuantitesByPercent } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
 import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Moktang';

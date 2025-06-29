@@ -1,12 +1,10 @@
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, EMonster, Monsters, deepResolveItems, resolveItems } from 'oldschooljs';
 
-import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import type { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
@@ -388,7 +386,7 @@ export const effectiveMonsters = [
 	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
-		id: ZALCANO_ID,
+		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>'
 	},
 	{
@@ -432,7 +430,7 @@ export const effectiveMonsters = [
 	{
 		name: "Phosani's Nightmare",
 		aliases: ['phosani', 'phosanis nightmare'],
-		id: PHOSANI_NIGHTMARE_ID
+		id: EMonster.PHOSANI_NIGHTMARE
 	},
 	{
 		name: 'Moktang',

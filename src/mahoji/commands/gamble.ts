@@ -1,12 +1,10 @@
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants';
-
 import { isSuperUntradeable } from '../../lib/bso/bsoUtil';
+import { BitField } from '../../lib/constants';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';

@@ -1,8 +1,7 @@
 import { sumArr } from 'e';
-import { Bank, Monsters, Openables } from 'oldschooljs';
+import { Bank, EMonster, Monsters, Openables } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
-import { ZALCANO_ID } from '../constants';
 import {
 	abyssalDragonCL,
 	all3rdAgeItems,
@@ -782,7 +781,7 @@ export const eliteTasks: Task[] = [
 		id: 3103,
 		name: 'Defeat Zalcano 1000 times',
 		has: async args => {
-			return leaguesHasKC(args, { id: ZALCANO_ID }, 1000);
+			return leaguesHasKC(args, { id: EMonster.ZALCANO }, 1000);
 		}
 	},
 	{

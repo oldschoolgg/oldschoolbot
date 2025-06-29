@@ -1,6 +1,8 @@
-import { Emoji } from '../../constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+
 import { skillEmoji } from '../../data/emojis';
-import { type Skill, SkillsEnum } from '../types';
+import type { Skill } from '../types';
+import { SkillsEnum } from '../types';
 import Agility from './agility';
 import Construction from './construction';
 import Cooking from './cooking/cooking';
