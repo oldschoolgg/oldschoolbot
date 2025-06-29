@@ -19,7 +19,7 @@ export const pollCommand: OSBMahojiCommand = {
 	run: async ({ interaction, options, user, channelID }: CommandRunOptions<{ question: string }>) => {
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return { ephemeral: true, content: 'Invalid channel.' };
-		await deferInteraction(interaction);
+		await deferInteraction(interaction, true);
 		try {
 			const message = await channel.send({
 				content: `**Poll from ${user.username}:** ${options.question}`,
