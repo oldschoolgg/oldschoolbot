@@ -132,11 +132,7 @@ export function Leagues() {
 						{tasksBeingShown.map(task => (
 							<tr
 								key={task.id}
-								className={
-									data?.completed_ca_task_ids.includes(task.id)
-										? 'bg-green-500 bg-opacity-20'
-										: undefined
-								}
+								className={data?.completed_ca_task_ids.includes(task.id) ? 'ca-complete' : undefined}
 							>
 								<td>{task.name}</td>
 								<td>{task.desc}</td>
