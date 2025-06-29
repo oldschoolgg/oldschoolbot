@@ -1,8 +1,7 @@
-import { Bank } from 'oldschooljs';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Bank, itemID } from 'oldschooljs';
 
-import { removeDiscontinuedItems } from '../../../bso/bsoUtil';
-import { Emoji } from '../../../constants';
-import itemID from '../../../util/itemID';
+import { removeDiscontinuedItems } from '../../../customItems/customItems';
 import type { Cookable } from '../../types';
 import { SkillsEnum } from '../../types';
 

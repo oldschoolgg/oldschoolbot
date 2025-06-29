@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import { wealthInventorySize } from '../../lib/constants';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { roll } from '../../lib/util/rng';
+import { wealthInventorySize } from '../../mahoji/lib/abstracted_commands/chargeWealthCommand';
 
 export const wealthChargeTask: MinionTask = {
 	type: 'WealthCharging',

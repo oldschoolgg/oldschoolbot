@@ -1,6 +1,6 @@
 import { LootTable } from 'oldschooljs';
 
-import { Emoji } from '../../constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
 import { type Ore, SkillsEnum } from '../types';

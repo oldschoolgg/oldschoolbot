@@ -1,7 +1,7 @@
+import type { CommandOptions, ICommand, MahojiClient, MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { isObject } from 'e';
 
-import type { CommandOptions, ICommand, MahojiClient, MahojiUserOption } from '@oldschoolgg/toolkit';
 import { Cooldowns } from './Cooldowns';
 import type { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
 

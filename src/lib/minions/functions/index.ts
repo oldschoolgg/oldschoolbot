@@ -1,8 +1,9 @@
 import type { User } from '@prisma/client';
 import { type Monster, Monsters } from 'oldschooljs';
 
-import { NIGHTMARES_HP, type PvMMethod } from '../../constants';
-import { GearStat, type OffenceGearStat, type PrimaryGearSetupType } from '../../gear';
+import type { PvMMethod } from '../../../mahoji/commands/k';
+import { NIGHTMARES_HP } from '../../constants';
+import { GearStat, type OffenceGearStat, type PrimaryGearSetupType } from '../../gear/types';
 import { NexMonster } from '../../nex';
 import { SkillsEnum } from '../../skilling/types';
 import { XPBank } from '../../structures/XPBank';

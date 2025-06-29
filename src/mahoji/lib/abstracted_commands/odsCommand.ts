@@ -3,7 +3,7 @@ import { Time, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

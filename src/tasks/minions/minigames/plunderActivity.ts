@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants.js';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -46,17 +45,6 @@ export const plunderTask: MinionTask = {
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP, duration: data.duration });
 
 		const str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}  ${flappyRes.userMsg}`;
-
-		if (loot.amount('Rocky') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
-					SkillsEnum.Thieving
-				)}!`
-			);
-		}
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

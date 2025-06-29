@@ -1,6 +1,5 @@
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, Monsters, SkillsEnum } from 'oldschooljs';
 
 import { GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';

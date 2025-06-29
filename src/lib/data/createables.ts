@@ -1,7 +1,8 @@
 import { isFunction, uniqueArr } from 'e';
 import { Bank, EItem, deepResolveItems } from 'oldschooljs';
 
-import { BitField, discontinuedItems } from '../constants';
+import { BitField } from '../constants';
+import { discontinuedItems } from '../customItems/customItems';
 import { allDyedItems } from '../dyedItems';
 import type { MaterialBank } from '../invention/MaterialBank';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';

@@ -1,7 +1,6 @@
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, EMonster, Monsters } from 'oldschooljs';
 
-import { PHOSANI_NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
 import type {
 	GauntletOptions,
@@ -422,7 +421,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: "Phosani's Nightmare",
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[PHOSANI_NIGHTMARE_ID]: 5
+				[EMonster.PHOSANI_NIGHTMARE]: 5
 			}
 		})
 	},
@@ -434,7 +433,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: "Phosani's Nightmare",
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[PHOSANI_NIGHTMARE_ID]: 25
+				[EMonster.PHOSANI_NIGHTMARE]: 25
 			}
 		})
 	},

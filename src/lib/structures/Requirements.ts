@@ -14,7 +14,7 @@ import type { RobochimpUser } from '../roboChimp';
 import { type MinigameName, minigameColumnToNameMap } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
 import type { Skills } from '../types';
-import { formatList, itemNameFromID } from '../util';
+import { formatList, itemNameFromID } from '../util/smallUtils';
 import type { MTame } from './MTame';
 import { MUserStats } from './MUserStats';
 

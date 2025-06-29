@@ -1,7 +1,7 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { percentChance, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
 import KingGoldemar, {

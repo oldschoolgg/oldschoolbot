@@ -1,12 +1,22 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import {
+	Bank,
+	ChambersOfXeric,
+	Clues,
+	EMonster,
+	type Item,
+	ItemGroups,
+	type Monster,
+	Monsters,
+	resolveItems
+} from 'oldschooljs';
+
+import { OSB_VIRTUS_IDS } from '../bso/bsoConstants';
 import { divinationEnergies, portents } from '../bso/divination';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
 import type { CollectionLogType } from '../collectionLogTask';
-import { OSB_VIRTUS_IDS, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { discontinuedDyes, dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
 import { implingsCL } from '../implings';
@@ -122,7 +132,6 @@ import {
 	giantMoleCL,
 	giantsFoundryCL,
 	gnomeRestaurantCL,
-	godWarsDungeonGodswordShards,
 	gracefulCL,
 	grotesqueGuardiansCL,
 	guardiansOfTheRiftCL,
@@ -188,7 +197,6 @@ import {
 	thermonuclearSmokeDevilCL,
 	tinkeringWorshopCL,
 	titheFarmCL,
-	toaCL,
 	tormentedDemonCL,
 	treeBeardCL,
 	troubleBrewingCL,
@@ -337,7 +345,7 @@ export const allCollectionLogs: ICollection = {
 					];
 				})(),
 				items: [
-					...godWarsDungeonGodswordShards,
+					...ItemGroups.godWarsDungeonGodswordShards,
 					...commanderZilyanaCL,
 					...generalGraardorCL,
 					...kreeArraCL,
@@ -560,7 +568,7 @@ export const allCollectionLogs: ICollection = {
 				items: theNightmareCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[NightmareMonster.id] ?? 0} KC`,
-					`${stats.kcBank[PHOSANI_NIGHTMARE_ID] ?? 0} Phosani KC`
+					`${stats.kcBank[EMonster.PHOSANI_NIGHTMARE] ?? 0} Phosani KC`
 				]
 			},
 			Obor: {
@@ -656,7 +664,7 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[ZALCANO_ID] ?? 0} KC` },
+			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
 				allItems: Monsters.Zulrah.allItems,
@@ -776,7 +784,7 @@ export const allCollectionLogs: ICollection = {
 					Normal: async (_, __, stats) => stats.getToaKCs().normalKC,
 					Expert: async (_, __, stats) => stats.getToaKCs().expertKC
 				},
-				items: toaCL,
+				items: ItemGroups.toaCL,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tombs_of_amascut} KC`];

@@ -4,7 +4,8 @@ import { Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 
-import { BitField, type PvMMethod, YETI_ID } from '../../../../lib/constants';
+import { YETI_ID } from '../../../../lib/bso/bsoConstants';
+import { BitField } from '../../../../lib/constants';
 import { getSimilarItems } from '../../../../lib/data/similarItems';
 import { checkRangeGearWeapon } from '../../../../lib/gear/functions/checkRangeGearWeapon';
 import type { InventionID } from '../../../../lib/invention/inventions';
@@ -35,6 +36,7 @@ import {
 	zodEnum
 } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
+import type { PvMMethod } from '../../../commands/k';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed';

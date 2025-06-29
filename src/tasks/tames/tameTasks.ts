@@ -33,9 +33,10 @@ import {
 	tameKillableMonsters
 } from '../../lib/tames';
 import type { ActivityTaskData } from '../../lib/types/minions';
-import { assert, calcPerHour, formatDuration, itemNameFromID } from '../../lib/util';
+import { calcPerHour, formatDuration, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleCrateSpawns } from '../../lib/util/handleCrateSpawns';
+import { assert } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { tameLastFinishedActivity } from '../../lib/util/tameUtil';
 import { sendToChannelID } from '../../lib/util/webhook';

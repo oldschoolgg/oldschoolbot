@@ -1,11 +1,12 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
+import { CHINCANNON_MESSAGES } from '../../../lib/bso/bsoConstants';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
-import { CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { userHasFlappy } from '../../../lib/invention/inventions';

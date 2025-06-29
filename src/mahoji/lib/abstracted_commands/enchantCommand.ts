@@ -1,15 +1,15 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
+import { itemID } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import { itemID } from 'oldschooljs/dist/util';
 import { BitField } from '../../../lib/constants';
 import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
-import { itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
+import { itemNameFromID } from '../../../lib/util/smallUtils';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {

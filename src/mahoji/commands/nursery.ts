@@ -1,12 +1,11 @@
 import { type CommandRunOptions, gaussianRandom } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { tame_growth } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events, globalConfig } from '../../lib/constants';
-
+import { globalConfig } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '../../lib/tames';
 import { formatDuration, roll } from '../../lib/util';

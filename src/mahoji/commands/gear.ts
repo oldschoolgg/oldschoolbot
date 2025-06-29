@@ -1,9 +1,7 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { GearSetupType } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { GearSetupType } from '@prisma/client';
-import { gearValidationChecks } from '../../lib/constants';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
 import { GearSetupTypes, GearStat } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
@@ -22,6 +20,8 @@ import {
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+
+export const gearValidationChecks = new Set();
 
 export const gearCommand: OSBMahojiCommand = {
 	name: 'gear',

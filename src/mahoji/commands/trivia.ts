@@ -1,7 +1,7 @@
+import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
 import { shuffleArr, uniqueArr } from 'e';
 
-import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../lib/roboChimp';
 import { deferInteraction } from '../../lib/util/interactionReply';

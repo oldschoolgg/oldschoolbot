@@ -1,9 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
 import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
-import { Emoji } from '../../lib/constants';
 import { refundChargeBank } from '../../lib/degradeableItems';
 import { trackLoot } from '../../lib/lootTrack';
 import { incrementMinigameScore } from '../../lib/settings/minigames';
@@ -11,7 +10,6 @@ import { ChargeBank } from '../../lib/structures/Bank';
 import type { ColoTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 

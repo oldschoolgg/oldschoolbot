@@ -3,7 +3,8 @@ import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/tool
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
+import { BSO_MAX_TOTAL_LEVEL } from '../../lib/bso/bsoConstants';
+import { BitField, Channel } from '../../lib/constants';
 import { calcCLDetails } from '../../lib/data/Collections';
 import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
 import { roboChimpUserFetch } from '../../lib/roboChimp';

@@ -1,11 +1,11 @@
 import { clamp, objectValues } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type Item, itemID } from 'oldschooljs';
 
-import type { Item } from 'oldschooljs/dist/meta/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ItemBank, Skills } from '../../../lib/types';
-import { assert, isValidSkill, itemID } from '../../../lib/util';
+import { isValidSkill } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
+import { assert } from '../../../lib/util/logError';
 import resolveItems from '../../../lib/util/resolveItems';
 import { userStatsUpdate } from '../../mahojiSettings';
 

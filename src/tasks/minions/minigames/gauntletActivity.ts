@@ -1,8 +1,8 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { calcWhatPercent, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants.js';
 import { type MinigameName, getMinigameScore, incrementMinigameScore } from '../../../lib/settings/minigames';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import type { GauntletOptions } from '../../../lib/types/minions';

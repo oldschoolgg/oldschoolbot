@@ -46,7 +46,6 @@ import {
 	tameSpecies
 } from '../../lib/tames';
 import {
-	assert,
 	formatDuration,
 	formatSkillRequirements,
 	isWeekend,
@@ -66,6 +65,7 @@ import {
 } from '../../lib/util/canvasUtil';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';

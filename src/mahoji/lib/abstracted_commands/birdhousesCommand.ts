@@ -65,7 +65,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 
 	const birdHouses = birdhouseLimit(user);
 
-	const existingBirdhouse = await calculateBirdhouseDetails(user);
+	const existingBirdhouse = calculateBirdhouseDetails(user);
 	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user);
 
 	let birdhouseToPlant = inputBirdhouseName

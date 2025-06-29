@@ -2,9 +2,9 @@ import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { getNewUser } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';

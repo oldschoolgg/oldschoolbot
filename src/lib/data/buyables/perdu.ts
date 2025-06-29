@@ -1,7 +1,6 @@
-import { Bank } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 
 import { itemNameFromID } from '../../util';
-import resolveItems from '../../util/resolveItems';
 import { diariesCL } from '../CollectionsExport';
 import type { Buyable } from './buyables';
 

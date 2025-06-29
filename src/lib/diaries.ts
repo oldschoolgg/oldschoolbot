@@ -1,7 +1,6 @@
-import { objectEntries } from 'e';
-import { Monsters } from 'oldschooljs';
-
 import type { Minigame } from '@prisma/client';
+
+import { objectEntries } from 'e';
 import { MAX_QP } from './minions/data/quests';
 import type { DiaryTier, DiaryTierName } from './minions/types';
 import { DiaryID } from './minions/types';
@@ -10,10 +9,10 @@ import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
 import { MUserStats } from './structures/MUserStats';
 import type { Skills } from './types';
-import { formatList } from './util';
+import { Monsters } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
-import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
+import { formatList, formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
 
 export type Diary = {
 	name: string;

@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji } from '../../constants';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import itemID from '../../util/itemID';
 import { SkillsEnum } from '../types';
 

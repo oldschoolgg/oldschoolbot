@@ -1,12 +1,12 @@
 import { userMention } from '@discordjs/builders';
+import { Table } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { User } from '@prisma/client';
 import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, LootTable } from 'oldschooljs';
 
-import { Table } from '@oldschoolgg/toolkit';
+import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
 import { MysteryBoxes } from './bsoOpenables';
-import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
 import { incrementMinigameScore } from './settings/minigames';
 import Grimy from './skilling/skills/herblore/mixables/grimy';
 import { SkillsEnum } from './skilling/types';

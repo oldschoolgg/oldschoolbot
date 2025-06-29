@@ -1,3 +1,4 @@
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import {
 	type CommandResponse,
 	calcPerHour,
@@ -8,6 +9,7 @@ import {
 	stringMatches,
 	stripEmojis
 } from '@oldschoolgg/toolkit/util';
+import type { Prisma, User } from '@prisma/client';
 import {
 	type BaseMessageOptions,
 	type ButtonInteraction,
@@ -25,29 +27,25 @@ import {
 	userMention
 } from 'discord.js';
 import type { ComponentType } from 'discord.js';
-import { Time, calcWhatPercent, noOp, notEmpty, objectEntries, sumArr } from 'e';
-import { Bank, type ItemBank, type Monster, Monsters, resolveItems } from 'oldschooljs';
-import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
+import { Time, calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
 
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import type { Prisma, User } from '@prisma/client';
+import { type Bank, type Monster, Monsters } from 'oldschooljs/dist/meta/types';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
-import { clAdjustedDroprate } from './bso/bsoUtil';
+import { clAdjustedDroprate, convertXPtoLVL } from './bso/bsoUtil';
 import { usernameWithBadgesCache } from './cache';
-import { ClueTiers } from './clues/clueTiers';
 import { BitField, MAX_XP, type ProjectileType, globalConfig } from './constants';
-import type { Consumable } from './minions/types';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
 import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type { GroupMonsterActivityTaskOptions } from './types/minions';
-import getOSItem from './util/getOSItem';
 import { makeBadgeString } from './util/makeBadgeString';
+import resolveItems from './util/resolveItems';
 import { sendToChannelID } from './util/webhook.js';
 
 export * from 'oldschooljs';
+export * from './util/rng';
 
 export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
 
@@ -65,37 +63,7 @@ export function britishTime() {
 	return currentDate;
 }
 
-export function convertXPtoLVL(xp: number, cap = 120) {
-	let points = 0;
-
-	for (let lvl = 1; lvl <= cap; lvl++) {
-		points += Math.floor(lvl + 300 * Math.pow(2, lvl / 7));
-
-		if (Math.floor(points / 4) >= xp + 1) {
-			return lvl;
-		}
-	}
-
-	return cap;
-}
-
-const randEngine = process.env.TEST ? nativeMath : nodeCrypto;
-
-export function cryptoRand(min: number, max: number) {
-	return integer(min, max)(randEngine);
-}
-
-export function randFloat(min: number, max: number) {
-	return real(min, max)(randEngine);
-}
-
-export function percentChance(percent: number) {
-	return bool(percent / 100)(randEngine);
-}
-
-export function roll(max: number) {
-	return cryptoRand(1, max) === 1;
-}
+export { convertXPtoLVL };
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
@@ -138,47 +106,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		}
 	}
 	return true;
-}
-
-export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
-	const str = [];
-
-	const consumables = [consumable];
-
-	if (consumable.alternativeConsumables) {
-		for (const c of consumable.alternativeConsumables) {
-			consumables.push(c);
-		}
-	}
-
-	for (const c of consumables) {
-		const itemEntries = c.itemCost.items();
-		const multiple = itemEntries.length > 1;
-		const subStr = [];
-
-		let multiply = 1;
-		if (c.qtyPerKill) {
-			multiply = c.qtyPerKill;
-		} else if (c.qtyPerMinute) {
-			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
-		}
-
-		for (const [item, quantity] of itemEntries) {
-			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
-		}
-
-		if (multiple) {
-			str.push(formatList(subStr));
-		} else {
-			str.push(subStr.join(''));
-		}
-	}
-
-	if (consumables.length > 1) {
-		return str.join(' OR ');
-	}
-
-	return str.join('');
 }
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
@@ -403,50 +330,12 @@ export function isModOrAdmin(user: MUser) {
 	return globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
-export async function calcClueScores(user: MUser) {
-	const { actualCluesBank } = await user.calcActualClues();
-	const stats = await user.fetchStats({ openable_scores: true });
-	const openableBank = new Bank(stats.openable_scores as ItemBank);
-	return openableBank
-		.items()
-		.map(entry => {
-			const tier = ClueTiers.find(i => i.id === entry[0].id);
-			if (!tier) return;
-			return {
-				tier,
-				casket: getOSItem(tier.id),
-				clueScroll: getOSItem(tier.scrollID),
-				opened: openableBank.amount(tier.id),
-				actualOpened: actualCluesBank.amount(tier.scrollID)
-			};
-		})
-		.filter(notEmpty);
-}
-
-export { assert } from './util/logError';
 export * from './util/smallUtils';
 export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
-
-export function isInSupportServer(channelID: string) {
-	const ch = globalClient.channels.cache.get(channelID);
-	return ch && 'guildId' in ch && ch.guildId === globalConfig.supportServerID;
-}
-
-export function replaceLast(str: string, pattern: string, replacement: string) {
-	const last = str.lastIndexOf(pattern);
-	return last !== -1 ? `${str.slice(0, last)}${replacement}${str.slice(last + pattern.length)}` : str;
-}
-
-export function formatList(_itemList: (string | undefined | null)[], end?: string) {
-	const itemList = _itemList.filter(i => i !== undefined && i !== null) as string[];
-	if (itemList.length < 2) return itemList.join(', ');
-	const lastItem = itemList.pop();
-	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
-}
 
 export async function adminPingLog(message: string) {
 	if (!globalConfig.isProduction) {

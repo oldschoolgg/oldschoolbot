@@ -1,7 +1,5 @@
-import { Monsters, resolveItems } from 'oldschooljs';
+import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { NIGHTMARE_ID, demonBaneWeapons } from '../constants';
-import { anglerOutfit } from '../data/CollectionsExport';
 import { Requirements } from '../structures/Requirements';
 import type { TOAOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
@@ -380,7 +378,8 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.KrilTsutsaroth.id)(data) && user.hasEquipped(demonBaneWeapons, false)
+				isCertainMonsterTrip(Monsters.KrilTsutsaroth.id)(data) &&
+				user.hasEquipped(ItemGroups.demonBaneWeapons, false)
 		}
 	},
 	{
@@ -587,7 +586,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		desc: 'Subdue Tempoross while wearing any variation of the angler outfit.',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data, user) => data.type === 'Tempoross' && user.hasEquipped(anglerOutfit, false)
+			hasChance: (data, user) => data.type === 'Tempoross' && user.hasEquipped(ItemGroups.anglerOutfit, false)
 		}
 	},
 	{
@@ -609,7 +608,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill The Nightmare once.',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NIGHTMARE_ID]: 1
+				[EMonster.NIGHTMARE]: 1
 			}
 		})
 	},
