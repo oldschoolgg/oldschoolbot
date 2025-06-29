@@ -1,7 +1,6 @@
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, ItemGroups } from 'oldschooljs';
 
-import { championScrolls } from '../../../lib/data/CollectionsExport';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -12,12 +11,12 @@ export async function championsChallengeCommand(user: MUser, channelID: string) 
 	}
 
 	const { bank } = user;
-	if (!bank.has(championScrolls)) {
+	if (!bank.has(ItemGroups.championScrolls)) {
 		return "You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each.";
 	}
 
 	const cost = new Bank();
-	for (const id of championScrolls) cost.add(id);
+	for (const id of ItemGroups.championScrolls) cost.add(id);
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({

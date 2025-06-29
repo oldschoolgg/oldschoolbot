@@ -525,17 +525,6 @@ export const chompyHats = [
 	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const toaPurpleItems = resolveItems([
-	"Tumeken's guardian",
-	"Tumeken's shadow (uncharged)",
-	"Elidinis' ward",
-	'Masori mask',
-	'Masori body',
-	'Masori chaps',
-	'Lightbearer',
-	"Osmumten's fang"
-]);
-
 export enum PeakTier {
 	High = 'high',
 	Medium = 'medium',
@@ -584,14 +573,6 @@ if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 }
 
 export const ONE_TRILLION = 1_000_000_000_000;
-export const demonBaneWeapons = resolveItems([
-	'Silverlight',
-	'Darklight',
-	'Arclight',
-	'Emberlight',
-	'Scorching bow',
-	'Purging staff'
-]);
 
 export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
 const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';

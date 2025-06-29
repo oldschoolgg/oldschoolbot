@@ -1,5 +1,5 @@
 import { roll } from 'e';
-import { Bank, type Item, LootTable } from 'oldschooljs';
+import { Bank, type Item, ItemGroups, LootTable } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { UnifiedOpenable } from './openables';
@@ -248,13 +248,6 @@ const chests = [
 	}
 ] as const;
 
-export const zealOutfit = resolveItems([
-	"Zealot's boots",
-	"Zealot's helm",
-	"Zealot's robe bottom",
-	"Zealot's robe top"
-]);
-
 export function openShadeChest({ item, qty, allItemsOwned }: { allItemsOwned: Bank; item: Item; qty: number }) {
 	const chest = chests.find(i => i.items.includes(item.id));
 	if (!chest) throw new Error(`No chest found for item ${item.name}.`);
@@ -268,7 +261,7 @@ export function openShadeChest({ item, qty, allItemsOwned }: { allItemsOwned: Ba
 		}
 
 		if (chest.name === 'Gold chest') {
-			const unownedPieces = zealOutfit.filter(i => !effectiveOwnedItems.has(i));
+			const unownedPieces = ItemGroups.zealOutfit.filter(i => !effectiveOwnedItems.has(i));
 			if (unownedPieces.length > 0 && roll(128)) {
 				thisLoot.add(unownedPieces[0]);
 			}

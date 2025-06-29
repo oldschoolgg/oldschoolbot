@@ -1,14 +1,7 @@
-import { Monsters } from 'oldschooljs';
+import { ItemGroups, Monsters } from 'oldschooljs';
 
 import { Time } from 'e';
-import {
-	MIMIC_MONSTER_ID,
-	NEX_ID,
-	NIGHTMARE_ID,
-	PHOSANI_NIGHTMARE_ID,
-	ZALCANO_ID,
-	demonBaneWeapons
-} from '../constants';
+import { MIMIC_MONSTER_ID, NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import type {
@@ -540,7 +533,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.DemonicGorilla.id)(data) && user.hasEquipped(demonBaneWeapons)
+				isCertainMonsterTrip(Monsters.DemonicGorilla.id)(data) && user.hasEquipped(ItemGroups.demonBaneWeapons)
 		}
 	},
 	// {
@@ -889,7 +882,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && !user.hasEquipped(demonBaneWeapons, false)
+				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && !user.hasEquipped(ItemGroups.demonBaneWeapons, false)
 		}
 	},
 	{

@@ -1,6 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
+import { Bank, ChambersOfXeric, Clues, type Item, ItemGroups, type Monster, Monsters } from 'oldschooljs';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
@@ -119,7 +119,6 @@ import {
 	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
-	toaCL,
 	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
@@ -586,7 +585,7 @@ export const allCollectionLogs: ICollection = {
 					Normal: async (_, __, stats) => stats.getToaKCs().normalKC,
 					Expert: async (_, __, stats) => stats.getToaKCs().expertKC
 				},
-				items: toaCL,
+				items: ItemGroups.toaCL,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tombs_of_amascut} KC`];

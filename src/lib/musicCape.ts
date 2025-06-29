@@ -1,10 +1,9 @@
 import { activity_type_enum } from '@prisma/client';
 import { objectEntries, partition } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, ItemGroups, Monsters } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
-import { championScrolls } from './data/CollectionsExport';
 import { RandomEvents } from './randomEvents';
 import type { MinigameName } from './settings/minigames';
 import { Minigames } from './settings/minigames';
@@ -219,7 +218,7 @@ export const musicCapeRequirements = new Requirements()
 	.add({
 		name: 'Champions Challenge',
 		has: ({ user }) => {
-			for (const scroll of championScrolls) {
+			for (const scroll of ItemGroups.championScrolls) {
 				if (user.cl.has(scroll)) return [];
 			}
 			return [{ reason: 'You need to have a Champion Scroll in your CL.' }];

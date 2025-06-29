@@ -1,7 +1,6 @@
 import { objectValues, randInt } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, ItemGroups } from 'oldschooljs';
 
-import { templeTrekkingOutfit } from '../../../lib/data/CollectionsExport';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
@@ -19,7 +18,7 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	let lowestCountPiece = 0;
 	let lowestCountAmount = -1;
 
-	for (const piece of templeTrekkingOutfit) {
+	for (const piece of ItemGroups.templeTrekkingOutfit) {
 		let amount = bank.amount(piece);
 
 		for (const setup of objectValues(user.gear)) {
