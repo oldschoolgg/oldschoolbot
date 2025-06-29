@@ -1380,7 +1380,11 @@ async function superGlassCommand(user: MUser, channelID: string) {
 
 async function superheatItemCommand(user: MUser, channelID: string, itemName: string) {
 	const item = Bars.find(i => getOSItem(i.id).name === itemName);
-	const hasKlik = new Bank((await getUsersTame(user))?.tame?.fed_items as ItemBank).has('Klik');
+
+	const { tame, activity } = await getUsersTame(user);
+	if (!tame) return `You don't have a tame selected.`;
+	if (activity) return `${tame} is already on a trip.`;
+	const hasKlik = tameHasBeenFed(tame, itemID('Klik'));
 
 	if (!item) {
 		return "That's not a valid item to superheat.";
