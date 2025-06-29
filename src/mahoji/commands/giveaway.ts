@@ -17,10 +17,11 @@ import { Time, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { chunk } from 'e';
 import { giveawayCache } from '../../lib/cache.js';
 import { Emoji, patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
-import { channelIsSendable, isModOrAdmin, makeComponents, toKMB } from '../../lib/util';
+import { channelIsSendable, isModOrAdmin, makeComponents, makePaginatedMessage, toKMB } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -257,26 +258,24 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return Emoji.RedX;
 			}
 
+			const lines = giveaways.map(
+				(g: Giveaway) =>
+					`${
+						user.perkTier() >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
+					}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
+						g.finish_date,
+						'R'
+					)}](${messageLink(g.channel_id, g.message_id)})`
+			);
+
+			const pages = chunk(lines, 10).map(chunkLines => ({
+				embeds: [new EmbedBuilder().setDescription(chunkLines.join('\n'))]
+			}));
+
+			makePaginatedMessage(channel, pages, user.id);
+
 			return {
-				embeds: [
-					new EmbedBuilder().setDescription(
-						giveaways
-							.map(
-								g =>
-									`${
-										user.perkTier() >= patronFeatures.ShowEnteredInGiveawayList.tier
-											? `${getEmoji(g)} `
-											: ''
-									}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
-										g.finish_date,
-										'R'
-									)}](${messageLink(g.channel_id, g.message_id)})`
-							)
-							.slice(0, 30)
-							.join('\n')
-					)
-				],
-				ephemeral: true
+				content: `Found ${giveaways.length} active giveaways in this server.`
 			};
 		}
 	}
