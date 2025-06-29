@@ -10,7 +10,7 @@ import { skillEmoji } from '../data/emojis';
 import type { Consumable } from '../minions/types';
 import type { SkillRequirements, Skills } from '../types';
 
-export function itemNameFromID(itemID: number | string) {
+export function itemNameFromID(itemID: number) {
 	return Items.get(itemID)?.name;
 }
 

@@ -1,8 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs';
+import { Items, SkillsEnum } from 'oldschooljs';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { collectables } from '../../mahoji/lib/collectables';
 import { ClueTiers } from '../clues/clueTiers';
@@ -82,7 +82,6 @@ import type {
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
 import { getActivityOfUser } from './minionIsBusy';
-import { itemNameFromID } from './smallUtils';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
@@ -343,7 +342,7 @@ export function minionStatus(user: MUser) {
 		case 'Alching': {
 			const data = currentTask as AlchingActivityTaskOptions;
 
-			return `${name} is currently alching ${data.quantity}x ${itemNameFromID(
+			return `${name} is currently alching ${data.quantity}x ${Items.itemNameFromId(
 				data.itemID
 			)}. ${formattedDuration}`;
 		}
@@ -361,7 +360,7 @@ export function minionStatus(user: MUser) {
 		case 'Sawmill': {
 			const data = currentTask as SawmillActivityTaskOptions;
 			const plank = Planks.find(_plank => _plank.outputItem === data.plankID)!;
-			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+			return `${name} is currently creating ${data.plankQuantity}x ${Items.itemNameFromId(
 				plank.outputItem
 			)}s. ${formattedDuration}`;
 		}
@@ -476,7 +475,7 @@ export function minionStatus(user: MUser) {
 		case 'Butler': {
 			const data = currentTask as ButlerActivityTaskOptions;
 			const plank = Planks.find(_plank => _plank.outputItem === data.plankID)!;
-			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+			return `${name} is currently creating ${data.plankQuantity}x ${Items.itemNameFromId(
 				plank.outputItem
 			)}s. ${formattedDuration}`;
 		}

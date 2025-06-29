@@ -74,6 +74,10 @@ class Items extends Collection<ItemID, Item> {
 
 		return undefined;
 	}
+
+	public itemNameFromId(itemID: number): string | undefined {
+		return super.get(itemID)?.name;
+	}
 }
 
 const itemsExport = new Items();

@@ -1,7 +1,5 @@
-import type { Activity, Prisma } from '@prisma/client';
-import { activity_type_enum } from '@prisma/client';
-import type { ButtonInteraction } from 'discord.js';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
+import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { type PvMMethod, autocompleteMonsters } from '../../mahoji/commands/k';
@@ -64,11 +62,11 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 import getOSItem from './getOSItem';
 import { interactionReply } from './interactionReply';
+import { itemNameFromID } from './smallUtils';
 
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {

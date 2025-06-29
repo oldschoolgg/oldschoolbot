@@ -1,15 +1,13 @@
 import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { resolveItems } from 'oldschooljs';
+import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
-import { itemNameFromID } from '../../lib/util/smallUtils';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const axes = [
@@ -187,7 +185,7 @@ export const chopCommand: OSBMahojiCommand = {
 			if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
 			axeMultiplier = axe.multiplier;
 			boosts.pop();
-			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
+			boosts.push(`**${axeMultiplier}x** success multiplier for ${Items.itemNameFromId(axe.id)}`);
 			break;
 		}
 

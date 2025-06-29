@@ -1,7 +1,6 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, SkillsEnum } from 'oldschooljs';
 
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import type { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minions';
