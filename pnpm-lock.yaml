@@ -212,6 +212,9 @@ importers:
       '@hono/node-server':
         specifier: ^1.13.8
         version: 1.14.4(hono@4.8.3)
+      '@oldschoolgg/toolkit':
+        specifier: workspace:*
+        version: link:../toolkit
       hono:
         specifier: ^4.7.1
         version: 4.8.3

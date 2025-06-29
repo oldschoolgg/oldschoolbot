@@ -7,6 +7,7 @@
 	"dependencies": {
 		"hono": "^4.7.1",
 		"@hono/node-server": "^1.13.8",
-		"hono-rate-limiter": "^0.4.2"
+		"hono-rate-limiter": "^0.4.2",
+		"@oldschoolgg/toolkit": "workspace:*"
 	}
 }
