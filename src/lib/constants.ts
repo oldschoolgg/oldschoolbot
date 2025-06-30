@@ -333,6 +333,11 @@ export const projectiles = {
 		savedByAvas: true,
 		weapons: resolveItems(['Twisted bow'])
 	},
+	ogreArrow: {
+		items: resolveItems(['Ogre Arrow']),
+		savedByAvas: true,
+		weapons: resolveItems(['Ogre bow'])
+	},
 	bolt: {
 		items: resolveItems([
 			'Runite bolts',
