@@ -2266,3 +2266,9 @@ export const chompyHats = [
 	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
+
+export const avasDevices: { item: Item; reduction: number }[] = [
+	{ item: getOSItem("Ava's attractor"), reduction: 60 },
+	{ item: getOSItem("Ava's accumulator"), reduction: 72 },
+	{ item: getOSItem("Ava's assembler"), reduction: 80 }
+];
