@@ -1,8 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
-import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
-import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
+import {
+	type CommandResponse,
+	type CommandRunOptions,
+	exponentialPercentScale,
+	mentionCommand
+} from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
@@ -16,8 +20,7 @@ import {
 	randInt,
 	reduceNumByPercent
 } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier, badges } from '../../lib/constants';
@@ -30,6 +33,7 @@ import { getUsersPerkTier } from '../../lib/perkTiers';
 
 import type { Canvas } from 'skia-canvas';
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
+import Bars from '../../lib/skilling/skills/smithing/smeltables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	type SeaMonkeySpell,
@@ -1377,6 +1381,35 @@ async function superGlassCommand(user: MUser, channelID: string) {
 	});
 }
 
+async function superheatItemCommand(user: MUser, channelID: string, itemName: string) {
+	const item = Bars.find(i => getOSItem(i.id).name === itemName);
+
+	const { tame, activity } = await getUsersTame(user);
+	if (!tame) return `You don't have a tame selected.`;
+	if (activity) return `${tame} is already on a trip.`;
+	const hasKlik = tameHasBeenFed(tame, itemID('Klik'));
+
+	if (!item) {
+		return "That's not a valid item to superheat.";
+	}
+
+	if (!hasKlik && (itemName === 'Dwarven bar' || itemName === 'Sun-metal bar')) {
+		return `You need to feed your tame a Klik to super heat ${itemName}.`;
+	}
+
+	return monkeyMagicHandler(user, channelID, {
+		spell: seaMonkeySpells.find(i => i.id === 5)!,
+		itemID: item.id,
+		costPerItem: new Bank().add(item.inputOres),
+		lootPerItem: new Bank().add(item.id),
+		timePerSpell: Time.Second * 3,
+		runes: {
+			per: 1,
+			cost: new Bank().add('Nature rune', 1).add('Fire rune', 4)
+		}
+	});
+}
+
 async function plankMakeCommand(user: MUser, channelID: string, plankName: string) {
 	const item = Planks.find(p => p.name === plankName);
 	if (!item) {
@@ -1752,6 +1785,7 @@ export type TamesCommandOptions = CommandRunOptions<{
 		spin_flax?: string;
 		plank_make?: string;
 		superglass_make?: string;
+		superheat_item?: string;
 	};
 	activity?: {
 		name: string;
@@ -1972,6 +2006,13 @@ export const tamesCommand: OSBMahojiCommand = {
 					description: 'Create glass.',
 					required: false,
 					choices: [{ name: 'Molten glass', value: 'molten glass' }]
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'superheat_item',
+					description: 'Superheat ore into bars',
+					required: false,
+					choices: Bars.map(t => ({ name: t.name, value: t.name }))
 				}
 			]
 		},
@@ -2054,6 +2095,7 @@ export const tamesCommand: OSBMahojiCommand = {
 		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelID);
 		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
 		if (options.cast?.superglass_make) return superGlassCommand(user, channelID);
+		if (options.cast?.superheat_item) return superheatItemCommand(user, channelID, options.cast.superheat_item);
 		if (options.clue?.clue) {
 			return tameClueCommand(user, channelID, options.clue.clue);
 		}

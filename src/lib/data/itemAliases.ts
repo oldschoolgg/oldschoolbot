@@ -428,8 +428,7 @@ export interface CustomItemData {
 	superTradeableButTradeableOnGE?: true;
 	isSecret?: true;
 }
-
-declare module 'oldschooljs/dist/meta/types' {
+declare module 'oldschooljs' {
 	interface Item {
 		customItemData?: CustomItemData;
 	}

@@ -1,9 +1,7 @@
-import { Bank, EMonster } from 'oldschooljs';
+import { Time } from 'e';
+import { Bank, EMonster, type ItemBank, SkillsEnum } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { Time } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { gorajanArcherOutfit, gorajanWarriorOutfit } from '../../../src/lib/data/CollectionsExport';
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
 import { VasaMagus } from '../../../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';

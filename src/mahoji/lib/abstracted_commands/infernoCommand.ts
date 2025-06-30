@@ -1,7 +1,7 @@
 import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr } from 'e';
-import { Bank, type ItemBank, Monsters, itemID, randomVariation } from 'oldschooljs';
+import { Bank, type ItemBank, Monsters, itemID, randomVariation, resolveItems } from 'oldschooljs';
 
 import { BitField, projectiles } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
@@ -19,7 +19,6 @@ import { determineProjectileTypeFromGear, itemNameFromID } from '../../../lib/ut
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const minimumRangeItems = [

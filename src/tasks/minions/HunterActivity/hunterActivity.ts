@@ -1,7 +1,6 @@
 import type { Prisma } from '@prisma/client';
 import { Time, randInt } from 'e';
-import { Bank, increaseBankQuantitesByPercent } from 'oldschooljs';
-import { EquipmentSlot, type ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, EquipmentSlot, type ItemBank, increaseBankQuantitesByPercent } from 'oldschooljs';
 
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';

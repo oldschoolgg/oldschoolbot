@@ -1,10 +1,9 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
-
 import { reduceNumByPercent } from 'e';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, type ItemBank, itemID } from 'oldschooljs';
+
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import type { UserFullGearSetup } from '../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';

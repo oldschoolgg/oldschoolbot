@@ -1,4 +1,5 @@
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { resolveItems } from 'oldschooljs';
+
 import { dyedItems } from '../dyedItems';
 import skillcapes from '../skilling/skillcapes';
 import getOSItem from '../util/getOSItem';

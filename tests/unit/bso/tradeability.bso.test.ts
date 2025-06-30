@@ -1,4 +1,4 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { isSuperUntradeable } from '../../../src/lib/bso/bsoUtil';

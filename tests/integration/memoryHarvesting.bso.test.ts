@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 import { MemoryHarvestType } from '../../src/lib/bso/divination';

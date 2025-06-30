@@ -6,17 +6,19 @@ import {
 	EItem,
 	EMonster,
 	EliteMimicTable,
+	HallowedSackTable,
+	Implings,
+	type Item,
+	type ItemBank,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
+	type OpenableOpenOptions,
 	Openables,
+	SkillsEnum,
 	ZombiePiratesLocker,
 	resolveItems
 } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { Item, ItemBank, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
-import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
-import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
 import { randInt } from 'e';
 import { bsoOpenables } from './bsoOpenables';

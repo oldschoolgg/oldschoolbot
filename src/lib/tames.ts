@@ -1,8 +1,16 @@
 import type { Tame, TameActivity } from '@prisma/client';
 import { Time, objectEntries } from 'e';
-import { Bank, Misc, Monsters } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
+import {
+	Bank,
+	ChambersOfXeric,
+	type Item,
+	type ItemBank,
+	Misc,
+	Monsters,
+	TheatreOfBlood,
+	itemID,
+	resolveItems
+} from 'oldschooljs';
 
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
@@ -11,13 +19,12 @@ import type { KillableMonster } from './minions/types';
 
 import type { handleFinish } from '../tasks/tames/tameTasks';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
+import Bars from './skilling/skills/smithing/smeltables';
 import type { MTame } from './structures/MTame';
 import { calculateSimpleMonsterDeathChance } from './util';
 import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
-import itemID from './util/itemID';
 import { assert } from './util/logError';
-import resolveItems from './util/resolveItems';
 
 export enum TameSpeciesID {
 	Igne = 1,
@@ -78,10 +85,10 @@ export const tameFeedableItems: FeedableItem[] = [
 	},
 	{
 		item: getOSItem('Klik'),
-		description: 'Makes tanning spell faster',
+		description: 'Makes tanning spell faster and the ability to superheat Dwarven & Sun-metal bars',
 		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
 		announcementString:
-			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster."
+			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster, and superheat Dwarven & Sun-metal bars"
 	},
 	{
 		item: getOSItem('Impling locator'),
@@ -122,7 +129,7 @@ export const seaMonkeyStaves = [
 ] as const;
 
 export interface SeaMonkeySpell {
-	id: 1 | 2 | 3 | 4;
+	id: 1 | 2 | 3 | 4 | 5;
 	tierRequired: number;
 	name: string;
 	description: string;
@@ -157,6 +164,13 @@ export const seaMonkeySpells: SeaMonkeySpell[] = [
 		name: 'Superglass make',
 		description: 'Turns seaweed/sand into molten glass',
 		itemIDs: [itemID('Molten glass')]
+	},
+	{
+		id: 5,
+		tierRequired: 2,
+		name: 'Superheat Item',
+		description: 'Turns ore into bars',
+		itemIDs: Bars.map(i => i.id)
 	}
 ];
 

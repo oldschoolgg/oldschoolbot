@@ -2,8 +2,7 @@ import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
 import { randInt } from 'e';
-import { Bank, increaseBankQuantitesByPercent } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, SkillsEnum, increaseBankQuantitesByPercent } from 'oldschooljs';
 
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';

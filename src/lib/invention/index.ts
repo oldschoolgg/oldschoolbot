@@ -1,4 +1,4 @@
-import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs';
 
 import { DisassemblySourceGroups } from './groups';
 

@@ -1,7 +1,6 @@
 import { type ChatInputCommandInteraction, EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
+import { Bank, toKMB } from 'oldschooljs';
 
 import KingGoldemar from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { BossInstance, gpCostPerKill } from '../../../lib/structures/Boss';

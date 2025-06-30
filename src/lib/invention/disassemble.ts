@@ -1,7 +1,6 @@
 import { type CommandResponse, Table } from '@oldschoolgg/toolkit';
 import { Time, calcWhatPercent, clamp, percentChance, reduceNumByPercent, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
 
 import {
 	type DisassembleFlag,

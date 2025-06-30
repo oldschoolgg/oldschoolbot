@@ -1,6 +1,5 @@
 import { randArrItem, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { inventorOutfit } from '../../../lib/data/CollectionsExport';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';

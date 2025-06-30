@@ -1,5 +1,5 @@
+import { randomVariation } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { randomVariation } from 'oldschooljs/dist/util';
 
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';

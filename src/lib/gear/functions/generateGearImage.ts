@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
-import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, type Item } from 'oldschooljs';
 
 import {
 	type GearSetup,

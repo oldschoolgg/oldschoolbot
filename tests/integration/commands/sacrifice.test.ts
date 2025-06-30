@@ -1,6 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { mahojiClientSettingsFetch } from '../../../src/lib/util/clientSettings';

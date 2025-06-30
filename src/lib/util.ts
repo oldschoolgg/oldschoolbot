@@ -16,6 +16,7 @@ import {
 	type CacheType,
 	type Collection,
 	type CollectorFilter,
+	type ComponentType,
 	type Guild,
 	type InteractionReplyOptions,
 	type Message,
@@ -26,10 +27,9 @@ import {
 	escapeMarkdown,
 	userMention
 } from 'discord.js';
-import type { ComponentType } from 'discord.js';
 import { Time, calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
+import { type Bank, type Monster, Monsters } from 'oldschooljs';
 
-import { type Bank, type Monster, Monsters } from 'oldschooljs/dist/meta/types';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { clAdjustedDroprate, convertXPtoLVL } from './bso/bsoUtil';

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt, roll } from 'e';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs';
 
 import { type CanvasImage, canvasToBuffer, createCanvas, loadImage, printWrappedText } from './util/canvasUtil';
 import { textBoxFile } from './util/chatHeadImage';
