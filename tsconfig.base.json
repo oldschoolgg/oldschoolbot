@@ -22,7 +22,10 @@
 		"skipLibCheck": true,
 		"types": ["node", "node-fetch"],
 		"esModuleInterop": true,
-		"skipDefaultLibCheck": true
+		"skipDefaultLibCheck": true,
+		"paths": {
+			"@/*": ["./src/*"]
+		}
 	},
 	"exclude": ["**/node_modules", "node_modules"]
 }
