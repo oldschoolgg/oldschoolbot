@@ -3,10 +3,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, sumArr } from 'e';
-import { Bank, Monsters, toKMB } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
-import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
+import { Bank, type ItemBank, Monsters, SkillsEnum, type SkillsScore, TOBRooms, toKMB } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';

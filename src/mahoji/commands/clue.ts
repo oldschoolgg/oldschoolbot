@@ -1,8 +1,7 @@
 import { type CommandRunOptions, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, clamp, increaseNumByPercent, notEmpty, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { clueHunterOutfit } from '../../lib/data/CollectionsExport';

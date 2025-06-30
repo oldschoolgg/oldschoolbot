@@ -3,8 +3,7 @@ import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { Time, calcWhatPercent, objectValues, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
-import { Bank, EquipmentSlot, type Item, type ItemBank } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { Bank, EquipmentSlot, type Item, type ItemBank, resolveItems } from 'oldschooljs';
 import { pick } from 'remeda';
 
 import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';

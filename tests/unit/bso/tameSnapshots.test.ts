@@ -1,10 +1,10 @@
 import { writeFileSync } from 'node:fs';
 import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs';
+import { groupBy } from 'remeda';
 import { test } from 'vitest';
 
-import { groupBy } from 'remeda';
 import { ClueTiers } from '../../../src/lib/clues/clueTiers';
 import { determineTameClueResult } from '../../../src/mahoji/commands/tames';
 

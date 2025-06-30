@@ -1,6 +1,5 @@
 import { Time } from 'e';
-import { LootTable, Monsters } from 'oldschooljs';
-import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
+import { GemTable, LootTable, Monsters } from 'oldschooljs';
 
 import { LowSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';

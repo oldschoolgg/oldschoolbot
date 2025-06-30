@@ -1,4 +1,4 @@
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot } from 'oldschooljs';
 
 import { allEquippableItems } from '../../mahoji/lib/mahojiCommandOptions';
 import { getSimilarItems } from '../data/similarItems';

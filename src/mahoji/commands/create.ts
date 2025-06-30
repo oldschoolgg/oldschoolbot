@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs';
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { isFunction, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import type { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, type SkillsEnum } from 'oldschooljs';
+
 import Createables from '../../lib/data/createables';
 import type { IMaterialBank } from '../../lib/invention';
 import { MaterialBank } from '../../lib/invention/MaterialBank';

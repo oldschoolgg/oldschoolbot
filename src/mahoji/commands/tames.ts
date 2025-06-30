@@ -1,8 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
-import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
-import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
+import {
+	type CommandResponse,
+	type CommandRunOptions,
+	exponentialPercentScale,
+	mentionCommand
+} from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
@@ -16,8 +20,7 @@ import {
 	randInt,
 	reduceNumByPercent
 } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier, badges } from '../../lib/constants';

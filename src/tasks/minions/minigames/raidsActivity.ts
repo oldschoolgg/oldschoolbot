@@ -1,8 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, shuffleArr } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import { Bank, ChambersOfXeric, SkillsEnum } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { CHINCANNON_MESSAGES } from '../../../lib/bso/bsoConstants';

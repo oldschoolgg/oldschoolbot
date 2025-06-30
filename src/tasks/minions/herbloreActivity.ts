@@ -1,6 +1,5 @@
 import { Time, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { herbertDroprate } from '../../lib/bso/bsoUtil';
 import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';

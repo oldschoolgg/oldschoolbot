@@ -1,4 +1,4 @@
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot } from 'oldschooljs';
 
 import getOSItem from '../util/getOSItem';
 import { setCustomItem } from './util';

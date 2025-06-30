@@ -14,7 +14,7 @@ import './moktang';
 import './leagues';
 import './paintCans';
 
-import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs';
 
 import getOSItem from '../util/getOSItem';
 import { UN_EQUIPPABLE, customItems, maxedRequirements, setCustomItem } from './util';

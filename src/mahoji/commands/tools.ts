@@ -9,9 +9,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
 import { Time, randArrItem, randInt, shuffleArr } from 'e';
-import { Bank, ItemGroups, convertLVLtoXP } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
+import { Bank, type Item, type ItemBank, ItemGroups, ToBUniqueTable, convertLVLtoXP } from 'oldschooljs';
 
 import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
 import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';

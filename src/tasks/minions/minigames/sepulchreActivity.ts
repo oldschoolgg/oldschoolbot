@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallowedCoffin';
+import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';

@@ -1,5 +1,4 @@
-import { Monsters } from 'oldschooljs';
-import type { Item, Monster } from 'oldschooljs/dist/meta/types';
+import { type Item, type Monster, Monsters } from 'oldschooljs';
 
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { slayerMasters } from '../slayer/slayerMasters';

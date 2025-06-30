@@ -1,9 +1,9 @@
-import { ItemGroups, itemID, resolveItems } from 'oldschooljs/dist/util';
+import { ItemGroups, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
+import { itemNameFromID } from '@/lib/util';
 import { PMBTable, combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '../../../src/lib/bsoOpenables';
 import { growablePets } from '../../../src/lib/growablePets';
-import { itemNameFromID } from '../../../src/lib/util';
 
 test("Items that shouldn't be dropped in mystery boxes", () => {
 	const shouldntBeIn = resolveItems([

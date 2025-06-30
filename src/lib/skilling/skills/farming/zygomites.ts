@@ -1,7 +1,6 @@
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { randArrItem, roll } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, LootTable } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../bsoOpenables';
 import { BitField } from '../../../constants';

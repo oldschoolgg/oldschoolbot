@@ -9,12 +9,11 @@ import {
 	tame_growth
 } from '@prisma/client';
 import { Time, objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Monsters } from 'oldschooljs';
+import { Bank, type EMonster, Monsters, convertLVLtoXP } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
+import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
-import { clone } from 'remeda';
 import { MUserClass } from '../../src/lib/MUser';
 import { completeActivity } from '../../src/lib/Task';
 import { globalConfig } from '../../src/lib/constants';

@@ -1,6 +1,5 @@
 import { sumArr } from 'e';
-import { Bank } from 'oldschooljs';
-import { LuckyImpling } from 'oldschooljs/dist/simulation/openables/Implings';
+import { Bank, type ItemBank, LuckyImpling, resolveItems } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import {
@@ -23,9 +22,7 @@ import { dungBuyables } from '../skilling/skills/dung/dungData';
 import { ashes } from '../skilling/skills/prayer';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
 import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
-import type { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
-import resolveItems from '../util/resolveItems';
 import { getTameSpecies } from '../util/tameUtil';
 import type { Task } from './leaguesUtils';
 

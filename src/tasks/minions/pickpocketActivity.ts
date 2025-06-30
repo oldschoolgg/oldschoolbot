@@ -1,5 +1,5 @@
 import { Time, percentChance, randInt, roll } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';

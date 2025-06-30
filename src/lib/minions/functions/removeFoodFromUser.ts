@@ -1,8 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { objectEntries, reduceNumByPercent } from 'e';
-import type { Bank } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { type Bank, itemID } from 'oldschooljs';
 
 import { Eatables } from '../../data/eatables';
 import type { GearSetupType } from '../../gear/types';

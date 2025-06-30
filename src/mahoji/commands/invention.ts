@@ -1,8 +1,7 @@
 import { type CommandRunOptions, Table } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { type IMaterialBank, type MaterialType, allItemsThatCanBeDisassembledIDs } from '../../lib/invention';
 import { MaterialBank } from '../../lib/invention/MaterialBank';

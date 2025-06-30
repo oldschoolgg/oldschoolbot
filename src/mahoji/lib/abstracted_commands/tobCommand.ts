@@ -1,8 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent } from 'e';
-import { Bank, randomVariation } from 'oldschooljs';
-import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
+import { Bank, TOBRooms, randomVariation } from 'oldschooljs';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';

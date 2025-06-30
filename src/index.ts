@@ -7,8 +7,7 @@ import './lib/geImage';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { MahojiClient } from '@oldschoolgg/toolkit/util';
 import { init } from '@sentry/node';
-import type { TextChannel } from 'discord.js';
-import { GatewayIntentBits, Options, Partials } from 'discord.js';
+import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 import { isObject } from 'e';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';

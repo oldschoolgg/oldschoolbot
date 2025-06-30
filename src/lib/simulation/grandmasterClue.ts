@@ -1,6 +1,4 @@
-import { EliteClueTable, LootTable } from 'oldschooljs/dist/simulation/clues/Elite';
-import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
-import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
+import { EliteClueTable, HardClueTable, LootTable, MasterClueTable } from 'oldschooljs';
 
 import { LampTable } from '../xpLamps';
 import { AllBarrows, BattlestaffTable, CosmeticsTable, StaffOrbTable, runeAlchablesTable } from './sharedTables';

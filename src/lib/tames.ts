@@ -1,8 +1,16 @@
 import type { Tame, TameActivity } from '@prisma/client';
 import { Time, objectEntries } from 'e';
-import { Bank, Misc, Monsters } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
+import {
+	Bank,
+	ChambersOfXeric,
+	type Item,
+	type ItemBank,
+	Misc,
+	Monsters,
+	TheatreOfBlood,
+	itemID,
+	resolveItems
+} from 'oldschooljs';
 
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
@@ -16,9 +24,7 @@ import type { MTame } from './structures/MTame';
 import { calculateSimpleMonsterDeathChance } from './util';
 import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
-import itemID from './util/itemID';
 import { assert } from './util/logError';
-import resolveItems from './util/resolveItems';
 
 export enum TameSpeciesID {
 	Igne = 1,

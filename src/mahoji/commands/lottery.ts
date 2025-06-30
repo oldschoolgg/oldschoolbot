@@ -2,8 +2,7 @@ import { userMention } from '@discordjs/builders';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { ores, secondaries, seedsFilter } from '../../lib/data/filterables';

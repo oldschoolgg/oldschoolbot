@@ -1,6 +1,6 @@
 import { isFunction, notEmpty } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
+import { Bank, Implings, Monsters } from 'oldschooljs';
+
 import { flowerTable } from '../mahoji/lib/abstracted_commands/hotColdCommand';
 import { tipTable } from '../tasks/minions/minigames/gnomeRestaurantActivity';
 import { ClueTiers } from './clues/clueTiers';
