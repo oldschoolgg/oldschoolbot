@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"============DEVELOPMENT": "============",
-		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm build:esbuild && node --enable-source-maps dist\"",
+		"watch": "nodemon --delay 1ms -e ts -w src --exec \"tsx esbuild.mts && node --enable-source-maps dist\"",
 		"dev:stage1": "pnpm concurrently --raw \"pnpm install\" \"prisma db push\" \"pnpm generate:robochimp\" \"pnpm build:packages\"",
 		"dev:stage2": "pnpm concurrently --raw \"pnpm commands\" \"pnpm creatables\" \"pnpm build\"",
 		"dev:stage3": "pnpm lint && pnpm test",
