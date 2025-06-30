@@ -2,7 +2,13 @@ import { writeFileSync } from 'node:fs';
 import fetch from 'node-fetch';
 
 import { Monsters } from '../src';
-import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '../src/meta/monsterData';
+import {
+	Element,
+	type MonsterAttackType,
+	type MonsterAttribute,
+	type MonsterData,
+	type MonsterSlayerMaster
+} from '../src/meta/monsterData';
 
 import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
@@ -50,7 +56,11 @@ interface Monster {
 	defence_slash: number;
 	defence_crush: number;
 	defence_magic: number;
-	defence_ranged: number;
+	defence_ranged_light: number;
+	defence_ranged_standard: number;
+	defence_ranged_heavy: number;
+	elemental_weakness_type: number;
+	elemental_weakness_percent: number;
 	attack_accuracy: number;
 	melee_strength: number;
 	ranged_strength: number;
@@ -84,7 +94,11 @@ const transformData = (data: any): MonsterData => {
 		dslash,
 		dcrush,
 		dmagic,
-		drange,
+		dlight,
+		dstandard,
+		dheavy,
+		elementalweaknesstype,
+		elementalweaknesspercent,
 		attributes
 	} = data;
 	attributes ??= [];
@@ -126,7 +140,13 @@ const transformData = (data: any): MonsterData => {
 		defenceSlash: Number(dslash ?? 0),
 		defenceCrush: Number(dcrush ?? 0),
 		defenceMagic: Number(dmagic ?? 0),
-		defenceRanged: Number(drange ?? 0),
+		defenceRangedLight: Number(dlight ?? 0),
+		defenceRangedStandard: Number(dstandard ?? 0),
+		defenceRangedHeavy: Number(dheavy ?? 0),
+		elementalWeakness: Element[elementalweaknesstype as keyof typeof Element]
+			? Element[elementalweaknesstype as keyof typeof Element]
+			: undefined,
+		elementalPercent: elementalweaknesspercent ? Number(elementalweaknesspercent) : undefined,
 		attackAccuracy: 0,
 		meleeStrength: 0,
 		rangedStrength: 0,
@@ -142,7 +162,7 @@ export default async function prepareMonsters(): Promise<void> {
 	const allMonsters: { [key: string]: Monster } = await (async () => {
 		try {
 			const response = await fetch(
-				'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/d760e5eada60cec1a4e62d4e6f8c62462fb86b0c/docs/monsters-complete.json'
+				'https://raw.githubusercontent.com/DayV-git/osrsreboxed-db/7e742efb13b5d6f66792222142f7684490e83b49/docs/monsters-complete.json'
 			);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch data: ${response.statusText}`);
@@ -191,7 +211,11 @@ export default async function prepareMonsters(): Promise<void> {
 			defenceSlash: mon.defence_slash ?? 0,
 			defenceCrush: mon.defence_crush ?? 0,
 			defenceMagic: mon.defence_magic ?? 0,
-			defenceRanged: mon.defence_ranged ?? 0,
+			defenceRangedLight: mon.defence_ranged_light ?? 0,
+			defenceRangedStandard: mon.defence_ranged_standard ?? 0,
+			defenceRangedHeavy: mon.defence_ranged_heavy ?? 0,
+			elementalWeakness: mon.elemental_weakness_type > 0 ? mon.elemental_weakness_type : undefined,
+			elementalPercent: mon.elemental_weakness_percent > 0 ? mon.elemental_weakness_percent : undefined,
 			attackAccuracy: mon.attack_accuracy ?? 0,
 			meleeStrength: mon.melee_strength ?? 0,
 			rangedStrength: mon.ranged_strength ?? 0,
