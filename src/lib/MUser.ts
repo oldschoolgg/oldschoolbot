@@ -1,14 +1,11 @@
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { calcWhatPercent, objectValues, percentChance, sumArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-
-import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
-
-import { UserError } from '@oldschoolgg/toolkit/structures';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { Bank, EquipmentSlot, type Item, resolveItems } from 'oldschooljs';
 import { pick } from 'remeda';
+
 import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';

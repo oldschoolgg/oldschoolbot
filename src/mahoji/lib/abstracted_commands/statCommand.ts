@@ -1,15 +1,18 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { type CommandResponse, PerkTier } from '@oldschoolgg/toolkit/util';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { Time, sumArr } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
-import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-import { toKMB } from 'oldschooljs/dist/util';
+import {
+	Bank,
+	type ItemBank,
+	Monsters,
+	SkillsEnum,
+	type SkillsScore,
+	TOBRooms,
+	resolveItems,
+	toKMB
+} from 'oldschooljs';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { PerkTier } from '@oldschoolgg/toolkit/util';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
@@ -18,7 +21,6 @@ import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';

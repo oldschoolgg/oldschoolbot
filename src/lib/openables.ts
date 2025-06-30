@@ -1,4 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import {
 	Bank,
@@ -6,19 +7,19 @@ import {
 	EItem,
 	EMonster,
 	EliteMimicTable,
+	HallowedSackTable,
+	Implings,
+	type Item,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
+	type OpenableOpenOptions,
 	Openables,
+	SkillsEnum,
 	ZombiePiratesLocker,
 	resolveItems
 } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
-import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
-import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
 import { ClueTiers } from './clues/clueTiers';
 import { cluesRaresCL } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';

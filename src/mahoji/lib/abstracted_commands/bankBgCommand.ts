@@ -1,8 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Bank, toKMB } from 'oldschooljs';
+import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField } from '../../../lib/constants';
 import { formatSkillRequirements } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';

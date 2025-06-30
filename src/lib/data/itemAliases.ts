@@ -364,7 +364,7 @@ for (const item of allTrophyItems) {
 export interface CustomItemData {
 	cantBeSacrificed?: true;
 }
-declare module 'oldschooljs/dist/meta/types' {
+declare module 'oldschooljs' {
 	interface Item {
 		customItemData?: CustomItemData;
 	}

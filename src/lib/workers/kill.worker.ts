@@ -1,9 +1,8 @@
 import '../data/itemAliases';
 
 import { stringMatches } from '@oldschoolgg/toolkit/util';
-import { Bank, Misc, Monsters, calcDropRatesFromBank } from 'oldschooljs';
+import { Bank, Misc, Monsters, calcDropRatesFromBank, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 import killableMonsters from '../minions/data/killableMonsters';
 import { handleNexKills } from '../simulation/nex';

@@ -1,10 +1,8 @@
-import { calcWhatPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-import { randomVariation } from 'oldschooljs/dist/util';
-
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { calcWhatPercent } from 'e';
+import { Bank, TOBRooms, randomVariation } from 'oldschooljs';
+
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
 	TENTACLE_CHARGES_PER_RAID,

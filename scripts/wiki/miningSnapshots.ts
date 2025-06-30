@@ -1,6 +1,6 @@
 import { Table, calcPerHour } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
-import { type Bank, convertLVLtoXP } from 'oldschooljs/dist/meta/types';
+import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
 import '../../src/lib/safeglobals.js';

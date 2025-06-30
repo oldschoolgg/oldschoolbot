@@ -1,9 +1,8 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Activity, ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Monsters } from 'oldschooljs';
+import { Bank, type EMonster, Monsters, convertLVLtoXP } from 'oldschooljs';
 
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
