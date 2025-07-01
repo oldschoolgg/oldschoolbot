@@ -1,12 +1,16 @@
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
 import type { UserStats } from '@prisma/client';
-import type { ChatInputCommandInteraction, MessageEditOptions } from 'discord.js';
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import {
+	ApplicationCommandOptionType,
+	type ChatInputCommandInteraction,
+	EmbedBuilder,
+	type MessageEditOptions
+} from 'discord.js';
 import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
 
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { masteryKey } from '../../lib/constants';
+import { MAX_LEVEL, masteryKey } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { allLeagueTasks } from '../../lib/leagues/leagues';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -593,7 +597,7 @@ async function skillsLb(
 		overallUsers = res.map(user => {
 			let totalLevel = 0;
 			for (const skill of skillsVals) {
-				totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}`]) as any, 120);
+				totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}`]) as any, MAX_LEVEL);
 			}
 			return {
 				id: user.id,
@@ -705,7 +709,7 @@ async function skillsLb(
 
 					return `${getPos(i, j)}**${getUsernameSync(obj.id)}:** ${skillXP.toLocaleString()} XP (${convertXPtoLVL(
 						skillXP,
-						120
+						MAX_LEVEL
 					)})`;
 				})
 				.join('\n')

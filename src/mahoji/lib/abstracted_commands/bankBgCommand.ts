@@ -2,9 +2,9 @@ import { stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
+import { formatSkillRequirements } from '@/lib/util';
+import { findGroupOfUser } from '@/lib/util/findGroupOfUser';
 import { BitField } from '../../../lib/constants';
-import { formatSkillRequirements } from '../../../lib/util';
-import { findGroupOfUser } from '../../../lib/util/findGroupOfUser';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 

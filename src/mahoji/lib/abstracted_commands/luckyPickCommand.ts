@@ -11,8 +11,8 @@ import {
 import { Time, chunk, noOp, roll, shuffleArr } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
+import { awaitMessageComponentInteraction } from '@/lib/util';
 import { SILENT_ERROR } from '../../../lib/constants';
-import { awaitMessageComponentInteraction } from '../../../lib/util';
 import { handleMahojiConfirmation, silentButtonAck } from '../../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';

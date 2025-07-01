@@ -1,5 +1,5 @@
 import { percentChance, sumArr } from 'e';
-import type { Bank } from 'oldschooljs';
+import { type Bank, itemID } from 'oldschooljs';
 
 import {
 	birdsNestID,
@@ -11,7 +11,6 @@ import {
 } from '../../simulation/birdsNest';
 import { SkillsEnum } from '../../skilling/types';
 import { GearBank } from '../../structures/GearBank';
-import itemID from '../../util/itemID';
 import { randFloat, roll } from '../../util/rng';
 
 const clues = [

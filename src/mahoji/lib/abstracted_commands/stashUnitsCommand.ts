@@ -1,13 +1,12 @@
 import { type CommandResponse, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { StashUnit, User } from '@prisma/client';
 import { partition } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import type { IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../../lib/clues/stashUnits';
 import { assert } from '../../../lib/util/logError';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { itemNameFromID } from '../../../lib/util/smallUtils';
 import { getMahojiBank } from '../../mahojiSettings';
 
 export async function getParsedStashUnits(userID: string): Promise<ParsedUnit[]> {
@@ -54,15 +53,14 @@ export async function stashUnitViewCommand(
 		const unit = parsedUnits.find(i => stringMatches(i.unit.id.toString(), stashID));
 		if (!unit || !unit.builtUnit) return "You don't have this unit built.";
 		return `${unit.unit.desc} - ${unit.tier.tier} STASH Unit
-Contains: ${unit.builtUnit.items_contained.map(itemNameFromID).join(', ')}`;
+Contains: ${unit.builtUnit.items_contained.map(i => Items.itemNameFromId(i)).join(', ')}`;
 	}
 
 	if (notBuilt) {
 		let str = "Stash units you haven't built/filled:\n";
 		for (const { unit, tier } of parsedUnits.filter(i => !i.isFull || !i.builtUnit)) {
 			str += `${unit.desc} (${tier.tier} tier): ${unit.items
-				.map(item => [item].flat()[0])
-				.map(itemNameFromID)
+				.map(item => Items.itemNameFromId([item].flat()[0]))
 				.join(', ')}\n`;
 		}
 		if (str.length < 1000) {

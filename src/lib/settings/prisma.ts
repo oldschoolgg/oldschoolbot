@@ -1,5 +1,4 @@
-import type { Activity, Prisma } from '@prisma/client';
-import type { activity_type_enum } from '@prisma/client';
+import type { Activity, Prisma, activity_type_enum } from '@prisma/client';
 
 import type { ActivityTaskData } from '../types/minions';
 

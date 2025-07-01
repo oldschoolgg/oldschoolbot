@@ -1,6 +1,13 @@
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import type { BaseMessageOptions, ComponentType, MessageEditOptions, TextChannel } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import {
+	ActionRowBuilder,
+	type BaseMessageOptions,
+	ButtonBuilder,
+	ButtonStyle,
+	type ComponentType,
+	type MessageEditOptions,
+	type TextChannel
+} from 'discord.js';
 import { Time, isFunction } from 'e';
 
 import { InteractionID } from './InteractionID';

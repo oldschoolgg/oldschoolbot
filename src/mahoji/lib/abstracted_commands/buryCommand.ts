@@ -1,7 +1,7 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { BuryingActivityTaskOptions } from '../../../lib/types/minions';

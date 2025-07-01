@@ -3,9 +3,9 @@ import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
-import { type Item, convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs';
+import { type Item, convertLVLtoXP, convertXPtoLVL, resolveItems, toKMB } from 'oldschooljs';
 
-import { Channel, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
+import { Channel, LEVEL_120_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
 import {
 	divinersOutfit,
 	gorajanArcherOutfit,
@@ -23,7 +23,6 @@ import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
 import { itemNameFromID } from './util/smallUtils';
 import { insertUserEvent } from './util/userEvents';
 import { sendToChannelID } from './util/webhook';
@@ -227,7 +226,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	const newXP = Math.min(MAX_XP, currentXP + params.amount);
 	const totalXPAdded = newXP - currentXP;
-	const newLevel = convertXPtoLVL(newXP, 120);
+	const newLevel = convertXPtoLVL(Math.floor(newXP), MAX_LEVEL);
 
 	// Pre-MAX_XP
 	let preMax = -1;

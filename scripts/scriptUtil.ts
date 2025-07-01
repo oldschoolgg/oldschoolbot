@@ -1,6 +1,7 @@
 import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 const rawExecAsync = promisify(execNonPromise);
 
@@ -28,4 +29,25 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	await fn();
 	stopwatch.stop();
 	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+}
+
+export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {
+	if (bank instanceof Bank) {
+		return bank
+			.items()
+			.map(i => i[0].name)
+			.sort((a, b) => a.localeCompare(b));
+	}
+	return getItemNamesFromBank(new Bank(bank));
+}
+
+export function getNamedBank(bank: Bank | ItemBank): Record<string, number> {
+	if (bank instanceof Bank) {
+		const namedBank: Record<string, number> = {};
+		for (const [item, quantity] of bank.items().sort((a, b) => a[0].name.localeCompare(b[0].name))) {
+			namedBank[item.name] = quantity;
+		}
+		return namedBank;
+	}
+	return getNamedBank(new Bank(bank));
 }

@@ -1,9 +1,9 @@
-import { resolveItems } from 'oldschooljs';
+import { itemID, resolveItems } from 'oldschooljs';
 
 import { dyedItems } from '../dyedItems';
 import skillcapes from '../skilling/skillcapes';
 import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID';
+
 import {
 	gracefulCapes,
 	gracefulFeet,

@@ -1,11 +1,11 @@
-import { randomVariation } from '@oldschoolgg/toolkit';
+import { formatDuration, randomVariation } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { Items } from 'oldschooljs';
 
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import Mining from '../../../lib/skilling/skills/mining';
 import type { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
@@ -34,14 +34,16 @@ export async function motherlodeMineCommand({
 	}
 	// Default bronze pickaxe, last in the array
 	let currentPickaxe = pickaxes[pickaxes.length - 1];
-	boosts.push(`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(currentPickaxe.id)}`);
+	boosts.push(
+		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(currentPickaxe.id)}`
+	);
 
 	// For each pickaxe, if they have it, give them its' bonus and break.
 	for (const pickaxe of pickaxes) {
 		if (!user.hasEquippedOrInBank([pickaxe.id]) || user.skillsAsLevels.mining < pickaxe.miningLvl) continue;
 		currentPickaxe = pickaxe;
 		boosts.pop();
-		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(pickaxe.id)}`);
 		break;
 	}
 

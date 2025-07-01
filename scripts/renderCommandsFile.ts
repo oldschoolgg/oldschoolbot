@@ -1,8 +1,9 @@
-import { writeFile } from 'node:fs/promises';
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { md5sum, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { DateTime } from 'luxon';
 
-import '../src/lib/safeglobals';
 import { BOT_TYPE } from '../src/lib/constants';
 import { allCommands } from '../src/mahoji/commands/allCommands';
 import type { AbstractCommand } from '../src/mahoji/lib/inhibitors';
@@ -33,22 +34,41 @@ function renderCommands() {
 					subOptions.push(option.name);
 				}
 			}
+			subOptions.sort((a, b) => a.localeCompare(b));
 			return {
 				name: cmd.name,
 				desc: cmd.attributes?.description,
-				examples: cmd.attributes?.examples,
-				flags: cmd.attributes?.categoryFlags,
+				examples: cmd.attributes?.examples?.sort((a, b) => a.localeCompare(b)),
+				flags: cmd.attributes?.categoryFlags?.sort((a, b) => a.localeCompare(b)),
 				subOptions
 			};
 		})
 		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-async function renderCommandsFile() {
-	const commands = await renderCommands();
-	const path = `data/${BOT_TYPE.toLowerCase()}.commands.json`;
-	await writeFile(path, `${JSON.stringify(commands, null, '	')}\n`);
-	process.exit(0);
-}
+export function renderCommandsFile() {
+	const stopwatch = new Stopwatch();
+	const commands = renderCommands();
+	const filePath = `data/${BOT_TYPE.toLowerCase()}/commands.json`;
 
-renderCommandsFile();
+	const hash = md5sum(JSON.stringify(commands));
+	const previousHash = JSON.parse(readFileSync(filePath, 'utf-8')).hash || '';
+	if (hash === previousHash) {
+		console.log('Commands JSON file is up to date');
+		return;
+	}
+
+	writeFileSync(
+		filePath,
+		`${JSON.stringify(
+			{
+				hash,
+				date: DateTime.utc().toISO(),
+				data: commands
+			},
+			null,
+			'	'
+		)}\n`
+	);
+	stopwatch.check('Finished commands file.');
+}

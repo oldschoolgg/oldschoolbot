@@ -1,8 +1,8 @@
+import { formatDuration, randomVariation } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 

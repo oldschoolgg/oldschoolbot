@@ -1,11 +1,18 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable, formatDuration, makeComponents, mentionCommand } from '@oldschoolgg/toolkit/util';
 import { command_name_enum } from '@prisma/client';
-import type { BaseMessageOptions, Message } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold, time } from 'discord.js';
+import {
+	type BaseMessageOptions,
+	ButtonBuilder,
+	ButtonStyle,
+	EmbedBuilder,
+	type Message,
+	bold,
+	time
+} from 'discord.js';
 import { Time, isFunction } from 'e';
-import { Items } from 'oldschooljs';
+import { Items, toKMB } from 'oldschooljs';
 
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
@@ -18,7 +25,6 @@ import { BitField, globalConfig } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 import type { ItemBank } from './types';
-import { formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';

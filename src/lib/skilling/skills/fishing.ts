@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { itemID } from 'oldschooljs';
 
-import itemID from '../../util/itemID';
 import type { Fish } from '../types';
 import { SkillsEnum } from '../types';
 
