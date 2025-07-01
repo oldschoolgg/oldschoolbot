@@ -1,8 +1,22 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction, MessageEditOptions } from 'discord.js';
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import {
+	type CommandRunOptions,
+	channelIsSendable,
+	formatDuration,
+	makePaginatedMessage,
+	stringMatches,
+	toTitleCase
+} from '@oldschoolgg/toolkit/util';
+import {
+	ApplicationCommandOptionType,
+	type ChatInputCommandInteraction,
+	EmbedBuilder,
+	type MessageEditOptions
+} from 'discord.js';
 import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
+import { convertXPtoLVL } from 'oldschooljs';
 
+import { getUsername, getUsernameSync } from '@/lib/util';
+import { logError, logErrorForInteraction } from '@/lib/util/logError';
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { MAX_LEVEL, masteryKey } from '../../lib/constants';
@@ -15,15 +29,6 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../lib/skilling/types';
-import {
-	channelIsSendable,
-	convertXPtoLVL,
-	formatDuration,
-	getUsername,
-	getUsernameSync,
-	makePaginatedMessage,
-	stringMatches
-} from '../../lib/util';
 import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { userEventsToMap } from '../../lib/util/userEvents';
@@ -72,6 +77,13 @@ export async function doMenu(
 
 			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
 		}),
+		(err, itx) => {
+			if (itx) {
+				logErrorForInteraction(err, itx);
+			} else {
+				logError(err);
+			}
+		},
 		user.id
 	);
 }
@@ -122,6 +134,13 @@ async function doMenuWrapper({
 
 			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
 		}),
+		(err, itx) => {
+			if (itx) {
+				logErrorForInteraction(err, itx);
+			} else {
+				logError(err);
+			}
+		},
 		user.id
 	);
 
@@ -542,7 +561,7 @@ async function skillsLb(
 		overallUsers = res.map(user => {
 			let totalLevel = 0;
 			for (const skill of skillsVals) {
-				totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}`]) as any);
+				totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}`]) as any, MAX_LEVEL);
 			}
 			return {
 				id: user.id,

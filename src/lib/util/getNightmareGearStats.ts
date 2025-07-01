@@ -1,7 +1,6 @@
 import { calcWhatPercent } from 'e';
-import { EMonster } from 'oldschooljs';
+import { EMonster, NIGHTMARES_HP, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
-import { NIGHTMARES_HP, ZAM_HASTA_CRUSH } from '../constants';
 import { NightmareMonster } from '../minions/data/killableMonsters';
 import { maxOtherStats } from '../structures/Gear';
 

@@ -5,6 +5,7 @@ import { Time, noOp } from 'e';
 import {
 	Bank,
 	Items,
+	MAX_INT_JAVA,
 	calcDropRatesFromBankWithoutUniques,
 	convertLVLtoXP,
 	getItem,
@@ -16,7 +17,7 @@ import {
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { MAX_INT_JAVA, globalConfig } from '../../lib/constants';
+import { globalConfig } from '../../lib/constants';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';

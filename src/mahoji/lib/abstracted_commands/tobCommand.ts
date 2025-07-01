@@ -1,8 +1,9 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable, formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent } from 'e';
-import { Bank, TOBRooms, randomVariation } from 'oldschooljs';
+import { Bank, TOBRooms, itemID } from 'oldschooljs';
 
+import { formatSkillRequirements, skillsMeetRequirements } from '@/lib/util';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
 	TENTACLE_CHARGES_PER_RAID,
@@ -21,12 +22,10 @@ import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MakePartyOptions } from '../../../lib/types';
 import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import getOSItem from '../../../lib/util/getOSItem';
-import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings';
 

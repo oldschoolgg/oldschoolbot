@@ -1,6 +1,6 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Bank, Items, SkillsEnum, randomVariation } from 'oldschooljs';
+import { Bank, Items, SkillsEnum } from 'oldschooljs';
 
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';

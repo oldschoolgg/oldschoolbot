@@ -1,8 +1,6 @@
-import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, objectEntries } from 'e';
-import type { Bank } from 'oldschooljs';
-import { Util } from 'oldschooljs';
+import { type Bank, Util } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import type { IToReturnCollection } from '../lib/data/CollectionsExport';

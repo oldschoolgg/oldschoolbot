@@ -4,11 +4,12 @@ import {
 	formatDuration,
 	formatOrdinal,
 	makeComponents,
+	randomVariation,
 	stringMatches
 } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
-import { Bank, itemID, randomVariation } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { degradeItem } from '../../../lib/degradeableItems';

@@ -1,9 +1,9 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, ECreature, itemID } from 'oldschooljs';
 
-import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
+import { hasSkillReqs } from '@/lib/util';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../lib/lootTrack';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
@@ -12,7 +12,6 @@ import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import type { Peak } from '../../lib/tickers';
 import type { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, hasSkillReqs, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -164,7 +163,7 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID) {
+		if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT) {
 			if (usingStaminaPotion) catchTime *= 0.8;
 		}
 
@@ -211,9 +210,9 @@ export const huntCommand: OSBMahojiCommand = {
 
 		// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
 		if (usingStaminaPotion) {
-			if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
+			if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT || crystalImpling) {
 				const staminaPotionQuantity =
-					creature.id === HERBIBOAR_ID || crystalImpling
+					creature.id === ECreature.HERBIBOAR || crystalImpling
 						? Math.round(duration / (9 * Time.Minute))
 						: Math.round(duration / (18 * Time.Minute));
 

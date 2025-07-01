@@ -312,13 +312,6 @@ export const badges: { [key: number]: string } = {
 
 export const MAX_XP = 200_000_000;
 
-export const NIGHTMARES_HP = 2400;
-export const ZAM_HASTA_CRUSH = 65;
-export const MAX_INT_JAVA = 2_147_483_647;
-export const HERBIBOAR_ID = 36;
-export const RAZOR_KEBBIT_ID = 35;
-export const BLACK_CHIN_ID = 9;
-
 export const LEVEL_99_XP = 13_034_431;
 export const MAX_LEVEL = BOT_TYPE === 'OSB' ? 99 : 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;

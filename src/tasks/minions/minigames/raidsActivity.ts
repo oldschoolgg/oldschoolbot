@@ -1,7 +1,7 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { shuffleArr } from 'e';
-import { Bank, ChambersOfXeric, SkillsEnum } from 'oldschooljs';
+import { roll, shuffleArr } from 'e';
+import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
@@ -10,7 +10,6 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import type { RaidsOptions } from '../../../lib/types/minions';
-import { randomVariation, resolveItems, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';

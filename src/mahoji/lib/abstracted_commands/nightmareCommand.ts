@@ -1,8 +1,8 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import { formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
-import { Bank, EMonster, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
 
-import { BitField, ZAM_HASTA_CRUSH } from '../../../lib/constants';
+import { BitField } from '../../../lib/constants';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
@@ -11,7 +11,6 @@ import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUse
 import type { KillableMonster } from '../../../lib/minions/types';
 import { Gear } from '../../../lib/structures/Gear';
 import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -76,7 +75,7 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 	}
 
 	if (isPhosani) {
-		const requirements = hasSkillReqs(user, {
+		const hasReqs = user.hasSkillReqs({
 			prayer: 70,
 			attack: 90,
 			strength: 90,
@@ -84,8 +83,8 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 			magic: 90,
 			hitpoints: 90
 		});
-		if (!requirements[0]) {
-			return `${user.usernameOrMention} doesn't meet the requirements: ${requirements[1]}.`;
+		if (!hasReqs) {
+			return `${user.usernameOrMention} doesn't meet the skill requirements.`;
 		}
 		if ((await user.getKC(NightmareMonster.id)) < 50) {
 			return "You need to have killed The Nightmare at least 50 times before you can face the Phosani's Nightmare.";

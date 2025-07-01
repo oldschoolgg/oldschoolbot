@@ -1,10 +1,15 @@
-import { type CommandRunOptions, channelIsSendable, toTitleCase } from '@oldschoolgg/toolkit/util';
+import {
+	type CommandRunOptions,
+	channelIsSendable,
+	makePaginatedMessage,
+	toTitleCase
+} from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, EmbedBuilder, type MessageEditOptions } from 'discord.js';
 import { chunk } from 'e';
 import { type BossRecords, Hiscores, bossNameMap } from 'oldschooljs';
 
+import { logError, logErrorForInteraction } from '@/lib/util/logError';
 import pets from '../../lib/data/pets';
-import { makePaginatedMessage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -75,7 +80,18 @@ export const bossrecordCommand: OSBMahojiCommand = {
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
 
-		await makePaginatedMessage(channel, pages, userID.toString());
+		await makePaginatedMessage(
+			channel,
+			pages,
+			(err, itx) => {
+				if (itx) {
+					logErrorForInteraction(err, itx);
+				} else {
+					logError(err);
+				}
+			},
+			userID
+		);
 		return {
 			content: `Showing OSRS Boss Records for \`${options.rsn}\`.`,
 			ephemeral: true

@@ -1,4 +1,4 @@
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, makeComponents, roughMergeMahojiResponse } from '@oldschoolgg/toolkit/util';
 
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import type {
@@ -9,7 +9,6 @@ import type {
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo';
 import { plants } from '../../../lib/skilling/skills/farming';
-import { roughMergeMahojiResponse } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';

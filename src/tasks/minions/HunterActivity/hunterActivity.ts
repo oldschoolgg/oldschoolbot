@@ -1,7 +1,7 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import type { Prisma } from '@prisma/client';
 import { Time, randInt } from 'e';
-import { Bank, EquipmentSlot } from 'oldschooljs';
+import { Bank, ECreature, EquipmentSlot } from 'oldschooljs';
 
 import { MAX_LEVEL } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
@@ -17,7 +17,6 @@ import itemID from '../../../lib/util/itemID';
 import { logError } from '../../../lib/util/logError.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 
 const riskDeathNumbers = [
 	{
@@ -80,7 +79,7 @@ export const hunterTask: MinionTask = {
 		}
 
 		if (creature.wildy) {
-			let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;
+			let riskPkChance = creature.id === ECreature.BLACK_CHINCHOMPA ? 100 : 200;
 			riskPkChance +=
 				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)?.extraChance ?? 0;
 			let riskDeathChance = 20;
@@ -138,7 +137,7 @@ export const hunterTask: MinionTask = {
 		let magicSecStr = '';
 		let herbXP = 0;
 		let xpStr = '';
-		if (creature.id === HERBIBOAR_ID) {
+		if (creature.id === ECreature.HERBIBOAR) {
 			creatureTable = generateHerbiTable(
 				user.skillLevel('herblore'),
 				user.hasEquippedOrInBank('Magic secateurs')
