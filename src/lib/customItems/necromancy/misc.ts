@@ -1,15 +1,11 @@
 // 74,051-74,100
-import { setCustomItem } from "../util";
+import { setCustomItem } from '../util';
 
-setCustomItem(
-    74_051,
-    'Death Monkey',
-    'Herbi',
-    {
-    customItemData: {
-        cantDropFromMysteryBoxes: true,
-        isSuperUntradeable: true
-    }
+setCustomItem(74_051, 'Death Monkey', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
 });
 
 setCustomItem(
