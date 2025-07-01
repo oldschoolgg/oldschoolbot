@@ -1,14 +1,14 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { UserError } from '@oldschoolgg/toolkit/structures';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
-import { Bank, type Item, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, type Item, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 
-import { UserError } from '@oldschoolgg/toolkit/structures';
-import { BOT_TYPE, BitField, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
+import { BOT_TYPE, BitField, ItemIconPacks, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
@@ -899,7 +899,7 @@ const chestLootTypes = [
 		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
 		width: 240,
 		height: 220,
-		purpleItems: toaPurpleItems,
+		purpleItems: ItemGroups.toaPurpleItems,
 		position: (canvas: Canvas, image: CanvasImage) => [
 			canvas.width - image.width + 25,
 			44 + canvas.height / 4 - image.height / 2

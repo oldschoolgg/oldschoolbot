@@ -8,6 +8,7 @@ import {
 	EliteCasket,
 	EliteMimicTable,
 	HardCasket,
+	ItemGroups,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
@@ -27,7 +28,6 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
-	evilChickenOutfit,
 	temporossCL,
 	theGauntletCL,
 	theNightmareCL,
@@ -228,12 +228,12 @@ export const finishables: Finishable[] = [
 	},
 	{
 		name: 'Evil Chicken Outfit',
-		cl: evilChickenOutfit,
+		cl: ItemGroups.evilChickenOutfit,
 		aliases: ['evil chicken outfit'],
 		kill: () => {
 			const loot = new Bank();
 			if (roll(300)) {
-				loot.add(randArrItem(evilChickenOutfit));
+				loot.add(randArrItem(ItemGroups.evilChickenOutfit));
 			} else {
 				loot.add(birdsNestID);
 				loot.add(treeSeedsNest.roll());

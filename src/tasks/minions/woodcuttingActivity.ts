@@ -1,15 +1,14 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
 import { Time, objectEntries, percentChance, randInt } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import type { TwitcherGloves } from '../../lib/constants';
-import { Emoji, Events } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
-import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
+import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { resolveItems, roll, skillingPetDropRate } from '../../lib/util';

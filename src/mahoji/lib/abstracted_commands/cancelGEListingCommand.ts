@@ -2,7 +2,6 @@ import { UserError } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
 import { GrandExchange } from '../../../lib/grandExchange';
-
 import { makeTransactFromTableBankQueries } from '../../../lib/tableBank';
 import { logError } from '../../../lib/util/logError';
 

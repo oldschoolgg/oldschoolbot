@@ -7,10 +7,11 @@ import {
 	HardCasket,
 	type LootTable,
 	MasterCasket,
-	MediumCasket
+	MediumCasket,
+	itemID,
+	resolveItems
 } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import {
 	cluesBeginnerCL,
 	cluesEasyCL,
@@ -19,7 +20,6 @@ import {
 	cluesMasterCL,
 	cluesMediumCL
 } from '../data/CollectionsExport';
-import itemID from '../util/itemID';
 import type { ClueReqs } from './clueReqs';
 import { beginnerReqs } from './clueReqs';
 import type { StashUnitTier } from './stashUnits';

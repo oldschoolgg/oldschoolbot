@@ -1,12 +1,15 @@
-import { discrimName, mentionCommand, truncateString } from '@oldschoolgg/toolkit/util';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { Events } from '@oldschoolgg/toolkit/constants';
+import {
+	type CommandRunOptions,
+	type MahojiUserOption,
+	discrimName,
+	mentionCommand,
+	truncateString
+} from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { Events } from '../../lib/constants';
-
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';

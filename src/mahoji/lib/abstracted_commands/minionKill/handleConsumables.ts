@@ -1,11 +1,10 @@
 import { Time, reduceNumByPercent } from 'e';
-import { EItem } from 'oldschooljs';
+import { EItem, itemID } from 'oldschooljs';
 
 import { getSimilarItems } from '../../../../lib/data/similarItems';
 import type { Consumable } from '../../../../lib/minions/types';
 import { FloatBank } from '../../../../lib/structures/Bank';
 import type { GearBank } from '../../../../lib/structures/GearBank';
-import itemID from '../../../../lib/util/itemID';
 
 // TODO: should use a FloatBank instead of a Bank
 export const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {

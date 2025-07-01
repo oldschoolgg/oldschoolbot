@@ -1,4 +1,5 @@
-import itemID from '../util/itemID';
+import { itemID } from 'oldschooljs';
+
 import { SkillsEnum } from './types';
 
 interface Skillcape {

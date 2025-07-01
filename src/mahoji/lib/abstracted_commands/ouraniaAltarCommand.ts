@@ -1,10 +1,10 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, increaseNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { OuraniaAltarOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -41,7 +41,7 @@ export async function ouraniaAltarStartCommand({
 	for (const pouch of Runecraft.pouches) {
 		if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
-		if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
+		if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
 	}
 
 	if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);

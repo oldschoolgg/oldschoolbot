@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { toKMB } from 'oldschooljs/dist/util';
+import { toKMB } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

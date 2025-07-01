@@ -1,7 +1,7 @@
 import { percentChance, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
 import { raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';

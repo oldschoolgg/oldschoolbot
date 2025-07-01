@@ -1,12 +1,11 @@
-import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { ChannelType, userMention } from 'discord.js';
+import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit/util';
+import { ChannelType, type ChatInputCommandInteraction, type TextChannel, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';
 import { setupParty } from '../../../lib/party';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import type { NexTaskOptions } from '../../../lib/types/minions';
-import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

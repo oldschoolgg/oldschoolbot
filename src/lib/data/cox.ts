@@ -1,3 +1,4 @@
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,
@@ -8,9 +9,7 @@ import {
 	reduceNumByPercent,
 	shuffleArr
 } from 'e';
-import { Bank, type Item } from 'oldschooljs';
-
-import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import { Bank, type ChambersOfXericOptions, type Item, itemID, resolveItems } from 'oldschooljs';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import type { GearStats } from '../gear/types';
@@ -18,9 +17,9 @@ import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { Skills } from '../types';
-import { formatList, itemID, itemNameFromID, randomVariation, resolveItems } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
+import { formatList, itemNameFromID } from '../util/smallUtils';
 import { getSimilarItems } from './similarItems';
 
 const bareMinStats: Skills = {

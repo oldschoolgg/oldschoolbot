@@ -1,8 +1,6 @@
 import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
 import { refundChargeBank } from '../../lib/degradeableItems';
 import { trackLoot } from '../../lib/lootTrack';

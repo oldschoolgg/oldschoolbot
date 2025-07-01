@@ -1,7 +1,14 @@
-import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { Minigame } from '@prisma/client';
-import { XpGainSource } from '@prisma/client';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import {
+	type CommandResponse,
+	channelIsSendable,
+	exponentialPercentScale,
+	formatDuration,
+	mentionCommand,
+	randomVariation
+} from '@oldschoolgg/toolkit/util';
+import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
 	Time,
@@ -20,12 +27,9 @@ import {
 	sumArr,
 	uniqueArr
 } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank, LootTable, itemID, resolveItems } from 'oldschooljs';
 
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
 import type { GearStats, UserFullGearSetup } from '../gear/types';
@@ -36,20 +40,17 @@ import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { MakePartyOptions, Skills } from '../types';
 import type { TOAOptions } from '../types/minions';
-import {
-	assert,
-	channelIsSendable,
-	formatDuration,
-	formatList,
-	formatSkillRequirements,
-	itemNameFromID,
-	randomVariation
-} from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID';
-import { bankToStrShortNames, getToaKCs } from '../util/smallUtils';
+import { assert } from '../util/logError';
+import {
+	bankToStrShortNames,
+	formatList,
+	formatSkillRequirements,
+	getToaKCs,
+	itemNameFromID
+} from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 

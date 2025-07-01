@@ -1,7 +1,7 @@
+import { Bank, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../../src/lib/data/cox';
-import { Bank, itemID, resolveItems } from '../../../src/lib/util';
 import { raidCommand } from '../../../src/mahoji/commands/raid';
 import { mockClient, mockUser } from '../util';
 

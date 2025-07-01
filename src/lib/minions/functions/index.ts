@@ -1,11 +1,11 @@
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
-import { type Monster, Monsters } from 'oldschooljs';
+import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
 
-import { NIGHTMARES_HP, type PvMMethod } from '../../constants';
+import type { PvMMethod } from '../../../mahoji/commands/k';
 import { GearStat, type OffenceGearStat, type PrimaryGearSetupType } from '../../gear/types';
 import { SkillsEnum } from '../../skilling/types';
 import { XPBank } from '../../structures/XPBank';
-import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import type { AddMonsterXpParams, KillableMonster } from '../types';

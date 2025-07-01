@@ -1,7 +1,5 @@
-import { ProductID, products } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { bold } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty } from 'e';
 
 import { BOT_TYPE } from '../../lib/constants';

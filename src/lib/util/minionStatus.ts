@@ -1,11 +1,11 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Items, SkillsEnum } from 'oldschooljs';
 
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { collectables } from '../../mahoji/lib/collectables';
 import { ClueTiers } from '../clues/clueTiers';
-import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import { quests } from '../minions/data/quests';
@@ -82,7 +82,6 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
@@ -344,7 +343,7 @@ export function minionStatus(user: MUser) {
 		case 'Alching': {
 			const data = currentTask as AlchingActivityTaskOptions;
 
-			return `${name} is currently alching ${data.quantity}x ${itemNameFromID(
+			return `${name} is currently alching ${data.quantity}x ${Items.itemNameFromId(
 				data.itemID
 			)}. ${formattedDuration}`;
 		}
@@ -362,7 +361,7 @@ export function minionStatus(user: MUser) {
 		case 'Sawmill': {
 			const data = currentTask as SawmillActivityTaskOptions;
 			const plank = Planks.find(_plank => _plank.outputItem === data.plankID)!;
-			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+			return `${name} is currently creating ${data.plankQuantity}x ${Items.itemNameFromId(
 				plank.outputItem
 			)}s. ${formattedDuration}`;
 		}
@@ -477,7 +476,7 @@ export function minionStatus(user: MUser) {
 		case 'Butler': {
 			const data = currentTask as ButlerActivityTaskOptions;
 			const plank = Planks.find(_plank => _plank.outputItem === data.plankID)!;
-			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+			return `${name} is currently creating ${data.plankQuantity}x ${Items.itemNameFromId(
 				plank.outputItem
 			)}s. ${formattedDuration}`;
 		}

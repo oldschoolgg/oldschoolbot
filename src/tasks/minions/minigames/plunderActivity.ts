@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
