@@ -1,13 +1,15 @@
 import { type CommandResponse, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { StashUnit, User } from '@prisma/client';
 import { partition } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import type { IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../../lib/clues/stashUnits';
 import { assert } from '../../../lib/util/logError';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { getMahojiBank } from '../../mahojiSettings';
+
+const NAILS_PER_STASH_UNIT = 10;
 
 export async function getParsedStashUnits(userID: string): Promise<ParsedUnit[]> {
 	const currentStashUnits = await prisma.stashUnit.findMany({
@@ -96,9 +98,20 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 	for (const parsedUnit of notBuilt) {
 		if (parsedUnit.tier.constructionLevel > stats.construction) continue;
 		if (!checkBank.has(parsedUnit.tier.cost)) continue;
-		checkBank.remove(parsedUnit.tier.cost);
-		costBank.add(parsedUnit.tier.cost);
-		toBuild.push(parsedUnit);
+		let hasNails = false;
+
+		for (const nail of ItemGroups.nails) {
+			if (checkBank.amount(nail) >= NAILS_PER_STASH_UNIT) {
+				hasNails = true;
+				checkBank.remove(nail, NAILS_PER_STASH_UNIT);
+				checkBank.remove(parsedUnit.tier.cost);
+				costBank.add(nail, NAILS_PER_STASH_UNIT);
+				costBank.add(parsedUnit.tier.cost);
+				toBuild.push(parsedUnit);
+				break;
+			}
+		}
+		if (!hasNails) break;
 	}
 
 	if (toBuild.length === 0) {
