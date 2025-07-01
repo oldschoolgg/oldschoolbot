@@ -1,11 +1,10 @@
 import { Time } from 'e';
-import { Bank, EMonster, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 
 import { GearStat } from '../../../gear/types';
 import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
 import { SkillsEnum } from '../../../skilling/types';
 import type { KillableMonster } from '../../types';
-import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
 import { camdozaalMonsters } from './camdozaalMonsters';
 import { chaeldarMonsters } from './chaeldarMonsters';

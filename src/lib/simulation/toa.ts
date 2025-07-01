@@ -5,7 +5,8 @@ import {
 	channelIsSendable,
 	exponentialPercentScale,
 	formatDuration,
-	mentionCommand
+	mentionCommand,
+	randomVariation
 } from '@oldschoolgg/toolkit/util';
 import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
@@ -26,7 +27,7 @@ import {
 	sumArr,
 	uniqueArr
 } from 'e';
-import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, LootTable, itemID, resolveItems } from 'oldschooljs';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { getSimilarItems } from '../data/similarItems';

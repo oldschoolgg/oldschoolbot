@@ -3,6 +3,7 @@ import { Bank, type ItemBank, Monsters, Openables, resolveItems } from 'oldschoo
 
 import { eggs } from '../../mahoji/commands/offer';
 import { divinationEnergies } from '../bso/divination';
+import { MAX_LEVEL } from '../constants';
 import {
 	allGildedItems,
 	brokenPernixOutfit,
@@ -180,7 +181,7 @@ export const hardTasks: Task[] = [
 		id: 2018,
 		name: 'Reach combat level 126',
 		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP) >= 126;
+			return calcCombatLevel(skillsXP, MAX_LEVEL) >= 126;
 		}
 	},
 	{

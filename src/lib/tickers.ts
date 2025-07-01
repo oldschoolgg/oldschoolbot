@@ -1,4 +1,4 @@
-import { cleanUsername, stringMatches } from '@oldschoolgg/toolkit';
+import { awaitMessageComponentInteraction, cleanUsername, stringMatches } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
@@ -17,7 +17,7 @@ import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { MTame } from './structures/MTame';
-import { awaitMessageComponentInteraction, getSupportGuild } from './util';
+import { getSupportGuild } from './util';
 import { PeakTier } from './util/calcWildyPkChance';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';

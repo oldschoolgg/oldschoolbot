@@ -1,7 +1,16 @@
 import type { Prisma } from '@prisma/client';
-import { Time, randInt } from 'e';
-import { Bank, EquipmentSlot, type ItemBank, increaseBankQuantitesByPercent } from 'oldschooljs';
+import { Time, randInt, roll } from 'e';
+import {
+	Bank,
+	ECreature,
+	EquipmentSlot,
+	type ItemBank,
+	increaseBankQuantitesByPercent,
+	itemID,
+	toKMB
+} from 'oldschooljs';
 
+import { clAdjustedDroprate, skillingPetDropRate } from '@/lib/util';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { MAX_LEVEL } from '../../../lib/constants';
@@ -16,14 +25,11 @@ import { type Creature, SkillsEnum } from '../../../lib/skilling/types';
 import type { Gear } from '../../../lib/structures/Gear';
 import type { Skills } from '../../../lib/types';
 import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { clAdjustedDroprate, roll, skillingPetDropRate, toKMB } from '../../../lib/util';
 import { PeakTier } from '../../../lib/util/calcWildyPkChance';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 import { logError } from '../../../lib/util/logError.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 
 const riskDeathNumbers = [
 	{
@@ -107,7 +113,7 @@ export function calculateHunterResult({
 	const crystalImpling = creature.name === 'Crystal impling';
 
 	if (creature.wildy) {
-		let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;
+		let riskPkChance = creature.id === ECreature.BLACK_CHINCHOMPA ? 100 : 200;
 		riskPkChance += riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeakTier)?.extraChance ?? 0;
 		let riskDeathChance = 20;
 		// The more experienced the less chance of death.
@@ -168,7 +174,7 @@ export function calculateHunterResult({
 	let totalHerbloreXP = 0;
 
 	let increasedOutputPercent = 0;
-	if (creature.id === HERBIBOAR_ID) {
+	if (creature.id === ECreature.HERBIBOAR) {
 		if (isUsingArcaneHarvester) {
 			messages.push(
 				`${inventionBoosts.arcaneHarvester.herbiboarExtraYieldPercent}% bonus yield from Arcane Harvester (${arcaneHarvesterMessages})`
@@ -306,7 +312,7 @@ export const hunterTask: MinionTask = {
 		const experienceScore = await user.getCreatureScore(creature.id);
 
 		const boostRes =
-			creature.id === HERBIBOAR_ID && user.allItemsOwned.has('Arcane harvester')
+			creature.id === ECreature.HERBIBOAR && user.allItemsOwned.has('Arcane harvester')
 				? await inventionItemBoost({
 						user,
 						inventionID: InventionID.ArcaneHarvester,

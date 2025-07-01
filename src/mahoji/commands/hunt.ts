@@ -2,9 +2,8 @@ import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoo
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { reduceNumByPercent } from 'e';
-import { Bank, type ItemBank, itemID } from 'oldschooljs';
+import { Bank, ECreature, type ItemBank, itemID } from 'oldschooljs';
 
-import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import type { UserFullGearSetup } from '../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
@@ -159,7 +158,7 @@ export function calculateHunterInput({
 	}
 
 	let timePerCatch = (catchTime * Time.Second) / traps;
-	if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID) {
+	if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT) {
 		if (shouldUseStaminaPotions) catchTime *= 0.8;
 	}
 
@@ -219,9 +218,9 @@ export function calculateHunterInput({
 
 	// If creatures Herbiboar or Razor-backed kebbit or Crystal Impling use Stamina potion(4)
 	if (shouldUseStaminaPotions) {
-		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
+		if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT || crystalImpling) {
 			const staminaPotionQuantity =
-				creature.id === HERBIBOAR_ID || crystalImpling
+				creature.id === ECreature.HERBIBOAR || crystalImpling
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 

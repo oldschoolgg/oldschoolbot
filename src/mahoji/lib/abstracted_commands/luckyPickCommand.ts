@@ -1,4 +1,4 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit';
+import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	type BaseMessageOptions,
@@ -11,7 +11,6 @@ import {
 import { Time, chunk, noOp, roll, shuffleArr } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { awaitMessageComponentInteraction } from '@/lib/util';
 import { SILENT_ERROR } from '../../../lib/constants';
 import { handleMahojiConfirmation, silentButtonAck } from '../../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../../lib/util/interactionReply';

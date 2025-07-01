@@ -1,8 +1,9 @@
 import { notEmpty, sumArr } from 'e';
-import { Monsters } from 'oldschooljs';
+import { type ItemBank, Monsters, calcCombatLevel, resolveItems } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { divinationEnergies } from '../bso/divination';
+import { MAX_LEVEL } from '../constants';
 import { barrowsChestCL, customPetsCL } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
@@ -23,9 +24,7 @@ import { Cookables } from '../skilling/skills/cooking/cooking';
 import Fishing from '../skilling/skills/fishing';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import Runecraft from '../skilling/skills/runecraft';
-import type { ItemBank } from '../types';
-import { calcCombatLevel, calcTotalLevel } from '../util';
-import resolveItems from '../util/resolveItems';
+import { calcTotalLevel } from '../util';
 import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
 import { calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
 
@@ -174,7 +173,7 @@ export const easyTasks: Task[] = [
 		id: 21,
 		name: 'Reach combat level 50',
 		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP) >= 30;
+			return calcCombatLevel(skillsXP, MAX_LEVEL) >= 30;
 		}
 	},
 	{

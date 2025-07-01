@@ -2,11 +2,9 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { calcPercentOfNum, clamp, reduceNumByPercent } from 'e';
-import { Bank, type Item, itemID, toKMB } from 'oldschooljs';
+import { Bank, type Item, MAX_INT_JAVA, itemID, toKMB } from 'oldschooljs';
 
-import { MAX_INT_JAVA } from '../../lib/constants';
 import { customPrices } from '../../lib/customItems/util';
-
 import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';

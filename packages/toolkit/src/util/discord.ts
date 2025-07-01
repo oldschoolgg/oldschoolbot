@@ -1,10 +1,16 @@
 import {
 	type ButtonBuilder,
+	type ButtonInteraction,
+	type CacheType,
 	type Client,
+	type Collection,
+	type CollectorFilter,
 	ComponentType,
 	type Guild,
 	type InteractionReplyOptions,
-	PermissionsBitField
+	type Message,
+	PermissionsBitField,
+	type SelectMenuInteraction
 } from 'discord.js';
 import { chunk } from 'e';
 
@@ -73,4 +79,28 @@ export function makeComponents(components: ButtonBuilder[]): InteractionReplyOpt
 
 export function cleanUsername(username: string) {
 	return stripEmojis(username).replace(/[@|*]/g, '').substring(0, 32);
+}
+
+export function awaitMessageComponentInteraction({
+	message,
+	filter,
+	time
+}: {
+	time: number;
+	message: Message;
+	filter: CollectorFilter<
+		[
+			ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
+			Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
+		]
+	>;
+}): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
+	return new Promise((resolve, reject) => {
+		const collector = message.createMessageComponentCollector<ComponentType.Button>({ max: 1, filter, time });
+		collector.once('end', (interactions, reason) => {
+			const interaction = interactions.first();
+			if (interaction) resolve(interaction);
+			else reject(new Error(reason));
+		});
+	});
 }

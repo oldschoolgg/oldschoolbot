@@ -1,8 +1,9 @@
 import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr } from 'e';
-import { Bank, type ItemBank, Monsters, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, Monsters, itemID, randomVariation, resolveItems } from 'oldschooljs';
 
+import { determineProjectileTypeFromGear } from '@/lib/util';
 import { BitField, projectiles } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';
@@ -15,7 +16,6 @@ import type { Gear } from '../../../lib/structures/Gear';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import type { Skills } from '../../../lib/types';
 import type { InfernoOptions } from '../../../lib/types/minions';
-import { determineProjectileTypeFromGear, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -211,7 +211,7 @@ async function infernoRun({
 	 */
 	const itemRequirements = getSimilarItems(itemID('Rune pouch'));
 	if (itemRequirements.every(item => !user.owns(item))) {
-		return `To do the Inferno, you need one of these items: ${itemRequirements.map(itemNameFromID).join(', ')}.`;
+		return `To do the Inferno, you need one of these items: ${itemRequirements.map(i => Items.itemNameFromId(i)).join(', ')}.`;
 	}
 
 	/**
@@ -495,7 +495,7 @@ async function infernoRun({
 		return `You're using incorrect projectiles, you're using a ${
 			rangeGear.equippedWeapon()?.name
 		}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
-			.map(itemNameFromID)
+			.map(i => Items.itemNameFromId(i))
 			.join(', ')}.`;
 	}
 

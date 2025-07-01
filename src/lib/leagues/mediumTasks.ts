@@ -1,8 +1,8 @@
 import { sumArr } from 'e';
-import { Bank, ItemGroups, Monsters } from 'oldschooljs';
+import { Bank, type ItemBank, ItemGroups, Monsters, calcCombatLevel, resolveItems } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
-import { BitField } from '../constants';
+import { BitField, MAX_LEVEL } from '../constants';
 import {
 	barrowsChestCL,
 	chambersOfXericCL,
@@ -34,9 +34,7 @@ import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBo
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
-import type { ItemBank } from '../types';
-import { calcCombatLevel, calcTotalLevel } from '../util';
-import resolveItems from '../util/resolveItems';
+import { calcTotalLevel } from '../util';
 import { LampTable } from '../xpLamps';
 import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
 import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
@@ -200,7 +198,7 @@ export const mediumTasks: Task[] = [
 		id: 1023,
 		name: 'Reach combat level 90',
 		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP) >= 90;
+			return calcCombatLevel(skillsXP, MAX_LEVEL) >= 90;
 		}
 	},
 	{
