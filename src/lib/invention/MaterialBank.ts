@@ -2,7 +2,7 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum } from 'e';
 
 import { type IMaterialBank, type MaterialType, materialTypes } from '.';
-import { assert } from '../util';
+import { assert } from '../util/logError';
 
 export class MaterialBank {
 	public bank: IMaterialBank;

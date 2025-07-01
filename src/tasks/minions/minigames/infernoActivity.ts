@@ -1,8 +1,8 @@
 import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
 import { Bank, type ItemBank, Monsters } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';

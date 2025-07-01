@@ -1,7 +1,6 @@
 import type { UserStats } from '@prisma/client';
 import { Time, increaseNumByPercent, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { Bank, MonsterAttribute, Monsters } from 'oldschooljs';
 
 import type { SlayerContext } from '../../tasks/minions/monsterActivity';
 import type { BitField } from '../constants';

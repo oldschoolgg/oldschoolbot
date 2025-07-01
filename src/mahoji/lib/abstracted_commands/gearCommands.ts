@@ -1,26 +1,24 @@
-import { PerkTier, toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
+import { getSimilarItems } from '../../../lib/data/similarItems';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
+import { isValidGearSetup } from '../../../lib/gear/functions/isValidGearSetup';
 import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
 import { GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
-
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { isValidGearSetup } from '../../../lib/gear/functions/isValidGearSetup';
 import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';
-import { assert, formatSkillRequirements, stringMatches } from '../../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
-import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { formatSkillRequirements } from '../../../lib/util/smallUtils';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
@@ -48,7 +46,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	// Checks the preset to make sure the user has the required stats for every item in the preset
 	for (const gearItemId of Object.values(preset)) {
 		if (gearItemId !== null) {
-			const itemToEquip = getItem(gearItemId);
+			const itemToEquip = Items.getItem(gearItemId);
 			if (itemToEquip?.equipment?.requirements && !user.hasSkillReqs(itemToEquip.equipment.requirements)) {
 				return `You can't equip this preset because ${
 					itemToEquip.name
@@ -217,7 +215,7 @@ export async function gearUnequipCommand(
 	const currentEquippedGear = user.gear[gearSetup];
 	const currentGear = currentEquippedGear.raw();
 
-	const item = getItem(itemToUnequip);
+	const item = Items.getItem(itemToUnequip);
 	if (!item) return "That's not a valid item.";
 	if (!currentEquippedGear.hasEquipped(item.id, true, false))
 		return `You don't have that equipped in your ${gearSetup} setup.`;
@@ -292,7 +290,7 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 export async function gearStatsCommand(user: MUser, input: string): CommandResponse {
 	const gear = { ...defaultGear };
 	for (const name of input.split(',')) {
-		const item = getItem(name);
+		const item = Items.getItem(name);
 		if (item?.equipment) {
 			gear[item.equipment.slot] = { item: item.id, quantity: 1 };
 		}

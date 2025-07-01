@@ -1,5 +1,4 @@
-import { LootTable } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { type Item, LootTable } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
 import { paintColors } from './customItems/paintCans';

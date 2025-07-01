@@ -1,6 +1,7 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { LootTable, Monsters } from 'oldschooljs';
+
+import { KING_GOLDEMAR_GUARD_ID } from '../../../bso/bsoConstants';
 import { QuestID } from '../../../minions/data/quests';
 
 const {
@@ -27,8 +28,6 @@ const {
 	WealthyCitizen,
 	YanilleWatchman
 } = Monsters;
-
-import { KING_GOLDEMAR_GUARD_ID } from '../../../constants';
 
 export interface Stealable {
 	name: string;

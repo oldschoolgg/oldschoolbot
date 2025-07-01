@@ -1,6 +1,5 @@
 import { cleanString } from '@oldschoolgg/toolkit';
-import { Items } from 'oldschooljs';
-import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { Items, itemNameMap } from 'oldschooljs';
 
 import getOSItem from './util/getOSItem';
 

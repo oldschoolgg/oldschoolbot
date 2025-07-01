@@ -1,11 +1,25 @@
-import { UserError } from '@oldschoolgg/toolkit/structures';
-import type { BaseMessageOptions, ComponentType, MessageEditOptions, TextChannel } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import {
+	ActionRowBuilder,
+	type BaseMessageOptions,
+	ButtonBuilder,
+	type ButtonInteraction,
+	ButtonStyle,
+	type ComponentType,
+	type MessageEditOptions,
+	type TextChannel
+} from 'discord.js';
 import { Time, isFunction } from 'e';
 
-import { InteractionID } from './InteractionID';
-import type { PaginatedMessagePage } from './util';
-import { logError, logErrorForInteraction } from './util/logError';
+import { UserError } from '../structures';
+
+const InteractionID = {
+	PaginatedMessage: {
+		FirstPage: 'PM_FIRST_PAGE',
+		PreviousPage: 'PM_PREVIOUS_PAGE',
+		NextPage: 'PM_NEXT_PAGE',
+		LastPage: 'PM_LAST_PAGE'
+	}
+} as const;
 
 const controlButtons: {
 	customId: string;
@@ -55,20 +69,24 @@ export class PaginatedMessage {
 	public pages!: PaginatedPages;
 	public channel: TextChannel;
 	public totalPages: number;
+	public onError: (error: Error, interaction?: ButtonInteraction) => void;
 
 	constructor({
 		channel,
 		pages,
-		startingPage
+		startingPage,
+		onError
 	}: {
 		channel: TextChannel;
 		pages: PaginatedPages;
 		startingPage?: number;
+		onError: (error: Error, interaction?: ButtonInteraction) => void;
 	}) {
 		this.pages = pages;
 		this.channel = channel;
 		this.index = startingPage ?? 0;
 		this.totalPages = Array.isArray(pages) ? pages.length : pages.numPages;
+		this.onError = onError;
 	}
 
 	async render(): Promise<MessageEditOptions | string> {
@@ -97,7 +115,7 @@ export class PaginatedMessage {
 		} catch (err) {
 			if (typeof err === 'string') return err;
 			if (err instanceof UserError) return err.message;
-			logError(err);
+			this.onError(err as Error);
 			return 'Sorry, something went wrong.';
 		}
 	}
@@ -126,7 +144,7 @@ export class PaginatedMessage {
 						try {
 							await interaction.update(await this.render());
 						} catch (err) {
-							logErrorForInteraction(err, interaction);
+							this.onError(err as Error, interaction);
 						}
 						return;
 					}
@@ -138,4 +156,16 @@ export class PaginatedMessage {
 			message.edit({ components: [] });
 		});
 	}
+}
+
+export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
+
+export async function makePaginatedMessage(
+	channel: TextChannel,
+	pages: PaginatedMessagePage[],
+	onError: (err: Error, itx?: ButtonInteraction) => unknown,
+	target?: string
+) {
+	const m = new PaginatedMessage({ pages, channel, onError });
+	return m.run(target ? [target] : undefined);
 }

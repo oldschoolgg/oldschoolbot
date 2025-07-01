@@ -1,8 +1,9 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { channelIsSendable, formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
+import { formatSkillRequirements } from '@/lib/util';
 import { setupParty } from '../../lib/party';
 import {
 	determineDgLevelForFloor,
@@ -19,7 +20,6 @@ import {
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { MakePartyOptions } from '../../lib/types';
 import type { DungeoneeringOptions } from '../../lib/types/minions';
-import { channelIsSendable, formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';

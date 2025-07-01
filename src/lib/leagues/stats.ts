@@ -3,8 +3,8 @@ import type { User as RoboChimpUser } from '@prisma/robochimp';
 import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { gloriesInventorySize, wealthInventorySize } from '../constants';
-
+import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
+import { wealthInventorySize } from '../../mahoji/lib/abstracted_commands/chargeWealthCommand';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import type { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';

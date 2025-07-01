@@ -1,13 +1,12 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcPercentOfNum, randInt, reduceNumByPercent } from 'e';
-import { Bank, Monsters, itemID } from 'oldschooljs';
+import { Bank, ItemGroups, Items, Monsters, itemID } from 'oldschooljs';
 
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -86,8 +85,8 @@ export const fishCommand: OSBMahojiCommand = {
 				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 			}
 		}
-		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(Number.parseInt(i)));
-		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasEquippedOrInBank(test!))) {
+
+		if (fish.name === 'Minnow' && ItemGroups.anglerOutfit.some(_piece => !user.hasEquippedOrInBank(_piece))) {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 
@@ -200,7 +199,7 @@ export const fishCommand: OSBMahojiCommand = {
 
 			const maxCanDo = user.bank.fits(baseCost);
 			if (maxCanDo === 0) {
-				return `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
+				return `You need ${Items.itemNameFromId(fish.bait)} to fish ${fish.name}!`;
 			}
 			if (maxCanDo < quantity) {
 				quantity = maxCanDo;

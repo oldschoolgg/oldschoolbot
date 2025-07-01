@@ -13,9 +13,9 @@ import {
 	reduceNumByPercent,
 	sumArr
 } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
-import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Bank, type EquipmentSlot, LootTable, resolveItems } from 'oldschooljs';
 
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { gorajanGearBoost } from './bso/gorajanGearBoost';
 import { getSimilarItems } from './data/similarItems';
@@ -28,8 +28,6 @@ import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
-import resolveItems from './util/resolveItems';
-import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
 
 function combinedChance(percentages: number[]): number {

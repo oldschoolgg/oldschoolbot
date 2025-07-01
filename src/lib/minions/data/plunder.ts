@@ -1,6 +1,5 @@
 import { randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { SkillsEnum } from '../../skilling/types';
 import { roll, skillingPetDropRate } from '../../util';

@@ -1,5 +1,4 @@
-import type { ItemBank } from '../../types';
-import itemID from '../../util/itemID';
+import { type ItemBank, itemID } from 'oldschooljs';
 
 interface TitheFarmBuyable {
 	name: string;

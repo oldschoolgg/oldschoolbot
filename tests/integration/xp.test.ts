@@ -1,6 +1,6 @@
+import { convertXPtoLVL } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { convertXPtoLVL } from 'oldschooljs/dist/util';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { createTestUser, mockClient } from './util';
 

@@ -6,9 +6,9 @@ import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } fr
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
-import { Bank, type Item, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, type Item, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 
-import { BOT_TYPE, BitField, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
+import { BOT_TYPE, BitField, ItemIconPacks, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { calcWholeDisXP, findDisassemblyGroup } from '../lib/invention/disassemble';
@@ -32,8 +32,8 @@ import {
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
+import { doaPurples } from './bso/bsoConstants';
 import { divinationEnergies } from './bso/divination';
-import { doaPurples } from './constants';
 import { customItems } from './customItems/util';
 import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
@@ -1012,7 +1012,7 @@ const chestLootTypes = [
 		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
 		width: 240,
 		height: 220,
-		purpleItems: toaPurpleItems,
+		purpleItems: ItemGroups.toaPurpleItems,
 		position: (canvas: Canvas, image: CanvasImage) => [
 			canvas.width - image.width + 25,
 			44 + canvas.height / 4 - image.height / 2

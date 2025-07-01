@@ -1,5 +1,4 @@
-import type { LootTable, Monster } from 'oldschooljs';
-import type { MonsterData } from 'oldschooljs/dist/meta/monsterData';
+import type { LootTable, Monster, MonsterData } from 'oldschooljs';
 
 import setCustomMonster, { makeKillTable } from '../../../../util/setCustomMonster';
 import type { KillableMonster } from '../../../types';

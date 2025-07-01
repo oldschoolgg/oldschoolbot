@@ -1,5 +1,4 @@
-import { Monsters } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { Monsters, resolveItems } from 'oldschooljs';
 
 import { activity_type_enum } from '@prisma/client';
 import { soteSkillRequirements } from '../skilling/functions/questRequirements';

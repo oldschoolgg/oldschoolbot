@@ -2,14 +2,15 @@ import { perTimeUnitChance } from '@oldschoolgg/toolkit';
 import { Time, objectEntries, percentChance, randInt, roll } from 'e';
 import { Bank, EItem, itemID } from 'oldschooljs';
 
-import { Emoji, Events, MAX_LEVEL, MIN_LENGTH_FOR_PET, type TwitcherGloves } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
+import { MAX_LEVEL } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
-import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
+import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
@@ -355,14 +356,6 @@ export const woodcuttingTask: MinionTask = {
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
 			if (roll(petDropRate / quantity)) {
 				loot.add('Beaver');
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
-						user.minionName
-					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-						'woodcutting'
-					)} Woodcutting!`
-				);
 			}
 		}
 

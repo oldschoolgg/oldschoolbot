@@ -1,8 +1,8 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Util } from 'oldschooljs';
 
-import { cryptoRand, percentChance } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
+import { cryptoRand, percentChance } from '../../../lib/util/rng';
 import {
 	mahojiParseNumber,
 	updateClientGPTrackSetting,

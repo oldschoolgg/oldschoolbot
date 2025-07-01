@@ -18,12 +18,18 @@
 			"types": "./dist/structures.d.ts",
 			"require": "./dist/cjs/structures.cjs",
 			"import": "./dist/esm/structures.mjs"
+		},
+		"./constants": {
+			"types": "./dist/constants.d.ts",
+			"require": "./dist/cjs/constants.cjs",
+			"import": "./dist/esm/constants.mjs"
 		}
 	},
 	"scripts": {
 		"test": "concurrently \"tsc -p src\" \"pnpm vitest run\" \"tsc -p tests\"",
 		"build:esbuild": "node esbuild.cjs",
-		"build:types": "tsc -p src"
+		"build:types": "tsc -p src",
+		"build": "concurrently \"pnpm build:types\" \"pnpm build:esbuild\""
 	},
 	"dependencies": {
 		"decimal.js": "^10.4.3",

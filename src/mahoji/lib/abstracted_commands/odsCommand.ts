@@ -1,9 +1,8 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, randomVariation } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-import { randomVariation } from 'oldschooljs/dist/util';
 
-import { Emoji } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

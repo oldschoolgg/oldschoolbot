@@ -1,8 +1,8 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
-
 import { Time, reduceNumByPercent } from 'e';
-import { PVM_METHODS, type PvMMethod, ZALCANO_ID } from '../../lib/constants';
+import { EMonster } from 'oldschooljs/EMonster';
+
 import { Eatables } from '../../lib/data/eatables.js';
 import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -18,6 +18,9 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
 import findMonster from '../../lib/util/findMonster.js';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
+
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
+export type PvMMethod = (typeof PVM_METHODS)[number];
 
 const otherMonsters = [
 	{
@@ -35,7 +38,7 @@ const otherMonsters = [
 	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
-		id: ZALCANO_ID,
+		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>',
 		link: '/miscellaneous/zalcano/'
 	},

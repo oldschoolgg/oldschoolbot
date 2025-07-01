@@ -1,11 +1,10 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, shuffleArr } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import { Bank, ChambersOfXeric, SkillsEnum, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
+import { CHINCANNON_MESSAGES } from '../../../lib/bso/bsoConstants';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
-import { CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { userHasFlappy } from '../../../lib/invention/inventions';
@@ -16,7 +15,6 @@ import type { RaidsOptions } from '../../../lib/types/minions';
 import { randomVariation, roll } from '../../../lib/util';
 import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 

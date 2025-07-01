@@ -1,8 +1,6 @@
-import { LootTable } from 'oldschooljs';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { LootTable, itemID, resolveItems } from 'oldschooljs';
 
-import { Emoji } from '../../constants';
-import itemID from '../../util/itemID';
-import resolveItems from '../../util/resolveItems';
 import { type Ore, SkillsEnum } from '../types';
 
 export const GemRockTable = new LootTable()

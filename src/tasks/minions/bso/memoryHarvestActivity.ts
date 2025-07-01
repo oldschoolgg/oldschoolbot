@@ -1,4 +1,5 @@
-import { calcPercentOfNum, increaseNumByPercent } from 'e';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { calcPercentOfNum, increaseNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {
@@ -7,11 +8,9 @@ import {
 	calcEnergyPerMemory,
 	divinationEnergies
 } from '../../../lib/bso/divination';
-import { Emoji } from '../../../lib/constants';
 import { inventionBoosts } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MemoryHarvestOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 

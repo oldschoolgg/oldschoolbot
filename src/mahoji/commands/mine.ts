@@ -1,6 +1,7 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { itemID } from 'oldschooljs';
 
 import { userhasDiaryTier } from '../../lib/diaries.js';
 import type { UserFullGearSetup } from '../../lib/gear';
@@ -11,17 +12,10 @@ import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Mining from '../../lib/skilling/skills/mining';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	formatSkillRequirements,
-	itemID,
-	itemNameFromID,
-	randomVariation,
-	stringMatches
-} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { minionName } from '../../lib/util/minionUtils';
+import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 

@@ -1,10 +1,10 @@
 import { Time, percentChance, randInt, roll } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
+import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { clueUpgraderEffect } from '../../lib/bso/inventionEffects';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { type Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';

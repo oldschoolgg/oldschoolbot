@@ -1,5 +1,4 @@
-import { LootTable } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { type Item, LootTable } from 'oldschooljs';
 
 import getOSItem from './util/getOSItem';
 

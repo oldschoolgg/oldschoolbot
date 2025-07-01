@@ -1,4 +1,4 @@
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { startBlacklistSyncing } from '../../lib/blacklists';
 import { usernameWithBadgesCache } from '../../lib/cache';

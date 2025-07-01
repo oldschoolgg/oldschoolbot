@@ -175,26 +175,6 @@ setItemAlias(5076, 'Red bird egg');
 setItemAlias(5077, 'Blue bird egg');
 setItemAlias(5078, 'Green bird egg');
 
-// Chompy hats
-setItemAlias(2978, 'Chompy bird hat (ogre bowman)');
-setItemAlias(2979, 'Chompy bird hat (bowman)');
-setItemAlias(2980, 'Chompy bird hat (ogre yeoman)');
-setItemAlias(2981, 'Chompy bird hat (yeoman)');
-setItemAlias(2982, 'Chompy bird hat (ogre marksman)');
-setItemAlias(2983, 'Chompy bird hat (marksman)');
-setItemAlias(2984, 'Chompy bird hat (ogre woodsman)');
-setItemAlias(2985, 'Chompy bird hat (woodsman)');
-setItemAlias(2986, 'Chompy bird hat (ogre forester)');
-setItemAlias(2987, 'Chompy bird hat (forester)');
-setItemAlias(2988, 'Chompy bird hat (ogre bowmaster)');
-setItemAlias(2989, 'Chompy bird hat (bowmaster)');
-setItemAlias(2990, 'Chompy bird hat (ogre expert)');
-setItemAlias(2991, 'Chompy bird hat (expert)');
-setItemAlias(2992, 'Chompy bird hat (ogre dragon archer)');
-setItemAlias(2993, 'Chompy bird hat (dragon archer)');
-setItemAlias(2994, 'Chompy bird hat (expert ogre dragon archer)');
-setItemAlias(2995, 'Chompy bird hat (expert dragon archer)');
-
 // Achievement diary lamps
 setItemAlias(11_137, 'Antique lamp 1');
 setItemAlias(11_139, 'Antique lamp 2');
@@ -448,8 +428,7 @@ export interface CustomItemData {
 	superTradeableButTradeableOnGE?: true;
 	isSecret?: true;
 }
-
-declare module 'oldschooljs/dist/meta/types' {
+declare module 'oldschooljs' {
 	interface Item {
 		customItemData?: CustomItemData;
 	}

@@ -1,13 +1,9 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
 
-import { discontinuedItems } from '../constants';
+import { MAX_XP } from '../constants';
 import { doaCL } from '../data/CollectionsExport';
 import { Bank, type Item, Items } from '../util';
 import resolveItems from '../util/resolveItems';
-
-export function removeDiscontinuedItems(arr: number[]) {
-	return arr.filter(i => !discontinuedItems.includes(i));
-}
 
 export function hasUnlockedAtlantis(user: MUser) {
 	return doaCL.some(itemID => user.cl.has(itemID));
@@ -52,4 +48,26 @@ export function clAdjustedDroprate(
 		if (newRate >= 1_000_000_000) break;
 	}
 	return Math.floor(newRate);
+}
+
+export function convertXPtoLVL(xp: number, cap = 120) {
+	let points = 0;
+
+	for (let lvl = 1; lvl <= cap; lvl++) {
+		points += Math.floor(lvl + 300 * Math.pow(2, lvl / 7));
+
+		if (Math.floor(points / 4) >= xp + 1) {
+			return lvl;
+		}
+	}
+
+	return cap;
+}
+
+export function herbertDroprate(herbloreXP: number, itemLevel: number) {
+	let petChance = Math.ceil(10_000_000 / (itemLevel * (itemLevel / 5)));
+	if (herbloreXP >= MAX_XP) {
+		petChance = Math.ceil(petChance / 2);
+	}
+	return petChance;
 }

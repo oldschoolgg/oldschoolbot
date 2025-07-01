@@ -1,8 +1,9 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll } from 'e';
-import { Bank, Items, LootTable, TreeHerbSeedTable } from 'oldschooljs';
+import { Bank, ItemGroups, Items, LootTable, TreeHerbSeedTable } from 'oldschooljs';
 
+import { OSB_VIRTUS_IDS } from './bso/bsoConstants';
 import { divinationEnergies } from './bso/divination';
-import { Emoji, OSB_VIRTUS_IDS } from './constants';
 import {
 	allPetIDs,
 	allPetsCL,
@@ -10,8 +11,7 @@ import {
 	cmbClothes,
 	customBossesDropsThatCantBeDroppedInMBs,
 	theatreOfBloodHardUniques,
-	theatreOfBloodNormalUniques,
-	toaCL
+	theatreOfBloodNormalUniques
 } from './data/CollectionsExport';
 import { PartyhatTable, baseHolidayItems } from './data/holidayItems';
 import { allTrophyItems } from './data/itemAliases';
@@ -461,7 +461,7 @@ const cantBeDropped = resolveItems([
 	...cmbClothes,
 	...theatreOfBloodHardUniques,
 	...theatreOfBloodNormalUniques,
-	...toaCL,
+	...ItemGroups.toaCL,
 	'Heavy ballista',
 	'Unstrung heavy ballista',
 	'Monkey tail',

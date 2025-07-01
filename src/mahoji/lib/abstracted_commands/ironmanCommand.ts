@@ -1,13 +1,12 @@
 import { mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
-
-import { assert } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 
 export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction | null) {

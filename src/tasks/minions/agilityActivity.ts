@@ -1,10 +1,8 @@
 import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, addItemToBank, randomVariation, toKMB } from 'oldschooljs';
 
-import { addItemToBank, randomVariation, toKMB } from 'oldschooljs/dist/util';
+import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';

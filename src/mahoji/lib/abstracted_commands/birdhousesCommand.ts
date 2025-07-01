@@ -1,7 +1,7 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import birdhouses, { type Birdhouse, birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { type BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
@@ -65,7 +65,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 
 	const birdHouses = birdhouseLimit(user);
 
-	const existingBirdhouse = await calculateBirdhouseDetails(user);
+	const existingBirdhouse = calculateBirdhouseDetails(user);
 	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user);
 
 	let birdhouseToPlant = inputBirdhouseName

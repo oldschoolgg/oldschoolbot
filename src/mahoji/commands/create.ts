@@ -1,28 +1,18 @@
-import { readFileSync } from 'node:fs';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { isFunction, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import type { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, type SkillsEnum } from 'oldschooljs';
+
 import Createables from '../../lib/data/createables';
 import type { IMaterialBank } from '../../lib/invention';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { transactMaterialsFromUser } from '../../lib/invention/inventions';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
-
-const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
-
-const content = 'Theses are the items that you can create:';
-const allCreatablesTable = {
-	content,
-	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
-};
 
 export const createCommand: OSBMahojiCommand = {
 	name: 'create',
@@ -62,12 +52,12 @@ export const createCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
-		const user = await mUserFetch(userID.toString());
+		const user = await mUserFetch(userID);
 
 		const itemName = options.item?.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
-			return allCreatablesTable;
+			return 'You can view all creatable items at: https://wiki.oldschool.gg/creatables';
 		}
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
@@ -111,12 +101,6 @@ export const createCommand: OSBMahojiCommand = {
 			return `You need ${createableItem.GPCost.toLocaleString()} coins to ${action} this item.`;
 		}
 
-		if (createableItem.cantBeInCL) {
-			const { cl } = user;
-			if (Object.keys(createableItem.outputItems).some(itemID => cl.amount(Number(itemID)) > 0)) {
-				return `You can only ${action} this item once!`;
-			}
-		}
 		if (createableItem.maxCanOwn) {
 			const allItems = user.allItemsOwned;
 			const amountOwned = allItems.amount(createableItem.name);

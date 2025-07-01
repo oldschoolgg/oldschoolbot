@@ -1,8 +1,7 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank, LootTable, itemID } from 'oldschooljs';
 
-import { Emoji } from '../../constants';
-import itemID from '../../util/itemID';
 import { SkillsEnum } from '../types';
 
 export interface Rune {

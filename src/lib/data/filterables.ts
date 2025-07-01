@@ -1,11 +1,14 @@
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
-import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
-import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
-import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
-
 import { uniqueArr } from 'e';
+import {
+	BeginnerClueTable,
+	EasyClueTable,
+	EliteClueTable,
+	HardClueTable,
+	MasterClueTable,
+	MediumClueTable,
+	itemID
+} from 'oldschooljs';
+
 import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
 import { gods } from '../bso/divineDominion';
 import { tmbTable, umbTable } from '../bsoOpenables';
@@ -22,7 +25,6 @@ import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import Grimy from '../skilling/skills/herblore/mixables/grimy';
 import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { allCollectionLogs } from './Collections';
 import {

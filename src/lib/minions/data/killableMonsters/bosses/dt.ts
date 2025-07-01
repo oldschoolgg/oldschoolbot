@@ -1,12 +1,11 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters, deepResolveItems, resolveItems } from 'oldschooljs';
+import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 
-import { OSB_VIRTUS_IDS } from '../../../../constants';
-import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
-import { GearStat } from '../../../../gear/types';
-import { SkillsEnum } from '../../../../skilling/types';
-import { getOSItem } from '../../../../util/getOSItem';
-import itemID from '../../../../util/itemID';
+import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport';
+import { GearStat } from '@/lib/gear/types';
+import { SkillsEnum } from '@/lib/skilling/types';
+import { getOSItem } from '@/lib/util/getOSItem';
+import { OSB_VIRTUS_IDS } from '../../../../bso/bsoConstants';
 import type { KillableMonster, KillableMonsterEffect } from '../../../types';
 import { QuestID } from '../../quests';
 

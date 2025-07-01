@@ -1,11 +1,10 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { Time, clamp } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { Planks } from '../../../lib/minions/data/planks';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ButlerActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -63,7 +62,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 	}
 
 	if (quantity === 0) {
-		return `You don't have any ${itemNameFromID(plank.inputItem)}.`;
+		return `You don't have any ${Items.itemNameFromId(plank.inputItem)}.`;
 	}
 
 	const { GP } = user;
@@ -144,7 +143,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		channelID: channelID.toString()
 	});
 
-	let response = `${user.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${
+	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${
 		quantity > 1 ? 's' : ''
 	}. The demon butler has charged you ${toKMB(cost)} GP.`;
 

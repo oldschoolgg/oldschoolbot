@@ -1,10 +1,9 @@
-import { itemID, resolveItems } from 'oldschooljs/dist/util';
+import { ItemGroups, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
+import { itemNameFromID } from '@/lib/util';
 import { PMBTable, combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '../../../src/lib/bsoOpenables';
-import { toaCL } from '../../../src/lib/data/CollectionsExport';
 import { growablePets } from '../../../src/lib/growablePets';
-import { itemNameFromID } from '../../../src/lib/util';
 
 test("Items that shouldn't be dropped in mystery boxes", () => {
 	const shouldntBeIn = resolveItems([
@@ -41,7 +40,7 @@ test("Items that shouldn't be dropped in mystery boxes", () => {
 		26245,
 		26241,
 		26243,
-		...toaCL
+		...ItemGroups.toaCL
 	]);
 	for (const i of shouldntBeIn) {
 		if (combinedTmbUmbEmbTables.includes(i)) {

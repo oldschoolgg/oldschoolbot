@@ -1,15 +1,13 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { type CommandRunOptions, formatOrdinal } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, roll } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
 
 import { itemContractResetTime } from '../../lib/MUser';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { MysteryBoxes, PMBTable, combinedTmbUmbEmbTables } from '../../lib/bsoOpenables';
-import { BitField, Emoji } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
@@ -21,7 +19,6 @@ import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/share
 import { formatDuration, itemID, makeComponents } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { LampTable } from '../../lib/xpLamps';
 import type { OSBMahojiCommand } from '../lib/util';

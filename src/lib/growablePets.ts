@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { Bank, resolveItems } from 'oldschooljs';
 
 import { Time, randFloat, roll } from 'e';
 import type { ActivityTaskOptions } from './types/minions';

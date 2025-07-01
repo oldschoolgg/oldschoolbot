@@ -1,12 +1,10 @@
 import { Time, calcWhatPercent, sumArr } from 'e';
-import { Bank, type Item, type Monster, Monsters } from 'oldschooljs';
-
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
 import { omit } from 'remeda';
+
+import { itemNameFromID } from '@/lib/util';
 import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { gearstatToSetup, gorajanBoosts } from '../../../../lib/bso/gorajanGearBoost';
-import type { PvMMethod } from '../../../../lib/constants';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
 import type { OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
 import { InventionID } from '../../../../lib/invention/inventions';
@@ -30,8 +28,8 @@ import { calcPOHBoosts } from '../../../../lib/poh';
 import { ChargeBank } from '../../../../lib/structures/Bank';
 import { maxOffenceStats } from '../../../../lib/structures/Gear';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import { itemNameFromID } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
+import type { PvMMethod } from '../../../commands/k';
 import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
 import { determineIfUsingCannon } from './determineIfUsingCannon';
 import { dragonHunterWeapons } from './minionKillData';
@@ -463,7 +461,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				if (equippedInThisSet) {
 					results.push({
 						percentageReduction: equippedInThisSet.boostPercent,
-						message: `${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`
+						message: `${equippedInThisSet.boostPercent}% for ${Items.itemNameFromId(equippedInThisSet.itemID)}`
 					});
 					continue;
 				}
@@ -473,7 +471,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 						deg.items.some(g => gearBank.gear[boostSet.gearSetup].hasEquipped(g.itemID))
 				);
 				if (!equippedInThisSet && boostSet.required && !insteadHasDegradeableItem) {
-					return `You need to have one of these items equipped in your ${boostSet.gearSetup} setup: ${boostSet.items.map(i => itemNameFromID(i.itemID)).join(', ')}.`;
+					return `You need to have one of these items equipped in your ${boostSet.gearSetup} setup: ${boostSet.items.map(i => Items.itemNameFromId(i.itemID)).join(', ')}.`;
 				}
 			}
 			return results;

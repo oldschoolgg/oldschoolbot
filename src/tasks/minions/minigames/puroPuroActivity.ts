@@ -1,6 +1,5 @@
 import { Time, randInt, reduceNumByPercent, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, SkillsEnum } from 'oldschooljs';
 
 import {
 	implings,

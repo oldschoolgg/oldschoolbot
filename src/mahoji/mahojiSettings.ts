@@ -1,18 +1,17 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User, UserStats } from '@prisma/client';
+import { bold } from 'discord.js';
 import { isObject, notEmpty, objectEntries, round } from 'e';
-import { Bank, itemID, resolveItems } from 'oldschooljs';
+import { Bank, ItemGroups, itemID, resolveItems } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
-import { type GearSetupType, GearStat } from '../lib/gear';
-import type { KillableMonster } from '../lib/minions/types';
-
-import { bold } from 'discord.js';
 import { userhasDiaryTier } from '../lib/diaries';
+import { type GearSetupType, GearStat } from '../lib/gear';
 import { BSOMonsters } from '../lib/minions/data/killableMonsters/custom/customMonsters';
 import { quests } from '../lib/minions/data/quests';
+import type { KillableMonster } from '../lib/minions/types';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { addStatsOfItemsTogether, hasGracefulEquipped } from '../lib/structures/Gear';
 import type { GearBank } from '../lib/structures/GearBank';
@@ -245,12 +244,10 @@ export function anglerBoostPercent(user: MUser) {
 	return round(boostPercent, 1);
 }
 
-const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
-
 export function rogueOutfitPercentBonus(user: MUser): number {
 	let amountEquipped = 0;
-	for (const id of rogueOutfit) {
-		if (user.hasEquippedOrInBank(id)) {
+	for (const id of ItemGroups.rogueOutfit) {
+		if (user.hasEquippedOrInBank([id])) {
 			amountEquipped++;
 		}
 	}

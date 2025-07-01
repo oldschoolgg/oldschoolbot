@@ -1,13 +1,14 @@
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
-import { Bank, toKMB } from 'oldschooljs';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { Time, calcWhatPercent, reduceNumByPercent, roll } from 'e';
+import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants.js';
+import { skillingPetDropRate } from '@/lib/util';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, randomVariation, roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const agilityArenaTask: MinionTask = {

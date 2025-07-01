@@ -5,26 +5,19 @@ import {
 	PerkTier,
 	asyncGzip
 } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
 import { Time, randArrItem, randInt, shuffleArr } from 'e';
-import { Bank, convertLVLtoXP } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
+import { Bank, type Item, type ItemBank, ItemGroups, ToBUniqueTable, convertLVLtoXP } from 'oldschooljs';
+
 import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
 import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField, Channel, Emoji, globalConfig } from '../../lib/constants';
+import { BitField, Channel, globalConfig } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import {
-	anglerOutfit,
-	evilChickenOutfit,
-	gnomeRestaurantCL,
-	guardiansOfTheRiftCL,
-	shadesOfMorttonCL,
-	toaCL
-} from '../../lib/data/CollectionsExport';
+import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { keyCrates } from '../../lib/keyCrates.js';
@@ -40,7 +33,6 @@ import {
 	formatDuration,
 	getUsername,
 	isGroupActivity,
-	isInSupportServer,
 	itemID,
 	itemNameFromID,
 	parseStaticTimeInterval,
@@ -402,8 +394,8 @@ export function generateXPLevelQuestion() {
 	};
 }
 
-async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
-	if (!isInSupportServer(channelID)) {
+async function spawnLampCommand(user: MUser, channelID: string, guildId: string | null): CommandResponse {
+	if (guildId !== globalConfig.supportServerID) {
 		return 'You can only use this command in the support server.';
 	}
 	const isAdmin = globalConfig.adminUserIDs.includes(user.id);
@@ -482,7 +474,7 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 	{
 		name: 'Fishing Trawler',
 		key: 'fishing_trawler',
-		items: anglerOutfit
+		items: ItemGroups.anglerOutfit
 	},
 	{
 		name: 'Gnome Restaurant',
@@ -507,7 +499,7 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 	{
 		name: 'Tombs of Amascut',
 		key: 'tombs_of_amascut',
-		items: toaCL
+		items: ItemGroups.toaCL
 	},
 	{
 		name: 'Shades of Morton',
@@ -684,7 +676,7 @@ LIMIT 10;`);
 	},
 	{
 		name: 'Evil Chicken Outfit',
-		items: evilChickenOutfit,
+		items: ItemGroups.evilChickenOutfit,
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
             SELECT *
@@ -1443,7 +1435,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return result;
 			}
 			if (patron.spawnlamp) {
-				return spawnLampCommand(mahojiUser, channelID);
+				return spawnLampCommand(mahojiUser, channelID, interaction.guildId);
 			}
 			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
 			if (patron.stats) {

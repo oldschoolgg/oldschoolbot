@@ -2,8 +2,7 @@ import { userMention } from '@discordjs/builders';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { Time, clamp, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
 
 import type { IMaterialBank, MaterialType } from '.';
 import { type ClueTier, ClueTiers } from '../clues/clueTiers';

@@ -1,12 +1,10 @@
 import { Time, calcPercentOfNum, randArrItem, randInt, shuffleArr } from 'e';
-import { Bank } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { describe, expect, test } from 'vitest';
+import { Bank, resolveItems } from 'oldschooljs';
+import PQueue from 'p-queue';
+import { assert, describe, expect, test } from 'vitest';
 
 import { GrandExchange } from '../../src/lib/grandExchange';
 
-import PQueue from 'p-queue';
-import { assert } from '../../src/lib/util';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import type { TestUser } from './util';

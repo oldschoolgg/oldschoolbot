@@ -1,8 +1,9 @@
 import { notEmpty, sumArr } from 'e';
-import { Bank, Monsters, Openables } from 'oldschooljs';
+import { Bank, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { divinationEnergies } from '../bso/divination';
+import { MAX_LEVEL } from '../constants';
 import {
 	allGildedItems,
 	brokenPernixOutfit,
@@ -45,9 +46,7 @@ import { allThirdAgeItems } from '../simulation/sharedTables';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
-import type { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
-import resolveItems from '../util/resolveItems';
 import { type Task, leaguesHasCatches, leaguesHasKC } from './leaguesUtils';
 import { calculateChargedItems, calculateTiarasMade } from './stats';
 
@@ -182,7 +181,7 @@ export const hardTasks: Task[] = [
 		id: 2018,
 		name: 'Reach combat level 126',
 		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP) >= 126;
+			return calcCombatLevel(skillsXP, MAX_LEVEL) >= 126;
 		}
 	},
 	{

@@ -1,7 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { type UserStats, tame_growth } from '@prisma/client';
 import { calcWhatPercent, objectEntries, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, ItemGroups } from 'oldschooljs';
 
 import { divinationEnergies } from './bso/divination';
 import { ClueTiers } from './clues/clueTiers';
@@ -125,7 +125,6 @@ import {
 	thermonuclearSmokeDevilCL,
 	tinkeringWorshopCL,
 	titheFarmCL,
-	toaCL,
 	tobMetamorphPets,
 	tormentedDemonCL,
 	treeBeardCL,
@@ -800,7 +799,7 @@ export const compCapeTrimmedRequirements = new Requirements()
 	.add({ name: "Complete Chamber's of Xeric CL", clRequirement: chambersOfXericCL })
 	.add({ name: 'Complete Depths of Atlantis CL', clRequirement: doaCL })
 	.add({ name: 'Complete Theatre of Blood CL', clRequirement: theatreOfBLoodCL })
-	.add({ name: 'Complete Tombs of Amascut CL', clRequirement: toaCL });
+	.add({ name: 'Complete Tombs of Amascut CL', clRequirement: ItemGroups.toaCL });
 
 for (const group of leagueTasks) {
 	compCapeTrimmedRequirements.add({

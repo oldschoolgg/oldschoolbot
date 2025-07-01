@@ -1,5 +1,5 @@
 import { calcWhatPercent, randInt } from 'e';
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs';
 
 import { maxOffenceStats } from '../gear';
 import type { GearStats } from '../gear/types';

@@ -1,7 +1,7 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { chompyHats } from '../../../lib/constants';
+import { chompyHats } from '../../../lib/data/CollectionsExport';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

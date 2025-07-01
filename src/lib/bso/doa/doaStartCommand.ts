@@ -1,9 +1,9 @@
 import { type CommandResponse, channelIsSendable, formatDuration } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, clamp } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
-import { Emoji } from '../../constants';
 import { degradeItem } from '../../degradeableItems';
 import {
 	calcDOAInput,

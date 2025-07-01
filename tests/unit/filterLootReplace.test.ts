@@ -1,4 +1,4 @@
-import { Bank } from 'oldschooljs/dist/meta/types';
+import { Bank } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { filterLootReplace } from '../../src/lib/slayer/slayerUtil';
