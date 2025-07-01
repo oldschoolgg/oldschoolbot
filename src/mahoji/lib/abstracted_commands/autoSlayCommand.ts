@@ -535,7 +535,7 @@ export async function autoSlayCommand({
 			return usersTask.assignedTask?.monsters.includes(m.id);
 		});
 		if (allMonsters.length === 0) return 'Please report this error. No monster variations found.';
-		let maxDiff = 0;
+		let maxDiff = -1;
 		let maxMobName: string | null = null;
 
 		for (const m of allMonsters) {
