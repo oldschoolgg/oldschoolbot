@@ -17,6 +17,7 @@
 		"data": "tsx --tsconfig scripts/tsconfig.json ./scripts/monster_table.ts && pnpm lint",
 		"wiki": "tsx --tsconfig scripts/tsconfig.json ./scripts/wiki.ts",
 		"generate:robochimp": "prisma generate --no-hints --schema prisma/robochimp.prisma",
+		"bso-data": "git fetch origin bso:bso && git checkout bso -- ./data/bso/",
 		"============BUILDING": "============",
 		"build": "pnpm build:packages && concurrently --raw \"tsx esbuild.mts\" \"pnpm test:types\"",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"pnpm generate:robochimp\" && echo \"Generated Prisma Client\"",
