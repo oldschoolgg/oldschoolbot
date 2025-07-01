@@ -3,7 +3,7 @@ import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { deepClone, increaseNumByPercent, notEmpty, objectEntries, reduceNumByPercent } from 'e';
 import fetch from 'node-fetch';
-import bsoItemsJson from '../../../data/bso_items.json';
+import bsoItemsJson from '../../../data/bso/bso_items.json';
 
 import { EquipmentSlot, type Item } from '../src/meta/types';
 import Items, { CLUE_SCROLLS, CLUE_SCROLL_NAMES, USELESS_ITEMS } from '../src/structures/Items';
