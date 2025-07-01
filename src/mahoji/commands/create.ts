@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
@@ -11,14 +10,6 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
-
-const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
-
-const content = 'Theses are the items that you can create:';
-const allCreatablesTable = {
-	content,
-	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
-};
 
 export const createCommand: OSBMahojiCommand = {
 	name: 'create',
@@ -58,12 +49,12 @@ export const createCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
-		const user = await mUserFetch(userID.toString());
+		const user = await mUserFetch(userID);
 
 		const itemName = options.item?.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
-			return allCreatablesTable;
+			return 'You can view all creatable items at: https://wiki.oldschool.gg/creatables';
 		}
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
@@ -107,12 +98,6 @@ export const createCommand: OSBMahojiCommand = {
 			return `You need ${createableItem.GPCost.toLocaleString()} coins to ${action} this item.`;
 		}
 
-		if (createableItem.cantBeInCL) {
-			const { cl } = user;
-			if (Object.keys(createableItem.outputItems).some(itemID => cl.amount(Number(itemID)) > 0)) {
-				return `You can only ${action} this item once!`;
-			}
-		}
 		if (createableItem.maxCanOwn) {
 			const allItems = user.allItemsOwned;
 			const amountOwned = allItems.amount(createableItem.name);

@@ -12,7 +12,7 @@ import { FloatBank } from '../../src/lib/structures/Bank.js';
 import { determineMiningTrip } from '../../src/mahoji/commands/mine.js';
 import { determineMiningResult } from '../../src/tasks/minions/miningActivity.js';
 import { makeGearBank } from '../../tests/unit/utils.js';
-import { handleMarkdownEmbed } from '../wiki.js';
+import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
 function bankToPerHour(bank: Bank, duration: number): FloatBank {
 	const perHourBank = new FloatBank();

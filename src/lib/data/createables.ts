@@ -38,7 +38,6 @@ export interface Createable {
 	noCl?: boolean;
 	forceAddToCl?: boolean;
 	GPCost?: number;
-	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	maxCanOwn?: number;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
