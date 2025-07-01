@@ -1,7 +1,7 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { CollectingOptions } from '../../../lib/types/minions';

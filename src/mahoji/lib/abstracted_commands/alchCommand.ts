@@ -1,9 +1,9 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, clamp } from 'e';
-import { Bank, type Item, SkillsEnum, resolveItems } from 'oldschooljs';
+import { Bank, type Item, SkillsEnum, resolveItems, toKMB } from 'oldschooljs';
 
 import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';

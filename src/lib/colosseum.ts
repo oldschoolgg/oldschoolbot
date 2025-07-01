@@ -15,6 +15,7 @@ import {
 } from 'e';
 import { Bank, type EquipmentSlot, LootTable, resolveItems } from 'oldschooljs';
 
+import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { degradeChargeBank } from './degradeableItems';
 import type { GearSetupType } from './gear/types';
@@ -23,9 +24,7 @@ import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
 import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
-import { formatList } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
-import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
 
 function combinedChance(percentages: number[]): number {

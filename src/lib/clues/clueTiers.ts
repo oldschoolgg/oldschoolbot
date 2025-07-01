@@ -8,6 +8,7 @@ import {
 	type LootTable,
 	MasterCasket,
 	MediumCasket,
+	itemID,
 	resolveItems
 } from 'oldschooljs';
 
@@ -19,7 +20,6 @@ import {
 	cluesMasterCL,
 	cluesMediumCL
 } from '../data/CollectionsExport';
-import itemID from '../util/itemID';
 import type { ClueReqs } from './clueReqs';
 import { beginnerReqs } from './clueReqs';
 import type { StashUnitTier } from './stashUnits';

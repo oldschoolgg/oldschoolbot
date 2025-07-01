@@ -12,15 +12,13 @@ import {
 	roll,
 	sumArr
 } from 'e';
-import { Bank, EMonster, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, itemID, randomVariation, resolveItems } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import type { Skills } from '../types';
-import { formatList } from '../util';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import itemID from '../util/itemID';
 import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
-import { formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
+import { formatList, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { TeamLoot } from './TeamLoot';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
 

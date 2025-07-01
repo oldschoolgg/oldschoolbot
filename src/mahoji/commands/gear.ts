@@ -1,12 +1,12 @@
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
+import { Items } from 'oldschooljs';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
 import type { GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes, GearStat } from '../../lib/gear/types';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { itemNameFromID } from '../../lib/util/smallUtils';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
@@ -114,7 +114,7 @@ export const gearCommand: OSBMahojiCommand = {
 						const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 						return allPetIDs
 							.filter(i => bank.has(i))
-							.map(i => itemNameFromID(i)!)
+							.map(i => Items.itemNameFromId(i)!)
 							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i, value: i }));
 					}

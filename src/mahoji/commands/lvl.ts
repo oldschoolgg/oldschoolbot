@@ -2,12 +2,12 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores, type SkillsEnum, convertLVLtoXP, convertXPtoLVL } from 'oldschooljs';
 
-import { MAX_XP } from '../../lib/constants';
+import { MAX_LEVEL, MAX_XP } from '../../lib/constants';
 import { skillOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const xpLeft = (xp: number) => {
-	const level = convertXPtoLVL(xp);
+	const level = convertXPtoLVL(xp, MAX_LEVEL);
 	if (level === 99) return 0;
 	return (convertLVLtoXP(level + 1) - xp).toLocaleString();
 };

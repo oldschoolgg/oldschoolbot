@@ -1,7 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { channelIsSendable, formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
 	calcCoxDuration,
 	calcCoxInput,
@@ -21,7 +22,6 @@ import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MakePartyOptions } from '../../../lib/types';
 import type { RaidsOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

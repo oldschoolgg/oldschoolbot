@@ -1,15 +1,12 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { BaseMessageOptions } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { makeComponents, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
-
 import { minionBuyButton } from '../../../lib/sharedComponents';
-import { makeComponents } from '../../../lib/util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,

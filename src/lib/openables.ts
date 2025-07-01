@@ -1,5 +1,4 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import {
 	Bank,
@@ -10,6 +9,7 @@ import {
 	HallowedSackTable,
 	Implings,
 	type Item,
+	type ItemBank,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
@@ -17,6 +17,7 @@ import {
 	Openables,
 	SkillsEnum,
 	ZombiePiratesLocker,
+	itemID,
 	resolveItems
 } from 'oldschooljs';
 
@@ -34,9 +35,7 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import type { ItemBank } from './types';
 import getOSItem from './util/getOSItem';
-import itemID from './util/itemID';
 import { roll } from './util/rng';
 
 const CacheOfRunesTable = new LootTable()

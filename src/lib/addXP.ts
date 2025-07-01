@@ -5,7 +5,7 @@ import { bold } from 'discord.js';
 import { Time, noOp } from 'e';
 import { convertXPtoLVL, toKMB } from './util';
 
-import { LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
+import { LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
 import { skillEmoji } from './data/emojis';
 import type { AddXpParams } from './minions/types';
 import { sql } from './postgres';
@@ -61,7 +61,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	const newXP = Math.min(MAX_XP, currentXP + params.amount);
 	const totalXPAdded = newXP - currentXP;
-	const newLevel = convertXPtoLVL(Math.floor(newXP));
+	const newLevel = convertXPtoLVL(Math.floor(newXP), MAX_LEVEL);
 
 	// Pre-MAX_XP
 	let preMax = -1;

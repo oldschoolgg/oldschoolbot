@@ -5,7 +5,7 @@ import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
 
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { masteryKey } from '../../lib/constants';
+import { MAX_LEVEL, masteryKey } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -653,7 +653,8 @@ async function skillsLb(
 					const skillXP = Number(obj[objKey] ?? 0);
 
 					return `${getPos(i, j)}**${getUsernameSync(obj.id)}:** ${skillXP.toLocaleString()} XP (${convertXPtoLVL(
-						skillXP
+						skillXP,
+						MAX_LEVEL
 					)})`;
 				})
 				.join('\n')

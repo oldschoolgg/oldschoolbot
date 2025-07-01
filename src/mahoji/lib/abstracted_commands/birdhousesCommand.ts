@@ -1,7 +1,7 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';

@@ -2,11 +2,11 @@ import { type CommandOptions, isGuildChannel, stringMatches } from '@oldschoolgg
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
+import { hasSkillReqs } from '@/lib/util';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { AutoslayOptionsEnum, autoslayModes } from '../../../lib/slayer/constants';
 import { SlayerMasterEnum, getCommonTaskName, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { hasSkillReqs } from '../../../lib/util';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import type { PvMMethod } from '../../commands/k';
 import { slayerNewTaskCommand } from './slayerTaskCommand';

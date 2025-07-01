@@ -26,7 +26,7 @@ import {
 	sumArr,
 	uniqueArr
 } from 'e';
-import { Bank, LootTable, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { getSimilarItems } from '../data/similarItems';
@@ -42,7 +42,6 @@ import type { TOAOptions } from '../types/minions';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID';
 import { assert } from '../util/logError';
 import {
 	bankToStrShortNames,

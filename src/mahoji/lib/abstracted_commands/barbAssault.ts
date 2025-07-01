@@ -1,3 +1,4 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
 import {
 	type CommandResponse,
 	formatDuration,
@@ -9,7 +10,6 @@ import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank, itemID, randomVariation } from 'oldschooljs';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';

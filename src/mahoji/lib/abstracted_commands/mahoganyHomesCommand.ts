@@ -1,8 +1,7 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time, calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../../lib/skilling/types';

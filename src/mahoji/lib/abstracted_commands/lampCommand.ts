@@ -1,9 +1,9 @@
 import { clamp, objectValues } from 'e';
 import { Bank, type Item, itemID, resolveItems } from 'oldschooljs';
 
+import { isValidSkill } from '@/lib/util';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { Skills } from '../../../lib/types';
-import { isValidSkill } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
 import { assert } from '../../../lib/util/logError';
 
