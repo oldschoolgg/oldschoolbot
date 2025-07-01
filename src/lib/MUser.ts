@@ -3,7 +3,17 @@ import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { Time, calcWhatPercent, objectValues, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
-import { Bank, EquipmentSlot, type Item, type ItemBank, resolveItems } from 'oldschooljs';
+import {
+	Bank,
+	EquipmentSlot,
+	type Item,
+	type ItemBank,
+	Items,
+	addItemToBank,
+	convertXPtoLVL,
+	itemID,
+	resolveItems
+} from 'oldschooljs';
 import { pick } from 'remeda';
 
 import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
@@ -15,7 +25,7 @@ import { userIsBusy } from './busyCounterCache';
 import { partialUserCache } from './cache';
 import { ClueTiers } from './clues/clueTiers';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
-import { BitField, projectiles } from './constants';
+import { BitField, MAX_LEVEL, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { degradeableItems } from './degradeableItems';
@@ -47,17 +57,16 @@ import { GearBank } from './structures/GearBank';
 import { MTame } from './structures/MTame';
 import type { Skills } from './types';
 import type { SkillRequirements } from './types';
-import { addItemToBank, convertXPtoLVL, hasSkillReqsRaw, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { findGroupOfUser } from './util/findGroupOfUser';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
-import itemID from './util/itemID';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
+import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
@@ -475,7 +484,7 @@ export class MUserClass {
 		};
 		if (levels) {
 			for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
-				skills[key] = convertXPtoLVL(val);
+				skills[key] = convertXPtoLVL(val, MAX_LEVEL);
 			}
 		}
 		return skills;
@@ -588,7 +597,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			}
 			if (equippedAmmo !== ammoRemove[0].id) {
 				throw new UserError(
-					`You have ${itemNameFromID(equippedAmmo)} equipped as your range ammo, but you need: ${ammoRemove[0].name}.`
+					`You have ${Items.itemNameFromId(equippedAmmo)} equipped as your range ammo, but you need: ${ammoRemove[0].name}.`
 				);
 			}
 			const newRangeGear = { ...this.gear[gearKey] };

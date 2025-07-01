@@ -1,7 +1,6 @@
-import { Bank, type Item } from 'oldschooljs';
+import { Bank, type Item, itemID } from 'oldschooljs';
 
 import getOSItem from '../../util/getOSItem';
-import itemID from '../../util/itemID';
 import type { Createable } from '../createables';
 
 export const armorAndItemPacks: Createable[] = [

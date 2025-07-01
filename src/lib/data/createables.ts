@@ -1,5 +1,5 @@
 import { isFunction, uniqueArr } from 'e';
-import { Bank, EItem, deepResolveItems } from 'oldschooljs';
+import { Bank, EItem, deepResolveItems, itemID } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import { discontinuedItems } from '../customItems/customItems';
@@ -8,10 +8,8 @@ import type { MaterialBank } from '../invention/MaterialBank';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank, Skills } from '../types';
-import { formatList } from '../util';
 import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID';
-import { itemNameFromID } from '../util/smallUtils';
+import { formatList, itemNameFromID } from '../util/smallUtils';
 import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport';
 import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';

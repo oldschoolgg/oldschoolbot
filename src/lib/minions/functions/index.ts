@@ -1,3 +1,4 @@
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 import { type Monster, Monsters } from 'oldschooljs';
 
@@ -7,7 +8,6 @@ import { GearStat, type OffenceGearStat, type PrimaryGearSetupType } from '../..
 import { NexMonster } from '../../nex';
 import { SkillsEnum } from '../../skilling/types';
 import { XPBank } from '../../structures/XPBank';
-import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import { Ignecarus } from '../data/killableMonsters/custom/bosses/Ignecarus';

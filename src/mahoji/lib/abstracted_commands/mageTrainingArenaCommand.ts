@@ -1,8 +1,7 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { getNewUser } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

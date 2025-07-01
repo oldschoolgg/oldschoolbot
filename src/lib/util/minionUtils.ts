@@ -6,13 +6,14 @@ import { type Bank, resolveItems } from 'oldschooljs';
 
 import { MUserClass } from '../MUser';
 import { convertXPtoLVL } from '../bso/bsoUtil';
+import { MAX_LEVEL } from '../constants';
 import { QuestID } from '../minions/data/quests';
 import type { SkillsEnum } from '../skilling/types';
 import type { Peak } from './../tickers';
 
 export function skillLevel(user: MUser, skill: SkillsEnum) {
 	const xp = Number(user.user[`skills_${skill}`]);
-	return convertXPtoLVL(xp, 120);
+	return convertXPtoLVL(xp, MAX_LEVEL);
 }
 
 export const bows = resolveItems([

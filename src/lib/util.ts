@@ -34,7 +34,7 @@ import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { clAdjustedDroprate, convertXPtoLVL } from './bso/bsoUtil';
 import { usernameWithBadgesCache } from './cache';
-import { BitField, MAX_XP, type ProjectileType, globalConfig } from './constants';
+import { BitField, MAX_LEVEL, MAX_XP, type ProjectileType, globalConfig } from './constants';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
 import type { GearBank } from './structures/GearBank';
@@ -76,14 +76,14 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-export function calcCombatLevel(skills: Skills) {
-	const defence = skills.defence ? convertXPtoLVL(skills.defence) : 1;
-	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged) : 1;
-	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints) : 1;
-	const magic = skills.magic ? convertXPtoLVL(skills.magic) : 1;
-	const prayer = skills.prayer ? convertXPtoLVL(skills.prayer) : 1;
-	const attack = skills.attack ? convertXPtoLVL(skills.attack) : 1;
-	const strength = skills.strength ? convertXPtoLVL(skills.strength) : 1;
+export function calcCombatLevel(skills: Skills, levelCap: number = MAX_LEVEL): number {
+	const defence = skills.defence ? convertXPtoLVL(skills.defence, levelCap) : 1;
+	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged, levelCap) : 1;
+	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints, levelCap) : 1;
+	const magic = skills.magic ? convertXPtoLVL(skills.magic, levelCap) : 1;
+	const prayer = skills.prayer ? convertXPtoLVL(skills.prayer, levelCap) : 1;
+	const attack = skills.attack ? convertXPtoLVL(skills.attack, levelCap) : 1;
+	const strength = skills.strength ? convertXPtoLVL(skills.strength, levelCap) : 1;
 
 	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
 	const melee = 0.325 * (attack + strength);
@@ -91,6 +91,7 @@ export function calcCombatLevel(skills: Skills) {
 	const mage = 0.325 * (Math.floor(magic / 2) + magic);
 	return Math.floor(base + Math.max(melee, range, mage));
 }
+
 export function calcTotalLevel(skills: Skills) {
 	return sumArr(Object.values(skills));
 }
@@ -219,7 +220,7 @@ export function skillingPetDropRate(
 ): { petDropRate: number } {
 	const xp = typeof user === 'number' ? user : user.skillsAsXP[skill];
 	const twoHundredMillXP = xp >= MAX_XP;
-	const skillLevel = convertXPtoLVL(xp);
+	const skillLevel = convertXPtoLVL(xp, MAX_LEVEL);
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
 	return { petDropRate: dropRate };

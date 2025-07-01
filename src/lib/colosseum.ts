@@ -15,6 +15,7 @@ import {
 } from 'e';
 import { Bank, type EquipmentSlot, LootTable, resolveItems } from 'oldschooljs';
 
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { gorajanGearBoost } from './bso/gorajanGearBoost';
 import { getSimilarItems } from './data/similarItems';
@@ -27,7 +28,6 @@ import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
-import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
 
 function combinedChance(percentages: number[]): number {

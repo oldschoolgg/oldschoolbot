@@ -17,10 +17,11 @@ import {
 	Openables,
 	SkillsEnum,
 	ZombiePiratesLocker,
+	itemID,
 	resolveItems
 } from 'oldschooljs';
 
-import { randInt } from 'e';
+import { percentChance, randInt } from 'e';
 import { bsoOpenables } from './bsoOpenables';
 import { ClueTiers } from './clues/clueTiers';
 import { clueHunterOutfit } from './data/CollectionsExport';
@@ -36,8 +37,8 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import { itemID, percentChance, roll } from './util';
 import getOSItem from './util/getOSItem';
+import { roll } from './util/rng';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
