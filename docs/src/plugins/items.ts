@@ -1,8 +1,9 @@
 import { collapseWhiteSpace } from 'collapse-white-space';
 import { Items } from 'oldschooljs';
 import { visitParents } from 'unist-util-visit-parents';
+
 import bsoItemsJson from '../../../data/bso_items.json';
-import commandsJson from '../../../data/osb.commands.json';
+import commandsJson from '../../../data/osb/commands.json';
 import { authors, authorsMap } from '../../../scripts/wiki/authors.js';
 import { SkillsArray } from '../../../src/lib/skilling/types.js';
 import { toTitleCase } from '../docs-util.js';
@@ -67,7 +68,7 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 				} else if (content.includes('embed.')) {
 					html = '';
 				} else if (content.startsWith('/')) {
-					const cmd = commandsJson.find(c => c.name === content.slice(1).split(' ')[0]);
+					const cmd = commandsJson.data.find(c => c.name === content.slice(1).split(' ')[0]);
 					if (!cmd) {
 						console.warn(`Could not find command with name: ${match.slice(1)}`);
 					}
