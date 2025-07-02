@@ -1,7 +1,7 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 import { Time } from 'e';
-import { Bank, randomVariation } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

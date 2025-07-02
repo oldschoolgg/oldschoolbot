@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, LootTable, Monsters, RareDropTable, resolveNameBank } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { GearStat } from '../../../../gear';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
 import type { CustomMonster } from './customMonsters';
 

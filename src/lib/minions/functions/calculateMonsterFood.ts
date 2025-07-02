@@ -1,8 +1,8 @@
 import { calcWhatPercent, reduceNumByPercent } from 'e';
 
+import { GearStat } from 'oldschooljs/gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import type { GearSetupType } from '../../gear/types';
-import { GearStat } from '../../gear/types';
 import { maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import type { GearBank } from '../../structures/GearBank';
 import { readableStatName } from '../../util/smallUtils';

@@ -1,6 +1,6 @@
 {
-	"hash": "3512d1ad16cd41c99d6e5073de62893c",
-	"date": "2025-07-01T02:28:48.192Z",
+	"hash": "a4f21eff2cf87d39c13854f6315b7d42",
+	"date": "2025-07-01T06:46:53.270Z",
 	"data": [
 		{
 			"name": "activities",
@@ -43,11 +43,6 @@
 			"name": "bingo",
 			"desc": "Bingo!",
 			"subOptions": ["create_bingo", "items", "leaderboard", "leave_team", "make_team", "manage_bingo", "view"]
-		},
-		{
-			"name": "bossrecords",
-			"desc": "Shows your OSRS boss records.",
-			"subOptions": []
 		},
 		{
 			"name": "bs",
@@ -173,16 +168,6 @@
 		{
 			"name": "droprate",
 			"desc": "Check the droprate of something.",
-			"subOptions": []
-		},
-		{
-			"name": "fake",
-			"desc": "Generate fake images of getting loot.",
-			"subOptions": []
-		},
-		{
-			"name": "fakepm",
-			"desc": "Generate fake images of PMs.",
 			"subOptions": []
 		},
 		{

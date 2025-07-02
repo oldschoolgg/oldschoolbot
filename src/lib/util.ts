@@ -1,6 +1,5 @@
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import {
-	type CommandResponse,
 	calcPerHour,
 	cleanUsername,
 	formatDuration,
@@ -10,28 +9,11 @@ import {
 	stripEmojis
 } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User } from '@prisma/client';
-import {
-	type BaseMessageOptions,
-	type ButtonInteraction,
-	type CacheType,
-	type Collection,
-	type CollectorFilter,
-	type ComponentType,
-	type Guild,
-	type InteractionReplyOptions,
-	type Message,
-	type MessageEditOptions,
-	type SelectMenuInteraction,
-	type TextChannel,
-	bold,
-	escapeMarkdown,
-	userMention
-} from 'discord.js';
+import { type Guild, bold, escapeMarkdown, userMention } from 'discord.js';
 import { Time, calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
-import { type Bank, type Monster, Monsters } from 'oldschooljs';
+import { type Bank, type Monster, Monsters, calcCombatLevel } from 'oldschooljs';
 
 import type { MUserClass } from './MUser';
-import { PaginatedMessage } from './PaginatedMessage';
 import { clAdjustedDroprate, convertXPtoLVL } from './bso/bsoUtil';
 import { usernameWithBadgesCache } from './cache';
 import { BitField, MAX_LEVEL, MAX_XP, type ProjectileType, globalConfig } from './constants';
@@ -76,22 +58,6 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-export function calcCombatLevel(skills: Skills, levelCap: number = MAX_LEVEL): number {
-	const defence = skills.defence ? convertXPtoLVL(skills.defence, levelCap) : 1;
-	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged, levelCap) : 1;
-	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints, levelCap) : 1;
-	const magic = skills.magic ? convertXPtoLVL(skills.magic, levelCap) : 1;
-	const prayer = skills.prayer ? convertXPtoLVL(skills.prayer, levelCap) : 1;
-	const attack = skills.attack ? convertXPtoLVL(skills.attack, levelCap) : 1;
-	const strength = skills.strength ? convertXPtoLVL(skills.strength, levelCap) : 1;
-
-	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
-	const melee = 0.325 * (attack + strength);
-	const range = 0.325 * (Math.floor(ranged / 2) + ranged);
-	const mage = 0.325 * (Math.floor(magic / 2) + magic);
-	return Math.floor(base + Math.max(melee, range, mage));
-}
-
 export function calcTotalLevel(skills: Skills) {
 	return sumArr(Object.values(skills));
 }
@@ -99,7 +65,7 @@ export function calcTotalLevel(skills: Skills) {
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
 		if ((skillName as string) === 'combat') {
-			if (calcCombatLevel(skills) < level!) return false;
+			if (calcCombatLevel(skills as any, MAX_LEVEL) < level!) return false;
 		} else {
 			const xpHas = skills[skillName];
 			const levelHas = convertXPtoLVL(xpHas ?? 1, 120);
@@ -107,13 +73,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		}
 	}
 	return true;
-}
-
-export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
-
-export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
-	const m = new PaginatedMessage({ pages, channel });
-	return m.run(target ? [target] : undefined);
 }
 
 export function birdhouseLimit(user: MUser) {
@@ -183,34 +142,6 @@ export function moidLink(items: number[]) {
 
 export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
-}
-
-function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
-	if (!one) return {};
-	if (typeof one === 'string') return { content: one };
-	const response: BaseMessageOptions = {};
-	if (one.content) response.content = one.content;
-	if (one.files) response.files = one.files;
-	if (one.components) response.components = one.components;
-	return response;
-}
-
-export function roughMergeMahojiResponse(
-	one: Awaited<CommandResponse>,
-	two: Awaited<CommandResponse>
-): InteractionReplyOptions {
-	const first = normalizeMahojiResponse(one);
-	const second = normalizeMahojiResponse(two);
-	const newContent: string[] = [];
-
-	const newResponse: InteractionReplyOptions = { content: '', files: [], components: [] };
-	for (const res of [first, second]) {
-		if (res.content) newContent.push(res.content);
-		if (res.files) newResponse.files = [...newResponse.files!, ...res.files];
-		if (res.components) newResponse.components = res.components;
-	}
-	newResponse.content = newContent.join('\n\n');
-	return newResponse;
 }
 
 export function skillingPetDropRate(
@@ -284,30 +215,6 @@ export function getUsernameSync(_id: string | bigint) {
 	return usernameWithBadgesCache.get(_id.toString()) ?? 'Unknown';
 }
 
-export function awaitMessageComponentInteraction({
-	message,
-	filter,
-	time
-}: {
-	time: number;
-	message: Message;
-	filter: CollectorFilter<
-		[
-			ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
-			Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
-		]
-	>;
-}): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
-	return new Promise((resolve, reject) => {
-		const collector = message.createMessageComponentCollector<ComponentType.Button>({ max: 1, filter, time });
-		collector.once('end', (interactions, reason) => {
-			const interaction = interactions.first();
-			if (interaction) resolve(interaction);
-			else reject(new Error(reason));
-		});
-	});
-}
-
 export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
 	const logger = globalConfig.isProduction ? debugLog : console.log;
 	const stopwatch = new Stopwatch();
@@ -332,7 +239,6 @@ export function isModOrAdmin(user: MUser) {
 }
 
 export * from './util/smallUtils';
-export { channelIsSendable } from '@oldschoolgg/toolkit/util';
 
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;

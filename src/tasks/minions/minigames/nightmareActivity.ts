@@ -1,5 +1,5 @@
 import { percentChance } from 'e';
-import { Bank, EMonster, Misc } from 'oldschooljs';
+import { Bank, EMonster, Misc, randomVariation } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -7,7 +7,6 @@ import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';

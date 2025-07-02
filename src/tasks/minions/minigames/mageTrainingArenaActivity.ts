@@ -1,10 +1,9 @@
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, randomVariation } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const pizazzPointsPerHour = 100;

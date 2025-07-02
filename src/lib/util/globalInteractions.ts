@@ -4,7 +4,7 @@ import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle, type Interaction } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { getItemContractDetails, handInContract } from '../../mahoji/commands/ic';
 import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
@@ -20,7 +20,6 @@ import type { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
-import type { ItemBank } from '../types';
 import { updateGiveawayMessage } from './giveaway';
 import { handleMahojiConfirmation } from './handleMahojiConfirmation';
 import { interactionReply } from './interactionReply';

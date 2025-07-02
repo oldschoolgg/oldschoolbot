@@ -5,7 +5,6 @@ import { adminCommand } from './admin';
 import { askCommand } from './ask';
 import { bankCommand } from './bank';
 import { bingoCommand } from './bingo';
-import { bossrecordCommand } from './bossrecords';
 import { bsCommand } from './bs';
 import { bsoMinigamesCommand } from './bsominigames';
 import { buildCommand } from './build';
@@ -27,8 +26,6 @@ import { dgCommand } from './dg';
 import { divinationCommand } from './divination';
 import { dropCommand } from './drop';
 import { dropRatesCommand } from './droprates';
-import { fakeCommand } from './fake';
-import { fakepmCommand } from './fakepm';
 import { farmingCommand } from './farming';
 import { finishCommand } from './finish';
 import { fishCommand } from './fish';
@@ -116,8 +113,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	createCommand,
 	activitiesCommand,
 	dataCommand,
-	fakeCommand,
-	fakepmCommand,
 	fletchCommand,
 	gambleCommand,
 	gearCommand,
@@ -161,7 +156,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	mahojiUseCommand,
 	bingoCommand,
 	bankCommand,
-	bossrecordCommand,
 	casketCommand,
 	finishCommand,
 	killCommand,

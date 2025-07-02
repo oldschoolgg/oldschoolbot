@@ -1,5 +1,5 @@
 import type { GearSetupType } from '@prisma/client';
-import { type DefenceGearStat, GearStat, type OffenceGearStat } from '../types';
+import { type DefenceGearStat, GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
 	let setup: GearSetupType = 'melee';

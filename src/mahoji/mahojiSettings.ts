@@ -1,14 +1,14 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/util';
-import type { Prisma, User, UserStats } from '@prisma/client';
+import type { GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
 import { isObject, notEmpty, objectEntries, round } from 'e';
 import { Bank, ItemGroups, itemID, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { userhasDiaryTier } from '../lib/diaries';
-import { type GearSetupType, GearStat } from '../lib/gear';
 import { BSOMonsters } from '../lib/minions/data/killableMonsters/custom/customMonsters';
 import { quests } from '../lib/minions/data/quests';
 import type { KillableMonster } from '../lib/minions/types';

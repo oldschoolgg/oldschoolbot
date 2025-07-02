@@ -1,7 +1,7 @@
-import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum, calcWhatPercent, percentChance, randInt } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
+import { Bank, Monsters, itemID } from 'oldschooljs';
 
 import { userhasDiaryTier } from '../../../lib/diaries';
 import { userHasFlappy } from '../../../lib/invention/inventions';
@@ -11,7 +11,7 @@ import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/s
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
+import { percentChance } from '../../../lib/util/rng';
 import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 

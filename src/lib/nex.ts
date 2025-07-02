@@ -1,5 +1,6 @@
 import { Time } from 'e';
-import { LootTable, RareDropTable } from 'oldschooljs';
+import { LootTable, RareDropTable, itemID } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
 import {
 	brokenPernixOutfit,
@@ -10,10 +11,8 @@ import {
 	torvaOutfit,
 	virtusOutfit
 } from './data/CollectionsExport';
-import { GearStat } from './gear';
 import type { KillableMonster } from './minions/types';
 import getOSItem from './util/getOSItem';
-import itemID from './util/itemID';
 import { makeKillTable } from './util/setCustomMonster';
 
 export const nexBrokenArmorDetails = [

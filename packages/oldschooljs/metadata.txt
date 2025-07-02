@@ -3,15 +3,16 @@ Files in ./dist/cjs:
 	./dist/cjs/EGear.cjs: 117.94 KB 120,774 bytes
 	./dist/cjs/EItem.cjs: 333.84 KB 341,850 bytes
 	./dist/cjs/EMonster.cjs: 25.5 KB 26,114 bytes
-	./dist/cjs/index.cjs: 861.41 KB 882,087 bytes
+	./dist/cjs/gear/index.cjs: 1.77 KB 1,810 bytes
+	./dist/cjs/index.cjs: 863.58 KB 884,310 bytes
 	./dist/cjs/item_data-DZ4AG27N.json: 5.25 MB 5,508,779 bytes
 	./dist/cjs/item_data-OPRFPN4I.json: 5.25 MB 5,509,046 bytes
 	./dist/cjs/monsters_data-5F625L5X.json: 363.54 KB 372,262 bytes
-	./dist/cjs/structures/Hiscores.cjs: 39.09 KB 40,025 bytes
+	./dist/cjs/structures/Hiscores.cjs: 39.64 KB 40,587 bytes
 	./dist/cjs/structures/Wiki.cjs: 3.8 KB 3,889 bytes
-	./dist/cjs/util/util.cjs: 36.21 KB 37,077 bytes
+	./dist/cjs/util/util.cjs: 37.73 KB 38,640 bytes
 
-Total size: 12.25 MB
+Total size: 12.26 MB
 
 
 Files in ./dist/esm:
@@ -19,12 +20,13 @@ Files in ./dist/esm:
 	./dist/esm/EGear.mjs: 116.97 KB 119,774 bytes
 	./dist/esm/EItem.mjs: 332.86 KB 340,850 bytes
 	./dist/esm/EMonster.mjs: 24.51 KB 25,099 bytes
-	./dist/esm/index.mjs: 854.08 KB 874,581 bytes
+	./dist/esm/gear/index.mjs: 807 B 807 bytes
+	./dist/esm/index.mjs: 856.07 KB 876,616 bytes
 	./dist/esm/item_data-DZ4AG27N.json: 5.25 MB 5,508,779 bytes
 	./dist/esm/item_data-OPRFPN4I.json: 5.25 MB 5,509,046 bytes
 	./dist/esm/monsters_data-5F625L5X.json: 363.54 KB 372,262 bytes
-	./dist/esm/structures/Hiscores.mjs: 38.51 KB 39,437 bytes
+	./dist/esm/structures/Hiscores.mjs: 39.06 KB 39,999 bytes
 	./dist/esm/structures/Wiki.mjs: 2.23 KB 2,288 bytes
-	./dist/esm/util/util.mjs: 34.93 KB 35,770 bytes
+	./dist/esm/util/util.mjs: 36.42 KB 37,291 bytes
 
 Total size: 12.24 MB

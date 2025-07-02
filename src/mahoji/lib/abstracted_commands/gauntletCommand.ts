@@ -1,11 +1,11 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
+import { formatSkillRequirements } from '@/lib/util';
 import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GauntletOptions } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 

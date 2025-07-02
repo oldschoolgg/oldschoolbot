@@ -1,7 +1,7 @@
 import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
-import { Bank, type ItemBank, Monsters } from 'oldschooljs';
+import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
 
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
@@ -13,7 +13,6 @@ import type { InfernoOptions } from '../../../lib/types/minions';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export function calculateInfernoItemRefund(percentMadeItThrough: number, cost: Bank) {

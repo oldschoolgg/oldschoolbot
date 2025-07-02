@@ -1,12 +1,11 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { type MahojiUserOption, channelIsSendable } from '@oldschoolgg/toolkit/util';
+import { type MahojiUserOption, awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Time, noOp, sleep } from 'e';
 import { Bank, Util } from 'oldschooljs';
 
 import { MUserClass } from '../../../lib/MUser';
 import { BLACKLISTED_USERS } from '../../../lib/blacklists';
-import { awaitMessageComponentInteraction } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
 

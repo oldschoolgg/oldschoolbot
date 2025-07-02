@@ -1,6 +1,6 @@
+import { Time } from 'e';
 import { expect, test } from 'vitest';
 
-import { Time } from 'e';
 import { killCommand } from '../../src/mahoji/commands/kill';
 import { createTestUser } from './util';
 

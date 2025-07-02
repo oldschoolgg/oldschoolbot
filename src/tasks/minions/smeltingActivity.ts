@@ -1,5 +1,5 @@
 import { Time, percentChance } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
@@ -9,7 +9,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',

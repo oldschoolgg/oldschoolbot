@@ -1,5 +1,5 @@
 import { Time, randInt } from 'e';
-import { Bank, Monsters, increaseBankQuantitesByPercent } from 'oldschooljs';
+import { Bank, Monsters, increaseBankQuantitesByPercent, itemID } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
@@ -16,7 +16,6 @@ import { clAdjustedDroprate, itemNameFromID, roll, skillingPetDropRate } from '.
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 import { assert } from '../../lib/util/logError';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';

@@ -1,10 +1,8 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters } from 'oldschooljs';
+import { Bank, LootTable, Monsters, itemID, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { GearStat } from '../../../../gear';
 import { Gear, addStatsOfItemsTogether } from '../../../../structures/Gear';
-import itemID from '../../../../util/itemID';
-import resolveItems from '../../../../util/resolveItems';
 import type { CustomMonster } from './customMonsters';
 
 const solisMinGear = new Gear();

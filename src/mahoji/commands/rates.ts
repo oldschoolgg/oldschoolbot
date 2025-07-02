@@ -2,7 +2,7 @@ import { bold } from '@discordjs/builders';
 import { type CommandRunOptions, calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { Time, increaseNumByPercent, sumArr } from 'e';
-import { Bank, convertBankToPerHourStats } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, itemID } from 'oldschooljs';
 import { unique } from 'remeda';
 
 import {
@@ -39,7 +39,6 @@ import { toKMB } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { PeakTier } from '../../lib/util/calcWildyPkChance';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import itemID from '../../lib/util/itemID';
 import { itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';

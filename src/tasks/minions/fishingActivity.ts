@@ -1,5 +1,5 @@
 import { calcPercentOfNum, percentChance, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
@@ -10,7 +10,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
 
 function radasBlessing(user: MUser) {
