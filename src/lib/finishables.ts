@@ -14,6 +14,7 @@ import {
 	MediumCasket,
 	Monsters,
 	Nightmare,
+	itemID,
 	resolveItems
 } from 'oldschooljs';
 
@@ -46,7 +47,6 @@ import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
 import getOSItem from './util/getOSItem';
-import itemID from './util/itemID';
 
 interface KillArgs {
 	accumulatedLoot: Bank;

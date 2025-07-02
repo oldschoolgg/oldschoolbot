@@ -1,9 +1,8 @@
 import { randInt } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, Items, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import getOSItem from '../../src/lib/util/getOSItem';
-import itemID from '../../src/lib/util/itemID';
 import { parseBank, parseQuantityAndItem, parseStringBank } from '../../src/lib/util/parseStringBank';
 
 const psb = parseStringBank;

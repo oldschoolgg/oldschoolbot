@@ -1,7 +1,7 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import type { Prisma } from '@prisma/client';
 import { Time, randInt } from 'e';
-import { Bank, ECreature, EquipmentSlot } from 'oldschooljs';
+import { Bank, ECreature, EquipmentSlot, itemID } from 'oldschooljs';
 
 import { MAX_LEVEL } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
@@ -13,7 +13,6 @@ import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
 import { PeakTier } from '../../../lib/util/calcWildyPkChance';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 import { logError } from '../../../lib/util/logError.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
