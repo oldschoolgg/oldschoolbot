@@ -1,9 +1,9 @@
 import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Bank, type Item } from 'oldschooljs';
+import type { GearStats } from 'oldschooljs/gear';
 
 import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
-import type { GearStats } from '../../../lib/gear';
 import { trackLoot } from '../../../lib/lootTrack';
 import { NAXXUS_HP, Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { Gear } from '../../../lib/structures/Gear';

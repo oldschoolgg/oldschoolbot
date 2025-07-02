@@ -1,7 +1,7 @@
 import { Bank, type EquipmentSlot, type Item } from 'oldschooljs';
 
+import { GearStat } from 'oldschooljs/gear';
 import type { GearSetupType } from '../../gear/types';
-import { GearStat } from '../../gear/types';
 import type { Gear } from '../../structures/Gear';
 import type { Skills } from '../../types';
 import { skillsMeetRequirements } from '../../util';

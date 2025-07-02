@@ -1,12 +1,10 @@
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, itemID, resolveItems } from 'oldschooljs';
 
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import creatures from './skilling/skills/hunter/creatures/index.js';
 import { getUsersCurrentSlayerInfo } from './slayer/slayerUtil';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
-import itemID from './util/itemID';
-import resolveItems from './util/resolveItems';
 
 const firstStep = {
 	hint: `In Lumbridge's dawn, where bovine graze,

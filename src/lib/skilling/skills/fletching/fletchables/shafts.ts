@@ -1,6 +1,4 @@
-import { Bank } from 'oldschooljs';
-
-import itemID from '../../../../util/itemID';
+import { Bank, itemID } from 'oldschooljs';
 import type { Fletchable } from '../../../types';
 
 const Shafts: Fletchable[] = [

@@ -1,9 +1,9 @@
 import { LRUCache } from 'lru-cache';
+import { itemID } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
 import { getPaintedItemImage, paintColorsMap } from '../paintColors';
 import { type CanvasImage, canvasToBuffer, createCanvas, loadImage } from './canvasUtil';
-import itemID from './itemID';
 
 export const customItemEffect = new Map([
 	[

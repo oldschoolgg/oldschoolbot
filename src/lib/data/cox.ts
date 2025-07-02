@@ -10,9 +10,9 @@ import {
 	shuffleArr
 } from 'e';
 import { Bank, type ChambersOfXericOptions, type Item } from 'oldschooljs';
+import type { GearStats } from 'oldschooljs/gear';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import type { GearStats } from '../gear';
 import { inventionBoosts } from '../invention/inventions';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';

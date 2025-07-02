@@ -1,6 +1,7 @@
 import type { GearSetupType } from '@prisma/client';
 import { Time, calcPercentOfNum, objectKeys, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
+
 import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { BitField } from '../../../../lib/constants';
 import { Eatables } from '../../../../lib/data/eatables';

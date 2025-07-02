@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Bank, EMonster, type ItemBank, SkillsEnum } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, SkillsEnum, itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { gorajanArcherOutfit, gorajanWarriorOutfit } from '../../../src/lib/data/CollectionsExport';
@@ -7,7 +7,6 @@ import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConsta
 import { VasaMagus } from '../../../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../../../src/lib/minions/data/killableMonsters/custom/customMonsters';
 import { Gear } from '../../../src/lib/structures/Gear';
-import { itemID, resolveItems } from '../../../src/lib/util';
 import { gearCommand } from '../../../src/mahoji/commands/gear';
 import { vasaBISGear } from '../../../src/mahoji/lib/abstracted_commands/vasaCommand';
 import { mockClient } from '../util';

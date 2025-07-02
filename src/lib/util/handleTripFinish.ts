@@ -9,7 +9,7 @@ import {
 	bold
 } from 'discord.js';
 import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
-import { Bank, toKMB } from 'oldschooljs';
+import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -26,7 +26,7 @@ import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, PerkTier } from '../constants';
+import { BitField, PerkTier } from '../constants';
 import pets from '../data/pets.js';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
@@ -52,7 +52,6 @@ import {
 	makeTearsOfGuthixButton
 } from './globalInteractions';
 import { handleCrateSpawns } from './handleCrateSpawns';
-import itemID from './itemID';
 import { logError } from './logError';
 import { hasSkillReqs, perHourChance } from './smallUtils';
 import { updateBankSetting } from './updateBankSetting';
@@ -91,7 +90,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Track GP Analytics',
 		fn: async ({ data, loot }) => {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-				const GP = loot.amount(COINS_ID);
+				const GP = loot.amount(EItem.COINS);
 				if (typeof GP === 'number') {
 					await updateClientGPTrackSetting('gp_pvm', GP);
 				}

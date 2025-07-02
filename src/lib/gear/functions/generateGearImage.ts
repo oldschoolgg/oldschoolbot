@@ -3,15 +3,9 @@ import * as fsPromises from 'node:fs/promises';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { EquipmentSlot, type Item } from 'oldschooljs';
+import type { GearStats } from 'oldschooljs/gear';
 
-import {
-	type GearSetup,
-	type GearSetupType,
-	GearSetupTypes,
-	type GearStats,
-	maxDefenceStats,
-	maxOffenceStats
-} from '..';
+import { type GearSetup, type GearSetupType, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
 import { monkeyTiers } from '../../monkeyRumble';
 import { Gear } from '../../structures/Gear';
 import {

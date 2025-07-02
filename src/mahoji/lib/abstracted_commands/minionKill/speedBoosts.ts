@@ -1,12 +1,13 @@
 import { Time, calcWhatPercent, sumArr } from 'e';
 import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
+import type { OffenceGearStat } from 'oldschooljs/gear';
 import { omit } from 'remeda';
 
+import type { PrimaryGearSetupType } from '@/lib/gear';
 import { itemNameFromID } from '@/lib/util';
 import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { gearstatToSetup, gorajanBoosts } from '../../../../lib/bso/gorajanGearBoost';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
-import type { OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
 import { InventionID } from '../../../../lib/invention/inventions';
 import {
 	SlayerActivityConstants,

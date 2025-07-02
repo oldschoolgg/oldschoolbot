@@ -1,11 +1,10 @@
 import type { CommandOptions } from '@oldschoolgg/toolkit/util';
+import { TimerManager } from '@sapphire/timer-manager';
 
+import { logError } from '@/lib/util/logError';
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';
-
-import { TimerManager } from '@sapphire/timer-manager';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
-import { logError } from '../../lib/util/logError';
 import type { AbstractCommand } from './inhibitors';
 
 export async function postCommand({

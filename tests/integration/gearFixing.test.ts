@@ -1,9 +1,8 @@
 import deepEqual from 'fast-deep-equal';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 import { assert, describe, test } from 'vitest';
 
 import { Gear, defaultGear } from '../../src/lib/structures/Gear';
-import itemID from '../../src/lib/util/itemID';
 import { createTestUser, mockClient } from './util';
 
 describe('Gear Fixing', async () => {

@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { GearStat } from '../../gear/types';
+import { GearStat } from 'oldschooljs/gear';
 import type { Skills } from '../../types';
 import type { GearRequirements } from '../types';
 

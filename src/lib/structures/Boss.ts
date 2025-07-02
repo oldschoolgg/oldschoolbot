@@ -1,9 +1,10 @@
+import type { GearSetupType } from '@prisma/client';
 import { AttachmentBuilder, type BaseMessageOptions, type TextChannel } from 'discord.js';
 import { Time, calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
+import type { GearStats } from 'oldschooljs/gear';
 
 import { Table } from '@oldschoolgg/toolkit';
-import type { GearSetupType, GearStats } from '../gear';
 import { trackLoot } from '../lootTrack';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { setupParty } from '../party';

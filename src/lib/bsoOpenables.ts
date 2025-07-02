@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll } from 'e';
-import { Bank, ItemGroups, Items, LootTable, TreeHerbSeedTable } from 'oldschooljs';
+import { Bank, ItemGroups, Items, LootTable, TreeHerbSeedTable, itemID, resolveItems } from 'oldschooljs';
 
 import { OSB_VIRTUS_IDS } from './bso/bsoConstants';
 import { divinationEnergies } from './bso/divination';
@@ -30,8 +30,6 @@ import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
 import { clAdjustedDroprate } from './util';
 import getOSItem from './util/getOSItem';
-import itemID from './util/itemID';
-import resolveItems from './util/resolveItems';
 import { LampTable } from './xpLamps';
 
 const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;

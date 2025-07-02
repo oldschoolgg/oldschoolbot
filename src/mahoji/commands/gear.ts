@@ -2,9 +2,10 @@ import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
+import { GearSetupTypes } from '@/lib/gear';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
-import { GearSetupTypes, GearStat } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';

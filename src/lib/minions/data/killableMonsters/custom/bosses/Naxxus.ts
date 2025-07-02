@@ -1,9 +1,7 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { LootTable, Monsters, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { GearStat } from '../../../../../gear';
-import resolveItems from '../../../../../util/resolveItems';
 import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';
 import type { KillableMonster } from '../../../../types';
 
