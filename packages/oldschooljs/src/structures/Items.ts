@@ -93,7 +93,7 @@ class Items extends Collection<ItemID, Item> {
 		}
 		return this.get(identifier) ?? null;
 	}
-	public getItemOrThrow(itemName: string | number | undefined): Item {
+	public getOrThrow(itemName: string | number | undefined): Item {
 		const item = this.getItem(itemName);
 		if (!item) throw new Error(`Item ${itemName} not found.`);
 		return item;
