@@ -1,6 +1,7 @@
 import type { GearSetupType } from '@prisma/client';
 import { Time, calcPercentOfNum, objectKeys, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
+
 import { BitField } from '../../../../lib/constants';
 import { Eatables } from '../../../../lib/data/eatables';
 import { convertAttackStyleToGearSetup } from '../../../../lib/gear/functions/convertAttackStyleToGearSetup';

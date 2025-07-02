@@ -4,6 +4,7 @@ import {
 	Bank,
 	ChambersOfXeric,
 	Clues,
+	EItem,
 	EMonster,
 	type Item,
 	ItemGroups,
@@ -1281,7 +1282,7 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 				} else {
 					items = [...new Set(attributes.items)];
 				}
-				if (removeCoins && items.includes(995)) items.splice(items.indexOf(995), 1);
+				if (removeCoins && items.includes(EItem.COINS)) items.splice(items.indexOf(EItem.COINS), 1);
 				const [totalCl, userAmount] = getUserClData(userBank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
@@ -1370,7 +1371,7 @@ export function getCollectionItems(
 			_items = uniqueArr(Monsters.get(_monster?.id)!.allItems);
 		}
 	}
-	if (removeCoins && _items.includes(995)) _items = removeFromArr(_items, 995);
+	if (removeCoins && _items.includes(EItem.COINS)) _items = removeFromArr(_items, EItem.COINS);
 	return returnValue(_clName, _items);
 }
 

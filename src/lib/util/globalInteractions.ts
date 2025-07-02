@@ -1,22 +1,19 @@
 import { cleanUsername, formatDuration, mentionCommand, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
-import type { ButtonInteraction, Interaction } from 'discord.js';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, type ButtonInteraction, ButtonStyle, type Interaction } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import type { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
-
 import { InteractionID } from '../InteractionID';
 import { giveawayCache } from '../cache.js';
+import type { ClueTier } from '../clues/clueTiers';
+import { BitField, PerkTier } from '../constants';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
-import type { ItemBank } from '../types';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';

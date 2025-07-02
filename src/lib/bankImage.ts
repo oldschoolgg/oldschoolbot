@@ -6,7 +6,7 @@ import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } fr
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
-import { Bank, type Item, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, type Item, ItemGroups, itemID, resolveItems, toKMB } from 'oldschooljs';
 
 import { BOT_TYPE, BitField, ItemIconPacks, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
@@ -28,7 +28,6 @@ import {
 	loadImage,
 	registerFont
 } from '../lib/util/canvasUtil';
-import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { TOBUniques } from './data/tob';

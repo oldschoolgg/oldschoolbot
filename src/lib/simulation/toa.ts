@@ -28,11 +28,12 @@ import {
 	uniqueArr
 } from 'e';
 import { Bank, LootTable, itemID, resolveItems } from 'oldschooljs';
+import type { GearStats } from 'oldschooljs/gear';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
-import type { GearStats, UserFullGearSetup } from '../gear/types';
+import type { UserFullGearSetup } from '../gear/types';
 import { trackLoot } from '../lootTrack';
 import { setupParty } from '../party';
 import { getMinigameScore } from '../settings/minigames';

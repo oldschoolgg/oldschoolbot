@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 
-import { GearStat } from '../../../gear/types';
+import { GearStat } from 'oldschooljs/gear';
 import { SkillsEnum } from '../../../skilling/types';
 import type { KillableMonster } from '../../types';
 import bosses from './bosses';

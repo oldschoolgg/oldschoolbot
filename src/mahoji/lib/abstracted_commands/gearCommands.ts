@@ -4,12 +4,12 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
+import { GearStat } from 'oldschooljs/gear';
 import { PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
 import { isValidGearSetup } from '../../../lib/gear/functions/isValidGearSetup';
 import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
-import { GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';

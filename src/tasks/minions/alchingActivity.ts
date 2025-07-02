@@ -1,10 +1,9 @@
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 import { roll } from '../../lib/util/rng';
 import { updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
 
