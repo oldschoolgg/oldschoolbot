@@ -141,14 +141,18 @@ const toggles: UserConfigToggle[] = [
 		name: 'Disable wilderness high peak time warning',
 		bit: BitField.DisableHighPeakTimeWarning
 	},
-	{
-		name: 'Disable Names on Opens',
-		bit: BitField.DisableOpenableNames
-	},
-	{
-		name: 'Show Detailed Info',
-		bit: BitField.ShowDetailedInfo
-	}
+        {
+                name: 'Disable Names on Opens',
+                bit: BitField.DisableOpenableNames
+        },
+       {
+               name: 'Disable Miscellania Button',
+               bit: BitField.DisableMiscellaniaButton
+       },
+        {
+                name: 'Show Detailed Info',
+                bit: BitField.ShowDetailedInfo
+        }
 ];
 
 async function handleToggle(user: MUser, name: string, interaction?: ChatInputCommandInteraction) {
