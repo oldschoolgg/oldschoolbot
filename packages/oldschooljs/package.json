@@ -40,6 +40,11 @@
 			"types": "./dist/constants.d.ts",
 			"require": "./dist/cjs/constants.cjs",
 			"import": "./dist/esm/constants.mjs"
+		},
+		"./gear": {
+			"types": "./dist/gear/index.d.ts",
+			"require": "./dist/cjs/gear/index.cjs",
+			"import": "./dist/esm/gear/index.mjs"
 		}
 	},
 	"license": "MIT",

@@ -1,8 +1,8 @@
 import { Time, roll } from 'e';
 import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport';
-import { GearStat } from '@/lib/gear/types';
 import { SkillsEnum } from '@/lib/skilling/types';
 import { getOSItem } from '@/lib/util/getOSItem';
 import type { KillableMonster, KillableMonsterEffect } from '../../../types';

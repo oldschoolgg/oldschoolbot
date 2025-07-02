@@ -1,8 +1,8 @@
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time, calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round } from 'e';
 import { Bank, type Item, resolveItems } from 'oldschooljs';
+import type { GearStats } from 'oldschooljs/gear';
 
-import type { GearStats } from '../gear/types';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import getOSItem from '../util/getOSItem';

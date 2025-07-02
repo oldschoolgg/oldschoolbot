@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters, itemID } from 'oldschooljs';
 
-import { GearStat } from '../../../gear/types';
+import { GearStat } from 'oldschooljs/gear';
 import type { KillableMonster } from '../../types';
 
 export const mazchnaMonsters: KillableMonster[] = [

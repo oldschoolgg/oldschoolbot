@@ -1,8 +1,9 @@
 import { calcWhatPercent, sumArr } from 'e';
 import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
+import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { PrimaryGearSetupType } from '@/lib/gear/types';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
-import type { OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
 import {
 	SlayerActivityConstants,
 	boostCannon,
