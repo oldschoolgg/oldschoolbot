@@ -5,6 +5,7 @@ import { chompyHats } from '../../../lib/data/CollectionsExport';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatList } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const chompHuntTask: MinionTask = {
@@ -33,12 +34,11 @@ export const chompHuntTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		let str = `${user}, ${user.minionName} finished hunting Chompy Birds, they killed ${quantity}x Chompies. You have now have ${newScore} Chompies total. You received **${loot}**.`;
+		let str = `${user}, ${user.minionName} finished hunting ${quantity}x Chompy birds, you now have ${newScore} KC. You received ${loot}.`;
 
-		for (const [item, qty] of chompyHats) {
-			if (newScore >= qty && previousScore < qty) {
-				str += `\n\nCongratulations, you can now buy a ${item.name}!`;
-			}
+		const newHats = chompyHats.filter(hat => newScore >= hat[1] && previousScore < hat[1]);
+		if (newHats.length > 0) {
+			str += `\nYou can now claim the following chompy bird hats: **${formatList(newHats.map(hat => hat[0].name))}**!`;
 		}
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
