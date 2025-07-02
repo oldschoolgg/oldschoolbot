@@ -166,5 +166,14 @@ export const demonBaneWeapons = [
 	EItem.PURGING_STAFF
 ];
 
+export const nails = [
+	EItem.BRONZE_NAILS,
+	EItem.IRON_NAILS,
+	EItem.STEEL_NAILS,
+	EItem.MITHRIL_NAILS,
+	EItem.ADAMANTITE_NAILS,
+	EItem.RUNE_NAILS
+];
+
 export * from './item-groups/boss-cl';
 export * from './item-groups/outfits';
