@@ -4,7 +4,7 @@ import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Time, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -17,7 +17,7 @@ import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/ma
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, MAX_CLUES_DROPPED, PerkTier } from '../constants';
+import { BitField, MAX_CLUES_DROPPED, PerkTier } from '../constants';
 import { allPetsCL } from '../data/CollectionsExport';
 import pets from '../data/pets';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -71,7 +71,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Track GP Analytics',
 		fn: async ({ data, loot }) => {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-				const GP = loot.amount(COINS_ID);
+				const GP = loot.amount(EItem.COINS);
 				if (typeof GP === 'number') {
 					await updateClientGPTrackSetting('gp_pvm', GP);
 				}

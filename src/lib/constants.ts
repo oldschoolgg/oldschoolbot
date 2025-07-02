@@ -110,8 +110,6 @@ export enum ActivityGroup {
 	Minigame = 'Minigame'
 }
 
-export const COINS_ID = 995;
-
 export enum BitField {
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,

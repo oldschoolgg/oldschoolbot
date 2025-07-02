@@ -1,6 +1,5 @@
-import { Bank, resolveItems } from 'oldschooljs';
+import { Bank, EItem, resolveItems } from 'oldschooljs';
 
-import { COINS_ID } from '../constants';
 import { leaguesCreatables } from '../data/creatables/leagueCreatables';
 import { leagueBuyables } from '../data/leaguesBuyables';
 import getOSItem from './getOSItem';
@@ -27,7 +26,7 @@ const specialTradeables = resolveItems([
 
 export default function itemIsTradeable(itemID: number | string, allowCoins = false) {
 	const osItem = getOSItem(itemID);
-	if (allowCoins && osItem.id === COINS_ID) return true;
+	if (allowCoins && osItem.id === EItem.COINS) return true;
 
 	if (specialTradeables.includes(osItem.id)) return true;
 	if (specialUntradeables.includes(osItem.id) || !('tradeable' in osItem) || !osItem.tradeable) {
