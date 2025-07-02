@@ -263,8 +263,9 @@ export enum BitField {
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
-	DisableOpenableNames = 41,
-	ShowDetailedInfo = 42
+       DisableOpenableNames = 41,
+       ShowDetailedInfo = 42,
+       DisableMiscellaniaButton = 43
 }
 
 interface BitFieldData {
@@ -358,16 +359,21 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-	[BitField.DisableOpenableNames]: {
-		name: 'Disable Names On Open',
-		protected: false,
-		userConfigurable: true
-	},
-	[BitField.ShowDetailedInfo]: {
-		name: 'Show Detailed Info',
-		protected: false,
-		userConfigurable: true
-	}
+        [BitField.DisableOpenableNames]: {
+                name: 'Disable Names On Open',
+                protected: false,
+                userConfigurable: true
+        },
+        [BitField.ShowDetailedInfo]: {
+                name: 'Show Detailed Info',
+                protected: false,
+                userConfigurable: true
+        },
+       [BitField.DisableMiscellaniaButton]: {
+               name: 'Disable Miscellania Button',
+               protected: false,
+               userConfigurable: true
+        }
 } as const;
 
 export const BadgesEnum = {

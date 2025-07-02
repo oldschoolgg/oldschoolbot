@@ -7,6 +7,7 @@ import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { sumArr } from 'e';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { fetchMiscellaniaData } from '../../mahoji/lib/abstracted_commands/miscellaniaCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
@@ -24,8 +25,9 @@ import { formatList } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
-	makeBirdHouseTripButton,
-	makeNewSlayerTaskButton,
+       makeBirdHouseTripButton,
+       makeMiscellaniaApprovalButton,
+        makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
 	makeRepeatTripButton
@@ -202,8 +204,16 @@ export async function handleTripFinish(
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
 		const birdHousedetails = await calculateBirdhouseDetails(user);
-		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
-			components.push(makeBirdHouseTripButton());
+               if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
+                       components.push(makeBirdHouseTripButton());
+
+               const miscData = await fetchMiscellaniaData(user);
+               if (
+                       miscData.approval < 100 &&
+                       !user.bitfield.includes(BitField.DisableMiscellaniaButton)
+               ) {
+                       components.push(makeMiscellaniaApprovalButton());
+               }
 
 		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
 			components.push(makeAutoContractButton());

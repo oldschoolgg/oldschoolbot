@@ -36,8 +36,9 @@ const globalInteractionActions = [
 	'OPEN_HARD_CASKET',
 	'OPEN_ELITE_CASKET',
 	'OPEN_MASTER_CASKET',
-	'DO_BIRDHOUSE_RUN',
-	'CLAIM_DAILY',
+        'DO_BIRDHOUSE_RUN',
+       'MISCELLANIA_APPROVAL',
+        'CLAIM_DAILY',
 	'CHECK_PATCHES',
 	'AUTO_SLAY',
 	'CANCEL_TRIP',
@@ -94,11 +95,19 @@ export function makeRepeatTripButton() {
 }
 
 export function makeBirdHouseTripButton() {
-	return new ButtonBuilder()
-		.setCustomId('DO_BIRDHOUSE_RUN')
-		.setLabel('Birdhouse Run')
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('692946556399124520');
+        return new ButtonBuilder()
+                .setCustomId('DO_BIRDHOUSE_RUN')
+                .setLabel('Birdhouse Run')
+                .setStyle(ButtonStyle.Secondary)
+                .setEmoji('692946556399124520');
+}
+
+export function makeMiscellaniaApprovalButton() {
+       return new ButtonBuilder()
+               .setCustomId('MISCELLANIA_APPROVAL')
+               .setLabel('Restore Approval')
+               .setStyle(ButtonStyle.Secondary)
+               .setEmoji('1067398228473038848');
 }
 
 export function makeAutoSlayButton() {
@@ -513,17 +522,25 @@ export async function interactionHook(interaction: Interaction) {
 				...options
 			});
 		}
-		case 'AUTO_FARM': {
-			return runCommand({
-				commandName: 'farming',
-				args: {
-					auto_farm: {}
-				},
-				bypassInhibitors: true,
-				...options
-			});
-		}
-		case 'AUTO_FARMING_CONTRACT': {
+                case 'AUTO_FARM': {
+                        return runCommand({
+                                commandName: 'farming',
+                                args: {
+                                        auto_farm: {}
+                                },
+                                bypassInhibitors: true,
+                                ...options
+                        });
+                }
+               case 'MISCELLANIA_APPROVAL': {
+                       return runCommand({
+                               commandName: 'activities',
+                               args: { miscellania: { subcommand: 'approval' } },
+                               bypassInhibitors: true,
+                               ...options
+                       });
+               }
+               case 'AUTO_FARMING_CONTRACT': {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
 			if (response) {
 				return interactionReply(interaction, response);

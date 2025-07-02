@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 import { randFloat } from './util';
 
-export interface RateTableRow {
+export interface MiscellaniaLootItem {
 	item: string;
-	rate: number;
+	weight: number;
 	maximum?: number;
 }
 
@@ -33,160 +33,160 @@ export const inverseCosts: Record<keyof MiscWorkerAllocation, number> = {
 	farmSeeds: 86
 };
 
-export const rateTables = {
+export const rateTables: Record<string, MiscellaniaLootItem[]> = {
 	Nests: [
-		{ item: 'Bird nest (seed)', rate: 65 },
-		{ item: 'Bird nest (ring)', rate: 32 },
-		{ item: 'Bird nest (green egg)', rate: 1 },
-		{ item: 'Bird nest (blue egg)', rate: 1 },
-		{ item: 'Bird nest (red egg)', rate: 1 }
-	] as RateTableRow[],
+		{ item: 'Bird nest (seed)', weight: 65 },
+		{ item: 'Bird nest (ring)', weight: 32 },
+		{ item: 'Bird nest (green egg)', weight: 1 },
+		{ item: 'Bird nest (blue egg)', weight: 1 },
+		{ item: 'Bird nest (red egg)', weight: 1 }
+	],
 	'Mining gems': [
-		{ item: 'Uncut sapphire', rate: 32 },
-		{ item: 'Uncut emerald', rate: 16 },
-		{ item: 'Uncut ruby', rate: 8 },
-		{ item: 'Uncut diamond', rate: 2 }
-	] as RateTableRow[],
+		{ item: 'Uncut sapphire', weight: 32 },
+		{ item: 'Uncut emerald', weight: 16 },
+		{ item: 'Uncut ruby', weight: 8 },
+		{ item: 'Uncut diamond', weight: 2 }
+	],
 	'Fishing loot': [
-		{ item: 'Uncut sapphire', rate: 32 },
-		{ item: 'Uncut emerald', rate: 16 },
-		{ item: 'Uncut ruby', rate: 8 },
-		{ item: 'Uncut diamond', rate: 2 },
-		{ item: 'Casket', rate: 32 },
-		{ item: 'Fremennik boots', rate: 4 },
-		{ item: 'Fremennik gloves', rate: 4 },
-		{ item: 'Loop half of key', rate: 1 },
-		{ item: 'Tooth half of key', rate: 1 },
-		{ item: 'Clue scroll (easy)', rate: 4 }
-	] as RateTableRow[],
+		{ item: 'Uncut sapphire', weight: 32 },
+		{ item: 'Uncut emerald', weight: 16 },
+		{ item: 'Uncut ruby', weight: 8 },
+		{ item: 'Uncut diamond', weight: 2 },
+		{ item: 'Casket', weight: 32 },
+		{ item: 'Fremennik boots', weight: 4 },
+		{ item: 'Fremennik gloves', weight: 4 },
+		{ item: 'Loop half of key', weight: 1 },
+		{ item: 'Tooth half of key', weight: 1 },
+		{ item: 'Clue scroll (easy)', weight: 4 }
+	],
 	Herbs: [
-		{ item: 'Grimy tarromin', rate: 10 },
-		{ item: 'Grimy harralander', rate: 9 },
-		{ item: 'Grimy irit leaf', rate: 6 },
-		{ item: 'Grimy avantoe', rate: 6 },
-		{ item: 'Grimy ranarr weed', rate: 3 },
-		{ item: 'Grimy kwuarm', rate: 3 },
-		{ item: 'Grimy cadantine', rate: 3 },
-		{ item: 'Grimy dwarf weed', rate: 3 },
-		{ item: 'Grimy lantadyme', rate: 3 }
-	] as RateTableRow[],
+		{ item: 'Grimy tarromin', weight: 10 },
+		{ item: 'Grimy harralander', weight: 9 },
+		{ item: 'Grimy irit leaf', weight: 6 },
+		{ item: 'Grimy avantoe', weight: 6 },
+		{ item: 'Grimy ranarr weed', weight: 3 },
+		{ item: 'Grimy kwuarm', weight: 3 },
+		{ item: 'Grimy cadantine', weight: 3 },
+		{ item: 'Grimy dwarf weed', weight: 3 },
+		{ item: 'Grimy lantadyme', weight: 3 }
+	],
 	'Herb seeds': [
-		{ item: 'Guam seed', rate: 320 },
-		{ item: 'Marrentill seed', rate: 218 },
-		{ item: 'Tarromin seed', rate: 149 },
-		{ item: 'Harralander seed', rate: 101 },
-		{ item: 'Ranarr seed', rate: 69, maximum: 2 },
-		{ item: 'Toadflax seed', rate: 47 },
-		{ item: 'Irit seed', rate: 32 },
-		{ item: 'Avantoe seed', rate: 22 },
-		{ item: 'Kwuarm seed', rate: 15 },
-		{ item: 'Snapdragon seed', rate: 10 },
-		{ item: 'Cadantine seed', rate: 7 },
-		{ item: 'Lantadyme seed', rate: 5 },
-		{ item: 'Dwarf weed seed', rate: 3 },
-		{ item: 'Torstol seed', rate: 2 }
-	] as RateTableRow[],
+		{ item: 'Guam seed', weight: 320 },
+		{ item: 'Marrentill seed', weight: 218 },
+		{ item: 'Tarromin seed', weight: 149 },
+		{ item: 'Harralander seed', weight: 101 },
+		{ item: 'Ranarr seed', weight: 69, maximum: 2 },
+		{ item: 'Toadflax seed', weight: 47 },
+		{ item: 'Irit seed', weight: 32 },
+		{ item: 'Avantoe seed', weight: 22 },
+		{ item: 'Kwuarm seed', weight: 15 },
+		{ item: 'Snapdragon seed', weight: 10 },
+		{ item: 'Cadantine seed', weight: 7 },
+		{ item: 'Lantadyme seed', weight: 5 },
+		{ item: 'Dwarf weed seed', weight: 3 },
+		{ item: 'Torstol seed', weight: 2 }
+	],
 	'Flax seeds': [
-		{ item: 'Guam seed', rate: 320 },
-		{ item: 'Marrentill seed', rate: 218 },
-		{ item: 'Tarromin seed', rate: 149 },
-		{ item: 'Harralander seed', rate: 101 },
-		{ item: 'Ranarr seed', rate: 69 },
-		{ item: 'Toadflax seed', rate: 47 },
-		{ item: 'Irit seed', rate: 32 },
-		{ item: 'Avantoe seed', rate: 22 },
-		{ item: 'Kwuarm seed', rate: 15 },
-		{ item: 'Snapdragon seed', rate: 10 },
-		{ item: 'Cadantine seed', rate: 7 },
-		{ item: 'Lantadyme seed', rate: 5 },
-		{ item: 'Dwarf weed seed', rate: 3 },
-		{ item: 'Torstol seed', rate: 2 }
-	] as RateTableRow[],
+		{ item: 'Guam seed', weight: 320 },
+		{ item: 'Marrentill seed', weight: 218 },
+		{ item: 'Tarromin seed', weight: 149 },
+		{ item: 'Harralander seed', weight: 101 },
+		{ item: 'Ranarr seed', weight: 69 },
+		{ item: 'Toadflax seed', weight: 47 },
+		{ item: 'Irit seed', weight: 32 },
+		{ item: 'Avantoe seed', weight: 22 },
+		{ item: 'Kwuarm seed', weight: 15 },
+		{ item: 'Snapdragon seed', weight: 10 },
+		{ item: 'Cadantine seed', weight: 7 },
+		{ item: 'Lantadyme seed', weight: 5 },
+		{ item: 'Dwarf weed seed', weight: 3 },
+		{ item: 'Torstol seed', weight: 2 }
+	],
 	'Tree seeds': [
-		{ item: 'Acorn', rate: 214, maximum: 4 },
-		{ item: 'Apple tree seed', rate: 170, maximum: 4 },
-		{ item: 'Willow seed', rate: 135, maximum: 4 },
-		{ item: 'Banana tree seed', rate: 108, maximum: 4 },
-		{ item: 'Orange tree seed', rate: 85, maximum: 4 },
-		{ item: 'Curry tree seed', rate: 68, maximum: 4 },
-		{ item: 'Maple seed', rate: 54, maximum: 4 },
-		{ item: 'Pineapple seed', rate: 42, maximum: 4 },
-		{ item: 'Papaya tree seed', rate: 34, maximum: 4 },
-		{ item: 'Yew seed', rate: 27, maximum: 4 },
-		{ item: 'Palm tree seed', rate: 22, maximum: 4 },
-		{ item: 'Calquat tree seed', rate: 17, maximum: 4 },
-		{ item: 'Spirit seed', rate: 11, maximum: 4 },
-		{ item: 'Dragonfruit tree seed', rate: 6, maximum: 4 },
-		{ item: 'Magic seed', rate: 5, maximum: 4 },
-		{ item: 'Teak seed', rate: 4, maximum: 4 },
-		{ item: 'Mahogany seed', rate: 4, maximum: 4 },
-		{ item: 'Celastrus seed', rate: 3, maximum: 4 },
-		{ item: 'Redwood tree seed', rate: 2, maximum: 4 }
-	] as RateTableRow[],
+		{ item: 'Acorn', weight: 214, maximum: 4 },
+		{ item: 'Apple tree seed', weight: 170, maximum: 4 },
+		{ item: 'Willow seed', weight: 135, maximum: 4 },
+		{ item: 'Banana tree seed', weight: 108, maximum: 4 },
+		{ item: 'Orange tree seed', weight: 85, maximum: 4 },
+		{ item: 'Curry tree seed', weight: 68, maximum: 4 },
+		{ item: 'Maple seed', weight: 54, maximum: 4 },
+		{ item: 'Pineapple seed', weight: 42, maximum: 4 },
+		{ item: 'Papaya tree seed', weight: 34, maximum: 4 },
+		{ item: 'Yew seed', weight: 27, maximum: 4 },
+		{ item: 'Palm tree seed', weight: 22, maximum: 4 },
+		{ item: 'Calquat tree seed', weight: 17, maximum: 4 },
+		{ item: 'Spirit seed', weight: 11, maximum: 4 },
+		{ item: 'Dragonfruit tree seed', weight: 6, maximum: 4 },
+		{ item: 'Magic seed', weight: 5, maximum: 4 },
+		{ item: 'Teak seed', weight: 4, maximum: 4 },
+		{ item: 'Mahogany seed', weight: 4, maximum: 4 },
+		{ item: 'Celastrus seed', weight: 3, maximum: 4 },
+		{ item: 'Redwood tree seed', weight: 2, maximum: 4 }
+	],
 	Seeds: [
-		{ item: 'Potato seed', rate: 1567735 },
-		{ item: 'Onion seed', rate: 1180708 },
-		{ item: 'Cabbage seed', rate: 619972 },
-		{ item: 'Tomato seed', rate: 561932 },
-		{ item: 'Barley seed', rate: 497148 },
-		{ item: 'Hammerstone seed', rate: 494318 },
-		{ item: 'Marigold seed', rate: 409668 },
-		{ item: 'Asgarnian seed', rate: 369067 },
-		{ item: 'Jute seed', rate: 368455 },
-		{ item: 'Redberry seed', rate: 343409 },
-		{ item: 'Nasturtium seed', rate: 270351 },
-		{ item: 'Yanillian seed', rate: 245383 },
-		{ item: 'Cadavaberry seed', rate: 242164 },
-		{ item: 'Sweetcorn seed', rate: 197249 },
-		{ item: 'Rosemary seed', rate: 173977 },
-		{ item: 'Dwellberry seed', rate: 172110 },
-		{ item: 'Guam seed', rate: 135320 },
-		{ item: 'Woad seed', rate: 129804 },
-		{ item: 'Krandorian seed', rate: 122649 },
-		{ item: 'Limpwurt seed', rate: 103567 },
-		{ item: 'Strawberry seed', rate: 97042 },
-		{ item: 'Marrentill seed', rate: 93062 },
-		{ item: 'Jangerberry seed', rate: 69567 },
-		{ item: 'Wildblood seed', rate: 62976 },
-		{ item: 'Tarromin seed', rate: 62551 },
-		{ item: 'Watermelon seed', rate: 47071 },
-		{ item: 'Harralander seed', rate: 43198 },
-		{ item: 'Snape grass seed', rate: 34094 },
-		{ item: 'Whiteberry seed', rate: 24586 },
-		{ item: 'Toadflax seed', rate: 19990 },
-		{ item: 'Mushroom spore', rate: 19266 },
-		{ item: 'Irit seed', rate: 14019 },
-		{ item: 'Belladonna seed', rate: 11594 },
-		{ item: 'Avantoe seed', rate: 9229 },
-		{ item: 'Poison ivy seed', rate: 9199 },
-		{ item: 'Cactus seed', rate: 7850 },
-		{ item: 'Kwuarm seed', rate: 6599 },
-		{ item: 'Ranarr seed', rate: 5305, maximum: 2 },
-		{ item: 'Snapdragon seed', rate: 3901 },
-		{ item: 'Potato cactus seed', rate: 3790 },
-		{ item: 'Cadantine seed', rate: 2817 },
-		{ item: 'Lantadyme seed', rate: 2097 },
-		{ item: 'Seaweed spore', rate: 1508 },
-		{ item: 'Dwarf weed seed', rate: 1208 },
-		{ item: 'Torstol seed', rate: 810 }
-	] as RateTableRow[]
+		{ item: 'Potato seed', weight: 1567735 },
+		{ item: 'Onion seed', weight: 1180708 },
+		{ item: 'Cabbage seed', weight: 619972 },
+		{ item: 'Tomato seed', weight: 561932 },
+		{ item: 'Barley seed', weight: 497148 },
+		{ item: 'Hammerstone seed', weight: 494318 },
+		{ item: 'Marigold seed', weight: 409668 },
+		{ item: 'Asgarnian seed', weight: 369067 },
+		{ item: 'Jute seed', weight: 368455 },
+		{ item: 'Redberry seed', weight: 343409 },
+		{ item: 'Nasturtium seed', weight: 270351 },
+		{ item: 'Yanillian seed', weight: 245383 },
+		{ item: 'Cadavaberry seed', weight: 242164 },
+		{ item: 'Sweetcorn seed', weight: 197249 },
+		{ item: 'Rosemary seed', weight: 173977 },
+		{ item: 'Dwellberry seed', weight: 172110 },
+		{ item: 'Guam seed', weight: 135320 },
+		{ item: 'Woad seed', weight: 129804 },
+		{ item: 'Krandorian seed', weight: 122649 },
+		{ item: 'Limpwurt seed', weight: 103567 },
+		{ item: 'Strawberry seed', weight: 97042 },
+		{ item: 'Marrentill seed', weight: 93062 },
+		{ item: 'Jangerberry seed', weight: 69567 },
+		{ item: 'Wildblood seed', weight: 62976 },
+		{ item: 'Tarromin seed', weight: 62551 },
+		{ item: 'Watermelon seed', weight: 47071 },
+		{ item: 'Harralander seed', weight: 43198 },
+		{ item: 'Snape grass seed', weight: 34094 },
+		{ item: 'Whiteberry seed', weight: 24586 },
+		{ item: 'Toadflax seed', weight: 19990 },
+		{ item: 'Mushroom spore', weight: 19266 },
+		{ item: 'Irit seed', weight: 14019 },
+		{ item: 'Belladonna seed', weight: 11594 },
+		{ item: 'Avantoe seed', weight: 9229 },
+		{ item: 'Poison ivy seed', weight: 9199 },
+		{ item: 'Cactus seed', weight: 7850 },
+		{ item: 'Kwuarm seed', weight: 6599 },
+		{ item: 'Ranarr seed', weight: 5305, maximum: 2 },
+		{ item: 'Snapdragon seed', weight: 3901 },
+		{ item: 'Potato cactus seed', weight: 3790 },
+		{ item: 'Cadantine seed', weight: 2817 },
+		{ item: 'Lantadyme seed', weight: 2097 },
+		{ item: 'Seaweed spore', weight: 1508 },
+		{ item: 'Dwarf weed seed', weight: 1208 },
+		{ item: 'Torstol seed', weight: 810 }
+	]
 };
 
-function weightedPick(table: RateTableRow[], total: number): RateTableRow {
+function weightedPick(table: MiscellaniaLootItem[], total: number): MiscellaniaLootItem {
 	let roll = randFloat(0, total);
 	for (const row of table) {
-		if (roll < row.rate) return row;
-		roll -= row.rate;
+		if (roll < row.weight) return row;
+		roll -= row.weight;
 	}
 	return table[table.length - 1];
 }
 
-export function rollFromRateTable(table: RateTableRow[], amount: number, bank: Bank) {
+export function rollFromRateTable(table: MiscellaniaLootItem[], amount: number, bank: Bank) {
 	if (amount <= 0) return;
 	const counts: Record<string, number> = {};
-	const total = table.reduce((t, r) => t + r.rate, 0);
+	const total = table.reduce((t, r) => t + r.weight, 0);
 	for (let i = 0; i < amount; i++) {
-		let row: RateTableRow;
+		let row: MiscellaniaLootItem;
 		let attempts = 0;
 		do {
 			row = weightedPick(table, total);
