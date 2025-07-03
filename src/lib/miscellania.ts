@@ -281,8 +281,13 @@ export function simulateDay(state: MiscellaniaData, royalTrouble: boolean): numb
 	return resourcePoints;
 }
 
-export function simulateCollection(days: number): Bank {
-	const state = defaultMiscellaniaData();
+export function simulateCollection(days: number, overrides: Partial<MiscellaniaData> = {}): Bank {
+	const base = defaultMiscellaniaData();
+	const state: MiscellaniaData = {
+		...base,
+		...overrides,
+		allocation: { ...base.allocation, ...(overrides.allocation ?? {}) }
+	};
 	const bank = new Bank();
 	for (let i = 0; i < days; i++) {
 		const rp = simulateDay(state, true);

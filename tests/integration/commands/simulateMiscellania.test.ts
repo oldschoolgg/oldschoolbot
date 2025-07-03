@@ -8,7 +8,14 @@ describe('Simulate Miscellania', async () => {
 
 	test('returns image', async () => {
 		const user = await createTestUser();
-		const result: any = await user.runCommand(simulateCommand, { miscellania: { days: 3 } });
+		const result: any = await user.runCommand(simulateCommand, {
+			miscellania: {
+				days: 3,
+				approval: 80,
+				woodcutting: 5,
+				mining: 5
+			}
+		});
 		expect(result.files?.length).toBe(1);
 	});
 });

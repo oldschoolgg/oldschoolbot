@@ -206,6 +206,94 @@ export const simulateCommand: OSBMahojiCommand = {
 					required: true,
 					min_value: 1,
 					max_value: 100
+				},
+				{
+					type: ApplicationCommandOptionType.Number,
+					name: 'approval',
+					description: 'Starting approval percentage.',
+					required: false,
+					min_value: 0,
+					max_value: 100
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'woodcutting',
+					description: 'Woodcutting workers',
+					required: false,
+					min_value: 0,
+					max_value: 15
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'mining',
+					description: 'Mining workers',
+					required: false,
+					min_value: 0,
+					max_value: 15
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'fishing_raw',
+					description: 'Raw fishing workers',
+					required: false,
+					min_value: 0,
+					max_value: 15
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'fishing_cooked',
+					description: 'Cooked fishing workers',
+					required: false,
+					min_value: 0,
+					max_value: 15
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'herbs',
+					description: 'Herb workers',
+					required: false,
+					min_value: 0,
+					max_value: 15
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'flax',
+					description: 'Flax workers',
+					required: false,
+					min_value: 0,
+					max_value: 15
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'hardwood_mahogany',
+					description: 'Mahogany workers',
+					required: false,
+					min_value: 0,
+					max_value: 15
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'hardwood_teak',
+					description: 'Teak workers',
+					required: false,
+					min_value: 0,
+					max_value: 15
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'hardwood_both',
+					description: 'Both hardwoods',
+					required: false,
+					min_value: 0,
+					max_value: 15
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'farm_seeds',
+					description: 'Farming seed workers',
+					required: false,
+					min_value: 0,
+					max_value: 15
 				}
 			]
 		}
@@ -225,7 +313,20 @@ export const simulateCommand: OSBMahojiCommand = {
 			quantity: number;
 		};
 		colosseum?: {};
-		miscellania?: { days: number };
+		miscellania?: {
+			days: number;
+			approval?: number;
+			woodcutting?: number;
+			mining?: number;
+			fishing_raw?: number;
+			fishing_cooked?: number;
+			herbs?: number;
+			flax?: number;
+			hardwood_mahogany?: number;
+			hardwood_teak?: number;
+			hardwood_both?: number;
+			farm_seeds?: number;
+		};
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
@@ -254,7 +355,26 @@ export const simulateCommand: OSBMahojiCommand = {
 			return received.join(' ');
 		}
 		if (options.miscellania) {
-			const loot = simulateCollection(options.miscellania.days);
+			const alloc: any = {};
+			for (const key of [
+				'woodcutting',
+				'mining',
+				'fishing_raw',
+				'fishing_cooked',
+				'herbs',
+				'flax',
+				'hardwood_mahogany',
+				'hardwood_teak',
+				'hardwood_both',
+				'farm_seeds'
+			]) {
+				const val = (options.miscellania as any)[key];
+				if (val !== undefined) alloc[key.replace(/_(.)/g, (_, c) => c.toUpperCase())] = val;
+			}
+			const loot = simulateCollection(options.miscellania.days, {
+				approval: options.miscellania.approval,
+				allocation: alloc
+			});
 			const image = await makeBankImage({
 				bank: loot,
 				title: `Loot from ${options.miscellania.days} days of Miscellania`
