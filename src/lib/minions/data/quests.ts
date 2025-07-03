@@ -26,12 +26,12 @@ export enum QuestID {
 	PerilousMoons = 6,
 	AtFirstLight = 7,
 	TwilightsPromise = 8,
-	TheHeartofDarkness = 9,
+	TheHeartOfDarkness = 9,
 	DeathOnTheIsle = 10,
 	MeatAndGreet = 11,
 	EthicallyAcquiredAntiquities = 12,
 	WhileGuthixSleeps = 13,
-	TheCurseofArrav = 14
+	TheCurseOfArrav = 14
 }
 
 export const quests: Quest[] = [
@@ -215,7 +215,7 @@ export const quests: Quest[] = [
 		}
 	},
 	{
-		id: QuestID.TheHeartofDarkness,
+		id: QuestID.TheHeartOfDarkness,
 		qp: 2,
 		name: 'The Heart of Darkness',
 		skillsRewards: {
@@ -328,7 +328,7 @@ export const quests: Quest[] = [
 		}
 	},
 	{
-		id: QuestID.TheCurseofArrav,
+		id: QuestID.TheCurseOfArrav,
 		qp: 2,
 		name: 'The Curse of Arrav',
 		prerequisitesQuests: [QuestID.DefenderOfVarrock],

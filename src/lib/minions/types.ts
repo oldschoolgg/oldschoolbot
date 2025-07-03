@@ -78,6 +78,7 @@ export interface KillableMonster {
 	notifyDrops?: ArrayItemsResolved;
 	existsInCatacombs?: boolean;
 	qpRequired?: number;
+	questRequired?: QuestID[];
 	difficultyRating?: number;
 	revsWeaponBoost?: boolean;
 

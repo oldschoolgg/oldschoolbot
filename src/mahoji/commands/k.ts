@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'disc
 import { Time, reduceNumByPercent } from 'e';
 import { EMonster } from 'oldschooljs';
 
+import { quests } from '@/lib/minions/data/quests';
 import { Eatables } from '../../lib/data/eatables';
 import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../lib/minions/functions';
@@ -228,6 +229,15 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 
 	if (monster.qpRequired) {
 		str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
+	}
+
+	if (monster.questRequired) {
+		for (const questRequired of monster.questRequired) {
+			if (!user.user.finished_quest_ids.includes(questRequired)) {
+				const questName = quests.find(q => q.id === questRequired)?.name ?? 'an unknown quest';
+				return `You need to complete "${questName}" before killing ${monster.name}.`;
+			}
+		}
 	}
 
 	if (monster.healAmountNeeded) {
