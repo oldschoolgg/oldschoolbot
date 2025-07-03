@@ -1,4 +1,4 @@
-import type { CommandOptions, CommandResponse } from '@oldschoolgg/toolkit/util';
+import { type CommandOptions, type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/util';
 import type { Activity, NewUser, Prisma } from '@prisma/client';
 import type {
 	APIInteractionGuildMember,
@@ -13,7 +13,7 @@ import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { minionActivityCache } from '../constants';
-import { channelIsSendable, isGroupActivity } from '../util';
+import { isGroupActivity } from '../util';
 import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 import { convertStoredActivityToFlatActivity } from './prisma';
@@ -79,8 +79,7 @@ async function runMahojiCommand({
 		user: globalClient.users.cache.get(user.id)!,
 		member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
 		client: globalClient.mahojiClient,
-		interaction: interaction as ChatInputCommandInteraction,
-		djsClient: globalClient
+		interaction: interaction as ChatInputCommandInteraction
 	});
 }
 

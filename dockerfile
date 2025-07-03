@@ -23,6 +23,7 @@ WORKDIR /usr/src/app
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY .env.test .env
+COPY packages/ packages/
 
 RUN pnpm install --frozen-lockfile
 

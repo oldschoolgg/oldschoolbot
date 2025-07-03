@@ -1,12 +1,10 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
-import { GearStat } from '../../../../gear/types';
-import { SkillsEnum } from '../../../../skilling/types';
-import { getOSItem } from '../../../../util/getOSItem';
-import itemID from '../../../../util/itemID';
+import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport';
+import { SkillsEnum } from '@/lib/skilling/types';
+import { getOSItem } from '@/lib/util/getOSItem';
 import type { KillableMonster, KillableMonsterEffect } from '../../../types';
 import { QuestID } from '../../quests';
 

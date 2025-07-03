@@ -1,23 +1,26 @@
+import { awaitMessageComponentInteraction, cleanUsername, stringMatches } from '@oldschoolgg/toolkit';
+import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
-import { TimerManager } from '@sapphire/timer-manager';
-import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
-import { BitField, Channel, PeakTier, globalConfig } from './constants';
+import { BitField, Channel, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
 import { populateRoboChimpCache } from './perkTier';
+import { fetchUsersWithoutUsernames } from './rawSql';
 import { runCommand } from './settings/settings';
 import { informationalButtons } from './sharedComponents';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
-import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
+import { getSupportGuild } from './util';
+import { PeakTier } from './util/calcWildyPkChance';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
+import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
 
 let lastMessageID: string | null = null;
@@ -118,44 +121,6 @@ export const tickers: {
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
 			await processPendingActivities();
-		}
-	},
-	{
-		name: 'daily_reminders',
-		interval: Time.Minute * 3,
-		startupWait: Time.Minute,
-		timer: null,
-		cb: async () => {
-			const result = await prisma.$queryRawUnsafe<{ id: string; last_daily_timestamp: bigint }[]>(
-				`
-SELECT users.id, user_stats.last_daily_timestamp
-FROM users
-JOIN user_stats ON users.id::bigint = user_stats.user_id
-WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '12 hours';
-`
-			);
-			const dailyDMButton = new ButtonBuilder()
-				.setCustomId('CLAIM_DAILY')
-				.setLabel('Claim Daily')
-				.setEmoji('493286312854683654')
-				.setStyle(ButtonStyle.Secondary);
-			const components = [dailyDMButton];
-			const str = 'Your daily is ready!';
-
-			for (const row of result.values()) {
-				if (!globalConfig.isProduction) continue;
-				if (Number(row.last_daily_timestamp) === -1) continue;
-
-				await userStatsUpdate(
-					row.id,
-					{
-						last_daily_timestamp: -1
-					},
-					{}
-				);
-				const user = await globalClient.fetchUser(row.id);
-				await user.send({ content: str, components: makeComponents(components) }).catch(noOp);
-			}
 		}
 	},
 	{
@@ -383,6 +348,54 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		interval: Time.Minute * 5,
 		cb: async () => {
 			await populateRoboChimpCache();
+		}
+	},
+	{
+		// Fetch users without usernames, and put in their usernames.
+		name: 'username_filling',
+		startupWait: Time.Minute * 10,
+		timer: null,
+		interval: Time.Minute * 7.33,
+		cb: async () => {
+			const users = await fetchUsersWithoutUsernames();
+			if (process.env.TEST) return;
+			debugLog(`username_filling: Found ${users.length} users without usernames.`);
+			for (const { id } of users) {
+				const djsUser = await globalClient.users.fetch(id).catch(() => null);
+				if (!djsUser) {
+					debugLog(`username_filling: Could not fetch user with ID ${id}, skipping...`);
+					continue;
+				}
+				const user = await prisma.user.upsert({
+					where: {
+						id
+					},
+					select: {
+						username: true,
+						badges: true,
+						minion_ironman: true
+					},
+					create: {
+						id
+					},
+					update: {}
+				});
+				const badges = makeBadgeString(user.badges, user.minion_ironman);
+				const username = cleanUsername(djsUser.username);
+				const usernameWithBadges = `${badges ? `${badges} ` : ''}${username}`;
+				await prisma.user.update({
+					where: {
+						id
+					},
+					data: {
+						username_with_badges: usernameWithBadges,
+						username
+					}
+				});
+				debugLog(
+					`username_filling: Updated user[${id}] to username[${username}] withbadges[${usernameWithBadges}]`
+				);
+			}
 		}
 	}
 ];

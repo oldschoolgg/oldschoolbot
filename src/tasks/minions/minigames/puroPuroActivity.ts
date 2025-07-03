@@ -1,6 +1,5 @@
 import { Time, randInt, reduceNumByPercent, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 
 import {
 	implings,
@@ -12,7 +11,6 @@ import {
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 function hunt(minutes: number, user: MUser, min: number, max: number) {

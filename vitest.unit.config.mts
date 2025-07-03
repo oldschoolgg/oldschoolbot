@@ -1,4 +1,4 @@
-import { basename, dirname, join } from 'node:path';
+import path, { basename, dirname, join } from 'node:path';
 
 import { defineConfig } from 'vitest/config';
 
@@ -18,6 +18,11 @@ export default defineConfig({
 				minForks: 5,
 				execArgv: ['--disable-warning=ExperimentalWarning']
 			}
+		}
+	},
+	resolve: {
+		alias: {
+			'@': path.resolve(import.meta.dirname, './src')
 		}
 	}
 });

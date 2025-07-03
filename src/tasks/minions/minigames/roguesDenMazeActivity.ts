@@ -1,7 +1,6 @@
 import { randInt } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, ItemGroups } from 'oldschooljs';
 
-import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -11,7 +10,7 @@ function getLowestCountOutfitPiece(bank: Bank): number {
 	let lowestCountPiece = 0;
 	let lowestCountAmount = -1;
 
-	for (const piece of roguesDenOutfit) {
+	for (const piece of ItemGroups.rogueOutfit) {
 		const amount = bank.amount(piece);
 		if (lowestCountAmount === -1 || amount < lowestCountAmount) {
 			lowestCountPiece = piece;

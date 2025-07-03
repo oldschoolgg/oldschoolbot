@@ -1,8 +1,6 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
 import type {
 	ActivityTaskData,
@@ -598,7 +596,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NEX_ID]: 25
+				[EMonster.NEX]: 25
 			}
 		})
 	},
@@ -735,7 +733,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: "Phosani's Nightmare",
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[PHOSANI_NIGHTMARE_ID]: 5
+				[EMonster.PHOSANI_NIGHTMARE]: 5
 			}
 		})
 	},
@@ -815,7 +813,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NIGHTMARE_ID]: 50
+				[EMonster.NIGHTMARE]: 50
 			}
 		})
 	},

@@ -1,9 +1,10 @@
 import { objectEntries } from 'e';
+import { Items } from 'oldschooljs';
 
+import { formatList } from '@/lib/util/smallUtils';
 import { projectiles } from '../../constants';
 import { getSimilarItems } from '../../data/similarItems';
 import type { Gear } from '../../structures/Gear';
-import { formatList, itemNameFromID } from '../../util';
 import { getOSItem } from '../../util/getOSItem';
 
 export function checkRangeGearWeapon(gear: Gear) {
@@ -26,7 +27,10 @@ export function checkRangeGearWeapon(gear: Gear) {
 	if (!projectileCategory[1].items.includes(ammo.item)) {
 		return `You have invalid ammo for your equipped weapon. For ${
 			projectileCategory[0]
-		}-based weapons, you can use: ${formatList(projectileCategory[1].items.map(itemNameFromID), 'or')}.`;
+		}-based weapons, you can use: ${formatList(
+			projectileCategory[1].items.map(i => Items.itemNameFromId(i)),
+			'or'
+		)}.`;
 	}
 
 	return {

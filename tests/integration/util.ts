@@ -1,15 +1,14 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Activity, ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Monsters } from 'oldschooljs';
+import { Bank, type EMonster, Monsters, convertLVLtoXP } from 'oldschooljs';
 
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 import { MUserClass } from '../../src/lib/MUser';
 import { completeActivity } from '../../src/lib/Task';
-import { type PvMMethod, globalConfig } from '../../src/lib/constants';
+import { globalConfig } from '../../src/lib/constants';
 import { sql } from '../../src/lib/postgres';
 import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
@@ -18,7 +17,7 @@ import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { getOSItem } from '../../src/lib/util/getOSItem';
-import { minionKCommand } from '../../src/mahoji/commands/k';
+import { type PvMMethod, minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
@@ -35,8 +34,7 @@ const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> =
 		editReply: () => Promise.resolve(),
 		followUp: () => Promise.resolve()
 	} as any,
-	client: {} as any,
-	djsClient: {} as any
+	client: {} as any
 });
 
 export class TestUser extends MUserClass {

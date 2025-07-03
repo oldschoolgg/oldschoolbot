@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -15,5 +16,10 @@ export default defineConfig({
 		maxConcurrency: 10,
 		maxWorkers: 4,
 		minWorkers: 4
+	},
+	resolve: {
+		alias: {
+			'@': path.resolve(import.meta.dirname, './src')
+		}
 	}
 });

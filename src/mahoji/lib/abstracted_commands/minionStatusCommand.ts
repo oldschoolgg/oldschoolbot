@@ -1,18 +1,17 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { BaseMessageOptions } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { makeComponents, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField, Emoji } from '../../../lib/constants';
+import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
-
 import { minionBuyButton } from '../../../lib/sharedComponents';
-import { makeComponents } from '../../../lib/util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
-	makeBirdHouseTripButton
+	makeBirdHouseTripButton,
+	makeClaimDailyButton
 } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
@@ -87,14 +86,8 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 	const status = minionStatus(user);
 	const buttons: ButtonBuilder[] = [];
 
-	if (dailyIsReady.isReady) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('CLAIM_DAILY')
-				.setLabel('Claim Daily')
-				.setEmoji('493286312854683654')
-				.setStyle(ButtonStyle.Secondary)
-		);
+	if (dailyIsReady.isReady && !user.bitfield.includes(BitField.DisableDailyButton)) {
+		buttons.push(makeClaimDailyButton());
 	}
 
 	if (minionIsBusy) {

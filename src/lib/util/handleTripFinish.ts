@@ -1,19 +1,24 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Time, sumArr } from 'e';
+import { Bank, EItem } from 'oldschooljs';
 
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { sumArr } from 'e';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { fetchMiscellaniaData } from '../../mahoji/lib/abstracted_commands/miscellaniaCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import {
+	tearsOfGuthixIronmanReqs,
+	tearsOfGuthixSkillReqs
+} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, Emoji, MAX_CLUES_DROPPED, PerkTier } from '../constants';
+import { BitField, MAX_CLUES_DROPPED, PerkTier } from '../constants';
 import { allPetsCL } from '../data/CollectionsExport';
 import pets from '../data/pets';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -21,17 +26,19 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { formatList } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
-       makeBirdHouseTripButton,
-       makeMiscellaniaApprovalButton,
-        makeNewSlayerTaskButton,
+	makeBirdHouseTripButton,
+	makeClaimDailyButton,
+	makeMiscellaniaApprovalButton,
+	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
-	makeRepeatTripButton
+	makeRepeatTripButton,
+	makeTearsOfGuthixButton
 } from './globalInteractions';
+import { formatList, hasSkillReqs } from './smallUtils';
 import { sendToChannelID } from './webhook';
 
 const collectors = new Map<string, MessageCollector>();
@@ -66,7 +73,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Track GP Analytics',
 		fn: async ({ data, loot }) => {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-				const GP = loot.amount(COINS_ID);
+				const GP = loot.amount(EItem.COINS);
 				if (typeof GP === 'number') {
 					await updateClientGPTrackSetting('gp_pvm', GP);
 				}
@@ -143,9 +150,9 @@ export async function handleTripFinish(
 		| Buffer
 		| undefined
 		| {
-				name: string;
-				attachment: Buffer;
-		  },
+			name: string;
+			attachment: Buffer;
+		},
 	data: ActivityTaskData,
 	loot: Bank | null,
 	_messages?: string[],
@@ -203,17 +210,45 @@ export async function handleTripFinish(
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
-		const birdHousedetails = await calculateBirdhouseDetails(user);
-               if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
-                       components.push(makeBirdHouseTripButton());
 
-               const miscData = await fetchMiscellaniaData(user);
-               if (
-                       miscData.approval < 100 &&
-                       !user.bitfield.includes(BitField.DisableMiscellaniaButton)
-               ) {
-                       components.push(makeMiscellaniaApprovalButton());
-               }
+		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats({
+			last_tears_of_guthix_timestamp: true,
+			last_daily_timestamp: true
+		});
+
+		// Tears of Guthix start button if ready
+		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
+			const last = Number(last_tears_of_guthix_timestamp);
+			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
+			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
+			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
+
+			if (user.QP >= 43 && ready && meetsSkillReqs && meetsIronmanReqs) {
+				components.push(makeTearsOfGuthixButton());
+			}
+		}
+
+		// Minion daily button if ready
+		if (!user.bitfield.includes(BitField.DisableDailyButton)) {
+			const last = Number(last_daily_timestamp);
+			const ready = last <= 0 || Date.now() - last >= Time.Hour * 12;
+
+			if (ready) {
+				components.push(makeClaimDailyButton());
+			}
+		}
+
+		const birdHousedetails = calculateBirdhouseDetails(user);
+		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
+			components.push(makeBirdHouseTripButton());
+
+		const miscData = await fetchMiscellaniaData(user);
+		if (
+			miscData.approval < 100 &&
+			!user.bitfield.includes(BitField.DisableMiscellaniaButton)
+		) {
+			components.push(makeMiscellaniaApprovalButton());
+		}
 
 		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
 			components.push(makeAutoContractButton());

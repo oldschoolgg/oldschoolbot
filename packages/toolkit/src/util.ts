@@ -14,6 +14,8 @@ export * from './util/runescape';
 export * from './util/string';
 export * from './lib/Store';
 export * from './util/markdown.js';
+export * from './util/mahoji.js';
+export * from './util/paginatedMessage.js';
 
 // External
 export { default as deepMerge } from 'deepmerge';

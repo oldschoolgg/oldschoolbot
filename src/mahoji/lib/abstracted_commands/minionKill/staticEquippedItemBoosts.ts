@@ -1,7 +1,8 @@
 import type { Item } from 'oldschooljs';
-import type { PvMMethod } from '../../../../lib/constants';
+
 import type { PrimaryGearSetupType } from '../../../../lib/gear/types';
 import getOSItem from '../../../../lib/util/getOSItem';
+import type { PvMMethod } from '../../../commands/k';
 
 interface StaticEquippedItemBoost {
 	item: Item;

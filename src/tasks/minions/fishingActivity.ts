@@ -1,15 +1,13 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPercentOfNum, percentChance, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import { z } from 'zod';
+import { Bank, itemID } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
 
 function radasBlessing(user: MUser) {
@@ -28,17 +26,8 @@ function radasBlessing(user: MUser) {
 	return { blessingEquipped: false, blessingChance: 0 };
 }
 
-const allFishIDs = Fishing.Fishes.map(fish => fish.id);
-
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
-	dataSchema: z.object({
-		type: z.literal('Fishing'),
-		fishID: z.number().refine(fishID => allFishIDs.includes(fishID), {
-			message: 'Invalid fish ID'
-		}),
-		quantity: z.number().min(1)
-	}),
 	async run(data: FishingActivityTaskOptions) {
 		const { fishID, quantity, userID, channelID, duration } = data;
 		let { flakesQuantity } = data;

@@ -1,13 +1,11 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder } from 'discord.js';
 import { shuffleArr, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { SkillsScore } from 'oldschooljs/dist/meta/types';
-import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
+import { Bank, type SkillsScore, convertXPtoLVL, toKMB } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
 import { getClueScoresFromOpenables } from '../clues/clueUtils';
-import { badges } from '../constants';
+import { MAX_LEVEL, badges } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { skillEmoji } from '../data/emojis';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
@@ -30,7 +28,8 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 
 		const skillXP = user.skillsAsXP[skill as keyof Skills] ?? 1;
 		return `${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${convertXPtoLVL(
-			skillXP
+			skillXP,
+			MAX_LEVEL
 		).toLocaleString()} (${toKMB(skillXP)})`;
 	};
 

@@ -1,5 +1,4 @@
-import { PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, PerkTier, makeComponents, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -9,7 +8,6 @@ import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { BitField, MAX_CLUES_DROPPED } from '../../../lib/constants';
 import type { UnifiedOpenable } from '../../../lib/openables';
 import { allOpenables, getOpenableLoot } from '../../../lib/openables';
-import { makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { displayCluesAndPets } from '../../../lib/util/handleTripFinish';

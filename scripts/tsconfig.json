@@ -1,8 +1,6 @@
 {
 	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
-		"rootDir": "..",
-		"composite": true,
 		"noEmit": true
 	},
 	"include": [".", "../src/**/*", "../tests/unit/utils.ts"],

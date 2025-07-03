@@ -1,14 +1,14 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { Minigame } from '@prisma/client';
 import { strikethrough } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import type { Minigame } from '@prisma/client';
 import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '../../../lib/diaries';
 import type { DiaryTier } from '../../../lib/minions/types';
 import { Minigames } from '../../../lib/settings/minigames';
 import { MUserStats } from '../../../lib/structures/MUserStats';
-import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../../lib/util';
+import { formatSkillRequirements, itemNameFromID } from '../../../lib/util/smallUtils';
 
 const lampRewards = {
 	Easy: 'Antique lamp 1',

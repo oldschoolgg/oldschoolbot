@@ -1,4 +1,5 @@
 import './structures/Items';
+import { ECreature } from './ECreature';
 import { EItem } from './EItem';
 import { EMonster } from './EMonster';
 import * as constants from './constants';
@@ -33,13 +34,13 @@ export {
 	SimpleMonster,
 	EItem,
 	EMonster,
-	SimpleOpenable
+	SimpleOpenable,
+	ECreature
 };
 
 export * from './simulation/monsters';
 export * from './constants';
 export * from './util';
-export * from './data/itemConstants';
 export * from './structures/Items';
 export * from './meta/types';
 export type { default as Monster } from './structures/Monster';
@@ -49,3 +50,8 @@ export * from './simulation/misc';
 export * from './simulation/openables/Implings';
 export * from './meta/monsterData';
 export * from './simulation/subtables/index';
+export * as ItemGroups from './itemGroups';
+
+export const NIGHTMARES_HP = 2400;
+export const ZAM_HASTA_CRUSH = 65;
+export const MAX_INT_JAVA = 2_147_483_647;
