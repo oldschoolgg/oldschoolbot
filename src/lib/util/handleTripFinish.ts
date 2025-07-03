@@ -150,9 +150,9 @@ export async function handleTripFinish(
 		| Buffer
 		| undefined
 		| {
-			name: string;
-			attachment: Buffer;
-		},
+				name: string;
+				attachment: Buffer;
+		  },
 	data: ActivityTaskData,
 	loot: Bank | null,
 	_messages?: string[],
@@ -243,10 +243,7 @@ export async function handleTripFinish(
 			components.push(makeBirdHouseTripButton());
 
 		const miscData = await fetchMiscellaniaData(user);
-		if (
-			miscData.approval < 100 &&
-			!user.bitfield.includes(BitField.DisableMiscellaniaButton)
-		) {
+		if (miscData.approval < 100 && !user.bitfield.includes(BitField.DisableMiscellaniaButton)) {
 			components.push(makeMiscellaniaApprovalButton());
 		}
 
