@@ -17,6 +17,7 @@ import type {
 	AnimatedArmourActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -127,6 +128,10 @@ const tripHandlers = {
 	[activity_type_enum.TokkulShop]: {
 		commandName: 'm',
 		args: () => ({})
+	},
+	[activity_type_enum.Buy]: {
+		commandName: 'buy',
+		args: (data: BuyActivityTaskOptions) => ({ name: itemNameFromID(data.itemID), quantity: data.quantity })
 	},
 	[activity_type_enum.ShootingStars]: {
 		commandName: 'm',
