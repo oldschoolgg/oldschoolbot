@@ -21,6 +21,7 @@ import { globalConfig } from '../../lib/constants';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
+import { herbloreItems } from '../../lib/data/filterables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import potions from '../../lib/minions/data/potions';
@@ -210,6 +211,11 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const herblorePreset = new Bank();
+for (const item of herbloreItems) {
+	herblorePreset.add(item, 100_000);
+}
+
 const runePreset = new Bank()
 	.add('Air rune', MAX_INT_JAVA)
 	.add('Mind rune', MAX_INT_JAVA)
@@ -242,7 +248,8 @@ const spawnPresets = [
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],
-	['runes', runePreset]
+	['runes', runePreset],
+	['herblore', herblorePreset]
 ] as const;
 
 const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
