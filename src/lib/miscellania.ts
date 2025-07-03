@@ -286,6 +286,8 @@ export function simulateCollection(days: number, overrides: Partial<MiscellaniaD
 	const state: MiscellaniaData = {
 		...base,
 		...overrides,
+		// Assume you have enough coins to fund the workers every day
+		coffer: overrides.coffer ?? days * MAX_WITHDRAW_ROYAL,
 		allocation: { ...base.allocation, ...(overrides.allocation ?? {}) }
 	};
 	const bank = new Bank();

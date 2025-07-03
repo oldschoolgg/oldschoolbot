@@ -1,6 +1,7 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
+import type { MiscWorkerAllocation } from '@/lib/miscellania';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
 import { quests } from '../../lib/minions/data/quests';
@@ -650,9 +651,22 @@ export const activitiesCommand: OSBMahojiCommand = {
 		inferno?: { action: string };
 		birdhouses?: { action?: string; birdhouse?: string };
 		miscellania?: {
-			subcommand: 'deposit' | 'status' | 'collect' | 'approval' | 'allocate';
-			deposit?: number;
-			allocate?: number;
+			deposit?: { amount?: number };
+			status?: Record<string, never>;
+			collect?: Record<string, never>;
+			approval?: Record<string, never>;
+			allocate?: {
+				woodcutting?: number;
+				mining?: number;
+				fishing_raw?: number;
+				fishing_cooked?: number;
+				herbs?: number;
+				flax?: number;
+				hardwood_mahogany?: number;
+				hardwood_teak?: number;
+				hardwood_both?: number;
+				farm_seeds?: number;
+			};
 		};
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
@@ -680,7 +694,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand(user);
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
-		if (options.miscellania?.subcommand === 'status') return miscellaniaStatusCommand(user);
+		if (options.miscellania?.status) return miscellaniaStatusCommand(user);
 
 		// Minion must be free
 		const isBusy = user.minionIsBusy;
@@ -694,36 +708,40 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
 		}
 		if (options.miscellania) {
-			const { subcommand, deposit } = options.miscellania;
-			if (subcommand === 'deposit') {
-				if (deposit === undefined || deposit <= 0) {
-					return 'Please specify a valid deposit amount.';
-				}
-				return miscellaniaDepositCommand(user, deposit);
+			if (options.miscellania.deposit) {
+				const amt = options.miscellania.deposit.amount ?? 0;
+				if (amt <= 0) return 'Please specify a valid deposit amount.';
+				return miscellaniaDepositCommand(user, amt);
 			}
-			if (subcommand === 'collect') {
+			if (options.miscellania.collect) {
 				return miscellaniaCollectCommand(user);
 			}
-			if (subcommand === 'approval') {
+			if (options.miscellania.approval) {
 				return miscellaniaApprovalCommand(user, channelID);
 			}
-			if (subcommand === 'allocate') {
-				const alloc: any = {};
-				for (const key of [
-					'woodcutting',
-					'mining',
-					'fishing_raw',
-					'fishing_cooked',
-					'herbs',
-					'flax',
-					'hardwood_mahogany',
-					'hardwood_teak',
-					'hardwood_both',
-					'farm_seeds'
-				]) {
-					const val = (options.miscellania as any)[key];
-					if (val !== undefined) alloc[key.replace(/_([a-z])/g, (_, c) => c.toUpperCase())] = val;
+			if (options.miscellania.allocate) {
+				const keyMap: Record<string, keyof MiscWorkerAllocation> = {
+					woodcutting: 'woodcutting',
+					mining: 'mining',
+					fishing_raw: 'fishingRaw',
+					fishing_cooked: 'fishingCooked',
+					herbs: 'herbs',
+					flax: 'flax',
+					hardwood_mahogany: 'hardwoodMahogany',
+					hardwood_teak: 'hardwoodTeak',
+					hardwood_both: 'hardwoodBoth',
+					farm_seeds: 'farmSeeds'
+				};
+
+				const alloc: Partial<Record<keyof MiscWorkerAllocation, number>> = {};
+
+				for (const [optionKey, allocKey] of Object.entries(keyMap)) {
+					const val = (options.miscellania.allocate as Record<string, number>)[optionKey];
+					if (val !== undefined) {
+						alloc[allocKey] = val;
+					}
 				}
+
 				return miscellaniaAllocateCommand(user, alloc);
 			}
 		}
