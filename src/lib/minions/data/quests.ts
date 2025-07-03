@@ -331,7 +331,7 @@ export const quests: Quest[] = [
 		id: QuestID.TheCurseofArrav,
 		qp: 2,
 		name: 'The Curse of Arrav',
-		prerequisitesQuests: [QuestID.DefenderOfVarrock, QuestID.ThePathOfGlouphrie],
+		prerequisitesQuests: [QuestID.DefenderOfVarrock],
 		qpReq: 180,
 		skillReqs: {
 			mining: 64,
