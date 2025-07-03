@@ -1,5 +1,4 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';

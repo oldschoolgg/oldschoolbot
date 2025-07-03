@@ -1,5 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores } from 'oldschooljs';

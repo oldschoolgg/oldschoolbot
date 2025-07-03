@@ -74,6 +74,30 @@ class Items extends Collection<ItemID, Item> {
 
 		return undefined;
 	}
+
+	public itemNameFromId(itemID: number): string | undefined {
+		return super.get(itemID)?.name;
+	}
+
+	public getItem(itemName: string | number | undefined): Item | null {
+		if (!itemName) return null;
+		let identifier: string | number | undefined = '';
+		if (typeof itemName === 'number') {
+			identifier = itemName;
+		} else {
+			const parsed = Number(itemName);
+			identifier = Number.isNaN(parsed) ? itemName : parsed;
+		}
+		if (typeof identifier === 'string') {
+			identifier = identifier.replace(/’/g, "'");
+		}
+		return this.get(identifier) ?? null;
+	}
+	public getOrThrow(itemName: string | number | undefined): Item {
+		const item = this.getItem(itemName);
+		if (!item) throw new Error(`Item ${itemName} not found.`);
+		return item;
+	}
 }
 
 const itemsExport = new Items();

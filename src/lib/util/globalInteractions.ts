@@ -1,23 +1,19 @@
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { ButtonInteraction, Interaction } from 'discord.js';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { cleanUsername, formatDuration, mentionCommand, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { Giveaway } from '@prisma/client';
+import { RateLimitManager } from '@sapphire/ratelimits';
+import { ButtonBuilder, type ButtonInteraction, ButtonStyle, type Interaction } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import type { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
-
-import type { Giveaway } from '@prisma/client';
-import { RateLimitManager } from '@sapphire/ratelimits';
 import { InteractionID } from '../InteractionID';
 import { giveawayCache } from '../cache.js';
+import type { ClueTier } from '../clues/clueTiers';
+import { BitField, PerkTier } from '../constants';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
-import type { ItemBank } from '../types';
-import { formatDuration, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
@@ -49,7 +45,8 @@ const globalInteractionActions = [
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
 	'DO_SHOOTING_STAR',
-	'CHECK_TOA'
+	'CHECK_TOA',
+	'START_TOG'
 ] as const;
 
 type GlobalInteractionAction = (typeof globalInteractionActions)[number];
@@ -93,6 +90,14 @@ export function makeRepeatTripButton() {
 		.setEmoji('🔁');
 }
 
+export function makeTearsOfGuthixButton() {
+	return new ButtonBuilder()
+		.setCustomId('START_TOG')
+		.setLabel('Start Tears of Guthix')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('🐍');
+}
+
 export function makeBirdHouseTripButton() {
 	return new ButtonBuilder()
 		.setCustomId('DO_BIRDHOUSE_RUN')
@@ -107,6 +112,14 @@ export function makeAutoSlayButton() {
 		.setLabel('Auto Slay')
 		.setEmoji('630911040560824330')
 		.setStyle(ButtonStyle.Secondary);
+}
+
+export function makeClaimDailyButton() {
+	return new ButtonBuilder()
+		.setCustomId('CLAIM_DAILY')
+		.setLabel('Minion Daily')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('493286312854683654');
 }
 
 const reactionTimeLimits = {
@@ -574,6 +587,14 @@ export async function interactionHook(interaction: Interaction) {
 						: `That Crashed Star was not discovered by ${user.minionName}.`
 				}`,
 				ephemeral: true
+			});
+		}
+		case 'START_TOG': {
+			return runCommand({
+				commandName: 'minigames',
+				args: { tears_of_guthix: { start: {} } },
+				bypassInhibitors: true,
+				...options
 			});
 		}
 		default: {

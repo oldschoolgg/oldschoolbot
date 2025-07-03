@@ -1,6 +1,6 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { getMinigameEntity } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

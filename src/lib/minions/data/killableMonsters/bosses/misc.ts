@@ -1,12 +1,10 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
+import { GearStat } from 'oldschooljs/gear';
 import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
-import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
-import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
 import { QuestID } from '../../quests';
 

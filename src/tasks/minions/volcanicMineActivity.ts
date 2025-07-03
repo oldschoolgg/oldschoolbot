@@ -1,7 +1,7 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, randFloat, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';

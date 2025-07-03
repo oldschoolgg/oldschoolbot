@@ -1,23 +1,27 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import {
 	Bank,
 	BrimstoneChest,
 	EItem,
+	EMonster,
 	EliteMimicTable,
+	HallowedSackTable,
+	Implings,
+	type Item,
+	type ItemBank,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
+	type OpenableOpenOptions,
 	Openables,
-	ZombiePiratesLocker
+	SkillsEnum,
+	ZombiePiratesLocker,
+	itemID,
+	resolveItems
 } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
-import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
-import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from './clues/clueTiers';
-import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import type { FarmingContract } from './minions/farming/types';
@@ -31,9 +35,8 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import type { ItemBank } from './types';
-import { itemID, roll } from './util';
 import getOSItem from './util/getOSItem';
+import { roll } from './util/rng';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -158,7 +161,7 @@ for (const clueTier of ClueTiers) {
 			}
 
 			if (mimicNumber > 0) {
-				await user.incrementKC(MIMIC_MONSTER_ID, mimicNumber);
+				await user.incrementKC(EMonster.MIMIC, mimicNumber);
 			}
 
 			return { bank: loot, message };

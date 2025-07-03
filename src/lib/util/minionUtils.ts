@@ -1,19 +1,18 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { perTimeUnitChance, toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { BaseMessageOptions } from 'discord.js';
-import { escapeMarkdown, time } from 'discord.js';
+import { type BaseMessageOptions, escapeMarkdown, time } from 'discord.js';
 import { Time } from 'e';
-import { type Bank, convertXPtoLVL } from 'oldschooljs/dist/util/util';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { type Bank, convertXPtoLVL, resolveItems } from 'oldschooljs';
 
 import { MUserClass } from '../MUser';
-import { Emoji } from '../constants';
+import { MAX_LEVEL } from '../constants';
 import { QuestID } from '../minions/data/quests';
 import type { SkillsEnum } from '../skilling/types';
 import type { Peak } from './../tickers';
 
 export function skillLevel(user: MUser, skill: SkillsEnum) {
 	const xp = Number(user.user[`skills_${skill}`]);
-	return convertXPtoLVL(xp);
+	return convertXPtoLVL(xp, MAX_LEVEL);
 }
 
 export const bows = resolveItems([

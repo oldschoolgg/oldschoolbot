@@ -1,3 +1,4 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -6,7 +7,6 @@ import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/
 import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import defaultBirdhouseTrap from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
@@ -64,7 +64,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 
-	const existingBirdhouse = await calculateBirdhouseDetails(user);
+	const existingBirdhouse = calculateBirdhouseDetails(user);
 	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user);
 
 	let birdhouseToPlant = inputBirdhouseName

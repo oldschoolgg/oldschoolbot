@@ -1,6 +1,6 @@
 import { Table, calcPerHour } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
-import { type Bank, convertLVLtoXP } from 'oldschooljs/dist/meta/types';
+import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
 import '../../src/lib/safeglobals.js';
@@ -12,7 +12,7 @@ import { FloatBank } from '../../src/lib/structures/Bank.js';
 import { determineMiningTrip } from '../../src/mahoji/commands/mine.js';
 import { determineMiningResult } from '../../src/tasks/minions/miningActivity.js';
 import { makeGearBank } from '../../tests/unit/utils.js';
-import { handleMarkdownEmbed } from '../wiki.js';
+import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
 function bankToPerHour(bank: Bank, duration: number): FloatBank {
 	const perHourBank = new FloatBank();

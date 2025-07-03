@@ -1,23 +1,24 @@
-import type { CommandOption } from '@oldschoolgg/toolkit/util';
-import { evalMathExpression } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import {
+	type CommandOption,
+	type CommandRunOptions,
+	evalMathExpression,
+	formatDuration,
+	makeComponents
+} from '@oldschoolgg/toolkit/util';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
-import { getItem } from 'oldschooljs/dist/util/util';
+import { Bank, type ItemBank, getItem, toKMB } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
-
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
 import { createChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import { itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';

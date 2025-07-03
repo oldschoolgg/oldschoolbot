@@ -1,14 +1,13 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPercentOfNum, percentChance, randInt } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
 
 function radasBlessing(user: MUser) {

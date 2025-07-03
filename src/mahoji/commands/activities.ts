@@ -1,12 +1,10 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
 
-import type { UnderwaterAgilityThievingTrainingSkill } from '../../lib/constants';
-import { UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL } from '../../lib/constants';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
 import { quests } from '../../lib/minions/data/quests';
+import Agility, { type UnderwaterAgilityThievingTrainingSkill } from '../../lib/skilling/skills/agility';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
@@ -448,7 +446,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 							name: 'training_skill',
 							description: 'The skill/skills to train.',
 							required: true,
-							choices: UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL.map(i => ({ name: i, value: i }))
+							choices: Agility.underwaterAgilityThievingTrainingSkill.map(i => ({ name: i, value: i }))
 						},
 						{
 							type: ApplicationCommandOptionType.Integer,

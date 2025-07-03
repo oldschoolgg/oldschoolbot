@@ -1,7 +1,7 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { itemID } from 'oldschooljs';
 
 import { userhasDiaryTier } from '../../lib/diaries.js';
 import { QuestID } from '../../lib/minions/data/quests';
@@ -13,11 +13,10 @@ import Mining from '../../lib/skilling/skills/mining';
 import type { Ore } from '../../lib/skilling/types';
 import type { GearBank } from '../../lib/structures/GearBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
+import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 

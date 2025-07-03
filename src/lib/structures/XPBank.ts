@@ -1,4 +1,5 @@
 import { sumArr } from 'e';
+
 import { skillEmoji } from '../data/emojis';
 import type { AddXpParams } from '../minions/types';
 import type { SkillNameType, SkillsEnum } from '../skilling/types';

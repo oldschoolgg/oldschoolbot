@@ -1,5 +1,5 @@
 import { AutoFarmFilterEnum } from '@prisma/client';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
 import { plants } from '../../skilling/skills/farming';

@@ -1,6 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { inlineCode } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, inlineCode } from 'discord.js';
 import { randArrItem } from 'e';
 
 import type { OSBMahojiCommand } from '../lib/util';

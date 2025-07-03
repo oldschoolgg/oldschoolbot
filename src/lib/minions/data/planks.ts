@@ -1,5 +1,6 @@
+import { itemID } from 'oldschooljs';
+
 import type { Plankable } from '../../skilling/types';
-import itemID from '../../util/itemID';
 
 export const Planks: Plankable[] = [
 	{

@@ -1,25 +1,20 @@
 import type { GearPreset } from '@prisma/client';
 import { notEmpty, objectKeys, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EquipmentSlot, type Item, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
-import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import {
+	type DefenceGearStat,
+	GearStat,
+	type GearStats,
+	type OffenceGearStat,
+	type OtherGearStat
+} from 'oldschooljs/gear';
 
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
-import type {
-	DefenceGearStat,
-	GearSetup,
-	GearSetupType,
-	GearSlotItem,
-	GearStats,
-	OffenceGearStat,
-	OtherGearStat
-} from '../gear/types';
-import { GearStat } from '../gear/types';
+import type { GearSetup, GearSetupType, GearSlotItem } from '../gear/types';
 import type { GearRequirement } from '../minions/types';
-import { assert } from '../util';
 import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID';
+import { assert } from '../util/logError';
 
 export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;

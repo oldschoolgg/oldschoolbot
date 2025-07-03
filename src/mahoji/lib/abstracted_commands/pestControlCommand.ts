@@ -1,13 +1,13 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { hasSkillReqs } from '@/lib/util/smallUtils';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

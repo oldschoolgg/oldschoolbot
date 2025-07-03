@@ -144,24 +144,27 @@ export const teamCapes = [
 	EItem.TEAM50_CAPE
 ];
 
-export const beekeeperOutfit = [
-	EItem.BEEKEEPERS_HAT,
-	EItem.BEEKEEPERS_TOP,
-	EItem.BEEKEEPERS_LEGS,
-	EItem.BEEKEEPERS_GLOVES,
-	EItem.BEEKEEPERS_BOOTS
+export const championScrolls = [
+	EItem.EARTH_WARRIOR_CHAMPION_SCROLL,
+	EItem.GHOUL_CHAMPION_SCROLL,
+	EItem.GIANT_CHAMPION_SCROLL,
+	EItem.GOBLIN_CHAMPION_SCROLL,
+	EItem.HOBGOBLIN_CHAMPION_SCROLL,
+	EItem.IMP_CHAMPION_SCROLL,
+	EItem.JOGRE_CHAMPION_SCROLL,
+	EItem.LESSER_DEMON_CHAMPION_SCROLL,
+	EItem.SKELETON_CHAMPION_SCROLL,
+	EItem.ZOMBIE_CHAMPION_SCROLL
 ];
 
-export const camoOutfit = [EItem.CAMO_HELMET, EItem.CAMO_TOP, EItem.CAMO_BOTTOMS];
-
-export const lederhosenOutfit = [EItem.LEDERHOSEN_HAT, EItem.LEDERHOSEN_TOP, EItem.LEDERHOSEN_SHORTS];
-
-export const zombieOutfit = [
-	EItem.ZOMBIE_MASK,
-	EItem.ZOMBIE_SHIRT,
-	EItem.ZOMBIE_TROUSERS,
-	EItem.ZOMBIE_GLOVES,
-	EItem.ZOMBIE_BOOTS
+export const demonBaneWeapons = [
+	EItem.SILVERLIGHT,
+	EItem.DARKLIGHT,
+	EItem.ARCLIGHT,
+	EItem.EMBERLIGHT,
+	EItem.SCORCHING_BOW,
+	EItem.PURGING_STAFF
 ];
 
-export const mimeOutfit = [EItem.MIME_MASK, EItem.MIME_TOP, EItem.MIME_LEGS, EItem.MIME_GLOVES, EItem.MIME_BOOTS];
+export * from './item-groups/boss-cl';
+export * from './item-groups/outfits';

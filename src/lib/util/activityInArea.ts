@@ -1,5 +1,4 @@
-import { Monsters } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { Monsters, resolveItems } from 'oldschooljs';
 
 import { soteSkillRequirements } from '../skilling/functions/questRequirements';
 import { courses } from '../skilling/skills/agility';
