@@ -722,7 +722,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					'farm_seeds'
 				]) {
 					const val = (options.miscellania as any)[key];
-					if (val !== undefined) alloc[key.replace(/_(.)/g, (_, c) => c.toUpperCase())] = val;
+					if (val !== undefined) alloc[key.replace(/_([a-z])/g, (_, c) => c.toUpperCase())] = val;
 				}
 				return miscellaniaAllocateCommand(user, alloc);
 			}

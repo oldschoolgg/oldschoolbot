@@ -5,7 +5,7 @@ import { Bank, ChambersOfXeric, averageBank, toKMB } from 'oldschooljs';
 
 import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
 import pets from '../../lib/data/pets';
-import { simulateCollection } from '../../lib/miscellania';
+import { type MiscWorkerAllocation, simulateCollection } from '../../lib/miscellania';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { assert } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -216,84 +216,40 @@ export const simulateCommand: OSBMahojiCommand = {
 					max_value: 100
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'woodcutting',
-					description: 'Woodcutting workers',
+					type: ApplicationCommandOptionType.String,
+					name: 'ten_workers',
+					description: 'Task for your first 10 workers.',
 					required: false,
-					min_value: 0,
-					max_value: 15
+					choices: [
+						{ name: 'Woodcutting', value: 'woodcutting' },
+						{ name: 'Mining', value: 'mining' },
+						{ name: 'Fishing (raw)', value: 'fishing_raw' },
+						{ name: 'Fishing (cooked)', value: 'fishing_cooked' },
+						{ name: 'Herbs', value: 'herbs' },
+						{ name: 'Flax', value: 'flax' },
+						{ name: 'Hardwood (mahogany)', value: 'hardwood_mahogany' },
+						{ name: 'Hardwood (teak)', value: 'hardwood_teak' },
+						{ name: 'Hardwood (both)', value: 'hardwood_both' },
+						{ name: 'Farming seeds', value: 'farm_seeds' }
+					]
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'mining',
-					description: 'Mining workers',
+					type: ApplicationCommandOptionType.String,
+					name: 'five_workers',
+					description: 'Task for your remaining 5 workers (Royal Trouble).',
 					required: false,
-					min_value: 0,
-					max_value: 15
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'fishing_raw',
-					description: 'Raw fishing workers',
-					required: false,
-					min_value: 0,
-					max_value: 15
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'fishing_cooked',
-					description: 'Cooked fishing workers',
-					required: false,
-					min_value: 0,
-					max_value: 15
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'herbs',
-					description: 'Herb workers',
-					required: false,
-					min_value: 0,
-					max_value: 15
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'flax',
-					description: 'Flax workers',
-					required: false,
-					min_value: 0,
-					max_value: 15
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'hardwood_mahogany',
-					description: 'Mahogany workers',
-					required: false,
-					min_value: 0,
-					max_value: 15
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'hardwood_teak',
-					description: 'Teak workers',
-					required: false,
-					min_value: 0,
-					max_value: 15
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'hardwood_both',
-					description: 'Both hardwoods',
-					required: false,
-					min_value: 0,
-					max_value: 15
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'farm_seeds',
-					description: 'Farming seed workers',
-					required: false,
-					min_value: 0,
-					max_value: 15
+					choices: [
+						{ name: 'Woodcutting', value: 'woodcutting' },
+						{ name: 'Mining', value: 'mining' },
+						{ name: 'Fishing (raw)', value: 'fishing_raw' },
+						{ name: 'Fishing (cooked)', value: 'fishing_cooked' },
+						{ name: 'Herbs', value: 'herbs' },
+						{ name: 'Flax', value: 'flax' },
+						{ name: 'Hardwood (mahogany)', value: 'hardwood_mahogany' },
+						{ name: 'Hardwood (teak)', value: 'hardwood_teak' },
+						{ name: 'Hardwood (both)', value: 'hardwood_both' },
+						{ name: 'Farming seeds', value: 'farm_seeds' }
+					]
 				}
 			]
 		}
@@ -312,20 +268,12 @@ export const simulateCommand: OSBMahojiCommand = {
 		petroll?: {
 			quantity: number;
 		};
-		colosseum?: {};
+		colosseum?: Record<string, never>;
 		miscellania?: {
 			days: number;
 			approval?: number;
-			woodcutting?: number;
-			mining?: number;
-			fishing_raw?: number;
-			fishing_cooked?: number;
-			herbs?: number;
-			flax?: number;
-			hardwood_mahogany?: number;
-			hardwood_teak?: number;
-			hardwood_both?: number;
-			farm_seeds?: number;
+			ten_workers?: string;
+			five_workers?: string;
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -355,22 +303,29 @@ export const simulateCommand: OSBMahojiCommand = {
 			return received.join(' ');
 		}
 		if (options.miscellania) {
-			const alloc: any = {};
-			for (const key of [
-				'woodcutting',
-				'mining',
-				'fishing_raw',
-				'fishing_cooked',
-				'herbs',
-				'flax',
-				'hardwood_mahogany',
-				'hardwood_teak',
-				'hardwood_both',
-				'farm_seeds'
-			]) {
-				const val = (options.miscellania as any)[key];
-				if (val !== undefined) alloc[key.replace(/_(.)/g, (_, c) => c.toUpperCase())] = val;
-			}
+			const zeroAlloc = {
+				woodcutting: 0,
+				mining: 0,
+				fishingRaw: 0,
+				fishingCooked: 0,
+				herbs: 0,
+				flax: 0,
+				hardwoodMahogany: 0,
+				hardwoodTeak: 0,
+				hardwoodBoth: 0,
+				farmSeeds: 0
+			};
+			const toCamel = (str: string | undefined) =>
+				str?.replace(/_([a-z])/g, (_, c) => c.toUpperCase()) as keyof MiscWorkerAllocation | undefined;
+
+			const alloc: MiscWorkerAllocation = { ...zeroAlloc } as MiscWorkerAllocation;
+
+			const first = toCamel(options.miscellania.ten_workers);
+			if (first) alloc[first] += 10;
+
+			const second = toCamel(options.miscellania.five_workers);
+			if (second) alloc[second] += 5;
+
 			const loot = simulateCollection(options.miscellania.days, {
 				approval: options.miscellania.approval,
 				allocation: alloc

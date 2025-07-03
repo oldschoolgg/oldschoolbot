@@ -12,8 +12,8 @@ describe('Simulate Miscellania', async () => {
 			miscellania: {
 				days: 3,
 				approval: 80,
-				woodcutting: 5,
-				mining: 5
+				ten_workers: 'herbs',
+				five_workers: 'mining'
 			}
 		});
 		expect(result.files?.length).toBe(1);
