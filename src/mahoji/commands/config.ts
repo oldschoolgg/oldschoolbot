@@ -162,6 +162,10 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableTearsOfGuthixButton
 	},
 	{
+		name: 'Disable Miscellania Button',
+		bit: BitField.DisableMiscellaniaButton
+	},
+	{
 		name: 'Show Detailed Info',
 		bit: BitField.ShowDetailedInfo
 	},

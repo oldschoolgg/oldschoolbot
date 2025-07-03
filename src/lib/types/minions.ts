@@ -51,6 +51,7 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'ShootingStars'
 		| 'HalloweenEvent'
 		| 'StrongholdOfSecurity'
+		| 'Miscellania'
 		| 'CombatRing';
 }
 

@@ -33,6 +33,7 @@ const globalInteractionActions = [
 	'OPEN_ELITE_CASKET',
 	'OPEN_MASTER_CASKET',
 	'DO_BIRDHOUSE_RUN',
+	'MISCELLANIA_APPROVAL',
 	'CLAIM_DAILY',
 	'CHECK_PATCHES',
 	'AUTO_SLAY',
@@ -104,6 +105,14 @@ export function makeBirdHouseTripButton() {
 		.setLabel('Birdhouse Run')
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('692946556399124520');
+}
+
+export function makeMiscellaniaApprovalButton() {
+	return new ButtonBuilder()
+		.setCustomId('MISCELLANIA_APPROVAL')
+		.setLabel('Restore Approval')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('1067398228473038848');
 }
 
 export function makeAutoSlayButton() {
@@ -532,6 +541,14 @@ export async function interactionHook(interaction: Interaction) {
 				args: {
 					auto_farm: {}
 				},
+				bypassInhibitors: true,
+				...options
+			});
+		}
+		case 'MISCELLANIA_APPROVAL': {
+			return runCommand({
+				commandName: 'activities',
+				args: { miscellania: { subcommand: 'approval' } },
 				bypassInhibitors: true,
 				...options
 			});

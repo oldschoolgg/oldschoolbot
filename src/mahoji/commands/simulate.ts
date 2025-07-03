@@ -5,6 +5,7 @@ import { Bank, ChambersOfXeric, averageBank, toKMB } from 'oldschooljs';
 
 import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
 import pets from '../../lib/data/pets';
+import { type MiscWorkerAllocation, simulateCollection } from '../../lib/miscellania';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { assert } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -192,6 +193,65 @@ export const simulateCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'colosseum',
 			description: 'Simulate colosseum.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'miscellania',
+			description: 'Simulate collecting resources from Miscellania.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'days',
+					description: 'Number of days to simulate.',
+					required: true,
+					min_value: 1,
+					max_value: 100
+				},
+				{
+					type: ApplicationCommandOptionType.Number,
+					name: 'approval',
+					description: 'Starting approval percentage.',
+					required: false,
+					min_value: 0,
+					max_value: 100
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'ten_workers',
+					description: 'Task for your first 10 workers.',
+					required: false,
+					choices: [
+						{ name: 'Woodcutting', value: 'woodcutting' },
+						{ name: 'Mining', value: 'mining' },
+						{ name: 'Fishing (raw)', value: 'fishing_raw' },
+						{ name: 'Fishing (cooked)', value: 'fishing_cooked' },
+						{ name: 'Herbs', value: 'herbs' },
+						{ name: 'Flax', value: 'flax' },
+						{ name: 'Hardwood (mahogany)', value: 'hardwood_mahogany' },
+						{ name: 'Hardwood (teak)', value: 'hardwood_teak' },
+						{ name: 'Hardwood (both)', value: 'hardwood_both' },
+						{ name: 'Farming seeds', value: 'farm_seeds' }
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'five_workers',
+					description: 'Task for your remaining 5 workers (Royal Trouble).',
+					required: false,
+					choices: [
+						{ name: 'Woodcutting', value: 'woodcutting' },
+						{ name: 'Mining', value: 'mining' },
+						{ name: 'Fishing (raw)', value: 'fishing_raw' },
+						{ name: 'Fishing (cooked)', value: 'fishing_cooked' },
+						{ name: 'Herbs', value: 'herbs' },
+						{ name: 'Flax', value: 'flax' },
+						{ name: 'Hardwood (mahogany)', value: 'hardwood_mahogany' },
+						{ name: 'Hardwood (teak)', value: 'hardwood_teak' },
+						{ name: 'Hardwood (both)', value: 'hardwood_both' },
+						{ name: 'Farming seeds', value: 'farm_seeds' }
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -208,7 +268,13 @@ export const simulateCommand: OSBMahojiCommand = {
 		petroll?: {
 			quantity: number;
 		};
-		colosseum?: {};
+		colosseum?: Record<string, never>;
+		miscellania?: {
+			days: number;
+			approval?: number;
+			ten_workers?: string;
+			five_workers?: string;
+		};
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
@@ -235,6 +301,40 @@ export const simulateCommand: OSBMahojiCommand = {
 
 			if (received.length === 0) return "You didn't get any pets!";
 			return received.join(' ');
+		}
+		if (options.miscellania) {
+			const zeroAlloc = {
+				woodcutting: 0,
+				mining: 0,
+				fishingRaw: 0,
+				fishingCooked: 0,
+				herbs: 0,
+				flax: 0,
+				hardwoodMahogany: 0,
+				hardwoodTeak: 0,
+				hardwoodBoth: 0,
+				farmSeeds: 0
+			};
+			const toCamel = (str: string | undefined) =>
+				str?.replace(/_([a-z])/g, (_, c) => c.toUpperCase()) as keyof MiscWorkerAllocation | undefined;
+
+			const alloc: MiscWorkerAllocation = { ...zeroAlloc } as MiscWorkerAllocation;
+
+			const first = toCamel(options.miscellania.ten_workers);
+			if (first) alloc[first] += 10;
+
+			const second = toCamel(options.miscellania.five_workers);
+			if (second) alloc[second] += 5;
+
+			const loot = simulateCollection(options.miscellania.days, {
+				approval: options.miscellania.approval,
+				allocation: alloc
+			});
+			const image = await makeBankImage({
+				bank: loot,
+				title: `Loot from ${options.miscellania.days} days of Miscellania`
+			});
+			return { files: [image.file] };
 		}
 		return 'Invalid command.';
 	}

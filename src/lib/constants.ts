@@ -152,7 +152,8 @@ export enum BitField {
 	DisableOpenableNames = 41,
 	ShowDetailedInfo = 42,
 	DisableTearsOfGuthixButton = 43,
-	DisableDailyButton = 44
+	DisableDailyButton = 44,
+	DisableMiscellaniaButton = 45
 }
 
 interface BitFieldData {
@@ -253,6 +254,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.ShowDetailedInfo]: {
 		name: 'Show Detailed Info',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableMiscellaniaButton]: {
+		name: 'Disable Miscellania Button',
 		protected: false,
 		userConfigurable: true
 	},

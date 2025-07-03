@@ -42,6 +42,7 @@ import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { userEventToStr } from '../../lib/util/userEvents';
 import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
+import { fetchMiscellaniaData, updateMiscellaniaData } from '../lib/abstracted_commands/miscellaniaCommand';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
@@ -590,6 +591,36 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					name: 'events',
 					description: 'See events',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'miscellania',
+					description: 'Modify your Miscellania state.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'days_ago',
+							description: 'Set last collected this many days ago.',
+							required: false,
+							min_value: 0,
+							max_value: 365
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'coffer',
+							description: 'Set GP in your coffer.',
+							required: false,
+							min_value: 0
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'approval',
+							description: 'Set your approval percent.',
+							required: false,
+							min_value: 0,
+							max_value: 100
+						}
+					]
 				}
 			],
 			run: async ({
@@ -612,6 +643,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				bingo_tools?: { start_bingo: string };
 				setslayertask?: { master: string; monster: string; quantity: number };
 				events?: {};
+				miscellania?: { days_ago?: number; coffer?: number; approval?: number };
 			}>) => {
 				if (globalConfig.isProduction) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -982,6 +1014,20 @@ ${droprates.join('\n')}`),
 					});
 
 					return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
+				}
+				if (options.miscellania) {
+					const state = await fetchMiscellaniaData(user);
+					if (typeof options.miscellania.coffer === 'number') {
+						state.coffer = options.miscellania.coffer;
+					}
+					if (typeof options.miscellania.approval === 'number') {
+						state.approval = options.miscellania.approval;
+					}
+					if (typeof options.miscellania.days_ago === 'number') {
+						state.lastCollect = Date.now() - options.miscellania.days_ago * Time.Day;
+					}
+					await updateMiscellaniaData(user, state);
+					return `Updated Miscellania: ${state.approval.toFixed(1)}% approval, ${state.coffer.toLocaleString()} GP coffer.`;
 				}
 
 				return 'Nothin!';

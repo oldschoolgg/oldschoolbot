@@ -1,0 +1,24 @@
+---
+title: "Miscellania"
+---
+
+The Kingdom of Miscellania lets your minion gather resources each day in exchange for GP. Your workers take a small portion of coins from your coffer daily and convert it into various resources depending on how they are assigned.
+
+## Managing your kingdom
+
+- Deposit GP with `[/activities miscellania deposit amount:]`. Keeping more coins in the coffer improves worker efficiency. Without completing **Royal Trouble** your coffer is limited to 5,000,000 GP. Meeting its requirements increases the cap to 7,500,000 GP.
+- Check your current **approval**, **coffer balance** and how many days have passed since you last collected using `[/activities miscellania status]`.
+- Send your minion to regain approval with `[/activities miscellania approval]` if it has dropped below 100%. Higher approval results in better resource yields.
+- Gather the resources your kingdom has produced with `[/activities miscellania collect]`. You will only receive loot for full days that have passed since your last collection.
+- Assign workers to different tasks with `[/activities miscellania allocate]` to customise your daily resource mix.
+
+## What do you get?
+
+Every day a small amount of GP is withdrawn (5 GP plus 10% of your remaining coffer, up to 50k or 75k depending on whether Royal Trouble is complete). This determines your worker effectiveness. By default you have ten workers split evenly between **woodcutting** and **mining**. They can also gather fish, herbs, seeds, flax and hardwood. The resources you receive scale with your approval and the GP spent.
+
+You can preview potential loot using the simulation command. By default it assumes full approval and the
+standard worker split, but you can customise these. For example:
+`[/simulate miscellania days:7 approval:80 ten_workers:herbs five_workers:mining]`
+would show a week of loot with 80% approval, assigning ten workers to herbs and five to mining.
+
+Make sure to top up your coffer and maintain your approval to keep your kingdom running efficiently!

@@ -1,6 +1,7 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
+import type { MiscWorkerAllocation } from '@/lib/miscellania';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
 import { quests } from '../../lib/minions/data/quests';
@@ -25,6 +26,13 @@ import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
 import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import {
+	miscellaniaAllocateCommand,
+	miscellaniaApprovalCommand,
+	miscellaniaCollectCommand,
+	miscellaniaDepositCommand,
+	miscellaniaStatusCommand
+} from '../lib/abstracted_commands/miscellaniaCommand';
 import { myNotesCommand } from '../lib/abstracted_commands/myNotesCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
@@ -290,6 +298,128 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'miscellania',
+			description: 'Manage your kingdom of Miscellania.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'deposit',
+					description: 'Update your Miscellania settings.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'amount',
+							description: 'Amount of GP to deposit in your coffer',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'status',
+					description: 'View your Miscellania status.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'collect',
+					description: 'Collect your resources.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'approval',
+					description: 'Enable maintaining approval each day.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'allocate',
+					description: 'Assign your Miscellania workers.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'woodcutting',
+							description: 'Woodcutting workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'mining',
+							description: 'Mining workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'fishing_raw',
+							description: 'Raw fishing workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'fishing_cooked',
+							description: 'Cooked fishing workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'herbs',
+							description: 'Herb workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'flax',
+							description: 'Flax workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'hardwood_mahogany',
+							description: 'Mahogany workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'hardwood_teak',
+							description: 'Teak workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'hardwood_both',
+							description: 'Both hardwoods',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'farm_seeds',
+							description: 'Farming seed workers',
+							required: false,
+							min_value: 0,
+							max_value: 15
+						}
+					]
+				}
+			]
+		},
+		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'aerial_fishing',
 			description: 'The Aerial Fishing activity.'
@@ -520,6 +650,24 @@ export const activitiesCommand: OSBMahojiCommand = {
 		fight_caves?: {};
 		inferno?: { action: string };
 		birdhouses?: { action?: string; birdhouse?: string };
+		miscellania?: {
+			deposit?: { amount?: number };
+			status?: Record<string, never>;
+			collect?: Record<string, never>;
+			approval?: Record<string, never>;
+			allocate?: {
+				woodcutting?: number;
+				mining?: number;
+				fishing_raw?: number;
+				fishing_cooked?: number;
+				herbs?: number;
+				flax?: number;
+				hardwood_mahogany?: number;
+				hardwood_teak?: number;
+				hardwood_both?: number;
+				farm_seeds?: number;
+			};
+		};
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
@@ -546,6 +694,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand(user);
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
+		if (options.miscellania?.status) return miscellaniaStatusCommand(user);
 
 		// Minion must be free
 		const isBusy = user.minionIsBusy;
@@ -557,6 +706,44 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.birdhouses?.action === 'harvest') {
 			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
+		}
+		if (options.miscellania) {
+			if (options.miscellania.deposit) {
+				const amt = options.miscellania.deposit.amount ?? 0;
+				if (amt <= 0) return 'Please specify a valid deposit amount.';
+				return miscellaniaDepositCommand(user, amt);
+			}
+			if (options.miscellania.collect) {
+				return miscellaniaCollectCommand(user);
+			}
+			if (options.miscellania.approval) {
+				return miscellaniaApprovalCommand(user, channelID);
+			}
+			if (options.miscellania.allocate) {
+				const keyMap: Record<string, keyof MiscWorkerAllocation> = {
+					woodcutting: 'woodcutting',
+					mining: 'mining',
+					fishing_raw: 'fishingRaw',
+					fishing_cooked: 'fishingCooked',
+					herbs: 'herbs',
+					flax: 'flax',
+					hardwood_mahogany: 'hardwoodMahogany',
+					hardwood_teak: 'hardwoodTeak',
+					hardwood_both: 'hardwoodBoth',
+					farm_seeds: 'farmSeeds'
+				};
+
+				const alloc: Partial<Record<keyof MiscWorkerAllocation, number>> = {};
+
+				for (const [optionKey, allocKey] of Object.entries(keyMap)) {
+					const val = (options.miscellania.allocate as Record<string, number>)[optionKey];
+					if (val !== undefined) {
+						alloc[allocKey] = val;
+					}
+				}
+
+				return miscellaniaAllocateCommand(user, alloc);
+			}
 		}
 		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
 		if (options.plank_make?.action === 'sawmill') {
