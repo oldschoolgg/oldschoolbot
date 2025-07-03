@@ -21,15 +21,13 @@ import { globalConfig } from '../../lib/constants';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
+import { herbloreItems } from '../../lib/data/filterables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import potions from '../../lib/minions/data/potions';
 import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
-
-import { herbloreItems } from '../../lib/data/filterables';
-
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
