@@ -32,12 +32,21 @@ function hasRoyalTrouble(user: MUser): boolean {
 }
 
 export async function miscellaniaDepositCommand(user: MUser, amount: number) {
-	const state = await fetchMiscellaniaData(user);
-	const maxCoffer = hasRoyalTrouble(user) ? 7_500_000 : 5_000_000;
-	const deposit = Math.max(0, amount);
-	state.coffer = Math.min(state.coffer + deposit, maxCoffer);
-	await updateMiscellaniaData(user, state);
-	return `Deposited ${deposit.toLocaleString()} GP into your coffer. New balance: ${state.coffer.toLocaleString()} GP.`;
+       const state = await fetchMiscellaniaData(user);
+       const maxCoffer = hasRoyalTrouble(user) ? 7_500_000 : 5_000_000;
+       const deposit = Math.max(0, Math.min(amount, maxCoffer - state.coffer));
+       if (deposit === 0) {
+               return `Your coffer is already at the maximum of ${maxCoffer.toLocaleString()} GP.`;
+       }
+
+       if (user.GP < deposit) {
+               return "You don't have enough GP to deposit that amount.";
+       }
+
+       await user.transactItems({ itemsToRemove: new Bank().add('Coins', deposit) });
+       state.coffer += deposit;
+       await updateMiscellaniaData(user, state);
+       return `Deposited ${deposit.toLocaleString()} GP into your coffer. New balance: ${state.coffer.toLocaleString()} GP.`;
 }
 
 export async function miscellaniaStatusCommand(user: MUser) {
