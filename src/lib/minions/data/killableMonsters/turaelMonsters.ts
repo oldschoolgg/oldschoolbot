@@ -1253,7 +1253,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		qpRequired: 20,
-		questRequired: [QuestID.TheCurseOfArrav],
+		requiredQuests: [QuestID.TheCurseOfArrav],
 		canBarrage: true,
 		canChinning: true,
 		healAmountNeeded: 20,
