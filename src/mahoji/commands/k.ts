@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'disc
 import { Time, reduceNumByPercent } from 'e';
 import { EMonster } from 'oldschooljs';
 
-import { quests } from '@/lib/minions/data/quests';
 import { Eatables } from '../../lib/data/eatables';
 import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../lib/minions/functions';
