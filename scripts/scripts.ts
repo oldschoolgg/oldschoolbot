@@ -4,6 +4,7 @@ import { execSync } from 'node:child_process';
 
 import { sonicBoom } from '@/lib/util/logger';
 import { renderBsoItemsFile } from './bsoData';
+import { generateBsoEnum } from './bsoEnum';
 import { renderCreatablesFile } from './creatables';
 import { createMonstersJson } from './monstersJson.js';
 import { renderCommandsFile } from './renderCommandsFile';
@@ -14,6 +15,7 @@ function scriptsMain() {
 	renderCommandsFile();
 
 	renderBsoItemsFile();
+	generateBsoEnum();
 
 	TimerManager.destroy();
 	sonicBoom.destroy();

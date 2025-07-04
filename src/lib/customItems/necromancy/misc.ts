@@ -85,3 +85,16 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	74_058,
+	'Book of death',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);

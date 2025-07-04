@@ -1,6 +1,6 @@
 {
-	"hash": "a77ac538ffb35699e382d6c06413fb0e",
-	"date": "2025-07-01T02:28:48.185Z",
+	"hash": "756f229547851d27ccc340c4ab11272d",
+	"date": "2025-07-04T10:13:15.366Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -9826,6 +9826,20 @@
 			"required_slayer_unlocks": []
 		},
 		{
+			"name": "Pristine starlight amulet",
+			"items_created": {
+				"Pristine starlight amulet": 1
+			},
+			"items_required": {
+				"Lunite": 100,
+				"Moonlight essence": 1,
+				"Platinum amulet": 1
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
 			"name": "Proselyte harness f",
 			"items_created": {
 				"Proselyte harness f": 1
@@ -16601,6 +16615,85 @@
 			"required_slayer_unlocks": []
 		},
 		{
+			"name": "Soul collector (t1)",
+			"items_created": {
+				"Soul collector (t1)": 1
+			},
+			"items_required": {
+				"Blood rune": 100000,
+				"Death rune": 100000,
+				"Soul rune": 100000,
+				"Tormented skull": 1
+			},
+			"required_stats": {
+				"invention": 90,
+				"crafting": 90,
+				"runecraft": 90
+			},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
+			"name": "Soul collector (t2)",
+			"items_created": {
+				"Soul collector (t2)": 1
+			},
+			"items_required": {
+				"Blood rune": 250000,
+				"Death rune": 100000,
+				"Soul collector (t1)": 1,
+				"Soul rune": 250000
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
+			"name": "Soul collector (t3)",
+			"items_created": {
+				"Soul collector (t3)": 1
+			},
+			"items_required": {
+				"Blood rune": 500000,
+				"Death rune": 500000,
+				"Soul collector (t2)": 1,
+				"Soul rune": 500000
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
+			"name": "Soul collector (t4)",
+			"items_created": {
+				"Soul collector (t4)": 1
+			},
+			"items_required": {
+				"Blood rune": 750000,
+				"Death rune": 750000,
+				"Soul collector (t3)": 1,
+				"Soul rune": 750000
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
+			"name": "Soul collector (t5)",
+			"items_created": {
+				"Soul collector (t5)": 1
+			},
+			"items_required": {
+				"Blood rune": 1000000,
+				"Death rune": 1000000,
+				"Soul collector (t4)": 1,
+				"Soul rune": 1000000
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
 			"name": "Soulreaper axe",
 			"items_created": {
 				"Soulreaper axe": 1
@@ -16744,6 +16837,19 @@
 			"items_required": {
 				"Guthixian icon": 1,
 				"Staff of the dead": 1
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
+			"name": "Starlight amulet",
+			"items_created": {
+				"Starlight amulet": 1
+			},
+			"items_required": {
+				"Lunite": 10,
+				"Platinum amulet": 1
 			},
 			"required_stats": {},
 			"qp_required": 0,
