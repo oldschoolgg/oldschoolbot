@@ -12,7 +12,6 @@ import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BOT_TYPE } from '../../lib/constants';
-
 import type { ItemBank } from '../../lib/types';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';

@@ -7,7 +7,7 @@ import { Bank, Items, convertBankToPerHourStats } from 'oldschooljs';
 import '../src/lib/safeglobals';
 
 import { omit } from 'remeda';
-import { type BitField, PVM_METHODS } from '../src/lib/constants';
+import type { BitField } from '../src/lib/constants';
 import { degradeableItems } from '../src/lib/degradeableItems';
 import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
@@ -21,6 +21,7 @@ import { GearBank } from '../src/lib/structures/GearBank';
 import { KCBank } from '../src/lib/structures/KCBank';
 import { MUserStats } from '../src/lib/structures/MUserStats';
 import { resolveItems, toKMB } from '../src/lib/util';
+import { PVM_METHODS } from '../src/mahoji/commands/k';
 import {
 	type MinionKillReturn,
 	newMinionKillCommand

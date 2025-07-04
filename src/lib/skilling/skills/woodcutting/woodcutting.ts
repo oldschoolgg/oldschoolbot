@@ -1,7 +1,6 @@
-import { LootTable } from 'oldschooljs';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { LootTable, itemID } from 'oldschooljs';
 
-import { Emoji } from '../../../constants';
-import itemID from '../../../util/itemID';
 import type { Log } from '../../types';
 import { SkillsEnum } from '../../types';
 
@@ -219,6 +218,9 @@ const logs: Log[] = [
 	}
 ];
 
+const twitchersGloves = ['egg', 'ring', 'seed', 'clue'] as const;
+export type TwitcherGloves = (typeof twitchersGloves)[number];
+
 const lumberjackItems: { [key: number]: number } = {
 	[itemID('Lumberjack hat')]: 0.4,
 	[itemID('Lumberjack top')]: 0.8,
@@ -232,7 +234,8 @@ const Woodcutting = {
 	id: SkillsEnum.Woodcutting,
 	emoji: Emoji.Woodcutting,
 	name: 'Woodcutting',
-	lumberjackItems
+	lumberjackItems,
+	twitchersGloves
 };
 
 export default Woodcutting;

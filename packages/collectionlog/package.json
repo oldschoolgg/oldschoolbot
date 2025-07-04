@@ -8,7 +8,7 @@
 		}
 	},
 	"scripts": {
-		"dev": "concurrently \"pnpm build:esbuild\" \"pnpm build:esbuild\"",
+		"build": "concurrently \"pnpm build:types\" \"pnpm build:esbuild\"",
 		"build:esbuild": "tsx esbuild.ts",
 		"build:types": "tsc -p src"
 	},

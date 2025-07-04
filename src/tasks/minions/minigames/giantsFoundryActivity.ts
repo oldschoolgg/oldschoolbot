@@ -1,3 +1,4 @@
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { deepClone } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +8,6 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';

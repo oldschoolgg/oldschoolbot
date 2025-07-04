@@ -1,12 +1,12 @@
+import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items, itemID } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';
 import { pickaxes, varrockArmours } from '../../../lib/skilling/functions/miningBoosts';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GuardiansOfTheRiftActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -48,7 +48,7 @@ export async function guardiansOfTheRiftStartCommand(
 	// Default bronze pickaxe, last in the array
 	let currentPickaxe = pickaxes[pickaxes.length - 1];
 	boosts.push(
-		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(
+		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(
 			currentPickaxe.id
 		)} while mining fragments`
 	);
@@ -59,7 +59,7 @@ export async function guardiansOfTheRiftStartCommand(
 		currentPickaxe = pickaxe;
 		boosts.pop();
 		boosts.push(
-			`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(
+			`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(
 				pickaxe.id
 			)} while mining fragments`
 		);
@@ -71,7 +71,9 @@ export async function guardiansOfTheRiftStartCommand(
 	for (const armour of varrockArmours) {
 		if (!user.hasEquippedOrInBank(armour.id)) continue;
 		armourEffect = 10;
-		boosts.push(`**${armourEffect}%** chance to mine an extra essence/fragment using ${itemNameFromID(armour.id)}`);
+		boosts.push(
+			`**${armourEffect}%** chance to mine an extra essence/fragment using ${Items.itemNameFromId(armour.id)}`
+		);
 		minedFragments *= 1.1;
 		break;
 	}

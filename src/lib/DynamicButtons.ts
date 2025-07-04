@@ -1,19 +1,20 @@
-import type {
-	BaseMessageOptions,
-	ButtonInteraction,
-	DMChannel,
-	Message,
-	MessageComponentInteraction,
-	NewsChannel,
-	TextChannel,
-	ThreadChannel
+import { awaitMessageComponentInteraction, makeComponents } from '@oldschoolgg/toolkit/util';
+import {
+	type BaseMessageOptions,
+	ButtonBuilder,
+	type ButtonInteraction,
+	ButtonStyle,
+	type DMChannel,
+	type Message,
+	type MessageComponentInteraction,
+	type NewsChannel,
+	type TextChannel,
+	type ThreadChannel
 } from 'discord.js';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, isFunction, noOp } from 'e';
 import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists';
-import { awaitMessageComponentInteraction, makeComponents } from './util';
 import { silentButtonAck } from './util/handleMahojiConfirmation';
 import { minionIsBusy } from './util/minionIsBusy';
 

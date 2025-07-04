@@ -1,10 +1,8 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { Events } from '@oldschoolgg/toolkit/constants';
+import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { calcPercentOfNum, calcWhatPercent } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
@@ -15,7 +13,6 @@ import type { InfernoOptions } from '../../../lib/types/minions';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const infernoTask: MinionTask = {

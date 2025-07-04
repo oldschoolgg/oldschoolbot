@@ -1,8 +1,9 @@
-import { Time, deepClone, percentChance } from 'e';
-import type { MonsterKillOptions } from 'oldschooljs';
-import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { calcPerHour } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Time, deepClone, percentChance, roll } from 'e';
+import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
-import { type BitField, Emoji } from '../../lib/constants';
+import type { BitField } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -16,12 +17,12 @@ import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { calcPerHour, calculateSimpleMonsterDeathChance, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { calculateSimpleMonsterDeathChance } from '../../lib/util/smallUtils';
 
 function handleSlayerTaskCompletion({
 	slayerContext,

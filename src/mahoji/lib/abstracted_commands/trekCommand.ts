@@ -1,20 +1,21 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { GearStat } from 'oldschooljs/gear';
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { GearStat } from '../../../lib/gear/types';
 import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
 import type { AddXpParams, GearRequirement } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { percentChance, readableStatName, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { percentChance } from '../../../lib/util/rng';
+import { readableStatName } from '../../../lib/util/smallUtils';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {

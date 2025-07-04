@@ -1,10 +1,10 @@
 import type { StoreBitfield } from '@oldschoolgg/toolkit/util';
-import type { XpGainSource } from '@prisma/client';
+import type { GearSetupType, XpGainSource } from '@prisma/client';
 import type { Bank, Item, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
+import type { GearStat, OffenceGearStat } from 'oldschooljs/gear';
 
 import type { ClueTier } from '../clues/clueTiers';
 import type { BitField, PerkTier } from '../constants';
-import type { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
 import type { LevelRequirements, SkillsEnum } from '../skilling/types';

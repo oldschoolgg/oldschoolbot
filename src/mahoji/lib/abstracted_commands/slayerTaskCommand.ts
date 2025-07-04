@@ -1,12 +1,10 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { awaitMessageComponentInteraction, channelIsSendable, stringMatches } from '@oldschoolgg/toolkit/util';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Time, notEmpty, randInt, removeFromArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import killableMonsters from '../../../lib/minions/data/killableMonsters';
-
 import { InteractionID } from '../../../lib/InteractionID';
+import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
@@ -18,7 +16,6 @@ import {
 	userCanUseMaster
 } from '../../../lib/slayer/slayerUtil';
 import type { AssignableSlayerTask } from '../../../lib/slayer/types';
-import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';

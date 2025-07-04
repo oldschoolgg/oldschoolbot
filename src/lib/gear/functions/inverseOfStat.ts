@@ -1,5 +1,4 @@
-import type { DefenceGearStat, OffenceGearStat } from '../types';
-import { GearStat } from '../types';
+import { type DefenceGearStat, GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
 const offenceMap: { [key in OffenceGearStat]: DefenceGearStat } = {
 	[GearStat.AttackSlash]: GearStat.DefenceSlash,

@@ -1,11 +1,17 @@
-import type { BaseMessageOptions, ButtonInteraction, CacheType, ChatInputCommandInteraction } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit';
+import {
+	ActionRowBuilder,
+	type BaseMessageOptions,
+	ButtonBuilder,
+	type ButtonInteraction,
+	ButtonStyle,
+	type CacheType,
+	type ChatInputCommandInteraction
+} from 'discord.js';
 import { Time, chunk, noOp, roll, shuffleArr } from 'e';
-import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { SILENT_ERROR } from '../../../lib/constants';
-import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation, silentButtonAck } from '../../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';

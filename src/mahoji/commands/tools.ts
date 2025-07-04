@@ -1,26 +1,13 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, type CommandRunOptions, asyncGzip } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
-import { ChannelType, EmbedBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
+import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
+import { Bank, type Item, type ItemBank, ItemGroups, ToBUniqueTable, resolveItems } from 'oldschooljs';
 
-import { PerkTier, asyncGzip } from '@oldschoolgg/toolkit/util';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField } from '../../lib/constants';
+import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import {
-	anglerOutfit,
-	evilChickenOutfit,
-	gnomeRestaurantCL,
-	guardiansOfTheRiftCL,
-	shadesOfMorttonCL,
-	toaCL
-} from '../../lib/data/CollectionsExport';
+import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { type UnifiedOpenable, allOpenables } from '../../lib/openables';
@@ -318,7 +305,7 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 	{
 		name: 'Fishing Trawler',
 		key: 'fishing_trawler',
-		items: anglerOutfit
+		items: ItemGroups.anglerOutfit
 	},
 	{
 		name: 'Gnome Restaurant',
@@ -343,7 +330,7 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 	{
 		name: 'Tombs of Amascut',
 		key: 'tombs_of_amascut',
-		items: toaCL
+		items: ItemGroups.toaCL
 	},
 	{
 		name: 'Shades of Morton',
@@ -479,7 +466,7 @@ LIMIT 10;`);
 	},
 	{
 		name: 'Evil Chicken Outfit',
-		items: evilChickenOutfit,
+		items: ItemGroups.evilChickenOutfit,
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
             SELECT *

@@ -1,10 +1,20 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import {
+	Bank,
+	ChambersOfXeric,
+	Clues,
+	EItem,
+	EMonster,
+	type Item,
+	ItemGroups,
+	type Monster,
+	Monsters,
+	resolveItems
+} from 'oldschooljs';
+
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
-import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
 import { sepulchreFloors } from '../minions/data/sepulchre';
 import {
@@ -119,7 +129,6 @@ import {
 	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
-	toaCL,
 	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
@@ -439,7 +448,7 @@ export const allCollectionLogs: ICollection = {
 					...resolveItems(['Clue scroll (elite)'])
 				],
 				items: NexCL,
-				fmtProg: ({ stats }) => `${stats.kcBank[NEX_ID] ?? 0} KC`
+				fmtProg: ({ stats }) => `${stats.kcBank[EMonster.NEX] ?? 0} KC`
 			},
 			'The Nightmare': {
 				alias: [...NightmareMonster.aliases, 'phosani'],
@@ -450,7 +459,7 @@ export const allCollectionLogs: ICollection = {
 				items: theNightmareCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[NightmareMonster.id] ?? 0} KC`,
-					`${stats.kcBank[PHOSANI_NIGHTMARE_ID] ?? 0} Phosani KC`
+					`${stats.kcBank[EMonster.PHOSANI_NIGHTMARE] ?? 0} Phosani KC`
 				]
 			},
 			Obor: {
@@ -540,7 +549,7 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[ZALCANO_ID] ?? 0} KC` },
+			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
 				allItems: Monsters.Zulrah.allItems,
@@ -586,7 +595,7 @@ export const allCollectionLogs: ICollection = {
 					Normal: async (_, __, stats) => stats.getToaKCs().normalKC,
 					Expert: async (_, __, stats) => stats.getToaKCs().expertKC
 				},
-				items: toaCL,
+				items: ItemGroups.toaCL,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tombs_of_amascut} KC`];
@@ -1273,7 +1282,7 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 				} else {
 					items = [...new Set(attributes.items)];
 				}
-				if (removeCoins && items.includes(995)) items.splice(items.indexOf(995), 1);
+				if (removeCoins && items.includes(EItem.COINS)) items.splice(items.indexOf(EItem.COINS), 1);
 				const [totalCl, userAmount] = getUserClData(userBank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
@@ -1362,7 +1371,7 @@ export function getCollectionItems(
 			_items = uniqueArr(Monsters.get(_monster?.id)!.allItems);
 		}
 	}
-	if (removeCoins && _items.includes(995)) _items = removeFromArr(_items, 995);
+	if (removeCoins && _items.includes(EItem.COINS)) _items = removeFromArr(_items, EItem.COINS);
 	return returnValue(_clName, _items);
 }
 

@@ -1,6 +1,6 @@
 import { Time } from 'e';
+import { itemID } from 'oldschooljs';
 
-import itemID from '../../../../util/itemID';
 import type { SmithedItem } from '../../../types';
 
 const Rune: SmithedItem[] = [

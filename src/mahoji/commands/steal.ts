@@ -1,10 +1,8 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { quests } from '../../lib/minions/data/quests';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';

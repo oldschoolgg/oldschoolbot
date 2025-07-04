@@ -1,21 +1,18 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { type CommandResponse, formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, type ItemBank, Items, Monsters, itemID } from 'oldschooljs';
 
 import type { ProjectileType } from '../../../lib/constants';
-import { BitField, Emoji, projectiles } from '../../../lib/constants';
+import { BitField, projectiles } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import type { BlowpipeData } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import type { Skills } from '../../../lib/types';
 import type { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -158,7 +155,7 @@ async function infernoRun({
 		ranged: 92,
 		prayer: 77
 	};
-	const [hasReqs] = hasSkillReqs(user, skillReqs);
+	const hasReqs = user.hasSkillReqs(skillReqs);
 	if (!hasReqs) {
 		return `You not meet skill requirements, you need ${Object.entries(skillReqs)
 			.map(([name, lvl]) => `${lvl} ${name}`)
@@ -172,7 +169,7 @@ async function infernoRun({
 	 */
 	const itemRequirements = getSimilarItems(itemID('Rune pouch'));
 	if (itemRequirements.every(item => !user.owns(item))) {
-		return `To do the Inferno, you need one of these items: ${itemRequirements.map(itemNameFromID).join(', ')}.`;
+		return `To do the Inferno, you need one of these items: ${itemRequirements.map(i => Items.itemNameFromId(i)).join(', ')}.`;
 	}
 
 	/**
@@ -331,7 +328,7 @@ async function infernoRun({
 		return `You're using incorrect projectiles, you're using a ${
 			rangeGear.equippedWeapon()?.name
 		}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
-			.map(itemNameFromID)
+			.map(i => Items.itemNameFromId(i))
 			.join(', ')}.`;
 	}
 

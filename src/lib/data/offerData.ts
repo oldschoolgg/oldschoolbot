@@ -1,7 +1,4 @@
-import { LootTable } from 'oldschooljs';
-
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import itemID from '../util/itemID';
+import { LootTable, itemID, resolveItems } from 'oldschooljs';
 
 interface Offerable {
 	name: string;

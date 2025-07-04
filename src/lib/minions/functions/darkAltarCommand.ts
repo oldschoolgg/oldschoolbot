@@ -1,3 +1,4 @@
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -5,11 +6,11 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
 import type { DarkAltarOptions } from '../../types/minions';
-import { formatDuration, hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import getOSItem from '../../util/getOSItem';
+import getOSItem from '../../util/getOSItem'
 import { updateBankSetting } from '../../util/updateBankSetting';
+import { hasSkillReqs } from '../../util/smallUtils'
 
 export const darkAltarRunes = {
 	soul: {

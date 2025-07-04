@@ -1,9 +1,7 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { Monsters, deepResolveItems, itemID } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { deepResolveItems } from 'oldschooljs/dist/util/util';
-import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import type { KillableMonster } from '../../types';
 

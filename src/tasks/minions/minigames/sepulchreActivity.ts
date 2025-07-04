@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallowedCoffin';
+import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
@@ -7,9 +6,9 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { roll } from '../../../lib/util/rng';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
