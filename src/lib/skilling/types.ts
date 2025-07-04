@@ -31,7 +31,8 @@ export enum SkillsEnum {
 	Dungeoneering = 'dungeoneering',
 	Slayer = 'slayer',
 	Invention = 'invention',
-	Divination = 'divination'
+	Divination = 'divination',
+	Necromancy = 'necromancy'
 }
 
 export const SkillsArray = [
@@ -60,7 +61,8 @@ export const SkillsArray = [
 	'dungeoneering',
 	'slayer',
 	'invention',
-	'divination'
+	'divination',
+	'necromancy'
 ] as const;
 
 export type SkillNameType = (typeof SkillsArray)[number];
