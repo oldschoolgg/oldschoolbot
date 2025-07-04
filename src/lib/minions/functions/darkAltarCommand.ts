@@ -1,7 +1,6 @@
 import { formatDuration } from '@oldschoolgg/toolkit';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
