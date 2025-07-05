@@ -15,7 +15,7 @@
 		"============SCRIPTS": "============",
 		"spritesheet": "tsx --tsconfig scripts/tsconfig.json ./scripts/spritesheet.ts && pnpm lint",
 		"data": "tsx --tsconfig scripts/tsconfig.json ./scripts/monster_table.ts && pnpm lint",
-		"wiki": "tsx --tsconfig scripts/tsconfig.json ./scripts/wiki.ts",
+		"wiki": "tsx --tsconfig scripts/tsconfig.json ./scripts/wiki.ts && pnpm lint",
 		"generate:robochimp": "prisma generate --no-hints --schema prisma/robochimp.prisma",
 		"bso-data": "git fetch origin bso:bso && git checkout bso -- ./data/bso/",
 		"============BUILDING": "============",
