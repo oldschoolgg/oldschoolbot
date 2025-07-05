@@ -15,7 +15,6 @@ import type { GearBank } from '../../lib/structures/GearBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { minionName } from '../../lib/util/minionUtils';
 import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -215,7 +214,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		if (user.skillsAsLevels.mining < ore.level) {
-			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
+			return `${user.minionName} needs ${ore.level} Mining to mine ${ore.name}.`;
 		}
 
 		// Check for daeyalt shard requirements.
@@ -259,7 +258,7 @@ export const mineCommand: OSBMahojiCommand = {
 			type: 'Mining'
 		});
 
-		let response = `${minionName(user)} is now mining ${ore.name} until your minion ${
+		let response = `${user.minionName} is now mining ${ore.name} until your minion ${
 			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity

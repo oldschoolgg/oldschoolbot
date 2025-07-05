@@ -5,7 +5,9 @@ const entryPoints = [
 	'src/structures.ts',
 	'src/constants.ts',
 	'src/testBotWebsocket.ts',
-	'src/util/datetime.ts'
+	'src/util/datetime.ts',
+	'src/string-util.ts',
+	'src/discord-util.ts'
 ];
 
 const baseConfig = {

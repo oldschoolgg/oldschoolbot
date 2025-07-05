@@ -1,3 +1,4 @@
+import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
@@ -9,7 +10,6 @@ import { calculateMonsterFood } from '../../lib/minions/functions';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import findMonster from '../../lib/util/findMonster';
-import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -178,7 +178,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	}
 };
 
-export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
+async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
 	const otherMon = otherMonsters.find(m => m.name === name || m.aliases.includes(name));
 	if (otherMon) {
 		return `View information, item costs, boosts and requirements for ${otherMon.name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;

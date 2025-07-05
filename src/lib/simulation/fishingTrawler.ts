@@ -1,4 +1,4 @@
-import { randomVariation } from '@oldschoolgg/toolkit';
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, LootTable, itemID, resolveItems } from 'oldschooljs';
 
 import { roll } from '../util/rng';

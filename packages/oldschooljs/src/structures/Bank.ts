@@ -336,7 +336,7 @@ export default class Bank {
 
 	toNamedBank(): Record<string, number> {
 		const namedBank: Record<string, number> = {};
-		for (const [item, quantity] of this.items()) {
+		for (const [item, quantity] of this.items().sort((a, b) => a[0].name.localeCompare(b[0].name))) {
 			namedBank[item.name] = quantity;
 		}
 		return namedBank;

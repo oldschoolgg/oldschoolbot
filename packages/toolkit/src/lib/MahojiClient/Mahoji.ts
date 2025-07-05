@@ -14,7 +14,7 @@ import {
 	type Snowflake,
 	type User
 } from 'discord.js';
-import type { CommandOption, CommandOptions, CommandRunOptions } from './mahojiTypes';
+import type { CommandOption, CommandOptions, CommandResponse, CommandRunOptions } from './mahojiTypes';
 
 export function convertCommandOptionToAPIOption(option: CommandOption): any {
 	switch (option.type) {
@@ -193,8 +193,6 @@ export async function handleAutocomplete(
 	}
 	return [];
 }
-
-export type CommandResponse = Promise<null | string | InteractionReplyOptions>;
 
 export type ICommand = Readonly<{
 	name: string;

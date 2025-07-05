@@ -1,4 +1,6 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank, itemID } from 'oldschooljs';

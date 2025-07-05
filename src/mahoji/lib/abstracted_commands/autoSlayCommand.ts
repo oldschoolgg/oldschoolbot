@@ -2,7 +2,7 @@ import { type CommandOptions, isGuildChannel, stringMatches } from '@oldschoolgg
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import { hasSkillReqs } from '@/lib/util';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { AutoslayOptionsEnum, autoslayModes } from '../../../lib/slayer/constants';

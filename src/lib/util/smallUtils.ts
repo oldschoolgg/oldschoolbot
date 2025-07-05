@@ -1,6 +1,6 @@
-import { type CommandResponse, deepMerge, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, clamp, objectEntries } from 'e';
 import { type ArrayItemsResolved, type Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
@@ -21,26 +21,6 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 			str.push(item.map(itemNameFromID).join(' OR '));
 		} else {
 			str.push(itemNameFromID(item));
-		}
-	}
-	return str.join(', ');
-}
-
-export function formatItemBoosts(items: ItemBank[]) {
-	const str = [];
-	for (const itemSet of items) {
-		const itemEntries = Object.entries(itemSet);
-		const multiple = itemEntries.length > 1;
-		const bonusStr = [];
-
-		for (const [itemID, boostAmount] of itemEntries) {
-			bonusStr.push(`${boostAmount}% for ${itemNameFromID(Number.parseInt(itemID))}`);
-		}
-
-		if (multiple) {
-			str.push(`(${bonusStr.join(' OR ')})`);
-		} else {
-			str.push(bonusStr.join(''));
 		}
 	}
 	return str.join(', ');
@@ -146,31 +126,6 @@ export function calculateSimpleMonsterDeathChance({
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }
 
-const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
-
-export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
-	if (typeof string === 'string') {
-		if (string.length > 2000) {
-			return {
-				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
-			};
-		}
-		return string;
-	}
-	if (string.content && string.content.length > 2000) {
-		return deepMerge(
-			string,
-			{
-				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
-			},
-			{ clone: false }
-		);
-	}
-	return string;
-}
-
 export const staticTimeIntervals = ['day', 'week', 'month'] as const;
 type StaticTimeInterval = (typeof staticTimeIntervals)[number];
 export function parseStaticTimeInterval(input: string): input is StaticTimeInterval {
@@ -196,13 +151,6 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 		return [false, formatSkillRequirements(reqs)];
 	}
 	return [true, null];
-}
-
-export function objHasAnyPropInCommon(obj: object, other: object): boolean {
-	for (const key of Object.keys(obj)) {
-		if (key in other) return true;
-	}
-	return false;
 }
 
 export const zodEnum = <T>(arr: T[] | readonly T[]): [T, ...T[]] => arr as [T, ...T[]];

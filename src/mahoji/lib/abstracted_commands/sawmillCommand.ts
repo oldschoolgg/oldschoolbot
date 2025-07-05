@@ -1,4 +1,4 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time, clamp } from 'e';
 import { Bank, Items, toKMB } from 'oldschooljs';
 

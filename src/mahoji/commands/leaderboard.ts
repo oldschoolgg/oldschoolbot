@@ -1,8 +1,8 @@
+import { makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type CommandRunOptions,
 	channelIsSendable,
 	formatDuration,
-	makePaginatedMessage,
 	stringMatches,
 	toTitleCase
 } from '@oldschoolgg/toolkit/util';

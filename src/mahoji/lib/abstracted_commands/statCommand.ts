@@ -1,5 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, PerkTier } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, PerkTier, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { Time, sumArr } from 'e';
 import {
@@ -13,6 +13,7 @@ import {
 	toKMB
 } from 'oldschooljs';
 
+import { SQL_sumOfAllCLItems } from '@/lib/util/smallUtils.js';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
@@ -27,7 +28,7 @@ import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestr
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import type { InfernoOptions } from '../../../lib/types/minions';
-import { SQL_sumOfAllCLItems, formatDuration, getUsername, stringMatches } from '../../../lib/util';
+import { getUsername } from '../../../lib/util';
 import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';

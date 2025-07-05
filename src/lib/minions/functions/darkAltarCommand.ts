@@ -1,4 +1,4 @@
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs';
 

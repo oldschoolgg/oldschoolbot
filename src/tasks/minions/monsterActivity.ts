@@ -1,5 +1,5 @@
-import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Time, deepClone, percentChance, roll } from 'e';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 

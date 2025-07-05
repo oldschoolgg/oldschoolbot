@@ -26,7 +26,7 @@ import {
 	command_name_enum
 } from '@prisma/client';
 import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 import { beforeAll, expect, test, vi } from 'vitest';
 
 import { processPendingActivities } from '../../src/lib/Task';
@@ -39,7 +39,7 @@ import type { SkillsEnum } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
 import type { Skills } from '../../src/lib/types';
-import { isGroupActivity, resolveItems } from '../../src/lib/util';
+import { isGroupActivity } from '../../src/lib/util';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
 import { findPlant } from '../../src/lib/util/farmingHelpers';
 import getOSItem from '../../src/lib/util/getOSItem';

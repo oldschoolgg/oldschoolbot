@@ -1,8 +1,15 @@
-import { type CommandResponse, type CommandRunOptions, asyncGzip } from '@oldschoolgg/toolkit/util';
+import {
+	type CommandResponse,
+	type CommandRunOptions,
+	asyncGzip,
+	formatDuration,
+	stringMatches
+} from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
-import { Bank, type Item, type ItemBank, ItemGroups, ToBUniqueTable, resolveItems } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, ItemGroups, Items, ToBUniqueTable, resolveItems } from 'oldschooljs';
 
+import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
@@ -16,15 +23,7 @@ import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	getUsername,
-	isGroupActivity,
-	itemNameFromID,
-	parseStaticTimeInterval,
-	staticTimeIntervals,
-	stringMatches
-} from '../../lib/util';
+import { getUsername, isGroupActivity } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -579,7 +578,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 	if (entity) {
 		if (!entity.items.includes(item.id)) {
 			return `That's not a valid item dropped for this thing, valid items are: ${entity.items
-				.map(itemNameFromID)
+				.map(id => Items.itemNameFromId(id))
 				.join(', ')}.`;
 		}
 

@@ -33,6 +33,16 @@
 			"types": "./dist/util/datetime.d.ts",
 			"require": "./dist/cjs/util/datetime.cjs",
 			"import": "./dist/esm/util/datetime.mjs"
+		},
+		"./discord-util": {
+			"types": "./dist/discord-util.d.ts",
+			"require": "./dist/cjs/discord-util.cjs",
+			"import": "./dist/esm/discord-util.mjs"
+		},
+		"./string-util": {
+			"types": "./dist/string-util.d.ts",
+			"require": "./dist/cjs/string-util.cjs",
+			"import": "./dist/esm/string-util.mjs"
 		}
 	},
 	"scripts": {

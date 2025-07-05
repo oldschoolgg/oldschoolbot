@@ -1,12 +1,13 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPercentOfNum, percentChance, randInt } from 'e';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
+import { roll } from '@/lib/util/rng';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../lib/util';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
 
@@ -139,10 +140,10 @@ export const fishingTask: MinionTask = {
 		}
 
 		for (let i = 0; i < quantity; i++) {
-			if (fish.id === itemID('Raw karambwanji')) {
+			if (fish.id === EItem.RAW_KARAMBWAN) {
 				lootQuantity +=
 					blessingEquipped && percentChance(blessingChance) ? baseKarambwanji * 2 : baseKarambwanji;
-			} else if (fish.id === itemID('Minnow')) {
+			} else if (fish.id === EItem.MINNOW) {
 				lootQuantity +=
 					blessingEquipped && percentChance(blessingChance)
 						? randInt(baseMinnow[0], baseMinnow[1]) * 2

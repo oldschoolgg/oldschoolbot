@@ -1,7 +1,5 @@
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import type { ItemBank } from '../../../lib/types';
-import { getItem } from '../../../lib/util/getOSItem';
 import { globalBingoTiles } from './globalTiles';
 
 interface CustomReq {
@@ -54,10 +52,10 @@ export function generateTileName(
 		return globalBingoTiles.find(t => t.id === tile.id)?.name ?? 'Unknown';
 	}
 	if ('oneOf' in tile) {
-		return `Receive one of: ${tile.oneOf.map(id => getItem(id)?.name).join(', ')}`;
+		return `Receive one of: ${tile.oneOf.map(id => Items.getOrThrow(id)?.name).join(', ')}`;
 	}
 	if ('allOf' in tile) {
-		return `Receive all of: ${tile.allOf.map(id => getItem(id)?.name).join(', ')}`;
+		return `Receive all of: ${tile.allOf.map(id => Items.getOrThrow(id)?.name).join(', ')}`;
 	}
 	if ('bank' in tile) {
 		return `Receive all of: ${new Bank(tile.bank)}`;

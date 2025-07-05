@@ -3,14 +3,14 @@ import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 
-import { SlayerActivityConstants } from '../../../../lib/minions/data/combatConstants';
-import { type AttackStyles, getAttackStylesContext } from '../../../../lib/minions/functions';
-import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
-import type { Consumable } from '../../../../lib/minions/types';
-import { ChargeBank } from '../../../../lib/structures/Bank';
-import { UpdateBank } from '../../../../lib/structures/UpdateBank';
-import type { SkillsRequired } from '../../../../lib/types';
-import { numberEnum } from '../../../../lib/util';
+import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants';
+import { type AttackStyles, getAttackStylesContext } from '@/lib/minions/functions';
+import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC';
+import type { Consumable } from '@/lib/minions/types';
+import { ChargeBank } from '@/lib/structures/Bank';
+import { UpdateBank } from '@/lib/structures/UpdateBank';
+import type { SkillsRequired } from '@/lib/types';
+import { numberEnum } from '@/lib/util/smallUtils.js';
 import { getItemCostFromConsumables } from './handleConsumables';
 import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
 

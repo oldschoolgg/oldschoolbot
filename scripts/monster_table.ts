@@ -2,11 +2,11 @@ import { TSVWriter } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
-import { Bank, Items, convertBankToPerHourStats } from 'oldschooljs';
+import { Bank, Items, convertBankToPerHourStats, resolveItems, toKMB } from 'oldschooljs';
+import { omit } from 'remeda';
 
 import '../src/lib/safeglobals';
 
-import { omit } from 'remeda';
 import type { BitField } from '../src/lib/constants';
 import { degradeableItems } from '../src/lib/degradeableItems';
 import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants';
@@ -20,7 +20,6 @@ import { Gear } from '../src/lib/structures/Gear';
 import { GearBank } from '../src/lib/structures/GearBank';
 import { KCBank } from '../src/lib/structures/KCBank';
 import { MUserStats } from '../src/lib/structures/MUserStats';
-import { resolveItems, toKMB } from '../src/lib/util';
 import { PVM_METHODS } from '../src/mahoji/commands/k';
 import {
 	type MinionKillReturn,

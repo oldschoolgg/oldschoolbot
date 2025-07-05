@@ -5,7 +5,7 @@ import './lib/util/transactItemsFromBank';
 import './lib/geImage';
 
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { MahojiClient } from '@oldschoolgg/toolkit/util';
+import { MahojiClient } from '@oldschoolgg/toolkit/discord-util';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 import { isObject } from 'e';

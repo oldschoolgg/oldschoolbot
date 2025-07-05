@@ -1,12 +1,12 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, addItemToBank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, skillingPetDropRate } from '../../lib/util';
+import { skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';

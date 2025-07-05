@@ -1,9 +1,19 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { userMention } from 'discord.js';
+import { escapeMarkdown, userMention } from 'discord.js';
 import { calcWhatPercent, objectValues, percentChance, sumArr, uniqueArr } from 'e';
-import { Bank, EquipmentSlot, type Item, Items, addItemToBank, convertXPtoLVL, resolveItems } from 'oldschooljs';
+import {
+	Bank,
+	EquipmentSlot,
+	type Item,
+	type ItemBank,
+	Items,
+	addItemToBank,
+	convertXPtoLVL,
+	resolveItems
+} from 'oldschooljs';
 import { pick } from 'remeda';
 
 import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
@@ -40,14 +50,13 @@ import { ChargeBank } from './structures/Bank';
 import { Gear, defaultGear } from './structures/Gear';
 import { GearBank } from './structures/GearBank';
 import type { XPBank } from './structures/XPBank';
-import type { ItemBank, SkillRequirements, Skills } from './types';
+import type { SkillRequirements, Skills } from './types';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
-import { minionName } from './util/minionUtils';
 import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
 
@@ -223,7 +232,14 @@ export class MUserClass {
 	}
 
 	get minionName() {
-		return minionName(this);
+		const prefix = this.isIronman ? Emoji.Ironman : '';
+		const icon = this.user.minion_icon ?? Emoji.Minion;
+
+		const strPrefix = prefix ? `${prefix} ` : '';
+
+		return this.user.minion_name
+			? `${strPrefix}${icon} **${escapeMarkdown(this.user.minion_name)}**`
+			: `${strPrefix}${icon} Your minion`;
 	}
 
 	get mention() {

@@ -1,7 +1,9 @@
+import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Prisma } from '@prisma/client';
 import { noOp, notEmpty, uniqueArr } from 'e';
+import { convertXPtoLVL } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
@@ -14,7 +16,7 @@ import { loggedRawPrismaQuery } from './rawSql';
 import { TeamLoot } from './simulation/TeamLoot';
 import { SkillsArray } from './skilling/types';
 import type { ItemBank } from './types';
-import { convertXPtoLVL, getUsernameSync, returnStringOrFile } from './util';
+import { getUsernameSync } from './util';
 import { fetchMultipleCLLeaderboards } from './util/clLeaderboard';
 import { logError } from './util/logError';
 

@@ -1,4 +1,4 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { logError } from '@/lib/util/logError';
