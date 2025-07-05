@@ -238,6 +238,10 @@ async function main() {
 		client.login(globalConfig.botToken)
 	]);
 	console.log(`Logged in as ${globalClient.user.username}`);
+
+	if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
+		import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
+	}
 }
 
 process.on('uncaughtException', err => {
