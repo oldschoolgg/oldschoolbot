@@ -1,6 +1,12 @@
 const esbuild = require('esbuild');
 
-const entryPoints = ['src/util.ts', 'src/structures.ts', 'src/constants.ts'];
+const entryPoints = [
+	'src/util.ts',
+	'src/structures.ts',
+	'src/constants.ts',
+	'src/testBotWebsocket.ts',
+	'src/util/datetime.ts'
+];
 
 const baseConfig = {
 	keepNames: true,
