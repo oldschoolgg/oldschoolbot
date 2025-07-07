@@ -31,7 +31,7 @@
 		"test:ci:unit": "pnpm concurrent \"pnpm test:unit\" \"pnpm test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"============MISC": "============",
 		"concurrent": "concurrently --raw --kill-others-on-fail",
-		"build:packages": "pnpm --stream -r --filter \"!.\" --filter \"!./docs\" build",
+		"build:packages": "pnpm --stream -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" build",
 		"============monorepo": "============",
 		"monorepo:build": "pnpm concurrent \"pnpm build:packages\" \"pnpm gen\" && pnpm build",
 		"monorepo:test": "pnpm --stream -r test"
