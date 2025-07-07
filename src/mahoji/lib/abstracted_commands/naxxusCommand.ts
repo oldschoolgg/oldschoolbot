@@ -1,3 +1,4 @@
+import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Bank, type Item } from 'oldschooljs';
@@ -8,7 +9,6 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { NAXXUS_HP, Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { Gear } from '../../../lib/structures/Gear';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

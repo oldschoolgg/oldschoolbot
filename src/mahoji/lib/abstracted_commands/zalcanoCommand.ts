@@ -1,9 +1,11 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
+import { EMonster } from 'oldschooljs';
 
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';
 import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import { EMonster, formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';

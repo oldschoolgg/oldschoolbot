@@ -3,14 +3,28 @@ import {
 	type CommandRunOptions,
 	type MahojiUserOption,
 	PerkTier,
-	asyncGzip
+	asyncGzip,
+	formatDuration,
+	stringMatches
 } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
-import { Time, randArrItem, randInt, shuffleArr } from 'e';
-import { Bank, type Item, type ItemBank, ItemGroups, ToBUniqueTable, convertLVLtoXP } from 'oldschooljs';
+import { Time, randArrItem, randInt, roll, shuffleArr } from 'e';
+import {
+	Bank,
+	type Item,
+	type ItemBank,
+	ItemGroups,
+	Items,
+	ToBUniqueTable,
+	convertLVLtoXP,
+	itemID,
+	resolveItems
+} from 'oldschooljs';
 
+import { getUsername, isGroupActivity } from '@/lib/util';
+import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils';
 import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
 import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -29,24 +43,12 @@ import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	getUsername,
-	isGroupActivity,
-	itemID,
-	itemNameFromID,
-	parseStaticTimeInterval,
-	roll,
-	staticTimeIntervals,
-	stringMatches
-} from '../../lib/util';
 import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
-import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 import { Cooldowns } from '../lib/Cooldowns';
 import {
@@ -810,7 +812,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 	if (entity) {
 		if (!entity.items.includes(item.id)) {
 			return `That's not a valid item dropped for this thing, valid items are: ${entity.items
-				.map(itemNameFromID)
+				.map(id => Items.itemNameFromId(id))
 				.join(', ')}.`;
 		}
 

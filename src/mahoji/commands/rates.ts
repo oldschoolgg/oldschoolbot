@@ -1,10 +1,12 @@
 import { bold } from '@discordjs/builders';
 import { type CommandRunOptions, calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
+import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { Time, increaseNumByPercent, sumArr } from 'e';
-import { Bank, convertBankToPerHourStats, itemID } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 
+import { itemNameFromID } from '@/lib/util';
 import {
 	BathhouseOres,
 	BathwaterMixtures,
@@ -35,11 +37,9 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { HunterTechniqueEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
 import type { BathhouseTaskOptions } from '../../lib/types/minions';
-import { toKMB } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { PeakTier } from '../../lib/util/calcWildyPkChance';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
@@ -195,7 +195,7 @@ export const ratesCommand: OSBMahojiCommand = {
 				);
 			}
 			return {
-				...(returnStringOrFile(tableArr.join('\n'), true) as InteractionReplyOptions)
+				...(returnStringOrFile(tableArr.join('\n')) as InteractionReplyOptions)
 			};
 		}
 		if (options.misc?.zygomite_seeds) {
@@ -267,7 +267,7 @@ ${zygomiteFarmingSource
 
 			return {
 				content: 'Assumes abyssal jibwings (e) and divine ring',
-				...(returnStringOrFile(results, true) as InteractionReplyOptions)
+				...(returnStringOrFile(results) as InteractionReplyOptions)
 			};
 		}
 
@@ -399,7 +399,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				...(returnStringOrFile(results) as InteractionReplyOptions),
 				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
 			};
 		}
@@ -455,7 +455,7 @@ ${zygomiteFarmingSource
 			}
 
 			return {
-				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				...(returnStringOrFile(results) as InteractionReplyOptions),
 				content: 'Assumes: Slayer master cape (8% boost to slayer xp)'
 			};
 		}
@@ -573,7 +573,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				...(returnStringOrFile(results) as InteractionReplyOptions),
 				content:
 					'Assumes: Mining master cape, full Prospector, Glory, Varrock armour 4, 120 mining, Volcanic pickaxe.'
 			};
@@ -719,7 +719,7 @@ ${zygomiteFarmingSource
 					}
 				}
 			}
-			return returnStringOrFile(results, true);
+			return returnStringOrFile(results);
 		}
 
 		if (options.xphr?.dungeoneering) {
@@ -759,7 +759,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				...(returnStringOrFile(results) as InteractionReplyOptions),
 				content: 'Assumes: 120 Dungeoneering, Ring of luck, master cape (For gora shard chance)'
 			};
 		}

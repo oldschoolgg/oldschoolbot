@@ -1278,6 +1278,7 @@ enum xp_gains_skill_enum {
   slayer
   invention
   divination
+  necromancy
 }
 
 enum tame_growth {

@@ -5,6 +5,7 @@ import { bold } from 'discord.js';
 import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
 import { type Item, convertLVLtoXP, convertXPtoLVL, resolveItems, toKMB } from 'oldschooljs';
 
+import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
 import { Channel, LEVEL_120_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
 import {
 	divinersOutfit,
@@ -16,8 +17,6 @@ import {
 import { skillEmoji } from './data/emojis';
 import { getSimilarItems } from './data/similarItems';
 import type { AddXpParams } from './minions/types';
-
-import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
 import { sql } from './postgres';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';

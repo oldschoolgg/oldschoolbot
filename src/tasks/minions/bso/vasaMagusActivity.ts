@@ -1,6 +1,8 @@
 import { objectEntries, randArrItem, randInt, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, resolveItems } from 'oldschooljs';
 
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { getMonster, itemNameFromID } from '@/lib/util';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { kittens } from '../../../lib/growablePets';
@@ -10,11 +12,9 @@ import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killabl
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import type { NewBossOptions } from '../../../lib/types/minions';
-import { clAdjustedDroprate, getMonster, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const vasaBosses = [

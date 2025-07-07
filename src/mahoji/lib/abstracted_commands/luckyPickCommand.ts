@@ -1,4 +1,4 @@
-import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit';
+import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/util';
 import {
 	ActionRowBuilder,
 	type BaseMessageOptions,

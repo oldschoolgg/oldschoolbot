@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { catchFishAtLocation, fishingLocations } from '../../../lib/fishingContest';
 import { trackLoot } from '../../../lib/lootTrack';
-
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';

@@ -1,9 +1,9 @@
 import { userMention } from '@discordjs/builders';
-import { Table } from '@oldschoolgg/toolkit';
+import { Table, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { User } from '@prisma/client';
 import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
-import { Bank, type Item, LootTable } from 'oldschooljs';
+import { Bank, type Item, LootTable, resolveItems } from 'oldschooljs';
 
 import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
 import { MysteryBoxes } from './bsoOpenables';
@@ -13,13 +13,12 @@ import { SkillsEnum } from './skilling/types';
 import { TameSpeciesID, getAllUserTames } from './tames';
 import type { Skills } from './types';
 import type { BathhouseTaskOptions } from './types/minions';
-import { formatDuration, formatSkillRequirements, skillsMeetRequirements, stringMatches } from './util';
+import { formatSkillRequirements, skillsMeetRequirements } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
 import { handleTripFinish } from './util/handleTripFinish';
 import { makeBankImage } from './util/makeBankImage';
-import resolveItems from './util/resolveItems';
 import { updateBankSetting } from './util/updateBankSetting';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;

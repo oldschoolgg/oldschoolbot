@@ -40,14 +40,3 @@ export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {
 	}
 	return getItemNamesFromBank(new Bank(bank));
 }
-
-export function getNamedBank(bank: Bank | ItemBank): Record<string, number> {
-	if (bank instanceof Bank) {
-		const namedBank: Record<string, number> = {};
-		for (const [item, quantity] of bank.items().sort((a, b) => a[0].name.localeCompare(b[0].name))) {
-			namedBank[item.name] = quantity;
-		}
-		return namedBank;
-	}
-	return getNamedBank(new Bank(bank));
-}

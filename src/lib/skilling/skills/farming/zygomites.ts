@@ -2,10 +2,10 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { randArrItem, roll } from 'e';
 import { Bank, type Item, LootTable } from 'oldschooljs';
 
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
 import { MysteryBoxes } from '../../../bsoOpenables';
 import { BitField } from '../../../constants';
 import { globalDroprates } from '../../../data/globalDroprates';
-import { clAdjustedDroprate } from '../../../util';
 import getOSItem from '../../../util/getOSItem';
 import type { Plant } from '../../types';
 

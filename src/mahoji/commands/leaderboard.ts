@@ -2,10 +2,10 @@ import {
 	type CommandRunOptions,
 	channelIsSendable,
 	formatDuration,
-	makePaginatedMessage,
 	stringMatches,
 	toTitleCase
 } from '@oldschoolgg/toolkit';
+import { makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import type { UserStats } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,

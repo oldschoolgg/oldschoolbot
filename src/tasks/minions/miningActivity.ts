@@ -1,6 +1,8 @@
 import { Time, increaseNumByPercent, randInt, roll } from 'e';
 import { Bank, SkillsEnum, itemID, toKMB } from 'oldschooljs';
 
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { skillingPetDropRate } from '@/lib/util';
 import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
@@ -13,9 +15,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import type { Ore } from '../../lib/skilling/types';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import resolveItems from '../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 export function calculateMiningResult({
@@ -129,7 +129,7 @@ export function calculateMiningResult({
 		}
 	}
 
-	const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
+	const isDestroyed = isUsingObsidianPickaxe && ore.id !== itemID('Obsidian shards');
 	if (isDestroyed) messages.push('Your volcanic pickaxe destroyed the ores.');
 	const hasAdze = Object.values(allGear).some(g => g.hasEquipped(['Superior inferno adze']));
 	const adzeIsDisabled = disabledInventions.includes(InventionID.SuperiorInfernoAdze);

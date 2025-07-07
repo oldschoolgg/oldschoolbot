@@ -6,9 +6,9 @@ export function calcMonsterStrengthFactor(monsterKillTime: number): number {
 
 export function calcSoulChance({
 	monsterKillTime,
-	necromancyLevel,
-	requiredNecromancyLevel
-}: { monsterKillTime: number; necromancyLevel: number; requiredNecromancyLevel: number }): number {
+	necromancyLevel
+}: { monsterKillTime: number; necromancyLevel: number }): number {
+	const requiredNecromancyLevel = calcNecroLevelForMonster({ monsterKillTime });
 	const monsterStrengthFactor = calcMonsterStrengthFactor(monsterKillTime);
 	const exponent = 3 - 1.65 * Math.min(1, monsterStrengthFactor / 200);
 	const difficultyScale = Math.pow(monsterStrengthFactor + 1, exponent);
@@ -38,7 +38,7 @@ export function calcSoulChance({
 	const differenceBasedResult =
 		(necromancyLevel === requiredNecromancyLevel
 			? normal
-			: calcSoulChance({ monsterKillTime, necromancyLevel: requiredNecromancyLevel, requiredNecromancyLevel })) +
+			: calcSoulChance({ monsterKillTime, necromancyLevel: requiredNecromancyLevel })) +
 		difference * 0.01;
 	return Math.max(differenceBasedResult, normal);
 }

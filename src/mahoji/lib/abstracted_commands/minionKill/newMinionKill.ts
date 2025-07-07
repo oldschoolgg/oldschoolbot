@@ -1,9 +1,11 @@
+import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/datetime';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Monsters } from 'oldschooljs';
+import { EItem, Items, Monsters, itemID } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 
+import { calculateSimpleMonsterDeathChance, zodEnum } from '@/lib/util';
 import { YETI_ID } from '../../../../lib/bso/bsoConstants';
 import { BitField } from '../../../../lib/constants';
 import { getSimilarItems } from '../../../../lib/data/similarItems';
@@ -27,15 +29,6 @@ import {
 import type { GearBank } from '../../../../lib/structures/GearBank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
 import type { Peak } from '../../../../lib/tickers';
-import {
-	calculateSimpleMonsterDeathChance,
-	formatDuration,
-	isWeekend,
-	itemID,
-	itemNameFromID,
-	zodEnum
-} from '../../../../lib/util';
-import getOSItem from '../../../../lib/util/getOSItem';
 import type { PvMMethod } from '../../../commands/k';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
@@ -215,7 +208,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		if (typeof rangeCheck === 'string') {
 			return `Your range gear isn't right: ${rangeCheck}`;
 		}
-		const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(rangeCheck.weapon.id);
+		const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(rangeCheck.weapon.id);
 		if (!gearBank.gear.range.ammo?.item && !usingBowfa) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
@@ -224,7 +217,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		if (rangeCheck.ammo) {
 			speedDurationResult.updateBank.itemCostBank.add(rangeCheck.ammo.item, projectilesNeeded);
 			if (projectilesNeeded > rangeCheck.ammo.quantity) {
-				return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
+				return `You need ${projectilesNeeded.toLocaleString()}x ${Items.itemNameFromId(
 					rangeCheck.ammo.item
 				)} to kill ${quantity}x ${monster.name}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
 			}

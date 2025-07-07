@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, itemID, resolveBank, resolveItems } from 'oldschooljs';
 
 import { necromancyCreatables } from '@/lib/bso/necromancy/necroCreatables';

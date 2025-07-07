@@ -1,12 +1,12 @@
 import { Time, increaseNumByPercent, percentChance, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, toKMB } from 'oldschooljs';
+
 import { ClueTiers } from '../clues/clueTiers';
 import { BitField } from '../constants';
 import { InventionID, inventionBoosts, inventionItemBoostRaw } from '../invention/inventions';
 import { bones } from '../skilling/skills/prayer';
 import type { GearBank } from '../structures/GearBank';
 import type { UpdateBank } from '../structures/UpdateBank';
-import { toKMB } from '../util';
 import getOSItem from '../util/getOSItem';
 import { assert } from '../util/logError';
 

@@ -8,6 +8,7 @@ import type {
 	Channel,
 	ChatInputCommandInteraction,
 	GuildMember,
+	InteractionReplyOptions,
 	Role,
 	User
 } from 'discord.js';
@@ -81,3 +82,5 @@ export interface CommandRunOptions<T extends CommandOptions = {}> {
 	guildID?: string;
 	userID: string;
 }
+
+export type CommandResponse = Promise<null | string | InteractionReplyOptions>;

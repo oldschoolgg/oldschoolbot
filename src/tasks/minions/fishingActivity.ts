@@ -1,6 +1,8 @@
 import { calcPercentOfNum, percentChance, randInt, roll } from 'e';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { skillingPetDropRate } from '@/lib/util';
 import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
@@ -8,7 +10,6 @@ import { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
 
@@ -118,10 +119,10 @@ export const fishingTask: MinionTask = {
 		}
 
 		for (let i = 0; i < quantity; i++) {
-			if (fish.id === itemID('Raw karambwanji')) {
+			if (fish.id === EItem.RAW_KARAMBWAN) {
 				lootQuantity +=
 					blessingEquipped && percentChance(blessingChance) ? baseKarambwanji * 2 : baseKarambwanji;
-			} else if (fish.id === itemID('Minnow')) {
+			} else if (fish.id === EItem.MINNOW) {
 				lootQuantity +=
 					blessingEquipped && percentChance(blessingChance)
 						? randInt(baseMinnow[0], baseMinnow[1]) * 2

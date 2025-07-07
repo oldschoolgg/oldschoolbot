@@ -1,11 +1,11 @@
-import { Bank, EItem, EMonster, Monsters } from 'oldschooljs';
+import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { Bank, EItem, EMonster, Monsters, convertLVLtoXP, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
 import { getPOHObject } from '../../../src/lib/poh';
 import { SkillsEnum } from '../../../src/lib/skilling/types';
 import { Gear } from '../../../src/lib/structures/Gear';
-import { calcPerHour, convertLVLtoXP, resolveItems } from '../../../src/lib/util';
 import { minionKCommand } from '../../../src/mahoji/commands/k';
 import { createTestUser, mockClient, mockUser } from '../util';
 

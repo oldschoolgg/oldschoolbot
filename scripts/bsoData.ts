@@ -36,8 +36,7 @@ export function renderBsoItemsFile() {
 
 			const chance = calcSoulChance({
 				monsterKillTime: monster.timeToFinish,
-				necromancyLevel,
-				requiredNecromancyLevel: necromancySoulChances[monster.name].necromancy_level_required
+				necromancyLevel
 			});
 
 			necromancySoulChances[monster.name].chances.push({

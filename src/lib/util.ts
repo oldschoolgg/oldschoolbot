@@ -1,20 +1,11 @@
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import {
-	calcPerHour,
-	cleanUsername,
-	formatDuration,
-	isWeekend,
-	makeComponents,
-	stringMatches,
-	stripEmojis
-} from '@oldschoolgg/toolkit/util';
+import { cleanUsername, stripEmojis } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User } from '@prisma/client';
 import { type Guild, bold, escapeMarkdown, userMention } from 'discord.js';
-import { Time, calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
-import { type Bank, type Monster, Monsters, calcCombatLevel } from 'oldschooljs';
+import { calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
+import { type Bank, type Monster, Monsters, calcCombatLevel, convertXPtoLVL, resolveItems } from 'oldschooljs';
 
 import type { MUserClass } from './MUser';
-import { clAdjustedDroprate, convertXPtoLVL } from './bso/bsoUtil';
 import { usernameWithBadgesCache } from './cache';
 import { BitField, MAX_LEVEL, MAX_XP, type ProjectileType, globalConfig } from './constants';
 import { SkillsEnum } from './skilling/types';
@@ -23,29 +14,12 @@ import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type { GroupMonsterActivityTaskOptions } from './types/minions';
 import { makeBadgeString } from './util/makeBadgeString';
-import resolveItems from './util/resolveItems';
 import { sendToChannelID } from './util/webhook.js';
-
-export * from 'oldschooljs';
-export * from './util/rng';
-
-export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
-
-export function inlineCodeblock(input: string) {
-	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
-}
-
-export function britishTime() {
-	const currentDate = new Date(Date.now() - Time.Hour * 10);
-	return currentDate;
-}
-
-export { convertXPtoLVL };
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
@@ -68,7 +42,7 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 			if (calcCombatLevel(skills as any, MAX_LEVEL) < level!) return false;
 		} else {
 			const xpHas = skills[skillName];
-			const levelHas = convertXPtoLVL(xpHas ?? 1, 120);
+			const levelHas = convertXPtoLVL(xpHas ?? 1, MAX_LEVEL);
 			if (levelHas < level!) return false;
 		}
 	}
@@ -255,5 +229,3 @@ export async function adminPingLog(message: string) {
 		allowedMentions: { users: globalConfig.adminUserIDs }
 	}).catch(noOp);
 }
-
-export { clAdjustedDroprate };

@@ -1,7 +1,8 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { Bank, type ItemBank } from 'oldschooljs';
 
+import { itemNameFromID } from '@/lib/util';
 import {
 	BathhouseOres,
 	BathwaterMixtures,
@@ -15,7 +16,6 @@ import { joinGuthixianCache } from '../../lib/bso/guthixianCache';
 import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '../../lib/bso/turaelsTrials';
 import { fishingLocations } from '../../lib/fishingContest';
 import type { MaterialType } from '../../lib/invention';
-import { Bank, type ItemBank, itemNameFromID } from '../../lib/util';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
 import {
 	fishingContestStartCommand,

@@ -1,3 +1,4 @@
+import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type CommandOption,
 	type CommandRunOptions,
@@ -10,11 +11,11 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import { itemNameFromID } from '@/lib/util';
 import { isGEUntradeable } from '../../lib/bso/bsoUtil';
 import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
-import { itemNameFromID, returnStringOrFile } from '../../lib/util';
 import { createChart } from '../../lib/util/chart';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';

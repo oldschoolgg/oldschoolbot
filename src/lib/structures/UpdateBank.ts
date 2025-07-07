@@ -1,16 +1,16 @@
+import { objHasAnyPropInCommon } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
-import { Bank } from 'oldschooljs';
-
 import { objectEntries } from 'e';
+import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
+
 import { type ClientBankKey, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import type { MUserClass } from '../MUser';
 import { degradeChargeBank } from '../degradeableItems';
 import type { GearSetup } from '../gear/types';
 import { MaterialBank } from '../invention/MaterialBank';
 import { transactMaterialsFromUser } from '../invention/inventions';
-import type { ItemBank } from '../types';
-import { type JsonKeys, objHasAnyPropInCommon } from '../util';
+import type { JsonKeys } from '../util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
 import { ChargeBank, XPBank } from './Bank';
 import { KCBank } from './KCBank';

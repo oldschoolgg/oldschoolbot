@@ -1,8 +1,7 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit/util';
 import { clamp, percentChance, sumArr } from 'e';
-
-import { Emoji } from '@oldschoolgg/toolkit/constants';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

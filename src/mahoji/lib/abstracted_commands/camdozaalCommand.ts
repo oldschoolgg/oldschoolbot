@@ -9,7 +9,6 @@ import Mining from '../../../lib/skilling/skills/mining';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { minionName } from '../../../lib/util/minionUtils';
 
 async function miningCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	let miningLevel = user.skillLevel(SkillsEnum.Mining);
@@ -73,7 +72,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		type: 'CamdozaalMining'
 	});
 
-	let response = `${minionName(user)} is now mining inside the Ruins of Camdozaal until your minion ${
+	let response = `${user.minionName} is now mining inside the Ruins of Camdozaal until your minion ${
 		quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity

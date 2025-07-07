@@ -2,12 +2,13 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPercentOfNum, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { roll } from '@/lib/util/rng';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../../lib/util';
+import { skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 

@@ -10,7 +10,8 @@ import {
 	toKMB
 } from 'oldschooljs';
 
-import { clAdjustedDroprate, skillingPetDropRate } from '@/lib/util';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { skillingPetDropRate } from '@/lib/util';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { MAX_LEVEL } from '../../../lib/constants';

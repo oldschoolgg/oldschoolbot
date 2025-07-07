@@ -4,11 +4,11 @@ import { bold } from 'discord.js';
 import { increaseNumByPercent, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
-import { clAdjustedDroprate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
 import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';

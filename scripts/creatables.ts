@@ -7,7 +7,6 @@ import { Bank } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants';
 import Createables from '@/lib/data/createables';
-import { getNamedBank } from './scriptUtil';
 
 export async function renderCreatablesFile() {
 	const stopwatch = new Stopwatch();
@@ -20,8 +19,8 @@ export async function renderCreatablesFile() {
 		}
 		creatables.push({
 			name: c.name,
-			items_created: isFunction(c.outputItems) ? ['Dynamic'] : getNamedBank(c.outputItems),
-			items_required: isFunction(c.inputItems) ? ['Dynamic'] : getNamedBank(c.inputItems),
+			items_created: isFunction(c.outputItems) ? ['Dynamic'] : new Bank(c.outputItems).toNamedBank(),
+			items_required: isFunction(c.inputItems) ? ['Dynamic'] : new Bank(c.inputItems).toNamedBank(),
 			required_stats: c.requiredSkills ?? {},
 			qp_required: c.QPRequired ?? 0,
 			required_slayer_unlocks: c.requiredSlayerUnlocks ?? []

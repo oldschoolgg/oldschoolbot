@@ -2,8 +2,6 @@ import type { activity_type_enum } from '@prisma/client';
 import { Time, calcPercentOfNum, calcWhatPercent } from 'e';
 
 import { BitField, PerkTier } from '../constants';
-import { SkillsEnum } from '../skilling/types';
-import { skillLevel } from './minionUtils';
 
 export function patronMaxTripBonus(user: MUser) {
 	const perkTier = user.perkTier();
@@ -81,7 +79,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	}
 
 	if (regularHPBoost) {
-		const hpLevel = skillLevel(user, SkillsEnum.Hitpoints);
+		const hpLevel = user.skillsAsLevels.hitpoints;
 		const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
 		max += calcPercentOfNum(hpPercent, Time.Minute * 5);
 

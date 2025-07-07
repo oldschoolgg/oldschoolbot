@@ -1,5 +1,6 @@
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { Minigame, PlayerOwnedHouse, Tame, User, UserStats, activity_type_enum } from '@prisma/client';
-import { Bank, type Monster } from 'oldschooljs';
+import { Bank, type ItemBank, type Monster } from 'oldschooljs';
 
 import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import type { personalSpellCastStats } from '../../mahoji/lib/abstracted_commands/statCommand';
@@ -10,8 +11,7 @@ import Potions from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
 import creatures from '../skilling/skills/hunter/creatures';
 import type { getSlayerTaskStats } from '../slayer/slayerUtil';
-import type { ItemBank, Skills } from '../types';
-import { stringMatches } from '../util';
+import type { Skills } from '../types';
 
 export interface HasFunctionArgs {
 	cl: Bank;

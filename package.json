@@ -70,6 +70,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
+		"@hono/node-ws": "^1.2.0",
 		"@types/luxon": "^3.6.2",
 		"@types/node": "^20.14.9",
 		"@types/node-cron": "^3.0.7",
@@ -83,7 +84,8 @@
 		"spritesmith": "^3.5.1",
 		"tsx": "^4.20.3",
 		"typescript": "^5.8.3",
-		"vitest": "^3.2.4"
+		"vitest": "^3.2.4",
+		"ws": "^8.18.3"
 	},
 	"resolutions": {
 		"esbuild": "0.25.3"

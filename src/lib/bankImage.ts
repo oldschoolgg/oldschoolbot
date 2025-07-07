@@ -6,7 +6,7 @@ import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } fr
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
-import { Bank, type Item, ItemGroups, itemID, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, ItemGroups, itemID, resolveItems, toKMB } from 'oldschooljs';
 
 import { BOT_TYPE, BitField, ItemIconPacks, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
@@ -14,9 +14,7 @@ import { filterableTypes } from '../lib/data/filterables';
 import { calcWholeDisXP, findDisassemblyGroup } from '../lib/invention/disassemble';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
-import type { BankSortMethod } from '../lib/sorts';
-import { BankSortMethods, sorts } from '../lib/sorts';
-import type { ItemBank } from '../lib/types';
+import { type BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import {
 	type Canvas,
 	type CanvasContext,

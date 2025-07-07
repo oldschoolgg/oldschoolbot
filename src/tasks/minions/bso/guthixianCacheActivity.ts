@@ -1,13 +1,12 @@
-import { roll } from 'e';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { percentChance, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { divinersOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { percentChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const guthixianCacheTask: MinionTask = {

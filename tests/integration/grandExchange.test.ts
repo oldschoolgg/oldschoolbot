@@ -4,7 +4,6 @@ import PQueue from 'p-queue';
 import { assert, describe, expect, test } from 'vitest';
 
 import { GrandExchange } from '../../src/lib/grandExchange';
-
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import type { TestUser } from './util';

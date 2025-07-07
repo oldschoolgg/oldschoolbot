@@ -1,7 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { type UserStats, tame_growth } from '@prisma/client';
 import { calcWhatPercent, objectEntries, sumArr } from 'e';
-import { Bank, ItemGroups } from 'oldschooljs';
+import { Bank, type ItemBank, ItemGroups, itemID, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from './bso/divination';
 import { ClueTiers } from './clues/clueTiers';
@@ -164,9 +164,7 @@ import { smithingCL } from './skilling/skills/smithing/smithables';
 import { slayerUnlockableRewards } from './slayer/slayerUnlocks';
 import { type RequirementFailure, Requirements } from './structures/Requirements';
 import { TameSpeciesID, tameFeedableItems } from './tames';
-import type { ItemBank } from './types';
-import { itemID, itemNameFromID } from './util';
-import resolveItems from './util/resolveItems';
+import { itemNameFromID } from './util';
 
 const minigameRequirements = new Requirements()
 	.add({ name: "Complete Balthazar's Big Bonanza CL", clRequirement: balthazarsBigBonanzaCL })

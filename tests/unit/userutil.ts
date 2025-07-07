@@ -84,7 +84,8 @@ const mockUser = (overrides?: MockUserArgs): User => {
 
 		skills_invention: 0,
 		skills_dungeoneering: 0,
-		skills_divination: 0
+		skills_divination: 0,
+		skills_necromancy: 0
 	} as unknown as User;
 
 	return r;

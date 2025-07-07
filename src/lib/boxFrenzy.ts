@@ -1,9 +1,9 @@
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { type Message, TextChannel } from 'discord.js';
 import { noOp } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import { MysteryBoxes } from './bsoOpenables';
-import { stringMatches } from './util';
 import { makeBankImage } from './util/makeBankImage';
 import { sendToChannelID } from './util/webhook';
 

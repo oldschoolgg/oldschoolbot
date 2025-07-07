@@ -1,8 +1,8 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, randArrItem, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
 	type Monkey,
 	TOTAL_MONKEYS,
@@ -16,7 +16,6 @@ import {
 } from '../../../lib/monkeyRumble';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import type { MonkeyRumbleOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead } from '../../../lib/util/chatHeadImage';

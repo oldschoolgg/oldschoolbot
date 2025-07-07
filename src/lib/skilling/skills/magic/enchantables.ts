@@ -349,7 +349,7 @@ const jewelery: Enchantable[] = [
 	}
 ];
 
-const bolts = [
+const bolts: Enchantable[] = [
 	{
 		name: '10x Opal bolts',
 		id: itemID('Opal bolts'),

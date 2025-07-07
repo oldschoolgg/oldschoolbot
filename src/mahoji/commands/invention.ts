@@ -1,7 +1,7 @@
-import { type CommandRunOptions, Table } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, Table, calcPerHour, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import { type IMaterialBank, type MaterialType, allItemsThatCanBeDisassembledIDs } from '../../lib/invention';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
@@ -15,7 +15,6 @@ import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, inventCommand, inventingCost, inventionBoosts } from '../../lib/invention/inventions';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { calcPerHour, stringMatches, toKMB } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { ownedMaterialOption } from '../lib/mahojiCommandOptions';

@@ -1,10 +1,9 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type Message, type User } from 'discord.js';
-import { Time, isFunction, randArrItem, shuffleArr } from 'e';
+import { Time, isFunction, randArrItem, roll, shuffleArr } from 'e';
 import fetch from 'node-fetch';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
-import { itemNameFromID, roll, stringMatches } from '../lib/util';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { MysteryBoxes } from './bsoOpenables';
 import { globalConfig } from './constants';
@@ -12,6 +11,7 @@ import { allCollectionLogsFlat } from './data/Collections';
 import Createables from './data/createables';
 import killableMonsters from './minions/data/killableMonsters';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
+import { itemNameFromID } from './util';
 import { sendToChannelID } from './util/webhook';
 import { LampTable } from './xpLamps';
 
