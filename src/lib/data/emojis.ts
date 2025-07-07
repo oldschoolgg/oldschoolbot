@@ -29,5 +29,6 @@ export const skillEmoji = {
 	combat: '<:combat:802136963956080650>',
 	dungeoneering: '<:dungeoneering:828683755198873623>',
 	invention: '<:Invention:936219232146980874>',
-	divination: '<:Divination:1187656347345494116>'
+	divination: '<:Divination:1187656347345494116>',
+	necromancy: '<:necromancy:1391853884842180779>'
 };

@@ -1,8 +1,9 @@
 import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
-import type { DeepPartial } from '@sapphire/utilities';
+import type { DeepPartial, DeepRequired } from '@sapphire/utilities';
 import deepMerge from 'deepmerge';
-import { type Item, type ItemRequirements, Items, itemNameMap } from 'oldschooljs';
+import { type Item, Items, itemNameMap } from 'oldschooljs';
 
+import type { Skills } from '../types';
 import getOSItem from '../util/getOSItem';
 
 export const customPrices: Record<number, number> = [];
@@ -61,7 +62,7 @@ export const UN_EQUIPPABLE = {
 	equipable_by_player: undefined
 };
 
-export const maxedRequirements = {
+export const maxedRequirements: { requirements: DeepRequired<Skills> } = {
 	requirements: {
 		agility: 120,
 		cooking: 120,
@@ -88,6 +89,7 @@ export const maxedRequirements = {
 		dungeoneering: 120,
 		slayer: 120,
 		invention: 120,
-		divination: 120
-	} as Partial<ItemRequirements>
+		divination: 120,
+		necromancy: 120
+	}
 };

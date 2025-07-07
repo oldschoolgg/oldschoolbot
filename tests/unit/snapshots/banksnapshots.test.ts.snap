@@ -18240,6 +18240,129 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "152616": 1,
+      "560": 100000,
+      "565": 100000,
+      "566": 100000,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "organic": 10000,
+        "pious": 10000,
+      },
+    },
+    "name": "Soul collector (t1)",
+    "outputItems": {
+      "74000": 1,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "runecraft": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "560": 100000,
+      "565": 250000,
+      "566": 250000,
+      "74000": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "organic": 20000,
+        "pious": 20000,
+      },
+    },
+    "name": "Soul collector (t2)",
+    "outputItems": {
+      "74003": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "560": 500000,
+      "565": 500000,
+      "566": 500000,
+      "74003": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "organic": 40000,
+        "pious": 40000,
+      },
+    },
+    "name": "Soul collector (t3)",
+    "outputItems": {
+      "74005": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "560": 750000,
+      "565": 750000,
+      "566": 750000,
+      "74005": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "organic": 60000,
+        "pious": 60000,
+      },
+    },
+    "name": "Soul collector (t4)",
+    "outputItems": {
+      "74006": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "560": 1000000,
+      "565": 1000000,
+      "566": 1000000,
+      "74006": 1,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "organic": 80000,
+        "pious": 80000,
+      },
+    },
+    "name": "Soul collector (t5)",
+    "outputItems": {
+      "74008": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73075": 10,
+      "74337": 1,
+    },
+    "name": "Starlight amulet",
+    "outputItems": {
+      "74338": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "73075": 100,
+      "73110": 1,
+      "74337": 1,
+    },
+    "name": "Pristine starlight amulet",
+    "outputItems": {
+      "74341": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "50017": 5,
       "50021": 30,
     },

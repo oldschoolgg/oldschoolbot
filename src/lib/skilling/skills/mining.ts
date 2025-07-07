@@ -281,6 +281,18 @@ const ores: Ore[] = [
 		aliases: ['amy', 'ame']
 	},
 	{
+		level: 94,
+		xp: 640,
+		id: itemID('Platinum ore'),
+		name: 'Platinum ore',
+		respawnTime: 25.75,
+		bankingTime: 66,
+		slope: 0.05,
+		intercept: -1.35,
+		clueScrollChance: 46_350,
+		aliases: ['plat']
+	},
+	{
 		level: 105,
 		xp: 275,
 		id: 70_011,

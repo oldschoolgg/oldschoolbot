@@ -1,5 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
+import { platinumCraftables } from '@/lib/bso/necromancy/platinumItems';
 import type { Craftable } from '../../../types';
 import { carapaceCraftables } from './carapace';
 
@@ -92,5 +93,6 @@ export const customCraftables: Craftable[] = [
 		inputItems: new Bank({ 'Royal dragon leather': 2 }),
 		tickRate: 3.5
 	},
-	...carapaceCraftables
+	...carapaceCraftables,
+	...platinumCraftables
 ];

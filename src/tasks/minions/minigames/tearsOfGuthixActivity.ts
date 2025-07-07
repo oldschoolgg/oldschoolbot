@@ -48,7 +48,7 @@ export const togTask: MinionTask = {
 		const baseXPperTear = 10;
 		const xpPerTearScaling = 50 / 29;
 		const xpScalingLevelCap = 30;
-		const skillLevel = user.skillLevel(lowestSkill);
+		const skillLevel = user.skillsAsLevels[lowestSkill];
 		const scaledXPperTear =
 			skillLevel >= xpScalingLevelCap ? 60 : baseXPperTear + (skillLevel - 1) * xpPerTearScaling;
 

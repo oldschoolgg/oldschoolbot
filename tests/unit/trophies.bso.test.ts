@@ -1,10 +1,10 @@
+import { resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { combinedTmbUmbEmbTables } from '../../src/lib/bsoOpenables';
 import { allTrophyItems } from '../../src/lib/data/itemAliases';
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
-import resolveItems from '../../src/lib/util/resolveItems';
 
 test('trophies', async () => {
 	expect(getOSItem('BSO dragon trophy')).toMatchObject({ id: 24_372 });
