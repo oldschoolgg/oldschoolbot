@@ -1,4 +1,4 @@
-import type { MahojiClient } from '@oldschoolgg/toolkit/util';
+import type { MahojiClient } from '@oldschoolgg/toolkit/discord-util';
 import type { User } from 'discord.js';
 import { Client } from 'discord.js';
 

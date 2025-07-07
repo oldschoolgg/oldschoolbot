@@ -1,5 +1,5 @@
-import { Time, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
+import { Time, reduceNumByPercent, roll } from 'e';
+import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
@@ -11,7 +11,6 @@ import {
 } from '../../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { DungeoneeringOptions } from '../../../lib/types/minions';
-import { randomVariation, roll, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 

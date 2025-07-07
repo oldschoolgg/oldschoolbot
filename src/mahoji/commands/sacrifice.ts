@@ -1,11 +1,11 @@
 import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { roll } from 'e';
+import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
-import type { ItemBank } from '../../lib/types';
-import { Bank, type Item, resolveItems, roll, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { parseBank } from '../../lib/util/parseStringBank';

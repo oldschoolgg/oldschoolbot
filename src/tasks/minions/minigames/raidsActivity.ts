@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { randArrItem, shuffleArr } from 'e';
-import { Bank, ChambersOfXeric, SkillsEnum, resolveItems } from 'oldschooljs';
+import { randArrItem, roll, shuffleArr } from 'e';
+import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { CHINCANNON_MESSAGES } from '../../../lib/bso/bsoConstants';
@@ -12,7 +12,6 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import type { RaidsOptions } from '../../../lib/types/minions';
-import { randomVariation, roll } from '../../../lib/util';
 import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

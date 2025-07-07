@@ -1,6 +1,8 @@
 import { Time, percentChance, randInt, roll } from 'e';
-import { SkillsEnum } from 'oldschooljs';
+import { SkillsEnum, resolveItems } from 'oldschooljs';
 
+import { skillingPetDropRate } from '@/lib/util';
+import { perHourChance } from '@/lib/util/rng';
 import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { clueUpgraderEffect } from '../../lib/bso/inventionEffects';
@@ -8,12 +10,10 @@ import { ClueTiers } from '../../lib/clues/clueTiers';
 import { type Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { perHourChance, skillingPetDropRate } from '../../lib/util';
 import { forcefullyUnequipItem } from '../../lib/util/forcefullyUnequipItem';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import resolveItems from '../../lib/util/resolveItems';
 import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 const notMultiplied = resolveItems([

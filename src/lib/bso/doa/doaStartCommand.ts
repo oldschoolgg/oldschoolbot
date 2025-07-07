@@ -1,7 +1,7 @@
 import { type CommandResponse, channelIsSendable, formatDuration } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, clamp } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 import { degradeItem } from '../../degradeableItems';
@@ -19,7 +19,6 @@ import type { DOAOptions } from '../../types/minions';
 import { bankToStrShortNames } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import getOSItem from '../../util/getOSItem';
 import { updateBankSetting } from '../../util/updateBankSetting';
 
 export async function doaStartCommand(
@@ -125,20 +124,20 @@ export async function doaStartCommand(
 			const { realCost } = await u.specialRemoveItems(cost.clone());
 
 			await degradeItem({
-				item: getOSItem('Sanguinesti staff'),
+				item: Items.getOrThrow('Sanguinesti staff'),
 				chargesToDegrade: sangCharges,
 				user: u
 			});
 
 			if (voidStaffCharges) {
 				await degradeItem({
-					item: getOSItem('Void staff'),
+					item: Items.getOrThrow('Void staff'),
 					chargesToDegrade: voidStaffCharges,
 					user: u
 				});
 			} else if (tumShadowCharges) {
 				await degradeItem({
-					item: getOSItem("Tumeken's shadow"),
+					item: Items.getOrThrow("Tumeken's shadow"),
 					chargesToDegrade: tumShadowCharges,
 					user: u
 				});

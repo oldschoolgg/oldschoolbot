@@ -1,7 +1,7 @@
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, sumArr } from 'e';
 
-import { hasSkillReqs } from '@/lib/util';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '../../../lib/minions/data/quests';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

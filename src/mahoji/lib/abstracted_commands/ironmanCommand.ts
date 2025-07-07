@@ -7,10 +7,9 @@ import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { assert } from '../../../lib/util/logError';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 
 export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction | null) {
-	if (minionIsBusy(user.id)) return 'Your minion is busy.';
+	if (user.minionIsBusy) return 'Your minion is busy.';
 	if (user.isIronman) {
 		return 'You are already an ironman.';
 	}

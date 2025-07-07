@@ -6,7 +6,8 @@ import {
 	HardClueTable,
 	MasterClueTable,
 	MediumClueTable,
-	itemID
+	itemID,
+	resolveItems
 } from 'oldschooljs';
 
 import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
@@ -25,7 +26,6 @@ import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import Grimy from '../skilling/skills/herblore/mixables/grimy';
 import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import resolveItems from '../util/resolveItems';
 import { allCollectionLogs } from './Collections';
 import {
 	allClueItems,

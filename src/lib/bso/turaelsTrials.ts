@@ -1,7 +1,7 @@
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { Time, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
 import { trackClientBankStats, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { degradeChargeBank } from '../degradeableItems';
 import { ChargeBank } from '../structures/Banks';

@@ -1,10 +1,9 @@
 import { uniqueArr } from 'e';
-import { Bank, ItemGroups } from 'oldschooljs';
+import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { skillingPetsCL } from '../../../lib/data/CollectionsExport';
 import { TanglerootTable } from '../../../lib/minions/data/killableMonsters/custom/Treebeard';
 import { assert } from '../../../lib/util/logError';
-import resolveItems from '../../../lib/util/resolveItems';
 import type { GlobalBingoTile } from './bingoUtil';
 
 const otherSpiritShieldParts = resolveItems(['Blessed spirit shield', 'Holy elixir', 'Spirit shield']);

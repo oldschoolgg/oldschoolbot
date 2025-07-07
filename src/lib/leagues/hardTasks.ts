@@ -1,5 +1,5 @@
 import { notEmpty, sumArr } from 'e';
-import { Bank, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Monsters, Openables, calcCombatLevel, resolveItems } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { divinationEnergies } from '../bso/divination';
@@ -46,7 +46,7 @@ import { allThirdAgeItems } from '../simulation/sharedTables';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
-import { calcCombatLevel, calcTotalLevel } from '../util';
+import { calcTotalLevel } from '../util';
 import { type Task, leaguesHasCatches, leaguesHasKC } from './leaguesUtils';
 import { calculateChargedItems, calculateTiarasMade } from './stats';
 

@@ -2,7 +2,7 @@ import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
 import { randInt } from 'e';
-import { Bank, SkillsEnum, increaseBankQuantitesByPercent } from 'oldschooljs';
+import { Bank, SkillsEnum, increaseBankQuantitesByPercent, resolveItems } from 'oldschooljs';
 
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -19,7 +19,6 @@ import type { MoktangTaskOptions } from '../../../lib/types/minions';
 import { itemNameFromID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const moktangTask: MinionTask = {

@@ -6,7 +6,9 @@ import {
 } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
+import { convertLVLtoXP } from 'oldschooljs';
 
+import { isValidNickname } from '@/lib/util';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import {
 	BitField,
@@ -30,7 +32,6 @@ import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { MUserStats } from '../../lib/structures/MUserStats';
-import { convertLVLtoXP, isValidNickname } from '../../lib/util';
 import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
 import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';

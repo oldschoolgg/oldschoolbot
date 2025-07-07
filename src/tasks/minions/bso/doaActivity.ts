@@ -1,7 +1,7 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
-import { Bank, type ItemBank, SkillsEnum } from 'oldschooljs';
+import { Bank, type ItemBank, SkillsEnum, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { DOANonUniqueTable } from '../../../lib/bso/doa/doaLootTable';
@@ -14,7 +14,6 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import type { DOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 

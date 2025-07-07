@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { randInt } from 'e';
 import { EquipmentSlot, type Item } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';

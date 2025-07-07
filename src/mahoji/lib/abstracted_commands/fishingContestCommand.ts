@@ -1,3 +1,5 @@
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -11,7 +13,6 @@ import {
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { FishingContestOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 

@@ -1,5 +1,5 @@
 import { sumArr } from 'e';
-import { Bank, EMonster, Monsters, Openables } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import {
@@ -40,9 +40,7 @@ import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
 import { TameSpeciesID, tameFeedableItems } from '../tames';
-import type { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
-import resolveItems from '../util/resolveItems';
 import { type Task, leaguesHasCatches, leaguesHasKC } from './leaguesUtils';
 import { calculateTiarasMade } from './stats';
 

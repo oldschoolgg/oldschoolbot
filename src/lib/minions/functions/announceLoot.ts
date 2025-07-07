@@ -1,7 +1,6 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import type { ArrayItemsResolved, Bank } from 'oldschooljs';
 
-import { minionName } from '../../util/minionUtils';
 import { effectiveMonsters } from '../data/killableMonsters';
 
 export default async function announceLoot({
@@ -30,9 +29,7 @@ export default async function announceLoot({
 			notif += `In ${team.leader.badgedUsername}'s party of ${team.size} minions killing ${monsterName}, `;
 		}
 
-		notif += `**${recipient.badgedUsername}'s** minion, ${minionName(
-			recipient
-		)}, just received **${itemsToAnnounce}**, their ${monsterName} KC is ${kc.toLocaleString()}!`;
+		notif += `**${recipient.badgedUsername}'s** minion, ${recipient.minionName}, just received **${itemsToAnnounce}**, their ${monsterName} KC is ${kc.toLocaleString()}!`;
 
 		globalClient.emit(Events.ServerNotification, notif);
 	}

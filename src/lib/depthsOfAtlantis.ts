@@ -1,4 +1,4 @@
-import { formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
+import { formatDuration, formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import {
 	Time,
@@ -10,17 +10,16 @@ import {
 	randInt,
 	reduceNumByPercent
 } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 
 import { calcSetupPercent } from './data/cox';
 import { getSimilarItems } from './data/similarItems';
 import type { UserFullGearSetup } from './gear';
 import { getMinigameScore } from './settings/minigames';
 import { Gear } from './structures/Gear';
-import type { ItemBank, Skills } from './types';
+import type { Skills } from './types';
 import type { DOAStoredRaid } from './types/minions';
-import { formatDuration, formatSkillRequirements, itemID, itemNameFromID } from './util';
-import resolveItems from './util/resolveItems';
+import { formatSkillRequirements, itemNameFromID } from './util';
 
 const { floor } = Math;
 

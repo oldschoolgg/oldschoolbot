@@ -1,7 +1,7 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
-
 import { Time } from 'e';
+
 import { handleDTD } from '../../../../lib/bso/handleDTD';
 import { colosseumCommand } from '../../../../lib/colosseum';
 import { getCurrentPeak } from '../../../../lib/getCurrentPeak';

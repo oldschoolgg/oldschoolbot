@@ -1,7 +1,6 @@
 import { randArrItem, randInt, roll } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank, LootTable, resolveItems } from 'oldschooljs';
 
-import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 
 const boxTable = new LootTable()

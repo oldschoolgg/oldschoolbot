@@ -2,9 +2,18 @@ import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
 import { isObject, notEmpty, objectEntries, round } from 'e';
-import { Bank, ItemGroups, itemID, resolveItems } from 'oldschooljs';
+import { Bank, ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import type { JsonKeys } from '@/lib/util';
+import {
+	formatItemCosts,
+	formatItemReqs,
+	formatList,
+	hasSkillReqs,
+	itemNameFromID,
+	readableStatName
+} from '@/lib/util/smallUtils.js';
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
@@ -16,15 +25,6 @@ import type { Rune } from '../lib/skilling/skills/runecraft';
 import { addStatsOfItemsTogether, hasGracefulEquipped } from '../lib/structures/Gear';
 import type { GearBank } from '../lib/structures/GearBank';
 import type { ItemBank } from '../lib/types';
-import {
-	type JsonKeys,
-	formatItemCosts,
-	formatItemReqs,
-	formatList,
-	hasSkillReqs,
-	itemNameFromID,
-	readableStatName
-} from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
 
@@ -302,7 +302,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			} else if (!getSimilarItems(item).some(id => user.hasEquippedOrInBank(id))) {
 				return [
 					false,
-					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`
+					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${Items.itemNameFromId(item)}.`
 				];
 			}
 		}

@@ -1,7 +1,8 @@
 import { PerkTier, cleanUsername, mentionCommand, seedShuffle } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { userMention } from 'discord.js';
+import { escapeMarkdown, userMention } from 'discord.js';
 import { Time, calcWhatPercent, objectValues, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
 import {
 	Bank,
@@ -64,7 +65,6 @@ import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
-import { minionName } from './util/minionUtils';
 import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
 import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
@@ -249,7 +249,14 @@ export class MUserClass {
 	}
 
 	get minionName() {
-		return minionName(this);
+		const prefix = this.isIronman ? Emoji.Ironman : '';
+		const icon = this.user.minion_icon ?? Emoji.Minion;
+
+		const strPrefix = prefix ? `${prefix} ` : '';
+
+		return this.user.minion_name
+			? `${strPrefix}${icon} **${escapeMarkdown(this.user.minion_name)}**`
+			: `${strPrefix}${icon} Your minion`;
 	}
 
 	get mention() {
@@ -964,7 +971,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		}
 		gear[slot] = null;
 
-		const actualItem = getItem(equippedInSlot.item);
+		const actualItem = Items.getOrThrow(equippedInSlot.item);
 		const refundBank = new Bank();
 		if (actualItem) {
 			refundBank.add(actualItem.id, equippedInSlot.quantity);

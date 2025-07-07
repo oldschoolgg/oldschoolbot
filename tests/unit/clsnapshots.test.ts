@@ -1,14 +1,14 @@
 import { alphabeticalSort } from '@oldschoolgg/toolkit/util';
+import { Items } from 'oldschooljs';
 import { expect, it } from 'vitest';
 
 import { BOT_TYPE } from '../../src/lib/constants';
 import { allCLItemsFiltered, allCollectionLogsFlat } from '../../src/lib/data/Collections';
-import { itemNameFromID } from '../../src/lib/util/smallUtils';
 
 it(`${BOT_TYPE} Overall Collection Log Items`, () => {
 	expect(
 		allCLItemsFiltered
-			.map(id => itemNameFromID(id)!)
+			.map(id => Items.itemNameFromId(id)!)
 			.sort(alphabeticalSort)
 			.join('\n')
 	).toMatchSnapshot();

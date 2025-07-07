@@ -1,4 +1,5 @@
 import { itemID } from 'oldschooljs';
+
 interface Constructable {
 	id: number;
 	name: string;

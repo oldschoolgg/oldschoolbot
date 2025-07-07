@@ -1,6 +1,6 @@
-import { type CommandResponse, Table } from '@oldschoolgg/toolkit';
+import { type CommandResponse, Table, calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
 import { Time, calcWhatPercent, clamp, percentChance, reduceNumByPercent, uniqueArr } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { Bank, type Item, toKMB } from 'oldschooljs';
 
 import {
 	type DisassembleFlag,
@@ -12,7 +12,6 @@ import {
 import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import type { DisassembleTaskOptions } from '../types/minions';
-import { calcPerHour, formatDuration, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { getItem } from '../util/getOSItem';

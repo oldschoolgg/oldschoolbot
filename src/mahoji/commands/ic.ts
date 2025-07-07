@@ -1,8 +1,8 @@
-import { type CommandRunOptions, formatOrdinal } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration, formatOrdinal, makeComponents } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, roll } from 'e';
-import { Bank, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, LootTable, itemID, resolveItems } from 'oldschooljs';
 
 import { itemContractResetTime } from '../../lib/MUser';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
@@ -16,8 +16,6 @@ import { BSOMonsters } from '../../lib/minions/data/killableMonsters/custom/cust
 import { nexLootTable } from '../../lib/nex';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
-import { formatDuration, itemID, makeComponents } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { LampTable } from '../../lib/xpLamps';
@@ -95,7 +93,7 @@ export function getItemContractDetails(mUser: MUser) {
 	const difference = currentDate - lastDate;
 	const totalContracts = mUser.user.total_item_contracts;
 	const streak = mUser.user.item_contract_streak;
-	const currentItem = mUser.user.current_item_contract ? getOSItem(mUser.user.current_item_contract) : null;
+	const currentItem = mUser.user.current_item_contract ? Items.getOrThrow(mUser.user.current_item_contract) : null;
 	const durationRemaining = Date.now() - (lastDate + itemContractResetTime);
 	const nextContractIsReady = difference >= itemContractResetTime;
 	const { bank } = mUser;

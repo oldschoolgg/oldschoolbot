@@ -1,6 +1,6 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
-import { itemID } from 'oldschooljs';
+import { Items, itemID } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
@@ -9,14 +9,13 @@ import type { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
-import { itemNameFromID } from '../../../lib/util/smallUtils';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
 		item =>
 			stringMatches(item.name, name) ||
-			stringMatches(itemNameFromID(item.id)!, name) ||
+			stringMatches(Items.itemNameFromId(item.id)!, name) ||
 			item.alias?.some(a => stringMatches(a, name))
 	);
 

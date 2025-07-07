@@ -3,6 +3,7 @@ import { randArrItem, roll } from 'e';
 import { Bank, ItemGroups, Items, LootTable, TreeHerbSeedTable, itemID, resolveItems } from 'oldschooljs';
 
 import { OSB_VIRTUS_IDS } from './bso/bsoConstants';
+import { clAdjustedDroprate } from './bso/bsoUtil';
 import { divinationEnergies } from './bso/divination';
 import {
 	allPetIDs,
@@ -28,7 +29,6 @@ import {
 } from './simulation/customImplings';
 import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
-import { clAdjustedDroprate } from './util';
 import getOSItem from './util/getOSItem';
 import { LampTable } from './xpLamps';
 

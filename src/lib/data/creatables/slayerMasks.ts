@@ -1,7 +1,6 @@
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
-import type { ItemBank } from '../../types';
 import type { Createable } from '../createables';
 import { slayerMaskHelms } from '../slayerMaskHelms';
 

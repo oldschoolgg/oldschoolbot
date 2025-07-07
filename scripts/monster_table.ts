@@ -3,10 +3,10 @@ import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, Items, SkillsEnum, convertBankToPerHourStats, itemID, resolveItems, toKMB } from 'oldschooljs';
+import { omit } from 'remeda';
 
 import '../src/lib/safeglobals';
 
-import { omit } from 'remeda';
 import type { BitField } from '../src/lib/constants';
 import { degradeableItems } from '../src/lib/degradeableItems';
 import { maxMage, maxMelee, maxRange } from '../src/lib/depthsOfAtlantis';

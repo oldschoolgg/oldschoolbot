@@ -1,4 +1,4 @@
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank, type Item, resolveItems } from 'oldschooljs';
 

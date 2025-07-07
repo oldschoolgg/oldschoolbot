@@ -1,18 +1,16 @@
 import { bold, userMention } from '@discordjs/builders';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, clamp, shuffleArr } from 'e';
 
 import { type MaterialType, materialTypes } from '.';
 import { SkillsEnum } from '../skilling/types';
 import type { ResearchTaskOptions } from '../types/minions';
-import { formatDuration, roll } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../util/handleMahojiConfirmation';
 import { handleTripFinish } from '../util/handleTripFinish';
-import { minionIsBusy } from '../util/minionIsBusy';
-import { minionName } from '../util/minionUtils';
+import { roll } from '../util/rng';
 import { MaterialBank } from './MaterialBank';
 import { type Invention, Inventions, transactMaterialsFromUser } from './inventions';
 
@@ -39,7 +37,7 @@ export async function researchCommand({
 	channelID: string;
 	interaction?: ChatInputCommandInteraction;
 }): CommandResponse {
-	if (minionIsBusy(user.id)) return 'Your minion is busy.';
+	if (user.minionIsBusy) return 'Your minion is busy.';
 	material = material.toLowerCase() as MaterialType;
 	if (!materialTypes.includes(material)) {
 		return "That's not a valid material.";
@@ -85,7 +83,7 @@ export async function researchCommand({
 		quantity
 	});
 
-	return `${minionName(user)} is now researching with ${cost}. The trip will take ${formatDuration(duration)}.`;
+	return `${user.minionName} is now researching with ${cost}. The trip will take ${formatDuration(duration)}.`;
 }
 
 export async function researchTask(data: ResearchTaskOptions) {

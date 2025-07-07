@@ -1,6 +1,6 @@
-import { LootTable } from 'oldschooljs';
+import { LootTable, resolveItems } from 'oldschooljs';
+
 import { GemRockTable } from '../skilling/skills/mining';
-import resolveItems from '../util/resolveItems';
 import { SeedTable } from './seedTable';
 
 export const allThirdAgeItems = resolveItems([

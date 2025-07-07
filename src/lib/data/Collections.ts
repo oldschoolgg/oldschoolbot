@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import {
 	Bank,
@@ -7,6 +7,7 @@ import {
 	EItem,
 	EMonster,
 	type Item,
+	type ItemBank,
 	ItemGroups,
 	type Monster,
 	Monsters,
@@ -59,7 +60,6 @@ import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
 import { getAllIgneTameKCs, tameKillableMonsters } from '../tames';
-import type { ItemBank } from '../types';
 import getOSItem from '../util/getOSItem';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';

@@ -1,3 +1,4 @@
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { Time, reduceNumByPercent, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
@@ -15,7 +16,6 @@ import type { Fletchable } from '../../../lib/skilling/types';
 import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';

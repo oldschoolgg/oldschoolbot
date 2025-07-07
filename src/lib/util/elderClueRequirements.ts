@@ -1,4 +1,5 @@
 import { notEmpty, uniqueArr } from 'e';
+import { Items, deepResolveItems } from 'oldschooljs';
 
 import { gods } from '../bso/divineDominion';
 import { BitField, BitFieldData, MAX_XP } from '../constants';
@@ -15,8 +16,6 @@ import {
 } from '../data/CollectionsExport';
 import { getSimilarItems } from '../data/similarItems';
 import { slayerMaskHelms } from '../data/slayerMaskHelms';
-import { deepResolveItems } from './resolveItems';
-import { itemNameFromID } from './smallUtils';
 
 export const elderRequiredClueCLItems = uniqueArr([
 	...cluesGrandmasterCL,
@@ -85,7 +84,10 @@ export async function checkElderClueRequirements(user: MUser) {
 		unmetRequirements.push(
 			`You have ${elderRequiredClueCLItems.length - doesntHave.length}/${
 				elderRequiredClueCLItems.length
-			} required clue items in your collection log: ${doesntHave.slice(0, 10).map(itemNameFromID).join(', ')}.`
+			} required clue items in your collection log: ${doesntHave
+				.slice(0, 10)
+				.map(i => Items.itemNameFromId(i))
+				.join(', ')}.`
 		);
 	}
 
@@ -99,8 +101,8 @@ export async function checkElderClueRequirements(user: MUser) {
 				.slice(0, 10)
 				.map(itemOrItems =>
 					Array.isArray(itemOrItems)
-						? itemOrItems.map(itemNameFromID).join(' OR ')
-						: itemNameFromID(itemOrItems)
+						? itemOrItems.map(i => Items.itemNameFromId(i)).join(' OR ')
+						: Items.itemNameFromId(itemOrItems)
 				)
 				.join(', ')}.`
 		);

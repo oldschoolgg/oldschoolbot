@@ -1,9 +1,9 @@
-import { ActivityGroup, globalConfig } from '../lib/constants';
+import type { ItemBank } from 'oldschooljs';
 
+import { ActivityGroup, globalConfig } from '../lib/constants';
 import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 import { sql } from './postgres.js';
-import type { ItemBank } from './util.js';
 import { getItem } from './util/getOSItem';
 
 async function calculateMinionTaskCounts() {

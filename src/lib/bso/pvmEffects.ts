@@ -10,7 +10,7 @@ import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { GearBank } from '../structures/GearBank';
 import type { UpdateBank } from '../structures/UpdateBank';
 import type { ItemBank } from '../types';
-import { clAdjustedDroprate } from '../util';
+import { clAdjustedDroprate } from './bsoUtil';
 import { bonecrusherEffect, clueUpgraderEffect, portableTannerEffect } from './inventionEffects';
 
 export type MidPVMEffectArgs = {

@@ -1,10 +1,10 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import { CyclopsTable } from '../../../../lib/simulation/cyclops';
-import type { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
-import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../../lib/util/makeBankImage';
-import { roll } from '../../../../lib/util/rng';
+import { CyclopsTable } from '@/lib/simulation/cyclops';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions';
+import { handleTripFinish } from '@/lib/util/handleTripFinish';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { roll } from '@/lib/util/rng';
 
 const cyclopsID = 2097;
 

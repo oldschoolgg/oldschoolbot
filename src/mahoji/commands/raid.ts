@@ -1,8 +1,8 @@
-import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
-
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
+import { Bank, averageBank, resolveItems } from 'oldschooljs';
+
 import { DOANonUniqueTable } from '../../lib/bso/doa/doaLootTable';
 import { doaStartCommand } from '../../lib/bso/doa/doaStartCommand';
 import { globalConfig } from '../../lib/constants';
@@ -18,11 +18,9 @@ import {
 	pickUniqueToGiveUser
 } from '../../lib/depthsOfAtlantis';
 import { type RaidLevel, mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
-import { averageBank, formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
-import resolveItems from '../../lib/util/resolveItems';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
 import type { OSBMahojiCommand } from '../lib/util';

@@ -1,12 +1,14 @@
 import { Time, increaseNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { skillingPetDropRate } from '@/lib/util';
+import { roll } from '@/lib/util/rng';
 import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, itemID, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
@@ -66,7 +68,7 @@ export const runecraftTask: MinionTask = {
 		bonusQuantity += raimentQuantity;
 
 		let bonusBlood = 0;
-		if (runeID === itemID('Blood rune')) {
+		if (runeID === EItem.BLOOD_RUNE) {
 			bonusBlood = await bloodEssence(user, essenceQuantity);
 			runeQuantity += bonusBlood;
 		}

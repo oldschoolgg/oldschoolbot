@@ -1,7 +1,7 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { type User, activity_type_enum } from '@prisma/client';
 import { calcWhatPercent, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
 import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
@@ -19,11 +19,9 @@ import {
 import { BitField } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { getMinigameEntity } from '../settings/minigames';
-
 import smithables from '../skilling/skills/smithing/smithables';
 import { getSlayerTaskStats } from '../slayer/slayerUtil';
 import { getAllUserTames } from '../tames';
-import type { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';
 import { easyTasks } from './easyTasks';
 import { eliteTasks } from './eliteTasks';

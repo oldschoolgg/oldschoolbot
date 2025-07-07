@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EmbedBuilder } from 'discord.js';
 import { shuffleArr, sumArr } from 'e';
 import { Bank, type SkillsScore, convertXPtoLVL, toKMB } from 'oldschooljs';

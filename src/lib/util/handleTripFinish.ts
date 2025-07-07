@@ -53,7 +53,8 @@ import {
 } from './globalInteractions';
 import { handleCrateSpawns } from './handleCrateSpawns';
 import { logError } from './logError';
-import { hasSkillReqs, perHourChance } from './smallUtils';
+import { perHourChance } from './rng';
+import { hasSkillReqs } from './smallUtils';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 

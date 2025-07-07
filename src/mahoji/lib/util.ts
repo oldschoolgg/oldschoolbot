@@ -1,4 +1,4 @@
-import type { ICommand, MahojiClient } from '@oldschoolgg/toolkit/util';
+import type { ICommand, MahojiClient } from '@oldschoolgg/toolkit/discord-util';
 
 import { Cooldowns } from './Cooldowns';
 import type { AbstractCommand, AbstractCommandAttributes } from './inhibitors';

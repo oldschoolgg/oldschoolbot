@@ -1,10 +1,11 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
+import { roll } from '@/lib/util/rng';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../../lib/util';
+import { skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 

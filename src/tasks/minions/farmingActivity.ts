@@ -1,6 +1,8 @@
 import { Time, randInt } from 'e';
 import { Bank, Monsters, increaseBankQuantitesByPercent, itemID } from 'oldschooljs';
 
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { roll } from '@/lib/util/rng';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { BitField } from '../../lib/constants';
@@ -12,7 +14,7 @@ import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingI
 import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { type Plant, SkillsEnum } from '../../lib/skilling/types';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, itemNameFromID, roll, skillingPetDropRate } from '../../lib/util';
+import { itemNameFromID, skillingPetDropRate } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';

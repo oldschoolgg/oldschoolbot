@@ -1,4 +1,5 @@
-import { Bank, itemID, resolveBank } from 'oldschooljs';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { Bank, itemID, resolveBank, resolveItems, resolveNameBank } from 'oldschooljs';
 
 import { expertCapesSource } from '../../bso/expertCapes';
 import { dyedItems } from '../../dyedItems';
@@ -8,10 +9,8 @@ import Skillcapes from '../../skilling/skillcapes';
 import { bones } from '../../skilling/skills/prayer';
 import type { Bone } from '../../skilling/types';
 import { seaMonkeyStaves } from '../../tames';
-import { resolveNameBank, stringMatches } from '../../util';
 import getOSItem from '../../util/getOSItem';
 import { assert } from '../../util/logError';
-import resolveItems from '../../util/resolveItems';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '../CollectionsExport';
 import type { Createable } from '../createables';
 import { divinationCreatables } from './divinationCreatables';

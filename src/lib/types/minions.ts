@@ -1,7 +1,7 @@
 import type { CropUpgradeType } from '@prisma/client';
+import type { ItemBank } from 'oldschooljs';
 
 import type { TeamMember } from 'discord.js';
-import type { ItemBank } from '.';
 import type { BathhouseTierName } from '../baxtorianBathhouses';
 import type { TuraelsTrialsMethod } from '../bso/turaelsTrials';
 import type { NMZStrategy } from '../constants';

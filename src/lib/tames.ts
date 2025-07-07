@@ -12,12 +12,11 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
+import type { handleFinish } from '../tasks/tames/tameTasks';
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
 import { Planks } from './minions/data/planks';
 import type { KillableMonster } from './minions/types';
-
-import type { handleFinish } from '../tasks/tames/tameTasks';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
 import Bars from './skilling/skills/smithing/smeltables';
 import type { MTame } from './structures/MTame';

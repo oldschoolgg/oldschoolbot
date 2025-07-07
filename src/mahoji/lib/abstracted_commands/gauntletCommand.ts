@@ -1,7 +1,7 @@
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
-import { formatSkillRequirements } from '@/lib/util';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
