@@ -63,6 +63,7 @@ model ClientStorage {
   sold_items_bank              Json     @default("{}") @db.Json
   herblore_cost_bank           Json     @default("{}") @db.Json
   construction_cost_bank       Json     @default("{}") @db.Json
+  mastering_mixology_cost_bank Json     @default("{}") @db.Json
   farming_cost_bank            Json     @default("{}") @db.Json
   farming_loot_bank            Json     @default("{}") @db.Json
   buy_cost_bank                Json     @default("{}") @db.Json
@@ -391,6 +392,9 @@ model User {
   carpenter_points     Int @default(0)
   zeal_tokens          Int @default(0)
   slayer_points        Int @default(0) @map("slayer.points")
+  mixology_mox_points  Int @default(0)
+  mixology_aga_points  Int @default(0)
+  mixology_lye_points  Int @default(0)
 
   completed_ca_task_ids Int[] @default([])
 
@@ -488,6 +492,7 @@ enum XpGainSource {
   CamdozaalFishing
   ForestryEvents
   MonsterKilling
+  MasteringMixology
 }
 
 model XPGain {
@@ -559,6 +564,7 @@ model Minigame {
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
   colosseum               Int    @default(0)
+  mastering_mixology      Int    @default(0)
 
   new_user NewUser?
 
@@ -886,6 +892,8 @@ enum activity_type_enum {
   AerialFishing
   DriftNet
   MahoganyHomes
+  MasteringMixologyContract
+  MixologyPasteCreation
   GnomeRestaurant
   SoulWars
   RoguesDenMaze

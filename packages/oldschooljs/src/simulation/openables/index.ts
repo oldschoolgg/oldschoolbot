@@ -31,6 +31,7 @@ import NestBoxRing from './NestBoxRing';
 import NestBoxSeeds from './NestBoxSeeds';
 import OgreCoffin from './OgreCoffin';
 import { GiantsFoundryOrePack, VolcanicMineOrePack } from './OrePack';
+import { AdeptPotionPack, ApprenticePotionPack, ExpertPotionPack } from './PotionPacks';
 import SeedPack from './SeedPack';
 import SinisterChest from './SinisterChest';
 import ZombiePiratesLocker from './ZombiePiratesLocker';
@@ -69,6 +70,9 @@ export {
 	LuckyImpling,
 	VolcanicMineOrePack,
 	GiantsFoundryOrePack,
+	ApprenticePotionPack,
+	AdeptPotionPack,
+	ExpertPotionPack,
 	IntricatePouch,
 	BasicSack,
 	AdeptSack,
@@ -111,6 +115,9 @@ const openablesObject = {
 	LuckyImpling,
 	VolcanicMineOrePack,
 	GiantsFoundryOrePack,
+	ApprenticePotionPack,
+	AdeptPotionPack,
+	ExpertPotionPack,
 	IntricatePouch,
 	BasicSack,
 	AdeptSack,
