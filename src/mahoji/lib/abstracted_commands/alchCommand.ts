@@ -1,12 +1,11 @@
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, clamp } from 'e';
-import { Bank, type Item, SkillsEnum, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, type Item, Items, SkillsEnum, resolveItems, toKMB } from 'oldschooljs';
 
 import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -35,7 +34,7 @@ export async function alchCommand(
 	quantity: number | undefined
 ) {
 	const userBank = user.bank;
-	let osItem = getItem(item);
+	let osItem = Items.getItem(item);
 
 	const [favAlchs] = user.favAlchs(calcMaxTripLength(user, 'Alching')) as Item[];
 	if (!osItem) osItem = favAlchs;

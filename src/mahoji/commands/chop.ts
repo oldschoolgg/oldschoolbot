@@ -7,7 +7,6 @@ import { determineWoodcuttingTime } from '../../lib/skilling/functions/determine
 import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { minionName } from '../../lib/util/minionUtils';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const axes = [
@@ -139,7 +138,7 @@ export const chopCommand: OSBMahojiCommand = {
 		const skills = user.skillsAsLevels;
 
 		if (skills.woodcutting < log.level) {
-			return `${minionName(user)} needs ${log.level} Woodcutting to chop ${log.name}.`;
+			return `${user.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
 		}
 
 		const { QP } = user;
@@ -241,7 +240,7 @@ export const chopCommand: OSBMahojiCommand = {
 			type: 'Woodcutting'
 		});
 
-		let response = `${minionName(user)} is now chopping ${log.name} until your minion ${
+		let response = `${user.minionName} is now chopping ${log.name} until your minion ${
 			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity

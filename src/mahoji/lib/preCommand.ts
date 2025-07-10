@@ -1,4 +1,4 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';

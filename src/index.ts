@@ -5,7 +5,7 @@ import './lib/util/transactItemsFromBank';
 import './lib/geImage';
 
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { MahojiClient } from '@oldschoolgg/toolkit/util';
+import { MahojiClient } from '@oldschoolgg/toolkit/discord-util';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 import { isObject } from 'e';
@@ -238,6 +238,10 @@ async function main() {
 		client.login(globalConfig.botToken)
 	]);
 	console.log(`Logged in as ${globalClient.user.username}`);
+
+	if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
+		import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
+	}
 }
 
 process.on('uncaughtException', err => {

@@ -4,12 +4,12 @@ Files in ./dist/cjs:
 	./dist/cjs/EItem.cjs: 333.84 KB 341,850 bytes
 	./dist/cjs/EMonster.cjs: 25.5 KB 26,114 bytes
 	./dist/cjs/gear/index.cjs: 1.77 KB 1,810 bytes
-	./dist/cjs/index.cjs: 863.58 KB 884,310 bytes
+	./dist/cjs/index.cjs: 864.36 KB 885,106 bytes
 	./dist/cjs/item_data-OPRFPN4I.json: 5.25 MB 5,509,046 bytes
 	./dist/cjs/monsters_data-5F625L5X.json: 363.54 KB 372,262 bytes
-	./dist/cjs/structures/Hiscores.cjs: 39.64 KB 40,587 bytes
+	./dist/cjs/structures/Hiscores.cjs: 39.85 KB 40,804 bytes
 	./dist/cjs/structures/Wiki.cjs: 3.8 KB 3,889 bytes
-	./dist/cjs/util/util.cjs: 37.73 KB 38,640 bytes
+	./dist/cjs/util/util.cjs: 37.95 KB 38,857 bytes
 
 Total size: 7.01 MB
 
@@ -20,11 +20,11 @@ Files in ./dist/esm:
 	./dist/esm/EItem.mjs: 332.86 KB 340,850 bytes
 	./dist/esm/EMonster.mjs: 24.51 KB 25,099 bytes
 	./dist/esm/gear/index.mjs: 807 B 807 bytes
-	./dist/esm/index.mjs: 856.07 KB 876,616 bytes
+	./dist/esm/index.mjs: 856.85 KB 877,412 bytes
 	./dist/esm/item_data-OPRFPN4I.json: 5.25 MB 5,509,046 bytes
 	./dist/esm/monsters_data-5F625L5X.json: 363.54 KB 372,262 bytes
-	./dist/esm/structures/Hiscores.mjs: 39.06 KB 39,999 bytes
+	./dist/esm/structures/Hiscores.mjs: 39.27 KB 40,216 bytes
 	./dist/esm/structures/Wiki.mjs: 2.23 KB 2,288 bytes
-	./dist/esm/util/util.mjs: 36.42 KB 37,291 bytes
+	./dist/esm/util/util.mjs: 36.63 KB 37,508 bytes
 
 Total size: 6.99 MB

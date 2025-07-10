@@ -1,9 +1,7 @@
 import { notEmpty } from 'e';
-import type { Bank } from 'oldschooljs';
+import { type Bank, Items } from 'oldschooljs';
 import { groupBy, mapValues, pickBy, sumBy, uniqueBy } from 'remeda';
 import { max, mean, medianSorted, min, quantileSorted } from 'simple-statistics';
-
-import { getItem } from './util/getOSItem';
 
 interface MarketPriceData {
 	totalSold: number;
@@ -108,7 +106,7 @@ export function marketPriceOfBank(bank: Bank) {
 }
 
 export function marketPriceOrBotPrice(itemID: number) {
-	const item = getItem(itemID);
+	const item = Items.get(itemID);
 	if (!item) return 0;
 	const data = marketPricemap.get(item.id);
 	if (data) {

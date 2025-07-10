@@ -1,19 +1,12 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { perTimeUnitChance, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { type BaseMessageOptions, escapeMarkdown, time } from 'discord.js';
+import { type BaseMessageOptions, time } from 'discord.js';
 import { Time } from 'e';
-import { type Bank, convertXPtoLVL, resolveItems } from 'oldschooljs';
+import { type Bank, resolveItems } from 'oldschooljs';
 
 import { MUserClass } from '../MUser';
-import { MAX_LEVEL } from '../constants';
 import { QuestID } from '../minions/data/quests';
-import type { SkillsEnum } from '../skilling/types';
 import type { Peak } from './../tickers';
-
-export function skillLevel(user: MUser, skill: SkillsEnum) {
-	const xp = Number(user.user[`skills_${skill}`]);
-	return convertXPtoLVL(xp, MAX_LEVEL);
-}
 
 export const bows = resolveItems([
 	'Twisted bow',
@@ -76,17 +69,6 @@ export const bolts = resolveItems([
 	'Iron bolts',
 	'Bronze bolts'
 ]);
-
-export function minionName(user: MUser) {
-	let [name, isIronman, icon] = [user.user.minion_name, user.user.minion_ironman, user.user.minion_icon];
-
-	const prefix = isIronman ? Emoji.Ironman : '';
-	icon ??= Emoji.Minion;
-
-	const strPrefix = prefix ? `${prefix} ` : '';
-
-	return name ? `${strPrefix}${icon} **${escapeMarkdown(name)}**` : `${strPrefix}${icon} Your minion`;
-}
 
 export function checkPeakTimes(): BaseMessageOptions {
 	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;

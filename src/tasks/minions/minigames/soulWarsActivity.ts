@@ -1,8 +1,8 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import { roll } from '@/lib/util/rng';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 function calcPoints() {

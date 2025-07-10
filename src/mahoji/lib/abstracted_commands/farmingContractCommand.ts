@@ -1,4 +1,5 @@
-import { type CommandResponse, makeComponents, roughMergeMahojiResponse } from '@oldschoolgg/toolkit/util';
+import { roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
+import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/util';
 
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import type {

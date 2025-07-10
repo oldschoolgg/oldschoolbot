@@ -1,10 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import {
-	type CommandRunOptions,
-	PaginatedMessage,
-	channelIsSendable,
-	makePaginatedMessage
-} from '@oldschoolgg/toolkit/util';
+import { PaginatedMessage, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
+import { type CommandRunOptions, channelIsSendable } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, EmbedBuilder, codeBlock } from 'discord.js';
 import { chunk } from 'e';
 import type { Bank } from 'oldschooljs';

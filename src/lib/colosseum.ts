@@ -13,7 +13,7 @@ import {
 	reduceNumByPercent,
 	sumArr
 } from 'e';
-import { Bank, type EquipmentSlot, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
 
 import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
@@ -22,7 +22,7 @@ import type { GearSetupType } from './gear/types';
 import { trackLoot } from './lootTrack';
 import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
-import type { ItemBank, Skills } from './types';
+import type { Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { updateBankSetting } from './util/updateBankSetting';

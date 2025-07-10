@@ -1,6 +1,12 @@
+import deepMerge from 'deepmerge';
 import type { BaseMessageOptions, InteractionReplyOptions } from 'discord.js';
+import type { CommandResponse } from './util.js';
 
-import type { CommandResponse } from '../util';
+export * from './util/paginatedMessage.js';
+export * from './util/discord';
+export * from './util/discordJS';
+export * from './lib/MahojiClient/Mahoji';
+export * from './lib/MahojiClient/mahojiTypes';
 
 export function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
 	if (!one) return {};
@@ -29,4 +35,29 @@ export function roughMergeMahojiResponse(
 	newResponse.content = newContent.join('\n\n');
 
 	return newResponse;
+}
+
+const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
+
+export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
+	if (typeof string === 'string') {
+		if (string.length > 2000) {
+			return {
+				content: TOO_LONG_STR,
+				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
+			};
+		}
+		return string;
+	}
+	if (string.content && string.content.length > 2000) {
+		return deepMerge(
+			string,
+			{
+				content: TOO_LONG_STR,
+				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
+			},
+			{ clone: false }
+		);
+	}
+	return string;
 }

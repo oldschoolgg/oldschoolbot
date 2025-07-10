@@ -3,10 +3,10 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatSkillRequirements, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';

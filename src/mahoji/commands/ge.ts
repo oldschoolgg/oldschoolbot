@@ -1,3 +1,4 @@
+import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type CommandOption,
 	type CommandRunOptions,
@@ -18,7 +19,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
+import { itemNameFromID } from '../../lib/util/smallUtils';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';

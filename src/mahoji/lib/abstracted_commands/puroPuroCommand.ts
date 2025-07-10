@@ -1,9 +1,10 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
+import { type Item, itemID } from 'oldschooljs';
 
-import type { Item } from 'oldschooljs';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import type { Skills } from '../../../lib/types';
 import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

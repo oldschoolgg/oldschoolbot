@@ -3,7 +3,8 @@ import { channelIsSendable, formatDuration, randomVariation } from '@oldschoolgg
 import { calcWhatPercent } from 'e';
 import { Bank, TOBRooms, itemID } from 'oldschooljs';
 
-import { formatSkillRequirements, skillsMeetRequirements } from '@/lib/util';
+import { skillsMeetRequirements } from '@/lib/util';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
 	TENTACLE_CHARGES_PER_RAID,

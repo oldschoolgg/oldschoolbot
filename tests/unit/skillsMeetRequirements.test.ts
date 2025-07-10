@@ -1,8 +1,9 @@
 import { objectEntries } from 'e';
+import { convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import type { Skills } from '../../src/lib/skilling/skills';
-import { convertLVLtoXP, skillsMeetRequirements } from '../../src/lib/util';
+import { skillsMeetRequirements } from '../../src/lib/util';
 
 function convert(bank: Record<keyof typeof Skills, number>) {
 	const newObj: Record<keyof typeof Skills, number> = {};

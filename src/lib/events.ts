@@ -13,13 +13,12 @@ import {
 } from 'discord.js';
 import { Time, isFunction, roll } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Items, toKMB } from 'oldschooljs';
+import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { untrustedGuildSettingsCache } from './cache.js';
 import { BitField, Channel, globalConfig } from './constants';
 import pets from './data/pets';
-import type { ItemBank } from './types';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';

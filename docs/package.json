@@ -19,7 +19,7 @@
 		"collapse-white-space": "^2.1.0",
 		"markdown-it": "^14.1.0",
 		"oldschooljs": "workspace:*",
-		"preact": "^10.26.6",
+		"preact": "^10.26.9",
 		"tailwindcss": "^4.1.5",
 		"unist-util-visit": "^5.0.0",
 		"unist-util-visit-parents": "^6.0.1"

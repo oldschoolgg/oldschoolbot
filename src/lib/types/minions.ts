@@ -1,6 +1,6 @@
 import type { CropUpgradeType } from '@prisma/client';
+import type { ItemBank } from 'oldschooljs';
 
-import type { ItemBank } from '.';
 import type { NMZStrategy } from '../constants';
 import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 import type { IPatchData } from '../minions/farming/types';

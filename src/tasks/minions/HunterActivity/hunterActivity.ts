@@ -3,6 +3,7 @@ import type { Prisma } from '@prisma/client';
 import { Time, randInt } from 'e';
 import { Bank, ECreature, EquipmentSlot, itemID } from 'oldschooljs';
 
+import { roll } from '@/lib/util/rng';
 import { MAX_LEVEL } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -10,7 +11,7 @@ import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/fun
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../../lib/util';
+import { skillingPetDropRate } from '../../../lib/util';
 import { PeakTier } from '../../../lib/util/calcWildyPkChance';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { logError } from '../../../lib/util/logError.js';

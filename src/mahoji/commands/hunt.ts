@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
-import { hasSkillReqs } from '@/lib/util';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../lib/lootTrack';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';

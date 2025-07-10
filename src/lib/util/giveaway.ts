@@ -1,5 +1,5 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
+import { channelIsSendable } from '@oldschoolgg/toolkit/util';
 import type { Giveaway } from '@prisma/client';
 import { type MessageEditOptions, time, userMention } from 'discord.js';
 import { Time, debounce, noOp } from 'e';

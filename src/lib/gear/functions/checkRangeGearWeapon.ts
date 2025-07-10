@@ -1,17 +1,16 @@
 import { objectEntries } from 'e';
-import { Items } from 'oldschooljs';
+import { EItem, Items } from 'oldschooljs';
 
 import { formatList } from '@/lib/util/smallUtils';
 import { projectiles } from '../../constants';
 import { getSimilarItems } from '../../data/similarItems';
 import type { Gear } from '../../structures/Gear';
-import { getOSItem } from '../../util/getOSItem';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();
 	const { ammo } = gear;
 	if (!weapon) return 'You have no weapon equipped.';
-	const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(weapon.id);
+	const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(weapon.id);
 	if (usingBowfa) {
 		return {
 			weapon,

@@ -1,16 +1,9 @@
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import {
-	calcPerHour,
-	cleanUsername,
-	formatDuration,
-	isWeekend,
-	makeComponents,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+import { cleanUsername } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { noOp, objectEntries } from 'e';
-import { calcCombatLevel } from 'oldschooljs';
+import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 
 import type { MUserClass } from './MUser';
 import { usernameWithBadgesCache } from './cache';
@@ -22,29 +15,10 @@ import type { GroupMonsterActivityTaskOptions } from './types/minions';
 import { makeBadgeString } from './util/makeBadgeString';
 import { sendToChannelID } from './util/webhook.js';
 
-export * from 'oldschooljs';
-export * from './util/rng';
-
-export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
-
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
-
-export function convertXPtoLVL(xp: number, cap = 99) {
-	let points = 0;
-
-	for (let lvl = 1; lvl <= cap; lvl++) {
-		points += Math.floor(lvl + 300 * Math.pow(2, lvl / 7));
-
-		if (Math.floor(points / 4) >= xp + 1) {
-			return lvl;
-		}
-	}
-
-	return cap;
-}
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
@@ -63,7 +37,7 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 			if (calcCombatLevel(skills as any, MAX_LEVEL) < level!) return false;
 		} else {
 			const xpHas = skills[skillName];
-			const levelHas = convertXPtoLVL(xpHas ?? 1);
+			const levelHas = convertXPtoLVL(xpHas ?? 1, MAX_LEVEL);
 			if (levelHas < level!) return false;
 		}
 	}

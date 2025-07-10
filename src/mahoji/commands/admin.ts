@@ -1,7 +1,7 @@
+import { bulkUpdateCommands } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type CommandRunOptions,
 	type MahojiUserOption,
-	bulkUpdateCommands,
 	calcPerHour,
 	cleanString,
 	dateFm,
