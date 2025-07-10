@@ -4,6 +4,46 @@ import type { Buyable } from './buyables';
 
 export const tripBuyables: Buyable[] = [
 	{
+		name: 'Pineapple',
+		outputItems: new Bank().add('Pineapple'),
+		gpCost: 5,
+		quantityPerHour: 3500,
+		shopQuantity: 15,
+		changePer: 2
+	},
+	{
+		name: 'Banana',
+		outputItems: new Bank().add('Pineapple'),
+		gpCost: 5,
+		quantityPerHour: 3500,
+		shopQuantity: 15,
+		changePer: 2
+	},
+	{
+		name: 'Orange',
+		outputItems: new Bank().add('Orange'),
+		gpCost: 5,
+		quantityPerHour: 3250,
+		shopQuantity: 10,
+		changePer: 2
+	},
+	{
+		name: 'Bucket of sand',
+		outputItems: new Bank().add('Bucket of sand'),
+		gpCost: 5,
+		quantityPerHour: 3250,
+		shopQuantity: 10,
+		changePer: 2
+	},
+	{
+		name: 'Soda ash',
+		outputItems: new Bank().add('Soda ash'),
+		gpCost: 5,
+		quantityPerHour: 3250,
+		shopQuantity: 10,
+		changePer: 2
+	},
+	{
 		name: 'Arrow shaft',
 		outputItems: new Bank().add('Arrow shaft'),
 		gpCost: 1,
