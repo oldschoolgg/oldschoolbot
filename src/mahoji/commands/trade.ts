@@ -120,8 +120,7 @@ export const tradeCommand: OSBMahojiCommand = {
 			return "You're trying to trade untradeable items.";
 		}
 
-		if (itemsSent.items().length === 0 && itemsReceived.items().length === 0)
-			return "You can't make an empty trade.";
+		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
 		if (!senderUser.owns(itemsSent)) return "You don't own those items.";
 
 		await handleMahojiConfirmation(
