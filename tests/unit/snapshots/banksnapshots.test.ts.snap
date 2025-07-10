@@ -4217,6 +4217,61 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
+    "changePer": 2,
+    "gpCost": 5,
+    "itemCost": {},
+    "name": "Pineapple",
+    "outputItems": {
+      "2114": 1,
+    },
+    "quantityPerHour": 3500,
+    "shopQuantity": 15,
+  },
+  {
+    "changePer": 2,
+    "gpCost": 5,
+    "itemCost": {},
+    "name": "Banana",
+    "outputItems": {
+      "2114": 1,
+    },
+    "quantityPerHour": 3500,
+    "shopQuantity": 15,
+  },
+  {
+    "changePer": 2,
+    "gpCost": 5,
+    "itemCost": {},
+    "name": "Orange",
+    "outputItems": {
+      "2108": 1,
+    },
+    "quantityPerHour": 3250,
+    "shopQuantity": 10,
+  },
+  {
+    "changePer": 2,
+    "gpCost": 5,
+    "itemCost": {},
+    "name": "Bucket of sand",
+    "outputItems": {
+      "1783": 1,
+    },
+    "quantityPerHour": 3250,
+    "shopQuantity": 10,
+  },
+  {
+    "changePer": 2,
+    "gpCost": 5,
+    "itemCost": {},
+    "name": "Soda ash",
+    "outputItems": {
+      "1781": 1,
+    },
+    "quantityPerHour": 3250,
+    "shopQuantity": 10,
+  },
+  {
     "changePer": 1,
     "gpCost": 1,
     "itemCost": {},
