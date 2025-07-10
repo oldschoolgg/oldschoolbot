@@ -2,9 +2,10 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { Buyable } from '../../../lib/data/buyables/buyables';
 import type { BuyActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
+import { itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import calculateShopBuyCost from '../../../lib/util/calculateShopBuyCost';
