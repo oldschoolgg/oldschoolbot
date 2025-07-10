@@ -19,6 +19,14 @@ import { filterOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
+function formatBankForDisplay(bank: Bank, maxLen: number): string {
+	const fullStr = bank.toStringFull();
+	if (fullStr.length > maxLen) {
+		return bank.toString(); // abbreviated with toKMB formatting
+	}
+	return fullStr;
+}
+
 export const tradeCommand: OSBMahojiCommand = {
 	name: 'trade',
 	description: 'Allows you to trade items with other players.',
@@ -116,13 +124,14 @@ export const tradeCommand: OSBMahojiCommand = {
 			return "You're trying to trade untradeable items.";
 		}
 
-		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
+		if (itemsSent.items().length === 0 && itemsReceived.items().length === 0)
+			return "You can't make an empty trade.";
 		if (!senderUser.owns(itemsSent)) return "You don't own those items.";
 
 		await handleMahojiConfirmation(
 			interaction,
-			`**${senderUser}** is giving: ${truncateString(itemsSent.toString(), 950)}
-**${recipientUser}** is giving: ${truncateString(itemsReceived.toString(), 950)}
+			`**${senderUser}** is giving: ${truncateString(formatBankForDisplay(itemsSent, 950), 950)}
+**${recipientUser}** is giving: ${truncateString(formatBankForDisplay(itemsReceived, 950), 950)}
 
 Both parties must click confirm to make the trade.`,
 			[recipientUser.id, senderUser.id]
@@ -158,9 +167,9 @@ Both parties must click confirm to make the trade.`,
 			await addToGPTaxBalance(senderUser.id, itemsSent.amount('Coins'));
 		}
 
-		return `${discrimName(senderAPIUser)} sold ${itemsSent} to ${discrimName(
+		return `${discrimName(senderAPIUser)} sold ${truncateString(formatBankForDisplay(itemsSent, 950), 950)} to ${discrimName(
 			recipientAPIUser
-		)} in return for ${itemsReceived}.
+		)} in return for ${truncateString(formatBankForDisplay(itemsReceived, 950), 950)}.
 
 You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
 	}
