@@ -1,11 +1,5 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import {
-	type CommandRunOptions,
-	type MahojiUserOption,
-	discrimName,
-	mentionCommand,
-	truncateString
-} from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, type MahojiUserOption, discrimName, mentionCommand } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -19,9 +13,11 @@ import { filterOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
-function formatBankForDisplay(bank: Bank, maxLen: number): string {
+const MAX_CHARACTER_LENGTH = 950;
+
+function formatBankForDisplay(bank: Bank): string {
 	const fullStr = bank.toStringFull();
-	if (fullStr.length > maxLen) {
+	if (fullStr.length > MAX_CHARACTER_LENGTH) {
 		return bank.toString(); // abbreviated with toKMB formatting
 	}
 	return fullStr;
@@ -130,8 +126,8 @@ export const tradeCommand: OSBMahojiCommand = {
 
 		await handleMahojiConfirmation(
 			interaction,
-			`**${senderUser}** is giving: ${truncateString(formatBankForDisplay(itemsSent, 950), 950)}
-**${recipientUser}** is giving: ${truncateString(formatBankForDisplay(itemsReceived, 950), 950)}
+			`**${senderUser}** is giving: ${formatBankForDisplay(itemsSent)}
+**${recipientUser}** is giving: ${formatBankForDisplay(itemsReceived)}
 
 Both parties must click confirm to make the trade.`,
 			[recipientUser.id, senderUser.id]
@@ -167,9 +163,9 @@ Both parties must click confirm to make the trade.`,
 			await addToGPTaxBalance(senderUser.id, itemsSent.amount('Coins'));
 		}
 
-		return `${discrimName(senderAPIUser)} sold ${truncateString(formatBankForDisplay(itemsSent, 950), 950)} to ${discrimName(
+		return `${discrimName(senderAPIUser)} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
 			recipientAPIUser
-		)} in return for ${truncateString(formatBankForDisplay(itemsReceived, 950), 950)}.
+		)} in return for ${formatBankForDisplay(itemsReceived)}.
 
 You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
 	}
