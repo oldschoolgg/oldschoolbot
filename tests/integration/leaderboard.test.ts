@@ -4,15 +4,32 @@ import { leaderboardCommand } from '../../src/mahoji/commands/leaderboard';
 import { kcGains } from '../../src/mahoji/commands/tools';
 import { createTestUser } from './util';
 
-describe.skip('Leaderboard', async () => {
-	test('KC Leaderboard', async () => {
-		const user = await createTestUser();
-		await user.runCommand(leaderboardCommand, {
-			kc: {
-				monster: 'man'
-			}
-		});
-	});
+describe('Leaderboard', async () => {
+        test('KC Leaderboard', async () => {
+                const user = await createTestUser();
+                await user.runCommand(leaderboardCommand, {
+                        kc: {
+                                monster: 'man'
+                        }
+                });
+        });
+
+       test('KC Leaderboard Tame', async () => {
+               const user = await createTestUser();
+               await user.runCommand(leaderboardCommand, {
+                       kc: {
+                               monster: 'Zulrah',
+                               tame: true
+                       }
+               });
+       });
+
+       test('Tames Hatched Leaderboard', async () => {
+               const user = await createTestUser();
+               await user.runCommand(leaderboardCommand, {
+                       tames_hatched: {}
+               });
+       });
 
 	test('kcGains Leaderboard', async () => {
 		for (const bool of [true, false]) {
