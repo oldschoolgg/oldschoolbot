@@ -627,7 +627,8 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Buy': {
 			const data = currentTask as BuyActivityTaskOptions;
-			const itemName = Items.get(data.itemID)?.name ?? `Item[${data.itemID}]`;
+			const tripBuyable = typeof data.buyableIndex === 'number' ? tripBuyables[data.buyableIndex] : undefined;
+			const itemName = tripBuyable?.displayName ?? Items.get(data.itemID)?.name ?? `Item[${data.itemID}]`;
 			return `${name} is currently buying ${data.quantity}x ${itemName}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Nex': {

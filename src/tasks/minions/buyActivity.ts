@@ -9,10 +9,11 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 export const buyTask: MinionTask = {
 	type: 'Buy',
 	async run(data: BuyActivityTaskOptions) {
-		const { userID, channelID, itemID, quantity, totalCost, duration } = data;
+		const { userID, channelID, itemID, quantity, totalCost, duration, buyableIndex } = data;
 		const user = await mUserFetch(userID);
 
-		const tripBuyable = tripBuyables.find(tb => tb.item === itemID);
+		const tripBuyable =
+			typeof buyableIndex === 'number' ? tripBuyables[buyableIndex] : tripBuyables.find(tb => tb.item === itemID);
 		if (!tripBuyable) {
 			throw new Error(`No trip buyable found for item ${itemID}`);
 		}

@@ -4,6 +4,7 @@ import { Time } from 'e';
 
 import { type PvMMethod, autocompleteMonsters } from '../../mahoji/commands/k';
 import { ClueTiers } from '../clues/clueTiers';
+import { tripBuyables } from '../data/buyables/tripBuyables';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { convertStoredActivityToFlatActivity } from '../settings/prisma';
@@ -131,7 +132,13 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Buy]: {
 		commandName: 'buy',
-		args: (data: BuyActivityTaskOptions) => ({ name: itemNameFromID(data.itemID), quantity: data.quantity })
+		args: (data: BuyActivityTaskOptions) => ({
+			name:
+				typeof data.buyableIndex === 'number'
+					? (tripBuyables[data.buyableIndex].displayName ?? itemNameFromID(data.itemID))
+					: itemNameFromID(data.itemID),
+			quantity: data.quantity
+		})
 	},
 	[activity_type_enum.ShootingStars]: {
 		commandName: 'm',

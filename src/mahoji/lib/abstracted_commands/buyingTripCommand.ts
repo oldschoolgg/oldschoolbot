@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import type { TripBuyable } from '../../../lib/data/buyables/tripBuyables';
+import { type TripBuyable, tripBuyables } from '../../../lib/data/buyables/tripBuyables';
 import type { BuyActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -70,7 +70,8 @@ export async function buyingTripCommand(
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
-		totalCost
+		totalCost,
+		buyableIndex: tripBuyables.indexOf(buyable)
 	});
 
 	return `${user.minionName} is now buying ${quantity}x ${itemDisplayName} and will return in ${formatDuration(duration)}.`;
