@@ -6,6 +6,7 @@ import { Items, SkillsEnum } from 'oldschooljs';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { collectables } from '../../mahoji/lib/collectables';
 import { ClueTiers } from '../clues/clueTiers';
+import { tripBuyables } from '../data/buyables/tripBuyables';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import { quests } from '../minions/data/quests';
@@ -35,6 +36,7 @@ import type {
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -623,6 +625,12 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'Buy': {
+			const data = currentTask as BuyActivityTaskOptions;
+			const tripBuyable = typeof data.buyableIndex === 'number' ? tripBuyables[data.buyableIndex] : undefined;
+			const itemName = tripBuyable?.displayName ?? Items.get(data.itemID)?.name ?? `Item[${data.itemID}]`;
+			return `${name} is currently buying ${data.quantity}x ${itemName}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Nex': {
 			const data = currentTask as NexTaskOptions;
