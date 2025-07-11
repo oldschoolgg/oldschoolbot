@@ -6,6 +6,7 @@ import { Items, SkillsEnum } from 'oldschooljs';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { collectables } from '../../mahoji/lib/collectables';
 import { ClueTiers } from '../clues/clueTiers';
+import { tripBuyables } from '../data/buyables/tripBuyables';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import { quests } from '../minions/data/quests';
