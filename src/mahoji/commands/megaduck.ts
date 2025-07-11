@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { globalConfig } from '@/lib/constants';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
 import { getUsernameSync } from '../../lib/util';
@@ -119,7 +120,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 	description: 'Mega duck!.',
 	attributes: {
 		requiresMinion: true,
-		cooldown: 30 * Time.Second
+		cooldown: 20 * Time.Second
 	},
 	options: [
 		{
@@ -147,6 +148,15 @@ export const megaDuckCommand: OSBMahojiCommand = {
 			resetCooldown(user, 'megaduck');
 			return message;
 		};
+		const defaultWithoutCooldown = () => {
+			resetCooldown(user, 'megaduck');
+			return {
+				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
+					location.usersParticipated[user.id] ?? 0
+				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
+				files: [{ attachment: image, name: 'megaduck.png' }]
+			};
+		};
 
 		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 		if (!guild) return withoutCooldown('You can only run this in a guild.');
@@ -171,7 +181,10 @@ export const megaDuckCommand: OSBMahojiCommand = {
 		const direction = options.move;
 
 		const member = guild.members.cache.get(userID.toString());
-		if (options.reset && member && member.permissions.has('Administrator')) {
+		if (
+			(globalConfig.adminUserIDs.includes(userID.toString()) && guild.id.toString() === '342983479501389826') ||
+			(options.reset && member && member.permissions.has('Administrator'))
+		) {
 			await handleMahojiConfirmation(
 				interaction,
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
@@ -186,12 +199,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 
 		const { image } = await makeImage(location);
 		if (!direction) {
-			return {
-				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
-					location.usersParticipated[user.id] ?? 0
-				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
-				files: [{ attachment: image, name: 'megaduck.png' }]
-			};
+			return defaultWithoutCooldown();
 		}
 
 		const cost = new Bank().add('Breadcrumbs');
@@ -202,7 +210,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 		let newLocation = applyDirection(location, direction);
 		const newLocationResult = await makeImage(newLocation);
 		if (newLocationResult.currentColor[3] !== 0) {
-			return "You can't move here.";
+			return withoutCooldown("You can't move here.");
 		}
 
 		if (newLocation.usersParticipated[user.id]) {
