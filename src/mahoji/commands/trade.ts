@@ -161,11 +161,23 @@ Both parties must click confirm to make the trade.`,
 		if (itemsSent.has('Coins')) {
 			await addToGPTaxBalance(senderUser.id, itemsSent.amount('Coins'));
 		}
-
-		return `${discrimName(senderAPIUser)} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
+		
+		const sentFull = itemsSent.toStringFull();
+		const receivedFull = itemsReceived.toStringFull();
+		const files: { attachment: Buffer; name: string }[] = [];
+		if (sentFull.length > MAX_CHARACTER_LENGTH) {
+			files.push({ attachment: Buffer.from(sentFull), name: 'items_sent.txt' });
+		}
+		if (receivedFull.length > MAX_CHARACTER_LENGTH) {
+			files.push({ attachment: Buffer.from(receivedFull), name: 'items_received.txt' });
+		}
+		
+		const content = `${discrimName(senderAPIUser)} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
 			recipientAPIUser
 		)} in return for ${formatBankForDisplay(itemsReceived)}.
-
-You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
+  
+  You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
+		
+	return files.length > 0 ? { content, files } : content;
 	}
 };
