@@ -208,6 +208,7 @@ export async function barbAssaultGambleCommand(
 		}
 	);
 	const loot = new Bank().add(table.roll(quantity));
+	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
 	str += await displayCluesAndPets(user.id, loot);
 	if (loot.has('Pet Penance Queen')) {
@@ -222,8 +223,6 @@ export async function barbAssaultGambleCommand(
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}
-	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
-
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
