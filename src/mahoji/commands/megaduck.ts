@@ -148,15 +148,6 @@ export const megaDuckCommand: OSBMahojiCommand = {
 			resetCooldown(user, 'megaduck');
 			return message;
 		};
-		const defaultWithoutCooldown = () => {
-			resetCooldown(user, 'megaduck');
-			return {
-				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
-					location.usersParticipated[user.id] ?? 0
-				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
-				files: [{ attachment: image, name: 'megaduck.png' }]
-			};
-		};
 
 		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 		if (!guild) return withoutCooldown('You can only run this in a guild.');
@@ -199,7 +190,13 @@ export const megaDuckCommand: OSBMahojiCommand = {
 
 		const { image } = await makeImage(location);
 		if (!direction) {
-			return defaultWithoutCooldown();
+			resetCooldown(user, 'megaduck');
+			return {
+				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
+					location.usersParticipated[user.id] ?? 0
+				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
+				files: [{ attachment: image, name: 'megaduck.png' }]
+			};
 		}
 
 		const cost = new Bank().add('Breadcrumbs');
