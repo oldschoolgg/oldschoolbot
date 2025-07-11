@@ -22,7 +22,7 @@ function escapeItemName(str: string) {
 
 const name = (id: number) => escapeItemName(Items.itemNameFromId(id)!);
 
-async function renderMonstersMarkdown() {
+function renderMonstersMarkdown() {
 	const markdown = new Markdown();
 
 	for (const monster of wikiMonsters) {
@@ -383,7 +383,7 @@ async function wiki() {
 	rendeCoxMarkdown();
 	clueBoosts();
 	renderMonstersMarkdown();
-	updateAuthors();
+	await updateAuthors();
 	miningSnapshots();
 	process.exit(0);
 }
