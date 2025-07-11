@@ -17,6 +17,7 @@ import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import { getUsername, getUsernameSync } from '@/lib/util';
+import { Prisma } from '@prisma/client';
 import { logError, logErrorForInteraction } from '@/lib/util/logError';
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -587,16 +588,18 @@ async function tamesHatchedLb(
        channelID: string,
        ironmanOnly: boolean
 ) {
+	 const query = Prisma.sql`
+               SELECT id, CAST(nursery->>'eggsHatched' AS INTEGER) as count
+               FROM users
+               WHERE nursery IS NOT NULL
+                 AND CAST(nursery->>'eggsHatched' AS INTEGER) > 0
+                 ${ironmanOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.empty}
+               ORDER BY count DESC
+               LIMIT 50;
+       `;
        const users = (
-               await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
-                       `SELECT id, CAST(nursery->>'eggsHatched' AS INTEGER) as count
-                        FROM users
-                        WHERE nursery IS NOT NULL AND CAST(nursery->>'eggsHatched' AS INTEGER) > 0
-                        ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
-                        ORDER BY count DESC
-                        LIMIT 50;`
-               )
-       ).map(res => ({ ...res, score: res.count }));
+		   await prisma.$queryRaw<{ id: string; count: number }[]>(query)
+	   ).map(res => ({ ...res, score: res.count }));
 
        return doMenuWrapper({
                ironmanOnly,
