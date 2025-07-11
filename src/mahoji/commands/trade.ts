@@ -177,7 +177,7 @@ Both parties must click confirm to make the trade.`,
 		)} in return for ${formatBankForDisplay(itemsReceived)}.
   
   You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
-	
+
 		return files.length > 0 ? { content, files } : content;
 	}
 };
