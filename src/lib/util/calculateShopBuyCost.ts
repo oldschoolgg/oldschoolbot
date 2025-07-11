@@ -1,9 +1,14 @@
-export function calculateShopBuyCost(
-	gpCost: number,
-	quantity: number,
-	shopQuantity?: number,
-	changePer?: number
-): { total: number; average: number } {
+interface ShopBuyCostOptions {
+	gpCost: number;
+	quantity: number;
+	shopQuantity?: number;
+	changePer?: number;
+}
+
+export function calculateShopBuyCost({ gpCost, quantity, shopQuantity, changePer }: ShopBuyCostOptions): {
+	total: number;
+	average: number;
+} {
 	if (quantity === 0) {
 		return { total: 0, average: 0 };
 	}
@@ -13,9 +18,10 @@ export function calculateShopBuyCost(
 	}
 
 	let total = 0;
+	const priceChange = changePer / 100;
 	for (let i = 0; i < quantity; i++) {
 		const itemsBoughtThisWorld = i % shopQuantity;
-		const price = Math.floor(gpCost * (1 + (changePer / 100) * itemsBoughtThisWorld));
+		const price = Math.floor(gpCost * (1 + priceChange * itemsBoughtThisWorld));
 		total += price;
 	}
 

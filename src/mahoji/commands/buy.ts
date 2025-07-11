@@ -1,12 +1,13 @@
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
 import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
 
+import { tripBuyables } from '@/lib/data/buyables/tripBuyables';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -18,7 +19,12 @@ import { buyingTripCommand } from '../lib/abstracted_commands/buyingTripCommand'
 import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
 
-const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
+const allBuyablesAutocomplete = [
+	...Buyables.map(b => ({ name: b.name })),
+	...tripBuyables.map(tb => ({ name: tb.displayName ?? Items.get(tb.item)?.name ?? 'Unknown item' })),
+	{ name: 'Kitten' },
+	{ name: 'Fossil Island Notes' }
+];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -57,6 +63,14 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 		if (stringMatches(name, 'Fossil Island Notes')) {
 			return buyFossilIslandNotes(user, interaction, quantity ?? 1);
+		}
+
+		const tripBuyable = tripBuyables.find(
+			tb => stringMatches(name, Items.get(tb.item)?.name ?? '') || stringMatches(name, tb.displayName ?? '')
+		);
+
+		if (tripBuyable) {
+			return buyingTripCommand(user, channelID.toString(), tripBuyable, quantity, interaction);
 		}
 		const buyable = Buyables.find(
 			item => stringMatches(name, item.name) || item.aliases?.some(alias => stringMatches(alias, name))
@@ -122,10 +136,6 @@ export const buyCommand: OSBMahojiCommand = {
 					Minigames.find(i => i.column === key)?.name
 				} to buy this, you only have ${kc} KC.`;
 			}
-		}
-
-		if (buyable.quantityPerHour) {
-			return buyingTripCommand(user, channelID.toString(), buyable, quantity, interaction);
 		}
 
 		if (quantity === null) {

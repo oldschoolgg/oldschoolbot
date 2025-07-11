@@ -82,7 +82,6 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { itemNameFromID } from '../util';
 import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
@@ -628,7 +627,8 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Buy': {
 			const data = currentTask as BuyActivityTaskOptions;
-			return `${name} is currently buying ${data.quantity}x ${itemNameFromID(data.itemID)}. The trip should take ${formatDuration(durationRemaining)}.`;
+			const itemName = Items.get(data.itemID)?.name ?? `Item[${data.itemID}]`;
+			return `${name} is currently buying ${data.quantity}x ${itemName}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Nex': {
 			const data = currentTask as NexTaskOptions;

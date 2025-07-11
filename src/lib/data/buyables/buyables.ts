@@ -22,7 +22,6 @@ import { runeBuyables } from './runes';
 import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
-import { tripBuyables } from './tripBuyables';
 import { troubleBrewingBuyables } from './troubleBrewingShop';
 
 export interface Buyable {
@@ -1154,8 +1153,7 @@ const Buyables: Buyable[] = [
 	...toaCapes,
 	...mairinsMarketBuyables,
 	...forestryBuyables,
-	...colossalWyrmAgilityBuyables,
-	...tripBuyables
+	...colossalWyrmAgilityBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
