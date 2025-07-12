@@ -11,6 +11,7 @@ import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
@@ -21,7 +22,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { displayCluesAndPets } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahojiSettings';
 
@@ -209,7 +209,7 @@ export async function barbAssaultGambleCommand(
 	const loot = new Bank().add(table.roll(quantity));
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
-	str += await displayCluesAndPets(user.id, loot);
+	str += await displayCluesAndPets(user, loot);
 	if (loot.has('Pet Penance Queen')) {
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 

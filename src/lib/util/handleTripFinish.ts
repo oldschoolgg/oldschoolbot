@@ -1,9 +1,8 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { Time, sumArr } from 'e';
+import { Time } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -17,14 +16,13 @@ import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/ma
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, MAX_CLUES_DROPPED, PerkTier } from '../constants';
-import { allPetsCL } from '../data/CollectionsExport';
-import pets from '../data/pets';
+import { BitField, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
+import { displayCluesAndPets } from './displayCluesAndPets';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -36,7 +34,7 @@ import {
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
 } from './globalInteractions';
-import { formatList, hasSkillReqs } from './smallUtils';
+import { hasSkillReqs } from './smallUtils';
 import { sendToChannelID } from './webhook';
 
 const collectors = new Map<string, MessageCollector>();
@@ -114,31 +112,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 	}
 ];
 
-export async function displayCluesAndPets(userID: string, loot: Bank | null | undefined) {
-	const user = await mUserFetch(userID);
-	let ret = '';
-	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
-	if (clueReceived.length > 0) {
-		const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
-		ret += `\n${Emoji.Casket} **You got a ${formatList(clueReceived.map(clue => clue.name))} clue scroll** in your loot.`;
-
-		if (clueStack >= MAX_CLUES_DROPPED) {
-			ret += `\n**You have reached the maximum clue stack of ${MAX_CLUES_DROPPED}!** (${formatList(ClueTiers.filter(tier => user.bank.amount(tier.scrollID) > 0).map(tier => `${user.bank.amount(tier.scrollID)} ${tier.name}`))}). If you receive more clues, lower tier clues will be replaced with higher tier clues.`;
-		} else {
-			ret += ` You are now stacking ${clueStack} total clues.`;
-		}
-	}
-	if (allPetsCL.some(p => loot?.has(p))) {
-		ret += petMessage(loot);
-	}
-	return ret;
-}
-
-export function petMessage(loot: Bank | null | undefined) {
-	const emoji = pets.find(p => loot?.has(p.name))?.emoji;
-	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling like you're being followed...**`;
-}
-
 export async function handleTripFinish(
 	user: MUser,
 	channelID: string,
@@ -190,7 +163,7 @@ export async function handleTripFinish(
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	message.content += await displayCluesAndPets(user.id, loot);
+	message.content += await displayCluesAndPets(user, loot);
 
 	const existingCollector = collectors.get(user.id);
 
