@@ -41,7 +41,7 @@ export const trawlerTask: MinionTask = {
 		let str = `${user}, ${
 			user.minionName
 		} finished completing the Fishing Trawler ${quantity}x times. ${await user.addXP({
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: totalXP,
 			duration: data.duration
 		})}`;
