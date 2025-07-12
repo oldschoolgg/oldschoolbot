@@ -3,20 +3,16 @@ import { Bank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, quantity, userID } = data;
-		const user = await mUserFetch(userID);
+	isNew: true,
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, quantity } = data;
 		await user.incrementMinigameScore('fishing_trawler', quantity);
-
-		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		const loot = new Bank();
 
@@ -24,7 +20,7 @@ export const trawlerTask: MinionTask = {
 		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		for (let i = 0; i < quantity; i++) {
 			const { loot: _loot, xp } = fishingTrawlerLoot(
-				fishingLevel,
+				user.skillsAsLevels.fishing,
 				hasEliteArdy,
 				loot.clone().add(user.allItemsOwned)
 			);

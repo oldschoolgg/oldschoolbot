@@ -97,6 +97,7 @@ import { globalConfig, minionActivityCache } from './constants';
 import { sql } from './postgres';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
+import { handleTripFinish } from './util/handleTripFinish';
 import { logError } from './util/logError';
 
 const tasks: MinionTask[] = [
@@ -238,7 +239,11 @@ export async function completeActivity(_activity: Activity) {
 
 	modifyBusyCounter(activity.userID, 1);
 	try {
-		await task.run(activity);
+		if ('isNew' in task) {
+			await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish });
+		} else {
+			await task.run(activity);
+		}
 	} catch (err) {
 		logError(err);
 	} finally {
@@ -247,10 +252,21 @@ export async function completeActivity(_activity: Activity) {
 	}
 }
 
-interface IMinionTask {
-	type: activity_type_enum;
-	run: Function;
-}
+type MinionTaskRunOptions = {
+	user: MUser;
+	handleTripFinish: typeof handleTripFinish;
+};
+
+type IMinionTask =
+	| {
+			type: activity_type_enum;
+			run: (data: any) => Promise<void>;
+	  }
+	| {
+			type: activity_type_enum;
+			isNew: true;
+			run: (data: any, options: MinionTaskRunOptions) => Promise<void>;
+	  };
 declare global {
 	export type MinionTask = IMinionTask;
 }
