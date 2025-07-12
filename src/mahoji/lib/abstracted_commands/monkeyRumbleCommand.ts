@@ -14,7 +14,6 @@ import {
 	monkeyTierOfUser,
 	monkeyTiers
 } from '../../../lib/monkeyRumble';
-import { getMinigameEntity } from '../../../lib/settings/minigames';
 import type { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -23,10 +22,10 @@ import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function monkeyRumbleStatsCommand(user: MUser) {
 	const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(user))!;
-	const scores = await getMinigameEntity(user.id);
+	const score = await user.fetchMinigameScore('monkey_rumble');
 	return `**Mad Marimbo's Monkey Rumble**
 
-**Fights Done:** ${scores.monkey_rumble}
+**Fights Done:** ${score}
 **Unique Monkeys Fought:** ${user.user.monkeys_fought.length}/${TOTAL_MONKEYS.toLocaleString()}
 **Greegree Level:** ${tier.greegrees[0].name} - ${tier.id}/${monkeyTiers.length.toLocaleString()}
 **Rumble tokens:** ${user.bank.amount('Rumble token')}`;

@@ -8,7 +8,6 @@ import type { NMZStrategy } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { MAX_QP } from '../../../lib/minions/data/quests';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameEntity } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { Skills } from '../../../lib/types';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -288,10 +287,10 @@ export const nightmareZoneBuyables: { name: string; output: Bank; cost: number; 
 ];
 
 export async function nightmareZoneStatsCommand(user: MUser) {
-	const scores = await getMinigameEntity(user.id);
+	const scores = await user.fetchMinigameScore('nmz');
 	return `**Nightmare Zone Stats:**
 
-**Nightmare Zone monsters killed:** ${scores.nmz}.
+**Nightmare Zone monsters killed:** ${scores}.
 **Nightmare Zone points:** ${user.user.nmz_points} Points.`;
 }
 

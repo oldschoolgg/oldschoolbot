@@ -1,5 +1,5 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -11,12 +11,17 @@ import { roll } from '../../../lib/util/rng';
 import { userStatsUpdate } from '../../mahojiSettings';
 
 export async function capeGambleStatsCommand(user: MUser) {
-	const stats = await user.fetchStats({ firecapes_sacrificed: true, infernal_cape_sacrifices: true });
+	const stats = await user.fetchStats({
+		firecapes_sacrificed: true,
+		infernal_cape_sacrifices: true,
+		quivers_sacrificed: true
+	});
 
-	return `You can gamble Fire capes and Infernal capes like this: \"\gamble cape fire/infernal\"
+	return `You can gamble Fire capes, Infernal capes and Quivers like this: ${mentionCommand(globalClient, 'gamble', 'item')}.
 
-**Fire Cape's Sacrificed:** ${stats.firecapes_sacrificed}
-**Infernal Cape's Gambled:** ${stats.infernal_cape_sacrifices}`;
+**Fire Capes Gambled:** ${stats.firecapes_sacrificed}
+**Infernal Capes Gambled:** ${stats.infernal_cape_sacrifices}
+**Quivers Gambled:** ${stats.quivers_sacrificed}`;
 }
 
 const itemGambles = [

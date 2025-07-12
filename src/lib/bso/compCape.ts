@@ -1,11 +1,10 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { type UserStats, tame_growth } from '@prisma/client';
 import { calcWhatPercent, objectEntries, sumArr } from 'e';
-import { Bank, type ItemBank, ItemGroups, itemID, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
 
-import { divinationEnergies } from './bso/divination';
-import { ClueTiers } from './clues/clueTiers';
-import { BitField } from './constants';
+import { ClueTiers } from '../clues/clueTiers';
+import { BitField } from '../constants';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -138,33 +137,33 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from './data/CollectionsExport';
-import { creatablesCL } from './data/createables';
-import { kibbleCL } from './data/kibble';
-import { getSimilarItems } from './data/similarItems';
-import { slayerMasksHelmsCL } from './data/slayerMaskHelms';
-import { diaries, diariesObject } from './diaries';
-import { growablePetsCL } from './growablePets';
-import { implingsCL } from './implings';
-import { inventionCL } from './invention/inventions';
-import { allLeagueTasks, leagueTasks } from './leagues/leagues';
-import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
-import { type DiaryID, type DiaryTierName, diaryTiers } from './minions/types';
-import { PoHObjects, getPOHObject } from './poh';
-import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
-import Skillcapes from './skilling/skillcapes';
-import Agility from './skilling/skills/agility';
-import { cookingCL } from './skilling/skills/cooking/cooking';
-import { craftingCL } from './skilling/skills/crafting/craftables';
-import { dungBuyables } from './skilling/skills/dung/dungData';
-import { allFarmingItems } from './skilling/skills/farming';
-import { fletchingCL } from './skilling/skills/fletching/fletchables';
-import { herbloreCL } from './skilling/skills/herblore/mixables';
-import { smithingCL } from './skilling/skills/smithing/smithables';
-import { slayerUnlockableRewards } from './slayer/slayerUnlocks';
-import { type RequirementFailure, Requirements } from './structures/Requirements';
-import { TameSpeciesID, tameFeedableItems } from './tames';
-import { itemNameFromID } from './util';
+} from '../data/CollectionsExport';
+import { creatablesCL } from '../data/createables';
+import { kibbleCL } from '../data/kibble';
+import { getSimilarItems } from '../data/similarItems';
+import { slayerMasksHelmsCL } from '../data/slayerMaskHelms';
+import { diaries, diariesObject } from '../diaries';
+import { growablePetsCL } from '../growablePets';
+import { implingsCL } from '../implings';
+import { inventionCL } from '../invention/inventions';
+import { allLeagueTasks, leagueTasks } from '../leagues/leagues';
+import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
+import { type DiaryID, type DiaryTierName, diaryTiers } from '../minions/types';
+import { PoHObjects, getPOHObject } from '../poh';
+import { getFarmingInfoFromUser } from '../skilling/functions/getFarmingInfo';
+import Skillcapes from '../skilling/skillcapes';
+import Agility from '../skilling/skills/agility';
+import { cookingCL } from '../skilling/skills/cooking/cooking';
+import { craftingCL } from '../skilling/skills/crafting/craftables';
+import { dungBuyables } from '../skilling/skills/dung/dungData';
+import { allFarmingItems } from '../skilling/skills/farming';
+import { fletchingCL } from '../skilling/skills/fletching/fletchables';
+import { herbloreCL } from '../skilling/skills/herblore/mixables';
+import { smithingCL } from '../skilling/skills/smithing/smithables';
+import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
+import { type RequirementFailure, Requirements } from '../structures/Requirements';
+import { TameSpeciesID, tameFeedableItems } from '../tames';
+import { divinationEnergies } from './divination';
 
 const minigameRequirements = new Requirements()
 	.add({ name: "Complete Balthazar's Big Bonanza CL", clRequirement: balthazarsBigBonanzaCL })
@@ -349,7 +348,7 @@ for (const cape of Skillcapes) {
 }
 for (const cape of expertCapesCL) {
 	skillingRequirements.add({
-		name: `Purchase a ${itemNameFromID(cape)}`,
+		name: `Purchase a ${Items.itemNameFromId(cape)}`,
 		clRequirement: [cape]
 	});
 }

@@ -7,7 +7,6 @@ import { Bank, type Item, LootTable, resolveItems } from 'oldschooljs';
 
 import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
 import { MysteryBoxes } from './bsoOpenables';
-import { incrementMinigameScore } from './settings/minigames';
 import Grimy from './skilling/skills/herblore/mixables/grimy';
 import { SkillsEnum } from './skilling/types';
 import { TameSpeciesID, getAllUserTames } from './tames';
@@ -459,7 +458,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	const user = await mUserFetch(userID);
 	const { cl } = user;
 	const { loot, herbXP, firemakingXP, tier, speciesServed, gaveExtraTips } = calculateBathouseResult(data);
-	await incrementMinigameScore(userID, 'bax_baths', quantity);
+	await user.incrementMinigameScore('bax_baths', quantity);
 
 	const uniques = resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire']);
 	let uniqueChance = Math.floor(50 * tier.uniqueMultiplier);

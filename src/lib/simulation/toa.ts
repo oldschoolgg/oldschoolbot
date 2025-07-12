@@ -37,7 +37,6 @@ import type { UserFullGearSetup } from '../gear/types';
 import { InventionID, canAffordInventionBoost, inventionBoosts, inventionItemBoost } from '../invention/inventions';
 import { trackLoot } from '../lootTrack';
 import { setupParty } from '../party';
-import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { MakePartyOptions, Skills } from '../types';
@@ -990,7 +989,7 @@ async function calcTOAInput({
 	blowpipeCost: Bank;
 }> {
 	const cost = new Bank();
-	const kc = kcOverride ?? (await getMinigameScore(user.id, 'tombs_of_amascut'));
+	const kc = kcOverride ?? (await user.fetchMinigameScore('tombs_of_amascut'));
 	if (minimumSuppliesNeeded.has('Super combat potion(4)')) {
 		cost.add('Super combat potion(4)', quantity);
 	} else {
@@ -1111,7 +1110,7 @@ async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number)
 		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOAUser(
 			user,
-			await getMinigameScore(user.id, 'tombs_of_amascut'),
+			await user.fetchMinigameScore('tombs_of_amascut'),
 			raidLevel,
 			users.length,
 			Time.Hour,
@@ -1139,7 +1138,7 @@ export async function toaStartCommand(
 
 	const initialCheck = await checkTOAUser(
 		user,
-		await getMinigameScore(user.id, 'tombs_of_amascut'),
+		await user.fetchMinigameScore('tombs_of_amascut'),
 		raidLevel,
 		solo ? 1 : (teamSize ?? 5),
 		Time.Hour,
@@ -1612,7 +1611,7 @@ function createTOATeam({
 }
 
 async function toaCheckCommand(user: MUser) {
-	const result = await checkTOAUser(user, await getMinigameScore(user.id, 'tombs_of_amascut'), 200, 5, Time.Hour, 1);
+	const result = await checkTOAUser(user, await user.fetchMinigameScore('tombs_of_amascut'), 200, 5, Time.Hour, 1);
 	if (result[0]) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
@@ -1676,9 +1675,9 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 		totalUniques += user.cl.amount(item);
 	}
 
-	const str = `**Tombs of Amascut** 
+	const str = `**Tombs of Amascut**
 
-**Attempts:** ${stats.toa_attempts} 
+**Attempts:** ${stats.toa_attempts}
 **Entry Mode:** ${entryKC} KC
 **Normal Mode:** ${normalKC} KC
 **Expert Mode:** ${expertKC} KC

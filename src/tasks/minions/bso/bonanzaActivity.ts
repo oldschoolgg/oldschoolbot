@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { MAX_LEVEL } from '../../../lib/constants';
 import { spectatorClothes } from '../../../lib/data/CollectionsExport';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TameSpeciesID, getAllUserTames } from '../../../lib/tames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
@@ -20,12 +19,9 @@ export const bonanzaTask: MinionTask = {
 	type: 'BalthazarsBigBonanza',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, duration, userID } = data;
-
-		const [user, tames, incrementResult] = await Promise.all([
-			mUserFetch(userID),
-			getAllUserTames(userID),
-			incrementMinigameScore(userID, 'balthazars_big_bonanza', quantity)
-		]);
+		const user = await mUserFetch(userID);
+		const tames = await getAllUserTames(user.id);
+		const incrementResult = await user.incrementMinigameScore('balthazars_big_bonanza', quantity);
 		const xpStrs = await Promise.all([
 			user.addXP({
 				amount: calcXP(user, duration, SkillsEnum.Agility),

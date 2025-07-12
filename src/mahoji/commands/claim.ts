@@ -1,14 +1,13 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { BSO_MAX_TOTAL_LEVEL } from '../../lib/bso/bsoConstants';
 import { BitField, Channel } from '../../lib/constants';
 import { calcCLDetails } from '../../lib/data/Collections';
 import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
-import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -101,11 +100,11 @@ export const claimCommand: OSBMahojiCommand = {
 			if (!reclaimableData.totalCanClaim.has(rawData.item_id)) {
 				return 'You already claimed this item. If you lose it, you can reclaim it.';
 			}
-			const item = getOSItem(rawData.item_id);
+			const item = Items.getOrThrow(rawData.item_id);
 			const loot = new Bank().add(item.id);
 			await user.addItemsToBank({ items: loot, collectionLog: false });
 			return `You claimed ${loot}.
-			
+
 ${rawData.name}: ${rawData.description}.
 ${dateFm(new Date(rawData.date))}`;
 		}

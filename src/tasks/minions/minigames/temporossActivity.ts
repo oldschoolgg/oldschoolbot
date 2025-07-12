@@ -1,7 +1,6 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent } from 'e';
 
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -15,7 +14,7 @@ export const temporossTask: MinionTask = {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const { newScore } = await incrementMinigameScore(userID, 'tempoross', quantity);
+		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);
 
 		let rewardTokens = quantity * 6;
 		if (rewardBoost > 0) {

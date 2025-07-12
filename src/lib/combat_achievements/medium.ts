@@ -555,7 +555,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Amoxliatl',
 		rng: {
-			chancePerKill: 10,
+			chancePerKill: 1,
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Amoxliatl.id)(data) && user.hasEquipped('Glacial temotli')
 		}

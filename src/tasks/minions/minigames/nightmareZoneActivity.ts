@@ -1,5 +1,4 @@
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
@@ -48,7 +47,7 @@ export const nightmareZoneTask: MinionTask = {
 			}
 		});
 
-		const score = await incrementMinigameScore(userID, 'nmz', quantity);
+		const score = await user.incrementMinigameScore('nmz', quantity);
 
 		const str = `${user}, ${
 			user.minionName

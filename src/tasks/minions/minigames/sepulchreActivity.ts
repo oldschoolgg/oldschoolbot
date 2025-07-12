@@ -3,7 +3,6 @@ import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
@@ -16,7 +15,7 @@ export const sepulchreTask: MinionTask = {
 	async run(data: SepulchreActivityTaskOptions) {
 		const { channelID, quantity, floors, userID, duration, fletch } = data;
 		const user = await mUserFetch(userID);
-		await incrementMinigameScore(userID, 'sepulchre', quantity);
+		await user.incrementMinigameScore('sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
 		const loot = new Bank();

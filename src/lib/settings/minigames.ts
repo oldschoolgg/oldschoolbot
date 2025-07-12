@@ -265,26 +265,3 @@ export const Minigames: readonly BotMinigame[] = [
 for (const minigame of Minigames) {
 	minigameColumnToNameMap.set(minigame.column, minigame.name);
 }
-
-export async function getMinigameScore(userID: string, minigame: MinigameName) {
-	const MinigameEntity = await getMinigameEntity(userID);
-	return MinigameEntity[minigame];
-}
-
-export async function getMinigameEntity(userID: string): Promise<Minigame> {
-	const value = await prisma.minigame.upsert({ where: { user_id: userID }, create: { user_id: userID }, update: {} });
-	return value;
-}
-
-export async function incrementMinigameScore(userID: string, minigame: MinigameName, amountToAdd = 1) {
-	const result = await prisma.minigame.upsert({
-		where: { user_id: userID },
-		update: { [minigame]: { increment: amountToAdd } },
-		create: { user_id: userID, [minigame]: amountToAdd }
-	});
-
-	return {
-		newScore: result[minigame],
-		entity: result
-	};
-}

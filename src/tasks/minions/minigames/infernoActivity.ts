@@ -6,7 +6,6 @@ import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { InfernoOptions } from '../../../lib/types/minions';
@@ -42,7 +41,7 @@ export const infernoTask: MinionTask = {
 			isEmergedZuk
 		} = data;
 		const user = await mUserFetch(userID);
-		const score = await getMinigameScore(user.id, 'inferno');
+		const score = await user.fetchMinigameScore('inferno');
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
@@ -110,12 +109,12 @@ export const infernoTask: MinionTask = {
 
 		// Give inferno KC if didn't die in normal inferno part
 		if (!diedZuk && !diedPreZuk) {
-			await incrementMinigameScore(userID, 'inferno', 1);
+			await user.incrementMinigameScore('inferno', 1);
 		}
 
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zuk for the ${formatOrdinal(
-			await getMinigameScore(user.id, 'inferno')
+			await user.fetchMinigameScore('inferno')
 		)} time! Please accept this cape as a token of appreciation.`;
 
 		if (deathTime) {
@@ -200,7 +199,7 @@ export const infernoTask: MinionTask = {
 			const zukLoot = Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask });
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
 			if (isEmergedZuk) {
-				await incrementMinigameScore(userID, 'emerged_inferno', 1);
+				await user.incrementMinigameScore('emerged_inferno', 1);
 
 				zukLoot.add("TzKal-Zuk's skin");
 				if (roll(10)) {
@@ -221,7 +220,7 @@ export const infernoTask: MinionTask = {
 					`**${user.usernameOrMention}** just received their ${formatOrdinal(
 						user.cl.amount('Jal-MejJak') + 1
 					)} Jal-MejJak pet by killing TzKal-Zuk's final form, on their ${formatOrdinal(
-						await getMinigameScore(user.id, 'emerged_inferno')
+						await user.fetchMinigameScore('emerged_inferno')
 					)} kill!`
 				);
 			}
@@ -240,7 +239,7 @@ export const infernoTask: MinionTask = {
 				);
 			}
 
-			const emergedKC = await getMinigameScore(user.id, 'emerged_inferno');
+			const emergedKC = await user.fetchMinigameScore('emerged_inferno');
 			// If first successfull emerged zuk kill
 			if (baseBank.has('Infernal cape') && isEmergedZuk && !diedEmergedZuk && emergedKC === 1) {
 				const usersDefeatedEmergedZuk = Number.parseInt(
@@ -269,7 +268,7 @@ export const infernoTask: MinionTask = {
 			user,
 			channelID,
 			`${user} ${text}
-			
+
 **Loot:** ${baseBank}
 **XP:** ${xpStr}
 You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${

@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 
 import { hasSkillReqs } from '@/lib/util/smallUtils';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-import { getMinigameScore } from '../../../lib/settings/settings';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -278,7 +277,7 @@ ${xpRes}`;
 
 export async function pestControlStatsCommand(user: MUser) {
 	const [kc, stats] = await Promise.all([
-		getMinigameScore(user.id, 'pest_control'),
+		user.fetchMinigameScore('pest_control'),
 		user.fetchStats({ pest_control_points: true })
 	]);
 	return `You have ${stats.pest_control_points} Void knight commendation points.

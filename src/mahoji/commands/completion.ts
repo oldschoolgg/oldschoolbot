@@ -1,9 +1,7 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 
-import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
-import { generateAllCompCapeTasksList } from '../../lib/compCape';
+import { generateAllCompCapeTasksList } from '../../lib/bso/compCape';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const completionCommand: OSBMahojiCommand = {
@@ -29,7 +27,7 @@ export const completionCommand: OSBMahojiCommand = {
 	run: async ({ options, userID }: CommandRunOptions<{ check?: {}; view_all_tasks?: {} }>) => {
 		const user = await mUserFetch(userID);
 		if (options.check) {
-			const { resultStr } = await calculateCompCapeProgress(user);
+			const { resultStr } = await user.calculateCompCapeProgress();
 
 			return {
 				files: [new AttachmentBuilder(Buffer.from(resultStr), { name: 'compcape.txt' })]

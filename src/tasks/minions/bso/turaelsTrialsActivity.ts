@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import type { TuraelsTrialsMethod } from '../../../lib/bso/turaelsTrials';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { XPBank } from '../../../lib/structures/Banks';
 import type { TuraelsTrialsOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -43,7 +42,7 @@ export const turaelsTrialsTask: MinionTask = {
 
 		const result = calculateTuraelsTrialsResult({ quantity, method, duration });
 
-		const { newScore } = await incrementMinigameScore(userID, 'turaels_trials', quantity);
+		const { newScore } = await user.incrementMinigameScore('turaels_trials', quantity);
 
 		await user.addItemsToBank({ items: result.loot, collectionLog: true });
 		await trackClientBankStats('turaels_trials_loot_bank', result.loot);

@@ -72,7 +72,7 @@ export async function createTeam(
 			deathChance -= calcPercentOfNum(total, 10);
 		}
 
-		const kc = (await u.fetchMinigames())[cm ? 'raids_challenge_mode' : 'raids'];
+		const kc = await u.fetchMinigameScore(cm ? 'raids_challenge_mode' : 'raids');
 		const kcChange = kcPointsEffect(kc);
 		if (kcChange < 0) points = reduceNumByPercent(points, Math.abs(kcChange));
 		else points = increaseNumByPercent(points, kcChange);
@@ -272,7 +272,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 			) {
 				return `${user.usernameOrMention} doesn't own a Twisted bow, Zaryte bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
-			const kc = (await user.fetchMinigames()).raids;
+			const kc = await user.fetchMinigameScore('raids');
 			if (kc < 200) {
 				return `${user.usernameOrMention} doesn't have the 200 KC required for Challenge Mode.`;
 			}

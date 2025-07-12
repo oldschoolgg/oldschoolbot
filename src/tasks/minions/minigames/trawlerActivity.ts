@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -16,7 +15,7 @@ export const trawlerTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);
-		await incrementMinigameScore(userID, 'fishing_trawler', quantity);
+		await user.incrementMinigameScore('fishing_trawler', quantity);
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 

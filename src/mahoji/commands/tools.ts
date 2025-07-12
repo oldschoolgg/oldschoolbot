@@ -38,13 +38,11 @@ import { keyCrates } from '../../lib/keyCrates.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { type UnifiedOpenable, allOpenables } from '../../lib/openables';
 import { getUsersPerkTier } from '../../lib/perkTiers';
-import type { MinigameName } from '../../lib/settings/minigames';
-import { Minigames } from '../../lib/settings/minigames';
+import { type MinigameName, Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
-import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -193,7 +191,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 		title = `Highest All clue scroll completions in the past ${interval}`;
 	}
 
-	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate
 	  FROM activity a
 	  JOIN users u ON a.user_id::text = u.id
 	  WHERE a.type = 'ClueCompletion'
@@ -801,7 +799,7 @@ for (const openable of allOpenables) {
 }
 
 async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean) {
-	const item = getItem(itemName);
+	const item = Items.get(itemName);
 	if (!item) return 'Invalid item.';
 	const entity = dryStreakEntities.find(
 		e =>
@@ -864,7 +862,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 }
 
 async function mostDrops(user: MUser, itemName: string, filter: string) {
-	const item = getItem(itemName);
+	const item = Items.getItem(itemName);
 	const ironmanPart =
 		filter === 'Irons Only'
 			? 'AND "minion.ironman" = true'

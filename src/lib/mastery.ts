@@ -1,7 +1,6 @@
 import { calcWhatPercent, clamp, round, sumArr } from 'e';
 
 import { calculateAchievementDiaryProgress } from '../mahoji/lib/abstracted_commands/achievementDiaryCommand';
-import { calculateCompCapeProgress } from './bso/calculateCompCapeProgress';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements';
 import { MAX_XP } from './constants';
 import { getTotalCl } from './data/Collections';
@@ -25,7 +24,7 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 
 	const leaguesPoints = roboChimpUser.leagues_points_total;
 
-	const { totalPercentTrimmed, totalPercentUntrimmed } = await calculateCompCapeProgress(user);
+	const { totalPercentTrimmed, totalPercentUntrimmed } = await user.calculateCompCapeProgress();
 
 	const masteryFactors = [
 		{

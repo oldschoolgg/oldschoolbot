@@ -30,7 +30,7 @@ import {
 import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
@@ -1149,7 +1149,7 @@ GROUP BY "bankBackground";`);
 		perkTierNeeded: null,
 		run: async (user, stats) => {
 			const entries = Object.entries(stats.laps_scores as ItemBank).map(arr => [Number.parseInt(arr[0]), arr[1]]);
-			const sepulchreCount = await getMinigameScore(user.id, 'sepulchre');
+			const sepulchreCount = await user.fetchMinigameScore('sepulchre');
 			if (sepulchreCount === 0 && entries.length === 0) {
 				return "You haven't done any laps yet! Sad.";
 			}

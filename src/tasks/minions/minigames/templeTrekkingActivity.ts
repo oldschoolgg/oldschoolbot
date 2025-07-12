@@ -9,7 +9,6 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '../../../lib/minions/data/templeTrekking';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -43,7 +42,7 @@ export const templeTrekkingTask: MinionTask = {
 	async run(data: TempleTrekkingActivityTaskOptions) {
 		const { channelID, quantity, userID, difficulty, duration } = data;
 		const user = await mUserFetch(userID);
-		await incrementMinigameScore(user.id, 'temple_trekking', quantity);
+		await user.incrementMinigameScore('temple_trekking', quantity);
 		const userBank = user.bank.clone();
 		const loot = new Bank();
 
