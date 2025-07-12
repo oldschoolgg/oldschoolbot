@@ -107,4 +107,11 @@ setCustomItem(74_115, 'Deathwarden boots (t3)', 'Bronze boots', {
 		cantDropFromMysteryBoxes: true,
 		isSuperUntradeable: true
 	}
+})
+
+setCustomItem(74_116, 'Reapers ring', 'Emerald ring', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
 });

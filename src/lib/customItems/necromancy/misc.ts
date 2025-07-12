@@ -98,3 +98,27 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	74_059,
+	'Necrotic dye',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	74_060,
+	'Ritual candle',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+		}
+	},
+	1_000_000
+);

@@ -93,7 +93,7 @@ setCustomItem(74_315, 'Spirit rune', 'Coal', {
 	}
 });
 
-// setCustomItem(74_316, 'Soulweave cloth', 'Coal', {
+// setCustomItem(74_316, 'Soulweave ', 'Coal', {
 // 	customItemData: {
 // 		cantDropFromMysteryBoxes: true,
 // 		isSuperUntradeable: true
@@ -121,7 +121,7 @@ setCustomItem(74_315, 'Spirit rune', 'Coal', {
 // 	}
 // });
 
-// setCustomItem(74_320, 'Ectoplasm', 'Coal', {
+// setCustomItem(74_320, 'Necroplasm', 'Coal', {
 // 	customItemData: {
 // 		cantDropFromMysteryBoxes: true,
 // 		isSuperUntradeable: true
