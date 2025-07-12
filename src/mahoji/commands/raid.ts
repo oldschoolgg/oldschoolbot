@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import type { RaidLevel } from '../../lib/simulation/toa';
 import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { coxBoostsCommand, coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -212,7 +211,7 @@ export const raidCommand: OSBMahojiCommand = {
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
 		if (options.toa?.help) return toaHelpCommand(user, channelID);
 
-		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
+		if (user.minionIsBusy) return "Your minion is busy, you can't do this.";
 
 		if (cox?.start) {
 			return coxCommand(

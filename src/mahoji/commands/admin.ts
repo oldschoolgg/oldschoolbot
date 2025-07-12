@@ -13,6 +13,8 @@ import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyO
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
 import { Bank, type ItemBank, convertBankToPerHourStats, toKMB } from 'oldschooljs';
 
+import { ActivityManager } from '@/lib/ActivityManager';
+import { countUsersWithItemInCl } from '@/lib/rawSql';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import {
@@ -28,8 +30,6 @@ import {
 import { economyLog } from '../../lib/economyLogs';
 import type { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
-import { countUsersWithItemInCl } from '../../lib/settings/prisma';
-import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
@@ -687,10 +687,9 @@ export const adminCommand: OSBMahojiCommand = {
 		 */
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
-			await cancelTask(user.id);
+			await ActivityManager.cancelActivity(user.id);
 			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
-			minionActivityCacheDelete(user.id);
 			return 'Done.';
 		}
 

@@ -12,7 +12,6 @@ import { getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmi
 import { plants } from '../../../lib/skilling/skills/farming';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { makeEasierFarmingContractButton } from '../../../lib/util/smallUtils';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand';
@@ -115,7 +114,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 		};
 	}
 
-	if (minionIsBusy(user.id)) {
+	if (user.minionIsBusy) {
 		return janeImage(
 			"You are busy at the moment! I can't give you a new farming contract like that. Please, come back when you have some free time for us to talk."
 		);

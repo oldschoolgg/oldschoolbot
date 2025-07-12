@@ -4,8 +4,8 @@ import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
+import { ActivityManager } from './ActivityManager';
 import { mahojiUserSettingsUpdate } from './MUser';
-import { processPendingActivities } from './Task';
 import { BitField, Channel, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
@@ -13,7 +13,7 @@ import { populateRoboChimpCache } from './perkTier';
 import { fetchUsersWithoutUsernames } from './rawSql';
 import { runCommand } from './settings/settings';
 import { informationalButtons } from './sharedComponents';
-import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
+import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { getSupportGuild } from './util';
 import { PeakTier } from './util/calcWildyPkChance';
@@ -21,7 +21,6 @@ import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers'
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
-import { minionIsBusy } from './util/minionIsBusy';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
@@ -120,7 +119,7 @@ export const tickers: {
 		timer: null,
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
-			await processPendingActivities();
+			await ActivityManager.processPendingActivities();
 		}
 	},
 	{
@@ -186,15 +185,11 @@ export const tickers: {
 							BitField.isModerator
 						]
 					}
-				},
-				select: {
-					id: true,
-					bitfield: true
 				}
 			});
-			for (const { id, bitfield } of users) {
-				if (bitfield.includes(BitField.DisabledFarmingReminders)) continue;
-				const { patches } = await getFarmingInfo(id);
+			for (const user of users) {
+				if (user.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
+				const { patches } = await getFarmingInfoFromUser(user);
 				for (const patchType of farmingPatchNames) {
 					const patch = patches[patchType];
 					if (!patch) continue;
@@ -213,13 +208,13 @@ export const tickers: {
 					if (!planted) continue;
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
-					await mahojiUserSettingsUpdate(id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						[getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
 					});
 
 					// Build buttons (only show Harvest/replant if not busy):
 					const farmingReminderButtons = new ActionRowBuilder<ButtonBuilder>();
-					if (!minionIsBusy(id)) {
+					if (!ActivityManager.minionIsBusy(user.id)) {
 						farmingReminderButtons.addComponents(
 							new ButtonBuilder()
 								.setLabel('Harvest & Replant')
@@ -234,9 +229,9 @@ export const tickers: {
 							.setStyle(ButtonStyle.Secondary)
 							.setCustomId('DISABLE')
 					);
-					const user = await globalClient.users.cache.get(id);
-					if (!user) continue;
-					const message = await user
+					const djsUser = await globalClient.users.cache.get(user.id);
+					if (!djsUser) continue;
+					const message = await djsUser
 						.send({
 							content: `The ${planted.name} planted in your ${patchType} patches are ready to be harvested!`,
 							components: [farmingReminderButtons]
@@ -255,17 +250,17 @@ export const tickers: {
 						// Check disable first so minion doesn't have to be free to disable reminders.
 						if (selection.customId === 'DISABLE') {
 							await mahojiUserSettingsUpdate(user.id, {
-								bitfield: removeFromArr(bitfield, BitField.DisabledFarmingReminders)
+								bitfield: removeFromArr(user.bitfield, BitField.DisabledFarmingReminders)
 							});
-							await user.send('Farming patch reminders have been disabled.');
+							await djsUser.send('Farming patch reminders have been disabled.');
 							return;
 						}
-						if (minionIsBusy(user.id)) {
+						if (ActivityManager.minionIsBusy(user.id)) {
 							selection.reply({ content: 'Your minion is busy.' });
 							return;
 						}
 						if (selection.customId === 'HARVEST') {
-							message.author = user;
+							message.author = djsUser;
 							runCommand({
 								commandName: 'farming',
 								args: { harvest: { patch_name: patchType } },

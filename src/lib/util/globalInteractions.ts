@@ -16,7 +16,6 @@ import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
-import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
 const globalInteractionActions = [
@@ -242,9 +241,10 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
 }
 
-async function repeatTripHandler(interaction: ButtonInteraction) {
-	if (minionIsBusy(interaction.user.id))
+async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
+	if (user.minionIsBusy) {
 		return interactionReply(interaction, { content: 'Your minion is busy.', ephemeral: true });
+	}
 	const trips = await fetchRepeatTrips(interaction.user.id);
 	if (trips.length === 0) {
 		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
@@ -364,10 +364,9 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
-	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(interaction);
-
 	const userNameToInsert = cleanUsername(interaction.user.username);
 	const user = await mUserFetch(userID, { username: userNameToInsert });
+	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
@@ -493,7 +492,7 @@ export async function interactionHook(interaction: Interaction) {
 		return openCasket('Master');
 	}
 
-	if (minionIsBusy(user.id)) {
+	if (user.minionIsBusy) {
 		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
 	}
 

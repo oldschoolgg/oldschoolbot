@@ -3,8 +3,7 @@ import { Time, shuffleArr } from 'e';
 import { generateRandomBank } from 'oldschooljs';
 import { expect, test, vi } from 'vitest';
 
-import { BitField, minionActivityCache } from '../../src/lib/constants';
-
+import { BitField } from '../../src/lib/constants';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
 import { allCommands } from '../../src/mahoji/commands/allCommands';
@@ -83,7 +82,6 @@ test(
 				promises.push(async () => {
 					try {
 						await maxUser.runCommand(command, option);
-						minionActivityCache.clear();
 					} catch (err) {
 						console.error(
 							`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`

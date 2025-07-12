@@ -2,12 +2,12 @@ import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
 import { ComponentType, PermissionsBitField } from 'discord.js';
 
+import { ActivityManager } from '@/lib/ActivityManager';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { type PartialUser, partialUserCache, perkTierCache, untrustedGuildSettingsCache } from '../../lib/cache';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
 import { minionBuyButton } from '../../lib/sharedComponents';
 import type { CategoryFlag } from '../../lib/types';
-import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
 
@@ -78,7 +78,7 @@ const inhibitors: Inhibitor[] = [
 		run: ({ userID, command }) => {
 			if (!command.attributes?.requiresMinionNotBusy) return false;
 
-			if (minionIsBusy(userID)) {
+			if (ActivityManager.minionIsBusy(userID)) {
 				return { content: 'Your minion must not be busy to use this command.' };
 			}
 

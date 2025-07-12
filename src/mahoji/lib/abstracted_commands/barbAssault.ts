@@ -11,10 +11,10 @@ import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
+import { countUsersWithItemInCl } from '@/lib/rawSql';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { degradeItem } from '../../../lib/degradeableItems';
-import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

@@ -29,7 +29,7 @@ import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 import { beforeAll, expect, test, vi } from 'vitest';
 
-import { processPendingActivities } from '../../src/lib/Task';
+import { ActivityManager } from '@/lib/ActivityManager';
 import { BitField } from '../../src/lib/constants';
 import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { trackLoot } from '../../src/lib/lootTrack';
@@ -1102,7 +1102,7 @@ async function runTestCommand(user: TestUser, command: TestCommand) {
 	} else {
 		const [cmd, args] = command.cmd;
 		await user.runCommand(cmd, args);
-		if (command.activity) await processPendingActivities();
+		if (command.activity) await ActivityManager.processPendingActivities();
 	}
 }
 async function runAllTestCommandsOnUser(user: TestUser) {

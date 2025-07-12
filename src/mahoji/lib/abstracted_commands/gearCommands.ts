@@ -17,7 +17,6 @@ import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearL
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { assert } from '../../../lib/util/logError';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { formatSkillRequirements } from '../../../lib/util/smallUtils';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
@@ -173,7 +172,7 @@ export async function gearEquipCommand(args: {
 	const { userID, setup, item, items, preset, quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	const user = await mUserFetch(userID);
-	if (minionIsBusy(user.id)) {
+	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
@@ -204,7 +203,7 @@ export async function gearUnequipCommand(
 	itemToUnequip: string | undefined,
 	unequipAll: boolean | undefined
 ): CommandResponse {
-	if (minionIsBusy(user.id)) {
+	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 	if (!isValidGearSetup(gearSetup)) return "That's not a valid gear setup.";

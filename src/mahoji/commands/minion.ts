@@ -8,15 +8,9 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
 import { convertLVLtoXP } from 'oldschooljs';
 
+import { ActivityManager } from '@/lib/ActivityManager';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import {
-	BitField,
-	BitFieldData,
-	FormattedCustomEmoji,
-	MAX_LEVEL,
-	PerkTier,
-	minionActivityCache
-} from '../../lib/constants';
+import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { calculateMastery } from '../../lib/mastery';
@@ -82,7 +76,7 @@ export async function getUserInfo(user: MUser) {
 		.map(i => i.name)
 		.join(', ')}`;
 
-	const task = minionActivityCache.get(user.id);
+	const task = ActivityManager.getActivityOfUser(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
 	const result = {
@@ -555,7 +549,7 @@ export const minionCommand: OSBMahojiCommand = {
 			const { masteryFactors, totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
 			const substr = masteryFactors.map(i => `${bold(i.name)}: ${i.percentage.toFixed(2)}%`).join('\n');
 			return `You have ${totalMastery.toFixed(2)}% mastery.
-			
+
 ${substr}`;
 		}
 

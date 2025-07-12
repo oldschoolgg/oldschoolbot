@@ -3,10 +3,10 @@ import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { type PvMMethod, autocompleteMonsters } from '../../mahoji/commands/k';
+import { ActivityManager } from '../ActivityManager';
 import { ClueTiers } from '../clues/clueTiers';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
-import { convertStoredActivityToFlatActivity } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { courses } from '../skilling/skills/agility';
 import Hunter from '../skilling/skills/hunter/hunter';
@@ -70,7 +70,7 @@ import { itemNameFromID } from './smallUtils';
 
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
-		const realActivity = convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
+		const realActivity = ActivityManager.convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
 		return (
 			realActivity.implingID !== undefined ||
 			user.owns(ClueTiers.find(clue => clue.id === realActivity.ci)!.scrollID)

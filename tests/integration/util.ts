@@ -3,14 +3,13 @@ import type { Activity, ClientStorage, GearSetupType, Prisma, User, UserStats } 
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Monsters, convertLVLtoXP } from 'oldschooljs';
 
+import { ActivityManager } from '@/lib/ActivityManager';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 import { MUserClass } from '../../src/lib/MUser';
-import { completeActivity } from '../../src/lib/Task';
 import { globalConfig } from '../../src/lib/constants';
 import { sql } from '../../src/lib/postgres';
-import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
@@ -65,9 +64,9 @@ export class TestUser extends MUserClass {
 			}
 		});
 
-		await completeActivity(activity);
+		await ActivityManager.completeActivity(activity);
 		await this.sync();
-		return convertStoredActivityToFlatActivity(activity);
+		return ActivityManager.convertStoredActivityToFlatActivity(activity);
 	}
 	async setLevel(skill: SkillNameType, level: number) {
 		await this.update({ [`skills_${skill}`]: convertLVLtoXP(level) });
@@ -375,7 +374,7 @@ class TestClient {
 					completed: true
 				}
 			});
-			await Promise.all(activities.map(completeActivity));
+			await Promise.all(activities.map(_act => ActivityManager.completeActivity(_act)));
 		}
 	}
 }

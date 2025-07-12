@@ -18,6 +18,7 @@ import { pick } from 'remeda';
 
 import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
+import { ActivityManager } from './ActivityManager';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { partialUserCache } from './cache';
@@ -56,7 +57,6 @@ import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
-import { minionIsBusy } from './util/minionIsBusy';
 import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
 
@@ -503,7 +503,7 @@ GROUP BY data->>'ci';`);
 	}
 
 	get minionIsBusy() {
-		return minionIsBusy(this.id);
+		return ActivityManager.minionIsBusy(this.id);
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {

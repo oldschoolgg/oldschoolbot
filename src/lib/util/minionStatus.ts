@@ -5,6 +5,7 @@ import { Items, SkillsEnum } from 'oldschooljs';
 
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { collectables } from '../../mahoji/lib/collectables';
+import { ActivityManager } from '../ActivityManager';
 import { ClueTiers } from '../clues/clueTiers';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
@@ -81,10 +82,9 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
-	const currentTask = getActivityOfUser(user.id);
+	const currentTask = ActivityManager.getActivityOfUser(user.id);
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;

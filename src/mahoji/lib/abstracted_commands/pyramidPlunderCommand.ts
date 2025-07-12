@@ -6,11 +6,10 @@ import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
 import type { PlunderActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function pyramidPlunderCommand(user: MUser, channelID: string) {
-	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const skills = user.skillsAsLevels;
 	const thievingLevel = skills.thieving;
 	const minLevel = plunderRooms[0].thievingLevel;
