@@ -109,6 +109,10 @@ const itemsThatDontAddToTempCL = resolveItems([
 	'Monkey crate',
 	'Magic crate',
 	'Chimpling jar',
+	'Mystery impling jar',
+	'Eternal impling jar',
+	'Infernal impling jar',
+	'Shrimpling',
 	...ClueTiers.flatMap(t => [t.id, t.scrollID])
 ]);
 
