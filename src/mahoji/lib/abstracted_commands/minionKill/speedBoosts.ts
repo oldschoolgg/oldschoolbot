@@ -213,12 +213,12 @@ const salveBoost: Boost = {
 
 const dragonHunterBoost: Boost = {
 	description: 'A boost for dragon-hunter gear when killing dragons',
-	run: ({ monster, isInWilderness, osjsMon, primaryStyle: style, gearBank }) => {
+	run: ({ monster, osjsMon, primaryStyle: style, gearBank }) => {
 		const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
 		if (!isDragon || monster.name.toLowerCase() === 'vorkath') return null;
 
 		for (const wep of dragonHunterWeapons) {
-			const hasWep = gearBank.wildyGearCheck(wep.item.id, isInWilderness);
+			const hasWep = gearBank.hasEquippedOrInBank(wep.item.id);
 			if (hasWep && style === wep.attackStyle) {
 				return {
 					percentageReduction: wep.boost,
