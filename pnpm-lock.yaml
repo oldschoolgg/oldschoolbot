@@ -14,6 +14,9 @@ importers:
       '@oldschoolgg/collectionlog':
         specifier: workspace:*
         version: link:packages/collectionlog
+      '@oldschoolgg/necromancy':
+        specifier: workspace:*
+        version: link:packages/necromancy
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:packages/toolkit
@@ -201,6 +204,12 @@ importers:
         version: 5.8.3
 
   packages/collectionlog:
+    dependencies:
+      oldschooljs:
+        specifier: workspace:*
+        version: link:../oldschooljs
+
+  packages/necromancy:
     dependencies:
       oldschooljs:
         specifier: workspace:*

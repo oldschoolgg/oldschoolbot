@@ -77,6 +77,15 @@ const Bars: Bar[] = [
 		timeToUse: Time.Second * 2.4
 	},
 	{
+		name: 'Platinum bar',
+		level: 85,
+		xp: 110,
+		id: itemID('Platinum bar'),
+		inputOres: new Bank({ 'Platinum ore': 1, Coal: 14 }),
+		chanceOfFail: 60,
+		timeToUse: Time.Second * 3.1
+	},
+	{
 		name: 'Dwarven bar',
 		level: 99,
 		xp: 5000,

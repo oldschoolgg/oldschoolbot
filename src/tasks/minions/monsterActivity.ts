@@ -141,7 +141,7 @@ function getSlayerContext({
 	};
 }
 
-interface newOptions {
+export interface NewMonsterActivityOptions {
 	type: 'MonsterKilling';
 	monster: KillableMonster;
 	q: number;
@@ -170,7 +170,7 @@ interface newOptions {
 	disabledInventions: number[];
 }
 
-export function doMonsterTrip(data: newOptions) {
+export function doMonsterTrip(data: NewMonsterActivityOptions) {
 	let {
 		monster,
 		q: quantity,

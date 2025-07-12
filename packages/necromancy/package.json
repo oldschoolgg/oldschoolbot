@@ -1,0 +1,18 @@
+{
+	"name": "@oldschoolgg/necromancy",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs"
+		}
+	},
+	"scripts": {
+		"build": "concurrently \"pnpm build:types\" \"pnpm build:esbuild\"",
+		"build:esbuild": "tsx esbuild.ts",
+		"build:types": "tsc -p src"
+	},
+	"dependencies": {
+		"oldschooljs": "workspace:*"
+	}
+}

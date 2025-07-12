@@ -1,7 +1,15 @@
 {
 	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
-		"noEmit": true
+		"noEmit": true,
+		"resolveJsonModule": true,
+		"paths": {
+			"data:*": ["data/*"],
+			"@/*": ["src/*"]
+		},
+		"module": "nodenext",
+		"target": "esnext",
+		"moduleResolution": "NodeNext"
 	},
 	"include": [".", "../src/**/*", "../tests/unit/utils.ts"],
 	"exclude": ["node_modules"]

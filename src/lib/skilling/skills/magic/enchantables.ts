@@ -349,7 +349,7 @@ const jewelery: Enchantable[] = [
 	}
 ];
 
-const bolts = [
+const bolts: Enchantable[] = [
 	{
 		name: '10x Opal bolts',
 		id: itemID('Opal bolts'),
@@ -518,6 +518,43 @@ const bolts = [
 		output: new Bank().add('Magic banana', 1),
 		xp: 66,
 		level: 82
+	},
+	// Platinum
+	{
+		name: 'Platinum ring',
+		id: itemID('Platinum ring'),
+		input: new Bank().add('Platinum ring').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
+		output: new Bank().add('Ring of suffering'),
+		xp: 110,
+		level: 93,
+		cantBeDoubled: true
+	},
+	{
+		name: 'Platinum amulet',
+		id: itemID('Platinum amulet'),
+		input: new Bank().add('Platinum amulet').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
+		output: new Bank().add('Amulet of torture'),
+		xp: 110,
+		level: 93,
+		cantBeDoubled: true
+	},
+	{
+		name: 'Platinum necklace',
+		id: itemID('Platinum necklace'),
+		input: new Bank().add('Platinum necklace').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
+		output: new Bank().add('Necklace of anguish'),
+		xp: 110,
+		level: 93,
+		cantBeDoubled: true
+	},
+	{
+		name: 'Platinum bracelet',
+		id: itemID('Platinum bracelet'),
+		input: new Bank().add('Platinum bracelet').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
+		output: new Bank().add('Tormented bracelet'),
+		xp: 110,
+		level: 93,
+		cantBeDoubled: true
 	}
 ];
 

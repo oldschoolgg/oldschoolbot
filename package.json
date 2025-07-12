@@ -39,6 +39,7 @@
 	"dependencies": {
 		"@oldschoolgg/collectionlog": "workspace:*",
 		"@oldschoolgg/toolkit": "workspace:*",
+		"@oldschoolgg/necromancy": "workspace:*",
 		"@prisma/client": "^6.10.1",
 		"@sapphire/ratelimits": "^2.4.9",
 		"@sapphire/snowflake": "^3.5.3",

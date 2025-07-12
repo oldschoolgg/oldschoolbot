@@ -55,7 +55,8 @@ const masterCapeBoosts: Record<SkillsEnum, DisassemblySourceGroup[]> = {
 	hitpoints: [],
 	invention: [],
 	hunter: [],
-	divination: []
+	divination: [],
+	necromancy: []
 };
 
 function doesHaveMasterCapeBoost(
