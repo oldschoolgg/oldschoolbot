@@ -8,7 +8,6 @@ import {
 	puroImpSpellTable,
 	puroImplings
 } from '../../../lib/implings';
-import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
@@ -27,7 +26,7 @@ export const puroPuroTask: MinionTask = {
 	async run(data: PuroPuroActivityTaskOptions) {
 		const { channelID, userID, quantity, darkLure, implingTier } = data;
 		const user = await mUserFetch(userID);
-		await incrementMinigameScore(userID, 'puro_puro', quantity);
+		await user.incrementMinigameScore('puro_puro', quantity);
 		const minutes = Math.floor(data.duration / Time.Minute);
 		const bank = new Bank();
 		const missed = new Bank();

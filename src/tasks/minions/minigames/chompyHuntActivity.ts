@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '../../../lib/data/CollectionsExport';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatList } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -14,8 +13,8 @@ export const chompHuntTask: MinionTask = {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);
 
-		const previousScore = (await getMinigameEntity(user.id)).big_chompy_bird_hunting;
-		const { newScore } = await incrementMinigameScore(userID, 'big_chompy_bird_hunting', quantity);
+		const previousScore = await user.fetchMinigameScore('big_chompy_bird_hunting');
+		const { newScore } = await user.incrementMinigameScore('big_chompy_bird_hunting', quantity);
 
 		const loot = new Bank();
 

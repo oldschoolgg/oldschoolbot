@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
 
 import { roll } from '@/lib/util/rng';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -61,8 +60,9 @@ export const gnomeResTask: MinionTask = {
 	type: 'GnomeRestaurant',
 	async run(data: GnomeRestaurantActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
+		const user = await mUserFetch(userID);
 
-		incrementMinigameScore(userID, 'gnome_restaurant', quantity);
+		await user.incrementMinigameScore('gnome_restaurant', quantity);
 
 		const loot = new Bank();
 
@@ -77,7 +77,6 @@ export const gnomeResTask: MinionTask = {
 			loot.add(tipTable.roll());
 		}
 
-		const user = await mUserFetch(userID);
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

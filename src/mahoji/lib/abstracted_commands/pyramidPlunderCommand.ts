@@ -2,7 +2,7 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
 
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+
 import type { PlunderActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -31,7 +31,7 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 
 	// Every 1h becomes 1% faster to a cap of 10%
 	const percentFaster = Math.min(
-		Math.floor((await getMinigameScore(user.id, 'pyramid_plunder')) / (Time.Hour / plunderTime)),
+		Math.floor((await user.fetchMinigameScore('pyramid_plunder')) / (Time.Hour / plunderTime)),
 		10
 	);
 

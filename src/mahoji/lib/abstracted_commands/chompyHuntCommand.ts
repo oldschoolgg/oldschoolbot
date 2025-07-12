@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '../../../lib/data/CollectionsExport';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -18,7 +18,7 @@ const diaryBoosts = [
 const baseChompyPerHour = 100;
 
 export async function chompyHuntClaimCommand(user: MUser) {
-	const chompyScore = await getMinigameScore(user.id, 'big_chompy_bird_hunting');
+	const chompyScore = await user.fetchMinigameScore('big_chompy_bird_hunting');
 	const userBank = user.bank;
 	const { cl } = user;
 

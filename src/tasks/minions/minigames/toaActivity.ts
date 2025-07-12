@@ -6,7 +6,6 @@ import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { trackLoot } from '../../../lib/lootTrack';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import {
 	calcTOALoot,
@@ -84,7 +83,7 @@ export const toaTask: MinionTask = {
 				mUser: user,
 				points: 0,
 				deaths: 0,
-				kc: await getMinigameScore(user.id, 'tombs_of_amascut')
+				kc: await user.fetchMinigameScore('tombs_of_amascut')
 			});
 		}
 
@@ -121,7 +120,7 @@ export const toaTask: MinionTask = {
 		}
 		messages = uniqueArr(messages);
 		const minigameIncrementResult = await Promise.all(
-			allUsers.map(u => incrementMinigameScore(u.id, 'tombs_of_amascut', quantity))
+			allUsers.map(u => u.incrementMinigameScore('tombs_of_amascut', quantity))
 		);
 
 		let resultMessage = isSolo

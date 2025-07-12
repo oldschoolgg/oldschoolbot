@@ -20,7 +20,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank';
 import { setupParty } from '../../../lib/party';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+
 import type { MakePartyOptions } from '../../../lib/types';
 import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -43,7 +43,7 @@ const SCYTHE_CHARGES_PER_RAID = 200;
 
 async function calcTOBInput(u: MUser) {
 	const items = new Bank();
-	const kc = await getMinigameScore(u.id, 'tob');
+	const kc = await u.fetchMinigameScore('tob');
 	items.add('Super combat potion(4)', 1);
 	items.add('Ranging potion(4)', 1);
 
@@ -212,7 +212,7 @@ async function checkTOBUser(
 	}
 
 	if (isHardMode) {
-		const kc = await getMinigameScore(user.id, 'tob');
+		const kc = await user.fetchMinigameScore('tob');
 
 		if (kc < 250) {
 			return [true, `${user.usernameOrMention} needs at least 250 Theatre of Blood KC before doing Hard mode.`];
@@ -223,7 +223,7 @@ async function checkTOBUser(
 	}
 
 	if (teamSize === 2) {
-		const kc = await getMinigameScore(user.id, isHardMode ? 'tob_hard' : 'tob');
+		const kc = await user.fetchMinigameScore(isHardMode ? 'tob_hard' : 'tob');
 		if (kc < 150) {
 			return [true, `${user.usernameOrMention} needs at least 150 KC before doing duo's.`];
 		}
@@ -302,7 +302,7 @@ export async function tobStartCommand(
 	}
 
 	if (isHardMode) {
-		const normalKC = await getMinigameScore(user.id, 'tob');
+		const normalKC = await user.fetchMinigameScore('tob');
 		if (normalKC < 250) {
 			return 'You need at least 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
 		}

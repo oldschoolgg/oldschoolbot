@@ -8,7 +8,6 @@ import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/da
 import { coxCMUniques, coxUniques, createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import type { RaidsOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -210,7 +209,7 @@ export const raidsTask: MinionTask = {
 			}
 		}
 
-		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, quantity)));
+		await Promise.all(allUsers.map(u => u.incrementMinigameScore(u.id, minigameID, quantity)));
 
 		for (const [userID, userData] of raidResults) {
 			const { personalPoints, deaths, deathChance, loot, mUser: user } = userData;
@@ -248,7 +247,7 @@ export const raidsTask: MinionTask = {
 				globalClient.emit(
 					Events.ServerNotification,
 					`${emote} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						await getMinigameScore(user.id, minigameID)
+						await user.fetchMinigameScore(minigameID)
 					)} raid.`
 				);
 			}

@@ -34,7 +34,6 @@ import { BitField } from '../../src/lib/constants';
 import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { trackLoot } from '../../src/lib/lootTrack';
 import type { MinigameName } from '../../src/lib/settings/minigames';
-import { incrementMinigameScore } from '../../src/lib/settings/minigames';
 import type { SkillsEnum } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
@@ -823,7 +822,7 @@ const allTableCommands: TestCommand[] = [
 				'gauntlet'
 			];
 			const quantity = randInt(10, 20);
-			await incrementMinigameScore(user.id, randArrItem(minigames), quantity);
+			await user.incrementMinigameScore(randArrItem(minigames), quantity);
 		}
 	},
 	{
