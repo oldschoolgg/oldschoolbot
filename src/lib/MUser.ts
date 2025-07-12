@@ -40,8 +40,8 @@ import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpip
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { getUsersPerkTier } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
-import type { MinigameScore } from './settings/minigames';
-import { Minigames, getMinigameEntity } from './settings/minigames';
+import type { MinigameName, MinigameScore } from './settings/minigames';
+import { Minigames } from './settings/minigames';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
@@ -431,7 +431,8 @@ GROUP BY data->>'ci';`);
 	}
 
 	async fetchMinigameScores() {
-		const userMinigames = await getMinigameEntity(this.id);
+		const userMinigames = await this.fetchMinigames();
+
 		const scores: MinigameScore[] = [];
 		for (const minigame of Minigames) {
 			const score = userMinigames[minigame.column];
@@ -441,7 +442,30 @@ GROUP BY data->>'ci';`);
 	}
 
 	async fetchMinigames() {
-		return getMinigameEntity(this.id);
+		const userMinigames = await prisma.minigame.upsert({
+			where: { user_id: this.id },
+			update: {},
+			create: { user_id: this.id }
+		});
+		return userMinigames;
+	}
+
+	async fetchMinigameScore(minigame: MinigameName) {
+		const userMinigames = await this.fetchMinigames();
+		return userMinigames[minigame];
+	}
+
+	async incrementMinigameScore(minigame: MinigameName, amountToAdd = 1) {
+		const result = await prisma.minigame.upsert({
+			where: { user_id: this.id },
+			update: { [minigame]: { increment: amountToAdd } },
+			create: { user_id: this.id, [minigame]: amountToAdd }
+		});
+
+		return {
+			newScore: result[minigame],
+			entity: result
+		};
 	}
 
 	getSkills(levels: boolean) {
