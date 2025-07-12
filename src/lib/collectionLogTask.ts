@@ -105,6 +105,7 @@ class CollectionLogTask {
 		flags: { [key: string]: string | number | undefined };
 		stats: MUserStats | null;
 		collectionLog?: IToReturnCollection;
+		minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 	}): Promise<CommandResponse> {
 		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
 
@@ -124,7 +125,8 @@ class CollectionLogTask {
 				user,
 				search: collection,
 				flags,
-				logType: type
+				logType: type,
+				minigameScoresOverride: options.minigameScoresOverride
 			});
 		}
 
