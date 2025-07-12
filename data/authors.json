@@ -10,9 +10,9 @@
 	"bso/Monsters/Demi Bosses/akumu.md": ["TastyPumPum"],
 	"bso/Monsters/Demi Bosses/venatrix.md": ["TastyPumPum"],
 	"bso/Monsters/Raids/README.md": ["wontonstrips", "Magnaboy"],
-	"bso/Monsters/Raids/chambers-of-xeric.md": ["chris jeng", "Magnaboy", "wontonstrips"],
+	"bso/Monsters/Raids/chambers-of-xeric.md": ["Chris Jeng", "Magnaboy", "wontonstrips"],
 	"bso/Monsters/Raids/theatre-of-blood-tob.md": ["Magnaboy", "wontonstrips"],
-	"bso/Monsters/Raids/tombs-of-amascut-toa.md": ["chris jeng", "wontonstrips", "Magnaboy"],
+	"bso/Monsters/Raids/tombs-of-amascut-toa.md": ["Chris Jeng", "wontonstrips", "Magnaboy"],
 	"bso/Tames/eagle-tame.md": ["TastyPumPum", "Magnaboy"],
 	"bso/Tames/monkey-tame.md": ["TastyPumPum", "Magnaboy"],
 	"bso/changelog.mdx": ["TastyPumPum", "Magnaboy"],
@@ -26,7 +26,7 @@
 	"osb/Activities/brimhaven-agility-arena.md": ["DayV", "Magnaboy", "Justas"],
 	"osb/Activities/fountain-of-rune.md": ["DayV", "Magnaboy", "wontonstrips"],
 	"osb/Activities/guardians-of-the-rift.md": ["DayV", "nick", "wontonstrips", "Magnaboy"],
-	"osb/Activities/hallowed-sepulchre.md": ["TastyPumPum", "DayV", "Porfet", "wontonstrips", "Magnaboy"],
+	"osb/Activities/hallowed-sepulchre.md": ["DayV", "TastyPumPum", "Porfet", "wontonstrips", "Magnaboy"],
 	"osb/Activities/mage-training-arena.md": ["DayV", "wontonstrips", "Magnaboy"],
 	"osb/Activities/mahogany-homes.md": ["DayV", "Magnaboy", "wontonstrips"],
 	"osb/Activities/motherlode-mine.md": ["DayV", "wontonstrips", "Magnaboy"],
@@ -35,6 +35,7 @@
 	"osb/Activities/wintertodt.md": ["DayV", "TastyPumPum", "wontonstrips", "Magnaboy"],
 	"osb/Bosses/the-nightmare.md": ["DayV"],
 	"osb/Getting Started/bank-background.md": ["DayV", "Magnaboy"],
+	"osb/Getting Started/bank-filters.md": ["DayV", "Magnaboy"],
 	"osb/Getting Started/beginner-guide.md": ["DayV", "Magnaboy"],
 	"osb/Getting Started/combat-skills.md": ["DayV", "Magnaboy"],
 	"osb/Getting Started/gear.md": ["DayV", "Magnaboy"],
@@ -67,5 +68,5 @@
 	"osb/clues.mdx": ["DayV", "Magnaboy"],
 	"osb/combat-achievements.mdx": ["DayV", "Magnaboy", "Jonesey", "Keres"],
 	"osb/monsters.mdx": ["DayV", "Magnaboy", "Keres"],
-	"osb/quests.mdx": ["Magnaboy", "Keres"]
+	"osb/quests.mdx": ["DayV", "Magnaboy", "Keres"]
 }
