@@ -2,11 +2,10 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Activity, ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Monsters, convertLVLtoXP } from 'oldschooljs';
-
-import { ActivityManager } from '@/lib/ActivityManager';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
+
 import { MUserClass } from '../../src/lib/MUser';
 import { globalConfig } from '../../src/lib/constants';
 import { sql } from '../../src/lib/postgres';

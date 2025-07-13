@@ -1,4 +1,29 @@
-import type { Peak } from './tickers';
+export interface Peak {
+	startTime: number;
+	finishTime: number;
+	peakTier: PeakTier;
+}
+
+export enum PeakTier {
+	High = 'high',
+	Medium = 'medium',
+	Low = 'low'
+}
+
+export const peakFactor = [
+	{
+		peakTier: PeakTier.High,
+		factor: 2.5
+	},
+	{
+		peakTier: PeakTier.Medium,
+		factor: 1
+	},
+	{
+		peakTier: PeakTier.Low,
+		factor: 0.2
+	}
+];
 
 export function getCurrentPeak() {
 	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;

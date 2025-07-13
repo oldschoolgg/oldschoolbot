@@ -2,52 +2,12 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import type { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
 import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
-import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
-import defaultBirdhouseTrap from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
-
-interface BirdhouseDetails {
-	raw: BirdhouseData;
-	isReady: boolean;
-	readyIn: null | number;
-	birdHouse: Birdhouse | null;
-	readyAt: Date | null;
-}
-
-export function calculateBirdhouseDetails(user: MUser): BirdhouseDetails {
-	const birdHouseTraps = user.user.minion_birdhouseTraps;
-	if (!birdHouseTraps) {
-		return {
-			raw: defaultBirdhouseTrap,
-			isReady: false,
-			readyIn: null,
-			birdHouse: null,
-			readyAt: null
-		};
-	}
-
-	const details = birdHouseTraps as unknown as BirdhouseData;
-
-	const birdHouse = details.lastPlaced ? birdhouses.find(_birdhouse => _birdhouse.name === details.lastPlaced) : null;
-	if (!birdHouse) throw new Error(`Missing ${details.lastPlaced} birdhouse`);
-
-	const lastPlacedTime: number = details.birdhouseTime;
-	const difference = Date.now() - lastPlacedTime;
-	const isReady = difference > birdHouse.waitTime;
-	const readyIn = lastPlacedTime + birdHouse.waitTime - Date.now();
-	return {
-		raw: details,
-		isReady,
-		readyIn,
-		birdHouse,
-		readyAt: new Date(Date.now() + readyIn)
-	};
-}
 
 export async function birdhouseCheckCommand(user: MUser) {
 	const details = calculateBirdhouseDetails(user);

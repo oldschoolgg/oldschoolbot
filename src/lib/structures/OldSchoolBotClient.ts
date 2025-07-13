@@ -1,8 +1,7 @@
 import type { MahojiClient } from '@oldschoolgg/toolkit/discord-util';
-import type { User } from 'discord.js';
-import { Client } from 'discord.js';
+import { Client, type User } from 'discord.js';
 
-import type { Peak } from '../tickers';
+import type { Peak } from '../util/peaks';
 
 export class OldSchoolBotClient extends Client<true> {
 	public busyCounterCache = new Map<string, number>();

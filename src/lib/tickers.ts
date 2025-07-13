@@ -4,7 +4,6 @@ import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
-import { ActivityManager } from './ActivityManager';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { BitField, Channel, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
@@ -16,11 +15,11 @@ import { informationalButtons } from './sharedComponents';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { getSupportGuild } from './util';
-import { PeakTier } from './util/calcWildyPkChance';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
+import { type Peak, PeakTier } from './util/peaks';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
@@ -61,12 +60,6 @@ const geEmbed = new EmbedBuilder()
 		name: 'Keep Ads Short',
 		value: 'Keep your ad less than 10 lines long, as short as possible.'
 	});
-
-export interface Peak {
-	startTime: number;
-	finishTime: number;
-	peakTier: PeakTier;
-}
 
 /**
  * Tickers should idempotent, and be able to run at any time.

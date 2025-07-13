@@ -1,6 +1,5 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 
-import { ActivityManager } from '@/lib/ActivityManager';
 import type { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 

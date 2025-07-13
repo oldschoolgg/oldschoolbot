@@ -5,7 +5,6 @@ import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateO
 import { Time } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import {
@@ -20,6 +19,7 @@ import { BitField, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
+import { calculateBirdhouseDetails } from '../skilling/skills/hunter/birdhouses';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
 import { displayCluesAndPets } from './displayCluesAndPets';
@@ -33,7 +33,7 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
-} from './globalInteractions';
+} from './interactions';
 import { hasSkillReqs } from './smallUtils';
 import { sendToChannelID } from './webhook';
 

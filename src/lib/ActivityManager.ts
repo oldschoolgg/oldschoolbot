@@ -120,4 +120,10 @@ class SActivityManager {
 	}
 }
 
-export const ActivityManager = new SActivityManager();
+const ActivityManagerSingleton = new SActivityManager();
+
+declare global {
+	var ActivityManager: typeof ActivityManagerSingleton;
+}
+
+global.ActivityManager = ActivityManagerSingleton;

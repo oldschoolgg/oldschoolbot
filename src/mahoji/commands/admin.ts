@@ -13,7 +13,6 @@ import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyO
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
 import { Bank, type ItemBank, convertBankToPerHourStats, toKMB } from 'oldschooljs';
 
-import { ActivityManager } from '@/lib/ActivityManager';
 import { countUsersWithItemInCl } from '@/lib/rawSql';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';

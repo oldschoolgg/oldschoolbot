@@ -29,7 +29,6 @@ import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 import { beforeAll, expect, test, vi } from 'vitest';
 
-import { ActivityManager } from '@/lib/ActivityManager';
 import { BitField } from '../../src/lib/constants';
 import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { trackLoot } from '../../src/lib/lootTrack';

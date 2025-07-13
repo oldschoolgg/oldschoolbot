@@ -1,4 +1,5 @@
 import '../../src/lib/data/itemAliases';
+import '../../src/lib/ActivityManager';
 import { MUserStats } from '../../src/lib/structures/MUserStats';
 
 MUserStats.fromID = async (id: string) => {

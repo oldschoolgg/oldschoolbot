@@ -1,6 +1,6 @@
 import { noOp, uniqueArr } from 'e';
+
 import { syncCustomPrices } from '../mahoji/lib/events';
-import { ActivityManager } from './ActivityManager';
 import { cacheBadges } from './badges';
 import { syncBlacklists } from './blacklists';
 import { globalConfig } from './constants';

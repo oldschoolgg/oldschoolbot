@@ -2,7 +2,6 @@ import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
 import { ComponentType, PermissionsBitField } from 'discord.js';
 
-import { ActivityManager } from '@/lib/ActivityManager';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { type PartialUser, partialUserCache, perkTierCache, untrustedGuildSettingsCache } from '../../lib/cache';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, globalConfig } from '../../lib/constants';

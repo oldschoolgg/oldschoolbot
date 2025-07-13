@@ -1,6 +1,5 @@
 import { UserError } from '@oldschoolgg/toolkit/structures';
 
-import { ActivityManager } from '../ActivityManager';
 import type { ActivityTaskData, ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { logError } from './logError';

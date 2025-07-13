@@ -21,7 +21,7 @@ import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks';
 import { type CurrentSlayerInfo, determineCombatBoosts, wildySlayerOnlyMonsters } from '@/lib/slayer/slayerUtil';
 import type { GearBank } from '@/lib/structures/GearBank';
 import { UpdateBank } from '@/lib/structures/UpdateBank';
-import type { Peak } from '@/lib/tickers';
+import type { Peak } from '@/lib/util/peaks';
 import { zodEnum } from '@/lib/util/smallUtils.js';
 import type { PvMMethod } from '../../../commands/k';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';

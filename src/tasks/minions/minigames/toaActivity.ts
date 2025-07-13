@@ -4,16 +4,11 @@ import { bold } from 'discord.js';
 import { Time, isObject, uniqueArr } from 'e';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
+import { normalizeTOAUsers } from '@/lib/util';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { trackLoot } from '../../../lib/lootTrack';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import {
-	calcTOALoot,
-	calculateXPFromRaid,
-	normalizeTOAUsers,
-	toaOrnamentKits,
-	toaPetTransmogItems
-} from '../../../lib/simulation/toa';
+import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '../../../lib/simulation/toa';
 import type { TOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';

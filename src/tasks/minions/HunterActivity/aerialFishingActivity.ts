@@ -6,19 +6,17 @@ import { roll } from '@/lib/util/rng';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { skillingPetDropRate } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
-		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
-		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
+	isNew: true,
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID } = data;
+		const currentHuntLevel = user.skillsAsLevels.hunter;
+		const currentFishLevel = user.skillsAsLevels.fishing;
 
 		// Current fishable creatures
 		const bluegill = aerialFishingCreatures.find(_fish => _fish.name === 'Bluegill')!;
@@ -103,13 +101,13 @@ export const aerialFishingTask: MinionTask = {
 		}
 
 		const fishXP = await user.addXP({
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: fishXpReceived,
 			duration: data.duration,
 			source: 'AerialFishing'
 		});
 		const huntXP = await user.addXP({
-			skillName: SkillsEnum.Hunter,
+			skillName: 'hunter',
 			amount: huntXpReceived,
 			duration: data.duration,
 			source: 'AerialFishing'
@@ -132,11 +130,11 @@ export const aerialFishingTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = 636_833;
-		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, 636_833);
+		const { petDropRate } = skillingPetDropRate(user, 'fishing', 636_833);
 		if (roll(petDropRate / totalFishCaught)) {
 			loot.add('Heron');
 			globalClient.emit(

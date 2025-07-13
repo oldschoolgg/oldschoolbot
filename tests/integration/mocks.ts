@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-import { PeakTier } from '../../src/lib/util/calcWildyPkChance';
+import { PeakTier } from '@/lib/util/peaks';
 
 vi.mock('../../src/lib/util/handleMahojiConfirmation.ts', () => ({
 	handleMahojiConfirmation: vi.fn()

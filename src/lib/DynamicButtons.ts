@@ -14,7 +14,6 @@ import {
 import { Time, isFunction, noOp } from 'e';
 import murmurhash from 'murmurhash';
 
-import { ActivityManager } from './ActivityManager';
 import { BLACKLISTED_USERS } from './blacklists';
 import { silentButtonAck } from './util/handleMahojiConfirmation';
 

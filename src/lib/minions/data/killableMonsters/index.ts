@@ -1,7 +1,8 @@
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Time } from 'e';
 import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
-
 import { GearStat } from 'oldschooljs/gear';
+
 import { SkillsEnum } from '../../../skilling/types';
 import type { KillableMonster } from '../../types';
 import bosses from './bosses';
@@ -400,3 +401,46 @@ export const wikiMonsters = killableMonsters
 	.filter(m => m.equippedItemBoosts || m.itemInBankBoosts || m.itemCost || m.requiredQuests)
 	.filter(m => ['Revenant', 'Reanim'].every(b => !m.name.includes(b)))
 	.sort((a, b) => a.name.localeCompare(b.name));
+
+const otherMonsters = [
+	{
+		id: -1,
+		name: 'Tempoross',
+		aliases: ['temp', 'tempoross'],
+		link: '/skills/fishing/tempoross/'
+	},
+	...["Phosani's Nightmare", 'Mass Nightmare', 'Solo Nightmare'].map(s => ({
+		id: -1,
+		name: s,
+		aliases: [s.toLowerCase()],
+		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
+	})),
+	{
+		name: 'Nex',
+		aliases: ['nex'],
+		id: EMonster.NEX,
+		link: '/bosses/nex/'
+	},
+	{
+		name: 'Zalcano',
+		aliases: ['zalcano'],
+		id: EMonster.ZALCANO,
+		emoji: '<:Smolcano:604670895113633802>',
+		link: '/miscellaneous/zalcano/'
+	},
+	{
+		name: 'Wintertodt',
+		aliases: ['wt', 'wintertodt', 'todt'],
+		id: -1,
+		emoji: '<:Phoenix:324127378223792129>',
+		link: '/activities/wintertodt/'
+	},
+	{
+		name: 'Colosseum',
+		aliases: ['colo', 'colosseum'],
+		id: -1,
+		link: '/bosses/colosseum/'
+	}
+];
+
+export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];

@@ -1,14 +1,16 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
 	type CommandRunOptions,
 	type MahojiUserOption,
 	formatOrdinal,
-	roboChimpCLRankQuery
+	roboChimpCLRankQuery,
+	toTitleCase
 } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { notEmpty, randArrItem } from 'e';
+import { ApplicationCommandOptionType, type BaseMessageOptions, bold, time } from 'discord.js';
+import { Time, notEmpty, randArrItem } from 'e';
 import { convertLVLtoXP } from 'oldschooljs';
 
-import { ActivityManager } from '@/lib/ActivityManager';
+import type { Peak } from '@/lib/util/peaks';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
@@ -29,7 +31,6 @@ import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
-import { checkPeakTimes } from '../../lib/util/minionUtils';
 import { isValidNickname } from '../../lib/util/smallUtils';
 import {
 	achievementDiaryCommand,
@@ -111,6 +112,23 @@ export async function getUserInfo(user: MUser) {
 		} points (Rank ${leaguesRanking > 500 ? 'Unranked! Get more points!' : formatOrdinal(leaguesRanking)})
 **Global CL:** ${globalCLPercent}% (${clRank > 500 ? 'Unranked! Get more CL slots completed!' : formatOrdinal(clRank)})
 `
+	};
+}
+
+function checkPeakTimes(): BaseMessageOptions {
+	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
+	let str = '';
+	for (const peak of cachedPeakInterval) {
+		str += `${Emoji.Stopwatch} **${toTitleCase(peak.peakTier)}** peak time: ${time(
+			new Date(peak.startTime),
+			'T'
+		)} to ${time(new Date(peak.finishTime), 'T')} (**${Math.round(
+			(peak.finishTime - peak.startTime) / Time.Hour
+		)}** hour peak ${time(new Date(peak.startTime), 'R')})\n`;
+	}
+
+	return {
+		content: str
 	};
 }
 

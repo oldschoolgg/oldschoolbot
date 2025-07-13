@@ -18,7 +18,6 @@ import { pick } from 'remeda';
 
 import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
-import { ActivityManager } from './ActivityManager';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { partialUserCache } from './cache';
