@@ -1,4 +1,4 @@
-import { EItem, ItemGroups, Items, Monster, MonsterAttribute } from 'oldschooljs';
+import { EItem, ItemGroups, Items, type Monster, MonsterAttribute } from 'oldschooljs';
 
 import type { GearBank } from '@/lib/structures/GearBank';
 
