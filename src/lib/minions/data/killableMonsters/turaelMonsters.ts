@@ -216,7 +216,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CrawlingHand.id,
