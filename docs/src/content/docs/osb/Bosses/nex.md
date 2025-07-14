@@ -2,27 +2,29 @@
 title: "Nex"
 ---
 
+Nex is a high-level boss found in the God Wars Dungeon. Nex can be killed in groups of up to 5 players, for a chance at unique drops such as [[Zaryte crossbow]], Torva armour pieces, and the [[Nexling]] pet. If you obtain damaged Torva items, you can use [[/create]] to repair them into usable gear.
+
+To start a Nex mass, use [[/k namen\:Nex]]. You can also kill Nex in a fake mass using [[/k name\:Nex solo\:True]].
+
+---
+
 ## Requirements
 
-- Frozen Key
-- Defeat one of each God Wars Dungeon Boss and then use [[/create]] to create a Frozen Key
-- Level 90 Ranged, Level 90 Defence, Level 74 Prayer
-- Good range gear in range setup. Including a weapon (Armadyl Crossbow, Dragon Crossbow, Zaryte Crossbow, Twisted Bow) and ammo (Dragon/rune arrows, or Ruby Dragon Bolts (e)).
-- Supplies: `8x Saradomin Brew, 5x Super Restore, 2x Ranging Potions, 1x Sanfew Serum, 600x ammo` regardless of trip length/quantity.
+- [[Frozen key]]: obtained by defeating one of each God Wars Dungeon boss, and using [[/create item\:Frozen key]].
+- [[ranged:90]] [[defence:90]] [[prayer:74]]
+- Good range gear in your range setup, including a weapon ([[Armadyl crossbow]], [[Dragon crossbow]], [[Zaryte crossbow]], or [[Twisted bow]]) and ammo ([[Dragon arrow]], [[Rune arrow]], or [[Ruby dragon bolts (e)]]).
+- Supplies: 8x [[Saradomin brew(4)]], 5x [[Super restore(4)]], 2x [[Ranging potion(4)]], 1x [[Sanfew serum(4)]], and 600x ammo (regardless of trip length or quantity).
+- At least 1,000,000 coins to cover potential deaths.
+
+---
 
 ## Boosts & BIS
 
-- Rune arrows are negative/slower than dragon arrows.
-- Zaryte Crossbow is the best in slot weapon.
-- Zaryte vambraces are BIS in gloves slot.
-- Rigour (Dexterous Prayer Scroll used) gives a boost.
-- If using an Elysian or Spectral, your maximum trip length will be longer! This is a new mechanic not currently used elsewhere. It means you can kill more nex per trip, because they let you sustain for longer. Note: The time is applied per user, e.g. maybe +3 mins per user in the team, for the maximum increase, everyone in the team needs one.
-- Spectral has best mage defence bonus in the shield slot.
-- Ely reduces death chance by 30%.
-- You get faster at killing Nex based on your Offence Boost % (gear) and your KC.
+- [[Zaryte crossbow]] is the best-in-slot weapon, and [[Armadyl crossbow]] with a spirit shield is better than a [[Twisted bow]].
+- Unlocking rigour (use [[/use item\:dexterous prayer scroll]]) gives a boost.
+- If using an [[Elysian spirit shield]] or [[Spectral spirit shield]], your maximum trip length will be longer. This mechanic is unique to Nex and allows you to kill more Nex per trip. The time increase is applied per user; for the maximum benefit, everyone in the team needs one.
+- [[Spectral spirit shield]] has the best magic defence bonus in the shield slot.
+- [[Elysian spirit shield]] reduces death chance by 30%.
+- Offence and Defence boosts are based on your gear stats and Nex KC.
 
-**NOTE**: You can now kill Nex Solo using [[/k name:Nex solo:True]]
-
-## BIS Gear
-
-Zaryte Crossbow + Elysian, Armadyl Crossbow + Ely, Armadyl Crossbow + Spectral, Twisted Bow (Best to worst)
+---
