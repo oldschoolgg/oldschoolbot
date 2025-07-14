@@ -4,7 +4,7 @@ title: "Nex"
 
 Nex is a high-level boss found in the God Wars Dungeon. Nex can be killed in groups of up to 5 players, for a chance at unique drops such as [[Zaryte crossbow]], Torva armour pieces, and the [[Nexling]] pet. If you obtain damaged Torva items, you can use [[/create]] to repair them into usable gear.
 
-To start a Nex mass, use [[/k namen\:Nex]]. You can also kill Nex in a fake mass using [[/k name\:Nex solo\:True]].
+To start a Nex mass, use [[/k name\:Nex]]. You can also kill Nex in a fake mass using [[/k name\:Nex solo\:True]].
 
 ---
 
