@@ -6,7 +6,7 @@ import { Items, SkillsEnum } from 'oldschooljs';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { collectables } from '../../mahoji/lib/collectables';
 import { ClueTiers } from '../clues/clueTiers';
-import { tripBuyables } from '../data/buyables/tripBuyables';
+import { findTripBuyable } from '../data/buyables/tripBuyables';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import { quests } from '../minions/data/quests';
@@ -627,7 +627,7 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Buy': {
 			const data = currentTask as BuyActivityTaskOptions;
-			const tripBuyable = tripBuyables.find(tb => tb.item === data.itemID);
+			const tripBuyable = findTripBuyable(data.itemID, data.quantity);
 			const itemName = tripBuyable?.displayName ?? Items.get(data.itemID)?.name ?? `Item[${data.itemID}]`;
 			const quantity =
 				tripBuyable?.quantity && tripBuyable.quantity > 0

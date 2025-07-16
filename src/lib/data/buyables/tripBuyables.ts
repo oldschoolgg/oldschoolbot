@@ -38,3 +38,16 @@ export const tripBuyables: TripBuyable[] = [
 		displayName: 'Chaos rune (pack)'
 	}
 ];
+
+export function findTripBuyable(itemID: EItem, totalQuantity?: number): TripBuyable | undefined {
+	const matches = tripBuyables.filter(tb => tb.item === itemID);
+	if (matches.length <= 1) return matches[0];
+	if (typeof totalQuantity === 'number') {
+		for (const tb of matches) {
+			if (tb.quantity && totalQuantity % tb.quantity === 0) {
+				return tb;
+			}
+		}
+	}
+	return matches[0];
+}

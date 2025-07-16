@@ -1,7 +1,7 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, toKMB } from 'oldschooljs';
 
-import { tripBuyables } from '../../lib/data/buyables/tripBuyables';
+import { findTripBuyable } from '../../lib/data/buyables/tripBuyables';
 import type { BuyActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -12,7 +12,7 @@ export const buyTask: MinionTask = {
 		const { userID, channelID, itemID, quantity, totalCost, duration } = data;
 		const user = await mUserFetch(userID);
 
-		const tripBuyable = tripBuyables.find(tb => tb.item === itemID);
+		const tripBuyable = findTripBuyable(itemID, quantity);
 		if (!tripBuyable) {
 			throw new Error(`No trip buyable found for item ${itemID}`);
 		}

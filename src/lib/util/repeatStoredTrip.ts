@@ -5,7 +5,7 @@ import { Items } from 'oldschooljs';
 
 import type { PvMMethod } from '../../mahoji/commands/k';
 import { ClueTiers } from '../clues/clueTiers';
-import { tripBuyables } from '../data/buyables/tripBuyables';
+import { findTripBuyable } from '../data/buyables/tripBuyables';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { autocompleteMonsters } from '../minions/data/killableMonsters';
 import { runCommand } from '../settings/settings';
@@ -131,7 +131,7 @@ const tripHandlers = {
 	[activity_type_enum.Buy]: {
 		commandName: 'buy',
 		args: (data: BuyActivityTaskOptions) => {
-			const tripBuyable = tripBuyables.find(tb => tb.item === data.itemID);
+			const tripBuyable = findTripBuyable(data.itemID, data.quantity);
 			return {
 				name: tripBuyable?.displayName ?? Items.itemNameFromId(data.itemID),
 				quantity:
