@@ -132,13 +132,19 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Buy]: {
 		commandName: 'buy',
-		args: (data: BuyActivityTaskOptions) => ({
-			name:
-				typeof data.buyableIndex === 'number'
-					? (tripBuyables[data.buyableIndex].displayName ?? itemNameFromID(data.itemID))
-					: itemNameFromID(data.itemID),
-			quantity: data.quantity
-		})
+		args: (data: BuyActivityTaskOptions) => {
+			const tripBuyable =
+				typeof data.buyableIndex === 'number' && tripBuyables[data.buyableIndex]
+					? tripBuyables[data.buyableIndex]
+					: undefined;
+			return {
+				name: tripBuyable?.displayName ?? itemNameFromID(data.itemID),
+				quantity:
+					tripBuyable?.quantity && tripBuyable.quantity > 0
+						? data.quantity / tripBuyable.quantity
+						: data.quantity
+			};
+		}
 	},
 	[activity_type_enum.ShootingStars]: {
 		commandName: 'm',

@@ -63,6 +63,8 @@ export async function buyingTripCommand(
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 	await updateBankSetting('buy_cost_bank', cost);
 
+	const buyableIndex = tripBuyables.indexOf(buyable);
+
 	await addSubTaskToActivityTask<BuyActivityTaskOptions>({
 		type: 'Buy',
 		itemID: osItem.id,
@@ -71,7 +73,7 @@ export async function buyingTripCommand(
 		channelID: channelID.toString(),
 		duration,
 		totalCost,
-		buyableIndex: tripBuyables.indexOf(buyable)
+		...(buyableIndex === -1 ? {} : { buyableIndex })
 	});
 
 	return `${user.minionName} is now buying ${quantity}x ${itemDisplayName} and will return in ${formatDuration(duration)}.`;
