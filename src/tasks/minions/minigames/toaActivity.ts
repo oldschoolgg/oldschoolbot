@@ -4,7 +4,7 @@ import { bold } from 'discord.js';
 import { Time, isObject, uniqueArr } from 'e';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { normalizeTOAUsers } from '@/lib/util';
+import { normalizeTOAUsers } from '@/lib/util/smallUtils';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { trackLoot } from '../../../lib/lootTrack';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';

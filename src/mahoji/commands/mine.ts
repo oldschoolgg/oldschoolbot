@@ -200,13 +200,13 @@ export const mineCommand: OSBMahojiCommand = {
 		if (motherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, quantity });
 		}
-
 		const ore = Mining.Ores.find(
 			ore =>
 				stringMatches(ore.id, options.name) ||
 				stringMatches(ore.name, options.name) ||
 				ore.aliases?.some(a => stringMatches(a, options.name))
 		);
+
 		if (!ore) {
 			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
 				Mining.MotherlodeMine.name

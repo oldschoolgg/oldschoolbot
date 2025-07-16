@@ -3,7 +3,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Skill } from '../types';
 import { SkillsEnum } from '../types';
 import Agility from './agility';
-import Construction from './construction';
+import { Construction } from './construction';
 import Cooking from './cooking/cooking';
 import Crafting from './crafting';
 import Farming from './farming';

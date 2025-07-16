@@ -86,8 +86,8 @@ export const raidsTask: MinionTask = {
 			quantity: _quantity
 		} = data;
 		const quantity = _quantity ?? 1;
-		const fetchedUsers = await Promise.all(users.map(async u => mUserFetch(u)));
-		let allUsers = isFakeMass ? Array(maxSizeInput).fill(fetchedUsers[0]) : fetchedUsers;
+		const fetchedUsers: MUser[] = await Promise.all(users.map(async u => mUserFetch(u)));
+		let allUsers: MUser[] = isFakeMass ? Array(maxSizeInput).fill(fetchedUsers[0]) : fetchedUsers;
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
 		let totalPoints = 0;
@@ -209,7 +209,7 @@ export const raidsTask: MinionTask = {
 			}
 		}
 
-		await Promise.all(allUsers.map(u => u.incrementMinigameScore(u.id, minigameID, quantity)));
+		await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, quantity)));
 
 		for (const [userID, userData] of raidResults) {
 			const { personalPoints, deaths, deathChance, loot, mUser: user } = userData;

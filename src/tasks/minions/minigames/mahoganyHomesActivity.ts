@@ -1,8 +1,8 @@
 import { calcPercentOfNum } from 'e';
 
+import { calcConBonusXP } from '../../../lib/skilling/skills/construction/calcConBonusXP';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { calcConBonusXP } from '../../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const mahoganyHomesTask: MinionTask = {

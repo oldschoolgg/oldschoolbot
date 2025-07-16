@@ -1,10 +1,10 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatList } from '@/lib/util/smallUtils';
 import { chompyHats } from '../../../lib/data/CollectionsExport';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatList } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const chompHuntTask: MinionTask = {

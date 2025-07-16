@@ -142,8 +142,6 @@ export function isModOrAdmin(user: MUser) {
 	return globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
-export * from './util/smallUtils';
-
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
