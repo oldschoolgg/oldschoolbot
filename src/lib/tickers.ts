@@ -2,7 +2,7 @@ import { awaitMessageComponentInteraction, cleanUsername, stringMatches } from '
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
+import { Time, noOp, removeFromArr } from 'e';
 
 import { mahojiUserSettingsUpdate } from './MUser';
 import { BitField, Channel, globalConfig } from './constants';
@@ -19,7 +19,6 @@ import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers'
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
-import { type Peak, PeakTier } from './util/peaks';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
@@ -113,49 +112,6 @@ export const tickers: {
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
 			await ActivityManager.processPendingActivities();
-		}
-	},
-	{
-		name: 'wilderness_peak_times',
-		timer: null,
-		interval: Time.Hour * 24,
-		cb: async () => {
-			let hoursUsed = 0;
-			let peakInterval: Peak[] = [];
-			const peakTiers: PeakTier[] = [PeakTier.High, PeakTier.Medium, PeakTier.Low];
-
-			// Divide the current day into interverals
-			for (let i = 0; i <= 10; i++) {
-				const randomedTime = randInt(1, 2);
-				const [peakTier] = shuffleArr(peakTiers);
-				const peak: Peak = {
-					startTime: randomedTime,
-					finishTime: randomedTime,
-					peakTier
-				};
-				peakInterval.push(peak);
-				hoursUsed += randomedTime;
-			}
-
-			const lastPeak: Peak = {
-				startTime: 24 - hoursUsed,
-				finishTime: 24 - hoursUsed,
-				peakTier: PeakTier.Low
-			};
-
-			peakInterval.push(lastPeak);
-
-			peakInterval = shuffleArr(peakInterval);
-
-			let currentTime = new Date().getTime();
-
-			for (const peak of peakInterval) {
-				peak.startTime = currentTime;
-				currentTime += peak.finishTime * Time.Hour;
-				peak.finishTime = currentTime;
-			}
-
-			globalClient._peakIntervalCache = peakInterval;
 		}
 	},
 	{

@@ -9,7 +9,7 @@ import type { MonsterActivityTaskOptions } from '@/lib/types/minions';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
 import findMonster from '@/lib/util/findMonster';
-import { getCurrentPeak } from '@/lib/util/peaks';
+import { generateDailyPeakIntervals } from '@/lib/util/peaks';
 import { updateBankSetting } from '@/lib/util/updateBankSetting';
 import type { PvMMethod } from '../../../commands/k';
 import { hasMonsterRequirements } from '../../../mahojiSettings';
@@ -86,7 +86,7 @@ export async function minionKillCommand(
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
-		currentPeak: getCurrentPeak()
+		currentPeak: generateDailyPeakIntervals().currentPeak
 	});
 
 	if (typeof result === 'string') {

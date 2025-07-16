@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
-import type { Peak } from '@/lib/util/peaks';
+import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../lib/lootTrack';
@@ -241,7 +241,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		if (creature.wildy) {
 			const date = new Date().getTime();
-			const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
+			const cachedPeakInterval: Peak[] = generateDailyPeakIntervals().peaks;
 			for (const peak of cachedPeakInterval) {
 				if (peak.startTime < date && peak.finishTime > date) {
 					wildyPeak = peak;
