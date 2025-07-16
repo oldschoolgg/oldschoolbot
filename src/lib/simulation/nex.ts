@@ -16,8 +16,8 @@ import { Bank, EMonster, itemID, resolveItems } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import type { Skills } from '../types';
+import { arrows, bolts, bows, crossbows } from '../util/archery';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
 import { formatList, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { TeamLoot } from './TeamLoot';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';

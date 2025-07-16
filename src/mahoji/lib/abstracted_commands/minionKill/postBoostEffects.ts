@@ -8,8 +8,8 @@ import { convertAttackStyleToGearSetup } from '@/lib/gear/functions/convertAttac
 import { calculateMonsterFoodRaw } from '@/lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC';
 import { removeFoodFromUserRaw } from '@/lib/minions/functions/removeFoodFromUser';
-import type { Peak } from '@/lib/tickers';
-import { PeakTier, calcWildyPKChance } from '@/lib/util/calcWildyPkChance';
+import { calcWildyPKChance } from '@/lib/util/calcWildyPkChance';
+import { type Peak, PeakTier } from '@/lib/util/peaks';
 import type { BoostArgs, BoostResult } from './speedBoosts';
 
 const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);

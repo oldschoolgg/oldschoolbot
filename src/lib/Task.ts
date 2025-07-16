@@ -1,4 +1,3 @@
-import type { Activity } from '@prisma/client';
 import { activity_type_enum } from '@prisma/client';
 
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
@@ -93,14 +92,9 @@ import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryAct
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
 import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
-import { modifyBusyCounter } from './busyCounterCache';
-import { globalConfig, minionActivityCache } from './constants';
-import { sql } from './postgres';
-import { convertStoredActivityToFlatActivity } from './settings/prisma';
-import { activitySync, minionActivityCacheDelete } from './settings/settings';
-import { logError } from './util/logError';
+import type { handleTripFinish } from './util/handleTripFinish';
 
-const tasks: MinionTask[] = [
+export const allTasks: MinionTask[] = [
 	aerialFishingTask,
 	birdHouseTask,
 	driftNetTask,
@@ -196,63 +190,21 @@ const tasks: MinionTask[] = [
 	buyTask
 ];
 
-export async function processPendingActivities() {
-	const activities: Activity[] = globalConfig.isProduction
-		? await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
-		: await sql`SELECT * FROM activity WHERE completed = false;`;
-
-	if (activities.length > 0) {
-		await prisma.activity.updateMany({
-			where: {
-				id: {
-					in: activities.map(i => i.id)
-				}
-			},
-			data: {
-				completed: true
-			}
-		});
-		await Promise.all(activities.map(completeActivity));
-	}
-}
-
-export const syncActivityCache = async () => {
-	const tasks = await prisma.activity.findMany({ where: { completed: false } });
-	minionActivityCache.clear();
-	for (const task of tasks) {
-		activitySync(task);
-	}
+type MinionTaskRunOptions = {
+	user: MUser;
+	handleTripFinish: typeof handleTripFinish;
 };
 
-export async function completeActivity(_activity: Activity) {
-	const activity = convertStoredActivityToFlatActivity(_activity);
-
-	if (_activity.completed) {
-		logError(new Error('Tried to complete an already completed task.'));
-		return;
-	}
-
-	const task = tasks.find(i => i.type === activity.type)!;
-	if (!task) {
-		logError(new Error('Missing task'));
-		return;
-	}
-
-	modifyBusyCounter(activity.userID, 1);
-	try {
-		await task.run(activity);
-	} catch (err) {
-		logError(err);
-	} finally {
-		modifyBusyCounter(activity.userID, -1);
-		minionActivityCacheDelete(activity.userID);
-	}
-}
-
-interface IMinionTask {
-	type: activity_type_enum;
-	run: Function;
-}
+type IMinionTask =
+	| {
+			type: activity_type_enum;
+			run: (data: any) => Promise<void>;
+	  }
+	| {
+			type: activity_type_enum;
+			isNew: true;
+			run: (data: any, options: MinionTaskRunOptions) => Promise<void>;
+	  };
 declare global {
 	export type MinionTask = IMinionTask;
 }
@@ -269,7 +221,7 @@ for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {
 		continue;
 	}
-	const t = tasks.find(i => i.type === a);
+	const t = allTasks.find(i => i.type === a);
 	if (!t) {
 		throw new Error(`Missing ${a} task`);
 	}

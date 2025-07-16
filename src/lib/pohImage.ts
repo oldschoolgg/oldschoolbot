@@ -13,7 +13,6 @@ import {
 	loadAndCacheLocalImage,
 	loadImage
 } from './util/canvasUtil';
-import { getActivityOfUser } from './util/minionIsBusy';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
@@ -124,7 +123,7 @@ class PoHImage {
 				ctx.drawImage(image, x - width / 2, y - height, width, height);
 			}
 		}
-		const activity = getActivityOfUser(poh.user_id);
+		const activity = ActivityManager.getActivityOfUser(poh.user_id);
 		if (!activity) {
 			const image = this.imageCache.get(11)!;
 			const [x, y] = this.randMinionCoords();

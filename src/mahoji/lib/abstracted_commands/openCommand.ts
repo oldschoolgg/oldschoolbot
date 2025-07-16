@@ -3,6 +3,7 @@ import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { BitField, MAX_CLUES_DROPPED } from '../../../lib/constants';
@@ -10,7 +11,6 @@ import type { UnifiedOpenable } from '../../../lib/openables';
 import { allOpenables, getOpenableLoot } from '../../../lib/openables';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { displayCluesAndPets } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings';
 
@@ -164,7 +164,7 @@ ${messages.join(', ')}`.trim(),
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
 
-	response.content += await displayCluesAndPets(user.id, loot);
+	response.content += await displayCluesAndPets(user, loot);
 
 	return response;
 }

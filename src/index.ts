@@ -2,6 +2,7 @@ import './lib/safeglobals';
 import './lib/globals';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
+import './lib/ActivityManager';
 import './lib/geImage';
 
 import { Events } from '@oldschoolgg/toolkit/constants';

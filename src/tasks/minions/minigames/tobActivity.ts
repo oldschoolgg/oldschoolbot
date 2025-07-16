@@ -8,7 +8,6 @@ import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -160,7 +159,7 @@ export const tobTask: MinionTask = {
 						`${Emoji.Purple} ${
 							user.badgedUsername
 						} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-							(await getMinigameScore(user.id, minigameID)) + (raidId - wipeCount)
+							(await user.fetchMinigameScore(minigameID)) + (raidId - wipeCount)
 						)} raid.`
 					);
 				}
@@ -199,7 +198,7 @@ export const tobTask: MinionTask = {
 		}
 		const successfulRaidCount = quantity - wipeCount;
 		if (successfulRaidCount > 0) {
-			await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, successfulRaidCount)));
+			await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, successfulRaidCount)));
 		}
 		if (wipeCount > 0) {
 			// Update economy stats:

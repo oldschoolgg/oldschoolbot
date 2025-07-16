@@ -1,10 +1,9 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
-import type { MinigameName } from '../../../lib/settings/settings';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import type { MinigameName } from '@/lib/settings/minigames';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import type { GauntletOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -18,7 +17,7 @@ export const gauntletTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
-		const kc = await getMinigameScore(user.id, key);
+		const kc = await user.fetchMinigameScore(key);
 
 		let chanceOfDeath = corrupted ? 6 : 3;
 		chanceOfDeath += Math.max(0, calcWhatPercent(50 - kc, 50) / 2);
@@ -42,7 +41,7 @@ export const gauntletTask: MinionTask = {
 			loot.add('Gauntlet cape');
 		}
 
-		await incrementMinigameScore(userID, key, quantity - deaths);
+		await user.incrementMinigameScore(key, quantity - deaths);
 
 		const { previousCL } = await transactItems({
 			userID: user.id,
@@ -51,7 +50,7 @@ export const gauntletTask: MinionTask = {
 		});
 		const name = `${corrupted ? 'Corrupted' : 'Normal'} Gauntlet`;
 
-		const newKc = await getMinigameScore(user.id, key);
+		const newKc = await user.fetchMinigameScore(key);
 
 		const str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
 

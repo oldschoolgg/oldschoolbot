@@ -3,6 +3,8 @@ import deepEqual from 'fast-deep-equal';
 import { Bank, Monsters } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
+import { Minigames } from '@/lib/settings/minigames';
+import type { MUserStats } from '@/lib/structures/MUserStats';
 import { MUserClass } from '../../src/lib/MUser';
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
@@ -44,8 +46,9 @@ describe('Images', async () => {
 				kcBank: {},
 				highGambles: 1,
 				gotrRiftSearches: 1
-			}
-		} as any);
+			} as MUserStats,
+			minigameScoresOverride: Minigames.map(_m => ({ minigame: _m, score: 0 }))
+		});
 		await writeFile(`tests/unit/snapshots/cl.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 

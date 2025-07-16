@@ -5,7 +5,6 @@ import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
 import { skillingPetDropRate } from '@/lib/util';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -38,7 +37,7 @@ export const agilityArenaTask: MinionTask = {
 		ticketsReceived += bonusTickets;
 
 		// Increment agility_arena minigame score
-		await incrementMinigameScore(user.id, 'agility_arena', ticketsReceived);
+		await user.incrementMinigameScore('agility_arena', ticketsReceived);
 
 		// give user xp and generate message
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP, duration: data.duration });

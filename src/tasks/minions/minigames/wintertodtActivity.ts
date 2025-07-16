@@ -4,7 +4,6 @@ import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { winterTodtPointsTable } from '../../../lib/simulation/simulatedKillables';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
@@ -19,7 +18,7 @@ export const wintertodtTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await mUserFetch(userID);
-		const { newScore } = await incrementMinigameScore(user.id, 'wintertodt', quantity);
+		const { newScore } = await user.incrementMinigameScore('wintertodt', quantity);
 		const loot = new Bank();
 
 		let totalPoints = 0;

@@ -427,9 +427,10 @@ ol + ol li blockquote {
 
 .discord_command_copy {
 	background-color: #4e538f;
-	width: max-content;
+	width: auto;
 	display: inline-flex;
 	align-items: center;
+	vertical-align: middle;
 	justify-content: center;
 	align-content: center;
 	padding: 0px 5px;
@@ -439,6 +440,7 @@ ol + ol li blockquote {
 	cursor: pointer;
 	transition: background 0.2s;
 	margin: 0 2px;
+	white-space: nowrap;
 }
 
 .discord_command_copy:hover {
@@ -639,4 +641,28 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 
 .text-xxs {
 	font-size: 10px;
+}
+
+.sl-markdown-content
+	li
+	> :last-child:not(li, ul, ol):not(
+		a,
+		strong,
+		em,
+		del,
+		span,
+		input,
+		:where(.not-content *)
+	) {
+	margin-bottom: 0 !important;
+}
+
+.ca-complete {
+	background: #e6f7e6 !important;
+	color: #225c22 !important;
+}
+
+:root[data-theme="dark"] .ca-complete {
+	background: #223326 !important;
+	color: #b8ffcc !important;
 }

@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import type { GiantsFoundryBank } from '../../../lib/giantsFoundry';
 import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '../../../lib/giantsFoundry';
 import { trackLoot } from '../../../lib/lootTrack';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -67,7 +66,7 @@ export const giantsFoundryTask: MinionTask = {
 			{}
 		);
 
-		await incrementMinigameScore(userID, 'giants_foundry', quantity);
+		await user.incrementMinigameScore('giants_foundry', quantity);
 
 		const loot = new Bank().add('Coins', 2 * xpReceived);
 

@@ -6,7 +6,6 @@ import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 
 export const tearsOfGuthixSkillReqs = {
 	[SkillsEnum.Firemaking]: 49,
@@ -50,7 +49,7 @@ function getTearsOfGuthixMissingSkillMessage(user: MUser): string | null {
 }
 
 export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
-	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const currentDate = Date.now();
 
 	const currentStats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });

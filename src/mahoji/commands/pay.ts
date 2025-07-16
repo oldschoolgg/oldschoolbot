@@ -1,7 +1,7 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, toKMB } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -57,7 +57,7 @@ export const payCommand: OSBMahojiCommand = {
 				interaction,
 				`Are you sure you want to pay ${options.user.user.username}#${options.user.user.discriminator} (ID: ${
 					recipient.id
-				}) ${toKMB(amount)}?`
+				}) ${amount.toLocaleString()}?`
 			);
 		}
 

@@ -83,10 +83,9 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
-	const currentTask = getActivityOfUser(user.id);
+	const currentTask = ActivityManager.getActivityOfUser(user.id);
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;

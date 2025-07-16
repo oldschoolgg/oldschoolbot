@@ -1,8 +1,7 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -13,7 +12,7 @@ export const plunderTask: MinionTask = {
 	async run(data: PlunderActivityTaskOptions) {
 		const { channelID, quantity, rooms, userID } = data;
 		const user = await mUserFetch(userID);
-		await incrementMinigameScore(userID, 'pyramid_plunder', quantity);
+		await user.incrementMinigameScore('pyramid_plunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [
 			allRooms.length < 2 ? allRooms[allRooms.length - 1] : allRooms[allRooms.length - 2],

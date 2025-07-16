@@ -1,11 +1,10 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
 import { trackLoot } from '../../../lib/lootTrack';
-import { getMinigameEntity } from '../../../lib/settings/minigames';
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
@@ -141,12 +140,12 @@ export const giantsFoundryBuyables: { name: string; output: Bank; cost: number; 
 ];
 
 export async function giantsFoundryStatsCommand(user: MUser) {
-	const scores = await getMinigameEntity(user.id);
+	const weaponsCreated = await user.fetchMinigameScore('giants_foundry');
 	const stats = await user.fetchStats({ gf_weapons_made: true, foundry_reputation: true });
 	const weaponsMade = stats.gf_weapons_made as GiantsFoundryBank;
 	return `**Giants' Foundry Stats:**
 
-**Weapons Created in total:** ${scores.giants_foundry} Created.
+**Weapons Created in total:** ${weaponsCreated} Created.
 **Unique Weapons Made:** ${Object.keys(
 		weaponsMade
 	).length.toLocaleString()} / ${TOTAL_GIANT_WEAPONS.toLocaleString()}, ${calcWhatPercent(

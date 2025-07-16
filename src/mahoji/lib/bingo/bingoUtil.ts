@@ -58,7 +58,7 @@ export function generateTileName(
 		return `Receive all of: ${tile.allOf.map(id => Items.getOrThrow(id)?.name).join(', ')}`;
 	}
 	if ('bank' in tile) {
-		return `Receive all of: ${new Bank(tile.bank)}`;
+		return `Receive these items: ${new Bank(tile.bank)}`;
 	}
 	throw new Error(`Invalid tile: ${JSON.stringify(tile)}`);
 }

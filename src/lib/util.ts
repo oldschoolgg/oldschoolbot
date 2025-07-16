@@ -8,7 +8,7 @@ import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 import type { MUserClass } from './MUser';
 import { usernameWithBadgesCache } from './cache';
 import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants';
-import { SkillsEnum } from './skilling/types';
+import { type SkillNameType, SkillsEnum } from './skilling/types';
 import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type { GroupMonsterActivityTaskOptions } from './types/minions';
@@ -50,7 +50,7 @@ export function isValidSkill(skill: string): skill is SkillsEnum {
 
 export function skillingPetDropRate(
 	user: MUserClass | GearBank | number,
-	skill: SkillsEnum,
+	skill: SkillsEnum | SkillNameType,
 	baseDropRate: number
 ): { petDropRate: number } {
 	const xp = typeof user === 'number' ? user : user.skillsAsXP[skill];
@@ -141,8 +141,6 @@ export function logWrapFn<T extends (...args: any[]) => Promise<unknown>>(
 export function isModOrAdmin(user: MUser) {
 	return globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
-
-export * from './util/smallUtils';
 
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;

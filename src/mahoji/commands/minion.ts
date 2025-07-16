@@ -8,15 +8,9 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
 import { convertLVLtoXP } from 'oldschooljs';
 
+import { getPeakTimesString } from '@/lib/util/peaks';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import {
-	BitField,
-	BitFieldData,
-	FormattedCustomEmoji,
-	MAX_LEVEL,
-	PerkTier,
-	minionActivityCache
-} from '../../lib/constants';
+import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { calculateMastery } from '../../lib/mastery';
@@ -35,7 +29,6 @@ import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
-import { checkPeakTimes } from '../../lib/util/minionUtils';
 import { isValidNickname } from '../../lib/util/smallUtils';
 import {
 	achievementDiaryCommand,
@@ -82,7 +75,7 @@ export async function getUserInfo(user: MUser) {
 		.map(i => i.name)
 		.join(', ')}`;
 
-	const task = minionActivityCache.get(user.id);
+	const task = ActivityManager.getActivityOfUser(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
 	const result = {
@@ -549,13 +542,13 @@ export const minionCommand: OSBMahojiCommand = {
 			);
 		}
 
-		if (options.peak) return checkPeakTimes();
+		if (options.peak) return getPeakTimesString();
 
 		if (options.mastery) {
 			const { masteryFactors, totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
 			const substr = masteryFactors.map(i => `${bold(i.name)}: ${i.percentage.toFixed(2)}%`).join('\n');
 			return `You have ${totalMastery.toFixed(2)}% mastery.
-			
+
 ${substr}`;
 		}
 

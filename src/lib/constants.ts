@@ -9,7 +9,6 @@ import { z } from 'zod';
 
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
-import type { ActivityTaskData } from './types/minions';
 import type { CanvasImage } from './util/canvasUtil';
 
 export { PerkTier };
@@ -324,6 +323,11 @@ export const projectiles = {
 		savedByAvas: true,
 		weapons: resolveItems(['Twisted bow'])
 	},
+	ogreArrow: {
+		items: resolveItems(['Ogre Arrow']),
+		savedByAvas: true,
+		weapons: resolveItems(['Ogre bow'])
+	},
 	bolt: {
 		items: resolveItems([
 			'Runite bolts',
@@ -368,8 +372,6 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 export const busyImmuneCommands = ['admin', 'rp'];
 
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
-
-export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
 
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 

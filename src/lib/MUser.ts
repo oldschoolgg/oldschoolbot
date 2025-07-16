@@ -26,7 +26,7 @@ import type { CATier } from './combat_achievements/combatAchievements';
 import { CombatAchievements } from './combat_achievements/combatAchievements';
 import { BitField, MAX_LEVEL, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
-import { allPetIDs } from './data/CollectionsExport';
+import { allPetIDs, avasDevices } from './data/CollectionsExport';
 import { degradeableItems } from './degradeableItems';
 import type { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
@@ -40,8 +40,8 @@ import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpip
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { getUsersPerkTier } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
-import type { MinigameScore } from './settings/minigames';
-import { Minigames, getMinigameEntity } from './settings/minigames';
+import type { MinigameName, MinigameScore } from './settings/minigames';
+import { Minigames } from './settings/minigames';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
@@ -56,7 +56,6 @@ import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
-import { minionIsBusy } from './util/minionIsBusy';
 import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
 
@@ -431,7 +430,8 @@ GROUP BY data->>'ci';`);
 	}
 
 	async fetchMinigameScores() {
-		const userMinigames = await getMinigameEntity(this.id);
+		const userMinigames = await this.fetchMinigames();
+
 		const scores: MinigameScore[] = [];
 		for (const minigame of Minigames) {
 			const score = userMinigames[minigame.column];
@@ -441,7 +441,30 @@ GROUP BY data->>'ci';`);
 	}
 
 	async fetchMinigames() {
-		return getMinigameEntity(this.id);
+		const userMinigames = await prisma.minigame.upsert({
+			where: { user_id: this.id },
+			update: {},
+			create: { user_id: this.id }
+		});
+		return userMinigames;
+	}
+
+	async fetchMinigameScore(minigame: MinigameName) {
+		const userMinigames = await this.fetchMinigames();
+		return userMinigames[minigame];
+	}
+
+	async incrementMinigameScore(minigame: MinigameName, amountToAdd = 1) {
+		const result = await prisma.minigame.upsert({
+			where: { user_id: this.id },
+			update: { [minigame]: { increment: amountToAdd } },
+			create: { user_id: this.id, [minigame]: amountToAdd }
+		});
+
+		return {
+			newScore: result[minigame],
+			entity: result
+		};
 	}
 
 	getSkills(levels: boolean) {
@@ -479,7 +502,7 @@ GROUP BY data->>'ci';`);
 	}
 
 	get minionIsBusy() {
-		return minionIsBusy(this.id);
+		return ActivityManager.minionIsBusy(this.id);
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
@@ -557,7 +580,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		const gearKey = options?.isInWilderness ? 'wildy' : 'range';
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearKey];
-		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
+		const avasDevice = avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
 		const updates: Prisma.UserUpdateArgs['data'] = {};
 
 		for (const [item, quantity] of bankToRemove.items()) {
@@ -592,10 +615,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
-			if (hasAvas && projectileCategory?.savedByAvas) {
+			if (avasDevice && projectileCategory?.savedByAvas) {
 				const ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
-					if (percentChance(80)) {
+					if (percentChance(avasDevice.reduction)) {
 						ammoRemove[1]--;
 						realCost.remove(ammoRemove[0].id, 1);
 					}
@@ -614,10 +637,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		}
 
 		if (dart) {
-			if (hasAvas) {
+			if (avasDevice) {
 				const copyDarts = dart?.[1];
 				for (let i = 0; i < copyDarts; i++) {
-					if (percentChance(80)) {
+					if (percentChance(avasDevice.reduction)) {
 						realCost.remove(dart[0].id, 1);
 						dart![1]--;
 					}

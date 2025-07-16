@@ -1,22 +1,15 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import { isObject, objectEntries, round } from 'e';
+import { Time, isObject, objectEntries, round } from 'e';
 import { Bank, type ItemBank, ItemGroups, Items, itemID } from 'oldschooljs';
 
-import {
-	formatItemCosts,
-	formatItemReqs,
-	formatList,
-	hasSkillReqs,
-	itemNameFromID,
-	readableStatName
-} from '@/lib/util/smallUtils.js';
+import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import { userhasDiaryTier } from '../lib/diaries';
 import { quests } from '../lib/minions/data/quests';
-import type { KillableMonster } from '../lib/minions/types';
+import type { Consumable, KillableMonster } from '../lib/minions/types';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { GearBank } from '../lib/structures/GearBank';
@@ -221,6 +214,47 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 		}
 	}
 	return amountEquipped * 20;
+}
+
+function formatItemCosts(consumable: Consumable, timeToFinish: number) {
+	const str = [];
+
+	const consumables = [consumable];
+
+	if (consumable.alternativeConsumables) {
+		for (const c of consumable.alternativeConsumables) {
+			consumables.push(c);
+		}
+	}
+
+	for (const c of consumables) {
+		const itemEntries = c.itemCost.items();
+		const multiple = itemEntries.length > 1;
+		const subStr = [];
+
+		let multiply = 1;
+		if (c.qtyPerKill) {
+			multiply = c.qtyPerKill;
+		} else if (c.qtyPerMinute) {
+			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
+		}
+
+		for (const [item, quantity] of itemEntries) {
+			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
+		}
+
+		if (multiple) {
+			str.push(formatList(subStr));
+		} else {
+			str.push(subStr.join(''));
+		}
+	}
+
+	if (consumables.length > 1) {
+		return str.join(' OR ');
+	}
+
+	return str.join('');
 }
 
 export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {

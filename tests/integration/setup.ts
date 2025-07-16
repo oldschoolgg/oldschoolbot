@@ -1,6 +1,7 @@
 import '../globalSetup';
 import '../../src/lib/globals';
 import '../../src/lib/util/transactItemsFromBank';
+import '../../src/lib/ActivityManager';
 import './mocks';
 
 import { beforeEach, vi } from 'vitest';

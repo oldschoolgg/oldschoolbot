@@ -1,15 +1,6 @@
-import { vi } from 'vitest';
-
 import '../../src/lib/data/itemAliases';
+import '../../src/lib/ActivityManager';
 import { MUserStats } from '../../src/lib/structures/MUserStats';
-
-vi.mock('../../src/lib/settings/minigames.ts', async () => {
-	const actual: any = await vi.importActual('../../src/lib/settings/minigames.ts');
-	return {
-		...actual,
-		getMinigameEntity: async () => ({})
-	};
-});
 
 MUserStats.fromID = async (id: string) => {
 	return new MUserStats({

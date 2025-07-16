@@ -145,7 +145,6 @@ export const miningTask: MinionTask = {
 		const { quantity } = data;
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
-
 		const { updateBank, bonusXP } = determineMiningResult({
 			ore,
 			quantity,

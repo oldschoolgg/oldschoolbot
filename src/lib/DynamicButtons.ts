@@ -16,7 +16,6 @@ import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists';
 import { silentButtonAck } from './util/handleMahojiConfirmation';
-import { minionIsBusy } from './util/minionIsBusy';
 
 type DynamicButtonFn = (opts: { message: Message; interaction: MessageComponentInteraction }) => unknown;
 
@@ -109,7 +108,7 @@ export class DynamicButtons {
 		if (collectedInteraction) {
 			for (const button of this.buttons) {
 				if (collectedInteraction.customId === button.id) {
-					if (minionIsBusy(collectedInteraction.user.id) && button.cantBeBusy) {
+					if (ActivityManager.minionIsBusy(collectedInteraction.user.id) && button.cantBeBusy) {
 						await collectedInteraction.reply({
 							content: "Your action couldn't be performed, because your minion is busy.",
 							ephemeral: true

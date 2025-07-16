@@ -1,15 +1,13 @@
 import { UserError } from '@oldschoolgg/toolkit/structures';
 
-import { activitySync } from '../settings/settings';
 import type { ActivityTaskData, ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { logError } from './logError';
-import { getActivityOfUser } from './minionIsBusy';
 
 export default async function addSubTaskToActivityTask<T extends ActivityTaskData>(
 	taskToAdd: Omit<T, 'finishDate' | 'id'>
 ) {
-	const usersTask = getActivityOfUser(taskToAdd.userID);
+	const usersTask = ActivityManager.getActivityOfUser(taskToAdd.userID);
 	if (usersTask) {
 		throw new UserError(
 			`That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`
@@ -54,7 +52,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 		const createdActivity = await prisma.activity.create({
 			data
 		});
-		activitySync(createdActivity);
+		ActivityManager.activitySync(createdActivity);
 		return createdActivity;
 	} catch (err: any) {
 		logError(err, {
