@@ -1,8 +1,9 @@
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, Items, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
+import { tripBuyables } from '@/lib/data/buyables/tripBuyables';
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
 import { Minigames } from '../../lib/settings/minigames';
@@ -13,10 +14,9 @@ import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUti
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
+import { buyingTripCommand } from '../lib/abstracted_commands/buyingTripCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
-import { tripBuyables } from '@/lib/data/buyables/tripBuyables';
-import { buyingTripCommand } from '../lib/abstracted_commands/buyingTripCommand';
 
 const allBuyablesAutocomplete = [
 	...Buyables.map(b => ({ name: b.name })),
