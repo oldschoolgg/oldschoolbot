@@ -627,10 +627,7 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Buy': {
 			const data = currentTask as BuyActivityTaskOptions;
-			const tripBuyable =
-				typeof data.buyableIndex === 'number' && tripBuyables[data.buyableIndex]
-					? tripBuyables[data.buyableIndex]
-					: undefined;
+			const tripBuyable = tripBuyables.find(tb => tb.item === data.itemID);
 			const itemName = tripBuyable?.displayName ?? Items.get(data.itemID)?.name ?? `Item[${data.itemID}]`;
 			const quantity =
 				tripBuyable?.quantity && tripBuyable.quantity > 0

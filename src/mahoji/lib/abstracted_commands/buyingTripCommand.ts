@@ -2,8 +2,8 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
+import type { TripBuyable } from '@/lib/data/buyables/tripBuyables';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { type TripBuyable, tripBuyables } from '../../../lib/data/buyables/tripBuyables';
 import type { BuyActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -63,8 +63,6 @@ export async function buyingTripCommand(
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 	await updateBankSetting('buy_cost_bank', cost);
 
-	const buyableIndex = tripBuyables.indexOf(buyable);
-
 	await addSubTaskToActivityTask<BuyActivityTaskOptions>({
 		type: 'Buy',
 		itemID: osItem.id,
@@ -72,8 +70,7 @@ export async function buyingTripCommand(
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
-		totalCost,
-		...(buyableIndex === -1 ? {} : { buyableIndex })
+		totalCost
 	});
 
 	return `${user.minionName} is now buying ${quantity}x ${itemDisplayName} and will return in ${formatDuration(duration)}.`;

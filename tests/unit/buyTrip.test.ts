@@ -5,8 +5,7 @@ import { tripBuyables } from '../../src/lib/data/buyables/tripBuyables';
 import { minionStatus } from '../../src/lib/util/minionStatus';
 import { mockMUser } from './userutil';
 
-const packIndex = tripBuyables.findIndex(tb => tb.displayName === 'Chaos rune (pack)');
-const packBuyable = tripBuyables[packIndex];
+const packBuyable = tripBuyables.find(tb => tb.displayName === 'Chaos rune (pack)')!;
 
 describe('buy trip helpers', () => {
 	test('minionStatus displays pack count', () => {
@@ -20,8 +19,7 @@ describe('buy trip helpers', () => {
 			channelID: '1',
 			itemID: packBuyable.item,
 			quantity: packBuyable.quantity! * 5,
-			totalCost: 0,
-			buyableIndex: packIndex
+			totalCost: 0
 		});
 		const status = minionStatus(user);
 		expect(status).toContain('5x Chaos rune (pack)');
@@ -55,8 +53,7 @@ describe('buy trip helpers', () => {
 					channelID: '1',
 					itemID: packBuyable.item,
 					quantity: packBuyable.quantity! * 5,
-					totalCost: 0,
-					buyableIndex: packIndex
+					totalCost: 0
 				},
 				type: 'Buy'
 			} as any

@@ -9,11 +9,10 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 export const buyTask: MinionTask = {
 	type: 'Buy',
 	async run(data: BuyActivityTaskOptions) {
-		const { userID, channelID, itemID, quantity, totalCost, duration, buyableIndex } = data;
+		const { userID, channelID, itemID, quantity, totalCost, duration } = data;
 		const user = await mUserFetch(userID);
 
-		const tripBuyable =
-			typeof buyableIndex === 'number' ? tripBuyables[buyableIndex] : tripBuyables.find(tb => tb.item === itemID);
+		const tripBuyable = tripBuyables.find(tb => tb.item === itemID);
 		if (!tripBuyable) {
 			throw new Error(`No trip buyable found for item ${itemID}`);
 		}
@@ -22,6 +21,8 @@ export const buyTask: MinionTask = {
 		const itemsPerHour = calcPerHour(quantity, duration);
 		const itemName = tripBuyable.displayName ?? Items.getOrThrow(itemID).name;
 		const itemNameWithRate = `${itemName} (${toKMB(itemsPerHour)}/hr)`;
+		const displayQuantity =
+			tripBuyable.quantity && tripBuyable.quantity > 0 ? quantity / tripBuyable.quantity : quantity;
 
 		const loot = new Bank().add(itemID, quantity);
 		await transactItems({
@@ -35,7 +36,7 @@ export const buyTask: MinionTask = {
 		handleTripFinish(
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished buying ${toKMB(quantity)} ${itemNameWithRate}. This cost ${toKMB(totalCost)} GP (avg ${average.toLocaleString()} GP ea).`,
+			`${user}, ${user.minionName} finished buying ${toKMB(displayQuantity)} ${itemNameWithRate}. This cost ${toKMB(totalCost)} GP (avg ${average.toLocaleString()} GP ea).`,
 			undefined,
 			data,
 			loot

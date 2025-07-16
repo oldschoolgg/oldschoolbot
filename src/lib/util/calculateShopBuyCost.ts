@@ -17,14 +17,19 @@ export function calculateShopBuyCost({ gpCost, quantity, shopQuantity, changePer
 		return { total, average: total / quantity };
 	}
 
-	let total = 0;
 	const priceChange = changePer / 100;
-	for (let i = 0; i < quantity; i++) {
-		const itemsBoughtThisWorld = i % shopQuantity;
-		const price = Math.floor(gpCost * (1 + priceChange * itemsBoughtThisWorld));
-		total += price;
+	const prices: number[] = [];
+	for (let i = 0; i < shopQuantity; i++) {
+		prices.push(Math.floor(gpCost * (1 + priceChange * i)));
 	}
 
+	const worldCount = Math.floor(quantity / shopQuantity);
+	const remainder = quantity % shopQuantity;
+
+	const sumFullWorld = prices.reduce((acc, p) => acc + p, 0);
+	const sumRemainder = prices.slice(0, remainder).reduce((acc, p) => acc + p, 0);
+
+	const total = sumFullWorld * worldCount + sumRemainder;
 	return { total, average: total / quantity };
 }
 
