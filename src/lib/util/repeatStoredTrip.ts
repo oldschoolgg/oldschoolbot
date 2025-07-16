@@ -67,7 +67,6 @@ import type {
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 import { interactionReply } from './interactionReply';
-import { itemNameFromID } from './smallUtils';
 
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
@@ -134,7 +133,7 @@ const tripHandlers = {
 		args: (data: BuyActivityTaskOptions) => {
 			const tripBuyable = tripBuyables.find(tb => tb.item === data.itemID);
 			return {
-				name: tripBuyable?.displayName ?? itemNameFromID(data.itemID),
+				name: tripBuyable?.displayName ?? Items.itemNameFromId(data.itemID),
 				quantity:
 					tripBuyable?.quantity && tripBuyable.quantity > 0
 						? data.quantity / tripBuyable.quantity
