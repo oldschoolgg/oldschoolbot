@@ -40,12 +40,12 @@ import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 
-export async function giveMaxStats(user: MUser) {
-	const updates: Prisma.UserUpdateArgs['data'] = {};
+export function getMaxUserValues() {
+	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
-	await user.update({
+	return {
 		QP: MAX_QP,
 		slayer_points: 50_000,
 		nmz_points: 50_000,
@@ -54,7 +54,11 @@ export async function giveMaxStats(user: MUser) {
 		zeal_tokens: 500_000,
 		lms_points: 500_000,
 		...updates
-	});
+	};
+}
+
+export async function giveMaxStats(user: MUser) {
+	user.update(getMaxUserValues());
 }
 
 const coloMelee = new Gear();
