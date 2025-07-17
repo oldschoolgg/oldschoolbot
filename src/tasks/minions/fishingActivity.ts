@@ -140,7 +140,7 @@ export const fishingTask: MinionTask = {
 		}
 
 		for (let i = 0; i < quantity; i++) {
-			if (fish.id === EItem.RAW_KARAMBWAN) {
+			if (fish.id === EItem.RAW_KARAMBWANJI) {
 				lootQuantity +=
 					blessingEquipped && percentChance(blessingChance) ? baseKarambwanji * 2 : baseKarambwanji;
 			} else if (fish.id === EItem.MINNOW) {
