@@ -468,6 +468,7 @@ export async function mockClient() {
 	});
 
 	globalConfig.clientID = clientId;
+	process.env.CLIENT_ID = clientId;
 	return new TestClient(client);
 }
 

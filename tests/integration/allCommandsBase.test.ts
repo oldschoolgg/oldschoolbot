@@ -13,7 +13,7 @@ import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirm
 import { allCommands } from '../../src/mahoji/commands/allCommands';
 import { createTestUser, mockClient } from './util';
 
-test.only(
+test(
 	'All Commands Base Test',
 	{
 		timeout: Time.Minute * 10
@@ -25,15 +25,8 @@ test.only(
 		}
 		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
 		const client = await mockClient();
-		process.env.CLIENT_ID = client.data.id;
-		// randomMock();
 
 		await mahojiClientSettingsFetch({ construction_cost_bank: true });
-		// await prisma.activity.deleteMany({
-		// 	where: {
-		// 		user_id: BigInt(maxUser.id)
-		// 	}
-		// });
 
 		const ignoredCommands = [
 			'bank',
@@ -151,6 +144,8 @@ test.only(
 		await queue.onEmpty();
 		await queue.onIdle();
 		await client.processActivities();
-		console.log(`[${stopwatch.toString()}] Finished running ${commandsRan}/${totalCommands} commands, ${client.activitiesProcessed} activities`);
+		console.log(
+			`[${stopwatch.toString()}] Finished running ${commandsRan}/${totalCommands} commands, ${client.activitiesProcessed} activities`
+		);
 	}
 );
