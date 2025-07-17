@@ -38,6 +38,10 @@ export function logError(err: any, context?: Record<string, string>, extra?: Rec
 			extra: metaInfo
 		});
 	}
+
+	if (process.env.TEST) {
+		throw err;
+	}
 }
 
 export function logErrorForInteraction(
