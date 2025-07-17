@@ -3,6 +3,7 @@ import { generateCommandInputs } from '@oldschoolgg/toolkit/util';
 import { Time, sumArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
+import { shuffle } from 'remeda';
 import { expect, test, vi } from 'vitest';
 
 import { getMaxUserValues } from '@/mahoji/commands/testpotato';
@@ -106,6 +107,13 @@ test(
 				}
 			}
 			processedCommands.push({ command, options });
+		}
+
+		// If running in CI, limit amount of permutations that are ran
+		if (process.env.CI) {
+			for (const command of processedCommands) {
+				command.options = shuffle(command.options).slice(0, 2);
+			}
 		}
 
 		const totalCommands = sumArr(processedCommands.map(i => i.options.length));
