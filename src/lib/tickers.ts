@@ -299,11 +299,10 @@ export const tickers: {
 		name: 'username_filling',
 		startupWait: Time.Minute * 10,
 		timer: null,
-		interval: Time.Minute * 7.33,
+		interval: Time.Minute * 33.33,
 		cb: async () => {
 			const users = await fetchUsersWithoutUsernames();
 			if (process.env.TEST) return;
-			debugLog(`username_filling: Found ${users.length} users without usernames.`);
 			for (const { id } of users) {
 				const djsUser = await globalClient.users.fetch(id).catch(() => null);
 				if (!djsUser) {
