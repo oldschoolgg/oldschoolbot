@@ -62,15 +62,15 @@ test.only(
 			'leaderboard',
 			'lb',
 			'bs',
-			'redeem'
+			'redeem',
 
-			// 'simulate',
-			// 'leagues',
-			// 'kill',
+			'simulate',
+			'leagues',
+			'kill'
 		];
 		const commandsToTest = allCommands.filter(c => !ignoredCommands.includes(c.name));
 
-		console.log(`ALL COMMANDS TEST: Running ${commandsToTest.length} commands...`);
+		console.log(`Running ${commandsToTest.length} commands...`);
 
 		const ignoredSubCommands = [
 			['tools', 'patron', 'cl_bank'],
@@ -105,9 +105,9 @@ test.only(
 			outer: for (const option of options) {
 				for (const [parent, sub, subCommand] of ignoredSubCommands) {
 					if (command.name === parent && option[sub] && (subCommand ? option[sub][subCommand] : true)) {
-						stopwatch.check(
-							`Skipping subcommand ${command.name} with options ${JSON.stringify(option)} due to ignore list.`
-						);
+						// stopwatch.check(
+						// 	`Skipping subcommand ${command.name} with options ${JSON.stringify(option)} due to ignore list.`
+						// );
 						continue outer;
 					}
 				}
@@ -121,7 +121,6 @@ test.only(
 
 		let commandsRan = 0;
 		for (const { command, options: allOptions } of processedCommands) {
-			console.log(`Running command tests ${command.name} with ${allOptions.length} options...`);
 			for (const options of allOptions) {
 				if (queue.size % 30 === 0) {
 					queue.add(async () => client.processActivities());
@@ -151,6 +150,7 @@ test.only(
 
 		await queue.onEmpty();
 		await queue.onIdle();
-		console.log(`All commands ran successfully: ${commandsRan}/${totalCommands} in ${stopwatch.toString()}.`);
+		await client.processActivities();
+		console.log(`[${stopwatch.toString()}] Finished running ${commandsRan}/${totalCommands} commands, ${client.activitiesProcessed} activities`);
 	}
 );

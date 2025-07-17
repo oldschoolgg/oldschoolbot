@@ -2,7 +2,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Activity, ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Monsters, convertLVLtoXP } from 'oldschooljs';
+import { Bank, type EMonster, Items, Monsters, convertLVLtoXP } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
@@ -15,7 +15,6 @@ import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { getOSItem } from '../../src/lib/util/getOSItem';
 import { type PvMMethod, minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
@@ -68,29 +67,29 @@ export function mockMessage({ userId }: { userId: string }) {
 	return {
 		author: mockDjsUser({ userId }),
 		channel: TestChannel,
-		send: vi.fn((...args) => {
-			console.log('TestMessage send called with args:', args);
+		send: vi.fn(() => {
+			// console.log('TestMessage send called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
-		reply: vi.fn((...args) => {
-			console.log('TestMessage reply called with args:', args);
+		reply: vi.fn(() => {
+			// console.log('TestMessage reply called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
-		edit: vi.fn((...args) => {
-			console.log('TestMessage edit called with args:', args);
+		edit: vi.fn(() => {
+			// console.log('TestMessage edit called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		delete: vi.fn(() => {
-			console.log('TestMessage delete called');
+			// console.log('TestMessage delete called');
 			return Promise.resolve();
 		})
 	};
@@ -146,7 +145,7 @@ export class TestUser extends MUserClass {
 	async equip(setup: GearSetupType, gear: number[]) {
 		const gearObj = this.gear[setup];
 		for (const item of gear) {
-			gearObj.equip(getOSItem(item));
+			gearObj.equip(Items.getOrThrow(item));
 		}
 		await this.update({
 			[`gear_${setup}`]: gearObj.raw()
@@ -312,20 +311,20 @@ export async function mockUser(
 	const rangeGear = new Gear();
 	if (options.rangeGear) {
 		for (const item of options.rangeGear) {
-			rangeGear.equip(getOSItem(item));
+			rangeGear.equip(Items.getOrThrow(item));
 		}
 	}
 	const mageGear = new Gear();
 	if (options.mageGear) {
 		for (const item of options.mageGear) {
-			mageGear.equip(getOSItem(item));
+			mageGear.equip(Items.getOrThrow(item));
 		}
 	}
 
 	const meleeGear = new Gear();
 	if (options.meleeGear) {
 		for (const item of options.meleeGear) {
-			meleeGear.equip(getOSItem(item));
+			meleeGear.equip(Items.getOrThrow(item));
 		}
 	}
 
@@ -409,6 +408,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 }
 
 class TestClient {
+	public activitiesProcessed = 0;
 	data: ClientStorage;
 	constructor(data: ClientStorage) {
 		this.data = data;
@@ -449,7 +449,7 @@ class TestClient {
 					completed: true
 				}
 			});
-			console.log(`Client processing ${activities.length} activities...`);
+			this.activitiesProcessed += activities.length;
 			await Promise.all(activities.map(_act => ActivityManager.completeActivity(_act)));
 		}
 

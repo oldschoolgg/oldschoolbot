@@ -197,7 +197,6 @@ describe('PVM', async () => {
 		await user.max();
 		await user.setAttackStyle([SkillsEnum.Ranged]);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
-		console.log({result});
 		expect(result.xpGained.ranged).toBeGreaterThan(0);
 		expect(user.bank.amount('Cannonball')).toBeLessThan(100_000);
 		expect(result.newKC).toBeGreaterThan(0);

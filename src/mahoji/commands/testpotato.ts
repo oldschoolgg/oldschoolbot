@@ -58,7 +58,7 @@ export function getMaxUserValues() {
 }
 
 export async function giveMaxStats(user: MUser) {
-	user.update(getMaxUserValues());
+	return user.update(getMaxUserValues());
 }
 
 const coloMelee = new Gear();
