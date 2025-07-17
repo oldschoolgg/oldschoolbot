@@ -1,5 +1,4 @@
 import { type CommandOption, type CommandRunOptions, cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { GearPreset } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { EquipmentSlot } from 'oldschooljs';
 
@@ -8,7 +7,7 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { isValidGearSetup } from '../../lib/gear/functions/isValidGearSetup';
 import type { GearSetup, GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes } from '../../lib/gear/types';
-import { Gear, defaultGear, globalPresets } from '../../lib/structures/Gear';
+import { Gear, globalPresets } from '../../lib/structures/Gear';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
 import { isValidNickname } from '../../lib/util/smallUtils';
@@ -38,34 +37,6 @@ function parseInputGear(inputGear: InputGear) {
 	return { gear, remove };
 }
 
-function gearPresetToGear(preset: GearPreset): GearSetup {
-	function gearItem(val: null | number) {
-		if (val === null) return null;
-		return {
-			item: val,
-			quantity: 1
-		};
-	}
-	const newGear = { ...defaultGear };
-	newGear.head = gearItem(preset.head);
-	newGear.neck = gearItem(preset.neck);
-	newGear.body = gearItem(preset.body);
-	newGear.legs = gearItem(preset.legs);
-	newGear.cape = gearItem(preset.cape);
-	newGear['2h'] = gearItem(preset.two_handed);
-	newGear.hands = gearItem(preset.hands);
-	newGear.feet = gearItem(preset.feet);
-	newGear.shield = gearItem(preset.shield);
-	newGear.weapon = gearItem(preset.weapon);
-	newGear.ring = gearItem(preset.ring);
-	newGear.ammo = preset.ammo
-		? {
-				item: preset.ammo,
-				quantity: 1
-			}
-		: null;
-	return newGear;
-}
 export async function createOrEditGearSetup(
 	user: MUser,
 	setupToCopy: GearSetupType | undefined,
@@ -106,7 +77,7 @@ export async function createOrEditGearSetup(
 	if (setupToCopy) {
 		gearSetup = user.gear[setupToCopy];
 	} else if (isUpdating) {
-		gearSetup = gearPresetToGear(userPresets.find(pre => pre.name === name)!);
+		gearSetup = Gear.fromGearPreset(userPresets.find(pre => pre.name === name)!);
 	}
 
 	// This is required to enable removal of items while editing
