@@ -1,5 +1,4 @@
 import { readFile } from 'node:fs/promises';
-import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
 import { CanvasRenderingContext2D as CanvasContext, FontLibrary, Image, Canvas as RawCanvas } from 'skia-canvas';
 
 import { assert } from '../util/logError';
@@ -29,31 +28,8 @@ export async function loadImage(_buffer: Buffer | string): Promise<CanvasImage> 
 export { CanvasContext };
 
 export function fillTextXTimesInCtx(ctx: CanvasContext, text: string, x: number, y: number) {
-	ctx.fillText(text, x, y);
-}
-
-export function drawItemQuantityText(ctx: CanvasContext, quantity: number, x: number, y: number) {
-	const quantityColor = generateHexColorForCashStack(quantity);
-	const formattedQuantity = formatItemStackQuantity(quantity);
-	ctx.font = '16px OSRSFontCompact';
-	ctx.textAlign = 'start';
-
-	ctx.fillStyle = '#000000';
-	fillTextXTimesInCtx(ctx, formattedQuantity, x + 1, y + 1);
-
-	ctx.fillStyle = quantityColor;
-	fillTextXTimesInCtx(ctx, formattedQuantity, x, y);
-}
-
-export function drawTitleText(ctx: CanvasContext, title: string, x: number, y: number) {
-	ctx.textAlign = 'center';
-	ctx.font = '16px RuneScape Bold 12';
-
-	ctx.fillStyle = '#000000';
-	fillTextXTimesInCtx(ctx, title, x + 1, y + 1);
-
-	ctx.fillStyle = '#ff981f';
-	fillTextXTimesInCtx(ctx, title, x, y);
+	const textPath = ctx.outlineText(text);
+	ctx.fill(textPath.offset(x, y));
 }
 
 export function drawImageWithOutline(
