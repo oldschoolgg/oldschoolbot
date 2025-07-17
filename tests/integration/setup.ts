@@ -21,7 +21,10 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util/webhook');
 	return {
 		...actual,
-		sendToChannelID: vi.fn()
+		sendToChannelID: vi.fn(() => {
+			// console.log('sendToChannelID called with args:', args);
+			return Promise.resolve();
+		})
 	};
 });
 

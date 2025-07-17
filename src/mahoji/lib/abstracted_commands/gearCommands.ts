@@ -111,7 +111,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 
 	return {
 		content: `You equipped the ${preset.name} preset in your ${gearSetup} setup.`,
-		files: [{ name: 'gear.jpg', attachment: image }]
+		files: [{ name: 'gear.png', attachment: image }]
 	};
 }
 
@@ -154,7 +154,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 
 	return {
 		content,
-		files: [{ name: 'gear.jpg', attachment: image }]
+		files: [{ name: 'gear.png', attachment: image }]
 	};
 }
 
@@ -244,7 +244,7 @@ export async function gearUnequipCommand(
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,
-		files: [{ name: 'gear.jpg', attachment: image }]
+		files: [{ name: 'gear.png', attachment: image }]
 	};
 }
 
@@ -282,7 +282,7 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 	const image = await generateGearImage(user, user.gear[gearSetup], gearSetup, user.user.minion_equippedPet);
 	return {
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
-		files: [{ name: 'gear.jpg', attachment: image }]
+		files: [{ name: 'gear.png', attachment: image }]
 	};
 }
 
@@ -295,7 +295,7 @@ export async function gearStatsCommand(user: MUser, input: string): CommandRespo
 		}
 	}
 	const image = await generateGearImage(user, new Gear(gear), null, null);
-	return { files: [{ name: 'image.jpg', attachment: image }] };
+	return { files: [{ name: 'image.png', attachment: image }] };
 }
 
 export async function gearViewCommand(user: MUser, input: string, text: boolean): CommandResponse {
@@ -371,7 +371,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 		return gear.toString();
 	}
 	const image = await generateGearImage(user, gear, input, user.user.minion_equippedPet);
-	return { files: [{ attachment: image, name: 'gear.jpg' }] };
+	return { files: [{ attachment: image, name: 'gear.png' }] };
 }
 
 export async function gearSwapCommand(

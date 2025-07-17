@@ -1,16 +1,10 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
 import { EquipmentSlot } from 'oldschooljs';
 
+import { OSRSCanvas } from '@/lib/OSRSCanvas';
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
-import {
-	type Canvas,
-	canvasToBuffer,
-	createCanvas,
-	drawItemQuantityText,
-	drawTitleText,
-	fillTextXTimesInCtx,
-	loadAndCacheLocalImage
-} from '../../util/canvasUtil';
+import { loadAndCacheLocalImage } from '../../util/canvasUtil';
 import type { GearSetup, GearSetupType } from '../types';
 import { GearSetupTypes } from '../types';
 
@@ -49,29 +43,34 @@ const slotCoordinatesCompact: { [key in EquipmentSlot]: [number, number] } = {
 
 const slotSize = 36;
 
-function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = true) {
-	const ctx = canvas.getContext('2d');
-	ctx.fillStyle = '#000000';
-	fillTextXTimesInCtx(ctx, text, x + 1, y + 1);
+function drawText(canvas: OSRSCanvas, text: string, x: number, y: number, maxStat = true) {
+	const ctx = canvas.ctx;
+
 	if (text.includes(':')) {
 		const texts = text.split(':');
 		for (let i = 0; i < texts.length; i++) {
 			const t = texts[i] + (i === 0 ? ': ' : '');
-			ctx.fillStyle = i === 0 ? '#ff981f' : maxStat ? '#00ff00' : '#ffffff';
-			fillTextXTimesInCtx(
-				ctx,
-				t,
+			const finalX =
 				i === 0
 					? x - (ctx.textAlign === 'end' ? ctx.measureText(texts[i + 1]).width - 3 : 0)
 					: ctx.textAlign === 'end'
 						? x
-						: ctx.measureText(texts[i - 1]).width + x + 3,
-				y
-			);
+						: ctx.measureText(texts[i - 1]).width + x + 3;
+
+			canvas.drawText({
+				text: t,
+				x: finalX,
+				y,
+				color: i === 0 ? '#ff981f' : maxStat ? '#00ff00' : '#ffffff'
+			});
 		}
 	} else {
-		ctx.fillStyle = '#ff981f';
-		fillTextXTimesInCtx(ctx, text, x, y);
+		canvas.drawText({
+			text,
+			x,
+			y,
+			color: '#ff981f'
+		});
 	}
 }
 
@@ -89,9 +88,8 @@ export async function generateGearImage(
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
-	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
-	const ctx = canvas.getContext('2d');
-	ctx.imageSmoothingEnabled = false;
+	const canvas = new OSRSCanvas(gearTemplateImage.width, gearTemplateImage.height);
+	const ctx = canvas.ctx;
 
 	ctx.fillStyle = userBgImage.transparent
 		? hexColor
@@ -109,19 +107,22 @@ export async function generateGearImage(
 	}
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 
-	if (!userBgImage.transparent) bankImageGenerator.drawBorder(ctx, sprite, false);
+	if (!userBgImage.transparent) canvas.drawBorder(sprite, false);
 
-	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
 	if (gearType) {
-		drawTitleText(ctx, toTitleCase(gearType), Math.floor(176 / 2), 25);
+		canvas.drawTitleText({
+			text: toTitleCase(gearType),
+			x: Math.floor(176 / 2),
+			y: 25,
+			center: true
+		});
 	}
 
 	// Draw stats
 	ctx.save();
 	ctx.translate(225, 0);
 	ctx.font = '16px RuneScape Bold 12';
-	ctx.textAlign = 'start';
 	drawText(canvas, 'Attack bonus', 0, 25);
 	ctx.font = '16px OSRSFontCompact';
 	drawText(canvas, `Stab: ${gearStats.attack_stab}`, 0, 50, maxOffenceStats.attack_stab === gearStats.attack_stab);
@@ -189,10 +190,15 @@ export async function generateGearImage(
 		122,
 		maxDefenceStats.defence_magic === gearStats.defence_magic
 	);
-	ctx.textAlign = 'center';
 	ctx.restore();
-	drawTitleText(ctx, 'Others', 210 + Math.floor(232 / 2), 140);
-	ctx.restore();
+	canvas.drawText({
+		text: 'Others',
+		x: 210 + Math.floor(232 / 2),
+		y: 140,
+		font: 'Bold',
+		color: '#ff981f',
+		center: true
+	});
 	ctx.save();
 	ctx.translate(225, 0);
 	ctx.font = '16px OSRSFontCompact';
@@ -232,11 +238,16 @@ export async function generateGearImage(
 		ctx.drawImage(image, x, y, image.width, image.height);
 
 		if (item.quantity > 1) {
-			drawItemQuantityText(ctx, item.quantity, x + 1, y + 9);
+			canvas.drawText({
+				text: item.quantity.toString(),
+				x: x + 1,
+				y: y + 9,
+				color: generateHexColorForCashStack(item.quantity)
+			});
 		}
 	}
 
-	return canvasToBuffer(canvas);
+	return canvas.toScaledOutput(2);
 }
 
 export async function generateAllGearImage(user: MUser) {
@@ -248,9 +259,8 @@ export async function generateAllGearImage(user: MUser) {
 
 	const hexColor = user.user.bank_bg_hex;
 	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template_compact.png');
-	const canvas = createCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
-	const ctx = canvas.getContext('2d');
-	ctx.imageSmoothingEnabled = false;
+	const canvas = new OSRSCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
+	const ctx = canvas.ctx;
 
 	ctx.fillStyle = userBg.transparent
 		? hexColor
@@ -281,17 +291,22 @@ export async function generateAllGearImage(user: MUser) {
 	}
 	let i = 0;
 	let y = 30;
-	for (const type of GearSetupTypes) {
+	for (const gearSetupName of GearSetupTypes) {
 		if (i === 4) {
 			y += gearTemplateImage.height + 30;
 			i = 0;
 		}
-		const gear = user.gear[type];
+		const gear = user.gear[gearSetupName];
 		ctx.save();
-		ctx.translate(15 + i * (gearTemplateImage.width + 10), y);
-		ctx.font = '16px RuneScape Bold 12';
-		ctx.textAlign = 'center';
-		drawText(canvas, toTitleCase(type), gearTemplateImage.width / 2, -7);
+		const x = Math.floor(gearTemplateImage.width / 2);
+		const translateX = 15 + i * (gearTemplateImage.width + 10);
+		ctx.translate(translateX, y);
+		canvas.drawTitleText({
+			text: toTitleCase(gearSetupName),
+			x,
+			y: -7,
+			center: true
+		});
 		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 		for (const enumName of Object.values(EquipmentSlot)) {
 			const item = gear[enumName];
@@ -303,17 +318,22 @@ export async function generateAllGearImage(user: MUser) {
 			ctx.drawImage(image, x, y, image.width, image.height);
 
 			if (item.quantity > 1) {
-				drawItemQuantityText(ctx, item.quantity, x + 1, y + 9);
+				canvas.drawText({
+					text: item.quantity.toString(),
+					x: x + 1,
+					y: y + 9,
+					color: generateHexColorForCashStack(item.quantity),
+					center: false
+				});
 			}
 		}
 		i++;
 		ctx.restore();
 	}
 
-	ctx.font = '16px RuneScape Bold 12';
 	const petX = canvas.width - 50;
 	const petY = canvas.height / 2 + 20;
-	drawText(canvas, 'Pet', petX + 5, petY - 5);
+	canvas.drawTitleText({ text: 'Pet', x: petX + 5, y: petY - 5 });
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
 	const userPet = user.user.minion_equippedPet;
 	if (userPet) {
@@ -321,7 +341,7 @@ export async function generateAllGearImage(user: MUser) {
 		ctx.drawImage(image, petX, petY, image.width, image.height);
 	}
 
-	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
+	if (!userBg.transparent) canvas.drawBorder(bgSprite, false);
 
-	return canvasToBuffer(canvas);
+	return canvas.toScaledOutput(2);
 }

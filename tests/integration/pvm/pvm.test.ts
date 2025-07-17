@@ -194,6 +194,7 @@ describe('PVM', async () => {
 			QP: 300,
 			maxed: true
 		});
+		await user.max();
 		await user.setAttackStyle([SkillsEnum.Ranged]);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
 		expect(result.xpGained.ranged).toBeGreaterThan(0);

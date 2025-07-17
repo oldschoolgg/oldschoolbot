@@ -1,7 +1,9 @@
+import { InteractionID } from '@/lib/InteractionID';
 import '../src/lib/safeglobals';
-
-import { Collection } from 'discord.js';
+import { Collection, type Message } from 'discord.js';
+import { randArrItem } from 'e';
 import { vi } from 'vitest';
+import { TEST_CHANNEL_ID, mockChannel, mockInteraction } from './integration/util';
 
 vi.mock('@oldschoolgg/toolkit', async () => {
 	const actual: any = await vi.importActual('@oldschoolgg/toolkit');
@@ -11,11 +13,18 @@ vi.mock('@oldschoolgg/toolkit', async () => {
 	};
 });
 
-vi.mock('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts', async () => {
-	const actualToolkit = await vi.importActual('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts');
+vi.mock('@oldschoolgg/toolkit/util', async () => {
+	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit/util');
 	return {
 		...actualToolkit,
-		mentionCommand: vi.fn().mockReturnValue('')
+		channelIsSendable: vi.fn().mockReturnValue(true),
+		awaitMessageComponentInteraction: vi.fn().mockImplementation(({ message }: { message: Message }) => {
+			return Promise.resolve({
+				customId: randArrItem(Object.values(InteractionID.Slayer)),
+				...mockInteraction({ userId: message.author.id })
+			});
+		}),
+		mentionCommand: vi.fn().mockReturnValue('true')
 	};
 });
 
@@ -38,7 +47,7 @@ global.globalClient = {
 		cache: new Collection()
 	},
 	channels: {
-		cache: new Collection().set('1', { id: '1' })
+		cache: new Collection().set(TEST_CHANNEL_ID, mockChannel({ userId: '123' }))
 	},
 	busyCounterCache: new Map<string, number>()
 } as any;

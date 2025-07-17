@@ -29,8 +29,10 @@ export interface IToReturnCollection {
 	counts: boolean;
 }
 
+export type CollectionStatus = 'not_started' | 'started' | 'completed';
+
 export interface ILeftListStatus {
-	[key: string]: 'not_started' | 'started' | 'completed';
+	[key: string]: CollectionStatus;
 }
 
 export interface IKCActivity {

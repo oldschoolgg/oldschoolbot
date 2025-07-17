@@ -1,7 +1,8 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Activity, ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
+import type { User as DJSUser } from 'discord.js';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Monsters, convertLVLtoXP } from 'oldschooljs';
+import { Bank, type EMonster, Items, Monsters, convertLVLtoXP } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
@@ -14,24 +15,93 @@ import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { getOSItem } from '../../src/lib/util/getOSItem';
 import { type PvMMethod, minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 
-const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
-	userID,
-	guildID: '342983479501389826',
-	member: {} as any,
-	user: { id: userID } as any,
-	channelID: '111111111',
-	interaction: {
-		channelId: '1',
+export const TEST_CHANNEL_ID = '1111111111111111';
+
+export function mockDjsUser({ userId }: { userId: string }) {
+	return {
+		id: userId,
+		username: 'TestUser',
+		discriminator: '0001',
+		bot: false,
+		system: false,
+		mfaEnabled: false,
+		avatarURL: () => 'https://example.com/avatar.png',
+		toString: () => '<@123456789>'
+	} as any as DJSUser;
+}
+
+export function mockInteraction({ userId }: { userId: string }) {
+	return {
+		channelId: TEST_CHANNEL_ID,
 		deferReply: () => Promise.resolve(),
 		editReply: () => Promise.resolve(),
-		followUp: () => Promise.resolve()
-	} as any,
+		followUp: () => Promise.resolve(),
+		user: {
+			id: userId
+		}
+	} as any;
+}
+
+export function mockChannel({ userId }: { userId: string }) {
+	return {
+		id: TEST_CHANNEL_ID,
+		isTextBased: () => true,
+		isDMBased: () => false,
+		permissionsFor: () => ({
+			has: () => true
+		}),
+		send: vi.fn(() => {
+			// console.log('TestChannel send called with args:', args);
+			return Promise.resolve(mockMessage({ userId }));
+		})
+	} as any;
+}
+
+export function mockMessage({ userId }: { userId: string }) {
+	const TestChannel = mockChannel({ userId });
+	return {
+		author: mockDjsUser({ userId }),
+		channel: TestChannel,
+		send: vi.fn(() => {
+			// console.log('TestMessage send called with args:', args);
+			return Promise.resolve({
+				id: '123456789',
+				channel: TestChannel
+			});
+		}),
+		reply: vi.fn(() => {
+			// console.log('TestMessage reply called with args:', args);
+			return Promise.resolve({
+				id: '123456789',
+				channel: TestChannel
+			});
+		}),
+		edit: vi.fn(() => {
+			// console.log('TestMessage edit called with args:', args);
+			return Promise.resolve({
+				id: '123456789',
+				channel: TestChannel
+			});
+		}),
+		delete: vi.fn(() => {
+			// console.log('TestMessage delete called');
+			return Promise.resolve();
+		})
+	};
+}
+
+const commandRunOptions = (userId: string): Omit<CommandRunOptions, 'options'> => ({
+	userID: userId,
+	guildID: '342983479501389826',
+	member: {} as any,
+	user: { id: userId } as any,
+	channelID: TEST_CHANNEL_ID,
+	interaction: mockInteraction({ userId }),
 	client: {} as any
 });
 
@@ -75,7 +145,7 @@ export class TestUser extends MUserClass {
 	async equip(setup: GearSetupType, gear: number[]) {
 		const gearObj = this.gear[setup];
 		for (const item of gear) {
-			gearObj.equip(getOSItem(item));
+			gearObj.equip(Items.getOrThrow(item));
 		}
 		await this.update({
 			[`gear_${setup}`]: gearObj.raw()
@@ -221,7 +291,7 @@ export function unMockedCyptoRand(min: number, max: number) {
 }
 
 export function mockedId() {
-	return unMockedCyptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
+	return unMockedCyptoRand(1, 5_000_000_000_000).toString();
 }
 
 export async function mockUser(
@@ -241,20 +311,20 @@ export async function mockUser(
 	const rangeGear = new Gear();
 	if (options.rangeGear) {
 		for (const item of options.rangeGear) {
-			rangeGear.equip(getOSItem(item));
+			rangeGear.equip(Items.getOrThrow(item));
 		}
 	}
 	const mageGear = new Gear();
 	if (options.mageGear) {
 		for (const item of options.mageGear) {
-			mageGear.equip(getOSItem(item));
+			mageGear.equip(Items.getOrThrow(item));
 		}
 	}
 
 	const meleeGear = new Gear();
 	if (options.meleeGear) {
 		for (const item of options.meleeGear) {
-			meleeGear.equip(getOSItem(item));
+			meleeGear.equip(Items.getOrThrow(item));
 		}
 	}
 
@@ -278,6 +348,7 @@ export async function mockUser(
 	});
 	return user;
 }
+
 export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
 	if (idsUsed.has(id)) {
@@ -296,42 +367,48 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		bank.remove('Coins', GP);
 	}
 
-	const user = await global.prisma!.user.upsert({
-		create: {
-			id,
-			...userData,
-			bank: bank?.toJSON(),
-			GP: GP ?? undefined
-		},
-		update: {
-			...userData,
-			bank: bank?.toJSON(),
-			GP
-		},
-		where: {
-			id
-		}
-	});
-
-	try {
-		await global.prisma!.userStats.upsert({
+	const [user] = await prisma.$transaction([
+		global.prisma!.user.upsert({
 			create: {
-				user_id: BigInt(user.id)
+				id,
+				...userData,
+				bank: bank?.toJSON(),
+				GP: GP ?? undefined
+			},
+			update: {
+				...userData,
+				bank: bank?.toJSON(),
+				GP
+			},
+			where: {
+				id
+			}
+		}),
+		global.prisma!.userStats.upsert({
+			create: {
+				user_id: BigInt(id)
 			},
 			update: {},
 			where: {
-				user_id: BigInt(user.id)
+				user_id: BigInt(id)
 			}
-		});
-	} catch (err) {
-		console.error(`Failed to make userStats for ${user.id}`);
-		throw new Error(err as any);
-	}
+		}),
+		global.prisma!.minigame.upsert({
+			create: {
+				user_id: id
+			},
+			update: {},
+			where: {
+				user_id: id
+			}
+		})
+	]);
 
 	return new TestUser(user);
 }
 
 class TestClient {
+	public activitiesProcessed = 0;
 	data: ClientStorage;
 	constructor(data: ClientStorage) {
 		this.data = data;
@@ -361,7 +438,6 @@ class TestClient {
 
 	async processActivities() {
 		const activities: Activity[] = await sql`SELECT * FROM activity WHERE completed = false;`;
-
 		if (activities.length > 0) {
 			await prisma.activity.updateMany({
 				where: {
@@ -373,8 +449,13 @@ class TestClient {
 					completed: true
 				}
 			});
+			this.activitiesProcessed += activities.length;
 			await Promise.all(activities.map(_act => ActivityManager.completeActivity(_act)));
 		}
+
+		return {
+			activities
+		};
 	}
 }
 
@@ -387,6 +468,7 @@ export async function mockClient() {
 	});
 
 	globalConfig.clientID = clientId;
+	process.env.CLIENT_ID = clientId;
 	return new TestClient(client);
 }
 

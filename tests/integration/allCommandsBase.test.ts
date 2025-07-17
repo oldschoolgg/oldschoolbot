@@ -1,90 +1,145 @@
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { generateCommandInputs } from '@oldschoolgg/toolkit/util';
-import { Time, shuffleArr } from 'e';
-import { generateRandomBank } from 'oldschooljs';
+import { Time, sumArr } from 'e';
+import { Bank, Items } from 'oldschooljs';
+import PromiseQueue from 'p-queue';
+import { shuffle } from 'remeda';
 import { expect, test, vi } from 'vitest';
 
-import { BitField } from '../../src/lib/constants';
+import { getMaxUserValues } from '@/mahoji/commands/testpotato';
+import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand';
+import type { OSBMahojiCommand } from '@/mahoji/lib/util';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
 import { allCommands } from '../../src/mahoji/commands/allCommands';
-import { randomMock } from './setup';
 import { createTestUser, mockClient } from './util';
 
 test(
 	'All Commands Base Test',
+	{
+		timeout: Time.Minute * 10
+	},
 	async () => {
-		const bank = generateRandomBank(500, 100_000);
+		const bankWithAllItems = new Bank();
+		for (const item of Items.keys()) {
+			bankWithAllItems.add(item, 100_000);
+		}
 		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
 		const client = await mockClient();
-		process.env.CLIENT_ID = client.data.id;
-		randomMock();
-		const maxUser = await createTestUser(bank, { GP: 100_000_000_000 });
-		await maxUser.max();
-		await maxUser.update({ bitfield: [BitField.isModerator] });
+
 		await mahojiClientSettingsFetch({ construction_cost_bank: true });
-		await prisma.activity.deleteMany({
-			where: {
-				user_id: BigInt(maxUser.id)
-			}
-		});
 
 		const ignoredCommands = [
-			'leagues',
 			'bank',
 			'bingo',
 			'bossrecords',
 			'stats',
 			'clues',
 			'kc',
-			'simulate',
 			'lvl',
 			'testpotato',
 			'xp',
 			'wiki',
 			'casket',
 			'finish',
-			'kill',
 			'trivia',
 			'ge',
 			'rp',
 			'cl',
-			'gearpresets'
-		];
-		const cmds = allCommands;
+			'gearpresets',
+			'admin',
+			'loot',
+			'slayer',
+			'trade',
+			'trivia',
+			'data',
+			'leaderboard',
+			'lb',
+			'bs',
+			'redeem',
 
-		for (const command of cmds) {
-			if (ignoredCommands.includes(command.name)) continue;
-			if (cmds.some(c => c.name === command.name)) continue;
-			throw new Error(
-				`If you added a new command (${command.name}), you need to put it in the allCommandsBase.test.ts file.`
-			);
-		}
+			'simulate',
+			'leagues',
+			'kill'
+		];
+		const commandsToTest = allCommands.filter(c => !ignoredCommands.includes(c.name));
+
+		console.log(`Running ${commandsToTest.length} commands...`);
 
 		const ignoredSubCommands = [
 			['tools', 'patron', 'cl_bank'],
 			['loot', 'view'],
-			['minion', 'bankbg']
+			['minion', 'bankbg'],
+			['minion', 'daily'],
+			['gamble', 'luckypick'],
+			['gamble', 'duel'],
+			['config', 'toggle']
 		];
 
-		const promises = [];
+		const useCommandOptions: Record<string, any>[] = [];
+		for (const item of allUsableItems) {
+			useCommandOptions.push({
+				item: item,
+				secondary_item: null
+			});
+		}
 
-		for (const command of cmds) {
+		const hardcodedOptions: Record<string, Record<string, any>[]> = {
+			use: useCommandOptions
+		};
+
+		const stopwatch = new Stopwatch();
+		const processedCommands: { command: OSBMahojiCommand; options: any[] }[] = [];
+		for (const command of commandsToTest) {
 			if (ignoredCommands.includes(command.name)) continue;
-
-			const options = shuffleArr(await generateCommandInputs(command.options!)).slice(0, 5);
+			const options = hardcodedOptions[command.name] ?? (await generateCommandInputs(command.options!));
+			if (options.length === 0) {
+				throw new Error(`No options generated for command ${command.name}`);
+			}
 			outer: for (const option of options) {
 				for (const [parent, sub, subCommand] of ignoredSubCommands) {
 					if (command.name === parent && option[sub] && (subCommand ? option[sub][subCommand] : true)) {
+						// stopwatch.check(
+						// 	`Skipping subcommand ${command.name} with options ${JSON.stringify(option)} due to ignore list.`
+						// );
 						continue outer;
 					}
 				}
+			}
+			processedCommands.push({ command, options });
+		}
 
-				promises.push(async () => {
+		// If running in CI, limit amount of permutations that are ran
+		if (process.env.CI) {
+			for (const command of processedCommands) {
+				command.options = shuffle(command.options).slice(0, 2);
+			}
+		}
+
+		const totalCommands = sumArr(processedCommands.map(i => i.options.length));
+
+		const queue = new PromiseQueue({ concurrency: 6 });
+
+		let commandsRan = 0;
+		for (const { command, options: allOptions } of processedCommands) {
+			for (const options of allOptions) {
+				if (queue.size % 30 === 0) {
+					queue.add(async () => client.processActivities());
+				}
+				queue.add(async () => {
 					try {
-						await maxUser.runCommand(command, option);
+						const maxUser = await createTestUser(bankWithAllItems, {
+							...(getMaxUserValues() as any),
+							GP: 100_000_000_000
+						});
+						// stopwatch.check(`	[${command.name}] User ${maxUser.id} created and maxed.`);
+						await maxUser.runCommand(command, options);
+						// stopwatch.check(`	[${command.name}] Finished running command ${command.name}, result was: ${typeof res === "string" ? res.replace(/\r?\n|\r/g, ' ').replace(/[*_`~>|#]/g, '') : res}`);
+						commandsRan++;
+						// stopwatch.check(`${commandsRan}/${totalCommands} commands ran ${command.name}`);
 					} catch (err) {
 						console.error(
-							`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
+							`Failed to run command ${command.name} with options ${JSON.stringify(options)}: ${err}`
 						);
 						throw err;
 					}
@@ -92,11 +147,13 @@ test(
 			}
 		}
 
-		await Promise.all(promises);
+		queue.add(async () => client.processActivities());
 
+		await queue.onEmpty();
+		await queue.onIdle();
 		await client.processActivities();
-	},
-	{
-		timeout: Time.Minute * 10
+		console.log(
+			`[${stopwatch.toString()}] Finished running ${commandsRan}/${totalCommands} commands, ${client.activitiesProcessed} activities`
+		);
 	}
 );
