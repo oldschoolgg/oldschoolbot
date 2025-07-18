@@ -116,7 +116,7 @@ export interface Fish {
 	petChance?: number;
 	timePerFish: number;
 	bait?: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;

@@ -1,6 +1,7 @@
 import { type CommandRunOptions, formatDuration, stringSearch } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { ItemGroups, Monsters } from 'oldschooljs';
+import { Quests } from 'oldschooljs';
 
 import type { FishingActivityTaskOptions } from '@/lib/types/minions';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
@@ -58,8 +59,12 @@ export const fishCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`;
 		}
 
-		if (fish.qpRequired && user.QP < fish.qpRequired) {
-			return `You need ${fish.qpRequired} qp to catch those!`;
+		if (fish.requiredQuests) {
+			const incompleteQuest = fish.requiredQuests.find(q => !user.hasCompletedQuest(q));
+			if (incompleteQuest) {
+				const questName = Quests.find(qObj => qObj.id === incompleteQuest)?.name ?? incompleteQuest;
+				return `You need to have completed the ${questName} quest to catch those!`;
+			}
 		}
 
 		if (

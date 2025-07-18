@@ -1,6 +1,6 @@
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Bank, Items, SkillsEnum } from 'oldschooljs';
+import { Bank, EQuest, Items, SkillsEnum } from 'oldschooljs';
 
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
@@ -168,9 +168,8 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 	)} to finish.`;
 }
 export async function camdozaalCommand(user: MUser, channelID: string, choice: string, quantity: number | undefined) {
-	const qp = user.QP;
-	if (qp <= 16) {
-		return "You haven't completed enough quests to enter the Ruins of Camdozaal, return when you have at least 17 quest points.";
+	if (!user.hasCompletedQuest(EQuest.BELOW_ICE_MOUNTAIN)) {
+		return "You haven't completed enough quests to enter the Ruins of Camdozaal.";
 	}
 	if (choice === 'mining') {
 		return miningCommand(user, channelID, quantity);

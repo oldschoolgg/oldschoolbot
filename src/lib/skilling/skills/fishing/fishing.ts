@@ -1,5 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { itemID } from 'oldschooljs';
+import { EQuest, itemID } from 'oldschooljs';
 
 import type { GearBank } from '@/lib/structures/GearBank';
 import { round } from 'e';
@@ -34,7 +34,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw karambwanji'),
 		name: 'Karambwanji',
 		petChance: 443_697,
-		qpRequired: 15,
+		requiredQuests: [EQuest.TAI_BWO_WANNAI_TRIO],
 		timePerFish: 3.6,
 		clueScrollChance: 443_697
 	},
@@ -160,7 +160,7 @@ const fishes: Fish[] = [
 		name: 'Monkfish',
 		alias: ['monk'],
 		petChance: 138_583,
-		qpRequired: 100,
+		requiredQuests: [EQuest.SWAN_SONG],
 		timePerFish: 13.5,
 		clueScrollChance: 138_583
 	},
@@ -193,7 +193,6 @@ const fishes: Fish[] = [
 		alias: ['angler'],
 		petChance: 78_649,
 		bait: itemID('Sandworms'),
-		qpRequired: 40,
 		timePerFish: 18.75,
 		clueScrollChance: 78_649
 	},
@@ -204,7 +203,7 @@ const fishes: Fish[] = [
 		name: 'Minnow',
 		alias: ['minnows'],
 		petChance: 977_778,
-		qpRequired: 1,
+		requiredQuests: [EQuest.SEA_SLUG],
 		timePerFish: 2.14,
 		clueScrollChance: 977_778
 	},
