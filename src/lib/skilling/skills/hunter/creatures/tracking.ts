@@ -1,4 +1,4 @@
-import { LootTable } from 'oldschooljs';
+import { EQuest, LootTable } from 'oldschooljs';
 
 import type { Creature } from '../../../types';
 import { HunterTechniqueEnum } from '../../../types';
@@ -71,7 +71,7 @@ const trackingCreatures: Creature[] = [
 		level: 80,
 		hunterXP: 1950, // Scaleable xp depending on hunting lvl
 		table: new LootTable() /* Scaleable loot table */,
-		qpRequired: 3,
+		requiredQuests: [EQuest.BONE_VOYAGE],
 		huntTechnique: HunterTechniqueEnum.Tracking,
 		herbloreLvl: 31,
 		catchTime: 91,

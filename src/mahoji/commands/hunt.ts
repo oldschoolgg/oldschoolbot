@@ -1,7 +1,7 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { Bank, ECreature, itemID } from 'oldschooljs';
+import { Bank, ECreature, EQuest, Quests, itemID } from 'oldschooljs';
 
 import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
@@ -68,7 +68,6 @@ export const huntCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
 		const user = await mUserFetch(userID);
 		const userBank = user.bank;
-		const userQP = user.QP;
 		const boosts = [];
 		let traps = 1;
 		const usingHuntPotion = Boolean(options.hunter_potion);
@@ -92,8 +91,12 @@ export const huntCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`;
 		}
 
-		if (creature.qpRequired && userQP < creature.qpRequired) {
-			return `${user.minionName} needs ${creature.qpRequired} QP to hunt ${creature.name}.`;
+		if (creature.requiredQuests) {
+			const incompleteQuest = creature.requiredQuests.find(q => !user.hasCompletedQuest(q));
+			if (incompleteQuest) {
+				const questName = Quests.find(qObj => qObj.id === incompleteQuest)?.name ?? incompleteQuest;
+				return `You need to have completed the ${questName} quest to hunt ${creature.name}.`;
+			}
 		}
 
 		if (creature.prayerLvl && user.skillLevel(SkillsEnum.Prayer) < creature.prayerLvl) {
@@ -125,8 +128,8 @@ export const huntCommand: OSBMahojiCommand = {
 			if (!hasReqs) {
 				return `To hunt ${creature.name}, you need: ${reason}.`;
 			}
-			if (user.QP < 150) {
-				return `To hunt ${creature.name}, you need 150 QP.`;
+			if (!user.hasCompletedQuest(EQuest.SONG_OF_THE_ELVES)) {
+				return `You need to complete the **Song of the Elves** quest to hunt ${creature.name}.`;
 			}
 		}
 

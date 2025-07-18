@@ -1,7 +1,6 @@
 import type { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Bank, EQuest, Item, ItemBank, LootTable } from 'oldschooljs';
 
-import type { QuestID } from '../minions/data/quests';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { FarmingPatchName } from '../util/farmingHelpers';
 
@@ -337,7 +336,7 @@ export interface Creature {
 	prayerLvl?: number;
 	herbloreLvl?: number;
 	catchTime: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 	slope: number;
 	intercept: number;
 }

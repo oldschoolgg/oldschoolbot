@@ -1,4 +1,4 @@
-import { LootTable } from 'oldschooljs';
+import { EQuest, LootTable } from 'oldschooljs';
 
 import type { Creature } from '../../../types';
 import { HunterTechniqueEnum } from '../../../types';
@@ -14,7 +14,7 @@ const boxTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.BoxTrapping,
 		multiTraps: true,
 		catchTime: 22,
-		qpRequired: 2,
+		requiredQuests: [EQuest.EAGLES_PEAK],
 		slope: 1,
 		intercept: 15
 	},
@@ -28,7 +28,7 @@ const boxTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.BoxTrapping,
 		multiTraps: true,
 		catchTime: 30,
-		qpRequired: 2,
+		requiredQuests: [EQuest.EAGLES_PEAK],
 		slope: 1.034_79,
 		intercept: 1.694_95
 	},
@@ -42,7 +42,7 @@ const boxTrappingCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.BoxTrapping,
 		multiTraps: true,
 		catchTime: 28,
-		qpRequired: 2,
+		requiredQuests: [EQuest.EAGLES_PEAK],
 		slope: 1.22,
 		intercept: -31.33
 	},
@@ -58,7 +58,7 @@ const boxTrappingCreatures: Creature[] = [
 		wildy: true,
 		prayerLvl: 43,
 		catchTime: 28,
-		qpRequired: 2,
+		requiredQuests: [EQuest.EAGLES_PEAK],
 		slope: 1.22,
 		intercept: -31.33
 	}
