@@ -1,4 +1,5 @@
 {
+	"getting-started/wiki.md": ["Magnaboy", "DayV", "dark", "Jonesey"],
 	"osb/Bosses/colosseum.md": ["DayV", "Magnaboy"],
 	"osb/Bosses/fight-caves.md": ["DayV", "Magnaboy"],
 	"osb/Bosses/inferno.md": ["DayV", "Magnaboy"],
@@ -28,7 +29,6 @@
 	"osb/Skills/woodcutting/README.md": ["TastyPumPum", "Magnaboy", "badgehunter"],
 	"bso/CustomItems/capes.md": ["TastyPumPum", "Magnaboy"],
 	"bso/CustomItems/index.md": ["TastyPumPum", "Magnaboy"],
-	"getting-started/wiki.md": ["Magnaboy", "DayV", "dark", "Jonesey"],
 	"osb/monsters.mdx": ["DayV", "Magnaboy", "Keres"],
 	"osb/GettingStarted/beginner-guide.md": ["DayV", "Magnaboy"],
 	"osb/GettingStarted/bank-background.md": ["DayV", "Magnaboy"],

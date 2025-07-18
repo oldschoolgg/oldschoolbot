@@ -25,7 +25,7 @@ test(
 			bankWithAllItems.add(item, 100_000);
 		}
 		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
-		const client = await mockClient();
+		await mockClient();
 
 		await mahojiClientSettingsFetch({ construction_cost_bank: true });
 

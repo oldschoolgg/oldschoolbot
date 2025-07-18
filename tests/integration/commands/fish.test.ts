@@ -87,7 +87,7 @@ describe('Fish Command', async () => {
 		await user.update({ bank: new Bank({ 'Spirit flakes': 100 }) });
 		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true, quantity: 50 });
 		expect(res).toContain('is now fishing 50x Shrimps');
-		const xaa = await user.runActivity();
+		await user.runActivity();
 		expect(user.bank.amount('Raw shrimps')).toBeGreaterThan(50);
 		expect(user.bank.amount('Spirit flakes')).toEqual(50);
 	});
