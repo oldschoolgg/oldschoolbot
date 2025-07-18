@@ -93,6 +93,15 @@ export const fishCommand: OSBMahojiCommand = {
 			return res;
 		}
 
+		if (res.cost.length > 0) {
+			if (!user.owns(res.cost)) {
+				return `You don't own the required items to fish ${fish.name}, you need: ${res.cost}.`;
+			}
+			await user.transactItems({
+				itemsToRemove: res.cost
+			});
+		}
+
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
 			fishID: fish.id,
 			userID: user.id,
