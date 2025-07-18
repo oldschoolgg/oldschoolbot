@@ -21,7 +21,7 @@ export async function renderCreatablesFile() {
 			items_created: new Bank(c.outputItems).toNamedBank(),
 			items_required: new Bank(c.inputItems).toNamedBank(),
 			required_stats: c.requiredSkills ?? {},
-			qp_required: c.QPRequired ?? 0,
+			requiredQuests: c.requiredQuests ?? [],
 			required_slayer_unlocks: c.requiredSlayerUnlocks ?? []
 		});
 	}

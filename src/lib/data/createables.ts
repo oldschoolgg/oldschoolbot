@@ -1,4 +1,4 @@
-import { Bank, EItem, deepResolveItems, itemID } from 'oldschooljs';
+import { Bank, EItem, EQuest, deepResolveItems, itemID } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
@@ -32,7 +32,7 @@ export interface Createable {
 	inputItems: ItemBank | Bank;
 	cantHaveItems?: ItemBank;
 	requiredSkills?: Skills;
-	QPRequired?: number;
+	requiredQuests?: EQuest[];
 	noCl?: boolean;
 	forceAddToCl?: boolean;
 	GPCost?: number;
@@ -332,7 +332,7 @@ const crystalTools: Createable[] = [
 			[itemID('Crystal pickaxe')]: 1
 		},
 		requiredSkills: { smithing: 76, crafting: 76 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Crystal harpoon',
@@ -345,7 +345,7 @@ const crystalTools: Createable[] = [
 			[itemID('Crystal harpoon')]: 1
 		},
 		requiredSkills: { smithing: 76, crafting: 76 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Crystal axe',
@@ -358,7 +358,7 @@ const crystalTools: Createable[] = [
 			[itemID('Crystal axe')]: 1
 		},
 		requiredSkills: { smithing: 76, crafting: 76 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Enhanced crystal key',
@@ -370,7 +370,7 @@ const crystalTools: Createable[] = [
 			[itemID('Enhanced crystal key')]: 1
 		},
 		requiredSkills: { smithing: 80, crafting: 80 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Blade of saeldor (c)',
@@ -382,7 +382,7 @@ const crystalTools: Createable[] = [
 			[itemID('Blade of saeldor (c)')]: 1
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Revert blade of saeldor (c)',
@@ -393,7 +393,7 @@ const crystalTools: Createable[] = [
 			[itemID('Blade of saeldor (inactive)')]: 1
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
-		QPRequired: 150,
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES],
 		noCl: true
 	},
 	{
@@ -406,7 +406,7 @@ const crystalTools: Createable[] = [
 			[itemID('Bow of faerdhinen (c)')]: 1
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Revert bow of faerdhinen (c)',
@@ -417,7 +417,7 @@ const crystalTools: Createable[] = [
 			[itemID('Bow of faerdhinen (inactive)')]: 1
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
-		QPRequired: 150,
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES],
 		noCl: true
 	},
 	{
@@ -430,7 +430,7 @@ const crystalTools: Createable[] = [
 			[itemID('Blade of saeldor (inactive)')]: 1
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Revert blade of saeldor (inactive)',
@@ -442,7 +442,7 @@ const crystalTools: Createable[] = [
 			[itemID('Enhanced crystal weapon seed')]: 1
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Bow of faerdhinen (inactive)',
@@ -454,7 +454,7 @@ const crystalTools: Createable[] = [
 			[itemID('Bow of faerdhinen (inactive)')]: 1
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Revert bow of faerdhinen (inactive)',
@@ -466,7 +466,7 @@ const crystalTools: Createable[] = [
 			[itemID('Enhanced crystal weapon seed')]: 1
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Crystal halberd',
@@ -478,7 +478,7 @@ const crystalTools: Createable[] = [
 			[itemID('Crystal halberd')]: 1
 		},
 		requiredSkills: { smithing: 78, crafting: 78 },
-		QPRequired: 150,
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES],
 		noCl: true
 	},
 	{
@@ -491,7 +491,7 @@ const crystalTools: Createable[] = [
 			[itemID('Crystal bow')]: 1
 		},
 		requiredSkills: { smithing: 78, crafting: 78 },
-		QPRequired: 150,
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES],
 		noCl: true
 	},
 	{
@@ -504,7 +504,7 @@ const crystalTools: Createable[] = [
 			[itemID('Crystal helm')]: 1
 		},
 		requiredSkills: { smithing: 70, crafting: 70 },
-		QPRequired: 150,
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES],
 		noCl: true
 	},
 	{
@@ -517,7 +517,7 @@ const crystalTools: Createable[] = [
 			[itemID('Crystal legs')]: 1
 		},
 		requiredSkills: { smithing: 72, crafting: 72 },
-		QPRequired: 150,
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES],
 		noCl: true
 	},
 	{
@@ -530,7 +530,7 @@ const crystalTools: Createable[] = [
 			[itemID('Crystal body')]: 1
 		},
 		requiredSkills: { smithing: 74, crafting: 74 },
-		QPRequired: 150,
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES],
 		noCl: true
 	}
 ];
@@ -1694,7 +1694,7 @@ const Createables: Createable[] = [
 			'Holy book': 1
 		}),
 		requiredSkills: { agility: 35 },
-		QPRequired: 5
+		requiredQuests: [EQuest.HORROR_FROM_THE_DEEP]
 	},
 	{
 		name: 'Book of balance',
@@ -1708,7 +1708,7 @@ const Createables: Createable[] = [
 			'Book of balance': 1
 		}),
 		requiredSkills: { agility: 35 },
-		QPRequired: 5
+		requiredQuests: [EQuest.HORROR_FROM_THE_DEEP]
 	},
 	{
 		name: 'Unholy book',
@@ -1722,7 +1722,7 @@ const Createables: Createable[] = [
 			'Unholy book': 1
 		}),
 		requiredSkills: { agility: 35 },
-		QPRequired: 5
+		requiredQuests: [EQuest.HORROR_FROM_THE_DEEP]
 	},
 	{
 		name: 'Book of law',
@@ -1736,7 +1736,7 @@ const Createables: Createable[] = [
 			'Book of law': 1
 		}),
 		requiredSkills: { agility: 35 },
-		QPRequired: 5
+		requiredQuests: [EQuest.HORROR_FROM_THE_DEEP]
 	},
 	{
 		name: 'Book of war',
@@ -1750,7 +1750,7 @@ const Createables: Createable[] = [
 			'Book of war': 1
 		}),
 		requiredSkills: { agility: 35 },
-		QPRequired: 5
+		requiredQuests: [EQuest.HORROR_FROM_THE_DEEP]
 	},
 	{
 		name: 'Book of darkness',
@@ -1764,7 +1764,7 @@ const Createables: Createable[] = [
 			'Book of darkness': 1
 		}),
 		requiredSkills: { agility: 35 },
-		QPRequired: 5
+		requiredQuests: [EQuest.HORROR_FROM_THE_DEEP]
 	},
 	{
 		name: "Ava's accumulator",
@@ -1774,7 +1774,7 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			"Ava's accumulator": 1
 		}),
-		QPRequired: 30
+		requiredQuests: [EQuest.ANIMAL_MAGNETISM]
 	},
 	{
 		name: "Ava's assembler",
@@ -1786,7 +1786,7 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			"Ava's assembler": 1
 		}),
-		QPRequired: 205
+		requiredQuests: [EQuest.ANIMAL_MAGNETISM, EQuest.DRAGON_SLAYER_II]
 	},
 	{
 		name: 'Dragon sq shield',
@@ -1797,7 +1797,7 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			'Dragon sq shield': 1
 		}),
-		QPRequired: 111,
+		requiredQuests: [EQuest.LEGENDS_QUEST],
 		requiredSkills: { smithing: 60 }
 	},
 	{
@@ -1810,7 +1810,7 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			'Dragon kiteshield': 1
 		}),
-		QPRequired: 205,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		requiredSkills: { smithing: 75 }
 	},
 	{
@@ -1823,7 +1823,7 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			'Dragon platebody': 1
 		}),
-		QPRequired: 205,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		requiredSkills: { smithing: 90 }
 	},
 	{
@@ -1845,7 +1845,7 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			'Zamorakian hasta': 1
 		}),
-		QPRequired: 3,
+		requiredQuests: [EQuest.TAI_BWO_WANNAI_TRIO],
 		requiredSkills: {
 			fishing: 55,
 			firemaking: 35,
@@ -2173,7 +2173,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Ivandis flail')]: 1
 		},
-		QPRequired: 75,
+		requiredQuests: [EQuest.A_TASTE_OF_HOPE],
 		requiredSkills: ivandisRequirements
 	},
 	{
@@ -2185,7 +2185,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Blisterwood flail')]: 1
 		},
-		QPRequired: 125,
+		requiredQuests: [EQuest.SINS_OF_THE_FATHER],
 		requiredSkills: blisterwoodRequirements
 	},
 	{
@@ -2347,7 +2347,7 @@ const Createables: Createable[] = [
 			'Eternal teleport crystal': 1
 		}),
 		requiredSkills: { smithing: 80, crafting: 80 },
-		QPRequired: 150
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Saturated heart',

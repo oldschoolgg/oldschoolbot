@@ -1,6 +1,6 @@
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Quests } from 'oldschooljs';
 
 import Createables from '../../lib/data/createables';
 import type { SkillsEnum } from '../../lib/skilling/types';
@@ -71,8 +71,12 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (createableItem.QPRequired && user.QP < createableItem.QPRequired) {
-			return `You need ${createableItem.QPRequired} QP to ${action} this item.`;
+		if (createableItem.requiredQuests) {
+			const incompleteQuest = createableItem.requiredQuests.find(q => !user.hasCompletedQuest(q));
+			if (incompleteQuest) {
+				const questName = Quests.find(qObj => qObj.id === incompleteQuest)?.name ?? incompleteQuest;
+				return `You need to have completed the ${questName} quest to ${action} this item.`;
+			}
 		}
 
 		if (createableItem.requiredSkills) {

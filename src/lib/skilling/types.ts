@@ -1,5 +1,5 @@
 import type { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
+import type { Bank, EQuest, Item, ItemBank, LootTable } from 'oldschooljs';
 
 import type { QuestID } from '../minions/data/quests';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
@@ -195,7 +195,7 @@ export interface Craftable {
 	crushChance?: number[];
 	bankChest?: boolean;
 	outputMultiple?: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 	wcLvl?: number;
 }
 

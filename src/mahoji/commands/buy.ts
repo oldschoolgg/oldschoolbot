@@ -1,10 +1,9 @@
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Quests } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
-import { quests } from '../../lib/minions/data/quests';
 import { Minigames } from '../../lib/settings/minigames';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -77,18 +76,11 @@ export const buyCommand: OSBMahojiCommand = {
 			quantity = quantity > buyable.maxQuantity ? buyable.maxQuantity : quantity;
 		}
 
-		if (buyable.qpRequired) {
-			const { QP } = user;
-			if (QP < buyable.qpRequired) {
-				return `You need ${buyable.qpRequired} QP to purchase this item.`;
-			}
-		}
-
 		if (buyable.requiredQuests) {
-			const incompleteQuest = buyable.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+			const incompleteQuest = buyable.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
 			if (incompleteQuest) {
 				return `You need to have completed the ${bold(
-					quests.find(i => i.id === incompleteQuest)!.name
+					Quests.find(i => i.id === incompleteQuest)!.name
 				)} quest to buy the ${buyable.name}.`;
 			}
 		}

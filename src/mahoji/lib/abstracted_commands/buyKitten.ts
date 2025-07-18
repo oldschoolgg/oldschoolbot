@@ -1,5 +1,5 @@
 import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EQuest } from 'oldschooljs';
 
 import { kittens } from '../../../lib/growablePets';
 import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
@@ -13,7 +13,7 @@ export async function buyKitten(user: MUser) {
 			content: "You don't have enough GP to buy a kitten! They cost 1000 coins."
 		});
 	}
-	if (user.QP < 10) {
+	if (!user.hasCompletedQuest(EQuest.GERTRUDES_CAT)) {
 		return mahojiChatHead({
 			head: 'gertrude',
 			content: "You haven't done enough quests to raise a kitten yet!"

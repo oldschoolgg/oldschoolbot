@@ -1,6 +1,6 @@
 {
-	"hash": "382baccc4a91a3e8fa11baedaf38068f",
-	"date": "2025-07-05T08:06:15.546Z",
+	"hash": "ba913dee0b9d0397c8f0736b1c6ff170",
+	"date": "2025-07-17T20:10:30.052Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -12,7 +12,7 @@
 				"Felling axe handle": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -26,7 +26,7 @@
 				"Bludgeon spine": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -38,7 +38,7 @@
 				"Abyssal green dye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -50,7 +50,7 @@
 				"Abyssal red dye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -62,7 +62,7 @@
 				"Abyssal blue dye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -74,7 +74,7 @@
 				"Abyssal red dye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -86,7 +86,7 @@
 				"Abyssal blue dye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -98,7 +98,7 @@
 				"Abyssal green dye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -111,7 +111,7 @@
 				"Kraken tentacle": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -124,7 +124,7 @@
 				"Shattered relics variety ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -137,7 +137,7 @@
 				"Shattered relics variety ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -150,7 +150,7 @@
 				"Revenant ether": 7000
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -164,7 +164,7 @@
 				"Thammaron's sceptre (u)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -177,7 +177,7 @@
 				"Felling axe handle": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -192,7 +192,7 @@
 				"Adamant platelegs (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -207,7 +207,7 @@
 				"Adamant plateskirt (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -222,7 +222,7 @@
 				"Adamant platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -237,7 +237,7 @@
 				"Adamant plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -252,7 +252,7 @@
 				"Adamant platelegs (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -267,7 +267,7 @@
 				"Adamant plateskirt (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -282,7 +282,7 @@
 				"Ahrim's staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -295,7 +295,7 @@
 				"Tumeken's guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -308,7 +308,7 @@
 				"Fury ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -320,7 +320,7 @@
 				"Amulet of rancour": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -333,7 +333,7 @@
 				"Torture ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -347,7 +347,7 @@
 				"Ancestral robe top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -362,7 +362,7 @@
 				"Ancient d'hide body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -375,7 +375,7 @@
 				"Godsword blade": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -390,7 +390,7 @@
 				"Ancient platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -405,7 +405,7 @@
 				"Ancient plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -419,7 +419,7 @@
 				"Uncharged ancient wyvern shield": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -431,7 +431,7 @@
 				"Scurrius' spine": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -443,7 +443,7 @@
 				"Cooking apple": 5
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -456,7 +456,7 @@
 				"Slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [202]
 		},
 		{
@@ -469,7 +469,7 @@
 				"Slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [202]
 		},
 		{
@@ -485,7 +485,7 @@
 				"prayer": 90,
 				"smithing": 85
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -508,7 +508,7 @@
 				"Mark of grace": 90
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -521,7 +521,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -534,7 +534,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -547,7 +547,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -560,7 +560,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -573,7 +573,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -586,7 +586,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -598,7 +598,7 @@
 				"Archers ring": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -611,7 +611,7 @@
 				"Darklight": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -626,7 +626,7 @@
 				"Max hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -641,7 +641,7 @@
 				"Armadyl d'hide body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -654,7 +654,7 @@
 				"Godsword blade": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -667,7 +667,7 @@
 				"Armadyl godsword ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -682,7 +682,7 @@
 				"Armadyl platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -697,7 +697,7 @@
 				"Armadyl plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -712,7 +712,7 @@
 				"Max hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -724,7 +724,7 @@
 				"Steel arrow": 75
 			},
 			"required_stats": {},
-			"qp_required": 30,
+			"requiredQuests": [116],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -738,7 +738,7 @@
 				"Vorkath's head": 1
 			},
 			"required_stats": {},
-			"qp_required": 205,
+			"requiredQuests": [116, 136],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -751,7 +751,7 @@
 				"Dragon defender": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -764,7 +764,7 @@
 				"Tumeken's guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -777,7 +777,7 @@
 				"Mole claw": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -789,7 +789,7 @@
 				"Bananas(5)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -801,7 +801,7 @@
 				"Banana": 5
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -816,7 +816,7 @@
 				"Bandos d'hide body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -829,7 +829,7 @@
 				"Godsword blade": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -842,7 +842,7 @@
 				"Bandos godsword ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -857,7 +857,7 @@
 				"Bandos platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -872,7 +872,7 @@
 				"Bandos plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -887,7 +887,7 @@
 				"Barronite shards": 1500
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -901,7 +901,7 @@
 				"Warrior icon": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -914,7 +914,7 @@
 				"Chromium ingot": 3
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -926,7 +926,7 @@
 				"Berserker ring": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -939,7 +939,7 @@
 				"Berserker necklace ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -952,7 +952,7 @@
 				"Broken coffin": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -966,7 +966,7 @@
 				"Black d'hide vambraces": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -979,7 +979,7 @@
 				"Felling axe handle": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -994,7 +994,7 @@
 				"Black platelegs (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1009,7 +1009,7 @@
 				"Black plateskirt (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1024,7 +1024,7 @@
 				"Black platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1039,7 +1039,7 @@
 				"Black plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1052,7 +1052,7 @@
 				"Slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 11]
 		},
 		{
@@ -1065,7 +1065,7 @@
 				"Slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 11]
 		},
 		{
@@ -1080,7 +1080,7 @@
 				"Black platelegs (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1095,7 +1095,7 @@
 				"Black plateskirt (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1111,7 +1111,7 @@
 				"smithing": 82,
 				"crafting": 82
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1127,7 +1127,7 @@
 				"smithing": 82,
 				"crafting": 82
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1140,7 +1140,7 @@
 				"Sunfire splinters": 150000
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1155,7 +1155,7 @@
 			"required_stats": {
 				"prayer": 85
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1181,7 +1181,7 @@
 				"woodcutting": 62,
 				"fletching": 60
 			},
-			"qp_required": 125,
+			"requiredQuests": [145],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1196,7 +1196,7 @@
 			"required_stats": {
 				"runecraft": 81
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1211,7 +1211,7 @@
 			"required_stats": {
 				"runecraft": 77
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1226,7 +1226,7 @@
 			"required_stats": {
 				"runecraft": 77
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1241,7 +1241,7 @@
 			"required_stats": {
 				"runecraft": 79
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1256,7 +1256,7 @@
 			"required_stats": {
 				"runecraft": 81
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1270,7 +1270,7 @@
 				"Blue d'hide vambraces": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1285,7 +1285,7 @@
 			"required_stats": {
 				"smithing": 35
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1300,7 +1300,7 @@
 			"required_stats": {
 				"fletching": 35
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1313,7 +1313,7 @@
 				"Giant squirrel": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1329,7 +1329,7 @@
 			"required_stats": {
 				"crafting": 35
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1346,7 +1346,7 @@
 			"required_stats": {
 				"agility": 35
 			},
-			"qp_required": 5,
+			"requiredQuests": [63],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1359,7 +1359,7 @@
 				"Shattered relics variety ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1374,7 +1374,7 @@
 				"Guthix page 4": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1391,7 +1391,7 @@
 			"required_stats": {
 				"agility": 35
 			},
-			"qp_required": 5,
+			"requiredQuests": [63],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1404,7 +1404,7 @@
 				"Shattered relics variety ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1419,7 +1419,7 @@
 				"Ancient page 4": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1436,7 +1436,7 @@
 			"required_stats": {
 				"agility": 35
 			},
-			"qp_required": 5,
+			"requiredQuests": [63],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1449,7 +1449,7 @@
 				"Shattered relics variety ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1464,7 +1464,7 @@
 				"Armadyl page 4": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1481,7 +1481,7 @@
 			"required_stats": {
 				"agility": 35
 			},
-			"qp_required": 5,
+			"requiredQuests": [63],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1494,7 +1494,7 @@
 				"Shattered relics variety ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1509,7 +1509,7 @@
 				"Bandos page 4": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1522,7 +1522,7 @@
 				"Drake's claw": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1535,7 +1535,7 @@
 				"Vial": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1551,7 +1551,7 @@
 				"smithing": 82,
 				"crafting": 82
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1567,7 +1567,7 @@
 				"smithing": 82,
 				"crafting": 82
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1580,7 +1580,7 @@
 				"Revenant ether": 2000
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1594,7 +1594,7 @@
 				"Hydra's heart": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1607,7 +1607,7 @@
 				"Bronze locks": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1620,7 +1620,7 @@
 				"Felling axe handle": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1635,7 +1635,7 @@
 				"Bronze platelegs (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1650,7 +1650,7 @@
 				"Bronze plateskirt (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1665,7 +1665,7 @@
 				"Bronze platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1680,7 +1680,7 @@
 				"Bronze plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1695,7 +1695,7 @@
 				"Bronze platelegs (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1710,7 +1710,7 @@
 				"Bronze plateskirt (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1724,7 +1724,7 @@
 				"Nature rune": 1000
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1737,7 +1737,7 @@
 				"Sandstone (10kg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1750,7 +1750,7 @@
 				"Sandstone (1kg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1763,7 +1763,7 @@
 				"Sandstone (2kg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1776,7 +1776,7 @@
 				"Sandstone (5kg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1788,7 +1788,7 @@
 				"Burning claw": 2
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1800,7 +1800,7 @@
 				"Cabbages(10)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1812,7 +1812,7 @@
 				"Cabbage": 10
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1825,7 +1825,7 @@
 				"Shattered cannon ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1838,7 +1838,7 @@
 				"Shattered cannon ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1851,7 +1851,7 @@
 				"Shattered cannon ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1864,7 +1864,7 @@
 				"Shattered cannon ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1879,7 +1879,7 @@
 				"Stardust": 1000
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1896,7 +1896,7 @@
 				"crafting": 50,
 				"woodcutting": 50
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1910,7 +1910,7 @@
 				"Vial": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1929,7 +1929,7 @@
 				"runecraft": 85,
 				"crafting": 56
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1943,7 +1943,7 @@
 				"Strength potion(4)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1955,7 +1955,7 @@
 				"Apples(5)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1967,7 +1967,7 @@
 				"Youngllef": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1980,7 +1980,7 @@
 				"Revenant ether": 7000
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -1997,7 +1997,7 @@
 				"smithing": 76,
 				"crafting": 76
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2013,7 +2013,7 @@
 				"smithing": 74,
 				"crafting": 74
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2029,7 +2029,7 @@
 				"smithing": 78,
 				"crafting": 78
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2042,7 +2042,7 @@
 				"Felling axe handle": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2058,7 +2058,7 @@
 				"smithing": 78,
 				"crafting": 78
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2075,7 +2075,7 @@
 				"smithing": 76,
 				"crafting": 76
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2091,7 +2091,7 @@
 				"smithing": 70,
 				"crafting": 70
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2104,7 +2104,7 @@
 				"Tooth half of key": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2120,7 +2120,7 @@
 				"smithing": 72,
 				"crafting": 72
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2137,7 +2137,7 @@
 				"smithing": 76,
 				"crafting": 76
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2149,7 +2149,7 @@
 				"Daeyalt shard": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2163,7 +2163,7 @@
 				"Dagon'hai robe top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2176,7 +2176,7 @@
 				"Dark bow": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2189,7 +2189,7 @@
 				"Green dark bow paint": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2202,7 +2202,7 @@
 				"White dark bow paint": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2215,7 +2215,7 @@
 				"Yellow dark bow paint": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2238,7 +2238,7 @@
 				"Graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2251,7 +2251,7 @@
 				"Graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2264,7 +2264,7 @@
 				"Graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2277,7 +2277,7 @@
 				"Graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2290,7 +2290,7 @@
 				"Graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2303,7 +2303,7 @@
 				"Graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2316,7 +2316,7 @@
 				"Graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2329,7 +2329,7 @@
 				"Infinity bottoms": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2342,7 +2342,7 @@
 				"Infinity hat": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2355,7 +2355,7 @@
 				"Infinity top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2368,7 +2368,7 @@
 				"Giant squirrel": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2382,7 +2382,7 @@
 				"Dark totem top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2395,7 +2395,7 @@
 				"Desert devil fur": 4
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2408,7 +2408,7 @@
 				"Holy sandals": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2423,7 +2423,7 @@
 				"Dharok's platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2436,7 +2436,7 @@
 				"Thread of elidinis": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2451,7 +2451,7 @@
 				"Max hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2466,7 +2466,7 @@
 				"Dragon platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2481,7 +2481,7 @@
 				"Dragon plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2494,7 +2494,7 @@
 				"Trailblazer tool ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2507,7 +2507,7 @@
 				"Dragon boots ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2520,7 +2520,7 @@
 				"Dragon chainbody ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2533,7 +2533,7 @@
 				"Dragon defender ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2546,7 +2546,7 @@
 				"Felling axe handle": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2559,7 +2559,7 @@
 				"Dragon full helm ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2572,7 +2572,7 @@
 				"Trailblazer tool ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2585,7 +2585,7 @@
 				"Kbd heads": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2598,7 +2598,7 @@
 				"Vorkath's head": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2611,7 +2611,7 @@
 				"Zamorakian hasta": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2627,7 +2627,7 @@
 			"required_stats": {
 				"smithing": 75
 			},
-			"qp_required": 205,
+			"requiredQuests": [136],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2640,7 +2640,7 @@
 				"Dragon kiteshield ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2653,7 +2653,7 @@
 				"Zalcano shard": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2666,7 +2666,7 @@
 				"Trailblazer tool ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2679,7 +2679,7 @@
 				"Dragon pickaxe upgrade kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2695,7 +2695,7 @@
 			"required_stats": {
 				"smithing": 90
 			},
-			"qp_required": 205,
+			"requiredQuests": [136],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2708,7 +2708,7 @@
 				"Dragon platebody ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2721,7 +2721,7 @@
 				"Dragon platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2734,7 +2734,7 @@
 				"Dragon plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2747,7 +2747,7 @@
 				"Dragon scimitar ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2762,7 +2762,7 @@
 			"required_stats": {
 				"smithing": 60
 			},
-			"qp_required": 111,
+			"requiredQuests": [50],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2775,7 +2775,7 @@
 				"Dragon sq shield ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2788,7 +2788,7 @@
 				"Uncharged dragonfire shield": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2801,7 +2801,7 @@
 				"Uncharged dragonfire ward": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2817,7 +2817,7 @@
 				"Dragonstone platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2832,7 +2832,7 @@
 				"Cannon stand": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2844,7 +2844,7 @@
 				"Ecumenical key shard": 50
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2857,7 +2857,7 @@
 				"Nightmare staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2870,7 +2870,7 @@
 				"Tumeken's guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2887,7 +2887,7 @@
 				"prayer": 90,
 				"smithing": 90
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2900,7 +2900,7 @@
 				"Menaphite ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2913,7 +2913,7 @@
 				"Shattered relics void ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2926,7 +2926,7 @@
 				"Shattered relics void ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2942,7 +2942,7 @@
 				"prayer": 90,
 				"smithing": 85
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2958,7 +2958,7 @@
 			"required_stats": {
 				"smithing": 74
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2974,7 +2974,7 @@
 				"smithing": 80,
 				"crafting": 80
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -2990,7 +2990,7 @@
 				"magic": 60,
 				"runecraft": 60
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3006,7 +3006,7 @@
 				"smithing": 80,
 				"crafting": 80
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3018,7 +3018,7 @@
 				"Hydra leather": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3033,7 +3033,7 @@
 				"Max hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3046,7 +3046,7 @@
 				"Fish sack": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3063,7 +3063,7 @@
 				"smithing": 75,
 				"woodcutting": 75
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3076,7 +3076,7 @@
 				"Fox whistle": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3089,7 +3089,7 @@
 				"Frozen whip mix": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3104,7 +3104,7 @@
 				"Frozen key piece (zamorak)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3117,7 +3117,7 @@
 				"Ghommal's hilt 5": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3130,7 +3130,7 @@
 				"Ghommal's hilt 6": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3140,7 +3140,7 @@
 			},
 			"items_required": {},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3155,7 +3155,7 @@
 				"Gilded platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3170,7 +3170,7 @@
 				"Gilded plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3184,7 +3184,7 @@
 				"Gilded d'hide vambraces": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3196,7 +3196,7 @@
 				"Dark kebbit fur": 2
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3212,7 +3212,7 @@
 			"required_stats": {
 				"smithing": 80
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3225,7 +3225,7 @@
 				"Gold locks": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3238,7 +3238,7 @@
 				"Star fragment": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3251,7 +3251,7 @@
 				"Star fragment": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3264,7 +3264,7 @@
 				"Star fragment": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3277,7 +3277,7 @@
 				"Star fragment": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3292,7 +3292,7 @@
 				"Tatty graahk fur": 2
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3309,7 +3309,7 @@
 				"Mark of grace": 260
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3321,7 +3321,7 @@
 				"Mark of grace": 40
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3333,7 +3333,7 @@
 				"Mark of grace": 40
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3345,7 +3345,7 @@
 				"Mark of grace": 30
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3357,7 +3357,7 @@
 				"Mark of grace": 35
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3369,7 +3369,7 @@
 				"Mark of grace": 60
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3381,7 +3381,7 @@
 				"Mark of grace": 55
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3394,7 +3394,7 @@
 				"Granite maul": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3407,7 +3407,7 @@
 				"Granite maul (ornate handle)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3420,7 +3420,7 @@
 				"Ornate maul handle": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3433,7 +3433,7 @@
 				"Spirit flakes": 3000
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3446,7 +3446,7 @@
 				"Rift guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3460,7 +3460,7 @@
 				"Green d'hide vambraces": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3473,7 +3473,7 @@
 				"Slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 12]
 		},
 		{
@@ -3486,7 +3486,7 @@
 				"Slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 12]
 		},
 		{
@@ -3499,7 +3499,7 @@
 				"Black tourmaline core": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3514,7 +3514,7 @@
 				"Guthan's warspear": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3529,7 +3529,7 @@
 				"Guthix platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3544,7 +3544,7 @@
 				"Guthix plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3559,7 +3559,7 @@
 				"Guthix d'hide body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3573,7 +3573,7 @@
 				"Red halloween mask": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3586,7 +3586,7 @@
 				"Nightmare staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3599,7 +3599,7 @@
 				"Hat of the eye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3612,7 +3612,7 @@
 				"Hat of the eye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3625,7 +3625,7 @@
 				"Hat of the eye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3638,7 +3638,7 @@
 				"Red dye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3655,7 +3655,7 @@
 			"required_stats": {
 				"agility": 35
 			},
-			"qp_required": 5,
+			"requiredQuests": [63],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3668,7 +3668,7 @@
 				"Shattered relics variety ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3683,7 +3683,7 @@
 				"Saradomin page 4": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3696,7 +3696,7 @@
 				"Holy ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3708,7 +3708,7 @@
 				"Holy sanguinesti staff (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3721,7 +3721,7 @@
 				"Sanguinesti staff (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3733,7 +3733,7 @@
 				"Holy scythe of vitur (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3746,7 +3746,7 @@
 				"Scythe of vitur (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3769,7 +3769,7 @@
 				"Mark of grace": 90
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3782,7 +3782,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3795,7 +3795,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3808,7 +3808,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3821,7 +3821,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3834,7 +3834,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3847,7 +3847,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3860,7 +3860,7 @@
 				"Slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 16]
 		},
 		{
@@ -3873,7 +3873,7 @@
 				"Slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 16]
 		},
 		{
@@ -3888,7 +3888,7 @@
 				"Max hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3903,7 +3903,7 @@
 				"Max hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3918,7 +3918,7 @@
 				"Max hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3931,7 +3931,7 @@
 				"Imcando hammer (broken)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3946,7 +3946,7 @@
 			"required_stats": {
 				"firemaking": 85
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3959,7 +3959,7 @@
 				"Trailblazer tool ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3975,7 +3975,7 @@
 				"cooking": 85,
 				"fishing": 75
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -3988,7 +3988,7 @@
 				"Trailblazer tool ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4003,7 +4003,7 @@
 				"Max hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4018,7 +4018,7 @@
 			"required_stats": {
 				"smithing": 85
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4031,7 +4031,7 @@
 				"Trailblazer tool ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4045,7 +4045,7 @@
 				"Initiate sallet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4059,7 +4059,7 @@
 				"Inquisitor's plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4072,7 +4072,7 @@
 				"Iron axe": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4087,7 +4087,7 @@
 				"Iron platelegs (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4102,7 +4102,7 @@
 				"Iron plateskirt (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4117,7 +4117,7 @@
 				"Iron platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4132,7 +4132,7 @@
 				"Iron plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4147,7 +4147,7 @@
 				"Iron platelegs (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4162,7 +4162,7 @@
 				"Iron plateskirt (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4186,7 +4186,7 @@
 				"slayer": 38,
 				"thieving": 22
 			},
-			"qp_required": 75,
+			"requiredQuests": [138],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4199,7 +4199,7 @@
 				"Feldip weasel fur": 4
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4213,7 +4213,7 @@
 				"Justiciar legguards": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4228,7 +4228,7 @@
 				"Karil's leathertop": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4241,7 +4241,7 @@
 				"Tumeken's guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4254,7 +4254,7 @@
 				"Keris partisan": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4267,7 +4267,7 @@
 				"Keris partisan": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4280,7 +4280,7 @@
 				"Keris partisan": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4293,7 +4293,7 @@
 				"Master wand": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4316,7 +4316,7 @@
 				"Mark of grace": 90
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4329,7 +4329,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4342,7 +4342,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4355,7 +4355,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4368,7 +4368,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4381,7 +4381,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4394,7 +4394,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4409,7 +4409,7 @@
 				"Tatty kyatt fur": 2
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4419,7 +4419,7 @@
 			},
 			"items_required": {},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4434,7 +4434,7 @@
 				"Tatty larupia fur": 2
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4447,7 +4447,7 @@
 				"Lava staff upgrade kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4460,7 +4460,7 @@
 				"Light infinity colour kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4473,7 +4473,7 @@
 				"Light infinity colour kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4486,7 +4486,7 @@
 				"Light infinity colour kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4498,7 +4498,7 @@
 				"Sanguine dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4510,7 +4510,7 @@
 				"Sanguine dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4522,7 +4522,7 @@
 				"Sanguine dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4534,7 +4534,7 @@
 				"Sanguine dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4546,7 +4546,7 @@
 				"Sanguine dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4559,7 +4559,7 @@
 				"Parasitic egg": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4571,7 +4571,7 @@
 				"Looting bag note": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4594,7 +4594,7 @@
 				"Mark of grace": 90
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4607,7 +4607,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4620,7 +4620,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4633,7 +4633,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4646,7 +4646,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4659,7 +4659,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4672,7 +4672,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4685,7 +4685,7 @@
 				"Magic shortbow scroll": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4699,7 +4699,7 @@
 				"Seers icon": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4712,7 +4712,7 @@
 				"Magus icon": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4726,7 +4726,7 @@
 				"Malediction shard 3": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4739,7 +4739,7 @@
 				"Ward upgrade kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4752,7 +4752,7 @@
 				"Tainted essence chunk": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4766,7 +4766,7 @@
 				"Masori mask (f)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4779,7 +4779,7 @@
 				"Masori crafting kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4794,7 +4794,7 @@
 				"Max hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4807,7 +4807,7 @@
 				"Masori body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4820,7 +4820,7 @@
 				"Masori chaps": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4833,7 +4833,7 @@
 				"Masori mask": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4848,7 +4848,7 @@
 				"Clue scroll (medium)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4858,7 +4858,7 @@
 			},
 			"items_required": {},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4870,7 +4870,7 @@
 				"Noon": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4883,7 +4883,7 @@
 				"Mithril axe": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4898,7 +4898,7 @@
 				"Mithril platelegs (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4913,7 +4913,7 @@
 				"Mithril plateskirt (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4928,7 +4928,7 @@
 				"Mithril platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4943,7 +4943,7 @@
 				"Mithril plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4958,7 +4958,7 @@
 				"Mithril platelegs (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4973,7 +4973,7 @@
 				"Mithril plateskirt (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -4987,7 +4987,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5000,7 +5000,7 @@
 				"Shattered relics mystic ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5014,7 +5014,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5028,7 +5028,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5042,7 +5042,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5055,7 +5055,7 @@
 				"Shattered relics mystic ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5068,7 +5068,7 @@
 				"Shattered relics mystic ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5082,7 +5082,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5096,7 +5096,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5109,7 +5109,7 @@
 				"Mystic lava staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5123,7 +5123,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5137,7 +5137,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5150,7 +5150,7 @@
 				"Shattered relics mystic ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5163,7 +5163,7 @@
 				"Shattered relics mystic ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5179,7 +5179,7 @@
 				"Mystic robe top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5195,7 +5195,7 @@
 				"Mystic robe top (dark)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5211,7 +5211,7 @@
 				"Mystic robe top (dusk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5227,7 +5227,7 @@
 				"Mystic robe top (light)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5241,7 +5241,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5255,7 +5255,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5269,7 +5269,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5282,7 +5282,7 @@
 				"Steam staff upgrade kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5296,7 +5296,7 @@
 			"required_stats": {
 				"prayer": 31
 			},
-			"qp_required": 1,
+			"requiredQuests": [23],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5311,7 +5311,7 @@
 				"Mythical cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5324,7 +5324,7 @@
 				"Ritual mulch": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5337,7 +5337,7 @@
 				"Necklace of anguish": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5350,7 +5350,7 @@
 				"Helm of neitiznot": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5367,7 +5367,7 @@
 				"smithing": 72,
 				"crafting": 72
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5381,7 +5381,7 @@
 				"Obsidian platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5394,7 +5394,7 @@
 				"Occult ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5408,7 +5408,7 @@
 				"Odium shard 3": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5421,7 +5421,7 @@
 				"Ward upgrade kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5433,7 +5433,7 @@
 				"Onions(10)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5445,7 +5445,7 @@
 				"Onion": 10
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5457,7 +5457,7 @@
 				"Oranges(5)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5469,7 +5469,7 @@
 				"Orange": 5
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5482,7 +5482,7 @@
 				"Osmumten's fang": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5495,7 +5495,7 @@
 				"Sagacious spectacles": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5512,7 +5512,7 @@
 				"Yellow partyhat": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5528,7 +5528,7 @@
 				"magic": 60,
 				"runecraft": 60
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5541,7 +5541,7 @@
 				"Golden pheasant egg": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5556,7 +5556,7 @@
 			"required_stats": {
 				"crafting": 2
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5571,7 +5571,7 @@
 			"required_stats": {
 				"crafting": 2
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5586,7 +5586,7 @@
 			"required_stats": {
 				"crafting": 2
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5601,7 +5601,7 @@
 			"required_stats": {
 				"crafting": 2
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5624,7 +5624,7 @@
 				"Mark of grace": 90
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5637,7 +5637,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5650,7 +5650,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5663,7 +5663,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5676,7 +5676,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5689,7 +5689,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5702,7 +5702,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5715,7 +5715,7 @@
 				"Polar kebbit fur": 4
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5727,7 +5727,7 @@
 				"Potatoes(10)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5739,7 +5739,7 @@
 				"Potato": 10
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5755,7 +5755,7 @@
 				"magic": 60,
 				"runecraft": 60
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5769,7 +5769,7 @@
 				"Proselyte tasset": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5783,7 +5783,7 @@
 				"Proselyte sallet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5795,7 +5795,7 @@
 				"Metamorphic dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5812,7 +5812,7 @@
 				"smithing": 55,
 				"crafting": 74
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5825,7 +5825,7 @@
 				"Slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 14]
 		},
 		{
@@ -5838,7 +5838,7 @@
 				"Slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 14]
 		},
 		{
@@ -5851,7 +5851,7 @@
 				"Nid": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5864,7 +5864,7 @@
 				"Rocky": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5878,7 +5878,7 @@
 				"Red d'hide vambraces": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5891,7 +5891,7 @@
 				"Slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 13]
 		},
 		{
@@ -5904,7 +5904,7 @@
 				"Slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 13]
 		},
 		{
@@ -5916,7 +5916,7 @@
 				"Bracelet of ethereum (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5929,7 +5929,7 @@
 				"Abyssal tentacle (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5942,7 +5942,7 @@
 				"Abyssal whip (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5955,7 +5955,7 @@
 				"Accursed sceptre": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5968,7 +5968,7 @@
 				"Akkhito": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5981,7 +5981,7 @@
 				"Amulet of fury (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -5993,7 +5993,7 @@
 				"Amulet of rancour (s)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6006,7 +6006,7 @@
 				"Amulet of torture (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6018,7 +6018,7 @@
 				"Ancient icon": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6030,7 +6030,7 @@
 				"Arcane spirit shield": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6052,7 +6052,7 @@
 				"Arceuus graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6064,7 +6064,7 @@
 				"Arceuus graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6076,7 +6076,7 @@
 				"Arceuus graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6088,7 +6088,7 @@
 				"Arceuus graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6100,7 +6100,7 @@
 				"Arceuus graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6112,7 +6112,7 @@
 				"Arceuus graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6124,7 +6124,7 @@
 				"Arceuus graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6136,7 +6136,7 @@
 				"Armadyl chainskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6148,7 +6148,7 @@
 				"Armadyl chestplate": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6161,7 +6161,7 @@
 				"Armadyl godsword": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6174,7 +6174,7 @@
 				"Armadyl godsword (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6186,7 +6186,7 @@
 				"Armadyl helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6198,7 +6198,7 @@
 				"Avernic defender": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6211,7 +6211,7 @@
 				"Babi": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6224,7 +6224,7 @@
 				"Mole skin": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6236,7 +6236,7 @@
 				"Bandos chestplate": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6249,7 +6249,7 @@
 				"Bandos godsword": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6262,7 +6262,7 @@
 				"Bandos godsword (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6274,7 +6274,7 @@
 				"Bandos tassets": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6287,7 +6287,7 @@
 				"Berserker necklace (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6300,7 +6300,7 @@
 				"Black slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 11]
 		},
 		{
@@ -6313,7 +6313,7 @@
 				"Black slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 11]
 		},
 		{
@@ -6328,7 +6328,7 @@
 				"smithing": 82,
 				"crafting": 82
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6344,7 +6344,7 @@
 				"smithing": 82,
 				"crafting": 82
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6357,7 +6357,7 @@
 				"Bone squirrel": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6370,7 +6370,7 @@
 				"Book of balance (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6383,7 +6383,7 @@
 				"Book of darkness (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6396,7 +6396,7 @@
 				"Book of law (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6409,7 +6409,7 @@
 				"Book of war (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6424,7 +6424,7 @@
 				"smithing": 82,
 				"crafting": 82
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6440,7 +6440,7 @@
 				"smithing": 82,
 				"crafting": 82
 			},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6462,7 +6462,7 @@
 				"Brimhaven graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6474,7 +6474,7 @@
 				"Brimhaven graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6486,7 +6486,7 @@
 				"Brimhaven graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6498,7 +6498,7 @@
 				"Brimhaven graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6510,7 +6510,7 @@
 				"Brimhaven graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6522,7 +6522,7 @@
 				"Brimhaven graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6534,7 +6534,7 @@
 				"Brimhaven graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6547,7 +6547,7 @@
 				"Cannon barrels (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6560,7 +6560,7 @@
 				"Cannon base (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6573,7 +6573,7 @@
 				"Cannon furnace (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6586,7 +6586,7 @@
 				"Cannon stand (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6598,7 +6598,7 @@
 				"Corrupted youngllef": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6611,7 +6611,7 @@
 				"Craw's bow": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6623,7 +6623,7 @@
 				"Craw's bow (u)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6635,7 +6635,7 @@
 				"Crystal armour seed": 1
 			},
 			"required_stats": {},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6647,7 +6647,7 @@
 				"Crystal tool seed": 1
 			},
 			"required_stats": {},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6659,7 +6659,7 @@
 				"Crystal weapon seed": 1
 			},
 			"required_stats": {},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6671,7 +6671,7 @@
 				"Dark bow (blue)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6683,7 +6683,7 @@
 				"Dark bow (green)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6695,7 +6695,7 @@
 				"Dark bow (white)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6707,7 +6707,7 @@
 				"Dark bow (yellow)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6729,7 +6729,7 @@
 				"Dark graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6741,7 +6741,7 @@
 				"Dark graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6753,7 +6753,7 @@
 				"Dark graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6765,7 +6765,7 @@
 				"Dark graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6777,7 +6777,7 @@
 				"Dark graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6789,7 +6789,7 @@
 				"Dark graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6801,7 +6801,7 @@
 				"Dark graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6814,7 +6814,7 @@
 				"Dark infinity bottoms": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6827,7 +6827,7 @@
 				"Dark infinity hat": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6840,7 +6840,7 @@
 				"Dark infinity top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6853,7 +6853,7 @@
 				"Dark squirrel": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6865,7 +6865,7 @@
 				"Decorative magic hat": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6877,7 +6877,7 @@
 				"Decorative magic robe": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6889,7 +6889,7 @@
 				"Decorative magic top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6901,7 +6901,7 @@
 				"Decorative quiver": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6913,7 +6913,7 @@
 				"Decorative ranged legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6925,7 +6925,7 @@
 				"Decorative ranged top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6937,7 +6937,7 @@
 				"Dizana's quiver (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6950,7 +6950,7 @@
 				"Dragon axe (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6963,7 +6963,7 @@
 				"Dragon boots (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6976,7 +6976,7 @@
 				"Dragon chainbody (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -6989,7 +6989,7 @@
 				"Dragon defender (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7002,7 +7002,7 @@
 				"Dragon full helm (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7015,7 +7015,7 @@
 				"Dragon harpoon (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7028,7 +7028,7 @@
 				"Dragon hunter crossbow (b)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7041,7 +7041,7 @@
 				"Dragon hunter crossbow (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7054,7 +7054,7 @@
 				"Dragon kiteshield (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7067,7 +7067,7 @@
 				"Dragon pickaxe (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7080,7 +7080,7 @@
 				"Dragon pickaxe (or) (Trailblazer)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7092,7 +7092,7 @@
 				"Dragon pickaxe (upgraded)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7105,7 +7105,7 @@
 				"Dragon platebody (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7118,7 +7118,7 @@
 				"Dragon platelegs (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7131,7 +7131,7 @@
 				"Dragon plateskirt (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7144,7 +7144,7 @@
 				"Dragon scimitar (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7157,7 +7157,7 @@
 				"Dragon sq shield (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7170,7 +7170,7 @@
 				"Eldritch nightmare staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7183,7 +7183,7 @@
 				"Elidinis' damaged guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7196,7 +7196,7 @@
 				"Elidinis' ward (f)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7209,7 +7209,7 @@
 				"Elidinis' ward (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7222,7 +7222,7 @@
 				"Elite void robe (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7235,7 +7235,7 @@
 				"Elite void top (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7247,7 +7247,7 @@
 				"Enhanced crystal teleport seed": 1
 			},
 			"required_stats": {},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7259,7 +7259,7 @@
 				"Enhanced crystal weapon seed": 1
 			},
 			"required_stats": {},
-			"qp_required": 150,
+			"requiredQuests": [143],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7271,7 +7271,7 @@
 				"Ferocious gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7284,7 +7284,7 @@
 				"Fish sack barrel": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7297,7 +7297,7 @@
 				"Fox": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7309,7 +7309,7 @@
 				"Frozen abyssal whip": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7322,7 +7322,7 @@
 				"Ghommal's avernic defender 5": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7335,7 +7335,7 @@
 				"Ghommal's avernic defender 6": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7347,7 +7347,7 @@
 				"Gold decorative body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7359,7 +7359,7 @@
 				"Gold decorative boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7371,7 +7371,7 @@
 				"Gold decorative full helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7383,7 +7383,7 @@
 				"Gold decorative helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7395,7 +7395,7 @@
 				"Gold decorative legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7407,7 +7407,7 @@
 				"Gold decorative shield": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7419,7 +7419,7 @@
 				"Gold decorative skirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7431,7 +7431,7 @@
 				"Gold decorative sword": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7448,7 +7448,7 @@
 				"Graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7460,7 +7460,7 @@
 				"Graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7472,7 +7472,7 @@
 				"Graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7484,7 +7484,7 @@
 				"Graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7496,7 +7496,7 @@
 				"Graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7508,7 +7508,7 @@
 				"Graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7520,7 +7520,7 @@
 				"Graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7532,7 +7532,7 @@
 				"Great blue heron": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7545,7 +7545,7 @@
 				"Greatish guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7558,7 +7558,7 @@
 				"Green slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 12]
 		},
 		{
@@ -7571,7 +7571,7 @@
 				"Green slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 12]
 		},
 		{
@@ -7583,7 +7583,7 @@
 				"Guthix halo": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7596,7 +7596,7 @@
 				"Harmonised nightmare staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7608,7 +7608,7 @@
 				"Hat of the eye (blue)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7620,7 +7620,7 @@
 				"Hat of the eye (green)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7632,7 +7632,7 @@
 				"Hat of the eye (red)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7645,7 +7645,7 @@
 				"Holy book (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7658,7 +7658,7 @@
 				"Holy ghrazi rapier": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7670,7 +7670,7 @@
 				"Holy sanguinesti staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7683,7 +7683,7 @@
 				"Holy sanguinesti staff (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7695,7 +7695,7 @@
 				"Holy scythe of vitur": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7708,7 +7708,7 @@
 				"Holy scythe of vitur (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7730,7 +7730,7 @@
 				"Hosidius graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7742,7 +7742,7 @@
 				"Hosidius graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7754,7 +7754,7 @@
 				"Hosidius graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7766,7 +7766,7 @@
 				"Hosidius graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7778,7 +7778,7 @@
 				"Hosidius graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7790,7 +7790,7 @@
 				"Hosidius graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7802,7 +7802,7 @@
 				"Hosidius graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7815,7 +7815,7 @@
 				"Hydra slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 16]
 		},
 		{
@@ -7828,7 +7828,7 @@
 				"Hydra slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 16]
 		},
 		{
@@ -7841,7 +7841,7 @@
 				"Infernal axe (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7854,7 +7854,7 @@
 				"Infernal harpoon (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7867,7 +7867,7 @@
 				"Infernal pickaxe (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7880,7 +7880,7 @@
 				"Kephriti": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7902,7 +7902,7 @@
 				"Kourend graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7914,7 +7914,7 @@
 				"Kourend graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7926,7 +7926,7 @@
 				"Kourend graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7938,7 +7938,7 @@
 				"Kourend graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7950,7 +7950,7 @@
 				"Kourend graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7962,7 +7962,7 @@
 				"Kourend graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7974,7 +7974,7 @@
 				"Kourend graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7986,7 +7986,7 @@
 				"Lava battlestaff (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -7999,7 +7999,7 @@
 				"Light infinity bottoms": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8012,7 +8012,7 @@
 				"Light infinity hat": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8025,7 +8025,7 @@
 				"Light infinity top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8038,7 +8038,7 @@
 				"Little parasite": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8060,7 +8060,7 @@
 				"Lovakengj graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8072,7 +8072,7 @@
 				"Lovakengj graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8084,7 +8084,7 @@
 				"Lovakengj graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8096,7 +8096,7 @@
 				"Lovakengj graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8108,7 +8108,7 @@
 				"Lovakengj graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8120,7 +8120,7 @@
 				"Lovakengj graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8132,7 +8132,7 @@
 				"Lovakengj graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8144,7 +8144,7 @@
 				"Magic fang": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8156,7 +8156,7 @@
 				"Malediction ward (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8169,7 +8169,7 @@
 				"Masori assembler": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8181,7 +8181,7 @@
 				"Midnight": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8194,7 +8194,7 @@
 				"Mystic boots (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8207,7 +8207,7 @@
 				"Mystic gloves (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8220,7 +8220,7 @@
 				"Mystic hat (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8232,7 +8232,7 @@
 				"Mystic lava staff (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8245,7 +8245,7 @@
 				"Mystic robe bottom (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8258,7 +8258,7 @@
 				"Mystic robe top (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8270,7 +8270,7 @@
 				"Mystic steam staff (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8283,7 +8283,7 @@
 				"Necklace of anguish (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8296,7 +8296,7 @@
 				"Neitiznot faceguard": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8309,7 +8309,7 @@
 				"Occult necklace (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8321,7 +8321,7 @@
 				"Odium ward (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8334,7 +8334,7 @@
 				"Partyhat & specs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8347,7 +8347,7 @@
 				"Pheasant": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8369,7 +8369,7 @@
 				"Piscarilius graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8381,7 +8381,7 @@
 				"Piscarilius graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8393,7 +8393,7 @@
 				"Piscarilius graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8405,7 +8405,7 @@
 				"Piscarilius graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8417,7 +8417,7 @@
 				"Piscarilius graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8429,7 +8429,7 @@
 				"Piscarilius graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8441,7 +8441,7 @@
 				"Piscarilius graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8454,7 +8454,7 @@
 				"Purple slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 14]
 		},
 		{
@@ -8467,7 +8467,7 @@
 				"Purple slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 14]
 		},
 		{
@@ -8480,7 +8480,7 @@
 				"Rax": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8493,7 +8493,7 @@
 				"White berries": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8505,7 +8505,7 @@
 				"Red decorative body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8517,7 +8517,7 @@
 				"Red decorative boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8529,7 +8529,7 @@
 				"Red decorative full helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8541,7 +8541,7 @@
 				"Red decorative helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8553,7 +8553,7 @@
 				"Red decorative legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8565,7 +8565,7 @@
 				"Red decorative shield": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8577,7 +8577,7 @@
 				"Red decorative skirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8589,7 +8589,7 @@
 				"Red decorative sword": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8602,7 +8602,7 @@
 				"Red slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 13]
 		},
 		{
@@ -8615,7 +8615,7 @@
 				"Red slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 13]
 		},
 		{
@@ -8627,7 +8627,7 @@
 				"Robe bottoms of the eye (blue)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8639,7 +8639,7 @@
 				"Robe bottoms of the eye (green)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8651,7 +8651,7 @@
 				"Robe bottoms of the eye (red)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8663,7 +8663,7 @@
 				"Robe top of the eye (blue)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8675,7 +8675,7 @@
 				"Robe top of the eye (green)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8687,7 +8687,7 @@
 				"Robe top of the eye (red)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8700,7 +8700,7 @@
 				"Rune crossbow (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8713,7 +8713,7 @@
 				"Rune defender (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8726,7 +8726,7 @@
 				"Rune scimitar (guthix)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8739,7 +8739,7 @@
 				"Rune scimitar (saradomin)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8752,7 +8752,7 @@
 				"Rune scimitar (zamorak)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8764,7 +8764,7 @@
 				"Sanguine scythe of vitur": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8777,7 +8777,7 @@
 				"Sanguine scythe of vitur (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8789,7 +8789,7 @@
 				"Sanguinesti staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8801,7 +8801,7 @@
 				"Saradomin banner": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8813,7 +8813,7 @@
 				"Saradomin castlewars cloak": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8825,7 +8825,7 @@
 				"Saradomin castlewars hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8838,7 +8838,7 @@
 				"Saradomin godsword": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8851,7 +8851,7 @@
 				"Saradomin godsword (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8863,7 +8863,7 @@
 				"Saradomin halo": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8875,7 +8875,7 @@
 				"Scythe of vitur": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8887,7 +8887,7 @@
 				"Serpentine helm (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8899,7 +8899,7 @@
 				"Serpentine visage": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8921,7 +8921,7 @@
 				"Shayzien graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8933,7 +8933,7 @@
 				"Shayzien graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8945,7 +8945,7 @@
 				"Shayzien graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8957,7 +8957,7 @@
 				"Shayzien graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8969,7 +8969,7 @@
 				"Shayzien graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8981,7 +8981,7 @@
 				"Shayzien graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -8993,7 +8993,7 @@
 				"Shayzien graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9012,7 +9012,7 @@
 			"required_stats": {
 				"crafting": 55
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2]
 		},
 		{
@@ -9031,7 +9031,7 @@
 			"required_stats": {
 				"crafting": 55
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2]
 		},
 		{
@@ -9043,7 +9043,7 @@
 				"Steam battlestaff (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9055,7 +9055,7 @@
 				"Tanzanite fang": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9068,7 +9068,7 @@
 				"Thammaron's sceptre": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9080,7 +9080,7 @@
 				"Thammaron's sceptre (u)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9093,7 +9093,7 @@
 				"Tormented bracelet (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9105,7 +9105,7 @@
 				"Toxic blowpipe (empty)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9118,7 +9118,7 @@
 				"Trailblazer graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9131,7 +9131,7 @@
 				"Trailblazer graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9144,7 +9144,7 @@
 				"Trailblazer graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9157,7 +9157,7 @@
 				"Trailblazer graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9170,7 +9170,7 @@
 				"Trailblazer graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9183,7 +9183,7 @@
 				"Trailblazer graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9196,7 +9196,7 @@
 				"Tumeken's damaged guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9209,7 +9209,7 @@
 				"Turquoise slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 15]
 		},
 		{
@@ -9222,7 +9222,7 @@
 				"Turquoise slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 15]
 		},
 		{
@@ -9235,7 +9235,7 @@
 				"Twisted ancestral hat": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9248,7 +9248,7 @@
 				"Twisted ancestral robe bottom": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9261,7 +9261,7 @@
 				"Twisted ancestral robe top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9274,7 +9274,7 @@
 				"Twisted slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 17]
 		},
 		{
@@ -9287,7 +9287,7 @@
 				"Twisted slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 17]
 		},
 		{
@@ -9300,7 +9300,7 @@
 				"Tzhaar-ket-om (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9312,7 +9312,7 @@
 				"Tzkal slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9324,7 +9324,7 @@
 				"Tzkal slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9336,7 +9336,7 @@
 				"Tzrek-zuk": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9348,7 +9348,7 @@
 				"Tztok slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9360,7 +9360,7 @@
 				"Tztok slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9373,7 +9373,7 @@
 				"Unholy book (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9386,7 +9386,7 @@
 				"Ursine chainmace": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9398,7 +9398,7 @@
 				"Vampyric slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9410,7 +9410,7 @@
 				"Vampyric slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9432,7 +9432,7 @@
 				"Varlamore graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9444,7 +9444,7 @@
 				"Varlamore graceful boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9456,7 +9456,7 @@
 				"Varlamore graceful cape": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9468,7 +9468,7 @@
 				"Varlamore graceful gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9480,7 +9480,7 @@
 				"Varlamore graceful hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9492,7 +9492,7 @@
 				"Varlamore graceful legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9504,7 +9504,7 @@
 				"Varlamore graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9516,7 +9516,7 @@
 				"Venator shard": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9529,7 +9529,7 @@
 				"Viggora's chainmace": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9541,7 +9541,7 @@
 				"Viggora's chainmace (u)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9554,7 +9554,7 @@
 				"Void knight gloves (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9567,7 +9567,7 @@
 				"Void knight robe (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9580,7 +9580,7 @@
 				"Void knight top (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9593,7 +9593,7 @@
 				"Void mage helm (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9606,7 +9606,7 @@
 				"Void melee helm (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9619,7 +9619,7 @@
 				"Void ranger helm (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9632,7 +9632,7 @@
 				"Volatile nightmare staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9644,7 +9644,7 @@
 				"Volcanic abyssal whip": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9657,7 +9657,7 @@
 				"Webweaver bow": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9669,7 +9669,7 @@
 				"White decorative body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9681,7 +9681,7 @@
 				"White decorative boots": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9693,7 +9693,7 @@
 				"White decorative full helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9705,7 +9705,7 @@
 				"White decorative helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9717,7 +9717,7 @@
 				"White decorative legs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9729,7 +9729,7 @@
 				"White decorative shield": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9741,7 +9741,7 @@
 				"White decorative skirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9753,7 +9753,7 @@
 				"White decorative sword": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9765,7 +9765,7 @@
 				"Xeric's talisman (inert)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9777,7 +9777,7 @@
 				"Zamorak banner": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9789,7 +9789,7 @@
 				"Zamorak castlewars cloak": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9801,7 +9801,7 @@
 				"Zamorak castlewars hood": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9814,7 +9814,7 @@
 				"Zamorak godsword": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9827,7 +9827,7 @@
 				"Zamorak godsword (or)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9839,7 +9839,7 @@
 				"Zamorak halo": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9851,7 +9851,7 @@
 				"Zamorakian hasta": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9864,7 +9864,7 @@
 				"Zebo": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9877,7 +9877,7 @@
 				"Ziggy": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9890,7 +9890,7 @@
 				"Stamina potion(4)": 125
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9903,7 +9903,7 @@
 				"Ring of wealth scroll": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9916,7 +9916,7 @@
 				"Robe bottoms of the eye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9929,7 +9929,7 @@
 				"Robe bottoms of the eye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9942,7 +9942,7 @@
 				"Robe bottoms of the eye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9955,7 +9955,7 @@
 				"Robe top of the eye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9968,7 +9968,7 @@
 				"Robe top of the eye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9981,7 +9981,7 @@
 				"Robe top of the eye": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -9996,7 +9996,7 @@
 				"Rune platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10011,7 +10011,7 @@
 				"Rune plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10024,7 +10024,7 @@
 				"Shattered relics variety ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10037,7 +10037,7 @@
 				"Rune defender ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10050,7 +10050,7 @@
 				"Rune axe": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10065,7 +10065,7 @@
 				"Rune platelegs (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10080,7 +10080,7 @@
 				"Rune plateskirt (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10092,7 +10092,7 @@
 				"Rune pouch note": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10105,7 +10105,7 @@
 				"Rune scimitar ornament kit (guthix)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10118,7 +10118,7 @@
 				"Rune scimitar ornament kit (saradomin)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10131,7 +10131,7 @@
 				"Rune scimitar ornament kit (zamorak)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10146,7 +10146,7 @@
 				"Rune platelegs (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10161,7 +10161,7 @@
 				"Rune plateskirt (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10174,7 +10174,7 @@
 				"Top of sceptre": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10186,7 +10186,7 @@
 				"Salve amulet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10198,7 +10198,7 @@
 				"Salve amulet(i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10210,7 +10210,7 @@
 				"Sanguine scythe of vitur (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10223,7 +10223,7 @@
 				"Scythe of vitur (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10236,7 +10236,7 @@
 				"Torva full helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10249,7 +10249,7 @@
 				"Torva platebody": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10262,7 +10262,7 @@
 				"Torva platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10274,7 +10274,7 @@
 				"Sanguinesti staff (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10289,7 +10289,7 @@
 				"Saradomin platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10304,7 +10304,7 @@
 				"Saradomin plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10319,7 +10319,7 @@
 				"Saradomin d'hide body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10332,7 +10332,7 @@
 				"Saradomin hilt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10345,7 +10345,7 @@
 				"Saradomin godsword ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10358,7 +10358,7 @@
 				"Saradomin's tear": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10371,7 +10371,7 @@
 				"Imbued heart": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10384,7 +10384,7 @@
 				"Tainted essence chunk": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10399,7 +10399,7 @@
 			"required_stats": {
 				"fletching": 74
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10411,7 +10411,7 @@
 				"Scythe of vitur (uncharged)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10424,7 +10424,7 @@
 				"Secateurs blade": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10436,7 +10436,7 @@
 				"Seers ring": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10459,7 +10459,7 @@
 				"Mark of grace": 90
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10472,7 +10472,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10485,7 +10485,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10498,7 +10498,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10511,7 +10511,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10524,7 +10524,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10537,7 +10537,7 @@
 				"Mark of grace": 15
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10550,7 +10550,7 @@
 				"Silver locks": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10563,7 +10563,7 @@
 				"Strange skull": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10575,7 +10575,7 @@
 				"Skull sceptre": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10594,7 +10594,7 @@
 			"required_stats": {
 				"crafting": 55
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2]
 		},
 		{
@@ -10613,7 +10613,7 @@
 			"required_stats": {
 				"crafting": 55
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2]
 		},
 		{
@@ -10628,7 +10628,7 @@
 			"required_stats": {
 				"crafting": 75
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [3]
 		},
 		{
@@ -10643,7 +10643,7 @@
 			"required_stats": {
 				"crafting": 75
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [3]
 		},
 		{
@@ -10653,7 +10653,7 @@
 			},
 			"items_required": {},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10669,7 +10669,7 @@
 				"Siren's staff": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10685,7 +10685,7 @@
 				"prayer": 90,
 				"smithing": 85
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10698,7 +10698,7 @@
 				"Spirit flakes": 1200
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10711,7 +10711,7 @@
 				"Spirit flakes": 1200
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10724,7 +10724,7 @@
 				"Spirit flakes": 1200
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10737,7 +10737,7 @@
 				"Spirit flakes": 1200
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10749,7 +10749,7 @@
 				"Spotted kebbit fur": 2
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10761,7 +10761,7 @@
 				"Dashing kebbit fur": 2
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10774,7 +10774,7 @@
 				"Staff of the dead": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10787,7 +10787,7 @@
 				"Steam staff upgrade kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10800,7 +10800,7 @@
 				"Steel locks": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10813,7 +10813,7 @@
 				"Steel axe": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10828,7 +10828,7 @@
 				"Steel platelegs (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10843,7 +10843,7 @@
 				"Steel plateskirt (g)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10858,7 +10858,7 @@
 				"Steel platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10873,7 +10873,7 @@
 				"Steel plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10888,7 +10888,7 @@
 				"Steel platelegs (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10903,7 +10903,7 @@
 				"Steel plateskirt (t)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10919,7 +10919,7 @@
 				"Mysterious page 5": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10932,7 +10932,7 @@
 				"Right skull half": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10944,7 +10944,7 @@
 				"Strawberry": 5
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10956,7 +10956,7 @@
 				"Strawberries(5)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10974,7 +10974,7 @@
 				"smithing": 75,
 				"woodcutting": 75
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -10988,7 +10988,7 @@
 				"Sunfire fanatic helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11002,7 +11002,7 @@
 				"Super strength(4)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11017,7 +11017,7 @@
 			"required_stats": {
 				"runecraft": 48
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11032,7 +11032,7 @@
 			"required_stats": {
 				"runecraft": 42
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11047,7 +11047,7 @@
 			"required_stats": {
 				"runecraft": 42
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11062,7 +11062,7 @@
 			"required_stats": {
 				"runecraft": 46
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11077,7 +11077,7 @@
 			"required_stats": {
 				"runecraft": 48
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11089,7 +11089,7 @@
 				"Metamorphic dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11102,7 +11102,7 @@
 				"Thammaron's sceptre (u)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11114,7 +11114,7 @@
 				"Swamp toad": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11126,7 +11126,7 @@
 				"Tomatoes(5)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11138,7 +11138,7 @@
 				"Tomato": 5
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11153,7 +11153,7 @@
 				"Torag's platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11166,7 +11166,7 @@
 				"Tormented ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11181,7 +11181,7 @@
 			"required_stats": {
 				"smithing": 90
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11196,7 +11196,7 @@
 			"required_stats": {
 				"smithing": 90
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11211,7 +11211,7 @@
 			"required_stats": {
 				"smithing": 90
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11224,7 +11224,7 @@
 				"Staff of the dead": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11237,7 +11237,7 @@
 				"Trailblazer graceful ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11250,7 +11250,7 @@
 				"Trailblazer graceful ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11263,7 +11263,7 @@
 				"Trailblazer graceful ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11276,7 +11276,7 @@
 				"Trailblazer graceful ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11289,7 +11289,7 @@
 				"Trailblazer graceful ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11302,7 +11302,7 @@
 				"Trailblazer graceful ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11315,7 +11315,7 @@
 				"Trident of the seas (full)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11328,7 +11328,7 @@
 				"Tumeken's guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11341,7 +11341,7 @@
 				"Vorkath's head": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 15]
 		},
 		{
@@ -11354,7 +11354,7 @@
 				"Vorkath's head": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 15]
 		},
 		{
@@ -11367,7 +11367,7 @@
 				"Twisted ancestral colour kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11380,7 +11380,7 @@
 				"Twisted ancestral colour kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11393,7 +11393,7 @@
 				"Twisted ancestral colour kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11406,7 +11406,7 @@
 				"Tainted essence chunk": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11419,7 +11419,7 @@
 				"Twisted horns": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 17]
 		},
 		{
@@ -11432,7 +11432,7 @@
 				"Twisted horns": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": [2, 17]
 		},
 		{
@@ -11445,7 +11445,7 @@
 				"Tzhaar-ket-om ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11457,7 +11457,7 @@
 				"Slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11469,7 +11469,7 @@
 				"Slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11481,7 +11481,7 @@
 				"Jal-nib-rek": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11493,7 +11493,7 @@
 				"Slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11505,7 +11505,7 @@
 				"Slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11519,7 +11519,7 @@
 				"Ultor vestige": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11532,7 +11532,7 @@
 				"Ultor icon": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11545,7 +11545,7 @@
 				"Volcanic ash": 2
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11561,7 +11561,7 @@
 				"smithing": 66,
 				"magic": 66
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11573,7 +11573,7 @@
 				"Black mask (10)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11588,7 +11588,7 @@
 			"required_stats": {
 				"smithing": 90
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11603,7 +11603,7 @@
 			"required_stats": {
 				"smithing": 90
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11616,7 +11616,7 @@
 				"Uncharged trident": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11629,7 +11629,7 @@
 				"Zenyte shard": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11646,7 +11646,7 @@
 			"required_stats": {
 				"agility": 35
 			},
-			"qp_required": 5,
+			"requiredQuests": [63],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11659,7 +11659,7 @@
 				"Unholy book": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11674,7 +11674,7 @@
 				"Zamorak page 4": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11689,7 +11689,7 @@
 				"Adamant gold-trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11704,7 +11704,7 @@
 				"Adamant gold-trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11719,7 +11719,7 @@
 				"Adamant set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11734,7 +11734,7 @@
 				"Adamant set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11749,7 +11749,7 @@
 				"Adamant trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11764,7 +11764,7 @@
 				"Adamant trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11779,7 +11779,7 @@
 				"Ahrim's armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11793,7 +11793,7 @@
 				"Ancestral robes set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11808,7 +11808,7 @@
 				"Ancient dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11823,7 +11823,7 @@
 				"Ancient rune armour set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11838,7 +11838,7 @@
 				"Ancient rune armour set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11853,7 +11853,7 @@
 				"Armadyl dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11868,7 +11868,7 @@
 				"Armadyl rune armour set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11883,7 +11883,7 @@
 				"Armadyl rune armour set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11898,7 +11898,7 @@
 				"Bandos dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11913,7 +11913,7 @@
 				"Bandos rune armour set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11928,7 +11928,7 @@
 				"Bandos rune armour set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11942,7 +11942,7 @@
 				"Black dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11957,7 +11957,7 @@
 				"Black gold-trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11972,7 +11972,7 @@
 				"Black gold-trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -11987,7 +11987,7 @@
 				"Black set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12002,7 +12002,7 @@
 				"Black set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12017,7 +12017,7 @@
 				"Black trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12032,7 +12032,7 @@
 				"Black trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12046,7 +12046,7 @@
 				"Blue dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12061,7 +12061,7 @@
 				"Book of balance page set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12076,7 +12076,7 @@
 				"Book of darkness page set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12091,7 +12091,7 @@
 				"Book of law page set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12106,7 +12106,7 @@
 				"Book of war page set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12121,7 +12121,7 @@
 				"Bronze gold-trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12136,7 +12136,7 @@
 				"Bronze gold-trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12151,7 +12151,7 @@
 				"Bronze set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12166,7 +12166,7 @@
 				"Bronze set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12181,7 +12181,7 @@
 				"Bronze trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12196,7 +12196,7 @@
 				"Bronze trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12210,7 +12210,7 @@
 				"Combat potion set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12224,7 +12224,7 @@
 				"Dagon'hai robes set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12239,7 +12239,7 @@
 				"Dharok's armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12254,7 +12254,7 @@
 				"Dragon armour set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12269,7 +12269,7 @@
 				"Dragon armour set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12285,7 +12285,7 @@
 				"Dragonstone armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12300,7 +12300,7 @@
 				"Dwarf cannon set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12315,7 +12315,7 @@
 				"Gilded armour set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12330,7 +12330,7 @@
 				"Gilded armour set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12344,7 +12344,7 @@
 				"Gilded dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12358,7 +12358,7 @@
 				"Green dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12373,7 +12373,7 @@
 				"Guthan's armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12388,7 +12388,7 @@
 				"Guthix armour set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12403,7 +12403,7 @@
 				"Guthix armour set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12418,7 +12418,7 @@
 				"Guthix dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12432,7 +12432,7 @@
 				"Halloween mask set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12447,7 +12447,7 @@
 				"Holy book page set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12461,7 +12461,7 @@
 				"Initiate harness m": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12475,7 +12475,7 @@
 				"Inquisitor's armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12490,7 +12490,7 @@
 				"Iron gold-trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12505,7 +12505,7 @@
 				"Iron gold-trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12520,7 +12520,7 @@
 				"Iron set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12535,7 +12535,7 @@
 				"Iron set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12550,7 +12550,7 @@
 				"Iron trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12565,7 +12565,7 @@
 				"Iron trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12579,7 +12579,7 @@
 				"Justiciar armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12594,7 +12594,7 @@
 				"Karil's armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12608,7 +12608,7 @@
 				"Masori armour set (f)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12623,7 +12623,7 @@
 				"Mithril gold-trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12638,7 +12638,7 @@
 				"Mithril gold-trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12653,7 +12653,7 @@
 				"Mithril set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12668,7 +12668,7 @@
 				"Mithril set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12683,7 +12683,7 @@
 				"Mithril trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12698,7 +12698,7 @@
 				"Mithril trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12714,7 +12714,7 @@
 				"Mystic set (blue)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12730,7 +12730,7 @@
 				"Mystic set (dark)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12746,7 +12746,7 @@
 				"Mystic set (dusk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12762,7 +12762,7 @@
 				"Mystic set (light)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12776,7 +12776,7 @@
 				"Obsidian armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12793,7 +12793,7 @@
 				"Partyhat set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12807,7 +12807,7 @@
 				"Proselyte harness f": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12821,7 +12821,7 @@
 				"Proselyte harness m": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12835,7 +12835,7 @@
 				"Red dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12850,7 +12850,7 @@
 				"Rune armour set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12865,7 +12865,7 @@
 				"Rune armour set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12880,7 +12880,7 @@
 				"Rune gold-trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12895,7 +12895,7 @@
 				"Rune gold-trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12910,7 +12910,7 @@
 				"Rune trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12925,7 +12925,7 @@
 				"Rune trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12940,7 +12940,7 @@
 				"Saradomin armour set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12955,7 +12955,7 @@
 				"Saradomin armour set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12970,7 +12970,7 @@
 				"Saradomin dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -12985,7 +12985,7 @@
 				"Shattered relic hunter (t1) armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13000,7 +13000,7 @@
 				"Shattered relic hunter (t2) armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13015,7 +13015,7 @@
 				"Shattered relic hunter (t3) armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13030,7 +13030,7 @@
 				"Steel gold-trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13045,7 +13045,7 @@
 				"Steel gold-trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13060,7 +13060,7 @@
 				"Steel set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13075,7 +13075,7 @@
 				"Steel set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13090,7 +13090,7 @@
 				"Steel trimmed set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13105,7 +13105,7 @@
 				"Steel trimmed set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13119,7 +13119,7 @@
 				"Sunfire fanatic armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13133,7 +13133,7 @@
 				"Super potion set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13148,7 +13148,7 @@
 				"Torag's armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13163,7 +13163,7 @@
 				"Trailblazer relic hunter (t1) armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13178,7 +13178,7 @@
 				"Trailblazer relic hunter (t2) armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13193,7 +13193,7 @@
 				"Trailblazer relic hunter (t3) armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13208,7 +13208,7 @@
 				"Twisted relic hunter (t1) armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13223,7 +13223,7 @@
 				"Twisted relic hunter (t2) armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13238,7 +13238,7 @@
 				"Twisted relic hunter (t3) armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13253,7 +13253,7 @@
 				"Unholy book page set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13268,7 +13268,7 @@
 				"Verac's armour set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13283,7 +13283,7 @@
 				"Zamorak armour set (lg)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13298,7 +13298,7 @@
 				"Zamorak armour set (sk)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13313,7 +13313,7 @@
 				"Zamorak dragonhide set": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13326,7 +13326,7 @@
 				"Ursine chainmace (u)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13340,7 +13340,7 @@
 				"Viggora's chainmace (u)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13352,7 +13352,7 @@
 				"Slayer helmet": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13364,7 +13364,7 @@
 				"Slayer helmet (i)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13376,7 +13376,7 @@
 				"Metamorphic dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13399,7 +13399,7 @@
 				"Graceful top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13411,7 +13411,7 @@
 				"Metamorphic dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13423,7 +13423,7 @@
 				"Venator shard": 5
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13437,7 +13437,7 @@
 				"Venator vestige": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13450,7 +13450,7 @@
 				"Venator icon": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13465,7 +13465,7 @@
 				"Verac's plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13477,7 +13477,7 @@
 				"Metamorphic dust": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13490,7 +13490,7 @@
 				"Viggora's chainmace (u)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13503,7 +13503,7 @@
 				"Void knight gloves": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13516,7 +13516,7 @@
 				"Void knight robe": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13529,7 +13529,7 @@
 				"Void knight top": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13542,7 +13542,7 @@
 				"Void mage helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13555,7 +13555,7 @@
 				"Void melee helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13568,7 +13568,7 @@
 				"Void ranger helm": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13583,7 +13583,7 @@
 				"Voidwaker hilt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13596,7 +13596,7 @@
 				"Volatile orb": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13609,7 +13609,7 @@
 				"Volcanic whip mix": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13622,7 +13622,7 @@
 				"Tainted essence chunk": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13634,7 +13634,7 @@
 				"Warrior ring": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13647,7 +13647,7 @@
 				"Webweaver bow (u)": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13661,7 +13661,7 @@
 				"Fangs of venenatis": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13674,7 +13674,7 @@
 				"Common kebbit fur": 4
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13689,7 +13689,7 @@
 				"Zamorak platelegs": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13704,7 +13704,7 @@
 				"Zamorak plateskirt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13719,7 +13719,7 @@
 				"Zamorak d'hide body": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13732,7 +13732,7 @@
 				"Zamorak hilt": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13745,7 +13745,7 @@
 				"Zamorak godsword ornament kit": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13758,7 +13758,7 @@
 				"Grapes": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13775,7 +13775,7 @@
 				"crafting": 11,
 				"smithing": 5
 			},
-			"qp_required": 3,
+			"requiredQuests": [58],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13789,7 +13789,7 @@
 				"Nihil shard": 250
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13802,7 +13802,7 @@
 				"Tumeken's guardian": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13815,7 +13815,7 @@
 				"Rocky": 1
 			},
 			"required_stats": {},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13829,7 +13829,7 @@
 			"required_stats": {
 				"smithing": 70
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		},
 		{
@@ -13843,7 +13843,7 @@
 			"required_stats": {
 				"smithing": 70
 			},
-			"qp_required": 0,
+			"requiredQuests": [],
 			"required_slayer_unlocks": []
 		}
 	]

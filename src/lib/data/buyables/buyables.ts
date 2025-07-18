@@ -1,7 +1,6 @@
-import { Bank, ItemGroups, Items } from 'oldschooljs';
+import { Bank, EQuest, ItemGroups, Items } from 'oldschooljs';
 
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
-import { QuestID } from '../../minions/data/quests';
 import type { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import type { MUserStats } from '../../structures/MUserStats';
@@ -27,8 +26,7 @@ import { troubleBrewingBuyables } from './troubleBrewingShop';
 export interface Buyable {
 	name: string;
 	outputItems?: Bank | ((user: MUser) => Bank);
-	qpRequired?: number;
-	requiredQuests?: QuestID[];
+	requiredQuests?: EQuest[];
 	gpCost?: number;
 	itemCost?: Bank;
 	aliases?: string[];
@@ -205,7 +203,7 @@ const constructionBuyables: Buyable[] = [
 		name: 'Fairy enchantment',
 		gpCost: 100_000,
 		ironmanPrice: 100,
-		qpRequired: 23
+		requiredQuests: [EQuest.FAIRYTALE_II__CURE_A_QUEEN]
 	},
 	{
 		name: 'Arceuus signet',
@@ -214,12 +212,12 @@ const constructionBuyables: Buyable[] = [
 	{
 		name: 'Ancient signet',
 		gpCost: 100_000,
-		qpRequired: 105
+		requiredQuests: [EQuest.DESERT_TREASURE_I]
 	},
 	{
 		name: 'Lunar signet',
 		gpCost: 100_000,
-		qpRequired: 52
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		name: 'Bucket of water',
@@ -350,60 +348,60 @@ const questBuyables: Buyable[] = [
 		outputItems: new Bank({
 			'Goldsmith gauntlets': 1
 		}),
-		qpRequired: 25,
+		requiredQuests: [EQuest.FAMILY_CREST],
 		gpCost: 1_000_000,
 		ironmanPrice: 25_000
 	},
 	{
 		name: 'Cooking gauntlets',
-		qpRequired: 25,
+		requiredQuests: [EQuest.FAMILY_CREST],
 		gpCost: 1_000_000,
 		ironmanPrice: 25_000
 	},
 	{
 		name: 'Anti-dragon shield',
-		qpRequired: 35,
+		requiredQuests: [EQuest.DRAGON_SLAYER_I],
 		gpCost: 10_000
 	},
 	{
 		name: 'Hardleather gloves',
-		qpRequired: 5,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 50_000,
 		ironmanPrice: 65
 	},
 	{
 		name: 'Bronze gloves',
-		qpRequired: 10,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 100_000,
 		ironmanPrice: 130
 	},
 	{
 		name: 'Iron gloves',
-		qpRequired: 20,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 200_000,
 		ironmanPrice: 325
 	},
 	{
 		name: 'Steel gloves',
-		qpRequired: 25,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 300_000,
 		ironmanPrice: 650
 	},
 	{
 		name: 'Black gloves',
-		qpRequired: 35,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 400_000,
 		ironmanPrice: 1000
 	},
 	{
 		name: 'Mithril gloves',
-		qpRequired: 50,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 500_000,
 		ironmanPrice: 2000
 	},
 	{
 		name: 'Adamant gloves',
-		qpRequired: 65,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 600_000,
 		ironmanPrice: 3250
 	},
@@ -412,86 +410,86 @@ const questBuyables: Buyable[] = [
 		outputItems: new Bank({
 			'Rune gloves': 1
 		}),
-		qpRequired: 85,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 700_000,
 		ironmanPrice: 6500
 	},
 	{
 		name: 'Dragon gloves',
-		qpRequired: 107,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 850_000,
 		ironmanPrice: 130_000
 	},
 	{
 		name: 'Barrows gloves',
-		qpRequired: 175,
+		requiredQuests: [EQuest.RECIPE_FOR_DISASTER],
 		gpCost: 1_000_000,
 		ironmanPrice: 130_000
 	},
 	{
 		name: 'Helm of neitiznot',
-		qpRequired: 75,
+		requiredQuests: [EQuest.THE_FREMENNIK_ISLES],
 		gpCost: 500_000,
 		ironmanPrice: 50_000
 	},
 	{
 		name: 'Magic secateurs',
-		qpRequired: 40,
+		requiredQuests: [EQuest.FAIRYTALE_I__GROWING_PAINS],
 		gpCost: 2_500_000,
 		ironmanPrice: 40_000
 	},
 	{
 		name: "Iban's staff",
 		aliases: ['iban'],
-		qpRequired: 30,
+		requiredQuests: [EQuest.UNDERGROUND_PASS],
 		gpCost: 300_000
 	},
 	{
 		name: 'Barrelchest anchor',
 		aliases: ['anchor'],
-		qpRequired: 30,
+		requiredQuests: [EQuest.THE_GREAT_BRAIN_ROBBERY],
 		gpCost: 2_000_000
 	},
 	{
 		name: 'Mythical cape',
 		gpCost: 1_000_000,
-		qpRequired: 205,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		ironmanPrice: 10_000
 	},
 	{
 		name: 'Mind shield',
 		gpCost: 100_000,
-		qpRequired: 35
+		requiredQuests: [EQuest.ELEMENTAL_WORKSHOP_II]
 	},
 	{
 		name: 'Dwarven helmet',
 		gpCost: 100_000,
-		qpRequired: 52
+		requiredQuests: [EQuest.GRIM_TALES]
 	},
 	{
 		name: 'Amulet of accuracy',
 		gpCost: 50_000,
-		qpRequired: 5
+		requiredQuests: [EQuest.IMP_CATCHER]
 	},
 	{
 		name: 'Cape of legends',
 		gpCost: 250_000,
-		qpRequired: 105
+		requiredQuests: [EQuest.LEGENDS_QUEST]
 	},
 	{
 		name: 'Bearhead',
 		gpCost: 1_000_000,
-		qpRequired: 105
+		requiredQuests: [EQuest.MOUNTAIN_DAUGHTER]
 	},
 	{
 		name: 'Bonesack',
 		gpCost: 1_000_000,
-		qpRequired: 82
+		requiredQuests: [EQuest.RAG_AND_BONE_MAN_II]
 	},
 	{
 		name: 'Ram skull helm',
 		gpCost: 1_000_000,
-		qpRequired: 82
+		requiredQuests: [EQuest.RAG_AND_BONE_MAN_II]
 	},
 	{
 		name: 'Monkey',
@@ -499,22 +497,22 @@ const questBuyables: Buyable[] = [
 			19556: 1
 		}),
 		gpCost: 1_000_000,
-		qpRequired: 182
+		requiredQuests: [EQuest.MONKEY_MADNESS_II]
 	},
 	{
 		name: 'Rat pole',
 		gpCost: 200_000,
-		qpRequired: 85
+		requiredQuests: [EQuest.RATCATCHERS]
 	},
 	{
 		name: 'Silverlight',
 		gpCost: 50_000,
-		qpRequired: 3
+		requiredQuests: [EQuest.DEMON_SLAYER]
 	},
 	{
 		name: 'Darklight',
 		gpCost: 200_000,
-		qpRequired: 58
+		requiredQuests: [EQuest.SHADOW_OF_THE_STORM]
 	},
 	{
 		name: 'Lunar Outfit',
@@ -530,7 +528,7 @@ const questBuyables: Buyable[] = [
 			'Lunar staff': 1
 		}),
 		gpCost: 5_000_000,
-		qpRequired: 120
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		name: 'Moonclan Outfit',
@@ -544,7 +542,7 @@ const questBuyables: Buyable[] = [
 			'Moonclan armour': 1
 		}),
 		gpCost: 5_000_000,
-		qpRequired: 120
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		name: 'Jester Outfit',
@@ -555,7 +553,7 @@ const questBuyables: Buyable[] = [
 			'Silly jester boots': 1
 		}),
 		gpCost: 5_000_000,
-		qpRequired: 89
+		requiredQuests: [EQuest.THE_FREMENNIK_ISLES]
 	},
 	{
 		name: 'Ardougne Knight Outfit',
@@ -565,7 +563,7 @@ const questBuyables: Buyable[] = [
 			'Ardougne knight platelegs': 1
 		}),
 		gpCost: 5_000_000,
-		qpRequired: 200
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		name: 'Desert Outfit',
@@ -579,7 +577,7 @@ const questBuyables: Buyable[] = [
 			'Desert robe': 1
 		}),
 		gpCost: 1_000_000,
-		qpRequired: 20
+		requiredQuests: [EQuest.THE_FEUD]
 	},
 	{
 		name: 'Pirate boots',
@@ -587,7 +585,7 @@ const questBuyables: Buyable[] = [
 			'Pirate boots': 1
 		}),
 		gpCost: 100_000,
-		qpRequired: 20
+		requiredQuests: [EQuest.CABIN_FEVER]
 	},
 	{
 		name: 'Vyrewatch outfit',
@@ -597,7 +595,7 @@ const questBuyables: Buyable[] = [
 			'Vyrewatch shoes': 1
 		}),
 		gpCost: 1_000_000,
-		qpRequired: 92
+		requiredQuests: [EQuest.SINS_OF_THE_FATHER]
 	},
 	{
 		name: 'Climbing boots',
@@ -605,56 +603,52 @@ const questBuyables: Buyable[] = [
 			'Climbing boots': 1
 		}),
 		gpCost: 100_000,
-		qpRequired: 20
+		requiredQuests: [EQuest.DEATH_PLATEAU]
 	},
 	{
 		name: 'Warrior helm',
 		gpCost: 780_000,
-		qpRequired: 60,
-		ironmanPrice: 78_000
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS]
 	},
 	{
 		name: 'Berserker helm',
 		gpCost: 780_000,
-		qpRequired: 60,
-		ironmanPrice: 98_000
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS]
 	},
 	{
 		name: 'Archer helm',
 		gpCost: 780_000,
-		qpRequired: 60,
-		ironmanPrice: 78_000
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS]
 	},
 	{
 		name: 'Farseer helm',
 		gpCost: 780_000,
-		qpRequired: 60,
-		ironmanPrice: 78_000
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS]
 	},
 	{
 		name: "Doctor's hat",
 		gpCost: 60_000,
-		qpRequired: 60
+		requiredQuests: [EQuest.A_TAIL_OF_TWO_CATS]
 	},
 	{
 		name: 'Medical gown',
 		gpCost: 60_000,
-		qpRequired: 60
+		requiredQuests: [EQuest.A_TAIL_OF_TWO_CATS]
 	},
 	{
 		name: 'Ring of charos',
 		gpCost: 100_000,
-		qpRequired: 60
+		requiredQuests: [EQuest.CREATURE_OF_FENKENSTRAIN]
 	},
 	{
 		name: 'Nurse hat',
 		gpCost: 60_000,
-		qpRequired: 60
+		requiredQuests: [EQuest.CREATURE_OF_FENKENSTRAIN]
 	},
 	{
 		name: 'Holy wrench',
 		gpCost: 70_000,
-		qpRequired: 70
+		requiredQuests: [EQuest.RUM_DEAL]
 	},
 	{
 		name: 'Initiate outfit',
@@ -664,7 +658,7 @@ const questBuyables: Buyable[] = [
 			'Initiate cuisse': 1
 		}),
 		gpCost: 250_000,
-		qpRequired: 35
+		requiredQuests: [EQuest.RECRUITMENT_DRIVE]
 	},
 	{
 		name: 'Proselyte outfit',
@@ -675,80 +669,80 @@ const questBuyables: Buyable[] = [
 			'Proselyte tasset': 1
 		}),
 		gpCost: 500_000,
-		qpRequired: 75
+		requiredQuests: [EQuest.THE_SLUG_MENACE]
 	},
 	{
 		name: 'Excalibur',
 		gpCost: 50_000,
-		qpRequired: 15
+		requiredQuests: [EQuest.HOLY_GRAIL]
 	},
 	{
 		name: 'Bomber jacket',
 		gpCost: 50_000,
-		qpRequired: 21
+		requiredQuests: [EQuest.ENLIGHTENED_JOURNEY]
 	},
 	{
 		name: 'Bomber cap',
 		gpCost: 50_000,
-		qpRequired: 21
+		requiredQuests: [EQuest.ENLIGHTENED_JOURNEY]
 	},
 	{
 		name: 'Pet rock',
 		gpCost: 500_000,
-		qpRequired: 60
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS]
 	},
 	{
 		name: 'Dwarf multicannon',
 		outputItems: CombatCannonItemBank,
 		gpCost: 10_000_000,
-		qpRequired: 5,
+		requiredQuests: [EQuest.DWARF_CANNON],
 		ironmanPrice: 750_000
 	},
 	{
 		name: 'Cannon barrels',
 		gpCost: 2_500_000,
-		qpRequired: 5,
+		requiredQuests: [EQuest.DWARF_CANNON],
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon base',
 		gpCost: 2_500_000,
-		qpRequired: 5,
+		requiredQuests: [EQuest.DWARF_CANNON],
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon furnace',
 		gpCost: 2_500_000,
-		qpRequired: 5,
+		requiredQuests: [EQuest.DWARF_CANNON],
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon stand',
 		gpCost: 2_500_000,
-		qpRequired: 5,
+		requiredQuests: [EQuest.DWARF_CANNON],
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Elemental shield',
 		gpCost: 2_500_000,
-		qpRequired: 25,
+		requiredQuests: [EQuest.ELEMENTAL_WORKSHOP_I],
 		ironmanPrice: 2000
 	},
 	{
 		name: 'Royal seed pod',
 		gpCost: 2_500_000,
-		qpRequired: 175,
+		requiredQuests: [EQuest.MONKEY_MADNESS_II],
 		ironmanPrice: 2000
 	},
 	{
 		name: 'Ring of shadows',
 		gpCost: 75_000,
-		requiredQuests: [QuestID.DesertTreasureII]
+		requiredQuests: [EQuest.DESERT_TREASURE_II__THE_FALLEN_EMPIRE]
 	},
 	{
 		name: 'Book of the dead',
 		gpCost: 1_000_000,
-		qpRequired: 120,
+		requiredQuests: [EQuest.A_KINGDOM_DIVIDED],
 		ironmanPrice: 9_500
 	}
 ];
@@ -795,13 +789,13 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Shield right half',
 		aliases: ['shield right half', 'right shield'],
-		qpRequired: 111,
+		requiredQuests: [EQuest.LEGENDS_QUEST],
 		gpCost: 1_000_000
 	},
 	{
 		name: 'Dragon metal shard',
 		aliases: ['metal shard'],
-		qpRequired: 205,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		gpCost: 2_500_000
 	},
 	{
@@ -856,7 +850,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Dragon scimitar',
 		gpCost: 500_000,
-		qpRequired: 105
+		requiredQuests: [EQuest.MONKEY_MADNESS_I]
 	},
 	{
 		name: 'Fishbowl pet',
@@ -888,7 +882,7 @@ const Buyables: Buyable[] = [
 		skillsNeeded: {
 			crafting: 35
 		},
-		qpRequired: 58
+		requiredQuests: [EQuest.HAUNTED_MINE]
 	},
 	{
 		name: 'Sandworms',
@@ -992,7 +986,7 @@ const Buyables: Buyable[] = [
 		name: 'Adamant halberd',
 		gpCost: 100_000,
 		ironmanPrice: 50_000,
-		qpRequired: 150,
+		requiredQuests: [EQuest.REGICIDE],
 		skillsNeeded: soteSkillRequirements
 	},
 	...[
@@ -1023,7 +1017,7 @@ const Buyables: Buyable[] = [
 	].map(i => ({
 		name: i,
 		gpCost: 10_000,
-		qpRequired: 10
+		requiredQuests: [EQuest.DESERT_TREASURE_I]
 	})),
 	{
 		name: 'Menaphite purple outfit',
@@ -1090,13 +1084,13 @@ const Buyables: Buyable[] = [
 		name: 'Keris partisan',
 		gpCost: 100_000,
 		ironmanPrice: 60_000,
-		qpRequired: 172
+		requiredQuests: [EQuest.BENEATH_CURSED_SANDS]
 	},
 	{
 		name: 'Mask of rebirth',
 		gpCost: 100_000,
 		ironmanPrice: 10_000,
-		qpRequired: 172,
+		requiredQuests: [EQuest.BENEATH_CURSED_SANDS],
 		customReq: async (_, stats) => {
 			const toaKCs = stats.getToaKCs();
 			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
@@ -1114,12 +1108,12 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Diving apparatus',
 		gpCost: 1000,
-		qpRequired: 30
+		requiredQuests: [EQuest.COOKS_ASSISTANT]
 	},
 	{
 		name: 'Fishbowl helmet',
 		gpCost: 1000,
-		qpRequired: 30
+		requiredQuests: [EQuest.COOKS_ASSISTANT]
 	},
 	...sepulchreBuyables,
 	...constructionBuyables,
