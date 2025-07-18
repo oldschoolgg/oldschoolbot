@@ -3,6 +3,8 @@ import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit/uti
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
+import { formatList } from '@/lib/util/smallUtils';
+import { Quests } from 'oldschooljs';
 import { Eatables } from '../../lib/data/eatables';
 import { autocompleteMonsters, wikiMonsters } from '../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../lib/minions/functions';
@@ -175,15 +177,19 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
 	const maxCanKill = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
 
-	const { QP } = user;
-
 	str.push(`**Barrage/Burst**: ${monster.canBarrage ? 'Yes' : 'No'}`);
 	str.push(
 		`**Cannon**: ${monster.canCannon ? `Yes, ${monster.cannonMulti ? 'multi' : 'single'} combat area` : 'No'}\n`
 	);
 
-	if (monster.qpRequired) {
-		str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
+	if (monster.requiredQuests && monster.requiredQuests.length > 0) {
+		const questNames = formatList(
+			monster.requiredQuests.map(qID => {
+				const quest = Quests.find(q => q.id === qID);
+				return quest ? quest.name : `Quest ID ${qID}`;
+			})
+		);
+		str.push(`**Required Quests:** ${questNames}`);
 	}
 
 	if (monster.healAmountNeeded) {

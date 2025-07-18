@@ -27,7 +27,7 @@ export function createMonstersJson() {
 				monster.itemsRequired?.map(i =>
 					typeof i === 'number' ? Items.itemNameFromId(i) : i.map(id => Items.itemNameFromId(id))
 				) ?? [],
-			qp_required: monster.qpRequired ?? 0,
+			requiredQuests: monster.requiredQuests ?? [],
 			item_in_bank_boosts: monster.itemInBankBoosts?.map(group => new Bank(group).toNamedBank()) ?? [],
 
 			can_barrage: monster.canBarrage ?? false,

@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Bank, Monsters, SkillsEnum, itemID } from 'oldschooljs';
+import { Bank, EQuest, Monsters, SkillsEnum, itemID } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '../../types';
@@ -28,7 +28,7 @@ for (const [creature, cost] of creatures) {
 			itemCost: cost,
 			qtyPerKill: 1
 		},
-		qpRequired: 35,
+		requiredQuests: [EQuest.TOWER_OF_LIFE],
 		itemInBankBoosts: [
 			{
 				[itemID('Bandos chestplate')]: 13,

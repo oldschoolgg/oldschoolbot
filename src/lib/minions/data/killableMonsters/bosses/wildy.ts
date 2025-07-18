@@ -39,7 +39,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Callisto cub']),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [
@@ -162,7 +162,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Callisto cub']),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [
@@ -276,7 +276,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [
@@ -390,7 +390,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [
@@ -526,7 +526,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 
 		difficultyRating: 6,
 		notifyDrops: resolveItems(['Venenatis spiderling']),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [
@@ -665,7 +665,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Venenatis spiderling']),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [
@@ -787,7 +787,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			["Black d'hide chaps", "Karil's leatherskirt"]
 		]),
 		notifyDrops: resolveItems(['Pet chaos elemental']),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [
@@ -827,7 +827,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		pkBaseDeathChance: 2,
 		difficultyRating: 6,
 		notifyDrops: resolveItems(['Pet chaos elemental']),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [
@@ -863,7 +863,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		pkActivityRating: 6,
 		pkBaseDeathChance: 7,
 		difficultyRating: 6,
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 10, itemID: itemID('Occult necklace') }],
@@ -889,7 +889,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		pkBaseDeathChance: 7,
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Scorpia's offspring"]),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 10, itemID: itemID('Occult necklace') }],

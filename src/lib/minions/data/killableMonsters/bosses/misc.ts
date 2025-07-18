@@ -1,12 +1,11 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EQuest, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 
 import { GearStat } from 'oldschooljs/gear';
 import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
 import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
 import type { KillableMonster } from '../../../types';
-import { QuestID } from '../../quests';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -20,7 +19,7 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 3,
 		itemsRequired: resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]),
 		notifyDrops: resolveItems(['Baby mole']),
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Barrows gloves')]: 5
@@ -53,7 +52,7 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 8,
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
 		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
-		qpRequired: 205,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		itemInBankBoosts: [
 			{
 				[itemID('Zaryte crossbow')]: 18,
@@ -88,7 +87,7 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 8,
 		notifyDrops: resolveItems(['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling']),
-		qpRequired: 75,
+		requiredQuests: [EQuest.REGICIDE],
 		itemInBankBoosts: [
 			{
 				[itemID('Ranger boots')]: 2,
@@ -167,7 +166,7 @@ const killableBosses: KillableMonster[] = [
 			["Black d'hide chaps", "karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10,
@@ -218,7 +217,7 @@ const killableBosses: KillableMonster[] = [
 			'Pet dark core',
 			'Jar of spirits'
 		]),
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10,
@@ -324,7 +323,7 @@ const killableBosses: KillableMonster[] = [
 			]
 		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{ [itemID('Spectral spirit shield')]: 10 },
 			{
@@ -381,7 +380,7 @@ const killableBosses: KillableMonster[] = [
 			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)", "Karil's leatherskirt"]
 		]),
 		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl crossbow')]: 6,
@@ -400,7 +399,7 @@ const killableBosses: KillableMonster[] = [
 		aliases: Monsters.PhantomMuspah.aliases,
 		table: Monsters.PhantomMuspah,
 		timeToFinish: Time.Minute * 7,
-		qpRequired: 215,
+		requiredQuests: [EQuest.SECRETS_OF_THE_NORTH],
 		respawnTime: 10_000,
 		levelRequirements: {
 			prayer: 43,
@@ -537,7 +536,7 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: 20_000,
 		table: Monsters.Scurrius,
 		notifyDrops: resolveItems(['Scurry']),
-		qpRequired: 0,
+
 		equippedItemBoosts: [
 			{
 				items: [
@@ -593,7 +592,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Araxxor,
 		difficultyRating: 8,
 		notifyDrops: resolveItems(['Nid']),
-		qpRequired: 200,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99
@@ -772,8 +771,7 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: 2000,
 		table: Monsters.TheHueycoatl,
 		difficultyRating: 8,
-		requiredQuests: [QuestID.ChildrenOfTheSun],
-		qpRequired: 100,
+		requiredQuests: [EQuest.CHILDREN_OF_THE_SUN],
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99
@@ -913,8 +911,7 @@ const killableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 3,
 		respawnTime: 500,
 		table: Monsters.Amoxliatl,
-		requiredQuests: [QuestID.TheHeartofDarkness],
-		qpRequired: 100,
+		requiredQuests: [EQuest.THE_HEART_OF_DARKNESS],
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99

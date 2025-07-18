@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Bank, Monsters, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EQuest, Monsters, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '../../types';
@@ -18,7 +18,7 @@ export const konarMonsters: KillableMonster[] = [
 
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 205,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		healAmountNeeded: 20 * 5,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
@@ -33,7 +33,6 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
 		healAmountNeeded: 15,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
@@ -51,7 +50,6 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
 		healAmountNeeded: 85,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
@@ -66,7 +64,6 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 5,
-		qpRequired: 0,
 		levelRequirements: {
 			slayer: 90
 		},
@@ -89,7 +86,6 @@ export const konarMonsters: KillableMonster[] = [
 
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Boots of stone']),
-		qpRequired: 0,
 		levelRequirements: {
 			slayer: 84
 		},
@@ -121,7 +117,6 @@ export const konarMonsters: KillableMonster[] = [
 			]
 		},
 		notifyDrops: resolveItems(['Hydra tail']),
-		qpRequired: 0,
 		levelRequirements: {
 			slayer: 95
 		},
@@ -150,7 +145,6 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		notifyDrops: resolveItems(['Hydra leather', "Hydra's claw", 'Ikkle hydra', 'Jar of chemicals']),
 		itemsRequired: resolveItems(['Boots of stone']),
-		qpRequired: 0,
 		itemInBankBoosts: [
 			{
 				[itemID('Twisted bow')]: 10
@@ -192,7 +186,6 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon full helm']),
-		qpRequired: 0,
 		healAmountNeeded: 85,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
@@ -207,7 +200,6 @@ export const konarMonsters: KillableMonster[] = [
 
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0,
 		healAmountNeeded: 26,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -226,7 +218,7 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
-		qpRequired: 205,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		healAmountNeeded: 20 * 6,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
@@ -241,7 +233,6 @@ export const konarMonsters: KillableMonster[] = [
 
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Dragon chainbody']),
-		qpRequired: 0,
 		levelRequirements: {
 			slayer: 93
 		},
@@ -264,7 +255,6 @@ export const konarMonsters: KillableMonster[] = [
 
 		difficultyRating: 4,
 		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Jar of smoke', 'Pet smoke devil']),
-		qpRequired: 0,
 		levelRequirements: {
 			slayer: 93
 		},
@@ -308,7 +298,6 @@ export const konarMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Mist battlestaff']),
-		qpRequired: 0,
 		healAmountNeeded: 38,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],

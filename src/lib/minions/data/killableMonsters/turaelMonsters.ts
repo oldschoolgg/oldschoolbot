@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters, deepResolveItems, itemID } from 'oldschooljs';
+import { EQuest, Monsters, deepResolveItems, itemID } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { SkillsEnum } from '../../../skilling/types';
@@ -15,7 +15,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 15
 		},
@@ -31,7 +31,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true
 	},
 	{
@@ -43,8 +43,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.BigWolf.id,
@@ -56,7 +55,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: false
@@ -70,8 +69,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.BlackBear.id,
@@ -83,7 +81,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true
 	},
 	{
@@ -96,7 +94,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true
 	},
 	{
@@ -108,7 +106,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 7
 		}
@@ -123,7 +121,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 10
 		},
@@ -139,7 +137,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 8,
+		requiredQuests: [EQuest.DEATH_TO_THE_DORGESHUUN],
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
@@ -153,7 +151,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Slayer helmet')]: 5,
@@ -174,7 +172,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
@@ -188,8 +186,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.Cow.id,
@@ -201,7 +198,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
@@ -216,7 +213,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
@@ -231,7 +227,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 5
 		},
@@ -246,7 +242,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 1
+		requiredQuests: [EQuest.PRIEST_IN_PERIL]
 	},
 	{
 		id: Monsters.DeathWing.id,
@@ -257,7 +253,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 111
+		requiredQuests: [EQuest.LEGENDS_QUEST]
 	},
 	{
 		id: Monsters.DemonicGorilla.id,
@@ -276,7 +272,7 @@ export const turaelMonsters: KillableMonster[] = [
 			['Armadyl chestplate', "Karil's leathertop"],
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
-		qpRequired: 175,
+		requiredQuests: [EQuest.MONKEY_MADNESS_II],
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 20,
@@ -299,7 +295,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 22
 		},
@@ -319,7 +315,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -335,8 +331,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Duck,
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.Duckling.id,
@@ -346,8 +341,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Duckling,
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.DungeonRat.id,
@@ -357,8 +351,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.DungeonRat,
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.Dwarf.id,
@@ -369,7 +362,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
@@ -383,7 +376,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 15,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -398,7 +391,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
@@ -411,8 +404,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.GiantBat,
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.GiantCryptSpider.id,
@@ -423,7 +415,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 1,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		canCannon: false,
 		cannonMulti: false,
 		canBarrage: false,
@@ -440,7 +432,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
@@ -454,7 +446,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -470,7 +462,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: false
@@ -484,7 +476,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -500,8 +492,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.GrizzlyBearCub,
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.GuardDog.id,
@@ -511,8 +502,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.GuardDog,
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.Icefiend.id,
@@ -523,7 +513,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 8,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
@@ -537,7 +527,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 26,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
@@ -553,7 +543,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -570,7 +560,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 22,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -585,7 +575,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: true,
 		healAmountNeeded: 40,
@@ -603,7 +593,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
@@ -621,7 +611,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: false,
@@ -639,7 +629,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		healAmountNeeded: 14,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -653,7 +643,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 22
 		},
@@ -673,7 +663,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		// Merfolk trident has similar items including all water tridents
 		itemsRequired: deepResolveItems([['Merfolk trident', 'Uncharged trident', 'Brine sabre']]),
-		qpRequired: 10,
+		requiredQuests: [EQuest.BONE_VOYAGE],
 		healAmountNeeded: 22,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab]
@@ -688,7 +678,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: false,
@@ -706,7 +696,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Strength, SkillsEnum.Attack]
 	},
@@ -720,7 +710,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 20,
+		requiredQuests: [EQuest.MONKEY_MADNESS_I],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -736,7 +726,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 20,
+		requiredQuests: [EQuest.MONKEY_MADNESS_I],
 		healAmountNeeded: 50,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -751,7 +741,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 20,
+		requiredQuests: [EQuest.MONKEY_MADNESS_I],
 		healAmountNeeded: 17,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -766,7 +756,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -783,8 +773,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.PitScorpion.id,
@@ -796,7 +785,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 11,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -811,7 +800,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 11,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -825,8 +814,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.Rooster.id,
@@ -837,8 +825,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.Scorpion.id,
@@ -850,7 +837,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -870,8 +857,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 1
 	},
 	{
 		id: Monsters.ShadowSpider.id,
@@ -883,7 +869,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 1,
+		requiredQuests: [EQuest.WATERFALL_QUEST],
 		itemInBankBoosts: [
 			{
 				[itemID('Spectral spirit shield')]: 3
@@ -904,7 +890,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -925,7 +911,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 13,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -940,7 +926,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 14,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
@@ -955,7 +941,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 5,
+		requiredQuests: [EQuest.ZOGRE_FLESH_EATERS],
 		healAmountNeeded: 32,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -969,7 +955,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 22
 		},
@@ -987,7 +973,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -1005,7 +991,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 44
 		},
@@ -1024,7 +1010,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -1038,7 +1024,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -1060,7 +1046,7 @@ export const turaelMonsters: KillableMonster[] = [
 			["Verac's plateskirt", 'Bandos tassets', 'Torva platelegs'],
 			['Abyssal whip', 'Dragon scimitar']
 		]),
-		qpRequired: 175,
+		requiredQuests: [EQuest.MONKEY_MADNESS_II],
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 20,
@@ -1083,7 +1069,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 1,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		healAmountNeeded: 15,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -1098,7 +1084,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 15
 		},
@@ -1116,7 +1102,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 1
+		requiredQuests: [EQuest.PRIEST_IN_PERIL]
 	},
 	{
 		id: Monsters.UndeadDruid.id,
@@ -1127,7 +1113,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		healAmountNeeded: 48,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
@@ -1141,7 +1127,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 16,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
@@ -1155,7 +1141,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: false,
@@ -1172,7 +1158,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -1189,7 +1175,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: false,
@@ -1206,7 +1192,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 5,
+		requiredQuests: [EQuest.ZOGRE_FLESH_EATERS],
 		healAmountNeeded: 28,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -1220,7 +1206,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -1240,7 +1226,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 32,
+		requiredQuests: [EQuest.DRAGON_SLAYER_I],
 		healAmountNeeded: 6,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -1254,7 +1240,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 20,
+		requiredQuests: [EQuest.THE_CURSE_OF_ARRAV],
 		canBarrage: true,
 		canChinning: true,
 		healAmountNeeded: 20,

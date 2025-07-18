@@ -182,7 +182,7 @@ for (const { mon, magicLvl, cost, prayerXP, magicXP } of renanimatedMonstersRaw)
 		table: mon,
 		wildy: false,
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: magicLvl,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],

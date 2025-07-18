@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { EQuest, Monsters } from 'oldschooljs';
 
 import type { KillableMonster } from '../../types';
 
@@ -12,7 +12,7 @@ export const camdozaalMonsters: KillableMonster[] = [
 		table: Monsters.FlawedGolem,
 		wildy: false,
 		difficultyRating: 0,
-		qpRequired: 17
+		requiredQuests: [EQuest.BELOW_ICE_MOUNTAIN]
 	},
 	{
 		id: Monsters.MindGolem.id,
@@ -22,7 +22,7 @@ export const camdozaalMonsters: KillableMonster[] = [
 		table: Monsters.MindGolem,
 		wildy: false,
 		difficultyRating: 1,
-		qpRequired: 17
+		requiredQuests: [EQuest.BELOW_ICE_MOUNTAIN]
 	},
 	{
 		id: Monsters.BodyGolem.id,
@@ -32,7 +32,7 @@ export const camdozaalMonsters: KillableMonster[] = [
 		table: Monsters.BodyGolem,
 		wildy: false,
 		difficultyRating: 1,
-		qpRequired: 17
+		requiredQuests: [EQuest.BELOW_ICE_MOUNTAIN]
 	},
 	{
 		id: Monsters.ChaosGolem.id,
@@ -42,6 +42,6 @@ export const camdozaalMonsters: KillableMonster[] = [
 		table: Monsters.ChaosGolem,
 		wildy: false,
 		difficultyRating: 2,
-		qpRequired: 17
+		requiredQuests: [EQuest.BELOW_ICE_MOUNTAIN]
 	}
 ];

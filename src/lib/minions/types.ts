@@ -1,6 +1,6 @@
 import type { StoreBitfield } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, XpGainSource } from '@prisma/client';
-import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
+import type { ArrayItemsResolved, Bank, EQuest, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 import type { GearStat, OffenceGearStat } from 'oldschooljs/gear';
 
 import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
@@ -15,7 +15,6 @@ import type { MUserStats } from '../structures/MUserStats';
 import type { UpdateBank } from '../structures/UpdateBank';
 import type { Skills } from '../types';
 import type { CanvasImage } from '../util/canvasUtil';
-import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';
 
 export type KillableMonsterEffect = (opts: {
@@ -77,7 +76,6 @@ export interface KillableMonster {
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
 	existsInCatacombs?: boolean;
-	qpRequired?: number;
 	difficultyRating?: number;
 	revsWeaponBoost?: boolean;
 
@@ -136,7 +134,7 @@ export interface KillableMonster {
 		items: { boostPercent: number; itemID: number }[];
 		required?: boolean;
 	}[];
-	requiredQuests?: QuestID[];
+	requiredQuests?: EQuest[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 	diaryRequirement?: [DiaryID, DiaryTierName];
 	wildySlayerCave?: boolean;

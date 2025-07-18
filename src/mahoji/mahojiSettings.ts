@@ -2,13 +2,12 @@ import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, isObject, objectEntries } from 'e';
-import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
+import { Bank, type ItemBank, ItemGroups, Items, Quests } from 'oldschooljs';
 
 import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import { userhasDiaryTier } from '../lib/diaries';
-import { quests } from '../lib/minions/data/quests';
 import type { Consumable, KillableMonster } from '../lib/minions/types';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
@@ -235,20 +234,13 @@ function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 }
 
 export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
-	if (monster.qpRequired && user.QP < monster.qpRequired) {
-		return [
-			false,
-			`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/activities quest\``
-		];
-	}
-
 	if (monster.requiredQuests) {
-		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+		const incompleteQuest = monster.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
 		if (incompleteQuest) {
 			return [
 				false,
 				`You need to have completed the ${bold(
-					quests.find(i => i.id === incompleteQuest)!.name
+					Quests.find(i => i.id === incompleteQuest)!.name
 				)} quest to kill ${monster.name}.`
 			];
 		}
