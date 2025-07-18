@@ -1,14 +1,15 @@
 import { writeFileSync } from 'node:fs';
-import { Markdown, Tab, Tabs, toTitleCase } from '@oldschoolgg/toolkit';
-import { Bank, Items } from 'oldschooljs';
+import { Markdown, Tab, Tabs, deepMerge, toTitleCase } from '@oldschoolgg/toolkit';
+import { Bank, Items, Quests } from 'oldschooljs';
 import { omit } from 'remeda';
 
 import '../src/lib/safeglobals';
+import { getQuestRequiredItemsBank, getQuestRewardItemsBank } from '@/mahoji/lib/abstracted_commands/questCommand';
 import { ClueTiers } from '../src/lib/clues/clueTiers';
 import { CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
 import { wikiMonsters } from '../src/lib/minions/data/killableMonsters';
-import { quests } from '../src/lib/minions/data/quests';
+import { questExtras } from '../src/lib/minions/data/questExtras';
 import { sorts } from '../src/lib/sorts';
 import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
 import { execAsync, runTimedLoggedFn } from './scriptUtil';
@@ -102,10 +103,6 @@ function renderMonstersMarkdown() {
 		const requirementsTab = new Tab().setTitle('Requirements').setContent(() => {
 			const requirementsMarkdown = new Markdown();
 
-			if (monster.qpRequired) {
-				requirementsMarkdown.addLine(`[[qp:${monster.qpRequired}]]`);
-			}
-
 			if (monster.levelRequirements) {
 				requirementsMarkdown.addLine(
 					Object.entries(monster.levelRequirements)
@@ -128,7 +125,7 @@ function renderMonstersMarkdown() {
 			if (monster.requiredQuests) {
 				requirementsMarkdown.addLine('**Required Quests**');
 				for (const quest of monster.requiredQuests) {
-					requirementsMarkdown.addLine(`- ${quests.find(q => q.id === quest)!.name}`);
+					requirementsMarkdown.addLine(`- ${Quests.find(q => q.id === quest)!.name}`);
 				}
 			}
 
@@ -217,66 +214,118 @@ function renderMonstersMarkdown() {
 	handleMarkdownEmbed('monsters', 'osb/monsters.mdx', markdown.toString());
 }
 
+function stripArticle(str: string) {
+	return str.replace(/^(the|a|an)\s+/i, '').trim();
+}
+
 function renderQuestsMarkdown() {
 	const markdown = new Markdown();
 
-	for (const quest of quests.sort((a, b) => a.name.localeCompare(b.name))) {
+	for (const quest of Quests.sort((a, b) => stripArticle(a.name).localeCompare(stripArticle(b.name)))) {
+		const extra = questExtras.find(q => q.id === quest.id);
+		const mergedQuest = extra ? deepMerge(quest, extra) : quest;
+
 		const questMarkdown = new Markdown();
-		questMarkdown.addLine(`## ${quest.name}`);
-		questMarkdown.addLine(
-			`You can send your minion to do this quest using [[/activities quest name:${quest.name}]]`
-		);
+		questMarkdown.addLine(`## ${mergedQuest.name}`);
+		questMarkdown.addLine(`You can send your minion to do this quest using [[/quest name\:${mergedQuest.name}]]`);
 
-		if (quest.skillReqs) {
-			questMarkdown.addLine('### Skill Requirements');
-			questMarkdown.addLine(
-				`- Skills: ${Object.entries(quest.skillReqs)
-					.map(([skill, lvl]) => `[[${skill}:${lvl}]]`)
-					.join(' ')}`
-			);
+		// Details section
+		questMarkdown.addLine('### Details');
+		if (mergedQuest.details?.difficulty) {
+			questMarkdown.addLine(`- **Difficulty:** ${mergedQuest.details.difficulty}`);
 		}
-		if (quest.ironmanSkillReqs) {
-			questMarkdown.addLine('### Ironman Skill Requirements');
-			questMarkdown.addLine(
-				`${Object.entries(quest.ironmanSkillReqs)
-					.map(([skill, lvl]) => `[[${skill}:${lvl}]]`)
-					.join(' ')}`
-			);
+		if (mergedQuest.details?.length) {
+			questMarkdown.addLine(`- **Length:** ${mergedQuest.details.length}`);
+		}
+		if (mergedQuest.qp) {
+			questMarkdown.addLine(`- **Quest Points:** ${mergedQuest.qp}`);
+		}
+		if (mergedQuest.kudos) {
+			questMarkdown.addLine(`- **Kudos:** ${mergedQuest.kudos}`);
 		}
 
-		if (quest.prerequisitesQuests) {
-			questMarkdown.addLine('### Required Quests');
-			for (const req of quest.prerequisitesQuests) {
-				questMarkdown.addLine(`- Must have finished ${quests.find(q => q.id === req)!.name}`);
+		// Requirements section
+		const reqResult = getQuestRequiredItemsBank(mergedQuest);
+		const reqBank = reqResult.bank;
+		const rewardResult = getQuestRewardItemsBank(mergedQuest);
+		const rewardBank = rewardResult.bank;
+		const hasPrereqQuests = mergedQuest.prerequisiteQuests && mergedQuest.prerequisiteQuests.length > 0;
+		const hasSkillReqs = mergedQuest.skillReqs && Object.keys(mergedQuest.skillReqs).length > 0;
+		const hasItemReqs = reqBank.length > 0;
+		const hasOtherReqs = mergedQuest.details?.other && mergedQuest.details.other.length > 0;
+
+		if (
+			mergedQuest.qpReq ||
+			mergedQuest.kudosReq ||
+			hasPrereqQuests ||
+			hasSkillReqs ||
+			hasItemReqs ||
+			hasOtherReqs
+		) {
+			questMarkdown.addLine('### Requirements');
+			if (mergedQuest.qpReq) {
+				questMarkdown.addLine(`- **Quest Points:** ${mergedQuest.qpReq}`);
+			}
+			if (mergedQuest.kudosReq) {
+				questMarkdown.addLine(`- **Kudos:** ${mergedQuest.kudosReq}`);
+			}
+			if (hasPrereqQuests) {
+				const prereqs = mergedQuest
+					.prerequisiteQuests!.map(name => {
+						const q = Quests.find(q => q.name.toLowerCase() === name.toLowerCase());
+						return q ? q.name : null;
+					})
+					.filter(Boolean)
+					.join(', ');
+				if (prereqs.length > 0) {
+					questMarkdown.addLine(`- **Quests:** ${prereqs}`);
+				}
+			}
+			if (hasSkillReqs) {
+				const skills = Object.entries(mergedQuest.skillReqs ?? {})
+					.map(([skill, lvl]) => `${lvl} ${skill}`)
+					.join(', ');
+				questMarkdown.addLine(`- **Skills:** ${skills}`);
+			}
+			if (hasItemReqs) {
+				questMarkdown.addLine(`- **Items:** ${reqBank.toString()}`);
+			}
+			if (hasOtherReqs) {
+				for (const other of mergedQuest.details.other) {
+					questMarkdown.addLine(`- **Other:** ${other}`);
+				}
 			}
 		}
 
-		if (quest.combatLevelReq || quest.qpReq) {
-			questMarkdown.addLine('### Other requirements');
-			if (quest.combatLevelReq) {
-				questMarkdown.addLine(`- Combat Level requirement: ${quest.combatLevelReq}`);
+		// Rewards section
+		const hasItemRewards = rewardBank.length > 0;
+		const hasXPRewards = mergedQuest.skillsRewards && Object.keys(mergedQuest.skillsRewards).length > 0;
+
+		if (hasItemRewards || hasXPRewards) {
+			questMarkdown.addLine('### Rewards');
+			if (hasItemRewards) {
+				questMarkdown.addLine(`- **Items:** ${rewardBank.toString()}`);
 			}
-			if (quest.qpReq) {
-				questMarkdown.addLine(`- Quest Points requirement: [[qp:${quest.qpReq}]]`);
+			if (hasXPRewards) {
+				const xpRewards = Object.entries(mergedQuest.skillsRewards ?? {})
+					.map(([skill, xp]) => `${xp} XP in ${skill}`)
+					.join(', ');
+				questMarkdown.addLine(`- **XP:** ${xpRewards}`);
 			}
 		}
 
-		if (quest.rewards) {
-			questMarkdown.addLine('### Item Rewards');
-			questMarkdown.addLine(
-				quest.rewards
-					.items()
-					.map(([item]) => `[[${item.id}]]`)
-					.join(' ')
-			);
-		}
-		if (quest.skillsRewards) {
-			questMarkdown.addLine('### XP Rewards');
-			questMarkdown.addLine(
-				Object.entries(quest.skillsRewards)
-					.map(([skill, xp]) => `[[${skill}:${xp.toLocaleString()}]]`)
-					.join(' ')
-			);
+		// Failed requirements/rewards section
+		if (
+			(reqResult.failed && reqResult.failed.length > 0) ||
+			(rewardResult.failed && rewardResult.failed.length > 0)
+		) {
+			questMarkdown.addLine('### Failed Requirements/Rewards');
+			if (reqResult.failed && reqResult.failed.length > 0) {
+				questMarkdown.addLine(`- **Unmatched Required Items:** ${reqResult.failed.join(', ')}`);
+			}
+			if (rewardResult.failed && rewardResult.failed.length > 0) {
+				questMarkdown.addLine(`- **Unmatched Reward Items:** ${rewardResult.failed.join(', ')}`);
+			}
 		}
 
 		markdown.add(questMarkdown);
@@ -389,7 +438,8 @@ async function wiki() {
 		runTimedLoggedFn('Render Clue Boosts', clueBoosts),
 		runTimedLoggedFn('Render Quests Markdown', renderQuestsMarkdown),
 		runTimedLoggedFn('Render CoX Markdown', rendeCoxMarkdown),
-		runTimedLoggedFn('Render Monsters Markdown', renderMonstersMarkdown)
+		runTimedLoggedFn('Render Monsters Markdown', renderMonstersMarkdown),
+		runTimedLoggedFn('Render Quest Markdown', renderQuestsMarkdown)
 	]);
 }
 
