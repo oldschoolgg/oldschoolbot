@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time } from 'e';
-import { Bank, LootTable, itemID } from 'oldschooljs';
+import { Bank, EQuest, LootTable, itemID } from 'oldschooljs';
 
 import { SkillsEnum } from '../types';
 
@@ -9,7 +9,7 @@ export interface Rune {
 	xp: number;
 	id: number;
 	name: string;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 	tripLength: number;
 	inputRune?: Bank;
 	inputTalisman?: Bank;
@@ -21,7 +21,7 @@ interface Tiara {
 	xp: number;
 	id: number;
 	name: string;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 	tripLength: number;
 	inputTalisman: Bank;
 }
@@ -184,7 +184,7 @@ const Runes: Rune[] = [
 			[59, 2]
 		],
 		tripLength: Time.Minute * 1.192,
-		qpRequired: 5,
+		requiredQuests: [EQuest.LOST_CITY],
 		ardyDiaryChance: 25
 	},
 	{
@@ -206,7 +206,7 @@ const Runes: Rune[] = [
 			[40, 1],
 			[82, 2]
 		],
-		qpRequired: 15,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		tripLength: Time.Minute * 0.917,
 		ardyDiaryChance: 25
 	},
@@ -229,7 +229,7 @@ const Runes: Rune[] = [
 			[54, 1],
 			[95, 2]
 		],
-		qpRequired: 10,
+		requiredQuests: [EQuest.TROLL_STRONGHOLD],
 		tripLength: Time.Minute * 1.56,
 		ardyDiaryChance: 20
 	},
@@ -241,7 +241,7 @@ const Runes: Rune[] = [
 			[65, 1],
 			[99, 2]
 		],
-		qpRequired: 10,
+		requiredQuests: [EQuest.MOURNINGS_END_PART_II],
 		tripLength: Time.Minute * 1.192,
 		ardyDiaryChance: 17.5
 	},
@@ -250,7 +250,7 @@ const Runes: Rune[] = [
 		id: itemID('Blood rune'),
 		name: 'Blood rune',
 		levels: [[77, 1]],
-		qpRequired: 125,
+		requiredQuests: [EQuest.SINS_OF_THE_FATHER],
 		tripLength: Time.Minute * 1.028,
 		stams: true,
 		ardyDiaryChance: 15
@@ -260,7 +260,7 @@ const Runes: Rune[] = [
 		id: itemID('Wrath rune'),
 		name: 'Wrath rune',
 		levels: [[95, 1]],
-		qpRequired: 200,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		tripLength: Time.Minute * 0.917
 	}
 ];
@@ -335,7 +335,7 @@ const Tiaras: Tiara[] = [
 		name: 'Cosmic tiara',
 		tripLength: Time.Minute * 1.3,
 		inputTalisman: new Bank({ 'Cosmic talisman': 1 }),
-		qpRequired: 5
+		requiredQuests: [EQuest.LOST_CITY]
 	},
 	{
 		xp: 50,
@@ -343,7 +343,7 @@ const Tiaras: Tiara[] = [
 		name: 'Death tiara',
 		tripLength: Time.Minute * 1.3,
 		inputTalisman: new Bank({ 'Death talisman': 1 }),
-		qpRequired: 10
+		requiredQuests: [EQuest.MOURNINGS_END_PART_II]
 	},
 	{
 		xp: 32.5,
@@ -365,7 +365,7 @@ const Tiaras: Tiara[] = [
 		name: 'Law tiara',
 		tripLength: Time.Minute * 1.7,
 		inputTalisman: new Bank({ 'Law talisman': 1 }),
-		qpRequired: 10
+		requiredQuests: [EQuest.TROLL_STRONGHOLD]
 	},
 	{
 		xp: 27.5,
@@ -394,7 +394,7 @@ const Tiaras: Tiara[] = [
 		name: 'Wrath tiara',
 		tripLength: Time.Minute,
 		inputTalisman: new Bank({ 'Wrath talisman': 1 }),
-		qpRequired: 200
+		requiredQuests: [EQuest.DRAGON_SLAYER_II]
 	}
 ];
 

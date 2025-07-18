@@ -78,7 +78,7 @@ export const XPLamps: IXPLamp[] = [
 	},
 	{
 		itemID: 28_590,
-		amount: 500,
+		amount: 5000,
 		name: 'Magic lamp (magic)',
 		minimumLevel: 1,
 		allowedSkills: [SkillsEnum.Magic]
@@ -124,6 +124,149 @@ export const XPLamps: IXPLamp[] = [
 		amount: 50_000,
 		name: 'Antique lamp (grandmaster ca)',
 		minimumLevel: 70
+	},
+	{
+		itemID: 21_262,
+		amount: 500,
+		name: 'Antique lamp (client of kourend)',
+		minimumLevel: 1
+	},
+	{
+		itemID: 6543,
+		amount: 2500,
+		name: 'Antique lamp (a tail of two cats)',
+		minimumLevel: 30
+	},
+	{
+		itemID: 7498,
+		amount: 20_000,
+		name: 'Antique lamp (recipe for disaster)',
+		minimumLevel: 50
+	},
+	{
+		itemID: 25_753,
+		amount: 20_000,
+		name: 'Antique lamp (a night at the theatre)',
+		minimumLevel: 50,
+		allowedSkills: [
+			SkillsEnum.Attack,
+			SkillsEnum.Strength,
+			SkillsEnum.Defence,
+			SkillsEnum.Hitpoints,
+			SkillsEnum.Ranged,
+			SkillsEnum.Magic
+		]
+	},
+	{
+		itemID: 25_820,
+		amount: 10_000,
+		name: 'Antique lamp (a kingdom divided)',
+		minimumLevel: 40
+	},
+	{
+		itemID: 27_543,
+		amount: 30_000,
+		name: "Antique lamp (legends' quest)",
+		minimumLevel: 1,
+		allowedSkills: [
+			SkillsEnum.Attack,
+			SkillsEnum.Defence,
+			SkillsEnum.Strength,
+			SkillsEnum.Hitpoints,
+			SkillsEnum.Prayer,
+			SkillsEnum.Magic,
+			SkillsEnum.Woodcutting,
+			SkillsEnum.Crafting,
+			SkillsEnum.Smithing,
+			SkillsEnum.Herblore,
+			SkillsEnum.Agility,
+			SkillsEnum.Thieving
+		]
+	},
+	{
+		itemID: 11_679,
+		amount: 5000,
+		name: "Antique lamp (king's ransom)",
+		minimumLevel: 50
+	},
+	{
+		itemID: 4447,
+		amount: 10_000,
+		name: 'Antique lamp (one small favour)',
+		minimumLevel: 30
+	},
+	{
+		itemID: 23_072,
+		amount: 300,
+		name: 'Antique lamp (x marks the spot)',
+		minimumLevel: 1
+	},
+	{
+		itemID: 11_185,
+		amount: 1000,
+		name: "Antique lamp (merlin's crystal)",
+		minimumLevel: 20
+	},
+	{
+		itemID: 11_186,
+		amount: 1000,
+		name: 'Antique lamp (shield of arrav)',
+		minimumLevel: 20
+	},
+	{
+		itemID: 11_187,
+		amount: 1000,
+		name: 'Antique lamp (making history)',
+		minimumLevel: 20
+	},
+	{
+		itemID: 9656,
+		amount: 2000,
+		name: 'Tome of experience (darkness of hallowvale) (3)',
+		minimumLevel: 30
+	},
+	{
+		itemID: 9657,
+		amount: 2000,
+		name: 'Tome of experience (darkness of hallowvale) (2)',
+		minimumLevel: 30
+	},
+	{
+		itemID: 9658,
+		amount: 2000,
+		name: 'Tome of experience (darkness of hallowvale) (1)',
+		minimumLevel: 30
+	},
+	{
+		itemID: itemID('Dreamy lamp'),
+		amount: 15_000,
+		name: 'Dreamy lamp',
+		minimumLevel: 1,
+		allowedSkills: [
+			SkillsEnum.Strength,
+			SkillsEnum.Ranged,
+			SkillsEnum.Magic,
+			SkillsEnum.Hitpoints,
+			SkillsEnum.Defence
+		]
+	},
+	{
+		itemID: itemID('Blessed lamp'),
+		amount: 5000,
+		name: 'Blessed lamp',
+		minimumLevel: 30
+	},
+	{
+		itemID: 22_415,
+		amount: 2500,
+		name: 'Tome of experience (a taste of hope)',
+		minimumLevel: 35
+	},
+	{
+		itemID: 24_690,
+		amount: 15_000,
+		name: 'Tome of experience (sins of the father)',
+		minimumLevel: 60
 	}
 ];
 

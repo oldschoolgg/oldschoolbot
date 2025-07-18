@@ -1,21 +1,19 @@
 import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { itemID } from 'oldschooljs';
+import { EQuest, itemID } from 'oldschooljs';
 
 import { userhasDiaryTier } from '../../lib/diaries.js';
-import { QuestID } from '../../lib/minions/data/quests';
 import { DiaryID } from '../../lib/minions/types.js';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Mining from '../../lib/skilling/skills/mining';
 import type { Ore } from '../../lib/skilling/types';
 import type { GearBank } from '../../lib/structures/GearBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
+import { itemNameFromID } from '../../lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -218,18 +216,14 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		// Check for daeyalt shard requirements.
-		const hasDaeyaltReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
 		if (ore.name === 'Daeyalt essence rock') {
-			if (!hasDaeyaltReqs) {
-				return `To mine ${ore.name}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
-			}
-			if (user.QP < 125) {
-				return `To mine ${ore.name}, you need at least 125 Quest Points.`;
+			if (!user.hasCompletedQuest(EQuest.SINS_OF_THE_FATHER)) {
+				return `To mine ${ore.name}, you need to complete Sins of the Father.`;
 			}
 		}
 
 		if (ore.name === 'Tainted essence chunk') {
-			if (!user.user.finished_quest_ids.includes(QuestID.DesertTreasureII)) {
+			if (!user.hasCompletedQuest(EQuest.DESERT_TREASURE_II__THE_FALLEN_EMPIRE)) {
 				return 'You need to have completed the Desert Treasure II quest to access the scar essence mine.';
 			}
 		}

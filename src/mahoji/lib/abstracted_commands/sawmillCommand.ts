@@ -34,7 +34,7 @@ export async function sawmillCommand(
 		boosts.push('10% for Graceful');
 	}
 	const skills = user.skillsAsLevels;
-	if (skills.woodcutting >= 60 && user.QP >= 50) {
+	if (skills.woodcutting >= 60) {
 		timePerPlank *= 0.9;
 		boosts.push('10% for Woodcutting Guild unlocked');
 	}

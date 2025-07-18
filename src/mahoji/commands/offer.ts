@@ -2,7 +2,7 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import { type CommandRunOptions, formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
-import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
+import { Bank, EQuest, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { Offerables } from '../../lib/data/offerData';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
@@ -202,8 +202,8 @@ export const offerCommand: OSBMahojiCommand = {
 
 		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, options.name));
 		if (specialBone) {
-			if (user.QP < 8) {
-				return 'You need at least 8 QP to offer long/curved bones for XP.';
+			if (!user.hasCompletedQuest(EQuest.DEATH_TO_THE_DORGESHUUN)) {
+				return 'You need to complete the **Death to the Dorgeshuun** quest to offer long/curved bones for XP.';
 			}
 			if (user.skillLevel(SkillsEnum.Construction) < 30) {
 				return 'You need at least level 30 Construction to offer long/curved bones for XP.';

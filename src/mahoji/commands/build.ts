@@ -1,38 +1,14 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, round } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EQuest } from 'oldschooljs';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
-import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { hasSkillReqs } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
-
-const ds2Requirements: Skills = {
-	magic: 75,
-	smithing: 70,
-	mining: 68,
-	crafting: 62,
-	agility: 60,
-	thieving: 60,
-	construction: 50,
-	hitpoints: 50,
-	herblore: 45,
-	prayer: 42,
-	strength: 50,
-	woodcutting: 55,
-	fishing: 53,
-	cooking: 53,
-	ranged: 30,
-	defence: 40,
-	firemaking: 49,
-	fletching: 25,
-	slayer: 18
-};
 
 export const buildCommand: OSBMahojiCommand = {
 	name: 'build',
@@ -75,7 +51,6 @@ export const buildCommand: OSBMahojiCommand = {
 				stringMatches(object.name, options.name) ||
 				stringMatches(object.name.split(' ')[0], options.name)
 		);
-		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
 
 		if (!object) return 'Thats not a valid object to build.';
 
@@ -84,11 +59,8 @@ export const buildCommand: OSBMahojiCommand = {
 		}
 
 		if (object.name === 'Mythical cape (mounted)') {
-			if (user.QP < 205) {
-				return `${user.minionName} needs 205 Quest Points to build a ${object.name}.`;
-			}
-			if (!hasDs2Requirements) {
-				return `In order to build a ${object.name}, you need: ${ds2Reason}.`;
+			if (!user.hasCompletedQuest(EQuest.DRAGON_SLAYER_II)) {
+				return `${user.minionName} needs to complete Dragon Slayer II to build a ${object.name}.`;
 			}
 			if (!user.hasEquippedOrInBank('Mythical cape')) {
 				return `${user.minionName} needs to own a Mythical cape to build a ${object.name}.`;

@@ -1,7 +1,8 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Quests } from 'oldschooljs';
 
+import { bold } from 'discord.js';
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { CollectingOptions } from '../../../lib/types/minions';
@@ -26,8 +27,14 @@ export async function collectCommand(
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Collecting');
-	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
-		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
+
+	if (collectable.requiredQuests) {
+		const incompleteQuest = collectable.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				Quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to collect ${collectable.item.name}.`;
+		}
 	}
 
 	if (collectable.skillReqs) {

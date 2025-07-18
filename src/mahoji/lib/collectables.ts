@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Bank, type Item, Items } from 'oldschooljs';
+import { Bank, EQuest, type Item, Items } from 'oldschooljs';
 
 import type { Skills } from '../../lib/types';
 
@@ -9,7 +9,7 @@ interface Collectable {
 	itemCost?: Bank;
 	quantity: number;
 	duration: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 }
 
 export const collectables: Collectable[] = [
@@ -38,7 +38,7 @@ export const collectables: Collectable[] = [
 			prayer: 50
 		},
 		duration: Time.Minute * 8.3,
-		qpRequired: 32
+		requiredQuests: [EQuest.NATURE_SPIRIT]
 	},
 	{
 		item: Items.getOrThrow('Flax'),
@@ -73,7 +73,7 @@ export const collectables: Collectable[] = [
 	{
 		item: Items.getOrThrow('White berries'),
 		quantity: 27,
-		qpRequired: 22,
+		requiredQuests: [EQuest.REGICIDE],
 		skillReqs: {
 			ranged: 60,
 			thieving: 50,
@@ -92,7 +92,7 @@ export const collectables: Collectable[] = [
 			'Astral rune': 12
 		}),
 		duration: Time.Minute * 6.5,
-		qpRequired: 72
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		item: Items.getOrThrow('Snake weed'),
@@ -101,7 +101,7 @@ export const collectables: Collectable[] = [
 			'Ring of dueling(8)': 1
 		}),
 		duration: Time.Minute * 30,
-		qpRequired: 3
+		requiredQuests: [EQuest.JUNGLE_POTION]
 	},
 	{
 		item: Items.getOrThrow('Bucket of sand'),
@@ -111,7 +111,7 @@ export const collectables: Collectable[] = [
 			Coins: 30 * 25
 		}),
 		duration: Time.Minute,
-		qpRequired: 30
+		requiredQuests: [EQuest.ENAKHRAS_LAMENT]
 	},
 	{
 		item: Items.getOrThrow('Jangerberries'),
@@ -140,6 +140,6 @@ export const collectables: Collectable[] = [
 			magic: 60
 		},
 		duration: 10 * Time.Minute,
-		qpRequired: 100
+		requiredQuests: [EQuest.HAUNTED_MINE]
 	}
 ];

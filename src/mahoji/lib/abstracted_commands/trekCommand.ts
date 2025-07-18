@@ -1,7 +1,7 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EQuest } from 'oldschooljs';
 
 import { GearStat } from 'oldschooljs/gear';
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
@@ -21,7 +21,6 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 	if (!tier) return 'that is not a valid difficulty';
 	const minLevel = tier.minCombat;
-	const qp = user.QP;
 	const allGear = user.gear;
 
 	if (tier.minimumGearRequirements) {
@@ -61,8 +60,8 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		}
 	}
 
-	if (qp < 30) {
-		return 'You need at least level 30 QP to do Temple Trekking.';
+	if (!user.hasCompletedQuest(EQuest.IN_AID_OF_THE_MYREQUE)) {
+		return 'You need to complete the **In Aid of the Myreque** quest to do Temple Trekking.';
 	}
 
 	if (minLevel !== undefined && user.combatLevel < minLevel) {

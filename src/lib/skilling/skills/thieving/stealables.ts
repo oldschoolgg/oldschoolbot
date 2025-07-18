@@ -1,7 +1,6 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { EQuest, Monsters } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
-import { QuestID } from '../../../minions/data/quests';
 
 const {
 	BeardedBandit,
@@ -34,9 +33,8 @@ export interface Stealable {
 	aliases?: string[];
 	level: number;
 	xp: number;
-	qpRequired?: number;
 	fireCapeRequired?: boolean;
-	requiredQuests?: QuestID[];
+	requiredQuests?: EQuest[];
 	table: LootTable;
 	id: number;
 	petChance: number;
@@ -65,7 +63,7 @@ const stalls: Stealable[] = [
 			.add('Onion', 1, 2)
 			.add('Tomato', 1, 2)
 			.add('Garlic'),
-		qpRequired: 3,
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS],
 		respawnTime: Time.Second * 2,
 		lootPercent: 20,
 		petChance: 206_777
@@ -102,7 +100,7 @@ const stalls: Stealable[] = [
 		xp: 16,
 		id: 4722,
 		table: new LootTable().add('Banana'),
-		qpRequired: 105,
+		requiredQuests: [EQuest.MONKEY_MADNESS_I],
 		respawnTime: Time.Second * 7,
 		lootPercent: 100,
 		petChance: 47_718
@@ -115,7 +113,7 @@ const stalls: Stealable[] = [
 		xp: 16,
 		id: 4723,
 		table: new LootTable().add('Hammer').add('Pot').add('Tinderbox'),
-		qpRequired: 105,
+		requiredQuests: [EQuest.MONKEY_MADNESS_I],
 		respawnTime: Time.Second * 7,
 		lootPercent: 25,
 		petChance: 47_718
@@ -281,7 +279,7 @@ const stalls: Stealable[] = [
 		xp: 100,
 		id: 4721,
 		table: new LootTable().add('Air rune').add('Earth rune').add('Fire rune'),
-		qpRequired: 105,
+		requiredQuests: [EQuest.MONKEY_MADNESS_I],
 		respawnTime: Time.Second * 40,
 		lootPercent: 100,
 		petChance: 36_490
@@ -294,7 +292,7 @@ const stalls: Stealable[] = [
 		xp: 160,
 		id: 4720,
 		table: new LootTable().add('Iron scimitar', 1, 67).add('Steel scimitar', 1, 33),
-		qpRequired: 105,
+		requiredQuests: [EQuest.MONKEY_MADNESS_I],
 		respawnTime: Time.Second * 40,
 		lootPercent: 25,
 		petChance: 36_490
@@ -546,7 +544,7 @@ const pickpocketables: Stealable[] = [
 		intercept: 0,
 		customTickRate: 10, // 2 tick thieving for 20s, downtime for ~80s
 		petChance: 257_211,
-		requiredQuests: [QuestID.ChildrenOfTheSun]
+		requiredQuests: [EQuest.CHILDREN_OF_THE_SUN]
 	},
 	{
 		name: 'Desert Bandit',
@@ -683,7 +681,7 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 5,
 		slope: 0.420_77,
 		intercept: -2.206_23,
-		qpRequired: 200,
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES],
 		petChance: 99_175
 	},
 	{

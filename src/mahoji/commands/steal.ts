@@ -3,8 +3,8 @@ import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';
 
+import { Quests } from 'oldschooljs';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { quests } from '../../lib/minions/data/quests';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
 import { stealables } from '../../lib/skilling/skills/thieving/stealables';
@@ -68,19 +68,11 @@ export const stealCommand: OSBMahojiCommand = {
 				.join(', ')}.`;
 		}
 
-		if (stealable.qpRequired && user.QP < stealable.qpRequired) {
-			return `You need at least **${stealable.qpRequired}** QP to ${
-				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-			} a ${stealable.name}.`;
-		}
-
 		if (stealable.requiredQuests) {
-			const incompleteQuest = stealable.requiredQuests.find(
-				quest => !user.user.finished_quest_ids.includes(quest)
-			);
+			const incompleteQuest = stealable.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
 			if (incompleteQuest) {
 				return `You need to have completed the ${bold(
-					quests.find(i => i.id === incompleteQuest)!.name
+					Quests.find(i => i.id === incompleteQuest)!.name
 				)} quest to steal from ${stealable.name}.`;
 			}
 		}

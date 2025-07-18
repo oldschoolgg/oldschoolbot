@@ -1,7 +1,8 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs';
+import { Quests, SkillsEnum } from 'oldschooljs';
 
+import { bold } from 'discord.js';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import type { CastingActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -29,8 +30,13 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		return `${user.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`;
 	}
 
-	if (spell.qpRequired && user.QP < spell.qpRequired) {
-		return `${user.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`;
+	if (spell.requiredQuests) {
+		const incompleteQuest = spell.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				Quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to cast ${spell.name}.`;
+		}
 	}
 
 	const userBank = user.bank;
