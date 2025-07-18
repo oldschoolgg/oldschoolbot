@@ -22,7 +22,7 @@ function bankToPerHour(bank: Bank, duration: number): FloatBank {
 	return perHourBank;
 }
 
-export function miningSnapshots() {
+export function main() {
 	const gearBank = makeGearBank();
 
 	gearBank.gear.skilling.equip('Varrock armour 4');
@@ -58,7 +58,7 @@ export function miningSnapshots() {
 							others.push('COTS');
 						}
 
-						const tripLengthHours = 2000;
+						const tripLengthHours = 1000;
 
 						const trip = determineMiningTrip({
 							gearBank,
@@ -125,3 +125,5 @@ export function miningSnapshots() {
 
 	handleMarkdownEmbed('miningxphr', 'osb/Skills/mining.mdx', table.toString());
 }
+
+main();
