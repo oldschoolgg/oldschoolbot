@@ -299,7 +299,7 @@ export interface Plant {
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;
 	canCompostandPay: boolean;
-	additionalPatchesByQP: number[][];
+	additionalPatchesByQuest?: number[][];
 	additionalPatchesByFarmLvl: number[][];
 	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
