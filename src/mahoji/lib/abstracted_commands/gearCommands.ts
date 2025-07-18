@@ -106,6 +106,22 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	await user.update({
 		[`gear_${gearSetup}`]: newGear
 	});
+
+	if (userPreset && !globalPreset) {
+		await prisma.gearPreset.update({
+			where: {
+				user_id_name: {
+					user_id: user.id,
+					name: userPreset.name
+				}
+			},
+			data: {
+				times_equipped: {
+					increment: 1
+				}
+			}
+		});
+	}
 	const updatedGear = user.gear[gearSetup];
 	const image = await generateGearImage(user, updatedGear, gearSetup, user.user.minion_equippedPet);
 

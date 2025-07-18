@@ -127,16 +127,12 @@ export async function createOrEditGearSetup(
 			}
 		},
 		update: {
-			...gearData,
-			times_equipped: {
-				increment: 1
-			}
+			...gearData
 		},
 		create: {
 			...gearData,
 			name,
-			user_id: user.id,
-			times_equipped: 1
+			user_id: user.id
 		}
 	});
 
