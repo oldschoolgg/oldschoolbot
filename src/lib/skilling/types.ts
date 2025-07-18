@@ -221,7 +221,7 @@ export interface Mixable {
 	outputMultiple?: number;
 	zahur?: boolean;
 	wesley?: boolean;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 }
 
 export interface CutLeapingFish {

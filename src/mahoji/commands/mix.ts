@@ -1,7 +1,7 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Quests } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -69,8 +69,13 @@ export const mixCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.item.name}.`;
 		}
 
-		if (mixableItem.qpRequired && user.QP < mixableItem.qpRequired) {
-			return `You need at least **${mixableItem.qpRequired}** QP to make ${mixableItem.item.name}.`;
+		if (mixableItem.requiredQuests) {
+			const incompleteQuest = mixableItem.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					Quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to make ${mixableItem.item.name}.`;
+			}
 		}
 
 		const requiredItems = new Bank(mixableItem.inputItems);
