@@ -96,7 +96,7 @@ export interface Log {
 	depletionChance: number;
 	wcGuild?: boolean;
 	petChance?: number;
-	qpRequired: number;
+	requiredQuests?: EQuest[];
 	clueScrollChance?: number;
 	clueNestsOnly?: boolean;
 }

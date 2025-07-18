@@ -1,7 +1,7 @@
 import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Items, itemID, resolveItems } from 'oldschooljs';
+import { Items, Quests, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
@@ -141,9 +141,13 @@ export const chopCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
 		}
 
-		const { QP } = user;
-		if (QP < log.qpRequired) {
-			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
+		if (log.requiredQuests) {
+			const incompleteQuest = log.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					Quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to chop ${log.name}.`;
+			}
 		}
 
 		if (twitchers_gloves && !user.hasEquipped("Twitcher's gloves")) {

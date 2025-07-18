@@ -1,5 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { LootTable, itemID } from 'oldschooljs';
+import { EQuest, LootTable, itemID } from 'oldschooljs';
 
 import type { Log } from '../../types';
 import { SkillsEnum } from '../../types';
@@ -29,7 +29,7 @@ const logs: Log[] = [
 		depletionChance: 100,
 		wcGuild: true,
 		petChance: 317_647,
-		qpRequired: 0,
+
 		clueScrollChance: 317_647
 	},
 	{
@@ -43,7 +43,7 @@ const logs: Log[] = [
 		intercept: 24.85,
 		depletionChance: 100,
 		petChance: 317_647,
-		qpRequired: 0,
+
 		clueScrollChance: 317_647
 	},
 	{
@@ -59,7 +59,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 361_146,
-		qpRequired: 0,
+
 		clueScrollChance: 361_146
 	},
 	{
@@ -75,7 +75,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 289_286,
-		qpRequired: 0,
+
 		clueScrollChance: 289_286
 	},
 	{
@@ -89,7 +89,7 @@ const logs: Log[] = [
 		intercept: 5.07,
 		depletionChance: 100 * (1 / 8),
 		petChance: 264_336,
-		qpRequired: 0,
+
 		clueScrollChance: 264_336
 	},
 	{
@@ -105,7 +105,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 221_918,
-		qpRequired: 0,
+
 		clueScrollChance: 221_918
 	},
 	{
@@ -119,7 +119,7 @@ const logs: Log[] = [
 		intercept: 6.24,
 		depletionChance: 100 * (1 / 8),
 		petChance: 214_367,
-		qpRequired: 0,
+
 		clueScrollChance: 214_367
 	},
 	{
@@ -133,7 +133,7 @@ const logs: Log[] = [
 		intercept: 3.05,
 		depletionChance: 100 * (1 / 8),
 		petChance: 220_623,
-		qpRequired: 0,
+
 		clueScrollChance: 220_623
 	},
 	{
@@ -147,7 +147,7 @@ const logs: Log[] = [
 		intercept: 1.79,
 		depletionChance: 100 * (1 / 8),
 		petChance: 145_758,
-		qpRequired: 0,
+
 		clueScrollChance: 145_758
 	},
 	{
@@ -163,7 +163,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 145_013,
-		qpRequired: 0,
+
 		clueScrollChance: 145_013
 	},
 	{
@@ -180,7 +180,7 @@ const logs: Log[] = [
 		intercept: 9.47,
 		depletionChance: 100 * (1 / 16),
 		petChance: 343_000,
-		qpRequired: 25,
+		requiredQuests: [EQuest.BONE_VOYAGE],
 		clueScrollChance: 343_000,
 		clueNestsOnly: true
 	},
@@ -197,7 +197,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 72_321,
-		qpRequired: 0,
+
 		clueScrollChance: 72_321
 	},
 	{
@@ -212,7 +212,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 11),
 		wcGuild: true,
 		petChance: 72_321,
-		qpRequired: 0,
+
 		clueScrollChance: 72_321,
 		clueNestsOnly: true
 	}
