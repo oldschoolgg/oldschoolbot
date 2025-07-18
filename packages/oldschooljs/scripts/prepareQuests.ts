@@ -149,7 +149,7 @@ async function fetchQuestDetailsSection(title: string) {
 	details.leagueRegion = undefined;
 
 	// Final check for empty or invalid details
-	if (!details || typeof details !== 'object' || Array.isArray(details)) {
+	if (typeof details !== 'object' || Array.isArray(details)) {
 		console.error(`No valid details for quest: ${title}`);
 		return null;
 	}
@@ -363,13 +363,6 @@ function extractRewardsFromWikitext(wikitext: string): { rewards: string[]; kudo
 	const match = wikitext.match(/==\s*Rewards?\s*==([\s\S]*?)(\n==|$)/i);
 	if (!match) return null;
 	const section = match[1];
-
-	const qpReward: string | null = null;
-	let qp: number | undefined = undefined;
-	const qpMatch = section.match(/\|qp\s*=\s*([0-9]+)/i);
-	if (qpMatch) {
-		qp = Number(qpMatch[1]);
-	}
 
 	const rewardsFieldMatch = section.match(/\|rewards\s*=\s*([\s\S]*?)(\n\||\n\}\}|$)/i);
 	let lines: string[];

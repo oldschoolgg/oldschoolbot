@@ -197,7 +197,7 @@ export function getQuestRewardItemsBank(quest: Quest): { bank: Bank; failed: str
 }
 
 function hasRequirements(user: MUser, quest: Quest): string | null {
-	if (user.user.finished_quest_ids.includes(quest.id)) {
+	if (user.hasCompletedQuest(quest.id)) {
 		return `You've already completed ${quest.name}.`;
 	}
 
