@@ -18,23 +18,36 @@ export function roll(max: number) {
 	return cryptoRand(1, max) === 1;
 }
 
-export class SeededRNG {
+export interface RNGProvider {
+	roll: (max: number) => boolean;
+	randInt(min: number, max: number): number;
+	randFloat(min: number, max: number): number;
+	rand(): number;
+	shuffle<T>(array: T[]): T[];
+	pick<T>(array: T[]): T;
+	percentChance(percent: number): boolean;
+}
+
+export class SeedableRNG implements RNGProvider {
 	private readonly engine: Random;
 
-	constructor(seed: number) {
-		const mt = MersenneTwister19937.seed(seed);
-		this.engine = new Random(mt);
+	constructor(seed?: number) {
+		this.engine = seed ? new Random(MersenneTwister19937.seed(seed)) : new Random(nodeCrypto);
 	}
 
-	nextInt(min: number, max: number): number {
+	roll(max: number): boolean {
+		return this.engine.bool(1 / max);
+	}
+
+	randInt(min: number, max: number): number {
 		return this.engine.integer(min, max);
 	}
 
-	nextFloat(min: number, max: number): number {
+	randFloat(min: number, max: number): number {
 		return this.engine.real(min, max, true);
 	}
 
-	next01(): number {
+	rand(): number {
 		return this.engine.real(0, 1, false);
 	}
 
@@ -44,5 +57,9 @@ export class SeededRNG {
 
 	pick<T>(array: T[]): T {
 		return this.engine.pick(array);
+	}
+
+	percentChance(percent: number): boolean {
+		return this.engine.bool(percent / 100);
 	}
 }
