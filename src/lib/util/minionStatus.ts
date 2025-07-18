@@ -246,7 +246,7 @@ export function minionStatus(user: MUser) {
 		}
 
 		case 'Questing': {
-			return `${name} is currently Questing. ${formattedDuration} Your current Quest Point count is: ${user.QP}.`;
+			throw new Error('Removed');
 		}
 
 		case 'Woodcutting': {
