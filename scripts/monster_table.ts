@@ -73,7 +73,8 @@ for (const monster of killableMonsters) {
 		},
 		bank,
 		skillsAsLevels,
-		skillsAsXP
+		skillsAsXP,
+		minionName: 'Minion'
 	});
 
 	const pkEvasionExperience = 100000000;
