@@ -1,9 +1,8 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
-import { quests } from '../../lib/minions/data/quests';
 import Agility, { type UnderwaterAgilityThievingTrainingSkill } from '../../lib/skilling/skills/agility';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
@@ -28,7 +27,6 @@ import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_comm
 import { myNotesCommand } from '../lib/abstracted_commands/myNotesCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
-import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
 import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/underwaterCommand';
@@ -160,29 +158,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Boolean,
 					name: 'no_stams',
 					description: "Don't use stamina potions when collecting.",
-					required: false
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'quest',
-			description: 'Send your minion to do quests.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'name',
-					description: 'The name of the quest (optional).',
-					autocomplete: async (_value: string, user: User) => {
-						const mUser = await mUserFetch(user.id);
-						let list = quests
-							.filter(i => !mUser.user.finished_quest_ids.includes(i.id))
-							.map(i => ({ name: i.name, value: i.name }));
-						if (list.length === 0) {
-							list = quests.map(i => ({ name: `${i.name} (completed)`, value: i.name }));
-						}
-						return list;
-					},
 					required: false
 				}
 			]
@@ -512,9 +487,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		warriors_guild?: { action: string; quantity?: number };
 		camdozaal?: { action: string; quantity?: number };
 		collect?: { item: string; quantity?: number; no_stams?: boolean };
-		quest?: {
-			name?: string;
-		};
 		decant?: { potion_name: string; dose?: number };
 		charge?: { item: string; quantity?: number };
 		fight_caves?: {};
@@ -593,9 +565,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 				options.collect.quantity,
 				options.collect.no_stams
 			);
-		}
-		if (options.quest) {
-			return questCommand(user, channelID, options.quest.name);
 		}
 		if (options.charge?.item === 'glory') {
 			return chargeGloriesCommand(user, channelID, options.charge.quantity);

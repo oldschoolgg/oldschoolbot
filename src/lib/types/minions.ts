@@ -574,6 +574,7 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 export interface SpecificQuestOptions extends ActivityTaskOptions {
 	type: 'SpecificQuest';
 	questID: number;
+	iName?: string;
 }
 
 export type ActivityTaskData =

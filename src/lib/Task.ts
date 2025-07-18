@@ -74,7 +74,6 @@ import { myNotesTask } from '../tasks/minions/myNotesActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
 import ouraniaAltarTask from '../tasks/minions/ouraniaAltarActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
-import { questingTask } from '../tasks/minions/questingActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
@@ -158,7 +157,6 @@ export const allTasks: MinionTask[] = [
 	smeltingTask,
 	nexTask,
 	pickpocketTask,
-	questingTask,
 	monsterTask,
 	vmTask,
 	templeTrekkingTask,
@@ -213,7 +211,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.Easter,
 	activity_type_enum.HalloweenEvent,
 	activity_type_enum.Revenants,
-	activity_type_enum.KourendFavour
+	activity_type_enum.KourendFavour,
+	activity_type_enum.Questing
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

@@ -16,7 +16,6 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'Cooking':
 		case 'Firemaking':
 		case 'Mining':
-		case 'Questing':
 		case 'Runecraft':
 		case 'Smelting':
 		case 'Smithing':

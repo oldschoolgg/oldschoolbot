@@ -2,7 +2,7 @@ import { type CommandRunOptions, mentionCommand, stringMatches } from '@oldschoo
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Time, noOp, randArrItem, randInt } from 'e';
-import { Bank, Items, MAX_INT_JAVA, convertLVLtoXP, getItem, itemID, resolveItems } from 'oldschooljs';
+import { Bank, Items, MAX_INT_JAVA, Quests, convertLVLtoXP, getItem, itemID, resolveItems } from 'oldschooljs';
 
 import { testBotKvStore } from '@/testing/TestBotStore';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -34,6 +34,7 @@ import { parseStringBank } from '../../lib/util/parseStringBank';
 import { userEventToStr } from '../../lib/util/userEvents';
 import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
+import { getQuestRequiredItemsBank } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -205,6 +206,12 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const questPreset = new Bank();
+for (const quest of Quests) {
+	if (!quest.itemsRequired) continue;
+	questPreset.add(getQuestRequiredItemsBank(quest).bank);
+}
+
 const runePreset = new Bank()
 	.add('Air rune', MAX_INT_JAVA)
 	.add('Mind rune', MAX_INT_JAVA)
@@ -237,7 +244,8 @@ const spawnPresets = [
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],
-	['runes', runePreset]
+	['runes', runePreset],
+	['quest', questPreset]
 ] as const;
 
 const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
