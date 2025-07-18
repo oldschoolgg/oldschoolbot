@@ -180,7 +180,7 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 }
 
 export interface Craftable {

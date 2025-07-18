@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { itemID } from 'oldschooljs';
+import { EQuest, itemID } from 'oldschooljs';
 
 import type { SmithedItem } from '../../../types';
 
@@ -12,7 +12,7 @@ const Gold: SmithedItem[] = [
 		inputBars: { [itemID('Gold bar')]: 3 },
 		timeToUse: Time.Second * 4,
 		outputMultiple: 1,
-		qpRequired: 4
+		requiredQuests: [EQuest.BETWEEN_A_ROCK]
 	},
 	{
 		name: 'Gold bowl',
@@ -22,7 +22,7 @@ const Gold: SmithedItem[] = [
 		inputBars: { [itemID('Gold bar')]: 2 },
 		timeToUse: Time.Second * 3.7,
 		outputMultiple: 1,
-		qpRequired: 111
+		requiredQuests: [EQuest.LEGENDS_QUEST]
 	}
 ];
 
