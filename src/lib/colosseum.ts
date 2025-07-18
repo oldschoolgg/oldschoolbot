@@ -13,14 +13,13 @@ import {
 	reduceNumByPercent,
 	sumArr
 } from 'e';
-import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, EQuest, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
 
 import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { degradeChargeBank } from './degradeableItems';
 import type { GearSetupType } from './gear/types';
 import { trackLoot } from './lootTrack';
-import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
 import type { Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
@@ -463,7 +462,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		return `${user.usernameOrMention} is busy`;
 	}
 
-	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+	if (!user.hasCompletedQuest(EQuest.CHILDREN_OF_THE_SUN)) {
 		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${mentionCommand(
 			globalClient,
 			'activities',
