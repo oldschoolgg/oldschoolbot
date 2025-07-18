@@ -14,8 +14,10 @@ import {
 	convertXPtoLVL,
 	resolveItems
 } from 'oldschooljs';
+import { Quests } from 'oldschooljs';
 import { pick } from 'remeda';
 
+import type { EQuest } from 'oldschooljs';
 import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
@@ -33,6 +35,7 @@ import { handleNewCLItems } from './handleNewCLItems';
 import { marketPriceOfBank } from './marketPrices';
 import backgroundImages from './minions/data/bankBackgrounds';
 import type { CombatOptionsEnum } from './minions/data/combatConstants';
+import { questExtras } from './minions/data/questExtras';
 import { defaultFarmingContract } from './minions/farming';
 import type { FarmingContract } from './minions/farming/types';
 import type { AttackStyles } from './minions/functions';
@@ -264,6 +267,21 @@ export class MUserClass {
 
 	get QP() {
 		return this.user.QP;
+	}
+
+	get kudos() {
+		const finishedQuestIDs = this.user.finished_quest_ids as number[] | undefined;
+		if (!finishedQuestIDs || finishedQuestIDs.length === 0) return 0;
+		let total = Quests.filter(q => finishedQuestIDs.includes(q.id)).reduce((sum, q) => sum + (q.kudos ?? 0), 0);
+
+		// Add extra kudos from questExtras
+		try {
+			for (const qID of finishedQuestIDs) {
+				const extra = questExtras.find((q: any) => q.id === qID && q.kudos);
+				if (extra) total += extra.kudos ?? 0;
+			}
+		} catch {}
+		return total;
 	}
 
 	get autoFarmFilter() {
@@ -979,7 +997,20 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			value: marketPriceOfBank(bank)
 		};
 	}
+
+	hasCompletedQuest(quest: EQuest): boolean {
+		const finishedQuestIDs = this.user.finished_quest_ids;
+		if (!finishedQuestIDs) return false;
+		return finishedQuestIDs.includes(quest);
+	}
+
+	public get hasCompletedAllQuests(): boolean {
+		const finishedQuestIDs = this.user.finished_quest_ids;
+		if (!finishedQuestIDs) return false;
+		return finishedQuestIDs.length === Quests.length;
+	}
 }
+
 declare global {
 	export type MUser = MUserClass;
 	var mUserFetch: typeof srcMUserFetch;

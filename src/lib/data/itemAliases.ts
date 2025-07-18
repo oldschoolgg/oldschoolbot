@@ -169,8 +169,6 @@ setItemAlias(11_139, 'Antique lamp 2');
 setItemAlias(11_141, 'Antique lamp 3');
 setItemAlias(11_185, 'Antique lamp 4');
 
-// Defender of varrock quest lamp
-setItemAlias(28_820, 'Antique lamp (defender of varrock)');
 setItemAlias(28_800, 'Antique lamp (Historian Aldo)');
 
 // Dragonfire shields
@@ -291,6 +289,30 @@ setItemAlias(25_922, 'Antique lamp (hard ca)');
 setItemAlias(25_923, 'Antique lamp (elite ca)');
 setItemAlias(25_924, 'Antique lamp (master ca)');
 setItemAlias(25_925, 'Antique lamp (grandmaster ca)');
+
+setItemAlias(4447, 'Antique lamp (one small favour)');
+setItemAlias(6543, 'Antique lamp (a tail of two cats)');
+setItemAlias(7498, 'Antique lamp (recipe for disaster)');
+setItemAlias(11_185, "Antique lamp (merlin's crystal)");
+setItemAlias(11_186, 'Antique lamp (shield of arrav)');
+setItemAlias(11_187, 'Antique lamp (making history)');
+setItemAlias(11_188, 'Antique lamp (curse of the empty lord)');
+setItemAlias(11_189, 'Antique lamp (uncleaned finds)');
+setItemAlias(11_679, "Antique lamp (king's ransom)");
+setItemAlias(21_262, 'Antique lamp (client of kourend)');
+setItemAlias(23_072, 'Antique lamp (x marks the spot)');
+setItemAlias(23_082, 'Antique lamp (architectural alliance)');
+setItemAlias(25_753, 'Antique lamp (a night at the theatre)');
+setItemAlias(25_820, 'Antique lamp (a kingdom divided)');
+setItemAlias(27_299, 'Antique lamp (into the tombs)');
+setItemAlias(27_543, "Antique lamp (legends' quest)");
+setItemAlias(28_820, 'Antique lamp (defender of Varrock)');
+
+setItemAlias(9656, 'Tome of experience (darkness of hallowvale) (3)');
+setItemAlias(9657, 'Tome of experience (darkness of hallowvale) (2)');
+setItemAlias(9658, 'Tome of experience (darkness of hallowvale) (1)');
+setItemAlias(22_415, 'Tome of experience (a taste of hope)');
+setItemAlias(24_690, 'Tome of experience (sins of the father');
 
 /**
  * Trophies
