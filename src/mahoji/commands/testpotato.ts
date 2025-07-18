@@ -15,7 +15,6 @@ import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import potions from '../../lib/minions/data/potions';
-import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
@@ -40,6 +39,8 @@ import { BingoManager } from '../lib/bingo/BingoManager';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
+
+const MAX_QP = Quests.reduce((a, b) => a + (b.qp ?? 0), 0);
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
@@ -853,7 +854,7 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 							dartQuantity: 100_000,
 							dartID: itemID('Dragon dart')
 						},
-						finished_quest_ids: quests.map(q => q.id)
+						finished_quest_ids: Quests.map(q => q.id)
 					});
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
