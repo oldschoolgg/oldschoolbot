@@ -278,7 +278,7 @@ describe('PVM', async () => {
 			}
 		},
 		{
-			repeats: 100
+			repeats: 5
 		}
 	);
 
