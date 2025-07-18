@@ -1,12 +1,14 @@
 import { calcWhatPercent, clamp, round, sumArr } from 'e';
 
+import { Quests } from 'oldschooljs';
 import { calculateAchievementDiaryProgress } from '../mahoji/lib/abstracted_commands/achievementDiaryCommand';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements';
 import { MAX_XP } from './constants';
 import { getTotalCl } from './data/Collections';
-import { MAX_QP } from './minions/data/quests';
 import { SkillsEnum } from './skilling/types';
 import type { MUserStats } from './structures/MUserStats';
+
+const MAX_QP = Quests.reduce((acc, q) => acc + (q.qp ?? 0), 0);
 
 export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);

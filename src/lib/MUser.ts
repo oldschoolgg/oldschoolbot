@@ -266,7 +266,9 @@ export class MUserClass {
 	}
 
 	get QP() {
-		return this.user.QP;
+		const finishedQuestIDs = this.user.finished_quest_ids as number[] | undefined;
+		if (!finishedQuestIDs || finishedQuestIDs.length === 0) return 0;
+		return Quests.filter(q => finishedQuestIDs.includes(q.id)).reduce((sum, q) => sum + (q.qp ?? 0), 0);
 	}
 
 	get kudos() {
