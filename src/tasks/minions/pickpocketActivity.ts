@@ -57,7 +57,8 @@ export const pickpocketTask: MinionTask = {
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance);
+
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance ?? 0);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
@@ -70,9 +71,6 @@ export const pickpocketTask: MinionTask = {
 					loot.add(id, lootItems.amount(id));
 					lootItems.remove(id);
 				}
-
-				// TODO: Remove Rocky from loot tables in oldschoolJS
-				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
 				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
 					rogueOutfitBoostActivated = true;
