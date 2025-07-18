@@ -33,7 +33,7 @@
 		"concurrent": "concurrently --raw --kill-others-on-fail",
 		"build:packages": "pnpm --stream -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" build",
 		"============monorepo": "============",
-		"monorepo:build": "pnpm concurrent \"pnpm build:packages\" \"pnpm gen\" && pnpm build",
+		"monorepo:build": "pnpm concurrent \"pnpm build:packages\" \"pnpm gen\" && tsx esbuild.mts",
 		"monorepo:test": "pnpm --stream -r test"
 	},
 	"dependencies": {
