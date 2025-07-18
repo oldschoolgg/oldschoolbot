@@ -6,7 +6,7 @@ import { raidCommand } from '../../../src/mahoji/commands/raid';
 import { mockClient, mockUser } from '../util';
 
 test('CoX ', async () => {
-	const client = await mockClient();
+	await mockClient();
 
 	const user = await mockUser({
 		rangeGear: resolveItems(['Venator bow']),
@@ -49,7 +49,7 @@ test('CoX ', async () => {
 		true
 	);
 	expect(res).toContain('the total trip will take');
-	await user.processActivities(client);
+	await user.runActivity();
 	await user.sync();
 	expect(user.bank.amount('Scythe of vitur (uncharged)')).toBe(1);
 	expect(user.bank.amount('Scythe of vitur')).toBe(0);

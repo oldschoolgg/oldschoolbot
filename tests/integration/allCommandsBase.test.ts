@@ -12,7 +12,7 @@ import type { OSBMahojiCommand } from '@/mahoji/lib/util';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
 import { allCommands } from '../../src/mahoji/commands/allCommands';
-import { createTestUser, mockClient } from './util';
+import { TestClient, createTestUser, mockClient } from './util';
 
 test(
 	'All Commands Base Test',
@@ -123,9 +123,6 @@ test(
 		let commandsRan = 0;
 		for (const { command, options: allOptions } of processedCommands) {
 			for (const options of allOptions) {
-				if (queue.size % 30 === 0) {
-					queue.add(async () => client.processActivities());
-				}
 				queue.add(async () => {
 					try {
 						const maxUser = await createTestUser(bankWithAllItems, {
@@ -134,6 +131,7 @@ test(
 						});
 						// stopwatch.check(`	[${command.name}] User ${maxUser.id} created and maxed.`);
 						await maxUser.runCommand(command, options);
+						await maxUser.runActivity();
 						// stopwatch.check(`	[${command.name}] Finished running command ${command.name}, result was: ${typeof res === "string" ? res.replace(/\r?\n|\r/g, ' ').replace(/[*_`~>|#]/g, '') : res}`);
 						commandsRan++;
 						// stopwatch.check(`${commandsRan}/${totalCommands} commands ran ${command.name}`);
@@ -147,13 +145,10 @@ test(
 			}
 		}
 
-		queue.add(async () => client.processActivities());
-
 		await queue.onEmpty();
 		await queue.onIdle();
-		await client.processActivities();
 		console.log(
-			`[${stopwatch.toString()}] Finished running ${commandsRan}/${totalCommands} commands, ${client.activitiesProcessed} activities`
+			`[${stopwatch.toString()}] Finished running ${commandsRan}/${totalCommands} commands, ${TestClient.activitiesProcessed} activities`
 		);
 	}
 );

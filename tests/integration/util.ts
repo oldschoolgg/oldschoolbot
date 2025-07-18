@@ -1,5 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { Activity, ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
+import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank, type EMonster, Items, Monsters, convertLVLtoXP } from 'oldschooljs';
@@ -9,7 +9,6 @@ import { expect, vi } from 'vitest';
 
 import { MUserClass } from '../../src/lib/MUser';
 import { globalConfig } from '../../src/lib/constants';
-import { sql } from '../../src/lib/postgres';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
@@ -133,6 +132,7 @@ export class TestUser extends MUserClass {
 			}
 		});
 
+		TestClient.activitiesProcessed++;
 		await ActivityManager.completeActivity(activity);
 		await this.sync();
 		return ActivityManager.convertStoredActivityToFlatActivity(activity);
@@ -151,11 +151,6 @@ export class TestUser extends MUserClass {
 			[`gear_${setup}`]: gearObj.raw()
 		});
 		return this;
-	}
-
-	async processActivities(client: TestClient) {
-		await client.processActivities();
-		await this.sync();
 	}
 
 	async openedBankMatch(bankToMatch: Bank) {
@@ -407,8 +402,8 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 	return new TestUser(user);
 }
 
-class TestClient {
-	public activitiesProcessed = 0;
+export class TestClient {
+	public static activitiesProcessed = 0;
 	data: ClientStorage;
 	constructor(data: ClientStorage) {
 		this.data = data;
@@ -434,28 +429,6 @@ class TestClient {
 		if (this.data[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${this.data[key]}`);
 		}
-	}
-
-	async processActivities() {
-		const activities: Activity[] = await sql`SELECT * FROM activity WHERE completed = false;`;
-		if (activities.length > 0) {
-			await prisma.activity.updateMany({
-				where: {
-					id: {
-						in: activities.map(i => i.id)
-					}
-				},
-				data: {
-					completed: true
-				}
-			});
-			this.activitiesProcessed += activities.length;
-			await Promise.all(activities.map(_act => ActivityManager.completeActivity(_act)));
-		}
-
-		return {
-			activities
-		};
 	}
 }
 
