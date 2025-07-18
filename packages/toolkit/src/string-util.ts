@@ -39,7 +39,7 @@ export function miniID(length: number): string {
 
 export function stringSearch(
 	queryString: string,
-	searchSpace: string | string[] | { name: string; aliases?: string[] }
+	searchSpace: string | string[] | { name: string; alias?: string[]; aliases?: string[] }
 ) {
 	if (typeof searchSpace === 'string') {
 		return searchSpace.toLowerCase().includes(queryString.toLowerCase());
@@ -53,5 +53,10 @@ export function stringSearch(
 	if (searchSpace.aliases) {
 		return searchSpace.aliases.some(alias => alias.toLowerCase().includes(queryString.toLowerCase()));
 	}
+
+	if (searchSpace.alias) {
+		return searchSpace.alias.some(alias => alias.toLowerCase().includes(queryString.toLowerCase()));
+	}
+
 	return false;
 }
