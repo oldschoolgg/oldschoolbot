@@ -1,7 +1,7 @@
 import { awaitMessageComponentInteraction, channelIsSendable, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Time, notEmpty, randInt, removeFromArr } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Monsters, Quests } from 'oldschooljs';
 
 import { InteractionID } from '../../../lib/InteractionID';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
@@ -326,7 +326,12 @@ export async function slayerNewTaskCommand({
 			const aRequirements: string[] = [];
 			if (matchedSlayerMaster.slayerLvl) aRequirements.push(`Slayer Level: ${matchedSlayerMaster.slayerLvl}`);
 			if (matchedSlayerMaster.combatLvl) aRequirements.push(`Combat Level: ${matchedSlayerMaster.combatLvl}`);
-			if (matchedSlayerMaster.questPoints) aRequirements.push(`Quest points: ${matchedSlayerMaster.questPoints}`);
+			if (matchedSlayerMaster.quest) {
+				const quest = Quests.find(q => q.id === matchedSlayerMaster.quest);
+				const questName = quest ? quest.name : `Quest ID ${matchedSlayerMaster.quest}`;
+				aRequirements.push(`Required quest: ${questName}`);
+			}
+
 			warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
 			if (aRequirements.length > 0) warningInfo += `**Requires**:\n${aRequirements.join('\n')}\n\n`;
 		}
