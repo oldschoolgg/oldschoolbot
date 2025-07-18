@@ -133,8 +133,7 @@ export interface Course {
 	cantFail?: boolean;
 	petChance: number | ((agilityLevel: number) => number);
 	aliases: string[];
-	qpRequired?: number;
-	requiredQuests?: QuestID[];
+	requiredQuests?: EQuest[];
 }
 
 export interface Cookable {

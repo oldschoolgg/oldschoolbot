@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import { QuestID } from '../../minions/data/quests';
+import { EQuest } from 'oldschooljs';
 import type { Course } from '../types';
 import { SkillsEnum } from '../types';
 
@@ -62,7 +62,7 @@ export const courses: Course[] = [
 		xp: 580,
 		lapTime: 38,
 		petChance: 37_720,
-		qpRequired: 82
+		requiredQuests: [EQuest.MONKEY_MADNESS_I]
 	},
 	{
 		id: 7,
@@ -164,7 +164,7 @@ export const courses: Course[] = [
 		xp: 1340.6,
 		lapTime: 74.2,
 		petChance: 25_146,
-		qpRequired: 205
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES]
 	},
 	{
 		id: 14,
@@ -184,7 +184,7 @@ export const courses: Course[] = [
 		lapTime: 60,
 		cantFail: true,
 		petChance: agilLevel => (agilLevel >= 62 ? 25_406 : 28_503),
-		requiredQuests: [QuestID.ChildrenOfTheSun]
+		requiredQuests: [EQuest.CHILDREN_OF_THE_SUN]
 	}
 ];
 

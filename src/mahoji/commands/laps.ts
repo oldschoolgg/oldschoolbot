@@ -1,9 +1,8 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Quests } from 'oldschooljs';
 
-import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -126,16 +125,11 @@ export const lapsCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${course.level} agility to train at ${course.name}.`;
 		}
 
-		if (course.qpRequired && user.QP < course.qpRequired) {
-			return `You need at least ${course.qpRequired} Quest Points to do this course.`;
-		}
-
-		// Check for quest requirements
 		if (course.requiredQuests) {
-			const incompleteQuest = course.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+			const incompleteQuest = course.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
 			if (incompleteQuest) {
 				return `You need to have completed the ${bold(
-					quests.find(i => i.id === incompleteQuest)!.name
+					Quests.find(i => i.id === incompleteQuest)!.name
 				)} quest to attempt the ${course.name} agility course.`;
 			}
 		}
