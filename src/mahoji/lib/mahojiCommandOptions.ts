@@ -119,20 +119,39 @@ export const gearPresetOption: CommandOption = {
 	description: 'The gear preset you want to select.',
 	required: false,
 	autocomplete: async (value, user) => {
-		const presets = await prisma.gearPreset.findMany({
-			where: {
-				user_id: user.id
-			}
-		});
+		const [presets, userWithBank] = await prisma.$transaction([
+			prisma.gearPreset.findMany({
+				where: {
+					user_id: user.id
+				}
+			}),
+			prisma.user.findFirst({
+				where: {
+					id: user.id
+				},
+				select: {
+					bank: true
+				}
+			})
+		]);
 
 		let allPresets: (GlobalPreset | GearPreset)[] = [...presets, ...globalPresets];
 		if (value) {
 			allPresets = allPresets.filter(_preset => stringSearch(value, _preset));
 		}
 
-		return allPresets.map(i => {
-			const gear = Gear.fromGearPreset(i);
-			return { name: truncateString(`${i.name} (${gear.toString()})`, 100), value: i.name };
-		});
+		const theirBank = new Bank(userWithBank?.bank as ItemBank);
+
+		return allPresets
+			.sort((a, b) => b.times_equipped - a.times_equipped)
+			.slice(0, 25)
+			.map(i => {
+				const gear = Gear.fromGearPreset(i);
+				const ownsAllItems = theirBank.has(gear.toBank());
+				return {
+					name: truncateString(`${ownsAllItems ? '🟢' : '🔴'} ${i.name} (${gear.toString()})`, 100),
+					value: i.name
+				};
+			});
 	}
 };
