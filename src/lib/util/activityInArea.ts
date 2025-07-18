@@ -1,6 +1,4 @@
-import { Monsters, resolveItems } from 'oldschooljs';
-
-import { soteSkillRequirements } from '../skilling/functions/questRequirements';
+import { EQuest, Monsters, resolveItems } from 'oldschooljs';
 import { courses } from '../skilling/skills/agility';
 import butterflyNettingCreatures from '../skilling/skills/hunter/creatures/butterflyNetting';
 import type {
@@ -21,7 +19,7 @@ const WorldLocationsChecker = [
 	{
 		area: WorldLocations.Priffdinas,
 		checker: (user: MUser, activity: ActivityTaskData) => {
-			if (user.hasSkillReqs(soteSkillRequirements) && user.QP >= 150) {
+			if (user.hasCompletedQuest(EQuest.SONG_OF_THE_ELVES)) {
 				if (['Gauntlet', 'Zalcano'].includes(activity.type)) return true;
 				if (
 					activity.type === 'MonsterKilling' &&

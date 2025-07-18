@@ -1,8 +1,7 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, increaseNumByPercent, randInt, roll, sumArr } from 'e';
-import { toKMB } from 'oldschooljs';
+import { EQuest, toKMB } from 'oldschooljs';
 
-import { QuestID } from '../../lib/minions/data/quests';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining, { prospectorItemsArr } from '../../lib/skilling/skills/mining';
 import { type Ore, SkillsEnum } from '../../lib/skilling/types';
@@ -151,7 +150,7 @@ export const miningTask: MinionTask = {
 			gearBank: user.gearBank,
 			duration,
 			isPowermining: powermine,
-			hasFinishedCOTS: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)
+			hasFinishedCOTS: user.hasCompletedQuest(EQuest.CHILDREN_OF_THE_SUN)
 		});
 
 		const updateResult = await updateBank.transact(user);
