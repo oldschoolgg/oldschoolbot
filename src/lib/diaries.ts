@@ -1,8 +1,8 @@
 import type { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
-import { Monsters, resolveItems } from 'oldschooljs';
+import { Monsters, Quests, resolveItems } from 'oldschooljs';
+import { EQuest } from 'oldschooljs';
 
-import { MAX_QP } from './minions/data/quests';
 import type { DiaryTier, DiaryTierName } from './minions/types';
 import { DiaryID } from './minions/types';
 import { Minigames } from './settings/minigames';
@@ -44,7 +44,6 @@ export function userhasDiaryTierSync(
 
 	const { bank } = user;
 	const { cl } = user;
-	const qp = user.QP;
 	const lapScores = data.stats.lapsScores;
 	const { monsterScores } = data.stats;
 
@@ -64,11 +63,6 @@ export function userhasDiaryTierSync(
 				`You don't have **${formatList(unownedItems.map(itemNameFromID), 'or')}** in your collection log`
 			);
 		}
-	}
-
-	if (tier.qp && qp < tier.qp) {
-		canDo = false;
-		reasons.push(`You don't have ${tier.qp} Quest Points`);
 	}
 
 	if (tier.minigameReqs) {
@@ -117,6 +111,27 @@ export function userhasDiaryTierSync(
 		}
 	}
 
+	if (tier.questReqs && tier.questReqs.length > 0) {
+		const incompleteQuests = tier.questReqs.filter(qID => !user.hasCompletedQuest(qID));
+		if (incompleteQuests.length > 0) {
+			canDo = false;
+			const questNames = incompleteQuests
+				.map(qID => {
+					const quest = Quests.find(q => q.id === qID || q.id === Number(qID));
+					return quest ? quest.name : `Quest ID ${qID}`;
+				})
+				.join(', ');
+			reasons.push(`You need to complete: ${questNames}`);
+		}
+	}
+
+	if (tier.kudos) {
+		if ((user.kudos ?? 0) < tier.kudos) {
+			canDo = false;
+			reasons.push(`You need at least ${tier.kudos} Kudos, you have ${user.kudos ?? 0}`);
+		}
+	}
+
 	return {
 		hasDiary: canDo,
 		reasons: reasons.join('\n- '),
@@ -156,7 +171,7 @@ export const WesternProv: Diary = {
 		lapsReqs: {
 			'Gnome Stronghold Agility Course': 1
 		},
-		qp: 10
+		questReqs: [EQuest.BIG_CHOMPY_BIRD_HUNTING, EQuest.THE_RESTLESS_GHOST]
 	},
 	medium: {
 		name: 'Medium',
@@ -177,7 +192,13 @@ export const WesternProv: Diary = {
 			big_chompy_bird_hunting: 125,
 			gnome_restaurant: 1
 		},
-		qp: 44
+		questReqs: [
+			EQuest.BIG_CHOMPY_BIRD_HUNTING,
+			EQuest.EAGLES_PEAK,
+			EQuest.THE_EYES_OF_GLOUPHRIE,
+			EQuest.MONKEY_MADNESS_I,
+			EQuest.ONE_SMALL_FAVOUR
+		]
 	},
 	hard: {
 		name: 'Hard',
@@ -204,7 +225,7 @@ export const WesternProv: Diary = {
 		minigameReqs: {
 			big_chompy_bird_hunting: 300
 		},
-		qp: 92,
+		questReqs: [EQuest.MOURNINGS_END_PART_II, EQuest.SWAN_SONG, EQuest.COOKS_ASSISTANT, EQuest.MONKEY_MADNESS_I],
 		monsterScores: {
 			Zulrah: 1
 		}
@@ -232,7 +253,8 @@ export const WesternProv: Diary = {
 		},
 		minigameReqs: {
 			big_chompy_bird_hunting: 1000
-		}
+		},
+		questReqs: [EQuest.MOURNINGS_END_PART_I]
 	}
 };
 export const ArdougneDiary: Diary = {
@@ -248,7 +270,7 @@ export const ArdougneDiary: Diary = {
 		minigameReqs: {
 			fishing_trawler: 1
 		},
-		qp: 10
+		questReqs: [EQuest.BIOHAZARD, EQuest.RUNE_MYSTERIES]
 	},
 	medium: {
 		name: 'Medium',
@@ -267,8 +289,15 @@ export const ArdougneDiary: Diary = {
 		minigameReqs: {
 			fishing_trawler: 1
 		},
-		qp: 23,
-		collectionLogReqs: resolveItems(["Iban's staff"])
+		questReqs: [
+			EQuest.FAIRYTALE_I__GROWING_PAINS,
+			EQuest.ENLIGHTENED_JOURNEY,
+			EQuest.THE_HAND_IN_THE_SAND,
+			EQuest.WATCHTOWER,
+			EQuest.SEA_SLUG,
+			EQuest.TOWER_OF_LIFE,
+			EQuest.UNDERGROUND_PASS
+		]
 	},
 	hard: {
 		name: 'Hard',
@@ -293,14 +322,14 @@ export const ArdougneDiary: Diary = {
 			thieving: 72,
 			woodcutting: 50
 		},
-		qp: 107,
 		collectionLogReqs: resolveItems([
 			'Red salamander',
 			'Dragon sq shield',
 			'Death rune',
 			'Mithril platebody',
 			'Coconut'
-		])
+		]),
+		questReqs: [EQuest.MONKEY_MADNESS_I, EQuest.MOURNINGS_END_PART_II, EQuest.LEGENDS_QUEST, EQuest.WATCHTOWER]
 	},
 	elite: {
 		name: 'Elite',
@@ -319,15 +348,15 @@ export const ArdougneDiary: Diary = {
 			smithing: 91,
 			thieving: 82
 		},
-		qp: 107,
 		collectionLogReqs: resolveItems(['Raw manta ray', 'Rune crossbow', 'Grimy torstol']),
 		lapsReqs: {
 			'Ardougne Rooftop Course': 1
-		}
+		},
+		questReqs: [EQuest.DESERT_TREASURE_I, EQuest.HAUNTED_MINE]
 	}
 };
 
-const DesertDiary: Diary = {
+export const DesertDiary: Diary = {
 	name: 'Desert',
 	id: DiaryID.Desert,
 	easy: {
@@ -337,11 +366,11 @@ const DesertDiary: Diary = {
 			hunter: 5,
 			thieving: 21
 		},
-		qp: 10,
 		collectionLogReqs: resolveItems(['Yellow feather']),
 		minigameReqs: {
 			pyramid_plunder: 1
-		}
+		},
+		questReqs: [EQuest.ICTHLARINS_LITTLE_HELPER]
 	},
 	medium: {
 		name: 'Medium',
@@ -361,8 +390,8 @@ const DesertDiary: Diary = {
 			woodcutting: 35,
 			construction: 20
 		},
-		qp: 22,
-		collectionLogReqs: resolveItems(['Orange salamander', 'Teak logs'])
+		collectionLogReqs: resolveItems(['Orange salamander', 'Teak logs']),
+		questReqs: [EQuest.ENAKHRAS_LAMENT, EQuest.THE_GOLEM, EQuest.SPIRITS_OF_THE_ELID, EQuest.EAGLES_PEAK]
 	},
 	hard: {
 		name: 'Hard',
@@ -389,7 +418,8 @@ const DesertDiary: Diary = {
 		monsterScores: {
 			'Dust Devil': 1
 		},
-		collectionLogReqs: resolveItems(['Mithril platebody'])
+		collectionLogReqs: resolveItems(['Mithril platebody']),
+		questReqs: [EQuest.DREAM_MENTOR, EQuest.DESERT_TREASURE_I, EQuest.THE_FEUD, EQuest.CONTACT]
 	},
 	elite: {
 		name: 'Elite',
@@ -407,7 +437,8 @@ const DesertDiary: Diary = {
 			prayer: 85,
 			thieving: 91
 		},
-		collectionLogReqs: resolveItems(['Dragon dart', 'Kq head'])
+		collectionLogReqs: resolveItems(['Dragon dart', 'Kq head']),
+		questReqs: [EQuest.DESERT_TREASURE_I, EQuest.ICTHLARINS_LITTLE_HELPER]
 	}
 };
 
@@ -423,7 +454,8 @@ export const FaladorDiary: Diary = {
 			construction: 16,
 			mining: 10,
 			smithing: 13
-		}
+		},
+		questReqs: [EQuest.THE_KNIGHTS_SWORD, EQuest.DORICS_QUEST]
 	},
 	medium: {
 		name: 'Medium',
@@ -444,8 +476,8 @@ export const FaladorDiary: Diary = {
 			thieving: 40,
 			woodcutting: 30
 		},
-		qp: 12,
-		collectionLogReqs: resolveItems(['Crystal key', 'Gold ore', 'Willow logs'])
+		collectionLogReqs: resolveItems(['Crystal key', 'Gold ore', 'Willow logs']),
+		questReqs: [EQuest.RATCATCHERS, EQuest.RECRUITMENT_DRIVE]
 	},
 	hard: {
 		name: 'Hard',
@@ -468,7 +500,6 @@ export const FaladorDiary: Diary = {
 			thieving: 58,
 			woodcutting: 71
 		},
-		qp: 32,
 		collectionLogReqs: resolveItems(['Mind rune', 'Prospector helmet']),
 		monsterScores: {
 			'Skeletal Wyvern': 1,
@@ -476,7 +507,8 @@ export const FaladorDiary: Diary = {
 		},
 		lapsReqs: {
 			'Falador Rooftop Course': 1
-		}
+		},
+		questReqs: [EQuest.HEROES_QUEST, EQuest.THE_SLUG_MENACE, EQuest.GRIM_TALES]
 	},
 	elite: {
 		name: 'Elite',
@@ -495,14 +527,15 @@ export const FaladorDiary: Diary = {
 			if (summary) return [false, 'Quest point cape or Skill cape.'];
 			const userBank = user.bank;
 			const skills = user.skillsAsLevels;
-			if (userBank.has('Quest point cape') && user.QP >= MAX_QP) return [true];
+			if (userBank.has('Quest point cape') && user.hasCompletedAllQuests) return [true];
 			for (const cape of Skillcapes) {
 				if ((userBank.has(cape.trimmed) || userBank.has(cape.untrimmed)) && skills[cape.skill] >= 99) {
 					return [true];
 				}
 			}
 			return [false, 'you need a Quest point cape or Skill cape'];
-		}
+		},
+		questReqs: [EQuest.WANTED]
 	}
 };
 
@@ -522,7 +555,8 @@ const FremennikDiary: Diary = {
 			thieving: 5,
 			woodcutting: 15
 		},
-		collectionLogReqs: resolveItems(['Blue feather', 'Oak logs'])
+		collectionLogReqs: resolveItems(['Blue feather', 'Oak logs']),
+		questReqs: [EQuest.THE_FREMENNIK_TRIALS, EQuest.THE_GIANT_DWARF, EQuest.TROLL_STRONGHOLD]
 	},
 	medium: {
 		name: 'Medium',
@@ -537,7 +571,14 @@ const FremennikDiary: Diary = {
 			smithing: 50,
 			thieving: 42
 		},
-		collectionLogReqs: resolveItems(['Coal', 'Snowy knight', 'Gold ore'])
+		collectionLogReqs: resolveItems(['Coal', 'Snowy knight', 'Gold ore']),
+		questReqs: [
+			EQuest.EAGLES_PEAK,
+			EQuest.FAIRYTALE_I__GROWING_PAINS,
+			EQuest.OLAFS_QUEST,
+			EQuest.BETWEEN_A_ROCK,
+			EQuest.HORROR_FROM_THE_DEEP
+		]
 	},
 	hard: {
 		name: 'Hard',
@@ -558,7 +599,13 @@ const FremennikDiary: Diary = {
 			woodcutting: 56
 		},
 		collectionLogReqs: resolveItems(['Tatty kyatt fur', 'Adamantite ore']),
-		qp: 50
+		questReqs: [
+			EQuest.THE_GIANT_DWARF,
+			EQuest.THE_FREMENNIK_ISLES,
+			EQuest.THRONE_OF_MISCELLANIA,
+			EQuest.EADGARS_RUSE,
+			EQuest.LUNAR_DIPLOMACY
+		]
 	},
 	elite: {
 		name: 'Elite',
@@ -583,7 +630,7 @@ const FremennikDiary: Diary = {
 			'Spiritual Mage': 1
 		},
 		collectionLogReqs: resolveItems(['Astral rune', 'Dragonstone amulet']),
-		qp: 50
+		questReqs: [EQuest.THE_FREMENNIK_ISLES, EQuest.TROLL_STRONGHOLD, EQuest.LUNAR_DIPLOMACY]
 	}
 };
 
@@ -599,7 +646,8 @@ export const KandarinDiary: Diary = {
 			farming: 13,
 			fishing: 16
 		},
-		collectionLogReqs: resolveItems(['Mackerel'])
+		collectionLogReqs: resolveItems(['Mackerel']),
+		questReqs: [EQuest.ELEMENTAL_WORKSHOP_I]
 	},
 	medium: {
 		name: 'Medium',
@@ -623,7 +671,8 @@ export const KandarinDiary: Diary = {
 		},
 		minigameReqs: {
 			barb_assault: 1
-		}
+		},
+		questReqs: [EQuest.ELEMENTAL_WORKSHOP_II, EQuest.WATERFALL_QUEST, EQuest.FAIRYTALE_I__GROWING_PAINS]
 	},
 	hard: {
 		name: 'Hard',
@@ -649,7 +698,8 @@ export const KandarinDiary: Diary = {
 		},
 		monsterScores: {
 			'Mithril Dragon': 1
-		}
+		},
+		questReqs: [EQuest.TAI_BWO_WANNAI_TRIO, EQuest.KINGS_RANSOM, EQuest.DESERT_TREASURE_I]
 	},
 	elite: {
 		name: 'Elite',
@@ -666,6 +716,7 @@ export const KandarinDiary: Diary = {
 			smithing: 90
 		},
 		collectionLogReqs: resolveItems(['Grimy dwarf weed', 'Shark']),
+		questReqs: [EQuest.TAI_BWO_WANNAI_TRIO, EQuest.FAMILY_CREST, EQuest.LUNAR_DIPLOMACY],
 		customReq: (_, summary, stats) => {
 			if (summary) return [false, 'Barbarian Assault Honour Level of 5.'];
 			const honourLevel = stats.userStats.honour_level;
@@ -705,7 +756,8 @@ export const KaramjaDiary: Diary = {
 			mining: 40,
 			woodcutting: 50
 		},
-		collectionLogReqs: resolveItems(['Agility arena ticket', 'Teak logs', 'Raw karambwan'])
+		collectionLogReqs: resolveItems(['Agility arena ticket', 'Teak logs', 'Raw karambwan']),
+		questReqs: [EQuest.THE_GRAND_TREE, EQuest.TAI_BWO_WANNAI_TRIO, EQuest.DRAGON_SLAYER_I, EQuest.SHILO_VILLAGE]
 	},
 	hard: {
 		name: 'Hard',
@@ -726,7 +778,8 @@ export const KaramjaDiary: Diary = {
 		collectionLogReqs: resolveItems(['Nature rune', 'Cooked karambwan']),
 		monsterScores: {
 			'Steel Dragon': 1
-		}
+		},
+		questReqs: [EQuest.TAI_BWO_WANNAI_TRIO, EQuest.LEGENDS_QUEST]
 	},
 	elite: {
 		name: 'Elite',
@@ -754,7 +807,8 @@ export const KourendKebosDiary: Diary = {
 			mining: 15,
 			thieving: 25
 		},
-		collectionLogReqs: resolveItems(['Iron ore', 'Raw trout', 'Strength potion(3)'])
+		collectionLogReqs: resolveItems(['Iron ore', 'Raw trout', 'Strength potion(3)']),
+		questReqs: [EQuest.DRUIDIC_RITUAL]
 	},
 	medium: {
 		name: 'Medium',
@@ -772,7 +826,16 @@ export const KourendKebosDiary: Diary = {
 		minigameReqs: {
 			wintertodt: 1
 		},
-		collectionLogReqs: resolveItems(['Chinchompa'])
+		collectionLogReqs: resolveItems(['Chinchompa']),
+		questReqs: [
+			EQuest.EAGLES_PEAK,
+			EQuest.THE_DEPTHS_OF_DESPAIR,
+			EQuest.THE_QUEEN_OF_THIEVES,
+			EQuest.TALE_OF_THE_RIGHTEOUS,
+			EQuest.THE_FORSAKEN_TOWER,
+			EQuest.THE_ASCENT_OF_ARCEUUS,
+			EQuest.FAIRYTALE_I__GROWING_PAINS
+		]
 	},
 	hard: {
 		name: 'Hard',
@@ -790,7 +853,8 @@ export const KourendKebosDiary: Diary = {
 		monsterScores: {
 			Wyrm: 1,
 			'Lizardman Shaman': 1
-		}
+		},
+		questReqs: [EQuest.DREAM_MENTOR]
 	},
 	elite: {
 		name: 'Elite',
@@ -835,7 +899,8 @@ export const LumbridgeDraynorDiary: Diary = {
 		lapsReqs: {
 			'Draynor Village Rooftop Course': 1
 		},
-		collectionLogReqs: resolveItems(['Water rune', 'Oak logs', 'Raw anchovies', 'Iron ore'])
+		collectionLogReqs: resolveItems(['Water rune', 'Oak logs', 'Raw anchovies', 'Iron ore']),
+		questReqs: [EQuest.COOKS_ASSISTANT, EQuest.RUNE_MYSTERIES]
 	},
 	medium: {
 		name: 'Medium',
@@ -855,7 +920,8 @@ export const LumbridgeDraynorDiary: Diary = {
 		lapsReqs: {
 			'Al Kharid Rooftop Course': 1
 		},
-		collectionLogReqs: resolveItems(['Raw salmon', 'Willow logs', 'Coif'])
+		collectionLogReqs: resolveItems(['Raw salmon', 'Willow logs', 'Coif']),
+		questReqs: [EQuest.ANIMAL_MAGNETISM, EQuest.FAIRYTALE_I__GROWING_PAINS]
 	},
 	hard: {
 		name: 'Hard',
@@ -870,7 +936,8 @@ export const LumbridgeDraynorDiary: Diary = {
 			runecraft: 59,
 			woodcutting: 57
 		},
-		collectionLogReqs: resolveItems(['Cosmic rune', 'Barrows gloves', 'Amulet of power'])
+		collectionLogReqs: resolveItems(['Cosmic rune', 'Amulet of power']),
+		questReqs: [EQuest.TEARS_OF_GUTHIX, EQuest.RECIPE_FOR_DISASTER, EQuest.ANOTHER_SLICE_OF_HAM]
 	},
 	elite: {
 		name: 'Elite',
@@ -885,7 +952,12 @@ export const LumbridgeDraynorDiary: Diary = {
 			woodcutting: 75
 		},
 		collectionLogReqs: resolveItems(['Magic logs', 'Water rune', 'Adamant platebody']),
-		qp: MAX_QP
+		customReq: (user, summary) => {
+			if (summary) return [false, 'Quest point cape.'];
+			const userBank = user.bank;
+			if (userBank.has('Quest point cape') && user.hasCompletedAllQuests) return [true];
+			return [false, 'you need a Quest point cape.'];
+		}
 	}
 };
 
@@ -906,7 +978,8 @@ export const MorytaniaDiary: Diary = {
 			Banshee: 1,
 			Ghoul: 1,
 			Werewolf: 1
-		}
+		},
+		questReqs: [EQuest.PRIEST_IN_PERIL, EQuest.NATURE_SPIRIT]
 	},
 	medium: {
 		name: 'Medium',
@@ -924,7 +997,14 @@ export const MorytaniaDiary: Diary = {
 		collectionLogReqs: resolveItems(['Swamp lizard', 'Cannonball']),
 		lapsReqs: {
 			'Canifis Rooftop Course': 1
-		}
+		},
+		questReqs: [
+			EQuest.DWARF_CANNON,
+			EQuest.GHOSTS_AHOY,
+			EQuest.HAUNTED_MINE,
+			EQuest.CABIN_FEVER,
+			EQuest.IN_AID_OF_THE_MYREQUE
+		]
 	},
 	hard: {
 		name: 'Hard',
@@ -946,7 +1026,14 @@ export const MorytaniaDiary: Diary = {
 		collectionLogReqs: resolveItems(['Watermelon', 'Mahogany logs', 'Mithril ore', 'Mushroom']),
 		monsterScores: {
 			'Cave Horror': 1
-		}
+		},
+		questReqs: [
+			EQuest.HAUNTED_MINE,
+			EQuest.DESERT_TREASURE_I,
+			EQuest.THE_GREAT_BRAIN_ROBBERY,
+			EQuest.IN_AID_OF_THE_MYREQUE,
+			EQuest.KINGS_RANSOM
+		]
 	},
 	elite: {
 		name: 'Elite',
@@ -965,7 +1052,8 @@ export const MorytaniaDiary: Diary = {
 		collectionLogReqs: resolveItems(['Raw shark', "Black d'hide body"]),
 		monsterScores: {
 			'Abyssal Demon': 1
-		}
+		},
+		questReqs: [EQuest.SHADES_OF_MORTTON, EQuest.IN_AID_OF_THE_MYREQUE, EQuest.LUNAR_DIPLOMACY]
 	}
 };
 
@@ -984,7 +1072,9 @@ const VarrockDiary: Diary = {
 			runecraft: 9,
 			thieving: 5
 		},
-		collectionLogReqs: resolveItems(['Iron ore', 'Plank', 'Logs', 'Earth rune', 'Raw trout'])
+		collectionLogReqs: resolveItems(['Iron ore', 'Plank', 'Logs', 'Earth rune', 'Raw trout']),
+		questReqs: [EQuest.RUNE_MYSTERIES],
+		kudos: 50
 	},
 	medium: {
 		name: 'Medium',
@@ -1002,7 +1092,15 @@ const VarrockDiary: Diary = {
 		lapsReqs: {
 			'Varrock Rooftop Course': 1
 		},
-		qp: 32
+		questReqs: [
+			EQuest.DRAGON_SLAYER_I,
+			EQuest.ENLIGHTENED_JOURNEY,
+			EQuest.A_SOULS_BANE,
+			EQuest.TREE_GNOME_VILLAGE,
+			EQuest.GERTRUDES_CAT,
+			EQuest.THE_DIG_SITE,
+			EQuest.GARDEN_OF_TRANQUILLITY
+		]
 	},
 	hard: {
 		name: 'Hard',
@@ -1020,7 +1118,8 @@ const VarrockDiary: Diary = {
 			woodcutting: 60
 		},
 		collectionLogReqs: resolveItems(['Yew roots', 'Yew logs']),
-		qp: 44
+		questReqs: [EQuest.DESERT_TREASURE_I]
+		// kudos: 153 // currently impossible
 	},
 	elite: {
 		name: 'Elite',
@@ -1033,7 +1132,8 @@ const VarrockDiary: Diary = {
 			runecraft: 78,
 			smithing: 89
 		},
-		collectionLogReqs: resolveItems(['Super combat potion(4)', 'Mahogany plank', 'Rune dart', 'Earth rune'])
+		collectionLogReqs: resolveItems(['Super combat potion(4)', 'Mahogany plank', 'Rune dart', 'Earth rune']),
+		questReqs: [EQuest.THE_TOURIST_TRAP, EQuest.DREAM_MENTOR, EQuest.RUNE_MYSTERIES]
 	}
 };
 
@@ -1053,7 +1153,8 @@ export const WildernessDiary: Diary = {
 		monsterScores: {
 			Mammoth: 1,
 			'Earth Warrior': 1
-		}
+		},
+		questReqs: [EQuest.RUNE_MYSTERIES]
 	},
 	medium: {
 		name: 'Medium',
@@ -1072,7 +1173,8 @@ export const WildernessDiary: Diary = {
 			'Green dragon': 1,
 			Ankou: 1,
 			Bloodveld: 1
-		}
+		},
+		questReqs: [EQuest.BETWEEN_A_ROCK]
 	},
 	hard: {
 		name: 'Hard',
@@ -1092,7 +1194,8 @@ export const WildernessDiary: Diary = {
 			'Chaos Fanatic': 1,
 			Scorpia: 1,
 			'Spiritual Warrior': 1
-		}
+		},
+		questReqs: [EQuest.TROLL_STRONGHOLD]
 	},
 	elite: {
 		name: 'Elite',
@@ -1115,7 +1218,8 @@ export const WildernessDiary: Diary = {
 			Callisto: 1,
 			Venenatis: 1,
 			"Vet'ion": 1
-		}
+		},
+		questReqs: [EQuest.DESERT_TREASURE_I]
 	}
 };
 

@@ -198,7 +198,8 @@ export interface DiaryTier {
 	collectionLogReqs?: number[];
 	minigameReqs?: Partial<Record<MinigameName, number>>;
 	lapsReqs?: Record<string, number>;
-	qp?: number;
+	questReqs?: EQuest[];
+	kudos?: number;
 	monsterScores?: Record<string, number>;
 	customReq?: (user: MUser, summary: boolean, stats: MUserStats) => [true] | [false, string];
 }

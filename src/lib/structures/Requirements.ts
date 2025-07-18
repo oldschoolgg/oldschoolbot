@@ -1,6 +1,6 @@
 import type { Minigame, PlayerOwnedHouse, activity_type_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
-import type { Bank } from 'oldschooljs';
+import { type Bank, type EQuest, Quests } from 'oldschooljs';
 
 import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
@@ -43,6 +43,7 @@ type Requirement = {
 	| { clRequirement: Bank | number[] }
 	| { kcRequirement: Record<number, number> }
 	| { qpRequirement: number }
+	| { questRequirement: EQuest[] }
 	| { lapsRequirement: Record<number, number> }
 	| { sacrificedItemsRequirement: Bank }
 	| { OR: Requirement[] }
@@ -221,10 +222,17 @@ export class Requirements {
 			}
 		}
 
-		if ('qpRequirement' in requirement) {
-			if (user.QP < requirement.qpRequirement) {
+		if ('questRequirement' in requirement) {
+			const questsToDo = requirement.questRequirement.filter(q => !user.hasCompletedQuest(q));
+			if (questsToDo.length > 0) {
+				const questNames = formatList(
+					questsToDo.map(qID => {
+						const quest = Quests.find(q => q.id === qID || q.id === Number(qID));
+						return quest ? quest.name : `Quest ID ${qID}`;
+					})
+				);
 				results.push({
-					reason: `You need ${requirement.qpRequirement} QP.`
+					reason: `You need to finish the following quests: ${questNames}.`
 				});
 			}
 		}
