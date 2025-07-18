@@ -2,6 +2,7 @@ import './structures/Items';
 import { ECreature } from './ECreature';
 import { EItem } from './EItem';
 import { EMonster } from './EMonster';
+import { EQuest } from './EQuest';
 import * as constants from './constants';
 import { MonsterSlayerMaster } from './meta/monsterData';
 import type { MonsterKillOptions } from './meta/types';
@@ -13,6 +14,7 @@ import { Hiscores } from './structures/Hiscores';
 import Items from './structures/Items';
 import LootTable from './structures/LootTable';
 import Player from './structures/Player';
+import { Quests } from './structures/Quest';
 import SimpleMonster from './structures/SimpleMonster';
 import SimpleOpenable from './structures/SimpleOpenable';
 import * as Util from './util';
@@ -34,8 +36,10 @@ export {
 	SimpleMonster,
 	EItem,
 	EMonster,
+	EQuest,
 	SimpleOpenable,
-	ECreature
+	ECreature,
+	Quests
 };
 
 export * from './simulation/monsters';

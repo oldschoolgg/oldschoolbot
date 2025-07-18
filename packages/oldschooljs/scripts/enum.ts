@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs';
 
 import { SkillsArray } from '../../../src/lib/skilling/types';
-import { type Item, Items, Monsters } from '../src';
+import { type Item, Items, Monsters, Quests } from '../src';
 
 export function safeItemName(itemName: string) {
 	let key = itemName;
@@ -103,6 +103,20 @@ async function main() {
 	monsterEnumStr += '\n}';
 	monsterEnumStr += '\n';
 	writeFileSync('./src/EMonster.ts', monsterEnumStr);
+
+	// EQuest
+	let questEnumStr = 'export enum EQuest {';
+	for (const quest of [...Quests].sort((a, b) => a.id - b.id)) {
+		const key = quest.name
+			.replaceAll(' ', '_')
+			.replace(/[^a-zA-Z0-9_]/g, '')
+			.toUpperCase();
+		questEnumStr += `\n\t${key} = ${quest.id},`;
+	}
+	questEnumStr = questEnumStr.slice(0, -1);
+	questEnumStr += '\n}';
+	questEnumStr += '\n';
+	writeFileSync('./src/EQuest.ts', questEnumStr);
 }
 
 main();

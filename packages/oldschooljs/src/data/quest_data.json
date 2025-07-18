@@ -1,0 +1,4372 @@
+[
+	{
+		"id": "116",
+		"title": "Animal Magnetism",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["the restless ghost", "ernest the chicken", "priest in peril"],
+				"skills": ["18 slayer", "19 crafting", "30 ranged", "35 woodcutting"]
+			},
+			"items": [
+				"Mithril axe (required to obtain the blessed axe; no other type of axe will do)",
+				"5 iron bars",
+				"Ghostspeak amulet (Morytania legs will not work)",
+				"20 ecto-tokens (or 4 bones, 4 buckets, and 4 pots to gain the tokens)",
+				"Hammer",
+				"Hard leather",
+				"Holy symbol",
+				"Polished buttons"
+			]
+		},
+		"rewards": [
+			"1,000 Crafting",
+			"1,000 Fletching",
+			"1,000 Slayer",
+			"2,500 Woodcutting",
+			"Ava's attractor if your Ranged level is less than 50, or Ava's accumulator if your Ranged level is 50 or higher"
+		],
+		"qp": 1
+	},
+	{
+		"id": "124",
+		"title": "Another Slice of H.A.M.",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": [
+					"death to the dorgeshuun",
+					"the lost tribe",
+					"goblin diplomacy",
+					"rune mysteries",
+					"the giant dwarf",
+					"the dig site"
+				],
+				"skills": ["15 attack", "25 prayer"],
+				"other": [
+					"The ability to defeat a level 64 (using any combat style) and two level 30 enemies using either Ranged or Magic."
+				]
+			},
+			"items": ["A light source"],
+			"kills": ["H.A.M. Archer", "H.A.M. Mage", "Sigmund"]
+		},
+		"rewards": ["3,000 Mining", "3,000 Prayer", "The ancient mace"],
+		"qp": 1
+	},
+	{
+		"id": "141",
+		"title": "The Ascent of Arceuus",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["client of kourend", "x marks the spot"],
+				"skills": ["12 hunter"]
+			},
+			"kills": ["Tormented Soul", "Trapped Soul"]
+		},
+		"rewards": ["2,000 coins", "1,500 Hunter", "500 Runecraft"],
+		"qp": 1
+	},
+	{
+		"id": "163",
+		"title": "At First Light",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["children of the sun", "eagles' peak"],
+				"skills": ["46 hunter", "30 herblore", "27 construction"]
+			},
+			"items": ["Needle or costume needle (one needle spawns in Pellem's Fur Store nearby)"]
+		},
+		"rewards": ["4,500 Hunter", "800 Construction", "500 Herblore"],
+		"qp": 1
+	},
+	{
+		"id": "148",
+		"title": "Below Ice Mountain",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"requirements": {
+				"qp": 16
+			},
+			"items": ["Bread", "Knife"]
+		},
+		"rewards": ["2,000 coins", "Flex emote"],
+		"qp": 1
+	},
+	{
+		"id": "153",
+		"title": "Beneath Cursed Sands",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["contact!", "prince ali rescue", "icthlarin's little helper", "gertrude's cat"],
+				"skills": ["62 agility", "55 crafting", "55 firemaking"]
+			},
+			"items": ["Coal", "Iron bar"],
+			"kills": ["Head Menaphite Guard", "Scarab Mage", "Champion of Scabaras", "Menaphite Akh"]
+		},
+		"rewards": [
+			"50,000 Agility",
+			"A Keris partisan. (If your inventory was full, you may claim one for free from Selim in front of Al Kharid Palace.)",
+			"The circlet of water, an untradeable helm that acts like a waterskin when worn. (If your inventory was full, you may claim one for free from the High Priest in Sophanem.)",
+			"Jaltevas teleport option on the Pharaoh's sceptre. (Unlocked by selecting Commune on an obelisk in the necropolis, by the mine.)"
+		],
+		"qp": 2
+	},
+	{
+		"id": "74",
+		"title": "Between a Rock...",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["dwarf cannon", "fishing contest"],
+				"skills": ["30 defence", "40 mining", "50 smithing"],
+				"other": ["The ability to defeat a level 75-125 enemy ''(depends on how much gold you mine)''"]
+			},
+			"items": [
+				"A pickaxe",
+				"4 gold bars (You will need an extra bar and telegrab if you want to keep a golden cannonball for after the quest)",
+				"A hammer",
+				"~830 coins ''(for cart and ferry)''"
+			],
+			"kills": ["Scorpion", "Arzinian Being of Bordanzan"]
+		},
+		"rewards": [
+			"5,000 Defence",
+			"5,000 Mining",
+			"5,000 Smithing",
+			"A rune pickaxe",
+			"You get to keep your gold helmet and can continue using it to fire yourself into the rock to access the Arzinian Mine where there are lots of gold rocks and gold veins, and a nearby dwarf, at the river, banks the player's gold ore for a charge (he keeps 20% of the ores, rounded up, or 10% of the ores if the player has the ring of charos (a))."
+		],
+		"qp": 2
+	},
+	{
+		"id": "52",
+		"title": "Big Chompy Bird Hunting",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["5 fletching", "30 cooking", "30 ranged"],
+				"other": ["The ability to defend against level 64 wolves and level 53 ogres"]
+			},
+			"items": [
+				"Any axe that you can use (Blessed axe does not work)",
+				"Feathers (100 to be safe; coloured feathers from work) Bringing to buy 25 feathers from Fycie also works",
+				"Knife (or to buy a knife and chisel from Bugs)",
+				"Chisel (or to buy a knife and chisel from Bugs)"
+			],
+			"kills": ["Chompy bird", "Wolf"]
+		},
+		"rewards": ["262 Fletching", "1,470 Cooking", "735 Ranged", "An ogre bow"],
+		"qp": 2
+	},
+	{
+		"id": "38",
+		"title": "Biohazard",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"requirements": {
+				"quests": ["plague city"]
+			},
+			"items": [
+				"Priest gown top and Priest gown bottom",
+				"Gas mask (can be obtained for free from the cupboard in Edmond and Alrena's house in East Ardougne)"
+			],
+			"kills": ["Mourner (boss)"]
+		},
+		"rewards": ["1,250 Thieving"],
+		"qp": 3
+	},
+	{
+		"id": "12",
+		"title": "Black Knights' Fortress",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Very Short",
+			"requirements": {
+				"other": ["The ability to evade level 33 Black Knights"],
+				"qp": 12
+			},
+			"items": [
+				"Cabbage (can be obtained from the cabbage patch in Edgeville Monastery and South Falador Farm, as well as Lumbridge Castle#Cellar"
+			]
+		},
+		"rewards": ["2,500 Coins"],
+		"qp": 3
+	},
+	{
+		"id": "132",
+		"title": "Bone Voyage",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["the dig site"],
+				"kudos": 100
+			},
+			"items": ["2 vodka", "Marrentill potion (unf)"]
+		},
+		"rewards": ["Fossil island note book"],
+		"qp": 1
+	},
+	{
+		"id": "98",
+		"title": "Cabin Fever",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Short",
+			"requirements": {
+				"quests": [
+					"pirate's treasure",
+					"rum deal",
+					"zogre flesh eaters",
+					"big chompy bird hunting",
+					"jungle potion",
+					"druidic ritual",
+					"priest in peril"
+				],
+				"skills": ["42 agility", "45 crafting", "50 smithing", "40 ranged"]
+			},
+			"kills": ["Pirate"]
+		},
+		"rewards": [
+			"7,000 Crafting",
+			"7,000 Smithing",
+			"7,000 Agility",
+			"10,000 coins (only if you speak to Bill Teach after the quest)",
+			"The Book o' piracy",
+			"Charter ship prices are halved"
+		],
+		"qp": 2
+	},
+	{
+		"id": "159",
+		"title": "Children of the Sun",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short"
+		},
+		"qp": 1
+	},
+	{
+		"id": "130",
+		"title": "Client of Kourend",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"requirements": {
+				"quests": ["x marks the spot"]
+			},
+			"items": ["Feather ''(a Stripy feather"]
+		},
+		"rewards": ["Kharedst's memoirs", "Kourend Castle Teleport spell"],
+		"qp": 1
+	},
+	{
+		"id": "29",
+		"title": "Clock Tower",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short"
+		},
+		"rewards": ["500 coins"],
+		"qp": 1
+	},
+	{
+		"id": "118",
+		"title": "Cold War",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["10 hunter", "30 agility", "30 crafting", "34 construction", "15 thieving"],
+				"other": ["Access to a crafting table 3"]
+			},
+			"items": [
+				"10 oak planks",
+				"10 steel nails",
+				"Hammer",
+				"Spade",
+				"Clockwork ''or'' a steel bar to make one",
+				"Plank",
+				"Silk",
+				"Raw cod ''or'' the ring of charos (a)",
+				"Swamp tar",
+				"5 feathers (only regular chicken feathers work)",
+				"Mahogany plank",
+				"Leather"
+			]
+		},
+		"rewards": [
+			"2,000 Crafting",
+			"5,000 Agility",
+			"1,500 Construction",
+			"Players can also steal more cowbells and make more bongos. The cowbells or the bongos can only be played in a penguin suit."
+		],
+		"qp": 1
+	},
+	{
+		"id": "117",
+		"title": "Contact!",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Short",
+			"requirements": {
+				"quests": ["prince ali rescue", "icthlarin's little helper", "gertrude's cat"]
+			},
+			"items": [
+				"A Light sources",
+				"A tinderbox (unless you have a non extinguishable light source such as Kandarin headgear, Firemaking cape, Abyssal lantern, or a bruma torch). If you don't have one, the Sophanem guard will sell you one for 50 coins."
+			],
+			"kills": ["Giant Scarab", "Locust rider", "Scarab Mage"]
+		},
+		"rewards": ["7,000 Thieving", "The Keris dagger"],
+		"qp": 1
+	},
+	{
+		"id": "1",
+		"title": "Cook's Assistant",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": ["Pot", "Bucket"]
+		},
+		"rewards": [
+			"300 Cooking",
+			"Permission to use the Cook-o-matic 100, which reduces the chance of burning some foods."
+		],
+		"qp": 1
+	},
+	{
+		"id": "135",
+		"title": "The Corsair Curse",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short"
+		},
+		"qp": 2
+	},
+	{
+		"id": "69",
+		"title": "Creature of Fenkenstrain",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["priest in peril", "the restless ghost"],
+				"skills": ["20 crafting", "25 thieving"],
+				"other": ["Able to defeat a level 51 monster and run past level 72 monsters"]
+			},
+			"items": [
+				"Ghostspeak amulet",
+				"Silver bar",
+				"3 bronze wire (unnoted)",
+				"Needle (Can NOT use costume needle)",
+				"5 thread (Can NOT use costume needle)",
+				"Spade",
+				"1 law rune"
+			],
+			"kills": ["Experiment"]
+		},
+		"rewards": ["1,000 Thieving"],
+		"qp": 2
+	},
+	{
+		"id": "110",
+		"title": "Darkness of Hallowvale",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Long",
+			"requirements": {
+				"quests": [
+					"in aid of the myreque",
+					"in search of the myreque",
+					"nature spirit",
+					"priest in peril",
+					"the restless ghost"
+				],
+				"skills": [
+					"5 construction",
+					"20 mining",
+					"22 thieving",
+					"26 agility",
+					"32 crafting",
+					"33 magic",
+					"40 strength"
+				],
+				"other": ["The ability to withstand several melee attacks from a level 169 enemy."]
+			},
+			"items": ["8 nails", "2 planks", "Hammer"]
+		},
+		"rewards": [
+			"7,000 Agility",
+			"6,000 Thieving",
+			"2,000 Construction",
+			"Tome of , granting 2,000 to any three skills of the player's choosing (level 30 or over). Can be the same skill."
+		],
+		"qp": 2
+	},
+	{
+		"id": "167",
+		"title": "Death on the Isle",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["children of the sun"],
+				"skills": ["34 thieving", "32 agility"]
+			}
+		},
+		"rewards": [
+			"10,000 Thieving",
+			"7,500 Agility",
+			"5,000 Crafting",
+			"A costume needle from the costumer",
+			"The butler's tray and an assortment of masks from the Head Butler"
+		],
+		"qp": 2
+	},
+	{
+		"id": "56",
+		"title": "Death Plateau",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"members": "Yes",
+			"items": [
+				"60 coins (bring 1000 for the gambling dice with Harold part)",
+				"10 unnoted bread",
+				"10 unnoted cooked trout",
+				"Iron bar",
+				"Asgarnian ale (can be found on the bar at the pub in Burthorpe)"
+			]
+		},
+		"rewards": ["3,000 Attack", "Steel claws"],
+		"qp": 1
+	},
+	{
+		"id": "106",
+		"title": "Death to the Dorgeshuun",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["the lost tribe", "goblin diplomacy", "rune mysteries"],
+				"skills": ["23 agility", "23 thieving"],
+				"other": ["The ability to defeat a level 50 enemy with Melee or Magic"]
+			},
+			"items": [
+				"Any light source (lanterns are recommended - open light sources such as a candle can cause gas explosions and require a tinderbox)",
+				"Pickaxe (if not using a games necklace to teleport to Tears of Guthix (minigame)"
+			],
+			"kills": ["Sigmund", "H.A.M. Guard"]
+		},
+		"rewards": [
+			"2,000 Thieving",
+			"2,000 Ranged",
+			"A torch if you did not have a light source in your inventory at the end of the quest"
+		],
+		"qp": 1
+	},
+	{
+		"id": "160",
+		"title": "Defender of Varrock",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"shield of arrav",
+					"temple of ikov",
+					"below ice mountain",
+					"family crest",
+					"garden of tranquillity",
+					"creature of fenkenstrain",
+					"priest in peril",
+					"the restless ghost",
+					"what lies below",
+					"rune mysteries",
+					"romeo & juliet",
+					"demon slayer"
+				],
+				"skills": ["55 smithing", "52 hunter"]
+			},
+			"items": ["Barronite deposit or a pickaxe to mine one"],
+			"kills": ["armoured zombie", "Chaos Golem"]
+		},
+		"rewards": ["15,000 Smithing", "15,000 Hunter"],
+		"qp": 2,
+		"kudos": 5
+	},
+	{
+		"id": "2",
+		"title": "Demon Slayer",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"items": ["25 bones (can't be noted, but can be delivered in increments)", "1 coin"]
+		},
+		"rewards": ["Silverlight (if lost, players may retrieve it from Sir Prysin for a fee of 500 coins.)"],
+		"qp": 3,
+		"kudos": 5
+	},
+	{
+		"id": "134",
+		"title": "The Depths of Despair",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["client of kourend", "x marks the spot"],
+				"skills": ["18 agility"],
+				"other": ["Ability to kill a level 36 Sand Snake"]
+			}
+		},
+		"rewards": ["1,500 Agility", "4,000 coins"],
+		"qp": 1
+	},
+	{
+		"id": "77",
+		"title": "Desert Treasure I",
+		"details": {
+			"difficulty": "Master",
+			"length": "Long",
+			"requirements": {
+				"quests": [
+					"the dig site",
+					"temple of ikov",
+					"the tourist trap",
+					"troll stronghold",
+					"death plateau",
+					"priest in peril",
+					"waterfall quest"
+				],
+				"skills": ["53 thieving", "50 magic", "50 firemaking", "10 slayer"],
+				"other": ["Access to Morytania Graveyard"]
+			},
+			"items": [
+				"10+ Shantay pass (item)",
+				"650 Coins",
+				"12 Magic logs (can be noted)",
+				"6 Steel bar (can be noted)",
+				"6 Molten glass (can be noted)",
+				"Ashes",
+				"Charcoal",
+				"1 blood rune",
+				"Bones (can be noted to prevent accidental burial)",
+				"A silver bar",
+				"Garlic powder (made by grinding garlic in a pestle and mortar)",
+				"Spice (gnome spice and Evil Dave's spices will '''not''' work)",
+				"A sweet (cake, chocolate cake (part cakes are accepted), or chocolate bar)",
+				"Climbing boots (if Eadgar's Ruse isn't completed and/or you lack 61 Magic for the Trollheim Teleport)",
+				"A facemask, slayer helmet, or gas mask",
+				"A tinderbox",
+				"20-50+ lockpicks"
+			],
+			"kills": ["Dessous", "ice troll", "Kamil", "Fareed", "Damis"]
+		},
+		"rewards": [
+			"20,006.9 Magic",
+			"Ring of visibility: If you ever lose it, you can obtain another one from Rasolo."
+		],
+		"qp": 3
+	},
+	{
+		"id": "157",
+		"title": "Desert Treasure II - The Fallen Empire",
+		"details": {
+			"difficulty": "Grandmaster",
+			"length": "Very Long",
+			"requirements": {
+				"quests": [
+					"desert treasure i",
+					"the dig site",
+					"temple of ikov",
+					"the tourist trap",
+					"troll stronghold",
+					"death plateau",
+					"priest in peril",
+					"waterfall quest",
+					"secrets of the north",
+					"making friends with my arm",
+					"my arm's big adventure",
+					"eadgar's ruse",
+					"druidic ritual",
+					"the feud",
+					"jungle potion",
+					"swan song",
+					"one small favour",
+					"rune mysteries",
+					"shilo village",
+					"garden of tranquillity",
+					"creature of fenkenstrain",
+					"the restless ghost",
+					"cold war",
+					"romeo & juliet",
+					"the general's shadow",
+					"curse of the empty lord, for full ghostly robes",
+					"fight arena",
+					"devious minds",
+					"wanted!",
+					"recruitment drive",
+					"black knights' fortress",
+					"the lost tribe",
+					"goblin diplomacy",
+					"doric's quest",
+					"enter the abyss",
+					"hazeel cult",
+					"enakhra's lament",
+					"temple of the eye",
+					"the garden of death",
+					"below ice mountain",
+					"his faithful servants"
+				],
+				"skills": ["75 firemaking", "75 magic", "70 thieving", "62 herblore", "60 runecraft", "60 construction"]
+			},
+			"items": ["Ring of visibility", "Facemask or Slayer helm"],
+			"kills": [
+				"Ancient Guardian (Desert Treasure II)",
+				"Vardorvis",
+				"Kasonde",
+				"A number of lesser demons, black demons, and abyssal creatures",
+				"The Leviathan",
+				"Jhallan",
+				"Duke Sucellus",
+				"The Whisperer",
+				"Mysterious Figure",
+				"The Forsaken Assassin",
+				"Ketla the Unworthy",
+				"Kasonde the Craven",
+				"Persten the Deceitful"
+			]
+		},
+		"rewards": ["Ring of shadows"],
+		"qp": 5
+	},
+	{
+		"id": "95",
+		"title": "Devious Minds",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Short",
+			"requirements": {
+				"quests": [
+					"wanted!",
+					"recruitment drive",
+					"black knights' fortress",
+					"druidic ritual",
+					"the lost tribe",
+					"goblin diplomacy",
+					"rune mysteries",
+					"priest in peril",
+					"troll stronghold",
+					"death plateau",
+					"doric's quest",
+					"enter the abyss"
+				],
+				"skills": ["65 smithing", "50 runecraft", "50 fletching"]
+			},
+			"items": ["A mithril 2h sword", "A bow string", "A non-degraded large pouch"]
+		},
+		"rewards": ["5,000 Fletching", "5,000 Runecraft", "6,500 Smithing"],
+		"qp": 1
+	},
+	{
+		"id": "48",
+		"title": "The Dig Site",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["10 agility", "10 herblore", "25 thieving"]
+			},
+			"items": [
+				"Pestle and mortar",
+				"Vial",
+				"Tinderbox",
+				"Cup of tea (can be stolen from the Varrock Ye Olde Tea Shoppe",
+				"2 ropes (can be stolen from a Digsite workman, but with average luck, this can easily take more than 15 minutes.)",
+				"Opal or uncut opal (small chance to acquire while panning for a quest item)"
+			]
+		},
+		"rewards": [
+			"15,300 Mining",
+			"2,000 Herblore",
+			"2 gold bars",
+			"Show the museum curator the Level 3 certificate to choose between something to drink (Fruit blast) or something to eat (chocolate cake). Get the cake for Desert Treasure I / A Tail of Two Cats or the fruit blast for Recipe for Disaster. Make sure that you go through the dialogue for each one that you give it or he will not give you a chance to pick which reward you want and you will receive nothing.",
+			"The Ancient talisman can be viewed in the Digsite Exhibit at the museum on the"
+		],
+		"qp": 2
+	},
+	{
+		"id": "11",
+		"title": "Doric's Quest",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": ["6 clay (not soft clay)", "4 copper ores", "2 iron ores"]
+		},
+		"rewards": ["1,300 Mining", "180 coins", "Bronze pickaxe given at the start of the quest"],
+		"qp": 1
+	},
+	{
+		"id": "17",
+		"title": "Dragon Slayer I",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"other": ["The ability to defeat a level 83 Elvarg|dragon"],
+				"qp": 32
+			},
+			"items": [
+				"Unfired bowl (can be made with soft clay on a Potter's Wheel with Crafting)",
+				"Wizard's mind bomb (can be bought in the Rising Sun Inn in Falador or The Toad and Chicken in Burthorpe)",
+				"Lobster pot (can be bought from any Fishing shops",
+				"Silk (can be bought from Thessalia for 30 coins or the Al Kharid silk stall for 3 coins -- members can steal it from the Ardougne silk stall with Thieving)",
+				"Hammer",
+				"90 steel nails (Members can buy these from the Sawmill operator north-east of Varrock, they can also be smithed at Smithing using 6 steel bars by all players)",
+				"3 planks (only normal planks) Free-to-play: Pick up the spawns in the Graveyard of Shadows, level 19 Wilderness, or for a safer option, ornate lockboxes in the Camdozaal Vault after Below Ice Mountain Member: Plank#Spawns",
+				"2,000 coins"
+			],
+			"kills": [
+				"Zombie rat",
+				"Ghost (Melzar's Maze)",
+				"Skeleton (Melzar's Maze)",
+				"Zombie (Melzar's Maze)",
+				"Melzar the Mad",
+				"Lesser demon (Melzar's Maze)",
+				"Wormbrain",
+				"Elvarg"
+			]
+		},
+		"rewards": ["18,650 Strength", "18,650 Defence"],
+		"qp": 2
+	},
+	{
+		"id": "136",
+		"title": "Dragon Slayer II",
+		"details": {
+			"difficulty": "Grandmaster",
+			"length": "Very Long",
+			"requirements": {
+				"quests": [
+					"legends' quest",
+					"family crest",
+					"heroes' quest",
+					"shield of arrav",
+					"lost city",
+					"merlin's crystal",
+					"dragon slayer i",
+					"underground pass",
+					"biohazard",
+					"plague city",
+					"waterfall quest",
+					"dream mentor",
+					"lunar diplomacy",
+					"the fremennik trials",
+					"rune mysteries",
+					"shilo village",
+					"jungle potion",
+					"eadgar's ruse",
+					"druidic ritual",
+					"troll stronghold",
+					"death plateau",
+					"a tail of two cats",
+					"icthlarin's little helper",
+					"gertrude's cat",
+					"animal magnetism",
+					"ernest the chicken",
+					"priest in peril",
+					"the restless ghost",
+					"ghosts ahoy",
+					"bone voyage",
+					"the dig site",
+					"100 kudos",
+					"client of kourend",
+					"x marks the spot"
+				],
+				"skills": [
+					"75 magic",
+					"70 smithing",
+					"68 mining",
+					"62 crafting",
+					"60 agility",
+					"60 thieving",
+					"50 construction",
+					"50 hitpoints"
+				],
+				"other": [
+					"Started the Barbarian_Training#Pyre_ships|pyre ship portion of the Barbarian Training miniquest to gain access to the Ancient Cavern"
+				],
+				"qp": 200
+			},
+			"items": [
+				"A pickaxe",
+				"An axe",
+				"8 oak planks",
+				"10 swamp paste",
+				"12 nails of any kind ('''Note:''' Bringing more is recommended; nails may bend!)",
+				"A hammer",
+				"A machete",
+				"A saw",
+				"Catspeak amulet",
+				"Ghostspeak amulet (Morytania Legs 2+ work)",
+				"Goutweed",
+				"Cut dragonstone",
+				"2 molten glass",
+				"Glassblowing pipe",
+				"Spade",
+				"Astral rune",
+				"Seal of passage (or elite Fremennik Diary completion)",
+				"Tinderbox",
+				"Pestle and mortar",
+				"Runes for 3 Fire Wave spells '''or''' 3 Fire Surge spells"
+			],
+			"kills": [
+				"Vorkath",
+				"Spawn (Dragon Slayer II)",
+				"Robert the Strong",
+				"Green dragon",
+				"Blue dragon",
+				"Red dragon",
+				"Iron dragon",
+				"Brutal green dragon",
+				"Black dragon",
+				"Steel dragon",
+				"Brutal red dragon",
+				"Mithril dragon",
+				"Adamant dragon",
+				"Rune dragon",
+				"Galvek"
+			]
+		},
+		"rewards": ["80,000 Smithing", "60,000 Mining", "50,000 Agility", "50,000 Thieving", "Locator orb"],
+		"qp": 5
+	},
+	{
+		"id": "125",
+		"title": "Dream Mentor",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"lunar diplomacy",
+					"the fremennik trials",
+					"lost city",
+					"rune mysteries",
+					"shilo village",
+					"jungle potion",
+					"eadgar's ruse",
+					"druidic ritual",
+					"troll stronghold",
+					"death plateau"
+				],
+				"skills": ["85 combat"],
+				"other": ["The ability to defeat 4 powerful monsters without the use of prayer"]
+			},
+			"items": [
+				"A seal of passage",
+				"Goutweed",
+				"An astral rune",
+				"A tinderbox",
+				"A hammer",
+				"A pestle and mortar"
+			],
+			"kills": ["The Inadequacy", "The Everlasting", "The Untouchable", "The Illusive"]
+		},
+		"rewards": [
+			"15,000 Hitpoints",
+			"10,000 Magic",
+			"7 new spells added to your Lunar spells book (Monster Examine, Humidify, Hunter Kit, Stat Spy, Dream, Plank Make, Spellbook Swap)",
+			"'Birds-Eye' Jack will now allow you to use the bank without a seal of passage equipped or in your inventory."
+		],
+		"qp": 2
+	},
+	{
+		"id": "18",
+		"title": "Druidic Ritual",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": ["Raw bear meat", "Raw rat meat", "Raw beef", "Raw chicken"]
+		},
+		"rewards": ["250 Herblore"],
+		"qp": 4
+	},
+	{
+		"id": "46",
+		"title": "Dwarf Cannon",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short"
+		},
+		"rewards": ["750 Crafting", "Membership of the Black Guard"],
+		"qp": 1
+	},
+	{
+		"id": "60",
+		"title": "Eadgar's Ruse",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["druidic ritual", "troll stronghold", "death plateau"],
+				"skills": ["31 herblore"]
+			},
+			"items": [
+				"Climbing boots (or 12 coins to buy from Tenzing)",
+				"Vodka (sold by Funch's Fine Groceries",
+				"Pineapple chunks (pineapples are sold by Funch's Fine Groceries",
+				"1 Logs",
+				"5 Raw chicken (there are chickens on the way at Tenzing's house. Undead chickens do not work)",
+				"Pestle and mortar",
+				"Ranarr potion (unf)"
+			]
+		},
+		"rewards": ["11,000 Herblore", "1 Burnt Meat"],
+		"qp": 1
+	},
+	{
+		"id": "115",
+		"title": "Eagles' Peak",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"requirements": {
+				"skills": ["27 hunter"]
+			},
+			"items": ["Yellow dye", "Swamp tar", "50 Coins"]
+		},
+		"rewards": [
+			"2,500 Hunter",
+			"Captured ferrets can be used to flush rabbits from their holes, allowing them to be caught in rabbit snares",
+			"A box trap"
+		],
+		"qp": 2
+	},
+	{
+		"id": "53",
+		"title": "Elemental Workshop I",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"requirements": {
+				"skills": ["20 mining", "20 smithing", "20 crafting"]
+			},
+			"items": [
+				"Pickaxe",
+				"Thread",
+				"Hammer",
+				"4 coal (4 more for each additional bar you would like to produce)"
+			],
+			"kills": ["Earth elemental"]
+		},
+		"rewards": ["5,000 Crafting", "5,000 Smithing"],
+		"qp": 1
+	},
+	{
+		"id": "112",
+		"title": "Elemental Workshop II",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["elemental workshop i"],
+				"skills": ["20 magic", "30 smithing"]
+			},
+			"items": ["Hammer", "The battered key from Elemental Workshop I"]
+		},
+		"rewards": [
+			"7,500 Smithing",
+			"7,500 Crafting",
+			"To make a mind shield: have the slashed book from the Elemental Workshop I quest in your inventory, then smith a primed mind bar into a mind shield"
+		],
+		"qp": 1
+	},
+	{
+		"id": "97",
+		"title": "Enakhra's Lament",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["50 crafting", "45 firemaking", "43 prayer", "39 magic"],
+				"other": ["Must be on the standard spellbook"]
+			},
+			"items": [
+				"Chisel",
+				"bread, any kind of pie, any kind of cake, any kind of pizza, or a baked potato with topping (partial pies, cakes and pizzas do '''not''' work, and neither will burnt versions)",
+				"Tinderbox",
+				"Candle (a black candle will '''not''' work)",
+				"Logs",
+				"Oak logs",
+				"Willow logs",
+				"Maple logs",
+				"Pickaxe (unless you already have the required items)",
+				"Two Granite (5kg)"
+			]
+		},
+		"rewards": [
+			"7,000 Crafting",
+			"7,000 Mining",
+			"7,000 Firemaking",
+			"7,000 Magic",
+			"Camulet, which allows you to talk to camels and teleport to the temple four times. It can be recharged by using camel dung on it. You can pay Lazim 1 million gold pieces to give it unlimited charges.",
+			"Camel mask (Use a piece of soft clay on the pedestal with the globes on it to make.)"
+		],
+		"qp": 2
+	},
+	{
+		"id": "114",
+		"title": "Enlightened Journey",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["20 firemaking", "30 farming", "36 crafting"],
+				"qp": 20
+			},
+			"items": [
+				"3 unnoted papyrus",
+				"1 ball of wool",
+				"A full Potatoes",
+				"8 empty sacks – bring 9 sacks if planning to fill one with potatoes on Entrana.",
+				"Yellow dye",
+				"Red dye",
+				"10 unnoted silk",
+				"10 unnoted normal logs",
+				"A tinderbox",
+				"12 unnoted willow branches (buy from the Grand Exchange, or plant a willow sapling and wait 4 hours.) Note: A willow seed is not required, nor is a basket of apples as payment (although planting one beforehand is faster); all players receive a Auguste's sapling"
+			]
+		},
+		"rewards": [
+			"2,000 Crafting",
+			"3,000 Farming",
+			"1,500 Woodcutting",
+			"4,000 Firemaking",
+			"The Bomber jacket and cap",
+			"Gnome goggles from the Gnome Restaurant minigame can be combined with the bomber cap by talking with Auguste"
+		],
+		"qp": 1
+	},
+	{
+		"id": "7",
+		"title": "Ernest the Chicken",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"requirements": {
+				"other": ["The ability to defend from a level 22 Skeleton."]
+			},
+			"items": ["Poison (item)"]
+		},
+		"rewards": ["300 Coins"],
+		"qp": 4
+	},
+	{
+		"id": "169",
+		"title": "Ethically Acquired Antiquities",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"requirements": {
+				"quests": ["children of the sun", "shield of arrav"],
+				"skills": ["25 thieving"]
+			}
+		},
+		"rewards": ["6,000 Thieving", "5,000 coins"],
+		"qp": 1
+	},
+	{
+		"id": "109",
+		"title": "The Eyes of Glouphrie",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["the grand tree quest"],
+				"skills": ["5 construction", "46 magic"]
+			},
+			"items": [
+				"Bucket of sap (If you do not have one, you can use a knife on any Tree#Single canopy",
+				"Mud rune",
+				"Maple logs",
+				"Oak logs",
+				"Hammer",
+				"Saw",
+				"Pestle and mortar"
+			]
+		},
+		"rewards": [
+			"12,000 Magic",
+			"2,500 Woodcutting",
+			"6,000 Runecraft",
+			"250 Construction",
+			"A crystal saw seed — Either take it to Ilfeen in Tirannwn or use it on the singing bowl by Brimstail to get an enchanted crystal saw. It allows items (that require a saw) to be made three levels above your Construction. It has a limited number of charges (28), but the recharge is free - use the bowl again."
+		],
+		"qp": 2
+	},
+	{
+		"id": "99",
+		"title": "Fairytale I - Growing Pains",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["lost city", "nature spirit", "priest in peril", "the restless ghost"],
+				"other": ["The ability to defeat a level 111 Tanglefoot with limited weaponry"]
+			},
+			"items": [
+				"Ghostspeak amulet",
+				"Dramen staff",
+				"A combination of three items picked for you at random, see Fairytale I - Growing Pains#Blessed secateurs"
+			]
+		},
+		"rewards": [
+			"Magic secateurs (increases some crop harvests when Farming)",
+			"3,500 Farming",
+			"2,000 Attack",
+			"1,000 Magic"
+		],
+		"qp": 2
+	},
+	{
+		"id": "107",
+		"title": "Fairytale II - Cure a Queen",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"fairytale i - growing pains",
+					"lost city",
+					"nature spirit",
+					"the restless ghost",
+					"priest in peril"
+				],
+				"skills": ["40 thieving", "49 farming", "57 herblore"]
+			},
+			"items": ["Dramen staff", "Vial of water", "Pestle and mortar"],
+			"kills": ["Gorak"]
+		},
+		"rewards": ["3,500 Herblore", "2,500 Thieving"],
+		"qp": 2
+	},
+	{
+		"id": "24",
+		"title": "Family Crest",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["40 mining", "40 smithing", "59 magic", "40 crafting"],
+				"other": ["The ability to defeat a level 170 Demons|demon (can be safespotted)"]
+			},
+			"items": [
+				"Shrimps",
+				"Salmon",
+				"Tuna",
+				"Bass",
+				"Swordfish",
+				"Pickaxe - Adamant pickaxe",
+				"2 Ruby",
+				"Ring Mould",
+				"Necklace Mould",
+				"Any poison cure like Antipoison (you will lose this item)"
+			],
+			"kills": ["Chronozon"]
+		},
+		"rewards": [
+			"Steel gauntlets",
+			"The steel gauntlets offer useful perks. Each brother will imbue them with a special ability. They will initially do this for free. Be careful choosing, though, since you can only have one effect, and it will cost you 25,000 coins to change them. Dimintheis will provide you with a \"magically\" found pair should you lose them."
+		],
+		"qp": 1
+	},
+	{
+		"id": "75",
+		"title": "The Feud",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["30 thieving"],
+				"other": [
+					"The ability to kill a level 70 Bandit champion|bandit and a level 75 Tough Guy|Menaphite (both can be safespotted)."
+				]
+			},
+			"items": [
+				"501+ coins",
+				"Gloves - (see Cactus (The Feud)",
+				"Kharidian headpiece (can be bought from Ali Morrisane)",
+				"Fake beard (can be bought from Ali Morrisane)",
+				"if you have the snake charm in your bank already you will need to retrieve it"
+			],
+			"kills": ["Bandit champion", "Tough Guy"]
+		},
+		"rewards": [
+			"15,000 Thieving",
+			"500 coins",
+			"An oak blackjack",
+			"A desert disguise (created during the quest)",
+			"A willow blackjack (as a drop from the tough guy)",
+			"An adamant scimitar (as a drop from the bandit champion)"
+		],
+		"qp": 1
+	},
+	{
+		"id": "32",
+		"title": "Fight Arena",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"other": ["The ability to defeat level 44, 63 and 137 enemies (all can be safespotted)"]
+			},
+			"items": ["5 coins (for Khali brew)"],
+			"kills": ["Khazard scorpion", "Khazard ogre", "Bouncer", "General Khazard"]
+		},
+		"rewards": ["12,175 Attack", "2,175 Thieving", "1,000 coins", "The Khazard armour set"],
+		"qp": 2
+	},
+	{
+		"id": "26",
+		"title": "Fishing Contest",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"requirements": {
+				"skills": ["10 fishing"]
+			},
+			"items": ["Spade", "5 coins (10 if you buy a fishing rod from Jack)"]
+		},
+		"rewards": ["2,437 Fishing"],
+		"qp": 1
+	},
+	{
+		"id": "85",
+		"title": "Forgettable Tale...",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Long",
+			"requirements": {
+				"quests": ["the giant dwarf", "fishing contest"],
+				"skills": ["22 cooking", "17 farming"]
+			},
+			"items": [
+				"~400 coins",
+				"2 barley malt (no range in Keldagrim, plain barley has to be cooked elsewhere)",
+				"2 buckets of water",
+				"Seed dibber (no Tool leprechaun in Keldagrim) or partial completion of the Farming portion of the Barbarian Training miniquest",
+				"A random item from the list below (see list for details)"
+			]
+		},
+		"rewards": ["5,000 Cooking", "5,000 Farming", "2 Dwarven stout (m)"],
+		"qp": 2
+	},
+	{
+		"id": "140",
+		"title": "The Forsaken Tower",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["client of kourend", "x marks the spot"]
+			}
+		},
+		"rewards": ["500 Mining", "500 Smithing", "6,000 coins"],
+		"qp": 1
+	},
+	{
+		"id": "144",
+		"title": "The Fremennik Exiles",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"the fremennik isles",
+					"the fremennik trials",
+					"lunar diplomacy",
+					"lost city",
+					"rune mysteries",
+					"shilo village",
+					"jungle potion",
+					"druidic ritual",
+					"mountain daughter",
+					"heroes' quest",
+					"dragon slayer i",
+					"merlin's crystal",
+					"shield of arrav"
+				],
+				"skills": ["65 crafting", "60 slayer", "60 smithing", "60 fishing", "55 runecraft"]
+			},
+			"items": [
+				"Mirror shield",
+				"1 Molten glass",
+				"100 Astral runes",
+				"Pet rock",
+				"Fishing rod or fly fishing rod",
+				"Fremennik shield (this is '''not''' the tradeable Neitiznot shield) Alternatively, get it from Bardur AFTER being exiled, for either '''or''' for free using a Ring of charos (a) Recommended: Rune thrownaxes or to get to Bardur in the Waterbirth Island Dungeon",
+				"Ice gloves or Smiths gloves (i)",
+				"Hammer",
+				"Glassblowing pipe",
+				"3 Lunar bar",
+				"Seal of Passage (if the Fremennik diaries"
+			],
+			"kills": [
+				"Basilisk Youngling",
+				"Basilisk",
+				"Monstrous Basilisk (The Fremennik Exiles)",
+				"Typhor",
+				"The Jormungand"
+			]
+		},
+		"rewards": ["V's shield", "50,000 Slayer", "50,000 Crafting", "30,000 Runecraft"],
+		"qp": 2
+	},
+	{
+		"id": "119",
+		"title": "The Fremennik Isles",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["the fremennik trials"],
+				"skills": ["20 construction"],
+				"other": [
+					"The ability to kill a level 122 Ice Troll King|Troll King (Damage can be reduced) and, separately, 10 rock throwing ice trolls in a multicombat area."
+				]
+			},
+			"items": [
+				"8 tin ores, 7 pieces of coal, or 6 mithril ores (depends on your Mining level; level 1 will require tin ore, 2-54 will require coal, and 55-99 require mithril ore). '''Note:''' The ores can be noted.",
+				"A knife",
+				"a Neitiznot shield (or 56 Woodcutting, a hammer and a bronze nail)",
+				"Yak-hide armour (top)",
+				"5000 coins (optional)"
+			],
+			"kills": ["Ice troll (disambiguation)", "Ice Troll King"]
+		},
+		"rewards": [
+			"5,000 Construction",
+			"5,000 Crafting",
+			"10,000 Woodcutting",
+			"Two lots of 10,000 Combat (choose between Strength, Attack, Defence or Hitpoints).",
+			"helm of Neitiznot, which is the equivalent of a berserker helm with a +3 Prayer bonus, slightly better Magic and crush Defence, and no negative bonuses. If a player loses the helm, they can talk to Mawnis Burowgar to buy another one for 50,000 coins.",
+			"Around 20,000 coins in assorted rewards during quest.",
+			"The banks in Neitiznot and Jatizso are close to water, range, furnace, fishing spots, mining ores; a spinning wheel is also nearby.",
+			"If the jester outfit is lost, a player can retrieve another one from the chest behind King Gjuki Sorvott IV's throne.",
+			"The Contraband Yak Produce shop is available on Jatizso if a player refunds the 5,000 coin tax to Vanligga Gastfrihet, who is north of the king."
+		],
+		"qp": 1
+	},
+	{
+		"id": "62",
+		"title": "The Fremennik Trials",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["25 fletching", "40 woodcutting", "40 crafting"],
+				"other": [
+					"If crafting the lyre:",
+					"'''OR'''",
+					"* Players can kill Lanzig, Borrokar, Lensa, or Freidir to obtain the lyre ''(1/17 chance)''",
+					"Ability to defeat a level-69 Draugen",
+					"Ability to defeat a Koschei|fairly strong warrior without armour, weapons, or spells"
+				]
+			},
+			"items": ["5,252 coins", "Tinderbox", "a raw shark, raw manta ray, or raw sea turtle"],
+			"kills": ["Koschei the deathless", "Draugen", "Lanzig"]
+		},
+		"rewards": [
+			"2,812.4 Agility",
+			"2,812.4 Attack",
+			"2,812.4 Crafting",
+			"2,812.4 Defence",
+			"2,812.4 Fishing",
+			"2,812.4 Fletching",
+			"2,812.4 Hitpoints",
+			"2,812.4 Strength",
+			"2,812.4 Thieving",
+			"2,812.4 Woodcutting",
+			"A herring",
+			"Jarvald will charge no fee for travelling to Waterbirth Island"
+		],
+		"qp": 3
+	},
+	{
+		"id": "155",
+		"title": "The Garden of Death",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["20 farming"]
+			}
+		},
+		"rewards": ["10,000 Farming"],
+		"qp": 1
+	},
+	{
+		"id": "86",
+		"title": "Garden of Tranquillity",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Long",
+			"requirements": {
+				"quests": ["creature of fenkenstrain", "priest in peril", "the restless ghost"],
+				"skills": ["25 farming"]
+			},
+			"items": [
+				"Ring of charos",
+				"All tool leprechaun tools A rake A seed dibber (or partial completion of the Farming portion of the Barbarian Training miniquest) A spade Secateurs (magic secateurs work) A watering can A gardening trowel",
+				"2 plant cures",
+				"A marigold seed (2 recommended in case of failure)",
+				"3+ cabbage seeds (6 recommended to plant in both allotments to increase chance of survival)",
+				"3+ onion seeds (6 recommended to plant in both allotments to increase chance of survival)",
+				"A hammer",
+				"A rune essence",
+				"A pestle and mortar",
+				"A filled plant pot",
+				"2 ultracompost/supercompost/compost (note: Bottomless compost bucket will not work for these two required composts. The quality of these 2 composts do not matter.)"
+			]
+		},
+		"rewards": [
+			"5,000 Farming",
+			"An activated ring of charos - players can wear the activated ring to charm various NPCs to pay less for certain services, or get choices that are otherwise unavailable.",
+			"An apple tree seed",
+			"An acorn",
+			"5 guam seeds",
+			"4-dose compost potion, which can be used to turn compost into supercompost.",
+			"After the quest, the player can visit the garden and pick 4 fruits from the white tree. They regrow after some time, similar to other fruit bearing trees. Each fruit restores about 8% of energy."
+		],
+		"qp": 2
+	},
+	{
+		"id": "49",
+		"title": "Gertrude's Cat",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": [
+				"Bucket of milk",
+				"100 coins",
+				"Seasoned sardine (Bought from the Grand Exchange) or alternatively: Raw sardine (Caught or bought from Gerrant's Fishy Business.) Doogle leaves (South of Gertrude's house)"
+			]
+		},
+		"rewards": [
+			"1,525 Cooking",
+			"Your own kitten",
+			"Chocolate cake",
+			"Stew",
+			"Gertrude will now sell kittens for you to raise for coins each."
+		],
+		"qp": 1
+	},
+	{
+		"id": "147",
+		"title": "Getting Ahead",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["30 crafting", "26 construction"]
+			},
+			"items": [
+				"Bear fur, grey wolf fur, or Fur (a Grizzly bear and bear cub spawn west of the farm and two black bears spawn east of the farm)",
+				"6 nails of any kind (iron nails can be found in the workbench north of the house, and more than 6 is recommended in case you bend a few)"
+			]
+		},
+		"rewards": [
+			"3,000 coins — If not claimed at quest completion due to no available inventory space, talk to Gordon again after the quest for the reward.",
+			"4,000 Crafting",
+			"3,200 Construction"
+		],
+		"qp": 1
+	},
+	{
+		"id": "71",
+		"title": "Ghosts Ahoy",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["priest in peril", "the restless ghost"],
+				"skills": ["25 agility", "20 cooking"]
+			},
+			"items": [
+				"Ecto-tokens: 31 Ecto-tokens (20 with ring of charos (a)) OR 25 Ecto-tokens (10 with ring) using charter ships OR 1 bone, 1 pot, and 1 bucket for every 5 ecto-tokens required (see Ghosts_Ahoy#Pre-quest: obtaining ecto-tokens",
+				"~400 Coins",
+				"Ghostspeak amulet",
+				"Bucket of milk",
+				"Silk",
+				"3 colours of dye (The dye colours you will need are random. If you want to save a trip, have 3 Red dye",
+				"Spade",
+				"Oak longbow"
+			],
+			"kills": ["Giant lobster (Ghosts Ahoy)"]
+		},
+		"rewards": [
+			"2,400 Prayer",
+			"Free passage into Port Phasmatys",
+			"The Ectophial, which allows direct teleport to the Ectofuntus, is refilled from the Ectofuntus."
+		],
+		"qp": 2
+	},
+	{
+		"id": "82",
+		"title": "The Giant Dwarf",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["12 crafting", "16 firemaking", "33 magic", "14 thieving"]
+			},
+			"items": [
+				"200 coins for the clothes",
+				"Logs (most logs will work, however, arctic pine, redwood & coloured logs do not work)",
+				"Tinderbox",
+				"Iron bar",
+				"3 cut sapphires",
+				"Redberry pie"
+			]
+		},
+		"rewards": [
+			"2,500 Mining",
+			"2,500 Smithing",
+			"2,500 Crafting",
+			"1,500 Magic",
+			"1,500 Thieving",
+			"1,500 Firemaking"
+		],
+		"qp": 2
+	},
+	{
+		"id": "15",
+		"title": "Goblin Diplomacy",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": [
+				"1 Blue dye (or 2 woad leaves and 5 coins to obtain a blue dye from Aggie) Offer 20 coins to Wyson the gardener and he will give you two woad leaves",
+				"1 Orange dye – created by combining red dye with yellow dye 1 Red dye (or 3 redberries and 5 coins to obtain a red dye from Aggie) 1 Yellow dye (2 onions and 5 coins to obtain a yellow dye from Aggie)"
+			]
+		},
+		"rewards": ["200 Crafting", "A gold bar"],
+		"qp": 5
+	},
+	{
+		"id": "76",
+		"title": "The Golem",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["20 crafting", "25 thieving"]
+			},
+			"items": [
+				"Vial",
+				"Pestle and mortar",
+				"Papyrus (can be bought from Ali Morrisane for 10gp)",
+				"4 soft clay (or a bracelet of clay and a pickaxe to mine north-west of the ruins)",
+				"Phoenix feather (can be obtained north-west of the ruins)",
+				"Means to enter the desert (such as the Shantay pass (item)"
+			]
+		},
+		"rewards": [
+			"1,000 Thieving",
+			"1,000 Crafting",
+			"2 cut rubies, emeralds, and sapphires (collect these by using a chisel and hammer on the throne)",
+			"Unlock the carpet ride from Shantay Pass to Uzer"
+		],
+		"qp": 1
+	},
+	{
+		"id": "40",
+		"title": "The Grand Tree",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["25 agility"],
+				"other": [
+					"The ability to defeat a level 172 Black demon (The Grand Tree)|Black demon (safespottable for Ranged and Magic or melee using a halberd)."
+				]
+			},
+			"items": [
+				"1,000 coins, unless you have helped Femi or completed Tree Gnome Village and plan to use spirit trees."
+			],
+			"kills": ["Black demon (The Grand Tree)"]
+		},
+		"rewards": ["18,400 Attack", "7,900 Agility", "2,150 Magic"],
+		"qp": 5,
+		"kudos": 5
+	},
+	{
+		"id": "121",
+		"title": "The Great Brain Robbery",
+		"details": {
+			"length": "Medium",
+			"difficulty": "Experienced",
+			"requirements": {
+				"quests": [
+					"creature of fenkenstrain",
+					"cabin fever",
+					"pirate's treasure",
+					"rum deal",
+					"priest in peril",
+					"zogre flesh eaters",
+					"big chompy bird hunting",
+					"jungle potion",
+					"druidic ritual",
+					"recipe for disaster/freeing pirate pete",
+					"recipe for disaster/another cook's quest",
+					"cook's assistant"
+				],
+				"skills": ["16 crafting", "30 construction", "50 prayer"],
+				"other": [
+					"Access to a player-owned house workshop and crafting table '''or''' the Grand Exchange",
+					"Be able to kill a level 190 monster that can disable Prayers (can be safespotted without taking damage)."
+				]
+			},
+			"items": [
+				"Fishbowl helmet",
+				"Diving apparatus ''(obtain these from Murphy in Port Khazard if you've lost them; talk to him 2 times, 1st time for helmet and 2nd time for apparatus.)''",
+				"10 wooden cats – partial completion of The Great Brain Robbery is required to make these yourself, however they are tradeable and available at the Grand Exchange 4 oak planks, a hammer, and a saw (if you are building your own crafting table 1",
+				"A hammer (Note: Imcando hammer does not work)",
+				"100 nails ''(38 are needed, but some—especially Bronze nails",
+				"8 normal planks (18 if making the wooden cats instead of buying them from the Grand Exchange)",
+				"Holy symbol"
+			],
+			"kills": ["Barrelchest", "Sorebones"]
+		},
+		"rewards": [
+			"6,000 Prayer",
+			"3,000 Crafting",
+			"2,000 Construction",
+			"Barrelchest anchor (To repair your barrelchest anchor, return to Mos Le'Harmless and make sure you have a book o' piracy in your inventory; then, go to the docks south of the bank and talk to \"Smith.\" He can fix your anchor for 230,000 coins.)",
+			"Prayer book"
+		],
+		"qp": 2
+	},
+	{
+		"id": "126",
+		"title": "Grim Tales",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["witch's house"],
+				"skills": ["45 farming", "52 herblore", "58 thieving", "59 agility", "71 woodcutting"],
+				"other": ["Ability to defeat a level 138 cloud giant—Glod"]
+			},
+			"items": [
+				"2 Tarromin potion (unf) ''or'' 2 vials of water and 2 tarromins",
+				"Seed dibber (Tool leprechaun",
+				"Watering can with at least 1 dose (can also be stored with the leprechaun)",
+				"Any axe",
+				"High healing food"
+			]
+		},
+		"rewards": [
+			"60,000 Woodcutting",
+			"25,000 Agility",
+			"25,000 Thieving",
+			"15,000 Herblore",
+			"10,000 Farming",
+			"5,000 Hitpoints",
+			"Dwarven helmet (equip this helmet in the Dwarven Mines to complete a Hard Falador task)"
+		],
+		"qp": 1
+	},
+	{
+		"id": "96",
+		"title": "The Hand in the Sand",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["17 thieving", "49 crafting"]
+			},
+			"items": [
+				"150 coins",
+				"1 empty vial",
+				"White berries",
+				"Lantern lens",
+				"5 earth runes (can be bought from Betty for 20 gp)"
+			]
+		},
+		"rewards": [
+			"1,000 Thieving",
+			"9,000 Crafting",
+			"A secret reward from Bert - He simply loves sand, and wasn't in the job for the money. He will ship 84 buckets of sand to your bank if you talk to him after the quest. This can be done once per day (UTC). Asking Bert to take sand to your bank is also an Ardougne Medium task."
+		],
+		"qp": 1
+	},
+	{
+		"id": "66",
+		"title": "Haunted Mine",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Short",
+			"requirements": {
+				"quests": ["priest in peril"],
+				"skills": ["35 crafting"],
+				"other": ["The ability to defeat a level 95 enemy", "Access to Abandoned Mine"]
+			},
+			"items": ["A Zealot's Key (Pickpocket from Zealot)"],
+			"kills": ["Treus Dayth"]
+		},
+		"rewards": ["22,000 Strength"],
+		"qp": 2
+	},
+	{
+		"id": "33",
+		"title": "Hazeel Cult",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short"
+		},
+		"rewards": [
+			"1,500 thieving",
+			"2000 coins (plus 5 from the fake ending if you sided with the Carnillean family)",
+			"Hazeel's mark (if you sided with Hazeel)",
+			"Carnillean armour (if you sided with Ceril and obtained an extra during the quest)"
+		],
+		"qp": 1,
+		"kudos": 5
+	},
+	{
+		"id": "166",
+		"title": "The Heart of Darkness",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["twilight's promise", "children of the sun"],
+				"skills": ["55 mining", "48 thieving", "48 slayer", "46 agility"]
+			},
+			"items": ["30 coins"],
+			"kills": ["Emissary Brawler", "Emissary Conjurer", "Prince Itzla Arkan", "Amoxliatl"]
+		},
+		"rewards": ["8,000 Mining", "8,000 Thieving", "8,000 Slayer", "8,000 Agility"],
+		"qp": 2
+	},
+	{
+		"id": "22",
+		"title": "Heroes' Quest",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["shield of arrav", "lost city", "merlin's crystal", "dragon slayer i"],
+				"skills": ["53 cooking", "53 fishing", "25 herblore", "50 mining"],
+				"other": ["A partner"],
+				"qp": 55
+			},
+			"items": [
+				"Harralander potion (unf) (or a harralander and a vial of water)",
+				"Pickaxe",
+				"Black full helm",
+				"Black platebody",
+				"Black platelegs"
+			],
+			"kills": ["Ice Queen", "Entrana firebird", "Jailer", "Grip"]
+		},
+		"rewards": [
+			"3,075 Attack",
+			"3,075 Defence",
+			"3,075 Strength",
+			"3,075 Hitpoints",
+			"2,075 Ranged",
+			"2,725 Fishing",
+			"2,825 Cooking",
+			"1,575 Woodcutting",
+			"1,575 Firemaking",
+			"2,275 Smithing",
+			"2,575 Mining",
+			"1,325 Herblore"
+		],
+		"qp": 1
+	},
+	{
+		"id": "30",
+		"title": "Holy Grail",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["merlin's crystal"],
+				"skills": ["20 attack"],
+				"other": ["Must be able to defeat a level 120 Black Knight Titan (can be safespotted or flinched)"]
+			},
+			"items": ["Excalibur"]
+		},
+		"rewards": ["11,000 Prayer", "15,300 Defence"],
+		"qp": 2
+	},
+	{
+		"id": "63",
+		"title": "Horror from the Deep",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["alfred grimhand's barcrawl"],
+				"skills": ["35 agility"]
+			},
+			"items": [
+				"Fire rune",
+				"Air rune",
+				"Water rune",
+				"Earth rune",
+				"Any sword or longsword that you are willing to lose (except rusty sword and prop sword)",
+				"Any arrow (except ogre arrows and training arrows)",
+				"Molten glass",
+				"Tinderbox",
+				"Hammer",
+				"60 steel nails",
+				"2 regular planks (can be obtained from Barbarian Outpost)",
+				"Swamp tar"
+			],
+			"kills": ["Dagannoth (Horror from the Deep)", "Dagannoth Mother"]
+		},
+		"rewards": [
+			"4,662.5 Magic",
+			"4,662.5 Strength",
+			"4,662.5 Ranged",
+			"A damaged book of your choice which, when complete, will become: a Holy book (Saradomin), an Unholy book (Zamorak), or a Book of balance (Guthix).",
+			"Further damaged books can be purchased from Jossik for 5,000 coins each, even if you have not filled your other book(s)."
+		],
+		"qp": 2
+	},
+	{
+		"id": "78",
+		"title": "Icthlarin's Little Helper",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["gertrude's cat"],
+				"other": ["The ability to defeat a level 91 monster."]
+			},
+			"items": [
+				"cat",
+				"Tinderbox",
+				"Willow log",
+				"Bag of salt (can be bought from any Slayer Master, other players, or the Grand Exchange) '''or''' an empty bucket to obtain a pile of salt in Sophanem",
+				"Bucket of sap (use a knife on an evergreen tree or a Tree#Single_canopy",
+				"Full waterskin to give away (can be bought for 30 coins at Shantay pass)",
+				"Means to enter the desert. (Such as the Shantay pass (item)"
+			],
+			"kills": [
+				"Possessed Priest",
+				"One of the level 75–81 guardians",
+				"Apmeken (monster)",
+				"Crondis (monster)",
+				"Scabaras (monster)",
+				"Het (monster)"
+			]
+		},
+		"rewards": [
+			"4,500 Thieving",
+			"4,000 Agility",
+			"4,000 Woodcutting",
+			"Catspeak amulet",
+			"Unlock the carpet rides from Pollnivneach to Sophanem and Menaphos"
+		],
+		"qp": 2
+	},
+	{
+		"id": "9",
+		"title": "Imp Catcher",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"items": ["Black bead", "Yellow bead", "Red bead", "White bead"],
+			"kills": ["imp"]
+		},
+		"rewards": [
+			"875 Magic",
+			"The amulet of accuracy",
+			"After the quest players can obtain more amulets by speaking to Wizard Mizgog with a complete set of beads."
+		],
+		"qp": 1
+	},
+	{
+		"id": "101",
+		"title": "In Aid of the Myreque",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["in search of the myreque", "nature spirit", "priest in peril", "the restless ghost"],
+				"skills": ["25 agility", "25 crafting", "15 mining", "7 magic"]
+			},
+			"items": [
+				"Food",
+				"A spade",
+				"A bucket (up to 5 recommended)",
+				"Any pickaxe",
+				"A hammer (Imcando hammer works.)",
+				"11 planks (Only regular planks will work.)",
+				"Swamp paste",
+				"10 raw mackerel or 10 Snail meats (depending on what is asked)",
+				"10 bronze axes",
+				"4 tinderboxes",
+				"2 steel bars",
+				"Coal",
+				"Soft clay",
+				"Rope",
+				"A silver bar",
+				"A mithril bar",
+				"A sapphire",
+				"Optional to give to Ivan Strom ('''''Strongly'' recommended if you don't have a high combat level''' 85+): A steel med helm A steel chainbody Steel platelegs A silver sickle 15 cooked salmon, snails, Cooked slimy eel"
+			],
+			"kills": ["Gadderanks", "Vampyre Juvinate", "Vampyre Juvinate"]
+		},
+		"rewards": [
+			"2,000 Attack",
+			"2,000 Strength",
+			"2,000 Crafting",
+			"2,000 Defence",
+			"A Gadderhammer from defeating Gadderanks"
+		],
+		"qp": 2,
+		"kudos": 5
+	},
+	{
+		"id": "68",
+		"title": "In Search of the Myreque",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["nature spirit", "priest in peril", "the restless ghost"],
+				"skills": ["25 agility"],
+				"other": ["The ability to defeat a level 97 foe (safespottable)"]
+			},
+			"items": [
+				"A steel longsword",
+				"2 steel swords",
+				"A steel mace",
+				"A steel warhammer",
+				"A steel dagger",
+				"225 steel nails",
+				"A Druid pouch containing at least 5 charges",
+				":'''Note:''' The pouch takes 3 per fill (need 6 Mort myre fungus or 3 Mort myre pear or Mort myre stem to have enough charges).",
+				"A hammer or Imcando hammer",
+				"6 planks",
+				"10 coins ''or'' a ring of charos (a)"
+			],
+			"kills": ["Skeleton Hellhound"]
+		},
+		"rewards": [
+			"600 Attack",
+			"600 Defence",
+			"600 Strength",
+			"600 Hitpoints",
+			"600 Crafting",
+			"Lore associated in-game Membership of The Myreque."
+		],
+		"qp": 2
+	},
+	{
+		"id": "39",
+		"title": "Jungle Potion",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"requirements": {
+				"quests": ["druidic ritual"],
+				"skills": ["3 herblore"],
+				"other": ["The ability to defend against level 53 Jogres and level 46 Harpie Bug Swarms."]
+			}
+		},
+		"rewards": ["775 Herblore"],
+		"qp": 1
+	},
+	{
+		"id": "127",
+		"title": "King's Ransom",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"black knights' fortress",
+					"holy grail",
+					"merlin's crystal",
+					"murder mystery",
+					"one small favour",
+					"rune mysteries",
+					"shilo village",
+					"jungle potion",
+					"druidic ritual"
+				],
+				"skills": ["45 magic", "65 defence"]
+			},
+			"items": [
+				"Granite (any size)",
+				"Full black armour (Black full helm, Black platebody",
+				"An Iron chainbody (Both the Iron Chainbody and the Bronze med helm can be bought upstairs in the Warrior Guild Armoury. If you can't access the Warriors' Guild you can get an Iron Chainbody from Wayne's Chains in Southern Falador, Horvik's Armour Shop in central Varrock, or the Grand Exchange)"
+			]
+		},
+		"rewards": ["33,000 Defence", "5,000 Magic"],
+		"qp": 1
+	},
+	{
+		"id": "150",
+		"title": "A Kingdom Divided",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Long",
+			"requirements": {
+				"quests": [
+					"the depths of despair",
+					"the queen of thieves",
+					"the ascent of arceuus",
+					"the forsaken tower",
+					"tale of the righteous",
+					"client of kourend",
+					"x marks the spot"
+				],
+				"skills": [
+					"54 agility",
+					"52 thieving",
+					"52 woodcutting",
+					"50 herblore",
+					"42 mining",
+					"38 crafting",
+					"35 magic"
+				]
+			},
+			"items": [
+				"Any axe",
+				"A defence potion (3 or 4 doses)",
+				"Volcanic sulphur",
+				"Molten glass",
+				"A dark essence block or a pickaxe and chisel (the latter is found at the mine) to obtain one"
+			],
+			"kills": [
+				"Judge of Yama (A Kingdom Divided)",
+				"Assassin (A Kingdom Divided)",
+				"Lizardman brute",
+				"Xamphur",
+				"Barbarian Warlord"
+			]
+		},
+		"rewards": [
+			"The book of the dead",
+			"24 new spells made available in the Arceuus spellbook (all combat spells with the exception of Ghostly Grasp and Inferior Demonbane, and all utility spells with the exception of Resurrect Crops and reanimation spells)."
+		],
+		"qp": 2
+	},
+	{
+		"id": "14",
+		"title": "The Knight's Sword",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["10 mining"],
+				"other": [
+					"The ability to run from combat level|level 57 ice warriors and level 53 ice giants could help."
+				]
+			},
+			"items": [
+				"Redberry pie (not half a redberry pie), (Members can purchase one from Romily Weaklax in the Cooks' Guild)",
+				"2 iron bars (4 if you want your own blurite sword) (one spawns west of the Graveyard of Shadows in the Wilderness)"
+			]
+		},
+		"rewards": ["12,725 Smithing", "A blurite sword (if you got Thurgo to make you an extra one)"],
+		"qp": 1
+	},
+	{
+		"id": "151",
+		"title": "Land of the Goblins",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"another slice of h.a.m.",
+					"death to the dorgeshuun",
+					"the lost tribe",
+					"goblin diplomacy",
+					"rune mysteries",
+					"the giant dwarf",
+					"the dig site",
+					"fishing contest"
+				],
+				"skills": ["38 agility", "40 fishing", "45 thieving", "48 herblore"]
+			},
+			"items": [
+				"A Light sources#Light sources",
+				"Toadflax potion (unf)",
+				"Yellow dye",
+				"Blue dye",
+				"Orange dye",
+				"Purple dye",
+				"Fishing rod (Oily fishing rod will not work)",
+				"Raw slimy eel",
+				"5 coins"
+			],
+			"kills": ["Snothead", "Snailfeet", "Mosschin", "Redeyes", "Strongbones"]
+		},
+		"rewards": ["8,000 Agility", "8,000 Fishing", "8,000 Thieving", "8,000 Herblore"],
+		"qp": 2
+	},
+	{
+		"id": "50",
+		"title": "Legends' Quest",
+		"details": {
+			"difficulty": "Master",
+			"length": "Long",
+			"requirements": {
+				"quests": [
+					"family crest",
+					"heroes' quest",
+					"shield of arrav",
+					"lost city",
+					"merlin's crystal",
+					"dragon slayer i",
+					"shilo village",
+					"jungle potion",
+					"druidic ritual",
+					"underground pass",
+					"biohazard",
+					"plague city",
+					"waterfall quest"
+				],
+				"skills": [
+					"50 agility",
+					"50 crafting",
+					"45 herblore",
+					"56 magic",
+					"52 mining",
+					"42 prayer",
+					"50 smithing",
+					"50 strength",
+					"50 thieving",
+					"50 woodcutting"
+				],
+				"other": ["The ability to defeat a level 187 demon"],
+				"qp": 107
+			},
+			"items": [
+				"Any machete (weapon)",
+				"2 gold bars (6 in case you fail or want more gold bowls)",
+				"Hammer",
+				"Rope",
+				"rune axe",
+				"Lockpick (2 in case you fail) (Strange old lockpick does not work)",
+				"Pickaxe",
+				"Vial of water",
+				"Sapphire Emerald Ruby Diamond Opal Jade Red topaz",
+				"Soul rune",
+				"Mind rune",
+				"2 law runes",
+				"Earth rune"
+			],
+			"kills": ["Ranalph Devere", "Irvig Senay", "San Tojalon", "Nezikchened"]
+		},
+		"rewards": [
+			"30,000 each in four skills of your choice (limited to Attack, Defence, Strength, Hitpoints, Prayer, Magic, Woodcutting, Crafting, Smithing, Herblore, Agility, Thieving. It is possible to choose the same skill all four times)",
+			"Radimus Erkle will provide replacement dark daggers, which can be investigated via right-click to switch appearance between a dark or glowing dagger",
+			"You can now receive the Rune spear, Dragon spear, and Shield left half from the Gem drop table."
+		],
+		"qp": 4
+	},
+	{
+		"id": "19",
+		"title": "Lost City",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["31 crafting", "36 woodcutting"],
+				"other": [
+					"Ability to kill a level 101 Tree spirit (Lost City)|Tree spirit with limited armour and weapons."
+				]
+			},
+			"items": [
+				"Knife",
+				"axe (you will need to bank the axe before accessing Entrana -- you cannot use a blessed axe)"
+			],
+			"kills": ["Tree spirit (Lost City)", "Zombie (Entrana Dungeon)"]
+		},
+		"rewards": ["A permanent portal to Puro-Puro in the wheat field east of the fairy ring in Zanaris."],
+		"qp": 3
+	},
+	{
+		"id": "81",
+		"title": "The Lost Tribe",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["goblin diplomacy", "rune mysteries"],
+				"skills": ["13 agility", "13 thieving", "17 mining"]
+			},
+			"items": [
+				"Pickaxe",
+				"Light source ('''Note:''' Candles, torches, and oil lamps can cause swamp gas explosions if going off-route, and need a tinderbox to stay lit)"
+			]
+		},
+		"rewards": ["3,000 Mining", "A ring of life", "A mining helmet from giving the brooch back to Mistag."],
+		"qp": 1
+	},
+	{
+		"id": "108",
+		"title": "Lunar Diplomacy",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Long",
+			"requirements": {
+				"quests": [
+					"the fremennik trials",
+					"lost city",
+					"rune mysteries",
+					"shilo village",
+					"jungle potion",
+					"druidic ritual"
+				],
+				"skills": [
+					"5 herblore",
+					"61 crafting",
+					"40 defence",
+					"49 firemaking",
+					"65 magic",
+					"60 mining",
+					"55 woodcutting"
+				],
+				"other": [
+					"The ability to kill multiple level 111 monsters.",
+					"Access to each of the elemental runic altars (Air Altar|Air, Fire Altar|Fire, Water Altar|Water, Earth Altar|Earth)"
+				]
+			},
+			"items": [
+				"A tinderbox",
+				"coins (1,000 is enough)",
+				"A pestle and mortar",
+				"A hammer (or an Imcando hammer)",
+				"Any pickaxe",
+				"A spade",
+				"A finished bullseye lantern ('''NOT bullseye lantern (unf)",
+				"All elemental talismans or their respective tiaras (Air talisman",
+				"A dramen staff"
+			],
+			"kills": ["Suqah", "Me"]
+		},
+		"rewards": ["5,000 Magic", "5,000 Runecraft", "A seal of passage", "50 Astral runes"],
+		"qp": 2
+	},
+	{
+		"id": "139",
+		"title": "Making Friends with My Arm",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"my arm's big adventure",
+					"eadgar's ruse",
+					"druidic ritual",
+					"troll stronghold",
+					"death plateau",
+					"the feud",
+					"jungle potion",
+					"swan song",
+					"one small favour",
+					"rune mysteries",
+					"shilo village",
+					"garden of tranquillity",
+					"creature of fenkenstrain",
+					"priest in peril",
+					"the restless ghost",
+					"cold war",
+					"romeo & juliet"
+				],
+				"skills": ["66 firemaking", "72 mining", "35 construction", "68 agility"],
+				"other": ["It is beneficial to have a higher Agility level."]
+			},
+			"items": [
+				"Saw",
+				"Bolt of cloth",
+				"5 mahogany planks",
+				"Cadava berries",
+				"Climbing boots (if not using Trollheim teleports)"
+			],
+			"kills": ["Don't Know What", "Mother"]
+		},
+		"rewards": [
+			"10,000 Construction",
+			"40,000 Firemaking",
+			"50,000 Mining",
+			"50,000 Agility",
+			"A new disease-free herb patch in Weiss (requires building the fire of nourishment before use)"
+		],
+		"qp": 2
+	},
+	{
+		"id": "92",
+		"title": "Making History",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["priest in peril", "the restless ghost"]
+			},
+			"items": [
+				"Spade",
+				"Sapphire amulet",
+				"Ghostspeak amulet or Morytania legs 2 or higher",
+				"A way to enter Port Phasmatys Completion of Ghosts Ahoy ''or'' 2 ecto-token ''or'' 1 bone, 1 pot and 1 bucket to earn 5 ecto-tokens (you still only need two) ''or'' 5,200 gold for a Charter ship to Port Phasmatys (cheaper depending upon where you travel from and if you use ring of charos)."
+			]
+		},
+		"rewards": [
+			"1,000 Crafting",
+			"1,000 Prayer",
+			"750  coins",
+			"Enchanted key, allowing you to go on your own treasure digs until it disappears"
+		],
+		"qp": 3,
+		"kudos": 5
+	},
+	{
+		"id": "168",
+		"title": "Meat and Greet",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Short",
+			"requirements": {
+				"quests": ["children of the sun"]
+			},
+			"kills": ["Dire Wolf Alpha", "Minotaur (Meat and Greet)"]
+		},
+		"rewards": ["8,000 Cooking"],
+		"qp": 1
+	},
+	{
+		"id": "21",
+		"title": "Merlin's Crystal",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"items": ["Bread", "Tinderbox"],
+			"kills": ["Sir Mordred", "Giant bat"]
+		},
+		"rewards": [
+			"Excalibur (Required for Holy Grail quest.)",
+			"Appointment with a title as a Honorary Knight of the Round Table."
+		],
+		"qp": 6,
+		"kudos": 5
+	},
+	{
+		"id": "129",
+		"title": "Misthalin Mystery",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short"
+		},
+		"rewards": ["Uncut ruby", "Uncut emerald", "Uncut sapphire", "600 Crafting"],
+		"qp": 1
+	},
+	{
+		"id": "27",
+		"title": "Monk's Friend",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": ["Jug of water", "Regular logs or a regular plank"]
+		},
+		"rewards": ["2,000 Woodcutting", "8 Law runes", "Brother Omad will throw parties for you by speaking to him."],
+		"qp": 1
+	},
+	{
+		"id": "65",
+		"title": "Monkey Madness I",
+		"details": {
+			"difficulty": "Master",
+			"length": "Long",
+			"requirements": {
+				"quests": ["the grand tree", "tree gnome village"],
+				"other": ["The ability to defeat a level 195 Jungle Demon"]
+			},
+			"items": ["A gold bar", "A ball of wool", "Monkey bones or Monkey corpse"],
+			"kills": ["Jungle Demon"]
+		},
+		"rewards": [
+			"10,000 Coins",
+			"3 Diamonds",
+			"Speaking to Daero after the quest gives the choice of either, 35,000 in Attack and Defence and 20,000 in Strength and Hitpoints '''OR''' 35,000 in Strength and Hitpoints and 20,000 in Attack and Defence. The skills you tell Daero you want to focus on will receive 35,000 each, and the others 20,000 each."
+		],
+		"qp": 3
+	},
+	{
+		"id": "128",
+		"title": "Monkey Madness II",
+		"details": {
+			"difficulty": "Grandmaster",
+			"length": "Very Long",
+			"requirements": {
+				"quests": [
+					"enlightened journey",
+					"balloon flight route to gnome stronghold must be unlocked to start the quest.",
+					"the eyes of glouphrie",
+					"recipe for disaster/freeing_king_awowogei|recipe for disaster (freeing king awowogei)",
+					"monkey madness i",
+					"the grand tree",
+					"tree gnome village",
+					"troll stronghold",
+					"death plateau",
+					"watchtower"
+				],
+				"skills": ["69 slayer", "70 crafting", "60 hunter", "55 agility", "55 thieving", "60 firemaking"]
+			},
+			"items": [
+				"A lemon",
+				"Grapes",
+				"A pestle and mortar",
+				"A pickaxe (if you choose the tanking route)",
+				"Logs",
+				"A light source",
+				"An m'speak amulet",
+				"A ninja monkey greegree (small or medium)",
+				"A slash weapon (to slash webs if you choose the tanking route - Wilderness sword of any tier recommended for this due to 100% web slash ability)."
+			],
+			"kills": ["Kruk", "Keef", "Kob", "Tortured gorilla", "Tortured gorilla", "Demonic gorilla", "Glough"]
+		},
+		"rewards": [
+			"80,000 Slayer",
+			"60,000 Agility",
+			"50,000 Thieving",
+			"50,000 Hunter",
+			"2x 50,000 rewards from Duke in your choice of Magic, Ranged, Attack, Defence, Strength or Hitpoints. Found on the hill east of main gate of Ape Atoll. (Walk up west hill, and climb the ladder to reach the east hill). You cannot be trained if you have not yet been trained by Daero after completing Monkey Madness I. This effectively prevents certain account builds from receiving the training.",
+			"A Royal seed pod, which provides unlimited teleports to the Grand Tree (up to level 30 Wilderness).",
+			"Various dragons will now drop dragon javelin heads.",
+			"A Monkey can be found in one of the crates at the Crash Site. It is purely cosmetic and can be equipped in the cape slot.",
+			"Bobawu will now track your laps of the Ape Atoll Agility Course, with you being able to transform your monkey into other variants upon completing a number of laps."
+		],
+		"qp": 4
+	},
+	{
+		"id": "73",
+		"title": "Mountain Daughter",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["20 agility"],
+				"other": ["The ability to defeat a level 70 The Kendal|monster (can be safespot|safespotted)"]
+			},
+			"items": ["Rope", "Pickaxe", "Axe", "Plank", "Spade", "Gloves (excluding: Slayer gloves"],
+			"kills": ["The Kendal"]
+		},
+		"rewards": ["2,000 Prayer", "1,000 Attack", "The Bearhead"],
+		"qp": 2
+	},
+	{
+		"id": "84",
+		"title": "Mourning's End Part I",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"roving elves",
+					"regicide",
+					"underground pass",
+					"biohazard",
+					"plague city",
+					"waterfall quest",
+					"big chompy bird hunting",
+					"sheep herder"
+				],
+				"skills": ["60 ranged", "50 thieving"],
+				"other": ["The ability to defeat a level 11 enemy with your combat stats set to 20 each."]
+			},
+			"items": [
+				"2 silk",
+				"red dye",
+				"Feather",
+				"Toad crunchies or Premade t'd crunch",
+				"Magic logs",
+				"Leather",
+				"Barrel of naphtha, or 5-9 coal to make one"
+			]
+		},
+		"rewards": [
+			"40,000 Thieving",
+			"25,000 Hitpoints",
+			"teleport crystal",
+			"The fixed device",
+			"Full mourner clothing"
+		],
+		"qp": 2
+	},
+	{
+		"id": "89",
+		"title": "Mourning's End Part II",
+		"details": {
+			"difficulty": "Master",
+			"length": "Long",
+			"requirements": {
+				"quests": [
+					"mourning's end part i",
+					"roving elves",
+					"regicide",
+					"underground pass",
+					"biohazard",
+					"plague city",
+					"waterfall quest",
+					"big chompy bird hunting",
+					"sheep herder"
+				]
+			},
+			"items": [
+				"Full mourner gear",
+				"A chisel (one can be found in the house south of the Mourner HQ)",
+				"A death talisman/death tiara",
+				"Rope"
+			]
+		},
+		"rewards": [
+			"60,000 Agility",
+			"A crystal trinket, which allows you to enter the Temple of Light again after the quest",
+			"Death talismans can be obtained via Guardians of the Rift",
+			"Death runes can now be crafted during Guardians of the Rift"
+		],
+		"qp": 2
+	},
+	{
+		"id": "47",
+		"title": "Murder Mystery",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"items": ["Pot"]
+		},
+		"rewards": ["1,406 Crafting", "2,000 Coins"],
+		"qp": 3
+	},
+	{
+		"id": "113",
+		"title": "My Arm's Big Adventure",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"eadgar's ruse",
+					"druidic ritual",
+					"troll stronghold",
+					"death plateau",
+					"the feud",
+					"jungle potion",
+					"the medium diary is desired, it is recommended to get 100% prior to starting this quest"
+				],
+				"skills": ["29 farming", "10 woodcutting"],
+				"other": [
+					"At least 60% favour in the Tai Bwo Wannai Cleanup minigame before starting this quest - this will be subtracted from the total favour"
+				]
+			},
+			"items": [
+				"Several farming supplies, which can be stored by any Tool Leprechaun and withdrawn from the Tool Leprechaun (Larry)",
+				"Climbing boots (can be bought from Tenzing for 12 coins)"
+			],
+			"kills": ["Baby Roc", "Giant Roc"]
+		},
+		"rewards": [
+			"10,000 Herblore",
+			"5,000 Farming",
+			"457 (315 total) additional Farming while My Arm harvests his crop.",
+			"29 Burnt meat"
+		],
+		"qp": 1
+	},
+	{
+		"id": "55",
+		"title": "Nature Spirit",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["priest in peril", "the restless ghost"]
+			},
+			"items": [
+				"Silver sickle - either purchase it from the Grand Exchange, or make it with a silver bar and sickle mould in a furnace at 18 Crafting. Ironmen can buy a silver bar from the Silver merchant in Ardougne.",
+				"Ghostspeak amulet"
+			],
+			"kills": ["Ghast"]
+		},
+		"rewards": [
+			"3,000 Crafting",
+			"2,000 Defence",
+			"2,000 Hitpoints",
+			"3 meat pies and 3 apple pies unless they were rotted by the ghasts"
+		],
+		"qp": 2
+	},
+	{
+		"id": "149",
+		"title": "A Night at the Theatre",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"a taste of hope",
+					"darkness of hallowvale",
+					"in aid of the myreque",
+					"in search of the myreque",
+					"nature spirit",
+					"priest in peril",
+					"the restless ghost"
+				]
+			},
+			"items": [
+				"Ivandis flail or Blisterwood flail",
+				"Saw (crystal saw also works)",
+				"Ghostspeak amulet (Morytania legs 2 or better also work)",
+				"Any axe besides the blessed axe"
+			],
+			"kills": [
+				"Vyrewatch",
+				"araxyte",
+				"Hespori (A Night at the Theatre)",
+				"The Maiden of Sugadinti",
+				"Pestilent Bloat",
+				"Nylocas Vasilias",
+				"Sotetseg",
+				"Xarpus",
+				"Verzik Vitur"
+			]
+		},
+		"qp": 2
+	},
+	{
+		"id": "43",
+		"title": "Observatory Quest",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"items": ["3 normal planks", "Bronze bar", "Molten glass"],
+			"kills": ["Goblin guard"]
+		},
+		"rewards": [
+			"2,250 Crafting",
+			"Your item reward depends on what astrological sign you see when you look through the telescope. It is different for each person. Each one rewards an uncut sapphire as well as the following:",
+			"Aquarius: 25 water runes",
+			"Aries: 875 Attack",
+			"Cancer: An amulet of defence",
+			"Capricorn: 875 Strength",
+			"Gemini: A black 2h sword",
+			"Leo: 875 Hitpoints",
+			"Libra: 3 law runes",
+			"Pisces: 3 tuna",
+			"Sagittarius: A maple longbow",
+			"Scorpio: Weapon poison",
+			"Taurus: A 1-dose super strength potion",
+			"Virgo: 875 Defence",
+			"The Spirit of Scorpius will now give you a mould to make unholy symbols, and he will bless them for you too. He can be found in the graveyard north of the Observatory.",
+			"Talk to the Observatory assistant after the quest and he will reward you with a jug of wine as well as tell you his and the professor's real name."
+		],
+		"qp": 2,
+		"kudos": 5
+	},
+	{
+		"id": "123",
+		"title": "Olaf's Quest",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["the fremennik trials"],
+				"skills": ["40 firemaking", "50 woodcutting"],
+				"other": ["The ability to defeat a level 100 monster"]
+			},
+			"items": ["Any axe", "Tinderbox", "Spade"],
+			"kills": ["Skeleton fremennik", "Ulfric"]
+		},
+		"rewards": [
+			"12,000 Defence",
+			"20,000 coins",
+			"4 cut rubies",
+			"A piece of parchment telling you of other shipwrecks with more treasure. (This extra treasure is currently not available in the game)"
+		],
+		"qp": 1
+	},
+	{
+		"id": "72",
+		"title": "One Small Favour",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Long",
+			"requirements": {
+				"quests": ["rune mysteries", "shilo village", "jungle potion", "druidic ritual"],
+				"skills": ["36 agility", "25 crafting", "18 herblore", "30 smithing"]
+			},
+			"items": ["4 steel bars", "Bronze bar", "Iron bar", "5 pigeon cage"],
+			"kills": ["Slagilith", "Dwarf gang member"]
+		},
+		"rewards": ["A steel key ring"],
+		"qp": 2
+	},
+	{
+		"id": "158",
+		"title": "The Path of Glouphrie",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["the eyes of glouphrie", "the grand tree", "waterfall quest", "tree gnome village"],
+				"skills": ["60 strength", "56 slayer", "56 thieving", "47 ranged", "45 agility"]
+			},
+			"items": ["Key (Tree Gnome Village Dungeon)", "Mith Grapple", "Any Crossbow_(weapon)", "Gnome amulet"],
+			"kills": ["Warped Terrorbird", "Evil Creature"]
+		},
+		"qp": 2
+	},
+	{
+		"id": "162",
+		"title": "Perilous Moons",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["twilight's promise", "children of the sun"],
+				"skills": ["48 slayer", "20 hunter", "20 fishing", "20 runecraft", "10 construction"]
+			},
+			"kills": ["Sulphur Nagua (Perilous Moons)", "Blue Moon", "Blood Moon", "Eclipse Moon"]
+		},
+		"rewards": [
+			"40,000 Slayer",
+			"5,000 Runecraft",
+			"5,000 Hunter",
+			"5,000 Fishing",
+			"In addition, completing the quest counts as a normal defeat of the Moons of Peril, allowing the player to loot the Lunar Chest for further rewards."
+		],
+		"qp": 2
+	},
+	{
+		"id": "16",
+		"title": "Pirate's Treasure",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": ["60 coins (only 30 are needed if using a Ring of charos"]
+		},
+		"qp": 2
+	},
+	{
+		"id": "35",
+		"title": "Plague City",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": [
+				"Rope (Purchasable in the East Ardougne general store, Port Khazard general store, Ned, or a spawn in Karamja general store.)",
+				"Spade (One spawns near Edmond.)",
+				"4 Bucket of water",
+				"Chocolate dust *Chocolate bar *Knife or pestle and mortar Bucket of milk (Obtained by using a bucket on a dairy cow, one is north of Ardougne, or bought from Hudo or Heckel Funch.) Snape grass (Spawns west of the Crafting Guild or the peninsula north-east of Hosidius. It can be grown at 61 Farming. Can also be obtained from killing Tribesmen in Karamja.)",
+				"Picture of Elena (Inside Alrena and Edmond's house)"
+			]
+		},
+		"rewards": ["2,425 Mining"],
+		"qp": 1
+	},
+	{
+		"id": "146",
+		"title": "A Porcine of Interest",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": ["Rope"]
+		},
+		"rewards": [
+			"5,000 coins",
+			"1,000 Slayer",
+			"30 Slayer reward points",
+			"Existing slayer helmets will have reinforced goggles added to them",
+			"Spria will now be able to give you slayer tasks"
+		],
+		"qp": 1
+	},
+	{
+		"id": "54",
+		"title": "Priest in Peril",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"members": "Yes",
+			"items": [
+				"50 unnoted rune essence or pure essence (can be mined by talking to Aubury in Varrock, after completing Rune Mysteries. All 50 essence does not have to be of the same type.)",
+				"Bucket (spawns above the Varrock Castle's kitchen in the north-easternmost room (go to the kitchen, and climb up the stairs))"
+			],
+			"kills": ["Temple guardian", "Monk of Zamorak"]
+		},
+		"rewards": [
+			"1,406 Prayer",
+			"Wolfbane dagger, prevents the citizens of Canifis from transforming into werewolves when attacked",
+			"Route to Canifis and Morytania"
+		],
+		"qp": 1,
+		"kudos": 5
+	},
+	{
+		"id": "10",
+		"title": "Prince Ali Rescue",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"items": [
+				"Soft clay",
+				"3 balls of wool",
+				"Yellow dye or 2 onions and 5 coins",
+				"Redberries",
+				"Ashes",
+				"Pot of flour",
+				"Bronze bar",
+				"Pink skirt",
+				"3 beers",
+				"100 coins"
+			]
+		},
+		"rewards": ["700 coins", "Free passage through the Lumbridge - Al Kharid toll gate from now on."],
+		"qp": 3
+	},
+	{
+		"id": "133",
+		"title": "The Queen of Thieves",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Very Short",
+			"requirements": {
+				"quests": ["client of kourend", "x marks the spot"],
+				"skills": ["20 thieving"]
+			}
+		},
+		"rewards": ["2,000 Thieving", "2,000 coins"],
+		"qp": 1
+	},
+	{
+		"id": "103",
+		"title": "Rag and Bone Man I",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"items": [
+				"8 coins for 8 pot of vinegar",
+				"8 pots",
+				"8 logs of any type (or an axe to obtain them)",
+				"Tinderbox",
+				"Light source (a lantern is highly preferred)"
+			]
+		},
+		"rewards": ["500 Cooking", "500 Prayer"],
+		"qp": 1
+	},
+	{
+		"id": "131",
+		"title": "Rag and Bone Man II",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"members": "Yes",
+			"requirements": {
+				"quests": [
+					"rag and bone man i",
+					"skippy and the mogres",
+					"horror from the deep or partial completion of the fremennik trials",
+					"creature of fenkenstrain",
+					"waterfall quest"
+				],
+				"skills": ["40 slayer", "20 defence"],
+				"other": ["The ability to kill several high-level monsters"]
+			},
+			"items": [
+				"27 pots",
+				"27 jugs of vinegar (bought from Fortunato for 27 coins)",
+				"27 sets of logs (any logs - normal logs can be obtained on the path just below the Odd Old Man's hut if you bring an axe).",
+				"Tinderbox",
+				"Light source",
+				"Dusty key (if under )",
+				"Rope",
+				"Ice coolers",
+				"Fishing explosives",
+				"Mirror shield or V's shield (unless using a workaround - see guide for how to get around using this)"
+			]
+		},
+		"rewards": ["5,000 Prayer", "Bonesack", "Ram skull helm"]
+	},
+	{
+		"id": "93",
+		"title": "Ratcatchers",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["icthlarin's little helper", "gertrude's cat"],
+				"other": ["Access to Keldagrim", "*The Giant Dwarf started"]
+			},
+			"items": [
+				"Any type of cat or hellcat (for most of the quest, a cat with a high successful rat catch rate is recommended, and overgrown cats cannot be used there -- during the Ratcatchers#Hooknosed Jack",
+				"4 cheese (or 4 Poisoned cheese)",
+				"Cleaned marrentill (grimy will not work)",
+				"Unicorn horn dust",
+				"Bucket of milk",
+				"Catspeak amulet (unless Dragon Slayer II is completed)",
+				"Pot of weeds (use an empty pot with weeds)",
+				"Tinderbox",
+				"101 coins (or 51 coins with a ring of charos (a))",
+				"1 free inventory space"
+			]
+		},
+		"rewards": ["4,500 Thieving", "A rat pole"],
+		"qp": 2
+	},
+	{
+		"id": "100",
+		"title": "Recipe for Disaster",
+		"details": {
+			"difficulty": "Special",
+			"length": "Very Long",
+			"requirements": {
+				"quests": [
+					"cook's assistant",
+					"fishing contest",
+					"goblin diplomacy",
+					"big chompy bird hunting",
+					"murder mystery",
+					"nature spirit",
+					"priest in peril",
+					"the restless ghost",
+					"witch's house",
+					"gertrude's cat",
+					"shadow of the storm",
+					"demon slayer",
+					"the golem",
+					"started legends' quest up until gaining access to the kharazi jungle",
+					"family crest",
+					"heroes' quest",
+					"shield of arrav",
+					"lost city",
+					"merlin's crystal",
+					"dragon slayer i",
+					"shilo village",
+					"jungle potion",
+					"druidic ritual",
+					"underground pass",
+					"biohazard",
+					"plague city",
+					"monkey madness i",
+					"the grand tree",
+					"tree gnome village",
+					"desert treasure i",
+					"the dig site",
+					"the tourist trap",
+					"temple of ikov",
+					"waterfall quest",
+					"troll stronghold",
+					"death plateau",
+					"horror from the deep",
+					"alfred grimhand's barcrawl"
+				],
+				"skills": [
+					"10 cooking",
+					"70 cooking",
+					"48 agility",
+					"50 mining",
+					"53 fishing",
+					"53 thieving",
+					"25 herblore",
+					"59 magic",
+					"40 smithing",
+					"50 firemaking",
+					"40 ranged",
+					"40 crafting",
+					"10 fletching",
+					"36 woodcutting"
+				],
+				"other": [
+					"All prerequisite quest requirements",
+					"The ability to defeat high leveled monsters, several of which have to be defeated without using {{SCP|Prayer|link=yes}}"
+				],
+				"qp": 175
+			},
+			"items": [
+				"Eye of newt",
+				"Greenman's ale",
+				"Rotten tomato",
+				"Any fruit blast excluding a premade fr' blast",
+				"Ashes",
+				"320 coins ''(or 120 if you have the activated Ring of charos)''",
+				"Bowl of water ''(an empty bowl can be bought from the Culinaromancer's Chest)''",
+				"Bucket of water ''(an Bucket",
+				"3 buckets of milk ''(can be bought from the Culinaromancer's Chest)''",
+				"2 eggs ''(can be bought from the Culinaromancer's Chest)''",
+				"Orange",
+				"Any dye '''except''' red, yellow, or orange",
+				"Spice or gnome spice ''(can be bought from the Culinaromancer's Chest)''",
+				"Gloves ''(ice gloves are preferred)''",
+				"Charcoal",
+				"Fishing bait",
+				"Fishbowl",
+				"2 bread",
+				"Pestle and mortar",
+				"Needle",
+				"3 bronze wires",
+				"Cake tin ''(can be bought from the Culinaromancer's Chest)''",
+				"4 Asgarnian ale ''(6 recommended)''",
+				"Any cat except an overgrown cat ''(you'll be chase",
+				"Several bowls of stew ''(9 at most)''",
+				"Raw chompy ''(several recommended in case of burning)''",
+				"Raw chicken",
+				"Raw cod",
+				"Iron spit",
+				"Regular logs",
+				"Tinderbox",
+				"Ball of wool",
+				"Ogre bow and several ogre arrows ''(10 is enough)''",
+				"2 pots of flour ''(can be bought from the Culinaromancer's Chest)''",
+				"Pot of cornflour ''(or raw sweetcorn and an empty pot)''",
+				"Pot of cream ''(can be bought from the Culinaromancer's Chest)''",
+				"Any axe",
+				"Any pickaxe",
+				"Any machete",
+				"Knife",
+				"Dramen staff and Dramen branch",
+				"M'speak amulet",
+				"gorilla greegree",
+				"Monkey nuts ''(or 3 coins)''",
+				"Rope"
+			],
+			"kills": [
+				"Icefiend",
+				"Mudskipper",
+				"Crab",
+				"Evil Chicken",
+				"Black dragon",
+				"Big Snake",
+				"Zombie monkey",
+				"Monkey guard",
+				"Ninja monkey",
+				"Agrith-Na-Na",
+				"Flambeed",
+				"Karamel",
+				"Dessourt",
+				"Gelatinnoth Mother",
+				"Culinaromancer"
+			]
+		},
+		"rewards": ["Ape Atoll Teleport spell"],
+		"qp": 10
+	},
+	{
+		"id": "83",
+		"title": "Recruitment Drive",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"requirements": {
+				"quests": ["black knights' fortress", "druidic ritual"]
+			}
+		},
+		"rewards": [
+			"1,000.5 Prayer",
+			"1,000.5 Herblore",
+			"1,000.5 Agility",
+			"3,000 coins",
+			"The Gaze of Saradomin - When you die, you will have the option of returning to Falador instead of Lumbridge. Talk to Sir Tiffy Cashien to change your spawn point at any time.",
+			"Appointment with the title of Initiate in the Order of Temple Knights."
+		],
+		"qp": 1
+	},
+	{
+		"id": "59",
+		"title": "Regicide",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Long",
+			"requirements": {
+				"quests": ["underground pass", "biohazard", "plague city"],
+				"skills": ["10 crafting", "56 agility"],
+				"other": ["The ability to defeat a level 110 Tyras guard (can be safespotted)"]
+			},
+			"items": [
+				"5 coal in the bank (although at least 25 is recommended; you may bring the coal noted to save you a bank trip)",
+				"Bow and some arrows (or fire arrows",
+				"2 ropes (3 in case you fail)",
+				"Spade",
+				"Limestone (or a pickaxe and ). Note that limestone bricks will '''not''' work.",
+				"Tinderbox",
+				"Strip of cloth (made on a loom with 4 balls of wool; '''not''' a bolt of cloth - you can use the loom at the Iorwerth Camp or at the Falador farm)",
+				"Pestle and mortar",
+				"Gloves, the list on Quicklime shows all gloves that work."
+			],
+			"kills": ["Tyras guard"]
+		},
+		"rewards": ["13,750 Agility", "15,000 coins"],
+		"qp": 3
+	},
+	{
+		"id": "3",
+		"title": "The Restless Ghost",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short"
+		},
+		"rewards": ["1,125 Prayer", "Ghostspeak amulet (keep for several quests and content in the future)"],
+		"qp": 1
+	},
+	{
+		"id": "164",
+		"title": "The Ribbiting Tale of a Lily Pad Labour Dispute",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"requirements": {
+				"quests": ["children of the sun"],
+				"skills": ["15 woodcutting"]
+			},
+			"kills": ["Cuthbert, Lord of Dread"]
+		},
+		"rewards": ["2,000 Woodcutting"],
+		"qp": 1
+	},
+	{
+		"id": "4",
+		"title": "Romeo & Juliet",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short"
+		},
+		"qp": 5
+	},
+	{
+		"id": "70",
+		"title": "Roving Elves",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Short",
+			"requirements": {
+				"quests": ["regicide", "underground pass", "biohazard", "plague city", "waterfall quest"],
+				"skills": ["56 agility"],
+				"other": [
+					"The ability to defeat a level 84 enemy unarmed, with Glarial's Tomb#Restricted items|heavy restrictions"
+				]
+			},
+			"items": ["Key (Waterfall Dungeon)", "Spade", "Rope"],
+			"kills": ["Moss Guardian"]
+		},
+		"rewards": ["10,000 Strength", "Crystal shield or bow with 500 charges"],
+		"qp": 1
+	},
+	{
+		"id": "105",
+		"title": "Royal Trouble",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"throne of miscellania",
+					"heroes' quest",
+					"shield of arrav",
+					"lost city",
+					"merlin's crystal",
+					"dragon slayer i",
+					"the fremennik trials"
+				],
+				"skills": ["40 agility", "40 slayer"]
+			}
+		},
+		"rewards": [
+			"20,000 Coins",
+			"5,000 Agility",
+			"5,000 Slayer",
+			"5,000 Hitpoints",
+			"Enhanced rewards from Managing Miscellania"
+		],
+		"qp": 1
+	},
+	{
+		"id": "90",
+		"title": "Rum Deal",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"zogre flesh eaters",
+					"big chompy bird hunting",
+					"jungle potion",
+					"druidic ritual",
+					"priest in peril"
+				],
+				"skills": ["42 crafting", "50 fishing", "40 farming", "47 prayer", "42 slayer"],
+				"other": ["The ability to kill a combat level 150 Evil spirit|monster (can be safespotted)"]
+			},
+			"kills": ["Evil spirit", "Fever spider"],
+			"items": ["47 prayer points for the ''Rum Deal#Evil spirits"]
+		},
+		"rewards": [
+			"7,000 Fishing",
+			"7,000 Prayer",
+			"7,000 Farming",
+			"The Holy wrench (while in your inventory, this grants more prayer points when drinking a prayer potion)"
+		],
+		"qp": 2
+	},
+	{
+		"id": "51",
+		"title": "Rune Mysteries",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short"
+		},
+		"rewards": ["An air talisman"],
+		"qp": 1,
+		"kudos": 5
+	},
+	{
+		"id": "23",
+		"title": "Scorpion Catcher",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["alfred grimhand's barcrawl"],
+				"skills": ["31 prayer"],
+				"other": ["The ability to run past level 172 black demons and level 64 poison spiders"]
+			},
+			"kills": ["Jailer"]
+		},
+		"rewards": ["6,625 Strength"],
+		"qp": 1
+	},
+	{
+		"id": "36",
+		"title": "Sea Slug",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["30 firemaking"]
+			},
+			"items": [
+				"Swamp paste (made by mixing flour with swamp tar then cooking the mixture on a fire; can also be bought from a Trader crewmember for 75 coins, from Rasolo for 60 coins west of the Fishing Guild, or from the Khazard General Store for 42 coins at full stock)"
+			]
+		},
+		"rewards": ["7,175 Fishing", "Oyster pearls"],
+		"qp": 1
+	},
+	{
+		"id": "156",
+		"title": "Secrets of the North",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"making friends with my arm",
+					"my arm's big adventure",
+					"eadgar's ruse",
+					"druidic ritual",
+					"troll stronghold",
+					"death plateau",
+					"the feud",
+					"jungle potion",
+					"swan song",
+					"one small favour",
+					"rune mysteries",
+					"shilo village",
+					"garden of tranquillity",
+					"creature of fenkenstrain",
+					"priest in peril",
+					"the restless ghost",
+					"cold war",
+					"romeo & juliet",
+					"the general's shadow",
+					"curse of the empty lord, for full ghostly robes",
+					"started desert treasure i, for the ring of visibility",
+					"fight arena",
+					"devious minds",
+					"wanted!",
+					"recruitment drive",
+					"black knights' fortress",
+					"the lost tribe",
+					"goblin diplomacy",
+					"doric's quest",
+					"enter the abyss",
+					"hazeel cult"
+				],
+				"skills": ["69 agility", "64 thieving", "56 hunter"]
+			},
+			"items": ["100 Coins", "Lockpick (Strange Old Lockpick does NOT work)"],
+			"kills": ["Evelot", "Assassin", "Strange Creature"]
+		},
+		"rewards": ["60,000 Agility", "50,000 Thieving", "40,000 Hunter"],
+		"qp": 2
+	},
+	{
+		"id": "61",
+		"title": "Shades of Mort'ton",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["priest in peril"],
+				"skills": ["20 crafting", "15 herblore", "5 firemaking"],
+				"other": [
+					"Must be able to defeat 5 level-40 Loar Shades.",
+					"Must be able to survive an onslaught when rebuilding the Temple (Being surrounded by many players makes this much easier).",
+					"Access to Mort'ton"
+				]
+			},
+			"items": [
+				"5000+ coins (bring plenty of money just in case)",
+				"Tinderbox",
+				"An axe for cutting pyre logs",
+				"2 Ashes",
+				"Prior to building the temple, you need a hammer (1 coin at the general store). However, a regular hammer is insufficient to build the temple without a large group. An additional 13,000 coins (or }} on the Grand Exchange) allows you to buy a Flamtaer hammer from Razmire, which is necessary to complete this part of the quest without a group."
+			],
+			"kills": ["Loar Shade"]
+		},
+		"rewards": [
+			"2,000 Herblore",
+			"2,000 Crafting",
+			"Bonus: If you take the Diary of Herbi Flax to the Apothecary in Varrock, you'll get an extra 335 Herblore (can only be done once)."
+		],
+		"qp": 3
+	},
+	{
+		"id": "91",
+		"title": "Shadow of the Storm",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["the golem", "demon slayer"],
+				"skills": ["30 crafting"],
+				"other": ["The ability to defeat a level 100 demon"]
+			},
+			"items": [
+				"Any black outfit (minimum of 3 pieces, see Shadow_of_the_Storm#Starting_Out",
+				"Black dye (from grinding a black mushroom using a pestle and mortar alongside a vial)",
+				"Silver bar",
+				"Means to enter the desert (such as the Shantay pass (item)"
+			]
+		},
+		"rewards": [
+			"10,000 in any combat skill other than Prayer.",
+			"the Darklight sword - it has a special attack and is even more powerful against demons. It costs slightly more to replace.",
+			"Six cut gems: two sapphires, two rubies and two emeralds, if you use a hammer and chisel on the demon's throne and had not yet removed them during The Golem."
+		],
+		"qp": 1
+	},
+	{
+		"id": "34",
+		"title": "Sheep Herder",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"items": ["100 coins"]
+		},
+		"rewards": ["3,100 coins"],
+		"qp": 4
+	},
+	{
+		"id": "5",
+		"title": "Sheep Shearer",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": ["20 balls of wool (unnoted)"]
+		},
+		"rewards": [
+			"150 Crafting (An additional 50 if you make the balls of wool on a spinning wheel instead of buying it yourself)",
+			"60 coins"
+		],
+		"qp": 1
+	},
+	{
+		"id": "6",
+		"title": "Shield of Arrav",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Short",
+			"items": ["20 coins"],
+			"kills": ["Weaponsmaster", "Jonny the beard"]
+		},
+		"rewards": [
+			"600 coins",
+			"Additional rewards, which members can claim, when talking with Historian Minas in the Varrock Museum"
+		],
+		"qp": 1,
+		"kudos": 5
+	},
+	{
+		"id": "41",
+		"title": "Shilo Village",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["jungle potion", "druidic ritual"],
+				"skills": ["20 crafting", "32 agility"],
+				"other": [
+					"Must be able to defend from many Undead ones (level 61-73) and able to defeat three monsters that are about level 90."
+				]
+			},
+			"items": [
+				"Spade",
+				"A lit torch or candle (lanterns or a Firemaking cape don't work) (a black candle or a bruma torch will work, but '''you will not get this item back''')",
+				"Rope",
+				"Bronze wire (can be made from scratch using the General Store and Anvil north of Tai Bwo Wannai)",
+				"Chisel"
+			],
+			"kills": ["Nazastarool"]
+		},
+		"rewards": [
+			"3,875 Crafting",
+			"After completing the quest, you can sell every item you obtained during the quest to Yanni Salika in Shilo Village for a total of — 100 each for the stone-plaque, tattered scroll, crumpled scroll, Bervirius notes, and the bone key; 500 for the locating crystal; and 1000 for the beads of the dead."
+		],
+		"qp": 2
+	},
+	{
+		"id": "145",
+		"title": "Sins of the Father",
+		"details": {
+			"difficulty": "Master",
+			"length": "Long",
+			"requirements": {
+				"quests": [
+					"vampyre slayer",
+					"a taste of hope",
+					"darkness of hallowvale",
+					"in aid of the myreque",
+					"in search of the myreque",
+					"nature spirit",
+					"priest in peril",
+					"the restless ghost"
+				],
+				"skills": [
+					"62 woodcutting",
+					"60 fletching",
+					"56 crafting",
+					"52 agility",
+					"50 attack",
+					"50 slayer",
+					"49 magic"
+				]
+			},
+			"items": [
+				"Any axe",
+				"Vyrewatch outfit (Vyrewatch top",
+				"Ivandis flail",
+				"Ruby",
+				"Chisel",
+				"Runes for Lvl-3 Enchant (1 cosmic rune, 5 fire runes) or an enchant ruby or topaz tablet"
+			],
+			"kills": [
+				"Kroy",
+				"Nail beast",
+				"Vampyre Juvinate",
+				"Mutated Bloodveld",
+				"Damien Leucurte",
+				"Vampyre Juvenile",
+				"Vanstrom Klause"
+			]
+		},
+		"rewards": [
+			"A tome of , granting 15,000 to any skill. (level 60 or higher). This reward can be utilised six times and may be used for the same skill.",
+			"The Blisterwood flail",
+			"Darkmeyer teleport via Drakan's medallion",
+			"Boat travel between Burgh de Rott, Slepe and the Icyene Graveyard",
+			"Promotion to the rank of Lieutenant within The Myreque and its associated title"
+		],
+		"qp": 2
+	},
+	{
+		"id": "154",
+		"title": "Sleeping Giants",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Very Short",
+			"requirements": {
+				"skills": ["15 smithing"]
+			},
+			"items": [
+				"3 oak logs",
+				"1 wool (ball of wool will '''not''' work)",
+				"10 nails",
+				"Hammer or Imcando hammer (Other types of hammers will not work)",
+				"Chisel"
+			]
+		},
+		"rewards": ["6,000 Smithing"],
+		"qp": 1
+	},
+	{
+		"id": "111",
+		"title": "The Slug Menace",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"wanted!",
+					"recruitment drive",
+					"black knights' fortress",
+					"druidic ritual",
+					"the lost tribe",
+					"rune mysteries",
+					"goblin diplomacy",
+					"enter the abyss",
+					"priest in peril",
+					"sea slug"
+				],
+				"skills": ["30 crafting", "30 runecraft", "30 slayer", "30 thieving"],
+				"other": [
+					"The ability to defeat a level 62 enemy with Melee.",
+					"You must have the Commorb in your inventory to start the quest."
+				]
+			},
+			"items": [
+				"Commorb (can get another by speaking to Sir Tiffy)",
+				"Swamp paste (not consumed)",
+				"5 rune essence",
+				"Chisel",
+				"Access to the Air Altar",
+				":'''OR''' Travelling through the Abyss or using a Runecraft cape",
+				":'''OR''' Access to Guardians of the Rift"
+			]
+		},
+		"rewards": [
+			"3,500 Crafting",
+			"3,500 Runecraft",
+			"3,500 Thieving",
+			"Promotion to Proselyte among the Temple Knights. This means you can buy and wear Proselyte armour with a greater Prayer bonus than Initiate. You can buy each piece individually, or buy the armour pack which, when opened, gives you the plate, helm, and legs/tassets all at once. The pack costs 25,000 coins",
+			"Buying the upgraded armour in separate pieces costs more: the helm costs 8,000 coins, the platelegs and plateskirt cost 10,000 coins, and the platebody costs 12,000 coins for a total of 30,000 coins",
+			"Required for the hard Falador Diary"
+		],
+		"qp": 1
+	},
+	{
+		"id": "143",
+		"title": "Song of the Elves",
+		"details": {
+			"difficulty": "Grandmaster",
+			"length": "Very Long",
+			"requirements": {
+				"quests": [
+					"mourning's end part ii",
+					"mourning's end part i",
+					"big chompy bird hunting",
+					"sheep herder",
+					"roving elves",
+					"waterfall quest",
+					"regicide",
+					"underground pass",
+					"biohazard",
+					"plague city",
+					"making history",
+					"priest in peril",
+					"the restless ghost",
+					"druidic ritual"
+				],
+				"skills": [
+					"70 agility",
+					"70 construction",
+					"70 farming",
+					"70 herblore",
+					"70 hunter",
+					"70 mining",
+					"70 smithing",
+					"70 woodcutting"
+				]
+			},
+			"items": [
+				"Steel full helm",
+				"Steel platebody",
+				"Steel platelegs",
+				"Red dye",
+				"Purple dye",
+				"Mourner gear including gas mask (plague jacket and plague trousers",
+				"Silk",
+				"Runite bar",
+				"Limestone brick x 8",
+				"Tinderbox",
+				"Rope",
+				"Nature rune",
+				"Flowers from mithril seeds or adamant seeds, or an irit leaf",
+				"Wine of zamorak OR Zamorak brew",
+				"Black knife OR black dagger",
+				"Cadantine seed",
+				"Seed dibber (or partial completion of the Farming portion of the Barbarian Training miniquest)",
+				"Vial of water",
+				"Pestle and mortar",
+				"Hammer",
+				"Saw",
+				"Pickaxe",
+				"Axe",
+				"Spade"
+			],
+			"kills": [
+				"Mourner (Song of the Elves)",
+				"Paladin (Song of the Elves)",
+				"Knight of Ardougne (Song of the Elves)",
+				"Iorwerth Archer",
+				"Arianwyn",
+				"Essyllt",
+				"Fragment of Seren"
+			]
+		},
+		"rewards": [
+			"40,000 Agility",
+			"40,000 Construction",
+			"40,000 Farming",
+			"40,000 Herblore",
+			"40,000 Hunter",
+			"40,000 Mining",
+			"40,000 Smithing",
+			"40,000 Woodcutting"
+		],
+		"qp": 4
+	},
+	{
+		"id": "102",
+		"title": "A Soul's Bane",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"items": ["Rope"]
+		},
+		"rewards": ["500 Defence", "500 Hitpoints", "500 Coins"],
+		"qp": 1
+	},
+	{
+		"id": "94",
+		"title": "Spirits of the Elid",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"skills": ["33 magic", "37 ranged", "37 mining", "37 thieving"],
+				"other": ["Ability to defeat three level 75 golems"]
+			},
+			"items": [
+				"Needle (Note: a Costume needle will not work)",
+				"1-2 thread",
+				"Crush weapon",
+				"Stab weapon",
+				"Slash weapon",
+				"Light source",
+				"Knife",
+				"Rope"
+			],
+			"kills": ["Black golem", "Grey golem", "White golem"]
+		},
+		"rewards": ["8,000 Prayer", "1,000 Thieving", "1,000 Magic", "Robe of elidinis"],
+		"qp": 2
+	},
+	{
+		"id": "104",
+		"title": "Swan Song",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"one small favour",
+					"rune mysteries",
+					"shilo village",
+					"jungle potion",
+					"druidic ritual",
+					"garden of tranquillity",
+					"creature of fenkenstrain",
+					"priest in peril",
+					"the restless ghost"
+				],
+				"skills": ["66 magic", "62 cooking", "62 fishing", "45 smithing", "42 firemaking", "40 crafting"],
+				"other": [
+					"The ability to defeat a combat level 170 monster, which is able to use Magic, Melee and can drain Prayer."
+				],
+				"qp": 100
+			},
+			"items": ["10 mist runes", "10 lava runes", "5 blood runes"],
+			"kills": ["Sea troll", "Sea Troll Queen"]
+		},
+		"rewards": ["15,000 Magic", "10,000 Prayer", "50,000 Fishing", "25,000 coins"],
+		"qp": 2
+	},
+	{
+		"id": "58",
+		"title": "Tai Bwo Wannai Trio",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["jungle potion", "druidic ritual"],
+				"skills": ["15 agility", "30 cooking", "5 fishing"]
+			},
+			"items": [
+				"Knife or bladed weapon, such as a Sword or a Spear",
+				"Small fishing net",
+				"2 Logs to quickly make Poison karambwan at fishing site and to cook Pasty jogre bones later in the quest",
+				"Agility potion",
+				"Tinderbox (If you wish to avoid running back to the range in Brimhaven)",
+				"Karamjan rum or 30 coins to purchase (if obtaining the rum before starting, add the sliced banana or the rum will disappear when you leave the island)"
+			],
+			"kills": ["Monkey"]
+		},
+		"rewards": [
+			"2,000 Coins (awarded by Timfraku immediately upon quest completion)",
+			"5,000 Cooking (claimed upon speaking to Tinsay after quest completion)",
+			"5,000 Fishing (claimed upon speaking to Tiadeche after quest completion)",
+			"2,500 Attack , 2,500 Strength , and a karambwan-poisoned rune spear (claimed upon speaking to Tamayu after quest completion)"
+		],
+		"qp": 2
+	},
+	{
+		"id": "87",
+		"title": "A Tail of Two Cats",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": ["icthlarin's little helper", "gertrude's cat"]
+			},
+			"items": [
+				"Cat or kitten (Hellcats work. Be sure to bring fish for your kitten if you're using one.)",
+				"Catspeak amulet",
+				"5 death runes",
+				"Chocolate cake (made with cake and chocolate bar or chocolate dust with 50 )",
+				"Logs",
+				"Tinderbox",
+				"Bucket of milk",
+				"Shears",
+				"4 potato seeds",
+				"Rake",
+				"Seed dibber (or partial completion of the Farming portion of Barbarian Training)",
+				"Vial of water"
+			]
+		},
+		"rewards": [
+			"A Doctor's hat or Nurse hat (you can switch by destroying your hat and requesting a new one from the Apothecary)",
+			"A present containing:"
+		],
+		"qp": 2,
+		"kudos": 5
+	},
+	{
+		"id": "137",
+		"title": "Tale of the Righteous",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["client of kourend", "x marks the spot"],
+				"skills": ["16 strength", "10 mining"]
+			},
+			"items": ["A pickaxe", "Runes for 2-3 casts of any magic combat spell", "Rope"]
+		},
+		"rewards": ["8,000 coins", "3 Xerician fabric (dropped by Corrupt Lizardman)"],
+		"qp": 1
+	},
+	{
+		"id": "138",
+		"title": "A Taste of Hope",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"darkness of hallowvale",
+					"in aid of the myreque",
+					"in search of the myreque",
+					"nature spirit",
+					"priest in peril",
+					"the restless ghost"
+				],
+				"skills": ["48 crafting", "45 agility", "40 attack", "40 herblore", "38 slayer"]
+			},
+			"items": [
+				"1,000 coins (More if taking Andras' boat from the Ectofuntus, 10,000 each trip)",
+				"Knife or sickle",
+				"Emerald",
+				"Chisel",
+				"3 air runes, 1 cosmic rune, and having your magic set to the standard spells"
+			],
+			"kills": ["Abomination", "Ranis Drakan", "vyrewatch"]
+		},
+		"rewards": [
+			"Ivandis flail - A weapon that can damage the vyrewatch",
+			"Drakan's medallion - An amulet that gives the player unlimited teleports to the Theatre of Blood",
+			"Tome of , granting 2,500 to any three skills of the player's choosing (level 35 or over). Can be the same skill."
+		],
+		"qp": 1
+	},
+	{
+		"id": "79",
+		"title": "Tears of Guthix",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Very Short",
+			"requirements": {
+				"skills": ["49 firemaking", "20 crafting", "20 mining"],
+				"qp": 43
+			},
+			"items": [
+				"Lit sapphire lantern (use a cut sapphire on a bullseye lantern or on a bullseye lantern (unf)), make sure to use a tinderbox on it as Juna is busy Swamp tar to fill an empty sapphire lantern using the chemist in Rimmington or the lamp still in Dorgesh-Kaan",
+				"Chisel",
+				"Tinderbox",
+				"Pickaxe",
+				"Rope (if you have not yet entered the Lumbridge Swamp Caves)"
+			]
+		},
+		"rewards": ["1,000 Crafting"],
+		"qp": 1
+	},
+	{
+		"id": "28",
+		"title": "Temple of Ikov",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["42 thieving", "40 ranged"],
+				"other": ["The ability to defeat a level 84 enemy with Ranged"]
+			},
+			"items": ["20 unnoted limpwurt roots", "Light source"],
+			"kills": ["Fire Warrior of Lesarkus", "Guardian of Armadyl", "Lucien"]
+		},
+		"rewards": [
+			"10,500 Ranged",
+			"8,000 Fletching",
+			"Armadyl pendant (if you sided with Lucien, you must kill Guardians of Armadyl to obtain it)",
+			"Optional; Boots of lightness",
+			"Optional; Shiny key, for a shortcut between the Temple of Ikov and McGrubor's Wood"
+		],
+		"qp": 1,
+		"kudos": 5
+	},
+	{
+		"id": "152",
+		"title": "Temple of the Eye",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["enter the abyss", "rune mysteries"],
+				"skills": ["10 runecraft"]
+			},
+			"items": ["Bucket of water"]
+		},
+		"rewards": [
+			"5,000 Runecraft",
+			"An additional 4,210 Runecraft is gained during the quest, for a total of 9,210",
+			"A medium pouch (if not already acquired)"
+		],
+		"qp": 1
+	},
+	{
+		"id": "170",
+		"title": "The Curse of Arrav",
+		"details": {
+			"difficulty": "Master",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"defender of varrock",
+					"shield of arrav",
+					"temple of ikov",
+					"below ice mountain",
+					"family crest",
+					"garden of tranquillity",
+					"creature of fenkenstrain",
+					"priest in peril",
+					"the restless ghost",
+					"what lies below",
+					"rune mysteries",
+					"romeo & juliet",
+					"demon slayer",
+					"troll romance",
+					"troll stronghold",
+					"death plateau"
+				],
+				"skills": ["64 mining", "62 ranged", "62 thieving", "61 agility", "58 strength", "37 slayer"]
+			},
+			"items": [
+				"3 dwellberries",
+				"Ring of life",
+				"Any pickaxe",
+				"Any Crossbow (weapon)",
+				"Mith grapple (Hallowed grapple will not work)",
+				"Insulated boots"
+			],
+			"kills": ["Golem guard", "Arrav"]
+		},
+		"rewards": ["40,000 Mining", "40,000 Thieving", "40,000 Agility"],
+		"qp": 2
+	},
+	{
+		"id": "64",
+		"title": "Throne of Miscellania",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"heroes' quest",
+					"shield of arrav",
+					"lost city",
+					"merlin's crystal",
+					"dragon slayer i",
+					"the fremennik trials"
+				],
+				"skills": ["45 woodcutting", "10 farming", "35 herblore"]
+			},
+			"items": [
+				"Iron bar",
+				"Any non-silver ring such as a gold ring that you're willing to lose ''(not Onyx ring"
+			]
+		},
+		"rewards": ["Management of Miscellania", "10,000 coins (inside the Miscellania coffers)"],
+		"qp": 1
+	},
+	{
+		"id": "44",
+		"title": "The Tourist Trap",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["10 fletching", "20 smithing"],
+				"other": ["The ability to defeat a level 47 enemy"]
+			},
+			"items": [
+				"Full Desert clothing (Desert shirt",
+				"A hammer",
+				"1 Bronze bar (recommended to bring at least 2 additional bars, 24-96% chance to succeed based on Smithing level)",
+				"10 feathers (recommended to bring 30-50 feathers, 24-99% chance to succeed based on Fletching level)",
+				"Means to enter the desert. (Such as the Shantay pass (item)"
+			],
+			"kills": ["Mercenary Captain"]
+		},
+		"rewards": [
+			"4,650 in your choice of two skills (you may pick same skill twice): Agility, Fletching, Smithing, or Thieving.",
+			"Full slave robes",
+			"6 bronze darts"
+		],
+		"qp": 2
+	},
+	{
+		"id": "120",
+		"title": "Tower of Life",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["10 construction"]
+			},
+			"items": [
+				"Hammer (or Imcando hammer)",
+				"Saw (or crystal saw)",
+				"Beer (must be a regular beer - other beers do not work.)"
+			]
+		},
+		"rewards": ["1,000 Construction", "500 Crafting", "500 Thieving", "Builder's costume"],
+		"qp": 2
+	},
+	{
+		"id": "31",
+		"title": "Tree Gnome Village",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"other": ["The ability to defeat a level 112 Khazard warlord"]
+			},
+			"items": ["Food"],
+			"kills": ["Khazard warlord"]
+		},
+		"rewards": ["11,450 Attack", "The Gnome amulet"],
+		"qp": 2
+	},
+	{
+		"id": "25",
+		"title": "Tribal Totem",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Very Short",
+			"requirements": {
+				"skills": ["21 thieving"]
+			}
+		},
+		"rewards": ["1,775 Thieving", "5 Swordfish"],
+		"qp": 1
+	},
+	{
+		"id": "67",
+		"title": "Troll Romance",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["troll stronghold", "death plateau"],
+				"skills": ["28 agility"],
+				"other": ["The ability to defeat a level 113 Arrg|troll"]
+			},
+			"items": [
+				"An iron bar",
+				"Maple logs",
+				"Rope",
+				"Climbing boots (not needed if using Trollheim Teleport)",
+				"Wax (can be made ahead of time) A bucket of wax (use insect repellent on a beehive followed by a bucket) A cake tin Swamp tar"
+			]
+		},
+		"rewards": [
+			"8,000 Agility",
+			"4,000 Strength",
+			"1 uncut diamond, 2 uncut rubies, and 4 uncut emeralds",
+			"A sled (required to complete a hard and two elite clue scroll steps)",
+			"Sledding route from Trollweiss Mountain"
+		],
+		"qp": 2
+	},
+	{
+		"id": "57",
+		"title": "Troll Stronghold",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["death plateau"],
+				"skills": ["15 agility"],
+				"other": ["The ability to defeat a level 113 Troll General (can be safespotted)"]
+			},
+			"items": ["Climbing boots or 12 coins to buy them"],
+			"kills": ["Dad", "Troll General", "Berry"]
+		},
+		"rewards": [
+			"Law talisman (if you lose it, you can get another from Dunstan for 1,000 coins)",
+			"Law talismans can be obtained via Guardians of the Rift"
+		],
+		"qp": 1
+	},
+	{
+		"id": "161",
+		"title": "Twilight's Promise",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["children of the sun"]
+			},
+			"kills": ["Knight of Varlamore (Twilight's Promise)", "cultist"]
+		},
+		"rewards": ["3,000 Thieving"],
+		"qp": 1
+	},
+	{
+		"id": "42",
+		"title": "Underground Pass",
+		"details": {
+			"difficulty": "Experienced",
+			"length": "Long",
+			"requirements": {
+				"quests": ["biohazard", "plague city"],
+				"skills": ["25 ranged"]
+			},
+			"items": [
+				"Rope (2 recommended)",
+				"Bow",
+				"1-5 arrows (only non-poisoned arrows with metal arrowtips will work. Craw's bow does not work. Crossbows and bolts will not work. Broad arrows, Ogre arrows, and Ice arrows will also not work.)",
+				"Spade"
+			],
+			"kills": ["Doomion", "Paladin", "Kalrag", "Disciple of Iban"]
+		},
+		"rewards": ["3,000 Agility", "3,000 Attack", "Klank's gauntlets"],
+		"qp": 5
+	},
+	{
+		"id": "8",
+		"title": "Vampyre Slayer",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Very Short",
+			"items": [
+				"Hammer (can be bought from the general store just north of the Blue Moon Inn for 1 coin)",
+				"Stake (obtained from Dr Harlow after giving him a beer)"
+			]
+		},
+		"rewards": ["4,825 Attack"],
+		"qp": 3
+	},
+	{
+		"id": "88",
+		"title": "Wanted!",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"quests": [
+					"recruitment drive",
+					"black knights' fortress",
+					"druidic ritual",
+					"the lost tribe",
+					"rune mysteries",
+					"goblin diplomacy",
+					"priest in peril",
+					"enter the abyss"
+				],
+				"other": ["The ability to defeat a level 32 Black Knight (Wanted!)|Black Knight."],
+				"qp": 32
+			},
+			"items": [
+				"10,000 coins, or: Law rune Enchanted gem (bought from a Slayer Master) Molten glass",
+				"20 un-noted Rune essence or pure essence (you'll get them back) File:Ultimate ironman chat badge.png The player must deliver all 20 rune essence at once",
+				"Light source ('''Note:''' Candles, torches and oil lamps can cause swamp gas explosions if going off-route, and need a tinderbox to stay lit)"
+			],
+			"kills": ["Black Knight (Wanted!)", "Solus Dellagar"]
+		},
+		"rewards": ["5,000 Slayer"],
+		"qp": 1
+	},
+	{
+		"id": "45",
+		"title": "Watchtower",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Medium",
+			"requirements": {
+				"skills": ["14 magic", "15 thieving", "25 agility", "14 herblore", "40 mining"],
+				"other": ["The ability to defeat a level 68 Ogre and run past level 111 Blue dragons"]
+			},
+			"items": ["20 coins", "Gold bar", "Tinderbox", "Pickaxe", "Dragon bones"],
+			"kills": ["Gorad", "Giant bat"]
+		},
+		"rewards": [
+			"15,250 Magic",
+			"5,000 Coins",
+			"Designation by the Ogres of Gu'Tanoth as a \"Friend of the Ogres\""
+		],
+		"qp": 4
+	},
+	{
+		"id": "37",
+		"title": "Waterfall Quest",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"other": [
+					"The ability to withstand and evade attacks from level 86 Fire Giants and level 84 Moss Guardian without any equipment."
+				]
+			},
+			"items": ["6 Air runes", "6 Earth runes", "6 Water runes", "Rope"]
+		},
+		"rewards": ["13,750 Strength", "13,750 Attack", "2 Diamonds", "2 Gold bars", "40 Mithril seeds"],
+		"qp": 1
+	},
+	{
+		"id": "122",
+		"title": "What Lies Below",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["rune mysteries"],
+				"skills": ["35 runecraft"]
+			},
+			"items": ["Empty bowl", "15 chaos runes", "Access to the Chaos Altar (Chaos talisman or Chaos tiara"],
+			"kills": ["Outlaw", "King Roald"]
+		},
+		"rewards": [
+			"8,000 Runecraft",
+			"2,000 Defence",
+			"The Beacon ring",
+			"5 Battlestaves in stock of Zaff's Superior Staffs! store (after defeating King Roald - the quest doesn't need to be completed)"
+		],
+		"qp": 1,
+		"kudos": 5
+	},
+	{
+		"id": "165",
+		"title": "While Guthix Sleeps",
+		"details": {
+			"difficulty": "Grandmaster",
+			"length": "Very Long",
+			"requirements": {
+				"quests": [
+					"defender of varrock",
+					"shield of arrav",
+					"temple of ikov",
+					"below ice mountain",
+					"family crest",
+					"what lies below",
+					"romeo & juliet",
+					"demon slayer",
+					"garden of tranquillity",
+					"creature of fenkenstrain",
+					"priest in peril",
+					"the restless ghost",
+					"the path of glouphrie",
+					"the eyes of glouphrie",
+					"the grand tree",
+					"waterfall quest",
+					"tree gnome village",
+					"fight arena",
+					"dream mentor",
+					"eadgar's ruse",
+					"druidic ritual",
+					"troll stronghold",
+					"death plateau",
+					"lunar diplomacy",
+					"the fremennik trials",
+					"lost city",
+					"rune mysteries",
+					"shilo village",
+					"jungle potion",
+					"the hand in the sand",
+					"wanted!",
+					"recruitment drive",
+					"black knights' fortress",
+					"the lost tribe",
+					"goblin diplomacy",
+					"temple of the eye",
+					"enter the abyss",
+					"tears of guthix",
+					"nature spirit",
+					"a tail of two cats",
+					"icthlarin's little helper",
+					"gertrude's cat"
+				],
+				"skills": [
+					"72 thieving",
+					"67 magic",
+					"66 agility",
+					"65 farming",
+					"65 herblore",
+					"62 hunter",
+					"99 attack",
+					"99 strength"
+				],
+				"qp": 180
+			},
+			"items": [
+				"Ring of charos(a) or 500 coins",
+				"Seed dibber (only if Barbarian Farming Training has not been completed)",
+				"Lantern lens",
+				"Unpowered orb",
+				"Bronze med helm",
+				"Iron chainbody",
+				"Sapphire lantern",
+				"Runes for any charge orb spell (30 runes of a chosen element and 3 cosmic runes)",
+				"Knife",
+				"Mort myre fungus",
+				"1 log of any type except redwood (you can obtain one using a bronze axe next to the Hunting Expert)",
+				"Pink dye (or 20 coins)",
+				"Snapdragon seed",
+				"Papyrus and charcoal",
+				"Restore potion",
+				"air rune"
+			],
+			"kills": [
+				"Assassin (While Guthix Sleeps)",
+				"Mercenary axeman",
+				"Mercenary mage",
+				"Elite Black Knight",
+				"Surok Magis",
+				"Balance Elemental",
+				"Tormented Demon"
+			]
+		},
+		"rewards": [
+			"80,000 Thieving",
+			"75,000 Farming",
+			"75,000 Herblore",
+			"50,000 Hunter",
+			"100 death runes, 100 fire runes, 100 coal, and 100 magic logs can be looted from Movario's base",
+			"Elite black armour and Dark Squall robes",
+			"The broav, if kept"
+		],
+		"qp": 5
+	},
+	{
+		"id": "20",
+		"title": "Witch's House",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Very Short",
+			"requirements": {
+				"other": ["The ability to defeat 4 monsters from level 19 to 53 without a break."]
+			},
+			"items": [
+				"Cheese (You may wish to bring several in case you mess up. One source is in Draynor Village - Aggie's house)"
+			],
+			"kills": ["Witch's experiment"]
+		},
+		"rewards": ["6,325 Hitpoints"],
+		"qp": 4
+	},
+	{
+		"id": "13",
+		"title": "Witch's Potion",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": ["Burnt meat", "Eye of newt", "Onion"]
+		},
+		"rewards": ["325 Magic"],
+		"qp": 1
+	},
+	{
+		"id": "142",
+		"title": "X Marks the Spot",
+		"details": {
+			"difficulty": "Novice",
+			"length": "Very Short",
+			"items": ["Spade (the Eastfloor spade does not work)"]
+		},
+		"rewards": [
+			"200 coins",
+			"A beginner scroll box (only if the player does not have one already in their possession; can be claimed later if players had one in their possession already)",
+			"+1 cap on all tiers of clue scrolls"
+		],
+		"qp": 1
+	},
+	{
+		"id": "80",
+		"title": "Zogre Flesh Eaters",
+		"details": {
+			"difficulty": "Intermediate",
+			"length": "Short",
+			"requirements": {
+				"quests": ["big chompy bird hunting", "jungle potion", "druidic ritual"],
+				"skills": ["4 smithing", "8 herblore", "30 ranged"],
+				"other": ["You must be able to defeat a level 111 enemy."]
+			},
+			"kills": ["Slash Bash", "Zombie (Zogre Flesh Eaters)"]
+		},
+		"rewards": ["3 ourg bones", "2 zogre bones", "2,000 Fletching", "2,000 Ranged", "2,000 Herblore"],
+		"qp": 1
+	}
+]
