@@ -3,7 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { roll } from '@/lib/util/rng';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import Fishing from '../../../lib/skilling/skills/fishing';
+import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { skillingPetDropRate } from '../../../lib/util';

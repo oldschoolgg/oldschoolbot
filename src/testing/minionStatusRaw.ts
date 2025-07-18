@@ -6,7 +6,7 @@ import Agility from '@/lib/skilling/skills/agility';
 import Cooking from '@/lib/skilling/skills/cooking/cooking';
 import Crafting from '@/lib/skilling/skills/crafting';
 import Firemaking from '@/lib/skilling/skills/firemaking';
-import Fishing from '@/lib/skilling/skills/fishing';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
 import Mining from '@/lib/skilling/skills/mining';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting';
 import type {

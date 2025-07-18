@@ -1,11 +1,11 @@
 import { calcPercentOfNum } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',
@@ -28,7 +28,7 @@ export const trawlerTask: MinionTask = {
 			loot.add(_loot);
 		}
 
-		const xpBonusPercent = anglerBoostPercent(user);
+		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
 		if (xpBonusPercent > 0) {
 			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
 			totalXP += bonusXP;
