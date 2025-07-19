@@ -1,8 +1,8 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Time, isObject, objectEntries, round } from 'e';
-import { Bank, type ItemBank, ItemGroups, Items, itemID } from 'oldschooljs';
+import { Time, isObject, objectEntries } from 'e';
+import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
 
 import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
 import type { SelectedUserStats } from '../lib/MUser';
@@ -180,29 +180,6 @@ export function userHasGracefulEquipped(user: MUser) {
 		if (hasGracefulEquipped(i)) return true;
 	}
 	return false;
-}
-
-const anglerBoosts = [
-	[itemID('Angler hat'), 0.4],
-	[itemID('Angler top'), 0.8],
-	[itemID('Angler waders'), 0.6],
-	[itemID('Angler boots'), 0.2]
-];
-
-export function anglerBoostPercent(user: MUser) {
-	const skillingSetup = user.gear.skilling;
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of anglerBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === 4) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
 }
 
 export function rogueOutfitPercentBonus(user: MUser): number {

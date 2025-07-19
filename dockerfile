@@ -22,14 +22,19 @@ FROM base AS dependencies
 WORKDIR /usr/src/app
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
-COPY .env.test .env
-COPY packages/ packages/
+COPY packages/oldschooljs/package.json ./packages/oldschooljs/package.json
+COPY packages/server/package.json ./packages/server/package.json
+COPY packages/test-dashboard/package.json ./packages/test-dashboard/package.json
+COPY packages/toolkit/package.json ./packages/toolkit/package.json
+COPY docs/package.json ./docs/package.json
 
 RUN pnpm install --frozen-lockfile
 
 FROM base AS build
 WORKDIR /usr/src/app
 
+COPY .env.test .env
+COPY packages/ packages/
 COPY --from=dependencies /usr/src/app/node_modules /usr/src/app/node_modules
 COPY --from=dependencies /usr/src/app/pnpm-lock.yaml /usr/src/app/pnpm-lock.yaml
 

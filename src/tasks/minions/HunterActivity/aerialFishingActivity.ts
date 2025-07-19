@@ -4,11 +4,10 @@ import { Bank } from 'oldschooljs';
 
 import { roll } from '@/lib/util/rng';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import Fishing from '../../../lib/skilling/skills/fishing';
+import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { skillingPetDropRate } from '../../../lib/util';
-import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',
@@ -117,7 +116,7 @@ export const aerialFishingTask: MinionTask = {
 		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
 		await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
 
-		const xpBonusPercent = anglerBoostPercent(user);
+		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
 		if (xpBonusPercent > 0) {
 			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishXpReceived));
 		}

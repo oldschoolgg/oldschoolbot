@@ -1,14 +1,15 @@
-import { type CommandOption, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { stringSearch, toTitleCase, truncateString } from '@oldschoolgg/toolkit/string-util';
+import type { CommandOption } from '@oldschoolgg/toolkit/util';
+import type { GearPreset } from '@prisma/client';
 import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes } from '../../lib/gear/types';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { globalPresets } from '../../lib/structures/Gear';
-import getOSItem from '../../lib/util/getOSItem';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {
@@ -83,7 +84,7 @@ export const equippedItemOption = (): CommandOption => ({
 		const results: APIApplicationCommandOptionChoice[] = [];
 		const entries: [string, Item[]][] = Object.entries(mUser.gear).map(entry => [
 			entry[0],
-			entry[1].allItems(false).map(getOSItem)
+			entry[1].allItems(false).map(id => Items.getOrThrow(id))
 		]);
 		for (const item of uniqueArr(entries.map(i => i[1]).flat(2))) {
 			if (results.length >= 15) break;
@@ -118,17 +119,39 @@ export const gearPresetOption: CommandOption = {
 	description: 'The gear preset you want to select.',
 	required: false,
 	autocomplete: async (value, user) => {
-		const presets = await prisma.gearPreset.findMany({
-			where: {
-				user_id: user.id
-			},
-			select: {
-				name: true
-			}
-		});
-		return presets
-			.map(i => ({ name: i.name, value: i.name }))
-			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })))
-			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
+		const [presets, userWithBank] = await prisma.$transaction([
+			prisma.gearPreset.findMany({
+				where: {
+					user_id: user.id
+				}
+			}),
+			prisma.user.findFirst({
+				where: {
+					id: user.id
+				},
+				select: {
+					bank: true
+				}
+			})
+		]);
+
+		let allPresets: (GlobalPreset | GearPreset)[] = [...presets, ...globalPresets];
+		if (value) {
+			allPresets = allPresets.filter(_preset => stringSearch(value, _preset));
+		}
+
+		const theirBank = new Bank(userWithBank?.bank as ItemBank);
+
+		return allPresets
+			.sort((a, b) => b.times_equipped - a.times_equipped)
+			.slice(0, 25)
+			.map(i => {
+				const gear = Gear.fromGearPreset(i);
+				const ownsAllItems = theirBank.has(gear.toBank());
+				return {
+					name: truncateString(`${ownsAllItems ? '🟢' : '🔴'} ${i.name} (${gear.toString()})`, 100),
+					value: i.name
+				};
+			});
 	}
 };

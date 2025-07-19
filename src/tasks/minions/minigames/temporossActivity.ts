@@ -3,7 +3,7 @@ import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, randInt } from 'e';
 
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
-import Fishing from '../../../lib/skilling/skills/fishing';
+import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';

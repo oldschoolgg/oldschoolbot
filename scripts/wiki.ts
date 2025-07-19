@@ -1,5 +1,4 @@
 import { writeFileSync } from 'node:fs';
-import process from 'node:process';
 import { Markdown, Tab, Tabs, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { omit } from 'remeda';
@@ -12,7 +11,7 @@ import { wikiMonsters } from '../src/lib/minions/data/killableMonsters';
 import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
 import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
-import { miningSnapshots } from './wiki/miningSnapshots.js';
+import { execAsync, runTimedLoggedFn } from './scriptUtil';
 import { updateAuthors } from './wiki/updateAuthors';
 import { handleMarkdownEmbed } from './wiki/wikiScriptUtil';
 
@@ -378,14 +377,20 @@ function renderCombatAchievementsFile() {
 }
 
 async function wiki() {
-	renderCombatAchievementsFile();
-	renderQuestsMarkdown();
-	rendeCoxMarkdown();
-	clueBoosts();
-	renderMonstersMarkdown();
-	await updateAuthors();
-	miningSnapshots();
-	process.exit(0);
+	await Promise.all([
+		runTimedLoggedFn('Fishing Snapshots', () =>
+			execAsync('tsx --tsconfig scripts/tsconfig.json ./scripts/wiki/fishingSnapshots.ts')
+		),
+		runTimedLoggedFn('Mining Snapshots', () =>
+			execAsync('tsx --tsconfig scripts/tsconfig.json ./scripts/wiki/miningSnapshots.ts')
+		),
+		runTimedLoggedFn('Update Authors', updateAuthors),
+		runTimedLoggedFn('Render Combat Achievements', renderCombatAchievementsFile),
+		runTimedLoggedFn('Render Clue Boosts', clueBoosts),
+		runTimedLoggedFn('Render Quests Markdown', renderQuestsMarkdown),
+		runTimedLoggedFn('Render CoX Markdown', rendeCoxMarkdown),
+		runTimedLoggedFn('Render Monsters Markdown', renderMonstersMarkdown)
+	]);
 }
 
 wiki();

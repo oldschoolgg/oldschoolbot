@@ -3,7 +3,7 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { Time } from 'e';
 
 import { time } from 'discord.js';
-import { SeededRNG } from './rng';
+import { SeedableRNG } from './rng';
 
 export interface Peak {
 	startTime: number;
@@ -41,14 +41,14 @@ function getSeedFromDate(date: Date): number {
 
 export function generateDailyPeakIntervals(date: Date = new Date()): { peaks: Peak[]; currentPeak: Peak } {
 	const seed = getSeedFromDate(date);
-	const rng = new SeededRNG(seed);
+	const rng = new SeedableRNG(seed);
 	const peakTiers: PeakTier[] = [PeakTier.High, PeakTier.Medium, PeakTier.Low];
 
 	let hoursUsed = 0;
 	let peaks: Peak[] = [];
 
 	for (let i = 0; i < 10; i++) {
-		const duration = rng.nextInt(1, 2);
+		const duration = rng.randInt(1, 2);
 		const peakTier = rng.shuffle(peakTiers)[0];
 		peaks.push({ startTime: duration, finishTime: duration, peakTier });
 		hoursUsed += duration;

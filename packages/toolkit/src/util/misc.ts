@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType, time } from 'discord.js';
 import { notEmpty, randArrItem, randInt, shuffleArr } from 'e';
+
 import type { CommandOption } from '../lib/MahojiClient/mahojiTypes';
 import { randomSnowflake } from './discord';
 
@@ -134,9 +135,14 @@ export function getInterval(intervalHours: number) {
 }
 
 type CommandInput = Record<string, any>;
+
 export async function generateCommandInputs(options: readonly CommandOption[]): Promise<CommandInput[]> {
 	const results: CommandInput[] = [];
 	const allPossibleOptions: Record<string, any[]> = {};
+
+	if (options.length === 0) {
+		return [{}];
+	}
 
 	for (const option of options) {
 		switch (option.type) {
@@ -154,9 +160,9 @@ export async function generateCommandInputs(options: readonly CommandOption[]): 
 						{ id: randomSnowflake() } as any,
 						{} as any
 					);
-					allPossibleOptions[option.name] = shuffleArr(autoCompleteResults.map(c => c.value)).slice(0, 3);
+					allPossibleOptions[option.name] = shuffleArr(autoCompleteResults.map(c => c.value)).slice(0, 10);
 				} else if (option.choices) {
-					allPossibleOptions[option.name] = option.choices.map(c => c.value).slice(0, 3);
+					allPossibleOptions[option.name] = shuffleArr(option.choices.map(c => c.value)).slice(0, 10);
 				} else if (['guild_id', 'message_id'].includes(option.name)) {
 					allPossibleOptions[option.name] = ['157797566833098752'];
 				} else {
@@ -166,13 +172,17 @@ export async function generateCommandInputs(options: readonly CommandOption[]): 
 			case ApplicationCommandOptionType.Integer:
 			case ApplicationCommandOptionType.Number:
 				if (option.choices) {
-					allPossibleOptions[option.name] = option.choices.map(c => c.value);
+					allPossibleOptions[option.name] = shuffleArr(option.choices.map(c => c.value)).slice(0, 10);
 				} else {
 					let value = randInt(1, 10);
 					if (option.min_value && option.max_value) {
 						value = randInt(option.min_value, option.max_value);
 					}
-					allPossibleOptions[option.name] = [option.min_value, value];
+					allPossibleOptions[option.name] = [
+						option.min_value ?? 0,
+						randInt(option.min_value ?? 0, value),
+						value
+					];
 				}
 				break;
 			case ApplicationCommandOptionType.Boolean: {

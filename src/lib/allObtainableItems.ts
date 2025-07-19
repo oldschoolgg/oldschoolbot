@@ -26,7 +26,7 @@ import { nonUniqueTable } from './simulation/toa';
 import { Cookables } from './skilling/skills/cooking/cooking';
 import { Craftables } from './skilling/skills/crafting/craftables';
 import { allFarmingItems } from './skilling/skills/farming';
-import Fishing from './skilling/skills/fishing';
+import { Fishing } from './skilling/skills/fishing/fishing';
 import { Fletchables } from './skilling/skills/fletching/fletchables';
 import Herblore from './skilling/skills/herblore/herblore';
 import Hunter from './skilling/skills/hunter/hunter';

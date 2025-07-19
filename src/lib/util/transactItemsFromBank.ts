@@ -139,7 +139,7 @@ async function transactItemsFromBank({
 			}
 		}
 
-		if (!options.neverUpdateHistory) {
+		if (!options.neverUpdateHistory && previousCL.length !== newCL.length) {
 			await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
 		}
 

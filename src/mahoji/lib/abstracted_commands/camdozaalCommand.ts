@@ -4,7 +4,7 @@ import { Bank, Items, SkillsEnum } from 'oldschooljs';
 
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
-import Fishing from '../../../lib/skilling/skills/fishing';
+import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
 import Mining from '../../../lib/skilling/skills/mining';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

@@ -154,7 +154,8 @@ export class MUserClass {
 			bank: this.bank,
 			skillsAsLevels: this.skillsAsLevels,
 			chargeBank: this.ownedChargeBank(),
-			skillsAsXP: this.skillsAsXP
+			skillsAsXP: this.skillsAsXP,
+			minionName: this.minionName
 		});
 	}
 

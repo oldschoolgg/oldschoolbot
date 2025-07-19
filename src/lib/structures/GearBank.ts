@@ -12,25 +12,29 @@ export class GearBank {
 	skillsAsLevels: SkillsRequired;
 	skillsAsXP: SkillsRequired;
 	chargeBank: ChargeBank;
+	minionName: string;
 
 	constructor({
 		gear,
 		bank,
 		skillsAsLevels,
 		chargeBank,
-		skillsAsXP
+		skillsAsXP,
+		minionName
 	}: {
 		gear: UserFullGearSetup;
 		bank: Bank;
 		skillsAsLevels: SkillsRequired;
 		chargeBank: ChargeBank;
 		skillsAsXP: SkillsRequired;
+		minionName: string;
 	}) {
 		this.gear = gear;
 		this.bank = bank;
 		this.skillsAsLevels = skillsAsLevels;
 		this.chargeBank = chargeBank;
 		this.skillsAsXP = skillsAsXP;
+		this.minionName = minionName;
 	}
 
 	wildyGearCheck(item: string | number, isWildy: boolean) {

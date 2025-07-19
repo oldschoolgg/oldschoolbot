@@ -36,3 +36,27 @@ export function miniID(length: number): string {
 
 	return id;
 }
+
+export function stringSearch(
+	queryString: string,
+	searchSpace: string | string[] | { name: string; alias?: string[]; aliases?: string[] }
+) {
+	if (typeof searchSpace === 'string') {
+		return searchSpace.toLowerCase().includes(queryString.toLowerCase());
+	}
+
+	if (Array.isArray(searchSpace)) {
+		return searchSpace.some(i => i.toLowerCase().includes(queryString.toLowerCase()));
+	}
+
+	if (searchSpace.name.toLowerCase().includes(queryString.toLowerCase())) return true;
+	if (searchSpace.aliases) {
+		return searchSpace.aliases.some(alias => alias.toLowerCase().includes(queryString.toLowerCase()));
+	}
+
+	if (searchSpace.alias) {
+		return searchSpace.alias.some(alias => alias.toLowerCase().includes(queryString.toLowerCase()));
+	}
+
+	return false;
+}
