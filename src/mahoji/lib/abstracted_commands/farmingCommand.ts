@@ -142,7 +142,6 @@ export async function farmingPlantCommand({
 	}
 	const userBank = user.bank;
 	const alwaysPay = user.user.minion_defaultPay;
-	const questPoints = user.QP;
 	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	const currentDate = new Date().getTime();
@@ -180,7 +179,7 @@ export async function farmingPlantCommand({
 	const treeStr = !planted ? null : treeCheck(planted, currentWoodcuttingLevel, GP, patchType.lastQuantity);
 	if (treeStr) return treeStr;
 
-	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
+	const [numOfPatches] = calcNumOfPatches(plant, user);
 	if (numOfPatches === 0) {
 		return 'There are no available patches to you.';
 	}

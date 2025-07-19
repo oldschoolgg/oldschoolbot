@@ -1,4 +1,4 @@
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EQuest, itemID } from 'oldschooljs';
 
 import type { Craftable } from '../../../types';
 
@@ -134,7 +134,7 @@ const Misc: Craftable[] = [
 		xp: 34,
 		inputItems: new Bank({ 'Arctic pine logs': 2, 'Bronze nails': 1 }),
 		tickRate: 3,
-		qpRequired: 4,
+		requiredQuests: [EQuest.THE_FREMENNIK_ISLES],
 		wcLvl: 56
 	},
 	{

@@ -1,4 +1,4 @@
-import { Bank } from 'oldschooljs';
+import { Bank, EQuest } from 'oldschooljs';
 
 import type { Createable } from '../createables';
 
@@ -10,7 +10,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic air staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -20,7 +20,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic water staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -30,7 +30,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic earth staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -40,7 +40,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic fire staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -50,7 +50,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic dust staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -60,7 +60,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic lava staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -70,7 +70,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic lava staff (or)': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -80,7 +80,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic mist staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -90,7 +90,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic mud staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -100,7 +100,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic smoke staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -110,7 +110,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic steam staff': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	},
 	{
@@ -120,7 +120,7 @@ export const mysticStavesCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Mystic steam staff (or)': 1 }),
 		GPCost: 40_000,
-		QPRequired: 1,
+		requiredQuests: [EQuest.SCORPION_CATCHER],
 		requiredSkills: { prayer: 31 }
 	}
 ];

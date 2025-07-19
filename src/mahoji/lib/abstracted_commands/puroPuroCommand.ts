@@ -1,6 +1,6 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
-import { type Item, itemID } from 'oldschooljs';
+import { EQuest, type Item, itemID } from 'oldschooljs';
 
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import type { Skills } from '../../../lib/types';
@@ -60,7 +60,9 @@ export async function puroPuroStartCommand(
 	const [hasReqs, reason] = hasSkillReqs(user, puroPuroSkillRequirements);
 	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
 	if (!hasReqs) return `To hunt in Puro-Puro, you need: ${reason}.`;
-	if (user.QP < 3) return 'To hunt in Puro-Puro, you need 3 QP.';
+	if (!user.hasCompletedQuest(EQuest.LOST_CITY)) {
+		return 'You need to complete the **Lost City** quest to hunt in Puro-Puro.';
+	}
 	let impToHunt: PuroImpling | undefined = undefined;
 	if (impling) {
 		impToHunt = puroOptions.find(i => stringMatches(i.name, impling));
@@ -72,7 +74,9 @@ export async function puroPuroStartCommand(
 		return `${user.minionName} needs at least level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
 	if (!darkLure || (darkLure && !impToHunt.spell)) darkLure = false;
 	if (darkLure) {
-		if (user.QP < 9) return 'To use Dark Lure, you need 9 QP.';
+		if (!user.hasCompletedQuest(EQuest.A_KINGDOM_DIVIDED)) {
+			return 'You need to complete the **A Kingdom Ddivided** quest to use Dark Lure.';
+		}
 		if (!hasDarkLureSkillReqs) return `To use Dark Lure, you need: ${lureReason}.`;
 		const { bank } = user;
 		const natureRuneID = itemID('Nature rune');

@@ -21,7 +21,7 @@ describe('Fish Command', async () => {
 			QP: 0
 		});
 		const res = await user.runCommand(fishCommand, { name: 'karambwanji', quantity: 1 });
-		expect(res).toEqual('You need 15 qp to catch those!');
+		expect(res).toEqual('You need to have completed the Tai Bwo Wannai Trio quest to catch those!');
 	});
 
 	it('should handle invalid fish', async () => {

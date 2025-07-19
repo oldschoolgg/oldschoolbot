@@ -1,6 +1,6 @@
 {
-	"hash": "5410f58e2adaaba0d46e13fe501eec0f",
-	"date": "2025-07-01T02:11:00.157Z",
+	"hash": "3bb9697e87dd6626f83d38c3125a62f1",
+	"date": "2025-07-17T10:54:14.161Z",
 	"data": [
 		{
 			"name": "activities",
@@ -23,7 +23,6 @@
 				"other",
 				"plank_make",
 				"puro_puro",
-				"quest",
 				"scatter",
 				"underwater",
 				"warriors_guild"
@@ -427,6 +426,11 @@
 		{
 			"name": "price",
 			"desc": "Looks up the price of an item.",
+			"subOptions": []
+		},
+		{
+			"name": "quest",
+			"desc": "Send your minion to do quests, view quest info, or claim completed quests up to your QP.",
 			"subOptions": []
 		},
 		{

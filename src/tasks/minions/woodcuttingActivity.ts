@@ -1,12 +1,11 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
 import { Time, objectEntries, percentChance, randInt } from 'e';
-import { Bank, EItem } from 'oldschooljs';
+import { Bank, EItem, EQuest } from 'oldschooljs';
 
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
-import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
 import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -194,7 +193,7 @@ export const woodcuttingTask: MinionTask = {
 		let lostLogs = 0;
 		const loot = new Bank();
 		const itemsToRemove = new Bank();
-		const priffUnlocked = user.hasSkillReqs(soteSkillRequirements) && user.QP >= 150;
+		const priffUnlocked = user.hasCompletedQuest(EQuest.SONG_OF_THE_ELVES);
 
 		// Felling axe +10% xp bonus & 20% logs lost
 		if (user.gear.skilling.hasEquipped('Bronze felling axe')) {

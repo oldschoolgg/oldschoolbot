@@ -1,10 +1,12 @@
 import { Bank } from 'oldschooljs';
 
+import { Quests } from 'oldschooljs';
 import { diaries, userhasDiaryTier } from '../../diaries';
-import { MAX_QP } from '../../minions/data/quests';
 import { musicCapeRequirements } from '../../musicCape';
 import { Requirements } from '../../structures/Requirements';
 import type { Buyable } from './buyables';
+
+const MAX_QP = Quests.reduce((acc, q) => acc + (q.qp ?? 0), 0);
 
 export const capeBuyables: Buyable[] = [
 	{
@@ -14,8 +16,13 @@ export const capeBuyables: Buyable[] = [
 			'Quest point hood': 1
 		}),
 		aliases: ['quest cape'],
-		qpRequired: MAX_QP,
-		gpCost: 99_000
+		gpCost: 99_000,
+		customReq: async user => {
+			if (user.QP !== MAX_QP) {
+				return [false, `You need ${MAX_QP} QP to buy this cape, you have ${user.QP}.`];
+			}
+			return [true];
+		}
 	},
 	{
 		name: 'Quest point cape(t)',
@@ -23,7 +30,6 @@ export const capeBuyables: Buyable[] = [
 			'Quest point cape (t)': 1
 		}),
 		aliases: ['quest cape(t)'],
-		qpRequired: MAX_QP,
 		gpCost: 99_000,
 		customReq: async user => {
 			for (const diary of diaries.map(d => d.elite)) {
@@ -31,6 +37,9 @@ export const capeBuyables: Buyable[] = [
 				if (!has) {
 					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
 				}
+			}
+			if (user.QP !== MAX_QP) {
+				return [false, `You need ${MAX_QP} QP to buy this cape, you have ${user.QP}.`];
 			}
 			return [true];
 		}
@@ -59,7 +68,6 @@ export const capeBuyables: Buyable[] = [
 			'Achievement diary cape(t)': 1
 		}),
 		aliases: ['achievement cape(t)'],
-		qpRequired: MAX_QP,
 		gpCost: 99_000,
 		customReq: async user => {
 			for (const diary of diaries.map(d => d.elite)) {
@@ -67,6 +75,10 @@ export const capeBuyables: Buyable[] = [
 				if (!has) {
 					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
 				}
+			}
+			const MAX_QP = Quests.reduce((acc, q) => acc + (q.qp ?? 0), 0);
+			if (user.QP !== MAX_QP) {
+				return [false, `You need ${MAX_QP} QP to buy this cape, you have ${user.QP}.`];
 			}
 			return [true];
 		}
@@ -93,7 +105,7 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 99_000,
 		customReq: async user => {
-			if (user.QP < MAX_QP) {
+			if (!user.hasCompletedAllQuests) {
 				return [false, "You can't buy this because you haven't completed all the quests!"];
 			}
 			if (!user.cl.has('Music cape')) {

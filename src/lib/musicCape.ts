@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { objectEntries, partition } from 'e';
-import { Bank, EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, ItemGroups, Monsters, Quests, resolveItems } from 'oldschooljs';
 
 import { RandomEvents } from './randomEvents';
 import type { MinigameName } from './settings/minigames';
@@ -82,7 +82,7 @@ export const musicCapeRequirements = new Requirements()
 		}
 	})
 	.add({
-		qpRequirement: 200
+		qpRequirement: Quests.reduce((acc, q) => acc + (q.qp ?? 0), 0)
 	})
 	.add({
 		sacrificedItemsRequirement: new Bank().add('Fire cape')
@@ -134,12 +134,12 @@ export const musicCapeRequirements = new Requirements()
 				activity_type_enum.HalloweenEvent,
 				activity_type_enum.GroupMonsterKilling,
 				activity_type_enum.BirthdayEvent,
-				activity_type_enum.Questing,
 				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 				activity_type_enum.ChampionsChallenge,
 				activity_type_enum.Nex,
 				activity_type_enum.Revenants, // This is now under monsterActivity
-				activity_type_enum.KourendFavour // Kourend favor activity was removed
+				activity_type_enum.KourendFavour, // Kourend favor activity was removed
+				activity_type_enum.Questing // Questing is now obsoleted by specificQuest in OSB
 			];
 			const notDoneActivities = Object.values(activity_type_enum).filter(
 				type => !typesNotRequiredForMusicCape.includes(type) && !uniqueActivitiesDone.includes(type)

@@ -134,9 +134,10 @@ function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 
 export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	return (
-		user.QP >= (master.questPoints ?? 0) &&
-		user.skillLevel(SkillsEnum.Slayer) >= (master.slayerLvl ?? 0) &&
-		user.combatLevel >= (master.combatLvl ?? 0)
+		(user.skillLevel(SkillsEnum.Slayer) >= (master.slayerLvl ?? 0) &&
+			user.combatLevel >= (master.combatLvl ?? 0) &&
+			!master.quest) ||
+		user.hasCompletedQuest(master.quest!)
 	);
 }
 
@@ -146,8 +147,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	const myLastTask = user.user.slayer_last_task;
 	if (myLastTask === task.monster.id) return false;
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
-	if (task.questPoints && task.questPoints > user.QP) return false;
-	if (task.requiredQuests?.find(quest => !user.user.finished_quest_ids.includes(quest))) return false;
+	if (task.requiredQuests?.find(quest => !user.hasCompletedQuest(quest))) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
 	if (task.levelRequirements && !user.hasSkillReqs(task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];

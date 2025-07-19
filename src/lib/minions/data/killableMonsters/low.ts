@@ -1,9 +1,8 @@
 import { Time } from 'e';
-import { Bank, Monsters, SkillsEnum, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EQuest, Monsters, SkillsEnum, itemID, resolveItems } from 'oldschooljs';
 
 import { GearStat } from 'oldschooljs/gear';
 import type { KillableMonster } from '../../types';
-import { QuestID } from '../quests';
 
 const killableMonsters: KillableMonster[] = [
 	{
@@ -13,8 +12,7 @@ const killableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 13,
 		table: Monsters.Imp,
 		wildy: false,
-		difficultyRating: 5,
-		qpRequired: 0
+		difficultyRating: 5
 	},
 	{
 		id: Monsters.Jogre.id,
@@ -26,7 +24,7 @@ const killableMonsters: KillableMonster[] = [
 		canCannon: true,
 		cannonMulti: true,
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		respawnTime: Time.Second * 1.5,
 		healAmountNeeded: 14,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -40,7 +38,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Unicorn,
 		wildy: false,
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		respawnTime: Time.Second * 10,
 		healAmountNeeded: 8,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -54,7 +52,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Goat,
 		wildy: false,
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		respawnTime: Time.Second * 30,
 		healAmountNeeded: 10,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -68,7 +66,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.TzHaarXil,
 		wildy: false,
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		canBarrage: false,
 		healAmountNeeded: 50,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -82,7 +80,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.TzHaarMej,
 		wildy: false,
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		canBarrage: false,
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -104,7 +102,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.JubblyBird.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.JubblyBird,
-		qpRequired: 10
+		requiredQuests: [EQuest.BIG_CHOMPY_BIRD_HUNTING]
 	},
 	{
 		id: Monsters.ManiacalMonkey.id,
@@ -116,7 +114,7 @@ const killableMonsters: KillableMonster[] = [
 			prayer: 74,
 			hitpoints: 74
 		},
-		qpRequired: 175,
+		requiredQuests: [EQuest.MONKEY_MADNESS_II],
 		wildy: false,
 		difficultyRating: 4,
 		canChinning: true,
@@ -150,7 +148,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.BloodReaver,
 		wildy: false,
 		difficultyRating: 3,
-		qpRequired: 1,
+		requiredQuests: [EQuest.DESERT_TREASURE_I],
 		itemsRequired: resolveItems(['Frozen key']),
 		healAmountNeeded: 30,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -169,7 +167,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Araxyte.aliases,
 		timeToFinish: Time.Second * 16,
 		table: Monsters.Araxyte,
-		qpRequired: 1,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		healAmountNeeded: 40,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackStab],
@@ -189,7 +187,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Crab,
 		wildy: false,
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		respawnTime: Time.Second * 6,
 		healAmountNeeded: 3,
 		attackStyleToUse: GearStat.AttackCrush,
@@ -204,7 +202,8 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.FrostNagua,
 		healAmountNeeded: 100,
 		attackStyleToUse: GearStat.AttackCrush,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		requiredQuests: [EQuest.THE_HEART_OF_DARKNESS]
 	},
 	{
 		id: Monsters.SulphurNagua.id,
@@ -214,7 +213,8 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.SulphurNagua,
 		healAmountNeeded: 100,
 		attackStyleToUse: GearStat.AttackCrush,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		requiredQuests: [EQuest.PERILOUS_MOONS]
 	},
 	{
 		id: Monsters.ZombiePirate.id,
@@ -224,7 +224,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.ZombiePirate,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [
@@ -277,7 +277,7 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 200,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush],
-		requiredQuests: [QuestID.ThePathOfGlouphrie],
+		requiredQuests: [EQuest.THE_PATH_OF_GLOUPHRIE],
 		customMonsterHP: 150,
 		canCannon: true
 	},
@@ -290,7 +290,7 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 200,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush],
-		requiredQuests: [QuestID.ThePathOfGlouphrie],
+		requiredQuests: [EQuest.THE_PATH_OF_GLOUPHRIE],
 		canCannon: true
 	}
 ];

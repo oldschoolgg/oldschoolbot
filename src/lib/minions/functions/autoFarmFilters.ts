@@ -13,7 +13,7 @@ export function replant(
 	patchesDetailed: IPatchDataDetailed[]
 ) {
 	if (p.level > farmingLevel) return false;
-	const [numOfPatches] = calcNumOfPatches(p, user, user.QP);
+	const [numOfPatches] = calcNumOfPatches(p, user);
 	if (numOfPatches === 0) return false;
 	const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
 	if (!userBank.has(reqItems)) return false;
@@ -24,7 +24,7 @@ export function replant(
 
 export function allFarm(p: Plant, farmingLevel: number, user: MUserClass, userBank: Bank) {
 	if (p.level > farmingLevel) return false;
-	const [numOfPatches] = calcNumOfPatches(p, user, user.QP);
+	const [numOfPatches] = calcNumOfPatches(p, user);
 	if (numOfPatches === 0) return false;
 	const reqItems = p.inputItems.clone().multiply(numOfPatches);
 	if (!userBank.has(reqItems)) return false;

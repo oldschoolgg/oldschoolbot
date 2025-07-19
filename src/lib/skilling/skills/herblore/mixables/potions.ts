@@ -1,4 +1,4 @@
-import { Bank } from 'oldschooljs';
+import { Bank, EQuest } from 'oldschooljs';
 
 import getOSItem from '../../../../util/getOSItem';
 import type { Mixable } from '../../../types';
@@ -440,7 +440,7 @@ const Potions: Mixable[] = [
 			'Crushed superior dragon bones': 1
 		}),
 		tickRate: 2,
-		qpRequired: 205,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		bankTimePerPotion: 0.3
 	},
 	{
@@ -471,7 +471,7 @@ const Potions: Mixable[] = [
 			'Lava scale shard': 4
 		}),
 		tickRate: 2,
-		qpRequired: 205,
+		requiredQuests: [EQuest.DRAGON_SLAYER_II],
 		bankTimePerPotion: 0.3
 	},
 	{

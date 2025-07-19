@@ -1,7 +1,8 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { Bank, Quests, SkillsEnum } from 'oldschooljs';
 
+import { bold } from 'discord.js';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import type { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -29,8 +30,13 @@ export async function tiaraRunecraftCommand({
 		return `That's not a valid tiara. Valid tiaras are ${Runecraft.Tiaras.map(_tiara => _tiara.name).join(', ')}.`;
 	}
 
-	if (tiaraObj.qpRequired && user.QP < tiaraObj.qpRequired) {
-		return `You need ${tiaraObj.qpRequired} QP to craft this tiara.`;
+	if (tiaraObj.requiredQuests) {
+		const incompleteQuest = tiaraObj.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				Quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to craft this tiara.`;
+		}
 	}
 
 	const bank = new Bank(user.bank);

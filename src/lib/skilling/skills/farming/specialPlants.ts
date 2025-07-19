@@ -1,4 +1,4 @@
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EQuest, itemID } from 'oldschooljs';
 
 import type { Plant } from '../../types';
 
@@ -31,9 +31,9 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patch
-			[33, 1] // Prif Patch
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patch
+			[EQuest.SONG_OF_THE_ELVES, 1] // Prif Patch
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -70,8 +70,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[3, 1] // Etceteria patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.THE_FREMENNIK_TRIALS, 1] // Etceteria patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -109,9 +109,9 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patch
-			[33, 1] // Prif Patch
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patch
+			[EQuest.SONG_OF_THE_ELVES, 1] // Prif Patch
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -148,8 +148,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[3, 1] // Etceteria patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.THE_FREMENNIK_TRIALS, 1] // Etceteria patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -186,8 +186,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[3, 2] // Underwater Fossil Island (2)
+		additionalPatchesByQuest: [
+			[EQuest.BONE_VOYAGE, 2] // Underwater Fossil Island (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -222,9 +222,9 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patch
-			[33, 1] // Prif Patch
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patch
+			[EQuest.SONG_OF_THE_ELVES, 1] // Prif Patch
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -262,9 +262,9 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patch
-			[33, 1] // Prif Patch
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patch
+			[EQuest.SONG_OF_THE_ELVES, 1] // Prif Patch
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -301,9 +301,9 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patch
-			[33, 1] // Prif Patch
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patch
+			[EQuest.SONG_OF_THE_ELVES, 1] // Prif Patch
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -342,8 +342,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[3, 3] // Fossil Island (3)
+		additionalPatchesByQuest: [
+			[EQuest.BONE_VOYAGE, 3] // Underwater Fossil Island (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -376,8 +376,7 @@ const specialPlants: Plant[] = [
 		canPayFarmer: false,
 		canCompostPatch: false,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
@@ -411,8 +410,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[3, 1] // Etceteria patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.THE_FREMENNIK_TRIALS, 1] // Etceteria patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -449,8 +448,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[3, 1] // Etceteria patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.THE_FREMENNIK_TRIALS, 1] // Etceteria patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -487,8 +486,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1] // Canifs patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1] // Canifs patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -522,8 +521,7 @@ const specialPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [
@@ -561,8 +559,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[3, 3] // Fossil Island (3)
+		additionalPatchesByQuest: [
+			[EQuest.BONE_VOYAGE, 3] // Fossil Island (3)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -598,9 +596,9 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patch
-			[33, 1] // Prif Patch
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patch
+			[EQuest.SONG_OF_THE_ELVES, 1] // Prif Patch
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -637,8 +635,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[3, 1] // Etceteria patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.THE_FREMENNIK_TRIALS, 1] // Etceteria patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -674,8 +672,7 @@ const specialPlants: Plant[] = [
 		canPayFarmer: false,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
@@ -708,8 +705,7 @@ const specialPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [
@@ -743,8 +739,7 @@ const specialPlants: Plant[] = [
 		canPayFarmer: false,
 		canCompostPatch: false,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [
@@ -779,8 +774,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: false,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[3, 1] // Etceteria patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.THE_FREMENNIK_TRIALS, 1] // Etceteria patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -818,8 +813,7 @@ const specialPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
@@ -860,8 +854,8 @@ const specialPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[33, 1] // Prifddinas (1)
+		additionalPatchesByQuest: [
+			[EQuest.SONG_OF_THE_ELVES, 1] // Prifddinas (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -899,8 +893,7 @@ const specialPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[99, 3] // Plant in all patches at lvl 99
@@ -938,8 +931,7 @@ const specialPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [
@@ -976,8 +968,7 @@ const specialPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [

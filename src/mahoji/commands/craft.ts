@@ -59,12 +59,7 @@ export const craftCommand: OSBMahojiCommand = {
 			sets = ' sets of';
 		}
 
-		const userQP = user.QP;
 		const currentWoodcutLevel = user.skillLevel(SkillsEnum.Woodcutting);
-
-		if (craftable.qpRequired && userQP < craftable.qpRequired) {
-			return `${user.minionName} needs ${craftable.qpRequired} QP to craft ${craftable.name}.`;
-		}
 
 		if (craftable.wcLvl && currentWoodcutLevel < craftable.wcLvl) {
 			return `${user.minionName} needs ${craftable.wcLvl} Woodcutting Level to craft ${craftable.name}.`;

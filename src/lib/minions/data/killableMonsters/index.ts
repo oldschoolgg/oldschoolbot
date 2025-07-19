@@ -1,6 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Time } from 'e';
-import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, EQuest, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { SkillsEnum } from '../../../skilling/types';
@@ -45,7 +45,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
-		qpRequired: 0,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		itemInBankBoosts: [
 			{ [itemID('Barrows gloves')]: 2 },
 			{
@@ -89,7 +89,7 @@ const killableMonsters: KillableMonster[] = [
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth prime']),
-		qpRequired: 0,
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS],
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl chestplate')]: 2,
@@ -130,7 +130,7 @@ const killableMonsters: KillableMonster[] = [
 			['Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth rex']),
-		qpRequired: 0,
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS],
 		itemInBankBoosts: [
 			{
 				[itemID("Iban's staff")]: 3,
@@ -168,7 +168,7 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos tassets', "Torag's platelegs", 'Torva platelegs']
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth supreme']),
-		qpRequired: 0,
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS],
 		itemInBankBoosts: [
 			{
 				[itemID('Bandos chestplate')]: 2,
@@ -199,7 +199,6 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '🧍‍♂️',
 		wildy: false,
 		difficultyRating: 0,
-		qpRequired: 0,
 		defaultAttackStyles: [SkillsEnum.Attack]
 	},
 	{
@@ -210,7 +209,6 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Guard,
 		wildy: false,
 		difficultyRating: 0,
-		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true
 	},
@@ -222,8 +220,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Woman,
 		emoji: '🧍‍♀️',
 		wildy: false,
-		difficultyRating: 0,
-		qpRequired: 0
+		difficultyRating: 0
 	},
 	{
 		id: Monsters.Sarachnis.id,
@@ -235,7 +232,6 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 5,
 		notifyDrops: resolveItems(['Sraracha', 'Jar of eyes']),
-		qpRequired: 0,
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon claws')]: 5
@@ -283,7 +279,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 10,
-		qpRequired: 205,
+		requiredQuests: [EQuest.SONG_OF_THE_ELVES],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -308,7 +304,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 5,
-		qpRequired: 50,
+		requiredQuests: [EQuest.BONE_VOYAGE],
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		healAmountNeeded: 4 * 20,
@@ -339,7 +335,7 @@ export const NightmareMonster: KillableMonster = {
 		'Volatile orb',
 		'Parasitic egg'
 	]),
-	qpRequired: 10,
+	requiredQuests: [EQuest.PRIEST_IN_PERIL],
 	groupKillable: true,
 	respawnTime: Time.Minute * 1.5,
 	levelRequirements: {

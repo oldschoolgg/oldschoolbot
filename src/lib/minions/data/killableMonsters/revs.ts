@@ -12,7 +12,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantCyclops,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [
@@ -41,7 +41,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantDarkBeast,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [
@@ -70,7 +70,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantDemon,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [
@@ -99,7 +99,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantDragon,
 		wildy: true,
 		difficultyRating: 10,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [
@@ -128,7 +128,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantGoblin,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 8,
 		pkBaseDeathChance: 8,
 		canBePked: true,
@@ -149,7 +149,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantHellhound,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [
@@ -178,7 +178,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantHobgoblin,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [
@@ -207,7 +207,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantImp,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 8,
 		pkBaseDeathChance: 8,
 		canBePked: true,
@@ -228,7 +228,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantKnight,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [
@@ -257,7 +257,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantOrk,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [
@@ -286,7 +286,7 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantPyrefiend,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
 		itemCost: [

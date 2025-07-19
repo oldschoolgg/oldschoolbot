@@ -2,6 +2,7 @@ import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolk
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { EQuest } from 'oldschooljs';
 import { BitField } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GauntletOptions } from '../../../lib/types/minions';
@@ -42,8 +43,8 @@ const corruptedRequirements = {
 
 export async function gauntletCommand(user: MUser, channelID: string, type: 'corrupted' | 'normal' = 'normal') {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	if (user.QP < 200) {
-		return 'You need at least 200 QP to do the Gauntlet.';
+	if (!user.hasCompletedQuest(EQuest.SONG_OF_THE_ELVES)) {
+		return 'You need to have completed the **Song of the Elves** quest to do the Gauntlet.';
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;

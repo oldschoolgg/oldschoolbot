@@ -1,7 +1,7 @@
 import { type CommandRunOptions, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
-import { Bank, SkillsEnum, itemID } from 'oldschooljs';
+import { Bank, Quests, SkillsEnum, itemID } from 'oldschooljs';
 
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
@@ -140,8 +140,13 @@ export const runecraftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${runeObj.levels[0][0]} Runecraft to create ${runeObj.name}s.`;
 		}
 
-		if (runeObj.qpRequired && user.user.QP < runeObj.qpRequired) {
-			return `You need ${runeObj.qpRequired} QP to craft this rune.`;
+		if (runeObj.requiredQuests) {
+			const incompleteQuest = runeObj.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					Quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to craft this rune.`;
+			}
 		}
 
 		const { bank } = user;

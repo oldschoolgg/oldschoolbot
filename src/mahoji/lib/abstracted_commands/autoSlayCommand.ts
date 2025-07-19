@@ -521,7 +521,6 @@ export async function autoSlayCommand({
 	}
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
-		const myQPs = await user.QP;
 		const commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
 			runCommand({
@@ -545,7 +544,8 @@ export async function autoSlayCommand({
 				(m.difficultyRating ?? 0) > maxDiff &&
 				(m.levelRequirements === undefined || hasSkillReqs(user, m.levelRequirements))
 			) {
-				if (m.qpRequired === undefined || m.qpRequired <= myQPs) {
+				const hasAllQuests = !m.requiredQuests || m.requiredQuests.every(q => user.hasCompletedQuest(q));
+				if (hasAllQuests) {
 					maxDiff = m.difficultyRating ?? 0;
 					maxMobName = m.name;
 				}

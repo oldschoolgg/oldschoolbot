@@ -29,8 +29,7 @@ const hopsPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
@@ -63,8 +62,7 @@ const hopsPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
@@ -97,8 +95,7 @@ const hopsPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
@@ -131,8 +128,7 @@ const hopsPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
@@ -165,8 +161,7 @@ const hopsPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
@@ -199,8 +194,7 @@ const hopsPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
@@ -233,8 +227,7 @@ const hopsPlants: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],

@@ -1,7 +1,6 @@
 import type { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
+import type { Bank, EQuest, Item, ItemBank, LootTable } from 'oldschooljs';
 
-import type { QuestID } from '../minions/data/quests';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { FarmingPatchName } from '../util/farmingHelpers';
 
@@ -96,7 +95,7 @@ export interface Log {
 	depletionChance: number;
 	wcGuild?: boolean;
 	petChance?: number;
-	qpRequired: number;
+	requiredQuests?: EQuest[];
 	clueScrollChance?: number;
 	clueNestsOnly?: boolean;
 }
@@ -116,7 +115,7 @@ export interface Fish {
 	petChance?: number;
 	timePerFish: number;
 	bait?: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
@@ -133,8 +132,7 @@ export interface Course {
 	cantFail?: boolean;
 	petChance: number | ((agilityLevel: number) => number);
 	aliases: string[];
-	qpRequired?: number;
-	requiredQuests?: QuestID[];
+	requiredQuests?: EQuest[];
 }
 
 export interface Cookable {
@@ -181,7 +179,7 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 }
 
 export interface Craftable {
@@ -195,7 +193,7 @@ export interface Craftable {
 	crushChance?: number[];
 	bankChest?: boolean;
 	outputMultiple?: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 	wcLvl?: number;
 }
 
@@ -222,7 +220,7 @@ export interface Mixable {
 	outputMultiple?: number;
 	zahur?: boolean;
 	wesley?: boolean;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 }
 
 export interface CutLeapingFish {
@@ -299,7 +297,7 @@ export interface Plant {
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;
 	canCompostandPay: boolean;
-	additionalPatchesByQP: number[][];
+	additionalPatchesByQuest?: number[][];
 	additionalPatchesByFarmLvl: number[][];
 	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
@@ -338,7 +336,7 @@ export interface Creature {
 	prayerLvl?: number;
 	herbloreLvl?: number;
 	catchTime: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 	slope: number;
 	intercept: number;
 }

@@ -13,7 +13,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 5,
-		qpRequired: 0,
 		canCannon: true,
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
@@ -30,7 +29,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 2,
-		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -48,7 +46,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -67,7 +64,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -83,7 +79,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: false,
@@ -103,7 +98,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 
 		difficultyRating: 3,
 		itemsRequired: deepResolveItems([['Dragon axe', 'Rune axe']]),
-		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false,
@@ -121,7 +115,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: false,
@@ -143,7 +136,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
 		pkActivityRating: 3,
 		pkBaseDeathChance: 4,
 		revsWeaponBoost: true,
@@ -161,7 +153,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Lockpick']),
-		qpRequired: 0,
 		levelRequirements: {
 			thieving: 23
 		},
@@ -180,7 +171,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
 		canBarrage: false,
@@ -204,7 +194,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			thieving: 39
 		},
-		qpRequired: 0,
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
 		revsWeaponBoost: true
