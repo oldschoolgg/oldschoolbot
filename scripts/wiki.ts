@@ -12,9 +12,9 @@ import { quests } from '../src/lib/minions/data/quests';
 import { sorts } from '../src/lib/sorts';
 import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
 import { execAsync, runTimedLoggedFn } from './scriptUtil';
+import { renderTripBuyables } from './wiki/tripBuyables';
 import { updateAuthors } from './wiki/updateAuthors';
 import { handleMarkdownEmbed } from './wiki/wikiScriptUtil';
-import { renderTripBuyables } from './wiki/tripBuyables';
 
 function escapeItemName(str: string) {
 	return str.replace(/\[/g, '\\[').replace(/\]/g, '\\]');
@@ -388,11 +388,11 @@ async function wiki() {
 		runTimedLoggedFn('Update Authors', updateAuthors),
 		runTimedLoggedFn('Render Combat Achievements', renderCombatAchievementsFile),
 		runTimedLoggedFn('Render Clue Boosts', clueBoosts),
-                runTimedLoggedFn('Render Quests Markdown', renderQuestsMarkdown),
-                runTimedLoggedFn('Render CoX Markdown', rendeCoxMarkdown),
-                runTimedLoggedFn('Render Trip Buyables', renderTripBuyables),
-                runTimedLoggedFn('Render Monsters Markdown', renderMonstersMarkdown)
-        ]);
+		runTimedLoggedFn('Render Quests Markdown', renderQuestsMarkdown),
+		runTimedLoggedFn('Render CoX Markdown', rendeCoxMarkdown),
+		runTimedLoggedFn('Render Trip Buyables', renderTripBuyables),
+		runTimedLoggedFn('Render Monsters Markdown', renderMonstersMarkdown)
+	]);
 }
 
 wiki();
