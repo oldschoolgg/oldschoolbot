@@ -1,17 +1,17 @@
 import { increaseNumByPercent } from 'e';
-import { ItemGroups, convertLVLtoXP } from 'oldschooljs';
+import { EQuest, ItemGroups, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
 import { activitiesCommand } from '@/mahoji/commands/activities';
 import { createTestUser } from '../util';
 
-describe('Camdozzal Fish Command', async () => {
+describe('Camdozaal Fish Command', async () => {
 	it('should give angler boost', async () => {
 		const user = await createTestUser();
 		await user.equip('skilling', ItemGroups.anglerOutfit);
 		const startingXP = convertLVLtoXP(80);
-		await user.update({ skills_fishing: startingXP, QP: 100 });
+		await user.update({ skills_fishing: startingXP, finished_quest_ids: [EQuest.BELOW_ICE_MOUNTAIN] });
 		const res = await user.runCommand(activitiesCommand, {
 			camdozaal: {
 				action: 'fishing',

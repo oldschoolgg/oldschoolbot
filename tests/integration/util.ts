@@ -2,7 +2,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Items, Monsters, convertLVLtoXP } from 'oldschooljs';
+import { Bank, type EMonster, type EQuest, Items, Monsters, convertLVLtoXP } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
@@ -299,7 +299,7 @@ export async function mockUser(
 		slayerLevel: number;
 		venatorBowCharges: number;
 		bank: Bank;
-		QP: number;
+		finished_quest_ids: EQuest[];
 		maxed: boolean;
 	}>
 ) {
@@ -331,7 +331,7 @@ export async function mockUser(
 		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
 		venator_bow_charges: options.venatorBowCharges,
-		QP: options.QP
+		finished_quest_ids: options.finished_quest_ids
 	});
 	if (options.maxed) {
 		await user.max();
