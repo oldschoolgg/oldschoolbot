@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EQuest, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '../../types';
@@ -15,7 +15,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 60
 		},
@@ -39,7 +39,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Abyssal head', 'Abyssal dagger']),
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 85
 		},
@@ -73,7 +73,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 5,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 85
 		},
@@ -111,7 +111,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 15,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
@@ -132,7 +132,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
@@ -147,7 +147,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 10,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
@@ -162,7 +162,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 1,
 		levelRequirements: {
 			slayer: 40
 		},
@@ -182,7 +181,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		difficultyRating: 4,
 		notifyDrops: resolveItems(['Basilisk jaw']),
-		qpRequired: 120,
+		requiredQuests: [EQuest.THE_FREMENNIK_EXILES],
 		levelRequirements: {
 			slayer: 60
 		},
@@ -212,7 +211,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 50
 		},
@@ -253,7 +252,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0,
+
 		healAmountNeeded: 28,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -270,7 +269,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 3,
+		requiredQuests: [EQuest.OLAFS_QUEST],
 		levelRequirements: {
 			slayer: 47
 		},
@@ -291,7 +290,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		existsInCatacombs: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0,
+
 		healAmountNeeded: 25,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -310,7 +309,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
+
 		healAmountNeeded: 75,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
@@ -326,7 +325,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0,
+
 		healAmountNeeded: 20 * 3,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
@@ -341,7 +340,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		canCannon: true,
 		// Not multi but you can safespot for same effect.
 		cannonMulti: true,
@@ -361,7 +360,6 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		qpRequired: 2,
 		itemInBankBoosts: [
 			{
 				[itemID('Dragonbone necklace')]: 2
@@ -396,7 +394,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 2,
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS],
 		healAmountNeeded: 9,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -411,7 +409,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 2,
+		requiredQuests: [EQuest.THE_FREMENNIK_TRIALS],
 		healAmountNeeded: 16,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -427,7 +425,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		difficultyRating: 4,
 		existsInCatacombs: true,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 60
 		},
@@ -448,7 +446,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		existsInCatacombs: true,
 		notifyDrops: resolveItems(['Dragon chainbody']),
-		qpRequired: 4,
 		levelRequirements: {
 			slayer: 65
 		},
@@ -474,7 +471,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 22,
+		requiredQuests: [EQuest.ROVING_ELVES],
 		healAmountNeeded: 22,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged],
@@ -492,7 +489,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 22,
+		requiredQuests: [EQuest.ROVING_ELVES],
 		healAmountNeeded: 26,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
@@ -510,7 +507,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+		requiredQuests: [EQuest.RUM_DEAL],
+
 		levelRequirements: {
 			slayer: 42
 		},
@@ -530,7 +528,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Giant champion scroll']),
-		qpRequired: 0,
+
 		healAmountNeeded: 17,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -549,7 +547,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		levelRequirements: {
 			slayer: 75
 		},
@@ -571,7 +569,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Noon', 'Jar of stone']),
 		itemsRequired: deepResolveItems(['Brittle key']),
 		slayerOnly: true,
-		qpRequired: 0,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		levelRequirements: {
 			slayer: 75
 		},
@@ -625,7 +623,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 5,
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10,
@@ -658,7 +656,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0,
+
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -678,7 +676,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 1,
 		levelRequirements: {
 			slayer: 33,
 			firemaking: 33
@@ -699,7 +696,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		existsInCatacombs: true,
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Smouldering stone']),
-		qpRequired: 0,
+
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
@@ -728,7 +725,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Giant champion scroll']),
-		qpRequired: 0,
+
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -749,7 +746,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 4,
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Neitiznot shield')]: 7
@@ -772,7 +769,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 45
 		},
@@ -791,7 +788,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 12,
+		requiredQuests: [EQuest.REGICIDE],
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged],
@@ -807,7 +804,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 5,
-		qpRequired: 12,
+		requiredQuests: [EQuest.REGICIDE],
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
@@ -823,7 +820,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 52
 		},
@@ -846,7 +843,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 20,
+		requiredQuests: [EQuest.CABIN_FEVER],
 		healAmountNeeded: 14,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
@@ -867,7 +864,7 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Leaf-bladed battleaxe')]: 15
 			}
 		],
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 70
 		},
@@ -896,7 +893,7 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Saradomin godsword')]: 3
 			}
 		],
-		qpRequired: 0,
+
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -919,7 +916,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 39
 		},
@@ -938,7 +935,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 17,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -958,7 +955,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: false,
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		itemCost: { itemCost: new Bank().add('Mossy key', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 8,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -974,7 +971,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 1,
 		canCannon: true,
 		healAmountNeeded: 28,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -990,7 +986,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+		requiredQuests: [EQuest.MOURNINGS_END_PART_I],
 		canCannon: true,
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -1007,7 +1003,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		qpRequired: 105,
+		requiredQuests: [EQuest.SINS_OF_THE_FATHER],
 		levelRequirements: {
 			slayer: 50
 		},
@@ -1046,7 +1042,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 4,
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10,
@@ -1071,7 +1067,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 16,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
@@ -1090,7 +1086,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic]
@@ -1105,7 +1101,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
@@ -1119,7 +1115,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+		requiredQuests: [EQuest.LOST_CITY],
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -1138,7 +1134,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 40
 		},
 		itemsRequired: resolveItems(['Antipoison(4)']),
-		qpRequired: 57,
+		requiredQuests: [EQuest.ROYAL_TROUBLE],
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -1157,7 +1153,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 40
 		},
 		itemsRequired: resolveItems(['Antipoison(4)']),
-		qpRequired: 57,
+		requiredQuests: [EQuest.ROYAL_TROUBLE],
 		healAmountNeeded: 30,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -1172,7 +1168,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 111,
+		requiredQuests: [EQuest.LEGENDS_QUEST],
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
@@ -1187,7 +1183,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 4,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 83
 		},
@@ -1208,7 +1204,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 63
 		},
@@ -1229,7 +1225,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 68
 		},
@@ -1250,7 +1246,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 3,
+		requiredQuests: [EQuest.HAUNTED_MINE],
 		levelRequirements: {
 			slayer: 40
 		},
@@ -1268,7 +1264,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		healAmountNeeded: 20 * 2,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
@@ -1283,7 +1279,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Leaf-bladed battleaxe')]: 5
@@ -1312,7 +1308,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
 			["Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 52
 		},
@@ -1332,7 +1328,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		itemInBankBoosts: [
 			{
 				[itemID('Wolfbane')]: 10

@@ -15,7 +15,7 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -34,7 +34,7 @@ export const nieveMonsters: KillableMonster[] = [
 
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0,
+
 		healAmountNeeded: 20 * 2,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -64,7 +64,7 @@ export const nieveMonsters: KillableMonster[] = [
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
+
 		levelRequirements: {
 			prayer: 43,
 			slayer: 77
@@ -83,7 +83,7 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		healAmountNeeded: 21,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged],
@@ -101,7 +101,7 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic],
@@ -122,7 +122,7 @@ export const nieveMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
+
 		levelRequirements: {
 			prayer: 43
 		},
@@ -154,7 +154,7 @@ export const nieveMonsters: KillableMonster[] = [
 				]
 			}
 		],
-		qpRequired: 0,
+
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackMagic],

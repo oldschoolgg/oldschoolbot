@@ -1,6 +1,6 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EQuest } from 'oldschooljs';
 
 import { fossilIslandNotesCL } from '../../../lib/data/CollectionsExport';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -11,8 +11,8 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
-	if (user.QP < 3) {
-		return 'You need 3 QP to reach the stone chest';
+	if (!user.hasCompletedQuest(EQuest.BONE_VOYAGE)) {
+		return 'You need to complete the **Bone Voyage** quest to reach the stone chest.';
 	}
 	if (!user.owns(cost)) {
 		return "You don't have enough Numulite.";

@@ -32,8 +32,6 @@ const trees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [
@@ -71,8 +69,6 @@ const trees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [
@@ -110,8 +106,7 @@ const trees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [
@@ -149,8 +144,7 @@ const trees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [
@@ -189,7 +183,7 @@ const trees: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
+		additionalPatchesByQuest: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [

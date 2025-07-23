@@ -49,7 +49,7 @@ honoApp.get('/monsters', () => {
 				monster.itemsRequired?.map(i =>
 					typeof i === 'number' ? Items.itemNameFromId(i) : i.map(i => Items.itemNameFromId(i))
 				) ?? [],
-			qp_required: monster.qpRequired ?? 0,
+			requiredQuests: monster.requiredQuests ?? [],
 			item_in_bank_boosts: monster.itemInBankBoosts?.map(group => new Bank(group).toNamedBank()) ?? [],
 
 			can_barrage: monster.canBarrage ?? false,

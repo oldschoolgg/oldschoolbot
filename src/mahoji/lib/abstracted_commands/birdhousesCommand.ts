@@ -1,6 +1,6 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { time } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { bold, time } from 'discord.js';
+import { Bank, Quests } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
 import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
@@ -49,8 +49,13 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 		return `${user.minionName} needs ${birdhouseToPlant.huntLvl} Hunter to place ${birdhouseToPlant.name}.`;
 	}
 
-	if (user.QP < birdhouseToPlant.qpRequired) {
-		return `${user.minionName} needs ${birdhouseToPlant.qpRequired} QP to do Birdhouse runs.`;
+	if (birdhouseToPlant.requiredQuests) {
+		const incompleteQuest = birdhouseToPlant.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				Quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to do Birdhouse runs.`;
+		}
 	}
 
 	let duration: number = birdhouseToPlant.runTime;

@@ -1,20 +1,21 @@
 import { randInt } from 'e';
 
-import { QuestID } from '../../minions/data/quests';
+import type { EQuest } from 'oldschooljs';
 import type { Plant } from '../types';
 import { SkillsEnum } from '../types';
 
-export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
+export function calcNumOfPatches(plant: Plant, user: MUser): [number] {
 	let numOfPatches = plant.defaultNumOfPatches;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
-	const questPoints = qp;
-	for (let i = plant.additionalPatchesByQP.length; i > 0; i--) {
-		const [questPointsReq, additionalPatches] = plant.additionalPatchesByQP[i - 1];
-		if (questPoints >= questPointsReq) {
-			numOfPatches += additionalPatches;
-			break;
+
+	if (plant.additionalPatchesByQuest) {
+		for (const [questEnum, additionalPatches] of plant.additionalPatchesByQuest) {
+			if (user.hasCompletedQuest(questEnum as EQuest)) {
+				numOfPatches += additionalPatches;
+			}
 		}
 	}
+
 	for (let i = plant.additionalPatchesByFarmGuildAndLvl.length; i > 0; i--) {
 		const [farmingLevelReq, additionalPatches] = plant.additionalPatchesByFarmGuildAndLvl[i - 1];
 		if (farmingLevel >= farmingLevelReq) {
@@ -29,19 +30,6 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 			break;
 		}
 	}
-
-	if (user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		switch (plant.seedType) {
-			case 'allotment':
-				numOfPatches += 2;
-				break;
-			case 'herb':
-			case 'flower':
-				numOfPatches += 1;
-				break;
-		}
-	}
-
 	return [numOfPatches];
 }
 

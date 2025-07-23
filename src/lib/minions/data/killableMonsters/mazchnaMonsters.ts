@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Bank, Monsters, itemID } from 'oldschooljs';
+import { Bank, EQuest, Monsters, itemID } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '../../types';
@@ -14,7 +14,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 4,
-		qpRequired: 4
+		requiredQuests: [EQuest.SHADES_OF_MORTTON]
 	},
 	{
 		id: Monsters.Catablepon.id,
@@ -25,7 +25,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 10,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
@@ -42,7 +42,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 25
 		},
@@ -62,7 +62,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		healAmountNeeded: 24,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -76,7 +76,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		levelRequirements: {
 			agility: 15
 		},
@@ -106,7 +106,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		],
 
 		difficultyRating: 2,
-		qpRequired: 1
+		requiredQuests: [EQuest.PRIEST_IN_PERIL]
 	},
 	{
 		id: Monsters.FiyrShade.id,
@@ -117,7 +117,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 4
+		requiredQuests: [EQuest.SHADES_OF_MORTTON]
 	},
 	{
 		id: Monsters.FleshCrawler.id,
@@ -128,7 +128,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
@@ -142,7 +142,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 1,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		canCannon: true,
 		// Can safespot for the multi-effect
 		cannonMulti: true,
@@ -158,7 +158,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 13,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
@@ -179,7 +179,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: false,
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		itemCost: { itemCost: new Bank().add('Giant key', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 5,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -194,7 +194,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 1,
-		qpRequired: 0,
+
 		healAmountNeeded: 14,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
@@ -211,7 +211,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		healAmountNeeded: 17,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
@@ -231,7 +231,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 4,
+		requiredQuests: [EQuest.ERNEST_THE_CHICKEN],
 		levelRequirements: {
 			slayer: 37
 		},
@@ -248,7 +248,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 4
+		requiredQuests: [EQuest.SHADES_OF_MORTTON]
 	},
 	{
 		id: Monsters.Mogre.id,
@@ -259,7 +259,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 32
 		},
@@ -277,7 +277,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 4
+		requiredQuests: [EQuest.SHADES_OF_MORTTON]
 	},
 	{
 		id: Monsters.UriumShade.id,
@@ -289,7 +289,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 6,
-		qpRequired: 4
+		requiredQuests: [EQuest.SHADES_OF_MORTTON]
 	},
 	{
 		id: Monsters.Pyrefiend.id,
@@ -301,7 +301,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 30
 		},
@@ -320,7 +320,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 30
 		},
@@ -339,7 +339,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 4
+		requiredQuests: [EQuest.SHADES_OF_MORTTON]
 	},
 	{
 		id: Monsters.Rockslug.id,
@@ -351,7 +351,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 20
 		},
@@ -370,8 +370,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		existsInCatacombs: true,
-		difficultyRating: 3,
-		qpRequired: 0
+		difficultyRating: 3
 	},
 	{
 		id: Monsters.VampyreJuvinate.id,
@@ -389,7 +388,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		],
 
 		difficultyRating: 2,
-		qpRequired: 1
+		requiredQuests: [EQuest.PRIEST_IN_PERIL]
 	},
 	{
 		id: Monsters.Vyrewatch.id,
@@ -407,7 +406,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		],
 
 		difficultyRating: 4,
-		qpRequired: 0,
+		requiredQuests: [EQuest.PRIEST_IN_PERIL],
 		healAmountNeeded: 28,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -427,7 +426,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 			}
 		],
 		difficultyRating: 5,
-		qpRequired: 0,
+		requiredQuests: [EQuest.SINS_OF_THE_FATHER],
 		healAmountNeeded: 40,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
@@ -441,7 +440,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 35
 		}

@@ -2,7 +2,7 @@ import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Minigame } from '@prisma/client';
 import { strikethrough } from 'discord.js';
 import { calcWhatPercent } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, Quests } from 'oldschooljs';
 
 import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '../../../lib/diaries';
 import type { DiaryTier } from '../../../lib/minions/types';
@@ -62,8 +62,14 @@ export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 			thisStr += `- Must Have in CL: ${tier.collectionLogReqs.map(itemNameFromID).join(', ')}\n`;
 		}
 
-		if (tier.qp) {
-			thisStr += `- **${tier.qp}** QP\n`;
+		if (tier.questReqs && tier.questReqs.length > 0) {
+			const questNames = tier.questReqs
+				.map(qID => {
+					const quest = Quests.find(q => q.id === qID);
+					return quest ? quest.name : `Quest ID ${qID}`;
+				})
+				.join(', ');
+			thisStr += `- Must Have Completed Quests: ${questNames}\n`;
 		}
 
 		if (tier.minigameReqs) {

@@ -1,4 +1,4 @@
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EQuest, itemID } from 'oldschooljs';
 
 import type { Plant } from '../../types';
 
@@ -32,9 +32,8 @@ const fruitTrees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[22, 1] // Lletya Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.MOURNINGS_END_PART_I, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -73,9 +72,8 @@ const fruitTrees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[22, 1] // Lletya Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.MOURNINGS_END_PART_I, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -114,9 +112,8 @@ const fruitTrees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[22, 1] // Lletya Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.MOURNINGS_END_PART_I, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -155,9 +152,8 @@ const fruitTrees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[22, 1] // Lletya Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.MOURNINGS_END_PART_I, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -196,9 +192,8 @@ const fruitTrees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[22, 1] // Lletya Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.MOURNINGS_END_PART_I, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -237,9 +232,8 @@ const fruitTrees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[22, 1] // Lletya Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.MOURNINGS_END_PART_I, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -278,9 +272,8 @@ const fruitTrees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[22, 1] // Lletya Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.MOURNINGS_END_PART_I, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -319,9 +312,8 @@ const fruitTrees: Plant[] = [
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: false,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[22, 1] // Lletya Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.MOURNINGS_END_PART_I, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],

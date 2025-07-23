@@ -1,12 +1,12 @@
-import { Bank } from 'oldschooljs';
+import { Bank, EQuest } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { minionKCommand } from '../../src/mahoji/commands/k';
-import { createTestUser, mockClient } from './util';
+import { mockClient, mockUser } from './util';
 
-test('Killing Men', async () => {
+test('Killing Bandos', async () => {
 	await mockClient();
-	const user = await createTestUser();
+	const user = await mockUser({ finished_quest_ids: [EQuest.TROLL_STRONGHOLD] });
 	const startingBank = new Bank().add('Shark', 1_000_000);
 	await user.addItemsToBank({ items: startingBank });
 	await user.max();

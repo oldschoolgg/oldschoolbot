@@ -1,4 +1,4 @@
-import { MonsterSlayerMaster } from 'oldschooljs';
+import { EQuest, MonsterSlayerMaster } from 'oldschooljs';
 
 import { chaeldarTasks } from './tasks/chaeldarTasks';
 import { duradelTasks } from './tasks/duradelTasks';
@@ -26,7 +26,7 @@ export const slayerMasters: SlayerMaster[] = [
 		tasks: mazchnaTasks,
 		basePoints: 2,
 		combatLvl: 20,
-		questPoints: 1,
+		quest: EQuest.PRIEST_IN_PERIL,
 		osjsEnum: MonsterSlayerMaster.Mazchna
 	},
 	{
@@ -45,7 +45,7 @@ export const slayerMasters: SlayerMaster[] = [
 		tasks: chaeldarTasks,
 		basePoints: 10,
 		combatLvl: 70,
-		questPoints: 3,
+		quest: EQuest.LOST_CITY,
 		osjsEnum: MonsterSlayerMaster.Chaeldar
 	},
 	{

@@ -12,6 +12,7 @@ const baseOptions: esbuild.BuildOptions = {
 		'./src/constants.ts',
 		'./src/EGear.ts',
 		'./src/EItem.ts',
+		'./src/EQuest.ts',
 		'./src/EMonster.ts',
 		'./src/structures/Wiki.ts',
 		'./src/structures/Hiscores.ts',

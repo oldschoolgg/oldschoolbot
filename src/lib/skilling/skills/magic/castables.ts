@@ -1,4 +1,4 @@
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EQuest, itemID } from 'oldschooljs';
 
 interface Castable {
 	id: number;
@@ -8,7 +8,7 @@ interface Castable {
 	level: number;
 	xp: number;
 	ticks: number;
-	qpRequired?: number;
+	requiredQuests?: EQuest[];
 	gpCost?: number;
 	craftLevel?: number;
 	craftXp?: number;
@@ -71,7 +71,7 @@ export const Castables: Castable[] = [
 		xp: 75,
 		level: 76,
 		ticks: 5,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 75,
 		craftLevel: 10
 	},
@@ -83,7 +83,7 @@ export const Castables: Castable[] = [
 		xp: 81,
 		level: 78,
 		ticks: 3.5,
-		qpRequired: 50
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		id: itemID('Blue dragon leather'),
@@ -93,7 +93,7 @@ export const Castables: Castable[] = [
 		xp: 81,
 		level: 78,
 		ticks: 3.5,
-		qpRequired: 50
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		id: itemID('Red Dragon Leather'),
@@ -103,7 +103,7 @@ export const Castables: Castable[] = [
 		xp: 81,
 		level: 78,
 		ticks: 3.5,
-		qpRequired: 50
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		id: itemID('Black dragon leather'),
@@ -113,7 +113,7 @@ export const Castables: Castable[] = [
 		xp: 81,
 		level: 78,
 		ticks: 3.5,
-		qpRequired: 50
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		id: itemID('Gold amulet'),
@@ -123,7 +123,7 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 4,
 		craftLevel: 8
 	},
@@ -139,7 +139,7 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 4,
 		craftLevel: 24
 	},
@@ -151,7 +151,7 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 4,
 		craftLevel: 31
 	},
@@ -163,7 +163,7 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 4,
 		craftLevel: 50
 	},
@@ -175,7 +175,7 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 4,
 		craftLevel: 70
 	},
@@ -191,7 +191,7 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 4,
 		craftLevel: 80
 	},
@@ -203,7 +203,7 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 4,
 		craftLevel: 90
 	},
@@ -215,7 +215,7 @@ export const Castables: Castable[] = [
 		xp: 90,
 		level: 86,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		gpCost: 70
 	},
 	{
@@ -226,7 +226,7 @@ export const Castables: Castable[] = [
 		xp: 90,
 		level: 86,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		gpCost: 175
 	},
 	{
@@ -237,7 +237,7 @@ export const Castables: Castable[] = [
 		xp: 90,
 		level: 86,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		gpCost: 350
 	},
 	{
@@ -248,7 +248,7 @@ export const Castables: Castable[] = [
 		xp: 90,
 		level: 86,
 		ticks: 3,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		gpCost: 1050
 	},
 	{
@@ -259,7 +259,7 @@ export const Castables: Castable[] = [
 		xp: 97.5,
 		level: 89,
 		ticks: 3,
-		qpRequired: 50
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		id: itemID('Combat bracelet (4)'),
@@ -269,7 +269,7 @@ export const Castables: Castable[] = [
 		xp: 97.5,
 		level: 89,
 		ticks: 3,
-		qpRequired: 50
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		id: itemID('Skills necklace (4)'),
@@ -279,7 +279,7 @@ export const Castables: Castable[] = [
 		xp: 97.5,
 		level: 89,
 		ticks: 3,
-		qpRequired: 50
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY]
 	},
 	{
 		id: itemID('Giant seaweed'),
@@ -294,7 +294,7 @@ export const Castables: Castable[] = [
 		xp: 78,
 		level: 77,
 		ticks: 12,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 180,
 		craftLevel: 61
 	},
@@ -311,7 +311,7 @@ export const Castables: Castable[] = [
 		xp: 78,
 		level: 77,
 		ticks: 12,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 130,
 		craftLevel: 61
 	},
@@ -328,7 +328,7 @@ export const Castables: Castable[] = [
 		xp: 78,
 		level: 77,
 		ticks: 12,
-		qpRequired: 50,
+		requiredQuests: [EQuest.LUNAR_DIPLOMACY],
 		craftXp: 130,
 		craftLevel: 61
 	},

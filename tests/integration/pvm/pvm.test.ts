@@ -1,5 +1,5 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { Bank, EItem, EMonster, Monsters, convertLVLtoXP, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EItem, EMonster, EQuest, Monsters, convertLVLtoXP, itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
@@ -25,7 +25,7 @@ describe('PVM', async () => {
 		const user = await createTestUser(new Bank().add('Shark', 1000), {
 			skills_prayer: convertLVLtoXP(70),
 			skills_strength: convertLVLtoXP(70),
-			QP: 100
+			finished_quest_ids: [EQuest.TROLL_STRONGHOLD]
 		});
 		const res = await user.runCommand(minionKCommand, { name: 'general graardor' });
 		expect(res).toContain('now killing');
@@ -191,7 +191,7 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Cannonball', 100_000).add(CombatCannonItemBank),
 			rangeLevel: 99,
-			QP: 300,
+			finished_quest_ids: [EQuest.MONKEY_MADNESS_II],
 			maxed: true
 		});
 		await user.max();
@@ -206,7 +206,7 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add(CombatCannonItemBank),
 			rangeLevel: 99,
-			QP: 300,
+			finished_quest_ids: [EQuest.MONKEY_MADNESS_II],
 			maxed: true
 		});
 		await user.setAttackStyle([SkillsEnum.Ranged]);
@@ -219,7 +219,7 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Red chinchompa', 5000),
 			rangeLevel: 99,
-			QP: 300,
+			finished_quest_ids: [EQuest.MONKEY_MADNESS_II],
 			maxed: true
 		});
 		await user.setAttackStyle([SkillsEnum.Ranged]);
@@ -232,7 +232,6 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Red chinchompa', 5000).add("Verac's plateskirt"),
 			rangeLevel: 99,
-			QP: 300,
 			maxed: true,
 			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
 		});
@@ -252,7 +251,6 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Dark totem', 100),
 			rangeLevel: 99,
-			QP: 300,
 			maxed: true,
 			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
 		});
@@ -266,7 +264,6 @@ describe('PVM', async () => {
 		async () => {
 			const user = await client.mockUser({
 				rangeLevel: 99,
-				QP: 300,
 				maxed: true,
 				meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
 			});
@@ -286,7 +283,6 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Dark totem', 100),
 			rangeLevel: 99,
-			QP: 300,
 			maxed: true,
 			meleeGear: resolveItems([
 				"Verac's flail",
@@ -319,7 +315,8 @@ describe('PVM', async () => {
 				ring: 'Berserker ring (i)',
 				ammo: "Rada's blessing 3",
 				weapon: 'Soulreaper axe'
-			}).allItems(false)
+			}).allItems(false),
+			finished_quest_ids: [EQuest.PRIEST_IN_PERIL]
 		});
 		await user.setAttackStyle([SkillsEnum.Attack]);
 		await user.giveSlayerTask(EMonster.ARAXYTE);

@@ -1,4 +1,4 @@
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EQuest, itemID } from 'oldschooljs';
 
 import type { Plant } from '../../types';
 
@@ -30,10 +30,10 @@ const allotmentPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 2], // Canifs Patches (2)
-			[15, 3], // Harmony Island Patch (1)
-			[33, 5] // Prifddinas (2)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 2], // Canifs Patches (2)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.SONG_OF_THE_ELVES, 2] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -70,10 +70,10 @@ const allotmentPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 2], // Canifs Patches (2)
-			[15, 3], // Harmony Island Patch (1)
-			[33, 5] // Prifddinas (2)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 2], // Canifs Patches (2)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.SONG_OF_THE_ELVES, 2] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -110,10 +110,10 @@ const allotmentPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 2], // Canifs Patches (2)
-			[15, 3], // Harmony Island Patch (1)
-			[33, 5] // Prifddinas (2)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 2], // Canifs Patches (2)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.SONG_OF_THE_ELVES, 2] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -150,10 +150,10 @@ const allotmentPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 2], // Canifs Patches (2)
-			[15, 3], // Harmony Island Patch (1)
-			[33, 5] // Prifddinas (2)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 2], // Canifs Patches (2)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.SONG_OF_THE_ELVES, 2] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -190,10 +190,10 @@ const allotmentPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 2], // Canifs Patches (2)
-			[15, 3], // Harmony Island Patch (1)
-			[33, 5] // Prifddinas (2)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 2], // Canifs Patches (2)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.SONG_OF_THE_ELVES, 2] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -230,10 +230,10 @@ const allotmentPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 2], // Canifs Patches (2)
-			[15, 3], // Harmony Island Patch (1)
-			[33, 5] // Prifddinas (2)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 2], // Canifs Patches (2)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.SONG_OF_THE_ELVES, 2] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -270,10 +270,10 @@ const allotmentPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 2], // Canifs Patches (2)
-			[15, 3], // Harmony Island Patch (1)
-			[33, 5] // Prifddinas (2)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 2], // Canifs Patches (2)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.SONG_OF_THE_ELVES, 2] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -310,10 +310,10 @@ const allotmentPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: true,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 2], // Canifs Patches (2)
-			[15, 3], // Harmony Island Patch (1)
-			[33, 5] // Prifddinas (2)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 2], // Canifs Patches (2)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.SONG_OF_THE_ELVES, 2] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],

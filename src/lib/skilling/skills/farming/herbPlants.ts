@@ -1,4 +1,4 @@
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EQuest, itemID } from 'oldschooljs';
 
 import type { Plant } from '../../types';
 
@@ -32,11 +32,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -75,11 +75,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -118,11 +118,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -161,11 +161,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -204,11 +204,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -247,11 +247,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -290,11 +290,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -333,11 +333,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -376,11 +376,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -419,11 +419,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -462,11 +462,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -505,11 +505,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -548,11 +548,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -591,11 +591,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
@@ -634,11 +634,11 @@ const herbPlants: Plant[] = [
 		canCompostPatch: true,
 		canCompostandPay: false,
 		// [QP, Patches Gained]
-		additionalPatchesByQP: [
-			[1, 1], // Canifs Patches (1)
-			[10, 2], // Troll Stronghold (1)
-			[15, 3], // Harmony Island Patch (1)
-			[31, 4] // Weiss Patch (1)
+		additionalPatchesByQuest: [
+			[EQuest.PRIEST_IN_PERIL, 1], // Canifs Patches (1)
+			[EQuest.MY_ARMS_BIG_ADVENTURE, 1], // Troll Stronghold (1)
+			[EQuest.THE_GREAT_BRAIN_ROBBERY, 1], // Harmony Island Patch (1)
+			[EQuest.MAKING_FRIENDS_WITH_MY_ARM, 1] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],

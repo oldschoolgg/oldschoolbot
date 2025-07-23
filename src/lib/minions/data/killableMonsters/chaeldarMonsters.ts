@@ -1,10 +1,9 @@
 import { Time } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EQuest, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { SkillsEnum } from '../../../skilling/types';
 import type { KillableMonster } from '../../types';
-import { QuestID } from '../quests';
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{
@@ -16,7 +15,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		wildy: false,
 		difficultyRating: 3,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 57
 		},
@@ -33,7 +32,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		wildy: true,
 		difficultyRating: 4,
-		qpRequired: 0,
+
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		healAmountNeeded: 24,
@@ -51,7 +50,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		difficultyRating: 3,
 		existsInCatacombs: true,
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10,
@@ -86,7 +85,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate', "Black d'hide body"],
 			["Karil's leatherskirt", 'Armadyl chainskirt', "Black d'hide chaps"]
 		]),
-		qpRequired: 20,
+		requiredQuests: [EQuest.CABIN_FEVER],
 		levelRequirements: {
 			slayer: 58
 		},
@@ -107,7 +106,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 4,
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 87
 		},
@@ -132,7 +131,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
-		qpRequired: 2,
+		requiredQuests: [EQuest.BONE_VOYAGE],
 		levelRequirements: {
 			slayer: 82
 		},
@@ -155,7 +154,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
-		qpRequired: 2,
+		requiredQuests: [EQuest.BONE_VOYAGE],
 		levelRequirements: {
 			slayer: 66
 		},
@@ -178,7 +177,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
-		qpRequired: 2,
+		requiredQuests: [EQuest.BONE_VOYAGE],
 		levelRequirements: {
 			slayer: 66
 		},
@@ -201,7 +200,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
-		qpRequired: 2,
+		requiredQuests: [EQuest.BONE_VOYAGE],
 		levelRequirements: {
 			slayer: 66
 		},
@@ -220,7 +219,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 12,
@@ -254,7 +253,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
+
 		healAmountNeeded: 35,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -301,7 +300,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 				[itemID('Imbued heart')]: 5
 			}
 		],
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 87
 		},
@@ -322,7 +321,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 30,
 		healAmountNeeded: 14,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
@@ -340,7 +338,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		qpRequired: 30,
 		healAmountNeeded: 16,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
@@ -360,7 +357,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe']]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
-		qpRequired: 30,
 		itemInBankBoosts: [
 			{
 				[itemID('Ring of the gods')]: 3,
@@ -399,7 +395,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 72
 		},
@@ -418,7 +414,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		difficultyRating: 0,
 		notifyDrops: resolveItems(['Jar of darkness', 'Skotos']),
-		qpRequired: 0,
+
 		// Skotizo requires 1 totem per kill, and arclight makes kill 2x faster irl.
 		itemInBankBoosts: [
 			{
@@ -441,7 +437,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0,
+
 		canBarrage: true
 	},
 	{
@@ -455,7 +451,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Boots of stone']),
-		qpRequired: 0,
+
 		levelRequirements: {
 			slayer: 62
 		},
@@ -473,7 +469,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 3,
+		requiredQuests: [EQuest.BONE_VOYAGE],
 		levelRequirements: {
 			slayer: 57
 		},
@@ -491,7 +487,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 6,
-		qpRequired: 0,
 
 		itemInBankBoosts: [
 			{
@@ -517,7 +512,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		healAmountNeeded: 250,
 		attackStyleToUse: GearStat.AttackStab,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged, GearStat.AttackMagic],
-		requiredQuests: [QuestID.WhileGuthixSleeps],
+		requiredQuests: [EQuest.WHILE_GUTHIX_SLEEPS],
 		itemCost: [
 			{
 				itemCost: new Bank().add('Guthixian temple teleport'),

@@ -1,6 +1,6 @@
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
-import { EMonster } from 'oldschooljs';
+import { EMonster, EQuest } from 'oldschooljs';
 
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
@@ -27,8 +27,8 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 	if (!hasReqs) {
 		return `To fight Zalcano, you need: ${reason}.`;
 	}
-	if (user.QP < 150) {
-		return 'To fight Zalcano, you need 150 QP.';
+	if (!user.hasCompletedQuest(EQuest.SONG_OF_THE_ELVES)) {
+		return 'You need to have completed the **Song of the Elves** quest to fight Zalcano.';
 	}
 
 	const kc = await user.getKC(EMonster.ZALCANO);

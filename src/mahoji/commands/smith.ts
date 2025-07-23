@@ -1,7 +1,7 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Quests } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -60,11 +60,15 @@ export const smithCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		const userQP = user.QP;
-
-		if (smithedItem.qpRequired && userQP < smithedItem.qpRequired) {
-			return `${user.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}.`;
+		if (smithedItem.requiredQuests) {
+			const incompleteQuest = smithedItem.requiredQuests.find(quest => !user.hasCompletedQuest(quest));
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					Quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to smith ${smithedItem.name}.`;
+			}
 		}
+
 		// If they have the entire Smiths' Uniform, give 100% chance save 1 tick each item
 		let setBonus = 0;
 		if (

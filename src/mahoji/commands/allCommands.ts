@@ -62,6 +62,7 @@ import { payCommand } from './pay';
 import { pohCommand } from './poh';
 import { pollCommand } from './poll';
 import { priceCommand } from './price';
+import { questCommand } from './quest';
 import { raidCommand } from './raid';
 import { redeemCommand } from './redeem';
 import { rollCommand } from './roll';
@@ -166,7 +167,8 @@ export const allCommands: OSBMahojiCommand[] = [
 	collectionLogCommand,
 	gearPresetsCommand,
 	statsCommand,
-	xpCommand
+	xpCommand,
+	questCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {

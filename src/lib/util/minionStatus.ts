@@ -1,14 +1,13 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Items, SkillsEnum } from 'oldschooljs';
+import { Items, Quests, SkillsEnum } from 'oldschooljs';
 
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { collectables } from '../../mahoji/lib/collectables';
 import { ClueTiers } from '../clues/clueTiers';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
-import { quests } from '../minions/data/quests';
 import Agility from '../skilling/skills/agility';
 import Constructables from '../skilling/skills/construction/constructables';
 import Cooking from '../skilling/skills/cooking/cooking';
@@ -247,7 +246,7 @@ export function minionStatus(user: MUser) {
 		}
 
 		case 'Questing': {
-			return `${name} is currently Questing. ${formattedDuration} Your current Quest Point count is: ${user.QP}.`;
+			throw new Error('Removed');
 		}
 
 		case 'Woodcutting': {
@@ -696,7 +695,7 @@ export function minionStatus(user: MUser) {
 		case 'SpecificQuest': {
 			const data = currentTask as SpecificQuestOptions;
 			return `${name} is currently doing the ${
-				quests.find(i => i.id === data.questID)?.name
+				Quests.find(i => i.id === data.questID)?.name
 			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Colosseum': {

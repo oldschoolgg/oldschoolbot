@@ -3,14 +3,10 @@ import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Time } from 'e';
-import { Bank, EItem } from 'oldschooljs';
+import { Bank, EItem, EQuest } from 'oldschooljs';
 
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import {
-	tearsOfGuthixIronmanReqs,
-	tearsOfGuthixSkillReqs
-} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
@@ -34,7 +30,6 @@ import {
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
 } from './interactions';
-import { hasSkillReqs } from './smallUtils';
 import { sendToChannelID } from './webhook';
 
 const collectors = new Map<string, MessageCollector>();
@@ -191,10 +186,7 @@ export async function handleTripFinish(
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
 			const last = Number(last_tears_of_guthix_timestamp);
 			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
-			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
-			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
-
-			if (user.QP >= 43 && ready && meetsSkillReqs && meetsIronmanReqs) {
+			if (ready && user.hasCompletedQuest(EQuest.TEARS_OF_GUTHIX)) {
 				components.push(makeTearsOfGuthixButton());
 			}
 		}

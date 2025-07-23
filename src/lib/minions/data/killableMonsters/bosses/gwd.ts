@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { EQuest, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import {
@@ -23,7 +23,7 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Pet general graardor']),
-		qpRequired: 1,
+		requiredQuests: [EQuest.TROLL_STRONGHOLD],
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10,
@@ -66,7 +66,7 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Pet zilyana']),
-		qpRequired: 1,
+		requiredQuests: [EQuest.TROLL_STRONGHOLD],
 		itemInBankBoosts: [
 			{
 				[itemID('Ranger boots')]: 3,
@@ -122,7 +122,7 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Pet kree'arra"]),
-		qpRequired: 1,
+		requiredQuests: [EQuest.TROLL_STRONGHOLD],
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl crossbow')]: 5,
@@ -175,7 +175,7 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
-		qpRequired: 1,
+		requiredQuests: [EQuest.TROLL_STRONGHOLD],
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10,

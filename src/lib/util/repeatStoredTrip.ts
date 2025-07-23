@@ -98,10 +98,6 @@ const tripHandlers = {
 			implings: data.implingID ? Items.itemNameFromId(data.implingID!) : undefined
 		})
 	},
-	[activity_type_enum.SpecificQuest]: {
-		commandName: 'm',
-		args: () => ({})
-	},
 	[activity_type_enum.HalloweenEvent]: {
 		commandName: 'm',
 		args: () => ({})
@@ -514,10 +510,8 @@ const tripHandlers = {
 		})
 	},
 	[activity_type_enum.Questing]: {
-		commandName: 'activities',
-		args: () => ({
-			quest: {}
-		})
+		commandName: 'm',
+		args: () => ({})
 	},
 	[activity_type_enum.Raids]: {
 		commandName: 'raid',
@@ -684,6 +678,10 @@ const tripHandlers = {
 		args: () => ({
 			name: 'colosseum'
 		})
+	},
+	[activity_type_enum.SpecificQuest]: {
+		commandName: 'quest',
+		args: () => ({})
 	}
 } as const;
 

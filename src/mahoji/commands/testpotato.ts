@@ -2,7 +2,7 @@ import { type CommandRunOptions, mentionCommand, stringMatches } from '@oldschoo
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Time, noOp, randArrItem, randInt } from 'e';
-import { Bank, Items, MAX_INT_JAVA, convertLVLtoXP, getItem, itemID, resolveItems } from 'oldschooljs';
+import { Bank, Items, MAX_INT_JAVA, Quests, convertLVLtoXP, getItem, itemID, resolveItems } from 'oldschooljs';
 
 import { testBotKvStore } from '@/testing/TestBotStore';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -15,7 +15,6 @@ import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import potions from '../../lib/minions/data/potions';
-import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
@@ -34,11 +33,14 @@ import { parseStringBank } from '../../lib/util/parseStringBank';
 import { userEventToStr } from '../../lib/util/userEvents';
 import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
+import { getQuestRequiredItemsBank } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
+
+const MAX_QP = Quests.reduce((a, b) => a + (b.qp ?? 0), 0);
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
@@ -205,6 +207,12 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const questPreset = new Bank();
+for (const quest of Quests) {
+	if (!quest.itemsRequired) continue;
+	questPreset.add(getQuestRequiredItemsBank(quest).bank);
+}
+
 const runePreset = new Bank()
 	.add('Air rune', MAX_INT_JAVA)
 	.add('Mind rune', MAX_INT_JAVA)
@@ -237,7 +245,8 @@ const spawnPresets = [
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],
-	['runes', runePreset]
+	['runes', runePreset],
+	['quest', questPreset]
 ] as const;
 
 const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
@@ -845,7 +854,7 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 							dartQuantity: 100_000,
 							dartID: itemID('Dragon dart')
 						},
-						finished_quest_ids: quests.map(q => q.id)
+						finished_quest_ids: Quests.map(q => q.id)
 					});
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';

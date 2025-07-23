@@ -1,12 +1,11 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EQuest, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport';
 import { SkillsEnum } from '@/lib/skilling/types';
 import { getOSItem } from '@/lib/util/getOSItem';
 import type { KillableMonster, KillableMonsterEffect } from '../../../types';
-import { QuestID } from '../../quests';
 
 const awakenedDeathProps = {
 	hardness: 0.9,
@@ -42,7 +41,6 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.DukeSucellus,
 		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
-		qpRequired: 100,
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Avernic defender') }],
@@ -93,7 +91,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: makeTabletEffect('Frozen tablet'),
-		requiredQuests: [QuestID.DesertTreasureII],
+		requiredQuests: [EQuest.DESERT_TREASURE_II__THE_FALLEN_EMPIRE],
 		degradeableItemUsage: [
 			{
 				required: false,
@@ -118,7 +116,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedDukeSucellus,
 		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
-		qpRequired: 100,
+
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Ferocious gloves') }],
@@ -165,7 +163,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: makeTabletEffect('Frozen tablet'),
-		requiredQuests: [QuestID.DesertTreasureII],
+		requiredQuests: [],
 		degradeableItemUsage: [
 			{
 				required: true,
@@ -191,7 +189,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 4.8,
 		table: Monsters.TheLeviathan,
 		notifyDrops: resolveItems(['Virtus robe top', "Lil'viathan", 'Virtus robe bottom', 'Virtus mask']),
-		qpRequired: 100,
+
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Twisted buckler') }],
@@ -258,7 +256,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		effect: makeTabletEffect('Scarred tablet'),
-		requiredQuests: [QuestID.DesertTreasureII],
+		requiredQuests: [EQuest.DESERT_TREASURE_II__THE_FALLEN_EMPIRE],
 		deathProps: {
 			hardness: 0.6,
 			steepness: 0.99
@@ -271,7 +269,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedTheLeviathan,
 		notifyDrops: resolveItems(['Virtus robe top', "Lil'viathan", 'Virtus robe bottom', 'Virtus mask']),
-		qpRequired: 100,
+
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Twisted buckler') }],
@@ -335,7 +333,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		effect: makeTabletEffect('Scarred tablet'),
-		requiredQuests: [QuestID.DesertTreasureII],
+		requiredQuests: [EQuest.DESERT_TREASURE_II__THE_FALLEN_EMPIRE],
 		itemCost: {
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
@@ -349,7 +347,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.TheWhisperer,
 		notifyDrops: resolveItems(['Virtus robe top', 'Wisp', 'Virtus robe bottom', 'Virtus mask']),
-		qpRequired: 100,
+
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 3, itemID: itemID("Elidinis' ward (f)") }],
@@ -413,7 +411,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		effect: makeTabletEffect('Sirenic tablet'),
-		requiredQuests: [QuestID.DesertTreasureII],
+		requiredQuests: [EQuest.DESERT_TREASURE_II__THE_FALLEN_EMPIRE],
 		degradeableItemUsage: [
 			{
 				required: true,
@@ -452,7 +450,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedTheWhisperer,
 		notifyDrops: resolveItems(['Virtus robe top', 'Wisp', 'Virtus robe bottom', 'Virtus mask']),
-		qpRequired: 100,
+
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 3, itemID: itemID("Elidinis' ward (f)") }],
@@ -516,7 +514,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		effect: makeTabletEffect('Sirenic tablet'),
-		requiredQuests: [QuestID.DesertTreasureII],
+		requiredQuests: [EQuest.DESERT_TREASURE_II__THE_FALLEN_EMPIRE],
 		degradeableItemUsage: [
 			{
 				required: true,
@@ -556,7 +554,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 4.1,
 		table: Monsters.Vardorvis,
 		notifyDrops: resolveItems(['Virtus robe top', 'Butch', 'Virtus robe bottom', 'Virtus mask']),
-		qpRequired: 100,
+
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 25, itemID: itemID('Soulreaper axe') }],
@@ -616,7 +614,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: makeTabletEffect('Strangled tablet'),
-		requiredQuests: [QuestID.DesertTreasureII],
+		requiredQuests: [EQuest.DESERT_TREASURE_II__THE_FALLEN_EMPIRE],
 		degradeableItemUsage: [
 			{
 				required: false,
@@ -641,7 +639,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedVardorvis,
 		notifyDrops: resolveItems(['Virtus robe top', 'Butch', 'Virtus robe bottom', 'Virtus mask']),
-		qpRequired: 100,
+
 		equippedItemBoosts: [
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Ferocious gloves') }],
@@ -688,7 +686,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: makeTabletEffect('Strangled tablet'),
-		requiredQuests: [QuestID.DesertTreasureII],
+		requiredQuests: [EQuest.DESERT_TREASURE_II__THE_FALLEN_EMPIRE],
 		degradeableItemUsage: [
 			{
 				required: true,

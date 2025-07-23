@@ -1,6 +1,6 @@
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, percentChance } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EQuest } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '../../../lib/data/CollectionsExport';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
@@ -33,8 +33,8 @@ export async function chompyHuntClaimCommand(user: MUser) {
 }
 
 export async function chompyHuntCommand(user: MUser, channelID: string) {
-	if (user.QP < 10) {
-		return 'You need at least 10 QP to hunt Chompy birds.';
+	if (!user.hasCompletedQuest(EQuest.BIG_CHOMPY_BIRD_HUNTING)) {
+		return 'You need to have completed the **Big Chompy Bird Hunting** quest to hunt Chompy birds.';
 	}
 
 	const rangeGear = user.gear.range;

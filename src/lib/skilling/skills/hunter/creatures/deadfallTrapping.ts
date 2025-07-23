@@ -1,4 +1,4 @@
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank, EQuest, LootTable } from 'oldschooljs';
 
 import type { Creature } from '../../../types';
 import { HunterTechniqueEnum } from '../../../types';
@@ -62,7 +62,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Damaged monkey tail').tertiary(5000, 'Monkey tail'),
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 33,
-		qpRequired: 175,
+		requiredQuests: [EQuest.MONKEY_MADNESS_II],
 		slope: 0.8,
 		intercept: 20
 	}

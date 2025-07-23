@@ -3,6 +3,7 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, notEmpty, objectEntries } from 'e';
 
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { EQuest } from 'oldschooljs';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -63,10 +64,8 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${duration}.`;
 	}
 
-	// 43 QP for the quest
-	const userQP = user.QP;
-	if (userQP < 43) {
-		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix when you have 43+ QP.`;
+	if (!user.hasCompletedQuest(EQuest.TEARS_OF_GUTHIX)) {
+		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix when you have completed the quest.`;
 	}
 
 	const missingSkillsMessage = getTearsOfGuthixMissingSkillMessage(user);
@@ -78,7 +77,7 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 		} ${missingIronmanSkillMessage ?? ''}`.trim();
 	}
 
-	const duration = Math.min(Time.Minute * 2 + Time.Second * 0.6 * userQP, Time.Minute * 30);
+	const duration = Math.min(Time.Minute * 2 + Time.Second * 0.6 * user.QP, Time.Minute * 30);
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'tears_of_guthix',

@@ -51,7 +51,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Shield right half",
     "outputItems": undefined,
-    "qpRequired": 111,
+    "requiredQuests": [
+      50,
+    ],
   },
   {
     "aliases": [
@@ -61,7 +63,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Dragon metal shard",
     "outputItems": undefined,
-    "qpRequired": 205,
+    "requiredQuests": [
+      136,
+    ],
   },
   {
     "aliases": [
@@ -151,7 +155,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Dragon scimitar",
     "outputItems": undefined,
-    "qpRequired": 105,
+    "requiredQuests": [
+      65,
+    ],
   },
   {
     "gpCost": 500000,
@@ -190,7 +196,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Salve amulet",
     "outputItems": undefined,
-    "qpRequired": 58,
+    "requiredQuests": [
+      66,
+    ],
     "skillsNeeded": {
       "crafting": 35,
     },
@@ -393,7 +401,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Adamant halberd",
     "outputItems": undefined,
-    "qpRequired": 150,
+    "requiredQuests": [
+      59,
+    ],
     "skillsNeeded": {
       "agility": 70,
       "construction": 70,
@@ -482,49 +492,63 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Ghostly boots",
     "outputItems": undefined,
-    "qpRequired": 10,
+    "requiredQuests": [
+      77,
+    ],
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly cloak",
     "outputItems": undefined,
-    "qpRequired": 10,
+    "requiredQuests": [
+      77,
+    ],
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly gloves",
     "outputItems": undefined,
-    "qpRequired": 10,
+    "requiredQuests": [
+      77,
+    ],
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly hood",
     "outputItems": undefined,
-    "qpRequired": 10,
+    "requiredQuests": [
+      77,
+    ],
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly robe top",
     "outputItems": undefined,
-    "qpRequired": 10,
+    "requiredQuests": [
+      77,
+    ],
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly robe bottom",
     "outputItems": undefined,
-    "qpRequired": 10,
+    "requiredQuests": [
+      77,
+    ],
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Shadow sword",
     "outputItems": undefined,
-    "qpRequired": 10,
+    "requiredQuests": [
+      77,
+    ],
   },
   {
     "gpCost": 25000,
@@ -613,7 +637,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Keris partisan",
     "outputItems": undefined,
-    "qpRequired": 172,
+    "requiredQuests": [
+      153,
+    ],
   },
   {
     "customReq": [Function],
@@ -622,7 +648,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Mask of rebirth",
     "outputItems": undefined,
-    "qpRequired": 172,
+    "requiredQuests": [
+      153,
+    ],
   },
   {
     "gpCost": 5000,
@@ -640,14 +668,18 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Diving apparatus",
     "outputItems": undefined,
-    "qpRequired": 30,
+    "requiredQuests": [
+      1,
+    ],
   },
   {
     "gpCost": 1000,
     "itemCost": {},
     "name": "Fishbowl helmet",
     "outputItems": undefined,
-    "qpRequired": 30,
+    "requiredQuests": [
+      1,
+    ],
   },
   {
     "itemCost": {
@@ -776,7 +808,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Fairy enchantment",
     "outputItems": undefined,
-    "qpRequired": 23,
+    "requiredQuests": [
+      107,
+    ],
   },
   {
     "gpCost": 100000,
@@ -789,14 +823,18 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Ancient signet",
     "outputItems": undefined,
-    "qpRequired": 105,
+    "requiredQuests": [
+      77,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Lunar signet",
     "outputItems": undefined,
-    "qpRequired": 52,
+    "requiredQuests": [
+      108,
+    ],
   },
   {
     "gpCost": 500,
@@ -870,7 +908,9 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "776": 1,
     },
-    "qpRequired": 25,
+    "requiredQuests": [
+      24,
+    ],
   },
   {
     "gpCost": 1000000,
@@ -878,14 +918,18 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Cooking gauntlets",
     "outputItems": undefined,
-    "qpRequired": 25,
+    "requiredQuests": [
+      24,
+    ],
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Anti-dragon shield",
     "outputItems": undefined,
-    "qpRequired": 35,
+    "requiredQuests": [
+      17,
+    ],
   },
   {
     "gpCost": 50000,
@@ -893,7 +937,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Hardleather gloves",
     "outputItems": undefined,
-    "qpRequired": 5,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 100000,
@@ -901,7 +947,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Bronze gloves",
     "outputItems": undefined,
-    "qpRequired": 10,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 200000,
@@ -909,7 +957,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Iron gloves",
     "outputItems": undefined,
-    "qpRequired": 20,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 300000,
@@ -917,7 +967,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Steel gloves",
     "outputItems": undefined,
-    "qpRequired": 25,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 400000,
@@ -925,7 +977,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Black gloves",
     "outputItems": undefined,
-    "qpRequired": 35,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 500000,
@@ -933,7 +987,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Mithril gloves",
     "outputItems": undefined,
-    "qpRequired": 50,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 600000,
@@ -941,7 +997,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Adamant gloves",
     "outputItems": undefined,
-    "qpRequired": 65,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 700000,
@@ -951,7 +1009,9 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "7460": 1,
     },
-    "qpRequired": 85,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 850000,
@@ -959,7 +1019,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Dragon gloves",
     "outputItems": undefined,
-    "qpRequired": 107,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 1000000,
@@ -967,7 +1029,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Barrows gloves",
     "outputItems": undefined,
-    "qpRequired": 175,
+    "requiredQuests": [
+      100,
+    ],
   },
   {
     "gpCost": 500000,
@@ -975,7 +1039,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Helm of neitiznot",
     "outputItems": undefined,
-    "qpRequired": 75,
+    "requiredQuests": [
+      119,
+    ],
   },
   {
     "gpCost": 2500000,
@@ -983,7 +1049,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Magic secateurs",
     "outputItems": undefined,
-    "qpRequired": 40,
+    "requiredQuests": [
+      99,
+    ],
   },
   {
     "aliases": [
@@ -993,7 +1061,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Iban's staff",
     "outputItems": undefined,
-    "qpRequired": 30,
+    "requiredQuests": [
+      42,
+    ],
   },
   {
     "aliases": [
@@ -1003,7 +1073,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Barrelchest anchor",
     "outputItems": undefined,
-    "qpRequired": 30,
+    "requiredQuests": [
+      121,
+    ],
   },
   {
     "gpCost": 1000000,
@@ -1011,56 +1083,72 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Mythical cape",
     "outputItems": undefined,
-    "qpRequired": 205,
+    "requiredQuests": [
+      136,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Mind shield",
     "outputItems": undefined,
-    "qpRequired": 35,
+    "requiredQuests": [
+      112,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Dwarven helmet",
     "outputItems": undefined,
-    "qpRequired": 52,
+    "requiredQuests": [
+      126,
+    ],
   },
   {
     "gpCost": 50000,
     "itemCost": {},
     "name": "Amulet of accuracy",
     "outputItems": undefined,
-    "qpRequired": 5,
+    "requiredQuests": [
+      9,
+    ],
   },
   {
     "gpCost": 250000,
     "itemCost": {},
     "name": "Cape of legends",
     "outputItems": undefined,
-    "qpRequired": 105,
+    "requiredQuests": [
+      50,
+    ],
   },
   {
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Bearhead",
     "outputItems": undefined,
-    "qpRequired": 105,
+    "requiredQuests": [
+      73,
+    ],
   },
   {
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Bonesack",
     "outputItems": undefined,
-    "qpRequired": 82,
+    "requiredQuests": [
+      131,
+    ],
   },
   {
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Ram skull helm",
     "outputItems": undefined,
-    "qpRequired": 82,
+    "requiredQuests": [
+      131,
+    ],
   },
   {
     "gpCost": 1000000,
@@ -1069,28 +1157,36 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "19556": 1,
     },
-    "qpRequired": 182,
+    "requiredQuests": [
+      128,
+    ],
   },
   {
     "gpCost": 200000,
     "itemCost": {},
     "name": "Rat pole",
     "outputItems": undefined,
-    "qpRequired": 85,
+    "requiredQuests": [
+      93,
+    ],
   },
   {
     "gpCost": 50000,
     "itemCost": {},
     "name": "Silverlight",
     "outputItems": undefined,
-    "qpRequired": 3,
+    "requiredQuests": [
+      2,
+    ],
   },
   {
     "gpCost": 200000,
     "itemCost": {},
     "name": "Darklight",
     "outputItems": undefined,
-    "qpRequired": 58,
+    "requiredQuests": [
+      91,
+    ],
   },
   {
     "gpCost": 5000000,
@@ -1107,7 +1203,9 @@ exports[`OSB Buyables 1`] = `
       "9102": 1,
       "9104": 1,
     },
-    "qpRequired": 120,
+    "requiredQuests": [
+      108,
+    ],
   },
   {
     "gpCost": 5000000,
@@ -1122,7 +1220,9 @@ exports[`OSB Buyables 1`] = `
       "9073": 1,
       "9074": 1,
     },
-    "qpRequired": 120,
+    "requiredQuests": [
+      108,
+    ],
   },
   {
     "gpCost": 5000000,
@@ -1134,7 +1234,9 @@ exports[`OSB Buyables 1`] = `
       "10838": 1,
       "10839": 1,
     },
-    "qpRequired": 89,
+    "requiredQuests": [
+      119,
+    ],
   },
   {
     "gpCost": 5000000,
@@ -1145,7 +1247,9 @@ exports[`OSB Buyables 1`] = `
       "23787": 1,
       "23789": 1,
     },
-    "qpRequired": 200,
+    "requiredQuests": [
+      143,
+    ],
   },
   {
     "gpCost": 1000000,
@@ -1160,7 +1264,9 @@ exports[`OSB Buyables 1`] = `
       "6386": 1,
       "6390": 1,
     },
-    "qpRequired": 20,
+    "requiredQuests": [
+      75,
+    ],
   },
   {
     "gpCost": 100000,
@@ -1169,7 +1275,9 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "7114": 1,
     },
-    "qpRequired": 20,
+    "requiredQuests": [
+      98,
+    ],
   },
   {
     "gpCost": 1000000,
@@ -1180,7 +1288,9 @@ exports[`OSB Buyables 1`] = `
       "9636": 1,
       "9638": 1,
     },
-    "qpRequired": 92,
+    "requiredQuests": [
+      145,
+    ],
   },
   {
     "gpCost": 100000,
@@ -1189,74 +1299,90 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "3105": 1,
     },
-    "qpRequired": 20,
+    "requiredQuests": [
+      56,
+    ],
   },
   {
     "gpCost": 780000,
-    "ironmanPrice": 78000,
     "itemCost": {},
     "name": "Warrior helm",
     "outputItems": undefined,
-    "qpRequired": 60,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 780000,
-    "ironmanPrice": 98000,
     "itemCost": {},
     "name": "Berserker helm",
     "outputItems": undefined,
-    "qpRequired": 60,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 780000,
-    "ironmanPrice": 78000,
     "itemCost": {},
     "name": "Archer helm",
     "outputItems": undefined,
-    "qpRequired": 60,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 780000,
-    "ironmanPrice": 78000,
     "itemCost": {},
     "name": "Farseer helm",
     "outputItems": undefined,
-    "qpRequired": 60,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 60000,
     "itemCost": {},
     "name": "Doctor's hat",
     "outputItems": undefined,
-    "qpRequired": 60,
+    "requiredQuests": [
+      87,
+    ],
   },
   {
     "gpCost": 60000,
     "itemCost": {},
     "name": "Medical gown",
     "outputItems": undefined,
-    "qpRequired": 60,
+    "requiredQuests": [
+      87,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Ring of charos",
     "outputItems": undefined,
-    "qpRequired": 60,
+    "requiredQuests": [
+      69,
+    ],
   },
   {
     "gpCost": 60000,
     "itemCost": {},
     "name": "Nurse hat",
     "outputItems": undefined,
-    "qpRequired": 60,
+    "requiredQuests": [
+      69,
+    ],
   },
   {
     "gpCost": 70000,
     "itemCost": {},
     "name": "Holy wrench",
     "outputItems": undefined,
-    "qpRequired": 70,
+    "requiredQuests": [
+      90,
+    ],
   },
   {
     "gpCost": 250000,
@@ -1267,7 +1393,9 @@ exports[`OSB Buyables 1`] = `
       "5575": 1,
       "5576": 1,
     },
-    "qpRequired": 35,
+    "requiredQuests": [
+      83,
+    ],
   },
   {
     "gpCost": 500000,
@@ -1279,35 +1407,45 @@ exports[`OSB Buyables 1`] = `
       "9676": 1,
       "9678": 1,
     },
-    "qpRequired": 75,
+    "requiredQuests": [
+      111,
+    ],
   },
   {
     "gpCost": 50000,
     "itemCost": {},
     "name": "Excalibur",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      30,
+    ],
   },
   {
     "gpCost": 50000,
     "itemCost": {},
     "name": "Bomber jacket",
     "outputItems": undefined,
-    "qpRequired": 21,
+    "requiredQuests": [
+      114,
+    ],
   },
   {
     "gpCost": 50000,
     "itemCost": {},
     "name": "Bomber cap",
     "outputItems": undefined,
-    "qpRequired": 21,
+    "requiredQuests": [
+      114,
+    ],
   },
   {
     "gpCost": 500000,
     "itemCost": {},
     "name": "Pet rock",
     "outputItems": undefined,
-    "qpRequired": 60,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 10000000,
@@ -1320,7 +1458,9 @@ exports[`OSB Buyables 1`] = `
       "6": 1,
       "8": 1,
     },
-    "qpRequired": 5,
+    "requiredQuests": [
+      46,
+    ],
   },
   {
     "gpCost": 2500000,
@@ -1328,7 +1468,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Cannon barrels",
     "outputItems": undefined,
-    "qpRequired": 5,
+    "requiredQuests": [
+      46,
+    ],
   },
   {
     "gpCost": 2500000,
@@ -1336,7 +1478,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Cannon base",
     "outputItems": undefined,
-    "qpRequired": 5,
+    "requiredQuests": [
+      46,
+    ],
   },
   {
     "gpCost": 2500000,
@@ -1344,7 +1488,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Cannon furnace",
     "outputItems": undefined,
-    "qpRequired": 5,
+    "requiredQuests": [
+      46,
+    ],
   },
   {
     "gpCost": 2500000,
@@ -1352,7 +1498,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Cannon stand",
     "outputItems": undefined,
-    "qpRequired": 5,
+    "requiredQuests": [
+      46,
+    ],
   },
   {
     "gpCost": 2500000,
@@ -1360,7 +1508,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Elemental shield",
     "outputItems": undefined,
-    "qpRequired": 25,
+    "requiredQuests": [
+      53,
+    ],
   },
   {
     "gpCost": 2500000,
@@ -1368,7 +1518,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Royal seed pod",
     "outputItems": undefined,
-    "qpRequired": 175,
+    "requiredQuests": [
+      128,
+    ],
   },
   {
     "gpCost": 75000,
@@ -1376,7 +1528,7 @@ exports[`OSB Buyables 1`] = `
     "name": "Ring of shadows",
     "outputItems": undefined,
     "requiredQuests": [
-      1,
+      157,
     ],
   },
   {
@@ -1385,7 +1537,9 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Book of the dead",
     "outputItems": undefined,
-    "qpRequired": 120,
+    "requiredQuests": [
+      150,
+    ],
   },
   {
     "gpCost": 1000000,
@@ -1410,77 +1564,99 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Fremennik green cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik blue cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik brown cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik cyan cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik red cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik grey cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik yellow cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik teal cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik purple cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik pink cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik black cloak",
     "outputItems": undefined,
-    "qpRequired": 55,
+    "requiredQuests": [
+      62,
+    ],
   },
   {
     "gpCost": 100000,
@@ -1627,210 +1803,270 @@ exports[`OSB Buyables 1`] = `
     "itemCost": {},
     "name": "Grey gloves",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Grey boots",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Grey robe bottoms",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Grey hat",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Grey robe top",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red gloves",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red boots",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red robe bottoms",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red robe top",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red hat",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow gloves",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow boots",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow robe top",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow robe bottoms",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow hat",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal gloves",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal boots",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal robe top",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal robe bottoms",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal hat",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple gloves",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple boots",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple robe top",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple robe bottoms",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple hat",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red cape",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Black cape",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Blue cape",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow cape",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Green cape",
     "outputItems": undefined,
-    "qpRequired": 15,
+    "requiredQuests": [
+      54,
+    ],
   },
   {
     "itemCost": {
@@ -2328,6 +2564,7 @@ exports[`OSB Buyables 1`] = `
     "aliases": [
       "quest cape",
     ],
+    "customReq": [Function],
     "gpCost": 99000,
     "itemCost": {},
     "name": "Quest point cape",
@@ -2335,7 +2572,6 @@ exports[`OSB Buyables 1`] = `
       "9813": 1,
       "9814": 1,
     },
-    "qpRequired": 319,
   },
   {
     "aliases": [
@@ -2348,7 +2584,6 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13068": 1,
     },
-    "qpRequired": 319,
   },
   {
     "aliases": [
@@ -2374,7 +2609,6 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13069": 1,
     },
-    "qpRequired": 319,
   },
   {
     "customReq": [Function],
@@ -5121,7 +5355,6 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
-    "QPRequired": 5,
     "cantHaveItems": undefined,
     "inputItems": {
       "3827": 1,
@@ -5133,12 +5366,14 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "3840": 1,
     },
+    "requiredQuests": [
+      63,
+    ],
     "requiredSkills": {
       "agility": 35,
     },
   },
   {
-    "QPRequired": 5,
     "cantHaveItems": undefined,
     "inputItems": {
       "3835": 1,
@@ -5150,12 +5385,14 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "3844": 1,
     },
+    "requiredQuests": [
+      63,
+    ],
     "requiredSkills": {
       "agility": 35,
     },
   },
   {
-    "QPRequired": 5,
     "cantHaveItems": undefined,
     "inputItems": {
       "3831": 1,
@@ -5167,12 +5404,14 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "3842": 1,
     },
+    "requiredQuests": [
+      63,
+    ],
     "requiredSkills": {
       "agility": 35,
     },
   },
   {
-    "QPRequired": 5,
     "cantHaveItems": undefined,
     "inputItems": {
       "12617": 1,
@@ -5184,12 +5423,14 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "12610": 1,
     },
+    "requiredQuests": [
+      63,
+    ],
     "requiredSkills": {
       "agility": 35,
     },
   },
   {
-    "QPRequired": 5,
     "cantHaveItems": undefined,
     "inputItems": {
       "12613": 1,
@@ -5201,12 +5442,14 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "12608": 1,
     },
+    "requiredQuests": [
+      63,
+    ],
     "requiredSkills": {
       "agility": 35,
     },
   },
   {
-    "QPRequired": 5,
     "cantHaveItems": undefined,
     "inputItems": {
       "12621": 1,
@@ -5218,12 +5461,14 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "12612": 1,
     },
+    "requiredQuests": [
+      63,
+    ],
     "requiredSkills": {
       "agility": 35,
     },
   },
   {
-    "QPRequired": 30,
     "cantHaveItems": undefined,
     "inputItems": {
       "886": 75,
@@ -5232,9 +5477,11 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "10499": 1,
     },
+    "requiredQuests": [
+      116,
+    ],
   },
   {
-    "QPRequired": 205,
     "cantHaveItems": undefined,
     "inputItems": {
       "10499": 1,
@@ -5245,9 +5492,12 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "22109": 1,
     },
+    "requiredQuests": [
+      116,
+      136,
+    ],
   },
   {
-    "QPRequired": 111,
     "cantHaveItems": undefined,
     "inputItems": {
       "2366": 1,
@@ -5257,12 +5507,14 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "1187": 1,
     },
+    "requiredQuests": [
+      50,
+    ],
     "requiredSkills": {
       "smithing": 60,
     },
   },
   {
-    "QPRequired": 205,
     "cantHaveItems": undefined,
     "inputItems": {
       "1187": 1,
@@ -5273,12 +5525,14 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "21895": 1,
     },
+    "requiredQuests": [
+      136,
+    ],
     "requiredSkills": {
       "smithing": 75,
     },
   },
   {
-    "QPRequired": 205,
     "cantHaveItems": undefined,
     "inputItems": {
       "22097": 1,
@@ -5289,6 +5543,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "21892": 1,
     },
+    "requiredQuests": [
+      136,
+    ],
     "requiredSkills": {
       "smithing": 90,
     },
@@ -5307,7 +5564,6 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "GPCost": 300000,
-    "QPRequired": 3,
     "cantHaveItems": undefined,
     "inputItems": {
       "11824": 1,
@@ -5316,6 +5572,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "11889": 1,
     },
+    "requiredQuests": [
+      58,
+    ],
     "requiredSkills": {
       "crafting": 11,
       "firemaking": 35,
@@ -5664,7 +5923,6 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
-    "QPRequired": 75,
     "cantHaveItems": undefined,
     "inputItems": {
       "1605": 1,
@@ -5674,6 +5932,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "22398": 1,
     },
+    "requiredQuests": [
+      138,
+    ],
     "requiredSkills": {
       "agility": 45,
       "attack": 40,
@@ -5688,7 +5949,6 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
-    "QPRequired": 125,
     "cantHaveItems": undefined,
     "inputItems": {
       "1603": 1,
@@ -5698,6 +5958,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "24699": 1,
     },
+    "requiredQuests": [
+      145,
+    ],
     "requiredSkills": {
       "agility": 52,
       "attack": 50,
@@ -5885,7 +6148,6 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23959": 1,
@@ -5895,6 +6157,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23946": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 80,
       "smithing": 80,
@@ -7036,7 +7301,6 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "11920": 1,
@@ -7047,13 +7311,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23680": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 76,
       "smithing": 76,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "21028": 1,
@@ -7064,13 +7330,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23762": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 76,
       "smithing": 76,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23953": 1,
@@ -7081,13 +7349,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23673": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 76,
       "smithing": 76,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23962": 10,
@@ -7097,13 +7367,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23951": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 80,
       "smithing": 80,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23962": 1000,
@@ -7113,13 +7385,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "24551": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 82,
       "smithing": 82,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "24551": 1,
@@ -7129,13 +7403,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23997": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 82,
       "smithing": 82,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23962": 2000,
@@ -7145,13 +7421,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "25867": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 82,
       "smithing": 82,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "25867": 1,
@@ -7161,13 +7439,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "25862": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 82,
       "smithing": 82,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23962": 100,
@@ -7177,13 +7457,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23997": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 82,
       "smithing": 82,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23962": 250,
@@ -7193,13 +7475,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "25859": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 82,
       "smithing": 82,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23962": 100,
@@ -7209,13 +7493,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "25862": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 82,
       "smithing": 82,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23962": 250,
@@ -7225,13 +7511,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "25859": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 82,
       "smithing": 82,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23962": 40,
@@ -7242,13 +7530,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23987": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 78,
       "smithing": 78,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23962": 40,
@@ -7259,13 +7549,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23983": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 78,
       "smithing": 78,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23956": 1,
@@ -7276,13 +7568,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23971": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 70,
       "smithing": 70,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23956": 2,
@@ -7293,13 +7587,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23979": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 72,
       "smithing": 72,
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23956": 3,
@@ -7310,6 +7606,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23975": 1,
     },
+    "requiredQuests": [
+      143,
+    ],
     "requiredSkills": {
       "crafting": 74,
       "smithing": 74,
@@ -14564,7 +14863,6 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "1397": 1,
@@ -14573,13 +14871,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "1405": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "1395": 1,
@@ -14588,13 +14888,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "1403": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "1399": 1,
@@ -14603,13 +14905,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "1407": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "1393": 1,
@@ -14618,13 +14922,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "1401": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "20736": 1,
@@ -14633,13 +14939,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "20739": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "3053": 1,
@@ -14648,13 +14956,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "3054": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "21198": 1,
@@ -14663,13 +14973,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "21200": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "20730": 1,
@@ -14678,13 +14990,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "20733": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "6562": 1,
@@ -14693,13 +15007,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "6563": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "11998": 1,
@@ -14708,13 +15024,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "12000": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "11787": 1,
@@ -14723,13 +15041,15 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "11789": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
   },
   {
     "GPCost": 40000,
-    "QPRequired": 1,
     "cantHaveItems": undefined,
     "inputItems": {
       "12795": 1,
@@ -14738,6 +15058,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "12796": 1,
     },
+    "requiredQuests": [
+      23,
+    ],
     "requiredSkills": {
       "prayer": 31,
     },
@@ -14830,7 +15153,6 @@ exports[`OSB Creatables 1`] = `
     },
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "4207": 1,
@@ -14840,9 +15162,11 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23962": 10,
     },
+    "requiredQuests": [
+      143,
+    ],
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23953": 1,
@@ -14852,9 +15176,11 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23962": 100,
     },
+    "requiredQuests": [
+      143,
+    ],
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23959": 1,
@@ -14864,9 +15190,11 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23962": 150,
     },
+    "requiredQuests": [
+      143,
+    ],
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "23956": 1,
@@ -14876,9 +15204,11 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23962": 250,
     },
+    "requiredQuests": [
+      143,
+    ],
   },
   {
-    "QPRequired": 150,
     "cantHaveItems": undefined,
     "inputItems": {
       "25859": 1,
@@ -14888,6 +15218,9 @@ exports[`OSB Creatables 1`] = `
     "outputItems": {
       "23962": 1500,
     },
+    "requiredQuests": [
+      143,
+    ],
   },
   {
     "cantHaveItems": undefined,

@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EQuest } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
 
 import { nestTable, strungRabbitFootNestTable } from '../../../simulation/birdsNest';
@@ -20,7 +20,7 @@ export interface Birdhouse {
 	huntTechnique: string;
 	waitTime: number;
 	runTime: number;
-	qpRequired: number;
+	requiredQuests: EQuest[];
 }
 
 const birdhouses: Birdhouse[] = [
@@ -39,7 +39,7 @@ const birdhouses: Birdhouse[] = [
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
-		qpRequired: 3
+		requiredQuests: [EQuest.BONE_VOYAGE]
 	},
 	{
 		name: 'Oak bird house',
@@ -56,7 +56,7 @@ const birdhouses: Birdhouse[] = [
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
-		qpRequired: 3
+		requiredQuests: [EQuest.BONE_VOYAGE]
 	},
 	{
 		name: 'Willow bird house',
@@ -73,7 +73,7 @@ const birdhouses: Birdhouse[] = [
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
-		qpRequired: 3
+		requiredQuests: [EQuest.BONE_VOYAGE]
 	},
 	{
 		name: 'Teak bird house',
@@ -90,7 +90,7 @@ const birdhouses: Birdhouse[] = [
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
-		qpRequired: 3
+		requiredQuests: [EQuest.BONE_VOYAGE]
 	},
 	{
 		name: 'Maple bird house',
@@ -107,7 +107,7 @@ const birdhouses: Birdhouse[] = [
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
-		qpRequired: 3
+		requiredQuests: [EQuest.BONE_VOYAGE]
 	},
 	{
 		name: 'Mahogany bird house',
@@ -124,7 +124,7 @@ const birdhouses: Birdhouse[] = [
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
-		qpRequired: 3
+		requiredQuests: [EQuest.BONE_VOYAGE]
 	},
 	{
 		name: 'Yew bird house',
@@ -141,7 +141,7 @@ const birdhouses: Birdhouse[] = [
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
-		qpRequired: 3
+		requiredQuests: [EQuest.BONE_VOYAGE]
 	},
 	{
 		name: 'Magic bird house',
@@ -158,7 +158,7 @@ const birdhouses: Birdhouse[] = [
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
-		qpRequired: 3
+		requiredQuests: [EQuest.BONE_VOYAGE]
 	},
 	{
 		name: 'Redwood bird house',
@@ -175,7 +175,7 @@ const birdhouses: Birdhouse[] = [
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
-		qpRequired: 3
+		requiredQuests: [EQuest.BONE_VOYAGE]
 	}
 ];
 

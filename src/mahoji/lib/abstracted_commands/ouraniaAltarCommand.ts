@@ -1,6 +1,6 @@
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, increaseNumByPercent } from 'e';
-import { Bank, EItem } from 'oldschooljs';
+import { Bank, EItem, EQuest } from 'oldschooljs';
 
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -51,7 +51,7 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip = increaseNumByPercent(timePerTrip, gracefulPenalty);
 	}
 
-	if (mageLvl < 71 && user.QP < 120) {
+	if (mageLvl < 71 && !user.hasCompletedQuest(EQuest.LUNAR_DIPLOMACY)) {
 		boosts.push('50% slower for not having the Ourania Teleport Spell');
 		timePerTrip = increaseNumByPercent(timePerTrip, 50);
 	}
