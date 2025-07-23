@@ -21,6 +21,7 @@ import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { partialUserCache } from './cache';
+import type { IconPackID } from './canvas/iconPacks';
 import { ClueTiers } from './clues/clueTiers';
 import type { CATier } from './combat_achievements/combatAchievements';
 import { CombatAchievements } from './combat_achievements/combatAchievements';
@@ -108,6 +109,7 @@ export class MUserClass {
 	skillsAsLevels!: Required<Skills>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
+	iconPackId!: IconPackID | null;
 
 	constructor(user: User) {
 		this.user = user;
@@ -146,6 +148,7 @@ export class MUserClass {
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
+		this.iconPackId = (this.user.icon_pack_id as IconPackID) ?? null;
 	}
 
 	public get gearBank() {
