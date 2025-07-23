@@ -200,7 +200,7 @@ export default class LootTable {
 
 	private cachedOptimizedTable: number[] | null = null;
 	roll(quantity?: number): Bank;
-	roll(quantity: number, options: { targetBank?: undefined } & LootTableRollOptions): Bank;
+	roll(quantity: number, options?: LootTableRollOptions): Bank;
 	roll(quantity: number, options: { targetBank: Bank } & LootTableRollOptions): null;
 	public roll(quantity = 1, options: LootTableRollOptions = {}): Bank | null {
 		const loot = options.targetBank ?? new Bank();
