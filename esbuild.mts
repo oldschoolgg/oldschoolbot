@@ -1,6 +1,8 @@
 import path from 'node:path';
 import { build } from 'esbuild';
 
+import { STATIC_DEFINE } from './meta';
+
 const external = [
 	'skia-canvas',
 	'@prisma/robochimp',
@@ -27,7 +29,8 @@ build({
 	external,
 	alias: {
 		'@': path.resolve(import.meta.dirname, './src')
-	}
+	},
+	define: STATIC_DEFINE
 });
 
 // Workers
@@ -50,5 +53,6 @@ build({
 	external,
 	alias: {
 		'@': path.resolve(import.meta.dirname, './src')
-	}
+	},
+	define: STATIC_DEFINE
 });

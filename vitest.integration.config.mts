@@ -1,6 +1,8 @@
 import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
+import { STATIC_DEFINE } from './meta';
+
 export default defineConfig({
 	test: {
 		name: 'Old School Bot - Integration',
@@ -21,5 +23,6 @@ export default defineConfig({
 		alias: {
 			'@': path.resolve(import.meta.dirname, './src')
 		}
-	}
+	},
+	define: STATIC_DEFINE
 });
