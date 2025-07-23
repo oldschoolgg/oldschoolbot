@@ -1,64 +1,32 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
+import { cleanString, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
-import fetch from 'node-fetch';
 import { Bank, type Item, type ItemBank, ItemGroups, itemID, resolveItems, toKMB } from 'oldschooljs';
+import { loadImage } from 'skia-canvas';
 
-import { BOT_TYPE, BitField, ItemIconPacks, PerkTier } from '../lib/constants';
+import { BitField, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { type BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
-import {
-	type Canvas,
-	type CanvasContext,
-	CanvasImage,
-	canvasToBuffer,
-	createCanvas,
-	drawImageWithOutline,
-	getClippedRegion,
-	loadImage,
-	registerFont
-} from '../lib/util/canvasUtil';
-import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
-import { OSRSCanvas } from './OSRSCanvas';
+import { OSRSCanvas } from './canvas/OSRSCanvas';
+import { type Canvas, CanvasImage, canvasToBuffer, createCanvas, getClippedRegion } from './canvas/canvasUtil';
+import type { IconPackID } from './canvas/iconPacks';
 import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
-
-const fonts = {
-	OSRSFont: './src/lib/resources/osrs-font.ttf',
-	OSRSFontCompact: './src/lib/resources/osrs-font-compact.otf',
-	'RuneScape Bold 12': './src/lib/resources/osrs-font-bold.ttf',
-	'Smallest Pixel-7': './src/lib/resources/small-pixel.ttf',
-	'RuneScape Quill 8': './src/lib/resources/osrs-font-quill-8.ttf'
-} as const;
-
-for (const [key, val] of Object.entries(fonts)) {
-	registerFont(key, val);
-}
 
 interface BankImageResult {
 	image: Buffer;
 	isTransparent: boolean;
 }
 
-const CACHE_DIR = './icon_cache';
-
 const itemSize = 32;
 const distanceFromTop = 32;
-const distanceFromSide = 16;
-
-const sourceGiftItemIDs = [26_298, 26_300, 26_302, 26_308, 26_316, 26_318, 26_320, 26_322, 26_324];
-const giftItemIDList: number[] = [];
-for (let i = 0; i < 100; i++) {
-	giftItemIDList.push(...sourceGiftItemIDs);
-}
 
 const { floor, ceil } = Math;
 
@@ -249,19 +217,6 @@ const forcedShortNameMap = new Map<number, string>([
 	[27_693, 'VM Pack']
 ]);
 
-function drawTitle(c: OSRSCanvas, title: string) {
-	const titleWidthPx = c.measureTextWidth(title, 'Bold');
-	const titleX = Math.floor(floor(c.width / 2) - titleWidthPx / 2);
-
-	c.drawText({
-		text: title,
-		x: titleX,
-		y: 21,
-		color: '#FF981F',
-		font: 'Bold'
-	});
-}
-
 export const bankFlags = [
 	'show_price',
 	'show_market_price',
@@ -275,8 +230,6 @@ export const bankFlags = [
 export type BankFlag = (typeof bankFlags)[number];
 
 export class BankImageTask {
-	public itemIconsList: Set<number>;
-	public itemIconImagesCache: Map<number, CanvasImage>;
 	public backgroundImages: BankBackground[] = [];
 	public alternateImages: { id: number; bgId: number; image: CanvasImage }[] = [];
 
@@ -284,16 +237,8 @@ export class BankImageTask {
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: CanvasImage;
 	public ready!: Promise<void>;
-	public spriteSheetImage!: CanvasImage;
-	public spriteSheetData!: Record<string, [number, number, number, number]>;
 
 	public constructor() {
-		// This tells us simply whether the file exists or not on disk.
-		this.itemIconsList = new Set();
-
-		// If this file does exist, it might be cached in this, or need to be read from fs.
-		this.itemIconImagesCache = new Map();
-
 		this.ready = this.init();
 	}
 
@@ -321,17 +266,6 @@ export class BankImageTask {
 				oddListColor: colors[bgName]
 			};
 		}
-
-		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.png'));
-		this.spriteSheetData = JSON.parse(
-			await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' })
-		);
-		await this.run();
-	}
-
-	async run() {
-		await this.cacheFiles();
-
 		this.backgroundImages = await Promise.all(
 			backgroundImages.map(async img => {
 				const ext = img.transparent ? 'png' : 'jpg';
@@ -366,152 +300,6 @@ export class BankImageTask {
 				};
 			})
 		);
-	}
-
-	async cacheFiles() {
-		// Ensure that the icon_cache dir exists.
-		await fs.mkdir(CACHE_DIR).catch(() => null);
-
-		// Get a list of all files (images) in the dir.
-		const filesInDir = await fs.readdir(CACHE_DIR);
-
-		// For each one, set a cache value that it exists.
-		for (const fileName of filesInDir) {
-			this.itemIconsList.add(Number.parseInt(path.parse(fileName).name));
-		}
-
-		for (const pack of ItemIconPacks) {
-			const directories = BOT_TYPE === 'OSB' ? ['osb'] : ['osb', 'bso'];
-
-			for (const dir of directories) {
-				const filesInThisDir = await fs.readdir(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}`);
-				for (const fileName of filesInThisDir) {
-					const themedItemID = Number.parseInt(path.parse(fileName).name);
-					const image = await loadImage(
-						await fs.readFile(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`)
-					);
-					pack.icons.set(themedItemID, image);
-				}
-			}
-		}
-	}
-
-	async getItemImage(itemID: number, user?: MUser): Promise<Canvas | CanvasImage> {
-		if (user && user.user.icon_pack_id !== null) {
-			for (const pack of ItemIconPacks) {
-				if (pack.id === user.user.icon_pack_id) {
-					return pack.icons.get(itemID) ?? this.getItemImage(itemID, undefined);
-				}
-			}
-		}
-
-		const data = this.spriteSheetData[itemID];
-		if (data) {
-			const [sX, sY, width, height] = data;
-			const image = getClippedRegion(this.spriteSheetImage, sX, sY, width, height);
-			return image;
-		}
-
-		const cachedImage = this.itemIconImagesCache.get(itemID);
-		if (cachedImage) return cachedImage;
-
-		const isOnDisk = this.itemIconsList.has(itemID);
-		if (!isOnDisk) {
-			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID, user);
-		}
-
-		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
-		try {
-			const image = await loadImage(imageBuffer);
-			this.itemIconImagesCache.set(itemID, image);
-			return image;
-		} catch (err) {
-			logError(`Failed to load item icon with id: ${itemID}`);
-			return this.getItemImage(1);
-		}
-	}
-
-	async drawItemIDSprite({
-		itemID,
-		ctx,
-		x,
-		y,
-		outline
-	}: {
-		itemID: number;
-		ctx: CanvasContext;
-		x: number;
-		y: number;
-		outline?: { outlineColor: string; alpha: number };
-	}) {
-		const data = this.spriteSheetData[itemID];
-		const drawOptions: {
-			image: CanvasImage | Canvas;
-			sourceX: number;
-			sourceY: number;
-			sourceWidth: number;
-			sourceHeight: number;
-			destX: number;
-			destY: number;
-		} = {
-			image: this.spriteSheetImage,
-			sourceX: -1,
-			sourceY: -1,
-			sourceWidth: -1,
-			sourceHeight: -1,
-			destX: -1,
-			destY: -1
-		};
-
-		if (!data) {
-			const image = await this.getItemImage(itemID);
-			drawOptions.sourceWidth = image.width;
-			drawOptions.sourceHeight = image.height;
-			drawOptions.sourceX = 0;
-			drawOptions.sourceY = 0;
-			drawOptions.image = image;
-		} else {
-			const [sX, sY, width, height] = data;
-			drawOptions.sourceX = sX;
-			drawOptions.sourceY = sY;
-			drawOptions.sourceWidth = width;
-			drawOptions.sourceHeight = height;
-		}
-
-		drawOptions.destX = Math.floor(x + (itemSize - drawOptions.sourceWidth) / 2) + 2;
-		drawOptions.destY = Math.floor(y + (itemSize - drawOptions.sourceHeight) / 2);
-
-		const args = [
-			drawOptions.image,
-			drawOptions.sourceX,
-			drawOptions.sourceY,
-			drawOptions.sourceWidth,
-			drawOptions.sourceHeight,
-			drawOptions.destX,
-			drawOptions.destY,
-			drawOptions.sourceWidth,
-			drawOptions.sourceHeight
-		] as const;
-
-		if (outline) {
-			drawImageWithOutline(ctx, ...args);
-		} else {
-			ctx.drawImage(...args);
-		}
-	}
-
-	async fetchAndCacheImage(itemID: number) {
-		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.buffer()
-		);
-
-		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
-
-		const image = await loadImage(imageBuffer);
-
-		this.itemIconsList.add(itemID);
-		this.itemIconImagesCache.set(itemID, image);
 	}
 
 	getBgAndSprite(bankBgId = 1, user?: MUser) {
@@ -557,11 +345,6 @@ export class BankImageTask {
 		verticalSpacer = 0,
 		_user?: MUser
 	) {
-		const ctx = c.ctx;
-		// Draw Items
-		ctx.textAlign = 'start';
-		ctx.fillStyle = '#494034';
-
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
 		for (let i = 0; i < items.length; i++) {
@@ -576,23 +359,14 @@ export class BankImageTask {
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 
-			await this.drawItemIDSprite({
+			await c.drawItemIDSprite({
 				itemID: item.id,
-				ctx,
 				x: xLoc,
 				y: yLoc,
-				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined
+				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined,
+				quantity,
+				textColor: isNewCLItem ? OSRSCanvas.COLORS.PURPLE : undefined
 			});
-
-			// Do not draw the item qty if there is 0 of that item in the bank
-			if (quantity !== 0) {
-				c.drawText({
-					text: formatItemStackQuantity(quantity),
-					x: xLoc + distanceFromSide - 18,
-					y: yLoc + distanceFromTop - 24,
-					color: isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity)
-				});
-			}
 
 			let bottomItemText: string | number | null = null;
 
@@ -637,6 +411,7 @@ export class BankImageTask {
 		user?: MUser;
 		collectionLog?: Bank;
 		mahojiFlags?: BankFlag[];
+		iconPackId?: IconPackID;
 	}): Promise<BankImageResult> {
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
@@ -749,14 +524,16 @@ export class BankImageTask {
 			currentCL !== undefined &&
 			items.some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
-		const actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
-
-		const hexColor = user?.user.bank_bg_hex;
-
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 
-		const canvas = new OSRSCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight), bgSprite);
+		const canvas = new OSRSCanvas({
+			width,
+			height: useSmallBank ? canvasHeight : Math.max(331, canvasHeight),
+			sprite: bgSprite,
+			iconPackId: opts.iconPackId ?? user?.iconPackId
+		});
 
+		const actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
 		let resizeBg = -1;
 		if (!wide && !useSmallBank && !isTransparent && actualBackground && canvasHeight > 331) {
 			resizeBg = Math.min(1440, canvasHeight) / actualBackground.height;
@@ -769,6 +546,7 @@ export class BankImageTask {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
+		const hexColor = user?.user.bank_bg_hex;
 		if (hexColor && isTransparent) {
 			ctx.fillStyle = hexColor;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -788,7 +566,12 @@ export class BankImageTask {
 			title += ` (V: ${toKMB(totalValue)} / MV: ${toKMB(marketPriceOfBank(bank))}) `;
 		}
 
-		drawTitle(canvas, title);
+		canvas.drawTitleText({
+			text: title,
+			x: canvas.width / 2,
+			y: 21,
+			center: true
+		});
 
 		// Skips border if noBorder is set
 		if (!isTransparent && noBorder !== 1) {
@@ -897,7 +680,7 @@ export async function drawChestLootImage(options: {
 
 	for (const { previousCL, loot, user, customTexts } of options.entries) {
 		const { sprite } = bankImageGenerator.getBgAndSprite();
-		const canvas = new OSRSCanvas(type.width, type.height, sprite);
+		const canvas = new OSRSCanvas({ width: type.width, height: type.height, sprite, iconPackId: user.iconPackId });
 		const ctx = canvas.ctx;
 
 		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
@@ -907,13 +690,19 @@ export async function drawChestLootImage(options: {
 		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
 		const [x, y] = type.position(canvas, image);
 		ctx.drawImage(image, x, y);
-		drawTitle(canvas, `${user.rawUsername} (${toKMB(loot.value())})`);
+
+		canvas.drawTitleText({
+			text: `${user.rawUsername} (${toKMB(loot.value())})`,
+			x: canvas.width / 2,
+			y: 21,
+			center: true
+		});
 		canvas.drawBorder(sprite, true);
 
 		const xOffset = 10;
 		const yOffset = 45;
 		const [iX, iY, iW, iH] = type.itemRect;
-		const itemCanvas = new OSRSCanvas(iW + xOffset, iH + yOffset);
+		const itemCanvas = new OSRSCanvas({ width: iW + xOffset, height: iH + yOffset });
 
 		await bankImageGenerator.drawItems(
 			itemCanvas,

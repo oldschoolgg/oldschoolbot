@@ -1,6 +1,6 @@
 import { AttachmentBuilder } from 'discord.js';
 
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage, printWrappedText } from './canvasUtil';
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage, printWrappedText } from '../canvas/canvasUtil';
 
 const textBoxFile = loadAndCacheLocalImage('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = loadAndCacheLocalImage('./src/lib/resources/images/mejJal.png');

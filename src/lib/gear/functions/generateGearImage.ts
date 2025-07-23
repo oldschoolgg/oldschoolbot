@@ -1,12 +1,12 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
 import { EquipmentSlot } from 'oldschooljs';
 
-import { OSRSCanvas } from '@/lib/OSRSCanvas';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
+import { calcAspectRatioFit } from '../../canvas/canvasUtil';
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
-import { loadAndCacheLocalImage } from '../../util/canvasUtil';
 import type { GearSetup, GearSetupType } from '../types';
 import { GearSetupTypes } from '../types';
+import { gearImages, transmogItems } from './gearImageData';
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -87,8 +87,13 @@ export async function generateGearImage(
 	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
-	const canvas = new OSRSCanvas(gearTemplateImage.width, gearTemplateImage.height);
+	const gearTemplateImage = await gearImages[user.user.gear_template ?? 0].template;
+	const canvas = new OSRSCanvas({
+		width: gearTemplateImage.width,
+		height: gearTemplateImage.height,
+		sprite,
+		iconPackId: user.iconPackId
+	});
 	const ctx = canvas.ctx;
 
 	ctx.fillStyle = userBgImage.transparent
@@ -108,6 +113,22 @@ export async function generateGearImage(
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 
 	if (!userBgImage.transparent) canvas.drawBorder(sprite, false);
+
+	// Draw transmog
+	const transmogItem = (gearType && transmogItems.find(t => user.gear[gearType].hasEquipped(t.item.name))) ?? null;
+	const transMogImage = transmogItem === null ? null : await transmogItem.image;
+	if (transMogImage) {
+		const maxWidth = gearTemplateImage.width * 0.45;
+		const altSize = calcAspectRatioFit(
+			transMogImage.width / 2,
+			transMogImage.height / 2,
+			maxWidth,
+			transmogItem?.maxHeight ?? gearTemplateImage.height * 0.5
+		);
+
+		const y = gearTemplateImage.height * 0.9 - altSize.height;
+		ctx.drawImage(transMogImage, maxWidth / 2 - altSize.width / 2, y, altSize.width, altSize.height);
+	}
 
 	// Draw preset title
 	if (gearType) {
@@ -217,34 +238,23 @@ export async function generateGearImage(
 
 	// Draw items
 	if (petID) {
-		const image = await bankImageGenerator.getItemImage(petID, user);
-		ctx.drawImage(
-			image,
-			178 + slotSize / 2 - image.width / 2,
-			190 + slotSize / 2 - image.height / 2,
-			image.width,
-			image.height
-		);
+		canvas.drawItemIDSprite({
+			itemID: petID,
+			x: 178 + slotSize / 2,
+			y: 190 + slotSize / 2
+		});
 	}
 
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await bankImageGenerator.getItemImage(item.item, user);
-
-		let [x, y] = slotCoordinates[enumName];
-		x = x + slotSize / 2 - image.width / 2;
-		y = y + slotSize / 2 - image.height / 2;
-		ctx.drawImage(image, x, y, image.width, image.height);
-
-		if (item.quantity > 1) {
-			canvas.drawText({
-				text: item.quantity.toString(),
-				x: x + 1,
-				y: y + 9,
-				color: generateHexColorForCashStack(item.quantity)
-			});
-		}
+		const [x, y] = slotCoordinates[enumName];
+		canvas.drawItemIDSprite({
+			itemID: item.item,
+			x: x + slotSize / 2,
+			y: y + slotSize / 2,
+			quantity: item.quantity
+		});
 	}
 
 	return canvas.toScaledOutput(2);
@@ -258,8 +268,10 @@ export async function generateAllGearImage(user: MUser) {
 	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
-	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template_compact.png');
-	const canvas = new OSRSCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
+	const gearTemplateImage = await gearImages[user.user.gear_template ?? 0].templateCompact;
+	const width = (gearTemplateImage.width + 10) * 4 + 20;
+	const height = Number(gearTemplateImage.height) * 2 + 70;
+	const canvas = new OSRSCanvas({ width, height, sprite: bgSprite, iconPackId: user.iconPackId });
 	const ctx = canvas.ctx;
 
 	ctx.fillStyle = userBg.transparent
@@ -311,21 +323,14 @@ export async function generateAllGearImage(user: MUser) {
 		for (const enumName of Object.values(EquipmentSlot)) {
 			const item = gear[enumName];
 			if (!item) continue;
-			const image = await bankImageGenerator.getItemImage(item.item, user);
-			let [x, y] = slotCoordinatesCompact[enumName];
-			x = x + slotSize / 2 - image.width / 2;
-			y = y + slotSize / 2 - image.height / 2;
-			ctx.drawImage(image, x, y, image.width, image.height);
+			const [x, y] = slotCoordinatesCompact[enumName];
 
-			if (item.quantity > 1) {
-				canvas.drawText({
-					text: item.quantity.toString(),
-					x: x + 1,
-					y: y + 9,
-					color: generateHexColorForCashStack(item.quantity),
-					center: false
-				});
-			}
+			canvas.drawItemIDSprite({
+				itemID: item.item,
+				x: x + slotSize / 2 + 1,
+				y: y + slotSize / 2 + 9,
+				quantity: item.quantity
+			});
 		}
 		i++;
 		ctx.restore();
@@ -337,8 +342,11 @@ export async function generateAllGearImage(user: MUser) {
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
 	const userPet = user.user.minion_equippedPet;
 	if (userPet) {
-		const image = await bankImageGenerator.getItemImage(userPet, user);
-		ctx.drawImage(image, petX, petY, image.width, image.height);
+		canvas.drawItemIDSprite({
+			itemID: userPet,
+			x: petX,
+			y: petY
+		});
 	}
 
 	if (!userBg.transparent) canvas.drawBorder(bgSprite, false);

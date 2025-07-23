@@ -11,6 +11,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, getItem, toKMB } from 'oldschooljs';
 
+import { GeImageGenerator } from '@/lib/geImage';
 import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
@@ -367,8 +368,10 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				take: 5
 			});
 
-			const image = await geImageGenerator.createInterface({
-				user,
+			const slots = await GrandExchange.calculateSlotsOfUser(user);
+			const image = await GeImageGenerator.createInterface({
+				maxSlots: slots.maxPossible,
+				slotsUsed: slots.slots,
 				page: options.my_listings.page ?? 1,
 				activeListings
 			});

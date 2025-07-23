@@ -35,3 +35,5 @@ export function makeGearBank({ bank }: { bank?: Bank } = {}) {
 }
 
 export const mockUserMap = new Map<string, MUser>();
+
+export const baseSnapshotPath = `tests/unit/snapshots/${__BOT_TYPE__.toLowerCase()}/`;

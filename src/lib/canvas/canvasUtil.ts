@@ -1,5 +1,11 @@
 import { readFile } from 'node:fs/promises';
-import { CanvasRenderingContext2D as CanvasContext, FontLibrary, Image, Canvas as RawCanvas } from 'skia-canvas';
+import {
+	CanvasRenderingContext2D as CanvasContext,
+	FontLibrary,
+	Image,
+	Canvas as RawCanvas,
+	loadImage
+} from 'skia-canvas';
 
 import { assert } from '../util/logError';
 
@@ -14,16 +20,6 @@ export type Canvas = ReturnType<typeof createCanvas>;
 
 export const CanvasImage = Image;
 export type CanvasImage = Image;
-
-export async function loadImage(_buffer: Buffer | string): Promise<CanvasImage> {
-	const buffer = typeof _buffer === 'string' ? await readFile(_buffer) : _buffer;
-	return new Promise<CanvasImage>((resolve, reject) => {
-		const image = new CanvasImage();
-		image.onload = () => resolve(image as CanvasImage);
-		image.onerror = e => reject(e);
-		image.src = buffer;
-	});
-}
 
 export { CanvasContext };
 
@@ -44,20 +40,59 @@ export function drawImageWithOutline(
 	dw: number,
 	dh: number
 ): void {
-	const alpha = 0.5;
+	const alpha = 1;
 	const outlineColor = '#ac7fff';
 	const outlineWidth = 1;
 	const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1];
-	const purplecanvas = createCanvas(image.width + (outlineWidth + 2), image.height + (outlineWidth + 2));
-	const pctx = purplecanvas.getContext('2d');
-	for (let i = 0; i < dArr.length; i += 2) pctx.drawImage(image, dArr[i] * outlineWidth, dArr[i + 1] * outlineWidth);
-	pctx.globalAlpha = alpha;
-	pctx.globalCompositeOperation = 'source-in';
-	pctx.fillStyle = outlineColor;
-	pctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-	pctx.globalCompositeOperation = 'source-over';
-	ctx.drawImage(pctx.canvas, sx, sy, sw, sh, dx, dy, dw + (outlineWidth + 2), dh + (outlineWidth + 2));
+
+	// Create canvas larger by outline width on all sides
+	const padding = outlineWidth;
+	const outlineCanvas = createCanvas(sw + padding * 2, sh + padding * 2);
+	const octx = outlineCanvas.getContext('2d');
+
+	// Draw the image 8 times in different directions to create outline
+	for (let i = 0; i < dArr.length; i += 2) {
+		octx.drawImage(
+			image,
+			// Source coordinates from original image
+			sx,
+			sy,
+			sw,
+			sh,
+			// Offset by padding + outline direction
+			padding + dArr[i] * outlineWidth,
+			padding + dArr[i + 1] * outlineWidth,
+			sw,
+			sh
+		);
+	}
+
+	// Apply outline color
+	octx.globalAlpha = alpha;
+	octx.globalCompositeOperation = 'source-in';
+	octx.fillStyle = outlineColor;
+	octx.fillRect(0, 0, outlineCanvas.width, outlineCanvas.height);
+
+	// Draw outline to main canvas (offset by outline width)
+	ctx.drawImage(
+		outlineCanvas,
+		0,
+		0,
+		outlineCanvas.width,
+		outlineCanvas.height,
+		dx - padding,
+		dy - padding,
+		dw + padding * 2,
+		dh + padding * 2
+	);
+
+	// Draw original image on top
 	ctx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+}
+
+export function calcAspectRatioFit(srcWidth: number, srcHeight: number, maxWidth: number, maxHeight: number) {
+	const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+	return { width: srcWidth * ratio, height: srcHeight * ratio };
 }
 
 function printMultilineText(ctx: CanvasContext, text: string, x: number, y: number) {

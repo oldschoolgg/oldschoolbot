@@ -2,17 +2,18 @@ import * as fs from 'node:fs';
 import path from 'node:path';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { objectEntries, randInt } from 'e';
+import { loadImage } from 'skia-canvas';
 
-import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
+import { OSRSCanvas } from './canvas/OSRSCanvas';
 import {
 	type Canvas,
 	type CanvasContext,
 	type CanvasImage,
 	canvasToBuffer,
 	createCanvas,
-	loadAndCacheLocalImage,
-	loadImage
-} from './util/canvasUtil';
+	loadAndCacheLocalImage
+} from './canvas/canvasUtil';
+import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
@@ -108,7 +109,7 @@ class PoHImage {
 					const mY = y - height / 2;
 					ctx.drawImage(mount, mX, mY, width, height);
 					if (hasCustomItem) {
-						const image = await bankImageGenerator.getItemImage(id);
+						const image = await OSRSCanvas.getItemImage({ itemID: id });
 						const h = image.height * 0.8;
 						const w = image.width * 0.8;
 						ctx.drawImage(image, mX + (mount.width - w) / 2, mY + (mount.height - h) / 2, w, h);
