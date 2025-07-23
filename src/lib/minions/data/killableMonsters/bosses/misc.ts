@@ -915,6 +915,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Amoxliatl,
 		requiredQuests: [QuestID.TheHeartofDarkness],
 		qpRequired: 100,
+		difficultyRating: 4,
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99
