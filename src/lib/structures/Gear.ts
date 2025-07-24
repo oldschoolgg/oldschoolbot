@@ -409,6 +409,14 @@ export class Gear {
 		return new Gear(newGear);
 	}
 
+	static fromList(items: (EGear | string)[]): Gear {
+		const gear = new Gear();
+		for (const item of items) {
+			gear.equip(item, 1);
+		}
+		return gear;
+	}
+
 	raw(): GearSetup {
 		return {
 			ammo: this.ammo,

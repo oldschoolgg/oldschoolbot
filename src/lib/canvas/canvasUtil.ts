@@ -7,7 +7,9 @@ import {
 	loadImage
 } from 'skia-canvas';
 
+import type { DetailedFarmingContract } from '../minions/farming/types';
 import { assert } from '../util/logError';
+import type { IconPackID } from './iconPacks';
 
 export function registerFont(fontFamily: string, fontPath: string) {
 	FontLibrary.use(fontFamily, fontPath);
@@ -176,3 +178,10 @@ export async function loadAndCacheLocalImage(path: string) {
 	const image = await loadImage(buff);
 	return image;
 }
+
+export type BaseCanvasArgs = {
+	iconPackId?: IconPackID | null;
+	bankBackgroundId?: number | null;
+	bankBgHexColor?: string | null;
+	farmingContract?: DetailedFarmingContract | null;
+};

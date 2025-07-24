@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
-import path from 'node:path';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export const STATIC_DEFINE = {
-	__BOT_TYPE__: existsSync(path.resolve(import.meta.dirname, './src/lib/bso')) ? '"BSO"' : '"OSB"'
+	__BOT_TYPE__: existsSync(path.resolve(dirname(fileURLToPath(import.meta.url)), './src/lib/bso')) ? '"BSO"' : '"OSB"'
 };

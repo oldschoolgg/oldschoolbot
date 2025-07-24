@@ -11,7 +11,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, getItem, toKMB } from 'oldschooljs';
 
-import { GeImageGenerator } from '@/lib/geImage';
+import { GeImageGenerator } from '@/lib/canvas/geImage';
 import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';

@@ -3,13 +3,13 @@ import deepEqual from 'fast-deep-equal';
 import { Bank, Monsters } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
+import { pohImageGenerator } from '@/lib/canvas/pohImage';
 import { Minigames } from '@/lib/settings/minigames';
 import type { MUserStats } from '@/lib/structures/MUserStats';
 import { MUserClass } from '../../src/lib/MUser';
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { BOT_TYPE } from '../../src/lib/constants';
-import { pohImageGenerator } from '../../src/lib/pohImage';
 import { type ChartOptions, createApexChartConfig, createChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';

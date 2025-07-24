@@ -4,9 +4,9 @@ import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Items } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
-import type { GEListingWithTransactions } from './../mahoji/commands/ge';
-import { CanvasSpritesheet } from './canvas/CanvasSpritesheet';
-import { OSRSCanvas } from './canvas/OSRSCanvas';
+import type { GEListingWithTransactions } from '../../mahoji/commands/ge';
+import { CanvasSpritesheet } from './CanvasSpritesheet';
+import { OSRSCanvas } from './OSRSCanvas';
 
 class GeImageGeneratorSingleton {
 	public geInterface: Canvas | null = null;
@@ -57,7 +57,7 @@ class GeImageGeneratorSingleton {
 		// Draw item
 		ctx.save();
 		ctx.translate(8, 34);
-		canvas.drawItemIDSprite({
+		await canvas.drawItemIDSprite({
 			itemID: listing.item_id,
 			x: 8,
 			y: 34,
@@ -183,4 +183,3 @@ class GeImageGeneratorSingleton {
 }
 
 export const GeImageGenerator = new GeImageGeneratorSingleton();
-GeImageGenerator.init();

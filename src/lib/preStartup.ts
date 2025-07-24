@@ -3,6 +3,7 @@ import { noOp, uniqueArr } from 'e';
 import { syncCustomPrices } from '../mahoji/lib/events';
 import { cacheBadges } from './badges';
 import { syncBlacklists } from './blacklists';
+import { GeImageGenerator } from './canvas/geImage';
 import { globalConfig } from './constants';
 import { allCollectionLogsFlat } from './data/Collections.js';
 import { GrandExchange } from './grandExchange';
@@ -31,6 +32,8 @@ async function syncCollectionLogSlotTable() {
 }
 
 export const preStartup = logWrapFn('PreStartup', async () => {
+	await GeImageGenerator.init();
+
 	await Promise.all([
 		prisma.clientStorage.upsert({
 			where: { id: globalConfig.clientID },

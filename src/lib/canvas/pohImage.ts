@@ -4,7 +4,8 @@ import type { PlayerOwnedHouse } from '@prisma/client';
 import { objectEntries, randInt } from 'e';
 import { loadImage } from 'skia-canvas';
 
-import { OSRSCanvas } from './canvas/OSRSCanvas';
+import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../poh';
+import { OSRSCanvas } from './OSRSCanvas';
 import {
 	type Canvas,
 	type CanvasContext,
@@ -12,8 +13,7 @@ import {
 	canvasToBuffer,
 	createCanvas,
 	loadAndCacheLocalImage
-} from './canvas/canvasUtil';
-import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
+} from './canvasUtil';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [

@@ -99,7 +99,10 @@ class CollectionLogTask {
 		collectionLog?: IToReturnCollection;
 		minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 	}): Promise<CommandResponse> {
-		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
+		const { sprite } = bankImageGenerator.getBgAndSprite({
+			bankBackgroundId: options.user.user.bankBackground,
+			farmingContract: options.user.farmingContract()
+		});
 
 		if (options.flags.temp) {
 			options.type = 'temp';
@@ -264,23 +267,7 @@ class CollectionLogTask {
 
 			totalPrice += (Items.getOrThrow(item).price ?? 0) * qtyText;
 
-			// ctx.drawImage(
-			// 	itemImage,
-			// 	Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 4,
-			// 	Math.floor(y * (itemSize + itemSpacer) + (itemSize - itemImage.height) / 2),
-			// 	itemImage.width,
-			// 	itemImage.height
-			// );
-
-			// if (qtyText > 0) {
-			// 	canvas.drawText({
-			// 		text: formatItemStackQuantity(qtyText),
-			// 		x: Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 1,
-			// 		y: Math.floor(y * (itemSize + itemSpacer)) + 11,
-			// 		color: generateHexColorForCashStack(qtyText)
-			// 	});
-			// }
-			canvas.drawItemIDSprite({
+			await canvas.drawItemIDSprite({
 				itemID: item,
 				x: Math.floor(i * (itemSize + itemSpacer)) + 1,
 				y: Math.floor(y * (itemSize + itemSpacer)) + 1,

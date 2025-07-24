@@ -15,8 +15,14 @@ import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { type BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { OSRSCanvas } from './canvas/OSRSCanvas';
-import { type Canvas, CanvasImage, canvasToBuffer, createCanvas, getClippedRegion } from './canvas/canvasUtil';
-import type { IconPackID } from './canvas/iconPacks';
+import {
+	type BaseCanvasArgs,
+	type Canvas,
+	CanvasImage,
+	canvasToBuffer,
+	createCanvas,
+	getClippedRegion
+} from './canvas/canvasUtil';
 import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
 
@@ -302,21 +308,20 @@ export class BankImageTask {
 		);
 	}
 
-	getBgAndSprite(bankBgId = 1, user?: MUser) {
-		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
+	getBgAndSprite({ bankBackgroundId, farmingContract }: BaseCanvasArgs = {}) {
+		const background = this.backgroundImages.find(i => i.id === bankBackgroundId) ?? this.backgroundImages[0];
 
-		const currentContract = user?.farmingContract();
 		const isFarmingContractReadyToHarvest = Boolean(
-			currentContract?.contract.hasContract &&
-				currentContract.matchingPlantedCrop &&
-				currentContract.matchingPlantedCrop.ready
+			farmingContract?.contract.hasContract &&
+				farmingContract.matchingPlantedCrop &&
+				farmingContract.matchingPlantedCrop.ready
 		);
 
 		let backgroundImage = background.image!;
-		if (bankBgId === 29 && isFarmingContractReadyToHarvest) {
+		if (bankBackgroundId === 29 && isFarmingContractReadyToHarvest) {
 			backgroundImage = this.alternateImages.find(i => i.bgId === 29)!.image;
 		}
-		if (bankBgId === 30 && isFarmingContractReadyToHarvest) {
+		if (bankBackgroundId === 30 && isFarmingContractReadyToHarvest) {
 			backgroundImage = this.alternateImages.find(i => i.bgId === 30)!.image;
 		}
 
@@ -403,16 +408,17 @@ export class BankImageTask {
 		}
 	}
 
-	async generateBankImage(opts: {
-		bank: Bank;
-		title?: string;
-		showValue?: boolean;
-		flags?: Flags;
-		user?: MUser;
-		collectionLog?: Bank;
-		mahojiFlags?: BankFlag[];
-		iconPackId?: IconPackID;
-	}): Promise<BankImageResult> {
+	async generateBankImage(
+		opts: {
+			bank: Bank;
+			title?: string;
+			showValue?: boolean;
+			flags?: Flags;
+			user?: MUser;
+			collectionLog?: Bank;
+			mahojiFlags?: BankFlag[];
+		} & BaseCanvasArgs
+	): Promise<BankImageResult> {
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));
@@ -515,7 +521,7 @@ export class BankImageTask {
 			uniqueSprite: hasBgSprite,
 			background: bgImage,
 			backgroundImage
-		} = this.getBgAndSprite(bankBackgroundID, user);
+		} = this.getBgAndSprite({ ...opts, bankBackgroundId: bankBackgroundID });
 
 		const isTransparent = Boolean(bgImage.transparent);
 
@@ -679,7 +685,7 @@ export async function drawChestLootImage(options: {
 	let anyoneGotPurple = false;
 
 	for (const { previousCL, loot, user, customTexts } of options.entries) {
-		const { sprite } = bankImageGenerator.getBgAndSprite();
+		const { sprite } = bankImageGenerator.getBgAndSprite({ bankBackgroundId: user.user.bankBackground });
 		const canvas = new OSRSCanvas({ width: type.width, height: type.height, sprite, iconPackId: user.iconPackId });
 		const ctx = canvas.ctx;
 
