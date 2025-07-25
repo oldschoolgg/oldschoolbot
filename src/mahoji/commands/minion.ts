@@ -8,6 +8,7 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
 import { convertLVLtoXP } from 'oldschooljs';
 
+import { bankImageTask } from '@/lib/canvas/bankImage';
 import { getPeakTimesString } from '@/lib/util/peaks';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
@@ -185,7 +186,7 @@ export const minionCommand: OSBMahojiCommand = {
 					autocomplete: async (value, user) => {
 						const mUser = await mUserFetch(user.id);
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
-						const bankImages = bankImageGenerator.backgroundImages;
+						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
 							.filter(bg => bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField))
 							.map(bg => bg.id);

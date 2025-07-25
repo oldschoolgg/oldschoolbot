@@ -13,7 +13,7 @@ interface TransmogItem {
 export const transmogItems: TransmogItem[] = [
 	{
 		item: Items.getOrThrow('Banana'),
-		image: fsPromises.readFile('./src/lib/resources/images/minimus.png').then(loadImage),
+		image: fsPromises.readFile('./src/lib/resources/images/chat_heads/minimus.png').then(loadImage),
 		maxHeight: 170
 	}
 ];

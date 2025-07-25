@@ -56,7 +56,7 @@ describe('GE Images', async () => {
 			{
 				item_id: EItem.ELYSIAN_SPIRIT_SHIELD,
 				type: GEListingType.Sell,
-				quantity_remaining: 100,
+				quantity_remaining: 602,
 				total_quantity: 1001,
 				asking_price_per_item: 10000
 			},

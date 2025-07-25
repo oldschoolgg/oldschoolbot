@@ -2,11 +2,12 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EquipmentSlot } from 'oldschooljs';
 
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
-import { gearImages, transmogItems } from '../gear/functions/gearImageData';
 import type { GearSetup, GearSetupType } from '../gear/types';
 import { GearSetupTypes } from '../gear/types';
 import { type Gear, maxDefenceStats, maxOffenceStats } from '../structures/Gear';
+import { bankImageTask } from './bankImage';
 import { type BaseCanvasArgs, calcAspectRatioFit } from './canvasUtil';
+import { gearImages, transmogItems } from './gearImageData';
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -84,6 +85,145 @@ function drawText({
 	}
 }
 
+interface StatGroup {
+	title: string;
+	stats: Array<{
+		label: string;
+		statKey: string;
+		value: number | string;
+		checkMax?: boolean;
+	}>;
+}
+
+function isMaxStat(statKey: string, value: number): boolean {
+	const maxStats = { ...maxOffenceStats, ...maxDefenceStats };
+	return maxStats[statKey as keyof typeof maxStats] === value;
+}
+
+function drawGearStats(canvas: OSRSCanvas, gearStats: any) {
+	// Define stat groups with their data
+	const attackStats: StatGroup = {
+		title: 'Attack bonus',
+		stats: [
+			{ label: 'Stab', statKey: 'attack_stab', value: gearStats.attack_stab, checkMax: true },
+			{ label: 'Slash', statKey: 'attack_slash', value: gearStats.attack_slash, checkMax: true },
+			{ label: 'Crush', statKey: 'attack_crush', value: gearStats.attack_crush, checkMax: true },
+			{ label: 'Ranged', statKey: 'attack_ranged', value: gearStats.attack_ranged, checkMax: true },
+			{ label: 'Magic', statKey: 'attack_magic', value: gearStats.attack_magic, checkMax: true }
+		]
+	};
+
+	const defenseStats: StatGroup = {
+		title: 'Defence bonus',
+		stats: [
+			{ label: 'Stab', statKey: 'defence_stab', value: gearStats.defence_stab, checkMax: true },
+			{ label: 'Slash', statKey: 'defence_slash', value: gearStats.defence_slash, checkMax: true },
+			{ label: 'Crush', statKey: 'defence_crush', value: gearStats.defence_crush, checkMax: true },
+			{ label: 'Ranged', statKey: 'defence_ranged', value: gearStats.defence_ranged, checkMax: true },
+			{ label: 'Magic', statKey: 'defence_magic', value: gearStats.defence_magic, checkMax: true }
+		]
+	};
+
+	const otherStats = [
+		{ label: 'Melee Str.', statKey: 'melee_strength', value: gearStats.melee_strength, checkMax: false },
+		{ label: 'Ranged Str.', statKey: 'ranged_strength', value: gearStats.ranged_strength, checkMax: false },
+		{
+			label: 'Magic Dmg.',
+			statKey: 'magic_damage',
+			value: `${gearStats.magic_damage.toFixed(1)}%`,
+			checkMax: false
+		},
+		{ label: 'Prayer', statKey: 'prayer', value: gearStats.prayer, checkMax: false }
+	];
+
+	// Helper function to draw a stat group
+	function drawStatGroup(statGroup: StatGroup, x: number, align: 'start' | 'end') {
+		canvas.ctx.save();
+		canvas.ctx.translate(x, 0);
+		canvas.ctx.textAlign = align;
+
+		// Draw title
+		canvas.ctx.font = '16px RuneScape Bold 12';
+		drawText({ canvas, text: statGroup.title, x: 0, y: 25 });
+
+		// Draw stats
+		canvas.ctx.font = '16px OSRSFontCompact';
+		for (const [index, stat] of statGroup.stats.entries()) {
+			const y = 50 + index * 18;
+			const isMax = stat.checkMax && typeof stat.value === 'number' ? isMaxStat(stat.statKey, stat.value) : false;
+
+			drawText({
+				canvas,
+				text: `${stat.label}: ${stat.value}`,
+				x: 0,
+				y,
+				maxStat: isMax
+			});
+		}
+
+		canvas.ctx.restore();
+	}
+
+	// Draw attack stats (left side)
+	drawStatGroup(attackStats, 225, 'start');
+
+	// Draw defense stats (right side)
+	drawStatGroup(defenseStats, canvas.width - 12, 'end');
+
+	// Draw "Others" section
+	canvas.drawText({
+		text: 'Others',
+		x: 210 + Math.floor(232 / 2),
+		y: 140,
+		font: 'Bold',
+		color: '#ff981f',
+		center: true
+	});
+
+	// Draw other stats (split between left and right)
+	canvas.ctx.save();
+	canvas.ctx.translate(225, 0);
+	canvas.ctx.font = '16px OSRSFontCompact';
+	canvas.ctx.textAlign = 'start';
+
+	// Left side other stats
+	for (const [index, stat] of otherStats.slice(0, 2).entries()) {
+		const y = 165 + index * 18;
+		const isMax = stat.checkMax && typeof stat.value === 'number' ? isMaxStat(stat.statKey, stat.value) : false;
+
+		drawText({
+			canvas,
+			text: `${stat.label}: ${stat.value}`,
+			x: 0,
+			y,
+			maxStat: isMax
+		});
+	}
+
+	canvas.ctx.restore();
+
+	canvas.ctx.save();
+	canvas.ctx.translate(canvas.width - 12, 0);
+	canvas.ctx.font = '16px OSRSFontCompact';
+	canvas.ctx.textAlign = 'end';
+
+	// Right side other stats
+	for (const [index, stat] of otherStats.slice(2).entries()) {
+		const y = 165 + index * 18;
+		const isMax = stat.checkMax && typeof stat.value === 'number' ? isMaxStat(stat.statKey, stat.value) : false;
+
+		drawText({
+			canvas,
+			text: `${stat.label}: ${stat.value}`,
+			x: 0,
+			y,
+			maxStat: isMax
+		});
+	}
+
+	canvas.ctx.restore();
+}
+
 export async function generateGearImage({
 	gearSetup,
 	petID,
@@ -96,14 +236,14 @@ export async function generateGearImage({
 }: {
 	gearSetup: Gear;
 	gearType: GearSetupType | null | undefined;
-	petID: number | null;
+	petID?: number | null;
 	gearTemplate?: number;
 } & BaseCanvasArgs) {
 	const {
 		sprite,
 		uniqueSprite,
 		background: userBgImage
-	} = bankImageGenerator.getBgAndSprite({ bankBackgroundId, farmingContract });
+	} = bankImageTask.getBgAndSprite({ bankBackgroundId, farmingContract });
 
 	const gearStats = gearSetup.stats;
 	const gearTemplateImage = await gearImages[gearTemplate].template;
@@ -115,6 +255,7 @@ export async function generateGearImage({
 	});
 	const ctx = canvas.ctx;
 
+	// Set background
 	ctx.fillStyle = userBgImage.transparent
 		? bankBgHexColor
 			? bankBgHexColor
@@ -122,6 +263,7 @@ export async function generateGearImage({
 		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+	// Draw background image if not unique sprite
 	if (!uniqueSprite) {
 		ctx.drawImage(
 			userBgImage.image!,
@@ -129,11 +271,13 @@ export async function generateGearImage({
 			(canvas.height - userBgImage.image!.height) * 0.5
 		);
 	}
-	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 
+	drawGearStats(canvas, gearStats);
+
+	// Draw border if background is not transparent
 	if (!userBgImage.transparent) canvas.drawBorder(sprite, false);
 
-	// Draw transmog
+	// Check for transmog item and draw it (early return if found)
 	const transmogItem = transmogItems.find(t => gearSetup.hasEquipped(t.item.id)) ?? null;
 	const transMogImage = transmogItem === null ? null : await transmogItem.image;
 	if (transMogImage) {
@@ -147,9 +291,13 @@ export async function generateGearImage({
 
 		const y = gearTemplateImage.height * 0.9 - altSize.height;
 		ctx.drawImage(transMogImage, maxWidth / 2 - altSize.width / 2, y, altSize.width, altSize.height);
+		return canvas.toScaledOutput(2);
 	}
 
-	// Draw preset title
+	// Draw gear template
+	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
+
+	// Draw gear type title
 	if (gearType) {
 		canvas.drawTitleText({
 			text: toTitleCase(gearType),
@@ -159,115 +307,7 @@ export async function generateGearImage({
 		});
 	}
 
-	// Draw stats
-	ctx.save();
-	ctx.translate(225, 0);
-	ctx.font = '16px RuneScape Bold 12';
-	drawText({ canvas, text: 'Attack bonus', x: 0, y: 25 });
-	ctx.font = '16px OSRSFontCompact';
-	drawText({
-		canvas,
-		text: `Stab: ${gearStats.attack_stab}`,
-		x: 0,
-		y: 50,
-		maxStat: maxOffenceStats.attack_stab === gearStats.attack_stab
-	});
-	drawText({
-		canvas,
-		text: `Slash: ${gearStats.attack_slash}`,
-		x: 0,
-		y: 68,
-		maxStat: maxOffenceStats.attack_slash === gearStats.attack_slash
-	});
-	drawText({
-		canvas,
-		text: `Crush: ${gearStats.attack_crush}`,
-		x: 0,
-		y: 86,
-		maxStat: maxOffenceStats.attack_crush === gearStats.attack_crush
-	});
-	drawText({
-		canvas,
-		text: `Ranged: ${gearStats.attack_ranged}`,
-		x: 0,
-		y: 104,
-		maxStat: maxOffenceStats.attack_ranged === gearStats.attack_ranged
-	});
-	drawText({
-		canvas,
-		text: `Magic: ${gearStats.attack_magic}`,
-		x: 0,
-		y: 122,
-		maxStat: maxOffenceStats.attack_magic === gearStats.attack_magic
-	});
-	ctx.restore();
-	ctx.save();
-	ctx.translate(canvas.width - 6 * 2, 0);
-	ctx.font = '16px RuneScape Bold 12';
-	ctx.textAlign = 'end';
-	drawText({ canvas, text: 'Defence bonus', x: 0, y: 25 });
-	ctx.font = '16px OSRSFontCompact';
-	drawText({
-		canvas,
-		text: `Stab: ${gearStats.defence_stab}`,
-		x: 0,
-		y: 50,
-		maxStat: maxDefenceStats.defence_stab === gearStats.defence_stab
-	});
-	drawText({
-		canvas,
-		text: `Slash: ${gearStats.defence_slash}`,
-		x: 0,
-		y: 68,
-		maxStat: maxDefenceStats.defence_slash === gearStats.defence_slash
-	});
-	drawText({
-		canvas,
-		text: `Crush: ${gearStats.defence_crush}`,
-		x: 0,
-		y: 86,
-		maxStat: maxDefenceStats.defence_crush === gearStats.defence_crush
-	});
-	drawText({
-		canvas,
-		text: `Ranged: ${gearStats.defence_ranged}`,
-		x: 0,
-		y: 104,
-		maxStat: maxDefenceStats.defence_ranged === gearStats.defence_ranged
-	});
-	drawText({
-		canvas,
-		text: `Magic: ${gearStats.defence_magic}`,
-		x: 0,
-		y: 122,
-		maxStat: maxDefenceStats.defence_magic === gearStats.defence_magic
-	});
-	ctx.restore();
-	canvas.drawText({
-		text: 'Others',
-		x: 210 + Math.floor(232 / 2),
-		y: 140,
-		font: 'Bold',
-		color: '#ff981f',
-		center: true
-	});
-	ctx.save();
-	ctx.translate(225, 0);
-	ctx.font = '16px OSRSFontCompact';
-	ctx.textAlign = 'start';
-	drawText({ canvas, text: `Melee Str.: ${gearStats.melee_strength}`, x: 0, y: 165, maxStat: false });
-	drawText({ canvas, text: `Ranged Str.: ${gearStats.ranged_strength}`, x: 0, y: 183, maxStat: false });
-	// drawText({ canvas, text: `Undead: ${(0).toFixed(1)} %`, x: 0, y: 201, maxStat: false });
-	ctx.restore();
-	ctx.save();
-	ctx.translate(canvas.width - 6 * 2, 0);
-	ctx.font = '16px OSRSFontCompact';
-	ctx.textAlign = 'end';
-	drawText({ canvas, text: `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, x: 0, y: 165, maxStat: false });
-	drawText({ canvas, text: `Prayer: ${gearStats.prayer}`, x: 0, y: 183, maxStat: false });
-	ctx.restore();
-
-	// Draw items
+	// Draw pet
 	if (petID) {
 		await canvas.drawItemIDSprite({
 			itemID: petID,
@@ -276,6 +316,7 @@ export async function generateGearImage({
 		});
 	}
 
+	// Draw equipped items
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
@@ -308,7 +349,7 @@ export async function generateAllGearImage({
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
-	} = bankImageGenerator.getBgAndSprite({ farmingContract, bankBackgroundId });
+	} = bankImageTask.getBgAndSprite({ farmingContract, bankBackgroundId });
 
 	const gearTemplateImage = await gearImages[gearTemplate].templateCompact;
 	const width = (gearTemplateImage.width + 10) * 4 + 20;
@@ -371,7 +412,7 @@ export async function generateAllGearImage({
 				itemID: item.item,
 				x,
 				y,
-				quantity: item.quantity
+				quantity: item.quantity === 1 ? undefined : item.quantity
 			});
 		}
 		i++;

@@ -55,8 +55,6 @@ class GeImageGeneratorSingleton {
 		if (!listing) return;
 
 		// Draw item
-		ctx.save();
-		ctx.translate(8, 34);
 		await canvas.drawItemIDSprite({
 			itemID: listing.item_id,
 			x: 8,
@@ -73,16 +71,14 @@ class GeImageGeneratorSingleton {
 		});
 
 		// Draw item name
-		ctx.translate(39, 11);
 		canvas.drawText({
 			text: Items.itemNameFromId(listing.item_id)!,
-			x: 0,
-			y: 0,
+			x: 8 + 39,
+			y: 34 + 11,
 			color: '#FFB83F',
 			maxWidth: ctx.measureText('Elysian spirit').width,
 			lineHeight: 10
 		});
-		ctx.restore();
 
 		// Draw item value of the transaction
 		ctx.save();

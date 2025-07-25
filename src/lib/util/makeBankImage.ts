@@ -1,6 +1,6 @@
 import type { Bank } from 'oldschooljs';
 
-import type { BankFlag } from '../bankImage';
+import { type BankFlag, bankImageTask } from '../canvas/bankImage';
 import type { IconPackID } from '../canvas/iconPacks';
 import type { Flags } from '../minions/types';
 
@@ -33,7 +33,7 @@ export async function makeBankImage({
 	const realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
 
-	const { image } = await bankImageGenerator.generateBankImage({
+	const { image } = await bankImageTask.generateBankImage({
 		bank,
 		title,
 		showValue: true,

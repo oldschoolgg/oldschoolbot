@@ -11,9 +11,9 @@ import {
 	loadImage
 } from 'skia-canvas';
 
-import type { IBgSprite } from '../bankImage';
 import { CanvasModule } from './CanvasModule';
 import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet';
+import type { IBgSprite } from './bankImage';
 import { type CanvasImage, drawImageWithOutline, getClippedRegion } from './canvasUtil';
 import { type IconPackID, ItemIconPacks } from './iconPacks';
 
@@ -69,7 +69,7 @@ export class OSRSCanvas {
 		height,
 		sprite,
 		iconPackId
-	}: { width: number; height: number; sprite?: IBgSprite; iconPackId?: IconPackID | null }) {
+	}: { width: number; height: number; sprite?: IBgSprite | undefined | null; iconPackId?: IconPackID | null }) {
 		this.canvas = new SkiaCanvas(width, height);
 		this.ctx = this.canvas.getContext('2d');
 		this.ctx.imageSmoothingEnabled = false;

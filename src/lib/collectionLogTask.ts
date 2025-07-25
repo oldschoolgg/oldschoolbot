@@ -4,8 +4,8 @@ import { type Bank, Items, Util } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport';
-import type { IBgSprite } from './bankImage';
 import { OSRSCanvas } from './canvas/OSRSCanvas';
+import { type IBgSprite, bankImageTask } from './canvas/bankImage';
 import type { MUserStats } from './structures/MUserStats';
 
 export const collectionLogTypes = [
@@ -99,7 +99,7 @@ class CollectionLogTask {
 		collectionLog?: IToReturnCollection;
 		minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 	}): Promise<CommandResponse> {
-		const { sprite } = bankImageGenerator.getBgAndSprite({
+		const { sprite } = bankImageTask.getBgAndSprite({
 			bankBackgroundId: options.user.user.bankBackground,
 			farmingContract: options.user.farmingContract()
 		});

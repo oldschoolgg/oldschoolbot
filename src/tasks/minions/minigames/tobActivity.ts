@@ -1,9 +1,9 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit/util';
 import { roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { drawChestLootImage } from '../../../lib/bankImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';

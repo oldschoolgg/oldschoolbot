@@ -2,29 +2,20 @@ import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { cleanString, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
-import { AttachmentBuilder } from 'discord.js';
-import { chunk, randInt, sumArr } from 'e';
-import { Bank, type Item, type ItemBank, ItemGroups, itemID, resolveItems, toKMB } from 'oldschooljs';
+import { chunk, sumArr } from 'e';
+import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
-import { BitField, PerkTier } from '../lib/constants';
-import { allCLItems } from '../lib/data/Collections';
-import { filterableTypes } from '../lib/data/filterables';
-import backgroundImages from '../lib/minions/data/bankBackgrounds';
-import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
-import { type BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
-import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
-import { OSRSCanvas } from './canvas/OSRSCanvas';
-import {
-	type BaseCanvasArgs,
-	type Canvas,
-	CanvasImage,
-	canvasToBuffer,
-	createCanvas,
-	getClippedRegion
-} from './canvas/canvasUtil';
-import { TOBUniques } from './data/tob';
-import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
+import { XPLamps } from '../../mahoji/lib/abstracted_commands/lampCommand';
+import { BitField, PerkTier } from '../constants';
+import { allCLItems } from '../data/Collections';
+import { filterableTypes } from '../data/filterables';
+import { marketPriceOfBank, marketPriceOrBotPrice } from '../marketPrices';
+import backgroundImages from '../minions/data/bankBackgrounds';
+import type { BankBackground, FlagMap, Flags } from '../minions/types';
+import { type BankSortMethod, BankSortMethods, sorts } from '../sorts';
+import { OSRSCanvas } from './OSRSCanvas';
+import { type BaseCanvasArgs, type Canvas, CanvasImage, getClippedRegion } from './canvasUtil';
 
 interface BankImageResult {
 	image: Buffer;
@@ -608,161 +599,4 @@ export class BankImageTask {
 	}
 }
 
-const chestLootTypes = [
-	{
-		title: 'Tombs of Amascut',
-		chestImage: loadImage('./src/lib/resources/images/toaChest.png'),
-		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
-		width: 240,
-		height: 220,
-		purpleItems: ItemGroups.toaPurpleItems,
-		position: (canvas: Canvas | OSRSCanvas, image: CanvasImage) => [
-			canvas.width - image.width + 25,
-			44 + canvas.height / 4 - image.height / 2
-		],
-		itemRect: [21, 50, 120, 160]
-	},
-	{
-		title: 'Theatre of Blood',
-		chestImage: loadImage('./src/lib/resources/images/tobChest.png'),
-		chestImagePurple: loadImage('./src/lib/resources/images/tobChestPurple.png'),
-		width: 260,
-		height: 180,
-		purpleItems: TOBUniques,
-		position: (canvas: Canvas | OSRSCanvas, image: CanvasImage) => [
-			canvas.width - image.width,
-			55 + canvas.height / 4 - image.height / 2
-		],
-		itemRect: [21, 50, 120, 160]
-	},
-	{
-		title: 'Chambers of Xerician',
-		chestImage: loadImage('./src/lib/resources/images/cox.png'),
-		chestImagePurple: loadImage('./src/lib/resources/images/cox.png'),
-		width: 260,
-		height: 180,
-		purpleItems: resolveItems([
-			'Metamorphic dust',
-			'Twisted ancestral colour kit',
-			"Xeric's guard",
-			"Xeric's warrior",
-			"Xeric's sentinel",
-			"Xeric's general",
-			"Xeric's champion",
-			'Olmlet',
-			'Twisted bow',
-			'Elder maul',
-			'Kodai insignia',
-			'Dragon claws',
-			'Ancestral hat',
-			'Ancestral robe top',
-			'Ancestral robe bottom',
-			"Dinh's bulwark",
-			'Dexterous prayer scroll',
-			'Arcane prayer scroll',
-			'Dragon hunter crossbow',
-			'Twisted buckler'
-		]),
-		position: () => [12, 44],
-		itemRect: [135, 45, 120, 120]
-	}
-] as const;
-
-interface CustomText {
-	x: number;
-	y: number;
-	text: string;
-}
-export async function drawChestLootImage(options: {
-	entries: { previousCL: Bank; user: MUser; loot: Bank; customTexts: CustomText[] }[];
-	type: (typeof chestLootTypes)[number]['title'];
-}) {
-	const type = chestLootTypes.find(t => t.title === options.type);
-	if (!type) throw new Error(`Invalid chest type: ${options.type}`);
-
-	const canvases: OSRSCanvas[] = [];
-
-	let anyoneGotPurple = false;
-
-	for (const { previousCL, loot, user, customTexts } of options.entries) {
-		const { sprite } = bankImageGenerator.getBgAndSprite({ bankBackgroundId: user.user.bankBackground });
-		const canvas = new OSRSCanvas({ width: type.width, height: type.height, sprite, iconPackId: user.iconPackId });
-		const ctx = canvas.ctx;
-
-		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		const isPurple: boolean = loot.items().some(([item]) => type.purpleItems.includes(item.id));
-		if (isPurple) anyoneGotPurple = true;
-		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
-		const [x, y] = type.position(canvas, image);
-		ctx.drawImage(image, x, y);
-
-		canvas.drawTitleText({
-			text: `${user.rawUsername} (${toKMB(loot.value())})`,
-			x: canvas.width / 2,
-			y: 21,
-			center: true
-		});
-		canvas.drawBorder(sprite, true);
-
-		const xOffset = 10;
-		const yOffset = 45;
-		const [iX, iY, iW, iH] = type.itemRect;
-		const itemCanvas = new OSRSCanvas({ width: iW + xOffset, height: iH + yOffset });
-
-		await bankImageGenerator.drawItems(
-			itemCanvas,
-			false,
-			5,
-			2,
-			55,
-			loot.items(),
-			new Map().set('showNewCL', true),
-			previousCL,
-			undefined,
-			undefined,
-			5,
-			user
-		);
-
-		ctx.drawImage(itemCanvas.getCanvas(), iX - xOffset, iY - yOffset);
-
-		for (const text of customTexts) {
-			canvas.drawText({
-				text: text.text,
-				x: text.x,
-				y: text.y,
-				color: '#FFFF00'
-			});
-		}
-		canvases.push(canvas);
-	}
-
-	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}toaloot-${randInt(1, 1000)}.png`;
-
-	if (canvases.length === 1) {
-		return new AttachmentBuilder(await canvases[0].toScaledOutput(2), {
-			name: fileName
-		});
-	}
-	const spaceBetweenImages = 15;
-	const combinedCanvas = createCanvas(
-		canvases[0].width * canvases.length + spaceBetweenImages * canvases.length,
-		canvases[0].height
-	);
-	const combinedCtx = combinedCanvas.getContext('2d');
-	for (const c of canvases) {
-		const index = canvases.indexOf(c);
-		combinedCtx.drawImage(c.getCanvas(), index * c.width + spaceBetweenImages * index, 0);
-	}
-	return new AttachmentBuilder(await canvasToBuffer(combinedCanvas), {
-		name: fileName
-	});
-}
-
-declare global {
-	var bankImageGenerator: BankImageTask;
-}
-
 export const bankImageTask = new BankImageTask();
-global.bankImageGenerator = bankImageTask;

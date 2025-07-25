@@ -6,8 +6,8 @@ import { chunk } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import { logError, logErrorForInteraction } from '@/lib/util/logError';
-import type { BankFlag } from '../../lib/bankImage';
-import { bankFlags } from '../../lib/bankImage';
+import type { BankFlag } from '../../lib/canvas/bankImage';
+import { bankFlags } from '../../lib/canvas/bankImage';
 import { PerkTier } from '../../lib/constants';
 import type { Flags } from '../../lib/minions/types';
 import type { BankSortMethod } from '../../lib/sorts';
