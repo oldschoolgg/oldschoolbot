@@ -86,8 +86,8 @@ describe('Chest Images', async () => {
 	});
 
 	test('Multiple Users Chest Loot', async () => {
-		const loot1 = new Bank().add('Fang', 1).add('Coins', 30000);
-		const loot2 = new Bank().add('Lightbearer', 1).add('Coins', 45000);
+		const loot1 = new Bank().add('Egg', 1).add('Coins', 30000);
+		const loot2 = new Bank().add('Trout', 1).add('Coins', 45000);
 
 		const previousCL = new Bank();
 
