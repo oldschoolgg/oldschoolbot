@@ -66,8 +66,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3
       node-fetch:
-        specifier: ^2.6.7
-        version: 2.6.7(encoding@0.1.13)
+        specifier: ^2.7.0
+        version: 2.7.0(encoding@0.1.13)
       oldschooljs:
         specifier: workspace:*
         version: link:packages/oldschooljs
@@ -118,7 +118,7 @@ importers:
         specifier: ^3.0.7
         version: 3.0.11
       '@types/node-fetch':
-        specifier: ^2.6.1
+        specifier: ^2.6.12
         version: 2.6.12
       '@vitest/coverage-v8':
         specifier: ^3.2.4
@@ -3671,8 +3671,8 @@ packages:
     resolution: {integrity: sha512-dOal67//nohNgYWb+nWmg5dkFdIwDm8EpeGYMekPMrngV3637lqnX0lbUcCtgibHTz6SEz7DAIjKvKDFYCnO1A==}
     engines: {node: '>=6.0.0'}
 
-  node-fetch@2.6.7:
-    resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
+  node-fetch@2.7.0:
+    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
     engines: {node: 4.x || >=6.0.0}
     peerDependencies:
       encoding: ^0.1.0
@@ -5823,7 +5823,7 @@ snapshots:
       detect-libc: 2.0.3
       https-proxy-agent: 5.0.1
       make-dir: 3.1.0
-      node-fetch: 2.6.7(encoding@0.1.13)
+      node-fetch: 2.7.0(encoding@0.1.13)
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
@@ -8129,7 +8129,7 @@ snapshots:
 
   isomorphic-unfetch@3.1.0(encoding@0.1.13):
     dependencies:
-      node-fetch: 2.6.7(encoding@0.1.13)
+      node-fetch: 2.7.0(encoding@0.1.13)
       unfetch: 4.2.0
     transitivePeerDependencies:
       - encoding
@@ -8969,7 +8969,7 @@ snapshots:
     dependencies:
       uuid: 8.3.2
 
-  node-fetch@2.6.7(encoding@0.1.13):
+  node-fetch@2.7.0(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
     optionalDependencies:
