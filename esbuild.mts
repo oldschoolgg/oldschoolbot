@@ -1,7 +1,11 @@
-import path from 'node:path';
+import { existsSync } from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 
-import { STATIC_DEFINE } from './meta';
+const STATIC_DEFINE = {
+	__BOT_TYPE__: existsSync(path.resolve(dirname(fileURLToPath(import.meta.url)), './src/lib/bso')) ? '"BSO"' : '"OSB"'
+};
 
 const external = [
 	'skia-canvas',

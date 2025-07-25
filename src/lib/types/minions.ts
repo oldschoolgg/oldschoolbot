@@ -6,7 +6,6 @@ import type { SlayerActivityConstants } from '../minions/data/combatConstants';
 import type { IPatchData } from '../minions/farming/types';
 import type { AttackStyles } from '../minions/functions';
 import type { MinigameName } from '../settings/minigames';
-import type { RaidLevel } from '../simulation/toa';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility';
 import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting';
 import type { Peak } from '../util/peaks';
@@ -497,7 +496,7 @@ export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TombsOfAmascut';
 	leader: string;
 	detailedUsers: TOAUser[] | [UserID, Points, RoomIDsDiedAt][][];
-	raidLevel: RaidLevel;
+	raidLevel: number;
 	fakeDuration: number;
 	wipedRoom: null | number | (number | null)[];
 	quantity: number;

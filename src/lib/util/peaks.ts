@@ -1,8 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { time } from 'discord.js';
 import { Time } from 'e';
 
-import { time } from 'discord.js';
 import { SeedableRNG } from './rng';
 
 export interface Peak {

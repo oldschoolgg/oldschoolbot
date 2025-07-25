@@ -37,3 +37,9 @@ export interface FarmingContract {
 
 export const ContractOptions = ['easy', 'medium', 'hard', 'easier'] as const;
 export type ContractOption = (typeof ContractOptions)[number];
+
+export type DetailedFarmingContract = {
+	contract: FarmingContract;
+	plant: Plant | undefined;
+	matchingPlantedCrop: IPatchDataDetailed | undefined;
+};

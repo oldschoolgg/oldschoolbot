@@ -21,6 +21,7 @@ import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { partialUserCache } from './cache';
+import { generateAllGearImage, generateGearImage } from './canvas/generateGearImage';
 import type { IconPackID } from './canvas/iconPacks';
 import { ClueTiers } from './clues/clueTiers';
 import type { CATier } from './combat_achievements/combatAchievements';
@@ -35,7 +36,7 @@ import { marketPriceOfBank } from './marketPrices';
 import backgroundImages from './minions/data/bankBackgrounds';
 import type { CombatOptionsEnum } from './minions/data/combatConstants';
 import { defaultFarmingContract } from './minions/farming';
-import type { FarmingContract } from './minions/farming/types';
+import type { DetailedFarmingContract, FarmingContract } from './minions/farming/types';
 import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
@@ -758,7 +759,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return Boolean(this.user.minion_hasBought);
 	}
 
-	farmingContract() {
+	farmingContract(): DetailedFarmingContract {
 		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
 		const plant = !currentFarmingContract
 			? undefined
@@ -769,6 +770,24 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			plant,
 			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
 		};
+	}
+
+	generateGearImage({ setupType, gearSetup }: { setupType?: GearSetupType | 'all'; gearSetup?: Gear }) {
+		if (setupType === 'all') {
+			return generateAllGearImage({
+				equippedPet: this.user.minion_equippedPet,
+				bankBgHexColor: this.user.bank_bg_hex,
+				iconPackId: this.iconPackId,
+				farmingContract: this.farmingContract(),
+				gear: this.gear
+			});
+		}
+		return generateGearImage({
+			gearSetup: setupType ? this.gear[setupType] : gearSetup!,
+			gearType: setupType,
+			petID: this.user.minion_equippedPet,
+			farmingContract: this.farmingContract()
+		});
 	}
 
 	caPoints(): number {

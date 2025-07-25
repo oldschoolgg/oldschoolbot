@@ -4,7 +4,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { petMessage } from '@/lib/util/displayCluesAndPets';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { roll } from '../../../lib/util/rng';

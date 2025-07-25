@@ -8,7 +8,7 @@ import {
 	createCanvas,
 	loadAndCacheLocalImage,
 	measureTextWidth
-} from '../../lib/util/canvasUtil';
+} from '../../lib/canvas/canvasUtil';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');

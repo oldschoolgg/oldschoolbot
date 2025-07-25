@@ -3,8 +3,8 @@ import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
-import type { PvMMethod } from '../../mahoji/commands/k';
 import { ClueTiers } from '../clues/clueTiers';
+import type { PvMMethod } from '../constants';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { autocompleteMonsters } from '../minions/data/killableMonsters';
 import { runCommand } from '../settings/settings';

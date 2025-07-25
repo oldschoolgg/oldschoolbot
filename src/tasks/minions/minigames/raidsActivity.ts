@@ -3,7 +3,7 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { roll, shuffleArr } from 'e';
 import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
 
-import { drawChestLootImage } from '../../../lib/bankImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { coxCMUniques, coxUniques, createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/lootTrack';

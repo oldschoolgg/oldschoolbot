@@ -5,9 +5,11 @@ import { Time } from 'e';
 import { Bank, Items, convertBankToPerHourStats, resolveItems, toKMB } from 'oldschooljs';
 import { omit } from 'remeda';
 
-import '../src/lib/safeglobals';
+applyStaticDefine();
 
-import type { BitField } from '../src/lib/constants';
+import '../src/lib/safeglobals';
+import { applyStaticDefine } from '../meta';
+import { type BitField, PVM_METHODS } from '../src/lib/constants';
 import { degradeableItems } from '../src/lib/degradeableItems';
 import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
@@ -20,7 +22,6 @@ import { Gear } from '../src/lib/structures/Gear';
 import { GearBank } from '../src/lib/structures/GearBank';
 import { KCBank } from '../src/lib/structures/KCBank';
 import { MUserStats } from '../src/lib/structures/MUserStats';
-import { PVM_METHODS } from '../src/mahoji/commands/k';
 import {
 	type MinionKillReturn,
 	newMinionKillCommand
@@ -33,6 +34,7 @@ const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints',
 function round(int: number) {
 	return Math.round(int / 1000) * 1000;
 }
+
 const slayerUnlocks: SlayerTaskUnlocksEnum[] = [];
 const bank = new Bank();
 for (const item of Items.values()) bank.add(item.id, 1000000);

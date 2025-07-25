@@ -22,8 +22,9 @@ import {
 import { Time, clamp, removeFromArr, uniqueArr } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import { ItemIconPacks } from '@/lib/canvas/iconPacks';
 import { DynamicButtons } from '../../lib/DynamicButtons';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants';
+import { BitField, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
@@ -1133,7 +1134,7 @@ LIMIT 20;
 							name: 'name',
 							description: 'The icon pack you want to use.',
 							required: true,
-							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({
+							choices: ['Default', ...Object.values(ItemIconPacks).map(i => i.name)].map(i => ({
 								name: i,
 								value: i
 							}))
@@ -1215,7 +1216,7 @@ LIMIT 20;
 						return 'Your icon pack is already set to default.';
 					}
 
-					const pack = ItemIconPacks.find(i => i.name === icon_pack.name);
+					const pack = Object.values(ItemIconPacks).find(i => i.name === icon_pack.name);
 					if (!pack) return 'Invalid icon pack.';
 
 					if (!user.user.store_bitfield.includes(pack.storeBitfield)) {
