@@ -43,18 +43,11 @@ function calcMinnowQuantityRange(gearBank: GearBank): [number, number] {
 	return [10, 10];
 }
 
-const anglerBoosts = [
-	[itemID('Angler hat'), 0.4],
-	[itemID('Angler top'), 0.8],
-	[itemID('Angler waders'), 0.6],
-	[itemID('Angler boots'), 0.2]
-];
-
 function calcAnglerBoostPercent(gearBank: GearBank) {
 	const skillingSetup = gearBank.gear.skilling;
 	let amountEquipped = 0;
 	let boostPercent = 0;
-	for (const [id, percent] of anglerBoosts) {
+	for (const [id, percent] of Object.entries(anglerItems)) {
 		if (skillingSetup.hasEquipped([id])) {
 			boostPercent += percent;
 			amountEquipped++;
