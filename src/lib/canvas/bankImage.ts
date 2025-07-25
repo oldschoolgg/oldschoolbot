@@ -214,7 +214,7 @@ export const bankFlags = [
 ] as const;
 export type BankFlag = (typeof bankFlags)[number];
 
-export class BankImageTask {
+class BankImageTask {
 	public backgroundImages: BankBackground[] = [];
 	public alternateImages: { id: number; bgId: number; image: CanvasImage }[] = [];
 

@@ -8,13 +8,13 @@ import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
 import { MUserClass } from '../../src/lib/MUser';
-import { globalConfig } from '../../src/lib/constants';
+import { type PvMMethod, globalConfig } from '../../src/lib/constants';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { type PvMMethod, minionKCommand } from '../../src/mahoji/commands/k';
+import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';

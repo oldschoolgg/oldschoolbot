@@ -61,7 +61,7 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-export function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
+function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
 	if (!user.username) return 'Unknown';
 	const badges = makeBadgeString(user.badges, user.minion_ironman);
 	return `${badges ? `${badges} ` : ''}${user.username}`;

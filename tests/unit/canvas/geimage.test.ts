@@ -5,7 +5,7 @@ import { EItem } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage';
-import { baseSnapshotPath } from '../utils';
+import { baseSnapshotPath } from '../testConstants';
 
 describe('GE Images', async () => {
 	await GeImageGenerator.init();
