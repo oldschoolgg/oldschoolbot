@@ -1,7 +1,7 @@
-import path from 'node:path';
-
 import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
 import { loadImage } from 'skia-canvas';
+
 import { CanvasSpritesheet } from './CanvasSpritesheet';
 import { ItemIconPacks } from './iconPacks';
 
@@ -45,8 +45,6 @@ class CanvasModuleSingleton {
 					pack.icons.set(themedItemID, image);
 				}
 			}
-
-			console.log(`Loaded ${pack.icons.size} icons for icon pack ${pack.name}`);
 		}
 
 		this.didInit = true;

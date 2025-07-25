@@ -1113,7 +1113,7 @@ export async function toaStartCommand(
 		return `${user.usernameOrMention} minion is busy`;
 	}
 
-	if (!mileStoneBaseDeathChances.some(i => i.level === raidLevel)) {
+	if (!mileStoneBaseDeathChances.some(i => i.level === _raidLevel)) {
 		return 'Invalid raid level.';
 	}
 
