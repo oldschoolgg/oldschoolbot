@@ -3,16 +3,13 @@ import type { User } from '@prisma/client';
 import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
 import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
+import type { PvMMethod } from '@/lib/constants';
 import type { PrimaryGearSetupType } from '@/lib/gear/types';
-import type { PvMMethod } from '../../../mahoji/commands/k';
 import { SkillsEnum } from '../../skilling/types';
 import { XPBank } from '../../structures/XPBank';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import type { AddMonsterXpParams, KillableMonster } from '../types';
-
-export { default as calculateMonsterFood } from './calculateMonsterFood';
-export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 
 export const attackStylesArr = [
 	SkillsEnum.Attack,

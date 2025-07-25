@@ -5,7 +5,8 @@ import { type Bank, Items, Util } from 'oldschooljs';
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport';
 import { OSRSCanvas } from './canvas/OSRSCanvas';
-import { type IBgSprite, bankImageTask } from './canvas/bankImage';
+import { bankImageTask } from './canvas/bankImage';
+import type { IBgSprite } from './canvas/canvasUtil';
 import type { MUserStats } from './structures/MUserStats';
 
 export const collectionLogTypes = [

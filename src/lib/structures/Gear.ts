@@ -12,7 +12,6 @@ import {
 
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import type { GearSetup, GearSetupType, GearSlotItem } from '../gear/types';
-import type { GearRequirement } from '../minions/types';
 import getOSItem from '../util/getOSItem';
 import { assert } from '../util/logError';
 
@@ -622,3 +621,6 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	});
 }
+
+export type GearRequirement = Partial<{ [key in GearStat]: number }>;
+export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;

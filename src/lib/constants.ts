@@ -445,3 +445,6 @@ if (!process.env.TEST && isMainThread) {
 }
 
 export const MAX_CLUES_DROPPED = 100;
+
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
+export type PvMMethod = (typeof PVM_METHODS)[number];

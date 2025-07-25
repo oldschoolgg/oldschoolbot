@@ -1105,13 +1105,19 @@ export async function toaStartCommand(
 	user: MUser,
 	solo: boolean,
 	channelID: string,
-	raidLevel: RaidLevel,
+	_raidLevel: number,
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
+
+	if (!mileStoneBaseDeathChances.some(i => i.level === raidLevel)) {
+		return 'Invalid raid level.';
+	}
+
+	const raidLevel = _raidLevel as RaidLevel;
 
 	const initialCheck = await checkTOAUser(
 		user,

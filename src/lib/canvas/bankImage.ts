@@ -11,11 +11,11 @@ import { BitField, PerkTier } from '../constants';
 import { allCLItems } from '../data/Collections';
 import { filterableTypes } from '../data/filterables';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '../marketPrices';
-import backgroundImages from '../minions/data/bankBackgrounds';
-import type { BankBackground, FlagMap, Flags } from '../minions/types';
+import backgroundImages, { type BankBackground } from '../minions/data/bankBackgrounds';
+import type { FlagMap, Flags } from '../minions/types';
 import { type BankSortMethod, BankSortMethods, sorts } from '../sorts';
 import { OSRSCanvas } from './OSRSCanvas';
-import { type BaseCanvasArgs, type Canvas, CanvasImage, getClippedRegion } from './canvasUtil';
+import { type BGSpriteName, type BaseCanvasArgs, CanvasImage, type IBgSprite, getClippedRegion } from './canvasUtil';
 
 interface BankImageResult {
 	image: Buffer;
@@ -26,18 +26,6 @@ const itemSize = 32;
 const distanceFromTop = 32;
 
 const { floor, ceil } = Math;
-
-type BGSpriteName = 'dark' | 'default' | 'transparent';
-export interface IBgSprite {
-	name: BGSpriteName;
-	border: Canvas;
-	borderCorner: Canvas;
-	borderTitle: Canvas;
-	repeatableBg: Canvas;
-	tabBorderInactive: Canvas;
-	tabBorderActive: Canvas;
-	oddListColor: string;
-}
 
 const i = itemID;
 const forcedShortNameMap = new Map<number, string>([

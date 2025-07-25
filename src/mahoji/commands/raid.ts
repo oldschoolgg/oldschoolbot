@@ -1,7 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { RaidLevel } from '../../lib/simulation/toa';
 import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { coxBoostsCommand, coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
@@ -198,7 +197,7 @@ export const raidCommand: OSBMahojiCommand = {
 			check?: { hard_mode?: boolean };
 		};
 		toa?: {
-			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean; quantity?: number };
+			start?: { raid_level: number; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
 		};
 	}>) => {

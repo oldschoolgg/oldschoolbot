@@ -13,8 +13,7 @@ import {
 
 import { CanvasModule } from './CanvasModule';
 import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet';
-import type { IBgSprite } from './bankImage';
-import { type CanvasImage, drawImageWithOutline, getClippedRegion } from './canvasUtil';
+import { type CanvasImage, type IBgSprite, drawImageWithOutline, getClippedRegion } from './canvasUtil';
 import { type IconPackID, ItemIconPacks } from './iconPacks';
 
 const Fonts = {

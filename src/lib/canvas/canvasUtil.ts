@@ -185,3 +185,16 @@ export type BaseCanvasArgs = {
 	bankBgHexColor?: string | null;
 	farmingContract?: DetailedFarmingContract | null;
 };
+
+export type BGSpriteName = 'dark' | 'default' | 'transparent';
+
+export interface IBgSprite {
+	name: BGSpriteName;
+	border: Canvas;
+	borderCorner: Canvas;
+	borderTitle: Canvas;
+	repeatableBg: Canvas;
+	tabBorderInactive: Canvas;
+	tabBorderActive: Canvas;
+	oddListColor: string;
+}
