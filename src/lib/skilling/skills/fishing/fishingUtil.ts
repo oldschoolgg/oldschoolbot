@@ -3,12 +3,12 @@ import { itemID } from 'oldschooljs';
 
 import type { GearBank } from '@/lib/structures/GearBank';
 
-const anglerItems: { [key: number]: number } = {
-	[itemID('Angler hat')]: 0.4,
-	[itemID('Angler top')]: 0.8,
-	[itemID('Angler waders ')]: 0.6,
-	[itemID('Angler boots')]: 0.2
-};
+const anglerItems = [
+	[itemID('Angler hat'), 0.4],
+	[itemID('Angler top'), 0.8],
+	[itemID('Angler waders '), 0.6],
+	[itemID('Angler boots'), 0.2]
+] as const;
 
 function calcRadasBlessingBoost(gearBank: GearBank) {
 	const blessingBoosts = [
@@ -47,7 +47,7 @@ function calcAnglerBoostPercent(gearBank: GearBank) {
 	const skillingSetup = gearBank.gear.skilling;
 	let amountEquipped = 0;
 	let boostPercent = 0;
-	for (const [id, percent] of Object.entries(anglerItems)) {
+	for (const [id, percent] of anglerItems) {
 		if (skillingSetup.hasEquipped([id])) {
 			boostPercent += percent;
 			amountEquipped++;

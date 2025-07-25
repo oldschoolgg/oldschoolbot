@@ -8,7 +8,7 @@ import { baseSnapshotPath } from '../testConstants';
 
 describe('Chest Images', async () => {
 	test('TOA Chest Loot Image', async () => {
-		const loot = new Bank().add('Fang', 1).add('Masori mask', 1).add('Thread of elidinis', 1).add('Coins', 50000);
+		const loot = new Bank().add('Masori mask', 1).add('Thread of elidinis', 1).add('Coins', 50000);
 
 		const previousCL = new Bank().add('Coins', 1000000);
 
