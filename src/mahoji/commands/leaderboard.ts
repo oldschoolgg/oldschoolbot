@@ -1,11 +1,11 @@
-import { makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
 	type CommandRunOptions,
+	type OSBMahojiCommand,
 	channelIsSendable,
-	formatDuration,
-	stringMatches,
-	toTitleCase
-} from '@oldschoolgg/toolkit/util';
+	makePaginatedMessage
+} from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import {
 	ApplicationCommandOptionType,
 	type ChatInputCommandInteraction,
@@ -33,8 +33,6 @@ import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { userEventsToMap } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
-import type { OSBMahojiCommand } from '../lib/util';
-
 const LB_PAGE_SIZE = 10;
 
 function lbMsg(str: string, ironmanOnly?: boolean) {
@@ -235,14 +233,14 @@ async function sacrificeLb(
 	if (type === 'value') {
 		const list = (
 			await prisma.$queryRawUnsafe<{ id: string; full_name: string; amount: number }[]>(
-				`SELECT 
+				`SELECT
 	u.id,
     ${SQL.SELECT_FULL_NAME},
 	"sacrificedValue"
-FROM 
+FROM
     users u
 ${SQL.LEFT_JOIN_BADGES}
-WHERE 
+WHERE
     "sacrificedValue" > 10000
 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ${SQL.GROUP_BY_U_ID}
@@ -270,28 +268,28 @@ LIMIT 400;`
 
 	const mostUniques: { full_name: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
 		`
-SELECT 
-    ${SQL.SELECT_FULL_NAME}, 
+SELECT
+    ${SQL.SELECT_FULL_NAME},
     u.sacbanklength
 FROM (
-    SELECT 
-        (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) AS sacbanklength, 
+    SELECT
+        (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) AS sacbanklength,
         u.id AS user_id,
         u.username,
         u.badges
-    FROM 
-        user_stats 
-    INNER JOIN 
+    FROM
+        user_stats
+    INNER JOIN
         users u ON u.id::bigint = user_stats.user_id
 	WHERE
 		sacrificed_bank::text != '{}'
 		${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ) u
-LEFT JOIN 
+LEFT JOIN
     badges b ON b.id = ANY(u.badges)
-GROUP BY 
+GROUP BY
     u.username, u.sacbanklength
-ORDER BY 
+ORDER BY
     u.sacbanklength DESC
 LIMIT 10;
 `

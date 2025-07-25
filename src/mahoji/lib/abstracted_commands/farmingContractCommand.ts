@@ -1,5 +1,5 @@
 import { roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
 
 import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import { defaultFarmingContract } from '../../../lib/minions/farming';

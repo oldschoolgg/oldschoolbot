@@ -1,7 +1,7 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { bankCommand } from './bank';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;

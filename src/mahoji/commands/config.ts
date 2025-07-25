@@ -1,12 +1,13 @@
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
 	type CommandResponse,
 	type CommandRunOptions,
+	type OSBMahojiCommand,
+	allAbstractCommands,
 	channelIsSendable,
-	formatDuration,
-	hasBanMemberPerms,
-	miniID,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+	hasBanMemberPerms
+} from '@oldschoolgg/toolkit/discord-util';
+import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { activity_type_enum } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
@@ -39,8 +40,6 @@ import { parseBank } from '../../lib/util/parseStringBank';
 import { isValidNickname, itemNameFromID } from '../../lib/util/smallUtils';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-import { allAbstractCommands } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 interface UserConfigToggle {

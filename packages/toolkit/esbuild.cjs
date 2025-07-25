@@ -7,17 +7,21 @@ const entryPoints = [
 	'src/testBotWebsocket.ts',
 	'src/util/datetime.ts',
 	'src/string-util.ts',
-	'src/discord-util.ts'
+	'src/util/discord/index.ts',
+	'src/util/math/index.ts',
+	'src/util/node.ts',
+	'src/util/runescape.ts'
 ];
 
 const baseConfig = {
-	keepNames: true,
-	minify: true,
+	minify: false,
 	treeShaking: true,
 	bundle: true,
+	keepNames: true,
+	metafile: true,
+	legalComments: 'none',
 	entryPoints,
 	platform: 'node',
-	sourcemap: true,
 	external: ['discord.js'],
 	loader: {
 		'.json': 'copy'

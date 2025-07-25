@@ -1,4 +1,4 @@
-import { awaitMessageComponentInteraction, makeComponents } from '@oldschoolgg/toolkit/util';
+import { awaitMessageComponentInteraction, makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type BaseMessageOptions,
 	ButtonBuilder,

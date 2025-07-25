@@ -1,12 +1,7 @@
 import deepMerge from 'deepmerge';
 import type { BaseMessageOptions, InteractionReplyOptions } from 'discord.js';
-import type { CommandResponse } from './util.js';
 
-export * from './util/paginatedMessage.js';
-export * from './util/discord';
-export * from './util/discordJS';
-export * from './lib/MahojiClient/Mahoji';
-export * from './lib/MahojiClient/mahojiTypes';
+import type { CommandResponse } from './MahojiClient/mahojiTypes';
 
 export function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
 	if (!one) return {};

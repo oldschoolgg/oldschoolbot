@@ -21,10 +21,10 @@ const external = [
 build({
 	entryPoints: ['src/index.ts'],
 	sourcemap: 'inline',
-	minify: true,
+	minify: false,
 	legalComments: 'none',
 	outdir: './dist',
-	logLevel: 'error',
+	// logLevel: 'error',
 	bundle: true,
 	platform: 'node',
 	loader: {

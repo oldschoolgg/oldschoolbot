@@ -1,7 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { channelIsSendable, formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { calcWhatPercent } from 'e';
-import { Bank, TOBRooms, itemID } from 'oldschooljs';
+import { Bank, TOBRooms, itemID, randomVariation } from 'oldschooljs';
 
 import { skillsMeetRequirements } from '@/lib/util';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
@@ -20,7 +21,6 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank';
 import { setupParty } from '../../../lib/party';
-
 import type { MakePartyOptions } from '../../../lib/types';
 import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

@@ -1,4 +1,4 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,

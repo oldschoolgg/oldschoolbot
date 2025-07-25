@@ -1,4 +1,6 @@
-import { type CommandResponse, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
+import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
+import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { calcWhatPercent, objectEntries } from 'e';
 import { type Bank, Items, Util } from 'oldschooljs';
 

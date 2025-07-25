@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { Offerables } from '../../lib/data/offerData';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
@@ -14,7 +15,6 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
 
 const specialBones = [

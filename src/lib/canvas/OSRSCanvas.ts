@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
 import fetch from 'node-fetch';
 import {
 	type Canvas,
@@ -21,7 +21,9 @@ const Fonts = {
 	Bold: '16px RuneScape Bold 12',
 	TinyPixel: '10px Smallest Pixel-7'
 } as const;
+
 type FontName = keyof typeof Fonts;
+
 const fonts = {
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
 	OSRSFontCompact: './src/lib/resources/osrs-font-compact.otf',

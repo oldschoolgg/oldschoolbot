@@ -8,9 +8,10 @@ import {
 	type MessageEditOptions,
 	type TextChannel
 } from 'discord.js';
-import { Time, isFunction } from 'e';
 
-import { UserError } from '../structures';
+import { UserError } from '../../structures';
+import { Time } from '../datetime';
+import { isFunction } from '../typeChecking';
 
 const InteractionID = {
 	PaginatedMessage: {

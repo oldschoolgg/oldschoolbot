@@ -1,6 +1,5 @@
 import type { Channel, GuildTextBasedChannel, TextChannel, User } from 'discord.js';
 
-/* c8 ignore start */
 /**
  * Checks if the bot can send a message to a channel object.
  * @param channel The channel to check if the bot can send a message to.

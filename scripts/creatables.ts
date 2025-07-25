@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { md5sum } from '@oldschoolgg/toolkit/node';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { md5sum } from '@oldschoolgg/toolkit/util';
 import { DateTime } from 'luxon';
 import { Bank } from 'oldschooljs';
 

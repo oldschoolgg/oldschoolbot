@@ -3,6 +3,7 @@ import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { quests } from '../../lib/minions/data/quests';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -15,7 +16,6 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { logError } from '../../lib/util/logError';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
-import type { OSBMahojiCommand } from '../lib/util';
 import { rogueOutfitPercentBonus } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {

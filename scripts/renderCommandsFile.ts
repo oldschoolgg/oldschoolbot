@@ -1,13 +1,13 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { type AbstractCommand, convertMahojiCommandToAbstractCommand } from '@oldschoolgg/toolkit/discord-util';
+import { md5sum } from '@oldschoolgg/toolkit/node';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { md5sum, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { DateTime } from 'luxon';
 
 import { BOT_TYPE } from '../src/lib/constants';
 import { allCommands } from '../src/mahoji/commands/allCommands';
-import type { AbstractCommand } from '../src/mahoji/lib/inhibitors';
-import { convertMahojiCommandToAbstractCommand } from '../src/mahoji/lib/util';
 
 function renderCommands() {
 	return allCommands

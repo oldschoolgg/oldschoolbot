@@ -1,5 +1,6 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

@@ -2,12 +2,12 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandOptions, PerkTier, dateFm } from '@oldschoolgg/toolkit/util';
+import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
+import { PerkTier, dateFm } from '@oldschoolgg/toolkit/util';
 import * as dotenv from 'dotenv';
 import { resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 
 export { PerkTier };

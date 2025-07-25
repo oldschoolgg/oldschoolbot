@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
@@ -10,7 +11,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { timePerAlchAgility } from '../lib/abstracted_commands/alchCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',

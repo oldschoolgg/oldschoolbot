@@ -1,11 +1,12 @@
-import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
 	type CommandOption,
 	type CommandRunOptions,
-	evalMathExpression,
-	formatDuration,
-	makeComponents
-} from '@oldschoolgg/toolkit/util';
+	type OSBMahojiCommand,
+	makeComponents,
+	returnStringOrFile
+} from '@oldschoolgg/toolkit/discord-util';
+import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
@@ -23,7 +24,6 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { itemNameFromID } from '../../lib/util/smallUtils';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export type GEListingWithTransactions = GEListing & {

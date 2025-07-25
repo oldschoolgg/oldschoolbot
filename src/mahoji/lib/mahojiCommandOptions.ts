@@ -1,5 +1,5 @@
+import type { CommandOption } from '@oldschoolgg/toolkit/discord-util';
 import { stringSearch, toTitleCase, truncateString } from '@oldschoolgg/toolkit/string-util';
-import type { CommandOption } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';

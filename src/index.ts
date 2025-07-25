@@ -5,7 +5,7 @@ import './lib/util/transactItemsFromBank';
 import './lib/ActivityManager';
 
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { MahojiClient } from '@oldschoolgg/toolkit/discord-util';
+import { MahojiClient, convertMahojiCommandToAbstractCommand } from '@oldschoolgg/toolkit/discord-util';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 import { isObject } from 'e';
@@ -26,7 +26,6 @@ import { onStartup } from './mahoji/lib/events';
 import { exitCleanup } from './mahoji/lib/exitHandler';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
-import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 if (globalConfig.sentryDSN) {
 	init({

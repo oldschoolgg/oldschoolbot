@@ -1,9 +1,5 @@
-import {
-	type CommandRunOptions,
-	type MahojiUserOption,
-	formatOrdinal,
-	roboChimpCLRankQuery
-} from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
 import { convertLVLtoXP } from 'oldschooljs';
@@ -44,7 +40,6 @@ import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { skillOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
 const patMessages = [

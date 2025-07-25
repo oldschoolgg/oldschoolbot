@@ -1,4 +1,4 @@
-import type { CommandOptions, MahojiUserOption } from '@oldschoolgg/toolkit/util';
+import type { CommandOptions, MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import type { Prisma, command_name_enum } from '@prisma/client';
 import { isObject } from 'e';
 

@@ -1,4 +1,5 @@
-import { formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
 import { Bank, EMonster, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
 

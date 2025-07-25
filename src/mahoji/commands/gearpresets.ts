@@ -1,4 +1,5 @@
-import { type CommandOption, type CommandRunOptions, cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandOption, CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { cleanString, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
@@ -11,7 +12,6 @@ import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { isValidNickname } from '../../lib/util/smallUtils';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
 import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 
 function maxPresets(user: MUser) {
 	return user.perkTier() * 2 + 4;

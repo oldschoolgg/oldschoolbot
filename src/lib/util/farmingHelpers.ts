@@ -1,5 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { dateFm, makeComponents, stringMatches } from '@oldschoolgg/toolkit/util';
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { dateFm } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 

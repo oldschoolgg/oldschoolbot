@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/util';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
@@ -17,7 +17,6 @@ import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 
 export const TEST_CHANNEL_ID = '1111111111111111';
 

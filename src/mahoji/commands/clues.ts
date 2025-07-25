@@ -3,7 +3,7 @@ import { EmbedBuilder } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 
 export const cluesCommand: OSBMahojiCommand = {
 	name: 'clues',
