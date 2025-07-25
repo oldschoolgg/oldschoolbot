@@ -1,14 +1,23 @@
 import { AttachmentBuilder } from 'discord.js';
 import { randInt } from 'e';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
-import { loadImage } from 'skia-canvas';
+import { type Image, loadImage } from 'skia-canvas';
 
 import { TOBUniques } from '../data/tob';
 import { OSRSCanvas } from './OSRSCanvas';
 import { bankImageTask } from './bankImage';
 import type { CanvasImage } from './canvasUtil';
 
-const chestLootTypes = [
+const chestLootTypes: {
+	title: string;
+	chestImage: Promise<Image>;
+	chestImagePurple: Promise<Image>;
+	width: number;
+	height: number;
+	purpleItems: (number | string)[];
+	position: (canvas: OSRSCanvas, image: CanvasImage) => [number, number];
+	itemRect: [number, number, number, number];
+}[] = [
 	{
 		title: 'Tombs of Amascut',
 		chestImage: loadImage('./src/lib/resources/images/toaChest.png'),
@@ -63,6 +72,16 @@ const chestLootTypes = [
 			'Dragon hunter crossbow',
 			'Twisted buckler'
 		]),
+		position: () => [12, 44],
+		itemRect: [135, 45, 120, 120]
+	},
+	{
+		title: 'Depths of Atlantis',
+		chestImage: loadImage('./src/lib/resources/images/doa.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/doa.png'),
+		width: 260,
+		height: 180,
+		purpleItems: [70420, 70441, 70425, 70426, 70428, 70437, 70438, 70439, 70440],
 		position: () => [12, 44],
 		itemRect: [135, 45, 120, 120]
 	}
