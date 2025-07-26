@@ -3,9 +3,9 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
 import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
 
+import { countUsersWithItemInCl } from '@/lib/rawSql';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
-import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { InfernoOptions } from '../../../lib/types/minions';

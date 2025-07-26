@@ -16,7 +16,6 @@ import type { WebSocket } from 'ws';
 import '@/lib/safeglobals';
 import { BOT_TYPE, META_CONSTANTS, globalConfig } from '@/lib/constants';
 import killableMonsters from '@/lib/minions/data/killableMonsters';
-import { convertStoredActivityToFlatActivity } from '@/lib/settings/prisma';
 import { testBotKvStore } from './TestBotStore';
 import { minionStatusRaw } from './minionStatusRaw';
 
@@ -99,7 +98,9 @@ async function getUserUpdate(discordId: string) {
 		username: djsUser.username,
 		avatar_url: djsUser.displayAvatarURL({ size: 256, forceStatic: true }),
 		raw_user_data: mUser.user,
-		recent_trips: recentTrips.map(convertStoredActivityToFlatActivity).map(minionStatusRaw),
+		recent_trips: recentTrips
+			.map(_act => ActivityManager.convertStoredActivityToFlatActivity(_act))
+			.map(minionStatusRaw),
 		minigame_scores: minigameScores.map(_i => ({ minigame: _i.minigame.name, score: _i.score })),
 		skills_as_xp: mUser.skillsAsXP,
 		skills_as_levels: mUser.skillsAsLevels

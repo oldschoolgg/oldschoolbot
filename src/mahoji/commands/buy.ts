@@ -4,10 +4,10 @@ import { bold } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, itemID } from 'oldschooljs';
 
+import { countUsersWithItemInCl } from '@/lib/rawSql';
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
 import { Minigames } from '../../lib/settings/minigames';
-import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { isElligibleForPresent } from '../../lib/settings/settings';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import getOSItem from '../../lib/util/getOSItem';

@@ -15,7 +15,7 @@ import type { RaidLevel } from '../simulation/toa';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility';
 import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting';
 import type { BossUser } from '../structures/Boss';
-import type { Peak } from '../tickers';
+import type { Peak } from '../util/peaks';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {

@@ -685,7 +685,7 @@
 				"type": "restriction",
 				"monster": "Amoxliatl",
 				"rng": {
-					"chancePerKill": 10
+					"chancePerKill": 1
 				}
 			},
 			{

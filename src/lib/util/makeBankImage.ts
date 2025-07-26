@@ -30,7 +30,7 @@ export async function makeBankImage({
 	const realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
 
-	const { image, isTransparent } = await bankImageGenerator.generateBankImage({
+	const { image } = await bankImageGenerator.generateBankImage({
 		bank,
 		title,
 		showValue: true,
@@ -42,7 +42,7 @@ export async function makeBankImage({
 
 	return {
 		file: {
-			name: `${spoiler ? 'SPOILER_' : ''}${isTransparent ? 'bank.png' : 'bank.jpg'}`,
+			name: `${spoiler ? 'SPOILER_' : ''}bank.png`,
 			attachment: image!
 		}
 	};

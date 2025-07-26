@@ -1,6 +1,6 @@
 import { noOp, uniqueArr } from 'e';
+
 import { syncCustomPrices } from '../mahoji/lib/events';
-import { syncActivityCache } from './Task';
 import { cacheBadges } from './badges';
 import { syncBlacklists } from './blacklists';
 import { globalConfig } from './constants';
@@ -38,7 +38,7 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 			update: {}
 		}),
 		syncActiveUserIDs(),
-		syncActivityCache(),
+		ActivityManager.syncActivityCache(),
 		runStartupScripts(),
 		syncDisabledCommands(),
 		syncBlacklists(),

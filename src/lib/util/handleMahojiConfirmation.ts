@@ -30,6 +30,7 @@ export async function handleMahojiConfirmation(
 	str: string | MessageCreateOptions,
 	_users?: string[]
 ) {
+	if (process.env.TEST) return;
 	let channel: Channel | null = globalClient.channels.cache.get(interaction.channelId) ?? null;
 	if (!channel) {
 		channel = await globalClient.channels.fetch(interaction.channelId).catch(() => null);

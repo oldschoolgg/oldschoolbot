@@ -2,9 +2,9 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 import { Time } from 'e';
 
+import { generateDailyPeakIntervals } from '@/lib/util/peaks';
 import { handleDTD } from '../../../../lib/bso/handleDTD';
 import { colosseumCommand } from '../../../../lib/colosseum';
-import { getCurrentPeak } from '../../../../lib/getCurrentPeak';
 import { trackLoot } from '../../../../lib/lootTrack';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
@@ -114,8 +114,8 @@ export async function minionKillCommand(
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
-		currentPeak: getCurrentPeak(),
-		disabledInventions: user.user.disabled_inventions
+		disabledInventions: user.user.disabled_inventions,
+		currentPeak: generateDailyPeakIntervals().currentPeak
 	});
 
 	if (typeof result === 'string') {

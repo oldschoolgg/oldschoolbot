@@ -15,6 +15,7 @@ export class GearBank {
 	chargeBank: ChargeBank;
 	materials: MaterialBank;
 	pet: number | null;
+	minionName: string;
 
 	constructor({
 		gear,
@@ -23,7 +24,8 @@ export class GearBank {
 		chargeBank,
 		materials,
 		pet,
-		skillsAsXP
+		skillsAsXP,
+		minionName
 	}: {
 		gear: UserFullGearSetup;
 		bank: Bank;
@@ -32,6 +34,7 @@ export class GearBank {
 		materials: MaterialBank;
 		pet: number | null;
 		skillsAsXP: SkillsRequired;
+		minionName: string;
 	}) {
 		this.gear = gear;
 		this.bank = bank;
@@ -40,6 +43,7 @@ export class GearBank {
 		this.materials = materials;
 		this.pet = pet;
 		this.skillsAsXP = skillsAsXP;
+		this.minionName = minionName;
 	}
 
 	usingPet(pet: string) {

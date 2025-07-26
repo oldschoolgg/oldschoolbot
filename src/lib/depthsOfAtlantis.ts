@@ -18,7 +18,7 @@ import type { UserFullGearSetup } from './gear';
 import { Gear } from './structures/Gear';
 import type { Skills } from './types';
 import type { DOAStoredRaid } from './types/minions';
-import { formatSkillRequirements, itemNameFromID } from './util';
+import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 
 const { floor } = Math;
 

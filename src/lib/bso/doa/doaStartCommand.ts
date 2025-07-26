@@ -3,6 +3,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, clamp } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
+import { bankToStrShortNames } from '@/lib/util/smallUtils';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 import { degradeItem } from '../../degradeableItems';
 import {
@@ -16,7 +17,6 @@ import { trackLoot } from '../../lootTrack';
 import { setupParty } from '../../party';
 import type { MakePartyOptions } from '../../types';
 import type { DOAOptions } from '../../types/minions';
-import { bankToStrShortNames } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { updateBankSetting } from '../../util/updateBankSetting';

@@ -5,29 +5,8 @@ import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import type { KillableMonster } from '../minions/types';
 import { maxDefenceStats } from '../structures/Gear';
 import type { GearBank } from '../structures/GearBank';
-import type { Peak } from '../tickers';
+import { type Peak, peakFactor } from './peaks';
 import { percentChance } from './rng';
-
-export enum PeakTier {
-	High = 'high',
-	Medium = 'medium',
-	Low = 'low'
-}
-
-const peakFactor = [
-	{
-		peakTier: PeakTier.High,
-		factor: 2.5
-	},
-	{
-		peakTier: PeakTier.Medium,
-		factor: 1
-	},
-	{
-		peakTier: PeakTier.Low,
-		factor: 0.2
-	}
-];
 
 export async function increaseWildEvasionXp(user: MUser, duration: number) {
 	const oldPkXp: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });

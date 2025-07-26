@@ -1,7 +1,9 @@
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Time } from 'e';
 import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import { NexMonster } from '@/lib/nex';
 import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
 import { SkillsEnum } from '../../../skilling/types';
 import type { KillableMonster } from '../../types';
@@ -443,3 +445,95 @@ export const wikiMonsters = killableMonsters
 	.filter(m => m.equippedItemBoosts || m.itemInBankBoosts || m.itemCost || m.requiredQuests)
 	.filter(m => ['Revenant', 'Reanim'].every(b => !m.name.includes(b)))
 	.sort((a, b) => a.name.localeCompare(b.name));
+
+const otherMonsters = [
+	{
+		id: -1,
+		name: 'Tempoross',
+		aliases: ['temp', 'tempoross'],
+		link: '/skills/fishing/tempoross/'
+	},
+	...["Phosani's Nightmare", 'Mass Nightmare', 'Solo Nightmare'].map(s => ({
+		id: -1,
+		name: s,
+		aliases: [s.toLowerCase()],
+		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
+	})),
+	{
+		name: 'Zalcano',
+		aliases: ['zalcano'],
+		id: EMonster.ZALCANO,
+		emoji: '<:Smolcano:604670895113633802>',
+		link: '/miscellaneous/zalcano/'
+	},
+	{
+		...VasaMagus,
+		link: '/bso/monsters/bosses/vasa-magus/'
+	},
+	{
+		...Ignecarus,
+		name: 'Ignecarus (Solo)',
+		link: '/bso/monsters/bosses/ignecarus/'
+	},
+	{
+		...Ignecarus,
+		name: 'Ignecarus (Mass)',
+		link: '/bso/monsters/bosses/ignecarus/'
+	},
+	{
+		...KingGoldemar,
+		name: 'King Goldemar (Solo)',
+		link: '/bso/monsters/bosses/king-goldemar/'
+	},
+	{
+		...KingGoldemar,
+		name: 'King Goldemar (Mass)',
+		link: '/bso/monsters/bosses/king-goldemar/'
+	},
+	{
+		...NexMonster,
+		name: 'Nex (Solo)',
+		link: '/bso/monsters/bosses/nex/'
+	},
+	{
+		...NexMonster,
+		name: 'Nex (Mass)',
+		link: '/bso/monsters/bosses/nex/'
+	},
+	{
+		...KalphiteKingMonster,
+		name: 'Kalphite King (Solo)',
+		link: '/bso/monsters/bosses/kalphite-king/'
+	},
+	{
+		...KalphiteKingMonster,
+		name: 'Kalphite King (Mass)',
+		link: '/bso/monsters/bosses/kalphite-king/'
+	},
+	{
+		...Naxxus,
+		name: 'Naxxus',
+		link: '/bso/monsters/bosses/naxxus/'
+	},
+	{
+		name: 'Wintertodt',
+		aliases: ['wt', 'wintertodt', 'todt'],
+		id: -1,
+		emoji: '<:Phoenix:324127378223792129>',
+		link: '/activities/wintertodt/'
+	},
+	{
+		name: 'Moktang',
+		aliases: ['moktang'],
+		id: MOKTANG_ID,
+		link: '/bso/monsters/bosses/moktang/'
+	},
+	{
+		name: 'Colosseum',
+		aliases: ['colo', 'colosseum'],
+		id: -1,
+		link: '/bosses/colosseum/'
+	}
+];
+
+export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];

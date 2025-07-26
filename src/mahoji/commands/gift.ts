@@ -4,10 +4,10 @@ import { GiftBoxStatus } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import { isValidNickname } from '@/lib/util/smallUtils';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { isSuperUntradeable } from '../../lib/bso/bsoUtil';
 import { BOT_TYPE } from '../../lib/constants';
-import { isValidNickname } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';

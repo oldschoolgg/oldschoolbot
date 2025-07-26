@@ -1,18 +1,10 @@
-import { type CommandResponse, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { calcWhatPercent, objectEntries } from 'e';
-import { type Bank, Util } from 'oldschooljs';
+import { type Bank, Items, Util } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
-import type { IToReturnCollection } from '../lib/data/CollectionsExport';
-import {
-	type CanvasContext,
-	canvasToBuffer,
-	createCanvas,
-	fillTextXTimesInCtx,
-	getClippedRegion,
-	measureTextWidth
-} from '../lib/util/canvasUtil';
-import getOSItem from '../lib/util/getOSItem';
+import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport';
+import { OSRSCanvas } from './OSRSCanvas';
 import type { IBgSprite } from './bankImage';
 import type { MUserStats } from './structures/MUserStats';
 
@@ -31,41 +23,29 @@ export const CollectionLogFlags = [
 ];
 
 class CollectionLogTask {
-	run() {}
-
-	drawBorder(ctx: CanvasContext, sprite: IBgSprite) {
-		return bankImageGenerator.drawBorder(ctx, sprite);
-	}
-
-	drawSquare(ctx: CanvasContext, x: number, y: number, w: number, h: number, pixelSize = 1, hollow = true) {
-		ctx.save();
-		if (hollow) {
-			ctx.translate(0.5, 0.5);
-			ctx.lineWidth = pixelSize;
-			ctx.moveTo(x, y); // top left
-			ctx.lineTo(w + x - pixelSize, y); // top right
-			ctx.lineTo(w + x - pixelSize, y + h - pixelSize); // bottom right
-			ctx.lineTo(x, y + h - pixelSize); // bottom left
-			ctx.lineTo(x, y); // top left
-			ctx.translate(-0.5, -0.5);
-			ctx.stroke();
-		} else {
-			ctx.fillRect(x, y, w, h);
+	COLORS = {
+		ORANGEY: '#FF981F',
+		WHITE: '#FFFFFF',
+		TABS: {
+			SELECTED_TAB: '#FFFFFF',
+			UNSELECTED_TAB: '#FF981F'
+		},
+		PAGE_TITLE: {
+			NOT_STARTED: '#FF0000',
+			COMPLETED: '#00FF00',
+			PARTIAL_COMPLETION: '#FFFF00'
 		}
-		ctx.restore();
-	}
+	};
 
-	drawText(ctx: CanvasContext, text: string, x: number, y: number) {
-		const baseFill = ctx.fillStyle;
-		ctx.fillStyle = '#000000';
-		fillTextXTimesInCtx(ctx, text, x + 1, y + 1);
-		ctx.fillStyle = baseFill;
-		fillTextXTimesInCtx(ctx, text, x, y);
+	private parseClPageName(name: string): string {
+		if (name === 'Thermonuclear smoke devil') return 'Thermy';
+		return name.replace('Treasure Trail ', '').replace(' and ', ' & ');
 	}
 
 	drawLeftList(collectionLog: IToReturnCollection, sprite: IBgSprite) {
 		if (!collectionLog.leftList) return;
-		const leftHeight = Object.keys(collectionLog.leftList).length * 15; // 15 is the height of every list item
+		const ITEM_HEIGHT = 15;
+		const leftHeight = Object.keys(collectionLog.leftList).length * ITEM_HEIGHT;
 		const colors = {
 			not_started: '#FF981F',
 			started: '#FFFF00',
@@ -74,30 +54,42 @@ class CollectionLogTask {
 			odd: sprite.oddListColor
 		};
 
-		// Create base canvas
-		const canvasList = createCanvas(200, leftHeight);
-		// Get the canvas context
-		const ctxl = canvasList.getContext('2d');
-		ctxl.font = '16px OSRSFontCompact';
-		ctxl.imageSmoothingEnabled = false;
+		const _canvas = new OSRSCanvas(200, leftHeight);
 		let index = 0;
-		let widestName = 0;
+		let widestNameLength = 0;
 
-		for (const [name, status] of Object.entries(collectionLog.leftList)) {
-			if (name === collectionLog.name) {
-				ctxl.fillStyle = colors.selected;
-			} else {
-				ctxl.fillStyle = index % 2 === 0 ? colors.odd : 'transparent';
+		const entries: [string, CollectionStatus][] = Object.entries(collectionLog.leftList).map(([name, status]) => [
+			this.parseClPageName(name),
+			status
+		]);
+
+		for (const [clPageName] of entries) {
+			const measuredName = _canvas.measureTextWidth(clPageName);
+			if (measuredName > widestNameLength) {
+				widestNameLength = measuredName;
 			}
-			ctxl.fillRect(1, index * 15, canvasList.width, 15);
-			ctxl.fillStyle = collectionLog.category === 'Discontinued' ? colors.not_started : colors[status];
-			const measuredName = ctxl.measureText(name).width;
-			if (measuredName > widestName) widestName = measuredName;
-			this.drawText(ctxl, name, 4, index * 15 + 13);
+		}
+		_canvas.setWidth(Math.min(widestNameLength, 150) + 8);
+
+		for (const [clPageName, status] of entries) {
+			const color =
+				clPageName === this.parseClPageName(collectionLog.name)
+					? colors.selected
+					: index % 2 === 0
+						? colors.odd
+						: 'transparent';
+			_canvas.drawSquare(1, index * ITEM_HEIGHT, _canvas.width, ITEM_HEIGHT, color);
+
+			_canvas.drawText({
+				text: clPageName,
+				x: 4,
+				y: index * ITEM_HEIGHT + 13,
+				color: collectionLog.category === 'Discontinued' ? colors.not_started : colors[status]
+			});
 			index++;
 		}
 
-		return getClippedRegion(canvasList, 0, 0, widestName + 8, canvasList.height);
+		return _canvas;
 	}
 
 	async generateLogImage(options: {
@@ -150,7 +142,7 @@ class CollectionLogTask {
 						attachment: Buffer.from(
 							collectionLog.collection
 								.map(i => {
-									const _i = getOSItem(i);
+									const _i = Items.getOrThrow(i);
 									const _q = (collectionLog as IToReturnCollection).userItems.amount(_i.id);
 									if (_q === 0 && !flags.missing) return undefined;
 									return `${flags.nq || flags.missing ? '' : `${_q}x `}${_i.name}`;
@@ -205,77 +197,59 @@ class CollectionLogTask {
 			)
 		);
 
-		// Create base canvas
-		const canvas = createCanvas(canvasWidth, canvasHeight);
-		// Get the canvas context
-		const ctx = canvas.getContext('2d');
-		ctx.font = '16px OSRSFontCompact';
-		ctx.imageSmoothingEnabled = false;
+		const canvas = new OSRSCanvas(canvasWidth, canvasHeight, sprite);
+		const ctx = canvas.ctx;
 
 		// 69 = top border height + bottom border height + title space + tab space
-		const boxHeight = ctx.canvas.height - 69;
+		const boxHeight = canvas.height - 69;
 
-		// Draw base background
-		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
-		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		canvas.drawBackgroundPattern();
+		canvas.drawBorder();
 
-		// Draw cl box lines
-		this.drawBorder(ctx, sprite);
-		ctx.strokeStyle = sprite.oddListColor;
 		if (!fullSize) {
-			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
-			this.drawSquare(ctx, leftDivisor, 59, rightArea, 47);
-			this.drawSquare(ctx, leftDivisor, 59, rightArea, boxHeight);
+			canvas.drawHollowSquare(10, 59, canvas.width - 20, boxHeight, sprite.oddListColor);
+			canvas.drawHollowSquare(leftDivisor, 59, rightArea, 47, sprite.oddListColor);
+			canvas.drawHollowSquare(leftDivisor, 59, rightArea, boxHeight, sprite.oddListColor);
 		} else {
-			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
-			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, 47);
+			canvas.drawHollowSquare(10, 59, canvas.width - 20, boxHeight, sprite.oddListColor);
+			canvas.drawHollowSquare(10, 59, canvas.width - 20, 47, sprite.oddListColor);
 		}
 
 		// Draw Title
-		ctx.save();
-		ctx.font = '16px RuneScape Bold 12';
-		ctx.fillStyle = '#FF981F';
-		const title = `${user.rawUsername}'s ${
-			type === 'sacrifice'
-				? 'Sacrifice'
-				: type === 'collection'
-					? 'Collection'
-					: type === 'tame'
-						? 'Tame Collection'
-						: 'Bank'
-		} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
+		const title = `${user.rawUsername}'s ${toTitleCase(type)} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
 			userTotalCl[1],
 			userTotalCl[0]
 		).toFixed(2)}%`;
-		const titleX = ctx.canvas.width / 2 - ctx.measureText(title).width / 2;
-		this.drawText(ctx, title, titleX, 22);
-		ctx.restore();
+
+		const titleX = Math.floor(canvas.width / 2 - canvas.measureTextWidth(title, 'Bold') / 2);
+		canvas.drawText({
+			text: title,
+			x: titleX,
+			y: 22,
+			color: this.COLORS.ORANGEY,
+			font: 'Bold'
+		});
 
 		// Draw cl tabs
 		let aclIndex = 0;
-		ctx.save();
 		for (const cl of Object.keys(allCollectionLogs)) {
 			const x = aclIndex * sprite.tabBorderInactive.width + aclIndex * 6 + 10;
 			ctx.drawImage(cl === collectionLog.category ? sprite.tabBorderActive : sprite.tabBorderInactive, x, 39);
-			ctx.fillStyle = cl === collectionLog.category ? '#FFFFFF' : '#FF981F';
-			this.drawText(
-				ctx,
-				cl,
-				Math.floor(x + sprite.tabBorderInactive.width / 2 - ctx.measureText(cl).width / 2),
-				39 + sprite.tabBorderInactive.height / 2 + 6 // 6 is to proper center the text
-			);
+			canvas.drawText({
+				text: cl,
+				x: Math.floor(x + sprite.tabBorderInactive.width / 2 - canvas.measureTextWidth(cl) / 2),
+				y: 39 + sprite.tabBorderInactive.height / 2 + 6,
+				color: this.COLORS.TABS[cl === collectionLog.category ? 'SELECTED_TAB' : 'UNSELECTED_TAB']
+			});
 			aclIndex++;
 		}
-		ctx.restore();
+
 		// Draw items
 		ctx.save();
-		if (!fullSize) {
-			ctx.translate(leftDivisor + 5, 110);
-		} else {
-			ctx.translate(15, 110);
-		}
+		ctx.translate(!fullSize ? leftDivisor + 5 : 15, 110);
 		let i = 0;
 		let y = 0;
+
 		for (const item of collectionLog.collection) {
 			if (i > 0 && i % maxPerLine === 0) {
 				i = 0;
@@ -285,7 +259,7 @@ class CollectionLogTask {
 			if (!userCollectionBank.has(item)) {
 				ctx.globalAlpha = 0.3;
 			}
-			const { drawOptions } = await bankImageGenerator.drawItemIDSprite({
+			await bankImageGenerator.drawItemIDSprite({
 				itemID: item,
 				ctx,
 				x: i * (itemSize + itemSpacer),
@@ -299,123 +273,126 @@ class CollectionLogTask {
 				qtyText = userCollectionBank.amount(item);
 			}
 
-			totalPrice += (getOSItem(item).price ?? 0) * qtyText;
-
-			// ctx.drawImage(
-			// 	itemImage,
-			// 	Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 4,
-			// 	Math.floor(y * (itemSize + itemSpacer) + (itemSize - itemImage.height) / 2),
-			// 	itemImage.width,
-			// 	itemImage.height
-			// );
-
-			if (qtyText > 0) {
-				ctx.fillStyle = generateHexColorForCashStack(qtyText);
-				this.drawText(
-					ctx,
-					formatItemStackQuantity(qtyText),
-					Math.floor(i * (itemSize + itemSpacer) + (itemSize - drawOptions.sourceWidth) / 2) + 1,
-					Math.floor(y * (itemSize + itemSpacer)) + 11
-				);
-			}
+			totalPrice += (Items.getOrThrow(item).price ?? 0) * qtyText;
 
 			ctx.globalAlpha = 1;
 			i++;
 		}
 		ctx.restore();
-		// Draw collection name
+
 		ctx.save();
-		if (!fullSize) {
-			ctx.translate(leftDivisor + 5, 75);
-		} else {
-			ctx.translate(15, 75);
-		}
+		ctx.translate(!fullSize ? leftDivisor + 5 : 15, 75);
 
 		// Collection title
-		ctx.font = '16px RuneScape Bold 12';
-		ctx.fillStyle = '#FF981F';
 		let effectiveName = collectionLog.name;
 		if (!collectionLog.counts) {
 			effectiveName = `${effectiveName} (Uncounted CL)`;
 		}
-		this.drawText(ctx, effectiveName, 0, 0);
+		canvas.drawText({
+			text: effectiveName,
+			x: 0,
+			y: 0,
+			color: this.COLORS.ORANGEY,
+			font: 'Bold'
+		});
 
 		// Collection obtained items
-		ctx.font = '16px OSRSFontCompact';
 		const toDraw = flags.missing ? 'Missing: ' : type === 'sacrifice' ? 'Sacrificed: ' : 'Obtained: ';
-		const obtainableMeasure = ctx.measureText(toDraw);
-		this.drawText(ctx, toDraw, 0, 13);
-		if (collectionLog.category === 'Discontinued') {
-			ctx.fillStyle = '#FF981F';
-		} else if (collectionLog.collectionTotal === collectionLog.collectionObtained) {
-			ctx.fillStyle = '#00FF00';
-		} else if (collectionLog.collectionObtained === 0) {
-			ctx.fillStyle = '#FF0000';
-		} else if (collectionLog.collectionTotal !== collectionLog.collectionObtained) {
-			ctx.fillStyle = '#FFFF00';
-		} else {
-			ctx.fillStyle = '#FF981F';
-		}
-		this.drawText(
-			ctx,
-			`${
-				flags.missing ? '' : `${collectionLog.collectionObtained.toLocaleString()}/`
-			}${collectionLog.collectionTotal.toLocaleString()}`,
-			Math.floor(obtainableMeasure.width),
-			13
-		);
+		canvas.drawText({
+			text: toDraw,
+			x: 0,
+			y: 13,
+			color: this.COLORS.ORANGEY
+		});
 
-		if (collectionLog.completions && ['collection', 'bank', 'tame'].includes(type)) {
-			let drawnSoFar = '';
+		let color = this.COLORS.PAGE_TITLE.NOT_STARTED;
+		if (collectionLog.collectionTotal === collectionLog.collectionObtained) {
+			color = this.COLORS.PAGE_TITLE.COMPLETED;
+		} else if (collectionLog.collectionTotal !== collectionLog.collectionObtained) {
+			color = this.COLORS.PAGE_TITLE.PARTIAL_COMPLETION;
+		}
+
+		if (collectionLog.category === 'Discontinued') {
+			color = this.COLORS.PAGE_TITLE.NOT_STARTED;
+		}
+
+		const obtainableMeasure = canvas.measureText(toDraw, 'Compact');
+		canvas.drawText({
+			text: `${flags.missing ? '' : `${collectionLog.collectionObtained.toLocaleString()}/`}${collectionLog.collectionTotal.toLocaleString()}`,
+			x: Math.floor(obtainableMeasure.width),
+			y: 13,
+			color
+		});
+
+		if (collectionLog.completions && ['collection', 'bank', 'tames'].includes(type)) {
+			const baseText = collectionLog.isActivity ? 'Completions: ' : 'Kills: ';
+			let drawnSoFar = baseText;
 			// Times done/killed
-			ctx.font = '16px OSRSFontCompact';
-			ctx.fillStyle = '#FF981F';
-			this.drawText(ctx, (drawnSoFar = collectionLog.isActivity ? 'Completions: ' : 'Kills: '), 0, 25);
+			canvas.drawText({
+				text: baseText,
+				x: 0,
+				y: 25,
+				color: this.COLORS.ORANGEY
+			});
 			let pixelLevel = 25;
 			for (const [type, value] of objectEntries(collectionLog.completions)) {
-				if (
-					measureTextWidth(ctx, drawnSoFar) +
-						measureTextWidth(ctx, ` / ${type}: `) +
-						measureTextWidth(ctx, value.toLocaleString()) >=
-					255
-				) {
+				const xxxx = canvas.measureTextWidth(`${drawnSoFar} / ${type}: ${value.toLocaleString()}`);
+				if (xxxx >= 255) {
 					pixelLevel += 10;
 					drawnSoFar = '';
 				}
 				if (type !== 'Default') {
-					ctx.fillStyle = '#FF981F';
-					this.drawText(ctx, ` / ${type}: `, ctx.measureText(drawnSoFar).width, pixelLevel);
+					canvas.drawText({
+						text: ` / ${type}: `,
+						x: canvas.measureTextWidth(drawnSoFar),
+						y: pixelLevel,
+						color: this.COLORS.ORANGEY
+					});
 					drawnSoFar += ` / ${type}: `;
 				}
-				ctx.fillStyle = '#FFFFFF';
-				this.drawText(ctx, value.toLocaleString(), ctx.measureText(drawnSoFar).width, pixelLevel);
-				drawnSoFar += value.toLocaleString();
+
+				const valueStr = value.toLocaleString();
+				canvas.drawText({
+					text: valueStr,
+					x: canvas.measureTextWidth(drawnSoFar),
+					y: pixelLevel,
+					color: this.COLORS.WHITE
+				});
+				drawnSoFar += valueStr;
 			}
 			// TODO: Make looting count generic in future
 			if (collectionLog.name === 'Guardians of the Rift') {
-				ctx.fillStyle = '#FF981F';
-				this.drawText(ctx, ' Rifts searches: ', ctx.measureText(drawnSoFar).width, pixelLevel);
+				canvas.drawText({
+					text: ' Rifts searches: ',
+					x: canvas.measureTextWidth(drawnSoFar),
+					y: pixelLevel,
+					color: this.COLORS.ORANGEY
+				});
 				drawnSoFar += ' Rifts searches: ';
-				ctx.fillStyle = '#FFFFFF';
-				this.drawText(
-					ctx,
-					options.stats?.gotrRiftSearches.toLocaleString() ?? '',
-					ctx.measureText(drawnSoFar).width,
-					pixelLevel
-				);
+
+				canvas.drawText({
+					text: options.stats?.gotrRiftSearches.toLocaleString() ?? '',
+					x: canvas.measureTextWidth(drawnSoFar),
+					y: pixelLevel,
+					color: this.COLORS.WHITE
+				});
 			}
 		}
 
 		ctx.restore();
 
 		ctx.save();
-		ctx.font = '16px OSRSFontCompact';
-		ctx.fillStyle = generateHexColorForCashStack(totalPrice);
 		const value = Util.toKMB(totalPrice);
-		this.drawText(ctx, value, ctx.canvas.width - 15 - ctx.measureText(value).width, 75 + 25);
+		canvas.drawText({
+			text: value,
+			x: canvas.width - 15 - canvas.measureTextWidth(value),
+			y: 75 + 25,
+			color: generateHexColorForCashStack(totalPrice)
+		});
 		ctx.restore();
 
 		if (leftListCanvas && !fullSize) {
+			const rawLeftListCanvas = leftListCanvas.getCanvas();
 			if (!flags.tall) {
 				let selectedPos = 8;
 				const listItemSize = 15;
@@ -424,12 +401,12 @@ class CollectionLogTask {
 					selectedPos += listItemSize;
 				}
 				// Canvas height - top area until list starts - left area, where list should end
-				const listHeightSpace = ctx.canvas.height - 62 - 13;
+				const listHeightSpace = canvas.height - 62 - 13;
 
 				// Check if in the start of the list
 				if (selectedPos <= listHeightSpace || selectedPos > leftListCanvas.height) {
 					ctx.drawImage(
-						leftListCanvas,
+						rawLeftListCanvas,
 						0,
 						0,
 						leftListCanvas.width,
@@ -441,11 +418,11 @@ class CollectionLogTask {
 					);
 				} else if (
 					// Check if in the end of the list
-					leftListCanvas.height - listHeightSpace <=
+					rawLeftListCanvas.height - listHeightSpace <=
 					selectedPos
 				) {
 					ctx.drawImage(
-						leftListCanvas,
+						rawLeftListCanvas,
 						0,
 						leftListCanvas.height - listHeightSpace,
 						leftListCanvas.width,
@@ -458,7 +435,7 @@ class CollectionLogTask {
 				} else {
 					// It is in the middle
 					ctx.drawImage(
-						leftListCanvas,
+						rawLeftListCanvas,
 						0,
 						selectedPos - Math.floor(listHeightSpace / 2),
 						leftListCanvas.width,
@@ -470,12 +447,12 @@ class CollectionLogTask {
 					);
 				}
 			} else {
-				ctx.drawImage(leftListCanvas, 12, 62);
+				ctx.drawImage(rawLeftListCanvas, 12, 62);
 			}
 		}
 
 		return {
-			files: [{ attachment: await canvasToBuffer(canvas), name: `${type}_log_${new Date().valueOf()}.png` }]
+			files: [{ attachment: await canvas.toScaledOutput(2), name: `${type}_log_${new Date().valueOf()}.png` }]
 		};
 	}
 

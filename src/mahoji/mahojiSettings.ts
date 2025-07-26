@@ -1,30 +1,22 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import { isObject, notEmpty, objectEntries, round } from 'e';
-import { Bank, ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
+import { Time, isObject, notEmpty, objectEntries } from 'e';
+import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { JsonKeys } from '@/lib/util';
-import {
-	formatItemCosts,
-	formatItemReqs,
-	formatList,
-	hasSkillReqs,
-	itemNameFromID,
-	readableStatName
-} from '@/lib/util/smallUtils.js';
+import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { userhasDiaryTier } from '../lib/diaries';
 import { BSOMonsters } from '../lib/minions/data/killableMonsters/custom/customMonsters';
 import { quests } from '../lib/minions/data/quests';
-import type { KillableMonster } from '../lib/minions/types';
+import type { Consumable, KillableMonster } from '../lib/minions/types';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { addStatsOfItemsTogether, hasGracefulEquipped } from '../lib/structures/Gear';
 import type { GearBank } from '../lib/structures/GearBank';
-import type { ItemBank } from '../lib/types';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
 
@@ -198,50 +190,12 @@ export async function updateGPTrackSetting(
 	});
 }
 
-const masterFarmerOutfit = resolveItems([
-	'Master farmer hat',
-	'Master farmer jacket',
-	'Master farmer pants',
-	'Master farmer gloves',
-	'Master farmer boots'
-]);
-
-export function userHasMasterFarmerOutfit(user: MUser) {
-	const allItems = user.allItemsOwned;
-	for (const item of masterFarmerOutfit) {
-		if (!allItems.has(item)) return false;
-	}
-	return true;
-}
-
 export function userHasGracefulEquipped(user: MUser) {
 	const rawGear = user.gear;
 	for (const i of Object.values(rawGear)) {
 		if (hasGracefulEquipped(i)) return true;
 	}
 	return false;
-}
-
-const anglerBoosts = [
-	[itemID('Angler hat'), 0.4],
-	[itemID('Angler top'), 0.8],
-	[itemID('Angler waders'), 0.6],
-	[itemID('Angler boots'), 0.2]
-];
-
-export function anglerBoostPercent(user: MUser) {
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of anglerBoosts) {
-		if (user.hasEquippedOrInBank(id)) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === 4) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
 }
 
 export function rogueOutfitPercentBonus(user: MUser): number {
@@ -252,6 +206,47 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 		}
 	}
 	return amountEquipped * 20;
+}
+
+function formatItemCosts(consumable: Consumable, timeToFinish: number) {
+	const str = [];
+
+	const consumables = [consumable];
+
+	if (consumable.alternativeConsumables) {
+		for (const c of consumable.alternativeConsumables) {
+			consumables.push(c);
+		}
+	}
+
+	for (const c of consumables) {
+		const itemEntries = c.itemCost.items();
+		const multiple = itemEntries.length > 1;
+		const subStr = [];
+
+		let multiply = 1;
+		if (c.qtyPerKill) {
+			multiply = c.qtyPerKill;
+		} else if (c.qtyPerMinute) {
+			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
+		}
+
+		for (const [item, quantity] of itemEntries) {
+			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
+		}
+
+		if (multiple) {
+			str.push(formatList(subStr));
+		} else {
+			str.push(subStr.join(''));
+		}
+	}
+
+	if (consumables.length > 1) {
+		return str.join(' OR ');
+	}
+
+	return str.join('');
 }
 
 export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {

@@ -20,7 +20,6 @@ import {
 import { type RaidLevel, mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -454,7 +453,7 @@ Slowest finish: ${formatDuration(slowest.time)}
 			};
 		}
 
-		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
+		if (user.minionIsBusy) return "Your minion is busy, you can't do this.";
 
 		if (cox?.start) {
 			return coxCommand(

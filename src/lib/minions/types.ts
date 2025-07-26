@@ -8,7 +8,7 @@ import type { ClueTier } from '../clues/clueTiers';
 import type { BitField } from '../constants';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
-import type { LevelRequirements, SkillsEnum } from '../skilling/types';
+import type { LevelRequirements, SkillNameType, SkillsEnum } from '../skilling/types';
 import type { XPBank } from '../structures/Bank';
 import type { GearBank } from '../structures/GearBank';
 import type { MUserStats } from '../structures/MUserStats';
@@ -168,7 +168,7 @@ export interface Consumable {
 }
 
 export interface AddXpParams {
-	skillName: SkillsEnum;
+	skillName: SkillsEnum | SkillNameType;
 	amount: number;
 	duration?: number;
 	multiplier?: boolean;

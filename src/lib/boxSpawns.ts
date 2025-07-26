@@ -11,7 +11,6 @@ import { allCollectionLogsFlat } from './data/Collections';
 import Createables from './data/createables';
 import killableMonsters from './minions/data/killableMonsters';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
-import { itemNameFromID } from './util';
 import { sendToChannelID } from './util/webhook';
 import { LampTable } from './xpLamps';
 
@@ -152,7 +151,7 @@ const monsterDropChallenge: Challenge = async (msg: Message): Promise<User | nul
 
 	const embed = new EmbedBuilder()
 		.setTitle('Reply with the answer for a reward!')
-		.setDescription(`Name a monster that drops these 3 items: ${items.map(itemNameFromID).join(', ')}`)
+		.setDescription(`Name a monster that drops these 3 items: ${items.map(Items.itemNameFromId).join(', ')}`)
 		.setThumbnail(
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);
@@ -192,7 +191,7 @@ const collectionLogChallenge: Challenge = async (msg: Message): Promise<User | n
 			max: 1,
 			time: Time.Second * 30,
 			errors: ['time'],
-			filter: _msg => cl.items.some(c => stringMatches(_msg.content, itemNameFromID(c)))
+			filter: _msg => cl.items.some(c => stringMatches(_msg.content, Items.itemNameFromId(c)))
 		});
 
 		const winner = collected.first()?.author;

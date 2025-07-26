@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 
 import { PerkTier } from '../../lib/constants';
 import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '../../lib/lootTrack';
-
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import type { OSBMahojiCommand } from '../lib/util';
 

@@ -3,6 +3,8 @@ import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, deepClone, percentChance, reduceNumByPercent, roll } from 'e';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
+import { logError } from '@/lib/util/logError';
+import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils';
 import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '../../lib/bso/pvmEffects';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import type { BitField } from '../../lib/constants';
@@ -22,7 +24,6 @@ import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { calculateSimpleMonsterDeathChance } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
@@ -610,7 +611,12 @@ export const monsterTask: MinionTask = {
 
 		const resultOrError = await updateBank.transact(user, { isInWilderness: data.isInWilderness });
 		if (typeof resultOrError === 'string') {
-			return resultOrError;
+			logError(new Error(`${user.logName} monster activity updateBank transact error: ${resultOrError}`), {
+				user_id: user.id,
+				monster_id: monster.id.toString(),
+				quantity: quantity.toString()
+			});
+			return;
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
 		messages.push(...rawResults.filter(r => typeof r === 'string'));

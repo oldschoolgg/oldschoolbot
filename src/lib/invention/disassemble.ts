@@ -15,7 +15,6 @@ import type { DisassembleTaskOptions } from '../types/minions';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { getItem } from '../util/getOSItem';
-import { minionIsBusy } from '../util/minionIsBusy';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 import { DisassemblyGroupMap, DisassemblySourceGroups } from './groups';
@@ -358,7 +357,7 @@ export async function disassembleCommand({
 	quantityToDisassemble: number | undefined;
 	channelID: string;
 }): CommandResponse {
-	if (minionIsBusy(user.id)) return 'Your minion is busy.';
+	if (user.minionIsBusy) return 'Your minion is busy.';
 	const item = getItem(itemToDisassembleName);
 	if (!item) return "That's not a valid item.";
 	const group = findDisassemblyGroup(item);

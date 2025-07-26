@@ -12,6 +12,7 @@ import {
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
 import { skillingPetDropRate } from '@/lib/util';
+import { PeakTier } from '@/lib/util/peaks';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { MAX_LEVEL } from '../../../lib/constants';
@@ -26,8 +27,6 @@ import { type Creature, SkillsEnum } from '../../../lib/skilling/types';
 import type { Gear } from '../../../lib/structures/Gear';
 import type { Skills } from '../../../lib/types';
 import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { PeakTier } from '../../../lib/util/calcWildyPkChance';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { logError } from '../../../lib/util/logError.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
@@ -284,18 +283,17 @@ export function calculateHunterResult({
 
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
-	async run(data: HunterActivityTaskOptions) {
+	isNew: true,
+	async run(data: HunterActivityTaskOptions, { handleTripFinish, user }) {
 		const {
 			creatureID,
 			quantity,
-			userID,
 			channelID,
 			usingHuntPotion = false,
 			wildyPeak,
 			duration,
 			usingStaminaPotion = false
 		} = data;
-		const user = await mUserFetch(userID);
 		const creature = Hunter.Creatures.find(c => c.id === creatureID);
 
 		if (!creature) {

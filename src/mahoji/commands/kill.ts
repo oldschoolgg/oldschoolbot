@@ -1,7 +1,8 @@
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters';
 import { PerkTier } from '../../lib/constants';
 import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
@@ -41,6 +42,12 @@ function determineKillLimit(user: MUser) {
 	return 10_000;
 }
 
+const ALL_VALID_KILLABLE_MONSTERS = [
+	...autocompleteMonsters.map(i => ({ name: i.name, aliases: i.aliases })),
+	...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] })),
+	{ name: 'nightmare', aliases: ['nightmare'] }
+];
+
 export const killCommand: OSBMahojiCommand = {
 	name: 'kill',
 	description: 'Simulate killing monsters.',
@@ -51,19 +58,12 @@ export const killCommand: OSBMahojiCommand = {
 			description: 'The monster you want to simulate killing.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return [
-					...Array.from(Monsters.values()).map(i => ({ name: i.name, aliases: i.aliases })),
-					...simulatedKillables
-						.filter(i => !Array.from(Monsters.values()).some(monster => monster.name === i.name))
-						.map(i => ({ name: i.name, aliases: [i.name] }))
-				]
-					.filter(i =>
-						!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
-					)
-					.map(i => ({
-						name: i.name,
-						value: i.name
-					}));
+				return ALL_VALID_KILLABLE_MONSTERS.filter(i =>
+					!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
+				).map(i => ({
+					name: i.name,
+					value: i.name
+				}));
 			}
 		},
 		{
@@ -100,6 +100,9 @@ export const killCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string; ori?: boolean }>) => {
 		const user = await mUserFetch(userID);
 		await deferInteraction(interaction);
+		if (!ALL_VALID_KILLABLE_MONSTERS.some(i => i.name.toLowerCase() === options.name.toLowerCase())) {
+			return `That's not a valid monster to simulate killing.`;
+		}
 		const result = await Workers.kill({
 			quantity: options.quantity,
 			bossName: options.name,

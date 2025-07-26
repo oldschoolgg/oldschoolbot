@@ -5,14 +5,13 @@ import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '../../../lib/minions/data/quests';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function questCommand(user: MUser, channelID: string, name?: string) {
 	if (!user.user.minion_hasBought) {
 		return 'You need a minion to do a questing trip';
 	}
-	if (minionIsBusy(user.id)) {
+	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to do a questing trip';
 	}
 

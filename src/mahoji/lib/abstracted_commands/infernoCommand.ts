@@ -3,7 +3,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, type ItemBank, Items, Monsters, itemID, randomVariation, resolveItems } from 'oldschooljs';
 
-import { determineProjectileTypeFromGear } from '@/lib/util';
+import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util';
 import { BitField, projectiles } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';

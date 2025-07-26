@@ -1,18 +1,10 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import { channelIsSendable, formatDuration, makeComponents, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable, formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
 import { command_name_enum } from '@prisma/client';
-import {
-	type BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	EmbedBuilder,
-	type Message,
-	bold,
-	time
-} from 'discord.js';
+import { type BaseMessageOptions, EmbedBuilder, type Message, bold, time } from 'discord.js';
 import { Time, isFunction } from 'e';
-import { Items, toKMB } from 'oldschooljs';
+import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
@@ -21,10 +13,9 @@ import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './M
 import { boxSpawnHandler } from './boxSpawns';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
 import { allIronmanMbTables, allMbTables } from './bsoOpenables';
-import { BitField, globalConfig } from './constants';
+import { globalConfig } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
-import type { ItemBank } from './types';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
@@ -238,31 +229,6 @@ const mentionCommands: MentionCommand[] = [
 			msg.reply({
 				content,
 				components
-			});
-		}
-	},
-	{
-		name: command_name_enum.sendtoabutton,
-		aliases: ['sendtoabutton'],
-		description: 'Shows your stats.',
-		run: async ({ msg, user }: MentionCommandOptions) => {
-			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
-				return;
-			}
-			return msg.reply({
-				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
-					globalClient,
-					'raid',
-					'toa',
-					'help'
-				)} command.`,
-				components: makeComponents([
-					new ButtonBuilder()
-						.setStyle(ButtonStyle.Primary)
-						.setCustomId('TOA_CHECK')
-						.setLabel('Check TOA Requirements')
-						.setEmoji('1069174271894638652')
-				])
 			});
 		}
 	},

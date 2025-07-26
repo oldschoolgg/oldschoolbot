@@ -23,12 +23,12 @@ export async function execAsync(command: string | string[], options?: ExecOption
 	}
 }
 
-export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+export async function runTimedLoggedFn(name: string, fn: () => unknown) {
 	const stopwatch = new Stopwatch();
-	stopwatch.start();
+	console.log(`Starting ${name}...`);
 	await fn();
 	stopwatch.stop();
-	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+	console.log(`${name} completed in ${stopwatch.toString()}`);
 }
 
 export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {

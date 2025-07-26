@@ -99,7 +99,8 @@ for (const monster of killableMonsters) {
 		skillsAsLevels,
 		materials,
 		pet: itemID('Ori'),
-		skillsAsXP
+		skillsAsXP,
+		minionName: 'Minion'
 	});
 
 	const pkEvasionExperience = 100000000;

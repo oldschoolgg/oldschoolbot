@@ -7,6 +7,7 @@ import { Bank, convertBankToPerHourStats, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 
 import { itemNameFromID } from '@/lib/util';
+import { PeakTier } from '@/lib/util/peaks';
 import {
 	BathhouseOres,
 	BathwaterMixtures,
@@ -38,7 +39,6 @@ import { HunterTechniqueEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
 import type { BathhouseTaskOptions } from '../../lib/types/minions';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { PeakTier } from '../../lib/util/calcWildyPkChance';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';

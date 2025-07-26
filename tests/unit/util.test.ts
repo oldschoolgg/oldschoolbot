@@ -4,11 +4,12 @@ import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { skillingPetDropRate } from '@/lib/util';
+import { pluraliseItemName } from '@/lib/util/smallUtils';
 import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { Eatables } from '../../src/lib/data/eatables';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import { pluraliseItemName, skillingPetDropRate } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './userutil';

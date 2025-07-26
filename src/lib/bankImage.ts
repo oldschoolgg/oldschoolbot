@@ -22,13 +22,13 @@ import {
 	canvasToBuffer,
 	createCanvas,
 	drawImageWithOutline,
-	fillTextXTimesInCtx,
 	getClippedRegion,
 	loadImage,
 	registerFont
 } from '../lib/util/canvasUtil';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
+import { OSRSCanvas } from './OSRSCanvas';
 import { doaPurples } from './bso/bsoConstants';
 import { divinationEnergies } from './bso/divination';
 import { customItems } from './customItems/util';
@@ -285,17 +285,17 @@ for (const energy of divinationEnergies) {
 	}
 }
 
-function drawTitle(ctx: CanvasContext, title: string, canvas: Canvas) {
-	// Draw Bank Title
-	ctx.font = '16px RuneScape Bold 12';
-	const titleWidthPx = ctx.measureText(title);
-	const titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
+function drawTitle(c: OSRSCanvas, title: string) {
+	const titleWidthPx = c.measureTextWidth(title, 'Bold');
+	const titleX = Math.floor(floor(c.width / 2) - titleWidthPx / 2);
 
-	ctx.fillStyle = '#000000';
-	fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
-
-	ctx.fillStyle = '#ff981f';
-	fillTextXTimesInCtx(ctx, title, titleX, 21);
+	c.drawText({
+		text: title,
+		x: titleX,
+		y: 21,
+		color: '#FF981F',
+		font: 'Bold'
+	});
 }
 
 export const bankFlags = [
@@ -605,69 +605,6 @@ export class BankImageTask {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	drawBorder(ctx: CanvasContext, sprite: IBgSprite, titleLine = true) {
-		// Top border
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
-		ctx.translate(0, 0);
-		ctx.scale(1, 1);
-		ctx.fillRect(0, 0, ctx.canvas.width, sprite.border.height);
-		ctx.restore();
-		// Bottom border
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
-		ctx.translate(0, ctx.canvas.height);
-		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, ctx.canvas.width, sprite.border.height);
-		ctx.restore();
-		// Right border
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
-		ctx.rotate((Math.PI / 180) * 90);
-		ctx.translate(0, -ctx.canvas.width);
-		ctx.fillRect(0, 0, ctx.canvas.height, sprite.border.height);
-		ctx.restore();
-		// Left border
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
-		ctx.rotate((Math.PI / 180) * 90);
-		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, ctx.canvas.height, sprite.border.height);
-		ctx.restore();
-		// Corners
-		// Top left
-		ctx.save();
-		ctx.scale(1, 1);
-		ctx.drawImage(sprite.borderCorner, 0, 0);
-		ctx.restore();
-		// Top right
-		ctx.save();
-		ctx.translate(ctx.canvas.width, 0);
-		ctx.scale(-1, 1);
-		ctx.drawImage(sprite.borderCorner, 0, 0);
-		ctx.restore();
-		// Bottom right
-		ctx.save();
-		ctx.translate(ctx.canvas.width, ctx.canvas.height);
-		ctx.scale(-1, -1);
-		ctx.drawImage(sprite.borderCorner, 0, 0);
-		ctx.restore();
-		// Bottom left
-		ctx.save();
-		ctx.translate(0, ctx.canvas.height);
-		ctx.scale(1, -1);
-		ctx.drawImage(sprite.borderCorner, 0, 0);
-		ctx.restore();
-		// Title border
-		if (titleLine) {
-			ctx.save();
-			ctx.fillStyle = ctx.createPattern(sprite.borderTitle, 'repeat-x')!;
-			ctx.translate(sprite.border.height - 1, 27);
-			ctx.fillRect(0, 0, ctx.canvas.width - sprite.border.height * 2 + 2, sprite.borderTitle.height);
-			ctx.restore();
-		}
-	}
-
 	getBgAndSprite(bankBgId = 1, user?: MUser) {
 		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
 
@@ -698,7 +635,7 @@ export class BankImageTask {
 	}
 
 	async drawItems(
-		ctx: CanvasContext,
+		c: OSRSCanvas,
 		compact: boolean,
 		spacer: number,
 		itemsPerRow: number,
@@ -711,10 +648,10 @@ export class BankImageTask {
 		verticalSpacer = 0,
 		_user?: MUser
 	) {
+		const ctx = c.ctx;
 		// Draw Items
 		ctx.textAlign = 'start';
 		ctx.fillStyle = '#494034';
-		const font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
 
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
@@ -743,16 +680,12 @@ export class BankImageTask {
 
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
-				ctx.font = font;
-				// Check if new cl item
-				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
-				const formattedQuantity = formatItemStackQuantity(quantity);
-				// Draw qty shadow
-				ctx.fillStyle = '#000000';
-				fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 17, yLoc + distanceFromTop - 23);
-				// Draw qty
-				ctx.fillStyle = quantityColor;
-				fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 18, yLoc + distanceFromTop - 24);
+				c.drawText({
+					text: formatItemStackQuantity(quantity),
+					x: xLoc + distanceFromSide - 18,
+					y: yLoc + distanceFromTop - 24,
+					color: isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity)
+				});
 			}
 
 			let bottomItemText: string | number | null = null;
@@ -782,18 +715,19 @@ export class BankImageTask {
 
 			const forcedShortName = forcedShortNameMap.get(item.id);
 			if (forcedShortName && !bottomItemText) {
-				ctx.font = '10px Smallest Pixel-7';
 				bottomItemText = forcedShortName.toUpperCase();
 			}
 
 			if (bottomItemText) {
 				const text =
 					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
-				ctx.fillStyle = 'black';
-				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
-				ctx.fillStyle =
-					typeof bottomItemText === 'string' ? 'white' : generateHexColorForCashStack(bottomItemText);
-				fillTextXTimesInCtx(ctx, text, floor(xLoc - 1), yLoc + distanceFromTop - 1);
+				c.drawText({
+					text,
+					x: floor(xLoc - 1),
+					y: yLoc + distanceFromTop - 1,
+					color: typeof bottomItemText === 'string' ? 'white' : generateHexColorForCashStack(bottomItemText),
+					font: forcedShortName ? 'TinyPixel' : 'Compact'
+				});
 			}
 		}
 	}
@@ -924,7 +858,7 @@ export class BankImageTask {
 		const isPurple: boolean =
 			flags.get('showNewCL') !== undefined &&
 			currentCL !== undefined &&
-			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
+			items.some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
 		const actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
 
@@ -934,18 +868,14 @@ export class BankImageTask {
 			bgImage.id !== 100 &&
 			(user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true);
 
-		const canvas = createCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
+		const canvas = new OSRSCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight), bgSprite);
 
 		let resizeBg = -1;
 		if (!wide && !useSmallBank && !isTransparent && actualBackground && canvasHeight > 331) {
 			resizeBg = Math.min(1440, canvasHeight) / actualBackground.height;
 		}
 
-		const ctx = canvas.getContext('2d');
-		ctx.font = '16px OSRSFontCompact';
-		ctx.imageSmoothingEnabled = false;
-
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		const ctx = canvas.ctx;
 
 		if (!isTransparent) {
 			ctx.fillStyle = ctx.createPattern(bgSprite.repeatableBg, 'repeat')!;
@@ -971,15 +901,15 @@ export class BankImageTask {
 			title += ` (V: ${toKMB(totalValue)} / MV: ${toKMB(marketPriceOfBank(bank))}) `;
 		}
 
-		drawTitle(ctx, title, canvas);
+		drawTitle(canvas, title);
 
 		// Skips border if noBorder is set
 		if (!isTransparent && noBorder !== 1) {
-			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
+			canvas.drawBorder(bgSprite, bgImage.name === 'Default');
 		}
 
 		await this.drawItems(
-			ctx,
+			canvas,
 			compact,
 			spacer,
 			itemsPerRow,
@@ -993,7 +923,7 @@ export class BankImageTask {
 			user
 		);
 
-		const image = await canvasToBuffer(canvas);
+		const image = await canvas.toScaledOutput(2);
 
 		return {
 			image,
@@ -1010,7 +940,7 @@ const chestLootTypes = [
 		width: 240,
 		height: 220,
 		purpleItems: ItemGroups.toaPurpleItems,
-		position: (canvas: Canvas, image: CanvasImage) => [
+		position: (canvas: Canvas | OSRSCanvas, image: CanvasImage) => [
 			canvas.width - image.width + 25,
 			44 + canvas.height / 4 - image.height / 2
 		],
@@ -1023,7 +953,7 @@ const chestLootTypes = [
 		width: 260,
 		height: 180,
 		purpleItems: TOBUniques,
-		position: (canvas: Canvas, image: CanvasImage) => [
+		position: (canvas: Canvas | OSRSCanvas, image: CanvasImage) => [
 			canvas.width - image.width,
 			55 + canvas.height / 4 - image.height / 2
 		],
@@ -1084,17 +1014,15 @@ export async function drawChestLootImage(options: {
 	const type = chestLootTypes.find(t => t.title === options.type);
 	if (!type) throw new Error(`Invalid chest type: ${options.type}`);
 
-	const canvases: Canvas[] = [];
+	const canvases: OSRSCanvas[] = [];
 
 	let anyoneGotPurple = false;
 
 	for (const { previousCL, loot, user, customTexts } of options.entries) {
-		const canvas = createCanvas(type.width, type.height);
-		const ctx = canvas.getContext('2d');
-
 		const { sprite } = bankImageGenerator.getBgAndSprite();
+		const canvas = new OSRSCanvas(type.width, type.height, sprite);
+		const ctx = canvas.ctx;
 
-		ctx.imageSmoothingEnabled = false;
 		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		const isPurple: boolean = loot.items().some(([item]) => type.purpleItems.includes(item.id));
@@ -1102,17 +1030,16 @@ export async function drawChestLootImage(options: {
 		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
 		const [x, y] = type.position(canvas, image);
 		ctx.drawImage(image, x, y);
-		drawTitle(ctx, `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
-		ctx.font = '16px OSRSFontCompact';
-		bankImageGenerator.drawBorder(ctx, sprite, true);
+		drawTitle(canvas, `${user.rawUsername} (${toKMB(loot.value())})`);
+		canvas.drawBorder(sprite, true);
 
 		const xOffset = 10;
 		const yOffset = 45;
 		const [iX, iY, iW, iH] = type.itemRect;
-		const itemCanvas = createCanvas(iW + xOffset, iH + yOffset);
+		const itemCanvas = new OSRSCanvas(iW + xOffset, iH + yOffset);
 
 		await bankImageGenerator.drawItems(
-			itemCanvas.getContext('2d'),
+			itemCanvas,
 			false,
 			5,
 			2,
@@ -1126,12 +1053,15 @@ export async function drawChestLootImage(options: {
 			user
 		);
 
-		ctx.drawImage(itemCanvas, iX - xOffset, iY - yOffset);
+		ctx.drawImage(itemCanvas.getCanvas(), iX - xOffset, iY - yOffset);
 
-		ctx.fillStyle = '#FFFF00';
-		ctx.font = '16px OSRSFontCompact';
 		for (const text of customTexts) {
-			fillTextXTimesInCtx(ctx, text.text, text.x, text.y);
+			canvas.drawText({
+				text: text.text,
+				x: text.x,
+				y: text.y,
+				color: '#FFFF00'
+			});
 		}
 		canvases.push(canvas);
 	}
@@ -1139,7 +1069,7 @@ export async function drawChestLootImage(options: {
 	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}chestloot-${randInt(1, 1000)}.png`;
 
 	if (canvases.length === 1) {
-		return new AttachmentBuilder(await canvasToBuffer(canvases[0]), {
+		return new AttachmentBuilder(await canvases[0].toScaledOutput(2), {
 			name: fileName
 		});
 	}
@@ -1151,7 +1081,7 @@ export async function drawChestLootImage(options: {
 	const combinedCtx = combinedCanvas.getContext('2d');
 	for (const c of canvases) {
 		const index = canvases.indexOf(c);
-		combinedCtx.drawImage(c, index * c.width + spaceBetweenImages * index, 0);
+		combinedCtx.drawImage(c.getCanvas(), index * c.width + spaceBetweenImages * index, 0);
 	}
 	return new AttachmentBuilder(await canvasToBuffer(combinedCanvas), {
 		name: fileName

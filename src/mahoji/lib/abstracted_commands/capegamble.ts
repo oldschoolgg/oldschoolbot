@@ -3,10 +3,10 @@ import { formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { petMessage } from '@/lib/util/displayCluesAndPets';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { petMessage } from '../../../lib/util/handleTripFinish';
 import { roll } from '../../../lib/util/rng';
 import { userStatsUpdate } from '../../mahojiSettings';
 

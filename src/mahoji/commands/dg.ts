@@ -3,7 +3,7 @@ import { channelIsSendable, formatDuration, formatOrdinal, stringMatches } from 
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
-import { formatSkillRequirements } from '@/lib/util';
+import { formatSkillRequirements } from '@/lib/util/smallUtils';
 import { setupParty } from '../../lib/party';
 import {
 	determineDgLevelForFloor,

@@ -10,9 +10,9 @@ import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { setupParty } from '../party';
 import type { Skills } from '../types';
 import type { NewBossOptions } from '../types/minions';
-import { formatSkillRequirements, hasSkillReqs } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
+import { formatSkillRequirements, hasSkillReqs } from '../util/smallUtils';
 import { type ClientBankKey, updateBankSetting } from '../util/updateBankSetting';
 import type { Gear } from './Gear';
 

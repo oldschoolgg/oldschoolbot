@@ -20,10 +20,10 @@ import type { KillableMonster } from './minions/types';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
 import Bars from './skilling/skills/smithing/smeltables';
 import type { MTame } from './structures/MTame';
-import { calculateSimpleMonsterDeathChance } from './util';
 import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import { assert } from './util/logError';
+import { calculateSimpleMonsterDeathChance } from './util/smallUtils';
 
 export enum TameSpeciesID {
 	Igne = 1,

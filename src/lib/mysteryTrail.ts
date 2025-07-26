@@ -1,6 +1,5 @@
 import { Bank, Monsters, itemID, resolveItems } from 'oldschooljs';
 
-import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import creatures from './skilling/skills/hunter/creatures/index.js';
 import { getUsersCurrentSlayerInfo } from './slayer/slayerUtil';
 import type { ActivityTaskData } from './types/minions';
@@ -167,8 +166,8 @@ export const mysteriousTrailTracks: Track[] = [
 					const [_spinTrip, _pickTrip] = lastTwoTrips;
 					if (!_spinTrip || !_pickTrip) return false;
 					const [spinTrip, pickTrip] = [
-						convertStoredActivityToFlatActivity(_spinTrip),
-						convertStoredActivityToFlatActivity(_pickTrip)
+						ActivityManager.convertStoredActivityToFlatActivity(_spinTrip),
+						ActivityManager.convertStoredActivityToFlatActivity(_pickTrip)
 					];
 					if (spinTrip.type !== 'Crafting' || spinTrip.craftableID !== itemID('Bow string')) return false;
 					if (pickTrip.type !== 'Collecting' || pickTrip.collectableID !== itemID('Flax')) return false;

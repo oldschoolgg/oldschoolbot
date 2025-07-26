@@ -1,44 +1,10 @@
-import * as fs from 'node:fs';
-import * as fsPromises from 'node:fs/promises';
+import { OSRSCanvas } from '@/lib/OSRSCanvas';
+import { bankImageTask } from '@/lib/bankImage';
+import type { Gear } from '@/lib/structures/Gear';
+import { calcAspectRatioFit } from '@/lib/util/canvasUtil';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { randInt } from 'e';
-import { EquipmentSlot, type Item } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
-
+import { EquipmentSlot } from 'oldschooljs';
 import { type GearSetup, type GearSetupType, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
-import { monkeyTiers } from '../../monkeyRumble';
-import { Gear } from '../../structures/Gear';
-import {
-	type Canvas,
-	type CanvasImage,
-	calcAspectRatioFit,
-	canvasToBuffer,
-	createCanvas,
-	drawItemQuantityText,
-	drawTitleText,
-	fillTextXTimesInCtx,
-	loadImage
-} from '../../util/canvasUtil';
-import { applyCustomItemEffects } from '../../util/customItemEffects';
-import getOSItem from '../../util/getOSItem';
-import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from '../../util/slayerMaskLeaderboard';
-
-const banana = loadImage(fs.readFileSync('./src/lib/resources/images/banana.png'));
-
-export const gearImages = [
-	{
-		id: 0,
-		template: fs.readFileSync('./src/lib/resources/images/gear_template.png'),
-		templateCompact: fs.readFileSync('./src/lib/resources/images/gear_template_compact.png'),
-		name: 'Default'
-	},
-	{
-		id: 1,
-		template: fs.readFileSync('./src/lib/resources/images/gear_template_hween.png'),
-		templateCompact: fs.readFileSync('./src/lib/resources/images/gear_template_compact_hween.png'),
-		name: 'Spooky'
-	}
-] as const;
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -73,202 +39,228 @@ const slotCoordinatesCompact: { [key in EquipmentSlot]: [number, number] } = {
 	[EquipmentSlot.Ring]: [84, 159]
 };
 
-const slotSize = 36;
+function drawText({
+	canvas,
+	text,
+	x,
+	y,
+	maxStat = true
+}: {
+	canvas: OSRSCanvas;
+	text: string;
+	x: number;
+	y: number;
+	maxStat?: boolean;
+}) {
+	const ctx = canvas.ctx;
 
-function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = true) {
-	const ctx = canvas.getContext('2d');
-	ctx.fillStyle = '#000000';
-	fillTextXTimesInCtx(ctx, text, x + 1, y + 1);
 	if (text.includes(':')) {
 		const texts = text.split(':');
 		for (let i = 0; i < texts.length; i++) {
 			const t = texts[i] + (i === 0 ? ': ' : '');
-			ctx.fillStyle = i === 0 ? '#ff981f' : maxStat ? '#00ff00' : '#ffffff';
-			fillTextXTimesInCtx(
-				ctx,
-				t,
+			const finalX =
 				i === 0
 					? x - (ctx.textAlign === 'end' ? ctx.measureText(texts[i + 1]).width - 3 : 0)
 					: ctx.textAlign === 'end'
 						? x
-						: ctx.measureText(texts[i - 1]).width + x + 3,
-				y
-			);
+						: ctx.measureText(texts[i - 1]).width + x + 3;
+
+			canvas.drawText({
+				text: t,
+				x: finalX,
+				y,
+				color: i === 0 ? '#ff981f' : maxStat ? '#00ff00' : '#ffffff'
+			});
 		}
 	} else {
-		ctx.fillStyle = '#ff981f';
-		fillTextXTimesInCtx(ctx, text, x, y);
+		canvas.drawText({
+			text,
+			x,
+			y,
+			color: '#ff981f'
+		});
 	}
 }
 
-async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: CanvasImage | null) {
-	const ctx = canvas.getContext('2d');
+interface StatGroup {
+	title: string;
+	stats: Array<{
+		label: string;
+		statKey: string;
+		value: number | string;
+		checkMax?: boolean;
+	}>;
+}
 
-	if (alternateImage) {
-		const numBananas = randInt(1, 30);
-		for (let i = 0; i < numBananas; i++) {
-			const b = await banana;
-			ctx.drawImage(
-				b,
-				randInt(1, canvas.width * 0.8),
-				randInt(canvas.height * 0.75, canvas.height * 0.8),
-				b.width,
-				b.height
-			);
+function isMaxStat(statKey: string, value: number): boolean {
+	const maxStats = { ...maxOffenceStats, ...maxDefenceStats };
+	return maxStats[statKey as keyof typeof maxStats] === value;
+}
+
+function drawGearStats(canvas: OSRSCanvas, gearStats: any) {
+	// Define stat groups with their data
+	const attackStats: StatGroup = {
+		title: 'Attack bonus',
+		stats: [
+			{ label: 'Stab', statKey: 'attack_stab', value: gearStats.attack_stab, checkMax: true },
+			{ label: 'Slash', statKey: 'attack_slash', value: gearStats.attack_slash, checkMax: true },
+			{ label: 'Crush', statKey: 'attack_crush', value: gearStats.attack_crush, checkMax: true },
+			{ label: 'Ranged', statKey: 'attack_ranged', value: gearStats.attack_ranged, checkMax: true },
+			{ label: 'Magic', statKey: 'attack_magic', value: gearStats.attack_magic, checkMax: true }
+		]
+	};
+
+	const defenseStats: StatGroup = {
+		title: 'Defence bonus',
+		stats: [
+			{ label: 'Stab', statKey: 'defence_stab', value: gearStats.defence_stab, checkMax: true },
+			{ label: 'Slash', statKey: 'defence_slash', value: gearStats.defence_slash, checkMax: true },
+			{ label: 'Crush', statKey: 'defence_crush', value: gearStats.defence_crush, checkMax: true },
+			{ label: 'Ranged', statKey: 'defence_ranged', value: gearStats.defence_ranged, checkMax: true },
+			{ label: 'Magic', statKey: 'defence_magic', value: gearStats.defence_magic, checkMax: true }
+		]
+	};
+
+	const otherStats = [
+		{ label: 'Melee Str.', statKey: 'melee_strength', value: gearStats.melee_strength, checkMax: false },
+		{ label: 'Ranged Str.', statKey: 'ranged_strength', value: gearStats.ranged_strength, checkMax: false },
+		{
+			label: 'Magic Dmg.',
+			statKey: 'magic_damage',
+			value: `${gearStats.magic_damage.toFixed(1)}%`,
+			checkMax: false
+		},
+		{ label: 'Prayer', statKey: 'prayer', value: gearStats.prayer, checkMax: false }
+	];
+
+	// Helper function to draw a stat group
+	function drawStatGroup(statGroup: StatGroup, x: number, align: 'start' | 'end') {
+		canvas.ctx.save();
+		canvas.ctx.translate(x, 0);
+		canvas.ctx.textAlign = align;
+
+		// Draw title
+		canvas.ctx.font = '16px RuneScape Bold 12';
+		drawText({ canvas, text: statGroup.title, x: 0, y: 25 });
+
+		// Draw stats
+		canvas.ctx.font = '16px OSRSFontCompact';
+		for (const [index, stat] of statGroup.stats.entries()) {
+			const y = 50 + index * 18;
+			const isMax = stat.checkMax && typeof stat.value === 'number' ? isMaxStat(stat.statKey, stat.value) : false;
+
+			drawText({
+				canvas,
+				text: `${stat.label}: ${stat.value}`,
+				x: 0,
+				y,
+				maxStat: isMax
+			});
 		}
-		return;
+
+		canvas.ctx.restore();
 	}
 
-	ctx.save();
-	ctx.translate(225, 0);
-	ctx.font = '16px RuneScape Bold 12';
-	ctx.textAlign = 'start';
-	drawText(canvas, 'Attack bonus', 0, 25);
-	ctx.font = '16px OSRSFontCompact';
-	drawText(canvas, `Stab: ${gearStats.attack_stab}`, 0, 50, maxOffenceStats.attack_stab === gearStats.attack_stab);
-	drawText(
-		canvas,
-		`Slash: ${gearStats.attack_slash}`,
-		0,
-		68,
-		maxOffenceStats.attack_slash === gearStats.attack_slash
-	);
-	drawText(
-		canvas,
-		`Crush: ${gearStats.attack_crush}`,
-		0,
-		86,
-		maxOffenceStats.attack_crush === gearStats.attack_crush
-	);
-	drawText(
-		canvas,
-		`Ranged: ${gearStats.attack_ranged}`,
-		0,
-		104,
-		maxOffenceStats.attack_ranged === gearStats.attack_ranged
-	);
-	drawText(
-		canvas,
-		`Magic: ${gearStats.attack_magic}`,
-		0,
-		122,
-		maxOffenceStats.attack_magic === gearStats.attack_magic
-	);
-	ctx.restore();
-	ctx.save();
-	ctx.translate(canvas.width - 6 * 2, 0);
-	ctx.font = '16px RuneScape Bold 12';
-	ctx.textAlign = 'end';
-	drawText(canvas, 'Defence bonus', 0, 25);
-	ctx.font = '16px OSRSFontCompact';
-	drawText(canvas, `Stab: ${gearStats.defence_stab}`, 0, 50, maxDefenceStats.defence_stab === gearStats.defence_stab);
-	drawText(
-		canvas,
-		`Slash: ${gearStats.defence_slash}`,
-		0,
-		68,
-		maxDefenceStats.defence_slash === gearStats.defence_slash
-	);
-	drawText(
-		canvas,
-		`Crush: ${gearStats.defence_crush}`,
-		0,
-		86,
-		maxDefenceStats.defence_crush === gearStats.defence_crush
-	);
-	drawText(
-		canvas,
-		`Ranged: ${gearStats.defence_ranged}`,
-		0,
-		104,
-		maxDefenceStats.defence_ranged === gearStats.defence_ranged
-	);
-	drawText(
-		canvas,
-		`Magic: ${gearStats.defence_magic}`,
-		0,
-		122,
-		maxDefenceStats.defence_magic === gearStats.defence_magic
-	);
-	ctx.textAlign = 'center';
-	ctx.restore();
-	drawTitleText(ctx, 'Others', 210 + Math.floor(232 / 2), 140);
-	ctx.restore();
-	ctx.save();
-	ctx.translate(225, 0);
-	ctx.font = '16px OSRSFontCompact';
-	ctx.textAlign = 'start';
-	drawText(canvas, `Melee Str.: ${gearStats.melee_strength}`, 0, 165, false);
-	drawText(canvas, `Ranged Str.: ${gearStats.ranged_strength}`, 0, 183, false);
-	// drawText(canvas, `Undead: ${(0).toFixed(1)} %`, 0, 201, false);
-	ctx.restore();
-	ctx.save();
-	ctx.translate(canvas.width - 6 * 2, 0);
-	ctx.font = '16px OSRSFontCompact';
-	ctx.textAlign = 'end';
-	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, 0, 165, false);
-	drawText(canvas, `Prayer: ${gearStats.prayer}`, 0, 183, false);
-	ctx.restore();
-}
+	// Draw attack stats (left side)
+	drawStatGroup(attackStats, 225, 'start');
 
-interface TransmogItem {
-	item: Item;
-	image: Promise<CanvasImage>;
-	maxHeight?: number;
-}
-const transmogItems: TransmogItem[] = [
-	{
-		item: getOSItem('Gorilla rumble greegree'),
-		image: fsPromises.readFile('./src/lib/resources/images/mmmr/gorilla.png').then(loadImage),
-		maxHeight: 170
-	},
-	...monkeyTiers.map(m => m.greegrees.map(g => ({ item: g, image: m.image }))).flat(2),
-	{
-		item: getOSItem('Gastly ghost cape'),
-		image: fsPromises.readFile('./src/lib/resources/images/ghost.png').then(loadImage),
-		maxHeight: 170
-	},
-	{
-		item: getOSItem('Spooky cat ears'),
-		image: fsPromises.readFile('./src/lib/resources/images/cat.png').then(loadImage),
-		maxHeight: 74
-	},
-	{
-		item: getOSItem('Pumpkinpole'),
-		image: fsPromises.readFile('./src/lib/resources/images/pumpkin.png').then(loadImage),
-		maxHeight: 180
+	// Draw defense stats (right side)
+	drawStatGroup(defenseStats, canvas.width - 12, 'end');
+
+	// Draw "Others" section
+	canvas.drawText({
+		text: 'Others',
+		x: 210 + Math.floor(232 / 2),
+		y: 140,
+		font: 'Bold',
+		color: '#ff981f',
+		center: true
+	});
+
+	// Draw other stats (split between left and right)
+	canvas.ctx.save();
+	canvas.ctx.translate(225, 0);
+	canvas.ctx.font = '16px OSRSFontCompact';
+	canvas.ctx.textAlign = 'start';
+
+	// Left side other stats
+	for (const [index, stat] of otherStats.slice(0, 2).entries()) {
+		const y = 165 + index * 18;
+		const isMax = stat.checkMax && typeof stat.value === 'number' ? isMaxStat(stat.statKey, stat.value) : false;
+
+		drawText({
+			canvas,
+			text: `${stat.label}: ${stat.value}`,
+			x: 0,
+			y,
+			maxStat: isMax
+		});
 	}
-];
 
-export async function generateGearImage(
-	user: MUser,
-	gearSetup: Gear | GearSetup,
-	gearType: GearSetupType | null,
-	petID: number | null,
-	titleOverride?: string
-) {
-	const transmogItem = (gearType && transmogItems.find(t => user.gear[gearType].hasEquipped(t.item.name))) ?? null;
-	const transMogImage = transmogItem === null ? null : await transmogItem.image;
+	canvas.ctx.restore();
 
-	const bankBg = user.user.bankBackground ?? 1;
+	canvas.ctx.save();
+	canvas.ctx.translate(canvas.width - 12, 0);
+	canvas.ctx.font = '16px OSRSFontCompact';
+	canvas.ctx.textAlign = 'end';
 
-	const { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg);
+	// Right side other stats
+	for (const [index, stat] of otherStats.slice(2).entries()) {
+		const y = 165 + index * 18;
+		const isMax = stat.checkMax && typeof stat.value === 'number' ? isMaxStat(stat.statKey, stat.value) : false;
 
-	const hexColor = user.user.bank_bg_hex;
+		drawText({
+			canvas,
+			text: `${stat.label}: ${stat.value}`,
+			x: 0,
+			y,
+			maxStat: isMax
+		});
+	}
 
-	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await loadImage(user.gearTemplate.template);
-	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
-	const ctx = canvas.getContext('2d');
-	ctx.imageSmoothingEnabled = false;
+	canvas.ctx.restore();
+}
 
+export async function generateGearImage({
+	gearSetup,
+	petID,
+	gearTemplate = 0,
+	iconPackId,
+	gearType,
+	bankBgHexColor,
+	farmingContract,
+	bankBackgroundId
+}: {
+	gearSetup: Gear;
+	gearType: GearSetupType | null | undefined;
+	petID?: number | null;
+	gearTemplate?: number;
+} & BaseCanvasArgs) {
+	const {
+		sprite,
+		uniqueSprite,
+		background: userBgImage
+	} = bankImageTask.getBgAndSprite({ bankBackgroundId, farmingContract });
+
+	const gearStats = gearSetup.stats;
+	const gearTemplateImage = await gearImages[gearTemplate].template;
+	const canvas = new OSRSCanvas({
+		width: gearTemplateImage.width,
+		height: gearTemplateImage.height,
+		sprite,
+		iconPackId
+	});
+	const ctx = canvas.ctx;
+
+	// Set background
 	ctx.fillStyle = userBgImage.transparent
-		? hexColor
-			? hexColor
+		? bankBgHexColor
+			? bankBgHexColor
 			: 'transparent'
 		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+	// Draw background image if not unique sprite
 	if (!uniqueSprite) {
 		ctx.drawImage(
 			userBgImage.image!,
@@ -276,14 +268,15 @@ export async function generateGearImage(
 			(canvas.height - userBgImage.image!.height) * 0.5
 		);
 	}
-	if (!transMogImage) {
-		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
-	} else {
-		ctx.drawImage(gearTemplateImage, 200, 0, gearTemplateImage.width, gearTemplateImage.height);
-	}
 
-	if (!userBgImage.transparent) bankImageGenerator.drawBorder(ctx, sprite, false);
+	drawGearStats(canvas, gearStats);
 
+	// Draw border if background is not transparent
+	if (!userBgImage.transparent) canvas.drawBorder(sprite, false);
+
+	// Check for transmog item and draw it (early return if found)
+	const transmogItem = transmogItems.find(t => gearSetup.hasEquipped(t.item.id)) ?? null;
+	const transMogImage = transmogItem === null ? null : await transmogItem.image;
 	if (transMogImage) {
 		const maxWidth = gearTemplateImage.width * 0.45;
 		const altSize = calcAspectRatioFit(
@@ -295,90 +288,75 @@ export async function generateGearImage(
 
 		const y = gearTemplateImage.height * 0.9 - altSize.height;
 		ctx.drawImage(transMogImage, maxWidth / 2 - altSize.width / 2, y, altSize.width, altSize.height);
+		return canvas.toScaledOutput(2);
 	}
 
-	// Draw stats
-	if (!transMogImage) await drawStats(canvas, gearStats, transMogImage);
+	// Draw gear template
+	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 
-	ctx.font = '16px OSRSFontCompact';
-	// Draw preset title
-	if (titleOverride || gearType) {
-		drawTitleText(
-			ctx,
-			toTitleCase(titleOverride ?? gearType ?? ''),
-			Math.floor(176 / 2) + (transMogImage ? 200 : 0),
-			25
-		);
+	// Draw gear type title
+	if (gearType) {
+		canvas.drawTitleText({
+			text: toTitleCase(gearType),
+			x: Math.floor(176 / 2),
+			y: 25,
+			center: true
+		});
 	}
 
-	// Draw items
+	// Draw pet
 	if (petID) {
-		const image = await bankImageGenerator.getItemImage(petID, user);
-		const imageAfterEffects = (await applyCustomItemEffects(user, petID)) ?? image;
-		ctx.drawImage(
-			imageAfterEffects,
-			(transMogImage ? 200 : 0) + 178 + slotSize / 2 - image.width / 2,
-			190 + slotSize / 2 - image.height / 2,
-			image.width,
-			image.height
-		);
+		await canvas.drawItemIDSprite({
+			itemID: petID,
+			x: 178,
+			y: 190
+		});
 	}
 
+	// Draw equipped items
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await bankImageGenerator.getItemImage(item.item, user);
-
-		let [x, y] = slotCoordinates[enumName];
-		x = x + slotSize / 2 - image.width / 2;
-		y = y + slotSize / 2 - image.height / 2;
-
-		if (transMogImage) {
-			x += 200;
-		}
-
-		let glow: CanvasImage | null = null;
-		if (allSlayerMaskHelmsAndMasks.has(item.item)) {
-			if (slayerMaskLeaderboardCache.get(item.item) === user?.id) {
-				glow = bankImageGenerator.redGlow;
-			}
-		}
-		if (glow) {
-			const centerX = x + image.width / 2;
-			const centerY = y + image.height / 2;
-			const glowX = centerX - glow.width / 2;
-			const glowY = centerY - glow.width / 2;
-			ctx.strokeStyle = 'red';
-			ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
-		}
-
-		const imageAfterEffects = (await applyCustomItemEffects(user, item.item)) ?? image;
-		ctx.drawImage(imageAfterEffects, x, y, image.width, image.height);
-
-		if (item.quantity > 1) {
-			drawItemQuantityText(ctx, item.quantity, x + 1, y + 9);
-		}
+		const [x, y] = slotCoordinates[enumName];
+		await canvas.drawItemIDSprite({
+			itemID: item.item,
+			x: x,
+			y: y,
+			quantity: item.quantity === 1 ? undefined : item.quantity
+		});
 	}
 
-	return canvasToBuffer(canvas);
+	return canvas.toScaledOutput(2);
 }
 
-export async function generateAllGearImage(user: MUser) {
+export async function generateAllGearImage({
+	bankBackgroundId = 1,
+	gearTemplate = 0,
+	iconPackId,
+	gear,
+	equippedPet,
+	bankBgHexColor,
+	farmingContract
+}: BaseCanvasArgs & {
+	gearTemplate?: number;
+	gear: { [key in GearSetupType]: GearSetup };
+	equippedPet?: number | null;
+}) {
 	const {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
-	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
+	} = bankImageTask.getBgAndSprite({ farmingContract, bankBackgroundId });
 
-	const hexColor = user.user.bank_bg_hex;
-	const gearTemplateImage = await loadImage(user.gearTemplate.templateCompact);
-	const canvas = createCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
-	const ctx = canvas.getContext('2d');
-	ctx.imageSmoothingEnabled = false;
+	const gearTemplateImage = await gearImages[gearTemplate].templateCompact;
+	const width = (gearTemplateImage.width + 10) * 4 + 20;
+	const height = Number(gearTemplateImage.height) * 2 + 70;
+	const canvas = new OSRSCanvas({ width, height, sprite: bgSprite, iconPackId });
+	const ctx = canvas.ctx;
 
 	ctx.fillStyle = userBg.transparent
-		? hexColor
-			? hexColor
+		? bankBgHexColor
+			? bankBgHexColor
 			: 'transparent'
 		: ctx.createPattern(bgSprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -405,48 +383,52 @@ export async function generateAllGearImage(user: MUser) {
 	}
 	let i = 0;
 	let y = 30;
-	for (const type of GearSetupTypes) {
+	for (const gearSetupName of GearSetupTypes) {
 		if (i === 4) {
 			y += gearTemplateImage.height + 30;
 			i = 0;
 		}
-		const gear = user.gear[type];
+		const gearSetup = gear[gearSetupName];
 		ctx.save();
-		ctx.translate(15 + i * (gearTemplateImage.width + 10), y);
-		ctx.font = '16px RuneScape Bold 12';
-		ctx.textAlign = 'center';
-		drawText(canvas, toTitleCase(type), gearTemplateImage.width / 2, -7);
+		const x = Math.floor(gearTemplateImage.width / 2);
+		const translateX = 15 + i * (gearTemplateImage.width + 10);
+		ctx.translate(translateX, y);
+		canvas.drawTitleText({
+			text: toTitleCase(gearSetupName),
+			x,
+			y: -7,
+			center: true
+		});
 		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 		for (const enumName of Object.values(EquipmentSlot)) {
-			const item = gear[enumName];
+			const item = gearSetup[enumName];
 			if (!item) continue;
-			const preImage = await bankImageGenerator.getItemImage(item.item, user);
-			const image = (await applyCustomItemEffects(user, item.item)) ?? preImage;
-			let [x, y] = slotCoordinatesCompact[enumName];
-			x = x + slotSize / 2 - image.width / 2;
-			y = y + slotSize / 2 - image.height / 2;
-			ctx.drawImage(image, x, y, image.width, image.height);
+			const [x, y] = slotCoordinatesCompact[enumName];
 
-			if (item.quantity > 1) {
-				drawItemQuantityText(ctx, item.quantity, x + 1, y + 9);
-			}
+			await canvas.drawItemIDSprite({
+				itemID: item.item,
+				x,
+				y,
+				quantity: item.quantity === 1 ? undefined : item.quantity
+			});
 		}
 		i++;
 		ctx.restore();
 	}
 
-	ctx.font = '16px RuneScape Bold 12';
 	const petX = canvas.width - 50;
 	const petY = canvas.height / 2 + 20;
-	drawText(canvas, 'Pet', petX + 5, petY - 5);
+	canvas.drawTitleText({ text: 'Pet', x: petX + 5, y: petY - 5 });
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
-	const userPet = user.user.minion_equippedPet;
-	if (userPet) {
-		const image = await bankImageGenerator.getItemImage(userPet, user);
-		ctx.drawImage(image, petX, petY, image.width, image.height);
+	if (equippedPet) {
+		await canvas.drawItemIDSprite({
+			itemID: equippedPet,
+			x: petX,
+			y: petY
+		});
 	}
 
-	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
+	if (!userBg.transparent) canvas.drawBorder(bgSprite, false);
 
-	return canvasToBuffer(canvas);
+	return canvas.toScaledOutput(2);
 }

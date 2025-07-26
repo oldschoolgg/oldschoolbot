@@ -26,7 +26,8 @@ import {
 import { Bank, type Item, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
-import { formatSkillRequirements, itemNameFromID } from '@/lib/util';
+import { itemNameFromID } from '@/lib/util';
+import { formatSkillRequirements } from '@/lib/util/smallUtils';
 import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier, badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';

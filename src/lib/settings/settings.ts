@@ -1,5 +1,5 @@
 import { type CommandOptions, type CommandResponse, PerkTier, channelIsSendable } from '@oldschoolgg/toolkit/util';
-import type { Activity, NewUser, Prisma } from '@prisma/client';
+import type { NewUser } from '@prisma/client';
 import type {
 	APIInteractionGuildMember,
 	ButtonInteraction,
@@ -13,11 +13,8 @@ import { isEmpty } from 'remeda';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
-import { minionActivityCache } from '../constants';
-import { isGroupActivity } from '../util';
 import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
-import { convertStoredActivityToFlatActivity } from './prisma';
 
 export * from './minigames';
 
@@ -32,21 +29,6 @@ export async function getNewUser(id: string): Promise<NewUser> {
 		});
 	}
 	return value;
-}
-
-export function minionActivityCacheDelete(userID: string) {
-	const entry = minionActivityCache.get(userID);
-	if (!entry) return;
-
-	const users: string[] = isGroupActivity(entry) ? entry.users : [entry.userID];
-	for (const u of users) {
-		minionActivityCache.delete(u);
-	}
-}
-
-export async function cancelTask(userID: string) {
-	await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
-	minionActivityCache.delete(userID);
 }
 
 async function runMahojiCommand({
@@ -191,16 +173,6 @@ export async function runCommand({
 	}
 
 	return null;
-}
-
-export function activitySync(activity: Activity) {
-	const users: bigint[] | string[] = isGroupActivity(activity.data)
-		? ((activity.data as Prisma.JsonObject).users! as string[])
-		: [activity.user_id];
-	const convertedActivity = convertStoredActivityToFlatActivity(activity);
-	for (const user of users) {
-		minionActivityCache.set(user.toString(), convertedActivity);
-	}
 }
 
 export async function isElligibleForPresent(user: MUser) {

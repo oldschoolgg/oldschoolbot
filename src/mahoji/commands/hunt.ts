@@ -4,6 +4,8 @@ import { Time } from 'e';
 import { reduceNumByPercent } from 'e';
 import { Bank, ECreature, type ItemBank, itemID } from 'oldschooljs';
 
+import type { Skills } from '@/lib/types';
+import type { Peak } from '@/lib/util/peaks';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import type { UserFullGearSetup } from '../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
@@ -14,8 +16,6 @@ import { soteSkillRequirements } from '../../lib/skilling/functions/questRequire
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { type Creature, HunterTechniqueEnum } from '../../lib/skilling/types';
-import type { Peak } from '../../lib/tickers';
-import type { Skills } from '../../lib/types';
 import type { HunterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';

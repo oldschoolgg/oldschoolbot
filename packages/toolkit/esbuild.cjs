@@ -17,7 +17,7 @@ const baseConfig = {
 	bundle: true,
 	entryPoints,
 	platform: 'node',
-	sourcemap: false,
+	sourcemap: true,
 	external: ['discord.js'],
 	loader: {
 		'.json': 'copy'

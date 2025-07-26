@@ -64,7 +64,6 @@ import { findGroupOfUser } from './util/findGroupOfUser';
 import { getKCByName } from './util/getKCByName';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
-import { minionIsBusy } from './util/minionIsBusy';
 import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
 import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
@@ -172,7 +171,8 @@ export class MUserClass {
 			chargeBank: this.ownedChargeBank(),
 			materials: this.ownedMaterials(),
 			pet: this.user.minion_equippedPet,
-			skillsAsXP: this.skillsAsXP
+			skillsAsXP: this.skillsAsXP,
+			minionName: this.minionName
 		});
 	}
 
@@ -523,7 +523,7 @@ export class MUserClass {
 	}
 
 	get minionIsBusy() {
-		return minionIsBusy(this.id);
+		return ActivityManager.minionIsBusy(this.id);
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {

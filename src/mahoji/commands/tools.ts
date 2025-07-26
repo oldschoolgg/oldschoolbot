@@ -37,9 +37,8 @@ import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { keyCrates } from '../../lib/keyCrates.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { type UnifiedOpenable, allOpenables } from '../../lib/openables';
-import { getUsersPerkTier } from '../../lib/perkTiers';
-import { type MinigameName, Minigames } from '../../lib/settings/minigames';
-import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
+import type { MinigameName } from '../../lib/settings/minigames';
+import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
@@ -914,7 +913,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 			}
 		})
 	)
-		.map(convertStoredActivityToFlatActivity)
+		.map(_act => ActivityManager.convertStoredActivityToFlatActivity(_act))
 		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTOBOrTOAActivity(m)) && m.users.length > 1);
 
 	if (masses.length === 0) {
@@ -956,7 +955,7 @@ function calcTime(perkTier: PerkTier | 0) {
 
 export const PATRON_DOUBLE_LOOT_COOLDOWN = Time.Day * 31;
 async function patronTriggerDoubleLoot(user: MUser) {
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
@@ -1421,7 +1420,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return minionStats(mahojiUser.user);
 			}
 			if (patron.give_box) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				return giveBox(mahojiUser, patron.give_box.user);
 			}
 			if (patron.activity_export) {

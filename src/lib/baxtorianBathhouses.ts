@@ -12,12 +12,13 @@ import { SkillsEnum } from './skilling/types';
 import { TameSpeciesID, getAllUserTames } from './tames';
 import type { Skills } from './types';
 import type { BathhouseTaskOptions } from './types/minions';
-import { formatSkillRequirements, skillsMeetRequirements } from './util';
+import { skillsMeetRequirements } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
 import { handleTripFinish } from './util/handleTripFinish';
 import { makeBankImage } from './util/makeBankImage';
+import { formatSkillRequirements } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;

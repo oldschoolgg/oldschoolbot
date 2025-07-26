@@ -1,6 +1,6 @@
 import { randInt } from 'e';
 
-import { userHasMasterFarmerOutfit } from '../../../mahoji/mahojiSettings';
+import { masterFarmerOutfit } from '@/lib/bso/bsoConstants';
 import { hasUnlockedAtlantis } from '../../bso/bsoUtil';
 import { BitField } from '../../constants';
 import { QuestID } from '../../minions/data/quests';
@@ -33,7 +33,7 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 		}
 	}
 	if (user.bitfield.includes(BitField.HasScrollOfFarming)) numOfPatches += 2;
-	if (userHasMasterFarmerOutfit(user)) numOfPatches += 3;
+	if (user.hasEquipped(masterFarmerOutfit, true)) numOfPatches += 3;
 
 	// Unlock extra patches in Atlantis
 	const atlantisPatches: Partial<Record<FarmingPatchName, number>> = {
