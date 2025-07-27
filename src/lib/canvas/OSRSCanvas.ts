@@ -237,7 +237,7 @@ export class OSRSCanvas {
 		this.ctx.restore();
 	}
 
-	drawBorder(_sprite: IBgSprite, titleLine = true) {
+	drawBorder(_sprite?: IBgSprite, titleLine = true) {
 		if (!this.sprite) throw new Error('No sprite provided for drawing border');
 		OSRSCanvas.drawBorder(this.ctx, _sprite ?? this.sprite, titleLine);
 	}
