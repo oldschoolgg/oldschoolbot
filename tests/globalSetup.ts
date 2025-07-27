@@ -1,20 +1,13 @@
-import { InteractionID } from '@/lib/InteractionID';
-import '../src/lib/safeglobals';
 import { Collection, type Message } from 'discord.js';
 import { randArrItem } from 'e';
 import { vi } from 'vitest';
+
+import '../src/lib/safeglobals';
+import { InteractionID } from '@/lib/InteractionID';
 import { TEST_CHANNEL_ID, mockChannel, mockInteraction } from './integration/util';
 
-vi.mock('@oldschoolgg/toolkit', async () => {
-	const actual: any = await vi.importActual('@oldschoolgg/toolkit');
-	return {
-		...actual,
-		mentionCommand: async (_args: any) => 'hi'
-	};
-});
-
-vi.mock('@oldschoolgg/toolkit/util', async () => {
-	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit/util');
+vi.mock('@oldschoolgg/toolkit/discord-util', async () => {
+	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit/discord-util');
 	return {
 		...actualToolkit,
 		channelIsSendable: vi.fn().mockReturnValue(true),
