@@ -186,6 +186,9 @@ describe('PVM', async () => {
 
 	describe(
 		'should fail to kill skotizo with no totems',
+		{
+			repeats: 5
+		},
 		async () => {
 			const user = await client.mockUser({
 				rangeLevel: 99,
@@ -199,9 +202,6 @@ describe('PVM', async () => {
 					expect(result.commandResult).toContain("You don't have the items");
 				});
 			}
-		},
-		{
-			repeats: 5
 		}
 	);
 

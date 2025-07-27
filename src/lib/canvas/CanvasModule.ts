@@ -2,6 +2,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { loadImage } from 'skia-canvas';
 
+import { BOT_TYPE } from '../constants';
 import { CanvasSpritesheet } from './CanvasSpritesheet';
 import { ItemIconPacks } from './iconPacks';
 
@@ -33,7 +34,7 @@ class CanvasModuleSingleton {
 
 		// Init/load icon pack icons
 		for (const pack of Object.values(ItemIconPacks)) {
-			const directories = __BOT_TYPE__ === 'OSB' ? ['osb'] : ['osb', 'bso'];
+			const directories = BOT_TYPE === 'OSB' ? ['osb'] : ['osb', 'bso'];
 
 			for (const dir of directories) {
 				const filesInThisDir = await readdir(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}`);

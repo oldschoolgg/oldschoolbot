@@ -11,6 +11,7 @@ import {
 	loadImage
 } from 'skia-canvas';
 
+import { BOT_TYPE } from '../constants';
 import { CanvasModule } from './CanvasModule';
 import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet';
 import { type CanvasImage, type IBgSprite, drawImageWithOutline, getClippedRegion } from './canvasUtil';
@@ -307,7 +308,7 @@ export class OSRSCanvas {
 	}
 
 	private static getItemSpriteData(itemID: number): CanvasSpritesheet | null {
-		if (__BOT_TYPE__ === 'BSO' && CanvasModule.Spritesheet.BSOItems.has(itemID)) {
+		if (BOT_TYPE === 'BSO' && CanvasModule.Spritesheet.BSOItems.has(itemID)) {
 			return CanvasModule.Spritesheet.BSOItems;
 		}
 

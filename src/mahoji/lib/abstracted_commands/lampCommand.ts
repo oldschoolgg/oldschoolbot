@@ -1,9 +1,9 @@
 import { clamp, objectValues } from 'e';
-import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 
-import { isValidSkill } from '@/lib/util';
+import { isValidSkill } from '@/lib/util/smallUtils';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ItemBank, Skills } from '../../../lib/types';
+import type { Skills } from '../../../lib/types';
 import { assert } from '../../../lib/util/logError';
 import { userStatsUpdate } from '../../mahojiSettings';
 
