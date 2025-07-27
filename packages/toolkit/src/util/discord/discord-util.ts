@@ -1,8 +1,6 @@
 import deepMerge from 'deepmerge';
 import type { BaseMessageOptions, InteractionReplyOptions } from 'discord.js';
 
-import type { CommandResponse } from './MahojiClient/mahojiTypes';
-
 export function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
 	if (!one) return {};
 	if (typeof one === 'string') return { content: one };
@@ -56,3 +54,5 @@ export function returnStringOrFile(string: string | InteractionReplyOptions): Aw
 	}
 	return string;
 }
+
+export type { CommandResponse, CommandRunOptions, OSBMahojiCommand };

@@ -72,15 +72,30 @@ export interface CommandOptions {
 	[key: string]: MahojiCommandOption | CommandOptions;
 }
 
-export interface CommandRunOptions<T extends CommandOptions = {}> {
-	interaction: ChatInputCommandInteraction;
-	options: T;
-	client: MahojiClient;
-	user: User;
-	member?: BaseInteraction['member'];
-	channelID: string;
-	guildID?: string;
-	userID: string;
-}
+// export interface CommandRunOptions<T extends CommandOptions = {}> {
+// 	interaction: ChatInputCommandInteraction;
+// 	options: T;
+// 	client: MahojiClient;
+// 	user: User;
+// 	member?: BaseInteraction['member'];
+// 	channelID: string;
+// 	guildID?: string;
+// 	userID: string;
+// }
 
-export type CommandResponse = Promise<null | string | InteractionReplyOptions>;
+// export type CommandResponse = Promise<null | string | InteractionReplyOptions>;
+
+declare global {
+	interface CommandRunOptions<T extends CommandOptions = {}> {
+		interaction: ChatInputCommandInteraction;
+		options: T;
+		client: MahojiClient;
+		user: User;
+		member?: BaseInteraction['member'];
+		channelID: string;
+		guildID?: string;
+		userID: string;
+	}
+
+	type CommandResponse = Promise<null | string | InteractionReplyOptions>;
+}

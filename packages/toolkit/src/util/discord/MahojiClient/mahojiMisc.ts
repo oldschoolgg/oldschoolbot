@@ -26,10 +26,6 @@ export interface AbstractCommand {
 	attributes?: AbstractCommandAttributes;
 }
 
-export interface OSBMahojiCommand extends ICommand {
-	attributes?: Omit<AbstractCommandAttributes, 'description'>;
-}
-
 export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand): AbstractCommand {
 	return {
 		name: command.name,
@@ -39,4 +35,10 @@ export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand)
 
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return Array.from(mahojiClient.commands.values()).map(convertMahojiCommandToAbstractCommand);
+}
+
+declare global {
+	interface OSBMahojiCommand extends ICommand {
+		attributes?: Omit<AbstractCommandAttributes, 'description'>;
+	}
 }
