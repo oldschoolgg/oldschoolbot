@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage';
-import { baseSnapshotPath } from '../testConstants';
+import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('Chest Images', async () => {
 	test('TOA Chest Loot Image', async () => {

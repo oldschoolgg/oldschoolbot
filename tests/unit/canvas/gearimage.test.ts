@@ -8,7 +8,7 @@ import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGe
 import { COXMaxMeleeGear } from '@/lib/data/cox';
 import Farming from '@/lib/skilling/skills/farming';
 import { Gear } from '@/lib/structures/Gear';
-import { baseSnapshotPath } from '../testConstants';
+import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('Gear Images', async () => {
 	const gear = COXMaxMeleeGear.clone();

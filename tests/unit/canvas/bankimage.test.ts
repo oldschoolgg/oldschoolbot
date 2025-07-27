@@ -7,7 +7,7 @@ import { bankImageTask } from '@/lib/canvas/bankImage';
 import { IconPackID } from '@/lib/canvas/iconPacks';
 import { allCLItems } from '@/lib/data/Collections';
 import { makeBankImage } from '@/lib/util/makeBankImage';
-import { baseSnapshotPath } from '../testConstants';
+import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('Bank Images', async () => {
 	const testItems = [...Monsters.Cow.allItems, ...Monsters.CorporealBeast.allItems, EItem.PHOENIX];
