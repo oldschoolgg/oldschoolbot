@@ -234,7 +234,11 @@ export class TestUser extends MUserClass {
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
-		const result = await command.run({ ...commandRunOptions(this.id), options });
+		const result = await command.run({
+			...commandRunOptions(this.id),
+			user: { createdAt: new Date(), id: this.id } as DJSUser,
+			options
+		});
 		if (syncAfter) {
 			await this.sync();
 		}
