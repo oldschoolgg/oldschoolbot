@@ -237,10 +237,13 @@ export class OSRSCanvas {
 		this.ctx.restore();
 	}
 
-	drawBorder(_sprite?: IBgSprite, titleLine = true) {
-		const sprite = _sprite ?? this.sprite;
+	drawBorder(_sprite: IBgSprite, titleLine = true) {
+		if (!this.sprite) throw new Error('No sprite provided for drawing border');
+		OSRSCanvas.drawBorder(this.ctx, _sprite ?? this.sprite, titleLine);
+	}
+
+	static drawBorder(ctx: CanvasContext, sprite: IBgSprite, titleLine = true) {
 		if (!sprite) throw new Error('No sprite provided for drawing border');
-		const ctx = this.ctx;
 		// Top border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
