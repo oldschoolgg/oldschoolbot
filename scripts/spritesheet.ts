@@ -7,12 +7,15 @@ import '../src/lib/safeglobals';
 import sharp from 'sharp';
 
 import { isFunction, uniqueArr } from 'e';
-import { Bank, Items, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
 import { BOT_TYPE } from '../src/lib/constants';
 import { allCLItems } from '../src/lib/data/Collections';
 import Buyables from '../src/lib/data/buyables/buyables';
 import Createables from '../src/lib/data/createables';
+
+import bsoItemsJson from '../data/bso/bso_items.json';
+import bsoMonstersJson from '../data/bso/monsters.json';
 
 const SPRITESHEETS_DIR = './src/lib/resources/spritesheets';
 const stopwatch = new Stopwatch();
@@ -77,7 +80,12 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		'Rune staff of collection',
 		'Dragon staff of collection',
 		'Gilded staff of collection'
-	])
+	]),
+	...uniqueArr(bsoMonstersJson.data.map(m => m.all_droppable_items).flat(100)).filter(id => {
+		if ((bsoItemsJson as any as ItemBank)[id]) return false;
+		if (!Items.has(id)) return false;
+		return true;
+	})
 ]);
 
 const getPngFiles = async (dir: string): Promise<string[]> => {
