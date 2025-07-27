@@ -4,12 +4,12 @@ import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
 import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
 
 import { countUsersWithItemInCl } from '@/lib/rawSql';
+import chatHeadImage from '../../../lib/canvas/chatHeadImage';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { InfernoOptions } from '../../../lib/types/minions';
-import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';

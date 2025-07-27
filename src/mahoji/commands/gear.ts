@@ -1,15 +1,15 @@
+import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil';
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
+import { loadImage } from 'skia-canvas';
 
 import { GearSetupTypes } from '@/lib/gear';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
-import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { canvasToBuffer, createCanvas, loadImage } from '../../lib/util/canvasUtil';
 import { findBestGearSetups } from '../../lib/util/findBISGear';
 import {
 	gearEquipCommand,
@@ -19,7 +19,6 @@ import {
 	gearViewCommand
 } from '../lib/abstracted_commands/gearCommands';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gearValidationChecks = new Set();
@@ -217,7 +216,7 @@ export const gearCommand: OSBMahojiCommand = {
 			const totalCanvas = createCanvas(5 * 175, 240);
 			const ctx = totalCanvas.getContext('2d');
 			for (let i = 0; i < 5; i++) {
-				const gearImage = await generateGearImage(user, res[i], 'melee', null, `${i + 1}`);
+				const gearImage = await user.generateGearImage({ gearSetup: res[i] });
 				ctx.drawImage(await loadImage(gearImage), i * 175, 0);
 			}
 			return {

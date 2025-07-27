@@ -1,7 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { channelIsSendable, formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { calcWhatPercent } from 'e';
-import { Bank, TOBRooms, itemID } from 'oldschooljs';
+import { Bank, TOBRooms, itemID, randomVariation } from 'oldschooljs';
 
 import { skillsMeetRequirements } from '@/lib/util';
 import { formatSkillRequirements } from '@/lib/util/smallUtils';

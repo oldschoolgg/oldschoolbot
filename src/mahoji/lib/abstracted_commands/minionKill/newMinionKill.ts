@@ -8,7 +8,7 @@ import z from 'zod';
 import type { Peak } from '@/lib/util/peaks';
 import { calculateSimpleMonsterDeathChance, zodEnum } from '@/lib/util/smallUtils';
 import { YETI_ID } from '../../../../lib/bso/bsoConstants';
-import { BitField } from '../../../../lib/constants';
+import { BitField, type PvMMethod } from '../../../../lib/constants';
 import { getSimilarItems } from '../../../../lib/data/similarItems';
 import { checkRangeGearWeapon } from '../../../../lib/gear/functions/checkRangeGearWeapon';
 import type { InventionID } from '../../../../lib/invention/inventions';
@@ -29,7 +29,6 @@ import {
 } from '../../../../lib/slayer/slayerUtil';
 import type { GearBank } from '../../../../lib/structures/GearBank';
 import { UpdateBank } from '../../../../lib/structures/UpdateBank';
-import type { PvMMethod } from '../../../commands/k';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed';

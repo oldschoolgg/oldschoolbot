@@ -1,4 +1,5 @@
-import { isAtleastThisOld, mentionCommand } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { isAtleastThisOld } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 

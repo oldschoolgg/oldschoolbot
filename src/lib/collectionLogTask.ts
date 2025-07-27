@@ -1,11 +1,14 @@
-import { type CommandResponse, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
+import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
+import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { calcWhatPercent, objectEntries } from 'e';
 import { type Bank, Items, Util } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport';
-import { OSRSCanvas } from './OSRSCanvas';
-import type { IBgSprite } from './bankImage';
+import { OSRSCanvas } from './canvas/OSRSCanvas';
+import { bankImageTask } from './canvas/bankImage';
+import type { IBgSprite } from './canvas/canvasUtil';
 import type { MUserStats } from './structures/MUserStats';
 
 export const collectionLogTypes = [
@@ -54,7 +57,7 @@ class CollectionLogTask {
 			odd: sprite.oddListColor
 		};
 
-		const _canvas = new OSRSCanvas(200, leftHeight);
+		const _canvas = new OSRSCanvas({ width: 200, height: leftHeight });
 		let index = 0;
 		let widestNameLength = 0;
 
@@ -101,7 +104,10 @@ class CollectionLogTask {
 		collectionLog?: IToReturnCollection;
 		minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 	}): Promise<CommandResponse> {
-		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
+		const { sprite } = bankImageTask.getBgAndSprite({
+			bankBackgroundId: options.user.user.bankBackground,
+			farmingContract: options.user.farmingContract()
+		});
 
 		if (options.flags.temp) {
 			options.type = 'temp';
@@ -197,7 +203,12 @@ class CollectionLogTask {
 			)
 		);
 
-		const canvas = new OSRSCanvas(canvasWidth, canvasHeight, sprite);
+		const canvas = new OSRSCanvas({
+			width: canvasWidth,
+			height: canvasHeight,
+			sprite,
+			iconPackId: user.iconPackId
+		});
 		const ctx = canvas.ctx;
 
 		// 69 = top border height + bottom border height + title space + tab space
@@ -259,13 +270,7 @@ class CollectionLogTask {
 			if (!userCollectionBank.has(item)) {
 				ctx.globalAlpha = 0.3;
 			}
-			await bankImageGenerator.drawItemIDSprite({
-				itemID: item,
-				ctx,
-				x: i * (itemSize + itemSpacer),
-				y: y * (itemSize + itemSpacer),
-				user
-			});
+
 			let qtyText = 0;
 			if (!userCollectionBank.has(item)) {
 				ctx.globalAlpha = 0.3;
@@ -274,6 +279,13 @@ class CollectionLogTask {
 			}
 
 			totalPrice += (Items.getOrThrow(item).price ?? 0) * qtyText;
+
+			await canvas.drawItemIDSprite({
+				itemID: item,
+				x: Math.floor(i * (itemSize + itemSpacer)) + 1,
+				y: Math.floor(y * (itemSize + itemSpacer)) + 1,
+				quantity: qtyText > 0 ? qtyText : undefined
+			});
 
 			ctx.globalAlpha = 1;
 			i++;

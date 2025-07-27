@@ -1,4 +1,5 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs';
 

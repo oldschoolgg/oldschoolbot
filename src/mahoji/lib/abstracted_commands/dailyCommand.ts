@@ -1,5 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, channelIsSendable, formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { roll, shuffleArr, uniqueArr } from 'e';
 

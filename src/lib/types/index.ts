@@ -28,14 +28,3 @@ export type Skills = Partial<{
 
 export type SkillRequirements = Skills & { combat?: number };
 export type SkillsRequired = Required<Skills>;
-
-export type CategoryFlag =
-	| 'minion'
-	| 'settings'
-	| 'patron'
-	| 'skilling'
-	| 'pvm'
-	| 'minigame'
-	| 'utility'
-	| 'fun'
-	| 'simulation';

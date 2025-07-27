@@ -1,16 +1,16 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil';
 import { globalConfig } from '@/lib/constants';
-import { Events } from '@oldschoolgg/toolkit/constants';
 import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
 import { getUsernameSync } from '../../lib/util';
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { mahojiGuildSettingsUpdate } from '../guildSettings';
-import { type OSBMahojiCommand, resetCooldown } from '../lib/util';
+import { Cooldowns } from '../lib/Cooldowns';
 
 const apeAtoll = [1059, 1226];
 const portSarim = [1418, 422];
@@ -145,7 +145,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ move?: MegaduckDirection; reset?: boolean }>) => {
 		const user = await mUserFetch(userID);
 		const withoutCooldown = (message: string) => {
-			resetCooldown(user, 'megaduck');
+			Cooldowns.delete(user.id, 'megaduck');
 			return message;
 		};
 
@@ -190,7 +190,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 
 		const { image } = await makeImage(location);
 		if (!direction) {
-			resetCooldown(user, 'megaduck');
+			Cooldowns.delete(user.id, 'megaduck');
 			return {
 				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[user.id] ?? 0

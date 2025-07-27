@@ -3,7 +3,7 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
 import { Bank, type ItemBank, SkillsEnum, resolveItems } from 'oldschooljs';
 
-import { drawChestLootImage } from '../../../lib/bankImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { DOANonUniqueTable } from '../../../lib/bso/doa/doaLootTable';
 import { doaCL, doaMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../../lib/data/globalDroprates';

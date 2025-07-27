@@ -1,13 +1,12 @@
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	type MahojiUserOption,
-	PerkTier,
-	asyncGzip,
-	formatDuration,
-	stringMatches
-} from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import type {
+	CommandResponse,
+	CommandRunOptions,
+	MahojiUserOption,
+	OSBMahojiCommand
+} from '@oldschoolgg/toolkit/discord-util';
+import { asyncGzip } from '@oldschoolgg/toolkit/node';
+import { PerkTier, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
 import { Time, randArrItem, randInt, roll, shuffleArr } from 'e';
@@ -58,7 +57,6 @@ import {
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { buttonUserPicker } from '../lib/buttonUserPicker';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
 function isRaidsActivity(data: any): data is RaidsOptions {

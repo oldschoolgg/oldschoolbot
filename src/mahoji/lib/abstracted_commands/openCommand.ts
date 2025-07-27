@@ -1,15 +1,17 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, PerkTier, makeComponents, stringMatches } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
+import { BitField, PerkTier } from '@/lib/constants';
+import { roboChimpUserFetch } from '@/lib/roboChimp';
+import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField } from '../../../lib/constants';
-import { type UnifiedOpenable, allOpenables, getOpenableLoot } from '../../../lib/openables';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { checkElderClueRequirements } from '../../../lib/util/elderClueRequirements';
+import type { UnifiedOpenable } from '../../../lib/openables';
+import { allOpenables, getOpenableLoot } from '../../../lib/openables';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { assert } from '../../../lib/util/logError';

@@ -10,7 +10,6 @@ import { globalDroprates } from '../../lib/data/globalDroprates';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import Potions from '../../lib/skilling/skills/herblore/mixables/potions';
-import type { OSBMahojiCommand } from '../lib/util';
 
 interface GlobalDroprate {
 	name: string;

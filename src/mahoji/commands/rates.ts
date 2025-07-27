@@ -6,6 +6,7 @@ import { Time, increaseNumByPercent, sumArr } from 'e';
 import { Bank, convertBankToPerHourStats, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 
+import type { GearBank } from '@/lib/structures/GearBank';
 import { itemNameFromID } from '@/lib/util';
 import { PeakTier } from '@/lib/util/peaks';
 import {
@@ -46,7 +47,6 @@ import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneer
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { calculateTuraelsTrialsResult } from '../../tasks/minions/bso/turaelsTrialsActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
-import type { OSBMahojiCommand } from '../lib/util';
 import { calculateHunterInput } from './hunt';
 import { calculateMiningInput } from './mine';
 import { determineTameClueResult } from './tames';
@@ -505,23 +505,26 @@ ${zygomiteFarmingSource
 									}
 
 									const fullSetup = {
-										skilling: fakeGear,
-										misc: secondaryGearSetup
-									} as any;
+										gear: {
+											skilling: fakeGear,
+											misc: secondaryGearSetup
+										},
+										bank: new Bank()
+									} as any as GearBank;
 
 									const result = calculateMiningInput({
 										nameInput: ore.name,
 										quantityInput: undefined,
 										isPowermining: isPowerminingInput,
-										gear: fullSetup,
+										gearBank: fullSetup,
 										hasSOTFQuest: true,
 										qp: 500,
 										miningLevel,
 										craftingLevel: 120,
 										strengthLevel: 120,
 										maxTripLength: duration,
-										user,
-										hasKaramjaMedium: true
+										hasKaramjaMedium: true,
+										hasDT2Quest: true
 									});
 									if (typeof result === 'string') continue;
 									const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
@@ -539,17 +542,14 @@ ${zygomiteFarmingSource
 											quantity: result.newQuantity,
 											hasMiningMasterCape: true,
 											ore,
-											allGear: fullSetup,
-											miningLevel,
 											disabledInventions: [],
-											equippedPet: null,
 											amountOfSpiritsToUse,
 											spiritOre,
 											portentResult: !shouldUsePortent
 												? { didCharge: false }
 												: ({ didCharge: true, portent: { charges_remaining: 1000 } } as any),
 											collectionLog: new Bank(),
-											miningXP: 500_000_000
+											gearBank: fullSetup
 										});
 
 									results += [

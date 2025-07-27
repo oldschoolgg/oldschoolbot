@@ -1,12 +1,9 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
+import { PVM_METHODS, type PvMMethod } from '@/lib/constants';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
-import type { OSBMahojiCommand } from '../lib/util';
-
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
-export type PvMMethod = (typeof PVM_METHODS)[number];
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
 	const res = await prisma.$queryRawUnsafe<{ mon_id: string; last_killed: Date }[]>(

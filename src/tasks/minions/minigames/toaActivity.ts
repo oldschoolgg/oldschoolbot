@@ -4,11 +4,17 @@ import { bold } from 'discord.js';
 import { Time, isObject, uniqueArr } from 'e';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { normalizeTOAUsers } from '@/lib/util/smallUtils';
-import { drawChestLootImage } from '../../../lib/bankImage';
 import { trackLoot } from '../../../lib/lootTrack';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '../../../lib/simulation/toa';
+import {
+	type RaidLevel,
+	calcTOALoot,
+	calculateXPFromRaid,
+	toaOrnamentKits,
+	toaPetTransmogItems
+} from '../../../lib/simulation/toa';
 import type { TOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
@@ -99,7 +105,7 @@ export const toaTask: MinionTask = {
 						deaths: i.deaths
 					};
 				}),
-				raidLevel
+				raidLevel: raidLevel as RaidLevel
 			});
 			for (const { id, points, deaths } of detailedUsers[x]) {
 				const currentUser = raidResults.get(id)!;

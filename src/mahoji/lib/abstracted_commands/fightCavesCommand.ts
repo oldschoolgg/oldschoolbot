@@ -2,10 +2,10 @@ import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit/util'
 import { Time, calcWhatPercent, percentChance, randInt, reduceNumByPercent } from 'e';
 import { Bank, Monsters, itemID } from 'oldschooljs';
 
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const fightCavesCost = new Bank({

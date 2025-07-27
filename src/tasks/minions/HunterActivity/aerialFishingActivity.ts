@@ -80,9 +80,9 @@ export const aerialFishingTask: MinionTask = {
 
 		// If they have the entire angler outfit, give an extra 2.5% xp bonus
 		if (
-			user.hasEquippedOrInBank(
-				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
-				'every'
+			user.gear.skilling.hasEquipped(
+				Fishing.anglerItems.map(i => i[0]),
+				true
 			)
 		) {
 			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
@@ -90,8 +90,8 @@ export const aerialFishingTask: MinionTask = {
 			bonusXP += amountToAdd;
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
+			for (const [itemID, bonus] of Fishing.anglerItems) {
+				if (user.hasEquipped(itemID)) {
 					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
 					fishXpReceived += amountToAdd;
 					bonusXP += amountToAdd;

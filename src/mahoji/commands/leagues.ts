@@ -13,7 +13,6 @@ import {
 import { getUsersPerkTier } from '../../lib/perkTiers';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { Cooldowns } from '../lib/Cooldowns';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const bsoLeaguesCommand: OSBMahojiCommand = {
 	name: 'leagues',

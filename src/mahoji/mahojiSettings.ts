@@ -1,4 +1,4 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit/util';
+import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, isObject, notEmpty, objectEntries } from 'e';

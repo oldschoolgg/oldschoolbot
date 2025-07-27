@@ -4,6 +4,7 @@ import { Bank, Items, Monsters, increaseBankQuantitesByPercent, itemID } from 'o
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
 import { roll } from '@/lib/util/rng';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
+import chatHeadImage from '../../lib/canvas/chatHeadImage';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { BitField } from '../../lib/constants';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
@@ -15,7 +16,6 @@ import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { type Plant, SkillsEnum } from '../../lib/skilling/types';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
-import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { assert } from '../../lib/util/logError';

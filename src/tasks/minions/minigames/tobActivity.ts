@@ -3,7 +3,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { drawChestLootImage } from '../../../lib/bankImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { CHINCANNON_MESSAGES } from '../../../lib/bso/bsoConstants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques } from '../../../lib/data/tob';

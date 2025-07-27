@@ -2,7 +2,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll, shuffleArr } from 'e';
 import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
 
-import { drawChestLootImage } from '../../../lib/bankImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { CHINCANNON_MESSAGES } from '../../../lib/bso/bsoConstants';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';

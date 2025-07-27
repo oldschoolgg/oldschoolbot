@@ -1,11 +1,11 @@
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
 	type CommandRunOptions,
+	type OSBMahojiCommand,
 	channelIsSendable,
-	formatDuration,
-	stringMatches,
-	toTitleCase
-} from '@oldschoolgg/toolkit';
-import { makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
+	makePaginatedMessage
+} from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import type { UserStats } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
@@ -35,7 +35,6 @@ import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '../../lib/util/clLea
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { userEventsToMap } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const LB_PAGE_SIZE = 10;
 

@@ -1,4 +1,4 @@
-import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit/discord-util';
 import { Hono } from 'hono';
 
 import { Err, type HonoServerGeneric, Res } from './lib/helpers.js';

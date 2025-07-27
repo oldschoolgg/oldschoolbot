@@ -1,4 +1,4 @@
-import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/toolkit';
+import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { activity_type_enum } from '@prisma/client';
 import {
@@ -22,6 +22,7 @@ import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from
 import { PortentID, chargePortentIfHasCharges, getAllPortentCharges } from '../bso/divination';
 import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
+import { mahojiChatHead } from '../canvas/chatHeadImage';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
@@ -38,7 +39,6 @@ import { calculateBirdhouseDetails } from '../skilling/skills/hunter/birdhouses'
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { mahojiChatHead } from './chatHeadImage';
 import { handleCrateSpawns } from './handleCrateSpawns';
 import {
 	makeAutoContractButton,

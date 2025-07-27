@@ -1,4 +1,4 @@
-import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, type OSBMahojiCommand, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
@@ -14,7 +14,6 @@ import {
 } from '../../lib/combat_achievements/combatAchievements';
 import { Requirements } from '../../lib/structures/Requirements';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 

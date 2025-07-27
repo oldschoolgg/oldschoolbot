@@ -3,8 +3,8 @@ import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, Skill
 import type { OffenceGearStat } from 'oldschooljs/gear';
 import { omit } from 'remeda';
 
+import type { PvMMethod } from '@/lib/constants';
 import type { PrimaryGearSetupType } from '@/lib/gear';
-import { itemNameFromID } from '@/lib/util';
 import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { gearstatToSetup, gorajanBoosts } from '../../../../lib/bso/gorajanGearBoost';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
@@ -30,7 +30,6 @@ import { ChargeBank } from '../../../../lib/structures/Bank';
 import { maxOffenceStats } from '../../../../lib/structures/Gear';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
 import getOSItem from '../../../../lib/util/getOSItem';
-import type { PvMMethod } from '../../../commands/k';
 import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
 import { determineIfUsingCannon } from './determineIfUsingCannon';
 import { dragonHunterWeapons } from './minionKillData';
@@ -536,7 +535,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				if (allGorajan || (expectedSetup === setup && gearBank.gear[setup].hasEquipped(outfit, true))) {
 					results.push({
 						percentageReduction: 10,
-						message: `10% for ${itemNameFromID(outfit[0])!.split(' ').slice(0, 2).join(' ')} gear`
+						message: `10% for ${Items.itemNameFromId(outfit[0])!.split(' ').slice(0, 2).join(' ')} gear`
 					});
 					break;
 				}

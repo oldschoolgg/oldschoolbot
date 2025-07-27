@@ -1,4 +1,5 @@
-import { getInterval, makeComponents } from '@oldschoolgg/toolkit/util';
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { getInterval } from '@oldschoolgg/toolkit/util';
 import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';

@@ -5,7 +5,6 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const shop = [
 	{

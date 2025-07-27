@@ -1,4 +1,5 @@
-import { formatDuration, formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
+import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { bold } from 'discord.js';
 import {
 	Time,

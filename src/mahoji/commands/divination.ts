@@ -1,5 +1,6 @@
-import { formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, increaseNumByPercent, removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -19,7 +20,6 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { assert } from '../../lib/util/logError';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const divinationCommand: OSBMahojiCommand = {
 	name: 'divination',

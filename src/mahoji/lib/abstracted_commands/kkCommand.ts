@@ -1,13 +1,14 @@
-import { channelIsSendable, formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { Bank } from 'oldschooljs';
 
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
 import { calcBossFood } from '../../../lib/bso/calcBossFood';
 import { gorajanWarriorOutfit, torvaOutfit } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { calculateMonsterFood } from '../../../lib/minions/functions';
 import type { KillableMonster } from '../../../lib/minions/types';
 import { setupParty } from '../../../lib/party';
 import { Gear } from '../../../lib/structures/Gear';

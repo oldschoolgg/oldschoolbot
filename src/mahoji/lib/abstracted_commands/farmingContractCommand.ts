@@ -1,6 +1,7 @@
 import { roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
 
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import type {
 	ContractOption,
@@ -10,7 +11,6 @@ import type {
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo';
 import { plants } from '../../../lib/skilling/skills/farming';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { makeEasierFarmingContractButton } from '../../../lib/util/smallUtils';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';

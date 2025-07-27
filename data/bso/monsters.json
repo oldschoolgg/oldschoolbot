@@ -1,6 +1,6 @@
 {
-	"hash": "240673b2e1446739db046a6d4ec4cd0b",
-	"date": "2025-07-01T02:28:48.168Z",
+	"hash": "59d99bc4b6022601fc96cca7e18f1271",
+	"date": "2025-07-27T11:23:27.263Z",
 	"data": [
 		{
 			"id": 2,
@@ -1280,7 +1280,7 @@
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
 			"can_chin": false,
-			"can_cannon": false,
+			"can_cannon": true,
 			"cannon_multi": false
 		},
 		{

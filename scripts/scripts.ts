@@ -3,12 +3,14 @@ import '../src/lib/safeglobals';
 import { execSync } from 'node:child_process';
 
 import { sonicBoom } from '@/lib/util/logger';
+import { applyStaticDefine } from '../meta.js';
 import { renderBsoItemsFile } from './bsoData';
 import { renderCreatablesFile } from './creatables';
 import { createMonstersJson } from './monstersJson.js';
 import { renderCommandsFile } from './renderCommandsFile';
 
 function scriptsMain() {
+	applyStaticDefine();
 	createMonstersJson();
 	renderCreatablesFile();
 	renderCommandsFile();

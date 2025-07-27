@@ -1,5 +1,10 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandRunOptions, channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
+import {
+	type CommandRunOptions,
+	type OSBMahojiCommand,
+	channelIsSendable,
+	makeComponents
+} from '@oldschoolgg/toolkit/discord-util';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import {
@@ -29,7 +34,6 @@ import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance } from '../mahojiSettings';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {

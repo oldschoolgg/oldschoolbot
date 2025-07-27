@@ -1,4 +1,5 @@
 {
+	"osb/Miscellaneous/champions-challenge.md": ["DayV", "TastyPumPum"],
 	"getting-started/wiki.md": ["Magnaboy", "DayV", "dark", "Jonesey"],
 	"osb/Bosses/colosseum.md": ["DayV", "Magnaboy"],
 	"osb/Bosses/fight-caves.md": ["DayV", "Magnaboy"],
@@ -41,7 +42,6 @@
 	"osb/Miscellaneous/bingo.mdx": ["TastyPumPum"],
 	"osb/Miscellaneous/bot-firsts.md": ["TastyPumPum"],
 	"osb/Miscellaneous/buyables.md": ["TastyPumPum"],
-	"osb/Miscellaneous/champions-challenge.md": ["TastyPumPum"],
 	"osb/Miscellaneous/charging-items.md": ["TastyPumPum"],
 	"osb/Miscellaneous/collecting.md": ["TastyPumPum"],
 	"osb/Miscellaneous/crack-the-clue.md": ["TastyPumPum"],

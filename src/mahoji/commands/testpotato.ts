@@ -1,4 +1,6 @@
-import { type CommandRunOptions, mentionCommand, stringMatches } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { type Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Time, noOp, randArrItem, randInt, uniqueArr } from 'e';
@@ -35,7 +37,6 @@ import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
-import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 import { tameEquippables } from './tames';

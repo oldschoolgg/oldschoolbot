@@ -2,7 +2,6 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 
 import { generateAllCompCapeTasksList } from '../../lib/bso/compCape';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const completionCommand: OSBMahojiCommand = {
 	name: 'completion',

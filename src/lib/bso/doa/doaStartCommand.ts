@@ -1,5 +1,6 @@
-import { type CommandResponse, channelIsSendable, formatDuration } from '@oldschoolgg/toolkit';
+import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { Time, clamp } from 'e';
 import { Bank, Items } from 'oldschooljs';
 

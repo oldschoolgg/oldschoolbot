@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { PerkTier } from '../../lib/constants';
 import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
@@ -10,7 +11,6 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
-import type { OSBMahojiCommand } from '../lib/util';
 
 function determineKillLimit(user: MUser) {
 	const perkTier = user.perkTier();

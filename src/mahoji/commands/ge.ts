@@ -1,16 +1,18 @@
-import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
 	type CommandOption,
 	type CommandRunOptions,
-	evalMathExpression,
-	formatDuration,
-	makeComponents
-} from '@oldschoolgg/toolkit/util';
+	type OSBMahojiCommand,
+	makeComponents,
+	returnStringOrFile
+} from '@oldschoolgg/toolkit/discord-util';
+import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import { GeImageGenerator } from '@/lib/canvas/geImage';
 import { itemNameFromID } from '@/lib/util';
 import { isGEUntradeable } from '../../lib/bso/bsoUtil';
 import { PerkTier } from '../../lib/constants';
@@ -23,7 +25,6 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemArr, itemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export type GEListingWithTransactions = GEListing & {
@@ -368,8 +369,10 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				take: 5
 			});
 
-			const image = await geImageGenerator.createInterface({
-				user,
+			const slots = await GrandExchange.calculateSlotsOfUser(user);
+			const image = await GeImageGenerator.createInterface({
+				maxSlots: slots.maxPossible,
+				slotsUsed: slots.slots,
 				page: options.my_listings.page ?? 1,
 				activeListings
 			});

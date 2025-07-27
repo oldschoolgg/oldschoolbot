@@ -8,7 +8,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const lightCommand: OSBMahojiCommand = {
 	name: 'light',

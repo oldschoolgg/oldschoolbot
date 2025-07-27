@@ -8,7 +8,6 @@ import { sorts } from '../../lib/sorts';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const finishCommand: OSBMahojiCommand = {
 	name: 'finish',

@@ -1,4 +1,5 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { type CommandRunOptions, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -17,7 +18,6 @@ import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUti
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
-import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];

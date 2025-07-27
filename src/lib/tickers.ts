@@ -1,4 +1,5 @@
-import { awaitMessageComponentInteraction, cleanUsername, stringMatches } from '@oldschoolgg/toolkit/util';
+import { awaitMessageComponentInteraction, cleanUsername } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';

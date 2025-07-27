@@ -1,6 +1,7 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
@@ -78,7 +79,6 @@ import {
 	volcanicMineShopCommand,
 	volcanicMineStatsCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 import type { NMZStrategy } from './../../lib/constants';
 import { NMZ_STRATEGY } from './../../lib/constants';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';

@@ -1,7 +1,7 @@
 import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-
 import { clamp } from 'e';
+
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import {
@@ -9,7 +9,6 @@ import {
 	abstractedOpenCommand,
 	abstractedOpenUntilCommand
 } from '../lib/abstracted_commands/openCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',

@@ -3,7 +3,7 @@ import { Bank, EItem, ItemGroups, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { fishCommand } from '../../../src/mahoji/commands/fish';
-import { createTestUser } from '../util';
+import { createTestUser, mockClient } from '../util';
 
 describe('Fish Command', async () => {
 	const client = await mockClient();

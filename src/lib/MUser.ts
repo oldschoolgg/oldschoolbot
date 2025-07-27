@@ -1,5 +1,7 @@
-import { PerkTier, cleanUsername, mentionCommand, seedShuffle } from '@oldschoolgg/toolkit';
+import { PerkTier } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { seedShuffle } from '@oldschoolgg/toolkit/rng';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
@@ -25,6 +27,8 @@ import { calculateCompCapeProgress } from './bso/calculateCompCapeProgress';
 import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { partialUserCache } from './cache';
+import { generateAllGearImage, generateGearImage } from './canvas/generateGearImage';
+import type { IconPackID } from './canvas/iconPacks';
 import { ClueTiers } from './clues/clueTiers';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
 import { BitField, MAX_LEVEL, projectiles } from './constants';
@@ -32,7 +36,6 @@ import { bossCLItems } from './data/Collections';
 import { allPetIDs, avasDevices } from './data/CollectionsExport';
 import { degradeableItems } from './degradeableItems';
 import { type GearSetup, type UserFullGearSetup, defaultGear } from './gear';
-import { gearImages } from './gear/functions/generateGearImage';
 import { handleNewCLItems } from './handleNewCLItems';
 import type { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
@@ -40,7 +43,7 @@ import { marketPriceOfBank } from './marketPrices';
 import backgroundImages from './minions/data/bankBackgrounds';
 import type { CombatOptionsEnum } from './minions/data/combatConstants';
 import { defaultFarmingContract } from './minions/farming';
-import type { FarmingContract } from './minions/farming/types';
+import type { DetailedFarmingContract, FarmingContract } from './minions/farming/types';
 import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
@@ -118,6 +121,7 @@ export class MUserClass {
 	paintedItems!: Map<number, number>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
+	iconPackId!: IconPackID | null;
 
 	constructor(user: User) {
 		this.user = user;
@@ -157,10 +161,7 @@ export class MUserClass {
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
-	}
-
-	get gearTemplate() {
-		return gearImages.find(i => i.id === this.user.gear_template)!;
+		this.iconPackId = (this.user.icon_pack_id as IconPackID) ?? null;
 	}
 
 	public get gearBank() {
@@ -795,7 +796,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return (Date.now() - createdAt.getTime()) / Time.Day;
 	}
 
-	farmingContract() {
+	farmingContract(): DetailedFarmingContract {
 		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
 		const plant = !currentFarmingContract
 			? undefined
@@ -890,6 +891,24 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			previousStepData: mysteriousStepData[(currentStepID - 1) as keyof typeof mysteriousStepData],
 			minionMessage: randArrItem(mysteriousStepData[currentStepID].messages).replace('{minion}', this.minionName)
 		};
+	}
+
+	generateGearImage({ setupType, gearSetup }: { setupType?: GearSetupType | 'all'; gearSetup?: Gear }) {
+		if (setupType === 'all') {
+			return generateAllGearImage({
+				equippedPet: this.user.minion_equippedPet,
+				bankBgHexColor: this.user.bank_bg_hex,
+				iconPackId: this.iconPackId,
+				farmingContract: this.farmingContract(),
+				gear: this.gear
+			});
+		}
+		return generateGearImage({
+			gearSetup: setupType ? this.gear[setupType] : gearSetup!,
+			gearType: setupType,
+			petID: this.user.minion_equippedPet,
+			farmingContract: this.farmingContract()
+		});
 	}
 
 	caPoints(): number {

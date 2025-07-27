@@ -35,14 +35,34 @@
 			"import": "./dist/esm/util/datetime.mjs"
 		},
 		"./discord-util": {
-			"types": "./dist/discord-util.d.ts",
-			"require": "./dist/cjs/discord-util.cjs",
-			"import": "./dist/esm/discord-util.mjs"
+			"types": "./dist/util/discord/index.d.ts",
+			"require": "./dist/cjs/util/discord/index.cjs",
+			"import": "./dist/esm/util/discord/index.mjs"
+		},
+		"./math": {
+			"types": "./dist/util/math/index.d.ts",
+			"require": "./dist/cjs/util/math/index.cjs",
+			"import": "./dist/esm/util/math/index.mjs"
 		},
 		"./string-util": {
 			"types": "./dist/string-util.d.ts",
 			"require": "./dist/cjs/string-util.cjs",
 			"import": "./dist/esm/string-util.mjs"
+		},
+		"./node": {
+			"types": "./dist/util/node.d.ts",
+			"require": "./dist/cjs/util/node.cjs",
+			"import": "./dist/esm/util/node.mjs"
+		},
+		"./runescape": {
+			"types": "./dist/util/runescape.d.ts",
+			"require": "./dist/cjs/util/runescape.cjs",
+			"import": "./dist/esm/util/runescape.mjs"
+		},
+		"./rng": {
+			"types": "./dist/rng/index.d.ts",
+			"require": "./dist/cjs/rng/index.cjs",
+			"import": "./dist/esm/rng/index.mjs"
 		}
 	},
 	"scripts": {

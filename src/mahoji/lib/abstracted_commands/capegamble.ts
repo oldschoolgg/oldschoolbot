@@ -1,10 +1,10 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { petMessage } from '@/lib/util/displayCluesAndPets';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { roll } from '../../../lib/util/rng';
@@ -113,9 +113,7 @@ export async function capeGambleCommand(
 	const loot = gotPet ? new Bank().add(pet.id) : undefined;
 
 	await user.transactItems({ itemsToAdd: loot, itemsToRemove: new Bank().add(item.id), collectionLog: true });
-	let str = '';
 	if (gotPet) {
-		str += petMessage(loot);
 		globalClient.emit(
 			Events.ServerNotification,
 			`**${user.badgedUsername}'s** just received their ${formatOrdinal(
@@ -123,7 +121,6 @@ export async function capeGambleCommand(
 			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);
 		return {
-			content: str,
 			files: [
 				{
 					name: 'image.jpg',

@@ -1,5 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { channelIsSendable, formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
@@ -23,7 +23,6 @@ import type { DungeoneeringOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import type { OSBMahojiCommand } from '../lib/util';
 
 // Max people in a party:
 const maxTeamSize = 20;

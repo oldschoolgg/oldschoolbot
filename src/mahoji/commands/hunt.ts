@@ -1,3 +1,4 @@
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
@@ -5,7 +6,7 @@ import { reduceNumByPercent } from 'e';
 import { Bank, ECreature, type ItemBank, itemID } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types';
-import type { Peak } from '@/lib/util/peaks';
+import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import type { UserFullGearSetup } from '../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
@@ -20,7 +21,6 @@ import type { HunterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
 
 export function calculateHunterInput({
@@ -253,7 +253,7 @@ export function calculateHunterInput({
 
 	if (creature.wildy) {
 		const date = new Date().getTime();
-		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
+		const cachedPeakInterval: Peak[] = generateDailyPeakIntervals().peaks;
 		for (const peak of cachedPeakInterval) {
 			if (peak.startTime < date && peak.finishTime > date) {
 				wildyPeak = peak;

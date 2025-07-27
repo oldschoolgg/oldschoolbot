@@ -2,14 +2,13 @@ import { Bank, type ItemBank, itemID } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 import { MemoryHarvestType } from '../../src/lib/bso/divination';
-import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { MemoryHarvestOptions } from '../../src/lib/types/minions';
 import { divinationCommand } from '../../src/mahoji/commands/divination';
 import { createTestUser, mockClient } from './util';
 
 describe('Divination', async () => {
-	const client = await mockClient();
+	await mockClient();
 
 	const ogRandom = Math.random;
 
@@ -31,7 +30,7 @@ describe('Divination', async () => {
 				energy: 'Pale'
 			}
 		});
-		await client.processActivities();
+		await user.runActivity();
 		await user.sync();
 		const _activity = await prisma.activity.findFirst({
 			where: {
@@ -39,7 +38,7 @@ describe('Divination', async () => {
 				type: 'MemoryHarvest'
 			}
 		});
-		const activity = convertStoredActivityToFlatActivity(_activity!) as MemoryHarvestOptions;
+		const activity = ActivityManager.convertStoredActivityToFlatActivity(_activity!) as MemoryHarvestOptions;
 		expect(user.skillsAsXP.divination).toBeGreaterThan(1);
 		expect(user.skillsAsLevels.divination).toEqual(36);
 		expect(activity.dp).toEqual(false);
@@ -61,7 +60,7 @@ describe('Divination', async () => {
 				type: MemoryHarvestType.ConvertToEnergy
 			}
 		});
-		await client.processActivities();
+		await user.runActivity();
 		await user.sync();
 		const _activity = await prisma.activity.findFirst({
 			where: {
@@ -69,7 +68,7 @@ describe('Divination', async () => {
 				type: 'MemoryHarvest'
 			}
 		});
-		const activity = convertStoredActivityToFlatActivity(_activity!) as MemoryHarvestOptions;
+		const activity = ActivityManager.convertStoredActivityToFlatActivity(_activity!) as MemoryHarvestOptions;
 		expect(user.skillsAsXP.divination).toBeGreaterThan(1);
 		expect(user.skillsAsLevels.divination).toEqual(32);
 		expect(activity.dp).toEqual(false);

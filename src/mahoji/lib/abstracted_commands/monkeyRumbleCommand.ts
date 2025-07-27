@@ -3,6 +3,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, randArrItem, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { mahojiChatHead } from '@/lib/canvas/chatHeadImage';
 import {
 	type Monkey,
 	TOTAL_MONKEYS,
@@ -17,7 +18,6 @@ import {
 import type { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function monkeyRumbleStatsCommand(user: MUser) {

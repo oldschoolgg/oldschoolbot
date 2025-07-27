@@ -1,19 +1,17 @@
-import { type CommandOption, type CommandRunOptions, cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandOption, CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { cleanString, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { EquipmentSlot } from 'oldschooljs';
+import { EquipmentSlot, Items } from 'oldschooljs';
 
-import { ParsedCustomEmojiWithGroups } from '../../lib/constants';
-import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { ParsedCustomEmojiWithGroups } from '@/lib/constants';
 import { isValidGearSetup } from '../../lib/gear/functions/isValidGearSetup';
 import type { GearSetup, GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { Gear, globalPresets } from '../../lib/structures/Gear';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
-import { getItem } from '../../lib/util/getOSItem';
 import { isValidNickname } from '../../lib/util/smallUtils';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
 import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 
 function maxPresets(user: MUser) {
 	return user.perkTier() * 2 + 4;
@@ -29,7 +27,7 @@ function parseInputGear(inputGear: InputGear) {
 			remove.push(key as EquipmentSlot);
 			continue;
 		}
-		const item = getItem(val);
+		const item = Items.getItem(val);
 		if (item && item.equipment?.slot === key) {
 			gear[key as EquipmentSlot] = item.id;
 		}
@@ -367,7 +365,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					where: { user_id: userID.toString(), name: options.view.preset }
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
-			const image = await generateGearImage(user, new Gear(preset), null, null);
+			const image = await user.generateGearImage({ gearSetup: new Gear(preset) });
 			return { files: [{ attachment: image, name: 'preset.jpg' }] };
 		}
 

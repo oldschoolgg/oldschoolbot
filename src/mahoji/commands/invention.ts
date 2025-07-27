@@ -18,7 +18,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
+
 import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const inventionCommand: OSBMahojiCommand = {
