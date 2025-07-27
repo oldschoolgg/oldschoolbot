@@ -8,7 +8,7 @@ import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 import type { MUserClass } from './MUser';
 import { usernameWithBadgesCache } from './cache';
 import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants';
-import { type SkillNameType, SkillsEnum } from './skilling/types';
+import type { SkillNameType, SkillsEnum } from './skilling/types';
 import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type { GroupMonsterActivityTaskOptions } from './types/minions';
@@ -42,10 +42,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		}
 	}
 	return true;
-}
-
-export function isValidSkill(skill: string): skill is SkillsEnum {
-	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
 
 export function skillingPetDropRate(
