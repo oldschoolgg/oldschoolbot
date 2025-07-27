@@ -10,7 +10,8 @@ const entryPoints = [
 	'src/util/discord/index.ts',
 	'src/util/math/index.ts',
 	'src/util/node.ts',
-	'src/util/runescape.ts'
+	'src/util/runescape.ts',
+	'src/rng/index.ts'
 ];
 
 const baseConfig = {

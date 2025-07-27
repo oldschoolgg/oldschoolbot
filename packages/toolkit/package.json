@@ -58,6 +58,11 @@
 			"types": "./dist/util/runescape.d.ts",
 			"require": "./dist/cjs/util/runescape.cjs",
 			"import": "./dist/esm/util/runescape.mjs"
+		},
+		"./rng": {
+			"types": "./dist/rng/index.d.ts",
+			"require": "./dist/cjs/rng/index.cjs",
+			"import": "./dist/esm/rng/index.mjs"
 		}
 	},
 	"scripts": {
