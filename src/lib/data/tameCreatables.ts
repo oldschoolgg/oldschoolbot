@@ -28,10 +28,10 @@ const eagleTameCreatables: Createable[] = [
 		}
 	},
 	{
-		name: '3rd age jibwings',
+		name: 'Third age jibwings',
 		materialCost: new MaterialBank().add('third-age', 6),
 		inputItems: new Bank().add('Gold bar', 1000),
-		outputItems: new Bank().add('3rd age jibwings'),
+		outputItems: new Bank().add('Third age jibwings'),
 		requiredSkills: {
 			invention: 90,
 			crafting: 90,
@@ -39,9 +39,9 @@ const eagleTameCreatables: Createable[] = [
 		}
 	},
 	{
-		name: '3rd age jibwings (e)',
-		inputItems: new Bank().add('3rd age jibwings').add('Ignecarus scales', 1000),
-		outputItems: new Bank().add('3rd age jibwings (e)'),
+		name: 'Third age jibwings (e)',
+		inputItems: new Bank().add('Third age jibwings').add('Ignecarus scales', 1000),
+		outputItems: new Bank().add('Third age jibwings (e)'),
 		requiredSkills: {
 			invention: 105,
 			crafting: 105,

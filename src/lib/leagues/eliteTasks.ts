@@ -824,10 +824,10 @@ export const eliteTasks: Task[] = [
 			return [
 				'Abyssal jibwings (e)',
 				'Demonic jibwings (e)',
-				'3rd age jibwings (e)',
+				'Third age jibwings (e)',
 				'Abyssal jibwings',
 				'Demonic jibwings',
-				'3rd age jibwings'
+				'Third age jibwings'
 			].some(i => cl.has(i));
 		}
 	},
@@ -835,7 +835,7 @@ export const eliteTasks: Task[] = [
 		id: 3109,
 		name: 'Create any set of enhanced eagle jibwings',
 		has: async ({ cl }) => {
-			return ['Abyssal jibwings (e)', 'Demonic jibwings (e)', '3rd age jibwings (e)'].some(i => cl.has(i));
+			return ['Abyssal jibwings (e)', 'Demonic jibwings (e)', 'Third age jibwings (e)'].some(i => cl.has(i));
 		}
 	},
 	{
