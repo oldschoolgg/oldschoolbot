@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
 import { bankImageTask } from '@/lib/canvas/bankImage';
-import { baseSnapshotPath } from '../testConstants';
+import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('BSO Bank Images', async () => {
 	test('Monkey/Dragon egg glow', async () => {

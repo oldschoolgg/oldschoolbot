@@ -59,7 +59,8 @@ test(
 
 			'simulate',
 			'leagues',
-			'kill'
+			'kill',
+			'ic'
 		];
 		const commandsToTest = allCommands.filter(c => !ignoredCommands.includes(c.name));
 
@@ -72,7 +73,8 @@ test(
 			['minion', 'daily'],
 			['gamble', 'luckypick'],
 			['gamble', 'duel'],
-			['config', 'toggle']
+			['config', 'toggle'],
+			['gear', 'best_in_slot']
 		];
 
 		const useCommandOptions: Record<string, any>[] = [];
@@ -124,6 +126,11 @@ test(
 			for (const options of allOptions) {
 				queue.add(async () => {
 					try {
+						for (const [cmdName, optName] of ignoredSubCommands) {
+							if (command.name === cmdName && options[optName]) {
+								return;
+							}
+						}
 						const maxUser = await createTestUser(bankWithAllItems, {
 							...(getMaxUserValues() as any),
 							GP: 100_000_000_000

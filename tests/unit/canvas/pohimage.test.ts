@@ -4,7 +4,7 @@ import { describe, test } from 'vitest';
 
 import { bankImageTask } from '@/lib/canvas/bankImage';
 import { pohImageGenerator } from '@/lib/canvas/pohImage';
-import { baseSnapshotPath } from '../testConstants';
+import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('POH Image', async () => {
 	await bankImageTask.ready;

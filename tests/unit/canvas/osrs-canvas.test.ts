@@ -5,7 +5,7 @@ import { describe, test } from 'vitest';
 
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
 import { bankImageTask } from '@/lib/canvas/bankImage';
-import { baseSnapshotPath } from '../testConstants';
+import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('OSRSCanvas', async () => {
 	await bankImageTask.ready;
