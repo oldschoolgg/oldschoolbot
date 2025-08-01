@@ -1,9 +1,8 @@
 import { existsSync } from 'node:fs';
-import path, { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
-// @ts-ignore
-const __BOT_TYPE__ = existsSync(path.resolve(dirname(fileURLToPath(import.meta.url)), './src/lib/bso')) ? 'BSO' : 'OSB';
+const checkPath = path.join(__dirname, '../src/lib/bso');
+const __BOT_TYPE__ = existsSync(checkPath) ? 'BSO' : 'OSB';
 
 export const baseSnapshotPath = `tests/unit/snapshots/${__BOT_TYPE__.toLowerCase()}/`;
 export const XP_MULTIPLIER = __BOT_TYPE__ === 'BSO' ? 5 : 1;
