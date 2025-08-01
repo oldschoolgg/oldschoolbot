@@ -65,7 +65,7 @@ async function main() {
 			_item.equipable &&
 			_item.equipment?.slot &&
 			(_item.tradeable_on_ge ||
-				['black mask', 'slayer', 'collection', ...SkillsArray.map(n => `${n} `)].some(_str =>
+				['black mask', 'slayer', 'collection', 'salve', ...SkillsArray.map(n => `${n} `)].some(_str =>
 					_item.name.toLowerCase().includes(_str)
 				))
 		) {
