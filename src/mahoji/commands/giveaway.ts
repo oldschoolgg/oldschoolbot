@@ -3,7 +3,6 @@ import {
 	type CommandRunOptions,
 	type OSBMahojiCommand,
 	channelIsSendable,
-	isModOrAdmin,
 	makeComponents,
 	makePaginatedMessage
 } from '@oldschoolgg/toolkit/discord-util';
@@ -36,6 +35,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { addToGPTaxBalance } from '../mahojiSettings';
+import { isModOrAdmin } from '@/lib/util.js';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [

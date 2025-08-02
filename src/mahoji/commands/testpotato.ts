@@ -1,18 +1,17 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { stringMatches, type CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { xp_gains_skill_enum } from '@prisma/client';
 import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, noOp, uniqueArr } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { ApplicationCommandOptionType, MessageFlags } from 'discord.js';
+import { Time, noOp, randArrItem, randInt, uniqueArr } from 'e';
+import { Bank, Items, MAX_INT_JAVA } from 'oldschooljs';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { BitFieldData, MAX_INT_JAVA, globalConfig } from '../../lib/constants';
+import { BitFieldData, globalConfig } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -31,7 +30,6 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { Gear } from '../../lib/structures/Gear';
-import { stringMatches } from '../../lib/util';
 import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
@@ -45,6 +43,8 @@ import { BingoManager } from '../lib/bingo/BingoManager';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
+import { testBotKvStore } from '@/testing/TestBotStore';
+import { mentionCommand } from 'packages/toolkit/dist/util/discord';
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
