@@ -1,4 +1,3 @@
-
 import { mentionCommand } from '@oldschoolgg/toolkit/util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
@@ -6,28 +5,14 @@ import { xp_gains_skill_enum } from '@prisma/client';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, noOp, uniqueArr } from 'e';
-import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
-import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
+import { Bank, Items } from 'oldschooljs';
+import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
 import { BitFieldData, MAX_INT_JAVA, globalConfig } from '../../lib/constants';
-import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
-import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
-import { Time, noOp, randArrItem, randInt } from 'e';
-import { Bank, Items, MAX_INT_JAVA, convertLVLtoXP, getItem, itemID, resolveItems } from 'oldschooljs';
-
-import { testBotKvStore } from '@/testing/TestBotStore';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { globalConfig } from '../../lib/constants';
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -36,6 +21,8 @@ import potions from '../../lib/minions/data/potions';
 import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
+
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -44,6 +31,7 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { Gear } from '../../lib/structures/Gear';
+import { stringMatches } from '../../lib/util';
 import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
@@ -54,6 +42,7 @@ import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
+import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 

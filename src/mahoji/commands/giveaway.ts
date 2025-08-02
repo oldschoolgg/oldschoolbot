@@ -27,7 +27,6 @@ import { giveawayCache } from '../../lib/cache.js';
 import { patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
 import { channelIsSendable, isModOrAdmin, makeComponents, makePaginatedMessage, toKMB } from '../../lib/util';
-import { isModOrAdmin } from '../../lib/util.js';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
